@@ -6,18 +6,12 @@ SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBD
 
 SET (HELP_SRCS
      main.cpp
-     qgshelpserver.cpp
      qgshelpviewer.cpp
-     #../core/qgsapplication.cpp
-     #../core/qgslogger.cpp
 )
 
 SET (HELP_UIS qgshelpviewerbase.ui)
 
-SET (HELP_MOC_HDRS
-     qgshelpserver.h
-     qgshelpviewer.h
-)
+SET (HELP_MOC_HDRS qgshelpviewer.h)
 
 #SET (HELP_RCCS  qgsgps_plugin.qrc)
 

@@ -28,6 +28,7 @@ class QgsOGRSublayersDialog : public QDialog, private Ui::QgsOGRSublayersDialogB
     ~QgsOGRSublayersDialog();
     void populateLayerTable( QStringList theList, QString delim = ":" );
     QStringList getSelection();
+    QList<int> getSelectionIndexes();
 
   public slots:
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }

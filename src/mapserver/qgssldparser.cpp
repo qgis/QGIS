@@ -31,6 +31,7 @@
 #include "qgsmslayercache.h"
 #include "qgsmsutils.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterrendererregistry.h"
 #include "qgscolorrampshader.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslabelattributes.h"
@@ -140,8 +141,10 @@ int QgsSLDParser::numberOfLayers() const
   return ( userLayerList.size() + namedLayerList.size() );
 }
 
-void QgsSLDParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+void QgsSLDParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings ) const
 {
+  Q_UNUSED( version );
+  Q_UNUSED( fullProjectSettings );
   //iterate over all <UserLayer> nodes
   if ( mXMLDoc )
   {
@@ -275,12 +278,13 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
         {
           QgsFeatureRendererV2* r = rendererFromUserStyle( userStyleElement, v );
           v->setRendererV2( r );
-          v->setUsingRendererV2( true );
           labelSettingsFromUserStyle( userStyleElement, v );
 #ifdef DIAGRAMSERVER
           overlaysFromUserStyle( userStyleElement, v );
 #endif //DIAGRAMSERVER
+#if 0
           setOpacityForLayer( namedLayerElemList[i], v );
+#endif
 
           resultList.push_back( v );
           return resultList;
@@ -292,7 +296,9 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
           {
             rasterSymbologyFromUserStyle( userStyleElement, r );
 
+#if 0
             setOpacityForLayer( namedLayerElemList[i], r );
+#endif
 
             //Using a contour symbolizer, there may be a raster and a vector layer
             QgsVectorLayer* v = contourLayerFromRaster( userStyleElement, r );
@@ -319,11 +325,13 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
       resultList = mFallbackParser->mapLayerFromStyle( layerName, styleName, useCache );
     }
 
+#if 0
     QList<QgsMapLayer*>::iterator it = resultList.begin();
     for ( ; it != resultList.end(); ++it )
     {
       setOpacityForLayer( userLayerElement, *it );
     }
+#endif
 
     return resultList;
   }
@@ -360,7 +368,9 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
           mLayersToRemove.push_back( v );
         }
       }
+#if 0
       setOpacityForLayer( userLayerElement, theMapLayer );
+#endif
       resultList.push_back( theMapLayer );
 
       return resultList;
@@ -392,9 +402,10 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
     return resultList;
   }
   theVectorLayer->setRendererV2( theRenderer );
-  theVectorLayer->setUsingRendererV2( true );
   QgsDebugMsg( "Returning the vectorlayer" );
+#if 0
   setOpacityForLayer( userLayerElement, theVectorLayer );
+#endif
   resultList.push_back( theVectorLayer );
   return resultList;
 }
@@ -419,6 +430,8 @@ QgsFeatureRendererV2* QgsSLDParser::rendererFromUserStyle( const QDomElement& us
 
 bool QgsSLDParser::rasterSymbologyFromUserStyle( const QDomElement& userStyleElement, QgsRasterLayer* r ) const
 {
+  return false;
+#if 0 //needs to be fixed
   QgsDebugMsg( "Entering" );
   if ( !r )
   {
@@ -502,6 +515,10 @@ bool QgsSLDParser::rasterSymbologyFromUserStyle( const QDomElement& userStyleEle
 
   //set pseudo color mode
   return true;
+#else
+  Q_UNUSED( userStyleElement );
+  Q_UNUSED( r );
+#endif //0
 }
 
 // ---------------labelSettingsFromUserStyle-----------------------
@@ -1381,7 +1398,6 @@ QgsVectorLayer* QgsSLDParser::contourLayerFromRaster( const QDomElement& userSty
   //create renderer
   QgsFeatureRendererV2* theRenderer = rendererFromUserStyle( userStyleElem, contourLayer );
   contourLayer->setRendererV2( theRenderer );
-  contourLayer->setUsingRendererV2( true );
 
   //add labelling if requested
   labelSettingsFromUserStyle( userStyleElem, contourLayer );
@@ -1444,6 +1460,7 @@ QString QgsSLDParser::layerNameFromUri( const QString& uri ) const
   return "";
 }
 
+#if 0
 void QgsSLDParser::setOpacityForLayer( const QDomElement& layerElem, QgsMapLayer* layer ) const
 {
   QDomNode opacityNode = layerElem.namedItem( "Opacity" );
@@ -1472,6 +1489,7 @@ void QgsSLDParser::setOpacityForLayer( const QDomElement& layerElem, QgsMapLayer
   QgsDebugMsg( "Setting opacity value: " + QString::number( opacityValue ) );
   layer->setTransparency( opacityValue );
 }
+#endif
 
 void QgsSLDParser::clearRasterSymbology( QgsRasterLayer* rl ) const
 {
@@ -1479,8 +1497,8 @@ void QgsSLDParser::clearRasterSymbology( QgsRasterLayer* rl ) const
   {
     if ( rl->rasterType() == QgsRasterLayer::GrayOrUndefined )
     {
-      rl->setDrawingStyle( QgsRasterLayer::SingleBandPseudoColor );
-      rl->setRasterShaderFunction( new QgsRasterShaderFunction() );
+      //rl->setDrawingStyle( QgsRasterLayer::SingleBandPseudoColor );
+      rl->setRenderer( QgsRasterRendererRegistry::instance()->defaultRendererForDrawingStyle( QgsRasterLayer::SingleBandPseudoColor, rl->dataProvider() ) );
     }
   }
 }
@@ -1508,6 +1526,18 @@ void QgsSLDParser::setCrsForLayer( const QDomElement& layerElem, QgsMapLayer* ml
     {
       QgsCoordinateReferenceSystem srs;
       srs.createFromProj4( projString );
+      //TODO: createFromProj4 used to save to the user database any new CRS
+      // this behavior was changed in order to separate creation and saving.
+      // Not sure if it necessary to save it here, should be checked by someone
+      // familiar with the code (should also give a more descriptive name to the generated CRS)
+      if ( srs.srsid() == 0 )
+      {
+        QString myName = QString( " * %1 (%2)" )
+                         .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
+                         .arg( srs.toProj4() );
+        srs.saveAsUserCRS( myName );
+      }
+
       ml->setCrs( srs );
     }
   }
@@ -1537,6 +1567,32 @@ bool QgsSLDParser::featureInfoWithWktGeometry() const
     return mFallbackParser->featureInfoWithWktGeometry();
   }
   return false;
+}
+
+QHash<QString, QString> QgsSLDParser::featureInfoLayerAliasMap() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->featureInfoLayerAliasMap();
+  }
+  return QHash<QString, QString>();
+}
+
+bool QgsSLDParser::featureInfoFormatSIA2045() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->featureInfoFormatSIA2045();
+  }
+  return false;
+}
+
+void QgsSLDParser::drawOverlays( QPainter* p, int dpi, int width, int height ) const
+{
+  if ( mFallbackParser )
+  {
+    mFallbackParser->drawOverlays( p, dpi, width, height );
+  }
 }
 
 #ifdef DIAGRAMSERVER
@@ -1593,7 +1649,7 @@ QgsVectorOverlay* QgsSLDParser::vectorOverlayFromDiagramSymbolizer( const QDomEl
   QList<QgsDiagramItem> theItems;
   QList<int> scalingAttributes;
   QgsAttributeList factoryCategoryAttributes;
-  QgsDiagramRenderer::ItemInterpretation interpretation; //discrete or linear
+  QgsDiagramRenderer::ItemInterpretation interpretation = QgsDiagramRenderer::DISCRETE; //discrete or linear
 
   //scale
   double scaleFactor = scaleFactorFromScaleTag( diagramElem.namedItem( "Scale" ).toElement() );

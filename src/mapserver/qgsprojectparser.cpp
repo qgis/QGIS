@@ -23,8 +23,8 @@
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include "qgsrasterlayer.h"
-#include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 
 #include "qgscomposition.h"
 #include "qgscomposerarrow.h"
@@ -37,7 +37,10 @@
 #include "qgscomposershape.h"
 
 #include "QFileInfo"
+#include <QSvgRenderer>
+#include <QTextDocument>
 #include "QTextStream"
+#include <QUrl>
 
 
 QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePath ): QgsConfigParser(), mXMLDoc( xmlDoc ), mProjectPath( filePath )
@@ -47,7 +50,7 @@ QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePat
   setSelectionColor();
   setMaxWidthHeight();
 
-  //accelerate search for layers and groups
+  //accelerate the search for layers, groups and the creation of annotation items
   if ( mXMLDoc )
   {
     QDomNodeList layerNodeList = mXMLDoc->elementsByTagName( "maplayer" );
@@ -70,6 +73,10 @@ QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePat
         mLegendGroupElements.push_back( groupNodeList.at( i ).toElement() );
       }
     }
+
+    mRestrictedLayers = restrictedLayers();
+    createTextAnnotationItems();
+    createSvgAnnotationItems();
   }
 }
 
@@ -80,6 +87,8 @@ QgsProjectParser::QgsProjectParser(): mXMLDoc( 0 )
 QgsProjectParser::~QgsProjectParser()
 {
   delete mXMLDoc;
+  cleanupTextAnnotationItems();
+  cleanupSvgAnnotationItems();
 }
 
 int QgsProjectParser::numberOfLayers() const
@@ -87,35 +96,21 @@ int QgsProjectParser::numberOfLayers() const
   return mProjectLayerElements.size();
 }
 
-void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings ) const
 {
   QStringList nonIdentifiableLayers = identifyDisabledLayers();
-
   if ( mProjectLayerElements.size() < 1 )
   {
     return;
   }
 
-  QMap<QString, QgsMapLayer *> layerMap;
-
-  foreach( const QDomElement &elem, mProjectLayerElements )
+  if ( fullProjectSettings )
   {
-    QgsMapLayer *layer = createLayerFromElement( elem );
-    if ( layer )
-    {
-      QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
-      layerMap.insert( layer->id(), layer );
-    }
-#if QGSMSDEBUG
-    else
-    {
-      QString buf;
-      QTextStream s( &buf );
-      elem.save( s, 0 );
-      QgsDebugMsg( QString( "layer %1 not found" ).arg( buf ) );
-    }
-#endif
+    addDrawingOrder( parentElement, doc );
   }
+
+  QMap<QString, QgsMapLayer *> layerMap;
+  projectLayerMap( layerMap );
 
   //According to the WMS spec, there can be only one toplevel layer.
   //So we create an artificial one here to be in accordance with the schema
@@ -133,15 +128,18 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
 
   QDomElement legendElem = mXMLDoc->documentElement().firstChildElement( "legend" );
 
-  addLayers( doc, layerParentElem, legendElem, layerMap, nonIdentifiableLayers );
+  addLayers( doc, layerParentElem, legendElem, layerMap, nonIdentifiableLayers, version, fullProjectSettings );
 
   parentElement.appendChild( layerParentElem );
-  combineExtentAndCrsOfGroupChildren( layerParentElem, doc );
+  combineExtentAndCrsOfGroupChildren( layerParentElem, doc, true );
 }
 
 void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const
 {
   QStringList wfsLayersId = wfsLayers();
+  QStringList wfstUpdateLayersId = wfstUpdateLayers();
+  QStringList wfstInsertLayersId = wfstInsertLayers();
+  QStringList wfstDeleteLayersId = wfstDeleteLayers();
 
   if ( mProjectLayerElements.size() < 1 )
   {
@@ -150,7 +148,7 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
 
   QMap<QString, QgsMapLayer *> layerMap;
 
-  foreach( const QDomElement &elem, mProjectLayerElements )
+  foreach ( const QDomElement &elem, mProjectLayerElements )
   {
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
@@ -197,6 +195,37 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
         srsElem.appendChild( srsText );
         layerElem.appendChild( srsElem );
 
+        //wfs:Operations element
+        QDomElement operationsElement = doc.createElement( "Operations"/*wfs:Operations*/ );
+        //wfs:Query element
+        QDomElement queryElement = doc.createElement( "Query"/*wfs:Query*/ );
+        operationsElement.appendChild( queryElement );
+
+        QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
+        QgsVectorDataProvider* provider = vlayer->dataProvider();
+        if (( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) && wfstInsertLayersId.contains( layer->id() ) )
+        {
+          //wfs:Insert element
+          QDomElement insertElement = doc.createElement( "Insert"/*wfs:Insert*/ );
+          operationsElement.appendChild( insertElement );
+        }
+        if (( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) &&
+            ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) &&
+            wfstUpdateLayersId.contains( layer->id() ) )
+        {
+          //wfs:Update element
+          QDomElement updateElement = doc.createElement( "Update"/*wfs:Update*/ );
+          operationsElement.appendChild( updateElement );
+        }
+        if (( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) && wfstDeleteLayersId.contains( layer->id() ) )
+        {
+          //wfs:Delete element
+          QDomElement deleteElement = doc.createElement( "Delete"/*wfs:Delete*/ );
+          operationsElement.appendChild( deleteElement );
+        }
+
+        layerElem.appendChild( operationsElement );
+
         QgsRectangle layerExtent = layer->extent();
         QDomElement bBoxElement = doc.createElement( "LatLongBoundingBox" );
         bBoxElement.setAttribute( "minx", QString::number( layerExtent.xMinimum() ) );
@@ -212,23 +241,210 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
   return;
 }
 
+void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const
+{
+  if ( mProjectLayerElements.size() < 1 )
+  {
+    return;
+  }
+
+  QStringList wfsLayersId = wfsLayers();
+  QStringList typeNameList;
+  if ( aTypeName != "" )
+  {
+    QStringList typeNameSplit = aTypeName.split( "," );
+    foreach ( const QString &str, typeNameSplit )
+    {
+      if ( str.contains( ":" ) )
+        typeNameList << str.section( ":", 1, 1 );
+      else
+        typeNameList << str;
+    }
+  }
+
+  foreach ( const QDomElement &elem, mProjectLayerElements )
+  {
+    QString type = elem.attribute( "type" );
+    if ( type == "vector" )
+    {
+      QgsMapLayer *mLayer = createLayerFromElement( elem );
+      QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
+
+      QString typeName = layer->name();
+      typeName = typeName.replace( QString( " " ), QString( "_" ) );
+
+      if ( layer && wfsLayersId.contains( layer->id() ) && ( aTypeName == "" || typeNameList.contains( typeName ) ) )
+      {
+        //do a select with searchRect and go through all the features
+        QgsVectorDataProvider* provider = layer->dataProvider();
+        if ( !provider )
+        {
+          continue;
+        }
+
+        //hidden attributes for this layer
+        const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWFS();
+
+        //xsd:element
+        QDomElement elementElem = doc.createElement( "element"/*xsd:element*/ );
+        elementElem.setAttribute( "name", typeName );
+        elementElem.setAttribute( "type", "qgs:" + typeName + "Type" );
+        elementElem.setAttribute( "substitutionGroup", "gml:_Feature" );
+        parentElement.appendChild( elementElem );
+
+        //xsd:complexType
+        QDomElement complexTypeElem = doc.createElement( "complexType"/*xsd:complexType*/ );
+        complexTypeElem.setAttribute( "name", typeName + "Type" );
+        parentElement.appendChild( complexTypeElem );
+
+        //xsd:complexType
+        QDomElement complexContentElem = doc.createElement( "complexContent"/*xsd:complexContent*/ );
+        complexTypeElem.appendChild( complexContentElem );
+
+        //xsd:extension
+        QDomElement extensionElem = doc.createElement( "extension"/*xsd:extension*/ );
+        extensionElem.setAttribute( "base", "gml:AbstractFeatureType" );
+        complexContentElem.appendChild( extensionElem );
+
+        //xsd:sequence
+        QDomElement sequenceElem = doc.createElement( "sequence"/*xsd:sequence*/ );
+        extensionElem.appendChild( sequenceElem );
+
+        //xsd:element
+        QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
+        geomElem.setAttribute( "name", "geometry" );
+        QGis::WkbType wkbType = layer->wkbType();
+        if ( wkbType != QGis::WKBNoGeometry )
+        {
+          switch ( wkbType )
+          {
+            case QGis::WKBPoint25D:
+            case QGis::WKBPoint:
+              geomElem.setAttribute( "type", "gml:PointPropertyType" );
+              break;
+            case QGis::WKBLineString25D:
+            case QGis::WKBLineString:
+              geomElem.setAttribute( "type", "gml:LineStringPropertyType" );
+              break;
+            case QGis::WKBPolygon25D:
+            case QGis::WKBPolygon:
+              geomElem.setAttribute( "type", "gml:PolygonPropertyType" );
+              break;
+            case QGis::WKBMultiPoint25D:
+            case QGis::WKBMultiPoint:
+              geomElem.setAttribute( "type", "gml:MultiPointPropertyType" );
+              break;
+            case QGis::WKBMultiLineString25D:
+            case QGis::WKBMultiLineString:
+              geomElem.setAttribute( "type", "gml:MultiLineStringPropertyType" );
+              break;
+            case QGis::WKBMultiPolygon25D:
+            case QGis::WKBMultiPolygon:
+              geomElem.setAttribute( "type", "gml:MultiPolygonPropertyType" );
+              break;
+            default:
+              geomElem.setAttribute( "type", "gml:GeometryPropertyType" );
+              break;
+          }
+          geomElem.setAttribute( "minOccurs", "0" );
+          geomElem.setAttribute( "maxOccurs", "1" );
+          sequenceElem.appendChild( geomElem );
+        }
+
+        const QgsFields& fields = provider->fields();
+        for ( int idx = 0; idx < fields.count(); ++idx )
+        {
+
+          QString attributeName = fields[idx].name();
+          //skip attribute if excluded from WFS publication
+          if ( layerExcludedAttributes.contains( attributeName ) )
+          {
+            continue;
+          }
+
+          //xsd:element
+          QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
+          geomElem.setAttribute( "name", attributeName );
+          QVariant::Type attributeType = fields[idx].type();
+          if ( attributeType == QVariant::Int )
+            geomElem.setAttribute( "type", "integer" );
+          else if ( attributeType == QVariant::Double )
+            geomElem.setAttribute( "type", "double" );
+          else
+            geomElem.setAttribute( "type", "string" );
+
+          sequenceElem.appendChild( geomElem );
+
+          QString alias = layer->attributeAlias( idx );
+          if ( !alias.isEmpty() )
+          {
+            geomElem.setAttribute( "alias", alias );
+          }
+        }
+      }
+    }
+  }
+  return;
+}
+
+QList<QgsMapLayer*> QgsProjectParser::mapLayerFromTypeName( const QString& tName, bool useCache ) const
+{
+  QList<QgsMapLayer*> layerList;
+
+  if ( mProjectLayerElements.size() < 1 )
+  {
+    return layerList;
+  }
+
+  QStringList wfsLayersId = wfsLayers();
+
+  foreach ( const QDomElement &elem, mProjectLayerElements )
+  {
+    QString type = elem.attribute( "type" );
+    if ( type == "vector" )
+    {
+      QgsMapLayer *mLayer = createLayerFromElement( elem, useCache );
+      QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
+
+      QString typeName = layer->name();
+      typeName = typeName.replace( QString( " " ), QString( "_" ) );
+      if ( tName == typeName )
+      {
+        layerList.push_back( mLayer );
+        return layerList;
+      }
+    }
+  }
+  return layerList;
+}
+
 void QgsProjectParser::addLayers( QDomDocument &doc,
                                   QDomElement &parentElem,
                                   const QDomElement &legendElem,
                                   const QMap<QString, QgsMapLayer *> &layerMap,
-                                  const QStringList &nonIdentifiableLayers ) const
+                                  const QStringList &nonIdentifiableLayers,
+                                  QString version,
+                                  bool fullProjectSettings ) const
 {
   QDomNodeList legendChildren = legendElem.childNodes();
   for ( int i = 0; i < legendChildren.size(); ++i )
   {
     QDomElement currentChildElem = legendChildren.at( i ).toElement();
-
     QDomElement layerElem = doc.createElement( "Layer" );
+    if ( fullProjectSettings )
+    {
+      layerElem.setAttribute( "visible", !( currentChildElem.attribute( "checked" ) == "Qt::Unchecked" ) );
+    }
+
 
     if ( currentChildElem.tagName() == "legendgroup" )
     {
       layerElem.setAttribute( "queryable", "1" );
       QString name = currentChildElem.attribute( "name" );
+      if ( mRestrictedLayers.contains( name ) ) //unpublished group
+      {
+        continue;
+      }
       QDomElement nameElem = doc.createElement( "Name" );
       QDomText nameText = doc.createTextNode( name );
       nameElem.appendChild( nameText );
@@ -252,7 +468,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
           QStringList pIdDisabled = p->identifyDisabledLayers();
 
           QDomElement embeddedGroupElem;
-          foreach( const QDomElement &elem, embeddedGroupElements )
+          foreach ( const QDomElement &elem, embeddedGroupElements )
           {
             if ( elem.attribute( "name" ) == embeddedGroupName )
             {
@@ -263,17 +479,17 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
 
           QMap<QString, QgsMapLayer *> pLayerMap;
           QList<QDomElement> embeddedProjectLayerElements = p->mProjectLayerElements;
-          foreach( const QDomElement &elem, embeddedProjectLayerElements )
+          foreach ( const QDomElement &elem, embeddedProjectLayerElements )
           {
             pLayerMap.insert( layerId( elem ), p->createLayerFromElement( elem ) );
           }
 
-          p->addLayers( doc, layerElem, embeddedGroupElem, pLayerMap, pIdDisabled );
+          p->addLayers( doc, layerElem, embeddedGroupElem, pLayerMap, pIdDisabled, version, fullProjectSettings );
         }
       }
       else //normal (not embedded) legend group
       {
-        addLayers( doc, layerElem, currentChildElem, layerMap, nonIdentifiableLayers );
+        addLayers( doc, layerElem, currentChildElem, layerMap, nonIdentifiableLayers, version, fullProjectSettings );
       }
 
       // combine bounding boxes of children (groups/layers)
@@ -296,6 +512,10 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
         continue;
       }
 
+      if ( mRestrictedLayers.contains( currentLayer->name() ) ) //unpublished layer
+      {
+        continue;
+      }
       if ( nonIdentifiableLayers.contains( currentLayer->id() ) )
       {
         layerElem.setAttribute( "queryable", "0" );
@@ -349,6 +569,37 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       styleElem.appendChild( styleNameElem );
       styleElem.appendChild( styleTitleElem );
       layerElem.appendChild( styleElem );
+
+      //min/max scale denominatormScaleBasedVisibility
+      if ( currentLayer->hasScaleBasedVisibility() )
+      {
+        QString minScaleString = QString::number( currentLayer->minimumScale() );
+        QString maxScaleString = QString::number( currentLayer->maximumScale() );
+
+        if ( version == "1.1.1" )
+        {
+          QDomElement scaleHintElem = doc.createElement( "ScaleHint" );
+          scaleHintElem.setAttribute( "min", minScaleString );
+          scaleHintElem.setAttribute( "max", maxScaleString );
+          layerElem.appendChild( scaleHintElem );
+        }
+        else
+        {
+          QDomElement minScaleElem = doc.createElement( "MinScaleDenominator" );
+          QDomText minScaleText = doc.createTextNode( minScaleString );
+          minScaleElem.appendChild( minScaleText );
+          layerElem.appendChild( minScaleElem );
+          QDomElement maxScaleElem = doc.createElement( "MaxScaleDenominator" );
+          QDomText maxScaleText = doc.createTextNode( maxScaleString );
+          maxScaleElem.appendChild( maxScaleText );
+          layerElem.appendChild( maxScaleElem );
+        }
+      }
+
+      if ( fullProjectSettings )
+      {
+        addLayerProjectSettings( layerElem, doc, currentLayer );
+      }
     }
     else
     {
@@ -360,7 +611,92 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
   }
 }
 
-void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupElem, QDomDocument& doc ) const
+void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocument& doc, QgsMapLayer* currentLayer )
+{
+  if ( !currentLayer )
+  {
+    return;
+  }
+
+  if ( currentLayer->type() == QgsMapLayer::VectorLayer )
+  {
+    QgsVectorLayer* vLayer = static_cast<QgsVectorLayer*>( currentLayer );
+    const QSet<QString>& excludedAttributes = vLayer->excludeAttributesWMS();
+
+    //displayfield
+    layerElem.setAttribute( "displayField", vLayer->displayField() );
+
+    //attributes
+    QDomElement attributesElem = doc.createElement( "Attributes" );
+    const QgsFields& layerFields = vLayer->pendingFields();
+    for ( int idx = 0; idx < layerFields.count(); ++idx )
+    {
+      const QgsField& field = layerFields[idx];
+      if ( excludedAttributes.contains( field.name() ) )
+      {
+        continue;
+      }
+      QDomElement attributeElem = doc.createElement( "Attribute" );
+      attributeElem.setAttribute( "name", vLayer->attributeDisplayName( idx ) );
+      attributeElem.setAttribute( "type", QVariant::typeToName( field.type() ) );
+
+      //edit type to text
+      QgsVectorLayer::EditType typeEnum = vLayer->editType( idx );
+      attributeElem.setAttribute( "editType", editTypeString( typeEnum ) );
+      attributeElem.setAttribute( "comment", field.comment() );
+      attributeElem.setAttribute( "length", field.length() );
+      attributeElem.setAttribute( "precision", field.precision() );
+      attributesElem.appendChild( attributeElem );
+    }
+    layerElem.appendChild( attributesElem );
+  }
+}
+
+//not very nice, needs to be kept in sync with QgsVectorLayer class...
+QString QgsProjectParser::editTypeString( QgsVectorLayer::EditType type )
+{
+  switch ( type )
+  {
+    case QgsVectorLayer::LineEdit:
+      return "LineEdit";
+    case QgsVectorLayer::UniqueValues:
+      return "UniqueValues";
+    case QgsVectorLayer::UniqueValuesEditable:
+      return "UniqueValuesEditable";
+    case QgsVectorLayer::ValueMap:
+      return "ValueMap";
+    case QgsVectorLayer::Classification:
+      return "Classification";
+    case QgsVectorLayer::EditRange:
+      return "EditRange";
+    case QgsVectorLayer::SliderRange:
+      return "SliderRange";
+    case QgsVectorLayer::CheckBox:
+      return "CheckBox";
+    case QgsVectorLayer::FileName:
+      return "FileName";
+    case QgsVectorLayer::Enumeration:
+      return "Enumeration";
+    case QgsVectorLayer::Immutable:
+      return "Immutable";
+    case QgsVectorLayer::Hidden:
+      return "Hidden";
+    case QgsVectorLayer::TextEdit:
+      return "TextEdit";
+    case QgsVectorLayer::Calendar:
+      return "Calendar";
+    case QgsVectorLayer::DialRange:
+      return "DialRange";
+    case QgsVectorLayer::ValueRelation:
+      return "ValueRelation";
+    case QgsVectorLayer::UuidGenerator:
+      return "UuidGenerator";
+    default:
+      return "Unknown";
+  }
+}
+
+void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupElem, QDomDocument& doc, bool considerMapExtent ) const
 {
   QgsRectangle combinedBBox;
   QSet<QString> combinedCRSSet;
@@ -408,6 +744,14 @@ void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupEle
   appendCRSElementsToLayer( groupElem, doc, combinedCRSSet.toList() );
 
   const QgsCoordinateReferenceSystem& groupCRS = projectCRS();
+  if ( considerMapExtent )
+  {
+    QgsRectangle mapRect = mapRectangle();
+    if ( !mapRect.isEmpty() )
+    {
+      combinedBBox = mapRect;
+    }
+  }
   appendLayerBoundingBoxes( groupElem, doc, combinedBBox, groupCRS );
 }
 
@@ -415,6 +759,12 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
 {
   Q_UNUSED( styleName );
   QList<QgsMapLayer*> layerList;
+
+  //first check if the layer name refers an unpublished layer / group
+  if ( mRestrictedLayers.contains( lName ) )
+  {
+    return layerList;
+  }
 
   if ( !mXMLDoc )
   {
@@ -612,9 +962,43 @@ int QgsProjectParser::layersAndStyles( QStringList& layers, QStringList& styles 
 
 QDomDocument QgsProjectParser::getStyle( const QString& styleName, const QString& layerName ) const
 {
-  Q_UNUSED( styleName );
-  Q_UNUSED( layerName );
-  return QDomDocument();
+  QDomDocument myDocument = QDomDocument();
+
+  QDomNode header = myDocument.createProcessingInstruction( "xml", "version=\"1.0\" encoding=\"UTF-8\"" );
+  myDocument.appendChild( header );
+
+  // Create the root element
+  QDomElement root = myDocument.createElementNS( "http://www.opengis.net/sld", "StyledLayerDescriptor" );
+  root.setAttribute( "version", "1.1.0" );
+  root.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" );
+  root.setAttribute( "xmlns:ogc", "http://www.opengis.net/ogc" );
+  root.setAttribute( "xmlns:se", "http://www.opengis.net/se" );
+  root.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+  root.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+  myDocument.appendChild( root );
+
+  QList<QgsMapLayer*> layerList = mapLayerFromStyle( layerName, styleName );
+  if ( layerList.size() < 1 )
+  {
+    throw QgsMapServiceException( "Error", QString( "The layer for the TypeName '%1' is not found" ).arg( layerName ) );
+  }
+
+  QgsMapLayer* currentLayer = layerList.at( 0 );
+  QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+  if ( !layer )
+  {
+    throw QgsMapServiceException( "Error", QString( "Could not get style because:\n%1" ).arg( "Non-vector layers not supported yet" ) );
+  }
+  // Create the NamedLayer element
+  QDomElement namedLayerNode = myDocument.createElement( "NamedLayer" );
+  root.appendChild( namedLayerNode );
+
+  QString errorMsg;
+  if ( !layer->writeSld( namedLayerNode, myDocument, errorMsg ) )
+  {
+    throw QgsMapServiceException( "Error", QString( "Could not get style because:\n%1" ).arg( errorMsg ) );
+  }
+  return myDocument;
 }
 
 QgsMapRenderer::OutputUnits QgsProjectParser::outputUnits() const
@@ -685,6 +1069,123 @@ QStringList QgsProjectParser::wfsLayers() const
   for ( int i = 0; i < valueList.size(); ++i )
   {
     wfsList << valueList.at( i ).toElement().text();
+  }
+  return wfsList;
+}
+
+QStringList QgsProjectParser::wfstUpdateLayers() const
+{
+  QStringList publiedIds = wfsLayers();
+  QStringList wfsList;
+  if ( !mXMLDoc )
+  {
+    return wfsList;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstLayersElem = propertiesElem.firstChildElement( "WFSTLayers" );
+  if ( wfstLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstUpdateLayersElem = wfstLayersElem.firstChildElement( "Update" );
+  if ( wfstUpdateLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomNodeList valueList = wfstUpdateLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    QString id = valueList.at( i ).toElement().text();
+    if ( publiedIds.contains( id ) )
+      wfsList << id;
+  }
+  return wfsList;
+}
+
+QStringList QgsProjectParser::wfstInsertLayers() const
+{
+  QStringList updateIds = wfstUpdateLayers();
+  QStringList wfsList;
+  if ( !mXMLDoc )
+  {
+    return wfsList;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstLayersElem = propertiesElem.firstChildElement( "WFSTLayers" );
+  if ( wfstLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstInsertLayersElem = wfstLayersElem.firstChildElement( "Insert" );
+  if ( wfstInsertLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomNodeList valueList = wfstInsertLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    QString id = valueList.at( i ).toElement().text();
+    if ( updateIds.contains( id ) )
+      wfsList << id;
+  }
+  return wfsList;
+}
+
+QStringList QgsProjectParser::wfstDeleteLayers() const
+{
+  QStringList insertIds = wfstInsertLayers();
+  QStringList wfsList;
+  if ( !mXMLDoc )
+  {
+    return wfsList;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstLayersElem = propertiesElem.firstChildElement( "WFSTLayers" );
+  if ( wfstLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfstDeleteLayersElem = wfstLayersElem.firstChildElement( "Delete" );
+  if ( wfstDeleteLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomNodeList valueList = wfstDeleteLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    QString id = valueList.at( i ).toElement().text();
+    if ( insertIds.contains( id ) )
+      wfsList << id;
   }
   return wfsList;
 }
@@ -762,61 +1263,6 @@ bool QgsProjectParser::featureInfoWithWktGeometry() const
   }
 
   return ( wktElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
-}
-
-QMap< QString, QMap< int, QString > > QgsProjectParser::layerAliasInfo() const
-{
-  QMap< QString, QMap< int, QString > > resultMap;
-
-  QList<QDomElement>::const_iterator layerIt = mProjectLayerElements.constBegin();
-  for ( ; layerIt != mProjectLayerElements.constEnd(); ++layerIt )
-  {
-    QDomNodeList aNodeList = layerIt->elementsByTagName( "aliases" );
-    if ( aNodeList.size() > 0 )
-    {
-      QMap<int, QString> aliasMap;
-      QDomNodeList aliasNodeList = aNodeList.at( 0 ).toElement().elementsByTagName( "alias" );
-      for ( int i = 0; i < aliasNodeList.size(); ++i )
-      {
-        QDomElement aliasElem = aliasNodeList.at( i ).toElement();
-        aliasMap.insert( aliasElem.attribute( "index" ).toInt(), aliasElem.attribute( "name" ) );
-      }
-      resultMap.insert( layerId( *layerIt ) , aliasMap );
-    }
-  }
-
-  return resultMap;
-}
-
-QMap< QString, QSet<QString> > QgsProjectParser::hiddenAttributes() const
-{
-  QMap< QString, QSet<QString> > resultMap;
-  QList<QDomElement>::const_iterator layerIt = mProjectLayerElements.constBegin();
-  for ( ; layerIt != mProjectLayerElements.constEnd(); ++layerIt )
-  {
-    QDomNodeList editTypesList = layerIt->elementsByTagName( "edittypes" );
-    if ( editTypesList.size() > 0 )
-    {
-      QSet< QString > hiddenAttributes;
-      QDomElement editTypesElem = editTypesList.at( 0 ).toElement();
-      QDomNodeList editTypeList = editTypesElem.elementsByTagName( "edittype" );
-      for ( int i = 0; i < editTypeList.size(); ++i )
-      {
-        QDomElement editTypeElem = editTypeList.at( i ).toElement();
-        if ( editTypeElem.attribute( "type" ).toInt() == QgsVectorLayer::Hidden )
-        {
-          hiddenAttributes.insert( editTypeElem.attribute( "name" ) );
-        }
-      }
-
-      if ( hiddenAttributes.size() > 0 )
-      {
-        resultMap.insert( layerId( *layerIt ), hiddenAttributes );
-      }
-    }
-  }
-
-  return resultMap;
 }
 
 QgsRectangle QgsProjectParser::mapRectangle() const
@@ -949,6 +1395,24 @@ QgsMapLayer* QgsProjectParser::createLayerFromElement( const QDomElement& elem, 
         }
       }
     }
+    else if ( uri.startsWith( "file:" ) ) //a file based datasource in url notation (e.g. delimited text layer)
+    {
+      QString filePath = uri.mid( 5, uri.indexOf( "?" ) - 5 );
+      QString absoluteFilePath = convertToAbsolutePath( filePath );
+      if ( filePath != absoluteFilePath )
+      {
+        QUrl destUrl = QUrl::fromEncoded( uri.toAscii() );
+        destUrl.setScheme( "file" );
+        destUrl.setPath( absoluteFilePath );
+        absoluteUri = destUrl.toEncoded();
+        QDomText absoluteTextNode = mXMLDoc->createTextNode( absoluteUri );
+        dataSourceElem.replaceChild( absoluteTextNode, dataSourceElem.firstChild() );
+      }
+      else
+      {
+        absoluteUri = uri;
+      }
+    }
     else //file based data source
     {
       absoluteUri = convertToAbsolutePath( uri );
@@ -1001,11 +1465,11 @@ QgsMapLayer* QgsProjectParser::createLayerFromElement( const QDomElement& elem, 
 
   if ( layer )
   {
-    layer->readXML( const_cast<QDomElement&>( elem ) ); //should be changed to const in QgsMapLayer
+    layer->readLayerXML( const_cast<QDomElement&>( elem ) ); //should be changed to const in QgsMapLayer
     layer->setLayerName( layerName( elem ) );
     if ( useCache )
     {
-      QgsMSLayerCache::instance()->insertLayer( absoluteUri, id, layer );
+      QgsMSLayerCache::instance()->insertLayer( absoluteUri, id, layer, mProjectPath );
     }
     else
     {
@@ -1169,80 +1633,16 @@ QgsComposition* QgsProjectParser::initComposition( const QString& composerTempla
     return 0;
   }
 
-  //go through all the item elements and add them to the composition (and to the lists)
-  QDomNodeList itemNodes = composerElem.childNodes();
-  for ( int i = 0; i < itemNodes.size(); ++i )
+  composition->addItemsFromXML( compositionElem, *mXMLDoc );
+  composition->composerItems( mapList );
+  composition->composerItems( labelList );
+
+  QList< QgsComposerPicture* > pictureList;
+  composition->composerItems( pictureList );
+  QList< QgsComposerPicture* >::iterator picIt = pictureList.begin();
+  for ( ; picIt != pictureList.end(); ++picIt )
   {
-    QDomElement currentElem = itemNodes.at( i ).toElement();
-    QString elemName = currentElem.tagName();
-    if ( elemName == "ComposerMap" )
-    {
-      QgsComposerMap* map = new QgsComposerMap( composition );
-      map->readXML( currentElem, *mXMLDoc );
-      map->setPreviewMode( QgsComposerMap::Rectangle );
-      composition->addItem( map );
-      mapList.push_back( map );
-    }
-    else if ( elemName == "ComposerLabel" )
-    {
-      QgsComposerLabel* label = new QgsComposerLabel( composition );
-      label->readXML( currentElem, *mXMLDoc );
-      composition->addItem( label );
-      labelList.push_back( label );
-    }
-    else if ( elemName == "ComposerLegend" )
-    {
-      //legend needs to be loaded indirectly to have generic content
-      //and to avoid usage of x-server with pixmap icons
-
-      //read full legend from xml
-      QgsComposerLegend* legend = new QgsComposerLegend( composition );
-      legend->readXML( currentElem, *mXMLDoc );
-
-      //dynamic legend (would be interesting in case of layers dynamically defined in SLD)
-      //legend->_readXML( currentElem.firstChildElement( "ComposerItem" ), *mXMLDoc );
-      //legend->updateLegend();
-      composition->addItem( legend );
-    }
-    else if ( elemName == "ComposerShape" )
-    {
-      QgsComposerShape* shape = new QgsComposerShape( composition );
-      shape->readXML( currentElem, *mXMLDoc );
-      composition->addItem( shape );
-    }
-    else if ( elemName == "ComposerArrow" )
-    {
-      QgsComposerArrow* arrow = new QgsComposerArrow( composition );
-      arrow->readXML( currentElem, *mXMLDoc );
-      composition->addItem( arrow );
-    }
-    else if ( elemName == "ComposerAttributeTable" )
-    {
-      QgsComposerAttributeTable* table = new QgsComposerAttributeTable( composition );
-      table->readXML( currentElem, *mXMLDoc );
-      composition->addItem( table );
-    }
-  }
-
-  //scalebars and pictures need to be loaded after the maps to receive the correct size / rotation
-  for ( int i = 0; i < itemNodes.size(); ++i )
-  {
-    QDomElement currentElem = itemNodes.at( i ).toElement();
-    QString elemName = currentElem.tagName();
-    if ( elemName == "ComposerPicture" )
-    {
-      QgsComposerPicture* picture = new QgsComposerPicture( composition );
-      picture->readXML( currentElem, *mXMLDoc );
-      //qgis mapserver needs an absolute file path
-      picture->setPictureFile( convertToAbsolutePath( picture->pictureFile() ) );
-      composition->addItem( picture );
-    }
-    else if ( elemName == "ComposerScaleBar" )
-    {
-      QgsComposerScaleBar* bar = new QgsComposerScaleBar( composition );
-      bar->readXML( currentElem, *mXMLDoc );
-      composition->addItem( bar );
-    }
+    ( *picIt )->setPictureFile( convertToAbsolutePath(( *picIt )->pictureFile() ) );
   }
 
   return composition;
@@ -1255,21 +1655,19 @@ void QgsProjectParser::printCapabilities( QDomElement& parentElement, QDomDocume
     return;
   }
 
-  QDomNodeList composerNodeList = mXMLDoc->elementsByTagName( "Composer" );
-  if ( composerNodeList.size() < 1 )
+  QList<QDomElement> composerElemList = publishedComposerElements();
+  if ( composerElemList.size() < 1 )
   {
     return;
   }
 
   QDomElement composerTemplatesElem = doc.createElement( "ComposerTemplates" );
-  composerTemplatesElem.setAttribute( "xmlns:wms", "http://www.opengis.net/wms" );
-  composerTemplatesElem.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-  composerTemplatesElem.setAttribute( "xsi:type", "wms:_ExtendedCapabilities" );
 
-  for ( int i = 0; i < composerNodeList.size(); ++i )
+  QList<QDomElement>::const_iterator composerElemIt = composerElemList.constBegin();
+  for ( ; composerElemIt != composerElemList.constEnd(); ++composerElemIt )
   {
     QDomElement composerTemplateElem = doc.createElement( "ComposerTemplate" );
-    QDomElement currentComposerElem = composerNodeList.at( i ).toElement();
+    QDomElement currentComposerElem = *composerElemIt;
     if ( currentComposerElem.isNull() )
     {
       continue;
@@ -1333,10 +1731,11 @@ QDomElement QgsProjectParser::composerByName( const QString& composerName ) cons
     return composerElem;
   }
 
-  QDomNodeList composerNodeList = mXMLDoc->elementsByTagName( "Composer" );
-  for ( int i = 0; i < composerNodeList.size(); ++i )
+  QList<QDomElement> composerElemList = publishedComposerElements();
+  QList<QDomElement>::const_iterator composerIt = composerElemList.constBegin();
+  for ( ; composerIt != composerElemList.constEnd(); ++composerIt )
   {
-    QDomElement currentComposerElem = composerNodeList.at( i ).toElement();
+    QDomElement currentComposerElem = *composerIt;
     if ( currentComposerElem.attribute( "title" ) == composerName )
     {
       return currentComposerElem;
@@ -1346,8 +1745,58 @@ QDomElement QgsProjectParser::composerByName( const QString& composerName ) cons
   return composerElem;
 }
 
+QList<QDomElement> QgsProjectParser::publishedComposerElements() const
+{
+  QList<QDomElement> composerElemList;
+  if ( !mXMLDoc )
+  {
+    return composerElemList;
+  }
+
+  QDomNodeList composerNodeList = mXMLDoc->elementsByTagName( "Composer" );
+
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  QDomElement wmsComposerListElem = propertiesElem.firstChildElement( "WMSComposerList" );
+  if ( wmsComposerListElem.isNull() )
+  {
+    for ( unsigned int i = 0; i < composerNodeList.length(); ++i )
+    {
+      composerElemList.push_back( composerNodeList.at( i ).toElement() );
+    }
+    return composerElemList;
+  }
+
+  QSet<QString> publishedComposerNames;
+  QDomNodeList valueList = wmsComposerListElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    publishedComposerNames.insert( valueList.at( i ).toElement().text() );
+  }
+
+  //remove unpublished composers from list
+  QString currentComposerName;
+  QDomElement currentElem;
+  for ( int i = 0; i < composerNodeList.size(); ++i )
+  {
+    currentElem = composerNodeList.at( i ).toElement();
+    currentComposerName = currentElem.attribute( "title" );
+    if ( publishedComposerNames.contains( currentComposerName ) )
+    {
+      composerElemList.push_back( currentElem );
+    }
+  }
+
+  return composerElemList;
+}
+
 void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
+  if ( doc.documentElement().tagName() == "WFS_Capabilities" )
+  {
+    serviceWFSCapabilities( parentElement, doc );
+    return;
+  }
+
   QDomElement serviceElem = doc.createElement( "Service" );
 
   QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
@@ -1388,6 +1837,32 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
     QDomText wmsAbstractText = doc.createTextNode( abstractElem.text() );
     wmsAbstractElem.appendChild( wmsAbstractText );
     serviceElem.appendChild( wmsAbstractElem );
+  }
+
+  //keyword list
+  QDomElement keywordListElem = propertiesElem.firstChildElement( "WMSKeywordList" );
+  if ( !keywordListElem.isNull() )
+  {
+    bool siaFormat = featureInfoFormatSIA2045();
+
+    QDomElement wmsKeywordElem = doc.createElement( "KeywordList" );
+    QDomNodeList keywordList = keywordListElem.elementsByTagName( "value" );
+    for ( int i = 0; i < keywordList.size(); ++i )
+    {
+      QDomElement keywordElem = doc.createElement( "Keyword" );
+      QDomText keywordText = doc.createTextNode( keywordList.at( i ).toElement().text() );
+      keywordElem.appendChild( keywordText );
+      if ( siaFormat )
+      {
+        keywordElem.setAttribute( "vocabulary", "SIA_Geo405" );
+      }
+      wmsKeywordElem.appendChild( keywordElem );
+    }
+
+    if ( keywordList.size() > 0 )
+    {
+      serviceElem.appendChild( wmsKeywordElem );
+    }
   }
 
   //OnlineResource element is mandatory according to the WMS specification
@@ -1456,6 +1931,26 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
 
   serviceElem.appendChild( contactInfoElem );
 
+  //Fees
+  QDomElement feesElem = propertiesElem.firstChildElement( "WMSFees" );
+  if ( !feesElem.isNull() )
+  {
+    QDomElement wmsFeesElem = doc.createElement( "Fees" );
+    QDomText wmsFeesText = doc.createTextNode( feesElem.text() );
+    wmsFeesElem.appendChild( wmsFeesText );
+    serviceElem.appendChild( wmsFeesElem );
+  }
+
+  //AccessConstraints
+  QDomElement accessConstraintsElem = propertiesElem.firstChildElement( "WMSAccessConstraints" );
+  if ( !accessConstraintsElem.isNull() )
+  {
+    QDomElement wmsAccessConstraintsElem = doc.createElement( "AccessConstraints" );
+    QDomText wmsAccessConstraintsText = doc.createTextNode( accessConstraintsElem.text() );
+    wmsAccessConstraintsElem.appendChild( wmsAccessConstraintsText );
+    serviceElem.appendChild( wmsAccessConstraintsElem );
+  }
+
   //MaxWidth / MaxHeight for WMS 1.3
   QString version = doc.documentElement().attribute( "version" );
   if ( version != "1.1.1" )
@@ -1477,6 +1972,273 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
   }
 
   parentElement.appendChild( serviceElem );
+}
+
+void QgsProjectParser::serviceWFSCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+{
+  QDomElement serviceElem = doc.createElement( "Service" );
+
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    QgsConfigParser::serviceCapabilities( parentElement, doc );
+    return;
+  }
+
+  QDomElement serviceCapabilityElem = propertiesElem.firstChildElement( "WMSServiceCapabilities" );
+  if ( serviceCapabilityElem.isNull() || serviceCapabilityElem.text().compare( "true", Qt::CaseInsensitive ) != 0 )
+  {
+    QgsConfigParser::serviceCapabilities( parentElement, doc );
+    return;
+  }
+
+  //Service name is always WMS
+  QDomElement wmsNameElem = doc.createElement( "Name" );
+  QDomText wmsNameText = doc.createTextNode( "WFS" );
+  wmsNameElem.appendChild( wmsNameText );
+  serviceElem.appendChild( wmsNameElem );
+
+  //WMS title
+  QDomElement titleElem = propertiesElem.firstChildElement( "WMSServiceTitle" );
+  if ( !titleElem.isNull() )
+  {
+    QDomElement wmsTitleElem = doc.createElement( "Title" );
+    QDomText wmsTitleText = doc.createTextNode( titleElem.text() );
+    wmsTitleElem.appendChild( wmsTitleText );
+    serviceElem.appendChild( wmsTitleElem );
+  }
+
+  //WMS abstract
+  QDomElement abstractElem = propertiesElem.firstChildElement( "WMSServiceAbstract" );
+  if ( !abstractElem.isNull() )
+  {
+    QDomElement wmsAbstractElem = doc.createElement( "Abstract" );
+    QDomText wmsAbstractText = doc.createTextNode( abstractElem.text() );
+    wmsAbstractElem.appendChild( wmsAbstractText );
+    serviceElem.appendChild( wmsAbstractElem );
+  }
+
+  //keyword list
+  QDomElement keywordListElem = propertiesElem.firstChildElement( "WMSKeywordList" );
+  if ( !keywordListElem.isNull() )
+  {
+    bool siaFormat = featureInfoFormatSIA2045();
+
+    QDomNodeList keywordList = keywordListElem.elementsByTagName( "value" );
+    QStringList keywords;
+    for ( int i = 0; i < keywordList.size(); ++i )
+    {
+      keywords << keywordList.at( i ).toElement().text();
+    }
+
+    if ( keywordList.size() > 0 )
+    {
+      QDomElement wfsKeywordElem = doc.createElement( "Keywords" );
+      QDomText keywordText = doc.createTextNode( keywords.join( ", " ) );
+      wfsKeywordElem.appendChild( keywordText );
+      if ( siaFormat )
+      {
+        wfsKeywordElem.setAttribute( "vocabulary", "SIA_Geo405" );
+      }
+      serviceElem.appendChild( wfsKeywordElem );
+    }
+  }
+
+  //OnlineResource element is mandatory according to the WMS specification
+  QDomElement wmsOnlineResourceElem = propertiesElem.firstChildElement( "WMSOnlineResource" );
+  QDomElement onlineResourceElem = doc.createElement( "OnlineResource" );
+  onlineResourceElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+  onlineResourceElem.setAttribute( "xlink:type", "simple" );
+  if ( !wmsOnlineResourceElem.isNull() )
+  {
+    onlineResourceElem.setAttribute( "xlink:href", wmsOnlineResourceElem.text() );
+  }
+
+  serviceElem.appendChild( onlineResourceElem );
+
+  //Fees
+  QDomElement feesElem = propertiesElem.firstChildElement( "WMSFees" );
+  if ( !feesElem.isNull() )
+  {
+    QDomElement wmsFeesElem = doc.createElement( "Fees" );
+    QDomText wmsFeesText = doc.createTextNode( feesElem.text() );
+    wmsFeesElem.appendChild( wmsFeesText );
+    serviceElem.appendChild( wmsFeesElem );
+  }
+
+  //AccessConstraints
+  QDomElement accessConstraintsElem = propertiesElem.firstChildElement( "WMSAccessConstraints" );
+  if ( !accessConstraintsElem.isNull() )
+  {
+    QDomElement wmsAccessConstraintsElem = doc.createElement( "AccessConstraints" );
+    QDomText wmsAccessConstraintsText = doc.createTextNode( accessConstraintsElem.text() );
+    wmsAccessConstraintsElem.appendChild( wmsAccessConstraintsText );
+    serviceElem.appendChild( wmsAccessConstraintsElem );
+  }
+  parentElement.appendChild( serviceElem );
+}
+
+QString QgsProjectParser::serviceUrl() const
+{
+  QString url;
+
+  if ( !mXMLDoc )
+  {
+    return url;
+  }
+
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement wmsUrlElem = propertiesElem.firstChildElement( "WMSUrl" );
+    if ( !wmsUrlElem.isNull() )
+    {
+      url = wmsUrlElem.text();
+    }
+  }
+  return url;
+}
+
+QStringList QgsProjectParser::wfsLayerNames() const
+{
+  QStringList layerNameList;
+
+  QMap<QString, QgsMapLayer*> layerMap;
+  projectLayerMap( layerMap );
+
+  QgsMapLayer* currentLayer = 0;
+  QStringList wfsIdList = wfsLayers();
+  QStringList::const_iterator wfsIdIt = wfsIdList.constBegin();
+  for ( ; wfsIdIt != wfsIdList.constEnd(); ++wfsIdIt )
+  {
+    QMap<QString, QgsMapLayer*>::const_iterator layerMapIt = layerMap.find( *wfsIdIt );
+    if ( layerMapIt != layerMap.constEnd() )
+    {
+      currentLayer = layerMapIt.value();
+      if ( currentLayer )
+      {
+        layerNameList.append( currentLayer->name() );
+      }
+    }
+  }
+
+  return layerNameList;
+}
+
+QHash<QString, QString> QgsProjectParser::featureInfoLayerAliasMap() const
+{
+  QHash<QString, QString> aliasMap;
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return aliasMap;
+  }
+
+  //WMSFeatureInfoAliasLayers
+  QStringList aliasLayerStringList;
+  QDomElement featureInfoAliasLayersElem = propertiesElem.firstChildElement( "WMSFeatureInfoAliasLayers" );
+  if ( featureInfoAliasLayersElem.isNull() )
+  {
+    return aliasMap;
+  }
+  QDomNodeList aliasLayerValueList = featureInfoAliasLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < aliasLayerValueList.size(); ++i )
+  {
+    aliasLayerStringList << aliasLayerValueList.at( i ).toElement().text();
+  }
+
+  //WMSFeatureInfoLayerAliases
+  QStringList layerAliasStringList;
+  QDomElement featureInfoLayerAliasesElem = propertiesElem.firstChildElement( "WMSFeatureInfoLayerAliases" );
+  if ( featureInfoLayerAliasesElem.isNull() )
+  {
+    return aliasMap;
+  }
+  QDomNodeList layerAliasesValueList = featureInfoLayerAliasesElem.elementsByTagName( "value" );
+  for ( int i = 0; i < layerAliasesValueList.size(); ++i )
+  {
+    layerAliasStringList << layerAliasesValueList.at( i ).toElement().text();
+  }
+
+  int nMapEntries = qMin( aliasLayerStringList.size(), layerAliasStringList.size() );
+  for ( int i = 0; i < nMapEntries; ++i )
+  {
+    aliasMap.insert( aliasLayerStringList.at( i ), layerAliasStringList.at( i ) );
+  }
+
+  return aliasMap;
+}
+
+QString QgsProjectParser::featureInfoDocumentElement( const QString& defaultValue ) const
+{
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return defaultValue;
+  }
+  QDomElement featureInfoDocumentElem = propertiesElem.firstChildElement( "WMSFeatureInfoDocumentElement" );
+  if ( featureInfoDocumentElem.isNull() )
+  {
+    return defaultValue;
+  }
+  return featureInfoDocumentElem.text();
+}
+
+QString QgsProjectParser::featureInfoDocumentElementNS() const
+{
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return "";
+  }
+  QDomElement featureInfoDocumentNSElem = propertiesElem.firstChildElement( "WMSFeatureInfoDocumentElementNS" );
+  if ( featureInfoDocumentNSElem.isNull() )
+  {
+    return "";
+  }
+  return featureInfoDocumentNSElem.text();
+}
+
+QString QgsProjectParser::featureInfoSchema() const
+{
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return "";
+  }
+  QDomElement featureInfoSchemaElem = propertiesElem.firstChildElement( "WMSFeatureInfoSchema" );
+  if ( featureInfoSchemaElem.isNull() )
+  {
+    return "";
+  }
+  return featureInfoSchemaElem.text();
+}
+
+bool QgsProjectParser::featureInfoFormatSIA2045() const
+{
+  if ( !mXMLDoc )
+  {
+    return false;
+  }
+
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return false;
+  }
+
+  QDomElement sia2045Elem = propertiesElem.firstChildElement( "WMSInfoFormatSIA2045" );
+  if ( sia2045Elem.isNull() )
+  {
+    return false;
+  }
+
+  if ( sia2045Elem.text().compare( "enabled", Qt::CaseInsensitive ) == 0
+       || sia2045Elem.text().compare( "true", Qt::CaseInsensitive ) == 0 )
+  {
+    return true;
+  }
+  return false;
 }
 
 QString QgsProjectParser::convertToAbsolutePath( const QString& file ) const
@@ -1668,7 +2430,7 @@ QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& 
 
   BBox.set( minx, miny, maxx, maxy );
 
-  if ( version == "1.3.0" && layerCrs.axisInverted() )
+  if ( version != "1.1.1" && layerCrs.axisInverted() )
   {
     BBox.invert();
   }
@@ -1680,4 +2442,483 @@ QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& 
   //transform
   BBox = t.transformBoundingBox( BBox );
   return BBox;
+}
+
+void QgsProjectParser::addDrawingOrder( QDomElement elem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList ) const
+{
+  if ( elem.isNull() )
+  {
+    return;
+  }
+
+  if ( elem.tagName() == "legendgroup" )
+  {
+    if ( elem.attribute( "embedded" ) == "1" )
+    {
+      addDrawingOrderEmbeddedGroup( elem, orderedLayerList, useDrawingOrder );
+    }
+    else
+    {
+      QDomNodeList groupChildren = elem.childNodes();
+      for ( int i = 0; i < groupChildren.size(); ++i )
+      {
+        addDrawingOrder( groupChildren.at( i ).toElement(), useDrawingOrder, orderedLayerList );
+      }
+    }
+  }
+  else if ( elem.tagName() == "legendlayer" )
+  {
+    QString layerName = elem.attribute( "name" );
+    if ( useDrawingOrder )
+    {
+      int drawingOrder = elem.attribute( "drawingOrder", "-1" ).toInt();
+      orderedLayerList.insert( drawingOrder, layerName );
+    }
+    else
+    {
+      orderedLayerList.insert( orderedLayerList.size(), layerName );
+    }
+  }
+}
+
+void QgsProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument& doc ) const
+{
+  if ( !mXMLDoc )
+  {
+    return;
+  }
+
+  //find legend section
+  QDomElement legendElement = mXMLDoc->documentElement().firstChildElement( "legend" );
+  if ( legendElement.isNull() )
+  {
+    return;
+  }
+
+  bool useDrawingOrder = ( legendElement.attribute( "updateDrawingOrder" ) == "false" );
+  QMap<int, QString> orderedLayerNames;
+
+  QDomNodeList legendChildren = legendElement.childNodes();
+  QDomElement childElem;
+  for ( int i = 0; i < legendChildren.size(); ++i )
+  {
+    addDrawingOrder( legendChildren.at( i ).toElement(), useDrawingOrder, orderedLayerNames );
+  }
+
+  QStringList layerList;
+  QMap<int, QString>::const_iterator nameIt = orderedLayerNames.constBegin();
+  for ( ; nameIt != orderedLayerNames.constEnd(); ++nameIt )
+  {
+    layerList.prepend( nameIt.value() );
+  }
+
+  QDomElement layerDrawingOrderElem = doc.createElement( "LayerDrawingOrder" );
+  QDomText drawingOrderText = doc.createTextNode( layerList.join( "," ) );
+  layerDrawingOrderElem.appendChild( drawingOrderText );
+  parentElem.appendChild( layerDrawingOrderElem );
+}
+
+void QgsProjectParser::projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const
+{
+  layerMap.clear();
+  foreach ( const QDomElement &elem, mProjectLayerElements )
+  {
+    QgsMapLayer *layer = createLayerFromElement( elem );
+    if ( layer )
+    {
+      QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
+      layerMap.insert( layer->id(), layer );
+    }
+  }
+}
+
+QSet<QString> QgsProjectParser::restrictedLayers() const
+{
+  QSet<QString> restrictedLayerSet;
+
+  if ( !mXMLDoc )
+  {
+    return restrictedLayerSet;
+  }
+
+  //names of unpublished layers / groups
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement wmsLayerRestrictionElem = propertiesElem.firstChildElement( "WMSRestrictedLayers" );
+    if ( !wmsLayerRestrictionElem.isNull() )
+    {
+      QStringList restrictedLayersAndGroups;
+      QDomNodeList wmsLayerRestrictionValues = wmsLayerRestrictionElem.elementsByTagName( "value" );
+      for ( int i = 0; i < wmsLayerRestrictionValues.size(); ++i )
+      {
+        restrictedLayerSet.insert( wmsLayerRestrictionValues.at( i ).toElement().text() );
+      }
+    }
+  }
+
+  //get legend dom element
+  if ( restrictedLayerSet.size() < 1 || !mXMLDoc )
+  {
+    return restrictedLayerSet;
+  }
+
+  QDomElement legendElem = mXMLDoc->documentElement().firstChildElement( "legend" );
+  if ( legendElem.isNull() )
+  {
+    return restrictedLayerSet;
+  }
+
+  //go through all legend groups and insert names of subgroups / sublayers if there is a match
+  QDomNodeList legendGroupList = legendElem.elementsByTagName( "legendgroup" );
+  for ( int i = 0; i < legendGroupList.size(); ++i )
+  {
+    //get name
+    QDomElement groupElem = legendGroupList.at( i ).toElement();
+    QString groupName = groupElem.attribute( "name" );
+    if ( restrictedLayerSet.contains( groupName ) ) //match: add names of subgroups and sublayers to set
+    {
+      //embedded group? -> also get names of subgroups and sublayers from embedded projects
+      if ( groupElem.attribute( "embedded" ) == "1" )
+      {
+        sublayersOfEmbeddedGroup( convertToAbsolutePath( groupElem.attribute( "project" ) ), groupName, restrictedLayerSet );
+      }
+      else //local group
+      {
+        QDomNodeList subgroupList = groupElem.elementsByTagName( "legendgroup" );
+        for ( int j = 0; j < subgroupList.size(); ++j )
+        {
+          restrictedLayerSet.insert( subgroupList.at( j ).toElement().attribute( "name" ) );
+        }
+        QDomNodeList sublayerList = groupElem.elementsByTagName( "legendlayer" );
+        for ( int k = 0; k < sublayerList.size(); ++k )
+        {
+          restrictedLayerSet.insert( sublayerList.at( k ).toElement().attribute( "name" ) );
+        }
+      }
+    }
+  }
+  return restrictedLayerSet;
+}
+
+void QgsProjectParser::sublayersOfEmbeddedGroup( const QString& projectFilePath, const QString& groupName, QSet<QString>& layerSet )
+{
+  QFile projectFile( projectFilePath );
+  if ( !projectFile.open( QIODevice::ReadOnly ) )
+  {
+    return;
+  }
+
+  QDomDocument xmlDoc;
+  if ( !xmlDoc.setContent( &projectFile ) )
+  {
+    return;
+  }
+
+  //go to legend node
+  QDomElement legendElem = xmlDoc.documentElement().firstChildElement( "legend" );
+  if ( legendElem.isNull() )
+  {
+    return;
+  }
+
+  //get group node list of embedded project
+  QDomNodeList groupNodes = legendElem.elementsByTagName( "legendgroup" );
+  QDomElement groupElem;
+  for ( int i = 0; i < groupNodes.size(); ++i )
+  {
+    groupElem = groupNodes.at( i ).toElement();
+    if ( groupElem.attribute( "name" ) == groupName )
+    {
+      //get all subgroups and sublayers and add to layerSet
+      QDomElement subElem;
+      QDomNodeList subGroupList = groupElem.elementsByTagName( "legendgroup" );
+      for ( int j = 0; j < subGroupList.size(); ++j )
+      {
+        subElem = subGroupList.at( j ).toElement();
+        layerSet.insert( subElem.attribute( "name" ) );
+      }
+      QDomNodeList subLayerList = groupElem.elementsByTagName( "legendlayer" );
+      for ( int j = 0; j < subLayerList.size(); ++j )
+      {
+        subElem = subLayerList.at( j ).toElement();
+        layerSet.insert( subElem.attribute( "name" ) );
+      }
+    }
+  }
+}
+
+QgsRectangle QgsProjectParser::projectExtent() const
+{
+  QgsRectangle extent;
+  if ( !mXMLDoc )
+  {
+    return extent;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  QDomElement mapCanvasElem = qgisElem.firstChildElement( "mapcanvas" );
+  if ( mapCanvasElem.isNull() )
+  {
+    return extent;
+  }
+
+  QDomElement extentElem = mapCanvasElem.firstChildElement( "extent" );
+  bool xminOk, xmaxOk, yminOk, ymaxOk;
+  double xMin = extentElem.firstChildElement( "xmin" ).text().toDouble( &xminOk );
+  double xMax = extentElem.firstChildElement( "xmax" ).text().toDouble( &xmaxOk );
+  double yMin = extentElem.firstChildElement( "ymin" ).text().toDouble( &yminOk );
+  double yMax = extentElem.firstChildElement( "ymax" ).text().toDouble( &ymaxOk );
+
+  if ( xminOk && xmaxOk && yminOk && ymaxOk )
+  {
+    extent = QgsRectangle( xMin, yMin, xMax, yMax );
+  }
+
+  return extent;
+}
+
+void QgsProjectParser::drawOverlays( QPainter* p, int dpi, int width, int height ) const
+{
+  Q_UNUSED( width );
+  Q_UNUSED( height );
+
+  //consider DPI
+  double scaleFactor = dpi / 88.0; //assume 88 as standard dpi
+  QgsRectangle prjExtent = projectExtent();
+
+  //text annotations
+  QList< QPair< QTextDocument*, QDomElement > >::const_iterator textIt = mTextAnnotationItems.constBegin();
+  for ( ; textIt != mTextAnnotationItems.constEnd(); ++textIt )
+  {
+    QDomElement annotationElem = textIt->second;
+    if ( annotationElem.isNull() )
+    {
+      continue;
+    }
+
+    int itemWidth = annotationElem.attribute( "frameWidth", "0" ).toInt();
+    int itemHeight = annotationElem.attribute( "frameHeight", "0" ).toInt();
+
+    //calculate item position
+    double xPos, yPos;
+    if ( !annotationPosition( annotationElem, scaleFactor, xPos, yPos ) )
+    {
+      continue;
+    }
+
+    drawAnnotationRectangle( p, annotationElem, scaleFactor, xPos, yPos, itemWidth, itemHeight );
+
+    //draw annotation contents
+    p->translate( xPos, yPos );
+    p->scale( scaleFactor, scaleFactor );
+    textIt->first->drawContents( p, QRectF( 0, 0, itemWidth / scaleFactor, itemHeight / scaleFactor ) );
+    p->restore();
+  }
+
+  //svg annotations
+  QList< QPair< QSvgRenderer*, QDomElement > >::const_iterator svgIt = mSvgAnnotationElems.constBegin();
+  QDomElement annotationElem;
+  for ( ; svgIt != mSvgAnnotationElems.constEnd(); ++svgIt )
+  {
+    annotationElem = svgIt->second;
+    int itemWidth = annotationElem.attribute( "frameWidth", "0" ).toInt() * scaleFactor;
+    int itemHeight = annotationElem.attribute( "frameHeight", "0" ).toInt() * scaleFactor;
+
+    //calculate item position
+    double xPos, yPos;
+    if ( !annotationPosition( annotationElem, scaleFactor, xPos, yPos ) )
+    {
+      continue;
+    }
+
+    drawAnnotationRectangle( p, annotationElem, scaleFactor, xPos, yPos, itemWidth, itemHeight );
+
+    //keep width/height ratio of svg
+    QRect viewBox = svgIt->first->viewBox();
+    if ( viewBox.isValid() )
+    {
+      double widthRatio = ( double )( itemWidth ) / ( double )( viewBox.width() );
+      double heightRatio = ( double )( itemHeight ) / ( double )( viewBox.height() );
+      double renderWidth = 0;
+      double renderHeight = 0;
+      if ( widthRatio <= heightRatio )
+      {
+        renderWidth = itemWidth;
+        renderHeight = viewBox.height() * itemWidth / viewBox.width() ;
+      }
+      else
+      {
+        renderHeight = itemHeight;
+        renderWidth = viewBox.width() * itemHeight / viewBox.height() ;
+      }
+
+      svgIt->first->render( p, QRectF( xPos, yPos, renderWidth,
+                                       renderHeight ) );
+    }
+  }
+}
+
+void QgsProjectParser::createTextAnnotationItems()
+{
+  cleanupTextAnnotationItems();
+
+  if ( !mXMLDoc )
+  {
+    return;
+  }
+
+  //text annotations
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  QDomNodeList textAnnotationList = qgisElem.elementsByTagName( "TextAnnotationItem" );
+  QDomElement textAnnotationElem;
+  QDomElement annotationElem;
+  for ( int i = 0; i < textAnnotationList.size(); ++i )
+  {
+    textAnnotationElem = textAnnotationList.at( i ).toElement();
+    annotationElem = textAnnotationElem.firstChildElement( "AnnotationItem" );
+    if ( !annotationElem.isNull() && annotationElem.attribute( "mapPositionFixed" ) != "1" )
+    {
+      QTextDocument* textDoc = new QTextDocument();
+      textDoc->setHtml( textAnnotationElem.attribute( "document" ) );
+      mTextAnnotationItems.push_back( qMakePair( textDoc, annotationElem ) );
+    }
+  }
+}
+
+void QgsProjectParser::createSvgAnnotationItems()
+{
+  mSvgAnnotationElems.clear();
+  if ( !mXMLDoc )
+  {
+    return;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  QDomNodeList svgAnnotationList = qgisElem.elementsByTagName( "SVGAnnotationItem" );
+  QDomElement svgAnnotationElem;
+  QDomElement annotationElem;
+  for ( int i = 0; i < svgAnnotationList.size(); ++i )
+  {
+    svgAnnotationElem = svgAnnotationList.at( i ).toElement();
+    annotationElem = svgAnnotationElem.firstChildElement( "AnnotationItem" );
+    if ( !annotationElem.isNull() && annotationElem.attribute( "mapPositionFixed" ) != "1" )
+    {
+      QSvgRenderer* svg = new QSvgRenderer();
+      if ( svg->load( convertToAbsolutePath( svgAnnotationElem.attribute( "file" ) ) ) )
+      {
+        mSvgAnnotationElems.push_back( qMakePair( svg, annotationElem ) );
+      }
+      else
+      {
+        delete svg;
+      }
+    }
+  }
+}
+
+void QgsProjectParser::cleanupSvgAnnotationItems()
+{
+  QList< QPair< QSvgRenderer*, QDomElement > >::const_iterator it = mSvgAnnotationElems.constBegin();
+  for ( ; it != mSvgAnnotationElems.constEnd(); ++it )
+  {
+    delete it->first;
+  }
+  mSvgAnnotationElems.clear();
+}
+
+void QgsProjectParser::cleanupTextAnnotationItems()
+{
+  QList< QPair< QTextDocument*, QDomElement > >::const_iterator it = mTextAnnotationItems.constBegin();
+  for ( ; it != mTextAnnotationItems.constEnd(); ++it )
+  {
+    delete it->first;
+  }
+  mTextAnnotationItems.clear();
+}
+
+bool QgsProjectParser::annotationPosition( const QDomElement& elem, double scaleFactor,
+    double& xPos, double& yPos )
+{
+  Q_UNUSED( scaleFactor );
+
+  xPos = elem.attribute( "canvasPosX" ).toDouble() / scaleFactor;
+  yPos = elem.attribute( "canvasPosY" ).toDouble() / scaleFactor;
+  return true;
+}
+
+void QgsProjectParser::drawAnnotationRectangle( QPainter* p, const QDomElement& elem, double scaleFactor, double xPos, double yPos, int itemWidth, int itemHeight )
+{
+  Q_UNUSED( scaleFactor );
+  if ( !p )
+  {
+    return;
+  }
+
+  QColor backgroundColor( elem.attribute( "frameBackgroundColor", "#000000" ) );
+  backgroundColor.setAlpha( elem.attribute( "frameBackgroundColorAlpha", "255" ).toInt() );
+  p->setBrush( QBrush( backgroundColor ) );
+  QColor frameColor( elem.attribute( "frameColor", "#000000" ) );
+  frameColor.setAlpha( elem.attribute( "frameColorAlpha", "255" ).toInt() );
+  QPen framePen( frameColor );
+  framePen.setWidth( elem.attribute( "frameBorderWidth", "1" ).toInt() );
+  p->setPen( framePen );
+
+  p->drawRect( QRectF( xPos, yPos, itemWidth, itemHeight ) );
+}
+
+void QgsProjectParser::addDrawingOrderEmbeddedGroup( const QDomElement& groupElem, QMap<int, QString>& orderedLayerList, bool useDrawingOrder ) const
+{
+  if ( groupElem.isNull() )
+  {
+    return;
+  }
+
+  QString project = convertToAbsolutePath( groupElem.attribute( "project" ) );
+  if ( project.isEmpty() )
+  {
+    return;
+  }
+
+  int embedDrawingOrder = groupElem.attribute( "drawingOrder", "-1" ).toInt();
+  QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
+  if ( !p )
+  {
+    return;
+  }
+
+  QDomDocument* doc = p->mXMLDoc;
+  if ( !doc )
+  {
+    return;
+  }
+
+  QDomNodeList layerNodeList = doc->elementsByTagName( "legendlayer" );
+  QDomElement layerElem;
+  QStringList layerNames;
+  QString layerName;
+  for ( int i = 0; i < layerNodeList.size(); ++i )
+  {
+    layerElem = layerNodeList.at( i ).toElement();
+    layerName = layerElem.attribute( "name" );
+    if ( useDrawingOrder )
+    {
+      layerNames.push_back( layerName );
+    }
+    else
+    {
+      orderedLayerList.insert( orderedLayerList.size(), layerName );
+    }
+  }
+
+  if ( useDrawingOrder )
+  {
+    for ( int i = layerNames.size() - 1; i >= 0; --i )
+    {
+      if ( useDrawingOrder )
+      {
+        orderedLayerList.insertMulti( embedDrawingOrder, layerNames.at( i ) );
+      }
+    }
+  }
 }

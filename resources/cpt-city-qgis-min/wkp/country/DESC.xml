@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>country</dir>
+  <name>Standard elevation schemes for various countries</name>
+  <full>
+    These schemes are specialisations of the template with scaling
+    suitable for that country's terrain. These are taken from various
+    Wikipedia maps by Wikipedia Commons users Sting (Eric Gaba),
+    Bourrichon and PZmaps.
+  </full>
+  <date>01/08/2012</date>
+</description>

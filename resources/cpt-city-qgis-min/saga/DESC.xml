@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>saga</dir>
+  <name>SAGA preset color tables</name>
+  <full>
+    SAGA, the system for automated geoscientific analyses, is a
+    sophisticated, portable and open source GUI-driven GIS which
+    includes a number of preset color tables.
+  </full>
+  <date>01/08/2012</date>
+</description>

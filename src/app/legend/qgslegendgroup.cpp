@@ -1,21 +1,16 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Tim Sutton                                      *
- *   aps02ts@macbuntu                                                      *
+    qgslegendgroup.cpp
+    ---------------------
+    begin                : January 2007
+    copyright            : (C) 2007 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "qgsapplication.h"
 #include "qgisapp.h"
@@ -30,8 +25,11 @@ QgsLegendGroup::QgsLegendGroup( QTreeWidgetItem * theItem, QString theName )
   mType = LEGEND_GROUP;
   setFlags( Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   setCheckState( 0, Qt::Checked );
-  QIcon myIcon = QgisApp::getThemeIcon( "/mActionFolder.png" );
+  QIcon myIcon = QgsApplication::getThemeIcon( "/mActionFolder.png" );
   setIcon( 0, myIcon );
+  setupFont();
+  mEmbedded = false;
+  mDrawingOrder = -1;
 }
 QgsLegendGroup::QgsLegendGroup( QTreeWidget* theListView, QString theString )
     : QgsLegendItem( theListView, theString )
@@ -39,8 +37,11 @@ QgsLegendGroup::QgsLegendGroup( QTreeWidget* theListView, QString theString )
   mType = LEGEND_GROUP;
   setFlags( Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   setCheckState( 0, Qt::Checked );
-  QIcon myIcon = QgisApp::getThemeIcon( "/mActionFolder.png" );
+  QIcon myIcon = QgsApplication::getThemeIcon( "/mActionFolder.png" );
   setIcon( 0, myIcon );
+  setupFont();
+  mEmbedded = false;
+  mDrawingOrder = -1;
 }
 
 QgsLegendGroup::QgsLegendGroup( QString name ): QgsLegendItem()
@@ -48,14 +49,25 @@ QgsLegendGroup::QgsLegendGroup( QString name ): QgsLegendItem()
   mType = LEGEND_GROUP;
   setFlags( Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   setCheckState( 0, Qt::Checked );
-  QIcon myIcon = QgisApp::getThemeIcon( + "/mActionFolder.png" );
+  QIcon myIcon = QgsApplication::getThemeIcon( + "/mActionFolder.png" );
   setText( 0, name );
   setIcon( 0, myIcon );
+  setupFont();
+  mEmbedded = false;
+  mDrawingOrder = -1;
 }
 
 QgsLegendGroup::~QgsLegendGroup()
 {}
 
+void QgsLegendGroup::setupFont()
+{
+  QSettings settings;
+  QFont myFont = font( 0 );
+  //visually differentiate group labels from the rest
+  myFont.setBold( settings.value( "/qgis/legendGroupsBold", false ).toBool() );
+  setFont( 0, myFont );
+}
 
 bool QgsLegendGroup::insert( QgsLegendItem* theItem )
 {
@@ -114,7 +126,7 @@ Qt::CheckState QgsLegendGroup::pendingCheckState()
     return Qt::PartiallyChecked;
 
   Qt::CheckState theState = elements[0]->checkState( 0 );
-  foreach( QgsLegendItem * li, elements )
+  foreach ( QgsLegendItem * li, elements )
   {
     if ( theState != li->checkState( 0 ) )
     {

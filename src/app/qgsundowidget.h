@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsundowidget.h
+    ---------------------
+    begin                : June 2009
+    copyright            : (C) 2009 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSUNDOWIDGET_H
 #define QGSUNDOWIDGET_H
 
@@ -44,6 +58,12 @@ class QgsUndoWidget : public QDockWidget
      */
     void destroyStack();
 
+    /**
+     * Access to dock's contents
+     * @note added in 1.9
+     */
+    QWidget* dockContents() { return dockWidgetContents; }
+
   public slots:
     /**
      * Changes undo stack which is displayed by undo view
@@ -63,7 +83,7 @@ class QgsUndoWidget : public QDockWidget
     /**
      * Slot to handle index changed signal
      */
-    void indexChanged( int value );
+    void indexChanged( int curIndx );
 
     /**
      * Undo operation called from button push
@@ -83,6 +103,8 @@ class QgsUndoWidget : public QDockWidget
     QUndoStack * mUndoStack;
     QgsMapCanvas* mMapCanvas;
 
+    int mPreviousIndex;
+    int mPreviousCount;
 };
 
 

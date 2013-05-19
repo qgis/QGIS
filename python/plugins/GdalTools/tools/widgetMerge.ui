@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>345</width>
-    <height>276</height>
+    <width>371</width>
+    <height>284</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -117,11 +117,11 @@
       <bool>false</bool>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="bottomMargin">
+      <property name="margin">
        <number>0</number>
       </property>
       <item>
-       <widget class="GdalToolsOptionsTable" name="creationOptionsTable" native="true"/>
+       <widget class="QgsRasterFormatSaveOptionsWidget" name="creationOptionsTable" native="true"/>
       </item>
      </layout>
     </widget>
@@ -136,9 +136,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>GdalToolsOptionsTable</class>
+   <class>QgsRasterFormatSaveOptionsWidget</class>
    <extends>QWidget</extends>
-   <header>optionsTable</header>
+   <header>qgis.gui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

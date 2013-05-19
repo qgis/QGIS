@@ -1,0 +1,170 @@
+<h3>Funktion format_date()</h3>
+Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt Datum- und Zeitformate. Siehe <a href='http://qt-project.org/doc/qt-4.8/qdatetime.html#toString'>QDateTime::toString</a>
+
+<h4>Syntax</h4>
+<code>format_date('zeichenkette', 'format')</code><br>
+
+<h4>Argumente</h4>
+<code>zeichenkette</code> - eine Zeichenkette. Datum/Zeit/Datum&Zeit-Zeichenkette.
+<br>
+<code>format</code> - eine Zeichenkette. Vorlage zur Formatierung.
+
+  <table>
+    <thead>
+      <tr>
+        <th>Ausdruck</th>
+
+        <th>Ausgabe</th>
+      </tr>
+    </thead>
+
+    <tr valign="top">
+      <td>d</td>
+
+      <td>Der Tag als Zahl ohne f&uuml;hrende Null (1 to 31)</td>
+    </tr>
+
+    <tr valign="top">
+      <td>dd</td>
+
+      <td>Der Tag als Zahl mit f&uuml;hrender Null (01 to 31)</td>
+    </tr>
+
+    <tr valign="top">
+      <td>ddd</td>
+
+      <td>Der abgek&uuml;rzte lokale Tagname (z.B. 'Mon' bis 'Son'). Siehe <a href="qdate.html#shortDayName">QDate::shortDayName</a>().</td>
+    </tr>
+
+    <tr valign="top">
+      <td>dddd</td>
+
+      <td>Der lokale Tagname (z.B. 'Montag' to 'Sonntag'). Siehe <a href="qdate.html#longDayName">QDate::longDayName</a>().</td>
+    </tr>
+
+    <tr valign="top">
+      <td>M</td>
+
+      <td>Der Monat als Zahl ohne f&uuml;hrende Null (1-12)</td>
+    </tr>
+
+    <tr valign="top">
+      <td>MM</td>
+
+      <td>Der Monat als Zahl mit f&uuml;hrender Null (01-12)</td>
+    </tr>
+
+    <tr valign="top">
+      <td>MMM</td>
+
+      <td>Der abgek&uuml;rzte lokale Monatsname (z.B. 'Jan' bis 'Dez'). Siehe <a href="qdate.html#shortMonthName">QDate::shortMonthName</a>().</td>
+    </tr>
+
+    <tr valign="top">
+      <td>MMMM</td>
+
+      <td>Der lokale Monatsname (z.B. 'Januar' to 'Dezember'). Siehe <a href="qdate.html#longMonthName">QDate::longMonthName</a>().</td>
+    </tr>
+
+    <tr valign="top">
+      <td>yy</td>
+
+      <td>Das Jahr als zweistellige Zahl (00-99)</td>
+    </tr>
+
+    <tr valign="top">
+      <td>yyyy</td>
+
+      <td>Das Jahr als vierstellige Zahl</td>
+    </tr>
+  </table>
+
+  <p>Diese Ausdr&uuml;cke k&ouml;nnen zum Formatieren des Zeitanteils verwendet werden:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Ausdruck</th>
+
+        <th>Ausgabe</th>
+      </tr>
+    </thead>
+
+    <tr valign="top">
+      <td>h</td>
+
+      <td>die Stunde ohne f&uuml;hrende Null (0 to 23 oder 1 to 12 bei AM/PM Anzeige)</td>
+    </tr>
+
+    <tr valign="top">
+      <td>hh</td>
+
+      <td>die Stunde mit f&uuml;hrender Null (00 to 23 oder 01 to 12 bei AM/PM Anzeige)</td>
+    </tr>
+
+    <tr valign="top">
+      <td>H</td>
+
+      <td>die Stunde ohne f&uuml;hrende Null (0 to 23 auch bei AM/PM Anzeige)</td>
+    </tr>
+
+    <tr valign="top">
+      <td>HH</td>
+
+      <td>die Stunde mit f&uuml;hrender Null (0 to 23 auch bei AM/PM Anzeige)</td>
+    </tr>
+
+    <tr valign="top">
+      <td>m</td>
+
+      <td>Die Minute ohne f&uuml;hrende Null (0 to 59)</td>
+    </tr>
+
+    <tr valign="top">
+      <td>mm</td>
+
+      <td>Die Minute mit f&uuml;hrender Null (00 to 59)</td>
+    </tr>
+
+    <tr valign="top">
+      <td>s</td>
+
+      <td>Die Sekunde ohne f&uuml;hrende Null (0 to 59)</td>
+    </tr>
+
+    <tr valign="top">
+      <td>ss</td>
+
+      <td>Die Sekunde mit f&uuml;hrender Null (00 to 59)</td>
+    </tr>
+
+    <tr valign="top">
+      <td>z</td>
+
+      <td>Die Millisekunde ohne f&uuml;hrende Null (0 to 999)</td>
+    </tr>
+
+    <tr valign="top">
+      <td>zzz</td>
+
+      <td>Die Millisekunde mit f&uuml;hrender Null (000 to 999)</td>
+    </tr>
+
+    <tr valign="top">
+      <td>AP or A</td>
+
+      <td>als AM/PM Zeit interpretiren. <i>AP</i> muss entweder "AM" oder "PM" sein.</td>
+    </tr>
+
+    <tr valign="top">
+      <td>ap or a</td>
+
+      <td>als AM/PM Zeit interpretiren. <i>ap</i> muss entweder "am" oder "pm" sein.</td>
+    </tr>
+  </table>
+
+<br>
+
+<h4>Beispiel</h4>
+<!-- Show example of function.-->
+<code>format_date('2012-05-15','dd.mm.yyyy') &rarr; 15.05.2012</code><br>

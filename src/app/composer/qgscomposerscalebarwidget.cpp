@@ -18,6 +18,7 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposermap.h"
 #include "qgscomposerscalebar.h"
+#include "qgscomposition.h"
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QWidget>
@@ -25,14 +26,11 @@
 QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar ): QWidget(), mComposerScaleBar( scaleBar )
 {
   setupUi( this );
-  if ( scaleBar )
-  {
-    QObject::connect( scaleBar, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
-  }
+  connectUpdateSignal();
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, scaleBar );
-  toolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
+  mainLayout->addWidget( itemPropertiesWidget );
 
   blockMemberSignals( true );
 
@@ -44,11 +42,17 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
   mStyleComboBox->insertItem( 4, tr( "Line Ticks Up" ) );
   mStyleComboBox->insertItem( 5, tr( "Numeric" ) );
 
+  //alignment combo box
   mAlignmentComboBox->insertItem( 0, tr( "Left" ) );
   mAlignmentComboBox->insertItem( 1, tr( "Middle" ) );
   mAlignmentComboBox->insertItem( 2, tr( "Right" ) );
-  blockMemberSignals( false );
 
+  //units combo box
+  mUnitsComboBox->insertItem( 0, tr( "Map units" ), 0 );
+  mUnitsComboBox->insertItem( 1, tr( "Meters" ), 1 );
+  mUnitsComboBox->insertItem( 2, tr( "Feet" ), 2 );
+
+  blockMemberSignals( false );
   setGuiElements(); //set the GUI elements to the state of scaleBar
 }
 
@@ -79,6 +83,11 @@ void QgsComposerScaleBarWidget::refreshMapComboBox()
     }
   }
 
+  if ( saveCurrentComboText.isEmpty() && mComposerScaleBar->composerMap() )
+  {
+    //combo box was not initialised before
+    mMapComboBox->setCurrentIndex( mMapComboBox->findText( tr( "Map %1" ).arg( mComposerScaleBar->composerMap()->id() ) ) );
+  }
   if ( mMapComboBox->findText( saveCurrentComboText ) == -1 )
   {
     //the former entry is no longer present. Inform the scalebar about the changed composer map
@@ -136,8 +145,10 @@ void QgsComposerScaleBarWidget::on_mMapComboBox_activated( const QString& text )
 
   //set it to scale bar
   mComposerScaleBar->beginCommand( tr( "Scalebar map changed" ) );
+  disconnectUpdateSignal();
   mComposerScaleBar->setComposerMap( composerMap );
   mComposerScaleBar->update();
+  connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
 
@@ -176,6 +187,10 @@ void QgsComposerScaleBarWidget::setGuiElements()
 
   //alignment
   mAlignmentComboBox->setCurrentIndex(( int )( mComposerScaleBar->alignment() ) );
+
+  //units
+  mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData(( int )mComposerScaleBar->units() ) );
+
   blockMemberSignals( false );
 }
 
@@ -189,10 +204,12 @@ void QgsComposerScaleBarWidget::on_mLineWidthSpinBox_valueChanged( double d )
   }
 
   mComposerScaleBar->beginCommand( tr( "Scalebar line width" ), QgsComposerMergeCommand::ScaleBarLineWidth );
-  QPen newPen( QColor( 0, 0, 0 ) );
+  disconnectUpdateSignal();
+  QPen newPen( mComposerScaleBar->pen().color() );
   newPen.setWidthF( d );
   mComposerScaleBar->setPen( newPen );
   mComposerScaleBar->update();
+  connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
 
@@ -204,8 +221,10 @@ void QgsComposerScaleBarWidget::on_mSegmentSizeSpinBox_valueChanged( double d )
   }
 
   mComposerScaleBar->beginCommand( tr( "Scalebar segment size" ), QgsComposerMergeCommand::ScaleBarSegmentSize );
+  disconnectUpdateSignal();
   mComposerScaleBar->setNumUnitsPerSegment( d );
   mComposerScaleBar->update();
+  connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
 
@@ -217,8 +236,10 @@ void QgsComposerScaleBarWidget::on_mSegmentsLeftSpinBox_valueChanged( int i )
   }
 
   mComposerScaleBar->beginCommand( tr( "Scalebar segments left" ), QgsComposerMergeCommand::ScaleBarSegmentsLeft );
+  disconnectUpdateSignal();
   mComposerScaleBar->setNumSegmentsLeft( i );
   mComposerScaleBar->update();
+  connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
 
@@ -230,8 +251,10 @@ void QgsComposerScaleBarWidget::on_mNumberOfSegmentsSpinBox_valueChanged( int i 
   }
 
   mComposerScaleBar->beginCommand( tr( "Scalebar n segments" ), QgsComposerMergeCommand::ScaleBarNSegments );
+  disconnectUpdateSignal();
   mComposerScaleBar->setNumSegments( i );
   mComposerScaleBar->update();
+  connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
 
@@ -242,8 +265,10 @@ void QgsComposerScaleBarWidget::on_mHeightSpinBox_valueChanged( int i )
     return;
   }
   mComposerScaleBar->beginCommand( tr( "Scalebar height changed" ), QgsComposerMergeCommand::ScaleBarHeight );
+  disconnectUpdateSignal();
   mComposerScaleBar->setHeight( i );
   mComposerScaleBar->update();
+  connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
 
@@ -265,10 +290,35 @@ void QgsComposerScaleBarWidget::on_mFontButton_clicked()
   if ( dialogAccepted )
   {
     mComposerScaleBar->beginCommand( tr( "Scalebar font changed" ) );
+    disconnectUpdateSignal();
     mComposerScaleBar->setFont( newFont );
+    connectUpdateSignal();
     mComposerScaleBar->endCommand();
   }
   mComposerScaleBar->update();
+}
+
+void QgsComposerScaleBarWidget::on_mFontColorPushButton_clicked()
+{
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
+
+  QColor oldColor = mComposerScaleBar->fontColor();
+  QColor newColor = QColorDialog::getColor( oldColor, 0 );
+
+  if ( !newColor.isValid() ) //user canceled the dialog
+  {
+    return;
+  }
+
+  mComposerScaleBar->beginCommand( tr( "Scalebar font color changed" ) );
+  disconnectUpdateSignal();
+  mComposerScaleBar->setFontColor( newColor );
+  mComposerScaleBar->update();
+  connectUpdateSignal();
+  mComposerScaleBar->endCommand();
 }
 
 void QgsComposerScaleBarWidget::on_mColorPushButton_clicked()
@@ -287,9 +337,36 @@ void QgsComposerScaleBarWidget::on_mColorPushButton_clicked()
   }
 
   mComposerScaleBar->beginCommand( tr( "Scalebar color changed" ) );
+  disconnectUpdateSignal();
   QBrush newBrush( newColor );
   mComposerScaleBar->setBrush( newBrush );
   mComposerScaleBar->update();
+  connectUpdateSignal();
+  mComposerScaleBar->endCommand();
+}
+
+void QgsComposerScaleBarWidget::on_mStrokeColorPushButton_clicked()
+{
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
+
+  QColor oldColor = mComposerScaleBar->pen().color();
+  QColor newColor = QColorDialog::getColor( oldColor, 0 );
+
+  if ( !newColor.isValid() ) //user canceled the dialog
+  {
+    return;
+  }
+
+  mComposerScaleBar->beginCommand( tr( "Scalebar stroke color changed" ) );
+  disconnectUpdateSignal();
+  QPen newPen = mComposerScaleBar->pen();
+  newPen.setColor( newColor );
+  mComposerScaleBar->setPen( newPen );
+  mComposerScaleBar->update();
+  connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
 
@@ -301,8 +378,10 @@ void QgsComposerScaleBarWidget::on_mUnitLabelLineEdit_textChanged( const QString
   }
 
   mComposerScaleBar->beginCommand( tr( "Scalebar unit text" ), QgsComposerMergeCommand::ScaleBarUnitText );
+  disconnectUpdateSignal();
   mComposerScaleBar->setUnitLabeling( text );
   mComposerScaleBar->update();
+  connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
 
@@ -314,8 +393,10 @@ void QgsComposerScaleBarWidget::on_mMapUnitsPerBarUnitSpinBox_valueChanged( doub
   }
 
   mComposerScaleBar->beginCommand( tr( "Scalebar map units per segment" ), QgsComposerMergeCommand::ScaleBarMapUnitsSegment );
+  disconnectUpdateSignal();
   mComposerScaleBar->setNumMapUnitsPerScaleBarUnit( d );
   mComposerScaleBar->update();
+  connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
 
@@ -327,6 +408,7 @@ void QgsComposerScaleBarWidget::on_mStyleComboBox_currentIndexChanged( const QSt
   }
 
   mComposerScaleBar->beginCommand( tr( "Scalebar style changed" ) );
+  disconnectUpdateSignal();
   QString untranslatedStyleName;
   if ( text == tr( "Single Box" ) )
   {
@@ -358,6 +440,7 @@ void QgsComposerScaleBarWidget::on_mStyleComboBox_currentIndexChanged( const QSt
   }
   mComposerScaleBar->setStyle( untranslatedStyleName );
   mComposerScaleBar->update();
+  connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
 
@@ -369,8 +452,10 @@ void QgsComposerScaleBarWidget::on_mLabelBarSpaceSpinBox_valueChanged( double d 
   }
 
   mComposerScaleBar->beginCommand( tr( "Scalebar label bar space" ), QgsComposerMergeCommand::ScaleBarLabelBarSize );
+  disconnectUpdateSignal();
   mComposerScaleBar->setLabelBarSpace( d );
   mComposerScaleBar->update();
+  connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
 
@@ -382,8 +467,10 @@ void QgsComposerScaleBarWidget::on_mBoxSizeSpinBox_valueChanged( double d )
   }
 
   mComposerScaleBar->beginCommand( tr( "Scalebar box content space" ), QgsComposerMergeCommand::ScaleBarBoxContentSpace );
+  disconnectUpdateSignal();
   mComposerScaleBar->setBoxContentSpace( d );
   mComposerScaleBar->update();
+  connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
 
@@ -395,7 +482,30 @@ void QgsComposerScaleBarWidget::on_mAlignmentComboBox_currentIndexChanged( int i
   }
 
   mComposerScaleBar->beginCommand( tr( "Scalebar alignment" ) );
+  disconnectUpdateSignal();
   mComposerScaleBar->setAlignment(( QgsComposerScaleBar::Alignment ) index );
+  connectUpdateSignal();
+  mComposerScaleBar->endCommand();
+}
+
+void QgsComposerScaleBarWidget::on_mUnitsComboBox_currentIndexChanged( int index )
+{
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
+
+  QVariant unitData = mUnitsComboBox->itemData( index );
+  if ( unitData.type() == QVariant::Invalid )
+  {
+    return;
+  }
+
+  mComposerScaleBar->beginCommand( tr( "Scalebar unit changed" ) );
+  disconnectUpdateSignal();
+  mComposerScaleBar->setUnits(( QgsComposerScaleBar::ScaleBarUnits )unitData.toInt() );
+  mComposerScaleBar->update();
+  connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
 
@@ -413,4 +523,21 @@ void QgsComposerScaleBarWidget::blockMemberSignals( bool block )
   mLabelBarSpaceSpinBox->blockSignals( block );
   mBoxSizeSpinBox->blockSignals( block );
   mAlignmentComboBox->blockSignals( block );
+  mUnitsComboBox->blockSignals( block );
+}
+
+void QgsComposerScaleBarWidget::connectUpdateSignal()
+{
+  if ( mComposerScaleBar )
+  {
+    QObject::connect( mComposerScaleBar, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
+  }
+}
+
+void QgsComposerScaleBarWidget::disconnectUpdateSignal()
+{
+  if ( mComposerScaleBar )
+  {
+    QObject::disconnect( mComposerScaleBar, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
+  }
 }

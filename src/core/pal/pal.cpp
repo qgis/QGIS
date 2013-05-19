@@ -165,7 +165,7 @@ namespace pal
   }
 
 
-  Layer * Pal::addLayer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel )
+  Layer * Pal::addLayer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll )
   {
     Layer *lyr;
     lyrsMutex->lock();
@@ -187,7 +187,7 @@ namespace pal
       }
     }
 
-    lyr = new Layer( lyrName, min_scale, max_scale, arrangement, label_unit, defaultPriority, obstacle, active, toLabel, this );
+    lyr = new Layer( lyrName, min_scale, max_scale, arrangement, label_unit, defaultPriority, obstacle, active, toLabel, this, displayAll );
     layers->push_back( lyr );
 
     lyrsMutex->unlock();
@@ -231,7 +231,7 @@ namespace pal
 
 
 #ifdef _DEBUG_FULL_
-    std::cout << "extract feat : " << ft_ptr->layer->name << "/" << ft_ptr->uid << std::endl;
+    std::cout << "extract feat : " << ft_ptr->getLayer()->getName() << "/" << ft_ptr->getUID() << std::endl;
 #endif
 
     // all feature which are obstacle will be inserted into obstacles
@@ -513,7 +513,7 @@ namespace pal
     {
       feat = fFeats->pop_front();
 #ifdef _DEBUG_FULL_
-      std::cout << "Feature:" << feat->feature->layer->name << "/" << feat->feature->uid << std::endl;
+      std::cout << "Feature:" << feat->feature->getLayer()->getName() << "/" << feat->feature->getUID() << " candidates " << feat->nblp << std::endl;
 #endif
       prob->featStartId[i] = idlp;
       prob->inactiveCost[i] = pow( 2, 10 - 10 * feat->priority );
@@ -535,7 +535,7 @@ namespace pal
       max_p = CostCalculator::finalizeCandidatesCosts( feat, max_p, obstacles, bbx, bby );
 
 #ifdef _DEBUG_FULL_
-      std::cout << "All Cost are setted" << std::endl;
+      std::cout << "All costs are set" << std::endl;
 #endif
       // only keep the 'max_p' best candidates
       for ( j = max_p; j < feat->nblp; j++ )
@@ -597,7 +597,7 @@ namespace pal
 
         nbOverlaps += lp->getNumOverlaps();
 #ifdef _DEBUG_FULL_
-        std::cout << "Nb overlap for " << idlp << "/" << prob->nblp - 1 << " : " << lp->nbOverlap << std::endl;
+        std::cout << "Nb overlap for " << idlp << "/" << prob->nblp - 1 << " : " << lp->getNumOverlaps() << std::endl;
 #endif
       }
       j++;

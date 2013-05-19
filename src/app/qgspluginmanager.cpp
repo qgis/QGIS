@@ -135,6 +135,7 @@ void QgsPluginManager::setTable()
   mModelPlugins = new QStandardItemModel( 0, 1 );
   mModelProxy = new QSortFilterProxyModel( this );
   mModelProxy->setSourceModel( mModelPlugins );
+  mModelProxy->setSortCaseSensitivity( Qt::CaseInsensitive );
   vwPlugins->setModel( mModelProxy );
   vwPlugins->setFocus();
   vwPlugins->setItemDelegateForColumn( 0, new QgsDetailedItemDelegate() );
@@ -209,8 +210,11 @@ void QgsPluginManager::getPythonPluginDescriptions()
     myData.setCheckable( true );
     myData.setRenderAsWidget( false );
     myData.setChecked( false ); //start off assuming false
-    if ( iconName == "__error__" )
+
+    if ( iconName == "__error__" || iconName.isEmpty() )
+    {
       myData.setIcon( QPixmap( QgsApplication::defaultThemePath() + "/plugin.png" ) );
+    }
     else
     {
       bool relative = QFileInfo( iconName ).isRelative();
@@ -220,7 +224,14 @@ void QgsPluginManager::getPythonPluginDescriptions()
         mPythonUtils->evalString( QString( "qgis.utils.pluginDirectory('%1')" ).arg( packageName ), pluginDir );
         iconName = pluginDir + "/" + iconName;
       }
-      myData.setIcon( QPixmap( iconName ) );
+      if ( QFileInfo( iconName ).isFile() )
+      {
+        myData.setIcon( QPixmap( iconName ) );
+      }
+      else
+      {
+        myData.setIcon( QPixmap( QgsApplication::defaultThemePath() + "/plugin.png" ) );
+      }
     }
 
     // check to see if the plugin is loaded and set the checkbox accordingly
@@ -246,7 +257,7 @@ void QgsPluginManager::getPythonPluginDescriptions()
 void QgsPluginManager::getPluginDescriptions()
 {
   QString sharedLibExtension;
-#ifdef WIN32
+#if defined(WIN32) || defined(__CYGWIN__)
   sharedLibExtension = "*.dll";
 #else
   sharedLibExtension = "*.so*";

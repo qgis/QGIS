@@ -23,6 +23,7 @@ email                : sbr00pwb@users.sourceforge.net
 
 #include "qgsdecorationscalebardialog.h"
 
+#include "qgis.h"
 #include "qgisapp.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -48,13 +49,8 @@ email                : sbr00pwb@users.sourceforge.net
 #include <cmath>
 
 
-#ifdef _MSC_VER
-#define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
-#endif
-
-
 QgsDecorationScaleBar::QgsDecorationScaleBar( QObject* parent )
-    : QObject( parent )
+    : QgsDecorationItem( parent )
 {
   mPlacementLabels << tr( "Bottom Left" ) << tr( "Top Left" )
   << tr( "Top Right" ) << tr( "Bottom Right" );
@@ -62,6 +58,7 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject* parent )
   mStyleLabels << tr( "Tick Down" ) << tr( "Tick Up" )
   << tr( "Bar" ) << tr( "Box" );
 
+  setName( "Scale Bar" );
   projectRead();
 }
 
@@ -72,27 +69,29 @@ QgsDecorationScaleBar::~QgsDecorationScaleBar()
 
 void QgsDecorationScaleBar::projectRead()
 {
-  mPreferredSize = QgsProject::instance()->readNumEntry( "ScaleBar", "/PreferredSize", 30 );
-  mStyleIndex = QgsProject::instance()->readNumEntry( "ScaleBar", "/Style", 0 );
-  mPlacementIndex = QgsProject::instance()->readNumEntry( "ScaleBar", "/Placement", 2 );
-  mEnabled = QgsProject::instance()->readBoolEntry( "ScaleBar", "/Enabled", false );
-  mSnapping = QgsProject::instance()->readBoolEntry( "ScaleBar", "/Snapping", true );
-  int myRedInt = QgsProject::instance()->readNumEntry( "ScaleBar", "/ColorRedPart", 0 );
-  int myGreenInt = QgsProject::instance()->readNumEntry( "ScaleBar", "/ColorGreenPart", 0 );
-  int myBlueInt = QgsProject::instance()->readNumEntry( "ScaleBar", "/ColorBluePart", 0 );
+  QgsDecorationItem::projectRead();
+  mPreferredSize = QgsProject::instance()->readNumEntry( mNameConfig, "/PreferredSize", 30 );
+  mStyleIndex = QgsProject::instance()->readNumEntry( mNameConfig, "/Style", 0 );
+  mPlacementIndex = QgsProject::instance()->readNumEntry( mNameConfig, "/Placement", 2 );
+  // mEnabled = QgsProject::instance()->readBoolEntry( mNameConfig, "/Enabled", false );
+  mSnapping = QgsProject::instance()->readBoolEntry( mNameConfig, "/Snapping", true );
+  int myRedInt = QgsProject::instance()->readNumEntry( mNameConfig, "/ColorRedPart", 0 );
+  int myGreenInt = QgsProject::instance()->readNumEntry( mNameConfig, "/ColorGreenPart", 0 );
+  int myBlueInt = QgsProject::instance()->readNumEntry( mNameConfig, "/ColorBluePart", 0 );
   mColor = QColor( myRedInt, myGreenInt, myBlueInt );
 }
 
 void QgsDecorationScaleBar::saveToProject()
 {
-  QgsProject::instance()->writeEntry( "ScaleBar", "/Placement", mPlacementIndex );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/PreferredSize", mPreferredSize );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/Snapping", mSnapping );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/Enabled", mEnabled );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/Style", mStyleIndex );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorRedPart", mColor.red() );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorGreenPart", mColor.green() );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorBluePart", mColor.blue() );
+  QgsDecorationItem::saveToProject();
+  QgsProject::instance()->writeEntry( mNameConfig, "/Placement", mPlacementIndex );
+  QgsProject::instance()->writeEntry( mNameConfig, "/PreferredSize", mPreferredSize );
+  QgsProject::instance()->writeEntry( mNameConfig, "/Snapping", mSnapping );
+  // QgsProject::instance()->writeEntry( mNameConfig, "/Enabled", mEnabled );
+  QgsProject::instance()->writeEntry( mNameConfig, "/Style", mStyleIndex );
+  QgsProject::instance()->writeEntry( mNameConfig, "/ColorRedPart", mColor.red() );
+  QgsProject::instance()->writeEntry( mNameConfig, "/ColorGreenPart", mColor.green() );
+  QgsProject::instance()->writeEntry( mNameConfig, "/ColorBluePart", mColor.blue() );
 }
 
 
@@ -102,13 +101,12 @@ void QgsDecorationScaleBar::run()
 
   if ( dlg.exec() )
   {
-    saveToProject();
-    QgisApp::instance()->mapCanvas()->refresh();
+    update();
   }
 }
 
 
-void QgsDecorationScaleBar::renderScaleBar( QPainter * theQPainter )
+void QgsDecorationScaleBar::render( QPainter * theQPainter )
 {
   QgsMapCanvas* canvas = QgisApp::instance()->mapCanvas();
 
@@ -122,6 +120,7 @@ void QgsDecorationScaleBar::renderScaleBar( QPainter * theQPainter )
   //projections) and that just confuses the rest of the code in this
   //function, so force to a positive number.
   double myMapUnitsPerPixelDouble = qAbs( canvas->mapUnitsPerPixel() );
+  double myActualSize = mPreferredSize;
 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
   int myLayerCount = canvas->layerCount();
@@ -129,14 +128,30 @@ void QgsDecorationScaleBar::renderScaleBar( QPainter * theQPainter )
     return;
 
   //Large if statement which determines whether to render the scale bar
-  if ( mEnabled )
+  if ( enabled() )
   {
     // Hard coded sizes
     int myMajorTickSize = 8;
     int myTextOffsetX = 3;
-    double myActualSize = mPreferredSize;
     int myMargin = 20;
 
+    QSettings settings;
+    QGis::UnitType myPreferredUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
+    QGis::UnitType myMapUnits = canvas->mapUnits();
+
+    // Adjust units meter/feet or vice versa
+    if ( myMapUnits == QGis::Meters && myPreferredUnits == QGis::Feet )
+    {
+      // From meter to feet
+      myMapUnits = QGis::Feet;
+      myMapUnitsPerPixelDouble /= 0.3084;
+    }
+    else if ( myMapUnits == QGis::Feet && myPreferredUnits == QGis::Meters )
+    {
+      // From feet to meter
+      myMapUnits = QGis::Meters;
+      myMapUnitsPerPixelDouble *= 0.3084;
+    }
     //Calculate size of scale bar for preferred number of map units
     double myScaleBarWidth = mPreferredSize / myMapUnitsPerPixelDouble;
 
@@ -162,12 +177,11 @@ void QgsDecorationScaleBar::renderScaleBar( QPainter * theQPainter )
     if ( mSnapping )
     {
       double scaler = pow( 10.0, myPowerOf10 );
-      myActualSize = round( myActualSize / scaler ) * scaler;
+      myActualSize = qRound( myActualSize / scaler ) * scaler;
       myScaleBarWidth = myActualSize / myMapUnitsPerPixelDouble;
     }
 
     //Get type of map units and set scale bar unit label text
-    QGis::UnitType myMapUnits = canvas->mapUnits();
     QString myScaleBarUnitLabel;
     switch ( myMapUnits )
     {

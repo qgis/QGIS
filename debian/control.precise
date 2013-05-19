@@ -10,7 +10,7 @@ Build-Depends:
  grass-dev,
  libexpat1-dev,
  libfcgi-dev,
- libgdal1-dev,
+ libgdal-dev (>= 1.9.0) | libgdal1-dev (<< 1.9.0),
  libgeos-dev (>= 3.0.0),
  libgsl0-dev,
  libpq-dev,
@@ -84,7 +84,7 @@ Section: libdevel
 Depends:
  grass-dev,
  libexpat1-dev,
- libgdal1-dev,
+ libgdal-dev (>= 1.9.0) | libgdal1-dev (<< 1.9.0),
  libgeos-dev (>= 3.0.0),
  libgsl0-dev,
  libpq-dev,
@@ -129,7 +129,7 @@ Description: GRASS plugin for Quantum GIS - architecture-independent data
 Package: python-qgis
 Section: python
 Architecture: any
-Depends: python-qt4 (>=4.1.0), python-sip (>= 4.5.0), python-qgis-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Depends: python-qt4 (>=4.1.0), python-sip (>= 4.5.0), python-qgis-common (= ${source:Version}), python-psycopg2, python-qscintilla2, ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to Quantum GIS
@@ -142,7 +142,7 @@ Package: python-qgis-common
 Section: python
 Architecture: all
 Provides: ${python:Provides}
-Depends: gdal-bin, python-gdal, ${python:Depends}
+Depends: gdal-bin, python-gdal, python-matplotlib, libjs-jquery, libjs-underscore, ${python:Depends}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to Quantum GIS - architecture-independent files
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
@@ -195,6 +195,7 @@ Description: Quantum GIS sql anywhere plugin and provider
 Package: qgis-api-doc
 Architecture: all
 Section: doc
+Depends: libjs-jquery
 Description: Quantum GIS API documentation
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.

@@ -37,24 +37,50 @@ SET(QGIS_ANALYSIS_SRCS
   vector/qgsgeometryanalyzer.cpp
   vector/qgszonalstatistics.cpp
   vector/qgsoverlayanalyzer.cpp
+
+  openstreetmap/qgsosmbase.cpp
+  openstreetmap/qgsosmdatabase.cpp
+  openstreetmap/qgsosmdownload.cpp
+  openstreetmap/qgsosmimport.cpp
 )
+
+SET(QGIS_ANALYSIS_MOC_HDRS
+  openstreetmap/qgsosmdownload.h
+  openstreetmap/qgsosmimport.h
+)
+
+IF (WITH_INTERNAL_SPATIALITE)
+  INCLUDE_DIRECTORIES(../core/spatialite/headers)
+  INCLUDE_DIRECTORIES(../core/spatialite/headers/spatialite)
+ELSE (WITH_INTERNAL_SPATIALITE)
+  INCLUDE_DIRECTORIES(${SPATIALITE_INCLUDE_DIR})
+  INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
+  ADD_DEFINITIONS(-DEXTERNAL_SPATIALITE)
+ENDIF (WITH_INTERNAL_SPATIALITE)
 
 INCLUDE_DIRECTORIES(BEFORE raster)
 ADD_FLEX_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalclexer.ll)
 
 ADD_BISON_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalcparser.yy)
 
-IF (MSVC AND PEDANTIC)
-# disable warnings
-# 4065 switch with default and no case
-# 4702 unreachable code
-SET_SOURCE_FILES_PROPERTIES(
-                ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp 
-                PROPERTIES COMPILE_FLAGS "-wd4065 -wd4702")
-ENDIF (MSVC AND PEDANTIC)
+IF (PEDANTIC AND MSVC)
+  # disable warnings
+  # 4065 switch with default and no case
+  # 4702 unreachable code
+  SET_SOURCE_FILES_PROPERTIES(
+    ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp
+    PROPERTIES COMPILE_FLAGS "-wd4065 -wd4702"
+  )
+ENDIF (PEDANTIC AND MSVC)
 
-SET(QGIS_ANALYSIS_MOC_HDRS
-)
+IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  SET_SOURCE_FILES_PROPERTIES(
+    interpolation/qgstininterpolator.cpp
+    interpolation/NormVecDecorator.cc
+    interpolation/CloughTocherInterpolator.cc
+    PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual"
+  )
+ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
 QT4_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
 
@@ -77,11 +103,18 @@ SET(QGIS_ANALYSIS_HDRS
   interpolation/qgstininterpolator.h
 )
 
+SET(QGIS_ANALYSIS_HDRS ${QGIS_ANALYSIS_HDRS}
+  openstreetmap/qgsosmbase.h
+  openstreetmap/qgsosmdatabase.h
+  openstreetmap/qgsosmdownload.h
+  openstreetmap/qgsosmimport.h
+)
+
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} 
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/
-  ${CMAKE_CURRENT_SOURCE_DIR}/../core/renderer
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/raster
+  ${CMAKE_CURRENT_SOURCE_DIR}/../core/symbology-ng
   interpolation
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
@@ -102,15 +135,22 @@ ENDIF (WIN32)
 
 ADD_LIBRARY(qgis_analysis SHARED ${QGIS_ANALYSIS_SRCS} ${QGIS_ANALYSIS_MOC_SRCS} ${QGIS_ANALYSIS_HDRS})
 
-SET_TARGET_PROPERTIES(qgis_analysis PROPERTIES
-  # no moc headers, messes up PROPERTIES syntax
-  PUBLIC_HEADER "${QGIS_ANALYSIS_HDRS}"
-  CLEAN_DIRECT_OUTPUT 1
-  FRAMEWORK 1
-  FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
-  MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
-  MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
-  MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis_analysis)
+IF(NOT APPLE)
+  INSTALL(FILES ${QGIS_ANALYSIS_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+ELSE(NOT APPLE)
+  SET_TARGET_PROPERTIES(qgis_analysis PROPERTIES
+    # no moc headers, messes up PROPERTIES syntax
+    CLEAN_DIRECT_OUTPUT 1
+    FRAMEWORK 1
+    FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
+    MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
+    MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
+    MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis2_analysis
+    BUILD_WITH_INSTALL_RPATH TRUE
+    PUBLIC_HEADER "${QGIS_ANALYSIS_HDRS}"
+    LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
+  )
+ENDIF(NOT APPLE)
 
 #generate unversioned libs for android
 IF (NOT ANDROID)
@@ -120,15 +160,8 @@ IF (NOT ANDROID)
     )
 ENDIF (NOT ANDROID)
 
-ADD_DEPENDENCIES(qgis_analysis qgis_core)
+TARGET_LINK_LIBRARIES(qgis_analysis qgis_core)
 
-TARGET_LINK_LIBRARIES(qgis_analysis
-  qgis_core
-)
-
-IF (APPLE)
-  SET_TARGET_PROPERTIES(qgis_analysis PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
-ENDIF (APPLE)
 
 # install
 

@@ -19,7 +19,7 @@
 #include <QDialog>
 #include <QSettings>
 #include <QCheckBox>
-#include "qgsosgviewer.h"
+#include <osgViewer/Viewer>
 #include "qgscontexthelp.h"
 #include <qgsproject.h>
 #include <qgsvectorlayer.h>
@@ -29,15 +29,17 @@ class QgsGlobePluginDialog: public QDialog, private Ui::QgsGlobePluginDialogGuiB
     Q_OBJECT
 
   public:
-    QgsGlobePluginDialog( QgsOsgViewer* viewer, QWidget * parent = 0, Qt::WFlags fl = 0 );
+    QgsGlobePluginDialog( QWidget * parent = 0, Qt::WFlags fl = 0 );
     ~QgsGlobePluginDialog();
+    void setViewer( osgViewer::Viewer* viewer ) { mViewer = viewer; }
+    void resetElevationDatasources();
     void readElevationDatasources();
     QTableWidget *elevationDatasources() { return elevationDatasourcesWidget; }
     void updatePointLayers();
     QgsVectorLayer* modelLayer();
     QString modelPath() { return modelPathLineEdit->text(); }
   private:
-    QgsOsgViewer* mViewer;
+    osgViewer::Viewer* mViewer;
     QSettings settings;
   private:
     QString openRasterFile();

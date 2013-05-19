@@ -59,7 +59,7 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 
     void enableAntiAliasing( bool flag ) { mAntiAliasing = flag; }
 
-    void updateFullExtent( const QgsRectangle& rect );
+    void updateFullExtent();
 
   public slots:
 

@@ -18,6 +18,8 @@
 #ifndef QGSMAPCANVAS_H
 #define QGSMAPCANVAS_H
 
+#include "qgsconfig.h"
+
 #include <list>
 #include <memory>
 #include <deque>
@@ -120,10 +122,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     QgsMapRenderer* mapRenderer();
 
-    //! Accessor for the canvas pixmap
-    //! @deprecated use canvasPaintDevice()
-    Q_DECL_DEPRECATED QPixmap& canvasPixmap();
-
     //! Accessor for the canvas paint device
     QPaintDevice &canvasPaintDevice();
 
@@ -142,7 +140,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsRectangle fullExtent() const;
 
     //! Set the extent of the map canvas
-    void setExtent( QgsRectangle const & r );
+    void setExtent( const QgsRectangle &r );
 
     //! Zoom to the full extent of all layers
     void zoomToFullExtent();
@@ -150,7 +148,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Zoom to the previous extent (view)
     void zoomToPreviousExtent();
 
-    //! Zoom to the Next extent (view)
+    //! Zoom to the next extent (view)
     void zoomToNextExtent();
 
     // ! Clears the list of extents and sets current extent as first item
@@ -183,7 +181,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** Read property of QColor bgColor. */
     virtual QColor canvasColor() const;
 
-    /** Emits signal scalChanged to update scale in main window */
+    /** Emits signal scaleChanged to update scale in main window */
     void updateScale();
 
     /** Updates the full extent */
@@ -315,7 +313,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /** emits current mouse position
         \note changed in 1.3 */
-    void xyCoordinates( const QgsPoint & p );
+    void xyCoordinates( const QgsPoint &p );
 
     //! Emitted when the scale of the map changes
     void scaleChanged( double );
@@ -333,6 +331,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     */
     void renderComplete( QPainter * );
 
+    /** Emitted when canvas finished a refresh request.
+    \note Added in 2.0 */
+    void mapCanvasRefreshed();
+
     /** Emitted when the canvas is about to be rendered.
       \note Added in 1.5 */
     void renderStarting();
@@ -347,7 +349,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void keyReleased( QKeyEvent * e );
 
     //! Emit map tool changed event
-    void mapToolSet( QgsMapTool * tool );
+    void mapToolSet( QgsMapTool *tool );
 
     //! Emitted when selection in any layer gets changed
     void selectionChanged( QgsMapLayer * layer );
@@ -430,6 +432,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! map overview widget - it's controlled by QgsMapCanvas
     QgsMapOverviewCanvas* mMapOverview;
 
+    //! If backbuffering is currently enabled
+    bool mBackbufferEnabled;
     //! Flag indicating a map refresh is in progress
     bool mDrawing;
 

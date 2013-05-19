@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>350</width>
-    <height>350</height>
+    <width>525</width>
+    <height>361</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -23,9 +23,9 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="mTabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
-     <widget class="QWidget" name="modulesTree">
+     <widget class="QWidget" name="mModulesTreeTab">
       <attribute name="title">
        <string>Modules Tree</string>
       </attribute>
@@ -33,10 +33,10 @@
        <item row="0" column="0">
         <widget class="QTreeWidget" name="mModulesTree">
          <property name="indentation">
-          <number>8</number>
+          <number>16</number>
          </property>
          <property name="rootIsDecorated">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -50,7 +50,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="modulesList">
+     <widget class="QWidget" name="mModulesListTab">
       <attribute name="title">
        <string>Modules List</string>
       </attribute>
@@ -67,6 +67,61 @@
        </item>
        <item row="1" column="0" colspan="2">
         <widget class="QListView" name="mListView">
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mDirectModulesTreeTab">
+      <attribute name="title">
+       <string>Direct Modules Tree</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <widget class="QTreeWidget" name="mDirectModulesTree">
+         <property name="indentation">
+          <number>16</number>
+         </property>
+         <property name="rootIsDecorated">
+          <bool>true</bool>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+         <column>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mDirectModulesListTab">
+      <attribute name="title">
+       <string>Direct Modules List</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Filter</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="mDirectFilterInput"/>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QListView" name="mDirectListView">
          <property name="horizontalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOff</enum>
          </property>

@@ -2,7 +2,7 @@
 ==Building with Microsoft Visual Studio==
 
 This section describes how to build QGIS using Visual Studio on Windows.  This
-is currently also who the binary QGIS packages are made (earlier versions used
+is currently also how the binary QGIS packages are made (earlier versions used
 MinGW).
 
 This section describes the setup required to allow Visual Studio to be used to
@@ -44,7 +44,7 @@ For the QGIS build you need to install following packages from OSGeo4W (select
 
 - expat
 - fcgi
-- gdal17
+- gdal
 - grass
 - gsl-devel
 - iconv
@@ -52,7 +52,10 @@ For the QGIS build you need to install following packages from OSGeo4W (select
 - qt4-devel
 - qwt5-devel-qt4
 - sip
--
+- spatialite
+- libspatialindex-devel
+- python-qscintilla
+
 
 This will also select packages the above packages depend on.
 
@@ -103,14 +106,15 @@ git clone git://github.com/qgis/Quantum-GIS.git
 Create a 'build' directory somewhere. This will be where all the build output
 will be generated.
 
-Now run ``cmake-gui`` and in the //Where is the source code:// box, browse to
-the top level QGIS directory.
+Now run ``cmake-gui`` (still from ``cmd``) and in the //Where is the source code://
+box, browse to the top level QGIS directory.
 
 In the //Where to build the binaries:// box, browse to the 'build' directory you
 created.
 
-Adjust the path to bison and flex so that the shortened ``C:/Progra~1`` is used 
-rather than ``C:/Program Files``.
+If the path to bison and flex contains blanks, you need to use the short name
+for the directory (i.e. ``C:\Program Files`` should be rewritten to
+``C:\Progra~n``, where ``n`` is the number as shown in `dir /x C:\``).
 
 Verify that the 'BINDINGS_GLOBAL_INSTALL' option is not checked, so that python
 bindings are placed into the output directory when you run the INSTALL target.
@@ -140,27 +144,23 @@ directory or add their respective directories to your PATH.
 
 === Packaging ===
 
-To create a windows 'all in one' standalone  package ''under ubuntu'' (yes you
-read correctly) do the following:
+To create a standalone installer there is a perl script named 'creatensis.pl'
+in 'qgis/ms-windows/osgeo4w'.  It downloads all required packages from OSGeo4W
+and repackages them into an installer using NSIS.
 
-```
-sudo apt-get install nsis
-```
 
-Now 
+The script can either be run on Windows, but also can be run on Linux.
 
-```
-cd qgis/ms-windows/osgeo4w
-```
+On Debian/Ubuntu you can just install the 'nsis' package.
 
-And run the nsis creation script:
+NSIS for Windows can be downloaded at:
 
-```
-creatensis.pl
-```
+	http://nsis.sourceforge.net
 
-When the script completes, it should have created a QGIS installer executable
-in the ms-windows directory (using the QGIS binaries from OSGEO4W). 
+And Perl for Windows (including other requirements like 'wget', 'unzip', 'tar'
+and 'bzip2') is available at:
+
+	http://cygwin.com
 
 === Packaging your own build of QGIS ===
 

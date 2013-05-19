@@ -1,152 +1,31 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="16px"
-   height="16px"
-   id="svg3427"
-   sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="amenity=fast_food.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/amenity=fast_food.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
-  <defs
-     id="defs3429">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 8 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="16 : 8 : 1"
-       inkscape:persp3d-origin="8 : 5.3333333 : 1"
-       id="perspective3435" />
-  </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="31.875"
-     inkscape:cx="3.2470588"
-     inkscape:cy="7.5963771"
-     inkscape:current-layer="layer3"
-     showgrid="true"
-     inkscape:grid-bbox="true"
-     inkscape:document-units="px"
-     inkscape:window-width="1280"
-     inkscape:window-height="723"
-     inkscape:window-x="0"
-     inkscape:window-y="0" />
-  <metadata
-     id="metadata3432">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <cc:license
-           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
-        <dc:title>amenity=fast_food</dc:title>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>Matt Amos</dc:title>
-          </cc:Agent>
-        </dc:creator>
-        <dc:rights>
-          <cc:Agent>
-            <dc:title>Matt Amos asserts the moral right to be identified as the author of this work.</dc:title>
-          </cc:Agent>
-        </dc:rights>
-      </cc:Work>
-      <cc:License
-         rdf:about="http://creativecommons.org/licenses/publicdomain/">
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Reproduction" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Distribution" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
-      </cc:License>
-    </rdf:RDF>
-  </metadata>
-  <g
-     id="layer1"
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     sodipodi:insensitive="true">
-    <rect
-       style="fill:#ffb922;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3946"
-       width="16"
-       height="16"
-       x="0"
-       y="0"
-       rx="4" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer3"
-     inkscape:label="top">
-    <g
-       id="g2427"
-       transform="translate(-0.8784302,0)">
-      <path
-         transform="translate(1.6627443,-0.7529412)"
-         sodipodi:end="5.9952665"
-         sodipodi:start="4.7152122"
-         d="M 1.8202096,2.9804376 A 11.32549,11.32549 0 0 1 12.647533,11.089927 L 1.7882353,14.305882 z"
-         sodipodi:ry="11.32549"
-         sodipodi:rx="11.32549"
-         sodipodi:cy="14.305882"
-         sodipodi:cx="1.7882353"
-         id="path3216"
-         style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.9000001;stroke-dasharray:none;stroke-opacity:1"
-         sodipodi:type="arc" />
-      <path
-         transform="translate(-1.2549027,-1.5372549)"
-         d="M 8.8156863,7.1529412 A 1.3176471,1.3176471 0 1 1 6.1803921,7.1529412 A 1.3176471,1.3176471 0 1 1 8.8156863,7.1529412 z"
-         sodipodi:ry="1.3176471"
-         sodipodi:rx="1.3176471"
-         sodipodi:cy="7.1529412"
-         sodipodi:cx="7.4980392"
-         id="path3220"
-         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.9000001;stroke-dasharray:none;stroke-opacity:1"
-         sodipodi:type="arc" />
-      <path
-         sodipodi:type="arc"
-         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.9000001;stroke-dasharray:none;stroke-opacity:1"
-         id="path3222"
-         sodipodi:cx="7.4980392"
-         sodipodi:cy="7.1529412"
-         sodipodi:rx="1.3176471"
-         sodipodi:ry="1.3176471"
-         d="M 8.8156863,7.1529412 A 1.3176471,1.3176471 0 1 1 6.1803921,7.1529412 A 1.3176471,1.3176471 0 1 1 8.8156863,7.1529412 z"
-         transform="translate(-1.2862752,2.7294118)" />
-      <path
-         transform="translate(2.5411757,1.2235294)"
-         d="M 8.8156863,7.1529412 A 1.3176471,1.3176471 0 1 1 6.1803921,7.1529412 A 1.3176471,1.3176471 0 1 1 8.8156863,7.1529412 z"
-         sodipodi:ry="1.3176471"
-         sodipodi:rx="1.3176471"
-         sodipodi:cy="7.1529412"
-         sodipodi:cx="7.4980392"
-         id="path3224"
-         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.9000001;stroke-dasharray:none;stroke-opacity:1"
-         sodipodi:type="arc" />
-      <path
-         sodipodi:nodetypes="cc"
-         id="path3226"
-         d="M 3.7339343,2.1961239 C 8.8284495,2.2105069 12.706784,5.2325489 14.153414,10.117378"
-         style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.9000001;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg3427" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/amenity=fast_food.png" inkscape:export-xdpi="90" inkscape:export-ydpi="90" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="amenity=fast_food.svg" inkscape:version="0.46" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="580.457px" viewBox="0 0 579.997 580.457" enable-background="new 0 0 579.997 580.457" xml:space="preserve">
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_z="16 : 8 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 8 : 1" sodipodi:type="inkscape:persp3d" id="perspective3435" inkscape:persp3d-origin="8 : 5.3333333 : 1">
+		</inkscape:perspective>
+</defs>
+<sodipodi:namedview  showgrid="true" inkscape:cy="7.5963771" inkscape:cx="3.2470588" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:document-units="px" inkscape:grid-bbox="true" inkscape:current-layer="layer3" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="723" inkscape:window-width="1280">
+	</sodipodi:namedview>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M191.412,155.646c-26.369,0.018-47.714,21.399-47.714,47.751
+	c0,0.018,0,0.018,0,0.035c0.018,26.368,21.398,47.715,47.749,47.715c26.352-0.018,47.715-21.398,47.697-47.75
+	c0-0.018,0-0.035,0-0.035C239.145,176.993,217.764,155.646,191.412,155.646z"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M190.263,310.198c-26.352,0-47.715,21.364-47.697,47.751
+	c0,0,0,0,0,0.035c0.019,26.35,21.381,47.714,47.75,47.714c26.352-0.035,47.716-21.399,47.698-47.749c0-0.036,0-0.036,0-0.071
+	C238.014,331.526,216.632,310.198,190.263,310.198z"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M328.898,255.639c-26.352,0.02-47.716,21.399-47.698,47.751
+	c0,0.018,0,0.018,0,0.034c0,26.369,21.382,47.733,47.732,47.733c26.352-0.035,47.715-21.435,47.715-47.768c0-0.018,0-0.035,0-0.035
+	C376.647,276.985,355.248,255.639,328.898,255.639z"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M503.994,358.721c-27.486-92.77-78.904-170.038-148.696-223.453
+	C284.799,81.312,196.733,52.65,100.62,52.384c-0.026,0-0.051,0-0.077,0c-14.966,0-27.121,12.112-27.162,27.089
+	c0,0.113,0.007,0.226,0.008,0.338c-0.014,0.273-0.042,0.543-0.043,0.817L72.196,490.82c-0.017,5.723,2.673,11.115,7.253,14.546
+	c3.171,2.374,6.988,3.614,10.857,3.614c1.721,0,3.452-0.245,5.142-0.745L488.75,391.761c4.896-1.449,8.707-4.79,10.898-8.983
+	C504.642,376.136,506.535,367.299,503.994,358.721z M109.491,106.839c163.296,3.85,289.362,99.863,339.804,258.832l-340.812,100.93
+	L109.491,106.839z"/>
 </svg>

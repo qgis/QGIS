@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsmimedatautils.cpp
+    ---------------------
+    begin                : November 2011
+    copyright            : (C) 2011 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsmimedatautils.h"
 
 #include "qgsdataitem.h"
@@ -6,7 +20,7 @@
 static const char* QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 
 QgsMimeDataUtils::Uri::Uri( QgsLayerItem* layerItem )
-    : providerKey( layerItem->providerKey() ), name( layerItem->name() ), uri( layerItem->uri() )
+    : providerKey( layerItem->providerKey() ), name( layerItem->layerName() ), uri( layerItem->uri() )
 {
   switch ( layerItem->mapLayerType() )
   {
@@ -54,7 +68,7 @@ QMimeData* QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList layers )
   QByteArray encodedData;
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
-  foreach( const QgsMimeDataUtils::Uri& u, layers )
+  foreach ( const QgsMimeDataUtils::Uri& u, layers )
   {
     stream << u.data();
   }

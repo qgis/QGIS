@@ -25,7 +25,10 @@
 #include <QFileOpenEvent>
 #include <QMessageBox>
 #include <QPalette>
+#include <QProcess>
 #include <QSettings>
+#include <QIcon>
+#include <QPixmap>
 
 #ifndef Q_WS_WIN
 #include <netinet/in.h>
@@ -48,6 +51,7 @@ QString ABISYM( QgsApplication::mLibraryPath );
 QString ABISYM( QgsApplication::mLibexecPath );
 QString ABISYM( QgsApplication::mThemeName );
 QStringList ABISYM( QgsApplication::mDefaultSvgPaths );
+QMap<QString, QString> ABISYM( QgsApplication::mSystemEnvVars );
 QString ABISYM( QgsApplication::mConfigPath );
 bool ABISYM( QgsApplication::mRunningFromBuildDir ) = false;
 QString ABISYM( QgsApplication::mBuildSourcePath );
@@ -75,66 +79,76 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, QStri
 {
   init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
 }
+
 void QgsApplication::init( QString customConfigPath )
 {
   if ( customConfigPath.isEmpty() )
   {
-    customConfigPath = QDir::homePath() + QString( "/.qgis/" );
+    customConfigPath = QDir::homePath() + QString( "/.qgis%1/" ).arg( 2 /* FIXME QGis::QGIS_VERSION_INT / 10000 */ );
   }
+
   qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
 
+  QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
+
   // check if QGIS is run from build directory (not the install directory)
-  QDir appDir( applicationDirPath() );
-#ifndef _MSC_VER
-#define SOURCE_PATH "source_path.txt"
-#else
-#define SOURCE_PATH "../source_path.txt"
-#endif
-  if ( appDir.exists( SOURCE_PATH ) )
+  QFile f;
+  // "/../../.." is for Mac bundled app in build directory
+  foreach ( QString path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
   {
-    QFile f( applicationDirPath() + "/" + SOURCE_PATH );
-    if ( f.open( QIODevice::ReadOnly ) )
-    {
-      ABISYM( mRunningFromBuildDir ) = true;
-      ABISYM( mBuildSourcePath ) = f.readAll();
-#if _MSC_VER
-      QStringList elems = applicationDirPath().split( "/", QString::SkipEmptyParts );
-      ABISYM( mCfgIntDir ) = elems.last();
-      ABISYM( mBuildOutputPath ) = applicationDirPath() + "/../..";
-#elif defined(Q_WS_MACX)
-      ABISYM( mBuildOutputPath ) = applicationDirPath();
-#else
-      ABISYM( mBuildOutputPath ) = applicationDirPath() + "/.."; // on linux
+    f.setFileName( prefixPath + path + "/path.txt" );
+    if ( f.exists() )
+      break;
+  }
+  if ( f.exists() && f.open( QIODevice::ReadOnly ) )
+  {
+    ABISYM( mRunningFromBuildDir ) = true;
+    ABISYM( mBuildSourcePath ) = f.readLine().trimmed();
+    ABISYM( mBuildOutputPath ) = f.readLine().trimmed();
+    qDebug( "Running from build directory!" );
+    qDebug( "- source directory: %s", ABISYM( mBuildSourcePath ).toUtf8().data() );
+    qDebug( "- output directory of the build: %s", ABISYM( mBuildOutputPath ).toUtf8().data() );
+#ifdef _MSC_VER
+    ABISYM( mCfgIntDir ) = prefixPath.split( "/", QString::SkipEmptyParts ).last();
+    qDebug( "- cfg: %s", ABISYM( mCfgIntDir ).toUtf8().data() );
 #endif
-      qDebug( "Running from build directory!" );
-      qDebug( "- source directory: %s", ABISYM( mBuildSourcePath ).toAscii().data() );
-      qDebug( "- output directory of the build: %s", ABISYM( mBuildOutputPath ).toAscii().data() );
-    }
   }
 
   if ( ABISYM( mRunningFromBuildDir ) )
   {
     // we run from source directory - not installed to destination (specified prefix)
     ABISYM( mPrefixPath ) = QString(); // set invalid path
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(USING_NMAKE)
     setPluginPath( ABISYM( mBuildOutputPath ) + "/" + QString( QGIS_PLUGIN_SUBDIR ) + "/" + ABISYM( mCfgIntDir ) );
 #else
     setPluginPath( ABISYM( mBuildOutputPath ) + "/" + QString( QGIS_PLUGIN_SUBDIR ) );
 #endif
     setPkgDataPath( ABISYM( mBuildSourcePath ) ); // directly source path - used for: doc, resources, svg
     ABISYM( mLibraryPath ) = ABISYM( mBuildOutputPath ) + "/" + QGIS_LIB_SUBDIR + "/";
+#if defined(_MSC_VER) && !defined(USING_NMAKE)
+    ABISYM( mLibexecPath ) = ABISYM( mBuildOutputPath ) + "/" + QGIS_LIBEXEC_SUBDIR + "/" + ABISYM( mCfgIntDir ) + "/";
+#else
     ABISYM( mLibexecPath ) = ABISYM( mBuildOutputPath ) + "/" + QGIS_LIBEXEC_SUBDIR + "/";
+#endif
   }
   else
   {
+    char *prefixPath = getenv( "QGIS_PREFIX_PATH" );
+    if ( !prefixPath )
+    {
 #if defined(Q_WS_MACX) || defined(Q_WS_WIN32) || defined(WIN32)
-    setPrefixPath( applicationDirPath(), true );
+      setPrefixPath( applicationDirPath(), true );
 #else
-    QDir myDir( applicationDirPath() );
-    myDir.cdUp();
-    QString myPrefix = myDir.absolutePath();
-    setPrefixPath( myPrefix, true );
+      QDir myDir( applicationDirPath() );
+      myDir.cdUp();
+      QString myPrefix = myDir.absolutePath();
+      setPrefixPath( myPrefix, true );
 #endif
+    }
+    else
+    {
+      setPrefixPath( prefixPath, true );
+    }
   }
 
   if ( !customConfigPath.isEmpty() )
@@ -143,6 +157,19 @@ void QgsApplication::init( QString customConfigPath )
   }
 
   ABISYM( mDefaultSvgPaths ) << qgisSettingsDirPath() + QString( "svg/" );
+
+  // store system environment variables passed to application, before they are adjusted
+  QMap<QString, QString> systemEnvVarMap;
+  foreach ( const QString &varStr, QProcess::systemEnvironment() )
+  {
+    int pos = varStr.indexOf( QLatin1Char( '=' ) );
+    if ( pos == -1 )
+      continue;
+    QString varStrName = varStr.left( pos );
+    QString varStrValue = varStr.mid( pos + 1 );
+    systemEnvVarMap.insert( varStrName, varStrValue );
+  }
+  ABISYM( mSystemEnvVars ) = systemEnvVarMap;
 
   // set a working directory up for gdal to write .aux.xml files into
   // for cases where the raster dir is read only to the user
@@ -200,7 +227,9 @@ bool QgsApplication::event( QEvent * event )
 bool QgsApplication::notify( QObject * receiver, QEvent * event )
 {
   bool done = false;
-  emit preNotify( receiver, event, &done );
+  // Crashes  in customization (especially on Mac), if we're not in the main/UI thread, see #5597
+  if ( thread() == receiver->thread() )
+    emit preNotify( receiver, event, &done );
 
   if ( done )
     return true;
@@ -319,6 +348,43 @@ QString QgsApplication::iconPath( QString iconFile )
   return defaultThemePath() + iconFile;
 }
 
+QIcon QgsApplication::getThemeIcon( const QString theName )
+{
+  QString myPreferredPath = activeThemePath() + QDir::separator() + theName;
+  QString myDefaultPath = defaultThemePath() + QDir::separator() + theName;
+  if ( QFile::exists( myPreferredPath ) )
+  {
+    return QIcon( myPreferredPath );
+  }
+  else if ( QFile::exists( myDefaultPath ) )
+  {
+    //could still return an empty icon if it
+    //doesnt exist in the default theme either!
+    return QIcon( myDefaultPath );
+  }
+  else
+  {
+    return QIcon();
+  }
+}
+
+// TODO: add some caching mechanism ?
+QPixmap QgsApplication::getThemePixmap( const QString theName )
+{
+  QString myPreferredPath = activeThemePath() + QDir::separator() + theName;
+  QString myDefaultPath = defaultThemePath() + QDir::separator() + theName;
+  if ( QFile::exists( myPreferredPath ) )
+  {
+    return QPixmap( myPreferredPath );
+  }
+  else
+  {
+    //could still return an empty icon if it
+    //doesnt exist in the default theme either!
+    return QPixmap( myDefaultPath );
+  }
+}
+
 /*!
   Set the theme path to the specified theme.
 */
@@ -381,11 +447,6 @@ const QString QgsApplication::translatorsFilePath()
   return ABISYM( mPkgDataPath ) + QString( "/doc/TRANSLATORS" );
 }
 
-const QString QgsApplication::developerPath()
-{
-  return QString(); // developer images are no longer shipped!
-}
-
 /*!
   Returns the path to the help application.
 */
@@ -398,6 +459,9 @@ const QString QgsApplication::helpAppPath()
   helpAppPath = libexecPath();
 #endif
   helpAppPath += "/qgis_help";
+#ifdef Q_OS_WIN
+  helpAppPath += ".exe";
+#endif
   return helpAppPath;
 }
 /*!
@@ -495,23 +559,14 @@ const QStringList QgsApplication::svgPaths()
   return myPathList;
 }
 
-/*!
-  Returns the path to the applications svg directories.
-*/
-const QString QgsApplication::svgPath()
-{
-  QString svgSubDir( ABISYM( mRunningFromBuildDir ) ? "/images/svg/" : "/svg/" );
-  return ABISYM( mPkgDataPath ) + svgSubDir;
-}
-
 const QString QgsApplication::userStyleV2Path()
 {
-  return qgisSettingsDirPath() + QString( "symbology-ng-style.xml" );
+  return qgisSettingsDirPath() + QString( "symbology-ng-style.db" );
 }
 
 const QString QgsApplication::defaultStyleV2Path()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/resources/symbology-ng-style.xml" );
+  return ABISYM( mPkgDataPath ) + QString( "/resources/symbology-ng-style.db" );
 }
 
 const QString QgsApplication::libraryPath()
@@ -546,15 +601,18 @@ void QgsApplication::exitQgis()
 
 QString QgsApplication::showSettings()
 {
+  QString myEnvironmentVar( getenv( "QGIS_PREFIX_PATH" ) );
   QString myState = tr( "Application state:\n"
-                        "Prefix:\t\t%1\n"
-                        "Plugin Path:\t\t%2\n"
-                        "Package Data Path:\t%3\n"
-                        "Active Theme Name:\t%4\n"
-                        "Active Theme Path:\t%5\n"
-                        "Default Theme Path:\t%6\n"
-                        "SVG Search Paths:\t%7\n"
-                        "User DB Path:\t%8\n" )
+                        "QGIS_PREFIX_PATH env var:\t\t%1\n"
+                        "Prefix:\t\t%2\n"
+                        "Plugin Path:\t\t%3\n"
+                        "Package Data Path:\t%4\n"
+                        "Active Theme Name:\t%5\n"
+                        "Active Theme Path:\t%6\n"
+                        "Default Theme Path:\t%7\n"
+                        "SVG Search Paths:\t%8\n"
+                        "User DB Path:\t%9\n" )
+                    .arg( myEnvironmentVar )
                     .arg( prefixPath() )
                     .arg( pluginPath() )
                     .arg( pkgDataPath() )
@@ -572,30 +630,48 @@ QString QgsApplication::reportStyleSheet()
   // Make the style sheet desktop preferences aware by using qappliation
   // palette as a basis for colors where appropriate
   //
-  QColor myColor1 = palette().highlight().color();
+//  QColor myColor1 = palette().highlight().color();
+  QColor myColor1( Qt::lightGray );
   QColor myColor2 = myColor1;
   myColor2 = myColor2.lighter( 110 ); //10% lighter
   QString myStyle;
   myStyle = "p.glossy{ background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
-            "stop: 0 " + myColor1.name()  + ","
-            "stop: 0.1 " + myColor2.name() + ","
-            "stop: 0.5 " + myColor1.name()  + ","
-            "stop: 0.9 " + myColor2.name() + ","
-            "stop: 1 " + myColor1.name() + ");"
-            "color: white;"
-            "padding-left: 4px;"
-            "padding-top: 20px;"
-            "padding-bottom: 8px;"
-            "border: 1px solid #6c6c6c;"
+            "  stop: 0 " + myColor1.name()  + ","
+            "  stop: 0.1 " + myColor2.name() + ","
+            "  stop: 0.5 " + myColor1.name()  + ","
+            "  stop: 0.9 " + myColor2.name() + ","
+            "  stop: 1 " + myColor1.name() + ");"
+            "  color: black;"
+            "  padding-left: 4px;"
+            "  padding-top: 20px;"
+            "  padding-bottom: 8px;"
+            "  border: 1px solid #6c6c6c;"
+            "}"
+            "p.subheaderglossy{ background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
+            "  stop: 0 " + myColor1.name()  + ","
+            "  stop: 0.1 " + myColor2.name() + ","
+            "  stop: 0.5 " + myColor1.name()  + ","
+            "  stop: 0.9 " + myColor2.name() + ","
+            "  stop: 1 " + myColor1.name() + ");"
+            "  font-weight: bold;"
+            "  font-size: medium;"
+            "  line-height: 1.1em;"
+            "  width: 100%;"
+            "  color: black;"
+            "  padding-left: 4px;"
+            "  padding-right: 4px;"
+            "  padding-top: 20px;"
+            "  padding-bottom: 8px;"
+            "  border: 1px solid #6c6c6c;"
             "}"
             "th.glossy{ background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
-            "stop: 0 " + myColor1.name()  + ","
-            "stop: 0.1 " + myColor2.name() + ","
-            "stop: 0.5 " + myColor1.name()  + ","
-            "stop: 0.9 " + myColor2.name() + ","
-            "stop: 1 " + myColor1.name() + ");"
-            "color: white;"
-            "border: 1px solid #6c6c6c;"
+            "  stop: 0 " + myColor1.name()  + ","
+            "  stop: 0.1 " + myColor2.name() + ","
+            "  stop: 0.5 " + myColor1.name()  + ","
+            "  stop: 0.9 " + myColor2.name() + ","
+            "  stop: 1 " + myColor1.name() + ");"
+            "  color: black;"
+            "  border: 1px solid #6c6c6c;"
             "}"
             ".overview{ font: 1.82em; font-weight: bold;}"
             "body{  background: white;"
@@ -808,3 +884,5 @@ void QgsApplication::applyGdalSkippedDrivers()
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );
   GDALAllRegister(); //to update driver list and skip missing ones
 }
+
+

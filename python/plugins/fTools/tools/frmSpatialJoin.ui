@@ -19,8 +19,8 @@
   <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="3">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <layout class="QVBoxLayout">
      <item>
       <widget class="QLabel" name="label_3">
@@ -34,7 +34,7 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0" colspan="3">
+   <item>
     <layout class="QVBoxLayout">
      <item>
       <widget class="QLabel" name="label">
@@ -48,28 +48,24 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0" colspan="3">
+   <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Attribute Summary</string>
      </property>
      <layout class="QGridLayout">
-      <item row="0" column="0" colspan="7">
-       <widget class="QRadioButton" name="rdoFirst">
-        <property name="text">
-         <string>Take attributes of first located feature</string>
+      <item row="2" column="6">
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-        <property name="checked">
-         <bool>true</bool>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
         </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="7">
-       <widget class="QRadioButton" name="rdoSummary">
-        <property name="text">
-         <string>Take summary of intersecting features</string>
-        </property>
-       </widget>
+       </spacer>
       </item>
       <item row="2" column="0">
        <spacer>
@@ -97,6 +93,13 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0" colspan="7">
+       <widget class="QRadioButton" name="rdoSummary">
+        <property name="text">
+         <string>Take summary of intersecting features</string>
+        </property>
+       </widget>
+      </item>
       <item row="2" column="2">
        <widget class="QCheckBox" name="chkMin">
         <property name="enabled">
@@ -104,16 +107,6 @@
         </property>
         <property name="text">
          <string>Min</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="3">
-       <widget class="QCheckBox" name="chkMax">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Max</string>
         </property>
        </widget>
       </item>
@@ -127,19 +120,6 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="6">
-       <spacer>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
       <item row="2" column="5">
        <widget class="QCheckBox" name="chkMedian">
         <property name="enabled">
@@ -150,10 +130,30 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="3">
+       <widget class="QCheckBox" name="chkMax">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Max</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="7">
+       <widget class="QRadioButton" name="rdoFirst">
+        <property name="text">
+         <string>Take attributes of first located feature</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" colspan="3">
+   <item>
     <layout class="QVBoxLayout">
      <item>
       <widget class="QLabel" name="label_2">
@@ -182,7 +182,7 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="0" colspan="3">
+   <item>
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
       <string>Output table</string>
@@ -208,41 +208,32 @@
      </layout>
     </widget>
    </item>
-   <item row="5" column="0" rowspan="3" colspan="3">
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>359</width>
-       <height>16</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="7" column="1">
-    <widget class="QProgressBar" name="progressBar">
-     <property name="value">
-      <number>24</number>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="textVisible">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="2" rowspan="2">
-    <widget class="QDialogButtonBox" name="buttonBox_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QProgressBar" name="progressBar">
+       <property name="value">
+        <number>24</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="textVisible">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

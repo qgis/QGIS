@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DlgCreateTable</class>
- <widget class="QDialog" name="DlgCreateTable">
+ <class>DbManagerDlgCreateTable</class>
+ <widget class="QDialog" name="DbManagerDlgCreateTable">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -40,7 +40,11 @@
       </widget>
      </item>
      <item row="1" column="2">
-      <widget class="QLineEdit" name="editName"/>
+      <widget class="QLineEdit" name="editName">
+       <property name="text">
+        <string notr="true"/>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -126,37 +130,37 @@
       <widget class="QComboBox" name="cboGeomType">
        <item>
         <property name="text">
-         <string>POINT</string>
+         <string notr="true">POINT</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>LINESTRING</string>
+         <string notr="true">LINESTRING</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>POLYGON</string>
+         <string notr="true">POLYGON</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>MULTIPOINT</string>
+         <string notr="true">MULTIPOINT</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>MULTILINESTRING</string>
+         <string notr="true">MULTILINESTRING</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>MULTIPOLYGON</string>
+         <string notr="true">MULTIPOLYGON</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>GEOMETRYCOLLECTION</string>
+         <string notr="true">GEOMETRYCOLLECTION</string>
         </property>
        </item>
       </widget>
@@ -174,7 +178,7 @@
      <item row="1" column="1">
       <widget class="QLineEdit" name="editGeomColumn">
        <property name="text">
-        <string>geom</string>
+        <string notr="true">geom</string>
        </property>
       </widget>
      </item>
@@ -224,7 +228,7 @@
      <item row="3" column="1">
       <widget class="QLineEdit" name="editGeomSrid">
        <property name="text">
-        <string>-1</string>
+        <string notr="true">-1</string>
        </property>
       </widget>
      </item>
@@ -278,7 +282,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>DlgCreateTable</receiver>
+   <receiver>DbManagerDlgCreateTable</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

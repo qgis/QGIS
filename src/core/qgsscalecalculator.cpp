@@ -66,37 +66,26 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, int canvasW
       conversionFactor = 12.0;
       delta = mapExtent.xMaximum() - mapExtent.xMinimum();
       break;
-    case QGis::DecimalDegrees:
-      // degrees require conversion to meters first
-      conversionFactor = 39.3700787;
-      delta = calculateGeographicDistance( mapExtent );
-      break;
-    case QGis::DegreesMinutesSeconds:
-      // degrees require conversion to meters first
-      conversionFactor = 39.3700787;
-      delta = calculateGeographicDistance( mapExtent );
-      break;
-    case QGis::DegreesDecimalMinutes:
-      // degrees require conversion to meters first
-      conversionFactor = 39.3700787;
-      delta = calculateGeographicDistance( mapExtent );
-      break;
+
     default:
-      Q_ASSERT( "bad map units" );
+    case QGis::Degrees:
+      // degrees require conversion to meters first
+      conversionFactor = 39.3700787;
+      delta = calculateGeographicDistance( mapExtent );
       break;
   }
-  QgsDebugMsg( "Using conversionFactor of " + QString::number( conversionFactor ) );
   if ( canvasWidth == 0 || mDpi == 0 )
   {
     QgsDebugMsg( "Can't calculate scale from the input values" );
     return 0;
   }
   double scale = ( delta * conversionFactor ) / (( double )canvasWidth / mDpi );
+  QgsDebugMsg( QString( "scale = %1 conversionFactor = %2" ).arg( scale ).arg( conversionFactor ) );
   return scale;
 }
 
 
-double  QgsScaleCalculator::calculateGeographicDistance( const QgsRectangle &mapExtent )
+double QgsScaleCalculator::calculateGeographicDistance( const QgsRectangle &mapExtent )
 {
   // need to calculate the x distance in meters
   // We'll use the middle latitude for the calculation

@@ -70,7 +70,7 @@ void QgsAttributeTypeLoadDialog::previewButtonPushed()
 void QgsAttributeTypeLoadDialog::fillLayerList()
 {
   layerComboBox->clear();
-  foreach( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
+  foreach ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l );
     if ( vl )
@@ -127,20 +127,18 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
     return;
   }
 
-  QgsVectorDataProvider* dataProvider = vLayer->dataProvider();
-  dataProvider->enableGeometrylessFeatures( true );
-
   QgsAttributeList attributeList = QgsAttributeList();
   attributeList.append( idx );
   attributeList.append( idx2 );
-  vLayer->select( attributeList, QgsRectangle(), false );
+
+  QgsFeatureIterator fit = vLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( attributeList ) );
 
   QgsFeature f;
   QMap<QString, QVariant> valueMap;
-  while ( vLayer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
-    QVariant val1 = f.attributeMap()[idx];
-    QVariant val2 = f.attributeMap()[idx2];
+    QVariant val1 = f.attribute( idx );
+    QVariant val2 = f.attribute( idx2 );
     if ( val1.isValid() && !val1.isNull() && !val1.toString().isEmpty()
          && val2.isValid() && !val2.isNull() && !val2.toString().isEmpty() )
     {
@@ -157,7 +155,6 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
     previewTableWidget->setItem( row, 1, new QTableWidgetItem( mit.key() ) );
   }
 
-  dataProvider->enableGeometrylessFeatures( false );
 }
 
 QMap<QString, QVariant> &QgsAttributeTypeLoadDialog::valueMap()
@@ -177,24 +174,21 @@ void QgsAttributeTypeLoadDialog::loadDataToValueMap()
     return;
   }
 
-  QgsVectorDataProvider* dataProvider = vLayer->dataProvider();
-  dataProvider->enableGeometrylessFeatures( true );
-
   QgsAttributeList attributeList = QgsAttributeList();
   attributeList.append( idx );
   attributeList.append( idx2 );
-  vLayer->select( attributeList, QgsRectangle(), false );
+
+  QgsFeatureIterator fit = vLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( attributeList ) );
 
   QgsFeature f;
-  while ( vLayer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
-    QVariant val = f.attributeMap()[idx];
+    QVariant val = f.attribute( idx );
     if ( val.isValid() && !val.isNull() && !val.toString().isEmpty() )
     {
-      mValueMap.insert( f.attributeMap()[idx2].toString(), val );
+      mValueMap.insert( f.attribute( idx2 ).toString(), val );
     }
   }
-  dataProvider->enableGeometrylessFeatures( false );
 }
 
 

@@ -14,7 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+#ifndef QGSPGTABLEMODEL_H
+#define QGSPGTABLEMODEL_H
 #include <QStandardItemModel>
 
 #include "qgis.h"
@@ -38,10 +39,6 @@ class QgsPgTableModel : public QStandardItemModel
     /**Sets an sql statement that belongs to a cell specified by a model index*/
     void setSql( const QModelIndex& index, const QString& sql );
 
-    /**Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
-       This is for tables where the type is dectected later by thread*/
-    void setGeometryTypesForTable( QgsPostgresLayerProperty layerProperty );
-
     /**Returns the number of tables in the model*/
     int tableCount() const { return mTableCount; }
 
@@ -49,8 +46,9 @@ class QgsPgTableModel : public QStandardItemModel
     {
       dbtmSchema = 0,
       dbtmTable,
-      dbtmType,
       dbtmGeomCol,
+      dbtmGeomType, // Data type (geometry, geography, topogeometry, ...)
+      dbtmType, // Spatial type (point, line, polygon, ...)
       dbtmSrid,
       dbtmPkCol,
       dbtmSelectAtId,
@@ -69,3 +67,4 @@ class QgsPgTableModel : public QStandardItemModel
     int mTableCount;
 };
 
+#endif // QGSPGTABLEMODEL_H

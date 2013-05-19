@@ -32,7 +32,7 @@ class QgsMapToolMeasureAngle: public QgsMapTool
     QgsMapToolMeasureAngle( QgsMapCanvas* canvas );
     ~QgsMapToolMeasureAngle();
 
-    //! Mouse move event for overriding
+    //! Mouse move event for overridingqgs
     void canvasMoveEvent( QMouseEvent * e );
 
     //! Mouse release event for overriding
@@ -59,14 +59,15 @@ class QgsMapToolMeasureAngle: public QgsMapTool
     /** tool for measuring */
     QgsDistanceArea mDa;
 
+  public slots:
+    /** recalculate angle if projection state changed*/
+    void updateSettings();
+
   private slots:
     /**Deletes the rubber band and the dialog*/
     void stopMeasuring();
 
-    /** recalculate angle if projection state changed*/
-    void changeProjectionEnabledState();
-
-    //! Configures distance area objects with ellipsoid / output crs
+    /** Configures distance area objects with ellipsoid / output crs*/
     void configureDistanceArea();
 
 };

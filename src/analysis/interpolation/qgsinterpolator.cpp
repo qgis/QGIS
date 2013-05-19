@@ -55,8 +55,8 @@ int QgsInterpolator::cacheBaseData()
       continue;
     }
 
-    QgsVectorDataProvider* provider = v_it->vectorLayer->dataProvider();
-    if ( !provider )
+    QgsVectorLayer* vlayer = v_it->vectorLayer;
+    if ( !vlayer )
     {
       return 2;
     }
@@ -67,23 +67,23 @@ int QgsInterpolator::cacheBaseData()
       attList.push_back( v_it->interpolationAttribute );
     }
 
-    provider->select( attList );
 
-    QgsFeature theFeature;
     double attributeValue = 0.0;
     bool attributeConversionOk = false;
 
-    while ( provider->nextFeature( theFeature ) )
+    QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
+
+    QgsFeature theFeature;
+    while ( fit.nextFeature( theFeature ) )
     {
       if ( !v_it->zCoordInterpolation )
       {
-        QgsAttributeMap attMap = theFeature.attributeMap();
-        QgsAttributeMap::const_iterator att_it = attMap.find( v_it->interpolationAttribute );
-        if ( att_it == attMap.end() ) //attribute not found, something must be wrong (e.g. NULL value)
+        QVariant attributeVariant = theFeature.attribute( v_it->interpolationAttribute );
+        if ( !attributeVariant.isValid() ) //attribute not found, something must be wrong (e.g. NULL value)
         {
           continue;
         }
-        attributeValue = att_it.value().toDouble( &attributeConversionOk );
+        attributeValue = attributeVariant.toDouble( &attributeConversionOk );
         if ( !attributeConversionOk || qIsNaN( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
         {
           continue;

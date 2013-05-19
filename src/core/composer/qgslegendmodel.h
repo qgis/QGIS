@@ -25,7 +25,6 @@
 class QDomDocument;
 class QDomElement;
 class QgsMapLayer;
-class QgsSymbol;
 class QgsSymbolV2;
 class QgsVectorLayer;
 
@@ -56,20 +55,26 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     /**Sets layer set and groups*/
     void setLayerSetAndGroups( const QStringList& layerIds, const QList< GroupLayerInfo >& groupInfo );
     void setLayerSet( const QStringList& layerIds );
-    /**Adds a group to a toplevel position (or -1 if it should be placed at the end of the legend). Returns a pointer to the added group*/
-    QStandardItem* addGroup( QString text = tr( "Group" ), int position = -1 );
+    /**Adds a group
+      @param text name of group (defaults to translation of "Group")
+      @param position insertion position (toplevel position (or -1 if it should be placed at the end of the legend).
+      @returns a pointer to the added group
+      */
+    QStandardItem *addGroup( QString text = QString::null, int position = -1 );
 
     /**Tries to automatically update a model entry (e.g. a whole layer or only a single item)*/
     void updateItem( QStandardItem* item );
     /**Updates the whole symbology of a layer*/
     void updateLayer( QStandardItem* layerItem );
     /**Tries to update a single classification item*/
-    void updateVectorClassificationItem( QStandardItem* classificationItem, QgsSymbol* symbol, QString itemText )
-    { Q_UNUSED( classificationItem ); Q_UNUSED( symbol ); Q_UNUSED( itemText ); }
     void updateVectorV2ClassificationItem( QStandardItem* classificationItem, QgsSymbolV2* symbol, QString itemText )
     { Q_UNUSED( classificationItem ); Q_UNUSED( symbol ); Q_UNUSED( itemText ); }
     void updateRasterClassificationItem( QStandardItem* classificationItem )
     { Q_UNUSED( classificationItem ); }
+
+    /** Update single item text using item userText and other properties like showFeatureCount */
+    void updateItemText( QStandardItem* item );
+
 
     bool writeXML( QDomElement& composerLegendElem, QDomDocument& doc ) const;
     bool readXML( const QDomElement& legendModelElem, const QDomDocument& doc );
@@ -98,10 +103,6 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     void layersChanged();
 
   private:
-    /**Adds classification items of vector layers
-     @return 0 in case of success*/
-    int addVectorLayerItems( QStandardItem* layerItem, QgsVectorLayer* vlayer );
-
     /**Adds classification items of vector layers using new symbology*/
     int addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer );
 
@@ -109,8 +110,10 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
      @return 0 in case of success*/
     int addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* rlayer );
 
-    /**Creates a model item for a vector symbol. The calling function takes ownership*/
-    QStandardItem* itemFromSymbol( QgsSymbol* s, int opacity, const QString& layerID );
+    void updateLayerItemText( QStandardItem* layerItem );
+    void updateSymbolV2ItemText( QStandardItem* symbolItem );
+    void updateRasterSymbolItemText( QStandardItem* symbolItem );
+
 
   protected:
     QStringList mLayerIds;

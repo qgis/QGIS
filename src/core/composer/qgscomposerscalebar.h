@@ -17,7 +17,9 @@
 #define QGSCOMPOSERSCALEBAR_H
 
 #include "qgscomposeritem.h"
+#include <QFont>
 #include <QPen>
+#include <QColor>
 
 class QgsComposerMap;
 class QgsScaleBarStyle;
@@ -27,7 +29,6 @@ class QgsScaleBarStyle;
 
 class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 {
-
     Q_OBJECT
 
   public:
@@ -38,6 +39,14 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
       Left = 0,
       Middle,
       Right
+    };
+
+    /**Added in version 1.9*/
+    enum ScaleBarUnits
+    {
+      MapUnits = 0,
+      Meters,
+      Feet
     };
 
     QgsComposerScaleBar( QgsComposition* composition );
@@ -67,6 +76,9 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     QFont font() const;
 
+    QColor fontColor() const {return mFontColor;}
+    void setFontColor( const QColor& c ) {mFontColor = c;}
+
     void setFont( const QFont& font );
 
     QPen pen() const {return mPen;}
@@ -95,6 +107,12 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     /**@note: this method was added in version 1.8*/
     void setAlignment( Alignment a ) { mAlignment = a; }
+
+    /**@note: this method was added in version 1.9*/
+    ScaleBarUnits units() const { return mUnits; }
+
+    /**@note: this method was added in version 1.9*/
+    void setUnits( ScaleBarUnits u );
 
     /**Apply default settings*/
     void applyDefaultSettings();
@@ -159,6 +177,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     QString mUnitLabeling;
     /**Font*/
     QFont mFont;
+    QColor mFontColor;
     /**Outline*/
     QPen mPen;
     /**Fill*/
@@ -179,8 +198,13 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     Alignment mAlignment;
 
+    ScaleBarUnits mUnits;
+
     /**Calculates with of a segment in mm and stores it in mSegmentMillimeters*/
     void refreshSegmentMillimeters();
+
+    /**Returns diagonal of composer map in selected units (map units / meters / feet)*/
+    double mapWidth() const;
 };
 
 #endif //QGSCOMPOSERSCALEBAR_H

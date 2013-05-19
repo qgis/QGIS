@@ -1,0 +1,426 @@
+class QgsPalLayerSettings
+{
+%TypeHeaderCode
+#include <qgspallabeling.h>
+#include <qgsdiagramrendererv2.h>
+%End
+  public:
+    QgsPalLayerSettings();
+    QgsPalLayerSettings( const QgsPalLayerSettings& s );
+    ~QgsPalLayerSettings();
+
+    enum Placement
+    {
+      AroundPoint, // Point / Polygon
+      OverPoint, // Point / Polygon
+      Line, // Line / Polygon
+      Curved, // Line
+      Horizontal, // Polygon
+      Free // Polygon
+    };
+
+    enum LinePlacementFlags
+    {
+      OnLine    = 1,
+      AboveLine = 2,
+      BelowLine = 4,
+      MapOrientation = 8
+    };
+
+    enum UpsideDownLabels
+    {
+      Upright, // upside-down labels (90 <= angle < 270) are shown upright
+      ShowDefined, // show upside down when rotation is layer- or data-defined
+      ShowAll // show upside down for all labels, including dynamic ones
+    };
+
+    enum DirectionSymbols
+    {
+      SymbolLeftRight, // place direction symbols on left/right of label
+      SymbolAbove, // place direction symbols on above label
+      SymbolBelow // place direction symbols on below label
+    };
+
+    enum MultiLineAlign
+    {
+      MultiLeft = 0,
+      MultiCenter,
+      MultiRight
+    };
+
+    enum ShapeType
+    {
+      ShapeRectangle = 0,
+      ShapeSquare,
+      ShapeEllipse,
+      ShapeCircle,
+      ShapeSVG
+    };
+
+    enum SizeType
+    {
+      SizeBuffer = 0,
+      SizeFixed,
+      SizePercent
+    };
+
+    enum RotationType
+    {
+      RotationSync = 0,
+      RotationOffset,
+      RotationFixed
+    };
+
+    /** Units used for option sizes, before being converted to rendered sizes */
+    enum SizeUnit
+    {
+      Points = 0,
+      MM,
+      MapUnits,
+      Percent
+    };
+
+    enum ShadowType
+    {
+      ShadowLowest = 0,
+      ShadowText,
+      ShadowBuffer,
+      ShadowShape
+    };
+
+    // update mDataDefinedNames QList in constructor when adding/deleting enum value
+    enum DataDefinedProperties
+    {
+      Size = 0,
+      Bold,
+      Italic,
+      Underline,
+      Color,
+      Strikeout,
+      Family,
+      BufferSize,
+      BufferColor,
+      PositionX, //x-coordinate data defined label position
+      PositionY, //y-coordinate data defined label position
+      Hali, //horizontal alignment for data defined label position (Left, Center, Right)
+      Vali, //vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
+      LabelDistance,
+      Rotation, //data defined rotation (only useful in connection with data defined position)
+      Show,
+      MinScale,
+      MaxScale,
+      FontTransp,
+      BufferTransp,
+      AlwaysShow
+    };
+
+    QString fieldName;
+
+    /** Is this label made from a expression string eg FieldName || 'mm'
+      */
+    bool isExpression;
+
+    /** Returns the QgsExpression for this label settings.
+      */
+    QgsExpression* getLabelExpression();
+
+    Placement placement;
+    unsigned int placementFlags;
+    // offset labels of point/centroid features default to center
+    // move label to quadrant: left/down, don't move, right/up (-1, 0, 1)
+    int xQuadOffset;
+    int yQuadOffset;
+
+    // offset from point in mm or map units
+    double xOffset;
+    double yOffset;
+    double angleOffset; // rotation applied to offset labels
+    bool centroidWhole; // whether centroid calculated from whole or visible polygon
+    QFont textFont;
+    QString textNamedStyle;
+    QColor textColor;
+    int textTransp;
+    QPainter::CompositionMode blendMode;
+    QColor previewBkgrdColor;
+    bool enabled;
+    int priority; // 0 = low, 10 = high
+    bool obstacle; // whether it's an obstacle
+    double dist; // distance from the feature (in mm)
+    double vectorScaleFactor; //scale factor painter units->pixels
+    double rasterCompressFactor; //pixel resolution scale factor
+
+    // disabled if both are zero
+    int scaleMin;
+    int scaleMax;
+    double bufferSize; //buffer size
+    QColor bufferColor;
+    int bufferTransp;
+    QPainter::CompositionMode bufferBlendMode;
+    Qt::PenJoinStyle bufferJoinStyle;
+    bool bufferNoFill; //set interior of buffer to 100% transparent
+
+    // shape background
+    bool shapeDraw;
+    ShapeType shapeType;
+    QString shapeSVGFile;
+    SizeType shapeSizeType;
+    QPointF shapeSize;
+    SizeUnit shapeSizeUnits;
+    RotationType shapeRotationType;
+    double shapeRotation;
+    QPointF shapeOffset;
+    SizeUnit shapeOffsetUnits;
+    QPointF shapeRadii;
+    SizeUnit shapeRadiiUnits;
+    QColor shapeFillColor;
+    QColor shapeBorderColor;
+    double shapeBorderWidth;
+    SizeUnit shapeBorderWidthUnits;
+    Qt::PenJoinStyle shapeJoinStyle;
+    int shapeTransparency;
+    QPainter::CompositionMode shapeBlendMode;
+
+    // drop shadow
+    bool shadowDraw;
+    ShadowType shadowUnder;
+    int shadowOffsetAngle;
+    double shadowOffsetDist;
+    SizeUnit shadowOffsetUnits;
+    bool shadowOffsetGlobal;
+    double shadowRadius;
+    SizeUnit shadowRadiusUnits;
+    bool shadowRadiusAlphaOnly;
+    int shadowTransparency;
+    int shadowScale;
+    QColor shadowColor;
+    QPainter::CompositionMode shadowBlendMode;
+
+    bool formatNumbers;
+    int decimals;
+    bool plusSign;
+    bool labelPerPart; // whether to label every feature's part or only the biggest one
+    bool displayAll;  // if true, all features will be labelled even though overlaps occur
+    bool mergeLines;
+    double minFeatureSize; // minimum feature size to be labelled (in mm)
+    bool limitNumLabels; // whether to limit the number of labels to be drawn
+    int maxNumLabels; // maximum number of labels to be drawn
+    // Adds '<' or '>', or user-defined symbol to the label string pointing to the
+    // direction of the line / polygon ring
+    // Works only if Placement == Line
+    bool addDirectionSymbol;
+    QString leftDirectionSymbol;
+    QString rightDirectionSymbol;
+    bool reverseDirectionSymbol;
+    DirectionSymbols placeDirectionSymbol; // whether to place left/right, above or below label
+    unsigned int upsidedownLabels; // whether, or how, to show upsidedown labels
+    double maxCurvedCharAngleIn; // maximum angle between inside curved label characters (defaults to 20.0, range 20.0 to 60.0)
+    double maxCurvedCharAngleOut; // maximum angle between outside curved label characters (defaults to -20.0, range -20.0 to -95.0)
+    bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
+    bool fontLimitPixelSize; // true is label should be limited by fontMinPixelSize/fontMaxPixelSize
+    int fontMinPixelSize; // minimum pixel size for showing rendered map unit labels (1 - 1000)
+    int fontMaxPixelSize; // maximum pixel size for showing rendered map unit labels (1 - 10000)
+    bool bufferSizeInMapUnits; //true if buffer is in map units (otherwise in mm)
+    bool labelOffsetInMapUnits; //true if label offset is in map units (otherwise in mm)
+    bool distInMapUnits; //true if distance is in map units (otherwise in mm)
+    QString wrapChar;
+    double multilineHeight; //0.0 to 10.0, leading between lines as multiplyer of line height
+    MultiLineAlign multilineAlign; // horizontal alignment of multi-line labels
+    // called from register feature hook
+    void calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY );
+
+    // implementation of register feature hook
+    void registerFeature( QgsVectorLayer* layer, QgsFeature& f, const QgsRenderContext& context );
+
+    void readFromLayer( QgsVectorLayer* layer );
+    void writeToLayer( QgsVectorLayer* layer );
+
+    /**Set a property as data defined*/
+    void setDataDefinedProperty( DataDefinedProperties p, QString attributeName );
+    /**Set a property to static instead data defined*/
+    void removeDataDefinedProperty( DataDefinedProperties p );
+
+    /**Stores field names for data defined layer properties*/
+    // QMap< DataDefinedProperties, QString > dataDefinedProperties;
+
+    bool preserveRotation; // preserve predefined rotation data during label pin/unpin operations
+
+    /** Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
+     * @param size size to convert
+     * @param c rendercontext
+     * @param unit SizeUnit enum value of size
+     * @param rasterfactor whether to consider oversampling
+     * @return font pixel size
+     */
+    int sizeToPixel( double size, const QgsRenderContext& c , SizeUnit unit, bool rasterfactor = false ) const;
+
+    /** Calculates size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
+     * @param size size to convert
+     * @param c rendercontext
+     * @param unit SizeUnit enum value of size
+     * @param rasterfactor whether to consider oversampling
+     * @return size that will render, as double
+     * @note added in 1.9, as a better precision replacement for sizeToPixel
+     */
+    double scaleToPixelContext( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor = false ) const;
+
+    /** List of data defined enum names
+     * @note adding in 1.9
+     */
+    QList<QString> dataDefinedNames() const;
+};
+
+class QgsLabelCandidate
+{
+%TypeHeaderCode
+#include <qgspallabeling.h>
+%End
+
+  public:
+    QgsLabelCandidate( QRectF r, double c );
+
+    QRectF rect;
+    double cost;
+};
+
+/** \ingroup core
+  * Maintains current state of more grainular and temporal values when creating/painting
+  * component parts of an individual label (e.g. buffer, background, shadow, etc.).
+  */
+class QgsLabelComponent
+{
+%TypeHeaderCode
+#include <qgspallabeling.h>
+%End
+
+  public:
+    QgsLabelComponent();
+
+    const QString& text();
+    void setText( const QString& text );
+
+    const QgsPoint& origin();
+    void setOrigin( QgsPoint point );
+
+    bool useOrigin() const;
+    void setUseOrigin( bool use );
+
+    double rotation() const;
+    void setRotation( double rotation );
+
+    double rotationOffset() const;
+    void setRotationOffset( double rotation );
+
+    bool useRotation() const;
+    void setUseRotation( bool use );
+
+    const QgsPoint& center();
+    void setCenter( QgsPoint point );
+
+    bool useCenter() const;
+    void setUseCenter( bool use );
+
+    const QgsPoint& size();
+    void setSize( QgsPoint point );
+
+    const QgsPoint& offset();
+    void setOffset( QgsPoint point );
+
+    const QPicture* picture();
+    void setPicture( QPicture* picture );
+
+    double pictureBuffer() const;
+    void setPictureBuffer( double buffer );
+
+    double dpiRatio() const;
+    void setDpiRatio( double ratio );
+};
+
+class QgsPalLabeling : QgsLabelingEngineInterface
+{
+%TypeHeaderCode
+#include <qgspallabeling.h>
+%End
+
+  public:
+    enum DrawLabelType
+    {
+      LabelText = 0,
+      LabelBuffer,
+      LabelShape,
+      LabelSVG,
+      LabelShadow
+    };
+
+    QgsPalLabeling();
+    ~QgsPalLabeling();
+
+    QgsPalLayerSettings& layer( const QString& layerName );
+
+    void numCandidatePositions( int& candPoint, int& candLine, int& candPolygon );
+    void setNumCandidatePositions( int candPoint, int candLine, int candPolygon );
+
+    enum Search { Chain, Popmusic_Tabu, Popmusic_Chain, Popmusic_Tabu_Chain, Falp };
+
+    void setSearchMethod( Search s );
+    Search searchMethod() const;
+
+    bool isShowingCandidates() const;
+    void setShowingCandidates( bool showing );
+    const QList<QgsLabelCandidate>& candidates();
+
+    bool isShowingShadowRectangles() const;
+    void setShowingShadowRectangles( bool showing );
+
+    bool isShowingAllLabels() const;
+    void setShowingAllLabels( bool showing );
+
+    // implemented methods from labeling engine interface
+
+    //! called when we're going to start with rendering
+    virtual void init( QgsMapRenderer* mr );
+    //! called to find out whether the layer is used for labeling
+    virtual bool willUseLayer( QgsVectorLayer* layer );
+    //! hook called when drawing layer before issuing select()
+    virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx );
+    //! adds a diagram layer to the labeling engine
+    virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings *s );
+    //! hook called when drawing for every feature in a layer
+    virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
+    virtual void registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
+    //! called when the map is drawn and labels should be placed
+    virtual void drawLabeling( QgsRenderContext& context );
+    //! called when we're done with rendering
+    virtual void exit();
+    //! return infos about labels at a given (map) position
+    virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p );
+    //! return infos about labels within a given (map) rectangle
+    virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r );
+
+    //! called when passing engine among map renderers
+    virtual QgsLabelingEngineInterface* clone() /Factory/;
+
+/*
+    void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
+    //!drawLabel
+    void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType );
+*/
+    static void drawLabelBuffer( QgsRenderContext& context,
+                                 QgsLabelComponent component,
+                                 const QgsPalLayerSettings& tmpLyr );
+
+    static void drawLabelBackground( QgsRenderContext& context,
+                                     QgsLabelComponent component,
+                                     const QgsPalLayerSettings& tmpLyr );
+
+    static void drawLabelShadow( QgsRenderContext& context,
+                                 QgsLabelComponent component,
+                                 const QgsPalLayerSettings& tmpLyr );
+
+    //! load/save engine settings to project file
+    //! @note added in QGIS 1.9
+    void loadEngineSettings();
+    void saveEngineSettings();
+    void clearEngineSettings();
+    bool isStoredWithProject() const;
+    void setStoredWithProject( bool store );
+};

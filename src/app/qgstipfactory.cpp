@@ -1,23 +1,17 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Tim Sutton                                      *
- *   tim@linfiniti.com                                                     *
+        qgstipfactory.cpp
+        ---------------------
+    begin                : February 2011
+    copyright            : (C) 2007 by Tim Sutton
+    email                : tim at linfiniti dot com
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
 
 #include "qgstipfactory.h"
 #include <QTime>
@@ -36,11 +30,11 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "Quantum GIS is open source software."
                         " This means that the software source code can be freely viewed"
                         " and modified. The GPL places a restriction that any modifications"
-                        " you make must be made available to the Quantum GIS project, and"
-                        " that you can not create a new version of Quantum GIS under a"
-                        " 'closed source' license. Visit <a href=\"http://qgis.org\">"
-                        " the QGIS home page (http://qgis.org)</a> for more"
-                        " information." ) );
+                        " you make must be made available in source form to whoever you give"
+                        " modified versions to, and that you can not create a new version of"
+                        " Quantum GIS under a 'closed source' license. Visit"
+                        " <a href=\"http://qgis.org\"> the QGIS home page (http://qgis.org)</a>"
+                        " for more information." ) );
   addGenericTip( myTip );
   //
   myTip.setTitle( tr( "QGIS Publications" ) );
@@ -63,7 +57,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "If you need help using QGIS"
                         " we have a 'users'  mailing list where users help each other with issues"
                         " related to using our sofware. We also have a 'developers' mailing list."
-                        " for those wanting help and to discuss things relating the the QGIS code base."
+                        " for those wanting help and to discuss things relating to the QGIS code base."
                         " Details on how to subscribe are in the <a href=\"http://www.qgis.org/en/community/mailing-lists.html\">community section</a> of"
                         " the QGIS home page (http://www.qgis.org/en/community/mailing-lists.html)."
                       ) );

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>366</width>
+    <width>368</width>
     <height>242</height>
    </rect>
   </property>
@@ -16,26 +16,6 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Marker</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnChangeMarker">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Change</string>
-       </property>
-      </widget>
-     </item>
      <item>
       <spacer>
        <property name="orientation">
@@ -69,9 +49,6 @@
    </item>
   </layout>
  </widget>
- <tabstops>
-  <tabstop>btnChangeMarker</tabstop>
- </tabstops>
  <resources/>
  <connections/>
 </ui>

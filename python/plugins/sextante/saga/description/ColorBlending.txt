@@ -1,0 +1,6 @@
+Color Blending
+grid_visualisation
+ParameterMultipleInput|GRIDS|Grids|3|False
+ParameterNumber|NSTEPS|Interpolation Steps|None|None|0
+ParameterSelection|RANGE|Color Stretch|[0] fit to each grid;[1] fit to overall range;[2] fit to overall 1.5 standard deviation;[3] fit to overall 2.0 standard deviation
+OutputRaster|GRID|Grid

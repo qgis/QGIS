@@ -1,0 +1,12 @@
+<h3>$rownum function</h3>
+Returns the number of the current row.
+
+<h4>Syntax</h4>
+<pre>$rownum</pre>
+
+<h4>Arguments</h4>
+None
+
+<h4>Example</h4>
+<pre>$rownum &rarr; 4711</pre>
+

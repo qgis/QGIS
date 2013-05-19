@@ -34,6 +34,7 @@ SET ( qgis_mapserv_SRCS
   qgsbetweenfilter.cpp
   qgscomparisonfilter.cpp
   qgslogicalfilter.cpp
+  qgsspatialfilter.cpp
   qgsftptransaction.cpp
   qgsmslayerbuilder.cpp 
   qgshostedvdsbuilder.cpp
@@ -62,6 +63,7 @@ SET (qgis_mapserv_MOC_HDRS
   qgsftptransaction.h
   qgscapabilitiescache.h
   qgsconfigcache.h
+  qgsmslayercache.h
 )
 
 SET (qgis_mapserv_RCCS 
@@ -93,8 +95,6 @@ INCLUDE_DIRECTORIES(
   ${QGIS_INCLUDE_DIR}
   ../core
   ../core/raster
-  ../core/renderer
-  ../core/symbology
   ../core/symbology-ng
   ../core/composer
   ../analysis/interpolation

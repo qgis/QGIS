@@ -1,4 +1,19 @@
 #!/bin/bash
+###########################################################################
+#    prepare-commit.sh
+#    ---------------------
+#    Date                 : August 2008
+#    Copyright            : (C) 2008 by Juergen E. Fischer
+#    Email                : jef at norbit dot de
+###########################################################################
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 2 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+###########################################################################
+
 
 PATH=$PATH:$(dirname $0)
 
@@ -14,13 +29,18 @@ if ! type -p colordiff >/dev/null; then
 	}
 fi
 
+if [ "$1" = "-c" ]; then
+	echo "Cleaning..."
+	find . \( -name "*.prepare" -o -name "*.astyle" -o -name "*.nocopyright" -o -name "astyle.*.diff" -o -name "sha-*.diff" \) -print -delete
+fi
+
 set -e
 
 # determine changed files
 if [ -d .svn ]; then
 	MODIFIED=$(svn status | sed -ne "s/^[MA] *//p")
 elif [ -d .git ]; then
-	MODIFIED=$(git status | sed -rne "s/^#	(modified|new file): *//p" | sort -u)
+	MODIFIED=$(git status --porcelain| sed -ne "s/^ *[MA]  *//p" | sort -u)
 else
 	echo No working copy
 	exit 1
@@ -34,10 +54,10 @@ fi
 # save original changes
 if [ -d .svn ]; then
 	REV=r$(svn info | sed -ne "s/Revision: //p")
-	svn diff >$REV.diff
+	svn diff >rev-$REV.diff
 elif [ -d .git ]; then
 	REV=$(git log -n1 --pretty=%H)
-	git diff >$REV.diff
+	git diff >sha-$REV.diff
 fi
 
 ASTYLEDIFF=astyle.$REV.diff
@@ -46,13 +66,22 @@ ASTYLEDIFF=astyle.$REV.diff
 # reformat
 for f in $MODIFIED; do
 	case "$f" in
-	src/core/spatialite/*|src/core/gps/qextserialport/*)
+	src/core/spatialite/*|src/core/gps/qextserialport/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
                 echo $f skipped
 		continue
 		;;
 
         *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H)
                 ;;
+
+	*.py)
+		perl -i.prepare -pe "s/[\t ]+$//;" $f
+		if diff -u $f.prepare $f >>$ASTYLEDIFF; then
+			# no difference found
+			rm $f.prepare
+		fi
+		continue
+		;;
 
         *)
                 continue

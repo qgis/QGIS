@@ -23,9 +23,9 @@
 
 QgsRubberSelectId::QgsRubberSelectId( QgsMapCanvas* mapCanvas )
 {
-  mIsPolygon = false;
+  mGeometryType = QGis::Line;
   mMapCanvas = mapCanvas;
-  mRubberBand = new QgsRubberBand( mMapCanvas, mIsPolygon );
+  mRubberBand = new QgsRubberBand( mMapCanvas, mGeometryType );
   mColorRGB[0] = 255;
   mColorRGB[1] = 0;
   mColorRGB[2] = 0;
@@ -42,7 +42,7 @@ QgsRubberSelectId::~QgsRubberSelectId()
 
 void QgsRubberSelectId::reset()
 {
-  mRubberBand->reset( mIsPolygon );
+  mRubberBand->reset( mGeometryType );
 } // void QgsRubberSelectId::reset()
 
 void QgsRubberSelectId::setStyle( int colorRed, int colorGreen, int colorBlue, int width )
@@ -56,17 +56,15 @@ void QgsRubberSelectId::setStyle( int colorRed, int colorGreen, int colorBlue, i
 
 void QgsRubberSelectId::addFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 {
-  bool isPolygon = ( lyr->geometryType() == QGis::Polygon );
-  if ( mIsPolygon != isPolygon )
+  if ( mGeometryType != lyr->geometryType() )
   {
     reset();
-    delete mRubberBand;
-    mIsPolygon = isPolygon;
-    mRubberBand = new QgsRubberBand( mMapCanvas, mIsPolygon );
+    mGeometryType = lyr->geometryType();
+    mRubberBand->reset( lyr->geometryType() );
     setStyle();
   }
   QgsFeature feat;
-  if ( !lyr->featureAtId( fid, feat, true, false ) )
+  if ( !lyr->getFeatures( QgsFeatureRequest().setFilterFid( fid ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( feat ) )
   {
     return;
   }

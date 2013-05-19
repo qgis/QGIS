@@ -68,12 +68,6 @@ void QgsVertexEntry::setCenter( QgsPoint p )
   }
 }
 
-void QgsVertexEntry::moveCenter( double x, double y )
-{
-  mPoint += QgsVector( x, y );
-  setCenter( mPoint );
-}
-
 void QgsVertexEntry::setSelected( bool selected )
 {
   mSelected = selected;

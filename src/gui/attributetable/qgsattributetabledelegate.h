@@ -19,8 +19,10 @@
 #include <QItemDelegate>
 #include "qgsfeature.h"
 
+class QgsFeatureSelectionModel;
 class QPainter;
 class QgsVectorLayer;
+class QgsAttributeTableView;
 
 /** \ingroup app
  * A delegate item class for QgsAttributeTable (see Qt documentation for
@@ -32,8 +34,6 @@ class QgsAttributeTableDelegate : public QItemDelegate
     Q_OBJECT;
 
     QgsVectorLayer *layer( const QAbstractItemModel *model ) const;
-    int fieldIdx( const QModelIndex &index ) const;
-    QgsFeatureId featureId( const QModelIndex &index ) const;
 
   public:
     /** Constructor
@@ -68,6 +68,11 @@ class QgsAttributeTableDelegate : public QItemDelegate
      * @param index index of field which is to be retrieved
      */
     void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+
+    void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
+
+  private:
+    QgsFeatureSelectionModel* mFeatureSelectionModel;
 };
 
 #endif //QGSATTRIBUTETABLEDELEGATE_H

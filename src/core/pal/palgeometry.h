@@ -47,7 +47,7 @@ namespace pal
        * \brief get the GEOSGeometry of the feature
        * This method is called by Pal each time it needs a geom's coordinates
        *
-       * @return GEOSGeometry * a pointer the the geos geom
+       * @return GEOSGeometry * a pointer the geos geom
        */
       virtual GEOSGeometry* getGeosGeometry() = 0;
 

@@ -1,10 +1,10 @@
 /***************************************************************************
-                             crssync.cpp
-                             sync srs.db with proj
-                             -------------------
-    begin                : 2011
-    copyright            : (C) 2011 by Juergen E. Fischer, norBIT GmbH
-    email                : jef at norbit dot de
+                            crssync.cpp
+                            sync srs.db with proj
+                            -------------------
+   begin                : May 2011
+   copyright            : (C) 2011 by Juergen E. Fischer, norBIT GmbH
+   email                : jef at norbit dot de
 ***************************************************************************/
 
 /***************************************************************************
@@ -40,7 +40,13 @@ int main( int argc, char ** argv )
 {
   QgsApplication a( argc, argv, false );
 
-  std::cout << "Synchronizing CRS database with PROJ definitions." << std::endl;
+  if ( !QgsApplication::isRunningFromBuildDir() )
+  {
+    char* prefixPath = getenv( "QGIS_PREFIX_PATH" );
+    QgsApplication::setPrefixPath( prefixPath ? prefixPath : CMAKE_INSTALL_PREFIX, TRUE );
+  }
+
+  std::cout << "Synchronizing CRS database with GDAL/PROJ definitions." << std::endl;
 
   CPLPushErrorHandler( showError );
 

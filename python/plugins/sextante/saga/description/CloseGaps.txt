@@ -1,0 +1,6 @@
+Close Gaps
+grid_tools
+ParameterRaster|INPUT|Grid|False
+ParameterRaster|MASK|Mask|True
+ParameterNumber|THRESHOLD|Tension Threshold|None|None|0.1
+OutputRaster|RESULT|Changed Grid

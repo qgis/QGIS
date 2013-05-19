@@ -57,10 +57,23 @@ QgsMapLayer * QgsMapLayerRegistry::mapLayer( QString theLayerId )
   return mMapLayers.value( theLayerId );
 }
 
+QList<QgsMapLayer *> QgsMapLayerRegistry::mapLayersByName( QString layerName )
+{
+  QList<QgsMapLayer *> myResultList;
+  foreach ( QgsMapLayer* layer, mMapLayers )
+  {
+    if ( layer->name() == layerName )
+    {
+      myResultList << layer;
+    }
+  }
+  return myResultList;
+}
+
 //introduced in 1.8
 QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
   QList<QgsMapLayer *> theMapLayers,
-  bool theEmitSignal )
+  bool addToLegend )
 {
   QList<QgsMapLayer *> myResultList;
   for ( int i = 0; i < theMapLayers.size(); ++i )
@@ -80,69 +93,55 @@ QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
     {
       mMapLayers[myLayer->id()] = myLayer;
       myResultList << mMapLayers[myLayer->id()];
-      if ( theEmitSignal )
-        emit layerWasAdded( myLayer );
+      emit layerWasAdded( myLayer );
     }
   }
-  if ( theEmitSignal && myResultList.count() > 0 )
+  if ( myResultList.count() > 0 )
   {
     emit layersAdded( myResultList );
+
+    if ( addToLegend )
+      emit legendLayersAdded( myResultList );
   }
   return myResultList;
 } // QgsMapLayerRegistry::addMapLayers
 
-//this is deprecated by addMapLayers and is just a thin wrapper for that
+//this is just a thin wrapper for addMapLayers
 QgsMapLayer *
-QgsMapLayerRegistry::addMapLayer( QgsMapLayer * theMapLayer,
-                                  bool theEmitSignal )
+QgsMapLayerRegistry::addMapLayer( QgsMapLayer* theMapLayer,
+                                  bool addToLegend )
 {
-  QList<QgsMapLayer *> myList;
-  myList.append( theMapLayer );
-  addMapLayers( myList, theEmitSignal );
-  return theMapLayer;
-} //  QgsMapLayerRegistry::addMapLayer
+  QList<QgsMapLayer *> addedLayers;
+  addedLayers = addMapLayers( QList<QgsMapLayer*>() << theMapLayer, addToLegend );
+  return addedLayers.isEmpty() ? 0 : addedLayers[0];
+}
+
 
 //introduced in 1.8
-void QgsMapLayerRegistry::removeMapLayers( QStringList theLayerIds,
-    bool theEmitSignal )
+void QgsMapLayerRegistry::removeMapLayers( QStringList theLayerIds )
 {
-  if ( theEmitSignal )
-    emit layersWillBeRemoved( theLayerIds );
+  emit layersWillBeRemoved( theLayerIds );
 
-  foreach( const QString &myId, theLayerIds )
+  foreach ( const QString &myId, theLayerIds )
   {
-    if ( theEmitSignal )
-      emit layerWillBeRemoved( myId );
+    emit layerWillBeRemoved( myId );
     delete mMapLayers[myId];
     mMapLayers.remove( myId );
   }
-  emit layersWillBeRemoved( theLayerIds );
 }
 
-//deprecated 1.8 use removeMapLayers rather
-void QgsMapLayerRegistry::removeMapLayer( QString theLayerId,
-    bool theEmitSignal )
+void QgsMapLayerRegistry::removeMapLayer( const QString& theLayerId )
 {
-  QStringList myList;
-  myList << theLayerId;
-  removeMapLayers( myList, theEmitSignal );
+  removeMapLayers( QStringList( theLayerId ) );
 }
+
 
 void QgsMapLayerRegistry::removeAllMapLayers()
 {
-  // moved before physically removing the layers
-  emit removedAll();
-
+  emit removeAll();
   // now let all canvas observers know to clear themselves,
   // and then consequently any of their map legends
-  QStringList myList;
-  QMap<QString, QgsMapLayer *>::iterator it;
-  for ( it = mMapLayers.begin(); it != mMapLayers.end() ; ++it )
-  {
-    QString id = it.key();
-    myList << id;
-  }
-  removeMapLayers( myList, false );
+  removeMapLayers( mMapLayers.keys() );
   mMapLayers.clear();
 } // QgsMapLayerRegistry::removeAllMapLayers()
 
@@ -170,7 +169,7 @@ void QgsMapLayerRegistry::reloadAllLayers()
   }
 }
 
-QMap<QString, QgsMapLayer*> & QgsMapLayerRegistry::mapLayers()
+const QMap<QString, QgsMapLayer*>& QgsMapLayerRegistry::mapLayers()
 {
   return mMapLayers;
 }

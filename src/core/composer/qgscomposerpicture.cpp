@@ -17,6 +17,7 @@
 
 #include "qgscomposerpicture.h"
 #include "qgscomposermap.h"
+#include "qgscomposition.h"
 #include "qgsproject.h"
 #include <QDomDocument>
 #include <QDomElement>
@@ -268,8 +269,8 @@ bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
   }
   QDomElement composerPictureElem = doc.createElement( "ComposerPicture" );
   composerPictureElem.setAttribute( "file", QgsProject::instance()->writePath( mSourceFile.fileName() ) );
-  composerPictureElem.setAttribute( "pictureWidth", mPictureWidth );
-  composerPictureElem.setAttribute( "pictureHeight", mPictureHeight );
+  composerPictureElem.setAttribute( "pictureWidth", QString::number( mPictureWidth ) );
+  composerPictureElem.setAttribute( "pictureHeight", QString::number( mPictureHeight ) );
   if ( !mRotationMap )
   {
     composerPictureElem.setAttribute( "mapId", -1 );

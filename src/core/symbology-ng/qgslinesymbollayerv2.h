@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgslinesymbollayerv2.h
+    ---------------------
+    begin                : November 2009
+    copyright            : (C) 2009 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #ifndef QGSLINESYMBOLLAYERV2_H
 #define QGSLINESYMBOLLAYERV2_H
@@ -6,6 +20,8 @@
 
 #include <QPen>
 #include <QVector>
+
+class QgsExpression;
 
 #define DEFAULT_SIMPLELINE_COLOR     QColor(0,0,0)
 #define DEFAULT_SIMPLELINE_WIDTH     DEFAULT_LINE_WIDTH
@@ -42,6 +58,11 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
+    QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
     // new stuff
 
     Qt::PenStyle penStyle() const { return mPenStyle; }
@@ -56,8 +77,14 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     double offset() const { return mOffset; }
     void setOffset( double offset ) { mOffset = offset; }
 
+    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
+
     bool useCustomDashPattern() const { return mUseCustomDashPattern; }
     void setUseCustomDashPattern( bool b ) { mUseCustomDashPattern = b; }
+
+    QgsSymbolV2::OutputUnit customDashPatternUnit() const { return mCustomDashPatternUnit; }
+    void setCustomDashPatternUnit( QgsSymbolV2::OutputUnit unit ) { mCustomDashPatternUnit = unit; }
 
     QVector<qreal> customDashVector() const { return mCustomDashVector; }
     void setCustomDashVector( const QVector<qreal>& vector ) { mCustomDashVector = vector; }
@@ -69,10 +96,18 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QPen mPen;
     QPen mSelPen;
     double mOffset;
+    QgsSymbolV2::OutputUnit mOffsetUnit;
+
     //use a custom dash dot pattern instead of the predefined ones
     bool mUseCustomDashPattern;
+    QgsSymbolV2::OutputUnit mCustomDashPatternUnit;
+
     /**Vector with an even number of entries for the */
     QVector<qreal> mCustomDashVector;
+
+  private:
+    //helper functions for data defined symbology
+    void applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QPen& pen, QPen& selPen, double& offset );
 };
 
 /////////
@@ -140,16 +175,27 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     Placement placement() const { return mPlacement; }
     void setPlacement( Placement p ) { mPlacement = p; }
 
+    QgsSymbolV2::OutputUnit intervalUnit() const { return mIntervalUnit; }
+    void setIntervalUnit( QgsSymbolV2::OutputUnit unit ) { mIntervalUnit = unit; }
+
+    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
   protected:
 
     void renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context );
-    void renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context );
+    void renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context, Placement placement = Vertex );
     void renderPolylineCentral( const QPolygonF& points, QgsSymbolV2RenderContext& context );
 
     bool mRotateMarker;
     double mInterval;
+    QgsSymbolV2::OutputUnit mIntervalUnit;
     QgsMarkerSymbolV2* mMarker;
     double mOffset;
+    QgsSymbolV2::OutputUnit mOffsetUnit;
     Placement mPlacement;
 };
 
@@ -169,7 +215,6 @@ class CORE_EXPORT QgsLineDecorationSymbolLayerV2 : public QgsLineSymbolLayerV2
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
-    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     // implemented from base classes
 
@@ -186,6 +231,9 @@ class CORE_EXPORT QgsLineDecorationSymbolLayerV2 : public QgsLineSymbolLayerV2
     QgsSymbolLayerV2* clone() const;
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
 
   protected:
     QPen mPen;

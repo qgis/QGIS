@@ -4,7 +4,7 @@
  * It can optionally capture the standard output and error from the
  * process and displays them in a dialog box.
  */
-class QgsRunProcess: QObject
+class QgsRunProcess : QObject /NoDefaultCtors/
 {
 %TypeHeaderCode
 #include <qgsrunprocess.h>
@@ -18,7 +18,7 @@ class QgsRunProcess: QObject
     // The action argument contains string with the command.
     // If capture is true, the standard output and error from the process
     // will be sent to QgsMessageOuptut - usually a dialog box.
-    static QgsRunProcess* create( const QString& action, bool capture );
+    static QgsRunProcess* create( const QString& action, bool capture ) /Factory/;
 
   public slots:
     void stdoutAvailable();

@@ -1,3 +1,17 @@
+/***************************************************************************
+    testrendererv2gui.cpp
+    ---------------------
+    begin                : January 2012
+    copyright            : (C) 2012 by Martin Dobias
+    email                : wonder.sk at gmail.com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "testrendererv2gui.h"
 
 #include <qgsapplication.h>
@@ -30,7 +44,7 @@ void TestRendererV2GUI::loadLayers()
 {
   // load just first vector layer
   QList<QgsMapCanvasLayer> canvasLayers;
-  foreach( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  foreach ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
   {
     if ( layer->type() == QgsMapLayer::VectorLayer )
       canvasLayers << QgsMapCanvasLayer( layer );

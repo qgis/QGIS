@@ -50,9 +50,7 @@ typedef SInt32 SRefCon;
 #endif
 #endif
 
-//#include "qgspluginregistry.h"
 #include "qgsbench.h"
-//#include "qgsmapcanvas.h"
 #include "qgsapplication.h"
 #include <qgsconfig.h>
 #include <qgsversion.h>
@@ -349,10 +347,20 @@ int main( int argc, char *argv[] )
   // but QgsApplication inherits from QApplication (GUI)
   // it is working, but maybe we should make QgsCoreApplication, which
   // could also be used by mapserver
-  // Don't use QgsApplication( int, char **, bool GUIenabled, QString) which is new
+  // Note (mkuhn,20.4.2013): Labeling does not work with QCoreApplication, because
+  // fontconfig needs some X11 dependencies which are initialized in QApplication (GUI)
+  // using it with QCoreApplication only crashes at the moment.
+  // Only use QgsApplication( int, char **, bool GUIenabled, QString) for newer versions
   // so that this program may be run with old libraries
   //QgsApplication myApp( argc, argv, false, configpath );
-  QCoreApplication myApp( argc, argv );
+
+  QCoreApplication *myApp;
+
+#if VERSION_INT >= 10900
+  myApp = new QgsApplication( argc, argv, false );
+#else
+  myApp = new QCoreApplication( argc, argv );
+#endif
 
   if ( myPrefixPath.isEmpty() )
   {
@@ -365,7 +373,7 @@ int main( int argc, char *argv[] )
   // Set up the QSettings environment must be done after qapp is created
   QgsApplication::setOrganizationName( "QuantumGIS" );
   QgsApplication::setOrganizationDomain( "qgis.org" );
-  QgsApplication::setApplicationName( "QGIS" );
+  QgsApplication::setApplicationName( "QGIS2" );
 
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
@@ -452,7 +460,7 @@ int main( int argc, char *argv[] )
   {
     QPainter::RenderHints hints;
     QStringList list = myQuality.split( ',' );
-    foreach( QString q, list )
+    foreach ( QString q, list )
     {
       if ( q == "Antialiasing" ) hints |= QPainter::Antialiasing;
       else if ( q == "TextAntialiasing" ) hints |= QPainter::TextAntialiasing;
@@ -546,5 +554,6 @@ int main( int argc, char *argv[] )
   qbench->printLog();
 
   delete qbench;
+  delete myApp;
   QCoreApplication::exit( 0 );
 }

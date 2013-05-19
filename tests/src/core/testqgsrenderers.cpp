@@ -66,19 +66,12 @@ void TestQgsRenderers::initTestCase()
 {
   mTestHasError = false;
   // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath();
-  QgsApplication::init( INSTALL_PREFIX );
-  QgsApplication::initQgis( );
+  QgsApplication::init();
+  QgsApplication::initQgis();
   QgsApplication::showSettings();
-  // Instantiate the plugin directory so that providers are loaded
-  QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
   //create some objects that will be used in all tests...
 
-  std::cout << "Prefix  PATH: " << QgsApplication::prefixPath().toLocal8Bit().data() << std::endl;
-  std::cout << "Plugin  PATH: " << QgsApplication::pluginPath().toLocal8Bit().data() << std::endl;
-  std::cout << "PkgData PATH: " << QgsApplication::pkgDataPath().toLocal8Bit().data() << std::endl;
-  std::cout << "User DB PATH: " << QgsApplication::qgisUserDbFilePath().toLocal8Bit().data() << std::endl;
 
   //
   //create a point layer that will be used in all tests...
@@ -225,4 +218,3 @@ bool TestQgsRenderers::imageCheck( QString theTestType )
 
 QTEST_MAIN( TestQgsRenderers )
 #include "moc_testqgsrenderers.cxx"
-

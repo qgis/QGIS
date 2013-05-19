@@ -4,27 +4,19 @@
 
 SET(WFS_SRCS
   qgswfsprovider.cpp
-  qgswfsconnection.cpp
+  qgswfscapabilities.cpp
   qgswfsdataitems.cpp
-  qgswfsdata.cpp
+  qgswfsfeatureiterator.cpp
   qgswfssourceselect.cpp
-  qgswfsutils.cpp
 )
 
 SET (WFS_MOC_HDRS
-     qgswfsdata.h
-     qgswfsconnection.h
-     qgswfsdataitems.h
-     qgswfsprovider.h
-     qgswfssourceselect.h
+  qgswfscapabilities.h
+  qgswfsdataitems.h
+  qgswfsprovider.h
+  qgswfssourceselect.h
 )
 
-#IF(NOT MSVC)
-#  IF (PEDANTIC)
-#    MESSAGE("providers/wfs : -Werror removed for qgswfsprovider.cpp for now - please get rid of any compiler warnings!")
-#  ENDIF (PEDANTIC)
-#  SET_SOURCE_FILES_PROPERTIES(qgswfsprovider.cpp PROPERTIES COMPILE_FLAGS -Wno-error )
-#ENDIF (NOT MSVC)
 ########################################################
 # Build
 

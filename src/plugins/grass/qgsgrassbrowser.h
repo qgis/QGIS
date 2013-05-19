@@ -88,7 +88,7 @@ class QgsGrassBrowser: public QMainWindow
     void showContextMenu( const QPoint &position );
 
   signals:
-    // emited when something in GRASS Tools changed region
+    // emitted when something in GRASS Tools changed region
     void regionChanged();
 
   private:

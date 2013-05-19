@@ -18,6 +18,7 @@ email                : morb at ozemail dot com dot au
 
 #include <QString>
 #include <QVector>
+#include <QDomDocument>
 
 #include "qgis.h"
 
@@ -30,6 +31,11 @@ email                : morb at ozemail dot com dot au
 
 #include "qgspoint.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfeature.h"
+
+#include <QSet>
+
+class QgsVectorLayer;
 
 /** polyline is represented as a vector of points */
 typedef QVector<QgsPoint> QgsPolyline;
@@ -70,9 +76,11 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry();
 
     /** copy constructor will prompt a deep copy of the object */
-    QgsGeometry( QgsGeometry const & );
+    QgsGeometry( const QgsGeometry & );
 
-    /** assignments will prompt a deep copy of the object */
+    /** assignments will prompt a deep copy of the object
+      @note not available in python bindings
+      */
     QgsGeometry & operator=( QgsGeometry const & rhs );
 
     //! Destructor
@@ -98,6 +106,7 @@ class CORE_EXPORT QgsGeometry
     /**
       Set the geometry, feeding in a geometry in GEOS format.
       This class will take ownership of the buffer.
+      @note not available in python bindings
      */
     void fromGeos( GEOSGeometry* geos );
     /**
@@ -113,12 +122,14 @@ class CORE_EXPORT QgsGeometry
     unsigned char * asWkb();
 
     /**
-       Returns the size of the WKB in asWkb().
-    */
+     * Returns the size of the WKB in asWkb().
+     */
     size_t wkbSize();
 
     /**Returns a geos geomtry. QgsGeometry keeps ownership, don't delete the returned object!
-        @note this method was added in version 1.1*/
+        @note this method was added in version 1.1
+        @note not available in python bindings
+      */
     GEOSGeometry* asGeos();
 
     /** Returns type of wkb (point / linestring / polygon etc.) */
@@ -220,15 +231,14 @@ class CORE_EXPORT QgsGeometry
     QgsPoint vertexAt( int atVertex );
 
     /**
-        Returns the squared cartesian distance between the given point
-        to the given vertex index (vertex at the given position number,
-        ring and item (first number is index 0))
-
+     *  Returns the squared cartesian distance between the given point
+     *  to the given vertex index (vertex at the given position number,
+     *  ring and item (first number is index 0))
      */
     double sqrDistToVertexAt( QgsPoint& point, int atVertex );
 
     /**
-     * Searches for the the closest vertex in this geometry to the given point.
+     * Searches for the closest vertex in this geometry to the given point.
      * @param point Specifiest the point for search
      * @param atVertex Receives index of the closest vertex
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
@@ -242,9 +252,10 @@ class CORE_EXPORT QgsGeometry
      * @param afterVertex Receives index of the vertex after the closest segment. The vertex
      * before the closest segment is always afterVertex - 1
      * @param leftOf Out: Returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
+     * @param epsilon epsilon for segment snapping (added in 1.8)
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
-    double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint, int& afterVertex, double* leftOf = 0 );
+    double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint, int& afterVertex, double* leftOf = 0, double epsilon = DEFAULT_SEGMENT_EPSILON );
 
     /**Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
@@ -255,7 +266,6 @@ class CORE_EXPORT QgsGeometry
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      not disjoint with existing polygons of the feature*/
     int addPart( const QList<QgsPoint> &points );
-    Q_DECL_DEPRECATED int addIsland( const QList<QgsPoint> &points ) { return addPart( points ); }
 
     /**Translate this geometry by dx, dy
      @return 0 in case of success*/
@@ -342,6 +352,11 @@ class CORE_EXPORT QgsGeometry
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
     QgsGeometry* convexHull();
 
+    /* Return interpolated point on line at distance
+     * @note added in 1.9
+     */
+    QgsGeometry* interpolate( double distance );
+
     /** Returns a geometry representing the points shared by this geometry and other. */
     QgsGeometry* intersection( QgsGeometry* geometry );
 
@@ -357,12 +372,14 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry* symDifference( QgsGeometry* geometry );
 
     /** Exports the geometry to mWkt
-        @return true in case of success and false else
+     *  @return true in case of success and false else
      */
     QString exportToWkt();
 
     /** Exports the geometry to mGeoJSON
-        @return true in case of success and false else
+     *  @return true in case of success and false else
+     *  @note added in 1.8
+     *  @note python binding added in 1.9
      */
     QString exportToGeoJSON();
 
@@ -417,9 +434,10 @@ class CORE_EXPORT QgsGeometry
      *          1 if geometry is not of polygon type,
      *          2 if avoid intersection would change the geometry type,
      *          3 other error during intersection removal
+     *  @param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in python bindings)
      *  @note added in 1.5
      */
-    int avoidIntersections();
+    int avoidIntersections( QMap<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures = ( QMap<QgsVectorLayer*, QSet<QgsFeatureId> >() ) );
 
     class Error
     {
@@ -438,6 +456,7 @@ class CORE_EXPORT QgsGeometry
 
     /** Validate geometry and produce a list of geometry errors
      * @note added in 1.5
+     * @note python binding added in 1.6
      **/
     void validateGeometry( QList<Error> &errors );
 
@@ -574,9 +593,8 @@ class CORE_EXPORT QgsGeometry
 
     /**Returns < 0 if point(x/y) is left of the line x1,y1 -> x1,y2*/
     double leftOf( double x, double y, double& x1, double& y1, double& x2, double& y2 );
-
-
-    static int refcount;
 }; // class QgsGeometry
+
+Q_DECLARE_METATYPE( QgsGeometry );
 
 #endif

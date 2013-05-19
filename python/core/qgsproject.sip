@@ -1,6 +1,6 @@
 
 /** Reads and writes project states.
-   
+
 
   @note
 
@@ -22,7 +22,7 @@ class QgsProject : QObject
 #include <qgsproject.h>
 %End
 
-public:
+  public:
 
     /**
        @todo XXX Should have semantics for saving project if dirty as last gasp?
@@ -90,13 +90,10 @@ public:
        - Registers maplayers
 
        @note it's presumed that the caller has already reset the map canvas, map registry, and legend
-
-       @exception
-
      */
     //@{
     bool read( const QFileInfo & file );
-    bool read( );
+    bool read();
     //@}
 
 
@@ -108,7 +105,7 @@ public:
         implementations fails.  Since the read()s are invoked from qgisapp,
         then qgisapp handles the exception.  It prompts the user for the new
         location of the data, if any.  If there is a new location, the Dom
-        node associated with the layer has its <datasource> tag corrected.
+        node associated with the layer has its datasource tag corrected.
         Then that node is passed to this member function to be re-opened.
 
      */
@@ -126,7 +123,7 @@ public:
      */
     //@{
     bool write( const QFileInfo & file );
-    bool write( );
+    bool write();
     //@}
 
 
@@ -152,10 +149,10 @@ public:
        @todo "properties" is, overall, a good name; but that might imply that
        the qgis specific state properites are different since they aren't
        accessible here.  Actually, what if we make "qgis" yet another
-       scope that stores its state in the properties list?  E.g., 
+       scope that stores its state in the properties list?  E.g.,
        QgsProject::instance()->properties()["qgis"]?
 
-       
+
      */
     // DEPRECATED Properties & properties( QString const & scope );
 
@@ -165,7 +162,7 @@ public:
     void clearProperties();
 
 
-    /* key value mutators 
+    /* key value mutators
 
       keys would be the familiar QSettings-like '/' delimited entries, implying
       a hierarchy of keys and corresponding values
@@ -173,12 +170,19 @@ public:
       @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
-    // TODO: resolve somehow to use always correct function
-    //bool writeEntry ( const QString & scope, const QString & key, bool value );
-    //bool writeEntry ( const QString & scope, const QString & key, double value );
-    bool writeEntry ( const QString & scope, const QString & key, int value );
-    bool writeEntry ( const QString & scope, const QString & key, const QString & value );
-    bool writeEntry ( const QString & scope, const QString & key, const QStringList & value );
+    bool writeEntryBool( const QString & scope, const QString & key, bool value );
+%MethodCode
+      sipRes = sipCpp->writeEntry( *a0, *a1, a2 );
+%End
+
+    bool writeEntryDouble( const QString & scope, const QString & key, double value );
+%MethodCode
+      sipRes = sipCpp->writeEntry( *a0, *a1, a2 );
+%End
+
+    bool writeEntry( const QString & scope, const QString & key, int value );
+    bool writeEntry( const QString & scope, const QString & key, const QString & value );
+    bool writeEntry( const QString & scope, const QString & key, const QStringList & value );
     //@}
 
     /** key value accessors
@@ -190,33 +194,33 @@ public:
         @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
-    QStringList readListEntry ( const QString & scope, const QString & key, bool * ok = 0 ) const;
+    QStringList readListEntry( const QString & scope, const QString & key, QStringList def = QStringList(), bool * ok = 0 ) const;
 
-    QString readEntry ( const QString & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
-    int readNumEntry ( const QString & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
-    double readDoubleEntry ( const QString & scope, const QString & key, double def = 0, bool * ok = 0 ) const;
-    bool readBoolEntry ( const QString & scope, const QString & key, bool def = FALSE, bool * ok = 0 ) const;
+    QString readEntry( const QString & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
+    int readNumEntry( const QString & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
+    double readDoubleEntry( const QString & scope, const QString & key, double def = 0, bool * ok = 0 ) const;
+    bool readBoolEntry( const QString & scope, const QString & key, bool def = false, bool * ok = 0 ) const;
     //@}
 
 
     /** remove the given key */
-    bool removeEntry ( const QString & scope, const QString & key );
+    bool removeEntry( const QString & scope, const QString & key );
 
 
     /** return keys with values -- do not return keys that contain other keys
 
       @note equivalent to QSettings entryList()
     */
-    QStringList entryList ( const QString & scope, const QString & key ) const;
+    QStringList entryList( const QString & scope, const QString & key ) const;
 
     /** return keys with keys -- do not return keys that contain only values
 
       @note equivalent to QSettings subkeyList()
     */
-    QStringList subkeyList ( const QString & scope, const QString & key ) const;
+    QStringList subkeyList( const QString & scope, const QString & key ) const;
 
 
-    /** dump out current project properties to stderr 
+    /** dump out current project properties to stderr
 
       @todo XXX Now slightly broken since re-factoring.  Won't print out top-level key
                 and redundantly prints sub-keys.
@@ -238,7 +242,42 @@ public:
     /** Change handler for missing layers.
       Deletes old handler and takes ownership of the new one.
       @note added in 1.4 */
-    void setBadLayerHandler( QgsProjectBadLayerHandler* handler );
+    void setBadLayerHandler( QgsProjectBadLayerHandler* handler /Transfer/ );
+
+    /**Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded*/
+    QString layerIsEmbedded( const QString& id ) const;
+
+    /**Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
+      @return the layer or 0 in case of error
+      @note: added in version 1.8
+     */
+    /*
+    bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
+                              QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
+    */
+
+    /**Convenience function to set snap settings per layer
+      @note added in version 1.9*/
+    void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance,
+                                  bool avoidIntersection );
+
+    /**Convenience function to query snap settings of a layer
+      @note added in version 1.9*/
+    bool snapSettingsForLayer( const QString& layerId, bool& enabled /Out/, QgsSnapper::SnappingType& type /Out/, QgsTolerance::UnitType& units /Out/, double& tolerance /Out/,
+                               bool& avoidIntersection /Out/ ) const;
+
+    /**Convenience function to set topological editing
+        @note added in version 1.9*/
+    void setTopologicalEditing( bool enabled );
+
+    /**Convenience function to query topological editing status
+        @note added in version 1.9*/
+    bool topologicalEditing() const;
+
+    /** Return project's home path
+        @return home path of project (or QString::null if not set)
+        @note added in version 2.0 */
+    QString homePath() const;
 
   protected:
 
@@ -250,13 +289,50 @@ public:
       @note added in 1.4 */
     void clearError();
 
+    //Creates layer and adds it to maplayer registry
+    // bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
+
   signals:
-    
     //! emitted when project is being read
-    void readProject(const QDomDocument &);
-    
+    void readProject( const QDomDocument & );
+
     //! emitted when project is being written
-    void writeProject(QDomDocument &);
+    void writeProject( QDomDocument & );
+
+    /**
+     * Emitted, after the basic initialisation of a layer from the project
+     * file is done. You can use this signal to read additional information
+     * from the project file.
+     *
+     * @param mapLayer  The map layer which is being initialized
+     * @param layerNode The layer node from the project file
+     */
+    void readMapLayer( QgsMapLayer *mapLayer, const QDomElement &layerNode );
+
+    /**
+     * Emitted, when a layer is being saved. You can use this method to save
+     * additional information to the layer.
+     *
+     * @param mapLayer  The map layer which is being initialized
+     * @param layerElem The layer element from the project file
+     * @param doc The document
+     */
+    void writeMapLayer( QgsMapLayer *mapLayer, QDomElement &layerElem, QDomDocument &doc );
+
+    //! emitted when the project file has been written and closed
+    void projectSaved();
+
+    //! emitted when an old project file is read.
+    void oldProjectVersionWarning( QString );
+
+    //! emitted when a layer from a projects was read
+    // @param i current layer
+    // @param n number of layers
+    void layerLoaded( int i, int n );
+
+    void loadingLayer( QString );
+
+    void snapSettingsChanged();
 
   private:
 
@@ -273,9 +349,9 @@ class QgsProjectBadLayerHandler
 #include <qgsproject.h>
 %End
 
-public:
-  virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom ) = 0;
-  virtual ~QgsProjectBadLayerHandler();
+  public:
+    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom ) = 0;
+    virtual ~QgsProjectBadLayerHandler();
 };
 
 
@@ -287,7 +363,7 @@ class QgsProjectBadLayerDefaultHandler : QgsProjectBadLayerHandler
 #include <qgsproject.h>
 %End
 
-public:
-  virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom );
+  public:
+    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom );
 
 };

@@ -1,0 +1,19 @@
+class QgsNewHttpConnection : QDialog
+{
+%TypeHeaderCode
+#include <qgsnewhttpconnection.h>
+%End
+
+  public:
+    //! Constructor
+    QgsNewHttpConnection( QWidget *parent = 0, const QString& baseKey = "/Qgis/connections-wms/", const QString& connName = QString::null, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    //! Destructor
+    ~QgsNewHttpConnection();
+  public slots:
+    //! Saves the connection to ~/.qt/qgisrc
+    void accept();
+
+    void on_txtName_textChanged( const QString & );
+
+    void on_buttonBox_helpRequested();
+};

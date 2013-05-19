@@ -24,9 +24,12 @@
 #include <QVariant>
 #include <QImage>
 #include <QDomNode>
+#include <QPainter>
 
 #include "qgis.h"
+#include "qgserror.h"
 #include "qgsrectangle.h"
+#include "qgsmaprenderer.h"
 
 class QgsRenderContext;
 class QgsCoordinateReferenceSystem;
@@ -69,13 +72,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
      * @note added in 1.7
-     **/
+     */
     QString id() const;
-
-    /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
-     * @deprecated use id()
-     **/
-    Q_DECL_DEPRECATED QString getLayerID() const { return id(); }
 
     /** Set the display name of the layer
      * @param name New name for the layer
@@ -85,13 +83,23 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Get the display name of the layer
      * @return the layer name
      */
-    QString const & name() const;
+    const QString & name() const;
+
+    /** Get the original name of the layer
+     * @note added in 1.9
+     */
+    const QString & originalName() const { return mLayerOrigName; }
 
     void setTitle( const QString& title ) { mTitle = title; }
     const QString& title() const { return mTitle; }
 
     void setAbstract( const QString& abstract ) { mAbstract = abstract; }
     const QString& abstract() const { return mAbstract; }
+
+    /* Set the blending mode used for rendering a layer */
+    void setBlendMode( const QPainter::CompositionMode blendMode );
+    /* Returns the current blending mode for a layer */
+    QPainter::CompositionMode blendMode() const;
 
     /**Synchronises with changes in the datasource
         @note added in version 1.6*/
@@ -110,8 +118,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual void drawLabels( QgsRenderContext& rendererContext );
 
-    /** Return the extent of the layer as a QRect */
-    QgsRectangle extent() const;
+    /** Return the extent of the layer */
+    virtual QgsRectangle extent();
 
     /*! Return the status of the layer. An invalid layer is one which has a bad datasource
      * or other problem. Child classes set this flag when intialized
@@ -126,7 +134,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString publicSource() const;
 
     /** Returns the source for the layer */
-    QString const & source() const;
+    const QString &source() const;
 
     /**
      * Returns the sublayers of this layer
@@ -147,7 +155,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool isEditable() const;
 
     /** sets state from Dom document
-       @param layer_node is Dom node corresponding to ``maplayer'' tag
+       @param layerElement The Dom element corresponding to ``maplayer'' tag
        @note
 
        The Dom node corresponds to a Dom document project file XML element read
@@ -160,12 +168,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
        @returns true if successful
      */
-    bool readXML( const QDomNode& layer_node );
+    bool readLayerXML( const QDomElement& layerElement );
 
 
     /** stores state in Dom node
-       @param layer_node is Dom node corresponding to ``projectlayers'' tag
-       @param document is Dom document
+       @param layerElement is a Dom element corresponding to ``maplayer'' tag
+       @param document is a the dom document being written
        @note
 
        The Dom node corresponds to a Dom document project file XML element to be
@@ -178,7 +186,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
        @returns true if successful
     */
-    bool writeXML( QDomNode & layer_node, QDomDocument & document );
+    bool writeLayerXML( QDomElement& layerElement, QDomDocument& document );
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      *  @note Added in v1.4 */
@@ -190,17 +198,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  @note Added in v1.4 */
     void removeCustomProperty( const QString& key );
 
-    /** Copies the symbology settings from another layer. Returns true in case of success */
-    virtual bool copySymbologySettings( const QgsMapLayer& other ) = 0;
-
-    /** Returns true if this layer can be in the same symbology group with another layer */
-    virtual bool hasCompatibleSymbology( const QgsMapLayer& other ) const = 0;
-
+#if 0
     /** Accessor for transparency level. */
     unsigned int getTransparency();
 
     /** Mutator for transparency level. Should be between 0 and 255 */
-    void setTransparency( unsigned int );
+    virtual void setTransparency( unsigned int );
+#endif
 
     /**
      * If an operation returns 0 (e.g. draw()), this function
@@ -218,29 +222,28 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QString lastError();
 
+    /** Get current status error. This error describes some principal problem
+     *  for which layer cannot work and thus is not valid. It is not last error
+     *  after accessing data by draw() etc.
+     */
+    virtual QgsError error() const { return mError; }
+
     /** Returns layer's spatial reference system
     @note This was introduced in QGIS 1.4
     */
-    const QgsCoordinateReferenceSystem& crs();
-
-    /** Returns layer's spatial reference system
-    @note This method is here for API compatibility
-    and will be deprecated in 2.0
-    @deprecated use crs()
-    */
-    Q_DECL_DEPRECATED const QgsCoordinateReferenceSystem& srs();
+    const QgsCoordinateReferenceSystem& crs() const;
 
     /** Sets layer's spatial reference system
     @note emitSignal added in 1.4 */
     void setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal = true );
 
-    /** A convenience function to capitalise the layer name */
-    static QString capitaliseLayerName( const QString name );
+    /** A convenience function to (un)capitalise the layer name */
+    static QString capitaliseLayerName( const QString& name );
 
     /** Retrieve the style URI for this layer
      * (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * @return a QString withe the style file name
+     * @return a QString with the style file name
      * @see also loadNamedStyle () and saveNamedStyle ();
      * @note This method was added in QGIS 1.8
      */
@@ -272,6 +275,24 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QString loadNamedStyle( const QString theURI, bool & theResultFlag );
 
     virtual bool loadNamedStyleFromDb( const QString db, const QString theURI, QString &qml );
+
+    //TODO edit infos
+    /**
+     * Export the properties of this layer as named style in a QDomDocument
+     * @param doc the target QDomDocument
+     * @param errorMsg this QString will be initialized on error
+     * during the execution of writeSymbology
+     */
+    virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg );
+
+
+    /**
+     * Export the properties of this layer as SLD style in a QDomDocument
+     * @param doc the target QDomDocument
+     * @param errorMsg this QString will be initialized on error
+     * during the execution of writeSymbology
+     */
+    virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg );
 
     /** Save the properties of this layer as the default style
      * (either as a .qml file on disk or as a
@@ -325,21 +346,27 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Get the QImage used for caching render operations
      * @note This method was added in QGIS 1.4 **/
-    QImage * cacheImage() { return mpCacheImage; }
+    QImage *cacheImage() { return mpCacheImage; }
     /** Set the QImage used for caching render operations
      * @note This method was added in QGIS 1.4 **/
     void setCacheImage( QImage * thepImage );
+
+    /**
+     * @brief Is called when the cache image is being deleted. Overwrite and use to clean up.
+     * @note added in 2.0
+     */
+    virtual void onCacheImageDelete() {};
 
   public slots:
 
     /** Event handler for when a coordinate transform fails due to bad vertex error */
     virtual void invalidTransformInput();
 
-    /** Accessor and mutator for the minimum scale member */
+    /** Accessor and mutator for the minimum scale denominator member */
     void setMinimumScale( float theMinScale );
     float minimumScale();
 
-    /** Accessor and mutator for the maximum scale member */
+    /** Accessor and mutator for the maximum scale denominator member */
     void setMaximumScale( float theMaxScale );
     float maximumScale();
 
@@ -390,17 +417,19 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void dataChanged();
 
   protected:
+    /** Set the extent */
+    virtual void setExtent( const QgsRectangle &rect );
 
     /** set whether layer is valid or not - should be used in constructor.
         \note added in v1.5 */
     void setValid( bool valid );
 
-    /** called by readXML(), used by children to read state specific to them from
+    /** called by readLayerXML(), used by children to read state specific to them from
         project files.
     */
     virtual bool readXml( const QDomNode& layer_node );
 
-    /** called by writeXML(), used by children to write state specific to them to
+    /** called by writeLayerXML(), used by children to write state specific to them to
         project files.
     */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & document );
@@ -417,11 +446,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** debugging member - invoked when a connect() is made to this object */
     void connectNotify( const char * signal );
 
+    /** Add error message */
+    void appendError( const QgsErrorMessage & theMessage ) { mError.append( theMessage );}
+    /** Set error message */
+    void setError( const QgsError & theError ) { mError = theError;}
+
     /** Transparency level for this layer should be 0-255 (255 being opaque) */
     unsigned int mTransparencyLevel;
 
     /** Extent of the layer */
-    QgsRectangle mLayerExtent;
+    QgsRectangle mExtent;
 
     /** Indicates if the layer is valid and can be drawn */
     bool mValid;
@@ -432,10 +466,18 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Name of the layer - used for display */
     QString mLayerName;
 
+    /** Original name of the layer
+     *  @note added in 1.9
+     */
+    QString mLayerOrigName;
+
     QString mTitle;
 
     /**Description of the layer*/
     QString mAbstract;
+
+    /** \brief Error */
+    QgsError mError;
 
   private:
     /** layer's spatial reference system.
@@ -454,12 +496,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Type of the layer (eg. vector, raster) */
     QgsMapLayer::LayerType mLayerType;
 
+    /** Blend mode for the layer */
+    QPainter::CompositionMode mBlendMode;
+
     /** Tag for embedding additional information */
     QString mTag;
 
-    /** Minimum scale at which this layer should be displayed */
+    /** Minimum scale denominator at which this layer should be displayed */
     float mMinScale;
-    /** Maximum scale at which this layer should be displayed */
+    /** Maximum scale denominator at which this layer should be displayed */
     float mMaxScale;
     /** A flag that tells us whether to use the above vars to restrict layer visibility */
     bool mScaleBasedVisibility;

@@ -23,6 +23,7 @@
 
 #include "qgsfield.h"
 #include "qgsfeature.h"
+#include "qgsfeaturestore.h"
 #include "qgscoordinatereferencesystem.h"
 
 /**
@@ -64,6 +65,12 @@ class QgsClipboard
      *  destroying the previous contents.
      */
     void replaceWithCopyOf( QgsVectorLayer *src );
+
+    /*
+     *  Place a copy of features on the internal clipboard,
+     *  destroying the previous contents.
+     */
+    void replaceWithCopyOf( QgsFeatureStore & featureStore );
 
     /*
      *  Returns a copy of features on the internal clipboard,
@@ -130,16 +137,20 @@ class QgsClipboard
     /*
      * source fields
      */
-    const QgsFieldMap &fields() { return mFeatureFields; }
+    const QgsFields &fields() { return mFeatureFields; }
 
   private:
+    /*
+     * Set system clipboard from previously set features.
+     */
+    void setSystemClipboard();
 
     /** QGIS-internal vector feature clipboard.
         Stored as values not pointers as each clipboard operation
         involves a deep copy anyway.
      */
     QgsFeatureList mFeatureClipboard;
-    QgsFieldMap mFeatureFields;
+    QgsFields mFeatureFields;
     QgsCoordinateReferenceSystem mCRS;
 };
 

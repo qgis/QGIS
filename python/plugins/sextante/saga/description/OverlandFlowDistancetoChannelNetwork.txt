@@ -1,0 +1,8 @@
+Overland Flow Distance to Channel Network
+ta_channels
+ParameterRaster|ELEVATION|Elevation|False
+ParameterRaster|CHANNELS|Channel Network|False
+ParameterSelection|METHOD|Flow Algorithm|[0] D8;[1] MFD
+OutputRaster|DISTANCE|Overland Flow Distance
+OutputRaster|DISTVERT|Vertical Overland Flow Distance
+OutputRaster|DISTHORZ|Horizontal Overland Flow Distance

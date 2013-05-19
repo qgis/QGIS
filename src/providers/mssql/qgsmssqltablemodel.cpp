@@ -133,7 +133,7 @@ void QgsMssqlTableModel::addTableEntry( QgsMssqlLayerProperty layerProperty )
     if ( detailsFromThread )
       flags |= Qt::ItemIsEnabled;
 
-    foreach( QStandardItem *item, childItemList )
+    foreach ( QStandardItem *item, childItemList )
     {
       item->setFlags( item->flags() & ~flags );
     }
@@ -251,7 +251,7 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
         row[ dbtmSrid ]->setText( tr( "Enter..." ) );
         row[ dbtmSrid ]->setFlags( row[ dbtmSrid ]->flags() | Qt::ItemIsEditable );
 
-        foreach( QStandardItem *item, row )
+        foreach ( QStandardItem *item, row )
         {
           item->setFlags( item->flags() | Qt::ItemIsEnabled );
         }
@@ -272,7 +272,7 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
         if ( layerProperty.pkCols.size() < 2 )
           flags |= Qt::ItemIsSelectable;
 
-        foreach( QStandardItem *item, row )
+        foreach ( QStandardItem *item, row )
         {
           item->setFlags( item->flags() | flags );
         }
@@ -296,23 +296,23 @@ QIcon QgsMssqlTableModel::iconForWkbType( QGis::WkbType type )
     case QGis::WKBPoint25D:
     case QGis::WKBMultiPoint:
     case QGis::WKBMultiPoint25D:
-      return QIcon( QgsDataItem::getThemePixmap( "/mIconPointLayer.png" ) );
+      return QgsApplication::getThemeIcon( "/mIconPointLayer.png" );
     case QGis::WKBLineString:
     case QGis::WKBLineString25D:
     case QGis::WKBMultiLineString:
     case QGis::WKBMultiLineString25D:
-      return QIcon( QgsDataItem::getThemePixmap( "/mIconLineLayer.png" ) );
+      return QgsApplication::getThemeIcon( "/mIconLineLayer.png" );
     case QGis::WKBPolygon:
     case QGis::WKBPolygon25D:
     case QGis::WKBMultiPolygon:
     case QGis::WKBMultiPolygon25D:
-      return QIcon( QgsDataItem::getThemePixmap( "/mIconPolygonLayer.png" ) );
+      return QgsApplication::getThemeIcon( "/mIconPolygonLayer.png" );
     case QGis::WKBNoGeometry:
-      return QIcon( QgsDataItem::getThemePixmap( "/mIconTableLayer.png" ) );
+      return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
     case QGis::WKBUnknown:
       break;
   }
-  return QIcon( QgsDataItem::getThemePixmap( "/mIconLayer.png" ) );
+  return QgsApplication::getThemeIcon( "/mIconLayer.png" );
 }
 
 bool QgsMssqlTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )

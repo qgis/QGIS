@@ -1,5 +1,5 @@
-<h3>Stra&szlig;engraph Erweitungseinstellungen</h3>
-<p>Stra&szlig;engraph ist eine C++-Erweiterung f&uuml;r QGIS, die den k&uuml;rzesten Weg zwischen zwei Punkten auf jedem Polylinien-Layer berechnet und ihn &uuml;ber dem Stra&szlig;ennetz anzeigt.</p>
+<h3>Straßengraph Erweitungseinstellungen</h3>
+<p>Straßengraph ist eine C++-Erweiterung für QGIS, die den kürzesten Weg zwischen zwei Punkten auf jedem Polylinien-Layer berechnet und ihn über dem Straßennetz anzeigt.</p>
 <p>
 <a href="#creating">Einheiten der Erweiterung</a><br/>
 <a href="#topologyTolerance">Topologietoleranz</a><br/>
@@ -9,22 +9,22 @@
 <a name="creating">
 <h4>Einheiten der Erweiterung</h4>
 </a>
-<p>Sie k&ouml;nnen die berechneten L&auml;ngen und Zeiten verschiedenen Einheiten anzeigen. W&auml;hlen Sie sie unter <label>L&auml;ngeneinheit</label> und <label>Zeiteinheit</label> ein.</p>
+<p>Sie können die berechneten Längen und Zeiten verschiedenen Einheiten anzeigen. Wählen Sie sie unter <label>Längeneinheit</label> und <label>Zeiteinheit</label> ein.</p>
 
 <a name="topologyTolerance">
 <h4>Topologietoleranz</h4>
 </a>
-<p><label>Topologietoleranz</label> - der Abstand in Projekteinheiten. Wenn zwei Punkt diesen Abstand unterschreiten, werden sie als gleich verstanden.  Ein Wert gr&ouml;&szlig;e Null verlangsamt die Erweiterung, erm&ouml;glicht aber die Nutzung von qualitativ schlechteren Datenquellen.</p>
+<p><label>Topologietoleranz</label> - der Abstand in Projekteinheiten. Wenn zwei Punkt diesen Abstand unterschreiten, werden sie als gleich verstanden.  Ein Wert größe Null verlangsamt die Erweiterung, ermöglicht aber die Nutzung von qualitativ schlechteren Datenquellen.</p>
 
 <h5>Hinweis</h5>
-<p>Die Stra&szlig;engraph-Erweitungen betrachtet zwei Stra&szlig;en als verbunden, wenn sie einen gemeinsamen Knoten haben. Knoten &uuml;ber ihre Koordinate eindeutig. Es kann aber vorkommen, dass bei der Digitalisierung Fehler auftreten. Diese treten manchmal auch auf, wenn von einem in andere Koordinatensystem transformiert wird. Dieser Effekt f&uuml;hrt dazu, dass verbundene Stra&szlig;en nicht als solches erkannt werden. In diesem Fall sollte die Topologietoleranz auf einen Wert gr&ouml;&szlig;er Null erh&ouml;ht werden.</p>
+<p>Die Straßengraph-Erweitungen betrachtet zwei Straßen als verbunden, wenn sie einen gemeinsamen Knoten haben. Knoten über ihre Koordinate eindeutig. Es kann aber vorkommen, dass bei der Digitalisierung Fehler auftreten. Diese treten manchmal auch auf, wenn von einem in andere Koordinatensystem transformiert wird. Dieser Effekt führt dazu, dass verbundene Straßen nicht als solches erkannt werden. In diesem Fall sollte die Topologietoleranz auf einen Wert größer Null erhöht werden.</p>
 
 <a name="LayerSettings">
 <h4>Verkehrslayereinstellung</h4>
 </a>
-<p><label>Layer</label> - der Layer mit dem Stra&szlig;ennetz.</p>
-<p><label>Richtungsfeld</label> - der Wert diese Feldes gibt an wie die Erweiterung die Stra&szlig;en interpretieren soll. <label>Wert f&uuml;r Vorw&auml;rts</label> - die Bewegungsrichtung entspricht der Reihenfolge der Linienpunkte. <label>Wert f&uuml;r R&uuml;ckw&auml;rts</label> - die Bewegungsrichtung ist der Reihenfolge der Linienpunkte entgegengesetzt. <label>Wert f&uuml;r beide Richtungen</label> - Die Stra&szlig;e ist in beide Richtungen befahrbar.</p>
-<p>Geschwindigkeitsfeld</p> - ein Feld, dass die aufgezeichnete Geschwindigkeit auf dieser Stra&szlig;e angibt.</p>
+<p><label>Layer</label> - der Layer mit dem Straßennetz.</p>
+<p><label>Richtungsfeld</label> - der Wert diese Feldes gibt an wie die Erweiterung die Straßen interpretieren soll. <label>Wert für Vorwärts</label> - die Bewegungsrichtung entspricht der Reihenfolge der Linienpunkte. <label>Wert für Rückwärts</label> - die Bewegungsrichtung ist der Reihenfolge der Linienpunkte entgegengesetzt. <label>Wert für beide Richtungen</label> - Die Straße ist in beide Richtungen befahrbar.</p>
+<p>Geschwindigkeitsfeld</p> - ein Feld, dass die aufgezeichnete Geschwindigkeit auf dieser Straße angibt.</p>
 
 <h5>Voreinstellungen</h5>
-<p>Wenn die Attributtabelle Ihres Linienlayers nicht die erforderlichen Felder oder Felder mit unerwarteten Werten enth&auml;lt, werden Voreinstellungen verwendet. Sie k&ouml;nnen diese unter dem Reiter <label>Voreinstellungen</label> festlegen.</p>
+<p>Wenn die Attributtabelle Ihres Linienlayers nicht die erforderlichen Felder oder Felder mit unerwarteten Werten enthält, werden Voreinstellungen verwendet. Sie können diese unter dem Reiter <label>Voreinstellungen</label> festlegen.</p>

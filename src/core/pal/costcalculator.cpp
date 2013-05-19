@@ -1,3 +1,17 @@
+/***************************************************************************
+    costcalculator.cpp
+    ---------------------
+    begin                : November 2009
+    copyright            : (C) 2009 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #include <iostream>
 #include <fstream>
@@ -23,10 +37,12 @@ namespace pal
     int n = 0;
     double dist;
     double distlabel = lp->feature->getLabelDistance();
-    /*unit_convert( double( lp->feature->distlabel ),
-                                     pal::PIXEL,
-                                     pal->map_unit,
-                                     pal->dpi, scale, 1 );*/
+#if 0
+    unit_convert( double( lp->feature->distlabel ),
+                  pal::PIXEL,
+                  pal->map_unit,
+                  pal->dpi, scale, 1 );
+#endif
 
     switch ( feat->getGeosType() )
     {
@@ -145,7 +161,6 @@ namespace pal
     delete pCost;
   }
 
-
   int CostCalculator::finalizeCandidatesCosts( Feats* feat, int max_p, RTree <PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
   {
     // If candidates list is smaller than expected
@@ -177,7 +192,7 @@ namespace pal
       max_p = stop;
 
 #ifdef _DEBUG_FULL_
-    std::cout << "Nblabel kept for feat " << feat->feature->uid << "/" << feat->feature->layer->name << ": " << max_p << "/" << feat->nblp << std::endl;
+    std::cout << "Nblabel kept for feat " << feat->feature->getUID() << "/" << feat->feature->getLayer()->getName() << ": " << max_p << "/" << feat->nblp << std::endl;
 #endif
 
     // Sets costs for candidates of polygon
@@ -217,7 +232,7 @@ namespace pal
     */
 
     double alpha = lp->getAlpha();
-    for ( i = 0; i < 8; i++, alpha += M_PI / 4 )
+    for ( i = 0; i < 8; i++, alpha += M_PI_4 )
     {
       dist[i] = DBL_MAX;
       ok[i] = false;
@@ -248,14 +263,12 @@ namespace pal
   {
     double beta = atan2( pset->y[0] - py, pset->x[0] - px ) - lp->getAlpha();
 
-    while ( beta < 0 )
+    while ( beta < 0.0 )
     {
       beta += 2 * M_PI;
     }
 
-    double a45 = M_PI / 4;
-
-    int i = ( int )( beta / a45 );
+    int i = ( int ) floor( beta / M_PI_4 ) % 8;
 
     for ( int j = 0; j < 2; j++, i = ( i + 1 ) % 8 )
     {
@@ -274,7 +287,7 @@ namespace pal
       }
       else
       {
-        std::cout << "this shouldn't occurs !!!" << std::endl;
+        std::cout << "this shouldn't occur!!!" << std::endl;
       }
     }
   }
@@ -321,14 +334,14 @@ namespace pal
 
     for ( i = 0; i < 8; i++ )
     {
-      /*
+#if 0
       if ( i == 0 || i == 4 ) // horizontal directions
         dist[i] -= lp->w / 2;
-      else if (i == 2 || i == 6 ) // vertical directions
+      else if ( i == 2 || i == 6 ) // vertical directions
         dist[i] -= lp->h / 2;
       else // other directions
-        dist[i] -= ( lp->w / 2 ) / cos( M_PI / 4 );
-      */
+        dist[i] -= ( lp->w / 2 ) / cos( M_PI_4 );
+#endif
 
       if ( !ok[i] || dist[i] < EPSILON )
       {
@@ -343,8 +356,10 @@ namespace pal
     c = min( dist[2], dist[6] );
     d = min( dist[3], dist[7] );
 
-    //if (a!=EPSILON || b!=EPSILON || c!=EPSILON || d!=EPSILON)
-    //  std::cout << "res " << (a*b*c*d) << "       " << a << " " << b << " " << c << " " << d << std::endl;
+#if 0
+    if ( a != EPSILON || b != EPSILON || c != EPSILON || d != EPSILON )
+      std::cout << "res " << ( a*b*c*d ) << "       " << a << " " << b << " " << c << " " << d << std::endl;
+#endif
     return ( a*b*c*d );
   }
 

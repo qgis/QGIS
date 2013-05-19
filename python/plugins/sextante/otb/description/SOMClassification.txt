@@ -1,0 +1,21 @@
+SOMClassification
+otbcli_SOMClassification
+SOM Classification
+Learning
+ParameterRaster|-in|InputImage|False
+OutputRaster|-out|OutputImage
+ParameterRaster|-vm|ValidityMask|True
+ParameterNumber|-tp|TrainingProbability|None|None|1.0
+ParameterNumber|-ts|TrainingSetSize|None|None|0
+ParameterNumber|-sl|StreamingLines|None|None|0
+OutputRaster|-som|SOM Map
+ParameterNumber|-sx|SizeX|None|None|32
+ParameterNumber|-sy|SizeY|None|None|32
+ParameterNumber|-nx|NeighborhoodX|None|None|10
+ParameterNumber|-ny|NeighborhoodY|None|None|10
+ParameterNumber|-ni|NumberIteration|None|None|5
+ParameterNumber|-bi|BetaInit|None|None|1.0
+ParameterNumber|-bf|BetaFinal|None|None|0.10000000149
+ParameterNumber|-iv|InitialValue|None|None|0.0
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128
+ParameterNumber|-rand|set user defined seed|None|None|0

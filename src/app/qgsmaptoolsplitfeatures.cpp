@@ -38,16 +38,13 @@ void QgsMapToolSplitFeatures::canvasReleaseEvent( QMouseEvent * e )
 
   if ( !vlayer )
   {
-    QMessageBox::information( 0, tr( "Not a vector layer" ),
-                              tr( "The current layer is not a vector layer" ) );
+    notifyNotVectorLayer();
     return;
   }
 
   if ( !vlayer->isEditable() )
   {
-    QMessageBox::information( 0, tr( "Layer not editable" ),
-                              tr( "Cannot edit the vector layer. Use 'Toggle Editing' to make it editable." )
-                            );
+    notifyNotEditableLayer();
     return;
   }
 

@@ -29,8 +29,10 @@
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QRegExp>
 #include <QSettings>
 #include <QTextStream>
+
 
 extern "C"
 {
@@ -134,10 +136,16 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   m = new QTreeWidgetItem( l, QStringList() << "Cimrman" << tr( "User's mapset" ) );
   m->setExpanded( true );
 
+  // LOCATION
+  QRegExp rx;
+  rx.setPattern( "[A-Za-z0-9_.]+" );
+  mLocationLineEdit->setValidator( new QRegExpValidator( rx, mLocationLineEdit ) );
+
   // CRS
 
   // MAPSET
   mMapsetsListView->clear();
+  mMapsetLineEdit->setValidator( new QRegExpValidator( rx, mMapsetLineEdit ) );
 
   // FINISH
 

@@ -22,6 +22,7 @@
 #include <QStringList>
 
 //#include "qgsdataitem.h"
+#include "qgserror.h"
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
@@ -80,7 +81,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * connection string
      * @param uri source specification
      */
-    virtual void setDataSourceUri( QString const & uri )
+    virtual void setDataSourceUri( const QString & uri )
     {
       mDataSourceURI = uri;
     }
@@ -280,7 +281,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
       return "";
     }
 
-    /**Reloads the data from the the source. Needs to be implemented by providers with data caches to
+    /**Reloads the data from the source. Needs to be implemented by providers with data caches to
       synchronize with changes in the data source*/
     virtual void reloadData() {}
 
@@ -289,6 +290,12 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
     /** Current time stamp of data source */
     virtual QDateTime dataTimestamp() const { return QDateTime(); }
+
+    /** Get current status error. This error describes some principal problem
+     *  for which provider cannot work and thus is not valid. It is not last error
+     *  after accessing data by block(), identify() etc.
+     */
+    virtual QgsError error() const { return mError; }
 
   signals:
 
@@ -318,6 +325,16 @@ class CORE_EXPORT QgsDataProvider : public QObject
     * Timestamp of data in the moment when the data were loaded by provider.
     */
     QDateTime mTimestamp;
+
+    /** \brief Error */
+    QgsError mError;
+
+    /** Add error message */
+    void appendError( const QgsErrorMessage & theMessage ) { mError.append( theMessage );}
+
+    /** Set error message */
+    void setError( const QgsError & theError ) { mError = theError;}
+
   private:
 
     /**

@@ -1,35 +1,51 @@
 <h3>Attribute table</h3>
 The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking <label>Open attribute table in a dock window</label> in <label>Settings > Options > General</label>.<p>
 
-The number of table features is printed on its header.<p>
+The number of total number of layer features, filtered features and selected features is printed on the window header.<p>
 <p>
 <a href="#Selecting">Selecting</a><br/>
 <a href="#Sorting">Sorting</a><br/>
-<a href="#Searching">Searching</a><br/>
-<a href="#Field">Field Calculator</a><br/>
+<a href="#Filtering">Filtering</a><br/>
+<a href="#Editing">Editing</a><br/>
+<a href="#FieldCalc">Field Calculator</a><br/>
 
 <a name="Selecting">
 <h4>Selecting</h4>
 </a>
-Rows can be selected by clicking on the row number on the left side of the row. Selecting a row doesn't change the current cursor position. Multiple rows can be marked by holding the <label>Ctrl</label> key.<br>
+Rows can be selected by clicking on the row number on the left side of the row. Subsequent rows can be selected by holding the mouse button down and moving the mouse to the other end of the selection. Multiple non-subsequent rows can be selected by holding the <label>Ctrl</label> key.<br>
 A continuous selection can be made by holding the <label>Shift</label> key and clicking on several row headers on the left side of the rows. All rows between the current cursor position and the clicked row are selected.
 
 <a name="Sorting">
 <h4>Sorting</h4>
 </a>
 Each column can be sorted by clicking on its column header. A small arrow indicates the sort order (downward pointing means descending values from the top row down, upward pointing means ascending values from the top row down).<br>
-Use <label>Move selected to top</label> button to sort selected rows and display them in first table rows.  To show selected records only, use the check box <label>Show selected records only</label>.
+Activate the <label>Selected on top</label> button to show the selected rows always on top, regardless of the current sort column.
 
-<a name="Searching">
-<h4>Searching</h4>
+<a name="Filtering">
+<h4>Filtering</h4>
 </a>
-For a simple search by attributes on only one column the <label>Look for</label> field can be used. Select the field (column) from which the search should be performed from the drop down menu and hit the <label>Search</label> button.<br>
-For more complex searches use the <label>Advanced search</label>. This button opens the Query Builder and allows you to select table features matching a SQL-like WHERE clause.
+To only navigate through parts of your data, you can use the filter button on the bottom left. The following options are available.
+<h5>Show All Features</h5>
+Shows all features of the layer.
+<h5>Show Selected Features</h5>
+Shows all features which are currently selected.
+<h5>Show Features Visible on Map</h5>
+Shows all features which are currently visible on the map canvas, taking the currently visible extent and scale based visibility into account.
+<h5>Show Edited and New Features</h5>
+Shows only edited and new features. In this mode, features with uncommitted changes are shown and this is therefore a good filter to review changes, before committing them. Please note, that deleted features are not shown in this mode.
+<h5>Column Filter</h5>
+A simple filter, which lets you filter by an attribute. If the attribute contains text, it looks for sub-strings also. Searching for <b>man</b> will therefore also show records containing <b>woman</b>. After changing the filter text, press <label>Enter</label> or click on <label>Apply</label>. You can also toggle the check-box <label>Case sensitive</label>, so your filter will also match <b>Night</b> when your search text is <b>night</b>.   
+<h5>Advanced Filter</h5>
+For more complex searches, this mode offers a powerful expression builder, which is similar to a SQL WHERE clause. Please refer to the built-in help of the expression builder for details on the syntax.
 
-<a name="Field">
+<a name="Editing">
+<h4>Editing</h4>
+</a>
+To edit values, you first have to switch the layer to editing mode. To switch to editing mode click on the <label>Toggle editing mode</label> (pencil) button or press <label>Ctrl + E</label>. Afterwards double-click on the value you want to edit or place the cursor on it and use the <label>Space</label>-Key. You can customize the widgets used for field editing in <label>Vector Layer Properties > Fields</label>  
+
+<a name="FieldCalc">
 <h4>Field Calculator</h4>
 </a>
 The <label>Field Calculator</label> button in the attribute table allows to perform calculations on basis of existing attribute values or defined functions, e.g. to calculate length or area of geometry features.<br>
 The results can be written to a new attribute column or it can be used to update values in an already existing column.<br>
-You have to bring the vector layer in editing mode, before you can click on the <label>Field calculator</label> icon to open the dialog.
-
+The vector layer needs to be in editing mode, before you can click on the <label>Field calculator</label> icon to open the dialog.

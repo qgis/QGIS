@@ -50,12 +50,12 @@ class Dialog(QDialog, Ui_Dialog):
 
     def populateLayers( self ):
         layers = ftools_utils.getLayerNames([QGis.Polygon, "Raster"])
-        QObject.disconnect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
+        self.inShape.blockSignals(True)
         self.inShape.clear()
+        self.inShape.blockSignals(False)
         self.inShape.addItems(layers)
-        QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
 
-# If input layer is changed, update field list
+    # If input layer is changed, update field list
     def update(self, inputLayer):
         self.cmbField.clear()
         changedLayer = ftools_utils.getMapLayerByName(unicode(inputLayer))
@@ -66,8 +66,9 @@ class Dialog(QDialog, Ui_Dialog):
             self.label_4.setEnabled(True)
             changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
             changedFields = ftools_utils.getFieldList(changedLayer)
-            for i in changedFields:
-                self.cmbField.addItem(unicode(changedFields[i].name()))
+            for f in changedFields:
+              if f.typeName() == "Integer":
+                self.cmbField.addItem(unicode(f.name()))
         else:
             self.rdoUnstratified.setChecked(True)
             self.rdoStratified.setEnabled(False)
@@ -78,7 +79,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.cmbField.setEnabled(False)
             self.label_4.setEnabled(False)
 
-# when 'OK' button is pressed, gather required inputs, and initiate random points generation
+    # when 'OK' button is pressed, gather required inputs, and initiate random points generation
     def accept(self):
         self.buttonOk.setEnabled( False )
         if self.inShape.currentText() == "":
@@ -99,7 +100,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.progressBar.setValue(5)
             mLayer = ftools_utils.getMapLayerByName(unicode(inName))
             if mLayer.type() == mLayer.VectorLayer:
-                inLayer = QgsVectorLayer(unicode(mLayer.source()),  unicode(mLayer.name()),  unicode(mLayer.dataProvider().name()))
+                inLayer = ftools_utils.getVectorLayerByName(unicode(inName))
                 if self.rdoUnstratified.isChecked():
                     design = self.tr("unstratified")
                     value = self.spnUnstratified.value()
@@ -113,7 +114,7 @@ class Dialog(QDialog, Ui_Dialog):
                     design = self.tr("field")
                     value = unicode(self.cmbField.currentText())
             elif mLayer.type() == mLayer.RasterLayer:
-                inLayer = QgsRasterLayer(unicode(mLayer.source()), unicode(mLayer.name()))
+                inLayer = ftools_utils.getRasterLayerByName(unicode(inName))
                 design = self.tr("unstratified")
                 value = self.spnUnstratified.value()
             else:
@@ -127,7 +128,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.tr("Created output point shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(outPath), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
-                QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
+                QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
                 self.populateLayers()
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
@@ -142,19 +143,14 @@ class Dialog(QDialog, Ui_Dialog):
 # combine all polygons in layer to create single polygon (slow for complex polygons)
     def createSinglePolygon(self, vlayer):
         provider = vlayer.dataProvider()
-        allAttrs = provider.attributeIndexes()
-        provider.select(allAttrs)
         feat = QgsFeature()
         geom = QgsGeometry()
-        #geom2 = QgsGeometry()
-        provider.nextFeature(feat)
+        fit = provider.getFeatures()
+        fit.nextFeature(feat)
         geom = QgsGeometry(feat.geometry())
         count = 10.00
         add = ( 40.00 - 10.00 ) / provider.featureCount()
-        #provider.rewind()
-        #provider.nextFeature(feat)
-        #geom = QgsGeometry(feat.geometry())
-        while provider.nextFeature(feat):
+        while fit.nextFeature(feat):
             geom = geom.combine(QgsGeometry( feat.geometry() ))
             count = count + add
             self.progressBar.setValue(count)
@@ -180,7 +176,6 @@ class Dialog(QDialog, Ui_Dialog):
 
     def vectorRandom(self, n, layer, xmin, xmax, ymin, ymax):
         provider = layer.dataProvider()
-        provider.select([])
         index = ftools_utils.createIndex(provider)
         seed()
         points = []
@@ -193,7 +188,7 @@ class Dialog(QDialog, Ui_Dialog):
             pGeom = QgsGeometry().fromPoint(point)
             ids = index.intersects(pGeom.buffer(5,5).boundingBox())
             for id in ids:
-                provider.featureAtId(int(id),feat,True)
+                provider.getFeatures( QgsFeatureRequest().setFilterFid( int(id) ) ).nextFeature( feat )
                 tGeom = QgsGeometry(feat.geometry())
                 if pGeom.intersects(tGeom):
                     points.append(pGeom)
@@ -205,6 +200,7 @@ class Dialog(QDialog, Ui_Dialog):
 
     def randomize(self, inLayer, outPath, minimum, design, value):
         outFeat = QgsFeature()
+        outFeat.initAttributes(1)
         if design == self.tr("unstratified"):
             ext = inLayer.extent()
             if inLayer.type() == inLayer.RasterLayer:
@@ -214,9 +210,11 @@ class Dialog(QDialog, Ui_Dialog):
                 points = self.vectorRandom(int(value), inLayer,
                 ext.xMinimum(), ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
         else: points = self.loopThruPolygons(inLayer, value, design)
-        crs = self.iface.mapCanvas().mapRenderer().destinationSrs()
+        crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
         if not crs.isValid(): crs = None
-        fields = { 0 : QgsField("ID", QVariant.Int) }
+        fields = QgsFields()
+        fields.append( QgsField("ID", QVariant.Int) )
+        outFeat.setFields(fields)
         check = QFile(self.shapefileName)
         if check.exists():
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
@@ -227,7 +225,7 @@ class Dialog(QDialog, Ui_Dialog):
         add = ( 100.00 - 70.00 ) / len(points)
         for i in points:
             outFeat.setGeometry(i)
-            outFeat.addAttribute(0, QVariant(idVar))
+            outFeat.setAttribute(0, QVariant(idVar))
             writer.addFeature(outFeat)
             idVar = idVar + 1
             count = count + add
@@ -237,25 +235,26 @@ class Dialog(QDialog, Ui_Dialog):
 #
     def loopThruPolygons(self, inLayer, numRand, design):
         sProvider = inLayer.dataProvider()
-        sAllAttrs = sProvider.attributeIndexes()
-        sProvider.select(sAllAttrs)
         sFeat = QgsFeature()
         sGeom = QgsGeometry()
         sPoints = []
         if design == self.tr("field"):
-            for (i, attr) in sProvider.fields().iteritems():
+            i = 0
+            for attr in sProvider.fields():
                 if (unicode(numRand) == attr.name()):
                     index = i #get input field index
                     break
+                i += 1
         count = 10.00
         add = 60.00 / sProvider.featureCount()
-        while sProvider.nextFeature(sFeat):
+        sFit = sProvider.getFeatures()
+        while sFit.nextFeature(sFeat):
             sGeom = sFeat.geometry()
             if design == self.tr("density"):
                 sDistArea = QgsDistanceArea()
                 value = int(round(numRand * sDistArea.measure(sGeom)))
             elif design == self.tr("field"):
-                sAtMap = sFeat.attributeMap()
+                sAtMap = sFeat.attributes()
                 value = sAtMap[index].toInt()[0]
             else:
                 value = numRand

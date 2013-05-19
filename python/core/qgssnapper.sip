@@ -5,10 +5,10 @@ struct QgsSnappingResult
 %TypeHeaderCode
 #include <qgssnapper.h>
 %End
-  
+
   /**The coordinates of the snapping result*/
   QgsPoint snappedVertex;
-  /**The vertex index of snappedVertex 
+  /**The vertex index of snappedVertex
    or -1 if no such vertex number (e.g. snap to segment)*/
   int snappedVertexNr;
   /**The layer coordinates of the vertex before snappedVertex*/
@@ -22,7 +22,7 @@ struct QgsSnappingResult
    or -1 if no such vertex*/
   int afterVertexNr;
   /**Index of the snapped geometry*/
-  int snappedAtGeometry;
+  qint64 snappedAtGeometry;
   /**Layer where the snap occured*/
   const QgsVectorLayer* layer;
 };
@@ -35,23 +35,23 @@ class QgsSnapper
 %TypeHeaderCode
 #include <qgssnapper.h>
 %End
-  
-public:
-  /**Snap to vertex, to segment or both*/
-  enum SnappingType
+
+  public:
+    /**Snap to vertex, to segment or both*/
+    enum SnappingType
     {
       SnapToVertex,
       SnapToSegment,
       //snap to vertex and also to segment if no vertex is within the search tolerance
       SnapToVertexAndSegment
     };
-  
-  enum SnappingMode
+
+    enum SnappingMode
     {
       /**Only one snapping result is retured*/
       SnapWithOneResult,
-      /**Several snapping results which have the same position are returned. This is useful for topological
-       editing*/
+      /**Several snapping results which have the same position are returned.
+         This is useful for topological editing*/
       SnapWithResultsForSamePosition,
       /**All results within the given layer tolerances are returned*/
       SnapWithResultsWithinTolerances
@@ -67,18 +67,19 @@ public:
       QgsSnapper::SnappingType mSnapTo;
       /**What unit is used for tolerance*/
       QgsTolerance::UnitType mUnitType;
-    };  
-    
-  QgsSnapper(QgsMapRenderer* mapRender);
-  ~QgsSnapper();
-  /**Does the snapping operation
-   @param startPoint the start point for snapping (in pixel coordinates)
-  @param snappingResult the list where the results are inserted (everything in map coordinate system)
-  @return 0 in case of success*/
-  int snapPoint(const QPoint& startPoint, QList<QgsSnappingResult>& snappingResult /Out/, const QList<QgsPoint>& excludeList);
+    };
 
-  //setters
-  void setSnapLayers( const QList<QgsSnapper::SnapLayer>& snapLayers );
-  void setSnapMode(QgsSnapper::SnappingMode snapMode);
+    QgsSnapper( QgsMapRenderer* mapRender );
+    ~QgsSnapper();
+    /**Does the snapping operation
+     @param startPoint the start point for snapping (in pixel coordinates)
+    @param snappingResult the list where the results are inserted (everything in map coordinate system)
+    @param excludePoints a list with (map coordinate) points that should be excluded in the snapping result. Useful e.g. for vertex moves where a vertex should not be snapped to its original position
+    @return 0 in case of success*/
+    int snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& snappingResult /Out/, const QList<QgsPoint>& excludePoints = QList<QgsPoint>() );
+
+    //setters
+    void setSnapLayers( const QList<QgsSnapper::SnapLayer>& snapLayers );
+    void setSnapMode( QgsSnapper::SnappingMode snapMode );
 
 };

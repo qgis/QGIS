@@ -72,8 +72,7 @@ void TestQgsPoint::initTestCase()
   // Runs once before any tests are run
   //
   // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath();
-  QgsApplication::init( INSTALL_PREFIX );
+  QgsApplication::init();
   QgsApplication::showSettings();
   mReport += "<h1>Point Tests</h1>\n";
 }

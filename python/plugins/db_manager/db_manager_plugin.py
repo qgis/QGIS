@@ -56,7 +56,7 @@ class DBManagerPlugin:
 			self.iface.removeDatabaseToolBarIcon(self.action)
 		else:
 			self.iface.removeToolBarIcon(self.action)
-		
+
 		if self.dlg != None:
 			self.dlg.close()
 

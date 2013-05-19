@@ -27,6 +27,6 @@ In diesem Dialog kann eine Verbindung zu einer PostgreSQL-Datenbank eingestellt 
 
 <li> <label>Auch geometrielose Tabellen anzeigen</label>  Legt fest, dass normalerweise nicht nur Tabellen mit Geometrie, sondern alle Tabellen aufgelistet werden sollen.
 
-<li> <label>Geschätzte Tabellenmetadaten nutzen</label> Wenn die Layer initialisiert werden, k&ouml;nnen mehrere Abfragen n&ouml;tig sein, um die Eigenschaften der Geometrien der Datenbanktabelle zu bestimmen.  Wenn diese Option gew&auml;hlt ist werden die Abfragen nur einige Zeilen und die Tabellenstatistiken, statt der gesamten Tabelle, betrachten.  Dies beschleunigt die Benutzung Layer erheblich, kann aber auch zu falschen Ergebnissen f&uuml;hren (z.B. wird die <font color="red">Objektanzahl</font> von gefilterten Layern nicht genau bestimmt).
+<li> <label>Geschätzte Tabellenmetadaten nutzen</label> Wenn die Layer initialisiert werden, können mehrere Abfragen nötig sein, um die Eigenschaften der Geometrien der Datenbanktabelle zu bestimmen.  Wenn diese Option gewählt ist werden die Abfragen nur einige Zeilen und die Tabellenstatistiken, statt der gesamten Tabelle, betrachten.  Dies beschleunigt die Benutzung Layer erheblich, kann aber auch zu falschen Ergebnissen führen (z.B. wird die <font color="red">Objektanzahl</font> von gefilterten Layern nicht genau bestimmt).
 
 </ul>

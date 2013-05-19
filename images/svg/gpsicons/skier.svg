@@ -1,29 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
-"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
-<svg
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   version="1.0"
-   x="0"
-   y="0"
-   width="109.13385"
-   height="109.13385"
-   id="svg644"
-   xml:space="preserve"><g
-   transform="matrix(0.174696,0,0,0.159551,-7.506304,-7.451576)"
-   style="font-size:12;"
-   id="g771"><path
-   d="M 72.47851 628.0976 C 72.47851 628.0976 555.0793 629.8654 563.9181 624.5621 C 572.7569 619.2588 641.6999 562.6902 641.6999 562.6902 L 608.1123 560.9224 L 549.7759 608.6521 L 68.94298 608.6521 L 72.47851 628.0976 z "
-   style="fill-rule:evenodd;stroke:#000000;"
-   id="path768" /><path
-   d="M 305.8239 612.1878 L 213.8999 288.6861 L 494.9751 290.4539 L 494.9751 316.9704 L 296.9851 318.7382 L 387.1413 612.1877 L 305.8239 612.1878 z "
-   style="fill-rule:evenodd;stroke:#000000;"
-   id="path769" /><ellipse
-   cx="251.906998"
-   cy="210.020477"
-   rx="52.1491547"
-   ry="60.987999"
-   style="fill-rule:evenodd;"
-   id="path770" /></g></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="svg644" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="579.997px" height="579.997px" viewBox="-235.433 -235.433 579.997 579.997"
+	 enable-background="new -235.433 -235.433 579.997 579.997" xml:space="preserve">
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M272.738,188.268l-50.579,37.794H82.964L7.483,1.672l170.512-1.391
+	v-25.896l-249.285-1.433l78.75,253.11h-203.944l4.048,20.337l2.027,0.007c0.667,0.003,67.587,0.223,147.219,0.223
+	c0.017,0,0.005,0,0.021,0c273.485,0,277.928-2.416,279.59-3.326c7.721-4.229,65.217-47.296,67.66-49.128l5.509-4.128
+	L272.738,188.268z"/>
+<ellipse fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" cx="-34.998" cy="-86.774" rx="45.167" ry="48.242"/>
+</svg>

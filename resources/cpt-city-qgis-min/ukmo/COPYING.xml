@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.metoffice.gov.uk/">
+      <name>UK Met Office</name>
+    </author>
+  </authors>
+  <license>
+    <informal>
+      Crown Copyright, released under UK Open Government Licence
+      for Public Sector Information v1.0
+    </informal>
+    <year>2011</year>
+    <text href="http://www.nationalarchives.gov.uk/doc/open-government-licence/"/>
+  </license>
+  <src>
+    <format>Images</format>
+    <link href="http://wow.metoffice.gov.uk/home">Weather Observation Website</link>
+    <link href="http://www.metoffice.gov.uk/public/beta/weather/forecast/">Beta forecast site</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="other"/>
+  </distribute>
+</copying>

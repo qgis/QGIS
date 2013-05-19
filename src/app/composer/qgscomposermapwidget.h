@@ -19,8 +19,8 @@
 #define QGSCOMPOSERMAPWIDGET_H
 
 #include "ui_qgscomposermapwidgetbase.h"
-
-class QgsComposerMap;
+#include "qgscomposermap.h"
+class QgsMapLayer;
 
 /** \ingroup MapComposer
  * Input widget for the configuration of QgsComposerMap
@@ -32,11 +32,9 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
   public:
 
     QgsComposerMapWidget( QgsComposerMap* composerMap );
-    ~QgsComposerMapWidget();
+    virtual ~QgsComposerMapWidget();
 
   public slots:
-    void on_mWidthLineEdit_editingFinished();
-    void on_mHeightLineEdit_editingFinished();
     void on_mPreviewModeComboBox_activated( int i );
     void on_mScaleLineEdit_editingFinished();
     void on_mRotationSpinBox_valueChanged( double value );
@@ -44,6 +42,10 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mUpdatePreviewButton_clicked();
     void on_mKeepLayerListCheckBox_stateChanged( int state );
     void on_mDrawCanvasItemsCheckBox_stateChanged( int state );
+    void on_mOverviewFrameMapComboBox_currentIndexChanged( const QString& text );
+    void on_mOverviewFrameStyleButton_clicked();
+    void on_mOverviewBlendModeComboBox_currentIndexChanged( int index );
+    void on_mOverviewInvertCheckbox_toggled( bool state );
 
     void on_mXMinLineEdit_editingFinished();
     void on_mXMaxLineEdit_editingFinished();
@@ -55,16 +57,41 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mIntervalYSpinBox_editingFinished();
     void on_mOffsetXSpinBox_editingFinished();
     void on_mOffsetYSpinBox_editingFinished();
-    void on_mLineWidthSpinBox_valueChanged( double d );
-    void on_mLineColorButton_clicked();
+    void on_mGridLineStyleButton_clicked();
     void on_mGridTypeComboBox_currentIndexChanged( const QString& text );
     void on_mCrossWidthSpinBox_valueChanged( double d );
+    void on_mGridBlendComboBox_currentIndexChanged( int index );
     void on_mAnnotationFontButton_clicked();
+    void on_mAnnotationFontColorButton_colorChanged( const QColor& newFontColor );
     void on_mDistanceToMapFrameSpinBox_valueChanged( double d );
-    void on_mAnnotationPositionComboBox_currentIndexChanged( const QString& text );
-    void on_mDrawAnnotationCheckBox_stateChanged( int state );
-    void on_mAnnotationDirectionComboBox_currentIndexChanged( const QString& text );
+
+    void on_mAnnotationFormatComboBox_currentIndexChanged( int index );
+
+    //annotation position
+    void on_mAnnotationPositionLeftComboBox_currentIndexChanged( const QString& text );
+    void on_mAnnotationPositionRightComboBox_currentIndexChanged( const QString& text );
+    void on_mAnnotationPositionTopComboBox_currentIndexChanged( const QString& text );
+    void on_mAnnotationPositionBottomComboBox_currentIndexChanged( const QString& text );
+
+    //annotation direction
+    void on_mAnnotationDirectionComboBoxLeft_currentIndexChanged( const QString& text );
+    void on_mAnnotationDirectionComboBoxRight_currentIndexChanged( const QString& text );
+    void on_mAnnotationDirectionComboBoxTop_currentIndexChanged( const QString& text );
+    void on_mAnnotationDirectionComboBoxBottom_currentIndexChanged( const QString& text );
+
+    void on_mDrawAnnotationCheckableGroupBox_toggled( bool state );
     void on_mCoordinatePrecisionSpinBox_valueChanged( int value );
+
+    void on_mFrameStyleComboBox_currentIndexChanged( const QString& text );
+    void on_mFrameWidthSpinBox_valueChanged( double d );
+
+  protected:
+    void showEvent( QShowEvent * event );
+
+    void addPageToToolbox( QWidget * widget, const QString& name );
+
+    /**Sets the current composer map values to the GUI elements*/
+    virtual void updateGuiElements();
 
   private slots:
 
@@ -74,14 +101,26 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
   private:
     QgsComposerMap* mComposerMap;
 
-    /**Sets the current composer map values to the GUI elements*/
-    void updateGuiElements();
-
     /**Sets extent of composer map from line edits*/
     void updateComposerExtentFromGui();
 
     /**Blocks / unblocks the signals of all GUI elements*/
     void blockAllSignals( bool b );
+
+    void handleChangedAnnotationPosition( QgsComposerMap::Border border, const QString& text );
+    void handleChangedAnnotationDirection( QgsComposerMap::Border border, const QString& text );
+
+    void insertAnnotationPositionEntries( QComboBox* c );
+    void insertAnnotationDirectionEntries( QComboBox* c );
+
+    void initAnnotationPositionBox( QComboBox* c, QgsComposerMap::GridAnnotationPosition pos );
+    void initAnnotationDirectionBox( QComboBox* c, QgsComposerMap::GridAnnotationDirection dir );
+
+    void updateOverviewSymbolMarker();
+    void updateLineSymbolMarker();
+
+    /**Updates the map combo box with the current composer map ids*/
+    void refreshMapComboBox();
 };
 
 #endif

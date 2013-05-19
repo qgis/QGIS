@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DlgFieldProperties</class>
- <widget class="QDialog" name="DlgFieldProperties">
+ <class>DbManagerDlgFieldProperties</class>
+ <widget class="QDialog" name="DbManagerDlgFieldProperties">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -24,7 +24,11 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="editName"/>
+      <widget class="QLineEdit" name="editName">
+       <property name="text">
+        <string notr="true"/>
+       </property>
+      </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
@@ -38,6 +42,9 @@
        <property name="editable">
         <bool>true</bool>
        </property>
+       <property name="insertPolicy">
+        <enum>QComboBox::NoInsert</enum>
+       </property>
       </widget>
      </item>
      <item row="3" column="0">
@@ -50,7 +57,7 @@
      <item row="3" column="1">
       <widget class="QCheckBox" name="chkNull">
        <property name="text">
-        <string/>
+        <string notr="true"/>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -65,7 +72,11 @@
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QLineEdit" name="editDefault"/>
+      <widget class="QLineEdit" name="editDefault">
+       <property name="text">
+        <string notr="true"/>
+       </property>
+      </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_5">
@@ -75,7 +86,11 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLineEdit" name="editLength"/>
+      <widget class="QLineEdit" name="editLength">
+       <property name="text">
+        <string notr="true"/>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -104,7 +119,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>DlgFieldProperties</receiver>
+   <receiver>DbManagerDlgFieldProperties</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

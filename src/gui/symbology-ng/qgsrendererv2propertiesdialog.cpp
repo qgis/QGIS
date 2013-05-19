@@ -1,4 +1,17 @@
-
+/***************************************************************************
+    qgsrendererv2propertiesdialog.cpp
+    ---------------------
+    begin                : December 2009
+    copyright            : (C) 2009 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsrendererv2propertiesdialog.h"
 
 #include "qgsrendererv2.h"
@@ -69,28 +82,34 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   }
 
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
-  connect( btnOldSymbology, SIGNAL( clicked() ), this, SLOT( useOldSymbology() ) );
 
   // initialize registry's widget functions
   _initRendererWidgetFunctions();
 
+  // Blend mode
+  mBlendModeComboBox->setBlendMode( mLayer->blendMode() );
+
+  // Feature blend mode
+  mFeatureBlendComboBox->setBlendMode( mLayer->featureBlendMode() );
+
+  // Layer transparency
+  mLayerTransparencySlider->setValue( mLayer->layerTransparency() );
+  mLayerTransparencySpnBx->setValue( mLayer->layerTransparency() );
+
+  // connect layer transparency slider and spin box
+  connect( mLayerTransparencySlider, SIGNAL( valueChanged( int ) ), mLayerTransparencySpnBx, SLOT( setValue( int ) ) );
+  connect( mLayerTransparencySpnBx, SIGNAL( valueChanged( int ) ), mLayerTransparencySlider, SLOT( setValue( int ) ) );
+
   QPixmap pix;
   QgsRendererV2Registry* reg = QgsRendererV2Registry::instance();
   QStringList renderers = reg->renderersList();
-  foreach( QString name, renderers )
+  foreach ( QString name, renderers )
   {
     QgsRendererV2AbstractMetadata* m = reg->rendererMetadata( name );
     cboRenderers->addItem( m->icon(), m->visibleName(), name );
   }
 
   cboRenderers->setCurrentIndex( -1 ); // set no current renderer
-
-  // if the layer doesn't use renderer V2, let's start using it!
-  if ( !mLayer->isUsingRendererV2() )
-  {
-    mLayer->setRendererV2( QgsFeatureRendererV2::defaultRenderer( mLayer->geometryType() ) );
-    mLayer->setUsingRendererV2( true );
-  }
 
   // setup slot rendererChanged()
   connect( cboRenderers, SIGNAL( currentIndexChanged( int ) ), this, SLOT( rendererChanged() ) );
@@ -164,6 +183,13 @@ void QgsRendererV2PropertiesDialog::apply()
   {
     mLayer->setRendererV2( renderer->clone() );
   }
+
+  // set the blend modes for the layer
+  mLayer->setBlendMode( mBlendModeComboBox->blendMode() );
+  mLayer->setFeatureBlendMode( mFeatureBlendComboBox->blendMode() );
+
+  // set transparency for the layer
+  mLayer->setLayerTransparency( mLayerTransparencySlider->value() );
 }
 
 void QgsRendererV2PropertiesDialog::onOK()
@@ -184,19 +210,4 @@ void QgsRendererV2PropertiesDialog::keyPressEvent( QKeyEvent * e )
   {
     QDialog::keyPressEvent( e );
   }
-}
-
-
-
-
-void QgsRendererV2PropertiesDialog::useOldSymbology()
-{
-  int res = QMessageBox::question( this, tr( "Symbology" ),
-                                   tr( "Do you wish to use the original symbology implementation for this layer?" ),
-                                   QMessageBox::Yes | QMessageBox::No );
-
-  if ( res != QMessageBox::Yes )
-    return;
-
-  emit useNewSymbology( false );
 }

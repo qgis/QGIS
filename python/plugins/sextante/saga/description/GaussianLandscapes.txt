@@ -1,0 +1,8 @@
+Gaussian Landscapes
+recreations_fractals
+ParameterNumber|NX|Width (Cells)|None|None|100
+ParameterNumber|NY|Height (Cells)|None|None|100
+ParameterNumber|H|Roughness/Smoothness|None|None|0.0
+ParameterSelection|METHOD|Method|[0] Simple;[1] Flattening
+ParameterNumber|M|Flattening|None|None|0.0
+OutputRaster|GRID|Grid

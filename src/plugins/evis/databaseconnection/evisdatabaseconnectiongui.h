@@ -15,7 +15,7 @@
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ** Library General Public License for more details.
 **
-** This work was made possible through a grant by the the John D. and
+** This work was made possible through a grant by the John D. and
 ** Catherine T. MacArthur Foundation. Additionally, this program was prepared by
 ** the American Museum of Natural History under award No. NA05SEC46391002
 ** from the National Oceanic and Atmospheric Administration, U.S. Department
@@ -83,7 +83,7 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
     void on_pbtnRunQuery_clicked( );
 
   signals:
-    /** \brief signal emited by the drawNewVectorLayer slot */
+    /** \brief signal emitted by the drawNewVectorLayer slot */
     void drawVectorLayer( QString, QString, QString );
 };
 

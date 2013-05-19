@@ -48,7 +48,7 @@ class TableViewer(QTableView):
 		self.loadData( self.item )
 
 	def loadData(self, item ):
-		if item == self.item and not self.dirty: 
+		if item == self.item and not self.dirty:
 			return
 		self._clear()
 		if item is None:
@@ -67,7 +67,12 @@ class TableViewer(QTableView):
 
 	def _clear(self):
 		if self.item is not None:
-			self.disconnect(self.item, SIGNAL('aboutToChange'), self.setDirty)
+			try:
+				self.disconnect(self.item, SIGNAL('aboutToChange'), self.setDirty)
+			except:
+				# do not raise any error if self.item was deleted
+				pass
+
 		self.item = None
 		self.dirty = False
 
@@ -83,11 +88,13 @@ class TableViewer(QTableView):
 			self.setModel( table.tableDataModel(self) )
 
 		except DbError, e:
-			QApplication.restoreOverrideCursor()
 			DlgDbError.showError(e, self)
+			return
 
 		else:
 			self.update()
+
+		finally:
 			QApplication.restoreOverrideCursor()
 
 

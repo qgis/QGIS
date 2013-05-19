@@ -1,0 +1,8 @@
+Polynomial Trend from Grids
+grid_calculus
+ParameterMultipleInput|GRIDS|Dependent Variables|3.0|False
+ParameterMultipleInput|Y_GRIDS|Independent Variable (per Grid and Cell)|3.0|True
+ParameterFixedTable|Y_TABLE|Independent Variable (per Grid)|3|Value|False
+ParameterSelection|POLYNOM|Type of Approximated Function|[0] first order polynom (linear regression);[1] second order polynom;[2] third order polynom;[3] fourth order polynom;[4] fifth order polynom
+OutputRaster|PARMS|Polynomial Coefficients
+OutputRaster|QUALITY|Coefficient of Determination

@@ -23,7 +23,12 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 
 #include <limits>
 
+#include "qgis.h"
+
 class QgsContrastEnhancementFunction;
+class QDomDocument;
+class QDomElement;
+class QString;
 
 /** \ingroup core
  * Manipulates raster pixel values so that they enhanceContrast or clip into a
@@ -45,31 +50,8 @@ class CORE_EXPORT QgsContrastEnhancement
       UserDefinedEnhancement
     };
 
-    /** These are exactly the same as GDAL pixel data types
-     ** This was added so that the python bindings could be built,
-     ** which initially was a problem because GDALDataType was passed
-     ** around as an argument to numerous method, including the constructor.
-     **
-     ** It seems like there should be a better way to do this...
-     */
-    enum QgsRasterDataType
-    {
-      QGS_Unknown = 0,
-      /*! Eight bit unsigned integer */           QGS_Byte = 1,
-      /*! Sixteen bit unsigned integer */         QGS_UInt16 = 2,
-      /*! Sixteen bit signed integer */           QGS_Int16 = 3,
-      /*! Thirty two bit unsigned integer */      QGS_UInt32 = 4,
-      /*! Thirty two bit signed integer */        QGS_Int32 = 5,
-      /*! Thirty two bit floating point */        QGS_Float32 = 6,
-      /*! Sixty four bit floating point */        QGS_Float64 = 7,
-      /*! Complex Int16 */                        QGS_CInt16 = 8,
-      /*! Complex Int32 */                        QGS_CInt32 = 9,
-      /*! Complex Float32 */                      QGS_CFloat32 = 10,
-      /*! Complex Float64 */                      QGS_CFloat64 = 11,
-      QGS_TypeCount = 12          /* maximum type # + 1 */
-    };
-
-    QgsContrastEnhancement( QgsContrastEnhancement::QgsRasterDataType theDatatype = QGS_Byte );
+    QgsContrastEnhancement( QGis::DataType theDatatype = QGis::Byte );
+    QgsContrastEnhancement( const QgsContrastEnhancement& ce );
     ~QgsContrastEnhancement();
 
     /*
@@ -78,10 +60,10 @@ class CORE_EXPORT QgsContrastEnhancement
      *
      */
     /** \brief Helper function that returns the maximum possible value for a GDAL data type */
-    static double maximumValuePossible( QgsRasterDataType );
+    static double maximumValuePossible( QGis::DataType );
 
     /** \brief Helper function that returns the minimum possible value for a GDAL data type */
-    static double minimumValuePossible( QgsRasterDataType );
+    static double minimumValuePossible( QGis::DataType );
 
     /*
      *
@@ -95,6 +77,10 @@ class CORE_EXPORT QgsContrastEnhancement
     double minimumValue() const { return mMinimumValue; }
 
     ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return mContrastEnhancementAlgorithm; }
+
+    static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
+
+    static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString& contrastEnhancementString );
 
     /*
      *
@@ -119,6 +105,10 @@ class CORE_EXPORT QgsContrastEnhancement
     /** \brief Return the minimum value for the contrast enhancement range. */
     void setMinimumValue( double, bool generateTable = true );
 
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+
+    void readXML( const QDomElement& elem );
+
   private:
     /** \brief Current contrast enhancement algorithm */
     ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm;
@@ -142,7 +132,7 @@ class CORE_EXPORT QgsContrastEnhancement
     double mMaximumValue;
 
     /** \brief Data type of the band */
-    QgsRasterDataType mRasterDataType;
+    QGis::DataType mRasterDataType;
 
     /** \brief Maximum range of values for a given data type */
     double mRasterDataTypeRange;

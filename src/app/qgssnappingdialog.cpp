@@ -72,8 +72,9 @@ QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas ): Q
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer * > ) ), this, SLOT( addLayers( QList<QgsMapLayer * > ) ) );
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersWillBeRemoved( QStringList ) ) );
   connect( cbxEnableTopologicalEditingCheckBox, SIGNAL( stateChanged( int ) ), this, SLOT( on_cbxEnableTopologicalEditingCheckBox_stateChanged( int ) ) );
+  connect( cbxEnableIntersectionSnappingCheckBox, SIGNAL( stateChanged( int ) ), this, SLOT( on_cbxEnableIntersectionSnappingCheckBox_stateChanged( int ) ) );
 
-  mLayerTreeWidget->clear();
+  reload();
 
   QMap< QString, QgsMapLayer *> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
   QMap< QString, QgsMapLayer *>::iterator it;
@@ -90,7 +91,7 @@ QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas ): Q
   mLayerTreeWidget->resizeColumnToContents( 4 );
   mLayerTreeWidget->setSortingEnabled( true );
 
-  setTopologicalEditingState();
+  connect( QgsProject::instance(), SIGNAL( snapSettingsChanged() ), this, SLOT( reload() ) );
 }
 
 QgsSnappingDialog::QgsSnappingDialog()
@@ -101,10 +102,30 @@ QgsSnappingDialog::~QgsSnappingDialog()
 {
 }
 
+void QgsSnappingDialog::reload()
+{
+  mLayerTreeWidget->clear();
+
+  QMap< QString, QgsMapLayer *> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap< QString, QgsMapLayer *>::iterator it;
+  for ( it = mapLayers.begin(); it != mapLayers.end() ; ++it )
+  {
+    addLayer( it.value() );
+  }
+
+  setTopologicalEditingState();
+  setIntersectionSnappingState();
+}
+
 void QgsSnappingDialog::on_cbxEnableTopologicalEditingCheckBox_stateChanged( int state )
 {
-  int topologicalEditingEnabled = ( state == Qt::Checked ) ? 1 : 0;
-  QgsProject::instance()->writeEntry( "Digitizing", "/TopologicalEditing", topologicalEditingEnabled );
+  QgsProject::instance()->writeEntry( "Digitizing", "/TopologicalEditing", state == Qt::Checked );
+  setTopologicalEditingState();
+}
+
+void QgsSnappingDialog::on_cbxEnableIntersectionSnappingCheckBox_stateChanged( int state )
+{
+  QgsProject::instance()->writeEntry( "Digitizing", "/IntersectionSnapping", state == Qt::Checked );
 }
 
 void QgsSnappingDialog::closeEvent( QCloseEvent* event )
@@ -174,6 +195,7 @@ void QgsSnappingDialog::apply()
 void QgsSnappingDialog::show()
 {
   setTopologicalEditingState();
+  setIntersectionSnappingState();
   if ( mDock )
     mDock->setVisible( true );
   else
@@ -182,7 +204,7 @@ void QgsSnappingDialog::show()
 
 void QgsSnappingDialog::addLayers( QList<QgsMapLayer *> layers )
 {
-  foreach( QgsMapLayer* layer, layers )
+  foreach ( QgsMapLayer* layer, layers )
   {
     addLayer( layer );
   }
@@ -216,12 +238,13 @@ void QgsSnappingDialog::addLayer( QgsMapLayer * theMapLayer )
   }
 
   bool layerIdListOk, enabledListOk, toleranceListOk, toleranceUnitListOk, snapToListOk, avoidIntersectionListOk;
-  QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", &layerIdListOk );
-  QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", &enabledListOk );
-  QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", & toleranceListOk );
-  QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", & toleranceUnitListOk );
-  QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", &snapToListOk );
-  QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", &avoidIntersectionListOk );
+  QStringList defList;
+  QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", defList, &layerIdListOk );
+  QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", defList, &enabledListOk );
+  QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", defList, & toleranceListOk );
+  QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", defList, &toleranceUnitListOk );
+  QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", defList, &snapToListOk );
+  QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", defList, &avoidIntersectionListOk );
 
   //snap to layer yes/no
   QTreeWidgetItem *item = new QTreeWidgetItem( mLayerTreeWidget );
@@ -262,22 +285,23 @@ void QgsSnappingDialog::addLayer( QgsMapLayer * theMapLayer )
     mLayerTreeWidget->setItemWidget( item, 5, cbxAvoidIntersection );
   }
 
-  if ( myDockFlag )
-  {
-    connect( cbxEnable, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
-    connect( cbxSnapTo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
-    connect( leTolerance, SIGNAL( textEdited( const QString ) ), this, SLOT( apply() ) );
-    connect( cbxUnits, SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
-
-    if ( cbxAvoidIntersection )
-    {
-      connect( cbxAvoidIntersection, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
-    }
-  }
-
   int idx = layerIdList.indexOf( currentVectorLayer->id() );
   if ( idx < 0 )
   {
+    if ( myDockFlag )
+    {
+      connect( cbxEnable, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
+      connect( cbxSnapTo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
+      connect( leTolerance, SIGNAL( textEdited( const QString ) ), this, SLOT( apply() ) );
+      connect( cbxUnits, SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
+
+      if ( cbxAvoidIntersection )
+      {
+        connect( cbxAvoidIntersection, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
+      }
+      setTopologicalEditingState();
+      setIntersectionSnappingState();
+    }
     // no settings for this layer yet
     return;
   }
@@ -304,11 +328,27 @@ void QgsSnappingDialog::addLayer( QgsMapLayer * theMapLayer )
   {
     cbxAvoidIntersection->setChecked( avoidIntersectionsList.contains( currentVectorLayer->id() ) );
   }
+
+  if ( myDockFlag )
+  {
+    connect( cbxEnable, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
+    connect( cbxSnapTo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
+    connect( leTolerance, SIGNAL( textEdited( const QString ) ), this, SLOT( apply() ) );
+    connect( cbxUnits, SIGNAL( currentIndexChanged( int ) ), this, SLOT( apply() ) );
+
+    if ( cbxAvoidIntersection )
+    {
+      connect( cbxAvoidIntersection, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
+    }
+
+    setTopologicalEditingState();
+    setIntersectionSnappingState();
+  }
 }
 
 void QgsSnappingDialog::layersWillBeRemoved( QStringList thelayers )
 {
-  foreach( QString theLayerId, thelayers )
+  foreach ( QString theLayerId, thelayers )
   {
     QTreeWidgetItem *item = 0;
 
@@ -330,13 +370,15 @@ void QgsSnappingDialog::setTopologicalEditingState()
   // read the digitizing settings
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
   cbxEnableTopologicalEditingCheckBox->blockSignals( true );
-  if ( topologicalEditing != 0 )
-  {
-    cbxEnableTopologicalEditingCheckBox->setCheckState( Qt::Checked );
-  }
-  else
-  {
-    cbxEnableTopologicalEditingCheckBox->setCheckState( Qt::Unchecked );
-  }
+  cbxEnableTopologicalEditingCheckBox->setChecked( topologicalEditing );
   cbxEnableTopologicalEditingCheckBox->blockSignals( false );
+}
+
+void QgsSnappingDialog::setIntersectionSnappingState()
+{
+  // read the digitizing settings
+  int intersectionSnapping = QgsProject::instance()->readNumEntry( "Digitizing", "/IntersectionSnapping", 0 );
+  cbxEnableIntersectionSnappingCheckBox->blockSignals( true );
+  cbxEnableIntersectionSnappingCheckBox->setChecked( intersectionSnapping );
+  cbxEnableIntersectionSnappingCheckBox->blockSignals( false );
 }

@@ -1,0 +1,11 @@
+<h3>Funktion $rownum</h3>
+Ergibt die Zeilennummer des aktuellen Datensatzes
+
+<h4>Syntax</h4>
+<pre>$rownum</pre>
+
+<h4>Argumente</h4>
+Keine
+
+<h4>Beispiel</h4>
+<pre>$rownum &rarr; 4711</pre>

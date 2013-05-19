@@ -69,9 +69,9 @@ class TestQgsRuleBasedRenderer: public QObject
       QgsVectorLayer* layer = new QgsVectorLayer( "point?field=fld:int", "x", "memory" );
       int idx = layer->fieldNameIndex( "fld" );
       QVERIFY( idx != -1 );
-      QgsFeature f1; f1.addAttribute( idx, QVariant( 2 ) );
-      QgsFeature f2; f2.addAttribute( idx, QVariant( 8 ) );
-      QgsFeature f3; f3.addAttribute( idx, QVariant( 100 ) );
+      QgsFeature f1; f1.initAttributes( 1 ); f1.setAttribute( idx, QVariant( 2 ) );
+      QgsFeature f2; f2.initAttributes( 1 ); f2.setAttribute( idx, QVariant( 8 ) );
+      QgsFeature f3; f3.initAttributes( 1 ); f3.setAttribute( idx, QVariant( 100 ) );
 
       // prepare renderer
       QgsSymbolV2* s1 = QgsSymbolV2::defaultSymbol( QGis::Point );
@@ -125,8 +125,8 @@ class TestQgsRuleBasedRenderer: public QObject
       // and does not have a parent
       QVERIFY( root->parent() == NULL );
 
-      foreach( QgsRuleBasedRendererV2::Rule* node, root->children() )
-      check_non_root_rule( node );
+      foreach ( QgsRuleBasedRendererV2::Rule* node, root->children() )
+        check_non_root_rule( node );
     }
 
     void check_non_root_rule( QgsRuleBasedRendererV2::Rule* node )
@@ -137,8 +137,8 @@ class TestQgsRuleBasedRenderer: public QObject
       // and must have a parent
       QVERIFY( node->parent() );
       // check that all children are okay
-      foreach( QgsRuleBasedRendererV2::Rule* child, node->children() )
-      check_non_root_rule( child );
+      foreach ( QgsRuleBasedRendererV2::Rule* child, node->children() )
+        check_non_root_rule( child );
     }
 
 };

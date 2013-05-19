@@ -27,6 +27,7 @@
 #include "qgscoordinatereferencesystem.h"
 class QDomNode;
 class QDomDocument;
+class QPolygonF;
 
 //non qt includes
 #include <iostream>
@@ -48,12 +49,12 @@ class QString;
 * of the layer. For example, a forward transformation transforms coordinates from the
 * layers coordinate system to the map canvas.
 */
-class CORE_EXPORT QgsCoordinateTransform: public QObject
+class CORE_EXPORT QgsCoordinateTransform : public QObject
 {
     Q_OBJECT
   public:
     /*! Default constructor. Make sure you use initialised() manually if you use this one! */
-    QgsCoordinateTransform() ;
+    QgsCoordinateTransform();
 
     /** Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
     * @param theSource CRS, typically of the layer's coordinate system
@@ -119,33 +120,33 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
     const QgsCoordinateReferenceSystem& destCRS() const { return mDestCRS; }
 
     /*! Transform the point from Source Coordinate System to Destination Coordinate System
-    * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
-    * otherwise points are transformed from map canvas CS to layerCS.
-    * @param p Point to transform
-    * @param direction TransformDirection (defaults to ForwardTransform)
-    * @return QgsPoint in Destination Coordinate System
+     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
+     * otherwise points are transformed from map canvas CS to layerCS.
+     * @param p Point to transform
+     * @param direction TransformDirection (defaults to ForwardTransform)
+     * @return QgsPoint in Destination Coordinate System
      */
     QgsPoint transform( const QgsPoint p, TransformDirection direction = ForwardTransform ) const;
 
     /*! Transform the point specified by x,y from Source Coordinate System to Destination Coordinate System
-    * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
-    * otherwise points are transformed from map canvas CS to layerCS.
-    * @param x x cordinate of point to transform
-    * @param y y coordinate of point to transform
-    * @param direction TransformDirection (defaults to ForwardTransform)
-    * @return QgsPoint in Destination Coordinate System
+     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
+     * otherwise points are transformed from map canvas CS to layerCS.
+     * @param x x cordinate of point to transform
+     * @param y y coordinate of point to transform
+     * @param direction TransformDirection (defaults to ForwardTransform)
+     * @return QgsPoint in Destination Coordinate System
      */
     QgsPoint transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const;
 
     /*! Transform a QgsRectangle to the dest Coordinate system
-    * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
-    * otherwise points are transformed from map canvas CS to layerCS.
-    * It assumes that rect is a bounding box, and creates a bounding box
-    * in the proejcted CS, so that all points in source rectangle is within
-    * returned rectangle.
-    * @param theRect rect to transform
-    * @param direction TransformDirection (defaults to ForwardTransform)
-    * @return QgsRectangle in Destination Coordinate System
+     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
+     * otherwise points are transformed from map canvas CS to layerCS.
+     * It assumes that rect is a bounding box, and creates a bounding box
+     * in the proejcted CS, so that all points in source rectangle is within
+     * returned rectangle.
+     * @param theRect rect to transform
+     * @param direction TransformDirection (defaults to ForwardTransform)
+     * @return QgsRectangle in Destination Coordinate System
      */
     QgsRectangle transformBoundingBox( const QgsRectangle theRect, TransformDirection direction = ForwardTransform ) const;
 
@@ -154,34 +155,37 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
     // C style arrays.
     void transformInPlace( double& x, double& y, double &z, TransformDirection direction = ForwardTransform ) const;
 
-    void transformInPlace( std::vector<double>& x, std::vector<double>& y, std::vector<double>& z,
+    //! @note not available in python bindings
+    void transformInPlace( QVector<double>& x, QVector<double>& y, QVector<double>& z,
                            TransformDirection direction = ForwardTransform ) const;
+
+    void transformPolygon( QPolygonF& poly, TransformDirection direction = ForwardTransform ) const;
 
 #ifdef ANDROID
     void transformInPlace( float& x, float& y, float& z, TransformDirection direction = ForwardTransform ) const;
 
-    void transformInPlace( std::vector<float>& x, std::vector<float>& y, std::vector<float>& z,
+    void transformInPlace( QVector<float>& x, QVector<float>& y, QVector<float>& z,
                            TransformDirection direction = ForwardTransform ) const;
 #endif
 
     /*! Transform a QgsRectangle to the dest Coordinate system
-    * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
-    * otherwise points are transformed from map canvas CS to layerCS.
-    * @param theRect rect to transform
-    * @param direction TransformDirection (defaults to ForwardTransform)
-    * @return QgsRectangle in Destination Coordinate System
+     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
+     * otherwise points are transformed from map canvas CS to layerCS.
+     * @param theRect rect to transform
+     * @param direction TransformDirection (defaults to ForwardTransform)
+     * @return QgsRectangle in Destination Coordinate System
      */
     QgsRectangle transform( const QgsRectangle theRect, TransformDirection direction = ForwardTransform ) const;
 
     /*! Transform an array of coordinates to a different Coordinate System
-    * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
-    * otherwise points are transformed from map canvas CS to layerCS.
-    * @param numPoint number of coordinates in arrays
-    * @param x array of x coordinates to transform
-    * @param y array of y coordinates to transform
-    * @param z array of z coordinates to transform
-    * @param direction TransformDirection (defaults to ForwardTransform)
-    * @return QgsRectangle in Destination Coordinate System
+     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
+     * otherwise points are transformed from map canvas CS to layerCS.
+     * @param numPoint number of coordinates in arrays
+     * @param x array of x coordinates to transform
+     * @param y array of y coordinates to transform
+     * @param z array of z coordinates to transform
+     * @param direction TransformDirection (defaults to ForwardTransform)
+     * @return QgsRectangle in Destination Coordinate System
      */
     void transformCoords( const int &numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const;
 

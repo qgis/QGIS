@@ -50,6 +50,7 @@ class QgisAppInterface : public QgisInterface
     QgsLegendInterface* legendInterface();
 
     /* Exposed functions */
+
     //! Zoom map to full extent
     void zoomFull();
     //! Zoom map to previous extent
@@ -64,8 +65,7 @@ class QgisAppInterface : public QgisInterface
     //! Add a raster layer given its file name
     QgsRasterLayer* addRasterLayer( QString rasterLayerPath, QString baseName );
     //! Add a WMS layer
-    QgsRasterLayer* addRasterLayer( const QString& url, const QString& baseName, const QString& providerKey,
-                                    const QStringList& layers, const QStringList& styles, const QString& format, const QString& crs );
+    QgsRasterLayer* addRasterLayer( const QString& url, const QString& baseName, const QString& providerKey );
 
     //! Add a project
     bool addProject( QString theProjectName );
@@ -80,22 +80,67 @@ class QgisAppInterface : public QgisInterface
 
     //! Add an icon to the plugins toolbar
     int addToolBarIcon( QAction *qAction );
+    /**
+     * Add a widget to the plugins toolbar.
+     * To remove this widget again, call {@link removeToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    QAction* addToolBarWidget( QWidget* widget );
     //! Remove an icon (action) from the plugin toolbar
     void removeToolBarIcon( QAction *qAction );
     //! Add an icon to the Raster toolbar
     int addRasterToolBarIcon( QAction *qAction );
+    /**
+     * Add a widget to the raster toolbar.
+     * To remove this widget again, call {@link removeRasterToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    QAction* addRasterToolBarWidget( QWidget* widget );
     //! Remove an icon (action) from the Raster toolbar
     void removeRasterToolBarIcon( QAction *qAction );
     //! Add an icon to the Vector toolbar
     int addVectorToolBarIcon( QAction *qAction );
+    /**
+     * Add a widget to the vector toolbar.
+     * To remove this widget again, call {@link removeVectorToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    QAction* addVectorToolBarWidget( QWidget* widget );
     //! Remove an icon (action) from the Vector toolbar
     void removeVectorToolBarIcon( QAction *qAction );
     //! Add an icon to the Database toolbar
     int addDatabaseToolBarIcon( QAction *qAction );
+    /**
+     * Add a widget to the database toolbar.
+     * To remove this widget again, call {@link removeDatabaseToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    QAction* addDatabaseToolBarWidget( QWidget* widget );
     //! Remove an icon (action) from the Database toolbar
     void removeDatabaseToolBarIcon( QAction *qAction );
     //! Add an icon to the Web toolbar
     int addWebToolBarIcon( QAction *qAction );
+    /**
+     * Add a widget to the web toolbar.
+     * To remove this widget again, call {@link removeWebToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    QAction* addWebToolBarWidget( QWidget* widget );
     //! Remove an icon (action) from the Web toolbar
     void removeWebToolBarIcon( QAction *qAction );
 
@@ -121,7 +166,50 @@ class QgisAppInterface : public QgisInterface
     */
     QWidget * mainWindow();
 
+    QgsMessageBar * messageBar();
+
     QList<QgsComposerView*> activeComposers();
+
+    /** Create a new composer
+     * @param title window title for new composer (one will be generated if empty)
+     * @return pointer to composer's view
+     * @note new composer window will be shown and activated (added in 1.9)
+     */
+    QgsComposerView* createNewComposer( QString title = QString( "" ) );
+
+    /** Duplicate an existing parent composer from composer view
+     * @param composerView pointer to existing composer view
+     * @param title window title for duplicated composer (one will be generated if empty)
+     * @return pointer to duplicate composer's view
+     * @note dupicate composer window will be hidden until loaded, then shown and activated (added in 1.9)
+     */
+    QgsComposerView* duplicateComposer( QgsComposerView* composerView, QString title = QString( "" ) );
+
+    /** Deletes parent composer of composer view, after closing composer window
+     * @note (added in 1.9)
+     */
+    void deleteComposer( QgsComposerView* composerView );
+
+    /** Return changeable options built from settings and/or defaults
+     * @note (added in 1.9)
+     */
+    QMap<QString, QVariant> defaultStyleSheetOptions();
+
+    /** Generate stylesheet
+     * @param opts generated default option values, or a changed copy of them
+     * @note added in 1.9
+     */
+    void buildStyleSheet( const QMap<QString, QVariant>& opts );
+
+    /** Save changed default option keys/values to user settings
+      * @note added in 1.9
+      */
+    void saveStyleSheetOptions( const QMap<QString, QVariant>& opts );
+
+    /** Get reference font for initial qApp (may not be same as QgisApp)
+     * @note added in 1.9
+     */
+    QFont defaultStyleSheetFont();
 
     /** Add action to the plugins menu */
     void addPluginToMenu( QString name, QAction* action );
@@ -159,8 +247,6 @@ class QgisAppInterface : public QgisInterface
     /** Remove specified dock widget from main window (doesn't delete it). Added in QGIS 1.1. */
     void removeDockWidget( QDockWidget * dockwidget );
 
-    virtual void refreshLegend( QgsMapLayer *l );
-
     /** show layer properties dialog for layer
      * @param l layer to show properties table for
      * @note added in added in 1.5
@@ -197,6 +283,8 @@ class QgisAppInterface : public QgisInterface
     virtual QMenu *editMenu();
     virtual QMenu *viewMenu();
     virtual QMenu *layerMenu();
+    //! @note added in 2.0
+    virtual QMenu *newLayerMenu();
     virtual QMenu *settingsMenu();
     virtual QMenu *pluginMenu();
     virtual QMenu *rasterMenu();
@@ -224,43 +312,32 @@ class QgisAppInterface : public QgisInterface
     //! File menu actions
     virtual QAction *actionNewProject();
     virtual QAction *actionOpenProject();
-    virtual QAction *actionFileSeparator1();
     virtual QAction *actionSaveProject();
     virtual QAction *actionSaveProjectAs();
     virtual QAction *actionSaveMapAsImage();
-    virtual QAction *actionFileSeparator2();
     virtual QAction *actionProjectProperties();
-    virtual QAction *actionFileSeparator3();
     virtual QAction *actionPrintComposer();
-    virtual QAction *actionFileSeparator4();
+    virtual QAction *actionShowComposerManager();
     virtual QAction *actionExit();
 
     //! Edit menu actions
     virtual QAction *actionCutFeatures();
     virtual QAction *actionCopyFeatures();
     virtual QAction *actionPasteFeatures();
-    virtual QAction *actionEditSeparator1();
     virtual QAction *actionAddFeature();
-    Q_DECL_DEPRECATED virtual QAction *actionCapturePoint();
-    Q_DECL_DEPRECATED virtual QAction *actionCaptureLine();
-    Q_DECL_DEPRECATED virtual QAction *actionCapturePolygon();
     virtual QAction *actionDeleteSelected();
     virtual QAction *actionMoveFeature();
     virtual QAction *actionSplitFeatures();
-    virtual QAction *actionAddVertex();
-    virtual QAction *actionDeleteVertex();
-    virtual QAction *actionMoveVertex();
     virtual QAction *actionAddRing();
     virtual QAction *actionAddPart();
-    Q_DECL_DEPRECATED virtual QAction *actionAddIsland();
     virtual QAction *actionSimplifyFeature();
     virtual QAction *actionDeleteRing();
     virtual QAction *actionDeletePart();
     virtual QAction *actionNodeTool();
-    virtual QAction *actionEditSeparator2();
 
     //! View menu actions
     virtual QAction *actionPan();
+    virtual QAction *actionTouch();
     virtual QAction *actionPanToSelected();
     virtual QAction *actionZoomIn();
     virtual QAction *actionZoomOut();
@@ -273,19 +350,16 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionFeatureAction();
     virtual QAction *actionMeasure();
     virtual QAction *actionMeasureArea();
-    virtual QAction *actionViewSeparator1();
     virtual QAction *actionZoomFullExtent();
     virtual QAction *actionZoomToLayer();
     virtual QAction *actionZoomToSelected();
     virtual QAction *actionZoomLast();
     virtual QAction *actionZoomNext();
     virtual QAction *actionZoomActualSize();
-    virtual QAction *actionViewSeparator2();
     virtual QAction *actionMapTips();
     virtual QAction *actionNewBookmark();
     virtual QAction *actionShowBookmarks();
     virtual QAction *actionDraw();
-    virtual QAction *actionViewSeparator3();
 
     //! Layer menu actions
     virtual QAction *actionNewVectorLayer();
@@ -293,41 +367,55 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionAddRasterLayer();
     virtual QAction *actionAddPgLayer();
     virtual QAction *actionAddWmsLayer();
-    virtual QAction *actionLayerSeparator1();
+    /** @note added in 1.9 */
+    virtual QAction *actionCopyLayerStyle();
+    /** @note added in 1.9 */
+    virtual QAction *actionPasteLayerStyle();
     virtual QAction *actionOpenTable();
+    virtual QAction *actionOpenFieldCalculator();
     virtual QAction *actionToggleEditing();
+    /** @note added in 1.9 */
+    virtual QAction *actionSaveActiveLayerEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionAllEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionSaveEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionSaveAllEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionRollbackEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionRollbackAllEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionCancelEdits();
+    /** @note added in 1.9 */
+    virtual QAction *actionCancelAllEdits();
     virtual QAction *actionLayerSaveAs();
     virtual QAction *actionLayerSelectionSaveAs();
     virtual QAction *actionRemoveLayer();
+    /** @note added in 1.9 */
+    virtual QAction *actionDuplicateLayer();
     virtual QAction *actionLayerProperties();
-    virtual QAction *actionLayerSeparator2();
     virtual QAction *actionAddToOverview();
     virtual QAction *actionAddAllToOverview();
     virtual QAction *actionRemoveAllFromOverview();
-    virtual QAction *actionLayerSeparator3();
     virtual QAction *actionHideAllLayers();
     virtual QAction *actionShowAllLayers();
 
     //! Plugin menu actions
     virtual QAction *actionManagePlugins();
-    virtual QAction *actionPluginSeparator1();
     virtual QAction *actionPluginListSeparator();
-    virtual QAction *actionPluginSeparator2();
-    virtual QAction *actionPluginPythonSeparator();
     virtual QAction *actionShowPythonDialog();
 
     //! Settings menu actions
     virtual QAction *actionToggleFullScreen();
-    virtual QAction *actionSettingsSeparator1();
     virtual QAction *actionOptions();
     virtual QAction *actionCustomProjection();
 
     //! Help menu actions
     virtual QAction *actionHelpContents();
-    virtual QAction *actionHelpSeparator1();
     virtual QAction *actionQgisHomePage();
     virtual QAction *actionCheckQgisVersion();
-    virtual QAction *actionHelpSeparator2();
     virtual QAction *actionAbout();
 
     //! open feature form
@@ -338,8 +426,37 @@ class QgisAppInterface : public QgisInterface
     // @added in 1.6
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false );
 
+    virtual QDialog* getFeatureForm( QgsVectorLayer *l, QgsFeature &f );
+
+    /** This method is only needed when using a UI form with a custom widget plugin and calling
+     * openFeatureForm or getFeatureForm from Python (PyQt4) and you havn't used the info tool first.
+     * Python will crash bringing QGIS wtih it
+     * if the custom form is not loaded from a C++ method call.
+     *
+     * This method uses a QTimer to call QUiLoader in order to load the form via C++
+     * you only need to call this once after that you can call openFeatureForm/getFeatureForm
+     * like normal
+     *
+     * More information here: http://qt-project.org/forums/viewthread/27098/
+     */
+    virtual void preloadForm( QString uifile );
+
+    /** Return vector layers in edit mode
+     * @param modified whether to return only layers that have been modified
+     * @returns list of layers in legend order, or empty list
+     * @note added in 1.9 */
+    virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
+
+    /** Get timeout for timed messages: default of 5 seconds
+     * @note added in 1.9 */
+    virtual int messageTimeout();
+
   signals:
     void currentThemeChanged( QString );
+
+  private slots:
+
+    void cacheloadForm( QString uifile );
 
   private:
 
@@ -351,6 +468,8 @@ class QgisAppInterface : public QgisInterface
 
     //! Pointer to the QgisApp object
     QgisApp *qgis;
+
+    QTimer *mTimer;
 
     //! Pointer to the LegendInterface object
     QgsAppLegendInterface legendIface;

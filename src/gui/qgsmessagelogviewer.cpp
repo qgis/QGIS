@@ -46,8 +46,8 @@ QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent
 {
   setupUi( this );
 
-  connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, int ) ),
-           this, SLOT( logMessage( QString, QString, int ) ) );
+  connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ),
+           this, SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
 
   if ( statusBar )
   {
@@ -60,6 +60,7 @@ QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent
     mButton->setCheckable( true );
     mButton->hide();
     connect( mButton, SIGNAL( toggled( bool ) ), this, SLOT( buttonToggled( bool ) ) );
+    connect( mButton, SIGNAL( destroyed() ), this, SLOT( buttonDestroyed() ) );
     statusBar->addPermanentWidget( mButton, 0 );
   }
 
@@ -100,11 +101,16 @@ void QgsMessageLogViewer::buttonToggled( bool checked )
     w->hide();
 }
 
-void QgsMessageLogViewer::logMessage( QString message, QString tag, int level )
+void QgsMessageLogViewer::buttonDestroyed()
+{
+  mButton = 0;
+}
+
+void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
 {
   mButton->setToolTip( tr( "%1 message(s) logged." ).arg( mCount++ ) );
 
-  if ( !isVisible() )
+  if ( !isVisible() && level > QgsMessageLog::INFO )
   {
     mButton->show();
     QToolTip::showText( mButton->mapToGlobal( QPoint( 0, 0 ) ), mButton->toolTip() );
@@ -131,8 +137,8 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, int level )
     w->verticalHeader()->setVisible( false );
     w->setGridStyle( Qt::DotLine );
     w->setEditTriggers( QAbstractItemView::NoEditTriggers );
+    w->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
     w->setHorizontalHeaderLabels( QStringList() << tr( "Timestamp" ) << tr( "Message" ) << tr( "Level" ) );
-    w->horizontalHeader()->setResizeMode( QHeaderView::ResizeToContents );
     tabWidget->addTab( w, tag );
 
     tabWidget->setCurrentIndex( tabWidget->count() - 1 );
@@ -146,6 +152,8 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, int level )
   w->setItem( n, 1, new QTableWidgetItem( message ) );
   w->setItem( n, 2, new QTableWidgetItem( QString::number( level ) ) );
   w->scrollToBottom();
+
+  w->horizontalHeader()->resizeSections( QHeaderView::ResizeToContents );
 }
 
 void QgsMessageLogViewer::closeTab( int index )

@@ -1,5 +1,18 @@
+/***************************************************************************
+    qgsvectorfieldsymbollayerwidget.cpp
+    ---------------------
+    begin                : October 2011
+    copyright            : (C) 2011 by Marco Hugentobler
+    email                : marco dot hugentobler at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsvectorfieldsymbollayerwidget.h"
-#include "qgssymbolv2propertiesdialog.h"
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
 
@@ -8,13 +21,12 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVecto
   setupUi( this );
   if ( mVectorLayer )
   {
-    const QgsFieldMap& fm = mVectorLayer->pendingFields();
-    QgsFieldMap::const_iterator fieldIt = fm.constBegin();
+    const QgsFields& fm = mVectorLayer->pendingFields();
     mXAttributeComboBox->addItem( "" );
     mYAttributeComboBox->addItem( "" );
-    for ( ; fieldIt != fm.constEnd(); ++fieldIt )
+    for ( int idx = 0; idx < fm.count(); ++idx )
     {
-      QString fieldName = fieldIt.value().name();
+      QString fieldName = fm[idx].name();
       mXAttributeComboBox->addItem( fieldName );
       mYAttributeComboBox->addItem( fieldName );
     }
@@ -74,7 +86,12 @@ void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
   {
     mRadiansRadioButton->setChecked( true );
   }
-  updateMarkerIcon();
+
+  mDistanceUnitComboBox->blockSignals( true );
+  mDistanceUnitComboBox->setCurrentIndex( mLayer->distanceUnit() );
+  mDistanceUnitComboBox->blockSignals( false );
+
+  emit changed();
 }
 
 QgsSymbolLayerV2* QgsVectorFieldSymbolLayerWidget::symbolLayer()
@@ -106,32 +123,6 @@ void QgsVectorFieldSymbolLayerWidget::on_mYAttributeComboBox_currentIndexChanged
   {
     mLayer->setYAttribute( mYAttributeComboBox->itemText( index ) );
     emit changed();
-  }
-}
-
-void QgsVectorFieldSymbolLayerWidget::on_mLineStylePushButton_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), mVectorLayer, this );
-  if ( dlg.exec() == QDialog::Rejected )
-  {
-    return;
-  }
-
-  updateMarkerIcon();
-  emit changed();
-}
-
-void QgsVectorFieldSymbolLayerWidget::updateMarkerIcon()
-{
-  if ( mLayer )
-  {
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLayer->subSymbol(), mLineStylePushButton->iconSize() );
-    mLineStylePushButton->setIcon( icon );
   }
 }
 
@@ -205,6 +196,15 @@ void QgsVectorFieldSymbolLayerWidget::on_mCounterclockwiseFromEastRadioButton_to
   if ( mLayer && checked )
   {
     mLayer->setAngleOrientation( QgsVectorFieldSymbolLayer::CounterclockwiseFromEast );
+    emit changed();
+  }
+}
+
+void QgsVectorFieldSymbolLayerWidget::on_mDistanceUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setDistanceUnit(( QgsSymbolV2::OutputUnit ) index );
     emit changed();
   }
 }

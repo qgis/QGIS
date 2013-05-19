@@ -73,7 +73,7 @@ QRectF QgsNumericScaleBarStyle::calculateBoxSize() const
 
   if ( mLastScaleBarWidth != rect.width() && mLastScaleBarWidth > 0 && rect.width() > 0 )
   {
-    //hack to move scale bar the the left / right in order to keep the bar alignment
+    //hack to move scale bar the left / right in order to keep the bar alignment
     const_cast<QgsComposerScaleBar*>( mScaleBar )->correctXPositionAlignment( mLastScaleBarWidth, rect.width() );
   }
   mLastScaleBarWidth = rect.width();
@@ -91,9 +91,9 @@ QString QgsNumericScaleBarStyle::scaleText() const
     if ( composerMap )
     {
       scaleDenominator = composerMap->scale();
-      scaleBarText = "1:" + QString::number( scaleDenominator, 'f', 0 );
+      scaleBarText = "1:" + QString( "%L1" ).arg( scaleDenominator, 0, 'f', 0 );
     }
-    scaleBarText = "1:" + QString::number( scaleDenominator, 'f', 0 );
+    scaleBarText = "1:" + QString( "%L1" ).arg( scaleDenominator, 0, 'f', 0 );
   }
   return scaleBarText;
 }

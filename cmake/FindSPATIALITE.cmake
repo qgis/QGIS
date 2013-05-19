@@ -11,6 +11,9 @@
 #    SPATIALITE_INCLUDE_DIR
 #    SPATIALITE_LIBRARY
 
+# This macro checks if the symbol exists
+include(CheckLibraryExists)
+
 
 # FIND_PATH and FIND_LIBRARY normally search standard locations
 # before the specified paths. To search non-standard paths first,
@@ -39,21 +42,15 @@ IF (APPLE)
 ENDIF (APPLE)
 
 FIND_PATH(SPATIALITE_INCLUDE_DIR spatialite.h
+  "$ENV{INCLUDE}"
   "$ENV{LIB_DIR}/include"
   "$ENV{LIB_DIR}/include/spatialite"
-  #mingw
-  c:/msys/local/include
-  NO_DEFAULT_PATH
   )
-FIND_PATH(SPATIALITE_INCLUDE_DIR spatialite.h)
 
-FIND_LIBRARY(SPATIALITE_LIBRARY NAMES spatialite PATHS
-  "$ENV{LIB_DIR}/lib"
-  #mingw
-  c:/msys/local/lib
-  NO_DEFAULT_PATH
+FIND_LIBRARY(SPATIALITE_LIBRARY NAMES spatialite spatialite_i PATHS
+  $ENV{LIB}
+  $ENV{LIB_DIR}/lib
   )
-FIND_LIBRARY(SPATIALITE_LIBRARY NAMES spatialite)
 
 IF (SPATIALITE_INCLUDE_DIR AND SPATIALITE_LIBRARY)
    SET(SPATIALITE_FOUND TRUE)
@@ -65,6 +62,13 @@ IF (SPATIALITE_FOUND)
    IF (NOT SPATIALITE_FIND_QUIETLY)
       MESSAGE(STATUS "Found SpatiaLite: ${SPATIALITE_LIBRARY}")
    ENDIF (NOT SPATIALITE_FIND_QUIETLY)
+
+   # Check for symbol gaiaDropTable
+   IF(APPLE)
+       # no extra LDFLAGS used in link test, may fail in OS X SDK
+       SET(CMAKE_REQUIRED_LIBRARIES "-F/Library/Frameworks" ${CMAKE_REQUIRED_LIBRARIES})
+   ENDIF(APPLE)
+   check_library_exists("${SPATIALITE_LIBRARY}" gaiaDropTable "" SPATIALITE_VERSION_GE_4_0_0)
 
 ELSE (SPATIALITE_FOUND)
 

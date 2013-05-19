@@ -38,16 +38,13 @@ void QgsMapToolReshape::canvasReleaseEvent( QMouseEvent * e )
 
   if ( !vlayer )
   {
-    QMessageBox::information( 0, tr( "Not a vector layer" ),
-                              tr( "The current layer is not a vector layer" ) );
+    notifyNotVectorLayer();
     return;
   }
 
   if ( !vlayer->isEditable() )
   {
-    QMessageBox::information( 0, tr( "Layer not editable" ),
-                              tr( "Cannot edit the vector layer. Use 'Toggle Editing' to make it editable." )
-                            );
+    notifyNotEditableLayer();
     return;
   }
 
@@ -86,13 +83,13 @@ void QgsMapToolReshape::canvasReleaseEvent( QMouseEvent * e )
     }
 
     //query all the features that intersect bounding box of capture line
-    vlayer->select( QgsAttributeList(), bbox, true, false );
+    QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( bbox ).setSubsetOfAttributes( QgsAttributeList() ) );
     QgsFeature f;
     int reshapeReturn;
     bool reshapeDone = false;
 
     vlayer->beginEditCommand( tr( "Reshape" ) );
-    while ( vlayer->nextFeature( f ) )
+    while ( fit.nextFeature( f ) )
     {
       //query geometry
       //call geometry->reshape(mCaptureList)

@@ -6,49 +6,55 @@ class QgsRenderContext
 #include <qgsrendercontext.h>
 %End
 
- public:
-  QgsRenderContext();
-  ~QgsRenderContext();
+  public:
+    QgsRenderContext();
+    ~QgsRenderContext();
 
-  //getters
+    //getters
 
-  QPainter* painter();
+    QPainter* painter();
+    const QPainter* constPainter() const;
 
-  const QgsCoordinateTransform* coordinateTransform() const;
+    const QgsCoordinateTransform* coordinateTransform() const;
 
-  const QgsRectangle& extent() const;
+    const QgsRectangle& extent() const;
 
-  const QgsMapToPixel& mapToPixel() const;
+    const QgsMapToPixel& mapToPixel() const;
 
-  double scaleFactor() const;
+    double scaleFactor() const;
 
-  double rasterScaleFactor() const;
-  
-  bool renderingStopped() const;
+    double rasterScaleFactor() const;
 
-  bool forceVectorOutput() const;
+    bool renderingStopped() const;
 
-  bool drawEditingInformation() const;
+    bool forceVectorOutput() const;
 
-  double rendererScale() const;
+    bool drawEditingInformation() const;
 
-  //! Added in QGIS v1.4
-  QgsLabelingEngineInterface* labelingEngine();
+    double rendererScale() const;
 
-  //setters
+    //! Added in QGIS v1.4
+    QgsLabelingEngineInterface* labelingEngine();
 
-  /**Sets coordinate transformation. QgsRenderContext takes ownership and deletes if necessary*/
-  void setCoordinateTransform(QgsCoordinateTransform* t);
-  void setMapToPixel(const QgsMapToPixel& mtp);
-  void setExtent(const QgsRectangle& extent);
-  void setDrawEditingInformation(bool b);
-  void setRenderingStopped(bool stopped);
-  void setScaleFactor(double factor);
-  void setRasterScaleFactor(double factor);
-  void setRendererScale( double scale );
-  void setPainter(QPainter* p);
-  //! Added in QGIS v1.5
-  void setForceVectorOutput( bool force );
-  //! Added in QGIS v1.4
-  void setLabelingEngine(QgsLabelingEngineInterface* iface);
+    //! Added in QGIS v2.0
+    QColor selectionColor() const;
+
+    //setters
+
+    /**Sets coordinate transformation. QgsRenderContext does not take ownership*/
+    void setCoordinateTransform( const QgsCoordinateTransform* t );
+    void setMapToPixel( const QgsMapToPixel& mtp );
+    void setExtent( const QgsRectangle& extent );
+    void setDrawEditingInformation( bool b );
+    void setRenderingStopped( bool stopped );
+    void setScaleFactor( double factor );
+    void setRasterScaleFactor( double factor );
+    void setRendererScale( double scale );
+    void setPainter( QPainter* p );
+    //! Added in QGIS v1.5
+    void setForceVectorOutput( bool force );
+    //! Added in QGIS v1.4
+    void setLabelingEngine(QgsLabelingEngineInterface* iface);
+    //! Added in QGIS v2.0
+    void setSelectionColor( const QColor& color );
 };

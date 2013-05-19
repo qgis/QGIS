@@ -19,13 +19,12 @@ class QgsContextHelp : QObject
 #include <qgscontexthelp.h>
 %End
 
-public:
-  static void run(QString context);
+  public:
+    static void run(QString context);
 
-private:
-  //! Constructor
-  QgsContextHelp(QString context);
-
-  //! Destructor
-  ~QgsContextHelp();
+  private:
+    //! Constructor
+    QgsContextHelp( QString context );
+    //! Destructor
+    ~QgsContextHelp();
 };

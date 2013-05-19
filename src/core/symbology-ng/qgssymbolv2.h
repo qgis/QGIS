@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgssymbolv2.h
+    ---------------------
+    begin                : November 2009
+    copyright            : (C) 2009 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #ifndef QGSSYMBOLV2_H
 #define QGSSYMBOLV2_H
@@ -22,7 +36,6 @@ class QgsSymbolLayerV2;
 class QgsRenderContext;
 class QgsVectorLayer;
 
-typedef QMap<QString, QString> QgsStringMap;
 typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
 
 class CORE_EXPORT QgsSymbolV2
@@ -31,8 +44,9 @@ class CORE_EXPORT QgsSymbolV2
 
     enum OutputUnit
     {
-      MM,
-      MapUnit
+      MM = 0,
+      MapUnit,
+      Mixed //mixed units in symbol layers
     };
 
     enum SymbolType
@@ -40,6 +54,12 @@ class CORE_EXPORT QgsSymbolV2
       Marker,
       Line,
       Fill
+    };
+
+    enum ScaleMethod
+    {
+      ScaleArea,
+      ScaleDiameter
     };
 
     //! @note added in 1.5
@@ -77,7 +97,6 @@ class CORE_EXPORT QgsSymbolV2
     //! delete layer at specified index and set a new one
     bool changeSymbolLayer( int index, QgsSymbolLayerV2* layer );
 
-
     void startRender( QgsRenderContext& context, const QgsVectorLayer* layer = 0 );
     void stopRender( QgsRenderContext& context );
 
@@ -94,8 +113,8 @@ class CORE_EXPORT QgsSymbolV2
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
-    OutputUnit outputUnit() const { return mOutputUnit; }
-    void setOutputUnit( OutputUnit u ) { mOutputUnit = u; }
+    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsSymbolV2::OutputUnit u );
 
     //! Get alpha transparency 1 for opaque, 0 for invisible
     qreal alpha() const { return mAlpha; }
@@ -122,8 +141,6 @@ class CORE_EXPORT QgsSymbolV2
     SymbolType mType;
     QgsSymbolLayerV2List mLayers;
 
-    OutputUnit mOutputUnit;
-
     /**Symbol opacity (in the range 0 - 1)*/
     qreal mAlpha;
 
@@ -139,6 +156,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext() { return mRenderContext; }
+    const QgsRenderContext& renderContext() const { return mRenderContext; }
     //void setRenderContext( QgsRenderContext& c ) { mRenderContext = c;}
 
     QgsSymbolV2::OutputUnit outputUnit() const { return mOutputUnit; }
@@ -162,9 +180,6 @@ class CORE_EXPORT QgsSymbolV2RenderContext
 
     void setLayer( const QgsVectorLayer* layer ) { mLayer = layer; }
     const QgsVectorLayer* layer() const { return mLayer; }
-
-    // Color used for selections
-    static QColor selectionColor();
 
     double outputLineWidth( double width ) const;
     double outputPixelSize( double size ) const;
@@ -204,6 +219,9 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
 
     void setSize( double size );
     double size();
+
+    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
+    ScaleMethod scaleMethod();
 
     void renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 

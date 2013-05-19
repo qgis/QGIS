@@ -38,10 +38,6 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget* par
   for ( QMap< QString, QString>::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
   {
     mFormatComboBox->addItem( it.key(), it.value() );
-    if ( it.key() == "SQLite" )
-    {
-      mFormatComboBox->addItem( "SpatiaLite", tr( "SpatiaLite" ) );
-    }
   }
 
   QString format = settings.value( "/UI/lastVectorFormat", "ESRI Shapefile" ).toString();
@@ -66,6 +62,12 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget* par
 
   mEncodingComboBox->setCurrentIndex( idx );
   on_mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
+
+  //symbology export combo box
+  mSymbologyExportComboBox->addItem( tr( "No symbology" ), QgsVectorFileWriter::NoSymbology );
+  mSymbologyExportComboBox->addItem( tr( "Feature symbology" ), QgsVectorFileWriter::FeatureSymbology );
+  mSymbologyExportComboBox->addItem( tr( "Symbol layer symbology" ), QgsVectorFileWriter::SymbolLayerSymbology );
+  on_mSymbologyExportComboBox_currentIndexChanged( mSymbologyExportComboBox->currentText() );
 }
 
 QgsVectorLayerSaveAsDialog::~QgsVectorLayerSaveAsDialog()
@@ -193,4 +195,25 @@ bool QgsVectorLayerSaveAsDialog::skipAttributeCreation() const
 bool QgsVectorLayerSaveAsDialog::addToCanvas() const
 {
   return mAddToCanvas->isChecked();
+}
+
+int QgsVectorLayerSaveAsDialog::symbologyExport() const
+{
+  return mSymbologyExportComboBox->itemData( mSymbologyExportComboBox->currentIndex() ).toInt();
+}
+
+double QgsVectorLayerSaveAsDialog::scaleDenominator() const
+{
+  return mScaleSpinBox->value();
+}
+
+void QgsVectorLayerSaveAsDialog::on_mSymbologyExportComboBox_currentIndexChanged( const QString& text )
+{
+  bool scaleEnabled = true;
+  if ( text == tr( "No symbology" ) )
+  {
+    scaleEnabled = false;
+  }
+  mScaleSpinBox->setEnabled( scaleEnabled );
+  mScaleLabel->setEnabled( scaleEnabled );
 }

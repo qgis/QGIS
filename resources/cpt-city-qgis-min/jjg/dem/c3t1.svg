@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="c3t1" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(137,185,148)" stop-opacity="1.0000"/>
+        <stop offset="1.33%" stop-color="rgb(137,185,148)" stop-opacity="1.0000"/>
+        <stop offset="1.33%" stop-color="rgb(159,200,167)" stop-opacity="1.0000"/>
+        <stop offset="3.33%" stop-color="rgb(159,200,167)" stop-opacity="1.0000"/>
+        <stop offset="3.33%" stop-color="rgb(190,221,188)" stop-opacity="1.0000"/>
+        <stop offset="6.67%" stop-color="rgb(190,221,188)" stop-opacity="1.0000"/>
+        <stop offset="6.67%" stop-color="rgb(229,230,201)" stop-opacity="1.0000"/>
+        <stop offset="13.33%" stop-color="rgb(229,230,201)" stop-opacity="1.0000"/>
+        <stop offset="13.33%" stop-color="rgb(255,252,200)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(255,252,200)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(255,241,198)" stop-opacity="1.0000"/>
+        <stop offset="33.33%" stop-color="rgb(255,241,198)" stop-opacity="1.0000"/>
+        <stop offset="33.33%" stop-color="rgb(255,232,181)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(255,232,181)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(255,221,162)" stop-opacity="1.0000"/>
+        <stop offset="66.67%" stop-color="rgb(255,221,162)" stop-opacity="1.0000"/>
+        <stop offset="66.67%" stop-color="rgb(255,211,144)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,211,144)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#c3t1)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:32:57 2012"/>
+  </metadata>
+</svg>

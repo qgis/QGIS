@@ -31,10 +31,12 @@
 #include <QPlastiqueStyle>
 #include <QTranslator>
 #include <QImageReader>
+#include <QMessageBox>
 
 #include "qgscustomization.h"
 #include "qgspluginregistry.h"
 #include "qgsmessagelog.h"
+#include "qgspythonrunner.h"
 
 #include <cstdio>
 #include <stdio.h>
@@ -43,6 +45,9 @@
 #ifdef WIN32
 // Open files in binary mode
 #include <fcntl.h> /*  _O_BINARY */
+#include <windows.h>
+#include <dbghelp.h>
+#include <time.h>
 #ifdef MSVC
 #undef _fmode
 int _fmode = _O_BINARY;
@@ -74,9 +79,10 @@ typedef SInt32 SRefCon;
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 
-#if defined(linux) && ! defined(ANDROID)
+#if defined(linux) && !defined(ANDROID)
 #include <unistd.h>
 #include <execinfo.h>
+#include <signal.h>
 #endif
 
 // (if Windows/Mac, use icon from resource)
@@ -104,8 +110,10 @@ void usage( std::string const & appName )
             << "\t[--nologo]\thide splash screen\n"
             << "\t[--noplugins]\tdon't restore plugins on startup\n"
             << "\t[--nocustomization]\tdon't apply GUI customization\n"
+            << "\t[--customizationfile]\tuse the given ini file as GUI customization\n"
             << "\t[--optionspath path]\tuse the given QSettings path\n"
             << "\t[--configpath path]\tuse the given path for all user configuration\n"
+            << "\t[--code path]\tRun the given python file on load. \n"
             << "\t[--help]\t\tthis text\n\n"
             << "  FILES:\n"
             << "    Files specified on the command line can include rasters,\n"
@@ -144,6 +152,55 @@ bool bundleclicked( int argc, char *argv[] )
   return ( argc > 1 && memcmp( argv[1], "-psn_", 5 ) == 0 );
 }
 
+#ifdef Q_OS_WIN
+LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
+{
+  QString dumpName = QDir::toNativeSeparators(
+                       QString( "%1\\qgis-%2-%3-%4-%5.dmp" )
+                       .arg( QDir::tempPath() )
+                       .arg( QDateTime::currentDateTime().toString( "yyyyMMdd-hhmmss" ) )
+                       .arg( GetCurrentProcessId() )
+                       .arg( GetCurrentThreadId() )
+                       .arg( QGis::QGIS_DEV_VERSION )
+                     );
+
+  QString msg;
+  HANDLE hDumpFile = CreateFile( dumpName.toLocal8Bit(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
+  if ( hDumpFile != INVALID_HANDLE_VALUE )
+  {
+    MINIDUMP_EXCEPTION_INFORMATION ExpParam;
+    ExpParam.ThreadId = GetCurrentThreadId();
+    ExpParam.ExceptionPointers = ExceptionInfo;
+    ExpParam.ClientPointers = TRUE;
+
+    if ( MiniDumpWriteDump( GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpWithDataSegs, ExceptionInfo ? &ExpParam : NULL, NULL, NULL ) )
+    {
+      msg = QObject::tr( "minidump written to %1" ).arg( dumpName );
+    }
+    else
+    {
+      msg = QObject::tr( "writing of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
+    }
+
+    CloseHandle( hDumpFile );
+  }
+  else
+  {
+    msg = QObject::tr( "creation of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
+  }
+
+  QMessageBox::critical( 0, QObject::tr( "Crash dumped" ), msg );
+
+  return EXCEPTION_EXECUTE_HANDLER;
+}
+#endif
+
+#ifdef Q_OS_UNIX
+void qgisCrash( int signal )
+{
+  qFatal( "QGIS died on signal %d", signal );
+}
+#endif
 
 /*
  * Hook into the qWarning/qFatal mechanism so that we can channel messages
@@ -197,8 +254,8 @@ void myMessageOutput( QtMsgType type, const char *msg )
     case QtFatalMsg:
     {
       fprintf( stderr, "Fatal: %s\n", msg );
-#if defined(linux) && ! defined(ANDROID)
-      fprintf( stderr, "Stacktrace (run through c++filt):\n" );
+#if defined(linux) && !defined(ANDROID)
+      ( void ) write( STDERR_FILENO, "Stacktrace (run through c++filt):\n", 34 );
       void *buffer[256];
       int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
       backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
@@ -222,7 +279,24 @@ int main( int argc, char *argv[] )
 #if !defined(ANDROID) && !defined(_MSC_VER)
   // Set up the custom qWarning/qDebug custom handler
   qInstallMsgHandler( myMessageOutput );
+
+  signal( SIGQUIT, qgisCrash );
+  signal( SIGILL, qgisCrash );
+  signal( SIGFPE, qgisCrash );
+  signal( SIGSEGV, qgisCrash );
+  signal( SIGBUS, qgisCrash );
+  signal( SIGSYS, qgisCrash );
+  signal( SIGTRAP, qgisCrash );
+  signal( SIGXCPU, qgisCrash );
+  signal( SIGXFSZ, qgisCrash );
 #endif
+
+#ifdef Q_OS_WIN
+  SetUnhandledExceptionFilter( qgisCrashDump );
+#endif
+
+  // initialize random number seed
+  srand( time( NULL ) );
 
   /////////////////////////////////////////////////////////////////
   // Command line options 'behaviour' flag setup
@@ -264,9 +338,17 @@ int main( int argc, char *argv[] )
   // The user can specify a path which will override the default path of custom
   // user settings (~/.qgis) and it will be used for QSettings INI file
   QString configpath;
+  QString optionpath;
+
+  QString pythonfile;
+
+  QString customizationfile;
 
 #if defined(ANDROID)
   QgsDebugMsg( QString( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
+  //put all QGIS settings in the same place
+  configpath = QgsApplication::qgisSettingsPath();
+  QgsDebugMsg( QString( "Android: configpath set to %1" ).arg( configpath ) );
 #elif defined(Q_WS_WIN)
   for ( int i = 1; i < argc; i++ )
   {
@@ -315,12 +397,19 @@ int main( int argc, char *argv[] )
     }
     else if ( i + 1 < argc && ( arg == "--optionspath" || arg == "-o" ) )
     {
-      QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, argv[++i] );
+      optionpath = argv[++i];
     }
     else if ( i + 1 < argc && ( arg == "--configpath" || arg == "-c" ) )
     {
       configpath = argv[++i];
-      QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, configpath );
+    }
+    else if ( i + 1 < argc && ( arg == "--code" || arg == "-f" ) )
+    {
+      pythonfile = argv[++i];
+    }
+    else if ( i + 1 < argc && ( arg == "--customizationfile" || arg == "-z" ) )
+    {
+      customizationfile = argv[++i];
     }
     else
     {
@@ -355,6 +444,8 @@ int main( int argc, char *argv[] )
         {"extent",   required_argument, 0, 'e'},
         {"optionspath", required_argument, 0, 'o'},
         {"configpath", required_argument, 0, 'c'},
+        {"customizationfile", required_argument, 0, 'z'},
+        {"code", required_argument, 0, 'f'},
         {"android", required_argument, 0, 'a'},
         {0, 0, 0, 0}
       };
@@ -418,11 +509,19 @@ int main( int argc, char *argv[] )
           break;
 
         case 'o':
-          QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optarg );
+          optionpath = optarg;
           break;
 
         case 'c':
           configpath = optarg;
+          break;
+
+        case 'f':
+          pythonfile = optarg;
+          break;
+
+        case 'z':
+          customizationfile = optarg;
           break;
 
         case '?':
@@ -477,14 +576,19 @@ int main( int argc, char *argv[] )
     exit( 1 ); //exit for now until a version of qgis is capabable of running non interactive
   }
 
-  if ( !configpath.isEmpty() )
+  if ( !optionpath.isEmpty() || !configpath.isEmpty() )
   {
     // tell QSettings to use INI format and save the file in custom config path
-    QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, configpath );
+    QSettings::setDefaultFormat( QSettings::IniFormat );
+    QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optionpath.isEmpty() ? configpath : optionpath );
   }
 
-  // GUI customization is enabled by default unless --nocustomization argument is used
-  QgsCustomization::instance()->setEnabled( myCustomization );
+  // GUI customization is enabled according to settings (loaded when instance is created)
+  // we force disabled here if --nocustomization argument is used
+  if ( !myCustomization )
+  {
+    QgsCustomization::instance()->setEnabled( false );
+  }
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
 
@@ -497,10 +601,32 @@ int main( int argc, char *argv[] )
   // Set up the QSettings environment must be done after qapp is created
   QCoreApplication::setOrganizationName( "QuantumGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );
-  QCoreApplication::setApplicationName( "QGIS" );
+  QCoreApplication::setApplicationName( "QGIS2" );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
 
+  QSettings* customizationsettings;
+  if ( !optionpath.isEmpty() || !configpath.isEmpty() )
+  {
+    // tell QSettings to use INI format and save the file in custom config path
+    QSettings::setDefaultFormat( QSettings::IniFormat );
+    QString path = optionpath.isEmpty() ? configpath : optionpath;
+    QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, path );
+    customizationsettings = new QSettings( QSettings::IniFormat, QSettings::UserScope, "QuantumGIS", "QGISCUSTOMIZATION2" );
+  }
+  else
+  {
+    customizationsettings = new QSettings( "QuantumGIS", "QGISCUSTOMIZATION2" );
+  }
+
+  // Using the customizationfile option always overrides the option and config path options.
+  if ( !customizationfile.isEmpty() )
+  {
+    customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
+    QgsCustomization::instance()->setEnabled( true );
+  }
+
   // Load and set possible default customization, must be done afterQgsApplication init and QSettings ( QCoreApplication ) init
+  QgsCustomization::instance()->setSettings( customizationsettings );
   QgsCustomization::instance()->loadDefault();
 
 #ifdef Q_OS_MACX
@@ -514,6 +640,73 @@ int main( int argc, char *argv[] )
 #endif
 
   QSettings mySettings;
+
+  // update any saved setting for older themes to new default 'gis' theme (2013-04-15)
+  if ( mySettings.contains( "/Themes" ) )
+  {
+    QString theme = mySettings.value( "/Themes", "default" ).toString();
+    if ( theme == QString( "gis" )
+         || theme == QString( "classic" )
+         || theme == QString( "nkids" ) )
+    {
+      mySettings.setValue( "/Themes", QString( "default" ) );
+    }
+  }
+
+
+  // custom environment variables
+  QMap<QString, QString> systemEnvVars = QgsApplication::systemEnvVars();
+  bool useCustomVars = mySettings.value( "qgis/customEnvVarsUse", QVariant( false ) ).toBool();
+  if ( useCustomVars )
+  {
+    QStringList customVarsList = mySettings.value( "qgis/customEnvVars", "" ).toStringList();
+    if ( !customVarsList.isEmpty() )
+    {
+      foreach ( const QString &varStr, customVarsList )
+      {
+        int pos = varStr.indexOf( QLatin1Char( '|' ) );
+        if ( pos == -1 )
+          continue;
+        QString envVarApply = varStr.left( pos );
+        QString varStrNameValue = varStr.mid( pos + 1 );
+        pos = varStrNameValue.indexOf( QLatin1Char( '=' ) );
+        if ( pos == -1 )
+          continue;
+        QString envVarName = varStrNameValue.left( pos );
+        QString envVarValue = varStrNameValue.mid( pos + 1 );
+
+        if ( systemEnvVars.contains( envVarName ) )
+        {
+          if ( envVarApply == "prepend" )
+          {
+            envVarValue += systemEnvVars.value( envVarName );
+          }
+          else if ( envVarApply == "append" )
+          {
+            envVarValue = systemEnvVars.value( envVarName ) + envVarValue;
+          }
+        }
+
+        if ( systemEnvVars.contains( envVarName ) && envVarApply == "unset" )
+        {
+#ifdef Q_WS_WIN
+          putenv( envVarName.toUtf8().constData() );
+#else
+          unsetenv( envVarName.toUtf8().constData() );
+#endif
+        }
+        else
+        {
+#ifdef Q_WS_WIN
+          if ( envVarApply != "undefined" || !getenv( envVarName.toUtf8().constData() ) )
+            putenv( QString( "%1=%2" ).arg( envVarName ).arg( envVarValue ).toUtf8().constData() );
+#else
+          setenv( envVarName.toUtf8().constData(), envVarValue.toUtf8().constData(), envVarApply == "undefined" ? 0 : 1 );
+#endif
+        }
+      }
+    }
+  }
 
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.
@@ -588,7 +781,7 @@ int main( int argc, char *argv[] )
   }
 
   //set up splash screen
-  QString mySplashPath( QgsApplication::splashPath() );
+  QString mySplashPath( QgsCustomization::instance()->splashPath() );
   QPixmap myPixmap( mySplashPath + QString( "splash.png" ) );
   QSplashScreen *mypSplash = new QSplashScreen( myPixmap );
   if ( mySettings.value( "/qgis/hideSplash" ).toBool() || myHideSplash )
@@ -630,8 +823,12 @@ int main( int argc, char *argv[] )
     QStringList myPathList;
     QCoreApplication::setLibraryPaths( myPathList );
     // Now set the paths inside the bundle
-    myPath += "/Contents/plugins";
+    myPath += "/Contents/Plugins";
     QCoreApplication::addLibraryPath( myPath );
+    if ( QgsApplication::isRunningFromBuildDir() )
+    {
+      QCoreApplication::addLibraryPath( QTPLUGINSDIR );
+    }
     //next two lines should not be needed, testing only
     //QCoreApplication::addLibraryPath( myPath + "/imageformats" );
     //QCoreApplication::addLibraryPath( myPath + "/sqldrivers" );
@@ -750,7 +947,16 @@ int main( int argc, char *argv[] )
     }
   }
 
-  /////////////////////////////////////////////////////////////////////
+  if ( !pythonfile.isEmpty() )
+  {
+#ifdef Q_WS_WIN
+    //replace backslashes with forward slashes
+    pythonfile.replace( "\\", "/" );
+#endif
+    QgsPythonRunner::run( QString( "execfile('%1')" ).arg( pythonfile ) );
+  }
+
+  /////////////////////////////////`////////////////////////////////////
   // Take a snapshot of the map view then exit if snapshot mode requested
   /////////////////////////////////////////////////////////////////////
   if ( mySnapshotFileName != "" )
@@ -777,7 +983,6 @@ int main( int argc, char *argv[] )
 
     return 1;
   }
-
 
   /////////////////////////////////////////////////////////////////////
   // Continue on to interactive gui...

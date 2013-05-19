@@ -1,71 +1,72 @@
-<ui version="4.0" >
- <class>DlgTableProperties</class>
- <widget class="QDialog" name="DlgTableProperties" >
-  <property name="geometry" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DbManagerDlgTableProperties</class>
+ <widget class="QDialog" name="DbManagerDlgTableProperties">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>531</width>
+    <width>547</width>
     <height>435</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Table properties</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout">
    <item>
-    <widget class="QTabWidget" name="tabs" >
-     <property name="currentIndex" >
-      <number>0</number>
+    <widget class="QTabWidget" name="tabs">
+     <property name="currentIndex">
+      <number>2</number>
      </property>
-     <widget class="QWidget" name="tabColumns" >
-      <attribute name="title" >
+     <widget class="QWidget" name="tabColumns">
+      <attribute name="title">
        <string>Columns</string>
       </attribute>
-      <layout class="QVBoxLayout" >
+      <layout class="QVBoxLayout">
        <item>
-        <widget class="QLabel" name="label" >
-         <property name="text" >
+        <widget class="QLabel" name="label">
+         <property name="text">
           <string>Table columns:</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QTreeView" name="viewFields" >
-         <property name="rootIsDecorated" >
+        <widget class="QTreeView" name="viewFields">
+         <property name="rootIsDecorated">
           <bool>false</bool>
          </property>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" >
+        <layout class="QHBoxLayout">
          <item>
-          <widget class="QPushButton" name="btnAddColumn" >
-           <property name="text" >
+          <widget class="QPushButton" name="btnAddColumn">
+           <property name="text">
             <string>Add column</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="btnAddGeometryColumn" >
-           <property name="text" >
+          <widget class="QPushButton" name="btnAddGeometryColumn">
+           <property name="text">
             <string>Add geometry column</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="btnEditColumn" >
-           <property name="text" >
+          <widget class="QPushButton" name="btnEditColumn">
+           <property name="text">
             <string>Edit column</string>
            </property>
           </widget>
          </item>
          <item>
           <spacer>
-           <property name="orientation" >
+           <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0">
             <size>
              <width>40</width>
              <height>20</height>
@@ -74,8 +75,8 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="btnDeleteColumn" >
-           <property name="text" >
+          <widget class="QPushButton" name="btnDeleteColumn">
+           <property name="text">
             <string>Delete column</string>
            </property>
           </widget>
@@ -84,40 +85,40 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabConstraints" >
-      <attribute name="title" >
+     <widget class="QWidget" name="tabConstraints">
+      <attribute name="title">
        <string>Constraints</string>
       </attribute>
-      <layout class="QVBoxLayout" >
+      <layout class="QVBoxLayout">
        <item>
-        <widget class="QLabel" name="label_3" >
-         <property name="text" >
+        <widget class="QLabel" name="label_3">
+         <property name="text">
           <string>Primary, foreign keys, unique and check constraints:</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QTreeView" name="viewConstraints" >
-         <property name="rootIsDecorated" >
+        <widget class="QTreeView" name="viewConstraints">
+         <property name="rootIsDecorated">
           <bool>false</bool>
          </property>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" >
+        <layout class="QHBoxLayout">
          <item>
-          <widget class="QPushButton" name="btnAddConstraint" >
-           <property name="text" >
+          <widget class="QPushButton" name="btnAddConstraint">
+           <property name="text">
             <string>Add primary key / unique</string>
            </property>
           </widget>
          </item>
          <item>
           <spacer>
-           <property name="orientation" >
+           <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0">
             <size>
              <width>40</width>
              <height>20</height>
@@ -126,8 +127,8 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="btnDeleteConstraint" >
-           <property name="text" >
+          <widget class="QPushButton" name="btnDeleteConstraint">
+           <property name="text">
             <string>Delete constraint</string>
            </property>
           </widget>
@@ -136,47 +137,47 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabIndexes" >
-      <attribute name="title" >
+     <widget class="QWidget" name="tabIndexes">
+      <attribute name="title">
        <string>Indexes</string>
       </attribute>
-      <layout class="QVBoxLayout" >
+      <layout class="QVBoxLayout">
        <item>
-        <widget class="QLabel" name="label_2" >
-         <property name="text" >
+        <widget class="QLabel" name="label_2">
+         <property name="text">
           <string>Indexes defined for this table:</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QTreeView" name="viewIndexes" >
-         <property name="rootIsDecorated" >
+        <widget class="QTreeView" name="viewIndexes">
+         <property name="rootIsDecorated">
           <bool>false</bool>
          </property>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" >
+        <layout class="QHBoxLayout">
          <item>
-          <widget class="QPushButton" name="btnAddIndex" >
-           <property name="text" >
+          <widget class="QPushButton" name="btnAddIndex">
+           <property name="text">
             <string>Add index</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="btnAddSpatialIndex" >
-           <property name="text" >
+          <widget class="QPushButton" name="btnAddSpatialIndex">
+           <property name="text">
             <string>Add spatial index</string>
            </property>
           </widget>
          </item>
          <item>
           <spacer>
-           <property name="orientation" >
+           <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0">
             <size>
              <width>40</width>
              <height>20</height>
@@ -185,8 +186,8 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="btnDeleteIndex" >
-           <property name="text" >
+          <widget class="QPushButton" name="btnDeleteIndex">
+           <property name="text">
             <string>Delete index</string>
            </property>
           </widget>
@@ -198,11 +199,11 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
+     <property name="standardButtons">
       <set>QDialogButtonBox::Close</set>
      </property>
     </widget>
@@ -230,14 +231,14 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>DlgTableProperties</receiver>
+   <receiver>DbManagerDlgTableProperties</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>248</x>
      <y>254</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
      <y>274</y>
     </hint>
@@ -246,14 +247,14 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>DlgTableProperties</receiver>
+   <receiver>DbManagerDlgTableProperties</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>316</x>
      <y>260</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
     </hint>

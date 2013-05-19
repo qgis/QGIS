@@ -13,45 +13,35 @@ class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectio
     /**
      * Constructor
      */
-    QgsGenericProjectionSelector(QWidget *parent = 0,
-                               Qt::WFlags fl = QgisGui::ModalDialogFlags);
+    QgsGenericProjectionSelector( QWidget *parent = 0,
+                                  Qt::WFlags fl = QgisGui::ModalDialogFlags );
 
     //! Destructor
     ~QgsGenericProjectionSelector();
 
- public slots:
-      /** If no parameter is passed, the message will be a generic
-       * 'define the CRS for this layer'.
-       */
-      void setMessage(QString theMessage="");
-      long selectedCrsId();
-      QString selectedAuthId();
+  public slots:
+    /** If no parameter is passed, the message will be a generic
+     * 'define the CRS for this layer'.
+     */
+    void setMessage( QString theMessage = "" );
+    long selectedCrsId();
+    QString selectedAuthId();
 
-      // @deprecated
-      long selectedEpsg();
-      // @deprecated
-      QString selectedProj4String();
+    void setSelectedCrsName( QString theName );
+    void setSelectedCrsId( long theID );
+    void setSelectedAuthId( QString authId );
 
-      void setSelectedCrsName(QString theName);
-      void setSelectedCrsId(long theID);
-      void setSelectedAuthId( QString authId );
-
-      // @deprecated
-      void setSelectedEpsg(long theID);
-
-      /**
-       * \brief filters this dialog by the given CRSs
-       *
-       * Sets this dialog to filter the available projections to those listed
-       * by the given Coordinate Reference Systems.
-       *
-       * \param crsFilter a list of OGC Coordinate Reference Systems to filter the
-       *                  list of projections by.  This is useful in (e.g.) WMS situations
-       *                  where you just want to offer what the WMS server can support.
-       *
-       * \note This function only deals with EpsgCrsId labels only at this time.
-       *
-       * \warning This function's behaviour is undefined if it is called after the dialog is shown.
-       */
-      void setOgcWmsCrsFilter(QSet<QString> crsFilter);
+    /**
+     * \brief filters this dialog by the given CRSs
+     *
+     * Sets this dialog to filter the available projections to those listed
+     * by the given Coordinate Reference Systems.
+     *
+     * \param crsFilter a list of OGC Coordinate Reference Systems to filter the
+     *                  list of projections by.  This is useful in (e.g.) WMS situations
+     *                  where you just want to offer what the WMS server can support.
+     *
+     * \warning This function's behaviour is undefined if it is called after the dialog is shown.
+     */
+    void setOgcWmsCrsFilter( QSet<QString> crsFilter );
 };

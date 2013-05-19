@@ -1,0 +1,7 @@
+ObtainUTMZoneFromGeoPoint
+otbcli_ObtainUTMZoneFromGeoPoint
+Obtain UTM Zone From Geo Point
+Miscellaneous
+ParameterNumber|-lat|Latitude|None|None|0.0
+ParameterNumber|-lon|Longitude|None|None|0.0
+ParameterNumber|-utm|UTMZone|None|None|0

@@ -1,0 +1,11 @@
+Classification Regularization
+otbcli_ClassificationMapRegularization
+Classification Regularization
+Learning
+ParameterRaster|-io.in|Input Image|False
+OutputRaster|-io.out|Output Image
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128
+ParameterNumber|-ip.radius|Structuring Element Radius|None|None|1
+ParameterBoolean|-ip.suvbool|Multiple majority|False
+ParameterNumber|-ip.nodatalabel|Label for the NoData class|None|None|0
+ParameterNumber|-ip.undecidedlabel|Label for the Undecided class|None|None|0

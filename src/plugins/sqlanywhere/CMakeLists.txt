@@ -6,11 +6,9 @@ SET (sqlanywhere_SRCS
      sasourceselect.cpp
      sanewconnection.cpp
      sadbtablemodel.cpp
-     sadbfilterproxymodel.cpp
-     saquerybuilder.cpp
 )
 
-SET (sqlanywhere_UIS 
+SET (sqlanywhere_UIS
     sanewconnectionbase.ui
     sasourceselectbase.ui
 )
@@ -21,7 +19,6 @@ SET (sqlanywhere_MOC_HDRS
      sanewconnection.h
      salayer.h
      sadbtablemodel.h
-     saquerybuilder.h
 )
 
 SET (sqlanywhere_RCCS  sqlanywhere.qrc)
@@ -51,10 +48,8 @@ INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}/../../ui
-     ../../core 
-     ../../core/raster 
-     ../../core/renderer 
-     ../../core/symbology
+     ../../core
+     ../../core/raster
      ../../gui
      ../../app
      ..

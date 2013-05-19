@@ -28,6 +28,7 @@ class QFile;
 class QDomDocument;
 class QgsGPSData;
 
+class QgsGPXFeatureIterator;
 
 /**
 \class QgsGPXProvider
@@ -51,24 +52,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
      */
     virtual QString storageType() const;
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-     * @param fetchAttributes list of attributes which should be fetched
-     * @param rect spatial filter
-     * @param fetchGeometry true if the feature geometry should be fetched
-     * @param useIntersect true if an accurate intersection test should be used,
-     *                     false if a test based on bounding box is sufficient
-     */
-    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRectangle rect = QgsRectangle(),
-                         bool fetchGeometry = true,
-                         bool useIntersect = false );
-
-    /**
-     * Get the next feature resulting from a select operation.
-     * @param feature feature which will receive data from the provider
-     * @return true when there was a feature to fetch, false when end was hit
-     */
-    virtual bool nextFeature( QgsFeature& feature );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
     /**
      * Get feature type.
@@ -83,17 +67,9 @@ class QgsGPXProvider : public QgsVectorDataProvider
     virtual long featureCount() const;
 
     /**
-     * Get the number of fields in the layer
-     */
-    virtual uint fieldCount() const;
-
-    /**
      * Get the field information for the layer
      */
-    virtual const QgsFieldMap & fields() const;
-
-    /** Restart reading features from previous select operation */
-    virtual void rewind();
+    virtual const QgsFields& fields() const;
 
     /**
      * Adds a list of features
@@ -150,41 +126,42 @@ class QgsGPXProvider : public QgsVectorDataProvider
     /** Adds one feature (used by addFeatures()) */
     bool addFeature( QgsFeature& f );
 
-    /**
-     * Check to see if the point is withn the selection
-     * rectangle
-     * @param x X value of point
-     * @param y Y value of point
-     * @return True if point is within the rectangle
-     */
-    bool boundsCheck( double x, double y );
-
 
   private:
+
+    enum DataType
+    {
+      WaypointType = 1,
+      RouteType = 2,
+      TrackType = 4,
+
+      TrkRteType = RouteType | TrackType,
+      AllType = WaypointType | RouteType | TrackType
+
+    };
+
+    enum Attribute { NameAttr = 0, EleAttr, SymAttr, NumAttr,
+                     CmtAttr, DscAttr, SrcAttr, URLAttr, URLNameAttr
+                 };
 
     QgsGPSData* data;
 
     //! Fields
-    QgsFieldMap attributeFields;
+    QgsFields attributeFields;
+    //! map from field index to attribute
+    QVector<int> indexToAttr;
 
     QString mFileName;
 
-    enum { WaypointType, RouteType, TrackType } mFeatureType;
-    enum Attribute { NameAttr = 0, EleAttr, SymAttr, NumAttr,
-                     CmtAttr, DscAttr, SrcAttr, URLAttr, URLNameAttr
-                 };
+    DataType mFeatureType;
+
     static const char* attr[];
-    //! Current selection rectangle
-    QgsRectangle *mSelectionRectangle;
+    static QVariant::Type attrType[];
+    static DataType attrUsed[];
+    static const int attrCount;
+
     bool mValid;
     long mNumberFeatures;
-
-    //! Current waypoint iterator
-    QgsGPSData::WaypointIterator mWptIter;
-    //! Current route iterator
-    QgsGPSData::RouteIterator mRteIter;
-    //! Current track iterator
-    QgsGPSData::TrackIterator mTrkIter;
 
     struct wkbPoint
     {
@@ -195,4 +172,6 @@ class QgsGPXProvider : public QgsVectorDataProvider
     };
     wkbPoint mWKBpt;
 
+    friend class QgsGPXFeatureIterator;
+    QgsGPXFeatureIterator* mActiveIterator;
 };

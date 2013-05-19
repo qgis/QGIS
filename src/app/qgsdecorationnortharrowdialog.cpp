@@ -41,7 +41,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   cboPlacement->setCurrentIndex( mDeco.mPlacementIndex );
 
   // enabled
-  cboxShow->setChecked( mDeco.mEnable );
+  cboxShow->setChecked( mDeco.enabled() );
 
   // automatic
   cboxAutomatic->setChecked( mDeco.mAutomatic );
@@ -62,7 +62,7 @@ void QgsDecorationNorthArrowDialog::on_buttonBox_accepted()
 {
   mDeco.mRotationInt = sliderRotation->value();
   mDeco.mPlacementIndex = cboPlacement->currentIndex();
-  mDeco.mEnable = cboxShow->isChecked();
+  mDeco.setEnabled( cboxShow->isChecked() );
   mDeco.mAutomatic = cboxAutomatic->isChecked();
 
   accept();

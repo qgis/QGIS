@@ -86,7 +86,7 @@ class DBPlugin(QObject):
 
 	def connectToUri(self, uri):
 		self.db = self.databasesFactory( self, uri )
-		if self.db: 
+		if self.db:
 			return True
 		return False
 
@@ -135,7 +135,7 @@ class DBPlugin(QObject):
 
 
 	def databasesFactory(self, connection, uri):
-		return None 
+		return None
 
 
 class DbItemObject(QObject):
@@ -192,21 +192,20 @@ class Database(DbItemObject):
 		from .info_model import DatabaseInfo
 		return DatabaseInfo(self)
 
-
 	def sqlResultModel(self, sql, parent):
 		from .data_model import SqlResultModel
 		return SqlResultModel(self, sql, parent)
 
-
-	def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None):
+	def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False):
 		from qgis.core import QgsMapLayer, QgsVectorLayer, QgsRasterLayer
 		uri = self.uri()
 		uri.setDataSource("", u"(%s\n)" % sql, geomCol, QString(), uniqueCol)
+		if avoidSelectById:
+			uri.disableSelectAtId( True )
 		provider = self.dbplugin().providerName()
 		if layerType == QgsMapLayer.RasterLayer:
 			return QgsRasterLayer(uri.uri(), layerName, provider)
 		return QgsVectorLayer(uri.uri(), layerName, provider)
-
 
 	def registerAllActions(self, mainWindow):
 		self.registerDatabaseActions(mainWindow)
@@ -224,7 +223,7 @@ class Database(DbItemObject):
 	def registerDatabaseActions(self, mainWindow):
 		action = QAction("&Re-connect", self)
 		mainWindow.registerAction( action, "&Database", self.reconnectActionSlot )
-		
+
 		if self.schemas() != None:
 			action = QAction("&Create schema", self)
 			mainWindow.registerAction( action, "&Schema", self.createSchemaActionSlot )
@@ -366,7 +365,7 @@ class Database(DbItemObject):
 		menu.clear()
 		for schema in self.schemas():
 			action = menu.addAction(schema.name, slot(schema))
-		
+
 	def moveTableToSchemaActionSlot(self, item, action, parent, new_schema):
 		QApplication.restoreOverrideCursor()
 		try:
@@ -512,7 +511,7 @@ class Table(DbItemObject):
 			ret = self.database().connector.deleteView( (self.schemaName(), self.name) )
 		else:
 			ret = self.database().connector.deleteTable( (self.schemaName(), self.name) )
-		if ret != False: 
+		if ret != False:
 			self.emit( SIGNAL('deleted') )
 		return ret
 
@@ -549,7 +548,8 @@ class Table(DbItemObject):
 		uri = self.database().uri()
 		schema = self.schemaName() if self.schemaName() else ''
 		geomCol = self.geomColumn if self.type in [Table.VectorType, Table.RasterType] else QString()
-		uri.setDataSource(schema, self.name, geomCol if geomCol else QString())
+		uniqueCol = self.getValidQGisUniqueFields(True) if self.isView else None
+		uri.setDataSource(schema, self.name, geomCol if geomCol else QString(), QString(), uniqueCol.name if uniqueCol else QString() )
 		return uri
 
 	def mimeUri(self):
@@ -566,8 +566,8 @@ class Table(DbItemObject):
 
 	def getValidQGisUniqueFields(self, onlyOne=False):
 		""" list of fields valid to load the table as layer in QGis canvas.
-			QGis automatically search for a valid unique field, so it's 
-			needed only for queries (e.g. SELECT * FROM table LIMIT 1)"""
+			QGis automatically search for a valid unique field, so it's
+			needed only for queries and views """
 
 		ret = []
 
@@ -575,14 +575,19 @@ class Table(DbItemObject):
 		pkcols = filter(lambda x: x.primaryKey, self.fields())
 		if len(pkcols) == 1: ret.append( pkcols[0] )
 
-		# add both serial and int4 fields with an unique index
+		# then add both oid, serial and int fields with an unique index
 		indexes = self.indexes()
 		if indexes != None:
 			for idx in indexes:
 				if idx.isUnique and len(idx.columns) == 1:
 					fld = idx.fields()[ idx.columns[0] ]
-					if fld and fld not in ret and fld.dataType in ["oid", "serial", "int4"]:
+					if fld.dataType in ["oid", "serial", "int4", "int8"] and fld not in ret:
 						ret.append( fld )
+
+		# and finally append the other suitable fields
+		for fld in self.fields():
+			if fld.dataType in ["oid", "serial", "int4", "int8"] and fld not in ret:
+					ret.append( fld )
 
 		if onlyOne:
 			return ret[0] if len(ret) > 0 else None
@@ -619,6 +624,8 @@ class Table(DbItemObject):
 		ret = self.database().connector.deleteTableColumn( (self.schemaName(), self.name), fld.name)
 		if ret != False:
 			self.refreshFields()
+			self.refreshConstraints()
+			self.refreshIndexes()
 		return ret
 
 	def addGeometryColumn(self, geomCol, geomType, srid, dim, createSpatialIndex=False):
@@ -968,10 +975,10 @@ class TableField(TableSubItemObject):
 
 class TableConstraint(TableSubItemObject):
 	""" class that represents a constraint of a table (relation) """
-	
+
 	TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique = range(4)
 	types = { "c" : TypeCheck, "f" : TypeForeignKey, "p" : TypePrimaryKey, "u" : TypeUnique }
-	
+
 	onAction = { "a" : "NO ACTION", "r" : "RESTRICT", "c" : "CASCADE", "n" : "SET NULL", "d" : "SET DEFAULT" }
 	matchTypes = { "u" : "UNSPECIFIED", "f" : "FULL", "p" : "PARTIAL" }
 
@@ -1028,7 +1035,7 @@ class TableIndex(TableSubItemObject):
 
 class TableTrigger(TableSubItemObject):
 	""" class that represents a trigger """
-	
+
 	# Bits within tgtype (pg_trigger.h)
 	TypeRow      = (1 << 0) # row or statement
 	TypeBefore   = (1 << 1) # before or after
@@ -1059,4 +1066,4 @@ class TableRule(TableSubItemObject):
 	def __init__(self, table):
 		TableSubItemObject.__init__(self, table)
 		self.name = self.definition = None
- 
+

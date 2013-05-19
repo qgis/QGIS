@@ -20,6 +20,7 @@
 
 #include <QDomDocument>
 #include <QMap>
+#include <QPair>
 #include <QString>
 #include <map>
 
@@ -28,10 +29,12 @@ class QgsComposerLayerItem;
 class QgsComposerLegendItem;
 class QgsComposition;
 class QgsConfigParser;
+class QgsFeatureRendererV2;
 class QgsMapLayer;
 class QgsMapRenderer;
 class QgsPoint;
 class QgsRasterLayer;
+class QgsRasterRenderer;
 class QgsRectangle;
 class QgsRenderContext;
 class QgsVectorLayer;
@@ -53,8 +56,10 @@ class QgsWMSServer
     /**Constructor. Takes parameter map and a pointer to a renderer object (does not take ownership)*/
     QgsWMSServer( QMap<QString, QString> parameters, QgsMapRenderer* renderer );
     ~QgsWMSServer();
-    /**Returns an XML file with the capabilities description (as described in the WMS specs)*/
-    QDomDocument getCapabilities( QString version = "1.3.0" );
+    /**Returns an XML file with the capabilities description (as described in the WMS specs)
+        @param version WMS version (1.1.1 or 1.3.0)
+        @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
+    QDomDocument getCapabilities( QString version = "1.3.0", bool fullProjectInformation = false );
     /**Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership
     of the image object*/
     QImage* getLegendGraphics();
@@ -115,7 +120,7 @@ class QgsWMSServer
     @param featureBBox the bounding box of the selected features in output CRS
     @return 0 in case of success*/
     int featureInfoFromVectorLayer( QgsVectorLayer* layer, const QgsPoint* infoPoint, int nFeatures, QDomDocument& infoDocument, QDomElement& layerElement, QgsMapRenderer* mapRender,
-                                    QgsRenderContext& renderContext, QMap<int, QString>& aliasMap, QSet<QString>& hiddenAttributes, QString version, QgsRectangle* featureBBox = 0 ) const;
+                                    QgsRenderContext& renderContext, QString version, QgsRectangle* featureBBox = 0 ) const;
     /**Appends feature info xml for the layer to the layer element of the dom document*/
     int featureInfoFromRasterLayer( QgsRasterLayer* layer, const QgsPoint* infoPoint, QDomDocument& infoDocument, QDomElement& layerElement, QString version ) const;
 
@@ -131,19 +136,14 @@ class QgsWMSServer
       */
     void drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p, double& maxTextWidth, double& maxSymbolWidth, double& currentY, const QFont& layerFont,
                               const QColor& layerFontColor, const QFont& itemFont, const QColor&  itemFontColor, double boxSpace, double layerSpace,
-                              double symbolSpace, double iconLabelSpace, double symbolWidth, double symbolHeight, double fontOversamplingFactor, double dpi ) const;
-    /**Draws a (old generation) symbol. Optionally, maxHeight is adapted (e.g. for large point markers) */
-    void drawLegendSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight,
-                           double layerOpacity, double dpi, double yDownShift ) const;
-    void drawPointSymbol( QPainter* p, QgsSymbol* s, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight, double layerOpacity, double dpi ) const;
-    void drawLineSymbol( QPainter* p, QgsSymbol* s, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double layerOpacity, double yDownShift ) const;
-    void drawPolygonSymbol( QPainter* p, QgsSymbol* s, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double layerOpacity, double yDownShift ) const;
+                              double layerTitleSpace, double symbolSpace, double iconLabelSpace, double symbolWidth, double symbolHeight, double fontOversamplingFactor, double dpi ) const;
+    /**Draws a symbol. Optionally, maxHeight is adapted (e.g. for large point markers) */
     void drawLegendSymbolV2( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight, double dpi, double yDownShift ) const;
     void drawRasterSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double yDownShift ) const;
 
     /**Read legend parameter from the request or from the first print composer in the project*/
-    void legendParameters( double mmToPixelFactor, double fontOversamplingFactor, double& boxSpace, double& layerSpace, double& symbolSpace, double& iconLabelSpace, double& symbolWidth, double& symbolHeight,
-                           QFont& layerFont, QFont& itemFont, QColor& layerFontColor, QColor& itemFontColor );
+    void legendParameters( double mmToPixelFactor, double fontOversamplingFactor, double& boxSpace, double& layerSpace, double& layerTitleSpace,
+                           double& symbolSpace, double& iconLabelSpace, double& symbolWidth, double& symbolHeight, QFont& layerFont, QFont& itemFont, QColor& layerFontColor, QColor& itemFontColor );
 
     QImage* printCompositionToImage( QgsComposition* c ) const;
 
@@ -155,6 +155,8 @@ class QgsWMSServer
     /**Tests if a filter sql string is allowed (safe)
       @return true in case of success, false if string seems unsafe*/
     bool testFilterStringSafety( const QString& filter ) const;
+    /**Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes*/
+    static void groupStringList( QStringList& list, const QString& groupString );
 
     /**Select vector features with ids specified in parameter SELECTED, e.g. ...&SELECTED=layer1:1,2,9;layer2:3,5,10&...
       @return list with layer ids where selections have been created*/
@@ -162,11 +164,33 @@ class QgsWMSServer
     /**Clear all feature selections in the given layers*/
     void clearFeatureSelections( const QStringList& layerIds ) const;
 
+    /**Applies opacity on layer/group level*/
+    void applyOpacities( const QStringList& layerList, QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
+                         QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers,
+                         QList< QPair< QgsVectorLayer*, double > >& labelTransparencies,
+                         QList< QPair< QgsVectorLayer*, double > >& labelBufferTransparencies
+                       );
+
+    /**Restore original opacities*/
+    void restoreOpacities( QList< QPair <QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
+                           QList< QPair < QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers,
+                           QList< QPair< QgsVectorLayer*, double > >& labelTransparencies,
+                           QList< QPair< QgsVectorLayer*, double > >& labelBufferTransparencies );
+
     void appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats );
 
     /**Checks WIDTH/HEIGHT values agains MaxWidth and MaxHeight
       @return true if width/height values are okay*/
     bool checkMaximumWidthHeight() const;
+
+    /**Get service address from REQUEST_URI if not specified in the configuration*/
+    QString serviceUrl() const;
+
+    /**Add '<?xml version="1.0" ?>'. Some clients need an xml declaration (though it is not strictly required)*/
+    void addXMLDeclaration( QDomDocument& doc ) const;
+
+    /**Converts a feature info xml document to SIA2045 norm*/
+    void convertFeatureInfoToSIA2045( QDomDocument& doc );
 
     /**Map containing the WMS parameters*/
     QMap<QString, QString> mParameterMap;

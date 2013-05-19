@@ -1,105 +1,13 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   x="0"
-   y="0"
-   width="109.13385"
-   height="109.13385"
-   id="svg602"
-   xml:space="preserve"
-   sodipodi:version="0.32"
-   inkscape:version="0.43"
-   sodipodi:docname="city_building.svg"
-   sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols"><metadata
-     id="metadata17"><rdf:RDF><cc:Work
-         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-     id="defs15" /><sodipodi:namedview
-     inkscape:window-height="683"
-     inkscape:window-width="1024"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     inkscape:zoom="5.222285"
-     inkscape:cx="54.013407"
-     inkscape:cy="50.506809"
-     inkscape:window-x="0"
-     inkscape:window-y="36"
-     inkscape:current-layer="svg602" /><rect
-     id="rect801"
-     style="font-size:12px;fill:#a9a5a5;fill-rule:evenodd;stroke:#000000;stroke-width:6.73433495"
-     y="11.704377"
-     x="7.7676334"
-     height="80.038193"
-     width="92.786179" /><rect
-     width="12.913403"
-     height="13.068814"
-     x="20.379229"
-     y="23.838627"
-     style="font-size:12px;fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:4.5519371;stroke-miterlimit:4;stroke-dasharray:none"
-     id="rect802" /><rect
-     id="rect2207"
-     style="font-size:12px;fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:4.5519371;stroke-miterlimit:4;stroke-dasharray:none"
-     y="23.838627"
-     x="46.878323"
-     height="13.068814"
-     width="12.913403" /><rect
-     width="12.913403"
-     height="13.068814"
-     x="73.377419"
-     y="23.838627"
-     style="font-size:12px;fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:4.5519371;stroke-miterlimit:4;stroke-dasharray:none"
-     id="rect2209" /><rect
-     id="rect2211"
-     style="font-size:12px;fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:4.5519371;stroke-miterlimit:4;stroke-dasharray:none"
-     y="47.05323"
-     x="20.379229"
-     height="13.068814"
-     width="12.913403" /><rect
-     width="12.913403"
-     height="13.068814"
-     x="46.878323"
-     y="47.05323"
-     style="font-size:12px;fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:4.5519371;stroke-miterlimit:4;stroke-dasharray:none"
-     id="rect2213" /><rect
-     id="rect2215"
-     style="font-size:12px;fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:4.5519371;stroke-miterlimit:4;stroke-dasharray:none"
-     y="47.05323"
-     x="73.377419"
-     height="13.068814"
-     width="12.913403" /><rect
-     width="12.913403"
-     height="13.068814"
-     x="20.379229"
-     y="70.267838"
-     style="font-size:12px;fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:4.5519371;stroke-miterlimit:4;stroke-dasharray:none"
-     id="rect2217" /><rect
-     style="fill:#a9a5a5;fill-opacity:1;stroke:none;stroke-width:3;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     id="rect3096"
-     width="86.115547"
-     height="7.8533039"
-     x="11.102947"
-     y="87.26165" /><rect
-     id="rect2219"
-     style="font-size:12px;fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:5.7926445;stroke-miterlimit:4;stroke-dasharray:none"
-     y="70.888191"
-     x="47.221634"
-     height="21.163986"
-     width="12.913403" /><rect
-     width="12.913403"
-     height="13.068814"
-     x="73.35704"
-     y="70.267838"
-     style="font-size:12px;fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:4.5519371;stroke-miterlimit:4;stroke-dasharray:none"
-     id="rect2221" /></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg602" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols" sodipodi:version="0.32" sodipodi:docname="city_building.svg" inkscape:version="0.43"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M517.815,486.516V93.48H62.181v393.036 M255.924,486.516V384.108
+	h63.414v102.408 M187.524,445.236h-63.411v-64.173h63.411V445.236z M187.524,331.237h-63.411v-64.174h63.411V331.237z
+	 M187.524,217.241h-63.411v-64.174h63.411V217.241z M317.65,331.237h-63.411v-64.174h63.411V331.237z M317.65,217.241h-63.411
+	v-64.174h63.411V217.241z M447.675,445.236h-63.41v-64.173h63.41V445.236z M447.781,331.237h-63.416v-64.174h63.416V331.237z
+	 M447.781,217.241h-63.416v-64.174h63.416V217.241z"/>
+</svg>

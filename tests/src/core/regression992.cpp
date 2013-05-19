@@ -22,7 +22,6 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QPainter>
-#include <QSettings>
 #include <QTime>
 #include <QDesktopServices>
 
@@ -70,7 +69,7 @@ void Regression992::initTestCase()
   QgsApplication::showSettings();
   // QgsApplication::skipGdalDriver( "JP2ECW" );
   // QgsApplication::skipGdalDriver( "JP2MrSID" );
-  QgsProviderRegistry::instance( QgsApplication::pluginPath() );
+  QgsApplication::initQgis();
 
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
@@ -125,11 +124,10 @@ void Regression992::regression992()
   myChecker.setControlName( "expected_rgbwcmyk01_YeGeo.jp2" );
   myChecker.setMapRenderer( mpMapRenderer );
   // allow up to 300 mismatched pixels
-  bool myResultFlag = myChecker.runTest( "regression992", 300 );
+  bool myResultFlag = myChecker.runTest( "regression992", 400 );
   mReport += "\n\n\n" + myChecker.report();
   QVERIFY( myResultFlag );
 }
 
 QTEST_MAIN( Regression992 )
 #include "moc_regression992.cxx"
-

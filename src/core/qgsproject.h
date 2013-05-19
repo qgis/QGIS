@@ -28,6 +28,10 @@
 #include <QObject>
 #include <QPair>
 
+//for the snap settings
+#include "qgssnapper.h"
+#include "qgstolerance.h"
+
 //#include <QDomDocument>
 
 class QFileInfo;
@@ -77,10 +81,10 @@ class CORE_EXPORT QgsProject : public QObject
        @todo However current dialogs don't allow setting of it yet
      */
     //@{
-    void title( QString const & title );
+    void title( const QString & title );
 
     /** returns title */
-    QString const & title() const;
+    const QString & title() const;
     //@}
 
     /**
@@ -98,7 +102,7 @@ class CORE_EXPORT QgsProject : public QObject
        Every project has an associated file that contains its XML
      */
     //@{
-    void setFileName( QString const & name );
+    void setFileName( const QString & name );
 
     /** returns file name */
     QString fileName() const;
@@ -131,8 +135,8 @@ class CORE_EXPORT QgsProject : public QObject
        @note it's presumed that the caller has already reset the map canvas, map registry, and legend
      */
     //@{
-    bool read( QFileInfo const & file );
-    bool read( );
+    bool read( const QFileInfo & file );
+    bool read();
     //@}
 
 
@@ -161,8 +165,8 @@ class CORE_EXPORT QgsProject : public QObject
        @note dirty set to false after successful invocation
      */
     //@{
-    bool write( QFileInfo const & file );
-    bool write( );
+    bool write( const QFileInfo & file );
+    bool write();
     //@}
 
 
@@ -209,11 +213,13 @@ class CORE_EXPORT QgsProject : public QObject
       @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
-    bool writeEntry( QString const & scope, const QString & key, bool value );
-    bool writeEntry( QString const & scope, const QString & key, double value );
-    bool writeEntry( QString const & scope, const QString & key, int value );
-    bool writeEntry( QString const & scope, const QString & key, const QString & value );
-    bool writeEntry( QString const & scope, const QString & key, const QStringList & value );
+    //! @note available in python bindings as writeEntryBool
+    bool writeEntry( const QString & scope, const QString & key, bool value );
+    //! @note available in python bindings as writeEntryDouble
+    bool writeEntry( const QString & scope, const QString & key, double value );
+    bool writeEntry( const QString & scope, const QString & key, int value );
+    bool writeEntry( const QString & scope, const QString & key, const QString & value );
+    bool writeEntry( const QString & scope, const QString & key, const QStringList & value );
     //@}
 
     /** key value accessors
@@ -225,30 +231,30 @@ class CORE_EXPORT QgsProject : public QObject
         @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
-    QStringList readListEntry( QString const & scope, const QString & key, bool * ok = 0 ) const;
+    QStringList readListEntry( const QString & scope, const QString & key, QStringList def = QStringList(), bool *ok = 0 ) const;
 
-    QString readEntry( QString const & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
-    int readNumEntry( QString const & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
-    double readDoubleEntry( QString const & scope, const QString & key, double def = 0, bool * ok = 0 ) const;
-    bool readBoolEntry( QString const & scope, const QString & key, bool def = false, bool * ok = 0 ) const;
+    QString readEntry( const QString & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
+    int readNumEntry( const QString & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
+    double readDoubleEntry( const QString & scope, const QString & key, double def = 0, bool * ok = 0 ) const;
+    bool readBoolEntry( const QString & scope, const QString & key, bool def = false, bool * ok = 0 ) const;
     //@}
 
 
     /** remove the given key */
-    bool removeEntry( QString const & scope, const QString & key );
+    bool removeEntry( const QString & scope, const QString & key );
 
 
     /** return keys with values -- do not return keys that contain other keys
 
       @note equivalent to QSettings entryList()
     */
-    QStringList entryList( QString const & scope, QString const & key ) const;
+    QStringList entryList( const QString & scope, const QString & key ) const;
 
     /** return keys with keys -- do not return keys that contain only values
 
       @note equivalent to QSettings subkeyList()
     */
-    QStringList subkeyList( QString const & scope, QString const & key ) const;
+    QStringList subkeyList( const QString & scope, const QString & key ) const;
 
 
     /** dump out current project properties to stderr
@@ -257,7 +263,6 @@ class CORE_EXPORT QgsProject : public QObject
                 and redundantly prints sub-keys.
     */
     void dumpProperties() const;
-
 
     /** prepare a filename to save it to the project file
       @note added in 1.3 */
@@ -281,10 +286,34 @@ class CORE_EXPORT QgsProject : public QObject
 
     /**Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
       @return the layer or 0 in case of error
-      @note: added in version 1.8*/
-    //static QgsMapLayer* createEmbeddedLayer( const QString& layerId, const QString& projectFilePath );
+      @note: added in version 1.8
+      @note not available in python bindings
+     */
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                               QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
+
+    /**Convenience function to set snap settings per layer
+      @note added in version 1.9*/
+    void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance,
+                                  bool avoidIntersection );
+
+    /**Convenience function to query snap settings of a layer
+      @note added in version 1.9*/
+    bool snapSettingsForLayer( const QString& layerId, bool& enabled, QgsSnapper::SnappingType& type, QgsTolerance::UnitType& units, double& tolerance,
+                               bool& avoidIntersection ) const;
+
+    /**Convenience function to set topological editing
+        @note added in version 1.9*/
+    void setTopologicalEditing( bool enabled );
+
+    /**Convenience function to query topological editing status
+      @note added in version 1.9*/
+    bool topologicalEditing() const;
+
+    /** Return project's home path
+      @return home path of project (or QString::null if not set)
+      @note added in version 2.0 */
+    QString homePath() const;
 
   protected:
 
@@ -297,15 +326,38 @@ class CORE_EXPORT QgsProject : public QObject
     void clearError();
 
     //Creates layer and adds it to maplayer registry
+    //! @note not available in python bindings
     bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
 
   signals:
-
     //! emitted when project is being read
     void readProject( const QDomDocument & );
 
     //! emitted when project is being written
     void writeProject( QDomDocument & );
+
+    /**
+     * Emitted, after the basic initialisation of a layer from the project
+     * file is done. You can use this signal to read additional information
+     * from the project file.
+     *
+     * @param mapLayer  The map layer which is being initialized
+     * @param layerNode The layer node from the project file
+     */
+    void readMapLayer( QgsMapLayer *mapLayer, const QDomElement &layerNode );
+
+    /**
+     * Emitted, when a layer is being saved. You can use this method to save
+     * additional information to the layer.
+     *
+     * @param mapLayer  The map layer which is being initialized
+     * @param layerElem The layer element from the project file
+     * @param doc The document
+     */
+    void writeMapLayer( QgsMapLayer *mapLayer, QDomElement &layerElem, QDomDocument &doc );
+
+    //! emitted when the project file has been written and closed
+    void projectSaved();
 
     //! emitted when an old project file is read.
     void oldProjectVersionWarning( QString );
@@ -314,6 +366,10 @@ class CORE_EXPORT QgsProject : public QObject
     // @param i current layer
     // @param n number of layers
     void layerLoaded( int i, int n );
+
+    void loadingLayer( QString );
+
+    void snapSettingsChanged();
 
   private:
 
@@ -338,6 +394,9 @@ class CORE_EXPORT QgsProject : public QObject
     value: pair< project file path, save layer yes / no (e.g. if the layer is part of an embedded group, loading/saving is done by the legend)
        If the project file path is empty, QgsProject is going to ignore the layer for saving (e.g. because it is part and managed by an embedded group)*/
     QHash< QString, QPair< QString, bool> > mEmbeddedLayers;
+
+    void snapSettings( QStringList& layerIdList, QStringList& enabledList, QStringList& snapTypeList, QStringList& snapUnitList, QStringList& toleranceUnitList,
+                       QStringList& avoidIntersectionList ) const;
 
 }; // QgsProject
 

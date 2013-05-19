@@ -8,7 +8,7 @@ Date                 : Oct 13, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
 
-The content of this file is based on 
+The content of this file is based on
 - PG_Manager by Martin Dobias (GPLv2 license)
  ***************************************************************************/
 
@@ -29,9 +29,11 @@ from .db_plugins.plugin import DbError
 from .dlg_db_error import DlgDbError
 from .db_plugins.plugin import TableField
 
-from .ui.ui_DlgAddGeometryColumn import Ui_DlgAddGeometryColumn
+from .ui.ui_DlgAddGeometryColumn import Ui_DbManagerDlgAddGeometryColumn as Ui_Dialog
 
-class DlgAddGeometryColumn(QDialog, Ui_DlgAddGeometryColumn):
+class DlgAddGeometryColumn(QDialog, Ui_Dialog):
+
+	GEOM_TYPES = ["POINT", "LINESTRING", "POLYGON", "MULTIPOINT", "MULTILINESTRING", "MULTIPOLYGON", "GEOMETRYCOLLECTION"]
 
 	def __init__(self, parent=None, table=None, db=None):
 		QDialog.__init__(self, parent)
@@ -48,7 +50,7 @@ class DlgAddGeometryColumn(QDialog, Ui_DlgAddGeometryColumn):
 			return
 
 		name = self.editName.text()
-		geom_type = self.cboType.currentText()
+		geom_type = self.GEOM_TYPES[ self.cboType.currentIndex() ]
 		dim = self.spinDim.value()
 		try:
 			srid = int(self.editSrid.text())

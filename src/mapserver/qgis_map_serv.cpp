@@ -29,6 +29,7 @@ map service syntax for SOAP/HTTP POST
 #include "qgswfsserver.h"
 #include "qgsmaprenderer.h"
 #include "qgsmapserviceexception.h"
+#include "qgspallabeling.h"
 #include "qgsprojectparser.h"
 #include "qgssldparser.h"
 #include <QDomDocument>
@@ -108,6 +109,19 @@ void printRequestInfos()
   {
     QgsDebugMsg( "HTTP_USER_AGENT: " + QString( getenv( "HTTP_USER_AGENT" ) ) );
   }
+  if ( getenv( "HTTP_PROXY" ) != NULL )
+  {
+    QgsDebugMsg( "HTTP_PROXY: " + QString( getenv( "HTTP_PROXY" ) ) );
+  }
+  if ( getenv( "HTTPS_PROXY" ) != NULL )
+  {
+    QgsDebugMsg( "HTTPS_PROXY: " + QString( getenv( "HTTPS_PROXY" ) ) );
+  }
+  if ( getenv( "NO_PROXY" ) != NULL )
+  {
+    QgsDebugMsg( "NO_PROXY: " + QString( getenv( "NO_PROXY" ) ) );
+  }
+
 #endif //QGSMSDEBUG
 }
 
@@ -165,6 +179,8 @@ int main( int argc, char * argv[] )
   }
 #endif
 
+  QDomImplementation::setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
+
   // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
   QgsDebugMsg( "Prefix  PATH: " + QgsApplication::prefixPath() );
@@ -196,6 +212,7 @@ int main( int argc, char * argv[] )
 
   //creating QgsMapRenderer is expensive (access to srs.db), so we do it here before the fcgi loop
   QgsMapRenderer* theMapRenderer = new QgsMapRenderer();
+  theMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
   while ( fcgi_accept() >= 0 )
   {
@@ -312,7 +329,7 @@ int main( int argc, char * argv[] )
         continue;
       }
 
-      if ( request == "GetCapabilities" )
+      if ( request.compare( "GetCapabilities", Qt::CaseInsensitive ) == 0 )
       {
         QDomDocument capabilitiesDocument;
         try
@@ -332,7 +349,7 @@ int main( int argc, char * argv[] )
         delete theServer;
         continue;
       }
-      else if ( request == "DescribeFeatureType" )
+      else if ( request.compare( "DescribeFeatureType", Qt::CaseInsensitive ) == 0 )
       {
         QDomDocument describeDocument;
         try
@@ -352,7 +369,7 @@ int main( int argc, char * argv[] )
         delete theServer;
         continue;
       }
-      else if ( request == "GetFeature" )
+      else if ( request.compare( "GetFeature", Qt::CaseInsensitive ) == 0 )
       {
         //output format for GetFeature
         QString outputFormat = parameterMap.value( "OUTPUTFORMAT" );
@@ -378,6 +395,26 @@ int main( int argc, char * argv[] )
           delete theServer;
           continue;
         }
+      }
+      else if ( request.compare( "Transaction", Qt::CaseInsensitive ) == 0 )
+      {
+        QDomDocument transactionDocument;
+        try
+        {
+          transactionDocument = theServer->transaction( parameterMap.value( "REQUEST_BODY" ) );
+        }
+        catch ( QgsMapServiceException& ex )
+        {
+          theRequestHandler->sendServiceException( ex );
+          delete theRequestHandler;
+          delete theServer;
+          continue;
+        }
+        QgsDebugMsg( "sending Transaction response" );
+        theRequestHandler->sendGetCapabilitiesResponse( transactionDocument );
+        delete theRequestHandler;
+        delete theServer;
+        continue;
       }
 
       return 0;
@@ -409,17 +446,22 @@ int main( int argc, char * argv[] )
     }
 
     QString version = parameterMap.value( "VERSION", "1.3.0" );
-
-    if ( request == "GetCapabilities" )
+    bool getProjectSettings = ( request.compare( "GetProjectSettings", Qt::CaseInsensitive ) == 0 );
+    if ( getProjectSettings )
     {
-      const QDomDocument* capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, version );
+      version = "1.3.0"; //getProjectSettings extends WMS 1.3.0 capabilities
+    }
+
+    if ( request.compare( "GetCapabilities", Qt::CaseInsensitive ) == 0 || getProjectSettings )
+    {
+      const QDomDocument* capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, getProjectSettings ? "projectSettings" : version );
       if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
       {
         QgsDebugMsg( "Capabilities document not found in cache" );
         QDomDocument doc;
         try
         {
-          doc = theServer->getCapabilities( version );
+          doc = theServer->getCapabilities( version, getProjectSettings );
         }
         catch ( QgsMapServiceException& ex )
         {
@@ -428,8 +470,8 @@ int main( int argc, char * argv[] )
           delete theServer;
           continue;
         }
-        capabilitiesCache.insertCapabilitiesDocument( configFilePath, version, &doc );
-        capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, version );
+        capabilitiesCache.insertCapabilitiesDocument( configFilePath, getProjectSettings ? "projectSettings" : version, &doc );
+        capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, getProjectSettings ? "projectSettings" : version );
       }
       else
       {
@@ -444,7 +486,7 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request == "GetMap" )
+    else if ( request.compare( "GetMap", Qt::CaseInsensitive ) == 0 )
     {
       QImage* result = 0;
       try
@@ -476,7 +518,7 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request == "GetFeatureInfo" )
+    else if ( request.compare( "GetFeatureInfo", Qt::CaseInsensitive ) == 0 )
     {
       QDomDocument featureInfoDoc;
       try
@@ -496,13 +538,13 @@ int main( int argc, char * argv[] )
         continue;
       }
 
-      //info format for GetFeatureInfo
-      theRequestHandler->sendGetFeatureInfoResponse( featureInfoDoc, parameterMap.value( "INFO_FORMAT" ) );
+      QString infoFormat = parameterMap.value( "INFO_FORMAT" );
+      theRequestHandler->sendGetFeatureInfoResponse( featureInfoDoc, infoFormat );
       delete theRequestHandler;
       delete theServer;
       continue;
     }
-    else if ( request == "GetStyles" || request == "GetStyle" ) // GetStyle for compatibility with earlier QGIS versions
+    else if ( request.compare( "GetStyles", Qt::CaseInsensitive ) == 0 || request.compare( "GetStyle", Qt::CaseInsensitive ) == 0 ) // GetStyle for compatibility with earlier QGIS versions
     {
       try
       {
@@ -518,7 +560,7 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request == "GetLegendGraphic" || request == "GetLegendGraphics" ) // GetLegendGraphics for compatibility with earlier QGIS versions
+    else if ( request.compare( "GetLegendGraphic", Qt::CaseInsensitive ) == 0 || request.compare( "GetLegendGraphics", Qt::CaseInsensitive ) == 0 ) // GetLegendGraphics for compatibility with earlier QGIS versions
     {
       QImage* result = 0;
       try
@@ -547,7 +589,7 @@ int main( int argc, char * argv[] )
       continue;
 
     }
-    else if ( request == "GetPrint" )
+    else if ( request.compare( "GetPrint", Qt::CaseInsensitive ) == 0 )
     {
       QByteArray* printOutput = 0;
       try

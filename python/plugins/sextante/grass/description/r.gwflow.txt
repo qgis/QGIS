@@ -1,0 +1,25 @@
+r.gwflow
+r.gwflow - Numerical calculation program for transient, confined and unconfined groundwater flow in two dimensions.
+Raster (r.*)
+ParameterString|phead|The initial piezometric head in [m]|
+ParameterString|status|Boundary condition status, 0-inactive, 1-active, 2-dirichlet|
+ParameterString|hc_x|X-part of the hydraulic conductivity tensor in [m/s]|
+ParameterString|hc_y|Y-part of the hydraulic conductivity tensor in [m/s]|
+ParameterString|q|Water sources and sinks in [m^3/s]|
+ParameterString|s|Specific yield in [1/m]|
+ParameterString|r|Recharge map e.g: 6*10^-9 per cell in [m^3/s*m^2]|
+ParameterString|top|Top surface of the aquifer in [m]|
+ParameterString|bottom|Bottom surface of the aquifer in [m]|
+ParameterSelection|type|The type of groundwater flow|confined;unconfined
+ParameterString|river_bed|The height of the river bed in [m]|
+ParameterString|river_head|Water level (head) of the river with leakage connection in [m]|
+ParameterString|river_leak|The leakage coefficient of the river bed in [1/s]|
+ParameterString|drain_bed|The height of the drainage bed in [m]|
+ParameterString|drain_leak|The leakage coefficient of the drainage bed in [1/s]|
+ParameterNumber|dt|The calculation time in seconds|None|None|86400.0
+ParameterNumber|maxit|Maximum number of iteration used to solver the linear equation system|None|None|100000.0
+ParameterNumber|error|Error break criteria for iterative solvers (jacobi, sor, cg or bicgstab)|None|None|1e-10
+ParameterSelection|solver|The type of solver which should solve the symmetric linear equation system|gauss;lu;cholesky;jacobi;sor;cg;bicgstab;pcg
+ParameterString|relax|The relaxation parameter used by the jacobi and sor solver for speedup or stabilizing|1
+ParameterBoolean|-s|Use a sparse matrix, only available with iterative solvers|False
+OutputRaster|output|The map storing the numerical result [m]

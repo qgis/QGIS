@@ -41,10 +41,9 @@ class QgsTextAnnotationDialog: public QDialog, private Ui::QgsTextAnnotationDial
   private slots:
     void applyTextToItem();
     void changeCurrentFormat();
-    void on_mFontColorButton_clicked();
+    void on_mFontColorButton_colorChanged( const QColor& color );
     void setCurrentFontPropertiesToGui();
     void deleteItem();
-    void on_mBackgroundColorButton_clicked();
 };
 
 #endif // QGSTEXTANNOTATIONDIALOG_H

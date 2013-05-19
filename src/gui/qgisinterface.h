@@ -32,8 +32,10 @@ class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsLegendInterface;
 class QgsFeature;
+class QgsMessageBar;
 
 #include <QObject>
+#include <QFont>
 #include <QPair>
 #include <map>
 
@@ -73,8 +75,9 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QgsLegendInterface* legendInterface() = 0;
 
-
   public slots: // TODO: do these functions really need to be slots?
+
+    /* Exposed functions */
 
     //! Zoom to full extent of map layers
     virtual void zoomFull() = 0;
@@ -95,8 +98,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QgsRasterLayer* addRasterLayer( QString rasterLayerPath, QString baseName = QString() ) = 0;
 
     //! Add a WMS layer
-    virtual QgsRasterLayer* addRasterLayer( const QString& url, const QString& layerName, const QString& providerKey, const QStringList& layers,
-                                            const QStringList& styles, const QString& format, const QString& crs ) = 0;
+    virtual QgsRasterLayer* addRasterLayer( const QString& url, const QString& layerName, const QString& providerKey ) = 0;
 
     //! Add a project
     virtual bool addProject( QString theProject ) = 0;
@@ -114,8 +116,28 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Add an icon to the plugins toolbar
     virtual int addToolBarIcon( QAction *qAction ) = 0;
 
+    /**
+     * Add a widget to the plugins toolbar.
+     * To remove this widget again, call {@link removeToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    virtual QAction* addToolBarWidget( QWidget* widget ) = 0;
+
     //! Remove an action (icon) from the plugin toolbar
     virtual void removeToolBarIcon( QAction *qAction ) = 0;
+
+    /**
+     * Add a widget to the raster toolbar.
+     * To remove this widget again, call {@link removeRasterToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    virtual QAction* addRasterToolBarWidget( QWidget* widget ) = 0;
 
     //! Add an icon to the Raster toolbar
     //! @note added in 2.0
@@ -127,7 +149,18 @@ class GUI_EXPORT QgisInterface : public QObject
 
     //! Add an icon to the Vector toolbar
     //! @note added in 2.0
+
     virtual int addVectorToolBarIcon( QAction *qAction ) = 0;
+
+    /**
+     * Add a widget to the vector toolbar.
+     * To remove this widget again, call {@link removeVectorToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    virtual QAction* addVectorToolBarWidget( QWidget* widget ) = 0;
 
     //! Remove an action (icon) from the Vector toolbar
     //! @note added in 2.0
@@ -137,6 +170,16 @@ class GUI_EXPORT QgisInterface : public QObject
     //! @note added in 2.0
     virtual int addDatabaseToolBarIcon( QAction *qAction ) = 0;
 
+    /**
+     * Add a widget to the database toolbar.
+     * To remove this widget again, call {@link removeDatabaseToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    virtual QAction* addDatabaseToolBarWidget( QWidget* widget ) = 0;
+
     //! Remove an action (icon) from the Database toolbar
     //! @note added in 2.0
     virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
@@ -145,12 +188,22 @@ class GUI_EXPORT QgisInterface : public QObject
     //! @note added in 2.0
     virtual int addWebToolBarIcon( QAction *qAction ) = 0;
 
+    /**
+     * Add a widget to the web toolbar.
+     * To remove this widget again, call {@link removeWebToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    virtual QAction* addWebToolBarWidget( QWidget* widget ) = 0;
+
     //! Remove an action (icon) from the Web toolbar
     //! @note added in 2.0
     virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
 
     //! Add toolbar with specified name
-    virtual QToolBar * addToolBar( QString name ) = 0;
+    virtual QToolBar *addToolBar( QString name ) = 0;
 
     /** Return a pointer to the map canvas */
     virtual QgsMapCanvas * mapCanvas() = 0;
@@ -158,8 +211,52 @@ class GUI_EXPORT QgisInterface : public QObject
     /** Return a pointer to the main window (instance of QgisApp in case of QGIS) */
     virtual QWidget * mainWindow() = 0;
 
+    /** Return the message bar of the main app */
+    virtual QgsMessageBar * messageBar() = 0;
+
     /**Return mainwindows / composer views of running composer instances (currently only one)*/
     virtual QList<QgsComposerView*> activeComposers() = 0;
+
+    /** Create a new composer
+     * @param title window title for new composer (one will be generated if empty)
+     * @return pointer to composer's view
+     * @note new composer window will be shown and activated (added in 1.9)
+     */
+    virtual QgsComposerView* createNewComposer( QString title = QString( "" ) ) = 0;
+
+    /** Duplicate an existing parent composer from composer view
+     * @param composerView pointer to existing composer view
+     * @param title window title for duplicated composer (one will be generated if empty)
+     * @return pointer to duplicate composer's view
+     * @note dupicate composer window will be hidden until loaded, then shown and activated (added in 1.9)
+     */
+    virtual QgsComposerView* duplicateComposer( QgsComposerView* composerView, QString title = QString( "" ) ) = 0;
+
+    /** Deletes parent composer of composer view, after closing composer window
+     * @note (added in 1.9)
+     */
+    virtual void deleteComposer( QgsComposerView* composerView ) = 0;
+
+    /** Return changeable options built from settings and/or defaults
+     * @note (added in 1.9)
+     */
+    virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
+
+    /** Generate stylesheet
+     * @param opts generated default option values, or a changed copy of them
+     * @note added in 1.9
+     */
+    virtual void buildStyleSheet( const QMap<QString, QVariant>& opts ) = 0;
+
+    /** Save changed default option keys/values to user settings
+      * @note added in 1.9
+      */
+    virtual void saveStyleSheetOptions( const QMap<QString, QVariant>& opts ) = 0;
+
+    /** Get reference font for initial qApp (may not be same as QgisApp)
+     * @note added in 1.9
+     */
+    virtual QFont defaultStyleSheetFont() = 0;
 
     /** Add action to the plugins menu */
     virtual void addPluginToMenu( QString name, QAction* action ) = 0;
@@ -217,7 +314,6 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void removePluginWebMenu( QString name, QAction* action ) = 0;
 
-
     /** Add a dock widget to the main window */
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget ) = 0;
 
@@ -225,14 +321,6 @@ class GUI_EXPORT QgisInterface : public QObject
      * @note Added in 1.1
      */
     virtual void removeDockWidget( QDockWidget * dockwidget ) = 0;
-
-    /** refresh the legend of a layer
-     \deprecated use QgsLegendInterface::refreshLayerSymbology
-     */
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual void refreshLegend( QgsMapLayer *l ) = 0;
 
     /** open layer properties dialog
      \note added in 1.5
@@ -269,6 +357,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * @param url URL to open
      * @param useQgisDocDirectory If true, the URL will be formed by concatenating
      * url to the QGIS documentation directory path (prefix/share/doc)
+     * @deprecated
      */
 #ifndef Q_MOC_RUN
     Q_DECL_DEPRECATED
@@ -285,6 +374,9 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QMenu *editMenu() = 0;
     virtual QMenu *viewMenu() = 0;
     virtual QMenu *layerMenu() = 0;
+    /** \note added in 2.0
+    */
+    virtual QMenu *newLayerMenu() = 0;
     virtual QMenu *settingsMenu() = 0;
     virtual QMenu *pluginMenu() = 0;
     virtual QMenu *rasterMenu() = 0;
@@ -306,7 +398,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QToolBar *layerToolBar() = 0;
     virtual QToolBar *mapNavToolToolBar() = 0;
     virtual QToolBar *digitizeToolBar() = 0;
-    virtual QToolBar *advancedDigitizeToolBar() = 0;  // added in v1.5
+    virtual QToolBar *advancedDigitizeToolBar() = 0; // added in v1.5
     virtual QToolBar *attributesToolBar() = 0;
     virtual QToolBar *pluginToolBar() = 0;
     virtual QToolBar *helpToolBar() = 0;
@@ -326,82 +418,32 @@ class GUI_EXPORT QgisInterface : public QObject
     //! File menu actions
     virtual QAction *actionNewProject() = 0;
     virtual QAction *actionOpenProject() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionFileSeparator1() = 0;
     virtual QAction *actionSaveProject() = 0;
     virtual QAction *actionSaveProjectAs() = 0;
     virtual QAction *actionSaveMapAsImage() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionFileSeparator2() = 0;
     virtual QAction *actionProjectProperties() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionFileSeparator3() = 0;
     virtual QAction *actionPrintComposer() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionFileSeparator4() = 0;
+    virtual QAction *actionShowComposerManager() = 0;
     virtual QAction *actionExit() = 0;
 
     //! Edit menu actions
     virtual QAction *actionCutFeatures() = 0;
     virtual QAction *actionCopyFeatures() = 0;
     virtual QAction *actionPasteFeatures() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionEditSeparator1() = 0;
     virtual QAction *actionAddFeature() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionCapturePoint() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionCaptureLine() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionCapturePolygon() = 0;
     virtual QAction *actionDeleteSelected() = 0;
     virtual QAction *actionMoveFeature() = 0;
     virtual QAction *actionSplitFeatures() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionAddVertex() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionDeleteVertex() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionMoveVertex() = 0;
     virtual QAction *actionAddRing() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionAddIsland() = 0;
     virtual QAction *actionAddPart() = 0;
     virtual QAction *actionSimplifyFeature() = 0;
     virtual QAction *actionDeleteRing() = 0;
     virtual QAction *actionDeletePart() = 0;
     virtual QAction *actionNodeTool() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionEditSeparator2() = 0;
 
     //! View menu actions
     virtual QAction *actionPan() = 0;
+    virtual QAction *actionTouch() = 0;
     virtual QAction *actionPanToSelected() = 0;
     virtual QAction *actionZoomIn() = 0;
     virtual QAction *actionZoomOut() = 0;
@@ -413,27 +455,15 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionIdentify() = 0;
     virtual QAction *actionMeasure() = 0;
     virtual QAction *actionMeasureArea() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionViewSeparator1() = 0;
     virtual QAction *actionZoomFullExtent() = 0;
     virtual QAction *actionZoomToLayer() = 0;
     virtual QAction *actionZoomToSelected() = 0;
     virtual QAction *actionZoomLast() = 0;
     virtual QAction *actionZoomActualSize() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionViewSeparator2() = 0;
     virtual QAction *actionMapTips() = 0;
     virtual QAction *actionNewBookmark() = 0;
     virtual QAction *actionShowBookmarks() = 0;
     virtual QAction *actionDraw() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionViewSeparator3() = 0;
 
     //! Layer menu actions
     virtual QAction *actionNewVectorLayer() = 0;
@@ -441,84 +471,90 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionAddRasterLayer() = 0;
     virtual QAction *actionAddPgLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionLayerSeparator1() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionCopyLayerStyle() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionPasteLayerStyle() = 0;
     virtual QAction *actionOpenTable() = 0;
+    virtual QAction *actionOpenFieldCalculator() = 0;
     virtual QAction *actionToggleEditing() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionSaveActiveLayerEdits() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionAllEdits() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionSaveEdits() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionSaveAllEdits() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionRollbackEdits() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionRollbackAllEdits() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionCancelEdits() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionCancelAllEdits() = 0;
     virtual QAction *actionLayerSaveAs() = 0;
     virtual QAction *actionLayerSelectionSaveAs() = 0;
     virtual QAction *actionRemoveLayer() = 0;
+    /** @note added in 1.9 */
+    virtual QAction *actionDuplicateLayer() = 0;
     virtual QAction *actionLayerProperties() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionLayerSeparator2() = 0;
     virtual QAction *actionAddToOverview() = 0;
     virtual QAction *actionAddAllToOverview() = 0;
     virtual QAction *actionRemoveAllFromOverview() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionLayerSeparator3() = 0;
     virtual QAction *actionHideAllLayers() = 0;
     virtual QAction *actionShowAllLayers() = 0;
 
     //! Plugin menu actions
     virtual QAction *actionManagePlugins() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionPluginSeparator1() = 0;
     virtual QAction *actionPluginListSeparator() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionPluginSeparator2() = 0;
-    virtual QAction *actionPluginPythonSeparator() = 0;
     virtual QAction *actionShowPythonDialog() = 0;
 
     //! Settings menu actions
     virtual QAction *actionToggleFullScreen() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionSettingsSeparator1() = 0;
     virtual QAction *actionOptions() = 0;
     virtual QAction *actionCustomProjection() = 0;
 
     //! Help menu actions
     virtual QAction *actionHelpContents() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionHelpSeparator1() = 0;
     virtual QAction *actionQgisHomePage() = 0;
     virtual QAction *actionCheckQgisVersion() = 0;
-#ifndef Q_MOC_RUN
-    Q_DECL_DEPRECATED
-#endif
-    virtual QAction *actionHelpSeparator2() = 0;
     virtual QAction *actionAbout() = 0;
 
     //! Open feature form
     // returns true when dialog was accepted
     // @added in 1.6
-    virtual bool openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, bool updateFeatureOnly = false ) = 0;
+    virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false ) = 0;
+
+    virtual QDialog* getFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
+
+    virtual void preloadForm( QString uifile ) = 0;
+
+    /** Return vector layers in edit mode
+     * @param modified whether to return only layers that have been modified
+     * @returns list of layers in legend order, or empty list
+     * @note added in 1.9 */
+    virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
+
+    /** Get timeout for timed messages: default of 5 seconds
+     * @note added in 1.9 */
+    virtual int messageTimeout() = 0;
 
   signals:
-    /** Emited whenever current (selected) layer changes.
+    /** Emitted whenever current (selected) layer changes.
      *  The pointer to layer can be null if no layer is selected
      */
     void currentLayerChanged( QgsMapLayer * layer );
+
     /**This signal is emitted when a new composer instance has been created
-      * @note added in 1.4
-      */
+     * @note added in 1.4
+     */
     void composerAdded( QgsComposerView* v );
+
     /**This signal is emitted before a new composer instance is going to be removed
-      *  @note added in 1.4
-      */
+     * @note added in 1.4
+     */
     void composerWillBeRemoved( QgsComposerView* v );
     /**This signal is emitted when the initialization is complete
       * @note added in version 1.6
@@ -544,7 +580,6 @@ class GUI_EXPORT QgisInterface : public QObject
         Added in v1.6
       */
     void newProjectCreated();
-
 };
 
 #ifdef _MSC_VER

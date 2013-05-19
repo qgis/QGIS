@@ -69,8 +69,8 @@ QgsPluginLayerRegistry::~QgsPluginLayerRegistry()
   if ( !mPluginLayerTypes.isEmpty() )
   {
     QgsDebugMsg( "QgsPluginLayerRegistry::~QgsPluginLayerRegistry(): creator list not empty" );
-    foreach( QString typeName, mPluginLayerTypes.keys() )
-    removePluginLayerType( typeName );
+    foreach ( QString typeName, mPluginLayerTypes.keys() )
+      removePluginLayerType( typeName );
   }
 }
 
@@ -93,7 +93,7 @@ bool QgsPluginLayerRegistry::removePluginLayerType( QString typeName )
 
   // remove all remaining layers of this type - to avoid invalid behaviour
   QList<QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers().values();
-  foreach( QgsMapLayer* layer, layers )
+  foreach ( QgsMapLayer* layer, layers )
   {
     if ( layer->type() == QgsMapLayer::PluginLayer )
     {

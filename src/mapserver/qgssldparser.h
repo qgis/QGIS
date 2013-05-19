@@ -54,9 +54,13 @@ class QgsSLDParser: public QgsConfigParser
     virtual ~QgsSLDParser();
 
     /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.*/
-    void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
+    void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const;
 
-    void featureTypeList( QDomElement &, QDomDocument & ) const {};
+    void featureTypeList( QDomElement &, QDomDocument & ) const {}
+
+    void describeFeatureType( const QString& , QDomElement& , QDomDocument& ) const {}
+    /**Returns one or possibly several maplayers for a given type name. If no layers/style are found, an empty list is returned*/
+    QList<QgsMapLayer*> mapLayerFromTypeName( const QString&, bool ) const { QList<QgsMapLayer*> layerList; return layerList; }
 
     /**Returns number of layers in configuration*/
     int numberOfLayers() const;
@@ -80,6 +84,15 @@ class QgsSLDParser: public QgsConfigParser
 
     /**True if the feature info response should contain the wkt geometry for vector features*/
     virtual bool featureInfoWithWktGeometry() const;
+
+    /**Returns map with layer aliases for GetFeatureInfo (or 0 pointer if not supported). Key: layer name, Value: layer alias*/
+    virtual QHash<QString, QString> featureInfoLayerAliasMap() const;
+
+    /**Return feature info in format SIA2045?*/
+    bool featureInfoFormatSIA2045() const;
+
+    /**Forward to fallback parser*/
+    void drawOverlays( QPainter* p, int dpi, int width, int height ) const;
 
   private:
     /**Don't use the default constructor*/
@@ -112,8 +125,10 @@ class QgsSLDParser: public QgsConfigParser
     QgsVectorLayer* contourLayerFromRaster( const QDomElement& userStyleElem, QgsRasterLayer* rasterLayer ) const;
     /**Creates a suitable layer name from a URL. */
     QString layerNameFromUri( const QString& uri ) const;
+#if 0
     /**Sets the opacity on layer level if the <Opacity> tag is present*/
     void setOpacityForLayer( const QDomElement& layerElem, QgsMapLayer* layer ) const;
+#endif
     /**Resets the former symbology of a raster layer. This is important for single band layers (e.g. dems)
      coming from the cash*/
     void clearRasterSymbology( QgsRasterLayer* rl ) const;

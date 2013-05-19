@@ -1,0 +1,32 @@
+<h3>age() function</h3>
+Returns the difference between two dates.
+<br><br>
+The difference is returned as a <code>Interval</code> 
+and needs to be used with one of the following functions
+in order to extract useful information:
+<ul>
+<li><code>year</code>
+<li><code>month</code>
+<li><code>week</code>
+<li><code>day</code>
+<li><code>hour</code>
+<li><code>minute</code>
+<li><code>second</code>
+</ul>
+<h4>Syntax</h4>
+<code>age(string,string)</code><br>
+<code>age(datetime,datetime)</code><br>
+<code>age(string,datetime)</code><br>
+<code>age(datetime,string)</code><br>
+
+<h4>Arguments</h4>
+<code>string</code> - is string. A string in date format.
+<br>
+<code>datetime</code> - is date or datetime. A date or datetime type.
+
+<h4>Example</h4>
+<!-- Show example of function.-->
+<code>age('2012-05-12','2012-05-2') &rarr; Interval</code><br>
+use <code>day</code> to extract number of days<br>
+<code>day(age('2012-05-12','2012-05-2')) &rarr; 10</code><br>
+

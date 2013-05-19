@@ -19,9 +19,10 @@
 #define QGSRECT_H
 
 #include <iosfwd>
+#include <QDomDocument>
 
 class QString;
-
+class QRectF;
 #include "qgspoint.h"
 
 
@@ -37,7 +38,10 @@ class CORE_EXPORT QgsRectangle
     //! Constructor
     QgsRectangle( double xmin = 0, double ymin = 0, double xmax = 0, double ymax = 0 );
     //! Construct a rectangle from two points. The rectangle is normalized after construction.
-    QgsRectangle( QgsPoint const & p1, QgsPoint const & p2 );
+    QgsRectangle( const QgsPoint & p1, const QgsPoint & p2 );
+    //! Construct a rectangle from a QRectF. The rectangle is normalized after construction.
+    //@note added in 2.0
+    QgsRectangle( const QRectF & qRectF );
     //! Copy constructor
     QgsRectangle( const QgsRectangle &other );
     //! Destructor
@@ -76,9 +80,7 @@ class CORE_EXPORT QgsRectangle
     //! Center point of the rectangle
     QgsPoint center() const;
     //! Scale the rectangle around its center point
-    void scale( double, const QgsPoint *c = 0 );
-    //! Expand the rectangle to support zoom out scaling
-    void expand( double, const QgsPoint *c = 0 );
+    void scale( double scaleFactor, const QgsPoint *c = 0 );
     //! return the intersection with the given rectangle
     QgsRectangle intersect( const QgsRectangle *rect ) const;
     //! returns true when rectangle intersects with other rectangle
@@ -97,11 +99,17 @@ class CORE_EXPORT QgsRectangle
     bool isEmpty() const;
     //! returns string representation in Wkt form
     QString asWktCoordinates() const;
+    //! returns string representation as WKT Polygon
+    //@note added in 2.0
+    QString asWktPolygon() const;
+    //! returns a QRectF with same coordinates.
+    //@note added in 2.0
+    QRectF toRectF() const;
     //! returns string representation of form xmin,ymin xmax,ymax
     QString toString( bool automaticPrecision = false ) const;
     //! overloaded toString that allows precision of numbers to be set
     QString toString( int thePrecision ) const;
-    //! returns rectangle s a polygon
+    //! returns rectangle as a polygon
     QString asPolygon() const;
     /*! Comparison operator
       @return True if rectangles are equal

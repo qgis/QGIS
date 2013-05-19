@@ -24,16 +24,20 @@
 
 class QgisApp;
 class QgsComposerArrow;
+class QgsComposerFrame;
+class QgsComposerHtml;
 class QgsComposerLabel;
 class QgsComposerLegend;
 class QgsComposerPicture;
 class QgsComposerPictureWidget;
+class QgsComposerRuler;
 class QgsComposerScaleBar;
 class QgsComposerShape;
 class QgsComposerAttributeTable;
 class QgsComposerView;
 class QgsComposition;
 class QgsMapCanvas;
+class QgsAtlasComposition;
 
 class QGridLayout;
 class QDomNode;
@@ -59,7 +63,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void setupTheme();
 
     void setIconSizes( int size );
-    void setFontSize( int size );
 
     //! Open and show, set defaults if first time
     void open();
@@ -74,7 +77,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QgsComposerView *view( void );
 
     //! Return current composition
-    //QgsComposition *composition(void);
+    QgsComposition* composition( void ) { return mComposition; }
 
     //! Restore the window and toolbar state
     void restoreWindowState();
@@ -83,6 +86,11 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     const QString& title() const {return mTitle;}
     void setTitle( const QString& title );
+
+    //! Load template into current or blank composer
+    //! @param newCompser whether to create a new composer first
+    //! @note added in 1.9
+    void loadTemplate( bool newCompser );
 
   protected:
     //! Move event
@@ -107,7 +115,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void composerAdded( QgsComposerView* v );
     //!Composer deletes the old composerview when loading a template
     void composerWillBeRemoved( QgsComposerView* v );
-
 
   public slots:
     //! Zoom to full extent of the paper
@@ -167,8 +174,30 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Add attribute table
     void on_mActionAddTable_triggered();
 
+    void on_mActionAddHtml_triggered();
+
+    //! Save parent project
+    //! @note added in 1.9
+    void on_mActionSaveProject_triggered();
+
+    //! Create new composer
+    //! @note added in 1.9
+    void on_mActionNewComposer_triggered();
+
+    //! Duplicate current composer
+    //! @note added in 1.9
+    void on_mActionDuplicateComposer_triggered();
+
+    //! Show composer manager
+    //! @note added in 1.9
+    void on_mActionComposerManager_triggered();
+
     //! Save composer as template
     void on_mActionSaveAsTemplate_triggered();
+
+    //! Load template into blank composer
+    //! @note added in 1.9
+    void on_mActionNewFromTemplate_triggered();
 
     void on_mActionLoadFromTemplate_triggered();
 
@@ -244,6 +273,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     /**Adds a composer table to the item/widget map and creates a configuration widget*/
     void addComposerTable( QgsComposerAttributeTable* table );
 
+    /**Adds composer html and creates a configuration widget*/
+    void addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame );
+
     /**Removes item from the item/widget map and deletes the configuration widget. Does not delete the item itself*/
     void deleteItem( QgsComposerItem* item );
 
@@ -254,6 +286,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Stores state in Dom node
     void writeXML( QDomDocument& doc );
+
+    //! Stores only template as base Dom node
+    void templateXML( QDomDocument& doc );
 
     //! Sets state from Dom document
     void readXML( const QDomDocument& doc );
@@ -274,26 +309,43 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! True if a composer map contains a WMS layer
     bool containsWMSLayer() const;
 
+    //! True if a composer contains advanced effects, such as blend modes
+    bool containsAdvancedEffects() const;
+
     //! Displays a warning because of possible min/max size in WMS
     void showWMSPrintingWarning();
 
+    //! Displays a warning because of incompatibility between blend modes and QPrinter
+    void showAdvancedEffectsWarning();
+
     //! Changes elements that are not suitable for this project
     void cleanupAfterTemplateRead();
-
-    //! Print to a printer object
-    void print( QPrinter &printer );
 
     //! Writes state under DOM element
     void writeXML( QDomNode& parentNode, QDomDocument& doc );
 
     //! Removes all the item from the graphics scene and deletes them
-    void deleteItems();
+    void deleteItemWidgets();
+
+    //! Restores composer map preview states.
+    //! Initially after reading from xml, states are set to rectangle to achieve faster project loading.
+    void restoreComposerMapStates();
+
+    //! Fills icons into composer picture widgets
+    //! To make loading from project faster, the previews are generated when the composer becomes visible.
+    void initialiseComposerPicturePreviews();
+
+    //! Create composer view and rulers
+    void createComposerView();
 
     /**Composer title*/
     QString mTitle;
 
     //! Pointer to composer view
     QgsComposerView *mView;
+    QGridLayout* mViewLayout;
+    QgsComposerRuler* mHorizontalRuler;
+    QgsComposerRuler* mVerticalRuler;
 
     //! Current composition
     QgsComposition *mComposition;
@@ -328,6 +380,47 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QDockWidget* mItemDock;
     QDockWidget* mUndoDock;
     QDockWidget* mGeneralDock;
+    QDockWidget* mAtlasDock;
+
+    QMenu* mPanelMenu;
+    QMenu* mToolbarMenu;
+
+    //! Print Composers menu as mirror of main app's
+    //! @note added in 1.9
+    QMenu* mPrintComposersMenu;
+
+    //! Window menu as mirror of main app's (on Mac)
+    //! @note added in 1.9
+    QMenu* mWindowMenu;
+
+    //! Help menu as mirror of main app's (on Mac)
+    //! @note added in 1.9
+    QMenu* mHelpMenu;
+
+  signals:
+    void printAsRasterChanged( bool state );
+
+  private slots:
+
+    //! Populate Print Composers menu from main app's
+    //! @note added in 1.9
+    void populatePrintComposersMenu();
+
+    //! Populate Window menu from main app's (on Mac)
+    //! @note added in 1.9
+    void populateWindowMenu();
+
+    //! Populate Help menu from main app's (on Mac)
+    //! @note added in 1.9
+    void populateHelpMenu();
+
+    //! Populate one menu from another menu (for Mac)
+    //! @note added in 1.9
+    void populateWithOtherMenu( QMenu* thisMenu, QMenu* otherMenu );
+
+    //! Create a duplicate of a menu (for Mac)
+    //! @note added in 1.9
+    QMenu* mirrorOtherMenu( QMenu* otherMenu );
 };
 
 #endif

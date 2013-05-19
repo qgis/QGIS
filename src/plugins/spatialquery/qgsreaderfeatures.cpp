@@ -53,7 +53,7 @@ void QgsReaderFeatures::initReader( bool useSelection )
   }
   else
   {
-    mLayer->select( QgsAttributeList() );
+    mFit = mLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
     mFuncNextFeature = &QgsReaderFeatures::nextFeatureTotal;
   }
 
@@ -61,20 +61,16 @@ void QgsReaderFeatures::initReader( bool useSelection )
 
 bool QgsReaderFeatures::nextFeatureTotal( QgsFeature & feature )
 {
-  return mLayer->nextFeature( feature );
+  return mFit.nextFeature( feature );
 } // bool QgsReaderFeatures::nextFeatureTotal ( QgsFeature & feature )
 
 bool QgsReaderFeatures::nextFeatureSelected( QgsFeature & feature )
 {
-  bool bReturn = true;
   if ( mIterSelectedFeature == mListSelectedFeature.end() )
-  {
-    bReturn = false;
-  }
-  else
-  {
-    feature = *mIterSelectedFeature;
-    mIterSelectedFeature++;
-  }
-  return bReturn;
+    return false;
+
+  feature = *mIterSelectedFeature;
+  mIterSelectedFeature++;
+
+  return true;
 } // bool QgsReaderFeatures::nextFeatureSelected( QgsFeature &feature )

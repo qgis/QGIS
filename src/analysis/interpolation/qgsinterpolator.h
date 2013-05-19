@@ -64,9 +64,6 @@ class ANALYSIS_EXPORT QgsInterpolator
        @return 0 in case of success*/
     virtual int interpolatePoint( double x, double y, double& result ) = 0;
 
-    /**Use a vector attribute as interpolation value*/
-    void enableAttributeValueInterpolation( int attribute );
-
   protected:
     /**Caches the vertex and value data from the provider. All the vertex data
      will be held in virtual memory

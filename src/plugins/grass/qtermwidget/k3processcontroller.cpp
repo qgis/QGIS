@@ -123,7 +123,7 @@ K3ProcessController::~K3ProcessController()
   close( d->fd[0] );
   close( d->fd[1] );
 #else
-#warning FIXME: why does close() freeze up destruction?
+//FIXME: why does close() freeze up destruction?
 #endif
 
   delete d;
@@ -209,7 +209,7 @@ void K3ProcessController::theSigCHLDHandler( int arg )
   int saved_errno = errno;
 
   char dummy = 0;
-  ::write( instance()->d->fd[1], &dummy, 1 );
+  ( void ) ::write( instance()->d->fd[1], &dummy, 1 );
 
 #ifdef Q_OS_UNIX
   if ( Private::oldChildHandlerData.sa_handler != SIG_IGN &&
@@ -243,14 +243,14 @@ K3ProcessController::rescheduleCheck()
   {
     d->needcheck = false;
     char dummy = 0;
-    ::write( d->fd[1], &dummy, 1 );
+    ( void ) ::write( d->fd[1], &dummy, 1 );
   }
 }
 
 void K3ProcessController::slotDoHousekeeping()
 {
   char dummy[16]; // somewhat bigger - just in case several have queued up
-  ::read( d->fd[0], dummy, sizeof( dummy ) );
+  ( void ) ::read( d->fd[0], dummy, sizeof( dummy ) );
 
   int status;
 again:

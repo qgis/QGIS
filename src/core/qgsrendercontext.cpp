@@ -23,9 +23,11 @@ QgsRenderContext::QgsRenderContext()
     mCoordTransform( 0 ),
     mDrawEditingInformation( true ),
     mForceVectorOutput( false ),
+    mUseAdvancedEffects( true ),
     mRenderingStopped( false ),
     mScaleFactor( 1.0 ),
     mRasterScaleFactor( 1.0 ),
+    mRendererScale( 1.0 ),
     mLabelingEngine( NULL )
 {
 
@@ -33,12 +35,10 @@ QgsRenderContext::QgsRenderContext()
 
 QgsRenderContext::~QgsRenderContext()
 {
-  delete mCoordTransform;
 }
 
-void QgsRenderContext::setCoordinateTransform( QgsCoordinateTransform* t )
+void QgsRenderContext::setCoordinateTransform( const QgsCoordinateTransform* t )
 {
-  delete mCoordTransform;
   mCoordTransform = t;
 }
 

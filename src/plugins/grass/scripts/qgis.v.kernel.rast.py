@@ -1,16 +1,34 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    qgis.v.kernel.rast.py
+    ---------------------
+    Date                 : February 2010
+    Copyright            : (C) 2010 by Radim Blazek
+    Email                : radim dot blazek at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Radim Blazek'
+__date__ = 'February 2010'
+__copyright__ = '(C) 2010, Radim Blazek'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 
 ############################################################################
 #
 # MODULE:       qgis.v.kernel.rast.py
-# AUTHOR(S):    Radim Blazek
-#
-# PURPOSE:      Export a vectore to PostGIS (PostgreSQL) database table
-# COPYRIGHT:    (C) 2009 by Radim Blazek
-#
-#               This program is free software under the GNU General Public
-#               License (>=v2). Read the file COPYING that comes with GRASS
-#               for details.
+# PURPOSE:      Export a vector to PostGIS (PostgreSQL) database table
 #
 #############################################################################
 
@@ -61,7 +79,7 @@ def main():
 
     if grass.run_command('v.kernel', input=input, stddeviation=stddeviation, output=output ) != 0:
          grass.fatal("Cannot run v.kernel.")
-	
+
 if __name__ == "__main__":
     options, flags = grass.parser()
     main()

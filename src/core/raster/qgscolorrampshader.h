@@ -65,7 +65,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const {return mColorRampItemList;}
 
     /** \brief Get the color ramp type */
-    QgsColorRampShader::ColorRamp_TYPE colorRampType() {return mColorRampType;}
+    QgsColorRampShader::ColorRamp_TYPE colorRampType() const {return mColorRampType;}
 
     /** \brief Get the color ramp type as a string */
     QString colorRampTypeAsQString();
@@ -90,6 +90,11 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     /** \brief Generates and new RGB value based on original RGB value */
     bool shade( double, double, double, int*, int*, int* );
+
+    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+
+    void setClip( bool clip ) { mClip = clip; }
+    bool clip() const { return mClip; }
 
   private:
     /** Current index from which to start searching the color table*/
@@ -127,6 +132,9 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * mValueClassification. Interpolates the color between two class breaks
      * linearly.*/
     bool interpolatedColor( double, int*, int*, int* );
+
+    /** Do not render values out of range */
+    bool mClip;
 };
 
 #endif

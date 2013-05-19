@@ -1,23 +1,48 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    sql_dictionary.py
+    ---------------------
+    Date                 : April 2012
+    Copyright            : (C) 2012 by Giuseppe Sucameli
+    Email                : brush dot tyler at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Giuseppe Sucameli'
+__date__ = 'April 2012'
+__copyright__ = '(C) 2012, Giuseppe Sucameli'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 # keywords
 keywords = [
 # TODO get them from a reference page
-"action", "add", "after", "all", "alter", "analyze", "and", "as", "asc", 
-"before", "begin", "between", "by", "cascade", "case", "cast", "check", 
-"collate", "column", "commit", "constraint", "create", "cross", "current_date", 
-"current_time", "current_timestamp", "default", "deferrable", "deferred", 
-"delete", "desc", "distinct", "drop", "each", "else", "end", "escape", 
-"except", "exists", "for", "foreign", "from", "full", "group", "having", 
-"ignore", "immediate", "in", "initially", "inner", "insert", "intersect", 
-"into", "is", "isnull", "join", "key", "left", "like", "limit", "match", 
-"natural", "no", "not", "notnull", "null", "of", "offset", "on", "or", "order", 
-"outer", "primary", "references", "release", "restrict", "right", "rollback", 
-"row", "savepoint", "select", "set", "table", "temporary", "then", "to", 
-"transaction", "trigger", "union", "unique", "update", "using", "values", 
+"action", "add", "after", "all", "alter", "analyze", "and", "as", "asc",
+"before", "begin", "between", "by", "cascade", "case", "cast", "check",
+"collate", "column", "commit", "constraint", "create", "cross", "current_date",
+"current_time", "current_timestamp", "default", "deferrable", "deferred",
+"delete", "desc", "distinct", "drop", "each", "else", "end", "escape",
+"except", "exists", "for", "foreign", "from", "full", "group", "having",
+"ignore", "immediate", "in", "initially", "inner", "insert", "intersect",
+"into", "is", "isnull", "join", "key", "left", "like", "limit", "match",
+"natural", "no", "not", "notnull", "null", "of", "offset", "on", "or", "order",
+"outer", "primary", "references", "release", "restrict", "right", "rollback",
+"row", "savepoint", "select", "set", "table", "temporary", "then", "to",
+"transaction", "trigger", "union", "unique", "update", "using", "values",
 "view", "when", "where",
 
-"abort", "attach", "autoincrement", "conflict", "database", "detach", 
-"exclusive", "explain", "fail", "glob", "if", "index", "indexed", "instead", 
-"plan", "pragma", "query", "raise", "regexp", "reindex", "rename", "replace", 
+"abort", "attach", "autoincrement", "conflict", "database", "detach",
+"exclusive", "explain", "fail", "glob", "if", "index", "indexed", "instead",
+"plan", "pragma", "query", "raise", "regexp", "reindex", "rename", "replace",
 "temp", "vacuum", "virtual"
 ]
 spatialite_keywords = []
@@ -25,10 +50,10 @@ spatialite_keywords = []
 # functions
 functions = [
 # TODO get them from a reference page
-"abs", "changes", "coalesce", "glob", "ifnull", "hex", "last_insert_rowid", 
-"length", "like", "lower", "ltrim", "max", "min", "nullif", "quote", "random", 
-"randomblob", "replace", "round", "rtrim", "soundex", "total_change", "trim", 
-"typeof", "upper", "zeroblob", "date", "datetime", "julianday", "strftime", 
+"abs", "changes", "coalesce", "glob", "ifnull", "hex", "last_insert_rowid",
+"length", "like", "lower", "ltrim", "max", "min", "nullif", "quote", "random",
+"randomblob", "replace", "round", "rtrim", "soundex", "total_change", "trim",
+"typeof", "upper", "zeroblob", "date", "datetime", "julianday", "strftime",
 "avg", "count", "group_concat", "sum", "total"
 ]
 spatialite_functions = [	# from www.gaia-gis.it/spatialite-2.3.0/spatialite-sql-2.3.0.html

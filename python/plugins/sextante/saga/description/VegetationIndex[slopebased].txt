@@ -1,0 +1,10 @@
+Vegetation Index[slope based]
+imagery_tools
+ParameterRaster|NIR|Near Infrared Band|False
+ParameterRaster|RED|Red Band|False
+OutputRaster|NDVI|Normalized Difference Vegetation Index
+OutputRaster|RATIO|Ratio Vegetation Index
+OutputRaster|TVI|Transformed Vegetation Index
+OutputRaster|CTVI|Corrected Transformed Vegetation Index
+OutputRaster|TTVI|Thiam's Transformed Vegetation Index
+OutputRaster|NRATIO|Normalized Ratio Vegetation Index

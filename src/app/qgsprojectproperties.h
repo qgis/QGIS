@@ -17,20 +17,21 @@
  ***************************************************************************/
 
 
+#include "qgsoptionsdialogbase.h"
 #include "ui_qgsprojectpropertiesbase.h"
 #include "qgis.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
 
 class QgsMapCanvas;
-
+class QgsStyleV2;
 
 /*!  Dialog to set project level properties
 
   @note actual state is stored in QgsProject singleton instance
 
  */
-class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBase
+class QgsProjectProperties : public QgsOptionsDialogBase, private Ui::QgsProjectPropertiesBase
 {
     Q_OBJECT
 
@@ -73,15 +74,27 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
      */
     void showProjectionsTab();
 
-    /*!
-     * Slot to select the map selection color
+    /*! Let the user add a scale to the list of project scales
+     * used in scale combobox instead of global ones
+     * @note added in QGIS 2.0
      */
-    void on_pbnSelectionColor_clicked();
+    void on_pbnAddScale_clicked();
 
-    /*!
-     * Slot to select the map selection color
+    /*! Let the user remove a scale from the list of project scales
+     * used in scale combobox instead of global ones
+     * @note added in QGIS 2.0
      */
-    void on_pbnCanvasColor_clicked();
+    void on_pbnRemoveScale_clicked();
+
+    /** Let the user load scales from file
+     * @note added in QGIS 2.0
+     */
+    void on_pbnImportScales_clicked();
+
+    /** Let the user load scales from file
+     * @note added in QGIS 2.0
+     */
+    void on_pbnExportScales_clicked();
 
     /*!
      * Slots for WMS project settings
@@ -90,40 +103,103 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void on_pbnWMSAddSRS_clicked();
     void on_pbnWMSRemoveSRS_clicked();
     void on_pbnWMSSetUsedSRS_clicked();
+    void on_mAddWMSComposerButton_clicked();
+    void on_mRemoveWMSComposerButton_clicked();
+    void on_mAddLayerRestrictionButton_clicked();
+    void on_mRemoveLayerRestrictionButton_clicked();
+
+    /*!
+     * Slots to select/unselect all the WFS layers
+     */
+    void on_pbnWFSLayersSelectAll_clicked();
+    void on_pbnWFSLayersUnselectAll_clicked();
+
+    /*!
+     * Slots for Styles
+     */
+    void on_pbtnStyleManager_clicked();
+    void on_pbtnStyleMarker_clicked();
+    void on_pbtnStyleLine_clicked();
+    void on_pbtnStyleFill_clicked();
+    void on_pbtnStyleColorRamp_clicked();
+    void on_mTransparencySlider_valueChanged( int value );
+    void on_mTransparencySpinBox_valueChanged( int value );
 
     /*!
      * Slot to show the context help for this dialog
      */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
-    void on_cbxProjectionEnabled_stateChanged( int state );
+    void on_cbxProjectionEnabled_toggled( bool onFlyEnabled );
+
+    /*!
+     * Slot to link WFS checkboxes
+     */
+    void on_cbxWFSPublied_stateChanged( int aIdx );
+    void on_cbxWFSUpdate_stateChanged( int aIdx );
+    void on_cbxWFSInsert_stateChanged( int aIdx );
+    void on_cbxWFSDelete_stateChanged( int aIdx );
 
     /*!
       * If user changes the CRS, set the corresponding map units
       */
     void setMapUnitsToCurrentProjection();
 
+    /* Update ComboBox accorindg to the selected new index
+     * Also sets the new selected Ellipsoid.
+     * @note added in 2.0
+     */
+    void updateEllipsoidUI( int newIndex );
+
   signals:
     //! Signal used to inform listeners that the mouse display precision may have changed
     void displayPrecisionChanged();
 
+    //! Signal used to inform listeners that project scale list may have chnaged
+    void scalesChanged( const QStringList &scales = QStringList() );
+
     //! let listening canvases know to refresh
     void refresh();
 
-
   private:
     QgsMapCanvas* mMapCanvas;
+    QgsStyleV2* mStyle;
+
+    void populateStyles();
+    void editSymbol( QComboBox* cbo );
 
     /*!
-     * Function to save dialog window state
+     * Function to save non-base dialog states
      */
     void saveState();
 
     /*!
-     * Function to restore dialog window state
+     * Function to restore non-base dialog states
      */
     void restoreState();
 
+    /*!
+     * Reset the python macros
+     */
+    void resetPythonMacros();
+
     long mProjectSrsId;
     long mLayerSrsId;
+
+    // List for all ellispods, also None and Custom
+    struct EllipsoidDefs
+    {
+      QString acronym;
+      QString description;
+      double semiMajor;
+      double semiMinor;
+    };
+    QList<EllipsoidDefs> mEllipsoidList;
+    int mEllipsoidIndex;
+
+    //! Populates list with ellipsoids from Sqlite3 db
+    void populateEllipsoidList();
+
+    static const char * GEO_NONE_DESC;
+
 };

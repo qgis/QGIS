@@ -34,7 +34,7 @@ class QgsCustomizationDialog : public QMainWindow, private Ui::QgsCustomizationD
 {
     Q_OBJECT
   public:
-    QgsCustomizationDialog( QWidget *parent );
+    QgsCustomizationDialog( QWidget *parent, QSettings *settings );
     ~QgsCustomizationDialog();
 
     // get item by path
@@ -89,13 +89,15 @@ class QgsCustomizationDialog : public QMainWindow, private Ui::QgsCustomizationD
     void on_actionCollapseAll_triggered( bool checked );
     void on_actionSelectAll_triggered( bool checked );
 
+    void on_mCustomizationEnabledCheckBox_toggled( bool checked );
+
   private:
     void init();
     QTreeWidgetItem * createTreeItemWidgets( );
     QTreeWidgetItem * readWidgetsXmlNode( QDomNode theNode );
 
     QString mLastDirSettingsName;
-    QSettings mSettings;
+    QSettings* mSettings;
 };
 
 class QgsCustomization : public QObject
@@ -114,8 +116,8 @@ class QgsCustomization : public QObject
     static QgsCustomization* instance();
 
     void openDialog( QWidget *parent );
-    static void customizeWidget( QWidget * widget, QEvent * event );
-    static void customizeWidget( QString path, QWidget * widget );
+    static void customizeWidget( QWidget * widget, QEvent * event, QSettings* settings );
+    static void customizeWidget( QString path, QWidget * widget, QSettings* settings );
     static void removeFromLayout( QLayout *theLayout, QWidget * widget );
 
     void updateMainWindow( QMenu * theToolBarMenu );
@@ -123,6 +125,11 @@ class QgsCustomization : public QObject
     // make sure to enable/disable before creating QgisApp in order to get it customized (or not)
     void setEnabled( bool enabled ) { mEnabled = enabled; }
     bool isEnabled() const { return mEnabled; }
+
+    void setSettings( QSettings* settings ) { mSettings = settings ;}
+
+    // Return the path to the splash screen
+    QString splashPath();
 
     // Load and set default customization
     void loadDefault();
@@ -141,9 +148,10 @@ class QgsCustomization : public QObject
     QgsCustomizationDialog *pDialog;
 
     bool mEnabled;
+    QSettings* mSettings;
     QString mStatusPath;
 
-    void updateMenu( QMenu* menu, QSettings& settings );
+    void updateMenu( QMenu* menu, QSettings* settings );
     void createTreeItemMenus( );
     void createTreeItemToolbars( );
     void createTreeItemDocks( );
@@ -157,7 +165,6 @@ class QgsCustomization : public QObject
 
   private:
     static QgsCustomization* pinstance;
-    QSettings mSettings;
 
 };
 #endif // QGSCUSTOMIZATION_H

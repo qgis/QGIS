@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsmimedatautils.h
+    ---------------------
+    begin                : November 2011
+    copyright            : (C) 2011 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSMIMEDATAUTILS_H
 #define QGSMIMEDATAUTILS_H
 
@@ -9,7 +23,7 @@ class CORE_EXPORT QgsMimeDataUtils
 {
   public:
 
-    struct Uri
+    struct CORE_EXPORT Uri
     {
       Uri( QgsLayerItem* layer );
       Uri( QString& encData );

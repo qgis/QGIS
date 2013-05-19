@@ -293,7 +293,7 @@ void QgsSpatialQuery::populateIndexResult(
   QList<QgsFeatureId>::iterator iterIdReference = listIdReference.begin();
   for ( ; iterIdReference != listIdReference.end(); iterIdReference++ )
   {
-    mLayerReference->featureAtId( *iterIdReference, featureReference );
+    mLayerReference->getFeatures( QgsFeatureRequest().setFilterFid( *iterIdReference ) ).nextFeature( featureReference );
     geomReference = featureReference.geometry();
     if (( geomTarget->*op )( geomReference ) )
     {
@@ -321,7 +321,7 @@ void QgsSpatialQuery::populateIndexResultDisjoint(
   bool addIndex = true;
   for ( ; iterIdReference != listIdReference.end(); iterIdReference++ )
   {
-    mLayerReference->featureAtId( *iterIdReference, featureReference );
+    mLayerReference->getFeatures( QgsFeatureRequest().setFilterFid( *iterIdReference ) ).nextFeature( featureReference );
     geomReference = featureReference.geometry();
 
     if ( !( geomTarget->*op )( geomReference ) )

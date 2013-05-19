@@ -5,7 +5,7 @@ class QgsAnnotationItem: QgsMapCanvasItem
 %TypeHeaderCode
 #include <qgsannotationitem.h>
 %End
-  
+
   public:
     enum MouseMoveAction
     {
@@ -33,7 +33,7 @@ class QgsAnnotationItem: QgsMapCanvasItem
 
     /**Returns the mouse move behaviour for a given position
       @param pos the position in scene coordinates*/
-    QgsAnnotationItem::MouseMoveAction moveActionForPosition( const QPointF& pos) const;
+    QgsAnnotationItem::MouseMoveAction moveActionForPosition( const QPointF& pos ) const;
     /**Returns suitable cursor shape for mouse move action*/
     Qt::CursorShape cursorShapeForAction( MouseMoveAction moveAction ) const;
 
@@ -51,7 +51,7 @@ class QgsAnnotationItem: QgsMapCanvasItem
     QPointF offsetFromReferencePoint() const;
 
     /**Set symbol that is drawn on map position. Takes ownership*/
-    void setMarkerSymbol( QgsMarkerSymbolV2* symbol );
+    void setMarkerSymbol( QgsMarkerSymbolV2* symbol /Transfer/ );
     const QgsMarkerSymbolV2* markerSymbol() const;
 
     void setFrameBorderWidth( double w );
@@ -68,4 +68,21 @@ class QgsAnnotationItem: QgsMapCanvasItem
 
     void _writeXML( QDomDocument& doc, QDomElement& itemElem ) const;
     void _readXML( const QDomDocument& doc, const QDomElement& annotationElem );
+
+  protected:
+    void updateBoundingRect();
+    /**Check where to attach the balloon connection between frame and map point*/
+    void updateBalloon();
+
+    void drawFrame( QPainter* p );
+    void drawMarkerSymbol( QPainter* p );
+    void drawSelectionBoxes( QPainter* p );
+    /**Returns frame width in painter units*/
+    //double scaledFrameWidth( QPainter* p) const;
+    /**Gets the frame line (0 is the top line, 1 right, 2 bottom, 3 left)*/
+    QLineF segment( int index );
+    /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
+    QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
+    /**Returns the symbol size scaled in (mapcanvas) pixels. Used for the counding rect calculation*/
+    double scaledSymbolSize() const;
 };

@@ -31,6 +31,7 @@
 #include "qgsprojectversion.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
+#include "qgsdatasourceuri.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -684,6 +685,10 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
     QDomNode node = nl.item( i );
     QDomElement element = node.toElement();
 
+    QString name = node.namedItem( "layername" ).toElement().text();
+    if ( !name.isNull() )
+      emit loadingLayer( tr( "Loading layer %1" ).arg( name ) );
+
     if ( element.attribute( "embedded" ) == "1" )
     {
       createEmbeddedLayer( element.attribute( "id" ), readPath( element.attribute( "project" ) ), brokenNodes, vLayerList );
@@ -701,17 +706,11 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
 
   //Update field map of layers with joins and create join caches if necessary
   //Needs to be done here once all dependent layers are loaded
-  QString errorMessage;
   QList< QPair< QgsVectorLayer*, QDomElement > >::iterator vIt = vLayerList.begin();
   for ( ; vIt != vLayerList.end(); ++vIt )
   {
     vIt->first->createJoinCaches();
-    vIt->first->updateFieldMap();
-    //for old symbology, it is necessary to read the symbology again after having the complete field map
-    if ( !vIt->first->isUsingRendererV2() )
-    {
-      vIt->first->readSymbology( vIt->second, errorMessage );
-    }
+    vIt->first->updateFields();
   }
 
   return qMakePair( returnStatus, brokenNodes );
@@ -739,8 +738,6 @@ bool QgsProject::addLayer( const QDomElement& layerElem, QList<QDomNode>& broken
     mapLayer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
   }
 
-  Q_CHECK_PTR( mapLayer );
-
   if ( !mapLayer )
   {
     QgsDebugMsg( "Unable to create layer" );
@@ -748,9 +745,13 @@ bool QgsProject::addLayer( const QDomElement& layerElem, QList<QDomNode>& broken
     return false;
   }
 
+  Q_CHECK_PTR( mapLayer );
+
   // have the layer restore state that is stored in Dom node
-  if ( mapLayer->readXML( layerElem ) && mapLayer->isValid() )
+  if ( mapLayer->readLayerXML( layerElem ) && mapLayer->isValid() )
   {
+    emit readMapLayer( mapLayer, layerElem );
+
     QList<QgsMapLayer *> myLayers;
     myLayers << mapLayer;
     QgsMapLayerRegistry::instance()->addMapLayers( myLayers );
@@ -794,7 +795,7 @@ bool QgsProject::read()
   std::auto_ptr< QDomDocument > doc =
     std::auto_ptr < QDomDocument > ( new QDomDocument( "qgis" ) );
 
-  if ( !imp_->file.open( QIODevice::ReadOnly ) )
+  if ( !imp_->file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
     imp_->file.close();
 
@@ -958,6 +959,7 @@ bool QgsProject::write()
   }
 
   QDomImplementation DomImplementation;
+  DomImplementation.setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
 
   QDomDocumentType documentType =
     DomImplementation.createDocumentType( "qgis", "http://mrcc.com/qgis.dtd",
@@ -983,14 +985,14 @@ bool QgsProject::write()
   emit writeProject( *doc );
 
   // within top level node save list of layers
-  QMap<QString, QgsMapLayer*> & layers = QgsMapLayerRegistry::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer*> & layers = QgsMapLayerRegistry::instance()->mapLayers();
 
   // Iterate over layers in zOrder
   // Call writeXML() on each
   QDomElement projectLayersNode = doc->createElement( "projectlayers" );
   projectLayersNode.setAttribute( "layercount", qulonglong( layers.size() ) );
 
-  QMap<QString, QgsMapLayer*>::iterator li = layers.begin();
+  QMap<QString, QgsMapLayer*>::ConstIterator li = layers.constBegin();
   while ( li != layers.end() )
   {
     //QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer(*li);
@@ -1002,7 +1004,14 @@ bool QgsProject::write()
       QHash< QString, QPair< QString, bool> >::const_iterator emIt = mEmbeddedLayers.find( ml->id() );
       if ( emIt == mEmbeddedLayers.constEnd() )
       {
-        ml->writeXML( projectLayersNode, *doc );
+        // general layer metadata
+        QDomElement maplayerElem = doc->createElement( "maplayer" );
+
+        ml->writeLayerXML( maplayerElem, *doc );
+
+        emit writeMapLayer( ml, maplayerElem, *doc );
+
+        projectLayersNode.appendChild( maplayerElem );
       }
       else //layer defined in an external project file
       {
@@ -1063,6 +1072,8 @@ bool QgsProject::write()
   }
 
   dirty( false );               // reset to pristine state
+
+  emit projectSaved();
 
   return true;
 } // QgsProject::write
@@ -1133,6 +1144,7 @@ QgsProject::writeEntry( QString const &scope, const QString & key,
 QStringList
 QgsProject::readListEntry( QString const & scope,
                            const QString & key,
+                           QStringList def,
                            bool * ok ) const
 {
   QgsProperty * property = findKey_( scope, key, imp_->properties_ );
@@ -1156,7 +1168,7 @@ QgsProject::readListEntry( QString const & scope,
     return value.toStringList();
   }
 
-  return QStringList();
+  return def;
 } // QgsProject::readListEntry
 
 
@@ -1366,11 +1378,11 @@ QString QgsProject::readPath( QString src ) const
     // That means that it was saved with an earlier version of "relative path support",
     // where the source file had to exist and only the project directory was stripped
     // from the filename.
-    QFileInfo pfi( fileName() );
-    if ( !pfi.exists() )
+    QString home = homePath();
+    if ( home.isNull() )
       return src;
 
-    QFileInfo fi( pfi.canonicalPath() + "/" + src );
+    QFileInfo fi( home + "/" + src );
 
     if ( !fi.exists() )
     {
@@ -1542,7 +1554,7 @@ QString QgsProject::layerIsEmbedded( const QString& id ) const
     return QString();
   }
   return it.value().first;
-};
+}
 
 bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                                       QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag )
@@ -1596,13 +1608,31 @@ bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& pro
       //change datasource path from relative to absolute if necessary
       if ( !useAbsolutePathes )
       {
-        QDomElement dsElem = mapLayerElem.firstChildElement( "datasource" );
-        QString debug( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
-        QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
-        if ( absoluteDs.exists() )
+        QDomElement provider = mapLayerElem.firstChildElement( "provider" );
+        if ( provider.text() == "spatialite" )
         {
-          dsElem.removeChild( dsElem.childNodes().at( 0 ) );
-          dsElem.appendChild( projectDocument.createTextNode( absoluteDs.absoluteFilePath() ) );
+          QDomElement dsElem = mapLayerElem.firstChildElement( "datasource" );
+
+          QgsDataSourceURI uri( dsElem.text() );
+
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + uri.database() );
+          if ( absoluteDs.exists() )
+          {
+            uri.setDatabase( absoluteDs.absoluteFilePath() );
+            dsElem.removeChild( dsElem.childNodes().at( 0 ) );
+            dsElem.appendChild( projectDocument.createTextNode( uri.uri() ) );
+          }
+        }
+        else
+        {
+          QDomElement dsElem = mapLayerElem.firstChildElement( "datasource" );
+          QString debug( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
+          if ( absoluteDs.exists() )
+          {
+            dsElem.removeChild( dsElem.childNodes().at( 0 ) );
+            dsElem.appendChild( projectDocument.createTextNode( absoluteDs.absoluteFilePath() ) );
+          }
         }
       }
 
@@ -1621,7 +1651,151 @@ bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& pro
   return false;
 }
 
+void QgsProject::setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType  type, QgsTolerance::UnitType unit, double tolerance, bool avoidIntersection )
+{
+  QStringList layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList;
+  snapSettings( layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList );
+  int idx = layerIdList.indexOf( layerId );
+  if ( idx != -1 )
+  {
+    layerIdList.removeAt( idx );
+    enabledList.removeAt( idx );
+    snapTypeList.removeAt( idx );
+    toleranceUnitList.removeAt( idx );
+    toleranceList.removeAt( idx );
+    avoidIntersectionList.removeOne( layerId );
+  }
+
+  layerIdList.append( layerId );
+
+  //enabled
+  enabledList.append( enabled ? "enabled" : "disabled" );
+
+  //snap type
+  QString typeString;
+  if ( type == QgsSnapper::SnapToSegment )
+  {
+    typeString = "to_segment";
+  }
+  else if ( type == QgsSnapper::SnapToVertexAndSegment )
+  {
+    typeString = "to_vertex_and_segment";
+  }
+  else
+  {
+    typeString = "to_vertex";
+  }
+  snapTypeList.append( typeString );
+
+  //units
+  toleranceUnitList.append( unit == QgsTolerance::Pixels ? "1" : "0" );
+
+  //tolerance
+  toleranceList.append( QString::number( tolerance ) );
+
+  //avoid intersection
+  if ( avoidIntersection )
+  {
+    avoidIntersectionList.append( layerId );
+  }
+
+  writeEntry( "Digitizing", "/LayerSnappingList", layerIdList );
+  writeEntry( "Digitizing", "/LayerSnappingEnabledList", enabledList );
+  writeEntry( "Digitizing", "/LayerSnappingToleranceList", toleranceList );
+  writeEntry( "Digitizing", "/LayerSnappingToleranceUnitList", toleranceUnitList );
+  writeEntry( "Digitizing", "/LayerSnapToList", snapTypeList );
+  writeEntry( "Digitizing", "/AvoidIntersectionsList", avoidIntersectionList );
+  emit snapSettingsChanged();
+}
+
+bool QgsProject::snapSettingsForLayer( const QString& layerId, bool& enabled, QgsSnapper::SnappingType &type, QgsTolerance::UnitType& units, double& tolerance,
+                                       bool& avoidIntersection ) const
+{
+  QStringList layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList;
+  snapSettings( layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList );
+  int idx = layerIdList.indexOf( layerId );
+  if ( idx == -1 )
+  {
+    return false;
+  }
+
+  //make sure all lists are long enough
+  int minListEntries = idx + 1;
+  if ( layerIdList.size() < minListEntries || enabledList.size() < minListEntries || snapTypeList.size() < minListEntries ||
+       toleranceUnitList.size() < minListEntries || toleranceList.size() < minListEntries )
+  {
+    return false;
+  }
+
+  //enabled
+  enabled = enabledList.at( idx ) == "enabled";
+
+  //snap type
+  QString snapType = snapTypeList.at( idx );
+  if ( snapType == "to_segment" )
+  {
+    type = QgsSnapper::SnapToSegment;
+  }
+  else if ( snapType == "to_vertex_and_segment" )
+  {
+    type = QgsSnapper::SnapToVertexAndSegment;
+  }
+  else //to vertex
+  {
+    type = QgsSnapper::SnapToVertex;
+  }
+
+  //units
+  if ( toleranceUnitList.at( idx ) == "1" )
+  {
+    units = QgsTolerance::Pixels;
+  }
+  else
+  {
+    units = QgsTolerance::MapUnits;
+  }
+
+  //tolerance
+  tolerance = toleranceList.at( idx ).toDouble();
+
+  //avoid intersection
+  avoidIntersection = ( avoidIntersectionList.indexOf( layerId ) != -1 );
+
+  return true;
+}
+
+void QgsProject::snapSettings( QStringList& layerIdList, QStringList& enabledList, QStringList& snapTypeList, QStringList& toleranceUnitList, QStringList& toleranceList,
+                               QStringList& avoidIntersectionList ) const
+{
+  layerIdList = readListEntry( "Digitizing", "/LayerSnappingList" );
+  enabledList = readListEntry( "Digitizing", "/LayerSnappingEnabledList" );
+  toleranceList = readListEntry( "Digitizing", "/LayerSnappingToleranceList" );
+  toleranceUnitList = readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList" );
+  snapTypeList = readListEntry( "Digitizing", "/LayerSnapToList" );
+  avoidIntersectionList = readListEntry( "Digitizing", "/AvoidIntersectionsList" );
+}
+
+void QgsProject::setTopologicalEditing( bool enabled )
+{
+  QgsProject::instance()->writeEntry( "Digitizing", "/TopologicalEditing", ( enabled ? 1 : 0 ) );
+  emit snapSettingsChanged();
+}
+
+bool QgsProject::topologicalEditing() const
+{
+  return ( QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 ) > 0 );
+}
+
 void QgsProjectBadLayerDefaultHandler::handleBadLayers( QList<QDomNode> /*layers*/, QDomDocument /*projectDom*/ )
 {
   // just ignore any bad layers
+}
+
+QString QgsProject::homePath() const
+{
+  QFileInfo pfi( fileName() );
+  if ( !pfi.exists() )
+    return QString::null;
+
+  return pfi.canonicalPath();
 }

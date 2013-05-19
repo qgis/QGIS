@@ -1,17 +1,17 @@
-<h3>Ma&szlig;stabserweiterung</h3>
-Zeichnet einen Ma&szlig;stab auf die Karte.
+<h3>Maßstabserweiterung</h3>
+Zeichnet einen Maßstab auf die Karte.
 <p>
-Sie k&ouml;nnen den Stil und die Platzierung wie auch die Beschriftungen beeinflussen.  QGIS unterst&uuml;tzt die Darstellung von Ma&szlig;st&auml;ben nur in der gleichen Einheit wie die der Karte.  Wenn die Einheit Ihrer Layer Meter ist, k&ouml;nnen Sie den Ma&szlig;stab nicht in Fu&szlig; angeben lassen. Genauso k&ouml;nnen Sie, wenn Sie Grad benutzen, die Abst&auml;nde auf dem Ma&szlig;stab nicht in Metern anzeigen.</p>
+Sie können den Stil und die Platzierung wie auch die Beschriftungen beeinflussen.  QGIS unterstützt die Darstellung von Maßstäben nur in der gleichen Einheit wie die der Karte.  Wenn die Einheit Ihrer Layer Meter ist, können Sie den Maßstab nicht in Fuß angeben lassen. Genauso können Sie, wenn Sie Grad benutzen, die Abstände auf dem Maßstab nicht in Metern anzeigen.</p>
 
-<p>Um ein Ma&szlig;stabsleiste hinzuzuf&uuml;gen: 
+<p>Um ein Maßstabsleiste hinzuzufügen: 
 <ol>
-<li>W&auml;hlen Sie eine Platzierung aus der Liste <label>Platzierung</label>.</li>
-<li>W&auml;hlen Sie einen Stile aus der Liste <label>Ma&szlig;stabsstil</label>.</li>
-<li>W&auml;hlen Sie die <label>Farbe des Ma&szlig;stabs</label> oder benutzen Sie die Voreinstellung Schwarz.</li>
-<li>Legen Sie die <label>Gr&ouml;&szlig;e des Ma&szlig;stabs</label> fest.</li>
-<li>Stellen Sie sicher das Kontrollk&auml;stchen <label>Aktiviere Ma&szlig;stab</label> angehakt ist.</li>
-<li>Wahlweise k&ouml;nnen Sie mit <label>Bei Gr&ouml;&szlig;en&auml;nderung automatisch auf runde 
-Zahlen einstellen</label> daf&uuml;r sorgen, dass die Ma&szlig;stabsleiste runde Zahlen 
+<li>Wählen Sie eine Platzierung aus der Liste <label>Platzierung</label>.</li>
+<li>Wählen Sie einen Stile aus der Liste <label>Maßstabsstil</label>.</li>
+<li>Wählen Sie die <label>Farbe des Maßstabs</label> oder benutzen Sie die Voreinstellung Schwarz.</li>
+<li>Legen Sie die <label>Größe des Maßstabs</label> fest.</li>
+<li>Stellen Sie sicher das Kontrollkästchen <label>Aktiviere Maßstab</label> angehakt ist.</li>
+<li>Wahlweise können Sie mit <label>Bei Größenänderung automatisch auf runde 
+Zahlen einstellen</label> dafür sorgen, dass die Maßstabsleiste runde Zahlen 
 anzeigt.</li>
 <li>Klicke Sie auf <label>OK</label>.</li>
 </ol>

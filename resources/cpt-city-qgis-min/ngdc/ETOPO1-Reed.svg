@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ETOPO1-Reed" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(16,6,180)" stop-opacity="1.0000"/>
+        <stop offset="15.38%" stop-color="rgb(16,6,180)" stop-opacity="1.0000"/>
+        <stop offset="15.38%" stop-color="rgb(0,14,203)" stop-opacity="1.0000"/>
+        <stop offset="25.64%" stop-color="rgb(0,14,203)" stop-opacity="1.0000"/>
+        <stop offset="25.64%" stop-color="rgb(12,68,231)" stop-opacity="1.0000"/>
+        <stop offset="35.90%" stop-color="rgb(12,68,231)" stop-opacity="1.0000"/>
+        <stop offset="35.90%" stop-color="rgb(21,158,252)" stop-opacity="1.0000"/>
+        <stop offset="46.15%" stop-color="rgb(21,158,252)" stop-opacity="1.0000"/>
+        <stop offset="46.15%" stop-color="rgb(65,200,255)" stop-opacity="1.0000"/>
+        <stop offset="51.28%" stop-color="rgb(65,200,255)" stop-opacity="1.0000"/>
+        <stop offset="51.28%" stop-color="rgb(94,223,255)" stop-opacity="1.0000"/>
+        <stop offset="53.85%" stop-color="rgb(94,223,255)" stop-opacity="1.0000"/>
+        <stop offset="53.85%" stop-color="rgb(138,227,255)" stop-opacity="1.0000"/>
+        <stop offset="56.41%" stop-color="rgb(138,227,255)" stop-opacity="1.0000"/>
+        <stop offset="56.41%" stop-color="rgb(51,102,0)" stop-opacity="1.0000"/>
+        <stop offset="56.92%" stop-color="rgb(0,51,102)" stop-opacity="1.0000"/>
+        <stop offset="56.92%" stop-color="rgb(51,204,102)" stop-opacity="1.0000"/>
+        <stop offset="58.97%" stop-color="rgb(51,204,102)" stop-opacity="1.0000"/>
+        <stop offset="58.97%" stop-color="rgb(255,220,185)" stop-opacity="1.0000"/>
+        <stop offset="61.54%" stop-color="rgb(255,220,185)" stop-opacity="1.0000"/>
+        <stop offset="61.54%" stop-color="rgb(243,202,137)" stop-opacity="1.0000"/>
+        <stop offset="66.67%" stop-color="rgb(243,202,137)" stop-opacity="1.0000"/>
+        <stop offset="66.67%" stop-color="rgb(217,166,39)" stop-opacity="1.0000"/>
+        <stop offset="76.92%" stop-color="rgb(217,166,39)" stop-opacity="1.0000"/>
+        <stop offset="76.92%" stop-color="rgb(159,123,13)" stop-opacity="1.0000"/>
+        <stop offset="87.18%" stop-color="rgb(159,123,13)" stop-opacity="1.0000"/>
+        <stop offset="87.18%" stop-color="rgb(178,118,118)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(178,118,118)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ETOPO1-Reed)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:30:53 2012"/>
+  </metadata>
+</svg>

@@ -1,83 +1,24 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   width="580"
-   height="580"
-   id="svg2"
-   sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="beach.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
-  <metadata
-     id="metadata10">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-			  <cc:license
-           rdf:resource="http://web.resource.org/cc/PublicDomain" />
-        <dc:language>en</dc:language>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <sodipodi:namedview
-     inkscape:window-height="675"
-     inkscape:window-width="718"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     guidetolerance="10.0"
-     gridtolerance="10.0"
-     objecttolerance="10.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     showgrid="false"
-     inkscape:zoom="0.5"
-     inkscape:cx="-308.95575"
-     inkscape:cy="209.12086"
-     inkscape:window-x="151"
-     inkscape:window-y="121"
-     inkscape:current-layer="svg2" />
-  <defs
-     id="defs4">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 290 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="580 : 290 : 1"
-       inkscape:persp3d-origin="290 : 193.33333 : 1"
-       id="perspective12" />
-  </defs>
-  <g
-     id="g1327">
-    <path
-       d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.598,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.84 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.627,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z"
-       style="fill:#111111;stroke:#eeeeee;stroke-width:3.40799999"
-       id="path1329" />
-  </g>
-  <path
-     style="fill:#ffffff;fill-rule:evenodd;stroke:#ffffff;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;fill-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-     d="M 46.337243,530.44142 L 119.89275,215.08816 L 167.31477,215.08816 L 191.64451,288.6961 L 240.81784,288.6961 L 263.91012,215.70689 L 313.1359,215.08816 L 336.2806,288.07738 L 384.26891,289.88113 L 407.51849,215.77506 L 456.58696,216.27318 L 529.57618,532.24517 L 46.337243,530.44142 z"
-     id="path2391"
-     sodipodi:nodetypes="ccccccccccccc" />
-  <path
-     style="fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="M 279.67789,47.872565 C 279.61539,76.872565 279.55289,105.87257 279.49039,134.87257 C 338.04829,167.35701 389.07372,134.56007 443.86539,134.40382 C 443.86539,105.11215 443.86539,75.820485 443.86539,46.528815 C 389.13622,36.933441 334.40706,75.043696 279.67789,47.872565 z"
-     id="path2395"
-     sodipodi:nodetypes="ccccc" />
-  <path
-     style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:15;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     d="M 287.48917,90.389607 L 287.48917,300.04329 L 281.21212,300.04329"
-     id="path2399" />
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="beach.svg" inkscape:version="0.46" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
+	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
+<sodipodi:namedview  showgrid="false" inkscape:cy="209.12086" inkscape:cx="-308.95575" inkscape:zoom="0.5" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="121" inkscape:window-x="151" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="718" inkscape:window-height="675">
+	</sodipodi:namedview>
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_z="580 : 290 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 290 : 1" sodipodi:type="inkscape:persp3d" id="perspective12" inkscape:persp3d-origin="290 : 193.33333 : 1">
+		</inkscape:perspective>
+</defs>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M534.347,530.68l-72.888-315.532
+	c-0.521-2.25-2.513-3.851-4.821-3.874l-49.068-0.499c-0.018,0-0.034,0-0.051,0c-2.183,0-4.116,1.417-4.771,3.503l-22.107,70.463
+	l-40.657-1.528l-22.081-69.636c-0.66-2.08-2.59-3.489-4.766-3.489c-0.021,0-0.043,0-0.063,0l-18.084,0.228v-68.247
+	c52.191,19.688,98.972-7.523,148.876-7.665c0-29.292,0-58.583,0-87.875c-54.729-9.595-109.458,28.515-164.188,1.344
+	c-0.063,29-0.125,58-0.188,87c0.167,0.092,0.333,0.177,0.499,0.269v75.363l-16.142,0.203c-2.157,0.027-4.053,1.435-4.704,3.491
+	l-21.988,69.498h-41.897l-23.195-70.178c-0.677-2.048-2.591-3.431-4.748-3.431h-47.422c-2.324,0-4.341,1.601-4.869,3.864
+	L41.468,529.306c-0.346,1.482,0.002,3.042,0.947,4.236s2.381,1.894,3.904,1.899l483.239,1.804c0.006,0,0.013,0,0.019,0
+	c0.008,0.002,0.013,0,0.02,0c2.762,0,5-2.238,5-5C534.596,531.698,534.509,531.173,534.347,530.68z"/>
 </svg>

@@ -37,21 +37,14 @@ IF (APPLE)
 ENDIF (APPLE)
 
 FIND_PATH(PROJ_INCLUDE_DIR proj_api.h
-  "$ENV{LIB_DIR}/include/proj"
+  "$ENV{INCLUDE}"
   "$ENV{LIB_DIR}/include"
-  #mingw
-  c:/msys/local/include
-  NO_DEFAULT_PATH
   )
-FIND_PATH(PROJ_INCLUDE_DIR proj_api.h)
 
 FIND_LIBRARY(PROJ_LIBRARY NAMES proj proj_i PATHS
+  "$ENV{LIB}"
   "$ENV{LIB_DIR}/lib"
-  #mingw
-  c:/msys/local/lib
-  NO_DEFAULT_PATH
   )
-FIND_LIBRARY(PROJ_LIBRARY NAMES proj)
 
 IF (PROJ_INCLUDE_DIR AND PROJ_LIBRARY)
    SET(PROJ_FOUND TRUE)

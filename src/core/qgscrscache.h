@@ -21,6 +21,25 @@
 #include "qgscoordinatereferencesystem.h"
 #include <QHash>
 
+class QgsCoordinateTransform;
+
+/**Cache coordinate transform by authid of source/dest transformation to avoid the
+overhead of initialisation for each redraw*/
+class CORE_EXPORT QgsCoordinateTransformCache
+{
+  public:
+    static QgsCoordinateTransformCache* instance();
+    ~QgsCoordinateTransformCache();
+    /**Returns coordinate transformation. Cache keeps ownership
+        @param srcAuthId auth id string of source crs
+        @param destAuthId auth id string of dest crs*/
+    const QgsCoordinateTransform* transform( const QString& srcAuthId, const QString& destAuthId );
+
+  private:
+    static QgsCoordinateTransformCache* mInstance;
+    QHash< QPair< QString, QString >, QgsCoordinateTransform* > mTransforms;
+};
+
 class CORE_EXPORT QgsCRSCache
 {
   public:
@@ -28,7 +47,7 @@ class CORE_EXPORT QgsCRSCache
     ~QgsCRSCache();
     /**Returns the CRS for authid, e.g. 'EPSG:4326' (or an invalid CRS in case of error)*/
     const QgsCoordinateReferenceSystem& crsByAuthId( const QString& authid );
-    const QgsCoordinateReferenceSystem& crsByEpsgId( long epgs );
+    const QgsCoordinateReferenceSystem& crsByEpsgId( long epsg );
 
   protected:
     QgsCRSCache();

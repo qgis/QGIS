@@ -47,6 +47,8 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
 
   mOrigSubsetString = layer->subsetString();
 
+  mUseUnfilteredLayer->setDisabled( mLayer->subsetString().isEmpty() );
+
   lblDataUri->setText( layer->name() );
   txtSQL->setText( mOrigSubsetString );
 
@@ -61,10 +63,11 @@ QgsQueryBuilder::~QgsQueryBuilder()
 
 void QgsQueryBuilder::populateFields()
 {
-  for ( QgsFieldMap::const_iterator it = mLayer->pendingFields().begin(); it != mLayer->pendingFields().end(); it++ )
+  const QgsFields& fields = mLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    QStandardItem *myItem = new QStandardItem( it->name() );
-    myItem->setData( it.key() );
+    QStandardItem *myItem = new QStandardItem( fields[idx].name() );
+    myItem->setData( idx );
     myItem->setEditable( false );
     mModelFields->insertRow( mModelFields->rowCount(), myItem );
   }
@@ -124,21 +127,38 @@ void QgsQueryBuilder::on_btnSampleValues_clicked()
 {
   lstValues->setCursor( Qt::WaitCursor );
 
+  QString prevSubsetString = mLayer->subsetString();
+  if ( mUseUnfilteredLayer->isChecked() && !prevSubsetString.isEmpty() )
+  {
+    mLayer->setSubsetString( "" );
+  }
+
   //delete connection mModelValues and lstValues
   QStandardItemModel *tmp = new QStandardItemModel();
   lstValues->setModel( tmp );
   //Clear and fill the mModelValues
   fillValues( mModelFields->data( lstFields->currentIndex(), Qt::UserRole + 1 ).toInt(), 25 );
   lstValues->setModel( mModelValues );
-  lstValues->setCursor( Qt::ArrowCursor );
   //delete the tmp
   delete tmp;
 
+  if ( prevSubsetString != mLayer->subsetString() )
+  {
+    mLayer->setSubsetString( prevSubsetString );
+  }
+
+  lstValues->setCursor( Qt::ArrowCursor );
 }
 
 void QgsQueryBuilder::on_btnGetAllValues_clicked()
 {
   lstValues->setCursor( Qt::WaitCursor );
+
+  QString prevSubsetString = mLayer->subsetString();
+  if ( mUseUnfilteredLayer->isChecked() && !prevSubsetString.isEmpty() )
+  {
+    mLayer->setSubsetString( "" );
+  }
 
   //delete connection mModelValues and lstValues
   QStandardItemModel *tmp = new QStandardItemModel();
@@ -146,9 +166,15 @@ void QgsQueryBuilder::on_btnGetAllValues_clicked()
   //Clear and fill the mModelValues
   fillValues( mModelFields->data( lstFields->currentIndex(), Qt::UserRole + 1 ).toInt(), -1 );
   lstValues->setModel( mModelValues );
-  lstValues->setCursor( Qt::ArrowCursor );
   //delete the tmp
   delete tmp;
+
+  if ( prevSubsetString != mLayer->subsetString() )
+  {
+    mLayer->setSubsetString( prevSubsetString );
+  }
+
+  lstValues->setCursor( Qt::ArrowCursor );
 }
 
 void QgsQueryBuilder::test()
@@ -159,6 +185,8 @@ void QgsQueryBuilder::test()
 
   if ( mLayer->setSubsetString( txtSQL->toPlainText() ) )
   {
+    mUseUnfilteredLayer->setDisabled( mLayer->subsetString().isEmpty() );
+
     QMessageBox::information( this,
                               tr( "Query Result" ),
                               tr( "The where clause returned %n row(s).", "returned test rows", mLayer->featureCount() ) );
@@ -181,26 +209,23 @@ void QgsQueryBuilder::test()
 
 void QgsQueryBuilder::accept()
 {
-  // if user hits Ok and there is no query, skip the validation
-  if ( !txtSQL->toPlainText().trimmed().isEmpty() )
+  if ( !mLayer->setSubsetString( txtSQL->toPlainText() ) )
   {
-    if ( !mLayer->setSubsetString( txtSQL->toPlainText() ) )
+    //error in query - show the problem
+    if ( mLayer->dataProvider()->hasErrors() )
     {
-      //error in query - show the problem
-      if ( mLayer->dataProvider()->hasErrors() )
-      {
-        QMessageBox::warning( this,
-                              tr( "Query Failed" ),
-                              tr( "An error occurred when executing the query." )
-                              + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( "\n" ) ) );
-        mLayer->dataProvider()->clearErrors();
-      }
-      else
-      {
-        QMessageBox::warning( this, tr( "Error in Query" ), tr( "The subset string could not be set" ) );
-      }
-      return;
+      QMessageBox::warning( this,
+                            tr( "Query Failed" ),
+                            tr( "An error occurred when executing the query." )
+                            + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( "\n" ) ) );
+      mLayer->dataProvider()->clearErrors();
     }
+    else
+    {
+      QMessageBox::warning( this, tr( "Error in Query" ), tr( "The subset string could not be set" ) );
+    }
+
+    return;
   }
 
   QDialog::accept();
@@ -322,12 +347,14 @@ void QgsQueryBuilder::clear()
 {
   txtSQL->clear();
   mLayer->setSubsetString( "" );
+  mUseUnfilteredLayer->setDisabled( true );
 }
 
 void QgsQueryBuilder::on_btnILike_clicked()
 {
   txtSQL->insertPlainText( " ILIKE " );
 }
+
 void QgsQueryBuilder::setDatasourceDescription( QString uri )
 {
   lblDataUri->setText( uri );

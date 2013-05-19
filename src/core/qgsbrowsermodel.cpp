@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsbrowsermodel.cpp
+    ---------------------
+    begin                : July 2011
+    copyright            : (C) 2011 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include <QDir>
 #include <QApplication>
 #include <QStyle>
@@ -10,12 +24,17 @@
 #include "qgsproviderregistry.h"
 
 #include "qgsbrowsermodel.h"
+#include "qgsproject.h"
 
 #include <QSettings>
 
-QgsBrowserModel::QgsBrowserModel( QObject *parent ) :
-    QAbstractItemModel( parent )
+QgsBrowserModel::QgsBrowserModel( QObject *parent )
+    : QAbstractItemModel( parent )
+    , mFavourites( 0 )
+    , mProjectHome( 0 )
 {
+  connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
+  connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
   addRootItems();
 }
 
@@ -24,9 +43,34 @@ QgsBrowserModel::~QgsBrowserModel()
   removeRootItems();
 }
 
+void QgsBrowserModel::updateProjectHome()
+{
+  int idx = mRootItems.indexOf( mProjectHome );
+  QString home = QgsProject::instance()->homePath();
+
+  delete mProjectHome;
+
+  mProjectHome = home.isNull() ? 0 : new QgsDirectoryItem( NULL, tr( "Project home" ), home );
+  if ( mProjectHome )
+  {
+    connectItem( mProjectHome );
+    if ( idx < 0 )
+      mRootItems.insert( 0, mProjectHome );
+    else
+      mRootItems.replace( idx, mProjectHome );
+  }
+  else if ( idx >= 0 )
+  {
+    mRootItems.remove( idx );
+  }
+  emit layoutChanged();
+}
+
 void QgsBrowserModel::addRootItems()
 {
-  // give the home directory a prominent first place
+  updateProjectHome();
+
+  // give the home directory a prominent second place
   QgsDirectoryItem *item = new QgsDirectoryItem( NULL, tr( "Home" ), QDir::homePath() );
   QStyle *style = QApplication::style();
   QIcon homeIcon( style->standardPixmap( QStyle::SP_DirHomeIcon ) );
@@ -35,15 +79,15 @@ void QgsBrowserModel::addRootItems()
   mRootItems << item;
 
   // add favourite directories
-  QgsFavouritesItem *favitem = new QgsFavouritesItem( NULL, tr( "Favourites" ) );
-  if ( favitem )
+  mFavourites = new QgsFavouritesItem( NULL, tr( "Favourites" ) );
+  if ( mFavourites )
   {
-    connectItem( favitem );
-    mRootItems << favitem;
+    connectItem( mFavourites );
+    mRootItems << mFavourites ;
   }
 
   // add drives
-  foreach( QFileInfo drive, QDir::drives() )
+  foreach ( QFileInfo drive, QDir::drives() )
   {
     QString path = drive.absolutePath();
     QgsDirectoryItem *item = new QgsDirectoryItem( NULL, path, path );
@@ -52,10 +96,17 @@ void QgsBrowserModel::addRootItems()
     mRootItems << item;
   }
 
+#ifdef Q_WS_MAC
+  QString path = QString( "/Volumes" );
+  QgsDirectoryItem *vols = new QgsDirectoryItem( NULL, path, path );
+  connectItem( vols );
+  mRootItems << vols;
+#endif
+
   // Add non file top level items
   QStringList providersList = QgsProviderRegistry::instance()->providerList();
   providersList.sort();
-  foreach( QString key, providersList )
+  foreach ( QString key, providersList )
   {
     QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
     if ( !library )
@@ -75,7 +126,7 @@ void QgsBrowserModel::addRootItems()
       continue;
     }
 
-    dataItem_t * dataItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
+    dataItem_t *dataItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
     if ( !dataItem )
     {
       QgsDebugMsg( library->fileName() + " does not have dataItem" );
@@ -94,7 +145,7 @@ void QgsBrowserModel::addRootItems()
 
 void QgsBrowserModel::removeRootItems()
 {
-  foreach( QgsDataItem* item, mRootItems )
+  foreach ( QgsDataItem* item, mRootItems )
   {
     delete item;
   }
@@ -113,11 +164,7 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex & index ) const
   QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
   if ( ptr->type() == QgsDataItem::Layer )
   {
-    QgsLayerItem *layer = ( QgsLayerItem* ) ptr;
-    if ( layer->providerKey() != "wms" )
-    {
-      flags |= Qt::ItemIsDragEnabled;
-    }
+    flags |= Qt::ItemIsDragEnabled;
   }
   if ( ptr->acceptDrop() )
     flags |= Qt::ItemIsDropEnabled;
@@ -347,14 +394,13 @@ QStringList QgsBrowserModel::mimeTypes() const
 QMimeData * QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
 {
   QgsMimeDataUtils::UriList lst;
-  foreach( const QModelIndex &index, indexes )
+  foreach ( const QModelIndex &index, indexes )
   {
     if ( index.isValid() )
     {
       QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
       if ( ptr->type() != QgsDataItem::Layer ) continue;
       QgsLayerItem *layer = ( QgsLayerItem* ) ptr;
-      if ( layer->providerKey() == "wms" ) continue;
       lst.append( QgsMimeDataUtils::Uri( layer ) );
     }
   }
@@ -382,4 +428,35 @@ QgsDataItem *QgsBrowserModel::dataItem( const QModelIndex &idx ) const
   QgsDataItem *d = reinterpret_cast<QgsDataItem*>( v );
   Q_ASSERT( !v || d );
   return d;
+}
+
+bool QgsBrowserModel::canFetchMore( const QModelIndex & parent ) const
+{
+  QgsDataItem* item = dataItem( parent );
+  // if ( item )
+  //   QgsDebugMsg( QString( "path = %1 canFetchMore = %2" ).arg( item->path() ).arg( item && ! item->isPopulated() ) );
+  return ( item && ! item->isPopulated() );
+}
+
+void QgsBrowserModel::fetchMore( const QModelIndex & parent )
+{
+  QgsDataItem* item = dataItem( parent );
+  if ( item )
+    item->populate();
+  QgsDebugMsg( "path = " + item->path() );
+}
+
+void QgsBrowserModel::addFavouriteDirectory( QString favDir )
+{
+  Q_ASSERT( mFavourites );
+  mFavourites->addDirectory( favDir );
+}
+
+void QgsBrowserModel::removeFavourite( const QModelIndex &index )
+{
+  QgsDirectoryItem *item = dynamic_cast<QgsDirectoryItem *>( dataItem( index ) );
+  if ( !item )
+    return;
+
+  mFavourites->removeDirectory( item );
 }

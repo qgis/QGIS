@@ -52,7 +52,7 @@ QString createDatabaseURI( QString connectionType, QString host, QString databas
         uri += QString( " pass=%1" ).arg( password );
     }
   }
-  else if ( connectionType == "INGRES" )
+  else if ( connectionType == "Ingres" )
   {
     //not tested
     uri = "@driver=ingres,dbname=" + database;

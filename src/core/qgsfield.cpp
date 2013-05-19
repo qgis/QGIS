@@ -42,9 +42,15 @@ QgsField::~QgsField()
 
 bool QgsField::operator==( const QgsField& other ) const
 {
-  return (( mName == other.mName ) && ( mType == other.mType ) && ( mTypeName == other.mTypeName )
+  return (( mName == other.mName ) && ( mType == other.mType )
           && ( mLength == other.mLength ) && ( mPrecision == other.mPrecision ) );
 }
+
+bool QgsField::operator!=( const QgsField& other ) const
+{
+  return !( *this == other );
+}
+
 
 const QString & QgsField::name() const
 {
@@ -103,4 +109,18 @@ void QgsField::setPrecision( int prec )
 void QgsField::setComment( const QString & comment )
 {
   mComment = comment;
+}
+
+QString QgsField::displayString( const QVariant& v ) const
+{
+  switch ( mType )
+  {
+    case QVariant::Double:
+      if ( mPrecision > 0 )
+      {
+        return QString::number( v.toDouble(), 'f', mPrecision );
+      }
+    default:
+      return v.toString();
+  }
 }

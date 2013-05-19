@@ -69,23 +69,27 @@ seenPluginGroup = "/Qgis/plugin-seen"
 
 
 # Repositories: (name, url, possible depreciated url)
-officialRepo = ("QGIS Official Repository",    "http://pyqgis.org/repo/official","")
-officialRepo2 = ("QGIS Official Repository 2", "http://plugins.qgis.org/plugins/plugins.xml","http://plugins.qgis.org/plugins")
-contribRepo  = ("QGIS Contributed Repository", "http://pyqgis.org/repo/contributed","")
-authorRepos  = [("Aaron Racicot's Repository", "http://qgisplugins.z-pulley.com", ""),
-                ("Barry Rowlingson's Repository", "http://www.maths.lancs.ac.uk/~rowlings/Qgis/Plugins/plugins.xml", ""),
-                # depreciated: ("Bob Bruce's Repository",     "http://www.mappinggeek.ca/QGISPythonPlugins/Bobs-QGIS-plugins.xml", ""),
-                # depreciated: ("Borys Jurgiel's Repository", "http://bwj.aster.net.pl/qgis/plugins.xml", "http://bwj.aster.net.pl/qgis-oldapi/plugins.xml"),
-                ("Carson Farmer's Repository", "http://www.ftools.ca/cfarmerQgisRepo.xml", "http://www.ftools.ca/cfarmerQgisRepo_0.xx.xml"),
-                ("CatAIS Repository",          "http://www.catais.org/qgis/plugins.xml", ""),
-                ("Faunalia Repository",        "http://www.faunalia.it/qgis/plugins.xml", "http://faunalia.it/qgis/plugins.xml"),
-                ("GIS-Lab Repository",         "http://gis-lab.info/programs/qgis/qgis-repo.xml", ""),
-                ("Kappasys Repository",        "http://www.kappasys.org/qgis/plugins.xml", ""),
-                ("Martin Dobias' Sandbox",     "http://mapserver.sk/~wonder/qgis/plugins-sandbox.xml", ""),
-                ("Marco Hugentobler's Repository","http://karlinapp.ethz.ch/python_plugins/python_plugins.xml", ""),
-                ("Sourcepole Repository",      "http://build.sourcepole.ch/qgis/plugins.xml", ""),
-                #("Volkan Kepoglu's Repository","http://ggit.metu.edu.tr/~volkan/plugins.xml", "")
-                ]
+officialRepo = ("QGIS Official Repository", "http://plugins.qgis.org/plugins/plugins.xml","http://plugins.qgis.org/plugins")
+depreciatedRepos = [
+    ("Old QGIS Official Repository",   "http://pyqgis.org/repo/official"),
+    ("Old QGIS Contributed Repository","http://pyqgis.org/repo/contributed"),
+    ("Aaron Racicot's Repository",     "http://qgisplugins.z-pulley.com"),
+    ("Barry Rowlingson's Repository",  "http://www.maths.lancs.ac.uk/~rowlings/Qgis/Plugins/plugins.xml"),
+    ("Bob Bruce's Repository",         "http://www.mappinggeek.ca/QGISPythonPlugins/Bobs-QGIS-plugins.xml"),
+    ("Borys Jurgiel's Repository",     "http://bwj.aster.net.pl/qgis/plugins.xml"),
+    ("Borys Jurgiel's Repository 2",   "http://bwj.aster.net.pl/qgis-oldapi/plugins.xml"),
+    ("Carson Farmer's Repository",     "http://www.ftools.ca/cfarmerQgisRepo.xml"),
+    ("Carson Farmer's Repository 2",   "http://www.ftools.ca/cfarmerQgisRepo_0.xx.xml"),
+    ("CatAIS Repository",              "http://www.catais.org/qgis/plugins.xml"),
+    ("Faunalia Repository",            "http://www.faunalia.it/qgis/plugins.xml"),
+    ("Faunalia Repository 2",          "http://faunalia.it/qgis/plugins.xml"),
+    ("GIS-Lab Repository",             "http://gis-lab.info/programs/qgis/qgis-repo.xml"),
+    ("Kappasys Repository",            "http://www.kappasys.org/qgis/plugins.xml"),
+    ("Martin Dobias' Sandbox",         "http://mapserver.sk/~wonder/qgis/plugins-sandbox.xml"),
+    ("Marco Hugentobler's Repository", "http://karlinapp.ethz.ch/python_plugins/python_plugins.xml"),
+    ("Sourcepole Repository",          "http://build.sourcepole.ch/qgis/plugins.xml"),
+    ("Volkan Kepoglu's Repository",    "http://ggit.metu.edu.tr/~volkan/plugins.xml")
+]
 
 
 
@@ -189,32 +193,27 @@ class Repositories(QObject):
     self.httpId = {}   # {httpId : repoName}
 
 
-  # ----------------------------------------- #
-  def addKnownRepos(self):
-    """ add known 3rd party repositories to QSettings """
-    presentURLs = []
-    for i in self.all().values():
-      presentURLs += [QString(i["url"])]
-    settings = QSettings()
-    settings.beginGroup(reposGroup)
-    # add the central repositories
-    if presentURLs.count(officialRepo[1]) == 0:
-      settings.setValue(officialRepo[0]+"/url", QVariant(officialRepo[1]))
-      settings.setValue(officialRepo[0]+"/enabled", QVariant(True))
-    if presentURLs.count(officialRepo2[1]) == 0:
-      settings.setValue(officialRepo2[0]+"/url", QVariant(officialRepo2[1]))
-      settings.setValue(officialRepo2[0]+"/enabled", QVariant(True))
-    if presentURLs.count(contribRepo[1]) == 0:
-      settings.setValue(contribRepo[0]+"/url", QVariant(contribRepo[1]))
-      settings.setValue(contribRepo[0]+"/enabled", QVariant(True))
-    # add author repositories
-    for i in authorRepos:
-      if i[1] and presentURLs.count(i[1]) == 0:
-        repoName = QString(i[0])
-        if self.all().has_key(repoName):
-          repoName = repoName + " (original)"
-        settings.setValue(repoName+"/url", QVariant(i[1]))
-        settings.setValue(repoName+"/enabled", QVariant(True))
+  ## depreciated in qgis 1.8 until we use 3rd party repos again
+  ## ----------------------------------------- #
+  #def addKnownRepos(self):
+    #""" add known 3rd party repositories to QSettings """
+    #presentURLs = []
+    #for i in self.all().values():
+      #presentURLs += [QString(i["url"])]
+    #settings = QSettings()
+    #settings.beginGroup(reposGroup)
+    ## add the official repository
+    #if presentURLs.count(officialRepo[1]) == 0:
+      #settings.setValue(officialRepo[0]+"/url", QVariant(officialRepo[1]))
+      #settings.setValue(officialRepo[0]+"/enabled", QVariant(True))
+    ## add author repositories
+    #for i in authorRepos:
+      #if i[1] and presentURLs.count(i[1]) == 0:
+        #repoName = QString(i[0])
+        #if self.all().has_key(repoName):
+          #repoName = repoName + " (original)"
+        #settings.setValue(repoName+"/url", QVariant(i[1]))
+        #settings.setValue(repoName+"/enabled", QVariant(True))
 
 
   # ----------------------------------------- #
@@ -328,31 +327,15 @@ class Repositories(QObject):
     settings.beginGroup(reposGroup)
     # first, update repositories in QSettings if needed
     officialRepoPresent = False
-    officialRepo2Present = False
     for key in settings.childGroups():
       url = settings.value(key+"/url", QVariant()).toString()
-      if url == contribRepo[1]:
-        settings.setValue(key+"/valid", QVariant(True)) # unlock the contrib repo in qgis 1.x
-      else:
-        settings.setValue(key+"/valid", QVariant(True)) # unlock any other repo
       if url == officialRepo[1]:
         officialRepoPresent = True
-      if url == officialRepo2[1]:
-        officialRepoPresent2 = True
       if url == officialRepo[2]:
         settings.setValue(key+"/url", QVariant(officialRepo[1])) # correct a depreciated url
         officialRepoPresent = True
-      if url == officialRepo2[2]:
-        settings.setValue(key+"/url", QVariant(officialRepo2[1])) # correct a depreciated url
-        officialRepoPresent2 = True
-      for authorRepo in authorRepos:
-        if url == authorRepo[2]:
-          settings.setValue(key+"/url", QVariant(authorRepo[1])) # correct a depreciated url
     if not officialRepoPresent:
       settings.setValue(officialRepo[0]+"/url", QVariant(officialRepo[1]))
-    if not officialRepo2Present:
-      settings.setValue(officialRepo2[0]+"/url", QVariant(officialRepo2[1]))
-
 
     for key in settings.childGroups():
       self.mRepositories[key] = {}
@@ -373,6 +356,8 @@ class Repositories(QObject):
     self.mRepositories[key]["state"] = 1
     url = QUrl(self.mRepositories[key]["url"])
     path = QString(url.toPercentEncoding(url.path(), "!$&'()*+,;=:@/"))
+    v=str(QGis.QGIS_VERSION_INT)
+    path += "?qgis=%s" % ('.'.join([str(int(s)) for s in [v[0], v[1:3], v[3:5]]]))
     port = url.port()
     if port < 0:
       port = 80
@@ -443,14 +428,12 @@ class Repositories(QObject):
             "localdir"      : name,
             "read-only"     : False}
           qgisMinimumVersion = pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().simplified()
-          if not qgisMinimumVersion: qgisMinimumVersion = "0"
-          # please use the tag below only if really needed! (for example if plugin development is abandoned)
+          if not qgisMinimumVersion: qgisMinimumVersion = "1"
           qgisMaximumVersion = pluginNodes.item(i).firstChildElement("qgis_maximum_version").text().simplified()
-          if not qgisMaximumVersion: qgisMaximumVersion = "2"
+          if not qgisMaximumVersion: qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
           #if compatible, add the plugin to the list
           if not pluginNodes.item(i).firstChildElement("disabled").text().simplified().toUpper() in ["TRUE","YES"]:
            if compareVersions(QGIS_VER, qgisMinimumVersion) < 2 and compareVersions(qgisMaximumVersion, QGIS_VER) < 2:
-            if QGIS_VER[0]==qgisMinimumVersion[0] or (qgisMinimumVersion!="0" and qgisMaximumVersion!="2"):   # to be deleted
               #add the plugin to the cache
               plugins.addFromRepository(plugin)
       # set state=2, even if the repo is empty
@@ -560,9 +543,14 @@ class Plugins(QObject):
       except:
         pass
       try:
-        exec("auth = %s.authorName()" % key)
+        exec("auth = %s.author()" % key)
       except:
-        pass
+        # "authorName" was deprecated in QGis > 1.8,
+        # you must use "author" instead
+        try:
+          exec("auth = %s.authorName()" % key)
+        except:
+          pass
       try:
         exec("homepage = %s.homepage()" % key)
       except:

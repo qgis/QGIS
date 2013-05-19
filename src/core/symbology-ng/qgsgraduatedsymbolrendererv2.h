@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsgraduatedsymbolrendererv2.h
+    ---------------------
+    begin                : November 2009
+    copyright            : (C) 2009 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSGRADUATEDSYMBOLRENDERERV2_H
 #define QGSGRADUATEDSYMBOLRENDERERV2_H
 
@@ -7,10 +21,13 @@
 class CORE_EXPORT QgsRendererRangeV2
 {
   public:
+    QgsRendererRangeV2();
     QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, QString label );
     QgsRendererRangeV2( const QgsRendererRangeV2& range );
 
     ~QgsRendererRangeV2();
+
+    QgsRendererRangeV2& operator=( const QgsRendererRangeV2& range );
 
     double lowerValue() const;
     double upperValue() const;
@@ -62,7 +79,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     //! returns bitwise OR-ed capabilities of the renderer
     //! \note added in 2.0
-    virtual int capabilities() { return SymbolLevels | RotationField; }
+    virtual int capabilities() { return SymbolLevels | RotationField | Filter; }
 
     virtual QgsSymbolV2List symbols();
 
@@ -78,6 +95,13 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     void addClass( QgsSymbolV2* symbol );
     void deleteClass( int idx );
+    void deleteAllClasses();
+
+    //! Moves the category at index position from to index position to.
+    void moveClass( int from, int to );
+
+    void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
+    void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
 
     enum Mode
     {
@@ -111,6 +135,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
+    //! @note not available in python bindings
     virtual QgsLegendSymbolList legendSymbolItems();
 
     QgsSymbolV2* sourceSymbol();
@@ -137,6 +162,12 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 1.6
     QString sizeScaleField() const { return mSizeScaleField; }
 
+    //! @note added in 2.0
+    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
+    //! @note added in 2.0
+    QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
+
+
   protected:
     QString mAttrName;
     QgsRangeList mRanges;
@@ -145,6 +176,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     QgsVectorColorRampV2* mSourceColorRamp;
     QString mRotationField;
     QString mSizeScaleField;
+    QgsSymbolV2::ScaleMethod mScaleMethod;
 
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum;

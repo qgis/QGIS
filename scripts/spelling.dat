@@ -53,6 +53,7 @@ persistant:persistent
 developement:development
 necesary:necessary
 recieved:received
+retrun:return
 ressize:resize
 assigment:assignment
 automatizes:automates
@@ -102,6 +103,9 @@ propery:property
 monocrome:monochrome
 independant:independent
 delemiter:delimiter
+delimeter:delimiter
+delemeter:delimiter
+emited:emitted
 charcter:character
 compatable:compatible
 seperated:separated
@@ -456,3 +460,8 @@ writeable:writable
 vaild:valid
 opps:oops
 arount:around
+acheive:achieve
+specifed:specified
+widht:width
+heigth:height
+heigh:height

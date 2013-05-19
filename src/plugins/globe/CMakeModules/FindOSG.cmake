@@ -10,7 +10,7 @@
 # directory, and source directory, respectively
 # OSGDIR or OSG_SOURCE_DIR: osg source directory, typically OpenSceneGraph
 # OSG_DIR or OSG_BUILD_DIR: osg build directory, place in which you've
-#    built osg via cmake 
+#    built osg via cmake
 
 # Header files are presumed to be included like
 # #include <osg/PositionAttitudeTransform>
@@ -106,9 +106,11 @@ FIND_OSG_LIBRARY( OSGVIEWER_LIBRARY_DEBUG osgViewerd )
 FIND_OSG_LIBRARY( OSGGA_LIBRARY osgGA )
 FIND_OSG_LIBRARY( OSGGA_LIBRARY_DEBUG osgGAd )
 
+FIND_OSG_LIBRARY( OSGQT_LIBRARY osgQt )
+FIND_OSG_LIBRARY( OSGQT_LIBRARY_DEBUG osgQtd )
+
 FIND_OSG_LIBRARY( OSGWIDGET_LIBRARY osgWidget )
 FIND_OSG_LIBRARY( OSGWIDGET_LIBRARY_DEBUG osgWidgetd )
-
 
 FIND_OSG_LIBRARY( OPENTHREADS_LIBRARY OpenThreads )
 FIND_OSG_LIBRARY( OPENTHREADS_LIBRARY_DEBUG OpenThreadsd )

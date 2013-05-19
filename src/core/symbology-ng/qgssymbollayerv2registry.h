@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgssymbollayerv2registry.h
+    ---------------------
+    begin                : November 2009
+    copyright            : (C) 2009 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #ifndef QGSSYMBOLLAYERV2REGISTRY_H
 #define QGSSYMBOLLAYERV2REGISTRY_H
@@ -49,6 +63,7 @@ typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFromSldFunc )( QDomElement& );
 class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMetadata
 {
   public:
+    //! not available in python bindings
     QgsSymbolLayerV2Metadata( QString name, QString visibleName,
                               QgsSymbolV2::SymbolType type,
                               QgsSymbolLayerV2CreateFunc pfCreate,
@@ -59,6 +74,7 @@ class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMeta
         , mCreateFromSldFunc( NULL )
     {}
 
+    //! not available in python bindings
     QgsSymbolLayerV2Metadata( QString name, QString visibleName,
                               QgsSymbolV2::SymbolType type,
                               QgsSymbolLayerV2CreateFunc pfCreate,
@@ -70,10 +86,14 @@ class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMeta
         , mCreateFromSldFunc( pfCreateFromSld )
     {}
 
+    //! not available in python bindings
     QgsSymbolLayerV2CreateFunc createFunction() const { return mCreateFunc; }
+    //! not available in python bindings
     QgsSymbolLayerV2WidgetFunc widgetFunction() const { return mWidgetFunc; }
+    //! not available in python bindings
     QgsSymbolLayerV2CreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; }
 
+    //! not available in python bindings
     void setWidgetFunction( QgsSymbolLayerV2WidgetFunc f ) { mWidgetFunc = f; }
 
     virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) { return mCreateFunc ? mCreateFunc( map ) : NULL; }

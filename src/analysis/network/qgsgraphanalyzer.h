@@ -36,7 +36,7 @@ class ANALYSIS_EXPORT QgsGraphAnalyzer
      * @param source The source graph
      * @param startVertexIdx index of start vertex
      * @param criterionNum index of arc property as optimization criterion
-     * @param treeResult array represents the shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reacheble and resultTree[ vertexIndex ] == -1 others.
+     * @param resultTree array represents the shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reacheble and resultTree[ vertexIndex ] == -1 others.
      * @param resultCost array of cost paths
      */
     static void dijkstra( const QgsGraph* source, int startVertexIdx, int criterionNum, QVector<int>* resultTree = NULL, QVector<double>* resultCost = NULL );

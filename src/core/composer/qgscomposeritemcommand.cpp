@@ -88,7 +88,7 @@ QgsComposerMergeCommand::~QgsComposerMergeCommand()
 bool QgsComposerMergeCommand::mergeWith( const QUndoCommand * command )
 {
   const QgsComposerItemCommand* c = dynamic_cast<const QgsComposerItemCommand*>( command );
-  if ( !c )
+  if ( !c || mItem != c->item() )
   {
     return false;
   }

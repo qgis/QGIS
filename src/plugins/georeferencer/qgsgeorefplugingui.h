@@ -38,6 +38,13 @@ class QgsPoint;
 class QgsRasterLayer;
 class QgsRectangle;
 
+class QgsGeorefDockWidget : public QDockWidget
+{
+    Q_OBJECT
+  public:
+    QgsGeorefDockWidget( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 );
+};
+
 class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBase
 {
     Q_OBJECT
@@ -101,11 +108,18 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void showMouseCoords( const QgsPoint pt );
     void updateMouseCoordinatePrecision();
 
+    // Histogram stretch
+    void localHistogramStretch();
+    void fullHistogramStretch();
+
+
     // when one Layer is removed
     void layerWillBeRemoved( QString theLayerId );
     void extentsChanged(); // Use for need add again Raster (case above)
 
     bool updateGeorefTransform();
+
+    void updateIconTheme( QString theme );
 
   private:
     enum SaveGCPs
@@ -122,8 +136,10 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void createMapCanvas();
     void createMenus();
     void createDockWidgets();
+    QLabel* createBaseLabelStatus();
     void createStatusBar();
     void setupConnections();
+    void removeOldLayer();
 
     // Mapcanvas Plugin
     void addRaster( QString file );
@@ -155,7 +171,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
 
     // utils
     bool checkReadyGeoref();
-    QgsRectangle transformViewportBoundingBox( const QgsRectangle &canvasExtent, const QgsGeorefTransform &t,
+    QgsRectangle transformViewportBoundingBox( const QgsRectangle &canvasExtent, QgsGeorefTransform &t,
         bool rasterToWorld = true, uint numSamples = 4 );
     QString convertTransformEnumToString( QgsGeorefTransform::TransformParametrisation transform );
     QString convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling );
@@ -192,6 +208,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QLabel *mScaleLabel;
     QLabel *mCoordsLabel;
     QLabel *mTransformParamLabel;
+    QLabel *mEPSG;
     unsigned int mMousePrecisionDecimalPlaces;
 
     QString mRasterFileName;
@@ -235,14 +252,6 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     bool mLoadInQgis;
 
     QDockWidget* mDock;
-};
-
-class QgsGeorefDockWidget : public QDockWidget
-{
-    Q_OBJECT
-  public:
-    QgsGeorefDockWidget( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 );
-    virtual void closeEvent( QCloseEvent * ev );
 };
 
 #endif

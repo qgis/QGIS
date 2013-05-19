@@ -129,7 +129,7 @@ void QgsGrassPlugin::initGui()
   connect( qgis, SIGNAL( newProject() ), this, SLOT( newProject() ) );
 
   // Create region rubber band
-  mRegionBand = new QgsRubberBand( mCanvas, 1 );
+  mRegionBand = new QgsRubberBand( mCanvas, QGis::Polygon );
   mRegionBand->setZValue( 20 );
 
   // Create the action for tool (the icons are set later by calling setCurrentTheme)
@@ -221,19 +221,25 @@ void QgsGrassPlugin::mapsetChanged()
 {
   if ( !QgsGrass::activeMode() )
   {
+#ifdef GRASS_DIRECT
+    mOpenToolsAction->setEnabled( true );
+#else
     mOpenToolsAction->setEnabled( false );
+#endif
     mRegionAction->setEnabled( false );
     mEditRegionAction->setEnabled( false );
     mRegionBand->reset();
     mCloseMapsetAction->setEnabled( false );
     mNewVectorAction->setEnabled( false );
 
+#if 0
     if ( mTools )
     {
       mTools->hide();
       delete mTools;
       mTools = 0;
     }
+#endif
   }
   else
   {
@@ -248,10 +254,12 @@ void QgsGrassPlugin::mapsetChanged()
     mRegionAction->setChecked( on );
     switchRegion( on );
 
+#if 0
     if ( mTools )
     {
       mTools->mapsetChanged();
     }
+#endif
     QString gisdbase = QgsGrass::getDefaultGisdbase();
     QString location = QgsGrass::getDefaultLocation();
     try
@@ -268,6 +276,7 @@ void QgsGrassPlugin::mapsetChanged()
     setTransform();
     redrawRegion();
   }
+  if ( mTools ) mTools->mapsetChanged();
 }
 
 void QgsGrassPlugin::saveMapset()
@@ -421,8 +430,7 @@ void QgsGrassPlugin::addRaster()
     name.replace( '/', ' ' );
 
     //qGisInterface->addRasterLayer( uri, sel->map );
-    qGisInterface->addRasterLayer( uri, sel->map, "grassraster", QStringList(), QStringList(),
-                                   QString(), QString() );
+    qGisInterface->addRasterLayer( uri, sel->map, "grassraster" );
   }
 }
 

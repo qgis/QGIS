@@ -30,7 +30,7 @@
         <lowervalue>B52</lowervalue>
         <uppervalue></uppervalue>
         <label></label>
-        <pointsymbol>svg:/Applications/qgis0.9.2.app/Contents/MacOS/share/qgis/svg/gpsicons/plane.svg</pointsymbol>
+        <pointsymbol>svg:/gpsicons/plane.svg</pointsymbol>
         <pointsize>6</pointsize>
         <rotationclassificationfield>1</rotationclassificationfield>
         <scaleclassificationfield>2</scaleclassificationfield>
@@ -45,7 +45,7 @@
         <lowervalue>Biplane</lowervalue>
         <uppervalue></uppervalue>
         <label></label>
-        <pointsymbol>svg:/Applications/qgis0.9.2.app/Contents/MacOS/share/qgis/svg/gpsicons/plane_orange.svg</pointsymbol>
+        <pointsymbol>svg:/gpsicons/plane_orange.svg</pointsymbol>
         <pointsize>5</pointsize>
         <rotationclassificationfield>1</rotationclassificationfield>
         <scaleclassificationfield>2</scaleclassificationfield>
@@ -60,7 +60,7 @@
         <lowervalue>Jet</lowervalue>
         <uppervalue></uppervalue>
         <label></label>
-        <pointsymbol>svg:/Applications/qgis0.9.2.app/Contents/MacOS/share/qgis/svg/gpsicons/plane.svg</pointsymbol>
+        <pointsymbol>svg:/gpsicons/plane.svg</pointsymbol>
         <pointsize>5</pointsize>
         <rotationclassificationfield>1</rotationclassificationfield>
         <scaleclassificationfield>2</scaleclassificationfield>

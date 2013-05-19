@@ -1,4 +1,4 @@
-﻿<h3>Complemento de Barra de escala</h3>
+<h3>Complemento de Barra de escala</h3>
 Dibuja una barra de escala sobre el mapa.
 <p>
 Es posible controlar el estilo y la ubicación, así como las etiquetas de la barra. QGIS sólo permite desplegar la escala en las mismas unidades del mapa. Por esto si las unidades de sus capas están en metros, no es posible crear una barra de escala en pies. De la misma manera, si usted está usando grados decimales no podrá crear una barra de escala que muestre la distancia en metros.</p>

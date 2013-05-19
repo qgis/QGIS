@@ -12,7 +12,7 @@ MACRO(FIND_FLEX)
       IF (MSVC)
         FIND_PROGRAM(FLEX_EXECUTABLE
                      NAMES flex.exe
-                     PATHS $ENV{LIB_DIR}/bin $ENV{PROGRAMFILES}/GnuWin32/bin
+                     PATHS $ENV{LIB_DIR}/bin c:/cygwin/bin $ENV{PROGRAMFILES}/GnuWin32/bin
                     )
       ELSE(MSVC)
         FIND_PROGRAM(FLEX_EXECUTABLE flex)
@@ -32,7 +32,6 @@ MACRO(ADD_FLEX_FILES _sources )
 
       SET(_out ${CMAKE_CURRENT_BINARY_DIR}/flex_${_basename}.cpp)
 
-
       # -d option for flex means that it will produce output to stderr while analyzing 
 
       ADD_CUSTOM_COMMAND(
@@ -45,6 +44,13 @@ MACRO(ADD_FLEX_FILES _sources )
       )
 
       SET(${_sources} ${${_sources}} ${_out} )
+
+      # Disable warnings
+      IF(MSVC)
+        SET_SOURCE_FILES_PROPERTIES(${_out} PROPERTIES COMPILE_FLAGS /W0)
+      ELSE(MSVC)
+        SET_SOURCE_FILES_PROPERTIES(${_out} PROPERTIES COMPILE_FLAGS -w)
+      ENDIF(MSVC)
    ENDFOREACH (_current_FILE)
 ENDMACRO(ADD_FLEX_FILES)
 
@@ -72,5 +78,12 @@ MACRO(ADD_FLEX_FILES_PREFIX _sources prefix )
       )
 
       SET(${_sources} ${${_sources}} ${_out} )
+
+      # Disable warnings
+      IF(MSVC)
+        SET_SOURCE_FILES_PROPERTIES(${_out} PROPERTIES COMPILE_FLAGS /W0)
+      ELSE(MSVC)
+        SET_SOURCE_FILES_PROPERTIES(${_out} PROPERTIES COMPILE_FLAGS -w)
+      ENDIF(MSVC)
     ENDFOREACH (_current_FILE)
 ENDMACRO(ADD_FLEX_FILES_PREFIX)

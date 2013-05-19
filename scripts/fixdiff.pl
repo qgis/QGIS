@@ -1,4 +1,18 @@
 #!/usr/bin/perl 
+###########################################################################
+#    fixdiff.pl
+#    ---------------------
+#    begin                : May 2008
+#    copyright            : (C) 2008 by Juergen E. Fischer
+#    email                : jef at norbit dot de
+###########################################################################
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 2 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+###########################################################################
 
 # NAME
 #   fixdiff.pl - fix line endings in svn diff to match lineending of existing files
@@ -9,9 +23,6 @@
 #   This is useful, when the compared trees to generate the diff are on a
 #   different architecture than that of the one where the patch is to be
 #   applied.
-# LICENSE:
-#   Copyright 2008 Jürgen E. Fischer <jef@norbit.de>
-#   GPL2
 
 use strict;
 use warnings;

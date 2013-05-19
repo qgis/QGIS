@@ -1,13 +1,13 @@
 <h3>Funktion length()</h3>
-Liefert die Länge einer Zeichenkette.
+Liefert die L&auml;nge einer Zeichenkette.
 
 <p><h4>Syntax</h4>
      length(<i>zeichenkette</i>)</p>
 
 <p><h4>Argumente</h4>
 <!-- List args for functions here-->
-<i>  zeichenkette</i> -> ist eine Zeichenkette.  Die Zeichenkette deren Länge zu bestimmen ist.</p>
+<i>  zeichenkette</i> &rarr; ist eine Zeichenkette.  Die Zeichenkette deren L&auml;nge zu bestimmen ist.</p>
 
 <p><h4>Beispiel</h4>
 <!-- Show example of function.-->
-     length('HALLO') -> 5</p>
+     length('HALLO') &rarr; 5</p>

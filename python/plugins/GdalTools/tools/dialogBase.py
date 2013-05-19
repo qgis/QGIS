@@ -1,4 +1,28 @@
 # -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    dialogBase.py
+    ---------------------
+    Date                 : June 2010
+    Copyright            : (C) 2010 by Giuseppe Sucameli
+    Email                : brush dot tyler at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Giuseppe Sucameli'
+__date__ = 'June 2010'
+__copyright__ = '(C) 2010, Giuseppe Sucameli'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -175,15 +199,14 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
         return
 
       if self.command.find( "gdalinfo" ) != -1 and exitCode == 0:
-        print "*** DEBUG ***"
         self.emit( SIGNAL("finished(bool)"), self.loadCheckBox.isChecked() )
         self.stop()
         return
 
       # show the error message if there's one, otherwise show the process output message
-      msg = QString(self.process.readAllStandardError())
+      msg = QString.fromLocal8Bit(self.process.readAllStandardError())
       if msg.isEmpty():
-        outMessages = QString(self.process.readAllStandardOutput()).split( "\n" )
+        outMessages = QString.fromLocal8Bit(self.process.readAllStandardOutput()).split( "\n" )
 
         # make sure to not show the help
         for m in outMessages:

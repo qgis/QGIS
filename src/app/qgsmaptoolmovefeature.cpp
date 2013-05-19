@@ -56,14 +56,13 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
   QgsVectorLayer* vlayer = currentVectorLayer();
   if ( !vlayer )
   {
+    notifyNotVectorLayer();
     return;
   }
 
   if ( !vlayer->isEditable() )
   {
-    QMessageBox::information( 0, tr( "Layer not editable" ),
-                              tr( "Cannot edit the vector layer. Use 'Toggle Editing' to make it editable." )
-                            );
+    notifyNotEditableLayer();
     return;
   }
 
@@ -76,7 +75,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
 
   if ( vlayer->selectedFeatureCount() == 0 )
   {
-    vlayer->select( QgsAttributeList(), selectRect, true );
+    QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setSubsetOfAttributes( QgsAttributeList() ) );
 
     //find the closest feature
     QgsGeometry* pointGeometry = QgsGeometry::fromPoint( layerCoords );
@@ -89,7 +88,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
 
     QgsFeature cf;
     QgsFeature f;
-    while ( vlayer->nextFeature( f ) )
+    while ( fit.nextFeature( f ) )
     {
       if ( f.geometry() )
       {
@@ -113,14 +112,14 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
     mMovedFeatures.clear();
     mMovedFeatures << cf.id(); //todo: take the closest feature, not the first one...
 
-    mRubberBand = createRubberBand();
+    mRubberBand = createRubberBand( vlayer->geometryType() );
     mRubberBand->setToGeometry( cf.geometry(), vlayer );
   }
   else
   {
     mMovedFeatures = vlayer->selectedFeaturesIds();
 
-    mRubberBand = createRubberBand();
+    mRubberBand = createRubberBand( vlayer->geometryType() );
     for ( int i = 0; i < vlayer->selectedFeatureCount(); i++ )
     {
       mRubberBand->addGeometry( vlayer->selectedFeatures()[i].geometry(), vlayer );
@@ -154,7 +153,7 @@ void QgsMapToolMoveFeature::canvasReleaseEvent( QMouseEvent * e )
   double dx = stopPointLayerCoords.x() - startPointLayerCoords.x();
   double dy = stopPointLayerCoords.y() - startPointLayerCoords.y();
   vlayer->beginEditCommand( tr( "Feature moved" ) );
-  foreach( QgsFeatureId id, mMovedFeatures )
+  foreach ( QgsFeatureId id, mMovedFeatures )
   {
     vlayer->translateFeature( id, dx, dy );
   }

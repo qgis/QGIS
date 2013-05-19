@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsvectorcolorbrewercolorrampv2dialog.cpp
+    ---------------------
+    begin                : November 2009
+    copyright            : (C) 2009 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #include "qgsvectorcolorbrewercolorrampv2dialog.h"
 
@@ -27,7 +41,7 @@ QgsVectorColorBrewerColorRampV2Dialog::QgsVectorColorBrewerColorRampV2Dialog( Qg
   cboSchemeName->setIconSize( iconSize );
 
   QStringList schemes = QgsVectorColorBrewerColorRampV2::listSchemeNames();
-  foreach( QString schemeName, schemes )
+  foreach ( QString schemeName, schemes )
   {
     // create a preview icon using five color variant
     QgsVectorColorBrewerColorRampV2* r = new QgsVectorColorBrewerColorRampV2( schemeName, 5 );
@@ -53,7 +67,7 @@ void QgsVectorColorBrewerColorRampV2Dialog::populateVariants()
   cboColors->clear();
   QString schemeName = cboSchemeName->currentText();
   QList<int> variants = QgsVectorColorBrewerColorRampV2::listSchemeVariants( schemeName );
-  foreach( int variant, variants )
+  foreach ( int variant, variants )
   {
     cboColors->addItem( QString::number( variant ) );
   }

@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsbrowsermodel.h
+    ---------------------
+    begin                : July 2011
+    copyright            : (C) 2011 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSBROWSERMODEL_H
 #define QGSBROWSERMODEL_H
 
@@ -61,9 +75,6 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
-    // Reload the whole model
-    void reload();
-
     // Refresh item specified by path
     void refresh( QString path );
 
@@ -75,25 +86,30 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     void connectItem( QgsDataItem *item );
 
-  signals:
+    bool canFetchMore( const QModelIndex & parent ) const;
+    void fetchMore( const QModelIndex & parent );
 
   public slots:
-    //void removeItems( QgsDataItem * parent, QVector<QgsDataItem *>items );
-    //void addItems( QgsDataItem * parent, QVector<QgsDataItem *>items );
-    //void refreshItems( QgsDataItem * parent, QVector<QgsDataItem *>items );
-
+    // Reload the whole model
+    void reload();
     void beginInsertItems( QgsDataItem *parent, int first, int last );
     void endInsertItems();
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
     void endRemoveItems();
 
-  protected:
+    void addFavouriteDirectory( QString favDir );
+    void removeFavourite( const QModelIndex &index );
 
+    void updateProjectHome();
+
+  protected:
     // populates the model
     void addRootItems();
     void removeRootItems();
 
     QVector<QgsDataItem*> mRootItems;
+    QgsFavouritesItem *mFavourites;
+    QgsDirectoryItem *mProjectHome;
 };
 
 #endif // QGSBROWSERMODEL_H

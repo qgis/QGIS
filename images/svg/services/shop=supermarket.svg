@@ -1,126 +1,29 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="16px"
-   height="16px"
-   id="svg3427"
-   sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="shop=supermarket.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/shop=supermarket.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
-  <defs
-     id="defs3429">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 8 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="16 : 8 : 1"
-       inkscape:persp3d-origin="8 : 5.3333333 : 1"
-       id="perspective3435" />
-  </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="31.875"
-     inkscape:cx="8"
-     inkscape:cy="8"
-     inkscape:current-layer="layer5"
-     showgrid="true"
-     inkscape:grid-bbox="true"
-     inkscape:document-units="px"
-     inkscape:window-width="1280"
-     inkscape:window-height="723"
-     inkscape:window-x="0"
-     inkscape:window-y="0" />
-  <metadata
-     id="metadata3432">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <cc:license
-           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
-        <dc:title>shop=supermarket</dc:title>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>Matt Amos</dc:title>
-          </cc:Agent>
-        </dc:creator>
-        <dc:rights>
-          <cc:Agent>
-            <dc:title>Matt Amos asserts the moral right to be identified as the author of this work.</dc:title>
-          </cc:Agent>
-        </dc:rights>
-      </cc:Work>
-      <cc:License
-         rdf:about="http://creativecommons.org/licenses/publicdomain/">
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Reproduction" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Distribution" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
-      </cc:License>
-    </rdf:RDF>
-  </metadata>
-  <g
-     id="layer1"
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     sodipodi:insensitive="true">
-    <rect
-       style="fill:#60de4e;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3946"
-       width="16"
-       height="16"
-       x="0"
-       y="0"
-       rx="4" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer5"
-     inkscape:label="top">
-    <path
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 12.995956,1.7481617 C 12.644395,1.7521245 12.284036,1.8499445 11.995956,2.0919117 C 11.707876,2.3338789 11.527206,2.7147926 11.527206,3.1544117 L 11.527206,3.7794117 L 1.6834559,5.1231617 L 1.1522059,5.1856617 L 1.2772059,5.7481617 L 2.4334559,10.404413 L 2.5272059,10.779413 L 2.9022059,10.779413 L 11.527206,10.779413 L 11.527206,11.904413 L 2.8693628,11.904413 L 3.1203432,12.904413 L 12.027206,12.904413 L 12.527206,12.904413 L 12.527206,12.404413 L 12.527206,10.779413 L 12.527206,10.279413 L 12.527206,4.2169117 L 12.527206,3.6231617 L 12.527206,3.1544117 C 12.527206,2.9854176 12.569697,2.9424632 12.652206,2.8731617 C 12.734715,2.8038602 12.853399,2.7497686 12.995956,2.7481617 C 13.138513,2.7465548 13.292627,2.776709 13.370956,2.8419117 C 13.449285,2.9071144 13.495956,2.9694999 13.495956,3.1544117 L 14.495956,3.1544117 C 14.495956,2.7084316 14.288215,2.3351929 13.995956,2.0919117 C 13.703697,1.8486305 13.347517,1.7441989 12.995956,1.7481617 z M 11.527206,4.7794117 L 11.527206,6.5919117 L 9.1834559,6.8106617 L 9.0584559,5.1231617 L 11.527206,4.7794117 z M 8.0584559,5.2794117 L 8.1834559,6.9044117 L 5.7459559,7.1544117 L 5.4959559,5.6231617 L 8.0584559,5.2794117 z M 4.4959559,5.7481617 L 4.7147059,7.2481617 L 2.7147059,7.4356617 L 2.3709559,6.0606617 L 4.4959559,5.7481617 z M 11.527206,7.5919117 L 11.527206,9.7794117 L 9.4022059,9.7794117 L 9.2459559,7.8106617 L 11.527206,7.5919117 z M 8.2459559,7.9044117 L 8.4022059,9.7794117 L 6.1209559,9.7794117 L 5.8709559,8.1544117 L 8.2459559,7.9044117 z M 4.8709559,8.2481617 L 5.1209559,9.7794117 L 3.3084559,9.7794117 L 2.9647059,8.4044117 L 4.8709559,8.2481617 z"
-       id="path3204"
-       sodipodi:nodetypes="csccccccccccccccccccccsssccsccccccccccccccccccccccccccccccc" />
-    <path
-       sodipodi:type="arc"
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.05;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.9000001;stroke-dasharray:none;stroke-opacity:1"
-       id="path3214"
-       sodipodi:cx="5.4745097"
-       sodipodi:cy="14.886274"
-       sodipodi:rx="0.9254902"
-       sodipodi:ry="0.9254902"
-       d="M 6.3999999,14.886274 A 0.9254902,0.9254902 0 1 1 4.5490195,14.886274 A 0.9254902,0.9254902 0 1 1 6.3999999,14.886274 z"
-       transform="translate(-1.0980398,-0.9725491)" />
-    <path
-       d="M 6.3999999,14.886274 A 0.9254902,0.9254902 0 1 1 4.5490195,14.886274 A 0.9254902,0.9254902 0 1 1 6.3999999,14.886274 z"
-       sodipodi:ry="0.9254902"
-       sodipodi:rx="0.9254902"
-       sodipodi:cy="14.886274"
-       sodipodi:cx="5.4745097"
-       id="path3216"
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.05;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.9000001;stroke-dasharray:none;stroke-opacity:1"
-       sodipodi:type="arc"
-       transform="translate(6.0862745,-1.0039217)" />
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg3427" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/shop=supermarket.png" inkscape:export-ydpi="90" inkscape:export-xdpi="90" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="shop=supermarket.svg" inkscape:version="0.46" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_z="16 : 8 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 8 : 1" sodipodi:type="inkscape:persp3d" id="perspective3435" inkscape:persp3d-origin="8 : 5.3333333 : 1">
+		</inkscape:perspective>
+</defs>
+<sodipodi:namedview  showgrid="true" inkscape:cy="8" inkscape:cx="8" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:document-units="px" inkscape:grid-bbox="true" inkscape:current-layer="layer5" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1280" inkscape:window-height="723">
+	</sodipodi:namedview>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M506.043,75.631c-10.592-8.793-23.444-12.57-36.155-12.43
+	c-12.712,0.143-25.74,3.689-36.156,12.43c-10.416,8.756-16.948,22.527-16.948,38.416v22.598L60.872,185.229l-19.208,2.26
+	l4.52,20.338l41.806,168.352l3.39,13.559h13.558h311.847v40.676H103.736l9.074,36.156h322.051h18.078V448.49v-58.754v-18.078
+	V152.463v-21.469v-16.947c0-6.109,1.554-7.662,4.52-10.17c2.966-2.506,7.273-4.449,12.429-4.52
+	c5.154-0.053,10.733,1.041,13.559,3.391c2.824,2.365,4.52,4.625,4.52,11.299h36.155C524.121,97.928,516.601,84.422,506.043,75.631z
+	 M98.158,268.84l-12.429-49.715l76.831-11.299l7.909,54.234L98.158,268.84z M119.625,353.58l-12.429-49.715l68.923-5.648
+	l9.039,55.363H119.625z M198.717,203.307l92.65-12.43l4.519,58.754l-88.13,9.039L198.717,203.307z M221.314,353.58l-9.039-58.754
+	l85.87-9.039l5.649,67.793H221.314z M416.783,353.58h-76.832l-5.649-71.182l82.481-7.91V353.58z M416.783,238.332l-84.741,7.91
+	l-4.52-61.014l89.261-12.43V238.332z"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M158.235,469.604c-18.484,0-33.455,14.973-33.455,33.473
+	c0,18.467,14.971,33.473,33.455,33.473s33.455-15.006,33.455-33.473C191.69,484.576,176.72,469.604,158.235,469.604z"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M417.983,468.475c-18.466,0-33.473,14.971-33.473,33.473
+	c0,18.467,15.007,33.438,33.473,33.438c18.502,0,33.473-14.971,33.473-33.438C451.456,483.445,436.485,468.475,417.983,468.475z"/>
 </svg>

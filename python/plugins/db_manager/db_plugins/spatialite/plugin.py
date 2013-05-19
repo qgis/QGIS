@@ -165,6 +165,9 @@ class SLVectorTable(SLTable, VectorTable):
 	def __init__(self, row, db, schema=None):
 		SLTable.__init__(self, row[:-5], db, schema)
 		VectorTable.__init__(self, db, schema)
+		# SpatiaLite does case-insensitive checks for table names, but the
+		# SL provider didn't do the same in QGis < 1.9, so self.geomTableName
+		# stores the table name like stored in the geometry_columns table
 		self.geomTableName, self.geomColumn, self.geomType, self.geomDim, self.srid = row[-5:]
 
 	def uri(self):
@@ -172,10 +175,10 @@ class SLVectorTable(SLTable, VectorTable):
 		uri.setDataSource('', self.geomTableName, self.geomColumn)
 		return uri
 
-	def hasSpatialIndex(self, geom_column=None):		
+	def hasSpatialIndex(self, geom_column=None):
 		geom_column = geom_column if geom_column != None else self.geomColumn
 		return self.database().connector.hasSpatialIndex( (self.schemaName(), self.name), geom_column )
-		
+
 	def createSpatialIndex(self, geom_column=None):
 		self.aboutToChange()
 		ret = VectorTable.createSpatialIndex(self, geom_column)
@@ -219,9 +222,9 @@ class SLRasterTable(SLTable, RasterTable):
 	def mimeUri(self):
 		uri = u"raster:gdal:%s:%s" % (self.name, self.gdalUri())
 		return QString( uri )
-	
+
 	def toMapLayer(self):
-		from qgis.core import QgsRasterLayer 
+		from qgis.core import QgsRasterLayer
 		rl = QgsRasterLayer(self.gdalUri(), self.name)
 		if rl.isValid():
 			rl.setContrastEnhancementAlgorithm("StretchToMinimumMaximum")

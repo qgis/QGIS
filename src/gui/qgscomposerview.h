@@ -32,6 +32,7 @@ class QgsComposerLabel;
 class QgsComposerLegend;
 class QgsComposerMap;
 class QgsComposerPicture;
+class QgsComposerRuler;
 class QgsComposerScaleBar;
 class QgsComposerShape;
 class QgsComposerAttributeTable;
@@ -54,6 +55,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     {
       Select = 0,      // Select/Move item
       AddArrow,         //add arrow
+      AddHtml,
       AddMap,          // add new map
       AddLegend, // add vector legend
       AddLabel,        // add label
@@ -88,6 +90,12 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void setPaintingEnabled( bool enabled ) { mPaintingEnabled = enabled; }
     bool paintingEnabled() const { return mPaintingEnabled; }
 
+    /**Update rulers with current scene rect*/
+    void updateRulers();
+
+    void setHorizontalRuler( QgsComposerRuler* r ) { mHorizontalRuler = r; }
+    void setVerticalRuler( QgsComposerRuler* r ) { mVerticalRuler = r; }
+
   protected:
     void mousePressEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );
@@ -95,7 +103,6 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void mouseDoubleClickEvent( QMouseEvent* e );
 
     void keyPressEvent( QKeyEvent * e );
-    void keyReleaseEvent( QKeyEvent * e );
 
     void wheelEvent( QWheelEvent* event );
 
@@ -104,9 +111,10 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void hideEvent( QHideEvent* e );
     void showEvent( QShowEvent* e );
 
+    void resizeEvent( QResizeEvent* event );
+    void scrollContentsBy( int dx, int dy );
+
   private:
-    /**Status of shift key (used for multiple selection)*/
-    bool mShiftKeyPressed;
     /**Current composer tool*/
     QgsComposerView::Tool mCurrentTool;
     /**Rubber band item*/
@@ -122,6 +130,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     bool mPaintingEnabled;
 
+    QgsComposerRuler* mHorizontalRuler;
+    QgsComposerRuler* mVerticalRuler;
+
     /** Draw a shape on the canvas */
     void addShape( Tool currentTool );
 
@@ -130,6 +141,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
   signals:
     /**Is emitted when selected item changed. If 0, no item is selected*/
     void selectedItemChanged( QgsComposerItem* selected );
+    /**Is emitted when a composer item has been removed from the scene*/
     void itemRemoved( QgsComposerItem* );
     /**Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
      QgsComposer may set the selection tool again*/

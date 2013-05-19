@@ -1,8 +1,10 @@
 @echo off
-
-SET OSGEO4W_ROOT=@osgeo4w@
-call "%OSGEO4W_ROOT%"\bin\o4w_env.bat
+call "%~dp0\o4w_env.bat"
 call "%OSGEO4W_ROOT%"\apps\grass\grass-@grassversion@\etc\env.bat
 @echo off
 path %PATH%;%OSGEO4W_ROOT%\apps\@package@\bin;%OSGEO4W_ROOT%\apps\grass\grass-@grassversion@\lib
-start "Quantum GIS" /B "%OSGEO4W_ROOT%"\apps\@package@\bin\qgis.exe %*
+set QGIS_PREFIX_PATH=%OSGEO4W_ROOT:\=/%/apps/@package@
+rem Set VSI cache to be used as buffer, see #6448
+set VSI_CACHE=TRUE
+set VSI_CACHE_SIZE=1000000
+start "Quantum GIS" /B "%OSGEO4W_ROOT%"\bin\@package@-bin.exe %*

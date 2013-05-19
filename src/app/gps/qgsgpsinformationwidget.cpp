@@ -802,7 +802,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
   //
   if ( layerWKBType == QGis::WKBPoint )
   {
-    QgsFeature* f = new QgsFeature( 0, "WKBPoint" );
+    QgsFeature* f = new QgsFeature( 0 );
 
     int size = 0;
     char end = QgsApplication::endian();
@@ -850,7 +850,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
     mNmea->disconnect( this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
 
     //create QgsFeature with wkb representation
-    QgsFeature* f = new QgsFeature( 0, "WKBLineString" );
+    QgsFeature* f = new QgsFeature( 0 );
     unsigned char* wkb;
     int size;
     char end = QgsApplication::endian();

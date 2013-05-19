@@ -29,121 +29,121 @@ from .db_model import DBModel
 from .db_plugins.plugin import DBPlugin, Schema, Table
 
 class DBTree(QTreeView):
-	def __init__(self, mainWindow):
-		QTreeView.__init__(self, mainWindow)
-		self.mainWindow = mainWindow
+  def __init__(self, mainWindow):
+    QTreeView.__init__(self, mainWindow)
+    self.mainWindow = mainWindow
 
-		self.setModel( DBModel(self) )
-		self.setHeaderHidden(True)
-		self.setEditTriggers(QTreeView.EditKeyPressed|QTreeView.SelectedClicked)
+    self.setModel( DBModel(self) )
+    self.setHeaderHidden(True)
+    self.setEditTriggers(QTreeView.EditKeyPressed|QTreeView.SelectedClicked)
 
-		self.setDragEnabled(True)
-		self.setAcceptDrops(True)
-		self.setDropIndicatorShown(True)
+    self.setDragEnabled(True)
+    self.setAcceptDrops(True)
+    self.setDropIndicatorShown(True)
 
-		self.connect(self.selectionModel(), SIGNAL("currentChanged(const QModelIndex&, const QModelIndex&)"), self.currentItemChanged)
-		self.connect(self, SIGNAL("expanded(const QModelIndex&)"), self.itemChanged)
-		self.connect(self, SIGNAL("collapsed(const QModelIndex&)"), self.itemChanged)
-		self.connect(self.model(), SIGNAL("dataChanged(const QModelIndex&, const QModelIndex&)"), self.modelDataChanged)
-		self.connect(self.model(), SIGNAL("notPopulated"), self.collapse)
+    self.connect(self.selectionModel(), SIGNAL("currentChanged(const QModelIndex&, const QModelIndex&)"), self.currentItemChanged)
+    self.connect(self, SIGNAL("expanded(const QModelIndex&)"), self.itemChanged)
+    self.connect(self, SIGNAL("collapsed(const QModelIndex&)"), self.itemChanged)
+    self.connect(self.model(), SIGNAL("dataChanged(const QModelIndex&, const QModelIndex&)"), self.modelDataChanged)
+    self.connect(self.model(), SIGNAL("notPopulated"), self.collapse)
 
-	def refreshItem(self, item=None):
-		if item == None:
-			item = self.currentItem()
-			if item == None: return
-		self.model().refreshItem(item)
+  def refreshItem(self, item=None):
+    if item == None:
+      item = self.currentItem()
+      if item == None: return
+    self.model().refreshItem(item)
 
-	def showSystemTables(self, show):
-		pass
+  def showSystemTables(self, show):
+    pass
 
-	def currentItem(self):
-		indexes = self.selectedIndexes()
-		if len(indexes) <= 0:
-			return
-		return self.model().getItem(indexes[0])
+  def currentItem(self):
+    indexes = self.selectedIndexes()
+    if len(indexes) <= 0:
+      return
+    return self.model().getItem(indexes[0])
 
 
-	def currentDatabase(self):
-		item = self.currentItem()
-		if item == None: return
+  def currentDatabase(self):
+    item = self.currentItem()
+    if item == None: return
 
-		if isinstance(item, (DBPlugin, Schema, Table)):
-			return item.database()
-		return None
+    if isinstance(item, (DBPlugin, Schema, Table)):
+      return item.database()
+    return None
 
-	def currentSchema(self):
-		item = self.currentItem()
-		if item == None: return
+  def currentSchema(self):
+    item = self.currentItem()
+    if item == None: return
 
-		if isinstance(item, (Schema, Table)):
-			return item.schema()
-		return None
+    if isinstance(item, (Schema, Table)):
+      return item.schema()
+    return None
 
-	def currentTable(self):
-		item = self.currentItem()
-		if item == None: return
+  def currentTable(self):
+    item = self.currentItem()
+    if item == None: return
 
-		if isinstance(item, Table):
-			return item
-		return None
-			
+    if isinstance(item, Table):
+      return item
+    return None
 
-	def itemChanged(self, index):
-		self.setCurrentIndex(index)
-		self.emit( SIGNAL('selectedItemChanged'), self.currentItem() )
 
-	def modelDataChanged(self, indexFrom, indexTo):
-		self.itemChanged(indexTo)
+  def itemChanged(self, index):
+    self.setCurrentIndex(index)
+    self.emit( SIGNAL('selectedItemChanged'), self.currentItem() )
 
-	def currentItemChanged(self, current, previous):
-		self.itemChanged(current)
+  def modelDataChanged(self, indexFrom, indexTo):
+    self.itemChanged(indexTo)
 
-	def contextMenuEvent(self, ev):
-		index = self.indexAt( ev.pos() )
-		if not index.isValid():
-			return
+  def currentItemChanged(self, current, previous):
+    self.itemChanged(current)
 
-		if index != self.currentIndex():
-			self.itemChanged(index)
+  def contextMenuEvent(self, ev):
+    index = self.indexAt( ev.pos() )
+    if not index.isValid():
+      return
 
-		item = self.currentItem()
+    if index != self.currentIndex():
+      self.itemChanged(index)
 
-		menu = QMenu(self)
+    item = self.currentItem()
 
-		if isinstance(item, (Table, Schema)):
-			menu.addAction("Rename", self.rename)
-			menu.addAction("Delete", self.delete)
+    menu = QMenu(self)
 
-			if isinstance(item, Table):
-				menu.addSeparator()
-				menu.addAction("Add to QGis canvas", self.addLayer)
+    if isinstance(item, (Table, Schema)):
+      menu.addAction("Rename", self.rename)
+      menu.addAction("Delete", self.delete)
 
-		elif isinstance(item, DBPlugin) and item.database() is not None:
-			menu.addAction("Re-connect", self.reconnect)
+      if isinstance(item, Table):
+        menu.addSeparator()
+        menu.addAction("Add to QGis canvas", self.addLayer)
 
-		if not menu.isEmpty():
-			menu.exec_(ev.globalPos())
+    elif isinstance(item, DBPlugin) and item.database() is not None:
+      menu.addAction("Re-connect", self.reconnect)
 
-		menu.deleteLater()
+    if not menu.isEmpty():
+      menu.exec_(ev.globalPos())
 
-	def rename(self):
-		index = self.currentIndex()
-		item = self.model().getItem(index)
-		if isinstance(item, (Table, Schema)):
-			self.edit( index )
+    menu.deleteLater()
 
-	def delete(self):
-		item = self.currentItem()
-		if isinstance(item, (Table, Schema)):
-			self.mainWindow.invokeCallback(item.database().deleteActionSlot)
+  def rename(self):
+    index = self.currentIndex()
+    item = self.model().getItem(index)
+    if isinstance(item, (Table, Schema)):
+      self.edit( index )
 
-	def addLayer(self):
-		table = self.currentTable()
-		if table is not None:
-			QgsMapLayerRegistry.instance().addMapLayer(table.toMapLayer())
+  def delete(self):
+    item = self.currentItem()
+    if isinstance(item, (Table, Schema)):
+      self.mainWindow.invokeCallback(item.database().deleteActionSlot)
 
-	def reconnect(self):
-		db = self.currentDatabase()
-		if db is not None:
-			self.mainWindow.invokeCallback(db.reconnectActionSlot)
+  def addLayer(self):
+    table = self.currentTable()
+    if table is not None:
+      QgsMapLayerRegistry.instance().addMapLayers([table.toMapLayer()])
+
+  def reconnect(self):
+    db = self.currentDatabase()
+    if db is not None:
+      self.mainWindow.invokeCallback(db.reconnectActionSlot)
 

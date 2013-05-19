@@ -1,0 +1,14 @@
+<h3>format() function</h3>
+Format a string using supplied arguments. 
+
+<h4>Syntax</h4>
+<code>format('string', arg, [arg...n])</code><br>
+
+<h4>Arguments</h4>
+<code>string</code> - is string.  String with Qt QString place holders.  Use %1, %2, etc for placeholders. Placeholders can be repeated. 
+<br>
+<code>arg [arg...n]</code> - any type. Any number of args. 
+
+<h4>Example</h4>
+<!-- Show example of function.-->
+<code>format('This %1 a %2','is', 'test') &rarr; This is a test</code><br>

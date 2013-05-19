@@ -1,0 +1,8 @@
+Accumulated Cost (Anisotropic)
+grid_analysis
+ParameterRaster|COST|Cost Grid|False
+ParameterRaster|DIRECTION|Direction of max cost|False
+ParameterRaster|POINTS|Destination Points|False
+ParameterNumber|K|k factor|None|None|1
+ParameterNumber|THRESHOLD|Threshold for different route|None|None|0
+OutputRaster|ACCCOST|Accumulated Cost

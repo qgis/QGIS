@@ -58,16 +58,19 @@ namespace pal
         double width;
       } CharacterInfo;
 
-      LabelInfo( int num, double height )
+      LabelInfo( int num, double height, double maxinangle = 20.0, double maxoutangle = -20.0 )
       {
-        max_char_angle_delta = 20;
+        max_char_angle_inside = maxinangle;
+        // outside angle should be negative
+        max_char_angle_outside = maxoutangle > 0 ? -maxoutangle : maxoutangle;
         label_height = height;
         char_num = num;
         char_info = new CharacterInfo[num];
       }
       ~LabelInfo() { delete [] char_info; }
 
-      double max_char_angle_delta;
+      double max_char_angle_inside;
+      double max_char_angle_outside;
       double label_height;
       int char_num;
       CharacterInfo* char_info;
@@ -88,9 +91,12 @@ namespace pal
       void setDistLabel( double dist ) { distlabel = dist; }
       //Set label position of the feature to fixed x/y values
       void setFixedPosition( double x, double y ) { fixedPos = true; fixedPosX = x; fixedPosY = y;}
+      void setQuadOffset( double x, double y ) { quadOffset = true; quadOffsetX = x; quadOffsetY = y;}
+      void setPosOffset( double x, double y ) { offsetPos = true; offsetPosX = x; offsetPosY = y;}
       bool fixedPosition() const { return fixedPos; }
       //Set label rotation to fixed value
       void setFixedAngle( double a ) { fixedRotation = true; fixedAngle = a; }
+      void setAlwaysShow( bool bl ) { alwaysShow = bl; }
 
     protected:
       Layer *layer;
@@ -105,9 +111,17 @@ namespace pal
       bool fixedPos; //true in case of fixed position (only 1 candidate position with cost 0)
       double fixedPosX;
       double fixedPosY;
+      bool quadOffset; // true if a quadrant offset exists
+      double quadOffsetX;
+      double quadOffsetY;
+      bool offsetPos; //true if position is to be offset by set amount
+      double offsetPosX;
+      double offsetPosY;
       //Fixed (e.g. data defined) angle only makes sense together with fixed position
       bool fixedRotation;
       double fixedAngle; //fixed angle value (in rad)
+
+      bool alwaysShow; //true is label is to always be shown (but causes overlapping)
 
       // array of parts - possibly not necessary
       //int nPart;
@@ -158,14 +172,15 @@ namespace pal
        * \param y y coordinates of the point
        * \param scale map scale is 1:scale
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
+       * \param angle orientation of the label
        * \return the number of generated cadidates
        */
-      int setPositionForPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width );
+      int setPositionForPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle );
 
       /**
        * generate one candidate over specified point
        */
-      int setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width );
+      int setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle );
 
       /**
        * \brief generate candidates for line feature
@@ -266,6 +281,11 @@ namespace pal
       void setLabelDistance( double dist ) { f->distlabel = dist; }
       double getLabelDistance() const { return f->distlabel; }
       void setLabelInfo( LabelInfo* info ) { f->labelInfo = info; }
+
+      bool getFixedRotation() { return f->fixedRotation; }
+      double getLabelAngle() { return f->fixedAngle; }
+      bool getFixedPosition() { return f->fixedPos; }
+      bool getAlwaysShow() { return f->alwaysShow; }
 
       int getNumSelfObstacles() const { return nbHoles; }
       PointSet* getSelfObstacle( int i ) { return holes[i]; }

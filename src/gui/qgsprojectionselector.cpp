@@ -32,6 +32,7 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name,
     , mUserProjListDone( false )
     , mRecentProjListDone( false )
     , mSearchColumn( NONE )
+    , mSkipFirstRecent( true )
 {
   Q_UNUSED( name );
   setupUi( this );
@@ -78,6 +79,11 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name,
         if ( ! crs.createFromProj4( projectionsProj4.at( i ) ) )
         {
           // No? Skip this entry
+          continue;
+        }
+        //If the CRS can be created but do not correspond to a CRS in the database, skip it (for example a deleted custom CRS)
+        if ( crs.srsid() == 0 )
+        {
           continue;
         }
       }
@@ -184,7 +190,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
 
   // iterate through all incoming CRSs
 
-  foreach( QString auth_id, crsFilter->values() )
+  foreach ( QString auth_id, crsFilter->values() )
   {
     QStringList parts = auth_id.split( ":" );
 
@@ -200,7 +206,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
   if ( authParts.size() > 0 )
   {
     QString prefix = " AND (";
-    foreach( QString auth_name, authParts.keys() )
+    foreach ( QString auth_name, authParts.keys() )
     {
       sqlExpression += QString( "%1(upper(auth_name)='%2' AND upper(auth_id) IN ('%3'))" )
                        .arg( prefix )
@@ -226,11 +232,6 @@ void QgsProjectionSelector::setSelectedCrsId( long theCRSID )
   applySelection( QGIS_CRS_ID_COLUMN, QString::number( theCRSID ) );
 }
 
-void QgsProjectionSelector::setSelectedEpsg( long id )
-{
-  setSelectedAuthId( QString( "EPSG:%1" ).arg( id ) );
-}
-
 void QgsProjectionSelector::setSelectedAuthId( QString id )
 {
   applySelection( AUTHID_COLUMN, id );
@@ -251,6 +252,9 @@ void QgsProjectionSelector::applySelection( int column, QString value )
     // invoked deferred selection
     column = mSearchColumn;
     value  = mSearchValue;
+
+    mSearchColumn = NONE;
+    mSearchValue.clear();
   }
 
   if ( column == NONE )
@@ -264,7 +268,7 @@ void QgsProjectionSelector::applySelection( int column, QString value )
   }
   else
   {
-    QgsDebugMsg( "nothing found" );
+    QgsDebugMsg( QString( "nothing found for %1,%2" ).arg( column ).arg( value ) );
     // unselect the selected item to avoid confusing the user
     lstCoordinateSystems->clearSelection();
     lstRecent->clearSelection();
@@ -332,7 +336,7 @@ QString QgsProjectionSelector::selectedProj4String()
   QgsDebugMsg( "db = " + databaseFileName );
 
   sqlite3 *database;
-  int rc = sqlite3_open( databaseFileName.toUtf8().data(), &database );
+  int rc = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
   if ( rc )
   {
     showDBMissingWarning( databaseFileName );
@@ -401,7 +405,7 @@ QString QgsProjectionSelector::getSelectedExpression( QString expression )
   // assuming that it will never be used anywhere else. Given the low overhead,
   // opening it each time seems to be a reasonable approach at this time.
   sqlite3 *database;
-  int rc = sqlite3_open( databaseFileName.toUtf8().data(), &database );
+  int rc = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
   if ( rc )
   {
     showDBMissingWarning( databaseFileName );
@@ -434,18 +438,6 @@ QString QgsProjectionSelector::getSelectedExpression( QString expression )
   return attributeValue;
 }
 
-long QgsProjectionSelector::selectedEpsg()
-{
-  if ( getSelectedExpression( "auth_name" ).compare( "EPSG", Qt::CaseInsensitive ) == 0 )
-  {
-    return getSelectedExpression( "auth_id" ).toLong();
-  }
-  else
-  {
-    QgsDebugMsg( "selected projection is NOT EPSG" );
-    return 0;
-  }
-}
 
 long QgsProjectionSelector::selectedPostgresSrId()
 {
@@ -520,7 +512,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   const char   *tail;
   sqlite3_stmt *stmt;
   //check the db is available
-  int result = sqlite3_open( databaseFileName.toUtf8().constData(), &database );
+  int result = sqlite3_open_v2( databaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, NULL );
   if ( result )
   {
     // XXX This will likely never happen since on open, sqlite creates the
@@ -548,6 +540,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
       // newItem->setText( EPSG_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 2 ) ) );
       // display the qgis srs_id (field 1) in the third column of the list view
       newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 1 ) ) );
+      newItem->setText( AUTHID_COLUMN, QString( "USER:%1" ).arg( QString::fromUtf8(( char * )sqlite3_column_text( stmt, 1 ) ).toInt() ) );
     }
   }
   // close the sqlite3 statement
@@ -599,7 +592,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
 
   // open the database containing the spatial reference data
   sqlite3 *database;
-  int rc = sqlite3_open( mSrsDatabaseFileName.toUtf8().data(), &database );
+  int rc = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
   if ( rc )
   {
     // XXX This will likely never happen since on open, sqlite creates the
@@ -738,6 +731,7 @@ void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWid
     {
       QgsDebugMsg( QString( "srs %1 not recent" ).arg( current->text( QGIS_CRS_ID_COLUMN ) ) );
       lstRecent->clearSelection();
+      lstCoordinateSystems->setFocus( Qt::OtherFocusReason );
     }
   }
   else
@@ -752,6 +746,12 @@ void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWid
 void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
   QgsDebugMsg( "Entered." );
+
+  if ( mSkipFirstRecent )
+  {
+    mSkipFirstRecent = false;
+    return;
+  }
 
   if ( !current )
   {
@@ -790,14 +790,18 @@ void QgsProjectionSelector::on_cbxHideDeprecated_stateChanged()
 
 void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTxt )
 {
+  QString filterTxt = theFilterTxt;
+  filterTxt.replace( QRegExp( "\\s+" ), ".*" );
+  QRegExp re( filterTxt, Qt::CaseInsensitive );
+
   // filter recent crs's
   QTreeWidgetItemIterator itr( lstRecent );
   while ( *itr )
   {
     if (( *itr )->childCount() == 0 ) // it's an end node aka a projection
     {
-      if (( *itr )->text( NAME_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
-          || ( *itr )->text( AUTHID_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+      if (( *itr )->text( NAME_COLUMN ).contains( re )
+          || ( *itr )->text( AUTHID_COLUMN ).contains( re )
          )
       {
         ( *itr )->setHidden( false );
@@ -827,8 +831,8 @@ void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTx
   {
     if (( *it )->childCount() == 0 ) // it's an end node aka a projection
     {
-      if (( *it )->text( NAME_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
-          || ( *it )->text( AUTHID_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+      if (( *it )->text( NAME_COLUMN ).contains( re )
+          || ( *it )->text( AUTHID_COLUMN ).contains( re )
          )
       {
         ( *it )->setHidden( false );
@@ -873,7 +877,7 @@ long QgsProjectionSelector::getLargestCRSIDMatch( QString theSql )
   QString databaseFileName = QgsApplication::qgisUserDbFilePath();
   if ( QFileInfo( databaseFileName ).exists() ) //only bother trying to open if the file exists
   {
-    result = sqlite3_open( databaseFileName.toUtf8().data(), &database );
+    result = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
     if ( result )
     {
       // XXX This will likely never happen since on open, sqlite creates the
@@ -899,7 +903,7 @@ long QgsProjectionSelector::getLargestCRSIDMatch( QString theSql )
   else
   {
     //only bother looking in srs.db if it wasnt found above
-    result = sqlite3_open( mSrsDatabaseFileName.toUtf8().data(), &database );
+    result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
     if ( result )
     {
       QgsDebugMsg( QString( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( database ) ) );
@@ -929,7 +933,7 @@ QStringList QgsProjectionSelector::authorities()
   const char   *tail;
   sqlite3_stmt *stmt;
 
-  int result = sqlite3_open( mSrsDatabaseFileName.toUtf8().data(), &database );
+  int result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
   if ( result )
   {
     QgsDebugMsg( QString( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( database ) ) );

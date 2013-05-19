@@ -17,18 +17,6 @@ email                : lorenxo86@gmail.com - brush.tyler@gmail.com
  ***************************************************************************/
  This script initializes the plugin, making it known to QGIS.
 """
-def name():
-  return "GdalTools"
-def description():
-  return "Integrate gdal tools into qgis"
-def category():
-  return "Raster"
-def version():
-  return "Version 1.2.29"
-def qgisMinimumVersion():
-  return "1.0"
-def icon():
-  return "icons/raster-info.png"
 def classFactory(iface):
   # load GdalTools class from file GdalTools
   from GdalTools import GdalTools

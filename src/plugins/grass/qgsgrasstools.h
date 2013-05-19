@@ -50,14 +50,14 @@ class QgsGrassTools: public QDialog, private Ui::QgsGrassToolsBase
 
     //! Recursively add sections and modules to the list view
     //  If parent is 0, the modules are added to mModulesListView root
-    void addModules( QTreeWidgetItem *parent, QDomElement &element );
+    void addModules( QTreeWidgetItem *parent, QDomElement &element, QTreeWidget *modulesTreeWidget, QStandardItemModel * modulesListModel, bool direct );
 
     //! Returns application directory
     QString appDir();
 
   public slots:
     //! Load configuration from file
-    bool loadConfig( QString filePath );
+    bool loadConfig( QString filePath, QTreeWidget *modulesTreeWidget, QStandardItemModel * modulesListModel, bool direct );
 
     //! Close
     void close( void );
@@ -73,6 +73,7 @@ class QgsGrassTools: public QDialog, private Ui::QgsGrassToolsBase
 
     //! Module in list clicked
     void moduleClicked( QTreeWidgetItem * item, int column );
+    void directModuleClicked( QTreeWidgetItem * item, int column );
 
     //! Current mapset changed
     void mapsetChanged();
@@ -85,10 +86,12 @@ class QgsGrassTools: public QDialog, private Ui::QgsGrassToolsBase
 
     //! Update the regex used to filter the modules list (autoconnect to ui)
     void on_mFilterInput_textChanged( QString theText );
+    void on_mDirectFilterInput_textChanged( QString theText );
     //! Run a module when its entry is clicked in the list view
     void listItemClicked( const QModelIndex &theIndex );
+    void directListItemClicked( const QModelIndex &theIndex );
     //! Run a module given its module name e.g. r.in.gdal
-    void runModule( QString name );
+    void runModule( QString name, bool direct );
   signals:
     void regionChanged();
 
@@ -102,14 +105,19 @@ class QgsGrassTools: public QDialog, private Ui::QgsGrassToolsBase
     //! Browser
     QgsGrassBrowser *mBrowser;
 
-    //
-    // For experimental model & filtered model by Tim
-    //
-    QStandardItemModel * mModelTools;
+    // For model & filtered model by Tim
+    QStandardItemModel * mModulesListModel;
     QSortFilterProxyModel * mModelProxy;
-    QListView * mListView2;
-    QDockWidget * mDockWidget;
 
+    // Direct modules model list
+    QStandardItemModel * mDirectModulesListModel;
+    QSortFilterProxyModel * mDirectModelProxy;
+
+    void removeEmptyItems( QTreeWidget *tree );
+    void removeEmptyItems( QTreeWidgetItem *item );
+
+    // Show (fill) / hide tabs according to direct/indirect mode
+    void showTabs();
 };
 
 #endif // QGSGRASSTOOLS_H

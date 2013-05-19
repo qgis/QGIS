@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgslabelsearchtree.cpp
+    ---------------------
+    begin                : November 2010
+    copyright            : (C) 2010 by Marco Hugentobler
+    email                : marco dot hugentobler at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgslabelsearchtree.h"
 #include "labelposition.h"
 
@@ -37,7 +51,23 @@ void QgsLabelSearchTree::label( const QgsPoint& p, QList<QgsLabelPosition*>& pos
   }
 }
 
-bool QgsLabelSearchTree::insertLabel( LabelPosition* labelPos, int featureId, const QString& layerName, bool diagram )
+void QgsLabelSearchTree::labelsInRect( const QgsRectangle& r, QList<QgsLabelPosition*>& posList )
+{
+  double c_min[2]; c_min[0] = r.xMinimum(); c_min[1] = r.yMinimum();
+  double c_max[2]; c_max[0] = r.xMaximum(); c_max[1] = r.yMaximum();
+
+  QList<QgsLabelPosition*> searchResults;
+  mSpatialIndex.Search( c_min, c_max, searchCallback, &searchResults );
+
+  posList.clear();
+  QList<QgsLabelPosition*>::const_iterator resultIt = searchResults.constBegin();
+  for ( ; resultIt != searchResults.constEnd(); ++resultIt )
+  {
+    posList.push_back( *resultIt );
+  }
+}
+
+bool QgsLabelSearchTree::insertLabel( LabelPosition* labelPos, int featureId, const QString& layerName, const QString& labeltext, bool diagram, bool pinned )
 {
   if ( !labelPos )
   {
@@ -54,7 +84,7 @@ bool QgsLabelSearchTree::insertLabel( LabelPosition* labelPos, int featureId, co
     cornerPoints.push_back( QgsPoint( labelPos->getX( i ), labelPos->getY( i ) ) );
   }
   QgsLabelPosition* newEntry = new QgsLabelPosition( featureId, labelPos->getAlpha(), cornerPoints, QgsRectangle( c_min[0], c_min[1], c_max[0], c_max[1] ),
-      labelPos->getWidth(), labelPos->getHeight(), layerName, labelPos->getUpsideDown(), diagram );
+      labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelPos->getUpsideDown(), diagram, pinned );
   mSpatialIndex.Insert( c_min, c_max, newEntry );
   return true;
 }

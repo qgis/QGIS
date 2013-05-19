@@ -75,6 +75,8 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
     void connectionsChanged();
     void addGeometryColumn( QgsPostgresLayerProperty );
+    void progress( int, int );
+    void progressMessage( QString );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog

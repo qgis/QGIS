@@ -19,14 +19,15 @@
 #ifndef QGSNORTHARROWPLUGIN
 #define QGSNORTHARROWPLUGIN
 
-#include <QObject>
+#include "qgsdecorationitem.h"
+
 #include <QStringList>
 
 class QAction;
 class QToolBar;
 class QPainter;
 
-class QgsDecorationNorthArrow: public QObject
+class QgsDecorationNorthArrow: public QgsDecorationItem
 {
     Q_OBJECT
 
@@ -45,7 +46,7 @@ class QgsDecorationNorthArrow: public QObject
     //! Show the dialog box
     void run();
     //! draw some arbitary text to the screen
-    void renderNorthArrow( QPainter * );
+    void render( QPainter * );
 
     //! try to calculate the direction for the north arrow. Sets the
     //! private class rotation variable. If unable to calculate the
@@ -62,8 +63,6 @@ class QgsDecorationNorthArrow: public QObject
     // The amount of rotation for the north arrow
     int mRotationInt;
     int pluginType;
-    // enable or disable north arrow
-    bool mEnable;
     //! enable or disable the automatic setting of the arrow direction
     bool mAutomatic;
     // The placement index and translated text

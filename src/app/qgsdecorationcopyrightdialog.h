@@ -31,7 +31,7 @@ class QgsDecorationCopyrightDialog : public QDialog, private Ui::QgsDecorationCo
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested();
-    void on_pbnColorChooser_clicked();
+    void on_pbnColorChooser_colorChanged( const QColor& c );
 
   protected:
     QgsDecorationCopyright& mDeco;

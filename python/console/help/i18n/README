@@ -1,0 +1,13 @@
+You can contribute to translate this help by creating a file *.properties and name it in
+<your_locale_name>.properties
+To get your locale name type the following lines in console:
+
+>>> from PyQt4.QtCore import *
+>>> QLocale.system().name()
+
+For example: for Italian translation copy and paste a *.properties file and rename it to "it_IT.properties".
+The only thing what you have to do is translate the values of the keys in dictionary.
+
+i18n_dict = {
+"key" : "value"
+}

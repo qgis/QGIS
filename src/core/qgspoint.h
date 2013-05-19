@@ -18,6 +18,8 @@
 #ifndef QGSPOINT_H
 #define QGSPOINT_H
 
+#include <qgis.h>
+
 #include <iostream>
 #include <QString>
 #include <QPoint>
@@ -131,6 +133,13 @@ class CORE_EXPORT QgsPoint
      */
     QString toDegreesMinutesSeconds( int thePrecision ) const;
 
+    /** Return a string representation as degrees minutes.
+     *  Its up to the calling function to ensure that this point can
+     *  be meaningfully represented in this form.
+     *  @note added in QGIS 1.9
+     */
+    QString toDegreesMinutes( int thePrecision ) const;
+
 
     /*! Return the well known text representation for the point.
      * The wkt is created without an SRID.
@@ -146,7 +155,7 @@ class CORE_EXPORT QgsPoint
 
     /**Returns the minimum distance between this point and a segment
     @note added in QGIS 1.5*/
-    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint ) const;
+    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
     /**Calculates azimut between this point and other one (clockwise in degree, starting from north)
       @note: this function has been added in version 1.7*/
@@ -158,9 +167,6 @@ class CORE_EXPORT QgsPoint
     //! Inequality operator
     bool operator!=( const QgsPoint &other ) const;
 
-    //! Assignment
-    QgsPoint & operator=( const QgsPoint &other );
-
     //! Multiply x and y by the given value
     void multiply( const double& scalar );
 
@@ -169,6 +175,9 @@ class CORE_EXPORT QgsPoint
     //! 1 if point is on open ray a, 2 if point is within line segment,
     //! 3 if point is on open ray b.
     int onSegment( const QgsPoint& a, const QgsPoint& b ) const;
+
+    //! Assignment
+    QgsPoint & operator=( const QgsPoint &other );
 
     QgsVector operator-( QgsPoint p ) const { return QgsVector( m_x - p.m_x, m_y - p.m_y ); }
     QgsPoint &operator+=( const QgsVector &v ) { *this = *this + v; return *this; }

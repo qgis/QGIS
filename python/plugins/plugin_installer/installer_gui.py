@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
 Copyright (C) 2007-2008 Matthew Perry
 Copyright (C) 2008-2010 Borys Jurgiel
@@ -12,17 +13,20 @@ Copyright (C) 2008-2010 Borys Jurgiel
  *                                                                         *
  ***************************************************************************/
 """
-
+import sys
+import time
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
 from qgis.core import QgsApplication, QgsContextHelp
-import sys, time
+
 from ui_qgsplugininstallerfetchingbase import Ui_QgsPluginInstallerFetchingDialogBase
 from ui_qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase
 from ui_qgsplugininstallerrepositorybase import Ui_QgsPluginInstallerRepositoryDetailsDialogBase
 from ui_qgsplugininstallerpluginerrorbase import Ui_QgsPluginInstallerPluginErrorDialogBase
 from ui_qgsplugininstallerbase import Ui_QgsPluginInstallerDialogBase
+
 from installer_data import *
 
 try:
@@ -161,7 +165,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     if port < 0:
       port = 80
     self.http = QPHttp(url.host(), port)
-    self.connect(self.http, SIGNAL("stateChanged ( int )"), self.stateChanged) 
+    self.connect(self.http, SIGNAL("stateChanged ( int )"), self.stateChanged)
     self.connect(self.http, SIGNAL("dataReadProgress ( int , int )"), self.readProgress)
     self.connect(self.http, SIGNAL("requestFinished (int, bool)"), self.requestFinished)
     self.httpGetId = self.http.get(path, self.file)
@@ -269,7 +273,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     self.connect(self.buttonHelp, SIGNAL("clicked()"), self.runHelp)
     # repositories handling
     self.connect(self.treeRepositories, SIGNAL("doubleClicked(QModelIndex)"), self.editRepository)
-    self.connect(self.buttonFetchRepositories, SIGNAL("clicked()"), self.addKnownRepositories)
+    #self.connect(self.buttonFetchRepositories, SIGNAL("clicked()"), self.addKnownRepositories)
     self.connect(self.buttonAddRep, SIGNAL("clicked()"), self.addRepository)
     self.connect(self.buttonEditRep, SIGNAL("clicked()"), self.editRepository)
     self.connect(self.buttonDeleteRep, SIGNAL("clicked()"), self.deleteRepository)
@@ -281,6 +285,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     self.connect(self.radioPluginType0, SIGNAL("toggled (bool)"), self.changePluginPolicy)
     self.connect(self.radioPluginType1, SIGNAL("toggled (bool)"), self.changePluginPolicy)
     self.connect(self.radioPluginType2, SIGNAL("toggled (bool)"), self.changePluginPolicy)
+    # increase default icon size
+    self.treePlugins.setIconSize(QSize(22, 22))
     if repositories.checkingOnStart():
       self.checkUpdates.setChecked(Qt.Checked)
     else:
@@ -360,23 +366,14 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     self.comboFilter2.addItem(self.tr("installed", "plural"))
     if plugins.isThereAnythingNew():
       self.comboFilter2.addItem(self.tr("upgradeable and news"))
-    #set configuration widgets (dependent on the repository list)
-    if len(repositories.all()) == 1:
-      self.radioPluginType0.setEnabled(False)
-      self.radioPluginType1.setEnabled(False)
-      self.radioPluginType2.setEnabled(False)
-    else:
-      self.radioPluginType0.setEnabled(True)
-      self.radioPluginType1.setEnabled(True)
-      self.radioPluginType2.setEnabled(True)
     settings = QSettings()
-    (i, ok) = settings.value(settingsGroup+"/allowedPluginType", QVariant(2)).toInt()
-    if i == 1 or len(repositories.all()) == 1:
+    (i, ok) = settings.value(settingsGroup+"/allowedPluginType", QVariant(1)).toInt()
+    if i == 1:
       self.radioPluginType0.setChecked(Qt.Checked)
-    elif i == 3:
-      self.radioPluginType2.setChecked(Qt.Checked)
-    else:
+    elif i == 2:
       self.radioPluginType1.setChecked(Qt.Checked)
+    else:
+      self.radioPluginType2.setChecked(Qt.Checked)
 
 
   # ----------------------------------------- #
@@ -484,26 +481,43 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
           repository = self.tr("only locally available")
         else:
           repository = p["repository"]
-        a = QTreeWidgetItem(self.treePlugins)
+        a = QgsPluginTreeItem(self.treePlugins)
+        if p["experimental"]:
+          a.setIcon(0, QIcon(":/plugins/installer/pluginExperimental.png"))
+          a.setToolTip(0, self.tr("Experimental plugin. Use at own risk"))
+          a.setData(0, Qt.UserRole, QVariant(0))
+        else:
+          # set empty icon to keep row height same for all plugins
+          a.setIcon(0, QIcon(":/plugins/installer/pluginStable.png"))
+          a.setData(0, Qt.UserRole, QVariant(1))
         if p["error"]:
-          a.setText(0,statuses[p["error"]])
+          a.setText(1,statuses[p["error"]])
         else:
-          a.setText(0,statuses[p["status"]])
-        a.setToolTip(0,statusTip)
-        a.setText(1,p["name"])
-        a.setText(2,ver)
-        a.setToolTip(2,verTip)
-        a.setText(3,desc)
-        a.setToolTip(3,descTip)
-        a.setText(4,p["author"])
+          a.setText(1,statuses[p["status"]])
+        a.setToolTip(1,statusTip)
+        a.setText(2,p["name"])
+        a.setText(3,ver)
+        a.setToolTip(3,verTip)
+        a.setText(4,desc)
+        # split the tooltip into multiple lines when they are too long
+        tmp = ""
+        splitTip = ""
+        for word in descTip.split(" "):
+            if len(tmp + word) < 80:
+                tmp = tmp + " " + word
+            else:
+                splitTip += tmp + "\n"
+                tmp = word
+        a.setToolTip(4, splitTip+tmp)
+        a.setText(5,p["author"])
         if p["homepage"]:
-          a.setToolTip(4,p["homepage"])
+          a.setToolTip(5,p["homepage"])
         else:
-          a.setToolTip(4,"")
-        a.setText(5,repository)
-        a.setToolTip(5,p["url"])
+          a.setToolTip(6,"")
+        a.setText(6,repository)
+        a.setToolTip(6,p["url"])
         # set fonts and colors
-        for i in [0,1,2,3,4,5]:
+        for i in [0,1,2,3,4,5,6]:
           if p["error"]:
             a.setForeground(i,QBrush(QColor(Qt.red)))
           if p["status"] in ["new","upgradeable"] or p["error"]:
@@ -531,7 +545,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
 
     # initially, keep insert order
     self.treePlugins.sortItems(100,Qt.AscendingOrder)
-    
+
     # resize the columns
     for i in [0,1,2,3,4,5]:
       self.treePlugins.resizeColumnToContents(i)
@@ -559,7 +573,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     item = self.treePlugins.currentItem()
     if not item:
       return
-    key = plugins.keyByUrl(item.toolTip(5))
+    key = plugins.keyByUrl(item.toolTip(6))
     if not key:
       return
     plugin = plugins.all()[key]
@@ -582,7 +596,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
   def installPluginClicked(self):
     if not self.treePlugins.currentItem():
       return
-    key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(5))
+    key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(6))
     self.installPlugin(key)
 
 
@@ -590,7 +604,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
   def uninstallPluginClicked(self):
     if not self.treePlugins.currentItem():
       return
-    key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(5))
+    key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(6))
     self.uninstallPlugin(key)
 
 
@@ -605,7 +619,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     if plugin["status"] == "newer" and not plugin["error"]: # ask for confirmation if user downgrades an usable plugin
       if QMessageBox.warning(self, self.tr("QGIS Python Plugin Installer"), self.tr("Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!"), QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
         return
-    
+
     dlg = QgsPluginInstallerInstallingDialog(self,plugin)
     dlg.exec_()
 
@@ -795,19 +809,20 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     self.populatePluginTree()
 
 
+  ## depreciated in qgis 1.8 until we use 3rd party repos again
   # ----------------------------------------- #
-  def addKnownRepositories(self):
-    """ update list of known repositories - in the future it will be replaced with an online fetching """
-    message = self.tr("You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.")
-    if QMessageBox.question(self, self.tr("QGIS Python Plugin Installer"), message, QMessageBox.Ok, QMessageBox.Abort) == QMessageBox.Ok:
-      repositories.addKnownRepos()
-      # refresh lists and populate widgets
-      QApplication.setOverrideCursor(Qt.WaitCursor)
-      self.getAllAvailablePlugins()
-      plugins.rebuild()
-      self.populateMostWidgets()
-      self.populatePluginTree()
-      QApplication.restoreOverrideCursor()
+  #def addKnownRepositories(self):
+    #""" update list of known repositories - in the future it will be replaced with an online fetching """
+    #message = self.tr("You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.")
+    #if QMessageBox.question(self, self.tr("QGIS Python Plugin Installer"), message, QMessageBox.Ok, QMessageBox.Abort) == QMessageBox.Ok:
+      #repositories.addKnownRepos()
+      ## refresh lists and populate widgets
+      #QApplication.setOverrideCursor(Qt.WaitCursor)
+      #self.getAllAvailablePlugins()
+      #plugins.rebuild()
+      #self.populateMostWidgets()
+      #self.populatePluginTree()
+      #QApplication.restoreOverrideCursor()
 
 
   # ----------------------------------------- #
@@ -854,7 +869,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     dlg.checkBoxEnabled.setCheckState(checkState[repositories.all()[reposName]["enabled"]])
     if repositories.all()[reposName]["valid"]:
       dlg.checkBoxEnabled.setEnabled(True)
-      dlg.labelInfo.setText("") 
+      dlg.labelInfo.setText("")
     else:
       dlg.checkBoxEnabled.setEnabled(False)
       dlg.labelInfo.setText(self.tr("This repository is blocked due to incompatibility with your Quantum GIS version"))
@@ -921,3 +936,14 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     plugins.updateSeenPluginsList()
     QDialog.reject(self)
 # --- /class QgsPluginInstallerDialog ------------------------------------------------------------------------ #
+
+class QgsPluginTreeItem(QTreeWidgetItem):
+  def __init__(self, parent=None):
+    QTreeWidgetItem.__init__(self, parent)
+
+  def __lt__(self, otherItem):
+    column = self.treeWidget().sortColumn()
+    if column == 0:
+      return self.data(column, Qt.UserRole).toInt()[0] < otherItem.data(column, Qt.UserRole).toInt()[0]
+    else:
+      return self.text(column) < otherItem.text(column)

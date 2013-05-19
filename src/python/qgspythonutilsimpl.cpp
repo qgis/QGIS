@@ -69,18 +69,21 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   // locally installed plugins have priority over the system plugins
   // use os.path.expanduser to support usernames with special characters (see #2512)
   QStringList pluginpaths;
-  foreach( QString p, extraPluginsPaths() )
+  foreach ( QString p, extraPluginsPaths() )
   {
+#ifdef Q_OS_WIN
+    p = p.replace( '\\', "\\\\" );
+#endif
     pluginpaths << '"' + p + '"';
   }
-  pluginpaths << "os.path.expanduser(\"~/.qgis/python/plugins\")";
+  pluginpaths << homePluginsPath();
   pluginpaths << '"' + pluginsPath() + '"';
 
   // expect that bindings are installed locally, so add the path to modules
   // also add path to plugins
   QStringList newpaths;
   newpaths << '"' + pythonPath() + '"';
-  newpaths << "os.path.expanduser(\"~/.qgis/python\")";
+  newpaths << homePythonPath();
   newpaths << pluginpaths;
   runString( "sys.path = [" + newpaths.join( "," ) + "] + sys.path" );
 
@@ -125,6 +128,9 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 
   // initialize 'iface' object
   runString( "qgis.utils.initInterface(" + QString::number(( unsigned long ) interface ) + ")" );
+
+  QString startuppath = homePythonPath() + " + \"/startup.py\"";
+  runString( "if os.path.exists(" + startuppath + "): from startup import *\n" );
 }
 
 void QgsPythonUtilsImpl::exitPython()
@@ -439,20 +445,25 @@ QString QgsPythonUtilsImpl::pythonPath()
 
 QString QgsPythonUtilsImpl::pluginsPath()
 {
-  if ( QgsApplication::isRunningFromBuildDir() )
-    return QString(); // plugins not used
-  else
-    return pythonPath() + "/plugins";
+  return pythonPath() + "/plugins";
 }
 
 QString QgsPythonUtilsImpl::homePythonPath()
 {
-  return QgsApplication::qgisSettingsDirPath() + "python";
+  QString settingsDir = QgsApplication::qgisSettingsDirPath();
+  if ( QDir::cleanPath( settingsDir ) == QDir::homePath() + QString( "/.qgis%1" ).arg( 2 /* FIXME QGis::QGIS_VERSION_INT / 10000 */ ) )
+  {
+    return QString( "os.path.expanduser(\"~/.qgis%1/python\")" ).arg( 2 /* FIXME: QGis::QGIS_VERSION_INT / 10000 */ );
+  }
+  else
+  {
+    return '"' + settingsDir.replace( '\\', "\\\\" ) + "python\"";
+  }
 }
 
 QString QgsPythonUtilsImpl::homePluginsPath()
 {
-  return homePythonPath() + "/plugins";
+  return homePythonPath() + " + \"/plugins\"";
 }
 
 QStringList QgsPythonUtilsImpl::extraPluginsPaths()

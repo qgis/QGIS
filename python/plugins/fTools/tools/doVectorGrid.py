@@ -42,7 +42,6 @@ class Dialog(QDialog, Ui_Dialog):
         self.setupUi(self)
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
         QObject.connect(self.spnX, SIGNAL("valueChanged(double)"), self.offset)
-        #QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.updateInput)
         QObject.connect(self.btnUpdate, SIGNAL("clicked()"), self.updateLayer)
         QObject.connect(self.btnCanvas, SIGNAL("clicked()"), self.updateCanvas)
         QObject.connect(self.chkAlign, SIGNAL("toggled(bool)"), self.chkAlignToggled)
@@ -139,8 +138,10 @@ class Dialog(QDialog, Ui_Dialog):
                 QMessageBox.information(self, self.tr("Vector grid"), self.tr("Invalid extent coordinates entered"))
             xSpace = self.spnX.value()
             ySpace = self.spnY.value()
-            if self.rdoPolygons.isChecked(): polygon = True
-            else: polygon = False
+            if self.rdoPolygons.isChecked():
+              polygon = True
+            else:
+              polygon = False
             self.outShape.clear()
             QApplication.setOverrideCursor(Qt.WaitCursor)
             self.compute( boundBox, xSpace, ySpace, polygon )
@@ -153,29 +154,43 @@ class Dialog(QDialog, Ui_Dialog):
         self.buttonOk.setEnabled( True )
 
     def compute( self, bound, xOffset, yOffset, polygon ):
-        crs = self.iface.mapCanvas().mapRenderer().destinationSrs()
+        crs = None
+        layer = ftools_utils.getMapLayerByName(unicode(self.inShape.currentText()))
+
+        if layer is None:
+          crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
+        else:
+          crs = layer.crs()
         if not crs.isValid(): crs = None
+
+        fields = QgsFields()
+        fields.append( QgsField("ID", QVariant.Int) )
+        fieldCount = 1
+
         if polygon:
-            fields = {0:QgsField("ID", QVariant.Int), 1:QgsField("XMIN", QVariant.Double), 2:QgsField("XMAX", QVariant.Double),
-            3:QgsField("YMIN", QVariant.Double), 4:QgsField("YMAX", QVariant.Double)}
+            fields.append( QgsField("XMIN", QVariant.Double) )
+            fields.append( QgsField("XMAX", QVariant.Double) )
+            fields.append( QgsField("YMIN", QVariant.Double) )
+            fields.append( QgsField("YMAX", QVariant.Double) )
+            fieldCount = 5
             check = QFile(self.shapefileName)
             if check.exists():
                 if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
                     return
             writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, QGis.WKBPolygon, crs)
-            #writer = QgsVectorFileWriter(outPath, "CP1250", fields, QGis.WKBPolygon, None)
         else:
-            fields = {0:QgsField("ID", QVariant.Int), 1:QgsField("COORD", QVariant.Double)}
+            fields.append( QgsField("COORD", QVariant.Double) )
+            fieldCount = 2
             check = QFile(self.shapefileName)
             if check.exists():
                 if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
                     return
             writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, QGis.WKBLineString, crs)
-            #writer = QgsVectorFileWriter(unicode(outPath), "CP1250", fields, QGis.WKBLineString, None)
         outFeat = QgsFeature()
+        outFeat.initAttributes(fieldCount)
+        outFeat.setFields(fields)
         outGeom = QgsGeometry()
         idVar = 0
-#        self.progressBar.setRange( 0, 0 )
         self.progressBar.setValue( 0 )
         if not polygon:
             # counters for progressbar - update every 5%
@@ -188,8 +203,8 @@ class Dialog(QDialog, Ui_Dialog):
                 pt2 = QgsPoint(bound.xMaximum(), y)
                 line = [pt1, pt2]
                 outFeat.setGeometry(outGeom.fromPolyline(line))
-                outFeat.addAttribute(0, QVariant(idVar))
-                outFeat.addAttribute(1, QVariant(y))
+                outFeat.setAttribute(0, QVariant(idVar))
+                outFeat.setAttribute(1, QVariant(y))
                 writer.addFeature(outFeat)
                 y = y - yOffset
                 idVar = idVar + 1
@@ -208,8 +223,8 @@ class Dialog(QDialog, Ui_Dialog):
                 pt2 = QgsPoint(x, bound.yMinimum())
                 line = [pt1, pt2]
                 outFeat.setGeometry(outGeom.fromPolyline(line))
-                outFeat.addAttribute(0, QVariant(idVar))
-                outFeat.addAttribute(1, QVariant(x))
+                outFeat.setAttribute(0, QVariant(idVar))
+                outFeat.setAttribute(1, QVariant(x))
                 writer.addFeature(outFeat)
                 x = x + xOffset
                 idVar = idVar + 1
@@ -233,11 +248,11 @@ class Dialog(QDialog, Ui_Dialog):
                     pt5 = QgsPoint(x, y)
                     polygon = [[pt1, pt2, pt3, pt4, pt5]]
                     outFeat.setGeometry(outGeom.fromPolygon(polygon))
-                    outFeat.addAttribute(0, QVariant(idVar))
-                    outFeat.addAttribute(1, QVariant(x))
-                    outFeat.addAttribute(2, QVariant(x + xOffset))
-                    outFeat.addAttribute(3, QVariant(y - yOffset))
-                    outFeat.addAttribute(4, QVariant(y))
+                    outFeat.setAttribute(0, QVariant(idVar))
+                    outFeat.setAttribute(1, QVariant(x))
+                    outFeat.setAttribute(2, QVariant(x + xOffset))
+                    outFeat.setAttribute(3, QVariant(y - yOffset))
+                    outFeat.setAttribute(4, QVariant(y))
                     writer.addFeature(outFeat)
                     idVar = idVar + 1
                     x = x + xOffset
@@ -247,7 +262,6 @@ class Dialog(QDialog, Ui_Dialog):
                     prog = int( count / count_max * 100 )
 
         self.progressBar.setValue( 100 )
-        #self.progressBar.setRange( 0, 100 )
         del writer
 
     def outFile(self):
@@ -279,7 +293,7 @@ class Dialog(QDialog, Ui_Dialog):
             while foundVal is None:
                 if tmpVal <= targetVal:
                     if backOneStep:
-                        tmpVal -= step 
+                        tmpVal -= step
                     foundVal = tmpVal
                 tmpVal += step
         else:
@@ -287,8 +301,7 @@ class Dialog(QDialog, Ui_Dialog):
             while foundVal is None:
                 if tmpVal >= targetVal:
                     if backOneStep:
-                        tmpVal -= step 
+                        tmpVal -= step
                     foundVal = tmpVal
                 tmpVal += step
-        return foundVal           
-
+        return foundVal

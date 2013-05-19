@@ -143,7 +143,7 @@ private:
     PrivateData *d_data;
 };
 
-//! \return the the curve data
+//! \return the curve data
 inline const QwtSeriesData<QwtPointPolar> *QwtPolarCurve::data() const
 {
     return d_series;

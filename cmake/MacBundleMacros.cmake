@@ -2,13 +2,13 @@
 
 # BundleUtilities has functions to bundle and fixup libraries into an
 # application package, but it's all-or-nothing and is missing some features:
-# 
+#
 # - @loader_path
 # - helper functions can't get install_name, just dependencies
 
 # the following cmakecache vars must be set, redefine them
 # with config-file substitutions in install-run scripts:
-# 
+#
 # CPACK_PACKAGE_VERSION_MAJOR, CPACK_PACKAGE_VERSION_MINOR
 # CMAKE_INSTALL_PREFIX, CMAKE_VERBOSE_MAKEFILE, CMAKE_BUILD_TYPE
 # CMAKE_OSX_ARCHITECTURES, OSX_HAVE_LOADERPATH
@@ -37,7 +37,8 @@ FUNCTION (GET_INSTALL_NAME LIBFILE LIBNAME OUTVAR)
         STRING (REGEX REPLACE ".*:\n" "" iname "${iname_out}")
         IF (iname)
             # find libname
-            STRING (REGEX MATCH "[^\n\t ]*${LIBNAME}[^\n ]*" iname "${iname}")
+            STRING (REGEX MATCH "[^\n\t ]*${LIBNAME}[^\n]*" iname "${iname}")
+            STRING (REGEX REPLACE " \\(compatibility version .*, current version .*\\)" "" iname "${iname}")
         ENDIF (iname)
         SET (${OUTVAR} ${iname} PARENT_SCOPE)
     ELSE ()
@@ -75,6 +76,7 @@ FUNCTION (COPY_FRAMEWORK FWPREFIX FWNAME FWDEST)
             EXECUTE_PROCESS (COMMAND cp -Rfp "${FWPREFIX}/${FWNAME}.framework/Versions/${FWVER}/Resources" "${FWDEST}/${FWNAME}.framework/Versions/${FWVER}")
             EXECUTE_PROCESS (COMMAND ln -sfh Versions/Current/Resources "${FWDEST}/${FWNAME}.framework/Resources")
         ENDIF (IS_DIRECTORY "${FWPREFIX}/${FWNAME}.framework/Versions/${FWVER}/Resources")
+        EXECUTE_PROCESS (COMMAND install_name_tool -id "${ATEXECUTABLE}/${QGIS_FW_SUBDIR}/${FWNAME}" "${FWDEST}/${FWNAME}.framework/${FWNAME}")
         # debug variants
         SET (FWD "${FWNAME}_debug")
         IF ("${FWDEBUG}" STREQUAL "Debug" AND EXISTS "${FWPREFIX}/${FWNAME}.framework/Versions/${FWVER}/${FWD}")
@@ -118,8 +120,8 @@ FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
         # libs
         IF (${OSX_HAVE_LOADERPATH})
             # bundled frameworks can use short relative path
-            IF (ISLIB})
-                SET (LIB_CHG_TO "${ATLOADER}/${QGIS_FW_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
+            IF (ISLIB)
+                SET (LIB_CHG_TO "${ATLOADER}/../../../${QGIS_FW_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
             ElSE ()
                 SET (LIB_CHG_TO "${ATLOADER}/../../../${LIBPOST}")
             ENDIF ()

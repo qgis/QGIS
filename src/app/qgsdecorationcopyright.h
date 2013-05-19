@@ -19,6 +19,8 @@
 #ifndef QGSCOPYRIGHTLABELPLUGIN
 #define QGSCOPYRIGHTLABELPLUGIN
 
+#include "qgsdecorationitem.h"
+
 #include <QColor>
 #include <QFont>
 #include <QObject>
@@ -27,7 +29,7 @@ class QPainter;
 
 class QgsDecorationCopyrightDialog;
 
-class QgsDecorationCopyright : public QObject
+class QgsDecorationCopyright : public QgsDecorationItem
 {
     Q_OBJECT
   public:
@@ -46,7 +48,7 @@ class QgsDecorationCopyright : public QObject
     //! Show the dialog box
     void run();
     //! render the copyright label
-    void renderLabel( QPainter * );
+    void render( QPainter * );
 
   private:
     //! This is the font that will be used for the copyright label
@@ -58,8 +60,6 @@ class QgsDecorationCopyright : public QObject
     //! Placement of the copyright label - index and translated label names
     int mPlacementIndex;
     QStringList mPlacementLabels;
-    //! Copyright label enabled
-    bool mEnable;
 
     friend class QgsDecorationCopyrightDialog;
 };

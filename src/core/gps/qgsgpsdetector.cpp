@@ -43,7 +43,7 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
 
 #ifdef linux
   // look for linux serial devices
-  foreach( QString linuxDev, QStringList() << "/dev/ttyS%1" << "/dev/ttyUSB%1" << "/dev/rfcomm%1" << "/dev/ttyACM%1" )
+  foreach ( QString linuxDev, QStringList() << "/dev/ttyS%1" << "/dev/ttyUSB%1" << "/dev/rfcomm%1" << "/dev/ttyACM%1" )
   {
     for ( int i = 0; i < 10; ++i )
     {
@@ -57,7 +57,7 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
 
 #ifdef __FreeBSD__ // freebsd
   // and freebsd devices (untested)
-  foreach( QString freebsdDev, QStringList() << "/dev/cuaa%1" << "/dev/ucom%1" )
+  foreach ( QString freebsdDev, QStringList() << "/dev/cuaa%1" << "/dev/ucom%1" )
   {
     for ( int i = 0; i < 10; ++i )
     {
@@ -83,7 +83,7 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
 
 #if defined(Q_WS_WIN) || defined(Q_WS_MAC)
   QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
-  foreach( QextPortInfo port, ports )
+  foreach ( QextPortInfo port, ports )
   {
     devs << QPair<QString, QString>( port.portName, port.friendName );
   }

@@ -1,6 +1,21 @@
 #!/bin/bash
+###########################################################################
+#    astyle.sh
+#    ---------------------
+#    Date                 : August 2008
+#    Copyright            : (C) 2008 by Juergen E. Fischer
+#    Email                : jef at norbit dot de
+###########################################################################
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 2 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+###########################################################################
 
-for ASTYLE in $(dirname $0)/astyle $(dirname $0)/RelWithDebInfo/astyle
+
+for ASTYLE in $(dirname $0)/qgisstyle $(dirname $0)/RelWithDebInfo/qgisstyle
 do
 	if type -p $ASTYLE >/dev/null; then
 		break
@@ -9,7 +24,7 @@ do
 done
 
 if [ -z "$ASTYLE" ]; then
-	echo "astyle not found - please enable WITH_ASTYLE in cmake and build it" >&2
+	echo "qgisstyle not found - please enable WITH_ASTYLE in cmake and build it" >&2
 	exit 1	
 fi
 

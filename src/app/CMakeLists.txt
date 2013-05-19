@@ -2,42 +2,48 @@ SET(QGIS_APP_SRCS
   main.cpp
   qgisapp.cpp
   qgisappinterface.cpp
+  qgisappstylesheet.cpp
   qgsabout.cpp
   qgssponsors.cpp
   qgsaddattrdialog.cpp
+  qgsaddtaborgroup.cpp
   qgsaddjoindialog.cpp
   qgsannotationwidget.cpp
   qgsattributeactiondialog.cpp
-  qgsattributedialog.cpp
   qgsattributetypedialog.cpp
   qgsattributetypeloaddialog.cpp
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
   qgsbrowserdockwidget.cpp
   qgsclipboard.cpp
-  qgscontinuouscolordialog.cpp
   qgsconfigureshortcutsdialog.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
+  qgsdecorationitem.cpp
   qgsdecorationcopyright.cpp
   qgsdecorationcopyrightdialog.cpp
   qgsdecorationnortharrow.cpp
   qgsdecorationnortharrowdialog.cpp
   qgsdecorationscalebar.cpp
   qgsdecorationscalebardialog.cpp
-  qgsembedlayerdialog.cpp
+  qgsdecorationgrid.cpp
+  qgsdecorationgriddialog.cpp
   qgsformannotationdialog.cpp
+  qgshtmlannotationdialog.cpp
   qgsdelattrdialog.cpp
+  qgsdiagramproperties.cpp
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
-  qgsgraduatedsymboldialog.cpp
-  qgsidentifyresults.cpp
+  qgsfieldsproperties.cpp
+  qgsidentifyresultsdialog.cpp
   qgsfeatureaction.cpp
   qgslabeldialog.cpp
   qgslabelpropertydialog.cpp
   qgslabelengineconfigdialog.cpp
   qgslabelinggui.cpp
   qgslabelpreview.cpp
+  qgsloadstylefromdbdialog.cpp
+  qgssavestyletodbdialog.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdvertex.cpp
@@ -52,7 +58,10 @@ SET(QGIS_APP_SRCS
   qgsmaptooledit.cpp
   qgsmaptoolfeatureaction.cpp
   qgsmaptoolformannotation.cpp
-  qgsmaptoolidentify.cpp
+  qgsmaptoolhtmlannotation.cpp
+  qgsmaptoolpinlabels.cpp
+  qgsmaptoolshowhidelabels.cpp
+  qgsmaptoolidentifyaction.cpp
   qgsmaptoollabel.cpp
   qgsmaptoolmeasureangle.cpp
   qgsmaptoolmovefeature.cpp
@@ -60,6 +69,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolmovevertex.cpp
   qgsmaptooloffsetcurve.cpp
   qgsmaptoolreshape.cpp
+  qgsmaptoolrotatefeature.cpp
   qgsmaptoolrotatelabel.cpp
   qgsmaptoolrotatepointsymbols.cpp
   qgsmaptoolselect.cpp
@@ -70,8 +80,9 @@ SET(QGIS_APP_SRCS
   qgsmaptoolselectutils.cpp
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
+  qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
-  qgsmaptoolvertexedit.cpp
+  qgsmaptoolvertexedit.cpp  
 
   nodetool/qgsmaptoolnodetool.cpp
   nodetool/qgsselectedfeature.cpp
@@ -81,31 +92,30 @@ SET(QGIS_APP_SRCS
   qgsmeasuretool.cpp
   qgsmergeattributesdialog.cpp
   qgsoptions.cpp
-  qgspastetransformations.cpp
+  #qgspastetransformations.cpp
   qgspointrotationitem.cpp
   qgspluginitem.cpp
   qgspluginmanager.cpp
   qgspluginmetadata.cpp
   qgspluginregistry.cpp
+  qgsprojectlayergroupdialog.cpp
   qgsprojectproperties.cpp
   qgsrastercalcdialog.cpp
   qgsrasterlayerproperties.cpp
   qgstextannotationdialog.cpp
   qgsshortcutsmanager.cpp
-  qgssinglesymboldialog.cpp
   qgssnappingdialog.cpp
+  qgssvgannotationdialog.cpp
   qgsundowidget.cpp
-  qgstilescalewidget.cpp
   qgstipgui.cpp
   qgstipfactory.cpp
-  qgsuniquevaluedialog.cpp
   qgsvectorlayerproperties.cpp
-  qgshighlight.cpp
   qgshandlebadlayers.cpp
 
   composer/qgsattributeselectiondialog.cpp
   composer/qgscomposer.cpp
   composer/qgscomposerarrowwidget.cpp
+  composer/qgscomposerhtmlwidget.cpp
   composer/qgscomposeritemwidget.cpp
   composer/qgscomposerlabelwidget.cpp
   composer/qgscomposerpicturewidget.cpp
@@ -118,7 +128,7 @@ SET(QGIS_APP_SRCS
   composer/qgscomposerlegendlayersdialog.cpp
   composer/qgscomposerlegendwidget.cpp
   composer/qgscompositionwidget.cpp
-  composer/qgsitempositiondialog.cpp
+  composer/qgsatlascompositionwidget.cpp
 
   legend/qgslegendgroup.cpp
   legend/qgslegend.cpp
@@ -129,7 +139,6 @@ SET(QGIS_APP_SRCS
   legend/qgslegendpropertyitem.cpp
   legend/qgslegendsymbologygroup.cpp
   legend/qgslegendsymbologyitem.cpp
-  legend/qgslegendvectorsymbologyitem.cpp
   legend/qgslayerorder.cpp
 
   ogr/qgsogrhelperfunctions.cpp
@@ -140,52 +149,56 @@ SET(QGIS_APP_SRCS
 
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
+
+  openstreetmap/qgsosmdownloaddialog.cpp
+  openstreetmap/qgsosmimportdialog.cpp
+  openstreetmap/qgsosmexportdialog.cpp
+
+  qgsnewspatialitelayerdialog.cpp
 )
-
-IF (ANDROID)
-    SET(QGIS_APP_SRCS
-        ${QGIS_APP_SRCS}
-        qtmain_android.cpp
-        )
-ENDIF (ANDROID)
-
 
 SET (QGIS_APP_MOC_HDRS
   qgisapp.h
   qgisappinterface.h
+  qgisappstylesheet.h
   qgsabout.h
   qgsaddattrdialog.h
   qgsaddjoindialog.h
+  qgsaddtaborgroup.h
   qgsannotationwidget.h
   qgsattributeactiondialog.h
-  qgsattributedialog.h
   qgsattributetypedialog.h
   qgsattributetypeloaddialog.h
   qgsattributetabledialog.h
   qgsbookmarks.h
   qgsbrowserdockwidget.h
   qgsconfigureshortcutsdialog.h
-  qgscontinuouscolordialog.h
   qgscustomization.h
   qgscustomprojectiondialog.h
+  qgsdecorationitem.h
   qgsdecorationcopyright.h
   qgsdecorationcopyrightdialog.h
   qgsdecorationnortharrow.h
   qgsdecorationnortharrowdialog.h
   qgsdecorationscalebar.h
   qgsdecorationscalebardialog.h
+  qgsdecorationgrid.h
+  qgsdecorationgriddialog.h
   qgsdelattrdialog.h
+  qgsdiagramproperties.h
   qgsdisplayangle.h
-  qgsembedlayerdialog.h
   qgsfeatureaction.h
   qgsfieldcalculator.h
+  qgsfieldsproperties.h
   qgsformannotationdialog.h
-  qgsgraduatedsymboldialog.h
-  qgsidentifyresults.h
+  qgshtmlannotationdialog.h
+  qgsidentifyresultsdialog.h
   qgslabeldialog.h
   qgslabelengineconfigdialog.h
   qgslabelinggui.h
   qgslabelpropertydialog.h
+  qgsloadstylefromdbdialog.h
+  qgssavestyletodbdialog.h
   qgsshortcutsmanager.h
 
   qgsmaptooladdfeature.h
@@ -198,13 +211,16 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooldeletering.h
   qgsmaptooldeletevertex.h
   qgsmaptoolfeatureaction.h
-  qgsmaptoolidentify.h
+  qgsmaptoolpinlabels.h
+  qgsmaptoolshowhidelabels.h
+  qgsmaptoolidentifyaction.h
   qgsmaptoolmeasureangle.h
   qgsmaptoolmovefeature.h
   qgsmaptoolmovelabel.h
   qgsmaptoolmovevertex.h
   qgsmaptooloffsetcurve.h
   qgsmaptoolreshape.h
+  qgsmaptoolrotatefeature.h
   qgsmaptoolrotatelabel.h
   qgsmaptoolrotatepointsymbols.h
   qgsmaptoolselectfreehand.h
@@ -223,26 +239,26 @@ SET (QGIS_APP_MOC_HDRS
   qgsmeasuretool.h
   qgsmergeattributesdialog.h
   qgsoptions.h
-  qgspastetransformations.h
+  #qgspastetransformations.h
   qgspluginmanager.h
+  qgsprojectlayergroupdialog.h
   qgsprojectproperties.h
   qgsrastercalcdialog.h
   qgsrasterlayerproperties.h
-  qgssinglesymboldialog.h
   qgssnappingdialog.h
   qgssponsors.h
+  qgssvgannotationdialog.h
   qgstextannotationdialog.h
-  qgstilescalewidget.h
   qgstipgui.h
   qgstipfactory.h
   qgsundowidget.h
-  qgsuniquevaluedialog.h
   qgsvectorlayerproperties.h
   qgshandlebadlayers.h
 
   composer/qgsattributeselectiondialog.h
   composer/qgscomposer.h
   composer/qgscomposerarrowwidget.h
+  composer/qgscomposerhtmlwidget.h
   composer/qgscomposeritemwidget.h
   composer/qgscomposerlabelwidget.h
   composer/qgscomposerlegendwidget.h
@@ -253,7 +269,7 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscomposertablewidget.h
   composer/qgscomposershapewidget.h
   composer/qgscompositionwidget.h
-  composer/qgsitempositiondialog.h
+  composer/qgsatlascompositionwidget.h
 
   legend/qgslegend.h
   legend/qgsapplegendinterface.h
@@ -266,6 +282,12 @@ SET (QGIS_APP_MOC_HDRS
   ogr/qgsvectorlayersaveasdialog.h
 
   gps/qgsgpsinformationwidget.h
+
+  openstreetmap/qgsosmdownloaddialog.h
+  openstreetmap/qgsosmimportdialog.h
+  openstreetmap/qgsosmexportdialog.h
+
+  qgsnewspatialitelayerdialog.h
   )
 
 IF(WITH_INTERNAL_QWTPOLAR)
@@ -297,6 +319,10 @@ IF(WITH_INTERNAL_QWTPOLAR)
 
     SET(QWTPOLAR_INCLUDE_DIR gps/qwtpolar-0.1)
   ELSE(QWT_VERSION_STR VERSION_LESS "6.0.0")
+    IF(NOT QWT_VERSION_STR VERSION_LESS "6.1.0")
+      MESSAGE(FATAL_ERROR "Internal QwtPolar does not support Qwt 6.1 and above")
+    ENDIF(NOT QWT_VERSION_STR VERSION_LESS "6.1.0")
+
     SET(QGIS_APP_SRCS
       ${QGIS_APP_SRCS}
       gps/qwtpolar-1.0/qwt_polar_canvas.cpp
@@ -337,16 +363,6 @@ IF (POSTGRES_FOUND)
     ADD_DEFINITIONS(-DHAVE_PGCONFIG=1)
   ENDIF(HAVE_PGCONFIG)
 ENDIF (POSTGRES_FOUND)
-
-IF (HAVE_SPATIALITE)
-  SET (QGIS_APP_SRCS ${QGIS_APP_SRCS}
-    qgsnewspatialitelayerdialog.cpp
-  )
-  SET (QGIS_APP_MOC_HDRS ${QGIS_APP_MOC_HDRS}
-    qgsnewspatialitelayerdialog.h
-  )
-ENDIF(HAVE_SPATIALITE)
-
 
 SET(IMAGE_RCCS ../../images/images.qrc)
 
@@ -392,30 +408,30 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
-  ../analysis/raster
+  ${QEXTSERIALPORT_INCLUDE_DIR}
+  ../analysis/raster ../analysis/openstreetmap
   ../core
-  ../core/gps ../core/gps/qextserialport
-  ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
-  ../gui ../gui/symbology-ng ../gui/attributetable
+  ../core/gps
+  ../core/composer ../core/raster ../core/symbology-ng
+  ../gui ../gui/symbology-ng ../gui/attributetable ../gui/raster
   ../plugins
   ../python
   gps
+  openstreetmap
   )
 
 IF (ANDROID)
-    INCLUDE_DIRECTORIES(${ANDROID_NDK_TOOLCHAIN_ROOT}/sysroot/usr/include)
+  INCLUDE_DIRECTORIES(${ANDROID_NDK_TOOLCHAIN_ROOT}/sysroot/usr/include)
 ENDIF (ANDROID)
 
-IF (HAVE_SPATIALITE)
-  IF (WITH_INTERNAL_SPATIALITE)
-    INCLUDE_DIRECTORIES(../core/spatialite/headers)
-    INCLUDE_DIRECTORIES(../core/spatialite/headers/spatialite)
-  ELSE (WITH_INTERNAL_SPATIALITE)
-    INCLUDE_DIRECTORIES(${SPATIALITE_INCLUDE_DIR})
-    INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
-    ADD_DEFINITIONS(-DEXTERNAL_SPATIALITE)
-  ENDIF (WITH_INTERNAL_SPATIALITE)
-ENDIF (HAVE_SPATIALITE)
+IF (WITH_INTERNAL_SPATIALITE)
+  INCLUDE_DIRECTORIES(../core/spatialite/headers)
+  INCLUDE_DIRECTORIES(../core/spatialite/headers/spatialite)
+ELSE (WITH_INTERNAL_SPATIALITE)
+  INCLUDE_DIRECTORIES(${SPATIALITE_INCLUDE_DIR})
+  INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
+  ADD_DEFINITIONS(-DEXTERNAL_SPATIALITE)
+ENDIF (WITH_INTERNAL_SPATIALITE)
 
 INCLUDE_DIRECTORIES(
   ${PROJ_INCLUDE_DIR}
@@ -450,16 +466,13 @@ TARGET_LINK_LIBRARIES(${QGIS_APP_NAME}
 )
 
 IF (ANDROID)
-    TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} log)
+  TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} log)
 ENDIF (ANDROID)
 
 IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)
+  TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} DbgHelp)
 ENDIF(WIN32)
-
-IF(NOT WITH_INTERNAL_SPATIALITE)
-  TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} ${SQLITE_LIBRARY})
-ENDIF(NOT WITH_INTERNAL_SPATIALITE)
 
 IF (APPLE)
   TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} ${APP_SERVICES_LIBRARY} )
@@ -473,10 +486,6 @@ ENDIF(APPLE)
 IF (POSTGRES_FOUND)
   TARGET_LINK_LIBRARIES (${QGIS_APP_NAME} ${POSTGRES_LIBRARY})
 ENDIF (POSTGRES_FOUND)
-
-IF (SPATIALITE_FOUND)
-  TARGET_LINK_LIBRARIES (${QGIS_APP_NAME} ${SPATIALITE_LIBRARY})
-ENDIF (SPATIALITE_FOUND)
 
 IF(MSVC)
   INSTALL(FILES qgis.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)

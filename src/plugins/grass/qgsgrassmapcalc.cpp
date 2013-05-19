@@ -42,7 +42,7 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   QWidget * parent, Qt::WFlags f )
     : QMainWindow( iface->mainWindow(), Qt::Dialog )
     , QgsGrassMapcalcBase( )
-    , QgsGrassModuleOptions( tools, module, iface )
+    , QgsGrassModuleOptions( tools, module, iface, false )
     , mTool( -1 )
     , mObject( 0 )
     , mConnector( 0 )
@@ -531,8 +531,9 @@ QStringList QgsGrassMapcalc::checkRegion()
   return list;
 }
 
-bool QgsGrassMapcalc::inputRegion( struct Cell_head *window, bool all )
+bool QgsGrassMapcalc::inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all )
 {
+  Q_UNUSED( crs );
   Q_UNUSED( all );
   QgsDebugMsg( "entered." );
 

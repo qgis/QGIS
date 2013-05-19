@@ -1,7 +1,7 @@
-<h3>Créer une nouvelle connections WMS</h3>
-Des couches WMS peuvent être ajoutées simplement; et tant que vous connaissez l'URL d'accès à votre serveur WMS, 
-vous avez une connexion à ce serveur dont vous pouvez vous servir, le serveur WMS prendra en compte le HTTP 
-comme protocole de communication et comme mécanisme de transfert de données.<p>
+<h3>CrÃ©er une nouvelle connections WMS</h3>
+Des couches WMS peuvent Ãªtre ajoutÃ©es simplement; et tant que vous connaissez l'URL d'accÃ¨s Ã  votre serveur WMS, 
+vous avez une connexion Ã  ce serveur dont vous pouvez vous servir, le serveur WMS prendra en compte le HTTP 
+comme protocole de communication et comme mÃ©canisme de transfert de donnÃ©es.<p>
 QGIS peut actuellement agir avec client WMS qui comprend les serveurs WMS 1.1, 1.1.1 et 1.3
 <p>
 <a href="#serv">Serveurs</a><br/>
@@ -12,36 +12,36 @@ QGIS peut actuellement agir avec client WMS qui comprend les serveurs WMS 1.1, 1
 <a name="serv">
 <h4>Serveurs</h4>
 </a>
-Afin de définir un nouveau serveur WMS dans la fenêtre "<LABEL>Ajoute le(s) couche(s) du serveur</LABEL>", cliquez sur le bouton <LABEL>Nouveau</LABEL> se trouvant sous l'onglet "Couches".
-Entrez ensuite les paramètres afin de vous connecter au serveur WMS voulu.
-Vous pouvez ajouter plusieurs serveurs pour vous amuser en cliquant sur " <LABEL>Ajouter les serveurs par défaut</LABEL>".
+Afin de dÃ©finir un nouveau serveur WMS dans la fenÃªtre "<LABEL>Ajoute le(s) couche(s) du serveur</LABEL>", cliquez sur le bouton <LABEL>Nouveau</LABEL> se trouvant sous l'onglet "Couches".
+Entrez ensuite les paramÃ¨tres afin de vous connecter au serveur WMS voulu.
+Vous pouvez ajouter plusieurs serveurs pour vous amuser en cliquant sur " <LABEL>Ajouter les serveurs par dÃ©faut</LABEL>".
 Cela va ajouter pas moins de 3 serveurs WMS que vous pourrez utiliser, incluant les serveurs de la NASA (JPL) ou le serveur LIZARDTECH.
-Une fois qu'une nouvelle connexion à un serveur WMS a été créée, elle sera sauvegardée dans votre future session QGIS.
+Une fois qu'une nouvelle connexion Ã  un serveur WMS a Ã©tÃ© crÃ©Ã©e, elle sera sauvegardÃ©e dans votre future session QGIS.
 
 <a name="load">
 <h5>Charger des couches WMS</h5>
 </a>
-Sélectionner le bouton <label>Connexion</label> pour récupérer les possibilités du serveur sélectionné. 
+SÃ©lectionner le bouton <label>Connexion</label> pour rÃ©cupÃ©rer les possibilitÃ©s du serveur sÃ©lectionnÃ©. 
 Cela inclut l'encodage d'images, les couches, les styles de couches et des projections.<br/>
-Pendant que le téléchargement des données depuis le serveur WMS a lieu, la progression du téléchargement 
-est visualisée en bas à gauche de la fenêtre d'ajout des couches de serveur.<p>
-La section d' <label>Encodage de l'image</label> liste à présent les formats qui sont supportés à la fois par le client et le serveur sélectionné.<br/>
+Pendant que le tÃ©lÃ©chargement des donnÃ©es depuis le serveur WMS a lieu, la progression du tÃ©lÃ©chargement 
+est visualisÃ©e en bas Ã  gauche de la fenÃªtre d'ajout des couches de serveur.<p>
+La section d' <label>Encodage de l'image</label> liste Ã  prÃ©sent les formats qui sont supportÃ©s Ã  la fois par le client et le serveur sÃ©lectionnÃ©.<br/>
 Choisir l'un des formats d'image en fonction de vos besoins.<p>
-Vous pouvez sélectionner plusieurs couches d'un serveur WMS à la fois, elles seront combinées au niveau du serveur WMS et transmise à QGIS en une seule fois.<p>
-Chaque couche WMS peut être présentée dans de multiples 
-Systèmes de Référence de Coordonnées (SRS) <i>(CRS - Coordinate Reference Systems en anglais).</i>, cela dépendant des possibilités du serveur WMS.
+Vous pouvez sÃ©lectionner plusieurs couches d'un serveur WMS Ã  la fois, elles seront combinÃ©es au niveau du serveur WMS et transmise Ã  QGIS en une seule fois.<p>
+Chaque couche WMS peut Ãªtre prÃ©sentÃ©e dans de multiples 
+SystÃ¨mes de RÃ©fÃ©rence de CoordonnÃ©es (SRS) <i>(CRS - Coordinate Reference Systems en anglais).</i>, cela dÃ©pendant des possibilitÃ©s du serveur WMS.
 Pour choisir un SRS (CRS), cliquez sur le bouton <label>Modification</label>.
 
 <a name="lay">
 <h4>Ordre des couches</h4>
 </a>
-Cliquez sur l'onglet "Ordre des couches" pour changer l'ordre des couches WMS chargées.
+Cliquez sur l'onglet "Ordre des couches" pour changer l'ordre des couches WMS chargÃ©es.
 
 <a name="search">
 <h4>Recherche de serveurs</h4>
 </a>
 Dans l'onglet "Recherche de serveurs" vous pouvez chercher des serveurs WMS. Il est possible de renseigner un texte de recherche 
-dans le champ prévu à cet effet et cliquez ensuite sur le bouton " <LABEL>Rechercher</LABEL>".
-Pour visualiser les résultats, sélectionner une entrée, et cliquez sur le bouton "<label>Aligner les colonnes sélectionnées à la liste WMS</label>"
+dans le champ prÃ©vu Ã  cet effet et cliquez ensuite sur le bouton " <LABEL>Rechercher</LABEL>".
+Pour visualiser les rÃ©sultats, sÃ©lectionner une entrÃ©e, et cliquez sur le bouton "<label>Aligner les colonnes sÃ©lectionnÃ©es Ã  la liste WMS</label>"
 et revenir sur l'onglet <label>Couches</label>.<p>
 Vous avez seulement besoin d'interroger la liste des couches en cliquant sur le bouton "<label>Connexion</label>"

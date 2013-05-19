@@ -302,11 +302,11 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument& doc )
   rendererElement.setAttribute( "type", "pointDisplacement" );
   rendererElement.setAttribute( "labelAttributeName", mLabelAttributeName );
   rendererElement.setAttribute( "labelFont", mLabelFont.toString() );
-  rendererElement.setAttribute( "circleWidth", mCircleWidth );
+  rendererElement.setAttribute( "circleWidth", QString::number( mCircleWidth ) );
   rendererElement.setAttribute( "circleColor", QgsSymbolLayerV2Utils::encodeColor( mCircleColor ) );
   rendererElement.setAttribute( "labelColor", QgsSymbolLayerV2Utils::encodeColor( mLabelColor ) );
-  rendererElement.setAttribute( "circleRadiusAddition", mCircleRadiusAddition );
-  rendererElement.setAttribute( "maxLabelScaleDenominator", mMaxLabelScaleDenominator );
+  rendererElement.setAttribute( "circleRadiusAddition", QString::number( mCircleRadiusAddition ) );
+  rendererElement.setAttribute( "maxLabelScaleDenominator", QString::number( mMaxLabelScaleDenominator ) );
 
   if ( mRenderer )
   {
@@ -364,8 +364,11 @@ void QgsPointDisplacementRenderer::createDisplacementGroups( QgsVectorLayer* vla
   QgsFeature f;
   QList<QgsFeatureId> intersectList;
 
-  vlayer->select( attList, viewExtent, true, false );
-  while ( vlayer->nextFeature( f ) )
+  //Because the new vector api does not allow querying features by id within a nextFeature loop, default constructed QgsFeature() is
+  //inserted first and the real features are created in a second loop
+
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( viewExtent ).setSubsetOfAttributes( attList ) );
+  while ( fit.nextFeature( f ) )
   {
     intersectList.clear();
 
@@ -389,7 +392,7 @@ void QgsPointDisplacementRenderer::createDisplacementGroups( QgsVectorLayer* vla
           {
             found = true;
             QgsFeature feature;
-            it->insert( f.id(), f );
+            it->insert( f.id(), QgsFeature() );
             mDisplacementIds.insert( f.id() );
             break;
           }
@@ -398,19 +401,29 @@ void QgsPointDisplacementRenderer::createDisplacementGroups( QgsVectorLayer* vla
         if ( !found )//insert the already existing feature and the new one into a map
         {
           QMap<QgsFeatureId, QgsFeature> newMap;
-          QgsFeature existingFeature;
-          vlayer->featureAtId( existingEntry, existingFeature );
-          newMap.insert( existingEntry, existingFeature );
+          newMap.insert( existingEntry, QgsFeature() );
           mDisplacementIds.insert( existingEntry );
-          newMap.insert( f.id(), f );
+          newMap.insert( f.id(), QgsFeature() );
           mDisplacementIds.insert( f.id() );
           mDisplacementGroups.push_back( newMap );
         }
       }
     }
   }
-  //refresh the selection because the vector layer is going to step through all features now
-  vlayer->select( attList, viewExtent, true, false );
+
+  //insert the real features into mDisplacementGroups
+  QList< QMap<QgsFeatureId, QgsFeature> >::iterator it = mDisplacementGroups.begin();
+  for ( ; it != mDisplacementGroups.end(); ++it )
+  {
+    QMap<QgsFeatureId, QgsFeature>::iterator mapIt = it->begin();
+    for ( ; mapIt != it->end(); ++mapIt )
+    {
+      QgsFeature fet;
+      vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mapIt.key() ) ).nextFeature( fet );
+      mapIt.value() = fet;
+    }
+  }
+
 }
 
 QgsRectangle QgsPointDisplacementRenderer::searchRect( const QgsPoint& p ) const
@@ -458,14 +471,10 @@ void QgsPointDisplacementRenderer::setDisplacementGroups( const QList< QMap<QgsF
 QString QgsPointDisplacementRenderer::getLabel( const QgsFeature& f )
 {
   QString attribute;
-  QgsAttributeMap attMap = f.attributeMap();
-  if ( attMap.size() > 0 )
+  const QgsAttributes& attrs = f.attributes();
+  if ( mLabelIndex >= 0 && mLabelIndex < attrs.count() )
   {
-    QgsAttributeMap::const_iterator valIt = attMap.find( mLabelIndex );
-    if ( valIt != attMap.constEnd() )
-    {
-      attribute = valIt->toString();
-    }
+    attribute = attrs[mLabelIndex].toString();
   }
   return attribute;
 }

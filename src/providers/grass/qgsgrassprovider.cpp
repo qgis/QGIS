@@ -29,6 +29,7 @@
 
 #include "qgsgrass.h"
 #include "qgsgrassprovider.h"
+#include "qgsgrassfeatureiterator.h"
 
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
@@ -72,6 +73,7 @@ static QString GRASS_DESCRIPTION = "Grass provider"; // XXX verify this
 
 QgsGrassProvider::QgsGrassProvider( QString uri )
     : QgsVectorDataProvider( uri )
+    , mActiveIterator( 0 )
 {
   QgsDebugMsg( QString( "QgsGrassProvider URI: %1" ).arg( uri ) );
 
@@ -205,21 +207,11 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
     mNumberFeatures = 0;
     mCidxFieldNumCats = 0;
   }
-  mNextCidx = 0;
 
   QgsDebugMsg( QString( "mNumberFeatures = %1 mCidxFieldIndex = %2 mCidxFieldNumCats = %3" ).arg( mNumberFeatures ).arg( mCidxFieldIndex ).arg( mCidxFieldNumCats ) );
 
 
-  // Create selection array
-  mSelectionSize = allocateSelection( mMap, &mSelection );
-  resetSelection( 1 ); // TODO ? - where what reset
-
   mMapVersion = mMaps[mLayers[mLayerId].mapId].version;
-
-  // Init structures
-  mPoints = Vect_new_line_struct();
-  mCats = Vect_new_cats_struct();
-  mList = Vect_new_list();
 
   mValid = true;
 
@@ -254,47 +246,21 @@ void QgsGrassProvider::update( void )
     mNumberFeatures = 0;
     mCidxFieldNumCats = 0;
   }
-  mNextCidx = 0;
 
   QgsDebugMsg( QString( "mNumberFeatures = %1 mCidxFieldIndex = %2 mCidxFieldNumCats = %3" ).arg( mNumberFeatures ).arg( mCidxFieldIndex ).arg( mCidxFieldNumCats ) );
-
-  // Create selection array
-  if ( mSelection )
-    free( mSelection );
-  mSelectionSize = allocateSelection( mMap, &mSelection );
-  resetSelection( 1 );
 
   mMapVersion = mMaps[mLayers[mLayerId].mapId].version;
 
   mValid = true;
 }
 
-int QgsGrassProvider::allocateSelection( struct Map_info *map, char **selection )
-{
-  int size;
-  QgsDebugMsg( "entered." );
-
-  int nlines = Vect_get_num_lines( map );
-  int nareas = Vect_get_num_areas( map );
-
-  if ( nlines > nareas )
-  {
-    size = nlines + 1;
-  }
-  else
-  {
-    size = nareas + 1;
-  }
-  QgsDebugMsg( QString( "nlines = %1 nareas = %2 size = %3" ).arg( nlines ).arg( nareas ).arg( size ) );
-
-  *selection = ( char * ) malloc( size );
-
-  return size;
-}
-
 QgsGrassProvider::~QgsGrassProvider()
 {
   QgsDebugMsg( "entered." );
+
+  if ( mActiveIterator )
+    mActiveIterator->close();
+
   closeLayer( mLayerId );
 }
 
@@ -304,255 +270,16 @@ QString QgsGrassProvider::storageType() const
   return "GRASS (Geographic Resources Analysis and Support System) file";
 }
 
-bool QgsGrassProvider::nextFeature( QgsFeature& feature )
+
+
+QgsFeatureIterator QgsGrassProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  feature.setValid( false );
-  int cat = -1, type = -1, id = -1;
-  unsigned char *wkb;
-  int wkbsize;
-
-  QgsDebugMsgLevel( "entered.", 3 );
-
   if ( isEdited() || isFrozen() || !mValid )
-    return false;
+    return QgsFeatureIterator();
 
-  if ( mCidxFieldIndex < 0 || mNextCidx >= mCidxFieldNumCats )
-    return false; // No features, no features in this layer
-
-  // Get next line/area id
-  int found = 0;
-  while ( mNextCidx < mCidxFieldNumCats )
-  {
-    Vect_cidx_get_cat_by_index( mMap, mCidxFieldIndex, mNextCidx++, &cat, &type, &id );
-    // Warning: selection array is only of type line/area of current layer -> check type first
-
-    if ( !( type & mGrassType ) )
-      continue;
-
-    if ( !mSelection[id] )
-      continue;
-
-    found = 1;
-    break;
-  }
-  if ( !found )
-    return false; // No more features
-#if QGISDEBUG > 3
-  QgsDebugMsg( QString( "cat = %1 type = %2 id = %3" ).arg( cat ).arg( type ).arg( id ) );
-#endif
-
-  feature.setFeatureId( id );
-  feature.clearAttributeMap();
-
-  // TODO int may be 64 bits (memcpy)
-  if ( type & ( GV_POINTS | GV_LINES | GV_FACE ) ) /* points or lines */
-  {
-    Vect_read_line( mMap, mPoints, mCats, id );
-    int npoints = mPoints->n_points;
-
-    if ( type & GV_POINTS )
-    {
-      wkbsize = 1 + 4 + 2 * 8;
-    }
-    else if ( type & GV_LINES )
-    {
-      wkbsize = 1 + 4 + 4 + npoints * 2 * 8;
-    }
-    else // GV_FACE
-    {
-      wkbsize = 1 + 4 + 4 + 4 + npoints * 2 * 8;
-    }
-    wkb = new unsigned char[wkbsize];
-    unsigned char *wkbp = wkb;
-    wkbp[0] = ( unsigned char ) QgsApplication::endian();
-    wkbp += 1;
-
-    /* WKB type */
-    memcpy( wkbp, &mQgisType, 4 );
-    wkbp += 4;
-
-    /* Number of rings */
-    if ( type & GV_FACE )
-    {
-      int nrings = 1;
-      memcpy( wkbp, &nrings, 4 );
-      wkbp += 4;
-    }
-
-    /* number of points */
-    if ( type & ( GV_LINES | GV_FACE ) )
-    {
-      QgsDebugMsg( QString( "set npoints = %1" ).arg( npoints ) );
-      memcpy( wkbp, &npoints, 4 );
-      wkbp += 4;
-    }
-
-    for ( int i = 0; i < npoints; i++ )
-    {
-      memcpy( wkbp, &( mPoints->x[i] ), 8 );
-      memcpy( wkbp + 8, &( mPoints->y[i] ), 8 );
-      wkbp += 16;
-    }
-  }
-  else   // GV_AREA
-  {
-    Vect_get_area_points( mMap, id, mPoints );
-    int npoints = mPoints->n_points;
-
-    wkbsize = 1 + 4 + 4 + 4 + npoints * 2 * 8; // size without islands
-    wkb = new unsigned char[wkbsize];
-    wkb[0] = ( unsigned char ) QgsApplication::endian();
-    int offset = 1;
-
-    /* WKB type */
-    memcpy( wkb + offset, &mQgisType, 4 );
-    offset += 4;
-
-    /* Number of rings */
-    int nisles = Vect_get_area_num_isles( mMap, id );
-    int nrings = 1 + nisles;
-    memcpy( wkb + offset, &nrings, 4 );
-    offset += 4;
-
-    /* Outer ring */
-    memcpy( wkb + offset, &npoints, 4 );
-    offset += 4;
-    for ( int i = 0; i < npoints; i++ )
-    {
-      memcpy( wkb + offset, &( mPoints->x[i] ), 8 );
-      memcpy( wkb + offset + 8, &( mPoints->y[i] ), 8 );
-      offset += 16;
-    }
-
-    /* Isles */
-    for ( int i = 0; i < nisles; i++ )
-    {
-      Vect_get_isle_points( mMap, Vect_get_area_isle( mMap, id, i ), mPoints );
-      npoints = mPoints->n_points;
-
-      // add space
-      wkbsize += 4 + npoints * 2 * 8;
-      wkb = ( unsigned char * ) realloc( wkb, wkbsize );
-
-      memcpy( wkb + offset, &npoints, 4 );
-      offset += 4;
-      for ( int i = 0; i < npoints; i++ )
-      {
-        memcpy( wkb + offset, &( mPoints->x[i] ), 8 );
-        memcpy( wkb + offset + 8, &( mPoints->y[i] ), 8 );
-        offset += 16;
-      }
-    }
-  }
-
-  feature.setGeometryAndOwnership( wkb, wkbsize );
-
-  setFeatureAttributes( mLayerId, cat, &feature, mAttributesToFetch );
-
-  feature.setValid( true );
-
-  return true;
+  return QgsFeatureIterator( new QgsGrassFeatureIterator( this, request ) );
 }
 
-void QgsGrassProvider::resetSelection( bool sel )
-{
-  QgsDebugMsg( "entered." );
-  if ( !mValid )
-    return;
-  memset( mSelection, ( int ) sel, mSelectionSize );
-  mNextCidx = 0;
-}
-
-void QgsGrassProvider::select( QgsAttributeList fetchAttributes,
-                               QgsRectangle rect,
-                               bool fetchGeometry,
-                               bool useIntersect )
-{
-  mAttributesToFetch = fetchAttributes;
-  mFetchGeom = fetchGeometry;
-
-  if ( isEdited() || isFrozen() || !mValid )
-    return;
-
-  // check if outdated and update if necessary
-  int mapId = mLayers[mLayerId].mapId;
-  if ( mapOutdated( mapId ) )
-  {
-    updateMap( mapId );
-  }
-  if ( mMapVersion < mMaps[mapId].version )
-  {
-    update();
-  }
-  if ( attributesOutdated( mapId ) )
-  {
-    loadAttributes( mLayers[mLayerId] );
-  }
-
-  //no selection rectangle - use all features
-  if ( rect.isEmpty() )
-  {
-    resetSelection( 1 );
-    return;
-  }
-
-  //apply selection rectangle
-  resetSelection( 0 );
-
-  if ( !useIntersect )
-  { // select by bounding boxes only
-    BOUND_BOX box;
-    box.N = rect.yMaximum(); box.S = rect.yMinimum();
-    box.E = rect.xMaximum(); box.W = rect.xMinimum();
-    box.T = PORT_DOUBLE_MAX; box.B = -PORT_DOUBLE_MAX;
-    if ( mLayerType == POINT || mLayerType == CENTROID || mLayerType == LINE || mLayerType == FACE || mLayerType == BOUNDARY )
-    {
-      Vect_select_lines_by_box( mMap, &box, mGrassType, mList );
-    }
-    else if ( mLayerType == POLYGON )
-    {
-      Vect_select_areas_by_box( mMap, &box, mList );
-    }
-
-  }
-  else
-  { // check intersection
-    struct line_pnts *Polygon;
-
-    Polygon = Vect_new_line_struct();
-
-    // Using z coor -PORT_DOUBLE_MAX/PORT_DOUBLE_MAX we cover 3D, Vect_select_lines_by_polygon is
-    // using dig_line_box to get the box, it is not perfect, Vect_select_lines_by_polygon
-    // should clarify better how 2D/3D is treated
-    Vect_append_point( Polygon, rect.xMinimum(), rect.yMinimum(), -PORT_DOUBLE_MAX );
-    Vect_append_point( Polygon, rect.xMaximum(), rect.yMinimum(), PORT_DOUBLE_MAX );
-    Vect_append_point( Polygon, rect.xMaximum(), rect.yMaximum(), 0 );
-    Vect_append_point( Polygon, rect.xMinimum(), rect.yMaximum(), 0 );
-    Vect_append_point( Polygon, rect.xMinimum(), rect.yMinimum(), 0 );
-
-    if ( mLayerType == POINT || mLayerType == CENTROID || mLayerType == LINE || mLayerType == FACE || mLayerType == BOUNDARY )
-    {
-      Vect_select_lines_by_polygon( mMap, Polygon, 0, NULL, mGrassType, mList );
-    }
-    else if ( mLayerType == POLYGON )
-    {
-      Vect_select_areas_by_polygon( mMap, Polygon, 0, NULL, mList );
-    }
-
-    Vect_destroy_line_struct( Polygon );
-  }
-  for ( int i = 0; i < mList->n_values; i++ )
-  {
-    if ( mList->value[i] <= mSelectionSize )
-    {
-      mSelection[mList->value[i]] = 1;
-    }
-    else
-    {
-      QgsDebugMsg( "Selected element out of range" );
-    }
-  }
-}
 
 
 
@@ -580,18 +307,9 @@ long QgsGrassProvider::featureCount() const
 }
 
 /**
-* Return the number of fields
-*/
-uint QgsGrassProvider::fieldCount() const
-{
-  QgsDebugMsg( QString( "return: %1" ).arg( mLayers[mLayerId].fields.size() ) );
-  return mLayers[mLayerId].fields.size();
-}
-
-/**
 * Return fields
 */
-const QgsFieldMap & QgsGrassProvider::fields() const
+const QgsFields & QgsGrassProvider::fields() const
 {
   return mLayers[mLayerId].fields;
 }
@@ -601,31 +319,9 @@ int QgsGrassProvider::keyField()
   return mLayers[mLayerId].keyColumn;
 }
 
-void QgsGrassProvider::rewind()
-{
-  if ( isEdited() || isFrozen() || !mValid )
-    return;
-
-  int mapId = mLayers[mLayerId].mapId;
-  if ( mapOutdated( mapId ) )
-  {
-    updateMap( mapId );
-  }
-  if ( mMapVersion < mMaps[mapId].version )
-  {
-    update();
-  }
-  if ( attributesOutdated( mapId ) )
-  {
-    loadAttributes( mLayers[mLayerId] );
-  }
-
-  mNextCidx = 0;
-}
-
 QVariant QgsGrassProvider::minimumValue( int index )
 {
-  if ( !fields().contains( index ) )
+  if ( index < 0 || index >= mLayers[mLayerId].fields.count() )
   {
     QgsDebugMsg( "Warning: access requested to invalid field index: " + QString::number( index ) );
     return QVariant();
@@ -636,7 +332,7 @@ QVariant QgsGrassProvider::minimumValue( int index )
 
 QVariant QgsGrassProvider::maxValue( int index )
 {
-  if ( !fields().contains( index ) )
+  if ( index < 0 || index >= mLayers[mLayerId].fields.count() )
   {
     QgsDebugMsg( "Warning: access requested to invalid field index: " + QString::number( index ) );
     return QVariant();
@@ -842,8 +538,8 @@ void QgsGrassProvider::loadAttributes( GLAYER &layer )
               qtype = QVariant::String;
               break;
           }
-          layer.fields[i] = QgsField( db_get_column_name( column ), qtype, ctypeStr,
-                                      db_get_column_length( column ), db_get_column_precision( column ) );
+          layer.fields.append( QgsField( db_get_column_name( column ), qtype, ctypeStr,
+                                         db_get_column_length( column ), db_get_column_precision( column ) ) );
 
           if ( G_strcasecmp( db_get_column_name( column ), layer.fieldInfo->key ) == 0 )
           {
@@ -947,7 +643,7 @@ void QgsGrassProvider::loadAttributes( GLAYER &layer )
   if ( layer.nColumns == 0 )
   {
     layer.keyColumn = 0;
-    layer.fields[0] = ( QgsField( "cat", QVariant::Int, "integer" ) );
+    layer.fields.append( QgsField( "cat", QVariant::Int, "integer" ) );
     layer.minmax = new double[1][2];
     layer.minmax[0][0] = 0;
     layer.minmax[0][1] = 0;
@@ -1283,6 +979,25 @@ bool QgsGrassProvider::attributesOutdated( int mapId )
   return false;
 }
 
+
+void QgsGrassProvider::ensureUpdated()
+{
+  int mapId = mLayers[mLayerId].mapId;
+  if ( mapOutdated( mapId ) )
+  {
+    updateMap( mapId );
+  }
+  if ( mMapVersion < mMaps[mapId].version )
+  {
+    update();
+  }
+  if ( attributesOutdated( mapId ) )
+  {
+    loadAttributes( mLayers[mLayerId] );
+  }
+}
+
+
 /** Set feature attributes */
 void QgsGrassProvider::setFeatureAttributes( int layerId, int cat, QgsFeature *feature )
 {
@@ -1298,22 +1013,25 @@ void QgsGrassProvider::setFeatureAttributes( int layerId, int cat, QgsFeature *f
     GATT *att = ( GATT * ) bsearch( &key, mLayers[layerId].attributes, mLayers[layerId].nAttributes,
                                     sizeof( GATT ), cmpAtt );
 
+    feature->initAttributes( mLayers[layerId].nColumns );
+
     for ( int i = 0; i < mLayers[layerId].nColumns; i++ )
     {
       if ( att != NULL )
       {
         QByteArray cstr( att->values[i] );
-        feature->addAttribute( i, convertValue( mLayers[mLayerId].fields[i].type(), mEncoding->toUnicode( cstr ) ) );
+        feature->setAttribute( i, convertValue( mLayers[mLayerId].fields[i].type(), mEncoding->toUnicode( cstr ) ) );
       }
       else   /* it may happen that attributes are missing -> set to empty string */
       {
-        feature->addAttribute( i, QVariant() );
+        feature->setAttribute( i, QVariant() );
       }
     }
   }
   else
   {
-    feature->addAttribute( 0, QVariant( cat ) );
+    feature->initAttributes( 1 );
+    feature->setAttribute( 0, QVariant( cat ) );
   }
 }
 
@@ -1330,22 +1048,25 @@ void QgsGrassProvider::setFeatureAttributes( int layerId, int cat, QgsFeature *f
     GATT *att = ( GATT * ) bsearch( &key, mLayers[layerId].attributes, mLayers[layerId].nAttributes,
                                     sizeof( GATT ), cmpAtt );
 
+    feature->initAttributes( mLayers[layerId].nColumns );
+
     for ( QgsAttributeList::const_iterator iter = attlist.begin(); iter != attlist.end(); ++iter )
     {
       if ( att != NULL )
       {
         QByteArray cstr( att->values[*iter] );
-        feature->addAttribute( *iter, convertValue( mLayers[mLayerId].fields[*iter].type(), mEncoding->toUnicode( cstr ) ) );
+        feature->setAttribute( *iter, convertValue( mLayers[mLayerId].fields[*iter].type(), mEncoding->toUnicode( cstr ) ) );
       }
       else   /* it may happen that attributes are missing -> set to empty string */
       {
-        feature->addAttribute( *iter, QVariant() );
+        feature->setAttribute( *iter, QVariant() );
       }
     }
   }
   else
   {
-    feature->addAttribute( 0, QVariant( cat ) );
+    feature->initAttributes( 1 );
+    feature->setAttribute( 0, QVariant( cat ) );
   }
 }
 

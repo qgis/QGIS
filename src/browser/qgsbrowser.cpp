@@ -41,6 +41,7 @@ QgsBrowser::QgsBrowser( QWidget *parent, Qt::WFlags flags )
     , mDirtyAttributes( true )
     , mLayer( 0 )
     , mParamWidget( 0 )
+    , mAttributeTableFilterModel( 0 )
 {
   setupUi( this );
 
@@ -115,7 +116,7 @@ void QgsBrowser::itemClicked( const QModelIndex& index )
   mDirtyAttributes = true;
 
   // clear the previous stuff
-  attributeTable->setCanvasAndLayer( 0, 0 );
+  setLayer( 0 );
 
   QList<QgsMapCanvasLayer> nolayers;
   mapCanvas->setLayerSet( nolayers );
@@ -207,33 +208,7 @@ bool QgsBrowser::layerClicked( QgsLayerItem *item )
     }
     if ( type == QgsMapLayer::RasterLayer )
     {
-      // This should go to WMS provider
-      QStringList URIParts = uri.split( "|" );
-      QString rasterLayerPath = URIParts.at( 0 );
-      QStringList layers;
-      QStringList styles;
-      QString format;
-      QString crs;
-      for ( int i = 1 ; i < URIParts.size(); i++ )
-      {
-        QString part = URIParts.at( i );
-        int pos = part.indexOf( "=" );
-        QString field = part.left( pos );
-        QString value = part.mid( pos + 1 );
-
-        if ( field == "layers" )
-          layers = value.split( "," );
-        if ( field == "styles" )
-          styles = value.split( "," );
-        if ( field == "format" )
-          format = value;
-        if ( field == "crs" )
-          crs = value;
-      }
-      QgsDebugMsg( "rasterLayerPath = " + rasterLayerPath );
-      QgsDebugMsg( "layers = " + layers.join( " " ) );
-
-      mLayer = new QgsRasterLayer( 0, rasterLayerPath, "", providerKey, layers, styles, format, crs );
+      mLayer = new QgsRasterLayer( uri, "", providerKey );
     }
   }
 
@@ -401,6 +376,19 @@ void QgsBrowser::keyPressEvent( QKeyEvent * e )
   }
 }
 
+void QgsBrowser::keyReleaseEvent( QKeyEvent * e )
+{
+  QgsDebugMsg( "Entered" );
+  if ( treeView->hasFocus() && ( e->key() == Qt::Key_Up || e->key() == Qt::Key_Down ) )
+  {
+    itemClicked( treeView->selectionModel()->currentIndex() );
+  }
+  else
+  {
+    e->ignore();
+  }
+}
+
 void QgsBrowser::stopRendering()
 {
   // you might have seen this already in QgisApp
@@ -481,13 +469,12 @@ void QgsBrowser::updateCurrentTab()
     {
       QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayer );
       QApplication::setOverrideCursor( Qt::WaitCursor );
-      attributeTable->setCanvasAndLayer( mapCanvas, vlayer );
-      qobject_cast<QgsAttributeTableModel * >( dynamic_cast<QgsAttributeTableFilterModel *>( attributeTable->model() )->sourceModel() )->loadLayer();
+      setLayer( vlayer );
       QApplication::restoreOverrideCursor();
     }
     else
     {
-      attributeTable->setCanvasAndLayer( 0, 0 );
+      setLayer( 0 );
     }
     mDirtyAttributes = false;
   }
@@ -539,5 +526,37 @@ void QgsBrowser::refresh( const QModelIndex& index )
     {
       refresh( idx );
     }
+  }
+}
+
+void QgsBrowser::setLayer( QgsVectorLayer* vLayer )
+{
+  attributeTable->setModel( NULL );
+
+  if ( mAttributeTableFilterModel )
+  {
+    // Cleanup
+    delete mAttributeTableFilterModel;
+    mAttributeTableFilterModel = NULL;
+  }
+
+  if ( vLayer )
+  {
+    // Initialize the cache
+    QSettings settings;
+    int cacheSize = qMax( 1, settings.value( "/qgis/attributeTableRowCache", "10000" ).toInt() );
+    QgsVectorLayerCache* layerCache = new QgsVectorLayerCache( vLayer, cacheSize, this );
+    layerCache->setCacheGeometry( false );
+
+    QgsAttributeTableModel *tableModel = new QgsAttributeTableModel( layerCache );
+
+    mAttributeTableFilterModel = new QgsAttributeTableFilterModel( NULL, tableModel, this );
+
+    // Let Qt do the garbage collection
+    layerCache->setParent( tableModel );
+    tableModel->setParent( mAttributeTableFilterModel );
+
+    attributeTable->setModel( mAttributeTableFilterModel );
+    tableModel->loadLayer();
   }
 }

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Compares bit patterns with raster" module="r.bitpattern">
+<qgisgrassmodule label="Compares bit patterns with raster" module="r.bitpattern" direct="1">
 	<flag key="q" />
-	<option key="input" />
 	<option key="input" />
 	<option key="output" />
 	<option key="pattern" />

@@ -1,0 +1,13 @@
+<h3>Funktion todate()</h3>
+Wandelt eine Zeichenkette in eine Qt-Datumstyp um.
+
+<h4>Syntax</h4>
+<code>todate('zeichenkette')</code><br>
+
+<h4>Argumente</h4>
+<code>zeichenkette</code> - eine Zeichenkette im Qt-Datumsformat.
+<br>
+
+<h4>Beispiel</h4>
+<!-- Show example of function.-->
+<code>todate('2012-05-04') &rarr; 2012-05-04</code><br>

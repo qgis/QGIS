@@ -40,17 +40,20 @@ class CORE_EXPORT QgsDistanceArea
     //! Destructor
     ~QgsDistanceArea();
 
+    //! Copy constructor
+    QgsDistanceArea( const QgsDistanceArea &origDA );
+
+    //! Assignment operator
+    QgsDistanceArea & operator=( const QgsDistanceArea & origDA );
+
     //! sets whether coordinates must be projected to ellipsoid before measuring
-    void setProjectionsEnabled( bool flag );
+    void setEllipsoidalMode( bool flag );
 
     //! returns projections enabled flag
-    bool hasCrsTransformEnabled() { return mProjectionsEnabled; }
+    bool ellipsoidalEnabled() const { return mEllipsoidalMode; }
 
     //! sets source spatial reference system (by QGIS CRS)
     void setSourceCrs( long srsid );
-
-    //! sets source spatial reference system (by EpsgCrsId)
-    Q_DECL_DEPRECATED void setSourceEpsgCrsId( long epsgId );
 
     //! sets source spatial reference system by authid
     void setSourceAuthId( QString authid );
@@ -62,6 +65,10 @@ class CORE_EXPORT QgsDistanceArea
 
     //! sets ellipsoid by its acronym
     bool setEllipsoid( const QString& ellipsoid );
+
+    //! Sets ellipsoid by supplied radii
+    // Inverse flattening is calculated with invf = a/(a-b)
+    bool setEllipsoid( double semiMajor, double semiMinor );
 
     //! returns ellipsoid's acronym
     const QString& ellipsoid() { return mEllipsoid; }
@@ -92,6 +99,9 @@ class CORE_EXPORT QgsDistanceArea
     double bearing( const QgsPoint& p1, const QgsPoint& p2 );
 
     static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit = false );
+
+    //! Helper for conversion between physical units
+    void convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::UnitType displayUnits, bool isArea );
 
   protected:
     //! measures line distance, line points are extracted from WKB
@@ -129,12 +139,14 @@ class CORE_EXPORT QgsDistanceArea
     void computeAreaInit();
 
   private:
+    //! Copy helper
+    void _copy( const QgsDistanceArea & origDA );
 
     //! used for transforming coordinates from source CRS to ellipsoid's coordinates
     QgsCoordinateTransform* mCoordTransform;
 
     //! indicates whether we will transform coordinates
-    bool mProjectionsEnabled;
+    bool mEllipsoidalMode;
 
     //! id of the source spatial reference system
     long mSourceRefSys;

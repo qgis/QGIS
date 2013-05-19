@@ -19,17 +19,32 @@
 #ifndef QGS_GLOBE_PLUGIN_H
 #define QGS_GLOBE_PLUGIN_H
 
-#include "../qgisplugin.h"
-#include "qgsosgviewer.h"
+#include "qgsconfig.h"
+#include "qgisplugin.h"
 #include "qgsosgearthtilesource.h"
 #include "globe_plugin_dialog.h"
 #include <QObject>
+#include <osgViewer/Viewer>
 #include <osgEarth/MapNode>
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/EarthManipulator>
+#ifndef HAVE_OSGEARTHQT //use backported controls if osgEarth <= 2.1
+#define USE_BACKPORTED_CONTROLS
+#endif
+#ifdef USE_BACKPORTED_CONTROLS
+#include "osgEarthUtil/Controls"
+using namespace osgEarth::Util::Controls21;
+#else
 #include <osgEarthUtil/Controls>
+using namespace osgEarth::Util::Controls;
+#endif
+#ifdef HAVE_OSGEARTH_ELEVATION_QUERY
+#include <osgEarth/ElevationQuery>
+#include <osgEarthUtil/ObjectLocator>
+#else
 #include <osgEarthUtil/ElevationManager>
 #include <osgEarthUtil/ObjectPlacer>
+#endif
 
 class QAction;
 class QToolBar;
@@ -51,13 +66,17 @@ class GlobePlugin : public QObject, public QgisPlugin
     void run();
     //! Show the settings dialog box
     void settings();
+    //!  Reset globe
+    void reset();
     //! unload the plugin
     void unload();
     //! show the help document
     void help();
 
-    //! Emitted when a new set of layers has been received
-    void layersChanged();
+    //! Emitted when a new set of image layers has been received
+    void imageLayersChanged();
+    //! Emitted when a new set of elevation layers has been received
+    void elevationLayersChanged();
     //! Called when the extents of the map change
     void extentsChanged();
     //! Sync globe extent to mapCanavas
@@ -84,7 +103,6 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! get elevation of user right click
     double getSelectedElevation();
 
-
     //! Place an OSG model on the globe
     void placeNode( osg::Node* node, double lat, double lon, double alt = 0.0 );
 
@@ -108,9 +126,9 @@ class GlobePlugin : public QObject, public QgisPlugin
     //!pointer to the qaction for this plugin
     QAction * mQActionSettingsPointer;
     //! OSG Viewer
-    QgsOsgViewer viewer;
-    //! Dock widget for viewer
-    QDockWidgetGlobe *mQDockWidget;
+    osgViewer::Viewer* mOsgViewer;
+    //! QT viewer widget
+    QWidget* mViewerWidget;
     //! Settings Dialog
     QgsGlobePluginDialog *mSettingsDialog;
     //! OSG root node
@@ -122,11 +140,18 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! Tile source
     osgEarth::Drivers::QgsOsgEarthTileSource* mTileSource;
     //! Control Canvas
-    osgEarth::Util::Controls::ControlCanvas* mControlCanvas;
+    ControlCanvas* mControlCanvas;
+#ifdef HAVE_OSGEARTH_ELEVATION_QUERY
+    //! Elevation manager
+    osgEarth::ElevationQuery* mElevationManager;
+    //! Object placer
+    osgEarth::Util::ObjectLocator* mObjectPlacer;
+#else
     //! Elevation manager
     osgEarth::Util::ElevationManager* mElevationManager;
     //! Object placer
     osgEarth::Util::ObjectPlacer* mObjectPlacer;
+#endif
     //! tracks if the globe is open
     bool mIsGlobeRunning;
     //! coordinates of the right-clicked point on the globe
@@ -151,6 +176,8 @@ class FlyToExtentHandler : public osgGA::GUIEventHandler
 };
 
 // An event handler that will print out the coordinates at the clicked point
+#ifdef HAVE_OSGEARTH_ELEVATION_QUERY
+#else
 class QueryCoordinatesHandler : public osgGA::GUIEventHandler
 {
   public:
@@ -168,6 +195,7 @@ class QueryCoordinatesHandler : public osgGA::GUIEventHandler
     osg::ref_ptr<osgEarth::Util::ElevationManager> _elevMan;
     bool _mouseDown;
 };
+#endif
 
 
 class KeyboardControlHandler : public osgGA::GUIEventHandler
@@ -189,7 +217,11 @@ namespace osgEarth
 {
   namespace Util
   {
+#ifdef USE_BACKPORTED_CONTROLS
+    namespace Controls21
+#else
     namespace Controls
+#endif
     {
       class NavigationControlHandler : public ControlEventHandler
       {

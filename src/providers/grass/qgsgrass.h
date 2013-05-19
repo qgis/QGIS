@@ -25,6 +25,7 @@ extern "C"
 
 #include <stdexcept>
 #include "qgsexception.h"
+#include <qgsrectangle.h>
 #include <QProcess>
 #include <QString>
 #include <QMap>
@@ -147,6 +148,11 @@ class QgsGrass
         QString mapsetName, QString element );
     static GRASS_LIB_EXPORT QStringList elements( QString mapsetPath, QString element );
 
+    //! Initialize GRASS region
+    static GRASS_LIB_EXPORT void initRegion( struct Cell_head *window );
+    //! Set region extent
+    static GRASS_LIB_EXPORT void setRegion( struct Cell_head *window, QgsRectangle rect );
+
     // ! Get map region
     static GRASS_LIB_EXPORT bool mapRegion( int type, QString gisbase,
                                             QString location, QString mapset, QString map,
@@ -190,11 +196,23 @@ class QgsGrass
     static GRASS_LIB_EXPORT QProcess *startModule( QString gisdbase, QString location, QString module, QStringList arguments, QTemporaryFile &gisrcFile );
 
     // ! Run a GRASS module in any gisdbase/location
-    static GRASS_LIB_EXPORT QByteArray runModule( QString gisdbase, QString location, QString module, QStringList arguments );
+    static GRASS_LIB_EXPORT QByteArray runModule( QString gisdbase, QString location, QString module, QStringList arguments, int timeOut = 30000 );
 
-    // ! Get info string from qgis.g.info module
+    /** \brief Get info string from qgis.g.info module
+     * @param info info type
+     * @gisdbase GISBASE path
+     * @location location name
+     * @mapset mapset name
+     * @map map name
+     * @type map type
+     * @x x coordinate for query
+     * @y y coordinate for query
+     * @extent extent for statistics
+     * @sampleSize sample size for statistics
+     * @timeOut timeout
+     */
     static GRASS_LIB_EXPORT QString getInfo( QString info, QString gisdbase,
-        QString location, QString mapset = "", QString map = "", MapType type = None, double x = 0.0, double y = 0.0 );
+        QString location, QString mapset = "", QString map = "", MapType type = None, double x = 0.0, double y = 0.0, QgsRectangle extent = QgsRectangle(), int sampleRows = 0, int sampleCols = 0, int timeOut = 30000 );
 
     // ! Get location projection
     static GRASS_LIB_EXPORT QgsCoordinateReferenceSystem crs( QString gisdbase, QString location );
@@ -210,9 +228,10 @@ class QgsGrass
     static GRASS_LIB_EXPORT void size( QString gisdbase, QString location,
                                        QString mapset, QString map, int *cols, int *rows );
 
-    // ! Get raster info
+    // ! Get raster info, info is either 'info' or 'stats'
+    //   extent and sampleSize are stats options
     static GRASS_LIB_EXPORT QHash<QString, QString> info( QString gisdbase, QString location,
-        QString mapset, QString map, MapType type );
+        QString mapset, QString map, MapType type, QString info = "info", QgsRectangle extent = QgsRectangle(), int sampleRows = 0, int sampleCols = 0, int timeOut = 30000 );
 
     // ! List of Color
     static GRASS_LIB_EXPORT QList<QgsGrass::Color> colors( QString gisdbase, QString location,

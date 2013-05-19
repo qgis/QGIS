@@ -31,7 +31,6 @@ from .layer_preview import LayerPreview
 
 from .db_tree import DBTree
 
-from .db_plugins import getDbPluginErrors
 from .db_plugins.plugin import BaseError
 from .dlg_db_error import DlgDbError
 
@@ -52,21 +51,6 @@ class DBManager(QMainWindow):
 		self.connect(self.tabs, SIGNAL("currentChanged(int)"), self.tabChanged)
 		self.connect(self.tree, SIGNAL("selectedItemChanged"), self.itemChanged)
 		self.itemChanged(None)
-
-		self.displayDbPluginErrors()
-
-	def displayDbPluginErrors(self):
-		if len(getDbPluginErrors()) <= 0:
-			return
-
-		if not hasattr(self, '_dbPluginErrorIndex') or self._dbPluginErrorIndex >= len(getDbPluginErrors()):
-			self._dbPluginErrorIndex = 0
-
-		msg = getDbPluginErrors()[self._dbPluginErrorIndex]
-		self._dbPluginErrorIndex += 1
-
-		self.statusBar.showMessage( msg, 5000 )
-		QTimer.singleShot( 6000, self.displayDbPluginErrors)
 
 
 	def closeEvent(self, e):
@@ -160,6 +144,35 @@ class DBManager(QMainWindow):
 		self.preview.setDirty()
 		self.refreshItem()
 
+	def importActionSlot(self):
+		db = self.tree.currentDatabase()
+		if db is None:
+			QMessageBox.information(self, "Sorry", "No database selected or you are not connected to it.")
+			return
+
+		outUri = db.uri()
+		schema = self.tree.currentSchema()
+		if schema:
+			outUri.setDataSource( schema.name, "", "", "" )
+
+		from .dlg_import_vector import DlgImportVector
+		dlg = DlgImportVector(None, db, outUri, self)
+		dlg.exec_()
+
+	def exportActionSlot(self):
+		table = self.tree.currentTable()
+		if table is None:
+			QMessageBox.information(self, "Sorry", "Select the table you want export to file.")
+			return
+
+		inLayer = table.toMapLayer()
+
+		from .dlg_export_vector import DlgExportVector
+		dlg = DlgExportVector(inLayer, table.database(), self)
+		dlg.exec_()
+
+		inLayer.deleteLater()
+
 	def runSqlWindow(self):
 		db = self.tree.currentDatabase()
 		if db == None:
@@ -172,7 +185,7 @@ class DBManager(QMainWindow):
 		#self.connect( dlg, SIGNAL( "queryExecuted(const QString &)" ), refreshDb )
 		dlg.show()
 		dlg.exec_()
-		
+
 
 	def showSystemTables(self):
 		self.tree.showSystemTables( self.actionShowSystemTables.isChecked() )
@@ -223,7 +236,7 @@ class DBManager(QMainWindow):
 		# get the placeholder's position to insert before it
 		pos = 0
 		for pos in range(len(menuActions)):
-			if menuActions[pos].isSeparator() and menuActions[pos].text() == "placeholder":
+			if menuActions[pos].isSeparator() and menuActions[pos].objectName().endsWith("_placeholder"):
 				menuActions[pos].setVisible(True)
 				break
 
@@ -301,10 +314,9 @@ class DBManager(QMainWindow):
 				# hide the placeholder if there're no other registered actions
 				if len(self._registeredDbActions[menuName]) <= 0:
 					for i in range(len(menuActions)):
-						if menuActions[i].isSeparator() and menuActions[i].text() == "placeholder":
+						if menuActions[i].isSeparator() and menuActions[i].objectName().endsWith("_placeholder"):
 							menuActions[i].setVisible(False)
 							break
-
 
 			action.deleteLater()
 			return True
@@ -345,7 +357,7 @@ class DBManager(QMainWindow):
 
 		# create status bar
 		self.statusBar = QStatusBar(self)
-		self.setStatusBar(self.statusBar)		
+		self.setStatusBar(self.statusBar)
 
 		# create menus
 		self.menuBar = QMenuBar(self)
@@ -369,25 +381,29 @@ class DBManager(QMainWindow):
 		# create menus' actions
 
 		# menu DATABASE
-		sep = self.menuDb.addAction("placeholder"); sep.setSeparator(True); sep.setVisible(False)
+		sep = self.menuDb.addSeparator(); sep.setObjectName("DB_Manager_DbMenu_placeholder"); sep.setVisible(False)
 		self.actionRefresh = self.menuDb.addAction( QIcon(":/db_manager/actions/refresh"), "&Refresh", self.refreshActionSlot, QKeySequence("F5") )
 		self.actionSqlWindow = self.menuDb.addAction( QIcon(":/db_manager/actions/sql_window"), "&SQL window", self.runSqlWindow, QKeySequence("F2") )
 		self.menuDb.addSeparator()
 		self.actionClose = self.menuDb.addAction( QIcon(), "&Exit", self.close, QKeySequence("CTRL+Q") )
 
 		# menu SCHEMA
-		sep = self.menuSchema.addAction("placeholder"); sep.setSeparator(True); sep.setVisible(False)
+		sep = self.menuSchema.addSeparator(); sep.setObjectName("DB_Manager_SchemaMenu_placeholder"); sep.setVisible(False)
 		actionMenuSchema.setVisible(False)
 
 		# menu TABLE
-		sep = self.menuTable.addAction("placeholder"); sep.setSeparator(True); sep.setVisible(False)
+		sep = self.menuTable.addSeparator(); sep.setObjectName("DB_Manager_TableMenu_placeholder"); sep.setVisible(False)
+		self.actionImport = self.menuTable.addAction( QIcon(":/db_manager/actions/import"), "&Import layer/file", self.importActionSlot )
+		self.actionExport = self.menuTable.addAction( QIcon(":/db_manager/actions/export"), "&Export to file", self.exportActionSlot )
+		self.menuTable.addSeparator()
+		#self.actionShowSystemTables = self.menuTable.addAction("Show system tables/views", self.showSystemTables)
+		#self.actionShowSystemTables.setCheckable(True)
+		#self.actionShowSystemTables.setChecked(True)
 		actionMenuTable.setVisible(False)
-		self.actionShowSystemTables = self.menuTable.addAction("Show system tables/views", self.showSystemTables)
-		self.actionShowSystemTables.setCheckable(True)
-		self.actionShowSystemTables.setChecked(True)
-		self.actionShowSystemTables.setVisible(False)
 
 		# add actions to the toolbar
 		self.toolBar.addAction( self.actionRefresh )
 		self.toolBar.addAction( self.actionSqlWindow )
+		self.toolBar.addAction( self.actionImport )
+		self.toolBar.addAction( self.actionExport )
 

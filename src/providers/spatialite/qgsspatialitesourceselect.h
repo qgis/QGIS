@@ -75,6 +75,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void on_btnConnect_clicked();
     void buildQuery();
     void addClicked();
+    void updateStatistics();
     //! Opens the create connection dialog to build a new connection
     void on_btnNew_clicked();
     //! Deletes the selected connection
@@ -128,6 +129,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     QString layerURI( const QModelIndex &index );
     QPushButton *mBuildQueryButton;
     QPushButton *mAddButton;
+    QPushButton *mStatsButton;
 };
 
 #endif // QGSSPATIALITESOURCESELECT_H
