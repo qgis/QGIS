@@ -27,10 +27,10 @@ class QgsRasterShaderFunction
     virtual void setMinimumValue( double );
 
     /** \brief generates and new RGB value based on one input value */
-    virtual bool shade( double, int* /Out/, int* /Out/, int* /Out/ );
+    virtual bool shade( double, int* /Out/, int* /Out/, int* /Out/, int* /Out/ );
 
     /** \brief generates and new RGB value based on original RGB value */
-    virtual bool shade( double, double, double, int* /Out/, int* /Out/, int* /Out/ );
+    virtual bool shade( double, double, double, double, int* /Out/, int* /Out/, int* /Out/, int* /Out/ );
 
     double minimumMaximumRange() const;
 
