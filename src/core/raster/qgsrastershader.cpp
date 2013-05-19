@@ -45,11 +45,11 @@ QgsRasterShader::~QgsRasterShader()
   @param theReturnBlueValue  The blue component of the new RGB value
   @return True if the return values are valid otherwise false
 */
-bool QgsRasterShader::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+bool QgsRasterShader::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue , int *theReturnAlpha )
 {
   if ( 0 != mRasterShaderFunction )
   {
-    return mRasterShaderFunction->shade( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
+    return mRasterShaderFunction->shade( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue, theReturnAlpha );
   }
 
   return false;
@@ -66,11 +66,11 @@ bool QgsRasterShader::shade( double theValue, int* theReturnRedValue, int* theRe
   @param theReturnBlueValue  The blue component of the new RGB value
   @return True if the return values are valid otherwise false
 */
-bool QgsRasterShader::shade( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+bool QgsRasterShader::shade( double theRedValue, double theGreenValue, double theBlueValue, double theAlphaValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int* theReturnAlphaValue )
 {
   if ( 0 != mRasterShaderFunction )
   {
-    return mRasterShaderFunction->shade( theRedValue, theGreenValue, theBlueValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
+    return mRasterShaderFunction->shade( theRedValue, theGreenValue, theBlueValue, theAlphaValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue, theReturnAlphaValue );
   }
 
   return false;
@@ -150,6 +150,7 @@ void QgsRasterShader::writeXML( QDomDocument& doc, QDomElement& parent ) const
       itemElem.setAttribute( "label", itemIt->label );
       itemElem.setAttribute( "value", QString::number( itemIt->value ) );
       itemElem.setAttribute( "color", itemIt->color.name() );
+      itemElem.setAttribute( "alpha", itemIt->color.alpha() );
       colorRampShaderElem.appendChild( itemElem );
     }
     rasterShaderElem.appendChild( colorRampShaderElem );
@@ -180,6 +181,8 @@ void QgsRasterShader::readXML( const QDomElement& elem )
       itemValue = itemElem.attribute( "value" ).toDouble();
       itemLabel = itemElem.attribute( "label" );
       itemColor.setNamedColor( itemElem.attribute( "color" ) );
+      itemColor.setAlpha( itemElem.attribute( "alpha", "255" ).toInt() );
+
       itemList.push_back( QgsColorRampShader::ColorRampItem( itemValue, itemColor, itemLabel ) );
     }
     colorRampShader->setColorRampItemList( itemList );

@@ -319,7 +319,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
     for ( int i = 0; i < numberOfEntries; ++i )
     {
       int idx = mInvertCheckBox->isChecked() ? numberOfEntries - i - 1 : i;
-      entryColors.push_back( colorRamp->color((( double ) idx ) / numberOfEntries ) );
+      entryColors.push_back( colorRamp->color((( double ) idx ) / ( numberOfEntries - 1 ) ) );
     }
   }
 
@@ -544,7 +544,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemDoubleCl
   if ( column == 1 ) //change item color
   {
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    QColor newColor = QColorDialog::getColor( item->background( column ).color() );
+    QColor newColor = QColorDialog::getColor( item->background( column ).color(), this, "Change color", QColorDialog::ShowAlphaChannel  );
     if ( newColor.isValid() )
     {
       item->setBackground( 1, QBrush( newColor ) );
