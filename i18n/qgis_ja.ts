@@ -1521,7 +1521,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Output spatial reference system is not valid</source>
-        <translation>出力空間参照システムが正しくないです</translation>
+        <translation>出力空間参照システムが不正です</translation>
     </message>
     <message>
         <source>Identical output spatial reference system chosen</source>
@@ -3176,7 +3176,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="115"/>
         <source>Web</source>
-        <translation>ウェッブ</translation>
+        <translation>ウェブ</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="122"/>
@@ -5996,7 +5996,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="467"/>
         <source>Web</source>
-        <translation>ウェッブ</translation>
+        <translation>ウェブ</translation>
     </message>
     <message>
         <source>&amp;New Project</source>
@@ -6168,7 +6168,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <location filename="../src/ui/qgisapp.ui" line="1961"/>
         <location filename="../src/ui/qgisapp.ui" line="1964"/>
         <source>Current Edits</source>
-        <translation>カレント編集</translation>
+        <translation>現在の編集</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1976"/>
@@ -8772,7 +8772,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="152"/>
         <source>Can&apos;t open database: %1</source>
-        <translation>データベース %1を開けません</translation>
+        <translation>データベースを開けません: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="565"/>
@@ -9432,7 +9432,7 @@ It will be disabled.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="114"/>
         <source>Location: %1</source>
-        <translation>場所;%1</translation>
+        <translation>場所: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="117"/>
@@ -9443,7 +9443,7 @@ It will be disabled.</source>
     <message>
         <location filename="../src/providers/gpx/gpsdata.cpp" line="375"/>
         <source>Couldn&apos;t open the data source: %1</source>
-        <translation>%1のデータソースを開けませんでした</translation>
+        <translation>データソースを開けませんでした: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/gpx/gpsdata.cpp" line="398"/>
@@ -9478,7 +9478,7 @@ It will be disabled.</source>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="608"/>
         <source>Cannot remove mapset lock: %1</source>
-        <translation>マップセット%1はロックされているので削除できません</translation>
+        <translation>マップセットロックを削除できません: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="803"/>
@@ -10124,7 +10124,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="422"/>
         <source>CRS undefined - defaulting to default CRS: %1</source>
-        <translation>CRSが定義されていません - デフォルトのCRSが初期値になります%1</translation>
+        <translation>CRSが定義されていません - デフォルトのCRSが初期値になります: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4338"/>
@@ -10511,7 +10511,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1779"/>
         <source>Duplicate field (10 significant characters): %1</source>
-        <translation>フィールド重複(10文字の有意文字) %1</translation>
+        <translation>フィールド重複(10文字の有意文字): %1</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1796"/>
@@ -10586,7 +10586,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2345"/>
         <source>Cannot get GDAL raster band: %1</source>
-        <translation>GDALラスタバンド %1 を取得できません</translation>
+        <translation>GDALラスタバンドを取得できません: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="667"/>
@@ -10606,7 +10606,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="776"/>
         <source>Cannot ChunkAndWarpImage: %1</source>
-        <translation> ChunkAndWarpImage: %1を実行できません</translation>
+        <translation> ChunkAndWarpImageを実行できません: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1833"/>
@@ -11206,7 +11206,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3439"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3468"/>
         <source>Error executing query: %1</source>
-        <translation>クエリ実行エラー %1</translation>
+        <translation>クエリ実行エラー: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3415"/>
@@ -11917,7 +11917,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5812"/>
         <source>Current edits</source>
-        <translation>カレント編集</translation>
+        <translation>現在の編集</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5813"/>
@@ -11958,7 +11958,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6322"/>
         <source>Couldn&apos;t load Python support library: %1</source>
-        <translation>Pythonサポートライブラリ %1 をロードできませんでした</translation>
+        <translation>Pythonサポートライブラリをロードできませんでした: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6333"/>
@@ -12039,7 +12039,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1045"/>
         <source>Current Edits</source>
-        <translation>カレント編集</translation>
+        <translation>現在の編集</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2937"/>
@@ -14394,27 +14394,27 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3362"/>
         <source>Failed to open: %1</source>
-        <translation>オープンに失敗しました %1</translation>
+        <translation>オープンに失敗しました: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3385"/>
         <source>Not valid project file: %1</source>
-        <translation>不正なプロジェクトファイルです %1</translation>
+        <translation>不正なプロジェクトファイルです: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3398"/>
         <source>Project failed to open: %1</source>
-        <translation>プロジェクトのオープンに失敗しました %1</translation>
+        <translation>プロジェクトのオープンに失敗しました: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3405"/>
         <source>Default template has been reopened: %1</source>
-        <translation>デフォルトテンプレートが再度開かれました %1</translation>
+        <translation>デフォルトテンプレートが再度開かれました: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3412"/>
         <source>File not found: %1</source>
-        <translation>ファイルが見つかりません %1</translation>
+        <translation>ファイルが見つかりません: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3481"/>
@@ -14655,7 +14655,7 @@ Error: %1</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5476"/>
         <source>Cannot read style: %1</source>
-        <translation>スタイルを読めません %1</translation>
+        <translation>スタイルを読めません: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5557"/>
@@ -14997,7 +14997,7 @@ This copy of QGIS has been built with QWT %1.</source>
         <location filename="../src/app/qgisapp.cpp" line="3691"/>
         <location filename="../src/app/qgisapp.cpp" line="3750"/>
         <source>Saved project to: %1</source>
-        <translation>%1に保存されたプロジェクト</translation>
+        <translation>プロジェクトを保存しました: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3703"/>
@@ -16331,7 +16331,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="237"/>
         <source>Pan map to the selected rows (Ctrl+P)</source>
-        <translation>選択された行のデータに地図をズームする(Ctrl+P)</translation>
+        <translation>選択された行のデータに地図をパンする(Ctrl+P)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="256"/>
@@ -16478,7 +16478,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="368"/>
         <source>Open field calculator (Ctrl+I)</source>
-        <translation>フィールド計算機のオープン(Ctrl+I)</translation>
+        <translation>フィールド計算機を開く(Ctrl+I)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="384"/>
@@ -16750,7 +16750,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="106"/>
         <source>Webview</source>
-        <translation>ウェッブビュー</translation>
+        <translation>ウェブビュー</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="111"/>
@@ -24680,7 +24680,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="339"/>
         <source>Bar length: Scale linearly, such as the following value matches the specified size.</source>
-        <translation>バーの長さは以下の値が指定のサイズに合うように調整されます</translation>
+        <translation>バーの長さは以下の値が指定のサイズに合うように調整されます.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="495"/>
@@ -27580,7 +27580,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2333"/>
         <source>Cannot get GDAL raster band: %1</source>
-        <translation>GDALラスタバンド %1 を取得できません</translation>
+        <translation>GDALラスタバンドを取得できません: %1</translation>
     </message>
     <message>
         <source>Cubic</source>
@@ -27931,7 +27931,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="242"/>
         <source>Raster loaded: %1</source>
-        <translation>ロードされたラスタ %1</translation>
+        <translation>ラスタがロードされました: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="243"/>
@@ -28161,7 +28161,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1751"/>
         <source>Rotation: %1</source>
-        <translation>回転 %1</translation>
+        <translation>回転: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1758"/>
@@ -28974,7 +28974,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="85"/>
         <source>Set current region to selected map</source>
-        <translation>カレント領域を選択地図に設定する</translation>
+        <translation>現在の領域を選択地図に設定する</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="93"/>
@@ -29021,7 +29021,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="517"/>
         <source>Cannot write new region</source>
-        <translation>新しいリージョンを書き込めません</translation>
+        <translation>新しい領域を書き込めません</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="273"/>
@@ -29904,7 +29904,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="489"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="544"/>
         <source>Cannot get current region</source>
-        <translation>現在のリージョンを取得できません</translation>
+        <translation>現在の領域を取得できません</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="783"/>
@@ -30038,12 +30038,12 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1522"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1551"/>
         <source>Cannot get input region</source>
-        <translation>入力リージョンを取得できません</translation>
+        <translation>入力領域を取得できません</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1538"/>
         <source>Use Input Region</source>
-        <translation>入力リージョンを使用</translation>
+        <translation>入力領域を使用</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1777"/>
@@ -30139,7 +30139,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1759"/>
         <source>Cannot start module: %1</source>
-        <translation>モジュール %1 を開始できません</translation>
+        <translation>モジュールを開始できません: %1</translation>
     </message>
 </context>
 <context>
@@ -30239,7 +30239,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3311"/>
         <source>Cannot find layeroption %1</source>
-        <translation>レイヤオプション%1:が見つかりません</translation>
+        <translation>レイヤオプション%1が見つかりません</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3291"/>
@@ -30282,7 +30282,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2700"/>
         <source>Use region of this map</source>
-        <translation>地図のリージョンを使用します</translation>
+        <translation>地図の領域を使用します</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2578"/>
@@ -30420,7 +30420,7 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="968"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1061"/>
         <source>Cannot get current region</source>
-        <translation>現在のリージョンを取得できません</translation>
+        <translation>現在の領域を取得できません</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="331"/>
@@ -30590,7 +30590,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="560"/>
         <source>Cannot reproject previously set region, default region set.</source>
-        <translation>前に設定されていたリージョンを再投影できません，デフォルトリージョンを設定します。</translation>
+        <translation>前に設定されていた領域を再投影できません，デフォルト領域を設定します。</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="687"/>
@@ -30605,12 +30605,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="893"/>
         <source>Cannot reproject selected region.</source>
-        <translation>選択したリージョンを再投影できません。</translation>
+        <translation>選択した領域を再投影できません。</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="986"/>
         <source>Cannot reproject region</source>
-        <translation>リージョンを再投影できません</translation>
+        <translation>領域を再投影できません</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1207"/>
@@ -30715,12 +30715,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1288"/>
         <source>Cannot create new location: %1</source>
-        <translation>新規ロケーション%1を作れません</translation>
+        <translation>新規ロケーションを作れません: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1354"/>
         <source>New mapset successfully created, but cannot be opened: %1</source>
-        <translation>新規マップセットの作成に成功しました、しかし%1を開けません</translation>
+        <translation>新規マップセットの作成に成功しましたが開けません: %1</translation>
     </message>
 </context>
 <context>
@@ -30800,7 +30800,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1839"/>
         <source>Region Error</source>
-        <translation>リージョンエラー</translation>
+        <translation>領域エラー</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1870"/>
@@ -30906,7 +30906,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1716"/>
         <source>Default GRASS Region</source>
-        <translation>デフォルトのGRASSリージョン</translation>
+        <translation>デフォルトのGRASS領域</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1747"/>
@@ -31021,12 +31021,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="144"/>
         <source>Display Current Grass Region</source>
-        <translation>現在のGRASSリージョンを表示</translation>
+        <translation>現在のGRASS領域を表示</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="147"/>
         <source>Edit Current Grass Region</source>
-        <translation>現在のGRASSリージョンを編集</translation>
+        <translation>現在のGRASS領域を編集</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="148"/>
@@ -31046,12 +31046,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="154"/>
         <source>Displays the current GRASS region as a rectangle on the map canvas</source>
-        <translation>地図キャンバス上に現在のGRASSリージョンを長方形で表示</translation>
+        <translation>地図キャンバス上に現在のGRASS領域を長方形で表示</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="155"/>
         <source>Edit the current GRASS region</source>
-        <translation>現在のGRASSリージョンを編集</translation>
+        <translation>現在のGRASS領域を編集</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="156"/>
@@ -31132,7 +31132,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="630"/>
         <source>GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region.</source>
-        <translation>GISBASE，ロケーション名またはマップセットが設定されていません，現在のリージョンを表示出来ません。</translation>
+        <translation>GISBASE，ロケーション名またはマップセットが設定されていません，現在の領域を表示出来ません。</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="385"/>
@@ -31144,7 +31144,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="559"/>
         <source>Cannot create new vector: %1</source>
-        <translation>新しいベクタを作成できません %1</translation>
+        <translation>新しいベクタを作成できません: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="597"/>
@@ -31154,27 +31154,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="641"/>
         <source>Cannot read current region: %1</source>
-        <translation>カレント領域%1を読めません</translation>
+        <translation>現在の領域を読めません: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="730"/>
         <source>Cannot open the mapset. %1</source>
-        <translation>マップセット%1を開けません</translation>
+        <translation>マップセットを開けません. %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="746"/>
         <source>Cannot close mapset. %1</source>
-        <translation>マップセット%1を閉じられません</translation>
+        <translation>マップセットを閉じられません. %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="800"/>
         <source>Cannot close current mapset. %1</source>
-        <translation>カレントマップセット%1を閉じられません</translation>
+        <translation>カレントマップセットを閉じられません. %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="809"/>
         <source>Cannot open GRASS mapset. %1</source>
-        <translation>GRASSマップセット%1を開けません</translation>
+        <translation>GRASSマップセットを開けません. %1</translation>
     </message>
 </context>
 <context>
@@ -31228,17 +31228,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="242"/>
         <source>GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region.</source>
-        <translation>GISBASE，ロケーション名またはマップセットが設定されていません，現在のリージョンを表示出来ません。</translation>
+        <translation>GISBASE，ロケーション名またはマップセットが設定されていません，現在の領域を表示出来ません。</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="509"/>
         <source>Cannot write region</source>
-        <translation>リージョンを書き込めません</translation>
+        <translation>領域を書き込めません</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="250"/>
         <source>Cannot read current region: %1</source>
-        <translation>カレント領域%1を読めません</translation>
+        <translation>現在の領域を読めません: %1</translation>
     </message>
 </context>
 <context>
@@ -34757,7 +34757,7 @@ not displayed</source>
         <location filename="../src/core/qgsmaprenderer.cpp" line="861"/>
         <location filename="../src/core/qgsmaprenderer.cpp" line="883"/>
         <source>Transform error caught: %1</source>
-        <translation>変換エラー発生 %1</translation>
+        <translation>変換エラー発生: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaprenderer.cpp" line="861"/>
@@ -35232,7 +35232,7 @@ not displayed</source>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="151"/>
         <source>Identifying done.</source>
-        <translation>地物選択終了</translation>
+        <translation>地物検索終了.</translation>
     </message>
     <message>
         <source>No features at this position found.</source>
@@ -36250,7 +36250,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlnewconnection.cpp" line="99"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation>既存の接続定義 %1 に上書きしますか?</translation>
+        <translation>既存の接続%1を上書きしますか?</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlnewconnection.cpp" line="161"/>
@@ -37133,7 +37133,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="231"/>
         <source>Failed to load SRIDS: %1</source>
-        <translation>SRIDS：%1のロードに失敗しました</translation>
+        <translation>SRIDSのロードに失敗しました: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="320"/>
@@ -37148,7 +37148,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="390"/>
         <source>Unable to open the database: %1</source>
-        <translation>データベース:%1を開けません</translation>
+        <translation>データベースを開けません: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="399"/>
@@ -37660,7 +37660,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/analysis/openstreetmap/qgsosmdownload.cpp" line="58"/>
         <source>Cannot open output file: %1</source>
-        <translation>出力ファイルをオープンできません %1</translation>
+        <translation>出力ファイルをオープンできません: %1</translation>
     </message>
 </context>
 <context>
@@ -39111,7 +39111,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="189"/>
         <source>System value: %1</source>
-        <translation>システム値 %1</translation>
+        <translation>システム値: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="310"/>
@@ -39368,7 +39368,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1509"/>
         <source>Ignore shapefile encoding declaration</source>
-        <translation>シェイプファイルのエンコーディング宣言を無視する</translation>
+        <translation>シェープファイルのエンコーディング宣言を無視する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1512"/>
@@ -39799,7 +39799,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3591"/>
         <source>Automatically enable &apos;on the fly&apos; reprojection if CRS of a new added layer differ from CRS of layer(s) already present. CRS of present layer(s) will be used.</source>
-        <translation>もし読み込まれたレイヤが既存のレイヤと異なる投影座標系をもつ場合、自動で既存のレイヤの投影座標系への &apos;オンザフライ&apos; 投影変換を有効にする</translation>
+        <translation>もし読み込まれたレイヤが既存のレイヤと異なる投影座標系をもつ場合、自動で既存のレイヤの投影座標系への &apos;オンザフライ&apos; 投影変換を有効にする.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3611"/>
@@ -44242,7 +44242,7 @@ Database error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2442"/>
         <source>result of extents query invalid: %1</source>
-        <translation>領域クエリの結果が不正です %1</translation>
+        <translation>領域クエリの結果が不正です: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2681"/>
@@ -46326,7 +46326,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="305"/>
         <source>Could not reproject view extent: %1</source>
-        <translation>ビューの領域を再投影できません %1</translation>
+        <translation>ビューの領域を再投影できません: %1</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="305"/>
@@ -46338,7 +46338,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="315"/>
         <source>Could not reproject layer extent: %1</source>
-        <translation>レイヤの領域を再投影できません %1</translation>
+        <translation>レイヤの領域を再投影できません: %1</translation>
     </message>
     <message>
         <source>Driver:</source>
@@ -46967,7 +46967,7 @@ Click on help button to get valid creation options for this format.</source>
         <source>Read access denied. Adjust the file permissions and try again.
 
 </source>
-        <translation>読み込みアクセスができません。ファイルのアクセス権限を調整して再度試みてください
+        <translation>読み込みアクセスができません。ファイルのアクセス権限を調整して再度試みてください.
 </translation>
     </message>
     <message>
@@ -47731,7 +47731,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1331"/>
         <source>Original data source no data value, if exists.</source>
-        <translation>オリジナルデータソースのNoデータ (ある場合)</translation>
+        <translation>オリジナルデータソースのデータ無し値 (ある場合).</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1334"/>
@@ -50952,7 +50952,7 @@ but implies better performance thereafter.</source>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="427"/>
         <source>Database does not exist: %1</source>
-        <translation>データベースが存在しません %1</translation>
+        <translation>データベースが存在しません: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="431"/>
@@ -51236,12 +51236,12 @@ but implies better performance thereafter.</source>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="511"/>
         <source>Add to current selection</source>
-        <translation>カレント選択に追加する</translation>
+        <translation>現在の選択に追加する</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="514"/>
         <source>Remove from current selection</source>
-        <translation>カレント選択から除去する</translation>
+        <translation>現在の選択から除去する</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="523"/>
@@ -54879,7 +54879,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="861"/>
         <source>The retrieved style is not a valid named style. Error message: %1</source>
-        <translation>取得されたスタイルは正しい名前のスタイルではありません.エラーメッセージ %1</translation>
+        <translation>取得されたスタイルは正しい名前のスタイルではありません.エラーメッセージ: %1</translation>
     </message>
     <message>
         <source>The style retrieved is not a valid named style. Error message: %1</source>
@@ -62579,7 +62579,7 @@ QGISはもはや最初にロードされたレイヤの空間参照系を地図�
 &lt;a name=&quot;net&quot;&gt;
 &lt;h4&gt;ネットワークとプロキシ&lt;/h4&gt;
 &lt;/a&gt;
-&lt;label&gt;ウェッブアクセスにプロキシを利用する&lt;/label&gt;をクリックするとホスト、ポート、ユーザー、パスワードを指定できます .
+&lt;label&gt;ウェブアクセスにプロキシを利用する&lt;/label&gt;をクリックするとホスト、ポート、ユーザー、パスワードを指定できます .
 </translation>
     </message>
     <message>
