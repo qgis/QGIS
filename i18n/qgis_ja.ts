@@ -63920,8 +63920,8 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$numpages 関数&lt;/h3&gt;
-Returns the total number of pages in the composition.
+        <translation>&lt;h3&gt;$numpages 関数&lt;/h3&gt;
+コンポジションの総ページ数を返す.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$numpages&lt;/pre&gt;
@@ -63949,8 +63949,8 @@ None
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$perimeter 関数&lt;/h3&gt;
-Returns the perimeter length of the current feature.
+        <translation>&lt;h3&gt;$perimeter 関数&lt;/h3&gt;
+カレント地物の周長を返す.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$perimeter&lt;/pre&gt;
@@ -63989,7 +63989,7 @@ Concatenates several strings to one.
      concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
         <translation type="unfinished">&lt;h3&gt;concat() 関数&lt;/h3&gt;
-Concatenates several strings to one.
+複数の文字列を1つに結合する.
 
 &lt;h4&gt;構文&lt;/h4&gt;
      concat(&lt;i&gt;string&lt;i&gt;[,&lt;i&gt;string&lt;/i&gt;...])
