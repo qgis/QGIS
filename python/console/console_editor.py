@@ -116,7 +116,7 @@ class Editor(QsciScintilla):
         #self.setMinimumWidth(300)
 
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-        self.setMatchedBraceBackgroundColor(QColor("#c6c6c6"))
+        self.setMatchedBraceBackgroundColor(QColor("#b7f907"))
 
         # Folding
         self.setFolding(QsciScintilla.PlainFoldStyle)
@@ -613,11 +613,12 @@ class Editor(QsciScintilla):
             return True
 
     def keyPressEvent(self, e):
-        t = unicode(e.text())
-        ## Close bracket automatically
-        if t in self.opening:
-            i = self.opening.index(t)
-            self.insert(self.closing[i])
+        if self.settings.value("pythonConsole/autoCloseBracketEditor", True).toBool():
+            t = unicode(e.text())
+            ## Close bracket automatically
+            if t in self.opening:
+                i = self.opening.index(t)
+                self.insert(self.closing[i])
         QsciScintilla.keyPressEvent(self, e)
 
     def focusInEvent(self, e):
@@ -1145,11 +1146,12 @@ class EditorTabWidget(QTabWidget):
         objInspectorEnabled = self.settings.value("pythonConsole/enableObjectInsp",
                                                   False).toBool()
         listObj = self.parent.objectListButton
-        listObj.setChecked(objInspectorEnabled)
+        if self.parent.listClassMethod.isVisible():
+            listObj.setChecked(objInspectorEnabled)
         listObj.setEnabled(objInspectorEnabled)
         if objInspectorEnabled:
             cW = self.currentWidget()
-            if cW:
+            if cW and not self.parent.listClassMethod.isVisible():
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 self.listObject(cW)
                 QApplication.restoreOverrideCursor()

@@ -72,7 +72,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         # Brace matching: enable for a brace immediately before or after
         # the current position
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-        self.setMatchedBraceBackgroundColor(QColor("#c6c6c6"))
+        self.setMatchedBraceBackgroundColor(QColor("#b7f907"))
 
         # Current line visible with special background color
         self.setCaretWidth(2)
@@ -380,8 +380,9 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                 self.setCursorPosition(line, 4)
             self.recolor()
 
-        elif e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier) and \
-                e.key() == Qt.Key_V:
+        elif (e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier) and \
+            e.key() == Qt.Key_V) or \
+            (e.modifiers() & Qt.ShiftModifier and e.key() == Qt.Key_Insert):
             self.paste()
             e.accept()
 
@@ -391,11 +392,12 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.showNext()
         ## TODO: press event for auto-completion file directory
         else:
-            t = unicode(e.text())
-            ## Close bracket automatically
-            if t in self.opening:
-                i = self.opening.index(t)
-                self.insert(self.closing[i])
+            if self.settings.value("pythonConsole/autoCloseBracket", True).toBool():
+                t = unicode(e.text())
+                ## Close bracket automatically
+                if t in self.opening:
+                    i = self.opening.index(t)
+                    self.insert(self.closing[i])
             QsciScintilla.keyPressEvent(self, e)
 
     def contextMenuEvent(self, e):
@@ -494,10 +496,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.writeCMD(cmd)
         import webbrowser
         self.updateHistory(cmd)
-        line, pos = self.getCursorPosition()
-        selCmdLenght = self.text(line).length()
-        self.setSelection(line, 0, line, selCmdLenght)
-        self.removeSelectedText()
         if cmd in ('_save', '_clear', '_clearAll', '_pyqgis', '_api'):
             if cmd == '_save':
                 self.writeHistoryFile()
@@ -516,18 +514,18 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             if msgText:
                 self.parent.callWidgetMessageBar(msgText)
 
-            self.displayPrompt(False)
+            more = False
         else:
             self.buffer.append(cmd)
             src = u"\n".join(self.buffer)
             more = self.runsource(src, "<input>")
             if not more:
                 self.buffer = []
-            ## prevents to commands with more lines to break the console
-            ## in the case they have a eol different from '\n'
-            self.setText('')
-            self.move_cursor_to_end()
-            self.displayPrompt(more)
+        ## prevents to commands with more lines to break the console
+        ## in the case they have a eol different from '\n'
+        self.setText('')
+        self.move_cursor_to_end()
+        self.displayPrompt(more)
 
     def write(self, txt):
         sys.stderr.write(txt)

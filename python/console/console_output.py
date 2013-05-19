@@ -148,6 +148,10 @@ class ShellOutputScintilla(QsciScintilla):
         font = QFont(loadFont)
         font.setFixedPitch(True)
         font.setPointSize(fontSize)
+        font.setStyleHint(QFont.TypeWriter)
+        font.setStretch(QFont.SemiCondensed)
+        font.setLetterSpacing(QFont.PercentageSpacing, 87.0)
+        font.setBold(False)
 
         self.lexer.setDefaultFont(font)
         self.lexer.setColor(Qt.red, 1)

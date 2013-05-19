@@ -704,6 +704,7 @@ class PythonConsoleWidget(QWidget):
                                QVariant(self.tabListScript))
 
     def saveSettingsConsole(self):
+        self.settings.setValue("pythonConsole/splitterConsole", self.splitter.saveState())
         self.settings.setValue("pythonConsole/splitterObj", self.splitterObj.saveState())
         self.settings.setValue("pythonConsole/splitterEditor", self.splitterEditor.saveState())
 
@@ -712,6 +713,7 @@ class PythonConsoleWidget(QWidget):
     def restoreSettingsConsole(self):
         storedTabScripts = self.settings.value("pythonConsole/tabScripts")
         self.tabListScript = storedTabScripts.toList()
+        self.splitter.restoreState(self.settings.value("pythonConsole/splitterConsole").toByteArray())
         self.splitterEditor.restoreState(self.settings.value("pythonConsole/splitterEditor").toByteArray())
         self.splitterObj.restoreState(self.settings.value("pythonConsole/splitterObj").toByteArray())
 
