@@ -8272,7 +8272,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Cut</source>
-        <translation>カット</translation>
+        <translation>切り取り</translation>
     </message>
     <message>
         <source>Copy</source>
@@ -11939,7 +11939,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5817"/>
         <source>%1 current changes for %2 layer(s)?</source>
-        <translation>%1 カレントへの変更は %2 レイヤ用ですか?</translation>
+        <translation>現在の%2レイヤの変更を%1しますか?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6089"/>
@@ -16411,7 +16411,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="472"/>
         <source>Filters the visible features according to the current filter selection and filter string.</source>
-        <translation>現在表示されている地物のフィルターはカレントフィルターの選択とフィルターストリングにしたがっています.</translation>
+        <translation>表示される地物を現在の選択フィルタとフィルタ文字列によって絞り込みます.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="475"/>
