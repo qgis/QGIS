@@ -58,6 +58,8 @@ QWidget *QgsAttributeTableDelegate::createEditor(
 
   QWidget *w = QgsAttributeEditor::createAttributeEditor( parent, 0, vl, fieldIdx, index.model()->data( index, Qt::EditRole ) );
 
+  w->setAutoFillBackground( true );
+
   if ( parent )
   {
     QgsAttributeTableView *tv = dynamic_cast<QgsAttributeTableView *>( parent->parentWidget() );

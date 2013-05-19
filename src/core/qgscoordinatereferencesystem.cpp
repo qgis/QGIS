@@ -1475,11 +1475,11 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS( QString name )
   QgsMessageLog::logMessage( QObject::tr( "Saved user CRS [%1]" ).arg( toProj4() ), QObject::tr( "CRS" ) );
 
   int return_id;
-  if(myResult == SQLITE_OK)
+  if ( myResult == SQLITE_OK )
   {
     return_id = sqlite3_last_insert_rowid( myDatabase );
-    setInternalId(return_id);
-    
+    setInternalId( return_id );
+
     //We add the just created user CRS to the list of recently used CRS
     QSettings settings;
     //QStringList recentProjections = settings.value( "/UI/recentProjections" ).toStringList();
@@ -1487,8 +1487,8 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS( QString name )
     QStringList projectionsAuthId = settings.value( "/UI/recentProjectionsAuthId" ).toStringList();
     //recentProjections.append();
     //settings.setValue( "/UI/recentProjections", recentProjections );
-    projectionsProj4.append(toProj4());
-    projectionsAuthId.append(authid());
+    projectionsProj4.append( toProj4() );
+    projectionsAuthId.append( authid() );
     settings.setValue( "/UI/recentProjectionsProj4", projectionsProj4 );
     settings.setValue( "/UI/recentProjectionsAuthId", projectionsAuthId );
 

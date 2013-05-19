@@ -1279,7 +1279,9 @@ QGraphicsLineItem* QgsComposition::addSnapLine()
   QGraphicsLineItem* item = new QGraphicsLineItem();
   QPen linePen( Qt::SolidLine );
   linePen.setColor( Qt::red );
-  linePen.setWidthF( 0.5 );
+  // use a pen width of 0, since this activates a cosmetic pen
+  // which doesn't scale with the composer and keeps a constant size
+  linePen.setWidthF( 0 );
   item->setPen( linePen );
   item->setZValue( 100 );
   addItem( item );

@@ -31,6 +31,7 @@
 
 QgsDualView::QgsDualView( QWidget* parent )
     : QStackedWidget( parent )
+    , mAttributeDialog( NULL )
     , mProgressDlg( NULL )
 {
   setupUi( this );
@@ -258,7 +259,7 @@ void QgsDualView::setCurrentEditSelection( const QgsFeatureIds& fids )
 
 void QgsDualView::saveEditChanges()
 {
-  if ( mAttributeDialog->dialog() )
+  if ( mAttributeDialog && mAttributeDialog->dialog() )
   {
     if ( mLayerCache->layer()->isEditable() )
     {

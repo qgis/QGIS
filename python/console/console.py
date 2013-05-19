@@ -489,9 +489,22 @@ class PythonConsoleWidget(QWidget):
         self.findPrevButton.setIcon(QgsApplication.getThemeIcon("console/iconSearchPrevEditorConsole.png"))
         self.findPrevButton.setIconSize(QSize(24, 24))
         self.findPrevButton.setAutoRaise(True)
+        self.caseSensitive = QCheckBox()
+        caseSensTr = QCoreApplication.translate("PythonConsole", "Case Sensitive")
+        self.caseSensitive.setText(caseSensTr)
+        self.wholeWord = QCheckBox()
+        wholeWordTr = QCoreApplication.translate("PythonConsole", "Whole Word")
+        self.wholeWord.setText(wholeWordTr)
+        self.wrapAround = QCheckBox()
+        self.wrapAround.setChecked(True)
+        wrapAroundTr = QCoreApplication.translate("PythonConsole", "Wrap Around")
+        self.wrapAround.setText(wrapAroundTr)
         self.layoutFind.addWidget(self.lineEditFind, 0, 1, 1, 1)
-        self.layoutFind.addWidget(self.findNextButton, 0, 3, 1, 1)
         self.layoutFind.addWidget(self.findPrevButton, 0, 2, 1, 1)
+        self.layoutFind.addWidget(self.findNextButton, 0, 3, 1, 1)
+        self.layoutFind.addWidget(self.caseSensitive, 0, 4, 1, 1)
+        self.layoutFind.addWidget(self.wholeWord, 0, 5, 1, 1)
+        self.layoutFind.addWidget(self.wrapAround, 0, 6, 1, 1)
 
         ##------------ Add first Tab in Editor -------------------------------
 
@@ -528,20 +541,20 @@ class PythonConsoleWidget(QWidget):
         self.lineEditFind.textChanged.connect(self._textFindChanged)
 
     def _findText(self):
-        self.tabEditorWidget.currentWidget().newEditor.findText()
+        self.tabEditorWidget.currentWidget().newEditor.findText(True)
 
     def _findNext(self):
-        self.tabEditorWidget.currentWidget().newEditor.findText()
+        self.tabEditorWidget.currentWidget().newEditor.findText(True)
 
     def _findPrev(self):
-        self.tabEditorWidget.currentWidget().newEditor.findText(True)
-        self.tabEditorWidget.currentWidget().newEditor.findNext()
+        self.tabEditorWidget.currentWidget().newEditor.findText(False)
 
     def _textFindChanged(self):
         if not self.lineEditFind.text().isEmpty():
             self.findNextButton.setEnabled(True)
             self.findPrevButton.setEnabled(True)
         else:
+            self.lineEditFind.setStyleSheet('')
             self.findNextButton.setEnabled(False)
             self.findPrevButton.setEnabled(False)
 

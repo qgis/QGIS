@@ -59,8 +59,8 @@ class ModelerArrowItem(QtGui.QGraphicsPathItem):
         self.setPen(QtGui.QPen(self.myColor, 1, QtCore.Qt.SolidLine,
                 QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
         self.setZValue(0)
-        
-    
+
+
     def startItem(self):
         return self.myStartItem
 
@@ -78,28 +78,28 @@ class ModelerArrowItem(QtGui.QGraphicsPathItem):
         controlPoints = []
         endPt = self.endItem().getLinkPointForParameter(self.paramIndex)
         startPt = self.startItem().getLinkPointForOutput(self.outputIndex)
-        if isinstance(self.startItem().element, GeoAlgorithm):            
-            if self.startItem().element.outputs:                
-                controlPoints.append(startItem.pos() + startPt) 
-                controlPoints.append(startItem.pos() + startPt + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH /2,0))                
+        if isinstance(self.startItem().element, GeoAlgorithm):
+            if self.startItem().element.outputs:
+                controlPoints.append(startItem.pos() + startPt)
+                controlPoints.append(startItem.pos() + startPt + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH /2,0))
                 controlPoints.append(endItem.pos() + endPt - QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH /2, 0))
-                controlPoints.append(endItem.pos() + endPt)                               
+                controlPoints.append(endItem.pos() + endPt)
                 pt = QtCore.QPointF(startItem.pos() + startPt + QtCore.QPointF(-3, -3))
                 painter.drawEllipse(pt.x(), pt.y(), 6, 6)
                 pt = QtCore.QPointF(endItem.pos() + endPt + QtCore.QPointF(-3, -3))
-                painter.drawEllipse(pt.x(), pt.y(), 6, 6)                  
+                painter.drawEllipse(pt.x(), pt.y(), 6, 6)
             else: # case where there is a dependency on an algorithm not on an output
-                controlPoints.append(startItem.pos() + startPt) 
+                controlPoints.append(startItem.pos() + startPt)
                 controlPoints.append(startItem.pos() + startPt + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH /2,0))
                 controlPoints.append(endItem.pos() + endPt - QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH /2, 0))
-                controlPoints.append(endItem.pos() + endPt)    
-        else:            
+                controlPoints.append(endItem.pos() + endPt)
+        else:
             controlPoints.append(startItem.pos())
             controlPoints.append(startItem.pos() + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH /2,0))
             controlPoints.append(endItem.pos() + endPt - QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH /2, 0))
-            controlPoints.append(endItem.pos() + endPt)  
+            controlPoints.append(endItem.pos() + endPt)
             pt = QtCore.QPointF(endItem.pos() + endPt + QtCore.QPointF(-3, -3))
-            painter.drawEllipse(pt.x(), pt.y(), 6, 6)                  
+            painter.drawEllipse(pt.x(), pt.y(), 6, 6)
 
         path = QtGui.QPainterPath()
         path.moveTo(controlPoints[0])

@@ -166,7 +166,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
 
 void QgsDelimitedTextProvider::resetCachedSubset()
 {
-  mCachedSubsetString=QString();
+  mCachedSubsetString = QString();
   mCachedUseSubsetIndex = false;
   mCachedUseSpatialIndex = false;
 }
@@ -755,8 +755,8 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
 {
   // If not changing string, then oll ok, nothing to do
 
-  if( subset.isNull() ) subset="";
-  if( subset == mSubsetString ) return true;
+  if ( subset.isNull() ) subset = "";
+  if ( subset == mSubsetString ) return true;
 
   bool valid = true;
 
@@ -814,16 +814,16 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
 
     if ( updateFeatureCount )
     {
-      if( ! mCachedSubsetString.isNull() && mSubsetString == mCachedSubsetString )
+      if ( ! mCachedSubsetString.isNull() && mSubsetString == mCachedSubsetString )
       {
-        QgsDebugMsg(QString("DelimitedText: Resetting cached subset string %1").arg(mSubsetString));
+        QgsDebugMsg( QString( "DelimitedText: Resetting cached subset string %1" ).arg( mSubsetString ) );
         mUseSpatialIndex = mCachedUseSpatialIndex;
         mUseSubsetIndex = mCachedUseSubsetIndex;
         resetCachedSubset();
       }
       else
       {
-        QgsDebugMsg(QString("DelimitedText: Setting new subset string %1").arg(mSubsetString));
+        QgsDebugMsg( QString( "DelimitedText: Setting new subset string %1" ).arg( mSubsetString ) );
         // Reset the subset index
         rescanFile();
         // Encode the subset string into the data source URI.
@@ -833,11 +833,11 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
     else
     {
       // If not already using temporary subset, then cache the current subset
-      QgsDebugMsg(QString("DelimitedText: Setting temporary subset string %1").arg(mSubsetString));
-      if( mCachedSubsetString.isNull() )
+      QgsDebugMsg( QString( "DelimitedText: Setting temporary subset string %1" ).arg( mSubsetString ) );
+      if ( mCachedSubsetString.isNull() )
       {
-        QgsDebugMsg(QString("DelimitedText: Caching previous subset %1").arg(previousSubset));
-        mCachedSubsetString=previousSubset;
+        QgsDebugMsg( QString( "DelimitedText: Caching previous subset %1" ).arg( previousSubset ) );
+        mCachedSubsetString = previousSubset;
         mCachedUseSpatialIndex = mUseSpatialIndex;
         mCachedUseSubsetIndex = mUseSubsetIndex;
       }

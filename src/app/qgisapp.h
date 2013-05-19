@@ -629,7 +629,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Add a Delimited Text layer to the map
     void addDelimitedTextLayer();
     //! Add a vector layer defined by uri, layer name, data source uri
-    void addSelectedVectorLayer(QString uri, QString layerName, QString provider );
+    void addSelectedVectorLayer( QString uri, QString layerName, QString provider );
     //#ifdef HAVE_MSSQL
     //! Add a MSSQL layer to the map
     void addMssqlLayer();

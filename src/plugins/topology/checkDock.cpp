@@ -427,17 +427,17 @@ void checkDock::validateSelected()
 
 void checkDock::toggleErrorMarker()
 {
-    QList<QgsRubberBand*>::const_iterator it;
-    for ( it = mRbErrorMarkers.begin(); it != mRbErrorMarkers.end(); ++it )
+  QList<QgsRubberBand*>::const_iterator it;
+  for ( it = mRbErrorMarkers.begin(); it != mRbErrorMarkers.end(); ++it )
+  {
+    QgsRubberBand* rb = *it;
+    if ( mToggleRubberband->isChecked() )
     {
-      QgsRubberBand* rb = *it;
-        if ( mToggleRubberband->isChecked() )
-        {
-            rb->show();
-        }
-        else
-        {
-            rb->hide();
-        }
+      rb->show();
     }
+    else
+    {
+      rb->hide();
+    }
+  }
 }

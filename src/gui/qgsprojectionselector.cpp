@@ -268,7 +268,7 @@ void QgsProjectionSelector::applySelection( int column, QString value )
   }
   else
   {
-    QgsDebugMsg( QString("nothing found for %1,%2" ).arg( column ).arg( value ) );
+    QgsDebugMsg( QString( "nothing found for %1,%2" ).arg( column ).arg( value ) );
     // unselect the selected item to avoid confusing the user
     lstCoordinateSystems->clearSelection();
     lstRecent->clearSelection();

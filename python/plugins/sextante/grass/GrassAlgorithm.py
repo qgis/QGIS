@@ -56,13 +56,13 @@ from sextante.parameters.ParameterString import ParameterString
 
 class GrassAlgorithm(GeoAlgorithm):
 
-    GRASS_OUTPUT_TYPE_PARAMETER = "GRASS_OUTPUT_TYPE_PARAMETER" 
+    GRASS_OUTPUT_TYPE_PARAMETER = "GRASS_OUTPUT_TYPE_PARAMETER"
     GRASS_MIN_AREA_PARAMETER = "GRASS_MIN_AREA_PARAMETER"
     GRASS_SNAP_TOLERANCE_PARAMETER = "GRASS_SNAP_TOLERANCE_PARAMETER"
     GRASS_REGION_EXTENT_PARAMETER = "GRASS_REGION_PARAMETER"
     GRASS_REGION_CELLSIZE_PARAMETER = "GRASS_REGION_CELLSIZE_PARAMETER"
     GRASS_REGION_ALIGN_TO_RESOLUTION = "-a_r.region"
-    
+
     OUTPUT_TYPES = ["auto", "point", "line", "area"]
 
     def __init__(self, descriptionfile):
@@ -156,12 +156,12 @@ class GrassAlgorithm(GeoAlgorithm):
             param = ParameterNumber(self.GRASS_MIN_AREA_PARAMETER, "v.in.ogr min area", 0, None, 0.0001)
             param.isAdvanced = True
             self.addParameter(param)
-        if vectorOutputs == 1:            
+        if vectorOutputs == 1:
             param = ParameterSelection(self.GRASS_OUTPUT_TYPE_PARAMETER, "v.out.ogr output type", self.OUTPUT_TYPES)
             param.isAdvanced = True
             self.addParameter(param)
-            
-            
+
+
     def getDefaultCellsize(self):
         cellsize = 0
         for param in self.parameters:
@@ -340,7 +340,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 command += " format=ESRI_Shapefile"
                 command += " olayer=" + os.path.basename(out.value)[:-4]
                 typeidx = self.getParameterValue(self.GRASS_OUTPUT_TYPE_PARAMETER);
-                outtype =  "auto" if typeidx is None else self.OUTPUT_TYPES[typeidx]                 
+                outtype =  "auto" if typeidx is None else self.OUTPUT_TYPES[typeidx]
                 command += " type=" + outtype
                 commands.append(command)
                 outputCommands.append(command)

@@ -420,7 +420,7 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
   }
   else
   {
-	lstTilesets->setRowCount( 0 );
+    lstTilesets->setRowCount( 0 );
   }
 
   // If we got some layers, let the user add them to the map
