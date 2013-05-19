@@ -402,8 +402,12 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
-        copyAction = menu.addAction("Copy", self.copy, QKeySequence.Copy)
-        pasteAction = menu.addAction("Paste", self.paste, QKeySequence.Paste)
+        copyAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                               "Copy"),
+                                    self.copy, QKeySequence.Copy)
+        pasteAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                                "Paste"),
+                                     self.paste, QKeySequence.Paste)
         copyAction.setEnabled(False)
         pasteAction.setEnabled(False)
         if self.hasSelectedText():
