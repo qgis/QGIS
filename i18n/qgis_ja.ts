@@ -10372,7 +10372,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="59"/>
         <source>Road graph plugin</source>
-        <translation>グラフプラグインをロードする</translation>
+        <translation>道路グラフプラグイン</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="60"/>
@@ -57960,7 +57960,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="46"/>
         <source>Transportation layer</source>
-        <translation>移動体レイヤ</translation>
+        <translation>輸送レイヤ</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="48"/>
@@ -57970,7 +57970,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="57"/>
         <source>Direction field</source>
-        <translation>ディレクトリフィールド</translation>
+        <translation>方向フィールド</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="102"/>
@@ -57980,7 +57980,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="64"/>
         <source>Value for forward direction</source>
-        <translation>前方向の値</translation>
+        <translation>順方向の値</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="70"/>
@@ -57995,7 +57995,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="82"/>
         <source>Speed field</source>
-        <translation>スピードレイヤ</translation>
+        <translation>スピードフィールド</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="95"/>
@@ -58015,7 +58015,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="101"/>
         <source>Forward direction</source>
-        <translation>前方向</translation>
+        <translation>順方向</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="110"/>
@@ -58106,12 +58106,12 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="68"/>
         <source>Start</source>
-        <translation>スタート</translation>
+        <translation>開始点</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="80"/>
         <source>Stop</source>
-        <translation>停止</translation>
+        <translation>終了点</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="93"/>
@@ -62064,7 +62064,47 @@ To measure areas, select the tool and click to create the area. The total area i
 &lt;h5&gt;Default settings&lt;/h5&gt;
 &lt;p&gt;If the attribute table of your linear layer does not contain the required fields or fields contain unexpected values, the plugin will use default values. You can set them in the default tab &lt;label&gt;Default settings&lt;/label&gt;.&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;道路グラフプラグイン設定&lt;/h3&gt;
+&lt;p&gt;道路グラフはQuantum GISのためのC++プラグインです. ラインレイヤ上の2つの点の間の最短経路を計算して道路ネットワークの上に最短経路を描画します.&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#creating&quot;&gt;プラグインの単位&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#topologyTolerance&quot;&gt;トポロジ許容値&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#layerSettings&quot;&gt;輸送レイヤ設定&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;a name=&quot;creating&quot;&gt;
+&lt;h4&gt;プラグインの単位&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;計算された経路の距離と時間の単位を適合するものに変えることができます.
+&lt;label&gt;距離単位&lt;/label&gt;と&lt;label&gt;時間単位&lt;/label&gt;で単位を選択して下さい.&lt;/p&gt;
+
+&lt;a name=&quot;topologyTolerance&quot;&gt;
+&lt;h4&gt;トポロジ許容値&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;&lt;label&gt;トポロジ許容値&lt;/label&gt; - プロジェクトの単位での距離です.
+2点の距離が短くトポロジ許容値を下回る場合は頂点であると考えられます.ゼロより大きいトポロジ許容値はプラグインを遅くしますが、理想的ではないデータソースの使用を可能にします.&lt;/p&gt;
+
+&lt;h5&gt;注意&lt;/h5&gt;
+&lt;p&gt;道路グラフプラグインは2つの道路が共通のノードを持っている場合それらがリンクされていると考えます.
+ノードはその座標によって一意に識別されます.
+しかしデジタイズの過程でエラーが発生する場合があります.
+ネットワークがある座標参照系から別のものに変換された時にエラーが起こることがあります.
+これは道路グラフプラグインが接続されている道路を切断されているとみなす原因になります。
+この場合トポロジ許容値はゼロより大きな値に設定した方がよいでしょう.&lt;/p&gt;
+
+&lt;a name=&quot;LayerSettings&quot;&gt;
+&lt;h4&gt;輸送レイヤ設定&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;&lt;label&gt;レイヤ&lt;/label&gt; - 道路レイヤ.&lt;/p&gt;
+&lt;p&gt;&lt;label&gt;方向フィールド&lt;/label&gt; - このフィールドの値は道路グラフプラグインのレイヤ地物の解釈方法を指定します.
+&lt;label&gt;順方向の値&lt;/label&gt; - 地物を構成するポイントの順に対応する移動の方向.
+&lt;label&gt;逆方向の値&lt;/label&gt; - 地物を構成するポイントの逆順に対応する移動の方向.
+&lt;label&gt;両方向の値&lt;/label&gt; - 両方向とも可能.&lt;/p&gt;
+&lt;p&gt;&lt;label&gt;スピードフィールド&lt;/label&gt; - 記載された道路のスピードを含むフィールドを指定します.&lt;/p&gt;
+
+&lt;h5&gt;デフォルト設定&lt;/h5&gt;
+&lt;p&gt;あなたの線形レイヤの属性テーブルが要求されたフィールドを含まない場合やフィールドが予期しない値を含む場合,プラグインはデフォルト値を使います.それらは&lt;label&gt;デフォルト設定&lt;/label&gt;タブで設定できます.&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="253"/>
@@ -62625,7 +62665,26 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;最短経路探索&lt;/h3&gt;
+&lt;p&gt;道路グラフはQuantum GISのためのC++プラグインです. ラインレイヤ上の2つの点の間の最短経路を計算して道路ネットワークの上に最短経路を描画します.
+プラグインを利用する前にメニュー&lt;label&gt;ベクタ &amp;rarr; 道路グラフ &amp;rarr; 設定&lt;/label&gt;で設定を行なって下さい.&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#howto&quot;&gt;使用方法&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;a name=&quot;howto&quot;&gt;
+&lt;h4&gt;使用方法&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;開始点と終了点のフィールドの隣のボタンを使ってマップキャンバスから座標を取得することができます. 
+&lt;label&gt;計算&lt;/label&gt;ボタンを押すと&lt;label&gt;判定基準&lt;/label&gt;コンボボックスで選択された最適化基準を用いて最短経路計算が実行されます. 
+&lt;label&gt;エクスポート&lt;/label&gt;ボタンで計算されたパスを新しいベクタレイヤにエクスポートできます. 
+&lt;label&gt;クリア&lt;/label&gt;ボタンは全てのフィールドの内容を消し, マップキャンバスからポイントと計算されたパスを削除します.
+
+&lt;h5&gt;注意&lt;/h5&gt;
+&lt;p&gt;経路の開始点と終了点を道路ネットワークに結びつけるために道路グラフプラグインはグラフの最近傍点か弧を選択します. 
+実際にはそれは道路ネットワークのどんな部分にも結びつけることができます. 
+それでも、経路とその特性は開始点から道路ネットワークまでの距離と道路ネットワークから終了点までの距離を考慮しません.&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="759"/>
