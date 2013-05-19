@@ -20,6 +20,7 @@
 
 #include "qgisinterface.h"
 #include "qgsapplegendinterface.h"
+#include "qgsapppluginmanagerinterface.h"
 
 class QgisApp;
 
@@ -48,6 +49,8 @@ class QgisAppInterface : public QgisInterface
     ~QgisAppInterface();
 
     QgsLegendInterface* legendInterface();
+
+    QgsPluginManagerInterface* pluginManagerInterface();
 
     /* Exposed functions */
 
@@ -473,6 +476,9 @@ class QgisAppInterface : public QgisInterface
 
     //! Pointer to the LegendInterface object
     QgsAppLegendInterface legendIface;
+
+    //! Pointer to the PluginManagerInterface object
+    QgsAppPluginManagerInterface pluginManagerIface;
 };
 
 #ifdef _MSC_VER

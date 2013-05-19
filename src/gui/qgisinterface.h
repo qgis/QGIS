@@ -31,6 +31,7 @@ class QgsMapCanvas;
 class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsLegendInterface;
+class QgsPluginManagerInterface;
 class QgsFeature;
 class QgsMessageBar;
 
@@ -74,6 +75,8 @@ class GUI_EXPORT QgisInterface : public QObject
       \note added in 1.4
      */
     virtual QgsLegendInterface* legendInterface() = 0;
+
+    virtual QgsPluginManagerInterface* pluginManagerInterface() = 0;
 
   public slots: // TODO: do these functions really need to be slots?
 

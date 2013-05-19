@@ -30,6 +30,8 @@ class QgisInterface : QObject
      */
     virtual QgsLegendInterface* legendInterface() = 0;
 
+    virtual QgsPluginManagerInterface* pluginManagerInterface() = 0;
+
   public slots: // TODO: do these functions really need to be slots?
 
     /* Exposed functions */
