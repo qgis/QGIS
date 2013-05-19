@@ -79,7 +79,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolsplitfeatures.cpp
   qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
-  qgsmaptoolvertexedit.cpp  
+  qgsmaptoolvertexedit.cpp
 
   nodetool/qgsmaptoolnodetool.cpp
   nodetool/qgsselectedfeature.cpp
@@ -91,8 +91,6 @@ SET(QGIS_APP_SRCS
   qgsoptions.cpp
   #qgspastetransformations.cpp
   qgspointrotationitem.cpp
-  qgspluginitem.cpp
-  qgspluginmanager.cpp
   qgspluginmetadata.cpp
   qgspluginregistry.cpp
   qgsprojectlayergroupdialog.cpp
@@ -149,6 +147,10 @@ SET(QGIS_APP_SRCS
   openstreetmap/qgsosmdownloaddialog.cpp
   openstreetmap/qgsosmimportdialog.cpp
   openstreetmap/qgsosmexportdialog.cpp
+
+  pluginmanager/qgspluginmanager.cpp
+  pluginmanager/qgsapppluginmanagerinterface.cpp
+  pluginmanager/qgspluginsortfilterproxymodel.cpp
 
   qgsnewspatialitelayerdialog.cpp
 )
@@ -233,7 +235,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmergeattributesdialog.h
   qgsoptions.h
   #qgspastetransformations.h
-  qgspluginmanager.h
   qgsprojectlayergroupdialog.h
   qgsprojectproperties.h
   qgsrastercalcdialog.h
@@ -278,6 +279,10 @@ SET (QGIS_APP_MOC_HDRS
   openstreetmap/qgsosmdownloaddialog.h
   openstreetmap/qgsosmimportdialog.h
   openstreetmap/qgsosmexportdialog.h
+
+  pluginmanager/qgspluginmanager.h
+  pluginmanager/qgsapppluginmanagerinterface.h
+  pluginmanager/qgspluginsortfilterproxymodel.h
 
   qgsnewspatialitelayerdialog.h
   )
@@ -395,7 +400,7 @@ IF(PEDANTIC)
 ENDIF(PEDANTIC)
 
 INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_SOURCE_DIR} composer legend attributetable
+  ${CMAKE_CURRENT_SOURCE_DIR} composer legend pluginmanager
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ${QWT_INCLUDE_DIR}

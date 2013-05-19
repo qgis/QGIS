@@ -354,6 +354,46 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
   }
 }
 
+
+void QgsPluginRegistry::unloadPythonPlugin( QString packageName )
+{
+  if ( !mPythonUtils || !mPythonUtils->isEnabled() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Python is not enabled in QGIS." ), QObject::tr( "Plugins" ) );
+    return;
+  }
+
+  if ( isLoaded( packageName ) )
+  {
+    mPythonUtils->unloadPlugin( packageName );
+    // add to settings
+    QSettings settings;
+    settings.setValue( "/PythonPlugins/" + packageName, false );
+    QgsDebugMsg( "Python plugin successfully unloaded: " + packageName );
+  }
+}
+
+
+void QgsPluginRegistry::unloadCppPlugin( QString theFullPathName )
+{
+  QString baseName = QFileInfo( theFullPathName ).baseName();
+  // first check to see if it's loaded
+  if ( isLoaded( baseName ) )
+  {
+    QgisPlugin * pluginInstance = plugin( baseName );
+    if ( pluginInstance )
+    {
+      pluginInstance->unload();
+    }
+    QSettings settings;
+    settings.setValue( "/Plugins/" + baseName, false );
+    // remove the plugin from the registry
+    removePlugin( baseName );
+    QgsDebugMsg( "Cpp plugin successfully unloaded: " + baseName);
+  }
+}
+
+
 //overloaded version of the next method that will load from multiple directories not just one
 void QgsPluginRegistry::restoreSessionPlugins( QStringList thePluginDirList )
 {

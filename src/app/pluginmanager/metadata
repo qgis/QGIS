@@ -1,0 +1,29 @@
+PLUGIN METADATA TAGS
+=======================================================
+id					the key, usually library base name
+name
+description
+icon				path to installed or available icon
+category			will be removed?
+tags				comma separated, spaces allowed
+changelog			may be multiline
+author_name
+author_email
+homepage			url
+tracker 			url
+code_repository		url
+version_installed
+library				cpp: path to the installed library | Python: module name
+pythonic			is plugin pythonic or cpp?
+readonly			is core plugin?
+status				not installed | installed | upgradeable | orphan | new | newer *
+error				NULL | broken | incompatible | dependent
+error_details
+experimental		choosen version status
+version_available
+zip_repository		the remote repository id
+download_url
+filename			the zip file name
+downloads			number of dowloads
+average_vote
+rating_votes		number of votes

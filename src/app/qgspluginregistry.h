@@ -77,6 +77,11 @@ class QgsPluginRegistry
     //! Python plugin loader
     void loadPythonPlugin( QString packageName );
 
+    //! C++ plugin unloader
+    void unloadCppPlugin( QString theFullPathName );
+    //! Python plugin unloader
+    void unloadPythonPlugin( QString packageName );
+
     //! Overloaded version of the next method that will load from multiple directories not just one
     void restoreSessionPlugins( QStringList thePluginDirList );
     //! Load any plugins used in the last qgis session

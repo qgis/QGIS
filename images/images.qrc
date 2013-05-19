@@ -366,6 +366,7 @@
         <file>themes/default/mMapserverExport.png</file>
         <file>themes/default/pie-chart.png</file>
         <file>themes/default/plugin.png</file>
+        <file>themes/default/pluginExperimental.png</file>
         <file>themes/default/plugins/coordinate_capture/coordinate_capture.png</file>
         <file>themes/default/plugins/copyright_label.png</file>
         <file>themes/default/plugins/dxf2shp_converter.png</file>
@@ -405,15 +406,22 @@
         <file>themes/default/propertyicons/metadata.svg</file>
         <file>themes/default/propertyicons/network_and_proxy.png</file>
         <file>themes/default/propertyicons/overlay.png</file>
+        <file>themes/default/propertyicons/plugin.svg</file>
+        <file>themes/default/propertyicons/plugin-installed.svg</file>
+        <file>themes/default/propertyicons/plugins.svg</file>
         <file>themes/default/propertyicons/pyramids.png</file>
         <file>themes/default/propertyicons/rendering.png</file>
         <file>themes/default/propertyicons/render.svg</file>
+        <file>themes/default/propertyicons/settings.svg</file>
         <file>themes/default/propertyicons/symbology.png</file>
         <file>themes/default/propertyicons/transparency.png</file>
         <file>themes/default/qgis.xpm</file>
         <file>themes/default/rendererCategorizedSymbol.png</file>
         <file>themes/default/rendererGraduatedSymbol.png</file>
-        <file>themes/default/rendererSingleSymbol.png</file>
+        <file>themes/default/rendererSingleSymbol.png</file>        
+        <file>themes/default/repositoryConnected.png</file>
+        <file>themes/default/repositoryDisabled.png</file>
+        <file>themes/default/repositoryUnavailable.png</file>
         <file>themes/default/styleicons/color.png</file>
         <file>themes/default/styleicons/style-line.png</file>
         <file>themes/default/styleicons/style-point.png</file>
