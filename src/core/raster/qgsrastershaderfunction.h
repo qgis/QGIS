@@ -40,11 +40,11 @@ class CORE_EXPORT QgsRasterShaderFunction
     /** \brief Return the minimum value */
     virtual void setMinimumValue( double );
 
-    /** \brief generates and new RGB value based on one input value */
-    virtual bool shade( double, int*, int*, int* );
+    /** \brief generates and new RGBA value based on one input value */
+    virtual bool shade( double, int*, int*, int*, int* );
 
-    /** \brief generates and new RGB value based on original RGB value */
-    virtual bool shade( double, double, double, int*, int*, int* );
+    /** \brief generates and new RGBA value based on original RGBA value */
+    virtual bool shade( double, double, double, double, int*, int*, int*, int* );
 
     double minimumMaximumRange() const { return mMinimumMaximumRange; }
 

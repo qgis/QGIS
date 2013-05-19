@@ -58,10 +58,10 @@ class QgsColorRampShader : QgsRasterShaderFunction
     void setMaximumColorCacheSize( int theSize );
 
     /** \brief Generates and new RGB value based on one input value */
-    bool shade( double, int* /Out/, int* /Out/, int* /Out/ );
+    bool shade( double, int* /Out/, int* /Out/, int* /Out/, int* /Out/ );
 
     /** \brief Generates and new RGB value based on original RGB value */
-    bool shade( double, double, double, int* /Out/, int* /Out/, int* /Out/ );
+    bool shade( double, double, double, double, int* /Out/, int* /Out/, int* /Out/, int* /Out/);
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 };

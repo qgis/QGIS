@@ -732,9 +732,9 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int theBandNumber )
         for ( int myCol = 0; myCol < mySize; myCol++ )
         {
           myValue = myStep * ( double )( myCol + myRow * mySize );
-          int c1, c2, c3;
-          myShader.shade( myValue, &c1, &c2, &c3 );
-          myLineBuffer[ myCol ] = qRgb( c1, c2, c3 );
+          int c1, c2, c3, c4;
+          myShader.shade( myValue, &c1, &c2, &c3, &c4 );
+          myLineBuffer[ myCol ] = qRgba( c1, c2, c3, c4 );
         }
       }
 

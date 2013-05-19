@@ -86,10 +86,10 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     void setMaximumColorCacheSize( int theSize ) { mMaximumColorCacheSize = theSize; }
 
     /** \brief Generates and new RGB value based on one input value */
-    bool shade( double, int*, int*, int* );
+    bool shade( double, int*, int*, int*, int* );
 
     /** \brief Generates and new RGB value based on original RGB value */
-    bool shade( double, double, double, int*, int*, int* );
+    bool shade( double, double, double, double, int*, int*, int*, int* );
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 
@@ -121,17 +121,17 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     /** Gets the color for a pixel value from the classification vector
      * mValueClassification. Assigns the color of the lower class for every
      * pixel between two class breaks.*/
-    bool discreteColor( double, int*, int*, int* );
+    bool discreteColor( double, int*, int*, int*, int* );
 
     /** Gets the color for a pixel value from the classification vector
      * mValueClassification. Assigns the color of the exact matching value in
      * the color ramp item list */
-    bool exactColor( double, int*, int*, int* );
+    bool exactColor( double, int*, int*, int*, int* );
 
     /** Gets the color for a pixel value from the classification vector
      * mValueClassification. Interpolates the color between two class breaks
      * linearly.*/
-    bool interpolatedColor( double, int*, int*, int* );
+    bool interpolatedColor( double, int*, int*, int*, int* );
 
     /** Do not render values out of range */
     bool mClip;
