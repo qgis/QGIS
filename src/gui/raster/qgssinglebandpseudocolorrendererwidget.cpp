@@ -319,7 +319,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
     for ( int i = 0; i < numberOfEntries; ++i )
     {
       int idx = mInvertCheckBox->isChecked() ? numberOfEntries - i - 1 : i;
-      entryColors.push_back( colorRamp->color((( double ) idx ) / numberOfEntries ) );
+      entryColors.push_back( colorRamp->color((( double ) idx ) / ( numberOfEntries - 1 ) ) );
     }
   }
 
