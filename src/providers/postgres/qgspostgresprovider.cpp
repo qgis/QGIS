@@ -510,15 +510,18 @@ QString QgsPostgresProvider::whereClause( QgsFeatureId featureId ) const
       break;
   }
 
-  if ( !mSqlWhereClause.isEmpty() )
-  {
-    if ( !whereClause.isEmpty() )
-      whereClause += " AND ";
+  return whereClause;
+}
 
-    whereClause += "(" + mSqlWhereClause + ")";
+QString QgsPostgresProvider::whereClause( QgsFeatureIds featureIds ) const
+{
+  QStringList whereClauses;
+  foreach ( const QgsFeatureId featureId, featureIds )
+  {
+    whereClauses << whereClause( featureId );
   }
 
-  return whereClause;
+  return whereClauses.join( " AND " );
 }
 
 QString QgsPostgresProvider::filterWhereClause() const

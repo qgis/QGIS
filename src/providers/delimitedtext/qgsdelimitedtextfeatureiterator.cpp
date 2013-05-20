@@ -138,7 +138,7 @@ QgsDelimitedTextFeatureIterator::~QgsDelimitedTextFeatureIterator()
   close();
 }
 
-bool QgsDelimitedTextFeatureIterator::nextFeature( QgsFeature& feature )
+bool QgsDelimitedTextFeatureIterator::fetchFeature( QgsFeature& feature )
 {
   // before we do anything else, assume that there's something wrong with
   // the feature

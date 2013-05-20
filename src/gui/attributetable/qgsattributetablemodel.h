@@ -188,6 +188,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     void prefetchColumnData( int column );
 
+    void setRequest( const QgsFeatureRequest& request );
+
   signals:
     /**
      * Model has been changed

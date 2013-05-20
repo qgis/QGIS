@@ -96,7 +96,7 @@ void QgsOgrFeatureIterator::ensureRelevantFields()
 }
 
 
-bool QgsOgrFeatureIterator::nextFeature( QgsFeature& feature )
+bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )
 {
   feature.setValid( false );
 

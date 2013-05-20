@@ -30,9 +30,6 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIterator
 
     ~QgsPostgresFeatureIterator();
 
-    //! fetch next feature, return true on success
-    virtual bool nextFeature( QgsFeature& feature );
-
     //! reset the iterator to the starting position
     virtual bool rewind();
 
@@ -40,12 +37,17 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIterator
     virtual bool close();
 
   protected:
+    //! fetch next feature, return true on success
+    virtual bool fetchFeature( QgsFeature& feature );
+
     QgsPostgresProvider* P;
 
     QString whereClauseRect();
     bool getFeature( QgsPostgresResult &queryResult, int row, QgsFeature &feature );
     void getFeatureAttribute( int idx, QgsPostgresResult& queryResult, int row, int& col, QgsFeature& feature );
     bool declareCursor( const QString& whereClause );
+
+    bool fetchNextFeature( QgsFeature& feature );
 
     QString mCursorName;
 

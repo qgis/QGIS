@@ -24,7 +24,7 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
   mFeatureIdIterator = featureIds.begin();
 }
 
-bool QgsCachedFeatureIterator::nextFeature( QgsFeature& f )
+bool QgsCachedFeatureIterator::fetchFeature( QgsFeature& f )
 {
   mFeatureIdIterator++;
 
@@ -58,7 +58,7 @@ QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCa
   mFeatIt = vlCache->layer()->getFeatures( featureRequest );
 }
 
-bool QgsCachedFeatureWriterIterator::nextFeature( QgsFeature& f )
+bool QgsCachedFeatureWriterIterator::fetchFeature( QgsFeature& f )
 {
   if ( mFeatIt.nextFeature( f ) )
   {

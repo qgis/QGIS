@@ -32,9 +32,6 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIterator
 
     ~QgsSpatiaLiteFeatureIterator();
 
-    //! fetch next feature, return true on success
-    virtual bool nextFeature( QgsFeature& feature );
-
     //! reset the iterator to the starting position
     virtual bool rewind();
 
@@ -42,6 +39,10 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIterator
     virtual bool close();
 
   protected:
+
+    //! fetch next feature, return true on success
+    virtual bool fetchFeature( QgsFeature& feature );
+
     QgsSpatiaLiteProvider* P;
 
     QString whereClauseRect();

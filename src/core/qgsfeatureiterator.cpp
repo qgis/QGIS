@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfeatureiterator.h"
-
+#include "qgslogger.h"
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest& request )
     : mRequest( request )
@@ -24,6 +24,44 @@ QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest&
 
 QgsAbstractFeatureIterator::~QgsAbstractFeatureIterator()
 {
+}
+
+bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
+{
+  switch ( mRequest.filterType() )
+  {
+    case QgsFeatureRequest::FilterExpression:
+      return nextFeatureFilterExpression( f );
+      break;
+
+    case QgsFeatureRequest::FilterFids:
+      return nextFeatureFilterFids( f );
+      break;
+
+    default:
+      return fetchFeature( f );
+      break;
+  }
+}
+
+bool QgsAbstractFeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
+{
+  while ( fetchFeature( f ) )
+  {
+    if ( mRequest.filterExpression()->evaluate( f ).toBool() )
+      return true;
+  }
+  return false;
+}
+
+bool QgsAbstractFeatureIterator::nextFeatureFilterFids( QgsFeature& f )
+{
+  while ( fetchFeature( f ) )
+  {
+    if ( mRequest.filterFids().contains( f.id() ) )
+      return true;
+  }
+  return false;
 }
 
 void QgsAbstractFeatureIterator::ref()

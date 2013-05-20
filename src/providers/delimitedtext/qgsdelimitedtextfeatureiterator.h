@@ -34,9 +34,6 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIterator
 
     ~QgsDelimitedTextFeatureIterator();
 
-    //! fetch next feature, return true on success
-    virtual bool nextFeature( QgsFeature& feature );
-
     //! reset the iterator to the starting position
     virtual bool rewind();
 
@@ -58,6 +55,9 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIterator
     bool wantGeometry( QgsGeometry *geom ) const;
 
   protected:
+    //! fetch next feature, return true on success
+    virtual bool fetchFeature( QgsFeature& feature );
+
     QgsDelimitedTextProvider* P;
     QList<QgsFeatureId> mFeatureIds;
     IteratorMode mMode;

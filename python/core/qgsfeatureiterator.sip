@@ -11,13 +11,18 @@ class QgsAbstractFeatureIterator
     virtual ~QgsAbstractFeatureIterator();
 
     //! fetch next feature, return true on success
-    virtual bool nextFeature( QgsFeature& f ) = 0;
+    virtual bool nextFeature( QgsFeature& f );
     //! reset the iterator to the starting position
     virtual bool rewind() = 0;
     //! end of iterating: free the resources / lock
     virtual bool close() = 0;
 
   protected:
+    virtual bool nextFeatureFilterExpression( QgsFeature &f );
+
+    virtual bool nextFeatureFilterFids( QgsFeature & f );
+
+    virtual bool fetchFeature( QgsFeature& f ) = 0;
     void ref(); // add reference
     void deref(); // remove reference, delete if refs == 0
 };

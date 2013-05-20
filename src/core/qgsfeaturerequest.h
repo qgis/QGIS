@@ -19,6 +19,7 @@
 
 #include "qgsfeature.h"
 #include "qgsrectangle.h"
+#include "qgsexpression.h"
 
 #include <QList>
 typedef QList<int> QgsAttributeList;
@@ -66,9 +67,11 @@ class CORE_EXPORT QgsFeatureRequest
 
     enum FilterType
     {
-      FilterNone,   //!< No filter is applied
-      FilterRect,   //!< Filter using a rectangle
-      FilterFid     //!< Filter using feature ID
+      FilterNone,       //!< No filter is applied
+      FilterRect,       //!< Filter using a rectangle
+      FilterFid,        //!< Filter using feature ID
+      FilterExpression, //!< Filter using expression
+      FilterFids        //!< Filter using feature ID's
     };
 
     //! construct a default request: for all features get attributes and geometries
@@ -79,6 +82,10 @@ class CORE_EXPORT QgsFeatureRequest
     explicit QgsFeatureRequest( const QgsRectangle& rect );
     //! copy constructor
     QgsFeatureRequest( const QgsFeatureRequest& rh );
+
+    QgsFeatureRequest& operator=( const QgsFeatureRequest& rh );
+
+    ~QgsFeatureRequest();
 
     FilterType filterType() const { return mFilter; }
 
@@ -91,6 +98,14 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest& setFilterFid( QgsFeatureId fid );
     const QgsFeatureId& filterFid() const { return mFilterFid; }
 
+    //! Set feature ID that should be fetched.
+    QgsFeatureRequest& setFilterFids( QgsFeatureIds fids );
+    const QgsFeatureIds& filterFids() const { return mFilterFids; }
+
+    //! Set filter expression. {@see QgsExpression}
+    QgsFeatureRequest& setFilterExpression( const QString& expression );
+    QgsExpression* filterExpression() const { return mFilterExpression; }
+
     //! Set flags that affect how features will be fetched
     QgsFeatureRequest& setFlags( Flags flags );
     const Flags& flags() const { return mFlags; }
@@ -102,6 +117,17 @@ class CORE_EXPORT QgsFeatureRequest
 
     //! Set a subset of attributes by names that will be fetched
     QgsFeatureRequest& setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields );
+    
+    /** 
+     * Check if a feature is accepted by this requests filter
+     *
+     * @param feature  The feature which will be tested
+     *
+     * @return true, if the filter accepts the feature
+     *
+     * @note added in 2.1
+     */
+    bool acceptFeature( const QgsFeature& feature );
 
     // TODO: in future
     // void setFilterExpression(const QString& expression); // using QgsExpression
@@ -112,6 +138,8 @@ class CORE_EXPORT QgsFeatureRequest
     FilterType mFilter;
     QgsRectangle mFilterRect;
     QgsFeatureId mFilterFid;
+    QgsFeatureIds mFilterFids;
+    QgsExpression* mFilterExpression;
     Flags mFlags;
     QgsAttributeList mAttrs;
 };

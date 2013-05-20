@@ -79,7 +79,7 @@ QgsSqlAnywhereFeatureIterator::~QgsSqlAnywhereFeatureIterator()
 }
 
 bool
-QgsSqlAnywhereFeatureIterator::nextFeature( QgsFeature& feature )
+QgsSqlAnywhereFeatureIterator::fetchFeature( QgsFeature& feature )
 {
   if ( mClosed )
     return false;

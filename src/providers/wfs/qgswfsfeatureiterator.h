@@ -25,9 +25,11 @@ class QgsWFSFeatureIterator: public QgsAbstractFeatureIterator
     QgsWFSFeatureIterator( QgsWFSProvider* provider, const QgsFeatureRequest& request );
     ~QgsWFSFeatureIterator();
 
-    bool nextFeature( QgsFeature& f );
     bool rewind();
     bool close();
+
+  protected:
+    bool fetchFeature( QgsFeature& f );
 
   private:
     QgsWFSProvider* mProvider;

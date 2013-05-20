@@ -33,9 +33,6 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIterator
 
     ~QgsMssqlFeatureIterator();
 
-    //! fetch next feature, return true on success
-    virtual bool nextFeature( QgsFeature& feature );
-
     //! reset the iterator to the starting position
     virtual bool rewind();
 
@@ -48,6 +45,9 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIterator
     void BuildStatement( const QgsFeatureRequest& request );
 
   private:
+    //! fetch next feature, return true on success
+    virtual bool fetchFeature( QgsFeature& feature );
+
     // The current database
     QSqlDatabase mDatabase;
 

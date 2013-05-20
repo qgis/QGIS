@@ -642,3 +642,8 @@ void QgsAttributeTableModel::prefetchColumnData( int column )
     mCachedField = fieldId;
   }
 }
+
+void QgsAttributeTableModel::setRequest( const QgsFeatureRequest& request )
+{
+  mFeatureRequest = request;
+}

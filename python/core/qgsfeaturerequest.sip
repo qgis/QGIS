@@ -17,9 +17,11 @@ class QgsFeatureRequest
 
     enum FilterType
     {
-      FilterNone,   //!< No filter is applied
-      FilterRect,   //!< Filter using a rectangle
-      FilterFid     //!< Filter using feature ID
+      FilterNone,       //!< No filter is applied
+      FilterRect,       //!< Filter using a rectangle
+      FilterFid,        //!< Filter using feature ID
+      FilterExpression, //!< Filter using expression
+      FilterFids        //!< Filter using feature IDs
     };
 
     //! construct a default request: for all features get attributes and geometries
@@ -39,6 +41,14 @@ class QgsFeatureRequest
     //! Set feature ID that should be fetched.
     QgsFeatureRequest& setFilterFid( qint64 fid );
     qint64 filterFid() const;
+
+    //! Set feature ID that should be fetched.
+    QgsFeatureRequest& setFilterFids( QgsFeatureIds fids );
+    const QgsFeatureIds& filterFids() const;
+
+    //! Set filter expression. Ownership is taken.
+    QgsFeatureRequest& setFilterExpression( const QString& expression );
+    QgsExpression* filterExpression() const;
 
     //! Set flags that affect how features will be fetched
     QgsFeatureRequest& setFlags( Flags flags );

@@ -232,6 +232,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   // If there is no & in the uri, then the uri is just the filename. The loaded
   // layer will be layer 0.
   //this is not true for geojson
+
   if ( !uri.contains( '|', Qt::CaseSensitive ) )
   {
     mFilePath = uri;

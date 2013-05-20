@@ -46,7 +46,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
      * @param f
      * @return bool
      */
-    virtual bool nextFeature( QgsFeature& f );
+    virtual bool fetchFeature( QgsFeature& f );
 
     /**
      * @brief
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
      * @param f
      * @return bool
      */
-    virtual bool nextFeature( QgsFeature& f );
+    virtual bool fetchFeature( QgsFeature& f );
 
     /**
      * @brief

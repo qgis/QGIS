@@ -71,7 +71,7 @@ bool QgsGPXFeatureIterator::close()
   return true;
 }
 
-bool QgsGPXFeatureIterator::nextFeature( QgsFeature& feature )
+bool QgsGPXFeatureIterator::fetchFeature( QgsFeature& feature )
 {
   feature.setValid( false );
 

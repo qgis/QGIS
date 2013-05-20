@@ -75,8 +75,9 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @param mapCanvas  The mapCanvas (used for the FilterMode
      *                   {@link QgsAttributeTableFilterModel::ShowVisible}
      * @param myDa       Used for attribute dialog creation
+     * @param request    Use a modified request to limit the shown features
      */
-    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QgsDistanceArea myDa );
+    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QgsDistanceArea myDa, const QgsFeatureRequest& request = QgsFeatureRequest() );
 
     /**
      * Change the current view mode.
@@ -129,6 +130,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @return The master model
      */
     QgsAttributeTableModel* masterModel() const { return mMasterModel; }
+
+    void setRequest( const QgsFeatureRequest& request );
 
   protected:
     /**
@@ -230,7 +233,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
   private:
     void initLayerCache( QgsVectorLayer *layer );
-    void initModels( QgsMapCanvas* mapCanvas );
+    void initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request );
 
     QgsAttributeTableModel* mMasterModel;
     QgsAttributeTableFilterModel* mFilterModel;

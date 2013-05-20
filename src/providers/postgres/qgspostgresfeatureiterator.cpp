@@ -61,6 +61,10 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresProvider* p, 
   {
     whereClause = P->whereClause( request.filterFid() );
   }
+  else if ( request.filterType() == QgsFeatureRequest::FilterFids )
+  {
+    whereClause = P->whereClause( request.filterFids() );
+  }
 
   if ( !P->mSqlWhereClause.isEmpty() )
   {
@@ -86,7 +90,7 @@ QgsPostgresFeatureIterator::~QgsPostgresFeatureIterator()
 }
 
 
-bool QgsPostgresFeatureIterator::nextFeature( QgsFeature& feature )
+bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
 {
   feature.setValid( false );
 
@@ -162,6 +166,7 @@ bool QgsPostgresFeatureIterator::nextFeature( QgsFeature& feature )
 
   feature.setValid( true );
   feature.setFields( &P->mAttributeFields ); // allow name-based attribute lookups
+
   return true;
 }
 

@@ -147,7 +147,7 @@ QgsGrassFeatureIterator::~QgsGrassFeatureIterator()
   close();
 }
 
-bool QgsGrassFeatureIterator::nextFeature( QgsFeature& feature )
+bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
 {
   if ( mClosed )
     return false;

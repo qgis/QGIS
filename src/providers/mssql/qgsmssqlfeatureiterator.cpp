@@ -186,7 +186,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 }
 
 
-bool QgsMssqlFeatureIterator::nextFeature( QgsFeature& feature )
+bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature& feature )
 {
   feature.setValid( false );
 

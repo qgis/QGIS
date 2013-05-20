@@ -32,9 +32,6 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     ~QgsVectorLayerFeatureIterator();
 
-    //! fetch next feature, return true on success
-    virtual bool nextFeature( QgsFeature& feature );
-
     //! reset the iterator to the starting position
     virtual bool rewind();
 
@@ -42,10 +39,19 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     virtual bool close();
 
   protected:
+    //! fetch next feature, return true on success
+    virtual bool fetchFeature( QgsFeature& feature );
+
+    //! Overrides default method as we only need to filter features in the edit buffer
+    //! while for others filtering is left to the provider implementation.
+    inline virtual bool nextFeatureFilterExpression( QgsFeature &f ) { return fetchFeature( f ); }
+
     QgsVectorLayer* L;
 
     QgsFeatureRequest mProviderRequest;
     QgsFeatureIterator mProviderIterator;
+    QgsFeatureRequest mChangedFeaturesRequest;
+    QgsFeatureIterator mChangedFeaturesIterator;
 
 #if 0
     // general stuff
@@ -67,6 +73,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     void prepareJoins();
     bool fetchNextAddedFeature( QgsFeature& f );
     bool fetchNextChangedGeomFeature( QgsFeature& f );
+    bool fetchNextChangedAttributeFeature( QgsFeature& f );
     void useAddedFeature( const QgsFeature& src, QgsFeature& f );
     void useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry& geom, QgsFeature& f );
     bool nextFeatureFid( QgsFeature& f );

@@ -28,9 +28,6 @@ class QgsGPXFeatureIterator : public QgsAbstractFeatureIterator
 
     ~QgsGPXFeatureIterator();
 
-    //! fetch next feature, return true on success
-    virtual bool nextFeature( QgsFeature& feature );
-
     //! reset the iterator to the starting position
     virtual bool rewind();
 
@@ -38,6 +35,9 @@ class QgsGPXFeatureIterator : public QgsAbstractFeatureIterator
     virtual bool close();
 
   protected:
+
+    //! fetch next feature, return true on success
+    virtual bool fetchFeature( QgsFeature& feature );
 
     bool readFid( QgsFeature& feature );
 

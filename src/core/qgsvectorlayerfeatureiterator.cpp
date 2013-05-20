@@ -25,6 +25,10 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
 {
   QgsVectorLayerJoinBuffer* joinBuffer = L->mJoinBuffer;
 
+  // by default provider's request is the same
+  mProviderRequest = mRequest;
+  mChangedFeaturesRequest = mRequest;
+
   if ( L->editBuffer() )
   {
     mAddedFeatures = QgsFeatureMap( L->editBuffer()->addedFeatures() );
@@ -33,14 +37,12 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
     mChangedAttributeValues = QgsChangedAttributesMap( L->editBuffer()->changedAttributeValues() );
     mAddedAttributes = QList<QgsField>( L->editBuffer()->addedAttributes() );
     mDeletedAttributeIds = QgsAttributeList( L->editBuffer()->deletedAttributeIds() );
+    mChangedFeaturesRequest.setFilterFids( L->editBuffer()->changedAttributeValues().keys().toSet() );
   }
 
   // prepare joins: may add more attributes to fetch (in order to allow join)
   if ( joinBuffer->containsJoins() )
     prepareJoins();
-
-  // by default provider's request is the same
-  mProviderRequest = mRequest;
 
   if ( mProviderRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
@@ -65,9 +67,21 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
   }
   else // no filter or filter by rect
   {
-    mProviderIterator = L->dataProvider()->getFeatures( mProviderRequest );
+    if ( L->editBuffer() )
+    {
+      mChangedFeaturesIterator = L->dataProvider()->getFeatures( mChangedFeaturesRequest );
+    }
+    else
+    {
+      mProviderIterator = L->dataProvider()->getFeatures( mProviderRequest );
+    }
 
     rewindEditBuffer();
+  }
+
+  if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
+  {
+    mRequest.filterExpression()->prepare( L->pendingFields() );
   }
 }
 
@@ -79,7 +93,7 @@ QgsVectorLayerFeatureIterator::~QgsVectorLayerFeatureIterator()
 
 
 
-bool QgsVectorLayerFeatureIterator::nextFeature( QgsFeature& f )
+bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature& f )
 {
   f.setValid( false );
 
@@ -99,8 +113,29 @@ bool QgsVectorLayerFeatureIterator::nextFeature( QgsFeature& f )
   {
     if ( fetchNextChangedGeomFeature( f ) )
       return true;
+
+    // no more changed geometries
   }
-  // no more changed geometries
+
+  if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
+  {
+    if ( fetchNextChangedAttributeFeature( f ) )
+      return true;
+
+    // no more changed features
+  }
+
+  while ( fetchNextAddedFeature( f ) )
+  {
+    return true;
+  }
+  // no more added features
+
+  if ( mProviderIterator.isClosed() )
+  {
+    mChangedFeaturesIterator.close();
+    mProviderIterator = L->dataProvider()->getFeatures( mProviderRequest );
+  }
 
   while ( mProviderIterator.nextFeature( f ) )
   {
@@ -124,11 +159,6 @@ bool QgsVectorLayerFeatureIterator::nextFeature( QgsFeature& f )
     return true;
   }
   // no more provider features
-
-  if ( fetchNextAddedFeature( f ) )
-    return true;
-  // no more added features
-
 
   close();
   return false;
@@ -178,10 +208,8 @@ bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature& f )
       // must have changed geometry outside rectangle
       continue;
 
-    if ( mRequest.filterType() == QgsFeatureRequest::FilterRect &&
-         mFetchAddedFeaturesIt->geometry() &&
-         !mFetchAddedFeaturesIt->geometry()->intersects( mRequest.filterRect() ) )
-      // skip added features not in rectangle
+    if ( !mRequest.acceptFeature ( *mFetchAddedFeaturesIt ) )
+      // skip features which are not accepted by the filter
       continue;
 
     useAddedFeature( *mFetchAddedFeaturesIt, f );
@@ -189,6 +217,7 @@ bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature& f )
     return true;
   }
 
+  mFetchAddedFeaturesIt = mAddedFeatures.constBegin();
   return false; // no more added features
 }
 
@@ -237,6 +266,30 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedGeomFeature( QgsFeature& f )
   }
 
   return false; // no more changed geometries
+}
+
+bool QgsVectorLayerFeatureIterator::fetchNextChangedAttributeFeature( QgsFeature& f )
+{
+  while ( mChangedFeaturesIterator.nextFeature( f ) )
+  {
+    mFetchConsidered << f.id();
+
+    updateChangedAttributes( f );
+
+    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
+    {
+      if ( mRequest.filterExpression()->evaluate( &f ).toBool() )
+      {
+        return true;
+      }
+    }
+    else
+    {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 

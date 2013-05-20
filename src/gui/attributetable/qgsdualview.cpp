@@ -57,14 +57,14 @@ QgsDualView::~QgsDualView()
   delete mAttributeDialog;
 }
 
-void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QgsDistanceArea myDa )
+void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QgsDistanceArea myDa, const QgsFeatureRequest &request )
 {
   mDistanceArea = myDa;
 
   connect( mTableView, SIGNAL( willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu*, QModelIndex ) ) );
 
   initLayerCache( layer );
-  initModels( mapCanvas );
+  initModels( mapCanvas, request );
 
   mTableView->setModel( mFilterModel );
   mFeatureList->setModel( mFeatureListModel );
@@ -233,9 +233,10 @@ void QgsDualView::initLayerCache( QgsVectorLayer* layer )
   connect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
 }
 
-void QgsDualView::initModels( QgsMapCanvas* mapCanvas )
+void QgsDualView::initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request )
 {
   mMasterModel = new QgsAttributeTableModel( mLayerCache, this );
+  mMasterModel->setRequest( request );
 
   connect( mMasterModel, SIGNAL( progress( int, bool & ) ), this, SLOT( progress( int, bool & ) ) );
   connect( mMasterModel, SIGNAL( finished() ), this, SLOT( finished() ) );
@@ -512,6 +513,11 @@ void QgsDualView::reloadAttribute( const int& idx )
 void QgsDualView::setFilteredFeatures( QgsFeatureIds filteredFeatures )
 {
   mFilterModel->setFilteredFeatures( filteredFeatures );
+}
+
+void QgsDualView::setRequest( const QgsFeatureRequest& request )
+{
+  mMasterModel->setRequest( request );
 }
 
 void QgsDualView::progress( int i, bool& cancel )

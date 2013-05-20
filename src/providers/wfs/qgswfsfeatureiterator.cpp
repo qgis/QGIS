@@ -56,7 +56,7 @@ QgsWFSFeatureIterator::~QgsWFSFeatureIterator()
   close();
 }
 
-bool QgsWFSFeatureIterator::nextFeature( QgsFeature& f )
+bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
 {
   if ( !mProvider )
   {
