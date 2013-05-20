@@ -219,6 +219,9 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   QObject::connect( mActionPaste, SIGNAL( triggered() ), this, SLOT( actionPasteTriggered() ) );
 
   QMenu *editMenu = menuBar()->addMenu( tr( "Edit" ) );
+  editMenu->addAction( mActionUndo );
+  editMenu->addAction( mActionRedo );
+  editMenu->addSeparator();
   editMenu->addAction( mActionCut );
   editMenu->addAction( mActionCopy );
   editMenu->addAction( mActionPaste );
@@ -247,22 +250,20 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mToolbarMenu->addAction( mItemToolbar->toggleViewAction() );
 
   QMenu *layoutMenu = menuBar()->addMenu( tr( "Layout" ) );
-  layoutMenu->addAction( mActionUndo );
-  layoutMenu->addAction( mActionRedo );
-  layoutMenu->addSeparator();
   layoutMenu->addAction( mActionAddNewMap );
   layoutMenu->addAction( mActionAddNewLabel );
   layoutMenu->addAction( mActionAddNewScalebar );
   layoutMenu->addAction( mActionAddNewLegend );
   layoutMenu->addAction( mActionAddImage );
-  layoutMenu->addAction( mActionSelectMoveItem );
-  layoutMenu->addAction( mActionMoveItemContent );
-
   layoutMenu->addAction( mActionAddArrow );
   layoutMenu->addAction( mActionAddTable );
   layoutMenu->addSeparator();
+  layoutMenu->addAction( mActionSelectMoveItem );
+  layoutMenu->addAction( mActionMoveItemContent );
+  layoutMenu->addSeparator();
   layoutMenu->addAction( mActionGroupItems );
   layoutMenu->addAction( mActionUngroupItems );
+  layoutMenu->addSeparator();
   layoutMenu->addAction( mActionRaiseItems );
   layoutMenu->addAction( mActionLowerItems );
   layoutMenu->addAction( mActionMoveItemsToTop );
