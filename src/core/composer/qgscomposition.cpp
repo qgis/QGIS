@@ -170,10 +170,16 @@ int QgsComposition::numPages() const
 
 QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
 {
+  return composerItemAt( position, 0 );
+}
+
+QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position, const QgsComposerItem* belowItem )
+{
+  //get a list of items which intersect the specified position, in descending z order
   QList<QGraphicsItem*> itemList;
   if ( mSelectionTolerance <= 0.0 )
   {
-    itemList = items( position );
+    itemList = items( position, Qt::IntersectsItemShape, Qt::DescendingOrder );
   }
   else
   {
@@ -182,13 +188,27 @@ QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
   }
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
 
+  bool foundBelowItem = false;
   for ( ; itemIt != itemList.end(); ++itemIt )
   {
     QgsComposerItem* composerItem = dynamic_cast<QgsComposerItem *>( *itemIt );
     QgsPaperItem* paperItem = dynamic_cast<QgsPaperItem*>( *itemIt );
     if ( composerItem && !paperItem )
     {
-      return composerItem;
+      // If we are not checking for a an item below a specified item, or if we've
+      // already found that item, then we've found our target
+      if ( ! belowItem || foundBelowItem )
+      {
+        return composerItem;
+      }
+      else
+      {
+        if ( composerItem == belowItem )
+        {
+          //Target item is next in list
+          foundBelowItem = true;
+        }
+      }
     }
   }
   return 0;

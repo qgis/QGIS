@@ -89,13 +89,43 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       //select/deselect items and pass mouse event further
     case Select:
     {
+      QgsComposerItem* selectedItem;
+      QgsComposerItem* previousSelectedItem = 0;
+
+      if ( e->modifiers() & Qt::ControlModifier )
+      {
+        //CTRL modifier, so we are trying to select the next item below the current one
+        //first, find currently selected item
+        QList<QgsComposerItem*> selectedItems = composition()->selectedComposerItems();
+        if ( selectedItems.size() > 0 )
+        {
+          previousSelectedItem = selectedItems.at( 0 );
+        }
+      }
+
       if ( !( e->modifiers() & Qt::ShiftModifier ) ) //keep selection if shift key pressed
       {
         composition()->clearSelection();
       }
 
-      //select topmost item at position of event
-      QgsComposerItem* selectedItem = composition()->composerItemAt( scenePoint );
+      if ( previousSelectedItem )
+      {
+        //select highest item just below previously selected item at position of event
+        selectedItem = composition()->composerItemAt( scenePoint, previousSelectedItem );
+
+        //if we didn't find a lower item we'll use the top-most as fall-back
+        //this duplicates mapinfo/illustrator/etc behaviour where ctrl-clicks are "cyclic"
+        if ( !selectedItem )
+        {
+          selectedItem = composition()->composerItemAt( scenePoint );
+        }
+      }
+      else
+      {
+        //select topmost item at position of event
+        selectedItem = composition()->composerItemAt( scenePoint );
+      }
+
       if ( !selectedItem )
       {
         break;
