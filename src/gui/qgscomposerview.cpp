@@ -487,10 +487,116 @@ void QgsComposerView::mouseDoubleClickEvent( QMouseEvent* e )
   e->ignore();
 }
 
+void QgsComposerView::copyItems( ClipboardMode mode )
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  QList<QgsComposerItem*> composerItemList = composition()->selectedComposerItems();
+  QList<QgsComposerItem*>::iterator itemIt = composerItemList.begin();
+
+  QDomDocument doc;
+  QDomElement documentElement = doc.createElement( "ComposerItemClipboard" );
+  for ( ; itemIt != composerItemList.end(); ++itemIt )
+  {
+    // copy each item in a group
+    QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup*>( *itemIt );
+    if ( itemGroup && composition() )
+    {
+      QSet<QgsComposerItem*> groupedItems = itemGroup->items();
+      QSet<QgsComposerItem*>::iterator it = groupedItems.begin();
+      for ( ; it != groupedItems.end(); ++it )
+      {
+        ( *it )->writeXML( documentElement, doc );
+      }
+    }
+    ( *itemIt )->writeXML( documentElement, doc );
+    if ( mode == ClipboardModeCut )
+    {
+      composition()->removeComposerItem( *itemIt );
+    }
+  }
+  doc.appendChild( documentElement );
+
+  //if it's a copy, we have to remove the UUIDs since we don't want any duplicate UUID
+  if ( mode == ClipboardModeCopy )
+  {
+    // remove all uuid attributes
+    QDomNodeList composerItemsNodes = doc.elementsByTagName( "ComposerItem" );
+    for ( int i = 0; i < composerItemsNodes.count(); ++i )
+    {
+      QDomNode composerItemNode = composerItemsNodes.at( i );
+      if ( composerItemNode.isElement() )
+      {
+        composerItemNode.toElement().removeAttribute( "uuid" );
+      }
+    }
+  }
+
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setData( "text/xml", doc.toByteArray() );
+  QClipboard *clipboard = QApplication::clipboard();
+  clipboard->setMimeData( mimeData );
+}
+
+void QgsComposerView::pasteItems( PasteMode mode )
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  QDomDocument doc;
+  QClipboard *clipboard = QApplication::clipboard();
+  if ( doc.setContent( clipboard->mimeData()->data( "text/xml" ) ) )
+  {
+    QDomElement docElem = doc.documentElement();
+    if ( docElem.tagName() == "ComposerItemClipboard" )
+    {
+      if ( composition() )
+      {
+        QPointF pt;
+        if ( mode == PasteModeCursor )
+        {
+          // place items at cursor position
+          pt = mapToScene( mapFromGlobal( QCursor::pos() ) );
+        }
+        else
+        {
+          // place items in center of viewport
+          pt = mapToScene( viewport()->rect().center() );
+        }
+        bool pasteInPlace = ( mode == PasteModeInPlace );
+        composition()->addItemsFromXML( docElem, doc, 0, true, &pt, pasteInPlace );
+      }
+    }
+  }
+}
+
+void QgsComposerView::deleteSelectedItems()
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  QList<QgsComposerItem*> composerItemList = composition()->selectedComposerItems();
+  QList<QgsComposerItem*>::iterator itemIt = composerItemList.begin();
+
+  //delete selected items
+  for ( ; itemIt != composerItemList.end(); ++itemIt )
+  {
+    if ( composition() )
+    {
+      composition()->removeComposerItem( *itemIt );
+    }
+  }
+}
+
 void QgsComposerView::keyPressEvent( QKeyEvent * e )
 {
-  //TODO : those should be actions (so we could also display menu items and/or toolbar items)
-
   if ( !composition() )
   {
     return;
@@ -507,85 +613,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     increment = 10.0;
   }
 
-  if ( e->matches( QKeySequence::Copy ) || e->matches( QKeySequence::Cut ) )
-  {
-    QDomDocument doc;
-    QDomElement documentElement = doc.createElement( "ComposerItemClipboard" );
-    for ( ; itemIt != composerItemList.end(); ++itemIt )
-    {
-      // copy each item in a group
-      QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup*>( *itemIt );
-      if ( itemGroup && composition() )
-      {
-        QSet<QgsComposerItem*> groupedItems = itemGroup->items();
-        QSet<QgsComposerItem*>::iterator it = groupedItems.begin();
-        for ( ; it != groupedItems.end(); ++it )
-        {
-          ( *it )->writeXML( documentElement, doc );
-        }
-      }
-      ( *itemIt )->writeXML( documentElement, doc );
-      if ( e->matches( QKeySequence::Cut ) )
-      {
-        composition()->removeComposerItem( *itemIt );
-      }
-    }
-    doc.appendChild( documentElement );
-
-    //if it's a copy, we have to remove the UUIDs since we don't want any duplicate UUID
-    if ( e->matches( QKeySequence::Copy ) )
-    {
-      // remove all uuid attributes
-      QDomNodeList composerItemsNodes = doc.elementsByTagName( "ComposerItem" );
-      for ( int i = 0; i < composerItemsNodes.count(); ++i )
-      {
-        QDomNode composerItemNode = composerItemsNodes.at( i );
-        if ( composerItemNode.isElement() )
-        {
-          composerItemNode.toElement().removeAttribute( "uuid" );
-        }
-      }
-    }
-
-    QMimeData *mimeData = new QMimeData;
-    mimeData->setData( "text/xml", doc.toByteArray() );
-    QClipboard *clipboard = QApplication::clipboard();
-    clipboard->setMimeData( mimeData );
-  }
-
-  //TODO : "Ctrl+Shift+V" is one way to paste, but on some platefoms you can use Shift+Ins and F18
-  if ( e->matches( QKeySequence::Paste ) || ( e->key() == Qt::Key_V && e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::ShiftModifier ) )
-  {
-    QDomDocument doc;
-    QClipboard *clipboard = QApplication::clipboard();
-    if ( doc.setContent( clipboard->mimeData()->data( "text/xml" ) ) )
-    {
-      QDomElement docElem = doc.documentElement();
-      if ( docElem.tagName() == "ComposerItemClipboard" )
-      {
-        if ( composition() )
-        {
-          QPointF pt = mapToScene( mapFromGlobal( QCursor::pos() ) );
-          bool pasteInPlace = ( e->modifiers() & Qt::ShiftModifier );
-          composition()->addItemsFromXML( docElem, doc, 0, true, &pt, pasteInPlace );
-        }
-      }
-    }
-  }
-
-  //delete selected items
-  if ( e->key() == Qt::Key_Delete || e->key() == Qt::Key_Backspace )
-  {
-    for ( ; itemIt != composerItemList.end(); ++itemIt )
-    {
-      if ( composition() )
-      {
-        composition()->removeComposerItem( *itemIt );
-      }
-    }
-  }
-
-  else if ( e->key() == Qt::Key_Left )
+  if ( e->key() == Qt::Key_Left )
   {
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
