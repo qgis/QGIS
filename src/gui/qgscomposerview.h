@@ -68,6 +68,19 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
       MoveItemContent //move content of item (e.g. content of map)
     };
 
+    enum ClipboardMode
+    {
+      ClipboardModeCut,
+      ClipboardModeCopy
+    };
+
+    enum PasteMode
+    {
+      PasteModeCursor,
+      PasteModeCenter,
+      PasteModeInPlace
+    };
+
     QgsComposerView( QWidget* parent = 0, const char* name = 0, Qt::WFlags f = 0 );
 
     /**Add an item group containing the selected items*/
@@ -81,6 +94,15 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     /**Unlock all items*/
     void unlockAllItems();
+
+    /**Cuts or copies the selected items*/
+    void copyItems( ClipboardMode mode );
+
+    /**Pastes items from clipboard*/
+    void pasteItems( PasteMode mode );
+
+    /**Deletes selected items*/
+    void deleteSelectedItems();
 
     QgsComposerView::Tool currentTool() const {return mCurrentTool;}
     void setCurrentTool( QgsComposerView::Tool t ) {mCurrentTool = t;}

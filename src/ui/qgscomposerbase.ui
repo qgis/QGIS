@@ -593,6 +593,28 @@
     <string>Unlock All Items</string>
    </property>
   </action>
+  <action name="mActionPasteInPlace">
+   <property name="text">
+    <string>Pa&amp;ste in Place</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste in place</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+V</string>
+   </property>
+  </action>
+  <action name="mActionDeleteSelection">
+   <property name="text">
+    <string>&amp;Delete</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete selected items</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
+   </property>
+  </action>  
  </widget>
  <resources>
   <include location="../../images/images.qrc"/>
