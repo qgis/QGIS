@@ -82,6 +82,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
       Crosses
     };
 
+    enum ZValueDirection
+    {
+      ZValueBelow,
+      ZValueAbove
+    };
+
     QgsComposition( QgsMapRenderer* mapRenderer );
     ~QgsComposition();
 
@@ -256,6 +262,11 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void moveItemToTop( QgsComposerItem* item );
     void moveSelectedItemsToBottom();
     void moveItemToBottom( QgsComposerItem* item );
+
+    //functions to find items by their position in the z list
+    void selectNextByZOrder( ZValueDirection direction );
+    QgsComposerItem* getComposerItemBelow( QgsComposerItem* item );
+    QgsComposerItem* getComposerItemAbove( QgsComposerItem* item );
 
     //functions to align selected items
     void alignSelectedItemsLeft();

@@ -651,6 +651,28 @@
     <string>Invert selection</string>
    </property>
   </action>
+  <action name="mActionSelectNextBelow">
+   <property name="text">
+    <string>Select Next Item &amp;Below</string>
+   </property>
+   <property name="toolTip">
+    <string>Select next item below</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+[</string>
+   </property>
+  </action>
+  <action name="mActionSelectNextAbove">
+   <property name="text">
+    <string>Select Next Item &amp;Above</string>
+   </property>
+   <property name="toolTip">
+    <string>Select next item above</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+]</string>
+   </property>
+  </action>  
  </widget>
  <resources>
   <include location="../../images/images.qrc"/>
