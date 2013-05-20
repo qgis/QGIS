@@ -2520,11 +2520,12 @@ void QgsPalLayerSettings::parseTextBuffer()
     bufrSize = exprVal.toDouble();
   }
 
+  // FIXME: find better solution for temporarily turning on buffer, when previously defined by size
   // fix for buffer being keyed off of just its size in the past
-  if ( bufrSize > 0.0 && bufferDrawOld )
-  {
-    drawBuffer = bufferDraw = true;
-  }
+//  if ( bufrSize > 0.0 && bufferDrawOld )
+//  {
+//    drawBuffer = bufferDraw = true;
+//  }
 
   if ( !drawBuffer )
   {
