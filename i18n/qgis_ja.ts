@@ -6247,12 +6247,12 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2098"/>
         <source>Add Delimited Text Layer...</source>
-        <translation>デリミテッドテキストレイヤを追加する...</translation>
+        <translation>デリミティッドテキストレイヤを追加する...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2101"/>
         <source>Add Delimited Text Layer</source>
-        <translation>デリミテッドテキストレイヤを追加する</translation>
+        <translation>デリミティッドテキストレイヤを追加する</translation>
     </message>
     <message>
         <source>Save Edits</source>
@@ -9913,7 +9913,7 @@ Error(%2): %3</source>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1062"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1424"/>
         <source>Comma Separated Value</source>
-        <translation>カンマ区切りファイル</translation>
+        <translation>コンマ区切りファイル</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1069"/>
@@ -23974,7 +23974,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="518"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="521"/>
         <source>The file a comma separated value file, fields delimited by commas and quoted by &quot;</source>
-        <translation>CSVファイル (カンマとダブルクォートで区切られる)</translation>
+        <translation>CSVファイル (コンマで区切られダブルクォートで囲まれる)</translation>
     </message>
     <message>
         <source>CSV (comma separated values) format</source>
@@ -23985,7 +23985,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="807"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="810"/>
         <source>Comma character is one of the delimiters</source>
-        <translation>デリミタとしカンマを使用</translation>
+        <translation>デリミタとしてカンマを使用</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="820"/>
@@ -24025,7 +24025,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="922"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="925"/>
         <source>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</source>
-        <translation>テキスト内のフィールド区切りに使用するデリミタ. デリミタには1文字以上を指定できます. カンマ、タブ、スペース、コロン、セミコロンオプションと同時に使用できます.</translation>
+        <translation>テキスト内のフィールド区切りに使用するデリミタ. デリミタには1文字以上を指定できます. コンマ、タブ、スペース、コロン、セミコロンオプションと同時に使用できます.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="935"/>
@@ -24155,7 +24155,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="524"/>
         <source>CSV (comma separated values)</source>
-        <translation>CSV (カンマで区切られた値)</translation>
+        <translation>CSV (コンマで区切られた値)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="543"/>
@@ -24334,12 +24334,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="743"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="746"/>
         <source>Number fields use comma for a decimal separator</source>
-        <translation>カンマが小数点区切りとして使用されている数値</translation>
+        <translation>コンマが小数点区切りとして使用されている数値</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="749"/>
         <source>Decimal separator is comma</source>
-        <translation>カンマを小数点区切りに指定</translation>
+        <translation>コンマを小数点区切りに指定</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="86"/>
@@ -24389,7 +24389,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="813"/>
         <source>Comma</source>
-        <translation>カンマ</translation>
+        <translation>コンマ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="883"/>
@@ -49292,7 +49292,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="311"/>
         <source>Please enter scale denominators at which will split the rule, separate them by commas (e.g. 1000,5000):</source>
-        <translation>スケールの分母をカンマ区切りで入力して下さい（例 1000,5000):</translation>
+        <translation>スケールの分母をコンマ区切りで入力して下さい（例 1000,5000):</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="323"/>
