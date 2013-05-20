@@ -92,7 +92,7 @@ class GdalTools:
     if not valid: return
     if int( self.QgisVersion ) < 1:
       QMessageBox.warning( self.iface.getMainWindow(), "Gdal Tools",
-      QCoreApplication.translate( "GdalTools", "Quantum GIS version detected: " ) +unicode( self.QgisVersion )+".xx\n"
+      QCoreApplication.translate( "GdalTools", "QGIS version detected: " ) +unicode( self.QgisVersion )+".xx\n"
       + QCoreApplication.translate( "GdalTools", "This version of Gdal Tools requires at least QGIS version 1.0.0\nPlugin will not be enabled." ) )
       return None
 

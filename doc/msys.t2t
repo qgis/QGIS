@@ -119,7 +119,7 @@ http://msysgit.googlecode.com/files/Git-1.7.4-preview20110204.exe
 
 === CMake ===
 
-CMake is build system used by Quantum GIS. Download it from here:
+CMake is build system used by QGIS. Download it from here:
 
 http://www.cmake.org/files/v2.8/cmake-2.8.2-win32-x86.exe
 
@@ -208,7 +208,7 @@ Now using windows explorer, enter the win_build directory in your QGIS source
 tree. Read the READMEfile there and follow the instructions. Next right click
 on qgis.nsi and choose the option 'Compile NSIS Script'. 
 
-== Creation of MSYS environment for compilation of Quantum GIS ==
+== Creation of MSYS environment for compilation of QGIS ==
 
 === Initial setup ===
 

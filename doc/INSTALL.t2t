@@ -1,4 +1,4 @@
-Quantum GIS (QGIS)
+QGIS
 Building QGIS from source - step by step
 %%date(%A %B %d, %Y)
 
@@ -71,10 +71,10 @@ Last Change : %%mtime(%A %B %d, %Y)
 = Introduction =
 
 This document is the original installation guide of the described software 
-Quantum GIS. The software and hardware descriptions named in this 
+QGIS. The software and hardware descriptions named in this 
 document are in most cases registered trademarks and are therefore subject 
-to the legal requirements. Quantum GIS is subject to the GNU General Public 
-License. Find more information on the Quantum GIS Homepage:
+to the legal requirements. QGIS is subject to the GNU General Public 
+License. Find more information on the QGIS Homepage:
 http://www.qgis.org
 
 The details, that are given in this document have been written and verified 
@@ -84,13 +84,13 @@ liable to any duties or guarantees. The editors and publishers do not take
 any responsibility or liability for failures and their consequences. You are 
 always welcome for indicating possible mistakes.
 
-You can download this document as part of the Quantum GIS 'User and 
+You can download this document as part of the QGIS 'User and 
 Installation Guide' in HTML and PDF format via http://www.qgis.org. A current 
 version is also available at:
 http://www.qgis.org/api/INSTALL.html
 
 Translations of this document can also be downloaded at the documentation area 
-of the Quantum GIS project at http://www.qgis.org. More information is 
+of the QGIS project at http://www.qgis.org. More information is 
 available via http://wiki.qgis.org/qgiswiki/DocumentationWritersCorner. 
 
 Please visit http://qgis.org for information on joining our mailing lists 

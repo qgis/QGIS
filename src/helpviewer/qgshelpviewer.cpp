@@ -73,7 +73,7 @@ void QgsHelpViewer::showHelp( QString help )
   QString myStyle = QgsApplication::reportStyleSheet();
   QString helpContents = "<head><style>" + myStyle + "</style></head><body>" + help + "</body>";
   webView->setHtml( helpContents );
-  setWindowTitle( tr( "Quantum GIS Help" ) );
+  setWindowTitle( tr( "QGIS Help" ) );
 
 #ifndef WIN32
   setWindowState( windowState() & ~Qt::WindowMinimized );

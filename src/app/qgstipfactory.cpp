@@ -26,13 +26,13 @@ QgsTipFactory::QgsTipFactory() : QObject()
   // it its worth the time Ill move this data
   // into a sqlite database...
   QgsTip myTip;
-  myTip.setTitle( tr( "Quantum GIS is open source" ) );
-  myTip.setContent( tr( "Quantum GIS is open source software."
+  myTip.setTitle( tr( "QGIS is open source" ) );
+  myTip.setContent( tr( "QGIS is open source software."
                         " This means that the software source code can be freely viewed"
                         " and modified. The GPL places a restriction that any modifications"
                         " you make must be made available in source form to whoever you give"
                         " modified versions to, and that you can not create a new version of"
-                        " Quantum GIS under a 'closed source' license. Visit"
+                        " QGIS under a 'closed source' license. Visit"
                         " <a href=\"http://qgis.org\"> the QGIS home page (http://qgis.org)</a>"
                         " for more information." ) );
   addGenericTip( myTip );
@@ -41,7 +41,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "If you write a scientific paper or any other article"
                         " that refers to QGIS we would love to include your work"
                         " in the <a href=\"http://www.qgis.org/en/community/qgis-case-studies.html\">case studies section</a> of"
-                        " the Quantum GIS home page (http://http://www.qgis.org/en/community/qgis-case-studies.html)."
+                        " the QGIS home page (http://http://www.qgis.org/en/community/qgis-case-studies.html)."
                       ) );
   addGenericTip( myTip );
   myTip.setTitle( tr( "Become an QGIS translator" ) );
@@ -63,11 +63,10 @@ QgsTipFactory::QgsTipFactory() : QObject()
                       ) );
   addGuiTip( myTip );
   myTip.setTitle( tr( "Is it 'QGIS' or 'Quantum GIS'?" ) );
-  myTip.setContent( tr( "Both are correct. For articles we suggest you write 'Quantum GIS (QGIS) is ....'"
-                        " and then refer to it as QGIS thereafter."
+  myTip.setContent( tr( "Both used to be correct, but we recently decided to just use 'QGIS'.  For articles we suggest you write 'QGIS is ....'"
                       ) );
   addGenericTip( myTip );
-  myTip.setTitle( tr( "How do I refer to Quantum GIS?" ) );
+  myTip.setTitle( tr( "How do I refer to QGIS?" ) );
   myTip.setContent( tr( "QGIS is spelled in all caps."
                         " We have various subprojects of the QGIS project"
                         " and it will help to avoid confusion if you refer to each by"
@@ -177,7 +176,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setTitle( tr( "Sponsor QGIS" ) );
   myTip.setContent( tr( "If QGIS is saving you money or you like our work and"
                         " have the financial ability to help, please consider sponsoring the"
-                        " development of Quantum GIS. We use money from sponsors to pay for"
+                        " development of QGIS. We use money from sponsors to pay for"
                         " travel and costs related to our bi-annual hackfests, and to generally"
                         " support the goals of our project.  Please see the <a"
                         " href=\"http://qgis.org/en/sponsorship.html\">QGIS Sponsorship Web"
@@ -185,8 +184,8 @@ QgsTipFactory::QgsTipFactory() : QObject()
                       ) );
   addGenericTip( myTip );
   // by gsherman
-  myTip.setTitle( tr( "Quantum GIS has Plugins!" ) );
-  myTip.setContent( tr( "Quantum GIS has plugins that extend its functionality."
+  myTip.setTitle( tr( "QGIS has Plugins!" ) );
+  myTip.setContent( tr( "QGIS has plugins that extend its functionality."
                         " QGIS ships with some core plugins you can explore from the"
                         " Plugins->Manage Plugins menu. In addition there are over 150"
                         " Python plugins contributed by the user community that can be"

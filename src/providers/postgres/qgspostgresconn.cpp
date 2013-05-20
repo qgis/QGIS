@@ -228,7 +228,7 @@ QgsPostgresConn::QgsPostgresConn( QString conninfo, bool readOnly )
 
   if ( mPostgresqlVersion >= 90000 )
   {
-    PQexecNR( "SET application_name='Quantum GIS'" );
+    PQexecNR( "SET application_name='QGIS'" );
   }
 
   /* Check to see if we have GEOS support and if not, warn the user about

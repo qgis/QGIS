@@ -310,7 +310,7 @@ const int AFTER_RECENT_PATHS = 321;
   */
 static void setTitleBarText_( QWidget & qgisApp )
 {
-  QString caption = QgisApp::tr( "Quantum GIS " );
+  QString caption = QgisApp::tr( "QGIS " );
 
   if ( QString( QGis::QGIS_VERSION ).endsWith( "Master" ) )
   {
@@ -447,7 +447,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     QMessageBox::critical(
       this,
       tr( "Multiple Instances of QgisApp" ),
-      tr( "Multiple instances of Quantum GIS application object detected.\nPlease contact the developers.\n" ) );
+      tr( "Multiple instances of QGIS application object detected.\nPlease contact the developers.\n" ) );
     abort();
   }
 
@@ -582,7 +582,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 #endif
 
   // set application's caption
-  QString caption = tr( "Quantum GIS - %1 ('%2')" ).arg( QGis::QGIS_VERSION ).arg( QGis::QGIS_RELEASE_NAME );
+  QString caption = tr( "QGIS - %1 ('%2')" ).arg( QGis::QGIS_VERSION ).arg( QGis::QGIS_RELEASE_NAME );
   setWindowTitle( caption );
 
   QgsMessageLog::logMessage( tr( "QGIS starting..." ), QString::null, QgsMessageLog::INFO );

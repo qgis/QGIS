@@ -1,7 +1,7 @@
-/*!  \mainpage Quantum GIS
+/*!  \mainpage QGIS
 *
 *  \section about  About QGIS
-* Quantum GIS (QGIS) is a user friendly Open Source Geographic Information
+* QGIS is a user friendly Open Source Geographic Information
 * System (GIS) that runs on Linux, Unix, Mac OSX, and Windows. QGIS supports
 * vector, raster, and database formats. QGIS is licensed under the GNU Public
 * License.
