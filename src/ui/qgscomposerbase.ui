@@ -570,6 +570,17 @@
     <string>New from template</string>
    </property>
   </action>
+  <action name="mActionPasteInPlace">
+   <property name="text">
+    <string>Pa&amp;ste in Place</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste in place</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+V</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../../images/images.qrc"/>
