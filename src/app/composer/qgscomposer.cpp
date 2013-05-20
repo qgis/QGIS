@@ -238,6 +238,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   editMenu->addAction( mActionSelectAll );
   editMenu->addAction( mActionDeselectAll );
   editMenu->addAction( mActionInvertSelection );
+  editMenu->addAction( mActionSelectNextBelow );
+  editMenu->addAction( mActionSelectNextAbove );
 
   QMenu *viewMenu = menuBar()->addMenu( tr( "View" ) );
   viewMenu->addAction( mActionZoomIn );
@@ -1776,6 +1778,22 @@ void QgsComposer::on_mActionInvertSelection_triggered()
   if ( mView )
   {
     mView->selectInvert();
+  }
+}
+
+void QgsComposer::on_mActionSelectNextAbove_triggered()
+{
+  if ( mComposition )
+  {
+    mComposition->selectNextByZOrder( QgsComposition::ZValueAbove );
+  }
+}
+
+void QgsComposer::on_mActionSelectNextBelow_triggered()
+{
+  if ( mComposition )
+  {
+    mComposition->selectNextByZOrder( QgsComposition::ZValueBelow );
   }
 }
 

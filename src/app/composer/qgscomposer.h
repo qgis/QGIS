@@ -240,6 +240,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Unlock all items
     void on_mActionUnlockAll_triggered();
 
+    //! Select next item below
+    void on_mActionSelectNextAbove_triggered();
+    
+    //! Select next item above
+    void on_mActionSelectNextBelow_triggered();
+
     //! Move selected items one position up
     void on_mActionRaiseItems_triggered();
 

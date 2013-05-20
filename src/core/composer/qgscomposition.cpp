@@ -907,6 +907,75 @@ void QgsComposition::raiseItem( QgsComposerItem* item )
   }
 }
 
+QgsComposerItem* QgsComposition::getComposerItemAbove( QgsComposerItem* item )
+{
+  //search item z list for selected item
+  QLinkedListIterator<QgsComposerItem*> it( mItemZList );
+  if ( it.findNext( item ) )
+  {
+    //return next item (list is sorted from lowest->highest items)
+    if ( it.hasNext() )
+    {
+      return it.next();
+    }
+  }
+  return 0;
+}
+
+QgsComposerItem* QgsComposition::getComposerItemBelow( QgsComposerItem* item )
+{
+  //search item z list for selected item
+  QLinkedListIterator<QgsComposerItem*> it( mItemZList );
+  if ( it.findNext( item ) )
+  {
+    //move position to before selected item
+    it.previous();
+    //now find previous item, since list is sorted from lowest->highest items
+    if ( it.hasPrevious() )
+    {
+      return it.previous();
+    }
+  }
+  return 0;
+}
+
+void QgsComposition::selectNextByZOrder( ZValueDirection direction )
+{
+  QgsComposerItem* previousSelectedItem = 0;
+  QList<QgsComposerItem*> selectedItems = selectedComposerItems();
+  if ( selectedItems.size() > 0 )
+  {
+    previousSelectedItem = selectedItems.at( 0 );
+  }
+
+  if ( !previousSelectedItem )
+  {
+    return;
+  }
+
+  //select item with target z value
+  QgsComposerItem* selectedItem;
+  switch ( direction )
+  {
+    case QgsComposition::ZValueBelow:
+      selectedItem = getComposerItemBelow( previousSelectedItem );
+      break;
+    case QgsComposition::ZValueAbove:
+      selectedItem = getComposerItemAbove( previousSelectedItem );
+      break;
+  }
+
+  if ( !selectedItem )
+  {
+    return;
+  }
+
+  //ok, found a good target item
+  clearSelection();
+  selectedItem->setSelected( true );
+  emit selectedItemChanged( selectedItem );
+}
+
 void QgsComposition::lowerSelectedItems()
 {
   QList<QgsComposerItem*> selectedItems = selectedComposerItems();
