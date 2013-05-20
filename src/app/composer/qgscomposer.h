@@ -219,6 +219,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Paste in place item(s)
     void on_mActionPasteInPlace_triggered();
 
+    //! Delete selected item(s)
+    void on_mActionDeleteSelection_triggered();
+
     //! Ungroup selected item group
     void on_mActionUngroupItems_triggered();
 

@@ -222,6 +222,13 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   editMenu->addAction( mActionUndo );
   editMenu->addAction( mActionRedo );
   editMenu->addSeparator();
+
+  //Backspace should also trigger delete selection
+  QShortcut* backSpace = new QShortcut( QKeySequence( "Backspace" ), this );
+  connect( backSpace, SIGNAL( activated() ), mActionDeleteSelection, SLOT( trigger() ) );
+  editMenu->addAction( mActionDeleteSelection );
+  editMenu->addSeparator();
+
   editMenu->addAction( mActionCut );
   editMenu->addAction( mActionCopy );
   editMenu->addAction( mActionPaste );
@@ -1664,6 +1671,14 @@ void QgsComposer::on_mActionPasteInPlace_triggered()
   if ( mView )
   {
     mView->pasteItems( QgsComposerView::PasteModeInPlace );
+  }
+}
+
+void QgsComposer::on_mActionDeleteSelection_triggered()
+{
+  if ( mView )
+  {
+    mView->deleteSelectedItems();
   }
 }
 

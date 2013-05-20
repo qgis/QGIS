@@ -95,6 +95,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**Pastes items from clipboard*/
     void pasteItems( PasteMode mode );
 
+    /**Deletes selected items*/
+    void deleteSelectedItems();
+
     QgsComposerView::Tool currentTool() const {return mCurrentTool;}
     void setCurrentTool( QgsComposerView::Tool t ) {mCurrentTool = t;}
 
