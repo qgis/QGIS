@@ -1023,7 +1023,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
           }
           else
           {
-            QgsMessageLog::logMessage( tr( "The table has no column suitable for use as a key. Quantum GIS requires a primary key, a PostgreSQL oid column or a ctid for tables." ), tr( "PostGIS" ) );
+            QgsMessageLog::logMessage( tr( "The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables." ), tr( "PostGIS" ) );
           }
         }
 

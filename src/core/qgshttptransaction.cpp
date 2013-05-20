@@ -106,8 +106,8 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   {
     header.setValue( "Host", QString( "%1:%2" ).arg( qurl.host() ).arg( qurl.port() ) );
   }
-  // Set the user agent to Quantum GIS plus the version name
-  header.setValue( "User-agent", QString( "Quantum GIS - " ) + VERSION );
+  // Set the user agent to QGIS plus the version name
+  header.setValue( "User-agent", QString( "QGIS - " ) + VERSION );
   // Set the host in the QHttp object
   http->setHost( qurl.host(), qurl.port( HTTP_PORT_DEFAULT ) );
   // Set the username and password if supplied for this connection

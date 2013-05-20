@@ -1,4 +1,4 @@
-Quantum GIS (QGIS)
+QGIS
 
 Developers guide for QGIS
 
@@ -463,7 +463,7 @@ git://github.com/qgis/Quantum-GIS.git
 
 To check out a branch, for example the release 1.7.0 branch do:
 ```
-  cd Quantum-GIS
+  cd QGIS
   git fetch
   git branch --track origin release-1_7_0
   git checkout release-1_7_0
@@ -473,7 +473,7 @@ To check out a branch, for example the release 1.7.0 branch do:
 To check out the master branch:
 
 ```
-  cd Quantum-GIS
+  cd QGIS
   git checkout master
 ```
 
@@ -590,7 +590,7 @@ can include multiple changed files into your patch from the top level
 directory:
 
 ```
-cd Quantum-GIS
+cd QGIS
 git checkout master
 git pull origin master
 git checkout newfeature
@@ -1242,14 +1242,14 @@ After installing you should find it in your gnome menu.
 
 == Setting up your project ==
 
-I'm assuming you have already got a local Quantum-GIS clone containing the
+I'm assuming you have already got a local QGIS clone containing the
 source code, and have installed all needed build dependencies etc. There are
 detailed in instructions on doing that here:
 
 http://github.com/qgis/Quantum-GIS/blob/master/CODING
 
 
-On my system I have checked out the code into $HOME/dev/cpp/Quantum-GIS and the
+On my system I have checked out the code into $HOME/dev/cpp/QGIS and the
 rest of the article is written assuming that, you should update these paths as
 appropriate for your local system.
 
@@ -1262,7 +1262,7 @@ File->Open File or Project
 Then use the resulting file selection dialog to browse to and open this file:
 
 ```
-$HOME/dev/cpp/Quantum-GIS/CMakeLists.txt
+$HOME/dev/cpp/QGIS/CMakeLists.txt
 ```
 
 [images/image01.jpeg]
@@ -1271,7 +1271,7 @@ Next you will be prompted for a build location. I create a specific build dir
 for QtCreator to work in under:
 
 ```
-$HOME/dev/cpp/Quantum-GIS/build-master-qtcreator
+$HOME/dev/cpp/QGIS/build-master-qtcreator
 ```
 
 Its probably a good idea to create separate build directories for different
@@ -1318,7 +1318,7 @@ Now we set the following details:
 ```
 Enable custom process step [yes]
 Command: make
-Working directory: $HOME/dev/cpp/Quantum-GIS/build-master-qtcreator
+Working directory: $HOME/dev/cpp/QGIS/build-master-qtcreator
 Command arguments: install
 ```
 

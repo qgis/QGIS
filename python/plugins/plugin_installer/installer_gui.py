@@ -353,7 +353,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
         if repositories.all()[key]["valid"]:
           a.setToolTip(0,self.tr("This repository is disabled"))
         else:
-          a.setToolTip(0,self.tr("This repository is blocked due to incompatibility with your Quantum GIS version"))
+          a.setToolTip(0,self.tr("This repository is blocked due to incompatibility with your QGIS version"))
         for i in [0,1,2]:
           a.setForeground(i,QBrush(QColor(Qt.gray)))
     for i in [0,1,2]:
@@ -417,8 +417,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
             "orphan" : self.tr("This plugin is installed, but I can't find it in any enabled repository"),
             "new" : self.tr("This plugin is not installed and is seen for the first time"),
             "newer" : self.tr("This plugin is installed and is newer than its version available in a repository"),
-            "incompatible" : self.tr("This plugin is incompatible with your Quantum GIS version and probably won't work."),
-            "dependent" : self.tr("The required Python module is not installed.\nFor more information, please visit its homepage and Quantum GIS wiki."),
+            "incompatible" : self.tr("This plugin is incompatible with your QGIS version and probably won't work."),
+            "dependent" : self.tr("The required Python module is not installed.\nFor more information, please visit its homepage and QGIS wiki."),
             "broken" : self.tr("This plugin seems to be broken.\nIt has been installed but can't be loaded.\nHere is the error message:")}
     statuses ={"not installed" : self.tr("not installed", "singular"),
             "installed" : self.tr("installed", "singular"),
@@ -465,7 +465,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
           descTip = statusTips[p["error"]] + "\n" + p["error_details"]
           statusTip = descTip
         elif p["error"] == "incompatible":
-          desc = self.tr("This plugin requires a newer version of Quantum GIS") + " (" + self.tr("at least")+ " " + p["error_details"] + ")"
+          desc = self.tr("This plugin requires a newer version of QGIS") + " (" + self.tr("at least")+ " " + p["error_details"] + ")"
           descTip = statusTips[p["error"]]
           statusTip = descTip
         elif p["error"] == "dependent":
@@ -662,13 +662,13 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
               infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Plugin reinstalled successfully"))
               reloadPlugin(key)
             else:
-              infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Python plugin reinstalled.\nYou need to restart Quantum GIS in order to reload it."))
-          else: infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Python plugin reinstalled.\nYou need to restart Quantum GIS in order to reload it."))
+              infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Python plugin reinstalled.\nYou need to restart QGIS in order to reload it."))
+          else: infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Python plugin reinstalled.\nYou need to restart QGIS in order to reload it."))
         if quiet:
           infoString = (None, None)
       else:
         if plugin["error"] == "incompatible":
-          message = self.tr("The plugin is designed for a newer version of Quantum GIS. The minimum required version is:")
+          message = self.tr("The plugin is designed for a newer version of QGIS. The minimum required version is:")
           message += " <b>" + plugin["error_details"] + "</b>"
         elif plugin["error"] == "dependent":
           message = self.tr("The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:")
@@ -761,7 +761,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       plugins.rebuild()
       self.populatePluginTree()
       if QGIS_14: QMessageBox.information(self, self.tr("Plugin uninstalled successfully"), self.tr("Plugin uninstalled successfully"))
-      else: QMessageBox.information(self, self.tr("Plugin uninstalled successfully"), self.tr("Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely."))
+      else: QMessageBox.information(self, self.tr("Plugin uninstalled successfully"), self.tr("Python plugin uninstalled. Note that you may need to restart QGIS in order to remove it completely."))
       history.markChange(key,'D')
 
 
@@ -813,7 +813,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
   # ----------------------------------------- #
   #def addKnownRepositories(self):
     #""" update list of known repositories - in the future it will be replaced with an online fetching """
-    #message = self.tr("You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.")
+    #message = self.tr("You are about to add several plugin repositories that are neither authorized nor supported by the QGIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.")
     #if QMessageBox.question(self, self.tr("QGIS Python Plugin Installer"), message, QMessageBox.Ok, QMessageBox.Abort) == QMessageBox.Ok:
       #repositories.addKnownRepos()
       ## refresh lists and populate widgets
@@ -872,7 +872,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       dlg.labelInfo.setText("")
     else:
       dlg.checkBoxEnabled.setEnabled(False)
-      dlg.labelInfo.setText(self.tr("This repository is blocked due to incompatibility with your Quantum GIS version"))
+      dlg.labelInfo.setText(self.tr("This repository is blocked due to incompatibility with your QGIS version"))
       dlg.labelInfo.setFrameShape(QFrame.Box)
     if not dlg.exec_():
       return # nothing to do if cancelled

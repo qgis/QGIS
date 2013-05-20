@@ -26,9 +26,8 @@ from qgis.utils import iface
 from console_sci import ShellScintilla
 from console_output import ShellOutputScintilla
 from console_editor import EditorTabWidget
-from console_help import HelpDialog
 from console_settings import optionsDialog
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsContextHelp
 from qgis.gui import QgsFilterLineEdit
 
 import sys
@@ -93,7 +92,6 @@ class PythonConsoleWidget(QWidget):
         self.settings = QSettings()
 
         self.options = optionsDialog(self)
-        self.helpDlg = HelpDialog(self)
 
         self.shell = ShellScintilla(self)
         self.setFocusProxy(self.shell)
@@ -675,8 +673,7 @@ class PythonConsoleWidget(QWidget):
                 self.updateTabListScript(pathFileName, action='remove')
 
     def openHelp(self):
-        self.helpDlg.show()
-        self.helpDlg.activateWindow()
+        QgsContextHelp.run( "PythonConsole" )
 
     def openSettings(self):
         self.options.exec_()

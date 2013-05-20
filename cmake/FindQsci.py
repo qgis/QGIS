@@ -32,7 +32,7 @@ license. For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 """
 __author__ = 'Larry Shaffer (larry@dakotacarto.com)'
 __date__ = '22/10/2012'
-__copyright__ = 'Copyright 2012, The Quantum GIS Project'
+__copyright__ = 'Copyright 2012, The QGIS Project'
 
 
 try:

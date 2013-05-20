@@ -1,10 +1,10 @@
-Quantum GIS (QGIS)
+QGIS
 Building QGIS from source - step by step
-Wednesday April 24, 2013
+Monday May 20, 2013
 
 
-Last Change : Saturday December 08, 2012
-Last Updated: Wednesday April 24, 2013
+Last Updated: Monday May 20, 2013
+Last Change : Monday May 20, 2013
 
 
   1. Introduction
@@ -22,7 +22,7 @@ Last Updated: Wednesday April 24, 2013
   4. Building on Windows
     4.1. Building with Microsoft Visual Studio
     4.2. Building using MinGW
-    4.3. Creation of MSYS environment for compilation of Quantum GIS
+    4.3. Creation of MSYS environment for compilation of QGIS
   5. Building on MacOS X
     5.1. Install Developer Tools
     5.2. Install Qt4 from disk image
@@ -48,10 +48,10 @@ Last Updated: Wednesday April 24, 2013
   ===============
 
 This document is the original installation guide of the described software 
-Quantum GIS. The software and hardware descriptions named in this 
+QGIS. The software and hardware descriptions named in this 
 document are in most cases registered trademarks and are therefore subject 
-to the legal requirements. Quantum GIS is subject to the GNU General Public 
-License. Find more information on the Quantum GIS Homepage:
+to the legal requirements. QGIS is subject to the GNU General Public 
+License. Find more information on the QGIS Homepage:
 http://www.qgis.org
 
 The details, that are given in this document have been written and verified 
@@ -61,13 +61,13 @@ liable to any duties or guarantees. The editors and publishers do not take
 any responsibility or liability for failures and their consequences. You are 
 always welcome for indicating possible mistakes.
 
-You can download this document as part of the Quantum GIS 'User and 
+You can download this document as part of the QGIS 'User and 
 Installation Guide' in HTML and PDF format via http://www.qgis.org. A current 
 version is also available at:
 http://www.qgis.org/api/INSTALL.html
 
 Translations of this document can also be downloaded at the documentation area 
-of the Quantum GIS project at http://www.qgis.org. More information is 
+of the QGIS project at http://www.qgis.org. More information is 
 available via http://wiki.qgis.org/qgiswiki/DocumentationWritersCorner. 
 
 Please visit http://qgis.org for information on joining our mailing lists 
@@ -865,7 +865,7 @@ http://msysgit.googlecode.com/files/Git-1.7.4-preview20110204.exe
     4.2.6. CMake
     ============
 
-CMake is build system used by Quantum GIS. Download it from here:
+CMake is build system used by QGIS. Download it from here:
 
 http://www.cmake.org/files/v2.8/cmake-2.8.2-win32-x86.exe
 
@@ -954,8 +954,8 @@ tree. Read the READMEfile there and follow the instructions. Next right click
 on qgis.nsi and choose the option 'Compile NSIS Script'. 
 
 
-  4.3. Creation of MSYS environment for compilation of Quantum GIS
-  ================================================================
+  4.3. Creation of MSYS environment for compilation of QGIS
+  =========================================================
 
 
     4.3.1. Initial setup
