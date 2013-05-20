@@ -181,6 +181,12 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
       **/
     const QgsComposerItem* getComposerItemByUuid( QString theUuid ) const;
 
+    /**Returns a composer item given its zValue.
+      @note added in 2.0
+      @param zValue An integer representing the zValue of the item to find
+      **/
+    QgsComposerItem* getComposerItemByZValue( const int zValue );
+
     int printResolution() const {return mPrintResolution;}
     void setPrintResolution( int dpi ) {mPrintResolution = dpi;}
 

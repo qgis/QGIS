@@ -613,6 +613,73 @@ void QgsComposerView::deleteSelectedItems()
   }
 }
 
+void QgsComposerView::selectNextBelow()
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  selectNextByZValue( ZValueBelow );
+}
+
+void QgsComposerView::selectNextAbove()
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  selectNextByZValue( ZValueAbove );
+}
+
+void QgsComposerView::selectNextByZValue( ZValueDirection direction )
+{
+  //get z value of first currently selection item
+  int currentZValue = 0;
+  QgsComposerItem* previousSelectedItem;
+  QList<QgsComposerItem*> selectedItems = composition()->selectedComposerItems();
+  if ( selectedItems.size() > 0 )
+  {
+    previousSelectedItem = selectedItems.at( 0 );
+    currentZValue = previousSelectedItem->zValue();
+  }
+
+  if ( currentZValue == 0 )
+  {
+    return;
+  }
+
+  int targetZValue = 0;
+  if ( direction == ZValueBelow )
+  {
+    //looking for the next item below this one, so decrease z value
+    targetZValue = currentZValue - 1;
+    if ( targetZValue < 1 )
+    {
+      return;
+    }
+  }
+  else
+  {
+    //looking for the next item above this one, so increase z value
+    targetZValue = currentZValue + 1;
+  }
+
+  //select item with target z value
+  QgsComposerItem* selectedItem = composition()->getComposerItemByZValue( targetZValue );
+
+  if ( !selectedItem )
+  {
+    return;
+  }
+
+  //ok, found a good target item
+  composition()->clearSelection();
+  selectedItem->setSelected( true );
+  emit selectedItemChanged( selectedItem );
+}
+
 void QgsComposerView::keyPressEvent( QKeyEvent * e )
 {
   if ( !composition() )

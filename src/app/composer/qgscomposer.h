@@ -222,6 +222,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Delete selected item(s)
     void on_mActionDeleteSelection_triggered();
 
+    //! Select next item below
+    void on_mActionSelectNextAbove_triggered();
+    
+    //! Select next item above
+    void on_mActionSelectNextBelow_triggered();
+        
     //! Ungroup selected item group
     void on_mActionUngroupItems_triggered();
 

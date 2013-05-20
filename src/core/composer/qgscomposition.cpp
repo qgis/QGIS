@@ -201,6 +201,24 @@ QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position, const
   return 0;
 }
 
+QgsComposerItem* QgsComposition::getComposerItemByZValue( const int zValue )
+{
+  QList<QGraphicsItem *> itemList = items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    QgsComposerItem* mypItem = dynamic_cast<QgsComposerItem *>( *itemIt );
+    if ( mypItem )
+    {
+      if ( mypItem->zValue() == zValue )
+      {
+        return mypItem;
+      }
+    }
+  }
+  return 0;
+}
+
 int QgsComposition::pageNumberAt( const QPointF& position ) const
 {
   return position.y() / ( paperHeight() + spaceBetweenPages() );
