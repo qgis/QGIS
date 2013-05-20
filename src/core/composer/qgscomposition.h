@@ -131,6 +131,11 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Returns the topmost composer item. Ignores mPaperItem*/
     QgsComposerItem* composerItemAt( const QPointF & position );
 
+    /**Returns the highest composer item with a zValue less than a specified value. Ignores mPaperItem
+      @note Added in QGIS 2.0
+    */
+    QgsComposerItem* composerItemAt( const QPointF & position, const int belowZValue );
+
     /** Returns the page number (0-bsaed) given a coordinate */
     int pageNumberAt( const QPointF& position ) const;
 

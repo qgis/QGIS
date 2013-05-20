@@ -167,6 +167,11 @@ int QgsComposition::numPages() const
 
 QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
 {
+  return composerItemAt( position, 0 );
+}
+
+QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position, const int belowZValue )
+{
   QList<QGraphicsItem*> itemList;
   if ( mSelectionTolerance <= 0.0 )
   {
@@ -185,7 +190,12 @@ QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
     QgsPaperItem* paperItem = dynamic_cast<QgsPaperItem*>( *itemIt );
     if ( composerItem && !paperItem )
     {
-      return composerItem;
+      // If we are checking for an item below a specific z value, test the found item
+      // otherwise belowZValue == 0 and we return the first (topmost) item
+      if ( belowZValue == 0 || composerItem->zValue() < belowZValue )
+      {
+        return composerItem;
+      }
     }
   }
   return 0;
