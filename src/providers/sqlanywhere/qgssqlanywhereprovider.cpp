@@ -135,7 +135,7 @@ QgsSqlAnywhereProvider::QgsSqlAnywhereProvider( QString const &uri )
     showMessageBox( tr( "No suitable key column" ),
                     tr( "The source relation %1 has no column suitable "
                         "for use as a unique key.\n\n"
-                        "Quantum GIS requires that the relation has an integer "
+                        "QGIS requires that the relation has an integer "
                         "column no larger than 32 bits containing unique values. "
                       ) .arg( mQuotedTableName ) );
     closeDb();
@@ -1517,7 +1517,7 @@ QgsSqlAnywhereProvider::checkLayerType()
     if ( mGeomType == QGis::WKBUnknown )
     {
       showMessageBox( tr( "Unknown geometry type" ),
-                      tr( "Column %1 has a geometry type of %2, which Quantum GIS does not currently support." )
+                      tr( "Column %1 has a geometry type of %2, which QGIS does not currently support." )
                       .arg( mQuotedTableName + "(" + mGeometryColumn + ")" )
                       .arg( geomType ) );
       return false;
@@ -1526,7 +1526,7 @@ QgsSqlAnywhereProvider::checkLayerType()
     if ( !foundSrid )
     {
       showMessageBox( tr( "Mixed Spatial Reference Systems" ),
-                      tr( "Column %1 is not restricted to a single SRID, which Quantum GIS requires." )
+                      tr( "Column %1 is not restricted to a single SRID, which QGIS requires." )
                       .arg( mQuotedTableName + "(" + mGeometryColumn + ")" ) );
       return false;
     }
@@ -1820,7 +1820,7 @@ QgsSqlAnywhereProvider::checkSrs()
       // use ST_Srid() to convert, since coordinate systems match
       projStr = QString( ".ST_SRID( %1 )" ).arg( projSrid );
       projMsg = tr(
-                  "Because Quantum GIS supports only planar data, "
+                  "Because QGIS supports only planar data, "
                   "the SQL Anywhere data provider will "
                   "transform the data to the compatible planar "
                   "projection (SRID=%1)."
@@ -1837,7 +1837,7 @@ QgsSqlAnywhereProvider::checkSrs()
       ymax = 180;
       projStr = QString( ".ST_Transform( %1 )" ).arg( projSrid );
       projMsg = tr(
-                  "Because Quantum GIS supports only planar data "
+                  "Because QGIS supports only planar data "
                   "and no compatible planar projection was found, "
                   "the SQL Anywhere data provider will attempt to "
                   "transform the data to planar WGS 84 (SRID=%1)."

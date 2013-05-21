@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*!  Quantum GIS - Plugin API
+/*!  QGIS - Plugin API
  *
  *  \section about  About QGis Plugins
  * Plugins provide additional functionality to QGis. Plugins must

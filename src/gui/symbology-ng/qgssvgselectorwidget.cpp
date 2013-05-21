@@ -18,13 +18,14 @@
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerv2utils.h"
 
 #include <QAbstractListModel>
+#include <QCheckBox>
 #include <QDir>
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QModelIndex>
 #include <QPixmapCache>
 #include <QSettings>
@@ -143,6 +144,7 @@ void QgsSvgSelectorGroupsModel::createTree( QStandardItem* &parentGroup )
 QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget* parent )
     : QWidget( parent )
 {
+  // TODO: in-code gui setup with option to vertically or horizontally stack SVG groups/images widgets
   setupUi( this );
 
   mGroupsTreeView->setHeaderHidden( true );
@@ -152,19 +154,37 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget* parent )
            this, SLOT( svgSelectionChanged( const QModelIndex& ) ) );
   connect( mGroupsTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
            this, SLOT( populateIcons( const QModelIndex& ) ) );
-  connect( this, SIGNAL( svgSelected( const QString& ) ), this, SLOT( updateCurrentSvgPath( const QString& ) ) );
+
+  QSettings settings;
+  bool useRelativePath = ( QgsProject::instance()->readBoolEntry( "Paths", "/Absolute", false )
+                           || settings.value( "/Windows/SvgSelectorWidget/RelativePath" ).toBool() );
+  mRelativePathChkBx->setChecked( useRelativePath );
 }
 
 QgsSvgSelectorWidget::~QgsSvgSelectorWidget()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/SvgSelectorWidget/RelativePath", mRelativePathChkBx->isChecked() );
 }
 
 void QgsSvgSelectorWidget::setSvgPath( const QString& svgPath )
 {
-  mCurrentSvgPath = svgPath;
+  QString updatedPath( "" );
+
+  // skip possible urls, excepting those that may locally resolve
+  if ( !svgPath.contains( "://" ) || ( svgPath.contains( "file://", Qt::CaseInsensitive ) ) )
+  {
+    QString resolvedPath = QgsSymbolLayerV2Utils::symbolNameToPath( svgPath.trimmed() );
+    if ( !resolvedPath.isNull() )
+    {
+      updatedPath = resolvedPath;
+    }
+  }
+
+  mCurrentSvgPath = updatedPath;
 
   mFileLineEdit->blockSignals( true );
-  mFileLineEdit->setText( svgPath );
+  mFileLineEdit->setText( updatedPath );
   mFileLineEdit->blockSignals( false );
 
   mImagesListView->selectionModel()->blockSignals( true );
@@ -186,19 +206,28 @@ void QgsSvgSelectorWidget::setSvgPath( const QString& svgPath )
 
 QString QgsSvgSelectorWidget::currentSvgPath() const
 {
+  if ( mRelativePathChkBx->isChecked() )
+    return currentSvgPathToName();
+
   return mCurrentSvgPath;
+}
+
+QString QgsSvgSelectorWidget::currentSvgPathToName() const
+{
+  return QgsSymbolLayerV2Utils::symbolPathToName( mCurrentSvgPath );
 }
 
 void QgsSvgSelectorWidget::updateCurrentSvgPath( const QString& svgPath )
 {
   mCurrentSvgPath = svgPath;
+  emit svgSelected( currentSvgPath() );
 }
 
 void QgsSvgSelectorWidget::svgSelectionChanged( const QModelIndex& idx )
 {
   QString filePath = idx.data( Qt::UserRole ).toString();
   mFileLineEdit->setText( filePath );
-  emit svgSelected( filePath );
+  updateCurrentSvgPath( filePath );
 }
 
 void QgsSvgSelectorWidget::populateIcons( const QModelIndex& idx )
@@ -237,41 +266,29 @@ void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
   QFileInfo fi( file );
   if ( !fi.exists() || !fi.isReadable() )
   {
-    emit svgSelected( QString( "" ) );
-    QMessageBox::critical( 0, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
+    updateCurrentSvgPath( QString( "" ) );
+    updateLineEditFeedback( false );
     return;
   }
   settings.setValue( "/UI/lastSVGMarkerDir", fi.absolutePath() );
   mFileLineEdit->setText( file );
-  emit svgSelected( file );
+  updateCurrentSvgPath( file );
 }
 
-void QgsSvgSelectorWidget::on_mFileLineEdit_textEdited( const QString& text )
+void QgsSvgSelectorWidget::updateLineEditFeedback( bool ok, QString tip )
 {
-  if ( !QFileInfo( text ).exists() )
-  {
-    emit svgSelected( QString( "" ) );
-    return;
-  }
-  emit svgSelected( text );
+  // draw red text for path field if invalid (path can't be resolved)
+  mFileLineEdit->setStyleSheet( QString( !ok ? "QLineEdit{ color: rgb(225, 0, 0); }" : "" ) );
+  mFileLineEdit->setToolTip( !ok ? tr( "File not found" ) : tip );
 }
 
-void QgsSvgSelectorWidget::on_mFileLineEdit_editingFinished()
+void QgsSvgSelectorWidget::on_mFileLineEdit_textChanged( const QString& text )
 {
-  if ( !QFileInfo( mFileLineEdit->text() ).exists() )
-  {
-    QUrl url( mFileLineEdit->text() );
-    if ( !url.isValid() )
-    {
-      emit svgSelected( QString( "" ) );
-      QMessageBox::critical( 0, tr( "Invalid file url" ), tr( "Error, file URL is invalid" ) );
-      return;
-    }
-    emit svgSelected( QString( "" ) );
-    QMessageBox::critical( 0, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
-    return;
-  }
-  emit svgSelected( mFileLineEdit->text() );
+  QString resolvedPath = QgsSymbolLayerV2Utils::symbolNameToPath( text );
+  bool validSVG = !resolvedPath.isNull();
+
+  updateLineEditFeedback( validSVG, resolvedPath );
+  updateCurrentSvgPath( validSVG ? resolvedPath : QString( "" ) );
 }
 
 void QgsSvgSelectorWidget::populateList()
@@ -288,4 +305,39 @@ void QgsSvgSelectorWidget::populateList()
   // Initally load the icons in the List view without any grouping
   QgsSvgSelectorListModel* m = new QgsSvgSelectorListModel( mImagesListView );
   mImagesListView->setModel( m );
+}
+
+//-- QgsSvgSelectorDialog
+
+QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WFlags fl,
+    QDialogButtonBox::StandardButtons buttons,
+    Qt::Orientation orientation )
+    : QDialog( parent, fl )
+{
+  // TODO: pass 'orientation' to QgsSvgSelectorWidget for customizing its layout, once implemented
+  Q_UNUSED( orientation );
+
+  // create buttonbox
+  mButtonBox = new QDialogButtonBox( buttons, orientation, this );
+  connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+  connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+
+  setMinimumSize( 480, 320 );
+
+  // dialog's layout
+  mLayout = new QVBoxLayout();
+  mSvgSelector = new QgsSvgSelectorWidget( this );
+  mLayout->addWidget( mSvgSelector );
+
+  mLayout->addWidget( mButtonBox );
+  setLayout( mLayout );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/SvgSelectorDialog/geometry" ).toByteArray() );
+}
+
+QgsSvgSelectorDialog::~QgsSvgSelectorDialog()
+{
+  QSettings settings;
+  settings.setValue( "/Windows/SvgSelectorDialog/geometry", saveGeometry() );
 }

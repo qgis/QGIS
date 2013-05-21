@@ -2552,7 +2552,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
 
         if ( !exec( qry, QString( "INSERT"
                                   " INTO sdo_coord_ref_system(srid,coord_ref_sys_name,coord_ref_sys_kind,legacy_wktext,is_valid,is_legacy,information_source)"
-                                  " VALUES (%1,%2,%3,%4,'TRUE','TRUE','GDAL/OGR via Quantum GIS')" )
+                                  " VALUES (%1,%2,%3,%4,'TRUE','TRUE','GDAL/OGR via QGIS')" )
                     .arg( srid )
                     .arg( quotedValue( srs->description() ) )
                     .arg( quotedValue( srs->geographicFlag() ? "GEOGRAPHIC2D" : "PROJECTED" ) )

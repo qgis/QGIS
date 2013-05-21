@@ -351,14 +351,14 @@ class TestQgsExpression: public QObject
       QTest::newRow( "negative age" ) << "age('2012-06-28','2012-06-30')" << false << QVariant::fromValue( QgsExpression::Interval( -172800 ) );
 
       // Color functions
-      QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "#fdbe73" );
-      QTest::newRow( "color rgb" ) << "color_rgb(255,127,0)" << false << QVariant( "#ff7f00" );
+      QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "253,190,115,255" );
+      QTest::newRow( "color rgb" ) << "color_rgb(255,127,0)" << false << QVariant( "255,127,0" );
       QTest::newRow( "color rgba" ) << "color_rgba(255,127,0,200)" << false << QVariant( "255,127,0,200" );
-      QTest::newRow( "color hsl" ) << "color_hsl(100,50,70)" << false << QVariant( "#a6d98c" );
+      QTest::newRow( "color hsl" ) << "color_hsl(100,50,70)" << false << QVariant( "166,217,140" );
       QTest::newRow( "color hsla" ) << "color_hsla(100,50,70,200)" << false << QVariant( "166,217,140,200" );
-      QTest::newRow( "color hsv" ) << "color_hsv(40,100,100)" << false << QVariant( "#ffaa00" );
+      QTest::newRow( "color hsv" ) << "color_hsv(40,100,100)" << false << QVariant( "255,170,0" );
       QTest::newRow( "color hsva" ) << "color_hsva(40,100,100,200)" << false << QVariant( "255,170,0,200" );
-      QTest::newRow( "color cmyk" ) << "color_cmyk(100,50,33,10)" << false << QVariant( "#00739a" );
+      QTest::newRow( "color cmyk" ) << "color_cmyk(100,50,33,10)" << false << QVariant( "0,115,154" );
       QTest::newRow( "color cmyka" ) << "color_cmyka(50,25,90,60,200)" << false << QVariant( "51,76,10,200" );
     }
 

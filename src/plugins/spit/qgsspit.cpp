@@ -429,7 +429,7 @@ void QgsSpit::dbConnect()
 
   if ( conn )
   {
-    PGresult *res = PQexec( conn, "SET application_name='Quantum GIS'" );
+    PGresult *res = PQexec( conn, "SET application_name='QGIS'" );
     if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
     {
       PQclear( res );

@@ -2852,7 +2852,7 @@ geometry column - column with unique integer values</source>
     <name>GdalTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation>Quantum　GISのバージョンが検出されました: </translation>
+        <translation type="obsolete">Quantum　GISのバージョンが検出されました: </translation>
     </message>
     <message>
         <source>This version of Gdal Tools requires at least QGIS version 1.0.0
@@ -3051,6 +3051,10 @@ Install it and try again.</source>
         <translation>プラグイン %1 をロードできません. 
 必要なモジュール &quot;%2&quot; がありません. 
 これをインストールして再度試して下さい.</translation>
+    </message>
+    <message>
+        <source>QGIS version detected: </source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Projections</source>
@@ -5781,14 +5785,12 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
 <context>
     <name>Help</name>
     <message>
-        <location filename="../python/console/console_help.ui" line="14"/>
         <source>Dialog</source>
-        <translation>ダイアログ</translation>
+        <translation type="obsolete">ダイアログ</translation>
     </message>
     <message>
-        <location filename="../python/console/console_help.ui" line="39"/>
         <source>about:blank</source>
-        <translation>アバウト:空白</translation>
+        <translation type="obsolete">アバウト:空白</translation>
     </message>
 </context>
 <context>
@@ -5886,12 +5888,12 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <translation>新規</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="213"/>
+        <location filename="../src/ui/qgisapp.ui" line="214"/>
         <source>&amp;Settings</source>
         <translation>設定(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="191"/>
+        <location filename="../src/ui/qgisapp.ui" line="192"/>
         <source>&amp;Plugins</source>
         <translation>プラグイン(&amp;P)</translation>
     </message>
@@ -5911,87 +5913,87 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <translation>地図整飾(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="225"/>
+        <location filename="../src/ui/qgisapp.ui" line="226"/>
         <source>&amp;Raster</source>
         <translation>ラスタ(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="199"/>
+        <location filename="../src/ui/qgisapp.ui" line="200"/>
         <source>&amp;Help</source>
         <translation>ヘルプ(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="231"/>
+        <location filename="../src/ui/qgisapp.ui" line="232"/>
         <source>Vect&amp;or</source>
         <translation>ベクタ(&amp;o)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="235"/>
+        <location filename="../src/ui/qgisapp.ui" line="236"/>
         <source>&amp;OpenStreetMap</source>
         <translation>OpenStreetMap(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="256"/>
+        <location filename="../src/ui/qgisapp.ui" line="257"/>
         <source>File</source>
         <translation>ファイル</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="273"/>
+        <location filename="../src/ui/qgisapp.ui" line="274"/>
         <source>Manage Layers</source>
         <translation>レイヤ管理</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="295"/>
+        <location filename="../src/ui/qgisapp.ui" line="297"/>
         <source>Digitizing</source>
         <translation>デジタイジング</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="316"/>
+        <location filename="../src/ui/qgisapp.ui" line="318"/>
         <source>Advanced Digitizing</source>
         <translation>先進的なデジタイズ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="341"/>
+        <location filename="../src/ui/qgisapp.ui" line="343"/>
         <source>Map Navigation</source>
         <translation>地図ナビゲーション</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="364"/>
+        <location filename="../src/ui/qgisapp.ui" line="366"/>
         <source>Attributes</source>
         <translation>属性</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="383"/>
+        <location filename="../src/ui/qgisapp.ui" line="385"/>
         <source>Plugins</source>
         <translation>プラグイン</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="394"/>
+        <location filename="../src/ui/qgisapp.ui" line="396"/>
         <source>Help</source>
         <translation>ヘルプ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="406"/>
+        <location filename="../src/ui/qgisapp.ui" line="408"/>
         <source>Raster</source>
         <translation>ラスタ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="425"/>
+        <location filename="../src/ui/qgisapp.ui" line="427"/>
         <source>Label</source>
         <translation>ラベル</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="443"/>
+        <location filename="../src/ui/qgisapp.ui" line="445"/>
         <source>Vector</source>
         <translation>ベクタ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="454"/>
+        <location filename="../src/ui/qgisapp.ui" line="456"/>
         <source>Database</source>
         <translation>データベース</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="465"/>
+        <location filename="../src/ui/qgisapp.ui" line="467"/>
         <source>Web</source>
         <translation>ウェッブ</translation>
     </message>
@@ -6000,7 +6002,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <translation type="obsolete">新規プロジェクト(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="483"/>
+        <location filename="../src/ui/qgisapp.ui" line="485"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
@@ -6009,7 +6011,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <translation type="obsolete">プロジェクトを開く(&amp;O)...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="495"/>
+        <location filename="../src/ui/qgisapp.ui" line="497"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
@@ -6018,7 +6020,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <translation type="obsolete">プロジェクトを保存(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="507"/>
+        <location filename="../src/ui/qgisapp.ui" line="509"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
@@ -6027,299 +6029,309 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <translation type="obsolete">プロジェクトを名前をつけて保存(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="519"/>
+        <location filename="../src/ui/qgisapp.ui" line="521"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="528"/>
+        <location filename="../src/ui/qgisapp.ui" line="530"/>
         <source>Save as Image...</source>
         <translation>イメージで保存...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="537"/>
+        <location filename="../src/ui/qgisapp.ui" line="539"/>
         <source>&amp;New Print Composer</source>
         <translation>新コンポーザマネージャ(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="540"/>
+        <location filename="../src/ui/qgisapp.ui" line="542"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="549"/>
+        <location filename="../src/ui/qgisapp.ui" line="551"/>
         <source>Composer Manager...</source>
         <translation>コンポーザーマネージャ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="558"/>
+        <location filename="../src/ui/qgisapp.ui" line="560"/>
         <source>Exit QGIS</source>
         <translation>QGISを終了する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="636"/>
+        <location filename="../src/ui/qgisapp.ui" line="638"/>
         <source>Add Feature</source>
         <translation>地物の追加</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="753"/>
+        <location filename="../src/ui/qgisapp.ui" line="755"/>
         <source>Merge Selected Features</source>
         <translation>選択地物の結合</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="762"/>
+        <location filename="../src/ui/qgisapp.ui" line="764"/>
         <source>Merge Attributes of Selected Features</source>
         <translation>選択された地物の属性を結合する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="845"/>
+        <location filename="../src/ui/qgisapp.ui" line="847"/>
         <source>Select Single Feature</source>
         <translation>1個の地物を選択する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="857"/>
+        <location filename="../src/ui/qgisapp.ui" line="859"/>
         <source>Select Features by Rectangle</source>
         <translation>長方形領域による地物選択</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="869"/>
+        <location filename="../src/ui/qgisapp.ui" line="871"/>
         <source>Select Features by Polygon</source>
         <translation>ポリゴンによる地物選択</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="881"/>
+        <location filename="../src/ui/qgisapp.ui" line="883"/>
         <source>Select Features by Freehand</source>
         <translation>フリーハンドによる地物選択</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="893"/>
+        <location filename="../src/ui/qgisapp.ui" line="895"/>
         <source>Select Features by Radius</source>
         <translation>半径指定による地物選択</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="902"/>
+        <location filename="../src/ui/qgisapp.ui" line="904"/>
         <source>Deselect Features from All Layers</source>
         <translation>すべてのレイヤから地物選択を取り消す</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1097"/>
+        <location filename="../src/ui/qgisapp.ui" line="1099"/>
         <source>Form Annotation</source>
         <translation>注記フォーム</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1121"/>
+        <location filename="../src/ui/qgisapp.ui" line="1123"/>
         <source>Layer Labeling Options</source>
         <translation>レイヤラベリングオプション</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1187"/>
+        <location filename="../src/ui/qgisapp.ui" line="1189"/>
         <source>Add PostGIS Layers...</source>
         <translation>PostGISレイヤの追加...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1223"/>
+        <location filename="../src/ui/qgisapp.ui" line="1225"/>
         <source>Add Oracle Spatial Layer...</source>
         <translation>Oracle Spatial レイヤの追加...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1259"/>
+        <location filename="../src/ui/qgisapp.ui" line="1261"/>
         <source>Toggle Editing</source>
         <translation>編集モード切替</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1875"/>
-        <location filename="../src/ui/qgisapp.ui" line="1878"/>
+        <location filename="../src/ui/qgisapp.ui" line="1877"/>
+        <location filename="../src/ui/qgisapp.ui" line="1880"/>
         <source>Duplicate Layer(s)</source>
         <translation>レイヤを複製する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1890"/>
+        <location filename="../src/ui/qgisapp.ui" line="1892"/>
         <source>SVG annotation</source>
         <translation>SVGアノテーション</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1899"/>
-        <location filename="../src/ui/qgisapp.ui" line="1902"/>
+        <location filename="../src/ui/qgisapp.ui" line="1901"/>
+        <location filename="../src/ui/qgisapp.ui" line="1904"/>
         <source>Save for All Layers</source>
         <translation>全レイヤを保存する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1914"/>
-        <location filename="../src/ui/qgisapp.ui" line="1917"/>
+        <location filename="../src/ui/qgisapp.ui" line="1916"/>
+        <location filename="../src/ui/qgisapp.ui" line="1919"/>
         <source>Rollback for All Layers</source>
         <translation>全レイヤをロールバックする</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1929"/>
-        <location filename="../src/ui/qgisapp.ui" line="1932"/>
+        <location filename="../src/ui/qgisapp.ui" line="1931"/>
+        <location filename="../src/ui/qgisapp.ui" line="1934"/>
         <source>Cancel for All Layers</source>
         <translation>全レイヤ編集キャンセル</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1944"/>
-        <location filename="../src/ui/qgisapp.ui" line="1947"/>
+        <location filename="../src/ui/qgisapp.ui" line="1946"/>
+        <location filename="../src/ui/qgisapp.ui" line="1949"/>
         <source>Rollback for Selected Layer(s)</source>
         <translation>選択レイヤのロールバック</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1959"/>
-        <location filename="../src/ui/qgisapp.ui" line="1962"/>
+        <location filename="../src/ui/qgisapp.ui" line="1961"/>
+        <location filename="../src/ui/qgisapp.ui" line="1964"/>
         <source>Current Edits</source>
         <translation>カレント編集</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1974"/>
-        <location filename="../src/ui/qgisapp.ui" line="1977"/>
+        <location filename="../src/ui/qgisapp.ui" line="1976"/>
+        <location filename="../src/ui/qgisapp.ui" line="1979"/>
         <source>Cancel for Selected Layer(s)</source>
         <translation>選択レイヤの編集キャンセル</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1989"/>
-        <location filename="../src/ui/qgisapp.ui" line="1992"/>
+        <location filename="../src/ui/qgisapp.ui" line="1991"/>
+        <location filename="../src/ui/qgisapp.ui" line="1994"/>
         <source>Save Layer Edits</source>
         <translation>レイヤ編集の保存</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2004"/>
-        <location filename="../src/ui/qgisapp.ui" line="2007"/>
+        <location filename="../src/ui/qgisapp.ui" line="2006"/>
+        <location filename="../src/ui/qgisapp.ui" line="2009"/>
         <source>Rotate Feature(s)</source>
         <translation>地物の回転</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2012"/>
+        <location filename="../src/ui/qgisapp.ui" line="2014"/>
         <source>&amp;Download data</source>
         <translation>データダウンロード(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2017"/>
+        <location filename="../src/ui/qgisapp.ui" line="2019"/>
         <source>&amp;Import topology from XML</source>
         <translation>XMLからトポロジーインポート(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2022"/>
+        <location filename="../src/ui/qgisapp.ui" line="2024"/>
         <source>&amp;Export topology to SpatiaLite</source>
         <translation>SpatiaLiteへのトポロジーエキスポート(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2031"/>
+        <location filename="../src/ui/qgisapp.ui" line="2033"/>
         <source>Increase brightness</source>
         <translation>明るさ増大</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2040"/>
+        <location filename="../src/ui/qgisapp.ui" line="2042"/>
         <source>Decrease brightness</source>
         <translation>明るさ減少</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2049"/>
+        <location filename="../src/ui/qgisapp.ui" line="2051"/>
         <source>Increase contrast</source>
         <translation>コントラスト増大</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2058"/>
+        <location filename="../src/ui/qgisapp.ui" line="2060"/>
         <source>Decrease contrast</source>
         <translation>コントラスト減少</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2067"/>
+        <location filename="../src/ui/qgisapp.ui" line="2069"/>
         <source>Select By Expression</source>
         <translation>条件選択</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2070"/>
+        <location filename="../src/ui/qgisapp.ui" line="2072"/>
         <source>Select features using an expression</source>
         <translation>条件を使った地物選択</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2075"/>
+        <location filename="../src/ui/qgisapp.ui" line="2077"/>
         <source>Need Support?</source>
         <translation>サポートが必要ですか？</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2084"/>
-        <location filename="../src/ui/qgisapp.ui" line="2087"/>
+        <location filename="../src/ui/qgisapp.ui" line="2086"/>
+        <location filename="../src/ui/qgisapp.ui" line="2089"/>
         <source>Open Field Calculator</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2098"/>
+        <source>Add Delimited Text Layer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2101"/>
+        <source>Add Delimited Text Layer</source>
+        <translation type="unfinished">デリミテッドテキストレイヤを追加する</translation>
     </message>
     <message>
         <source>Save Edits</source>
         <translation type="obsolete">編集を保存する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1279"/>
+        <location filename="../src/ui/qgisapp.ui" line="1281"/>
         <source>Save As...</source>
         <translation>名前をつけて保存...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1284"/>
+        <location filename="../src/ui/qgisapp.ui" line="1286"/>
         <source>Save Selection as Vector File...</source>
         <translation>選択部分をベクタファイルとして保存する...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1309"/>
+        <location filename="../src/ui/qgisapp.ui" line="1311"/>
         <source>Set Project CRS from Layer</source>
         <translation>レイヤのCRSをプロジェクトに設定する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1539"/>
+        <location filename="../src/ui/qgisapp.ui" line="1541"/>
         <source>Rotate Label
 Ctl (Cmd) increments by 15 deg.</source>
         <translation>ラベルの回転
 Ctl(Cmd)15度増加.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1617"/>
+        <location filename="../src/ui/qgisapp.ui" line="1619"/>
         <source>Embed Layers and Groups...</source>
         <translation>埋め込みレイヤとグループ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1683"/>
+        <location filename="../src/ui/qgisapp.ui" line="1685"/>
         <source>Run Feature Action</source>
         <translation>地物操作の実行</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1707"/>
-        <location filename="../src/ui/qgisapp.ui" line="1710"/>
+        <location filename="../src/ui/qgisapp.ui" line="1709"/>
+        <location filename="../src/ui/qgisapp.ui" line="1712"/>
         <source>Touch zoom and pan</source>
         <translation>パンとズームの操作</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1722"/>
+        <location filename="../src/ui/qgisapp.ui" line="1724"/>
         <source>Offset Curve</source>
         <translation>オフセット曲線</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1731"/>
+        <location filename="../src/ui/qgisapp.ui" line="1733"/>
         <source>Copy style</source>
         <translation>スタイルのコピー</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1740"/>
+        <location filename="../src/ui/qgisapp.ui" line="1742"/>
         <source>Paste style</source>
         <translation>スタイルの貼り付け</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1749"/>
+        <location filename="../src/ui/qgisapp.ui" line="1751"/>
         <source>Add WCS Layer...</source>
         <translation>WCSレイヤの追加...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1758"/>
+        <location filename="../src/ui/qgisapp.ui" line="1760"/>
         <source>&amp;Grid</source>
         <translation>グリッド(&amp;G)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1761"/>
+        <location filename="../src/ui/qgisapp.ui" line="1763"/>
         <source>Grid</source>
         <translation>グリッド</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1776"/>
+        <location filename="../src/ui/qgisapp.ui" line="1778"/>
         <source>Pin/Unpin Labels</source>
         <translation>ラベルのピン/アンピン</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1779"/>
+        <location filename="../src/ui/qgisapp.ui" line="1781"/>
         <source>Pin/Unpin Labels
 Click or marquee on label to pin
 Shift unpins, Ctl (Cmd) toggles state
@@ -6331,45 +6343,45 @@ Shiftで固定解除; Ctrl(Cmd) 状態の切り替え
 すべての編集可能なレイヤーに適用されます</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1794"/>
-        <location filename="../src/ui/qgisapp.ui" line="1797"/>
+        <location filename="../src/ui/qgisapp.ui" line="1796"/>
+        <location filename="../src/ui/qgisapp.ui" line="1799"/>
         <source>Highlight Pinned Labels</source>
         <translation>ピンされたラベルをハイライトする</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1806"/>
-        <location filename="../src/ui/qgisapp.ui" line="1809"/>
+        <location filename="../src/ui/qgisapp.ui" line="1808"/>
+        <location filename="../src/ui/qgisapp.ui" line="1811"/>
         <source>New Blank Project</source>
         <translation>新しいブランクプロジェクト</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1818"/>
+        <location filename="../src/ui/qgisapp.ui" line="1820"/>
         <source>Local Cumulative Cut Stretch</source>
         <translation>表示範囲内でヒストグラムの累積的カットと引き伸ばし</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1821"/>
+        <location filename="../src/ui/qgisapp.ui" line="1823"/>
         <source>Local cumulative cut stretch using current extent, default limits and estimated values.</source>
         <translatorcomment>「default limits and estimated values.」の&quot;and&quot;は&quot;an&quot;の間違えか？</translatorcomment>
         <translation>現在の表示範囲でヒストグラムの累積的カットと引き伸ばしを行う, デフォルトでは予測値を元にする.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1830"/>
+        <location filename="../src/ui/qgisapp.ui" line="1832"/>
         <source>Full Dataset Cumulative Cut Stretch</source>
         <translation>レイヤー全体のヒストグラムの累積的カットと引き伸ばし</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1833"/>
+        <location filename="../src/ui/qgisapp.ui" line="1835"/>
         <source>Cumulative cut stretch using full dataset extent, default limits and estimated values.</source>
         <translation>レイヤー全体のヒストグラムの累積的カットと引き伸ばしを行う, デフォルトでは予測値を元にする.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1845"/>
+        <location filename="../src/ui/qgisapp.ui" line="1847"/>
         <source>Show/Hide Labels</source>
         <translation>ラベルの表示/非表示</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1848"/>
+        <location filename="../src/ui/qgisapp.ui" line="1850"/>
         <source>Show/Hide Labels
 Click or marquee on feature to show label
 Shift+click or marquee on label to hide it
@@ -6380,8 +6392,8 @@ Shift+クリックで非表示
 すべての編集可能なレイヤーに適用されます</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1863"/>
-        <location filename="../src/ui/qgisapp.ui" line="1866"/>
+        <location filename="../src/ui/qgisapp.ui" line="1865"/>
+        <location filename="../src/ui/qgisapp.ui" line="1868"/>
         <source>Html Annotation</source>
         <translation>Htmlアノテーション</translation>
     </message>
@@ -6394,57 +6406,57 @@ Shift+クリックで非表示
         <translation type="obsolete">終了</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="561"/>
+        <location filename="../src/ui/qgisapp.ui" line="563"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="573"/>
+        <location filename="../src/ui/qgisapp.ui" line="575"/>
         <source>&amp;Undo</source>
         <translation>取り消し(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="576"/>
+        <location filename="../src/ui/qgisapp.ui" line="578"/>
         <source>Ctrl+Z</source>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="585"/>
+        <location filename="../src/ui/qgisapp.ui" line="587"/>
         <source>&amp;Redo</source>
         <translation>再実行(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="588"/>
+        <location filename="../src/ui/qgisapp.ui" line="590"/>
         <source>Ctrl+Shift+Z</source>
         <translation>Ctrl+Shift+Z</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="597"/>
+        <location filename="../src/ui/qgisapp.ui" line="599"/>
         <source>Cut Features</source>
         <translation>地物の切り取り</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="600"/>
+        <location filename="../src/ui/qgisapp.ui" line="602"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="609"/>
+        <location filename="../src/ui/qgisapp.ui" line="611"/>
         <source>Copy Features</source>
         <translation>地物のコピー</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="612"/>
+        <location filename="../src/ui/qgisapp.ui" line="614"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="621"/>
+        <location filename="../src/ui/qgisapp.ui" line="623"/>
         <source>Paste Features</source>
         <translation>地物の貼り付け</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="624"/>
+        <location filename="../src/ui/qgisapp.ui" line="626"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
@@ -6453,7 +6465,7 @@ Shift+クリックで非表示
         <translation type="obsolete">点を入力</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="639"/>
+        <location filename="../src/ui/qgisapp.ui" line="641"/>
         <source>Ctrl+.</source>
         <translation>Ctrl+.</translation>
     </message>
@@ -6478,47 +6490,47 @@ Shift+クリックで非表示
         <translation type="obsolete">地物追加</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="651"/>
+        <location filename="../src/ui/qgisapp.ui" line="653"/>
         <source>Move Feature(s)</source>
         <translation>地物の移動</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="663"/>
+        <location filename="../src/ui/qgisapp.ui" line="665"/>
         <source>Reshape Features</source>
         <translation>地物の変形</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="675"/>
+        <location filename="../src/ui/qgisapp.ui" line="677"/>
         <source>Split Features</source>
         <translation>地物を分割する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="684"/>
+        <location filename="../src/ui/qgisapp.ui" line="686"/>
         <source>Delete Selected</source>
         <translation>選択物の削除</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="696"/>
+        <location filename="../src/ui/qgisapp.ui" line="698"/>
         <source>Add Ring</source>
         <translation>リングの追加</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="708"/>
+        <location filename="../src/ui/qgisapp.ui" line="710"/>
         <source>Add Part</source>
         <translation>部分の追加</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="720"/>
+        <location filename="../src/ui/qgisapp.ui" line="722"/>
         <source>Simplify Feature</source>
         <translation>地物の簡素化</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="732"/>
+        <location filename="../src/ui/qgisapp.ui" line="734"/>
         <source>Delete Ring</source>
         <translation>リングの削除</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="744"/>
+        <location filename="../src/ui/qgisapp.ui" line="746"/>
         <source>Delete Part</source>
         <translation>部分の削除</translation>
     </message>
@@ -6531,42 +6543,42 @@ Shift+クリックで非表示
         <translation type="obsolete">選択された地物の属性を結合する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="774"/>
+        <location filename="../src/ui/qgisapp.ui" line="776"/>
         <source>Node Tool</source>
         <translation>ノードツール</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="786"/>
+        <location filename="../src/ui/qgisapp.ui" line="788"/>
         <source>Rotate Point Symbols</source>
         <translation>ポイントシンボルを回転する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="791"/>
+        <location filename="../src/ui/qgisapp.ui" line="793"/>
         <source>Snapping Options...</source>
         <translation>スナップオプション...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="803"/>
+        <location filename="../src/ui/qgisapp.ui" line="805"/>
         <source>Pan Map</source>
         <translation>地図移動</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="815"/>
+        <location filename="../src/ui/qgisapp.ui" line="817"/>
         <source>Zoom In</source>
         <translation>拡大</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="818"/>
+        <location filename="../src/ui/qgisapp.ui" line="820"/>
         <source>Ctrl++</source>
         <translation>Ctrl++</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="830"/>
+        <location filename="../src/ui/qgisapp.ui" line="832"/>
         <source>Zoom Out</source>
         <translation>縮小</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="833"/>
+        <location filename="../src/ui/qgisapp.ui" line="835"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
     </message>
@@ -6595,128 +6607,128 @@ Shift+クリックで非表示
         <translation type="obsolete">すべてのレイヤから地物選択を取り消す</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="914"/>
+        <location filename="../src/ui/qgisapp.ui" line="916"/>
         <source>Identify Features</source>
         <translation>地物情報表示</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="917"/>
+        <location filename="../src/ui/qgisapp.ui" line="919"/>
         <source>Ctrl+Shift+I</source>
         <translation>Ctrl+Shift+I</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="929"/>
+        <location filename="../src/ui/qgisapp.ui" line="931"/>
         <source>Measure Line</source>
         <translation>線の長さを測る</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="932"/>
-        <location filename="../src/ui/qgisapp.ui" line="1214"/>
+        <location filename="../src/ui/qgisapp.ui" line="934"/>
+        <location filename="../src/ui/qgisapp.ui" line="1216"/>
         <source>Ctrl+Shift+M</source>
         <translation>Ctrl+Shift+M</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="944"/>
+        <location filename="../src/ui/qgisapp.ui" line="946"/>
         <source>Measure Area</source>
         <translation>面積を測る</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="947"/>
+        <location filename="../src/ui/qgisapp.ui" line="949"/>
         <source>Ctrl+Shift+J</source>
         <translation>Ctrl+Shift+J</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="959"/>
+        <location filename="../src/ui/qgisapp.ui" line="961"/>
         <source>Measure Angle</source>
         <translation>角度を測る</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="968"/>
+        <location filename="../src/ui/qgisapp.ui" line="970"/>
         <source>Zoom Full</source>
         <translation>全域表示</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="971"/>
+        <location filename="../src/ui/qgisapp.ui" line="973"/>
         <source>Ctrl+Shift+F</source>
         <translation>Ctrl+Shift+F</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="980"/>
+        <location filename="../src/ui/qgisapp.ui" line="982"/>
         <source>Zoom to Layer</source>
         <translation>レイヤの領域にズーム</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="989"/>
+        <location filename="../src/ui/qgisapp.ui" line="991"/>
         <source>Zoom to Selection</source>
         <translation>選択部分にズーム</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="992"/>
+        <location filename="../src/ui/qgisapp.ui" line="994"/>
         <source>Ctrl+J</source>
         <translation>Ctrl+J</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1001"/>
+        <location filename="../src/ui/qgisapp.ui" line="1003"/>
         <source>Zoom Last</source>
         <translation>直前の表示領域にズーム</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1010"/>
+        <location filename="../src/ui/qgisapp.ui" line="1012"/>
         <source>Zoom Next</source>
         <translation>次表示領域へズーム</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1019"/>
+        <location filename="../src/ui/qgisapp.ui" line="1021"/>
         <source>Zoom Actual Size</source>
         <translation>実際のサイズにズームする</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1022"/>
+        <location filename="../src/ui/qgisapp.ui" line="1024"/>
         <source>Zoom to Native Pixel Resolution</source>
         <translation>ネイティブピクセル解像度にズームする</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1034"/>
+        <location filename="../src/ui/qgisapp.ui" line="1036"/>
         <source>Map Tips</source>
         <translation>マップチップス</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1037"/>
+        <location filename="../src/ui/qgisapp.ui" line="1039"/>
         <source>Show information about a feature when the mouse is hovered over it</source>
         <translation>マウスカーソルが上にある時に地物の情報が表示されます</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1046"/>
+        <location filename="../src/ui/qgisapp.ui" line="1048"/>
         <source>New Bookmark...</source>
         <translation>新しいブックマーク....</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1049"/>
+        <location filename="../src/ui/qgisapp.ui" line="1051"/>
         <source>Ctrl+B</source>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1058"/>
+        <location filename="../src/ui/qgisapp.ui" line="1060"/>
         <source>Show Bookmarks</source>
         <translation>ブックマーク一覧を見る</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1061"/>
+        <location filename="../src/ui/qgisapp.ui" line="1063"/>
         <source>Ctrl+Shift+B</source>
         <translation>Ctrl+Shift+B</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1070"/>
+        <location filename="../src/ui/qgisapp.ui" line="1072"/>
         <source>Refresh</source>
         <translation>再読み込み</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1073"/>
+        <location filename="../src/ui/qgisapp.ui" line="1075"/>
         <source>Ctrl+R</source>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1085"/>
+        <location filename="../src/ui/qgisapp.ui" line="1087"/>
         <source>Text Annotation</source>
         <translation>文字注記</translation>
     </message>
@@ -6725,57 +6737,57 @@ Shift+クリックで非表示
         <translation type="obsolete">注記フォーム</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1109"/>
+        <location filename="../src/ui/qgisapp.ui" line="1111"/>
         <source>Move Annotation</source>
         <translation>注記移動</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1118"/>
+        <location filename="../src/ui/qgisapp.ui" line="1120"/>
         <source>Labeling</source>
         <translation>ラベリング</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1130"/>
+        <location filename="../src/ui/qgisapp.ui" line="1132"/>
         <source>New Shapefile Layer...</source>
         <translation>新しいShapeファイルレイヤ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1133"/>
+        <location filename="../src/ui/qgisapp.ui" line="1135"/>
         <source>Ctrl+Shift+N</source>
         <translation>Ctrl+Shift+N</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1142"/>
+        <location filename="../src/ui/qgisapp.ui" line="1144"/>
         <source>New SpatiaLite Layer ...</source>
         <translation>新しいSpatialiteレイヤ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1145"/>
+        <location filename="../src/ui/qgisapp.ui" line="1147"/>
         <source>Ctrl+Shift+A</source>
         <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1154"/>
+        <location filename="../src/ui/qgisapp.ui" line="1156"/>
         <source>Raster calculator ...</source>
         <translation>ラスタ計算機...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1163"/>
+        <location filename="../src/ui/qgisapp.ui" line="1165"/>
         <source>Add Vector Layer...</source>
         <translation>ベクタレイヤの追加...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1166"/>
+        <location filename="../src/ui/qgisapp.ui" line="1168"/>
         <source>Ctrl+Shift+V</source>
         <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1175"/>
+        <location filename="../src/ui/qgisapp.ui" line="1177"/>
         <source>Add Raster Layer...</source>
         <translation>ラスタレイヤの追加...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1178"/>
+        <location filename="../src/ui/qgisapp.ui" line="1180"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
@@ -6784,37 +6796,37 @@ Shift+クリックで非表示
         <translation type="obsolete">PostGISレイヤの追加...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1190"/>
+        <location filename="../src/ui/qgisapp.ui" line="1192"/>
         <source>Ctrl+Shift+D</source>
         <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1199"/>
+        <location filename="../src/ui/qgisapp.ui" line="1201"/>
         <source>Add SpatiaLite Layer...</source>
         <translation>SpatiaLiteレイヤの追加...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1202"/>
+        <location filename="../src/ui/qgisapp.ui" line="1204"/>
         <source>Ctrl+Shift+L</source>
         <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1211"/>
+        <location filename="../src/ui/qgisapp.ui" line="1213"/>
         <source>Add MSSQL Spatial Layer...</source>
         <translation>MSSQL 空間レイヤの追加...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1235"/>
+        <location filename="../src/ui/qgisapp.ui" line="1237"/>
         <source>Add WMS Layer...</source>
         <translation>WMSレイヤの追加...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1238"/>
+        <location filename="../src/ui/qgisapp.ui" line="1240"/>
         <source>Ctrl+Shift+W</source>
         <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1247"/>
+        <location filename="../src/ui/qgisapp.ui" line="1249"/>
         <source>Open Attribute Table</source>
         <translation>属性テーブルのオープン</translation>
     </message>
@@ -6823,7 +6835,7 @@ Shift+クリックで非表示
         <translation type="obsolete">編集モード変更</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1262"/>
+        <location filename="../src/ui/qgisapp.ui" line="1264"/>
         <source>Toggles the editing state of the current layer</source>
         <translation>カレントレイヤの編集モードを変更する</translation>
     </message>
@@ -6832,7 +6844,7 @@ Shift+クリックで非表示
         <translation type="obsolete">編集を保存する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1274"/>
+        <location filename="../src/ui/qgisapp.ui" line="1276"/>
         <source>Save edits to current layer, but continue editing</source>
         <translation>カレントレイヤへの編集を保存した後,編集作業を続けます</translation>
     </message>
@@ -6845,22 +6857,22 @@ Shift+クリックで非表示
         <translation type="obsolete">選択部分をベクタファイルとして保存する...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1293"/>
+        <location filename="../src/ui/qgisapp.ui" line="1295"/>
         <source>Remove Layer(s)</source>
         <translation>レイヤ（群）の削除</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1296"/>
+        <location filename="../src/ui/qgisapp.ui" line="1298"/>
         <source>Ctrl+D</source>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1301"/>
+        <location filename="../src/ui/qgisapp.ui" line="1303"/>
         <source>Set CRS of Layer(s)</source>
         <translation>レイヤのCRSを設定する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1304"/>
+        <location filename="../src/ui/qgisapp.ui" line="1306"/>
         <source>Ctrl+Shift+C</source>
         <translation>Ctrl+Shift+C</translation>
     </message>
@@ -6873,94 +6885,94 @@ Shift+クリックで非表示
         <translation type="obsolete">タイルスケールスライダー</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1349"/>
+        <location filename="../src/ui/qgisapp.ui" line="1351"/>
         <source>Remove All from Overview</source>
         <translation>全体図から全て削除</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1561"/>
+        <location filename="../src/ui/qgisapp.ui" line="1563"/>
         <source>Style Manager...</source>
         <translation>スタイルマネージャ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1578"/>
+        <location filename="../src/ui/qgisapp.ui" line="1580"/>
         <source>Stretch Histogram to Full Dataset</source>
         <translation>ヒストグラムをフルデータセットに伸ばす</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1601"/>
+        <location filename="../src/ui/qgisapp.ui" line="1603"/>
         <source>Customization...</source>
         <translation>カスタマイズ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1606"/>
+        <location filename="../src/ui/qgisapp.ui" line="1608"/>
         <source>mActionCatchForCustomization</source>
         <translation>mActionCatchForCustomizatio</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1609"/>
+        <location filename="../src/ui/qgisapp.ui" line="1611"/>
         <source>This is here just to avoid shortcut conflicts, the shortcut is caught in QgsCustomization</source>
         <translation>ここでショートカットのコンフリクトを除去します,ショートカットはQgsCustomizationでキャッチされます</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1612"/>
+        <location filename="../src/ui/qgisapp.ui" line="1614"/>
         <source>Ctrl+M</source>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1620"/>
+        <location filename="../src/ui/qgisapp.ui" line="1622"/>
         <source>Embed layers and groups from other project files</source>
         <translation>他のプロジェクトファイルの組み込みレイヤとグループ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1629"/>
+        <location filename="../src/ui/qgisapp.ui" line="1631"/>
         <source>&amp;Copyright Label</source>
         <translation>著作権ラベル(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1632"/>
+        <location filename="../src/ui/qgisapp.ui" line="1634"/>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
         <translation>地図キャンバス上に表示される著作権ラベルを作成。</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1641"/>
+        <location filename="../src/ui/qgisapp.ui" line="1643"/>
         <source>&amp;North Arrow</source>
         <translation>方位記号(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1644"/>
+        <location filename="../src/ui/qgisapp.ui" line="1646"/>
         <source>&quot;Creates a north arrow that is displayed on the map canvas&quot;</source>
         <translation>”地図キャンバスに表示される北向き矢印を作ります&quot;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1653"/>
+        <location filename="../src/ui/qgisapp.ui" line="1655"/>
         <source>&amp;Scale Bar</source>
         <translation>スケールバー(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1656"/>
-        <location filename="../src/ui/qgisapp.ui" line="1764"/>
+        <location filename="../src/ui/qgisapp.ui" line="1658"/>
+        <location filename="../src/ui/qgisapp.ui" line="1766"/>
         <source>Creates a scale bar that is displayed on the map canvas</source>
         <translation>地図キャンバス上に表示されるスケールバーを作成します</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1665"/>
+        <location filename="../src/ui/qgisapp.ui" line="1667"/>
         <source>Add WFS Layer...</source>
         <translation>WFSレイヤの追加...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1668"/>
+        <location filename="../src/ui/qgisapp.ui" line="1670"/>
         <source>Add WFS Layer</source>
         <translation>WFSレイヤの追加</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1680"/>
+        <location filename="../src/ui/qgisapp.ui" line="1682"/>
         <source>Feature Action</source>
         <translation>地物操作</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1692"/>
-        <location filename="../src/ui/qgisapp.ui" line="1695"/>
+        <location filename="../src/ui/qgisapp.ui" line="1694"/>
+        <location filename="../src/ui/qgisapp.ui" line="1697"/>
         <source>Pan Map to Selection</source>
         <translation>選択部分に地図をパンする</translation>
     </message>
@@ -6969,53 +6981,53 @@ Shift+クリックで非表示
         <translation type="obsolete">ライブGPSトラッキング</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1314"/>
+        <location filename="../src/ui/qgisapp.ui" line="1316"/>
         <source>Properties...</source>
         <translation>プロパティ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1319"/>
+        <location filename="../src/ui/qgisapp.ui" line="1321"/>
         <source>Query...</source>
         <translation>検索...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1328"/>
+        <location filename="../src/ui/qgisapp.ui" line="1330"/>
         <source>Add to Overview</source>
         <translation>全体図に追加</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1226"/>
-        <location filename="../src/ui/qgisapp.ui" line="1331"/>
+        <location filename="../src/ui/qgisapp.ui" line="1228"/>
+        <location filename="../src/ui/qgisapp.ui" line="1333"/>
         <source>Ctrl+Shift+O</source>
         <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="480"/>
+        <location filename="../src/ui/qgisapp.ui" line="482"/>
         <source>&amp;New</source>
         <translation>新規 (&amp;N)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="492"/>
+        <location filename="../src/ui/qgisapp.ui" line="494"/>
         <source>&amp;Open...</source>
         <translation>開く(&amp;O)...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="504"/>
+        <location filename="../src/ui/qgisapp.ui" line="506"/>
         <source>&amp;Save</source>
         <translation>保存(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="516"/>
+        <location filename="../src/ui/qgisapp.ui" line="518"/>
         <source>Save &amp;As...</source>
         <translation>名前をつけて保存(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1271"/>
+        <location filename="../src/ui/qgisapp.ui" line="1273"/>
         <source>Save for Selected Layer(s)</source>
         <translation>選択レイヤの保存</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1340"/>
+        <location filename="../src/ui/qgisapp.ui" line="1342"/>
         <source>Add All to Overview</source>
         <translation>全体図に全て追加</translation>
     </message>
@@ -7024,133 +7036,133 @@ Shift+クリックで非表示
         <translation type="obsolete">全体図から全て削除</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1358"/>
+        <location filename="../src/ui/qgisapp.ui" line="1360"/>
         <source>Show All Layers</source>
         <translation>全てのレイヤを表示</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1361"/>
+        <location filename="../src/ui/qgisapp.ui" line="1363"/>
         <source>Ctrl+Shift+U</source>
         <translation>Ctrl+Shift+U</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1370"/>
+        <location filename="../src/ui/qgisapp.ui" line="1372"/>
         <source>Hide All Layers</source>
         <translation>全てのレイヤを隠す</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1373"/>
+        <location filename="../src/ui/qgisapp.ui" line="1375"/>
         <source>Ctrl+Shift+H</source>
         <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1382"/>
+        <location filename="../src/ui/qgisapp.ui" line="1384"/>
         <source>Manage Plugins...</source>
         <translation>プラグインの管理...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1387"/>
+        <location filename="../src/ui/qgisapp.ui" line="1389"/>
         <source>Toggle Full Screen Mode</source>
         <translation>フルスクリーンモードへ切り替え</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1390"/>
+        <location filename="../src/ui/qgisapp.ui" line="1392"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1399"/>
+        <location filename="../src/ui/qgisapp.ui" line="1401"/>
         <source>Project Properties...</source>
         <translation>プロジェクトのプロパティ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1402"/>
+        <location filename="../src/ui/qgisapp.ui" line="1404"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1411"/>
+        <location filename="../src/ui/qgisapp.ui" line="1413"/>
         <source>Options...</source>
         <translation>オプション...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1423"/>
+        <location filename="../src/ui/qgisapp.ui" line="1425"/>
         <source>Custom CRS...</source>
         <translation>カスタムCRS...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1432"/>
+        <location filename="../src/ui/qgisapp.ui" line="1434"/>
         <source>Configure shortcuts...</source>
         <translation>ショートカットの構成...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1444"/>
+        <location filename="../src/ui/qgisapp.ui" line="1446"/>
         <source>Local Histogram Stretch</source>
         <translation>ローカルヒストグラムの広がり</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1447"/>
+        <location filename="../src/ui/qgisapp.ui" line="1449"/>
         <source>Stretch histogram of active raster to view extents</source>
         <translation>アクティブラスタの領域を見えるようにするためにヒストグラムを伸ばす</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1456"/>
+        <location filename="../src/ui/qgisapp.ui" line="1458"/>
         <source>Help Contents</source>
         <translation>QGIS ヘルプ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1459"/>
+        <location filename="../src/ui/qgisapp.ui" line="1461"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1464"/>
+        <location filename="../src/ui/qgisapp.ui" line="1466"/>
         <source>API documentation</source>
         <translation>API文書</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1473"/>
+        <location filename="../src/ui/qgisapp.ui" line="1475"/>
         <source>QGIS Home Page</source>
         <translation>QGIS ホームページ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1476"/>
+        <location filename="../src/ui/qgisapp.ui" line="1478"/>
         <source>Ctrl+H</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1485"/>
+        <location filename="../src/ui/qgisapp.ui" line="1487"/>
         <source>Check QGIS Version</source>
         <translation>QGISのバージョンをチェックする</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1488"/>
+        <location filename="../src/ui/qgisapp.ui" line="1490"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
         <translation>QGISのバージョンがアップデートされているか検証する（インターネットアクセスが必要)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1497"/>
+        <location filename="../src/ui/qgisapp.ui" line="1499"/>
         <source>About</source>
         <translation>アバウト</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1509"/>
+        <location filename="../src/ui/qgisapp.ui" line="1511"/>
         <source>QGIS Sponsors</source>
         <translation>QGISスポンサー</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1521"/>
-        <location filename="../src/ui/qgisapp.ui" line="1524"/>
+        <location filename="../src/ui/qgisapp.ui" line="1523"/>
+        <location filename="../src/ui/qgisapp.ui" line="1526"/>
         <source>Move Label</source>
         <translation>ラベルの移動</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1536"/>
+        <location filename="../src/ui/qgisapp.ui" line="1538"/>
         <source>Rotate Label</source>
         <translation>ラベルの回転</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1552"/>
+        <location filename="../src/ui/qgisapp.ui" line="1554"/>
         <source>Change Label</source>
         <translation>ラベルを変更する</translation>
     </message>
@@ -7159,12 +7171,12 @@ Shift+クリックで非表示
         <translation type="obsolete">スタイルマネージャ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1566"/>
+        <location filename="../src/ui/qgisapp.ui" line="1568"/>
         <source>Python Console</source>
         <translation>Pythonコンソール</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1575"/>
+        <location filename="../src/ui/qgisapp.ui" line="1577"/>
         <source>Full histogram stretch</source>
         <translation>全ヒストグラムを拡大</translation>
     </message>
@@ -8275,19 +8287,35 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Comment code</source>
-        <translation>コードのコメント</translation>
+        <translation type="obsolete">コードのコメント</translation>
     </message>
     <message>
         <source>Uncomment code</source>
-        <translation>コードのアンコメント</translation>
+        <translation type="obsolete">コードのアンコメント</translation>
     </message>
     <message>
         <source>Object browser</source>
-        <translation>オブジェクトブラウザ</translation>
+        <translation type="obsolete">オブジェクトブラウザ</translation>
     </message>
     <message>
         <source>Find text</source>
-        <translation>テキスト検索</translation>
+        <translation type="obsolete">テキスト検索</translation>
+    </message>
+    <message>
+        <source>Object Inspector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Comment</source>
+        <translation type="unfinished">コメント</translation>
+    </message>
+    <message>
+        <source>Uncomment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Find Text</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show editor</source>
@@ -8336,6 +8364,18 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <message>
         <source>Find Previous</source>
         <translation>前の検索</translation>
+    </message>
+    <message>
+        <source>Case Sensitive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Whole Word</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrap Around</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Open File</source>
@@ -8661,27 +8701,23 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>バージョン0.1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="37"/>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="53"/>
         <source>Version 0.2</source>
         <translation>バージョン0.2</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="38"/>
         <source>Loads and displays delimited text files containing x,y coordinates</source>
-        <translation>x y 座標が含まれたデリミテッドテキストファイルをロードして表示する</translation>
+        <translation type="obsolete">x y 座標が含まれたデリミテッドテキストファイルをロードして表示する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="39"/>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="21"/>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="50"/>
         <source>Layers</source>
         <translation>レイヤ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="193"/>
         <source>Add Delimited Text Layer</source>
-        <translation>デリミテッドテキストレイヤを追加する</translation>
+        <translation type="obsolete">デリミテッドテキストレイヤを追加する</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="51"/>
@@ -9338,11 +9374,16 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>プラグイン</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspluginregistry.cpp" line="253"/>
         <source>Plugin &quot;%1&quot; is not compatible with this version of Quantum GIS.
 It will be disabled.</source>
-        <translation>プラグイン &quot;%1&quot;はこのバージョンのQuantum GISでは互換性がありません.
+        <translation type="obsolete">プラグイン &quot;%1&quot;はこのバージョンのQuantum GISでは互換性がありません.
 これは無効になります.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgspluginregistry.cpp" line="253"/>
+        <source>Plugin &quot;%1&quot; is not compatible with this version of QGIS.
+It will be disabled.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="268"/>
@@ -9619,7 +9660,7 @@ Error(%2): %3</source>
         <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="482"/>
         <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1224"/>
         <location filename="../src/core/qgsdistancearea.cpp" line="222"/>
-        <location filename="../src/mapserver/qgssldparser.cpp" line="1534"/>
+        <location filename="../src/mapserver/qgssldparser.cpp" line="1536"/>
         <location filename="../src/providers/grass/qgsgrassgislib.cpp" line="231"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3210"/>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1896"/>
@@ -10114,12 +10155,12 @@ Only %1 of %2 features written.</source>
         <translation>CRSが定義されていません - デフォルトのCRSが初期値になります%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4312"/>
+        <location filename="../src/app/qgisapp.cpp" line="4342"/>
         <source>Reading raster</source>
         <translation>ラスタデータを読み込み中</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5260"/>
+        <location filename="../src/app/qgisapp.cpp" line="5290"/>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="42"/>
         <source>To select features, choose a vector layer in the legend</source>
         <translation>要素を選択するには、凡例からベクタレイヤーを選択してください</translation>
@@ -10306,7 +10347,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation>ポイントパターン塗りつぶし</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5259"/>
+        <location filename="../src/app/qgisapp.cpp" line="5289"/>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="41"/>
         <source>No active vector layer</source>
         <translation>アクティブなベクタレイヤがありません</translation>
@@ -11010,23 +11051,23 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation type="obsolete">カラム  &apos;%1&apos;&apos; がみつかりません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3794"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3815"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3840"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3797"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3818"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3843"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="64"/>
         <source>Unable to load %1 provider</source>
         <translation>%1プロバイダーをロードできません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3802"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3823"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3848"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3805"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3826"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3851"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="73"/>
         <source>Provider %1 has no %2 method</source>
         <translation>%1プロバイダには%2メソッドがありません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3904"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3907"/>
         <source>Loaded from Provider</source>
         <translatorcomment>QgsVectorLayerPropertiesにも同じメッセージ.翻訳を合わせる.</translatorcomment>
         <translation>プロバイダからロードしました</translation>
@@ -11090,10 +11131,10 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2384"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2872"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2841"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3165"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3228"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3366"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2843"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3167"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3230"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3368"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="140"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5132"/>
         <source>Connection to database failed</source>
@@ -11106,7 +11147,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2583"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2964"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2966"/>
         <source>Creation of data source %1 failed: 
 %2</source>
         <translation>データソース %1 の作成に失敗しました: 
@@ -11114,7 +11155,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2617"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2982"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2984"/>
         <source>Loading of the layer %1 failed</source>
         <translation>レイヤ%1のロードに失敗しました</translation>
     </message>
@@ -11150,68 +11191,68 @@ You are seeing this message most likely because you have no DISPLAY environment 
 %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3180"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3208"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3182"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3210"/>
         <source>Unable to delete layer %1: 
 %2</source>
         <translation>レイヤ%1を削除できませんでした
 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3252"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3254"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>レイヤースタイルを保存出来ません. データベース上にテーブルを保存出来ません. テーブルのパーミッションに問題があります（user=%1）. データベースの管理者に問い合わせてください</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3300"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3302"/>
         <source>Save style in database</source>
         <translation>スタイルをデータベースに保存</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3301"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3303"/>
         <source>A style named &quot;%1&quot; already exists in the database for this layer. Do you want to overwrite it?</source>
         <translation>このレイヤの&quot;%1&quot;という名前のスタイルはデータベースに存在します.上書きしますか?</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3305"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3307"/>
         <source>Operation aborted. No changes were made in the database</source>
         <translation>操作は中断されました.データベースに変更は加えられませんでした</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3351"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3353"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
         <translation>レイヤースタイルを保存出来ません. スタイルテーブルに新規レコードを追加できません. テーブルのパーミッションに問題があります（user=%1）. データベースの管理者に問い合わせてください. </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3396"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3460"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3398"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3462"/>
         <source>Connection to database failed using username: %1</source>
         <translation>ユーザ名%1によるデータベースへの接続に失敗しました</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3414"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3439"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3468"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3416"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3441"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3470"/>
         <source>Error executing query: %1</source>
         <translation>クエリ実行エラー %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3415"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3417"/>
         <source>Error executing the select query for related styles. The query was logged</source>
         <translation>関連するスタイルのクエリに失敗しました. クエリは記録されました</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3440"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3442"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
         <translation>関連していないスタイルのクエリに失敗しました. クエリは記録されました</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3469"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3471"/>
         <source>Error executing the select query. The query was logged</source>
         <translation>SELECTクエリの実行に失敗しました. クエリは記録されました</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3479"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3481"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
         <translation>テーブル&apos;%1&apos;の整合性エラー. スタイルIDはユニークである必要があります</translation>
     </message>
@@ -11223,14 +11264,14 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1709"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2696"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3018"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3020"/>
         <source>Unsupported type for field %1</source>
         <translation>フィールド%1はサポートされていない型です</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1723"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2715"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3038"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3040"/>
         <source>Creation of fields failed</source>
         <translation>フィールドの作成に失敗しました</translation>
     </message>
@@ -11831,7 +11872,7 @@ SQL: %1</translation>
 <context>
     <name>QgisApp</name>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2054"/>
+        <location filename="../src/app/qgisapp.cpp" line="2055"/>
         <source>Layers</source>
         <translation>レイヤ</translation>
     </message>
@@ -11844,22 +11885,22 @@ SQL: %1</translation>
         <translation type="obsolete">QgsHttpTransactionの代わりに QNetworkAccessManagerを使います(キャッシングとウェッブサイトとプロキシのダイナミック認証を含みます)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2546"/>
-        <location filename="../src/app/qgisapp.cpp" line="2553"/>
+        <location filename="../src/app/qgisapp.cpp" line="2547"/>
+        <location filename="../src/app/qgisapp.cpp" line="2554"/>
         <source>Invalid Data Source</source>
         <translation>無効なデータソース</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4517"/>
-        <location filename="../src/app/qgisapp.cpp" line="6511"/>
-        <location filename="../src/app/qgisapp.cpp" line="6520"/>
-        <location filename="../src/app/qgisapp.cpp" line="6562"/>
-        <location filename="../src/app/qgisapp.cpp" line="6571"/>
+        <location filename="../src/app/qgisapp.cpp" line="4547"/>
+        <location filename="../src/app/qgisapp.cpp" line="6541"/>
+        <location filename="../src/app/qgisapp.cpp" line="6550"/>
+        <location filename="../src/app/qgisapp.cpp" line="6592"/>
+        <location filename="../src/app/qgisapp.cpp" line="6601"/>
         <source>No Layer Selected</source>
         <translation>レイヤが選択されていません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5669"/>
+        <location filename="../src/app/qgisapp.cpp" line="5699"/>
         <source>Could not %1 changes to layer %2
 
 Errors: %3
@@ -11870,146 +11911,145 @@ Errors: %3
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5670"/>
+        <location filename="../src/app/qgisapp.cpp" line="5700"/>
         <source>rollback</source>
         <translation>ロールバック</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5670"/>
+        <location filename="../src/app/qgisapp.cpp" line="5700"/>
         <source>cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5706"/>
+        <location filename="../src/app/qgisapp.cpp" line="5736"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5706"/>
-        <location filename="../src/app/qgisapp.cpp" line="5738"/>
-        <location filename="../src/app/qgisapp.cpp" line="5770"/>
+        <location filename="../src/app/qgisapp.cpp" line="5736"/>
+        <location filename="../src/app/qgisapp.cpp" line="5768"/>
+        <location filename="../src/app/qgisapp.cpp" line="5800"/>
         <source>all</source>
         <translation>全て</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5738"/>
+        <location filename="../src/app/qgisapp.cpp" line="5768"/>
         <source>Rollback</source>
         <translation>ロールバック</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5770"/>
+        <location filename="../src/app/qgisapp.cpp" line="5800"/>
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5786"/>
+        <location filename="../src/app/qgisapp.cpp" line="5816"/>
         <source>Current edits</source>
         <translation>カレント編集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5787"/>
+        <location filename="../src/app/qgisapp.cpp" line="5817"/>
         <source>%1 current changes for %2 layer(s)?</source>
         <translation>%1 カレントへの変更は %2 レイヤ用ですか?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6059"/>
+        <location filename="../src/app/qgisapp.cpp" line="6089"/>
         <source>copy</source>
         <translation>コピー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6063"/>
+        <location filename="../src/app/qgisapp.cpp" line="6093"/>
         <source>Plugin layer</source>
         <translation>プラグインレイヤ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6075"/>
+        <location filename="../src/app/qgisapp.cpp" line="6105"/>
         <source>Memory layer</source>
         <translation>メモリレイヤ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6095"/>
-        <location filename="../src/app/qgisapp.cpp" line="6105"/>
+        <location filename="../src/app/qgisapp.cpp" line="6125"/>
+        <location filename="../src/app/qgisapp.cpp" line="6135"/>
         <source>Duplicate layer: </source>
         <translation>レイヤを複製する:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6096"/>
+        <location filename="../src/app/qgisapp.cpp" line="6126"/>
         <source>%1 (duplication resulted in invalid layer)</source>
         <translation>%1(複製の結果は不正なレイヤ内にあります)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6106"/>
+        <location filename="../src/app/qgisapp.cpp" line="6136"/>
         <source>%1 (%2type unsupported)</source>
         <translation>%1(型%2はサポートされていません)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6296"/>
+        <location filename="../src/app/qgisapp.cpp" line="6326"/>
         <source>Couldn&apos;t load Python support library: %1</source>
         <translation>Pythonサポートライブラリ %1 をロードできませんでした</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6307"/>
+        <location filename="../src/app/qgisapp.cpp" line="6337"/>
         <source>Couldn&apos;t resolve python support library&apos;s instance() symbol.</source>
         <translation>pythonサポートライブラリの instance() シンボル参照が解決できません.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6322"/>
+        <location filename="../src/app/qgisapp.cpp" line="6352"/>
         <source>Python support ENABLED :-) </source>
         <translation>Python サポートが有効になりました :-) </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6370"/>
+        <location filename="../src/app/qgisapp.cpp" line="6400"/>
         <source>There is a new version of QGIS available</source>
         <translation>新しいバージョンの QGIS が出ています</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6374"/>
+        <location filename="../src/app/qgisapp.cpp" line="6404"/>
         <source>You are running a development version of QGIS</source>
         <translation>これは開発バージョンの QGIS です</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6378"/>
+        <location filename="../src/app/qgisapp.cpp" line="6408"/>
         <source>You are running the current version of QGIS</source>
         <translation>これは最新バージョンの QGIS です</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6383"/>
+        <location filename="../src/app/qgisapp.cpp" line="6413"/>
         <source>Would you like more information?</source>
         <translation>もっと情報が欲しいですか?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6386"/>
-        <location filename="../src/app/qgisapp.cpp" line="6399"/>
-        <location filename="../src/app/qgisapp.cpp" line="6404"/>
-        <location filename="../src/app/qgisapp.cpp" line="6425"/>
+        <location filename="../src/app/qgisapp.cpp" line="6416"/>
+        <location filename="../src/app/qgisapp.cpp" line="6429"/>
+        <location filename="../src/app/qgisapp.cpp" line="6434"/>
+        <location filename="../src/app/qgisapp.cpp" line="6455"/>
         <source>QGIS Version Information</source>
         <translation>QGIS バージョン情報</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6392"/>
+        <location filename="../src/app/qgisapp.cpp" line="6422"/>
         <source>QGIS - Changes since last release</source>
         <translation>QGIS - 前回リリース後の変更</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6404"/>
+        <location filename="../src/app/qgisapp.cpp" line="6434"/>
         <source>Unable to get current version information from server</source>
         <translation>サーバから現在のバージョン情報が取得できませんでした</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6414"/>
+        <location filename="../src/app/qgisapp.cpp" line="6444"/>
         <source>Connection refused - server may be down</source>
         <translation>接続拒否 - サーバがダウンしているかもしれません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6417"/>
+        <location filename="../src/app/qgisapp.cpp" line="6447"/>
         <source>QGIS server was not found</source>
         <translation>QGIS サーバが見つかりません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2936"/>
-        <location filename="../src/app/qgisapp.cpp" line="8248"/>
-        <location filename="../src/app/qgisapp.cpp" line="8349"/>
-        <location filename="../src/app/qgisapp.cpp" line="8423"/>
+        <location filename="../src/app/qgisapp.cpp" line="8278"/>
+        <location filename="../src/app/qgisapp.cpp" line="8379"/>
+        <location filename="../src/app/qgisapp.cpp" line="8453"/>
         <source>Invalid Layer</source>
         <translation>無効なレイヤ</translation>
     </message>
@@ -12024,42 +12064,41 @@ Errors: %3
         <translation>ブラウザ(2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1044"/>
+        <location filename="../src/app/qgisapp.cpp" line="1045"/>
         <source>Current Edits</source>
         <translation>カレント編集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2936"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation>%1は無効なレイヤでロードできません。</translation>
+        <translation type="obsolete">%1は無効なレイヤでロードできません。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4558"/>
+        <location filename="../src/app/qgisapp.cpp" line="4588"/>
         <source>Problem deleting features</source>
         <translation>地物削除中の問題</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4559"/>
+        <location filename="../src/app/qgisapp.cpp" line="4589"/>
         <source>A problem occured during deletion of features</source>
         <translation>地物削除中に問題が発生しました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4526"/>
+        <location filename="../src/app/qgisapp.cpp" line="4556"/>
         <source>No Vector Layer Selected</source>
         <translation>ベクタレイヤが選択されていません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4527"/>
+        <location filename="../src/app/qgisapp.cpp" line="4557"/>
         <source>Deleting features only works on vector layers</source>
         <translation>地物の削除はベクタレイヤでのみ有効です</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4518"/>
+        <location filename="../src/app/qgisapp.cpp" line="4548"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>地物を削除するには、凡例中のベクタレイヤを選択してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1554"/>
+        <location filename="../src/app/qgisapp.cpp" line="1555"/>
         <source>Render</source>
         <translation>レンダ</translation>
     </message>
@@ -12068,17 +12107,17 @@ Errors: %3
         <translation type="obsolete">QGis ファイル (*.qgs)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3644"/>
+        <location filename="../src/app/qgisapp.cpp" line="3674"/>
         <source>Choose a QGIS project file</source>
         <translation>QGIS プロジェクトファイルを選択</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2053"/>
+        <location filename="../src/app/qgisapp.cpp" line="2054"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>地図キャンバスにある全てのレイヤの凡例。チェックボックスのクリックでレイヤの表示、非表示を切り替えます。凡例中のレイヤ名をダブルクリックして外観などの設定を変更します。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1965"/>
+        <location filename="../src/app/qgisapp.cpp" line="1966"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>全体図キャンバス。このキャンバスは、現在の地図キャンバスの位置を特定するために用いられます。現在の表示領域が赤の矩形で表示されます。全体図キャンバスには、任意のレイヤを表示することができます。</translation>
     </message>
@@ -12092,32 +12131,32 @@ Errors: %3
         <translation type="obsolete">プラグイン(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1463"/>
+        <location filename="../src/app/qgisapp.cpp" line="1464"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
         <translation>レイヤのレンダリングなど、時間のかかる操作の状態を表示するプログレスバー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1539"/>
+        <location filename="../src/app/qgisapp.cpp" line="1540"/>
         <source>Displays the current map scale</source>
         <translation>現在の地図縮尺を表示</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1558"/>
+        <location filename="../src/app/qgisapp.cpp" line="1559"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
         <translation>チェックされている場合、地図レイヤはナビゲーションコマンドなどのイベント時にレンダリングされます。チェックされていない場合、レンダリングされません。これにより、レンダリングせずに多くのレイヤを追加してシンボル化することができます。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1562"/>
+        <location filename="../src/app/qgisapp.cpp" line="1563"/>
         <source>Toggle map rendering</source>
         <translation>地図レンダリングを循環</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2395"/>
+        <location filename="../src/app/qgisapp.cpp" line="2396"/>
         <source>Compiled against GDAL/OGR</source>
         <translation>コンパイルされているGDAL/OGRとは異なるバージョン</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2396"/>
+        <location filename="../src/app/qgisapp.cpp" line="2397"/>
         <source>Running against GDAL/OGR</source>
         <translation>実行しているGDAL/OGRとは異なるバージョン</translation>
     </message>
@@ -12126,17 +12165,17 @@ Errors: %3
         <translation type="obsolete">QGIS プロジェクト読み込み時にエラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6420"/>
+        <location filename="../src/app/qgisapp.cpp" line="6450"/>
         <source>Unknown network socket error: %1</source>
         <translation>不明なネットワークソケットエラー: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8172"/>
+        <location filename="../src/app/qgisapp.cpp" line="8202"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>GDAL のサポートするラスタデータソースを開く</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3481"/>
+        <location filename="../src/app/qgisapp.cpp" line="3511"/>
         <source>Choose a QGIS project file to open</source>
         <translation>開く QGIS プロジェクトファイルを選択</translation>
     </message>
@@ -12156,9 +12195,26 @@ Errors: %3
         <translation>データベースをチェックしています</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="313"/>
+        <source>QGIS </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="450"/>
+        <source>Multiple instances of QGIS application object detected.
+Please contact the developers.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/app/qgisapp.cpp" line="565"/>
         <source>Log Messages</source>
         <translation>ログメッセージ</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="585"/>
+        <source>QGIS - %1 (&apos;%2&apos;)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="588"/>
@@ -12612,22 +12668,22 @@ Errors: %3
         <translation type="obsolete">プラグイン</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1594"/>
+        <location filename="../src/app/qgisapp.cpp" line="1595"/>
         <source>Ready</source>
         <translation>準備</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1146"/>
-        <location filename="../src/app/qgisapp.cpp" line="4386"/>
-        <location filename="../src/app/qgisapp.cpp" line="5411"/>
-        <location filename="../src/app/qgisapp.cpp" line="5437"/>
-        <location filename="../src/app/qgisapp.cpp" line="5449"/>
-        <location filename="../src/app/qgisapp.cpp" line="5569"/>
-        <location filename="../src/app/qgisapp.cpp" line="5586"/>
-        <location filename="../src/app/qgisapp.cpp" line="5638"/>
+        <location filename="../src/app/qgisapp.cpp" line="1147"/>
+        <location filename="../src/app/qgisapp.cpp" line="4416"/>
+        <location filename="../src/app/qgisapp.cpp" line="5441"/>
+        <location filename="../src/app/qgisapp.cpp" line="5467"/>
+        <location filename="../src/app/qgisapp.cpp" line="5479"/>
+        <location filename="../src/app/qgisapp.cpp" line="5599"/>
+        <location filename="../src/app/qgisapp.cpp" line="5616"/>
         <location filename="../src/app/qgisapp.cpp" line="5668"/>
-        <location filename="../src/app/qgisapp.cpp" line="8268"/>
-        <location filename="../src/app/qgisapp.cpp" line="8443"/>
+        <location filename="../src/app/qgisapp.cpp" line="5698"/>
+        <location filename="../src/app/qgisapp.cpp" line="8298"/>
+        <location filename="../src/app/qgisapp.cpp" line="8473"/>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
@@ -12671,7 +12727,7 @@ Errors: %3
         <translation>Pythonを開始しています</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1297"/>
+        <location filename="../src/app/qgisapp.cpp" line="1298"/>
         <source>Window</source>
         <translation>Window</translation>
     </message>
@@ -12680,122 +12736,122 @@ Errors: %3
         <translation type="obsolete">ベクタ(&amp;t)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1316"/>
+        <location filename="../src/app/qgisapp.cpp" line="1317"/>
         <source>&amp;Web</source>
         <translation>Web(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1508"/>
+        <location filename="../src/app/qgisapp.cpp" line="1509"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position. The format is lat,lon or east,north</source>
         <translation>現在地の座標を表示する. マウスを動かすと表示は更新されます. キャンバスの中心を指定の座標にすることも可能です. 指定可能なフォーマットは緯度・経度または直交座標（東向方向・北方向）です</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1512"/>
+        <location filename="../src/app/qgisapp.cpp" line="1513"/>
         <source>Current map coordinate (lat,lon or east,north)</source>
         <translation>現在の地図座標(緯度,経度　または東北)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2177"/>
+        <location filename="../src/app/qgisapp.cpp" line="2178"/>
         <source>Update of view in private qgis.db failed.
 %1</source>
         <translation>プライベートのqgis.dbのビューの更新に失敗しました
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2318"/>
-        <location filename="../src/app/qgisapp.cpp" line="3402"/>
+        <location filename="../src/app/qgisapp.cpp" line="2319"/>
+        <location filename="../src/app/qgisapp.cpp" line="3432"/>
         <source>&lt; Blank &gt;</source>
         <translation>&lt; 空白 &gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2385"/>
+        <location filename="../src/app/qgisapp.cpp" line="2386"/>
         <source>QGIS version</source>
         <translation>QGISバージョン</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2386"/>
+        <location filename="../src/app/qgisapp.cpp" line="2387"/>
         <source>QGIS code revision</source>
         <translation>QGISコードレビジョン</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2390"/>
+        <location filename="../src/app/qgisapp.cpp" line="2391"/>
         <source>Compiled against Qt</source>
         <translation>コンパイル　Qt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2391"/>
+        <location filename="../src/app/qgisapp.cpp" line="2392"/>
         <source>Running against Qt</source>
         <translation>実行中 Qt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2400"/>
+        <location filename="../src/app/qgisapp.cpp" line="2401"/>
         <source>GEOS Version</source>
         <translation>GEOSバージョン</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2401"/>
+        <location filename="../src/app/qgisapp.cpp" line="2402"/>
         <source>PostgreSQL Client Version</source>
         <translation>PostgreSQLクライアントバージョン</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2405"/>
+        <location filename="../src/app/qgisapp.cpp" line="2406"/>
         <source>No support.</source>
         <translation>サポート無し.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2411"/>
+        <location filename="../src/app/qgisapp.cpp" line="2412"/>
         <source>SpatiaLite Version</source>
         <translation>SpatiaLiteバージョン</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2415"/>
+        <location filename="../src/app/qgisapp.cpp" line="2416"/>
         <source>QWT Version</source>
         <translation>QWTバージョン</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2419"/>
+        <location filename="../src/app/qgisapp.cpp" line="2420"/>
         <source>PROJ.4 Version</source>
         <translation>PROJ 4バージョン</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2421"/>
+        <location filename="../src/app/qgisapp.cpp" line="2422"/>
         <source>QScintilla2 Version</source>
         <translation>QScintilla2 バージョン</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2424"/>
+        <location filename="../src/app/qgisapp.cpp" line="2425"/>
         <source>This copy of QGIS writes debugging output.</source>
         <translation>このQGISコピーはデバッグ出力を書きだします.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2631"/>
+        <location filename="../src/app/qgisapp.cpp" line="2632"/>
         <source>Select zip layers to add...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2645"/>
+        <location filename="../src/app/qgisapp.cpp" line="2646"/>
         <source>Vector</source>
         <translation>ベクタ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2988"/>
+        <location filename="../src/app/qgisapp.cpp" line="3018"/>
         <source>Cannot get MSSQL select dialog from provider.</source>
         <translation>MSSQLセレクトダイアログをプロバイダから取得できません.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4534"/>
+        <location filename="../src/app/qgisapp.cpp" line="4564"/>
         <source>Provider does not support deletion</source>
         <translation>プロバイダは削除をサポートしていません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4535"/>
+        <location filename="../src/app/qgisapp.cpp" line="4565"/>
         <source>Data provider does not support deleting features</source>
         <translation>データプロバイダが地物の削除をサポートしていません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4542"/>
-        <location filename="../src/app/qgisapp.cpp" line="5004"/>
-        <location filename="../src/app/qgisapp.cpp" line="5063"/>
+        <location filename="../src/app/qgisapp.cpp" line="4572"/>
+        <location filename="../src/app/qgisapp.cpp" line="5034"/>
+        <location filename="../src/app/qgisapp.cpp" line="5093"/>
         <source>Layer not editable</source>
         <translation>レイヤは編集不可です</translation>
     </message>
@@ -12812,36 +12868,36 @@ Errors: %3
         <translation type="obsolete">リングの追加</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1525"/>
+        <location filename="../src/app/qgisapp.cpp" line="1526"/>
         <source>Scale </source>
         <translation>縮尺</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1540"/>
+        <location filename="../src/app/qgisapp.cpp" line="1541"/>
         <source>Current map scale (formatted as x:y)</source>
         <translation>現在の地図の縮尺</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6563"/>
-        <location filename="../src/app/qgisapp.cpp" line="6572"/>
+        <location filename="../src/app/qgisapp.cpp" line="6593"/>
+        <location filename="../src/app/qgisapp.cpp" line="6602"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
         <translation>輝度やコントラストの変更にはラスターレイヤを選択する必要があります.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6598"/>
+        <location filename="../src/app/qgisapp.cpp" line="6628"/>
         <source>en</source>
         <comment>documentation language</comment>
         <translatorcomment>ドキュメントの言語</translatorcomment>
         <translation>ja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6616"/>
+        <location filename="../src/app/qgisapp.cpp" line="6646"/>
         <source>http://www.qgis.org/en/commercial-support.html</source>
         <translatorcomment>日本語ページはまだない(2013/05/13).準備ができ次第URLを変更しましょう</translatorcomment>
         <translation>http://www.qgis.org/en/commercial-support.html</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7543"/>
+        <location filename="../src/app/qgisapp.cpp" line="7573"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>マウスカーソル位置の地図座標</translation>
     </message>
@@ -13086,12 +13142,12 @@ Errors: %3
         <translation type="obsolete">さらに多くのGEOS機能操作のサポート</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2545"/>
+        <location filename="../src/app/qgisapp.cpp" line="2546"/>
         <source>%1 doesn&apos;t have any layers</source>
         <translation>%1にはレイヤがありません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3532"/>
+        <location filename="../src/app/qgisapp.cpp" line="3562"/>
         <source>Unable to open project</source>
         <translation>プロジェクトを開けません</translation>
     </message>
@@ -13100,19 +13156,19 @@ Errors: %3
         <translation type="obsolete">ベクタレイヤを最初に選択して下さい.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4543"/>
+        <location filename="../src/app/qgisapp.cpp" line="4573"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>カレントレイヤは編集できません.デジタイジングツールバーで&apos;編集開始&apos;を選択して下さい.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5012"/>
-        <location filename="../src/app/qgisapp.cpp" line="5078"/>
-        <location filename="../src/app/qgisapp.cpp" line="5115"/>
+        <location filename="../src/app/qgisapp.cpp" line="5042"/>
+        <location filename="../src/app/qgisapp.cpp" line="5108"/>
+        <location filename="../src/app/qgisapp.cpp" line="5145"/>
         <source>Not enough features selected</source>
         <translation>十分な数の地物が選択されていません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5098"/>
+        <location filename="../src/app/qgisapp.cpp" line="5128"/>
         <source>Union operation canceled</source>
         <translation>結合操作がキャンセルされました</translation>
     </message>
@@ -13129,8 +13185,8 @@ Errors: %3
         <translation type="obsolete">不明なネットワークソケットエラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6512"/>
-        <location filename="../src/app/qgisapp.cpp" line="6521"/>
+        <location filename="../src/app/qgisapp.cpp" line="6542"/>
+        <location filename="../src/app/qgisapp.cpp" line="6551"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>ヒストグラムを拡張するためにラスタレイヤを選択する必要があります.</translation>
     </message>
@@ -13139,18 +13195,18 @@ Errors: %3
         <translation type="obsolete">ローカルヒストグラムを拡大するためにはグレイスケールまたはマルチバンド（マルチバンドシングルレイヤ,シングルバンドグレイスケールまたはマルチバンドカラー）ラスタレイヤを選択する必要があります.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6709"/>
-        <location filename="../src/app/qgisapp.cpp" line="6753"/>
+        <location filename="../src/app/qgisapp.cpp" line="6739"/>
+        <location filename="../src/app/qgisapp.cpp" line="6783"/>
         <source>Layer is not valid</source>
         <translation>レイヤが不正です</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6754"/>
+        <location filename="../src/app/qgisapp.cpp" line="6784"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>このレイヤは不正なので地図に追加できません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6866"/>
+        <location filename="../src/app/qgisapp.cpp" line="6896"/>
         <source>Save?</source>
         <translation>保存しますか？</translation>
     </message>
@@ -13167,7 +13223,7 @@ Errors: %3
         <translation type="obsolete">無効なプロジェクトCRS %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8463"/>
+        <location filename="../src/app/qgisapp.cpp" line="8493"/>
         <source>Unsupported Data Source</source>
         <translation>サポートされていないデータソース</translation>
     </message>
@@ -13192,23 +13248,23 @@ Errors: %3
         <translation type="obsolete">マウスカーソルが上にある時に地物の情報が表示されます</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1526"/>
+        <location filename="../src/app/qgisapp.cpp" line="1527"/>
         <source>Current map scale</source>
         <translation>現在の地図の縮尺</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8616"/>
+        <location filename="../src/app/qgisapp.cpp" line="8646"/>
         <source>Project file is older</source>
         <translation>プロジェクトファイルは古いです</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8614"/>
+        <location filename="../src/app/qgisapp.cpp" line="8644"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;設定:オプション:一般&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8615"/>
+        <location filename="../src/app/qgisapp.cpp" line="8645"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>オープンしたプロジェクトファイルを古いバージョンで保存する時は警告してください</translation>
     </message>
@@ -13227,7 +13283,7 @@ Errors: %3
         <translation type="obsolete">アイコンリソースを%1から読み込み時にエラーが発生しました。終了しています...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1974"/>
+        <location filename="../src/app/qgisapp.cpp" line="1975"/>
         <source>Overview</source>
         <translation>全体図</translation>
     </message>
@@ -13241,7 +13297,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
         <translation type="obsolete">このバイナリはQt%1を利用してコンパイルされています。現在Qt%2が動作しています</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1551"/>
+        <location filename="../src/app/qgisapp.cpp" line="1552"/>
         <source>Stop map rendering</source>
         <translation>地図描画の中止</translation>
     </message>
@@ -13251,11 +13307,10 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
         <translation>複数のQgisAppインスタンス</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="450"/>
         <source>Multiple instances of Quantum GIS application object detected.
 Please contact the developers.
 </source>
-        <translation>Quantum GISアプリケーションの複数のインスタンスが検出されました。
+        <translation type="obsolete">Quantum GISアプリケーションの複数のインスタンスが検出されました。
 開発者に連絡してください。</translation>
     </message>
     <message>
@@ -13280,9 +13335,8 @@ Please contact the developers.
         <translation type="obsolete">切り取り(&amp;t)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="313"/>
         <source>Quantum GIS </source>
-        <translation>Quantum GIS </translation>
+        <translation type="obsolete">Quantum GIS </translation>
     </message>
     <message>
         <source>Ctrl+X</source>
@@ -13521,38 +13575,38 @@ Please contact the developers.
         <translation type="obsolete">カスタム座標参照系の管理</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1026"/>
+        <location filename="../src/app/qgisapp.cpp" line="1027"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1027"/>
+        <location filename="../src/app/qgisapp.cpp" line="1028"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1028"/>
+        <location filename="../src/app/qgisapp.cpp" line="1029"/>
         <source>Minimizes the active window to the dock</source>
         <translation>アクティブウィンドウの最小化</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1031"/>
+        <location filename="../src/app/qgisapp.cpp" line="1032"/>
         <source>Zoom</source>
         <translation>ズーム</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1032"/>
+        <location filename="../src/app/qgisapp.cpp" line="1033"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
         <translation>定義されたサイズとユーザ設定サイズ間の切り替え</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1035"/>
+        <location filename="../src/app/qgisapp.cpp" line="1036"/>
         <source>Bring All to Front</source>
         <translation>全てを前面に</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1036"/>
+        <location filename="../src/app/qgisapp.cpp" line="1037"/>
         <source>Bring forward all open windows</source>
         <translation>開いているすべてのウィンドウを前面に</translation>
     </message>
@@ -13609,7 +13663,7 @@ Please contact the developers.
         <translation type="obsolete">スタイルマネージャV2表示</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1146"/>
+        <location filename="../src/app/qgisapp.cpp" line="1147"/>
         <source>Failed to open Python console:</source>
         <translation>Pythomコンソールのオープンに失敗しました:</translation>
     </message>
@@ -13622,12 +13676,12 @@ Please contact the developers.
         <translation type="obsolete">編集(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1244"/>
+        <location filename="../src/app/qgisapp.cpp" line="1245"/>
         <source>Panels</source>
         <translation>パネル</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1246"/>
+        <location filename="../src/app/qgisapp.cpp" line="1247"/>
         <source>Toolbars</source>
         <translation>ツールバー</translation>
     </message>
@@ -13648,7 +13702,7 @@ Please contact the developers.
         <translation type="obsolete">ウィンドウ(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8837"/>
+        <location filename="../src/app/qgisapp.cpp" line="8867"/>
         <source>
 
 Always ignore these errors?</source>
@@ -13657,7 +13711,7 @@ Always ignore these errors?</source>
 いつもこれらのエラーを無視しますか?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8841"/>
+        <location filename="../src/app/qgisapp.cpp" line="8871"/>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
         <translation>
@@ -13669,18 +13723,18 @@ Always ignore these errors?</source>
         <translation type="obsolete">選択ツール</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1478"/>
+        <location filename="../src/app/qgisapp.cpp" line="1479"/>
         <source>Toggle extents and mouse position display</source>
         <translation>切り替えで表示が広がりマウス位置が表示されます</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1492"/>
-        <location filename="../src/app/qgisapp.cpp" line="7545"/>
+        <location filename="../src/app/qgisapp.cpp" line="1493"/>
+        <location filename="../src/app/qgisapp.cpp" line="7575"/>
         <source>Coordinate:</source>
         <translation>座標:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1493"/>
+        <location filename="../src/app/qgisapp.cpp" line="1494"/>
         <source>Current map coordinate</source>
         <translation>現在の地図の座標</translation>
     </message>
@@ -13693,49 +13747,49 @@ Always ignore these errors?</source>
         <translation type="obsolete">現在の地図の座標(x,y形式）</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1585"/>
+        <location filename="../src/app/qgisapp.cpp" line="1586"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
         <translation>このアイコンはオンザフライ空間参照システム変換が有効かどうかを表します。アイコンをクリックするとこの機能についてのプロジェクトプロパティダイアログが表示されます。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1589"/>
+        <location filename="../src/app/qgisapp.cpp" line="1590"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
         <translation>CRSステータス-クリックすると空間参照システムダイアログが開きます</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2058"/>
+        <location filename="../src/app/qgisapp.cpp" line="2059"/>
         <source>Control rendering order</source>
         <translation>描画順序のコントロール</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2075"/>
+        <location filename="../src/app/qgisapp.cpp" line="2076"/>
         <source>Map layer list that displays all layers in drawing order.</source>
         <translation>全てのレイヤの描画順序を示す地図レイヤリスト.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2076"/>
+        <location filename="../src/app/qgisapp.cpp" line="2077"/>
         <source>Layer order</source>
         <translation>レイヤ順序</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2116"/>
+        <location filename="../src/app/qgisapp.cpp" line="2117"/>
         <source>[ERROR] Can not make qgis.db private copy</source>
         <translation>[エラー]qgis.dbプライベートコピーを作れません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2126"/>
-        <location filename="../src/app/qgisapp.cpp" line="2153"/>
-        <location filename="../src/app/qgisapp.cpp" line="2177"/>
+        <location filename="../src/app/qgisapp.cpp" line="2127"/>
+        <location filename="../src/app/qgisapp.cpp" line="2154"/>
+        <location filename="../src/app/qgisapp.cpp" line="2178"/>
         <source>Private qgis.db</source>
         <translation>プライベートqgisデータベース</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2126"/>
+        <location filename="../src/app/qgisapp.cpp" line="2127"/>
         <source>Could not open qgis.db</source>
         <translation>qgis dbを開けません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2153"/>
+        <location filename="../src/app/qgisapp.cpp" line="2154"/>
         <source>Migration of private qgis.db failed.
 %1</source>
         <translation>プライベートqgis ｄｂの移動に失敗しました
@@ -13941,12 +13995,12 @@ This copy of QGIS writes debugging output.</source>
         <translation type="obsolete">コンポーザ属性テーブルのソート機能(それぞれのカラムで昇順/降順).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2709"/>
+        <location filename="../src/app/qgisapp.cpp" line="2710"/>
         <source>Select raster layers to add...</source>
         <translation>追加するラスタレイヤの選択...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2737"/>
+        <location filename="../src/app/qgisapp.cpp" line="2738"/>
         <source>Raster</source>
         <translation>ラスタ</translation>
     </message>
@@ -14273,388 +14327,403 @@ QWT Version: %1.</source>
         <translation type="obsolete">プリントコンポーザでアンドゥ/リドゥがサポートされました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2814"/>
+        <location filename="../src/app/qgisapp.cpp" line="2815"/>
         <source>Select vector layers to add...</source>
         <translation>追加するベクタレイヤの選択...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2875"/>
+        <location filename="../src/app/qgisapp.cpp" line="2876"/>
         <source>PostgreSQL</source>
         <translation>PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2875"/>
+        <location filename="../src/app/qgisapp.cpp" line="2876"/>
         <source>Cannot get PostgreSQL select dialog from provider.</source>
         <translation>PostgreSQLセレクトダイアログをプロバイダから取得できません.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2935"/>
+        <location filename="../src/app/qgisapp.cpp" line="2936"/>
         <source>%1 is an invalid layer - not loaded</source>
         <translation>%1は無効なレイヤです-ロードできませんでした</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2967"/>
+        <location filename="../src/app/qgisapp.cpp" line="2937"/>
+        <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2972"/>
         <source>SpatiaLite</source>
         <translation>SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2967"/>
+        <location filename="../src/app/qgisapp.cpp" line="2972"/>
         <source>Cannot get SpatiaLite select dialog from provider.</source>
         <translation>SpatiaLiteセレクトダイアログをプロバイダから取得できません.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2988"/>
+        <location filename="../src/app/qgisapp.cpp" line="2992"/>
+        <source>Delimited Text</source>
+        <translation type="unfinished">区切り文字</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2992"/>
+        <source>Cannot get Delimited Text select dialog from provider.</source>
+        <translation type="unfinished">プロバイダから区切り文字選択ダイアログを取得できません.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="3018"/>
         <source>MSSQL</source>
         <translation>MSSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3010"/>
+        <location filename="../src/app/qgisapp.cpp" line="3040"/>
         <source>Oracle</source>
         <translation>Oracle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3010"/>
+        <location filename="../src/app/qgisapp.cpp" line="3040"/>
         <source>Cannot get Oracle select dialog from provider.</source>
         <translation>Oracleが取得出来ませんプロバイダを選択して下さい.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3037"/>
+        <location filename="../src/app/qgisapp.cpp" line="3067"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3037"/>
+        <location filename="../src/app/qgisapp.cpp" line="3067"/>
         <source>Cannot get WMS select dialog from provider.</source>
         <translation>WMSセレクトダイアログをプロバイダから取得できません.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3058"/>
+        <location filename="../src/app/qgisapp.cpp" line="3088"/>
         <source>WCS</source>
         <translation>WCS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3058"/>
+        <location filename="../src/app/qgisapp.cpp" line="3088"/>
         <source>Cannot get WCS select dialog from provider.</source>
         <translation>プロバイダからWCS選択ダイアログを取得出来ません.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3085"/>
+        <location filename="../src/app/qgisapp.cpp" line="3115"/>
         <source>WFS</source>
         <translation>WFS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3085"/>
+        <location filename="../src/app/qgisapp.cpp" line="3115"/>
         <source>Cannot get WFS select dialog from provider.</source>
         <translation>WFSセレクトダイアログをプロバイダから取得できません.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3272"/>
+        <location filename="../src/app/qgisapp.cpp" line="3302"/>
         <source>Default failed to open: %1</source>
         <translation>デフォルトテンプレートのオープンに失敗しました: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3276"/>
+        <location filename="../src/app/qgisapp.cpp" line="3306"/>
         <source>Default not found: %1</source>
         <translation>デフォルトテンプレートが見つかりません: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3278"/>
+        <location filename="../src/app/qgisapp.cpp" line="3308"/>
         <source>Open Template Project</source>
         <translation>テンプレートプロジェクトを開きます</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3303"/>
+        <location filename="../src/app/qgisapp.cpp" line="3333"/>
         <source>Auto-open Project</source>
         <translation>自動的にプロジェクトを開く</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3336"/>
+        <location filename="../src/app/qgisapp.cpp" line="3366"/>
         <source>Failed to open: %1</source>
         <translation>オープンに失敗しました %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3359"/>
+        <location filename="../src/app/qgisapp.cpp" line="3389"/>
         <source>Not valid project file: %1</source>
         <translation>不正なプロジェクトファイルです %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3372"/>
+        <location filename="../src/app/qgisapp.cpp" line="3402"/>
         <source>Project failed to open: %1</source>
         <translation>プロジェクトのオープンに失敗しました %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3379"/>
+        <location filename="../src/app/qgisapp.cpp" line="3409"/>
         <source>Default template has been reopened: %1</source>
         <translation>デフォルトテンプレートが再度開かれました %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3386"/>
+        <location filename="../src/app/qgisapp.cpp" line="3416"/>
         <source>File not found: %1</source>
         <translation>ファイルが見つかりません %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3455"/>
+        <location filename="../src/app/qgisapp.cpp" line="3485"/>
         <source>Calculating...</source>
         <translation>計算中...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3455"/>
-        <location filename="../src/app/qgisapp.cpp" line="4310"/>
+        <location filename="../src/app/qgisapp.cpp" line="3485"/>
+        <location filename="../src/app/qgisapp.cpp" line="4340"/>
         <source>Abort...</source>
         <translation>中断...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3483"/>
-        <location filename="../src/app/qgisapp.cpp" line="3646"/>
-        <location filename="../src/app/qgisapp.cpp" line="3705"/>
+        <location filename="../src/app/qgisapp.cpp" line="3513"/>
+        <location filename="../src/app/qgisapp.cpp" line="3676"/>
+        <location filename="../src/app/qgisapp.cpp" line="3735"/>
         <source>QGis files</source>
         <translation>QGisファイル</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3518"/>
+        <location filename="../src/app/qgisapp.cpp" line="3548"/>
         <source>Loading project: %1</source>
         <translation>プロジェクトをロード: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3577"/>
+        <location filename="../src/app/qgisapp.cpp" line="3607"/>
         <source>Security warning</source>
         <translation>セキュリティ警告</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3578"/>
+        <location filename="../src/app/qgisapp.cpp" line="3608"/>
         <source>project macros have been disabled.</source>
         <translation>プロジェクトマクロが無効になりました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3583"/>
+        <location filename="../src/app/qgisapp.cpp" line="3613"/>
         <source>Enable macros</source>
         <translation>マクロを有効にする</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3612"/>
+        <location filename="../src/app/qgisapp.cpp" line="3642"/>
         <source>Project loaded</source>
         <translation>プロジェクトが読み込まれました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3703"/>
+        <location filename="../src/app/qgisapp.cpp" line="3733"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>QGISのプロジェクトとして保存するファイル名を選択してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3829"/>
+        <location filename="../src/app/qgisapp.cpp" line="3859"/>
         <source>Unable to load %1</source>
         <translation>%1をロードできません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3877"/>
+        <location filename="../src/app/qgisapp.cpp" line="3907"/>
         <source>Choose a file name to save the map image as</source>
         <translation>地図イメージとして保存するファイル名を選択してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4201"/>
+        <location filename="../src/app/qgisapp.cpp" line="4231"/>
         <source>Labeling Options</source>
         <translation>ラベリングオプション</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4202"/>
+        <location filename="../src/app/qgisapp.cpp" line="4232"/>
         <source>Please select a vector layer first</source>
         <translation>まずベクタレイヤーを選択してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4211"/>
+        <location filename="../src/app/qgisapp.cpp" line="4241"/>
         <source>Layer labeling settings</source>
         <translation>レイヤラベリング設定</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4387"/>
+        <location filename="../src/app/qgisapp.cpp" line="4417"/>
         <source>Cannot write raster error code: %1</source>
         <translation>ラスタファイルに書き込むことができません エラーコード %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4478"/>
+        <location filename="../src/app/qgisapp.cpp" line="4508"/>
         <source>Saving done</source>
         <translation>保存完了</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4479"/>
+        <location filename="../src/app/qgisapp.cpp" line="4509"/>
         <source>Export to vector file has been completed</source>
         <translation>ベクタファイルへのエキスポートが完了しました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4485"/>
+        <location filename="../src/app/qgisapp.cpp" line="4515"/>
         <source>Save error</source>
         <translation>保存エラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4486"/>
+        <location filename="../src/app/qgisapp.cpp" line="4516"/>
         <source>Export to vector file failed.
 Error: %1</source>
         <translation>ベクタファイルへのエキスポートが失敗しました.
 エラー:%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4555"/>
+        <location filename="../src/app/qgisapp.cpp" line="4585"/>
         <source>Features deleted</source>
         <translation>削除された地物</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4606"/>
+        <location filename="../src/app/qgisapp.cpp" line="4636"/>
         <source>Merging features...</source>
         <translation>地物を結合しています...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4606"/>
+        <location filename="../src/app/qgisapp.cpp" line="4636"/>
         <source>Abort</source>
         <translation>取り消し</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4663"/>
+        <location filename="../src/app/qgisapp.cpp" line="4693"/>
         <source>Create unique print composer title</source>
         <translation>独自のコンポーザタイトルを作成してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4666"/>
+        <location filename="../src/app/qgisapp.cpp" line="4696"/>
         <source>(title generated if left empty)</source>
         <translation>（空欄にするとタイトルを自動生成します）</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4680"/>
+        <location filename="../src/app/qgisapp.cpp" line="4710"/>
         <source>Composer title</source>
         <translation>コンポーザタイトル</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4695"/>
+        <location filename="../src/app/qgisapp.cpp" line="4725"/>
         <source>Title can not be empty!</source>
         <translation>タイトルは空白にできません!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4706"/>
+        <location filename="../src/app/qgisapp.cpp" line="4736"/>
         <source>Title already exists!</source>
         <translation>タイトルはすでに存在します!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4723"/>
-        <location filename="../src/app/qgisapp.cpp" line="4804"/>
+        <location filename="../src/app/qgisapp.cpp" line="4753"/>
+        <location filename="../src/app/qgisapp.cpp" line="4834"/>
         <source>Composer %1</source>
         <translation>コンポーザー%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4766"/>
+        <location filename="../src/app/qgisapp.cpp" line="4796"/>
         <source> copy</source>
         <translation>コピー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4989"/>
-        <location filename="../src/app/qgisapp.cpp" line="5052"/>
+        <location filename="../src/app/qgisapp.cpp" line="5019"/>
+        <location filename="../src/app/qgisapp.cpp" line="5082"/>
         <source>No active layer</source>
         <translation>アクティブレイヤ無し</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4990"/>
-        <location filename="../src/app/qgisapp.cpp" line="5052"/>
+        <location filename="../src/app/qgisapp.cpp" line="5020"/>
+        <location filename="../src/app/qgisapp.cpp" line="5082"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>アクティブレイヤがありません。レイヤリストでレイヤを選択してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4998"/>
-        <location filename="../src/app/qgisapp.cpp" line="5058"/>
+        <location filename="../src/app/qgisapp.cpp" line="5028"/>
+        <location filename="../src/app/qgisapp.cpp" line="5088"/>
         <source>Active layer is not vector</source>
         <translation>アクティブレイヤはベクタ形式ではありません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4998"/>
-        <location filename="../src/app/qgisapp.cpp" line="5058"/>
+        <location filename="../src/app/qgisapp.cpp" line="5028"/>
+        <location filename="../src/app/qgisapp.cpp" line="5088"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>地物結合ツールはベクタレイヤでのみ利用できます。レイヤリストでベクタレイヤを選択してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5004"/>
-        <location filename="../src/app/qgisapp.cpp" line="5063"/>
+        <location filename="../src/app/qgisapp.cpp" line="5034"/>
+        <location filename="../src/app/qgisapp.cpp" line="5093"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
         <translation>地物結合は編集モードのレイヤでのみ利用できます。結合を利用するためにはレイヤ-&gt;編集切り替えを実行してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5012"/>
-        <location filename="../src/app/qgisapp.cpp" line="5078"/>
-        <location filename="../src/app/qgisapp.cpp" line="5115"/>
+        <location filename="../src/app/qgisapp.cpp" line="5042"/>
+        <location filename="../src/app/qgisapp.cpp" line="5108"/>
+        <location filename="../src/app/qgisapp.cpp" line="5145"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>結合ツールを利用するためには少なくとも2個の地物を選択する必要があります</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5026"/>
+        <location filename="../src/app/qgisapp.cpp" line="5056"/>
         <source>Merged feature attributes</source>
         <translation>結合された地物属性</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5090"/>
-        <location filename="../src/app/qgisapp.cpp" line="5130"/>
+        <location filename="../src/app/qgisapp.cpp" line="5120"/>
+        <location filename="../src/app/qgisapp.cpp" line="5160"/>
         <source>Merge failed</source>
         <translation>結合に失敗しました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5090"/>
-        <location filename="../src/app/qgisapp.cpp" line="5130"/>
+        <location filename="../src/app/qgisapp.cpp" line="5120"/>
+        <location filename="../src/app/qgisapp.cpp" line="5160"/>
         <source>An error occured during the merge operation</source>
         <translation>結合処理中にエラーが発生しました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5098"/>
-        <location filename="../src/app/qgisapp.cpp" line="5137"/>
+        <location filename="../src/app/qgisapp.cpp" line="5128"/>
+        <location filename="../src/app/qgisapp.cpp" line="5167"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation>統合操作の結果のジオメトリタイプはカレントレイヤのジオメトリタイプと互換性がありませんので処理がキャンセルされました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5143"/>
+        <location filename="../src/app/qgisapp.cpp" line="5173"/>
         <source>Merged features</source>
         <translation>結合された地物群</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5305"/>
+        <location filename="../src/app/qgisapp.cpp" line="5335"/>
         <source>Features cut</source>
         <translation>地物群の削除</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5339"/>
+        <location filename="../src/app/qgisapp.cpp" line="5369"/>
         <source>Features pasted</source>
         <translation>地物群の貼付け</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5412"/>
+        <location filename="../src/app/qgisapp.cpp" line="5442"/>
         <source>Cannot copy style: %1</source>
         <translation>スタイルのコピーができません:%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5438"/>
+        <location filename="../src/app/qgisapp.cpp" line="5468"/>
         <source>Cannot parse style: %1:%2:%3</source>
         <translation>スタイルのペーストができません:%1:%2:%3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5450"/>
+        <location filename="../src/app/qgisapp.cpp" line="5480"/>
         <source>Cannot read style: %1</source>
         <translation>スタイルを読めません %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5531"/>
+        <location filename="../src/app/qgisapp.cpp" line="5561"/>
         <source>Start editing failed</source>
         <translation>編集開始に失敗しました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5532"/>
+        <location filename="../src/app/qgisapp.cpp" line="5562"/>
         <source>Provider cannot be opened for editing</source>
         <translation>指定プロバイダは編集できません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5557"/>
+        <location filename="../src/app/qgisapp.cpp" line="5587"/>
         <source>Stop editing</source>
         <translation>編集を終了</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5558"/>
+        <location filename="../src/app/qgisapp.cpp" line="5588"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>%1レイヤーの変更を保存しますか？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5587"/>
+        <location filename="../src/app/qgisapp.cpp" line="5617"/>
         <source>Problems during roll back</source>
         <translation>ロールバック中に問題が発生しました</translation>
     </message>
@@ -14688,47 +14757,47 @@ Error: %1</source>
         <translation type="obsolete">ローカルヒストグラムを拡張するためにはグレイスケールラスタレイヤ(マルチバンドのシングルレイヤまたはシングルバンドのグレイスケール)を選択する必要があります.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6710"/>
+        <location filename="../src/app/qgisapp.cpp" line="6740"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>レイヤ%1は正しいレイヤではないので地図に追加できません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6842"/>
+        <location filename="../src/app/qgisapp.cpp" line="6872"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
         <translation>未保存のエディットモードレイヤーがあります これらは保存されません！</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6867"/>
+        <location filename="../src/app/qgisapp.cpp" line="6897"/>
         <source>Do you want to save the current project?%1</source>
         <translation>現在のプロジェクトを保存しますか？ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7475"/>
+        <location filename="../src/app/qgisapp.cpp" line="7505"/>
         <source>Current CRS: %1 (OTFR enabled)</source>
         <translation>カレントCRS %1 (OTFRが有効）</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7482"/>
+        <location filename="../src/app/qgisapp.cpp" line="7512"/>
         <source>Current CRS: %1 (OTFR disabled)</source>
         <translation>カレントCRS %1 (OTFRが無効）</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7535"/>
+        <location filename="../src/app/qgisapp.cpp" line="7565"/>
         <source>Map coordinates for the current view extents</source>
         <translation>現在の地図表示領域矩形の座標</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7605"/>
+        <location filename="../src/app/qgisapp.cpp" line="7635"/>
         <source>Extents:</source>
         <translation>範囲:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7677"/>
+        <location filename="../src/app/qgisapp.cpp" line="7707"/>
         <source>Maptips require an active layer</source>
         <translation>マップチップスの表示にはアクティブレイヤの選択が必要です</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="7769"/>
+        <location filename="../src/app/qgisapp.cpp" line="7799"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation>
@@ -14736,45 +14805,45 @@ Error: %1</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8266"/>
-        <location filename="../src/app/qgisapp.cpp" line="8441"/>
+        <location filename="../src/app/qgisapp.cpp" line="8296"/>
+        <location filename="../src/app/qgisapp.cpp" line="8471"/>
         <source>Error adding valid layer to map canvas</source>
         <translation>正常なレイヤーをマップキャンバスに追加時にエラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8267"/>
-        <location filename="../src/app/qgisapp.cpp" line="8442"/>
-        <location filename="../src/app/qgisapp.cpp" line="8462"/>
+        <location filename="../src/app/qgisapp.cpp" line="8297"/>
+        <location filename="../src/app/qgisapp.cpp" line="8472"/>
+        <location filename="../src/app/qgisapp.cpp" line="8492"/>
         <source>Raster layer</source>
         <translation>ラスタレイヤ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8620"/>
+        <location filename="../src/app/qgisapp.cpp" line="8650"/>
         <source>This project file was saved by an older version of QGIS</source>
         <translation>このプロジェクトファイルは古いバージョンのQGISで保存されています</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8761"/>
+        <location filename="../src/app/qgisapp.cpp" line="8791"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8762"/>
+        <location filename="../src/app/qgisapp.cpp" line="8792"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>このレイヤはプロパティダイアログがありません.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8794"/>
+        <location filename="../src/app/qgisapp.cpp" line="8824"/>
         <source>Authentication required</source>
         <translation>認証が必要です</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8810"/>
+        <location filename="../src/app/qgisapp.cpp" line="8840"/>
         <source>Proxy authentication required</source>
         <translation>プロキシの認証が必要です</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8821"/>
+        <location filename="../src/app/qgisapp.cpp" line="8851"/>
         <source>SSL errors occured accessing URL %1:</source>
         <translation>URL%1アクセス中にSSLエラーが発生しました:</translation>
     </message>
@@ -14791,9 +14860,8 @@ Ignore errors?</source>
         <translation type="obsolete">SSLエラーが発生しました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="585"/>
         <source>Quantum GIS - %1 (&apos;%2&apos;)</source>
-        <translation>Quantum GIS - %1 (&apos;%2&apos;)</translation>
+        <translation type="obsolete">Quantum GIS - %1 (&apos;%2&apos;)</translation>
     </message>
     <message>
         <source>&amp;New Print Composer</source>
@@ -14942,7 +15010,7 @@ Ignore errors?</source>
         <translation type="obsolete">タイルスケールスライダを表示する</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1312"/>
+        <location filename="../src/app/qgisapp.cpp" line="1313"/>
         <source>&amp;Database</source>
         <translation>データベース(&amp;D)</translation>
     </message>
@@ -14963,30 +15031,30 @@ This copy of QGIS has been built with QWT %1.</source>
 このQGISはQWT(%1)を利用してビルドされています.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2552"/>
+        <location filename="../src/app/qgisapp.cpp" line="2553"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1は正しくないか認識できないデータソースです</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3665"/>
-        <location filename="../src/app/qgisapp.cpp" line="3724"/>
+        <location filename="../src/app/qgisapp.cpp" line="3695"/>
+        <location filename="../src/app/qgisapp.cpp" line="3754"/>
         <source>Saved project to: %1</source>
         <translation>%1に保存されたプロジェクト</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3677"/>
-        <location filename="../src/app/qgisapp.cpp" line="3731"/>
+        <location filename="../src/app/qgisapp.cpp" line="3707"/>
+        <location filename="../src/app/qgisapp.cpp" line="3761"/>
         <source>Unable to save project %1</source>
         <translation>プロジェクトを%1に保存できません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3882"/>
+        <location filename="../src/app/qgisapp.cpp" line="3912"/>
         <source>Saved map image to %1</source>
         <translation>%1に保存された地図イメージ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5570"/>
-        <location filename="../src/app/qgisapp.cpp" line="5639"/>
+        <location filename="../src/app/qgisapp.cpp" line="5600"/>
+        <location filename="../src/app/qgisapp.cpp" line="5669"/>
         <source>Could not commit changes to layer %1
 
 Errors: %2
@@ -15000,7 +15068,7 @@ Errors: %2
         <translation type="obsolete">QGIS-最後のリリース以来のSVN内の変更</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6425"/>
+        <location filename="../src/app/qgisapp.cpp" line="6455"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>QGISバージョンサーバーと通信できません %1 　</translation>
@@ -15010,22 +15078,22 @@ Errors: %2
         <translation type="obsolete">%1は正しく認識できるラスタデータソースではありません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8458"/>
+        <location filename="../src/app/qgisapp.cpp" line="8488"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1はサポートされているラスタデータソースではありません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8598"/>
+        <location filename="../src/app/qgisapp.cpp" line="8628"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation>&lt;p&gt;このプロジェクトファイルは別の古いバージョンのQGISで保存されています. このプロジェクトが保存される時にQGISはプロジェクトファイルを最新の版で保存します.その場合古いバージョンのQGISでは利用できない表現に更新されます.&lt;p&gt;QGISの開発者はバックワードコンパチビリティを保守しようとしていますが古いプロジェクトの情報のいくつかは失われるでしょう. QGISの品質を向上させるために%3にバグレポートをしていただけると感謝いたします. その場合古いプロジェクトファイルとエラーを発見したQGISのバージョンを含めることを忘れないでください.&lt;p&gt;古いプロジェクトファイルが開かれる度にこの警告が表示されることを停止するためには%4メニューの&apos;%5&apos;ボックスのチェックをはずして下さい.&lt;p&gt;プロジェクトファイルのバージョン: %1&lt;br&gt; QGISのバージョン: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4550"/>
+        <location filename="../src/app/qgisapp.cpp" line="4580"/>
         <source>Delete features</source>
         <translation>地物群の削除</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="4550"/>
+        <location filename="../src/app/qgisapp.cpp" line="4580"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
@@ -15110,9 +15178,8 @@ This copy of QGIS has been built without SpatiaLite support.</source>
 <context>
     <name>QgsAbout</name>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="14"/>
         <source>About Quantum GIS</source>
-        <translation>Quantum GIS について</translation>
+        <translation type="obsolete">Quantum GIS について</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="147"/>
@@ -15155,6 +15222,24 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <translation>QGIS ホームページ</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgsabout.ui" line="14"/>
+        <source>About QGIS</source>
+        <translation type="unfinished">QGIS について</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsabout.ui" line="58"/>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;QGIS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsabout.ui" line="86"/>
+        <source>QGIS is licensed under the GNU General Public License</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgsabout.ui" line="166"/>
         <source>Providers</source>
         <translation>プロバイダ</translation>
@@ -15173,17 +15258,15 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <translation type="obsolete">スポンサー</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="86"/>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
-        <translation>Quantum GIS のライセンスは GNU 一般公衆利用許諾契約書(GNU General Public License) です</translation>
+        <translation type="obsolete">Quantum GIS のライセンスは GNU 一般公衆利用許諾契約書(GNU General Public License) です</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsabout.ui" line="58"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;Quantum GIS (QGIS)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;Quantum GIS (QGIS)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
@@ -15438,7 +15521,7 @@ p, li { white-space: pre-wrap; }
         <translation>不明な例外が発生しました</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="607"/>
+        <location filename="../src/core/qgsapplication.cpp" line="605"/>
         <source>Application state:
 QGIS_PREFIX_PATH env var:		%1
 Prefix:		%2
@@ -15462,11 +15545,17 @@ SVG検索パス	%8
 ユーザデータベースパス	%9</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="624"/>
+        <location filename="../src/core/qgsapplication.cpp" line="622"/>
         <source>
 		</source>
         <comment>match indentation of application state</comment>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsapplication.cpp" line="622"/>
+        <source></source>
+        <comment>match indentation of application state</comment>
+        <translation></translation>
     </message>
     <message>
         <source>Application state:
@@ -15488,12 +15577,6 @@ User DB Path:	%8
 デフォルトテーマパス:	%6
 SVG サーチパス:	%7
 ユーザDBパス:	%8</translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsapplication.cpp" line="624"/>
-        <source></source>
-        <comment>match indentation of application state</comment>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -16118,7 +16201,7 @@ SVG サーチパス:	%7
 <context>
     <name>QgsAttributeTableDelegate</name>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetabledelegate.cpp" line="91"/>
+        <location filename="../src/gui/attributetable/qgsattributetabledelegate.cpp" line="93"/>
         <source>Attribute changed</source>
         <translation>属性が変更されました</translation>
     </message>
@@ -16579,7 +16662,7 @@ SVG サーチパス:	%7
         <translation type="obsolete">属性が変更されました</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="435"/>
+        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="436"/>
         <source>feature id</source>
         <translation>地物id</translation>
     </message>
@@ -21257,9 +21340,8 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsComposerView</name>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="153"/>
         <source>Quantum GIS</source>
-        <translation>Quantum GIS</translation>
+        <translation type="obsolete">Quantum GIS</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="289"/>
@@ -21298,6 +21380,11 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/gui/qgscomposerview.cpp" line="175"/>
         <source>Scale bar added</source>
         <translation>スケールバーが追加されました</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgscomposerview.cpp" line="153"/>
+        <source>QGIS</source>
+        <translation type="unfinished">QGIS</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="188"/>
@@ -21416,22 +21503,22 @@ Should the existing classes be deleted before classification?</source>
         <translation>アイテムのZオーダーを変更しました</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1731"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1733"/>
         <source>Remove item group</source>
         <translation>アイテムグループを削除する</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1755"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1757"/>
         <source>Frame deleted</source>
         <translation>フレームが削除されました</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1762"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1764"/>
         <source>Item deleted</source>
         <translation>アイテムが削除されました</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1779"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1781"/>
         <source>Multiframe removed</source>
         <translation>マルチフレームが削除されました</translation>
     </message>
@@ -23452,33 +23539,28 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsDelimitedTextPlugin</name>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="103"/>
         <source>&amp;Add Delimited Text Layer</source>
-        <translation>デリミティッドテキストレイヤの追加(&amp;A)</translation>
+        <translation type="obsolete">デリミティッドテキストレイヤの追加(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="105"/>
         <source>Add a delimited text file as a map layer. The file must have a header row containing the field names. The file must either contain X and Y fields with coordinates in decimal units or a WKT field.</source>
-        <translation>地図レイヤとしてデリミテッドテキストファイルを追加します.このファイルはヘッダ行にフィールド名が必要です.ファイルはXとY座標を10進数単位かWKTフィールドとして持たなければいけません.</translation>
+        <translation type="obsolete">地図レイヤとしてデリミテッドテキストファイルを追加します.このファイルはヘッダ行にフィールド名が必要です.ファイルはXとY座標を10進数単位かWKTフィールドとして持たなければいけません.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="124"/>
         <source>Delimited Text</source>
-        <translation>区切り文字</translation>
+        <translation type="obsolete">区切り文字</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="124"/>
         <source>Cannot get Delimited Text select dialog from provider.</source>
-        <translation>プロバイダから区切り文字選択ダイアログを取得できません.</translation>
+        <translation type="obsolete">プロバイダから区切り文字選択ダイアログを取得できません.</translation>
     </message>
     <message>
         <source>&amp;Delimited text</source>
         <translation type="obsolete">デリミティッドテキスト(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="52"/>
         <source>DelimitedTextLayer</source>
-        <translation>デリミティッドテキストレイヤ</translation>
+        <translation type="obsolete">デリミティッドテキストレイヤ</translation>
     </message>
     <message>
         <source>Add a delimited text file as a map layer. The file must have a header row containing the field names. X and Y fields are required and must contain coordinates in decimal units.</source>
@@ -23789,117 +23871,117 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsDelimitedTextSourceSelect</name>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="107"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="121"/>
         <source>No layer name</source>
         <translation>レイヤ名がありません</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="107"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="121"/>
         <source>Please enter a layer name before adding the layer to the map</source>
         <translation>レイヤを地図に追加する前にレイヤ名を入力してください</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="115"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="129"/>
         <source>No delimiters set</source>
         <translation>デリミタが設定されていません</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="115"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="129"/>
         <source>Please one or more characters to use as the delimiter, or choose a different delimiter type</source>
         <translation>1文字以上の文字をデリミタとして指定するか他のデリミタ型を選択してください</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="125"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="139"/>
         <source>Invalid regular expression</source>
         <translation>不正な正規表現です</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="125"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="139"/>
         <source>Please enter a valid regular expression as the delimiter, or choose a different delimiter type</source>
         <translation>正しい正規表現をデリミタとして指定するか他のデリミタ型を選択してください</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="132"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="146"/>
         <source>Invalid delimited text file</source>
         <translation>不正なデリミティッドテキストファイル</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="132"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="146"/>
         <source>Please enter a valid file and delimiter</source>
         <translation>正しいファイル名とデリミタを入力してください</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="605"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="629"/>
         <source>Choose a delimited text file to open</source>
         <translation>デリミティッドテキストファイルを開く</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="607"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="631"/>
         <source>Text files</source>
         <translation>テキストファイル</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="647"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="671"/>
         <source>Please select an input file</source>
         <translation>入力ファイルを選択してください</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="651"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="675"/>
         <source>File %1 does not exist</source>
         <translation>%1 というファイルは存在しません</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="655"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="679"/>
         <source>Please enter a layer name</source>
         <translation>レイヤ名を入力してください</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="659"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="683"/>
         <source>At least one delimiter character must be specified</source>
         <translation>一つ以上のデリミタを指定する必要があります</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="667"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="691"/>
         <source>Regular expression is not valid</source>
         <translation>正規表現が正しくありません</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="671"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="695"/>
         <source>^.. expression needs capture groups</source>
         <translation>^.. 式にはキャプチャグループが必要です</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="682"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="706"/>
         <source>Definition of filename and delimiters is not valid</source>
         <translation>ファイル名のとデリミタの指定が正しくありません</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="687"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="711"/>
         <source>No data found in file</source>
         <translation>ファイルにデータが見つかりません</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="690"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="714"/>
         <source>%1 badly formatted records discarded</source>
         <translation>フォーマットが正しくない %1 レコードが削除されました</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="695"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="719"/>
         <source>X and Y field names must be selected</source>
         <translation>XとYのフィールド名を選択してください</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="699"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="723"/>
         <source>X and Y field names cannot be the same</source>
         <translation>XとYで同じフィールド名は選べません</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="703"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="727"/>
         <source>The WKT field name must be selected</source>
         <translation>WKTフィールド名を選択してください</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="710"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="734"/>
         <source>%1 badly formatted records discarded from sample data</source>
         <translation>フォーマットが正しくない %1 レコードサンプルデータから削除されました</translation>
     </message>
@@ -23908,7 +23990,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">ウェルノウンテキストファイル</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="608"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="632"/>
         <source>All files</source>
         <translation>全ファイル</translation>
     </message>
@@ -23921,355 +24003,413 @@ p, li { white-space: pre-wrap; }
         <translation>デリミティッドテキストファイルからレイヤを作成</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="55"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="58"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="61"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="559"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="562"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="565"/>
         <source>Each line in the  file is split using a regular expression to define the end of each field</source>
         <translation>行ごとに正規表現でフィールド区切りを指定して分割します</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="71"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="74"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="77"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="534"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="537"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="540"/>
         <source>Fields are defined by the specified delimiter, quote, and escape characters</source>
         <translation>選択されたデリミタやクォート文字、エスケープ文字によりフィールドを区切ります</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="90"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="93"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="96"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="515"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="518"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="521"/>
         <source>The file a comma separated value file, fields delimited by commas and quoted by &quot;</source>
         <translation>CSVファイル (カンマとダブルクォートで区切られる)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="99"/>
         <source>CSV (comma separated values) format</source>
-        <translation>CSV (カンマで区切られた値) 形式</translation>
+        <translation type="obsolete">CSV (カンマで区切られた値) 形式</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="126"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="129"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="132"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="804"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="807"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="810"/>
         <source>Comma character is one of the delimiters</source>
         <translation>デリミタとしカンマを使用</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="142"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="145"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="148"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="820"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="823"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="826"/>
         <source>Tab character is one of the delimiters</source>
         <translation>デリミタとしタブを使用</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="161"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="164"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="167"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="839"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="842"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="845"/>
         <source>Space character is one of the delimiters</source>
         <translation>デリミタとしスペースを使用</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="180"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="183"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="186"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="858"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="861"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="864"/>
         <source>Colon character is one of the delimiters</source>
         <translation>デリミタとしコロンを使用</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="196"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="199"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="202"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="874"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="877"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="880"/>
         <source>Semicolon character is one of the delimiters</source>
         <translation>デリミタとしセミコロンを使用</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="219"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="897"/>
         <source>Other delimiters</source>
         <translation>他のデリミタ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="241"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="244"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="247"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="919"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="922"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="925"/>
         <source>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</source>
         <translation>テキスト内のフィールド区切りに使用するデリミタ. デリミタには1文字以上を指定できます. カンマ、タブ、スペース、コロン、セミコロンオプションと同時に使用できます.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="257"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="935"/>
         <source>Quote</source>
         <translation>クォート文字</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="264"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="267"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="270"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="942"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="945"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="948"/>
         <source>The quote character(s) enclose fields which may include delimiters and new lines</source>
         <translation>デリミタ文字や改行を囲むクォート文字</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="273"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="299"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="951"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="977"/>
         <source>&quot;</source>
         <translation>&quot;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="283"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="961"/>
         <source>Escape</source>
         <translation>エスケープ文字</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="290"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="293"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="296"/>
-        <source>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</source>
-        <translation>エスケープ文字はそれに続く文字を普通の文字として扱うように強制します (つまりデリミタやクォート、改行とみなさない).  もしエスケープ文字がクォート文字と同じ場合はクォートに囲まれた部分しかエスケープしません.</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="344"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="347"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="350"/>
-        <source>Regular expression used to split each line into fields</source>
-        <translation>正規表現はそれぞれのラインをフィールドに分割するために使われます</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="369"/>
-        <source>File format </source>
-        <translation>ファイル形式</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="397"/>
-        <source>Geometry definition</source>
-        <translation>ジオメトリ定義</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="409"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="412"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="415"/>
-        <source>Geometry is a point defined by X and Y coordinate fields</source>
-        <translation>ジオメトリはXとYの座標が指定されたポイントです</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="418"/>
-        <source>Point coordinates</source>
-        <translation>ポイント座標</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="510"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="513"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="516"/>
-        <source>X and Y coordinates are expressed in degrees/minutes/seconds</source>
-        <translation>XとY座標は度分秒で表現されます</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="519"/>
-        <source>DMS coordinates</source>
-        <translation>度分秒を使用</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="549"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="552"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="555"/>
-        <source>Geometry is read as a well known text string from the selected fields</source>
-        <translation>ジオメトリは指定フィールドから well known text として読まれます</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="558"/>
-        <source>Well known text (WKT) </source>
-        <translation>Well known text (WKT) 形式</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="565"/>
-        <source>Geometry field</source>
-        <translation>ジオメトリフィールド</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="587"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="590"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="593"/>
-        <source>Name of the field containing well known text value</source>
-        <translation>well known text 値を含むフィールド名</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="606"/>
-        <source>Geometry type</source>
-        <translation>ジオメトリタイプ</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="620"/>
-        <source>Detect</source>
-        <translation>検出する</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="625"/>
-        <source>Point</source>
-        <translation>点</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="630"/>
-        <source>Line</source>
-        <translation>ライン</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="635"/>
-        <source>Polygon</source>
-        <translation>ポリゴン</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="663"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="666"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="669"/>
-        <source>The file contains only attribute information - it will not be displayed on the map</source>
-        <translation>属性情報しか含まないファイルは地図上に表示されません</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="672"/>
-        <source>No geometry (attribute only table)</source>
-        <translation>ジオメトリなし (属性テーブルのみ)</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="704"/>
-        <source>File Name</source>
-        <translation>ファイル名</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="714"/>
-        <source>Full path to the delimited text file</source>
-        <translation>デリミティッドテキストファイルへのフルパス</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="717"/>
-        <source>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</source>
-        <translation>デリミティッドテキストファイルへのフルパス。ファイル中のフィールドを正しく処理するために、ファイル名を入力する前にデリミタを決定します。入力ファイルを選択するためにこのフィールドの右のブラウズボタンを使用してください。</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="765"/>
-        <source>Layer name</source>
-        <translation>レイヤ名</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="772"/>
-        <source>Name to display in the map legend</source>
-        <translation>地図凡例中の名称</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="775"/>
-        <source>Name displayed in the map legend</source>
-        <translation>地図凡例中の名称</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="782"/>
-        <source>Encoding</source>
-        <translation>エンコーディング</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="789"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="792"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="795"/>
-        <source>Select the file encoding</source>
-        <translation>ファイルエンコーディングを選択して下さい</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="835"/>
-        <source>Sample data</source>
-        <translation>サンプルデータ</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="850"/>
-        <source>Record options</source>
-        <translation>レコードオプション</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="868"/>
-        <source>Number of header lines to discard</source>
-        <translation>無視するヘッダー行数</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="887"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="890"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="893"/>
-        <source>The number of lines to discard from the beginning of the file</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="909"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="912"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="915"/>
-        <source>Field names are read from the first record.  If not selected then fields are numbered</source>
-        <translation>フィールド名は最初のレコードから取得します.もし選択されていない場合フィールド名は数字になります</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="918"/>
-        <source>First record has field names</source>
-        <translation>最初のレコードはフィールド名を保持している</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="943"/>
-        <source>Field options</source>
-        <translation>フィールドオプション</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="952"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="955"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="958"/>
-        <source>Trim leading and trailing spaces from fields</source>
-        <translation>フィールドの前と後にあるスペースを削除します</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="961"/>
-        <source>Trim fields</source>
-        <translation>前後の空白削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="968"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="971"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="974"/>
+        <source>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</source>
+        <translation>エスケープ文字はそれに続く文字を普通の文字として扱うように強制します (つまりデリミタやクォート、改行とみなさない).  もしエスケープ文字がクォート文字と同じ場合はクォートに囲まれた部分しかエスケープしません.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="1014"/>
+        <source>Expression</source>
+        <translation type="unfinished">式</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="1036"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="1039"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="1042"/>
+        <source>Regular expression used to split each line into fields</source>
+        <translation>正規表現はそれぞれのラインをフィールドに分割するために使われます</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="414"/>
+        <source>File format </source>
+        <translation>ファイル形式</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="632"/>
+        <source>Geometry definition</source>
+        <translation>ジオメトリ定義</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="647"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="650"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="653"/>
+        <source>Geometry is a point defined by X and Y coordinate fields</source>
+        <translation>ジオメトリはXとYの座標が指定されたポイントです</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="656"/>
+        <source>Point coordinates</source>
+        <translation>ポイント座標</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="259"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="262"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="265"/>
+        <source>X and Y coordinates are expressed in degrees/minutes/seconds</source>
+        <translation>XとY座標は度分秒で表現されます</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="268"/>
+        <source>DMS coordinates</source>
+        <translation>度分秒を使用</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="669"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="672"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="675"/>
+        <source>Geometry is read as a well known text string from the selected fields</source>
+        <translation>ジオメトリは指定フィールドから well known text として読まれます</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="678"/>
+        <source>Well known text (WKT) </source>
+        <translation>Well known text (WKT) 形式</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="302"/>
+        <source>Geometry field</source>
+        <translation>ジオメトリフィールド</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="324"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="327"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="330"/>
+        <source>Name of the field containing well known text value</source>
+        <translation>well known text 値を含むフィールド名</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="343"/>
+        <source>Geometry type</source>
+        <translation>ジオメトリタイプ</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="357"/>
+        <source>Detect</source>
+        <translation>検出する</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="362"/>
+        <source>Point</source>
+        <translation>点</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="367"/>
+        <source>Line</source>
+        <translation>ライン</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="372"/>
+        <source>Polygon</source>
+        <translation>ポリゴン</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="524"/>
+        <source>CSV (comma separated values)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="543"/>
+        <source>Custom delimiters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="568"/>
+        <source>Regular expression delimiter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="582"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="585"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="588"/>
+        <source>Use a spatial index to improve performance of displaying and spatially selecting features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="591"/>
+        <source>Use spatial index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="598"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="601"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="604"/>
+        <source>Use an index to improve performance of subset filters (set in layer properties)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="607"/>
+        <source>Use subset index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="614"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="617"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="620"/>
+        <source>Watch for changes to the file by other applications while QGIS is running</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="623"/>
+        <source>Watch file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="685"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="688"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="691"/>
+        <source>The file contains only attribute information - it will not be displayed on the map</source>
+        <translation>属性情報しか含まないファイルは地図上に表示されません</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="694"/>
+        <source>No geometry (attribute only table)</source>
+        <translation>ジオメトリなし (属性テーブルのみ)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="54"/>
+        <source>File Name</source>
+        <translation>ファイル名</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="64"/>
+        <source>Full path to the delimited text file</source>
+        <translation>デリミティッドテキストファイルへのフルパス</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="67"/>
+        <source>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</source>
+        <translation>デリミティッドテキストファイルへのフルパス。ファイル中のフィールドを正しく処理するために、ファイル名を入力する前にデリミタを決定します。入力ファイルを選択するためにこのフィールドの右のブラウズボタンを使用してください。</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="115"/>
+        <source>Layer name</source>
+        <translation>レイヤ名</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="122"/>
+        <source>Name to display in the map legend</source>
+        <translation>地図凡例中の名称</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="125"/>
+        <source>Name displayed in the map legend</source>
+        <translation>地図凡例中の名称</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="132"/>
+        <source>Encoding</source>
+        <translation>エンコーディング</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="139"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="142"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="145"/>
+        <source>Select the file encoding</source>
+        <translation>ファイルエンコーディングを選択して下さい</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="1065"/>
+        <source>Layer settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="1089"/>
+        <source>Sample data</source>
+        <translation>サンプルデータ</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="400"/>
+        <source>Record options</source>
+        <translation>レコードオプション</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="432"/>
+        <source>Number of header lines to discard</source>
+        <translation>無視するヘッダー行数</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="451"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="454"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="457"/>
+        <source>The number of lines to discard from the beginning of the file</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="473"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="476"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="479"/>
+        <source>Field names are read from the first record.  If not selected then fields are numbered</source>
+        <translation>フィールド名は最初のレコードから取得します.もし選択されていない場合フィールド名は数字になります</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="482"/>
+        <source>First record has field names</source>
+        <translation>最初のレコードはフィールド名を保持している</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="407"/>
+        <source>Field options</source>
+        <translation>フィールドオプション</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="705"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="708"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="711"/>
+        <source>Trim leading and trailing spaces from fields</source>
+        <translation>フィールドの前と後にあるスペースを削除します</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="714"/>
+        <source>Trim fields</source>
+        <translation>前後の空白削除</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="721"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="724"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="727"/>
         <source>Discard empty fields in each record</source>
         <translation>レコード内の空フィールドを削除</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="977"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="730"/>
         <source>Discard empty fields</source>
         <translation>空フィールドを削除</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="987"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="990"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="993"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="740"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="743"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="746"/>
         <source>Number fields use comma for a decimal separator</source>
         <translation>カンマが小数点区切りとして使用されている数値</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="996"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="749"/>
         <source>Decimal separator is comma</source>
         <translation>カンマを小数点区切りに指定</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="736"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="86"/>
         <source>Browse to find the delimited text file to be processed</source>
         <translation>処理するデリミティッドテキストファイルを探す</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="739"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="89"/>
         <source>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</source>
         <translation>デリミティッドテキストファイルの場所を探すために使用します。このボタンは、&lt;i&gt;デリミタ&lt;/i&gt;ボックスに入力されるまで使用できません。ファイル選択後、デリミティッドテキストファイルからX と Y フィールドドロップダウンボックスに値が挿入されます。</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="742"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="92"/>
         <source>Browse...</source>
         <translation>参照...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="80"/>
         <source>Selected delimiters</source>
-        <translation>選択されたデリミタ</translation>
+        <translation type="obsolete">選択されたデリミタ</translation>
     </message>
     <message>
         <source>The delimiter is a regular expression</source>
         <translation type="obsolete">デリミタは正規表現です</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="64"/>
         <source>Regular expression</source>
-        <translation>正規表現</translation>
+        <translation type="obsolete">正規表現</translation>
     </message>
     <message>
         <source>The delimiter is taken as is</source>
@@ -24280,27 +24420,27 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">プレーンキャラクター</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="151"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="829"/>
         <source>Tab</source>
         <translation>タブ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="170"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="848"/>
         <source>Space</source>
         <translation>空白</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="135"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="813"/>
         <source>Comma</source>
         <translation>カンマ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="205"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="883"/>
         <source>Semicolon</source>
         <translation>セミコロン</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="189"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="867"/>
         <source>Colon</source>
         <translation>コロン</translation>
     </message>
@@ -24325,14 +24465,14 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">X Yフィールド</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="431"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="180"/>
         <source>&lt;p align=&quot;right&quot;&gt;X field&lt;/p&gt;</source>
         <translation>&lt;p align=&quot;right&quot;&gt;X フィールド&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="453"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="456"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="459"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="202"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="205"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="208"/>
         <source>Name of the field containing x values</source>
         <translation>x 値を含むフィールドの名前</translation>
     </message>
@@ -24341,14 +24481,14 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">x 値を含むフィールドの名前。リストからフィールドを選択してください。リストはデリミティッドテキストファイルのヘッダ行をパースして作成されます。</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="472"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="221"/>
         <source>&lt;p align=&quot;right&quot;&gt;Y field&lt;/p&gt;</source>
         <translation>&lt;p align=&quot;right&quot;&gt;Y フィールド&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="494"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="497"/>
-        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="500"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="243"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="246"/>
+        <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="249"/>
         <source>Name of the field containing y values</source>
         <translation>y 値を含むフィールドの名前</translation>
     </message>
@@ -25015,22 +25155,22 @@ Leave empty to automatically apply the maximum value.</source>
 <context>
     <name>QgsDualView</name>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="276"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="277"/>
         <source>Attributes changed</source>
         <translation>属性が変更されました</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="295"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="296"/>
         <source>Expression based preview</source>
         <translation>式に基づくプレビュー</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="315"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="316"/>
         <source>Could not set preview column</source>
         <translation>プレビューカラムを設定できません</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="316"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="317"/>
         <source>Could not set column &apos;%1&apos; as preview column.
 Parser error:
 %2</source>
@@ -25039,33 +25179,33 @@ Parser error:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="357"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="358"/>
         <source>Run action</source>
         <translation>アクション実行</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="372"/>
         <location filename="../src/gui/attributetable/qgsdualview.cpp" line="373"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="374"/>
         <source>Open form</source>
         <translation>フォームのオープン</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="390"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="391"/>
         <source>Loading features...</source>
         <translation>地物をロードしています...</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="390"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="391"/>
         <source>Abort</source>
         <translation>取り消し</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="391"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="392"/>
         <source>Attribute table</source>
         <translation>属性テーブル</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="397"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="398"/>
         <source>%1 features loaded.</source>
         <translation>%1地物ロード済.</translation>
     </message>
@@ -25800,175 +25940,174 @@ p, li { white-space: pre-wrap; }
         <translation>ラベル</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="292"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="291"/>
         <source>Id</source>
         <translation>Id</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="293"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="292"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="294"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="293"/>
         <source>Type</source>
         <translation>タイプ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="295"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="294"/>
         <source>Length</source>
         <translation>長さ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="296"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="295"/>
         <source>Precision</source>
         <translation>精度</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="297"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="296"/>
         <source>Comment</source>
         <translation>コメント</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="298"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="297"/>
         <source>Edit widget</source>
         <translation>ウィジェットの編集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="301"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="300"/>
         <source>Alias</source>
         <translation>別名</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="558"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="618"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="565"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="604"/>
         <source>Name conflict</source>
         <translation>名前の衝突</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="558"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="618"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="565"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="604"/>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
         <translation>属性は追加されませんでした。指定された名前はテーブル内に既に存在しています。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="570"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="577"/>
         <source>Added attribute</source>
         <translation>追加された属性</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="595"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="639"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="624"/>
         <source>Deleted attribute</source>
         <translation>削除された属性</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="712"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="696"/>
         <source>Line edit</source>
         <translation>行編集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="713"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="697"/>
         <source>Unique values</source>
         <translation>ユニーク値</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="714"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="698"/>
         <source>Unique values editable</source>
         <translation>ユニーク値編集可能</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="715"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="699"/>
         <source>Classification</source>
         <translation>分類</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="716"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="700"/>
         <source>Value map</source>
         <translation>バリューマップ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="717"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="701"/>
         <source>Edit range</source>
         <translation>編集レンジ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="718"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="702"/>
         <source>Slider range</source>
         <translation>スライダーレンジ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="719"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="703"/>
         <source>Dial range</source>
         <translation>ダイアル範囲</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="720"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="704"/>
         <source>File name</source>
         <translation>ファイル名</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="721"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="705"/>
         <source>Enumeration</source>
         <translation>列挙</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="722"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="706"/>
         <source>Immutable</source>
         <translation>変わらない</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="723"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="707"/>
         <source>Hidden</source>
         <translation>非表示</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="724"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="708"/>
         <source>Checkbox</source>
         <translation>チェックボックス</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="725"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="709"/>
         <source>Text edit</source>
         <translation>テキスト編集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="726"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="710"/>
         <source>Calendar</source>
         <translation>カレンダー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="727"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="711"/>
         <source>Value relation</source>
         <translation>値のリレーション</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="728"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="712"/>
         <source>UUID generator</source>
         <translation>UUIDジェネレータ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="729"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="713"/>
         <source>Photo</source>
         <translation>写真</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="730"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="714"/>
         <source>Web view</source>
         <translation>ウェブ表示</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="731"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="715"/>
         <source>Color</source>
         <translation>色</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="772"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="756"/>
         <source>Select edit form</source>
         <translation>編集フォームを選ぶ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="772"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="756"/>
         <source>UI file</source>
         <translation>UIファイル</translation>
     </message>
@@ -31703,9 +31842,8 @@ at line %2 column %3</source>
         <translation type="obsolete">QGIS ヘルプデータベースがインストールされていません</translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="76"/>
         <source>Quantum GIS Help</source>
-        <translation>Quantum GIS ヘルプ</translation>
+        <translation type="obsolete">Quantum GIS ヘルプ</translation>
     </message>
     <message>
         <source>This help file is not available in your language %1. If you would like to translate it, please contact the QGIS  development team.</source>
@@ -31724,6 +31862,11 @@ at line %2 column %3</source>
   %1</source>
         <translation type="obsolete">ヘルプ文書をデータベースから取得に失敗しました
  %1</translation>
+    </message>
+    <message>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="76"/>
+        <source>QGIS Help</source>
+        <translation type="unfinished">QGIS ヘルプ</translation>
     </message>
 </context>
 <context>
@@ -40478,12 +40621,12 @@ Always network: always load from network and do not check if the cache has a val
 <context>
     <name>QgsOptionsDialogBase</name>
     <message>
-        <location filename="../src/gui/qgsoptionsdialogbase.cpp" line="193"/>
+        <location filename="../src/gui/qgsoptionsdialogbase.cpp" line="195"/>
         <source>Missing objects</source>
         <translation>オブジェクトがありません</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsoptionsdialogbase.cpp" line="194"/>
+        <location filename="../src/gui/qgsoptionsdialogbase.cpp" line="196"/>
         <source>Base options dialog could not be initialized.
 
 Missing some of the .ui template objects:
@@ -42669,7 +42812,7 @@ PostGISのジオメトリが存在するテーブルにあなたがSELECT権限�
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation>このリポジトリはアナタのQuantum GISのバージョンと互換性がないのでブロックされました</translation>
+        <translation type="obsolete">このリポジトリはアナタのQuantum GISのバージョンと互換性がないのでブロックされました</translation>
     </message>
     <message>
         <source>orphans</source>
@@ -42717,12 +42860,12 @@ PostGISのジオメトリが存在するテーブルにあなたがSELECT権限�
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation>このプラグインはあなたのQuantum GISのバージョンに適合しません。多分これは動作しません。</translation>
+        <translation type="obsolete">このプラグインはあなたのQuantum GISのバージョンに適合しません。多分これは動作しません。</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation>必要なPythonモジュールがインストールされていません。
+        <translation type="obsolete">必要なPythonモジュールがインストールされていません。
 詳しい情報はプラグインのホームページかQuantum GIS wikiを参照してください。</translation>
     </message>
     <message>
@@ -42771,7 +42914,24 @@ Here is the error message:</source>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation>プラグインを使用するには新しいバージョンのQuantum GISが必要です</translation>
+        <translation type="obsolete">プラグインを使用するには新しいバージョンのQuantum GISが必要です</translation>
+    </message>
+    <message>
+        <source>This repository is blocked due to incompatibility with your QGIS version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is incompatible with your QGIS version and probably won&apos;t work.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The required Python module is not installed.
+For more information, please visit its homepage and QGIS wiki.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin requires a newer version of QGIS</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>at least</source>
@@ -42847,13 +43007,26 @@ Now you need to enable it in Plugin Manager.</source>
     </message>
     <message>
         <source>Python plugin reinstalled.
+You need to restart QGIS in order to reload it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin is designed for a newer version of QGIS. The minimum required version is:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that you may need to restart QGIS in order to remove it completely.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation>Pythonプラグインが再インストールされました。
+        <translation type="obsolete">Pythonプラグインが再インストールされました。
 これをリロードするためにQuantum GISを再起動させる必要があります。</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation>プラグインは新しいバージョンのQuantum GIS用に設計されました。最低必要なバージョンは:</translation>
+        <translation type="obsolete">プラグインは新しいバージョンのQuantum GIS用に設計されました。最低必要なバージョンは:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
@@ -42889,7 +43062,7 @@ You need to restart Quantum GIS in order to reload it.</source>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation>Pythonプラグインがアンインストールされました。完全に削除するためにはQuantum GISを再起動する必要があります。</translation>
+        <translation type="obsolete">Pythonプラグインがアンインストールされました。完全に削除するためにはQuantum GISを再起動する必要があります。</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
@@ -43062,6 +43235,15 @@ You need to restart Quantum GIS in order to reload it.</source>
         <translation>起動時に更新を確認</translation>
     </message>
     <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="541"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, QGIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Installer window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Add third party plugin repositories to the list</source>
         <translation type="obsolete">サードパーティーのプラグインリポジトリを一覧に追加</translation>
     </message>
@@ -43159,13 +43341,12 @@ You need to restart Quantum GIS in order to reload it.</source>
         <translation>毎月</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="541"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, Quantum GIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Installer window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -43952,7 +44133,7 @@ SQL:%2
         <translation type="obsolete">地物追加中にエラー発生</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="806"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="808"/>
         <source>Unable to access the %1 relation.
 The error message from the database was:
 %2.
@@ -43963,7 +44144,7 @@ SQL: %3</source>
 SQL %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="864"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="866"/>
         <source>Unable to determine table access privileges for the %1 relation.
 The error message from the database was:
 %2.
@@ -43974,7 +44155,7 @@ SQL: %3</source>
 SQL %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="159"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="160"/>
         <source>Whole number (smallint - 16bit)</source>
         <translation>整数(smallint - 16bit)</translation>
     </message>
@@ -43986,25 +44167,27 @@ SQL %3</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="124"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="133"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="345"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="538"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="696"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="756"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="775"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="781"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="809"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="820"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="868"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="918"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="947"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1024"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1047"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1052"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1057"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1062"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1115"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1432"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2442"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="145"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="204"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="347"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="540"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="698"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="758"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="777"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="783"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="811"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="822"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="870"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="920"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="949"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1026"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1049"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1054"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1059"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1064"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1117"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1434"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2444"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
@@ -44014,27 +44197,32 @@ SQL %3</translation>
         <translation>不正なPostgreSQLトポロジレイヤ</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="162"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="145"/>
+        <source>PostgreSQL layer has no primary key.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="163"/>
         <source>Decimal number (numeric)</source>
         <translation>小数点付き数値(numeric)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="163"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="164"/>
         <source>Decimal number (decimal)</source>
         <translation>小数点付き数値(decimal)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="166"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="167"/>
         <source>Decimal number (real)</source>
         <translation>小数点付き数値(real)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="167"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="168"/>
         <source>Decimal number (double)</source>
         <translation>小数点付き数値(double)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="170"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="171"/>
         <source>Text, fixed length (char)</source>
         <translation>固定長テキスト(char)</translation>
     </message>
@@ -44043,7 +44231,7 @@ SQL %3</translation>
         <translation type="obsolete">バイナリ形式で地物ジオメトリを取得できませんでした</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="345"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="347"/>
         <source>Read attempt on an invalid postgresql data source</source>
         <translation>不正なpostgresqlデータソースを読もうとしています</translation>
     </message>
@@ -44066,33 +44254,32 @@ Database error: %2</source>
         <translation type="obsolete">1個ではなく%1 の地物がみつかりました</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="538"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="540"/>
         <source>FAILURE: Field %1 not found.</source>
         <translation>エラー: フィールド%1が見つかりません.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="693"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="747"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="695"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="749"/>
         <source>unexpected formatted field type &apos;%1&apos; for field %2</source>
         <translation>フィールド%2のフィールドタイプ&apos;%1&apos;は期待されていない形式です</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="756"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="758"/>
         <source>Field %1 ignored, because of unsupported type %2</source>
         <translation>フィールド%1は無視されました,何故ならば%2という型はサポートされていないからです</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="918"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="920"/>
         <source>The custom query is not a select query.</source>
         <translation>カスタムクエリはselectクエリではありません.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1024"/>
         <source>The table has no column suitable for use as a key. Quantum GIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
-        <translation>このテーブルはキーとして適切なカラムがありません.Quantum GISではPostgreSQLのoidやctidのようなプライマリキーが必要です.</translation>
+        <translation type="obsolete">このテーブルはキーとして適切なカラムがありません.Quantum GISではPostgreSQLのoidやctidのようなプライマリキーが必要です.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1047"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1049"/>
         <source>Primary key field &apos;%1&apos; for view not unique.</source>
         <translation>ビューのプライマリキーフィールド &apos;%1&apos;はユニークではありません.</translation>
     </message>
@@ -44101,87 +44288,97 @@ Database error: %2</source>
         <translation type="obsolete">Viewのプライマリキーフィールド&apos;%2&apos;の型&apos;%1&apos;は不適格です.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="175"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="176"/>
         <source>Date</source>
         <translation>日付</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="775"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="204"/>
+        <source>PostgreSQL layer has unknown primary key type.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="777"/>
         <source>Field %1 ignored, because of unsupported type type %2</source>
         <translation>フィールド%1は無視されました.なぜならば%2タイプはサポートされていないからです</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1052"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1026"/>
+        <source>The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1054"/>
         <source>Key field &apos;%1&apos; for view not found.</source>
         <translation>Viewのキーフィールド&apos;%1&apos;がみつかりません.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1057"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1059"/>
         <source>No key field for view given.</source>
         <translation>viewにキーフィールドがありません.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1062"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1064"/>
         <source>Unexpected relation type &apos;%1&apos;.</source>
         <translation>予期せぬリレーションタイプ &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1115"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1117"/>
         <source>No key field for query given.</source>
         <translation>クエリにキーフィールドがありません.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1428"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1430"/>
         <source>Could not find topology of layer %1.%2.%3</source>
         <translation>レイヤ%1.%2.%3のトポロジが見つかりません</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1754"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1756"/>
         <source>PostGIS error while adding features: %1</source>
         <translation>地物追加中のPostGISエラー: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1811"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1813"/>
         <source>PostGIS error while deleting features: %1</source>
         <translation>地物削除中のPostGISエラー: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1874"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1876"/>
         <source>PostGIS error while adding attributes: %1</source>
         <translation>属性追加中のPostGISエラー: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1921"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1923"/>
         <source>PostGIS error while deleting attributes: %1</source>
         <translation>属性削除中のPostGISエラー: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2026"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2028"/>
         <source>PostGIS error while changing attributes: %1</source>
         <translation>属性変更中のPostGISエラー: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2228"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2230"/>
         <source>PostGIS error while changing geometry values: %1</source>
         <translation>ジオメトリの値変更中のPostGISエラー: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2442"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2444"/>
         <source>result of extents query invalid: %1</source>
         <translation>領域クエリの結果が不正です %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2681"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2683"/>
         <source>Geometry type and srid for empty column %1 of %2 undefined.</source>
         <translation>内容が無いカラム%2 の %1ジオメトリタイプとsridが定義されていません.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2709"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2711"/>
         <source>Feature type or srid for %1 of %2 could not be determined or was not requested.</source>
         <translation>%2の%1の地物タイプまたはsridは判明しないかリクエストされていません.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2732"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2734"/>
         <source>Editing and adding disabled for 2D+ layer (%1; %2)</source>
         <translation>2D+layer (%1; %2)では編集と追加は禁止されています</translation>
     </message>
@@ -44212,7 +44409,7 @@ PostGIS を GEOS サポート付きでインストールしてください (http
         <translation type="obsolete">曖昧なフィールドです!</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="781"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="783"/>
         <source>Duplicate field %1 found
 </source>
         <translation>重複フィールド%1がありました</translation>
@@ -44222,7 +44419,7 @@ PostGIS を GEOS サポート付きでインストールしてください (http
         <translation type="obsolete">PostgreSQLは復旧中です</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="820"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="822"/>
         <source>PostgreSQL is still in recovery after a database crash
 (or you are connected to a (read-only) slave).
 Write accesses will be denied.</source>
@@ -44235,7 +44432,7 @@ Write accesses will be denied.</source>
         <translation type="obsolete">検索を実行できません</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="945"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="947"/>
         <source>Unable to execute the query.
 The error message from the database was:
 %1.
@@ -44328,22 +44525,22 @@ SQL:%2
         <translation type="obsolete">予期せぬPostgreSQLエラー</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="160"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="161"/>
         <source>Whole number (integer - 32bit)</source>
         <translation>整数値(integer - 32bit)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="161"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="162"/>
         <source>Whole number (integer - 64bit)</source>
         <translation>整数値(integer - 64bit)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="171"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="172"/>
         <source>Text, limited variable length (varchar)</source>
         <translation>上限付き可変長テキスト(varchar)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="172"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="173"/>
         <source>Text, unlimited length (text)</source>
         <translation>上限無し可変長テキスト(text)</translation>
     </message>
@@ -46257,7 +46454,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="305"/>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="315"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1610"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1599"/>
         <source>Raster</source>
         <translation>ラスタ</translation>
     </message>
@@ -46462,7 +46659,7 @@ Click on help button to get valid creation options for this format.</source>
         <translation type="obsolete">データプロバイダが不正です（レイヤ %1 スタイル %2 フォーマット %3)</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1610"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1599"/>
         <source>&lt;maplayer&gt; not found.</source>
         <translation>&lt;maplayer&gt; が見つかりません.</translation>
     </message>
@@ -46610,73 +46807,73 @@ Click on help button to get valid creation options for this format.</source>
         <translation type="obsolete">フリークアウト</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="71"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="72"/>
         <source>Not Set</source>
         <translation>未設定</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="449"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="450"/>
         <source>From</source>
         <translation>開始</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="450"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="451"/>
         <source>To</source>
         <translation>終了</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="638"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="639"/>
         <source>not defined</source>
         <translation>定義されてない</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="685"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="686"/>
         <source>Columns: </source>
         <translation>カラム:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="686"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="687"/>
         <source>Rows: </source>
         <translation>行:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="692"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="703"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="693"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="704"/>
         <source>No-Data Value: </source>
         <translation>データ無しとする値:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="685"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="686"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="692"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="703"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="687"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="693"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="704"/>
         <source>n/a</source>
         <translation>n/a</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="951"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1244"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="952"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1235"/>
         <source>Write access denied</source>
         <translation>書き込み権限がありません</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1244"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1235"/>
         <source>Write access denied. Adjust the file permissions and try again.
 
 </source>
         <translation>書き込み権限がありません。ファイルパーミッションを設定して再度実行してください。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="956"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="962"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="967"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="972"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="957"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="963"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="968"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="973"/>
         <source>Building pyramids failed.</source>
         <translation>ピラミッド建設に失敗しました。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="963"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="973"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="964"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="974"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
         <translation>このラスタ種別では、ピラミッドオーバービューはサポートされていません。</translation>
     </message>
@@ -46709,13 +46906,14 @@ Click on help button to get valid creation options for this format.</source>
         <translation type="obsolete">等量(四分位)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="216"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="217"/>
         <source>Description</source>
         <translation>記述</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1223"/>
         <source>Value</source>
-        <translation type="obsolete">値</translation>
+        <translation type="unfinished">値</translation>
     </message>
     <message>
         <source>Color</source>
@@ -46726,90 +46924,87 @@ Click on help button to get valid creation options for this format.</source>
         <translation type="obsolete">ラベル</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="217"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="218"/>
         <source>Large resolution raster layers can slow navigation in QGIS.</source>
         <translation>高解像度ラスタレイヤーではQGISでの動作が遅くなる可能性があります.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="218"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="219"/>
         <source>By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom.</source>
         <translation>より低解像度のコピー画像群（ピラミッド）を作成すると、QGISはズームレベルに応じて適切な解像度の画像を選択するのでパフォーマンスが大幅に改善します。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="219"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="220"/>
         <source>You must have write access in the directory where the original data is stored to build pyramids.</source>
         <translation>ピラミッド画像を作成するにはオリジナルデータが格納されているディレクトリへの書き込み権限を持っている必要があります。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="227"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="228"/>
         <source>Layer Properties - %1</source>
         <translation>レイヤプロパティ - %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="235"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="238"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="236"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="239"/>
         <source>Nearest neighbour</source>
         <translation>最近傍</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="236"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="847"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="237"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="848"/>
         <source>Bilinear</source>
         <translation>バイリニア</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="237"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="851"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="238"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="852"/>
         <source>Cubic</source>
         <translation>キュービック</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="239"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="864"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="240"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="865"/>
         <source>Average</source>
         <translation>平均</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="301"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="302"/>
         <source>None</source>
         <translation>なし</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="427"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1211"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="428"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1212"/>
         <source>Red</source>
         <translation>赤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="428"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1211"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="429"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1212"/>
         <source>Green</source>
         <translation>緑</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="429"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1211"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="430"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1212"/>
         <source>Blue</source>
         <translation>青</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="430"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="451"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1211"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1227"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1231"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="431"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="452"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1212"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1223"/>
         <source>Percent Transparent</source>
         <translation>透過率</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="442"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1227"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="443"/>
         <source>Gray</source>
         <translation>グレー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="446"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1231"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="447"/>
         <source>Indexed Value</source>
         <translation>インデックス値</translation>
     </message>
@@ -46834,17 +47029,17 @@ Click on help button to get valid creation options for this format.</source>
         <translation type="obsolete">データ無しとする値:未設定</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="968"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="969"/>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library.</source>
         <translation>JPEG圧縮ラスタレイヤとカレントlibtiffライブラリでは内部ピラミッドオーバービューの作成はサポートされていません。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1196"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1197"/>
         <source>Save file</source>
         <translation>ファイルに保存する</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1661"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1652"/>
         <source>Save layer properties as style file</source>
         <translation>レイヤプロパティをスタイルファイルとして保存する</translation>
     </message>
@@ -46853,7 +47048,7 @@ Click on help button to get valid creation options for this format.</source>
         <translation type="obsolete">テキストファイル(*.txt)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1208"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1209"/>
         <source>QGIS Generated Transparent Pixel Value Export File</source>
         <translation>QGISはピクセル透過値のエクスポートファイルを作成しました</translation>
     </message>
@@ -46866,12 +47061,12 @@ Click on help button to get valid creation options for this format.</source>
         <translation type="obsolete">地図イメージとして保存するファイル名を選択してください</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1328"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1319"/>
         <source>Open file</source>
         <translation>ファイルを開く</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1407"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1398"/>
         <source>Import Error</source>
         <translation>インポートエラー</translation>
     </message>
@@ -46886,12 +47081,12 @@ Click on help button to get valid creation options for this format.</source>
         <translation type="obsolete">以下の行はエラーを含んでいます</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1412"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1403"/>
         <source>Read access denied</source>
         <translation>読み込みが拒否されました</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1412"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1403"/>
         <source>Read access denied. Adjust the file permissions and try again.
 
 </source>
@@ -46903,8 +47098,8 @@ Click on help button to get valid creation options for this format.</source>
         <translation type="obsolete">色ランプ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1594"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1611"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1585"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1602"/>
         <source>Default Style</source>
         <translation>既定スタイル</translation>
     </message>
@@ -46929,17 +47124,17 @@ Click on help button to get valid creation options for this format.</source>
         <translation type="obsolete">厳密</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="220"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="221"/>
         <source>Please note that building internal pyramids may alter the original data file and once created they cannot be removed!</source>
         <translation>内部ピラミッドの構築はオリジナルのデータファイルに上書きされ、一度作成されると消去することができませんので、注意してください!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="221"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="222"/>
         <source>Please note that building internal pyramids could corrupt your image - always make a backup of your data first!</source>
         <translation>内部ピラミッドの構築は画像データを壊す可能性があります - 必ず最初にバックアップをとってください!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="957"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="958"/>
         <source>The file was not writable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
         <translation>ファイルは書き込みができません。いくつかのフォーマットではピラミッドオーバービューはサポートされません。疑わしい場合はGDALのドキュメントを参照してください。</translation>
     </message>
@@ -46956,19 +47151,19 @@ Click on help button to get valid creation options for this format.</source>
         <translation type="obsolete">カラーマップをロード</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1625"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1616"/>
         <source>Load layer properties from style file</source>
         <translation>レイヤプロパティをスタイルファイルから読み込む</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1627"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1663"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1618"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1654"/>
         <source>QGIS Layer Style File</source>
         <translation>QGISレイヤースタイルファイル</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1649"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1679"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1640"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1670"/>
         <source>Saved Style</source>
         <translation>スタイルを保存</translation>
     </message>
@@ -46996,33 +47191,33 @@ Click on help button to get valid creation options for this format.</source>
         <translation type="obsolete">デフォルト R%1 G%2 B%3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="679"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="680"/>
         <source>Columns: %1</source>
         <translation>カラム %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="680"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="681"/>
         <source>Rows: %1</source>
         <translation>行 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="699"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="700"/>
         <source>No-Data Value: %1</source>
         <translation>データが無い値 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="952"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="953"/>
         <source>Write access denied. Adjust the file permissions and try again.</source>
         <translation>書き込みアクセスができません。ファイルアクセス権限を調整して再度試みてください。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1196"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1328"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1197"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1319"/>
         <source>Textfile</source>
         <translation>テキストファイル</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1407"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1398"/>
         <source>The following lines contained errors
 
 %1</source>
@@ -52030,8 +52225,16 @@ Do you want to overwrite the [%2] relation?</source>
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? QGIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; for more details. In the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsors page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? Quantum GIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; for more details. In the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsors page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -52151,11 +52354,10 @@ p, li { white-space: pre-wrap; }
         <translation>適切なキーカラムがありません</translation>
     </message>
     <message>
-        <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="136"/>
         <source>The source relation %1 has no column suitable for use as a unique key.
 
 Quantum GIS requires that the relation has an integer column no larger than 32 bits containing unique values. </source>
-        <translation>%1のソースリレーションはユニークキーに適したカラムがありません
+        <translation type="obsolete">%1のソースリレーションはユニークキーに適したカラムがありません
 Quantum GISでは32bit以下の整数をリレーションのユニーク値として持つ必要があります.</translation>
     </message>
     <message>
@@ -52181,6 +52383,13 @@ Quantum GISでは32bit以下の整数をリレーションのユニーク値と�
     <message>
         <source>Error binding parameters</source>
         <translation type="obsolete">結合パラメータエラー</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="136"/>
+        <source>The source relation %1 has no column suitable for use as a unique key.
+
+QGIS requires that the relation has an integer column no larger than 32 bits containing unique values. </source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="284"/>
@@ -52239,8 +52448,27 @@ Quantum GISでは32bit以下の整数をリレーションのユニーク値と�
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1520"/>
+        <source>Column %1 has a geometry type of %2, which QGIS does not currently support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1529"/>
+        <source>Column %1 is not restricted to a single SRID, which QGIS requires.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1822"/>
+        <source>Because QGIS supports only planar data, the SQL Anywhere data provider will transform the data to the compatible planar projection (SRID=%1).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1839"/>
+        <source>Because QGIS supports only planar data and no compatible planar projection was found, the SQL Anywhere data provider will attempt to transform the data to planar WGS 84 (SRID=%1).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Column %1 has a geometry type of %2, which Quantum GIS does not currently support.</source>
-        <translation>カラム%1のジオメトリタイプ%2は Quantum GISでは現在サポートされていません.</translation>
+        <translation type="obsolete">カラム%1のジオメトリタイプ%2は Quantum GISでは現在サポートされていません.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1528"/>
@@ -52248,9 +52476,8 @@ Quantum GISでは32bit以下の整数をリレーションのユニーク値と�
         <translation>空間参照システムが混在しています</translation>
     </message>
     <message>
-        <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1529"/>
         <source>Column %1 is not restricted to a single SRID, which Quantum GIS requires.</source>
-        <translation>カラム%1は単一のSRIDに限定されていません,Quantum GISではSRIDは１つである必要があります.</translation>
+        <translation type="obsolete">カラム%1は単一のSRIDに限定されていません,Quantum GISではSRIDは１つである必要があります.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1560"/>
@@ -52263,14 +52490,12 @@ Quantum GISでは32bit以下の整数をリレーションのユニーク値と�
         <translation>SRS定義ロードエラー</translation>
     </message>
     <message>
-        <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1822"/>
         <source>Because Quantum GIS supports only planar data, the SQL Anywhere data provider will transform the data to the compatible planar projection (SRID=%1).</source>
-        <translation>Quantum GISは平面的データのみをサポートしているのでSQL Anywhereデータプロバイダは平面投影互換データに変換を行います(SRID=%1).</translation>
+        <translation type="obsolete">Quantum GISは平面的データのみをサポートしているのでSQL Anywhereデータプロバイダは平面投影互換データに変換を行います(SRID=%1).</translation>
     </message>
     <message>
-        <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1839"/>
         <source>Because Quantum GIS supports only planar data and no compatible planar projection was found, the SQL Anywhere data provider will attempt to transform the data to planar WGS 84 (SRID=%1).</source>
-        <translation>Quantum GISは平面的データのみをサポートしていて互換性の無い平面投影が検出されました.SQL Anywhereデータプロバイダは平面データWGS 84(SRID=%1)への変換を試みます.</translation>
+        <translation type="obsolete">Quantum GISは平面的データのみをサポートしていて互換性の無い平面投影が検出されました.SQL Anywhereデータプロバイダは平面データWGS 84(SRID=%1)への変換を試みます.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1847"/>
@@ -53277,9 +53502,8 @@ There was a problem with your symbol database.</source>
 <context>
     <name>QgsTipFactory</name>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="29"/>
         <source>Quantum GIS is open source</source>
-        <translation>Quantum GIS はオープンソースです</translation>
+        <translation type="obsolete">Quantum GIS はオープンソースです</translation>
     </message>
     <message>
         <source>Quantum GIS is open source software. This means that the software source code can be freely viewed and modified. The GPL places a restriction that any modifications you make must be made available to the Quantum GIS project, and that you can not create a new version of Quantum GIS under a &apos;closed source&apos; license. Visit &lt;a href=&quot;http://qgis.org&quot;&gt; the QGIS home page (http://qgis.org)&lt;/a&gt; for more information.</source>
@@ -53291,9 +53515,8 @@ There was a problem with your symbol database.</source>
         <translation>QGISパブリケーション</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="41"/>
         <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case studies section&lt;/a&gt; of the Quantum GIS home page (http://http://www.qgis.org/en/community/qgis-case-studies.html).</source>
-        <translation>もしあなたが科学論文を書いたり他の著作でQGISを参照するようなことがあった場合,私たちはあなたの著作をQuantum GIS (http://http://www.qgis.org/en/community/qgis-case-studies.html)の&lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;ケーススタディセクション&lt;/a&gt;に収録したいです。</translation>
+        <translation type="obsolete">もしあなたが科学論文を書いたり他の著作でQGISを参照するようなことがあった場合,私たちはあなたの著作をQuantum GIS (http://http://www.qgis.org/en/community/qgis-case-studies.html)の&lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;ケーススタディセクション&lt;/a&gt;に収録したいです。</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="47"/>
@@ -53315,9 +53538,8 @@ There was a problem with your symbol database.</source>
         <translation type="obsolete">もしあなたがQGISの利用でヘルプが必要な場合&apos;users&apos;メーリングリストがユーザがこのソフトウェア利用についてお互いに助け合えるところなのでアクセスするといいでしょう.私たちは&apos;developers&apos;メーリングリストも持っています.そこではQGISのプログラムコードをベースにした論議が行われています.メーリングリストへの参加方法等の詳細はQGISホームページ (http://www.qgis.org/en/community/mailing-lists.html)の&lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;community section&lt;/a&gt;を参照して下さい.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="30"/>
         <source>Quantum GIS is open source software. This means that the software source code can be freely viewed and modified. The GPL places a restriction that any modifications you make must be made available in source form to whoever you give modified versions to, and that you can not create a new version of Quantum GIS under a &apos;closed source&apos; license. Visit &lt;a href=&quot;http://qgis.org&quot;&gt; the QGIS home page (http://qgis.org)&lt;/a&gt; for more information.</source>
-        <translation>Quantum GISはオープンソースソフトウェアです.これはこのソフトウェアのソースコードを自由に見て改造できることを意味します.あなたが行う全ての改造にはQuantum GISプロジェクトに対してGPLの制約を守らなければいけません.またあなたは&apos;クローズドソース&apos;ライセンスでQuantum GISの新しいバージョンを作ってはいけません.&lt;a href=&quot;http://qgis.org&quot;&gt;QGISホームページ(http://qgis.org)&lt;/a&gt;を訪問してさらに詳しい情報を参照して下さい.</translation>
+        <translation type="obsolete">Quantum GISはオープンソースソフトウェアです.これはこのソフトウェアのソースコードを自由に見て改造できることを意味します.あなたが行う全ての改造にはQuantum GISプロジェクトに対してGPLの制約を守らなければいけません.またあなたは&apos;クローズドソース&apos;ライセンスでQuantum GISの新しいバージョンを作ってはいけません.&lt;a href=&quot;http://qgis.org&quot;&gt;QGISホームページ(http://qgis.org)&lt;/a&gt;を訪問してさらに詳しい情報を参照して下さい.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="57"/>
@@ -53330,129 +53552,164 @@ There was a problem with your symbol database.</source>
         <translation>’QGIS’　それとも &apos;Quantum GIS&apos; ?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="66"/>
         <source>Both are correct. For articles we suggest you write &apos;Quantum GIS (QGIS) is ....&apos; and then refer to it as QGIS thereafter.</source>
-        <translation>両方とも正しいです.論文や記事では最初に &apos;Quantum GIS (QGIS) &apos;と表記して、以後文章内ではQGISというように記述することをお勧めします.</translation>
+        <translation type="obsolete">両方とも正しいです.論文や記事では最初に &apos;Quantum GIS (QGIS) &apos;と表記して、以後文章内ではQGISというように記述することをお勧めします.</translation>
+    </message>
+    <message>
+        <source>How do I refer to Quantum GIS?</source>
+        <translation type="obsolete">Quantum GISについてどのように紹介すればいいでしょうか?</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="29"/>
+        <source>QGIS is open source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="30"/>
+        <source>QGIS is open source software. This means that the software source code can be freely viewed and modified. The GPL places a restriction that any modifications you make must be made available in source form to whoever you give modified versions to, and that you can not create a new version of QGIS under a &apos;closed source&apos; license. Visit &lt;a href=&quot;http://qgis.org&quot;&gt; the QGIS home page (http://qgis.org)&lt;/a&gt; for more information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="41"/>
+        <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case studies section&lt;/a&gt; of the QGIS home page (http://http://www.qgis.org/en/community/qgis-case-studies.html).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="66"/>
+        <source>Both used to be correct, but we recently decided to just use &apos;QGIS&apos;.  For articles we suggest you write &apos;QGIS is ....&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="69"/>
+        <source>How do I refer to QGIS?</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="70"/>
-        <source>How do I refer to Quantum GIS?</source>
-        <translation>Quantum GISについてどのように紹介すればいいでしょうか?</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="71"/>
         <source>QGIS is spelled in all caps. We have various subprojects of the QGIS project and it will help to avoid confusion if you refer to each by its name:&lt;ul&gt;&lt;li&gt;QGIS Library - this is the C++ library that contains the core logic that is used to build the QGIS user interface and other applications.&lt;/li&gt;&lt;li&gt;QGIS Application - this is the desktop application that you know and love so much :-).&lt;/li&gt;&lt;li&gt;QGIS Mapserver - this is a server-side application based on the QGIS Library that will serve up your .qgs projects using the WMS protocol.&lt;/li&gt;&lt;/ul&gt;</source>
         <translation>QGISはすべて大文字で綴られます.私たちは多くのQGISプロジェクトを運営しています.そしてそれはそれぞれの名前に言及することで混乱をなくします&lt;ul&gt;&lt;li&gt;QGIS ライブラリ - これはC++言語のライブラリでQGISユーザーインターフェースと他のアプリケーションを構成するコアロジックを含みます..&lt;/li&gt;&lt;li&gt;QGIS アプリケーション - これはあなたが良く知っているデスクトップアプリケーションのことです :-).&lt;/li&gt;&lt;li&gt;QGIS Mapserver - これはQGISライブラリをベースとしたサーバー側アプリケーションです.これによって.qgsプロジェクトをWMSプロトコルを利用して配信できます.&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="85"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="84"/>
         <source>Add the current date to a map layout</source>
         <translation>現在の日付を地図レイアウトに加える</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="86"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="85"/>
         <source>You can add a current date variable to your map layout. Create a regular text label and add the string $CURRENT_DATE(yyyy-MM-dd) to the text box. See the &lt;a href=&quot;http://doc.qt.nokia.com/latest/qdate.html#toString&quot;&gt;QDate::toString format documentation&lt;/a&gt; for the possible date formats.</source>
         <translation>地図のレイアウトに現在の日付を加えることができます.テキストボックスに通常のテキストラベルを作成して　$CURRENT_DATE(yyyy-MM-dd)という文字列を加えて下さい.&lt;a href=&quot;http://doc.qt.nokia.com/latest/qdate.html#toString&quot;&gt;QDate::toString format documentation&lt;/a&gt;を参照すると利用可能な日付形式の情報があります.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="93"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="92"/>
         <source>Moving Elements and Maps in the Print Composer</source>
         <translation>プリントコンポーザでエレメントと地図を移動する</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="94"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="93"/>
         <source>In the print composer tool bar you can find two buttons for moving elements. The left one (a selection cursor with the hand symbol) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item &amp;rarr; General Options &amp;rarr; Position and Size&lt;/strong&gt;. For easier positioning you can also set specific anchor points of the element within this dialogue. The other move tool (the globe icon combined with the hand icon) allows one to move the map content within a map frame.</source>
         <translation>プリントコンポーザのツールバーにはエレメント移動のための２個のボタンがあります.左のものは（手のシンボルの選択カーソル）レイアウト中でエレメントの選択と移動を行います.エレメントを選択した後は矢印キーを使ってそれらを移動させることもできます.正確な位置決めを行いたい場合は&lt;strong&gt;アイテム &amp;rarr; 一般情報オプション &amp;rarr; 位置とサイズ&lt;/strong&gt;タブの&lt;strong&gt;位置とサイズ&lt;/strong&gt;ダイアログを利用して下さい..このダイアログでは簡単な位置決めのためのアンカーポイントをエレメントの中に指定することもできます.もう１つの移動ツール(手と地球儀のアイコン）は地図コンテントを地図フレーム内で移動します.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="108"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="107"/>
         <source>Lock an element in the layout view</source>
         <translation>レイアウトビューでエレメントをロックする</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="109"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="108"/>
         <source>By left clicking an element in the layout view you can select it, by right clicking an element you can lock it. A lock symbol will appear in the upper left corner of the selected element. This prevents the element from accidentally being moved with the mouse. While in a locked state, you cannot move an element with the mouse but you can still move it with the arrow keys or by absolutely positioning it by setting its &lt;strong&gt;Position and Size&lt;/strong&gt;.</source>
         <translation>レイアウトビューでマウス右ボタンクリックで選択したエレメントをマウス左クリックでロックすることができます.選択エレメントの左上角にロックシンボルが表示されます.これはエレメントがマウスの思いがけない動きで動くことを防ぎます.ロックされた状態の間マウスを使ってエレメントを移動することはできません,しかし矢印キーと&lt;strong&gt;位置とサイズ&lt;/strong&gt;設定による絶対位置の指定ではエレメントを動かすことができます.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="119"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="118"/>
         <source>Rotating a map and linking a north arrow</source>
         <translation>北向き矢印にリンクして地図を傾ける</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="120"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="119"/>
         <source>You can rotate a map by setting its rotation value in the &lt;strong&gt;Item tab &amp;rarr; Map&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool, the button with the little camera icon. QGIS comes with a selection of north arrows. After the placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
         <translation>&lt;strong&gt;アイテムタブ &amp;rarr; 地図&lt;/strong&gt;セクションの傾きの値を使って地図を傾かせることができます.北向き矢印をレイアウトに置くために小さいカメラアイコンの&lt;strong&gt;Add Image&lt;/strong&gt;ツールを利用できます.QGISでは北向き矢印を選択するとできます.北向き矢印をレイアウトに置くと &lt;strong&gt;Sync with map&lt;/strong&gt;チェックボックスが有効になり地図フレームを選択できます.関連地図の傾きの値を変更すると北向き矢印は自動的に傾きを調整します.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="132"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="131"/>
         <source>Numeric scale value in map layout linked to map frame</source>
         <translation>地図フレームにリンクした地図レイアウト内のスケール数値</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="133"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="132"/>
         <source>If you want to place a text label as a placeholder for the current scale, linked to a map frame, you need to place a scalebar and set the style to &apos;Numeric&apos;. You also need to select the map frame, if there is more than one.</source>
         <translation>もしテキストラベルを地図フレームのカレントスケールにリンクしたプレースホルダーとして置きたい場合はスケールバーを置いてスタイルを&apos;Numeric&apos;にする必要があります.また地図が複数ある場合は地図を選択する必要があります.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="140"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="139"/>
         <source>Using the mouse scroll wheel</source>
         <translation>マウススクロールホィールを利用する</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="141"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="140"/>
         <source>You can use the scroll wheel on your mouse to zoom in, out and pan the map. Scroll forwards to zoom in, scroll backwards to zoom out and press and hold the scroll wheel down to pan the map. You can configure options for scroll wheel behaviour in the Options panel.</source>
         <translation>マウスについているスクロールホィールを使って地図の拡大、縮小、スクロールを行えます.前方にスクロールすると拡大、後方にスクロールすると縮小、ホィールをホールドしてマウスを動かすと地図をスクロールできます.オプションパネルでスクロールホィールの動作を設定することができます.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="148"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="147"/>
         <source>Stopping rendering</source>
         <translation>レンダリングの停止</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="149"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="148"/>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;esc&apos; (the escape key), or click the small red &apos;X&apos; icon in the status bar to the bottom right of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
         <translation>時々とても大きなデータセットを使うと描画にえらく時間がかかる時があるでしょう.&apos;esc&apos;(エスケープキー)を押すかウィンドウ右下のステータスバーの小さい赤い&apos;X&apos;アイコンをクリックするといつでもレンダリングを中断できます.もしあなたが様々な作業（例えばシンボロジーオプションの変更）を行っていて、その作業中は地図レンダリングを無効にしたい場合は右下ステータスバーの’Render&apos;チェックボックスのチェックをはずして下さい.地図の描画準備ができたら再度チェックボックスをチェックすることを忘れないでください!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="160"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="159"/>
         <source>Join intersected polylines when rendering</source>
         <translation>レンダリング時に交差しているポリラインを結合する</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="161"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="160"/>
         <source>When applying layered styles to a polyline layer, you can join intersecting lines together simply by enabling symbol levels. The image below shows a before (left) and after (right) view of an intersection when symbol levels are enabled.</source>
         <translation>ポリラインレイヤで重なりスタイルを適用すると交差しているラインをシンプルにシンボルレベルで結合できます.以下のイメージで前（左側）と後（右側）でシンボルレベルの結合状況がわかります.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="169"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="168"/>
         <source>Auto-enable on the fly projection</source>
         <translation>オンザフライプロジェクションを自動的に有効にする</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="170"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="169"/>
         <source>In the options dialog, under the CRS tab, you can set QGIS so that whenever you create a new project, &apos;on the fly projection&apos; is enabled automatically and a pre-selected Coordinate Reference System of your choice is used.</source>
         <translation>オプションダイアログのCRSタブでQGISで新しいプロジェクトを作成すると &apos;オンザフライプロジェクション&apos;が自動的に有効になるように事前に設定できます.選択した座標参照システムが利用されます.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="177"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="176"/>
         <source>Sponsor QGIS</source>
         <translation>QGISのスポンサー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="178"/>
-        <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
-        <translation>もしQGISを使ってお金の節約ができたり、あなたが私たちの活動をきにいってくれてお金に余裕があるならば、是非QuantumGISの開発スポンサーになることを検討して下さい.私たちはスポンサーがはらっていただいたお金を年2回のハックフェストの旅費や関連費用やプロジェクトの目的のための様々な費用に使います.是非&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt;の詳細情報を参照して下さい.</translation>
+        <location filename="../src/app/qgstipfactory.cpp" line="177"/>
+        <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="187"/>
+        <source>QGIS has Plugins!</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="188"/>
-        <source>Quantum GIS has Plugins!</source>
-        <translation>Quantum GIS にはプラグインがあります!</translation>
+        <source>QGIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage Plugins menu. In addition there are over 150 Python plugins contributed by the user community that can be installed from the Plugins-&gt;Fetch Python Plugins menu. Don&apos;t miss out on all QGIS has to offer---check out the plugins and see what they can do for you.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="189"/>
+        <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
+        <translation type="obsolete">もしQGISを使ってお金の節約ができたり、あなたが私たちの活動をきにいってくれてお金に余裕があるならば、是非QuantumGISの開発スポンサーになることを検討して下さい.私たちはスポンサーがはらっていただいたお金を年2回のハックフェストの旅費や関連費用やプロジェクトの目的のための様々な費用に使います.是非&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt;の詳細情報を参照して下さい.</translation>
+    </message>
+    <message>
+        <source>Quantum GIS has Plugins!</source>
+        <translation type="obsolete">Quantum GIS にはプラグインがあります!</translation>
+    </message>
+    <message>
         <source>Quantum GIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage Plugins menu. In addition there are over 150 Python plugins contributed by the user community that can be installed from the Plugins-&gt;Fetch Python Plugins menu. Don&apos;t miss out on all QGIS has to offer---check out the plugins and see what they can do for you.</source>
-        <translation>QuantumGISはプラグインによって機能を拡張できます.QGISはいくつかのコアプラグインを同梱して出荷されます,それらはメニュープラグイン-&gt;プラグインの管理で見ることができます.加えてコミュニティによって追加された150以上のPythonプラグインがあります.それらはメニュープラグイン-&gt;Pythonプラグインを呼び出すを使ってインストールできます.QGISが提供するすべてを見逃さないでください---プラグインをチェックアウトしてどのように利用できるか見て下さい.</translation>
+        <translation type="obsolete">QuantumGISはプラグインによって機能を拡張できます.QGISはいくつかのコアプラグインを同梱して出荷されます,それらはメニュープラグイン-&gt;プラグインの管理で見ることができます.加えてコミュニティによって追加された150以上のPythonプラグインがあります.それらはメニュープラグイン-&gt;Pythonプラグインを呼び出すを使ってインストールできます.QGISが提供するすべてを見逃さないでください---プラグインをチェックアウトしてどのように利用できるか見て下さい.</translation>
     </message>
 </context>
 <context>
@@ -53889,40 +54146,51 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsVectorGradientColorRampV2Dialog</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="50"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="52"/>
         <source>Discrete</source>
         <translation>離散的</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="51"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="53"/>
         <source>Continuous</source>
         <translation>連続的</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="123"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="125"/>
         <source>Gradient file : %1</source>
         <translation>グラデーションファイル: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="140"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="142"/>
         <source>License file : %1</source>
         <translation>ライセンスファイル: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="289"/>
-        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="293"/>
-        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="331"/>
-        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="335"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="276"/>
+        <source>Edit Stop Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="291"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="295"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="333"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="337"/>
         <source>Offset of the stop</source>
         <translation>終わりからのオフセット</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="290"/>
-        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="294"/>
-        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="332"/>
-        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="336"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="292"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="296"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="334"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="338"/>
         <source>Please enter offset in percents (%) of the new stop</source>
         <translation>新しい終わりからのオフセットをパーセント(%)で入力してください</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="323"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="354"/>
+        <source>Add Color Stop</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -54000,12 +54268,12 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsVectorLayer</name>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2545"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2548"/>
         <source>ERROR: no provider</source>
         <translation>エラー: プロバイダがありません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2551"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2554"/>
         <source>ERROR: layer not editable</source>
         <translation>エラー: レイヤは編集不可です</translation>
     </message>
@@ -54141,7 +54409,7 @@ Should the existing classes be deleted before classification?</source>
         <translation>取り消し</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2568"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2571"/>
         <source>Commit errors:
   %1</source>
         <translation>コミットエラー:
@@ -54184,13 +54452,13 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">レイヤの空間参照系の単位:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3611"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3630"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3614"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3633"/>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
         <translation>xMin,yMin %1,%2 : xMax,yMax %3,%4</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3616"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3619"/>
         <source>unknown extent</source>
         <translation>領域が不明</translation>
     </message>
@@ -54207,7 +54475,7 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">プロジェクト（出力）空間参照系:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3665"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3668"/>
         <source>(Invalid transformation of layer extents)</source>
         <translation>(レイヤ領域の不正な座標変換)</translation>
     </message>
@@ -54216,103 +54484,103 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">属性フィールド情報:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3488"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3491"/>
         <source>General</source>
         <translation>一般情報</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3494"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3497"/>
         <source>Layer comment</source>
         <translation>レイヤコメント</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3501"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3504"/>
         <source>Storage type of this layer</source>
         <translation>このレイヤのストレージタイプ</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3507"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3510"/>
         <source>Source for this layer</source>
         <translation>このレイヤのソース</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3524"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3527"/>
         <source>Geometry type of the features in this layer</source>
         <translation>このレイヤの地物のジオメトリタイプ</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3533"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3536"/>
         <source>Primary key attributes</source>
         <translation>プライマリキーカラム名</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3544"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3547"/>
         <source>The number of features in this layer</source>
         <translation>このレイヤの地物数</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3549"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3552"/>
         <source>Editing capabilities of this layer</source>
         <translation>このレイヤは編集可能か</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3558"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3561"/>
         <source>Extents</source>
         <translation>領域</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3562"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3565"/>
         <source>In layer spatial reference system units</source>
         <translation>レイヤ空間参照システムの単位で</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3628"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3663"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3631"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3666"/>
         <source>In project spatial reference system units</source>
         <translation>プロジェクト空間座標系の単位で</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3641"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3644"/>
         <source>Layer Spatial Reference System</source>
         <translation>レイヤ空間参照システム</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3652"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3655"/>
         <source>Project (Output) Spatial Reference System</source>
         <translation>プロジェクト(出力)空間参照システム</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3674"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3677"/>
         <source>Attribute field info</source>
         <translation>属性フィールド情報</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3680"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3683"/>
         <source>Field</source>
         <translation>フィールド</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3683"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3686"/>
         <source>Type</source>
         <translation>タイプ</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3686"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3689"/>
         <source>Length</source>
         <translation>長さ</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3689"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3692"/>
         <source>Precision</source>
         <translation>精度</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3692"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3695"/>
         <source>Comment</source>
         <translation>コメント</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3916"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3919"/>
         <source>Error: qgis element could not be found</source>
         <translation>エラー: qgisエレメントが見つかりません</translation>
     </message>
@@ -56525,8 +56793,12 @@ Response was:
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="476"/>
+        <source>WCS server version %1 is not supported by QGIS (supported versions: 1.0.0, 1.1.0, 1.1.2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>WCS server version %1 is not supported by Quantum GIS (supported versions: 1.0.0, 1.1.0, 1.1.2)</source>
-        <translation>WCSサーババージョン%1はQuantum GISではサポートされていません(サポートされるバージョンは1.0.0, 1.1.0, 1.1.2です)</translation>
+        <translation type="obsolete">WCSサーババージョン%1はQuantum GISではサポートされていません(サポートされるバージョンは1.0.0, 1.1.0, 1.1.2です)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="738"/>
@@ -58780,82 +59052,94 @@ SQL Anywhereエラーコード %2
 <context>
     <name>SettingsDialogPythonConsole</name>
     <message>
-        <location filename="../python/console/console_settings.ui" line="59"/>
+        <location filename="../python/console/console_settings.ui" line="255"/>
         <source>Console</source>
         <translation>コンソール</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="67"/>
-        <location filename="../python/console/console_settings.ui" line="236"/>
+        <location filename="../python/console/console_settings.ui" line="84"/>
+        <location filename="../python/console/console_settings.ui" line="360"/>
         <source>Font</source>
         <translation>フォント</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="87"/>
-        <location filename="../python/console/console_settings.ui" line="256"/>
+        <location filename="../python/console/console_settings.ui" line="104"/>
+        <location filename="../python/console/console_settings.ui" line="380"/>
         <source>Size</source>
         <translation>大きさ</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="121"/>
-        <location filename="../python/console/console_settings.ui" line="290"/>
+        <location filename="../python/console/console_settings.ui" line="138"/>
+        <location filename="../python/console/console_settings.ui" line="261"/>
         <source>Autocompletion</source>
         <translation>自動入力補完</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="132"/>
-        <location filename="../python/console/console_settings.ui" line="301"/>
+        <location filename="../python/console/console_settings.ui" line="149"/>
+        <location filename="../python/console/console_settings.ui" line="272"/>
         <source>Autocompletion enabled</source>
         <translation>自動入力補完 ON</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="157"/>
-        <location filename="../python/console/console_settings.ui" line="326"/>
+        <location filename="../python/console/console_settings.ui" line="174"/>
+        <location filename="../python/console/console_settings.ui" line="297"/>
         <source>Threshold</source>
         <translation>補完開始文字数</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="180"/>
-        <location filename="../python/console/console_settings.ui" line="349"/>
+        <location filename="../python/console/console_settings.ui" line="197"/>
+        <location filename="../python/console/console_settings.ui" line="320"/>
         <source>Get autocompletion from current document</source>
         <translation>自動入力補完を現在のドキュメントから行う</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="183"/>
-        <location filename="../python/console/console_settings.ui" line="352"/>
+        <location filename="../python/console/console_settings.ui" line="200"/>
+        <location filename="../python/console/console_settings.ui" line="323"/>
         <source>from Document</source>
         <translation>ドキュメントから</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="190"/>
-        <location filename="../python/console/console_settings.ui" line="359"/>
+        <location filename="../python/console/console_settings.ui" line="207"/>
+        <location filename="../python/console/console_settings.ui" line="330"/>
         <source>Get autocompletion from installed APIs</source>
         <translation>自動入力補完をインストールされたAPIから行う</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="193"/>
-        <location filename="../python/console/console_settings.ui" line="362"/>
+        <location filename="../python/console/console_settings.ui" line="210"/>
+        <location filename="../python/console/console_settings.ui" line="333"/>
         <source>from APIs files</source>
         <translation>APIファイルから</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="206"/>
-        <location filename="../python/console/console_settings.ui" line="375"/>
+        <location filename="../python/console/console_settings.ui" line="223"/>
+        <location filename="../python/console/console_settings.ui" line="346"/>
         <source>from Doc and APIs</source>
         <translation>文書とAPIから</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="396"/>
+        <location filename="../python/console/console_settings.ui" line="235"/>
+        <source>Enable Object Inspector (switching between tabs may be slow)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="245"/>
+        <location filename="../python/console/console_settings.ui" line="414"/>
+        <source>Automatic parentheses insertion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="430"/>
         <source>Using preloaded APIs file</source>
         <translation>事前のロードされたAPIファイルを利用している</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="515"/>
+        <location filename="../python/console/console_settings.ui" line="424"/>
+        <location filename="../python/console/console_settings.ui" line="558"/>
         <source>APIs</source>
         <translation>API</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="520"/>
+        <location filename="../python/console/console_settings.ui" line="563"/>
         <source>Path</source>
         <translation>パス</translation>
     </message>
@@ -58864,8 +59148,8 @@ SQL Anywhereエラーコード %2
         <translation type="obsolete">APIから</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="203"/>
-        <location filename="../python/console/console_settings.ui" line="372"/>
+        <location filename="../python/console/console_settings.ui" line="220"/>
+        <location filename="../python/console/console_settings.ui" line="343"/>
         <source>Get autocompletion from current document and installed APIs</source>
         <translation>自動入力補完を現在のドキュメント、インストールされたAPIから行う</translation>
     </message>
@@ -58875,19 +59159,18 @@ SQL Anywhereエラーコード %2
 APIから</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="221"/>
+        <location filename="../python/console/console_settings.ui" line="69"/>
         <source>Editor</source>
         <translation>エディタ</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="227"/>
+        <location filename="../python/console/console_settings.ui" line="75"/>
         <source>Auto-save script before running</source>
         <translation>実行前にスクリプトを自動保存する</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="390"/>
         <source>API</source>
-        <translation>API</translation>
+        <translation type="obsolete">API</translation>
     </message>
     <message>
         <source>Browse</source>
@@ -60167,38 +60450,47 @@ Would you like to add the new layer to the TOC?</source>
         <translation>トポロジチェッカー</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/checkDock.ui" line="25"/>
+        <location filename="../src/plugins/topology/checkDock.ui" line="41"/>
         <source>Validate All</source>
         <translation>全てを検証する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/checkDock.ui" line="32"/>
+        <location filename="../src/plugins/topology/checkDock.ui" line="48"/>
         <source>Validate Extent</source>
         <translation>検証する領域</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/checkDock.ui" line="41"/>
         <source>Toggle Error Markers</source>
-        <translation>エラーマーカーの切り替え</translation>
+        <translation type="obsolete">エラーマーカーの切り替え</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/checkDock.ui" line="51"/>
+        <location filename="../src/plugins/topology/checkDock.ui" line="72"/>
         <source>Topology not checked yet</source>
         <translation>トポロジはまだチェックされていません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/checkDock.ui" line="60"/>
+        <location filename="../src/plugins/topology/checkDock.ui" line="30"/>
         <source>Configure</source>
         <translation>設定</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/checkDock.ui" line="68"/>
+        <location filename="../src/plugins/topology/checkDock.ui" line="59"/>
+        <source>Show topology errors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.ui" line="62"/>
+        <source>Show errors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/topology/checkDock.ui" line="84"/>
         <location filename="../src/plugins/topology/checkDock.cpp" line="212"/>
         <source>Select automatic fix</source>
         <translation>自動修正の選択</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/checkDock.ui" line="76"/>
+        <location filename="../src/plugins/topology/checkDock.ui" line="92"/>
         <source>Fix!</source>
         <translation>修正!</translation>
     </message>
@@ -60261,7 +60553,7 @@ Run topology check again.</source>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="317"/>
-        <location filename="../src/plugins/topology/checkDock.cpp" line="401"/>
+        <location filename="../src/plugins/topology/checkDock.cpp" line="402"/>
         <source>%1 errors were found</source>
         <translation>%1 エラーがありました</translation>
     </message>
@@ -60435,7 +60727,6 @@ These values are written to the map file in the appropriate spots to set things 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="79"/>
         <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
 Loads and displays delimited text files
 &lt;p&gt;
@@ -60721,6 +61012,342 @@ The following options can be added
 
 
 </source>
+        <translation type="obsolete">&lt;h3&gt;デリミテッドテキストレイヤプラグイン&lt;/h3&gt;
+x,y座標が含まれている値が区切り文字（空白やカンマ等）で区切られているテキストファイルをロードして表示します.
+&lt;p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;要件&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#example&quot;&gt;適切なテキストファイル例&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#notes&quot;&gt;注記&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;re&quot;&gt;
+&lt;h4&gt;要件&lt;/h4&gt;
+&lt;/a&gt;
+デリミテッドテキストをレイヤとして表示するためには以下の要件が必要です:
+&lt;ol&gt;
+&lt;li&gt;文字区切りのフィールド名ヘッダ行. この行はテキストファイルの先頭に必要です.&lt;/li&gt;
+&lt;li&gt;ヘッダ行にはXとYの値のフィールドが必要です. このフィールドは任意の名前をつけられます.&lt;/li&gt;
+&lt;li&gt;&lt;B&gt;x&lt;/B&gt;と&lt;B&gt;y&lt;/B&gt;座標が数値で記入されている必要があります. 座標系は重要ではありません.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;a name=&quot;example&quot;&gt;
+&lt;h4&gt;適切なテキストファイル例&lt;/h4&gt; 
+&lt;/a&gt;
+X;Y;ELEV&lt;br/&gt;
+-300120;7689960;13&lt;br/&gt;
+-654360;7562040;52&lt;br/&gt;
+1640;7512840;3&lt;br/&gt;
+[...]&lt;br/&gt;
+&lt;a name=&quot;notes&quot;&gt;
+&lt;h4&gt;注記&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ol&gt;
+&lt;li&gt;上記例のテキストファイルでは &lt;b&gt;;&lt;/b&gt;を区切り文字として使っています. 任意の文字でフィールドを区切ることができます.&lt;/li&gt;
+&lt;li&gt;先頭の行はヘッダ行です. ここには X, Y と ELEVというフィールドがあります.&lt;/li&gt;
+&lt;li&gt;クォート (&quot;) はテキストフィールドに利用しないで下さい.&lt;/li&gt;
+&lt;li&gt;x座標はXフィールドに格納されています.&lt;/li&gt;
+&lt;li&gt;y座標はYフィールドに格納されています.&lt;/li&gt;
+&lt;/ol&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="79"/>
+        <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
+Loads and displays delimited text files
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;Overview&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overview&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;A &amp;quot;delimited text file&amp;quot; contains data in which each record starts on a new line, and 
+is split into fields by a delimiter such as a comma.  
+This type of file is commonly exported from spreadsheets (for example CSV files) or databases.  
+Typically the first line of a delimited text file contains the names of the fields.  
+&lt;/p&gt;
+&lt;p&gt;
+Delimited text files can be loaded into QGIS as a layer. 
+The records can be displayed spatially either as a point
+defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
+describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
+only table, which can then be joined to other tables in QGIS.
+&lt;/p&gt;
+&lt;p&gt;
+In addition to the geometry definition the file can contain text, integer, and real number fields.  QGIS
+will choose the type of field based on its contents. 
+&lt;/p&gt;
+&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
+be split into fields), and defining the geometry is represented.  
+This is managed with the delimited text dialog as detailed below.  
+The dialog box displays a sample from the beginning of the file which shows how the format
+options have been applied.
+&lt;/p&gt;
+&lt;h5&gt;Choosing the data file&lt;/h5&gt;
+&lt;p&gt;Use the &amp;quot;Browse...&amp;quot; button to select the data file.  Once the file is selected the
+layer name will automatically be populated based on the file name.  The layer name is used to represent
+the data in the QGIS legend.  
+&lt;/p&gt;
+&lt;p&gt;
+By default files are assumed to be encoded as UTF-8.  However other file
+encodings can be selected.  For example &amp;quot;System&amp;quot; uses the default encoding for the operating system.  
+It is safer to use an explicit coding if the QGIS project needs to be portable.
+&lt;/p&gt;
+&lt;h5&gt;Specifying the file format&lt;/h5&gt;
+&lt;p&gt;The file format can be one of
+&lt;ul&gt;
+    &lt;li&gt;CSV file format.  This is a format commonly used by spreadsheets, in which fields are delimited
+    by a comma character, and quoted using a &amp;quot;(quote) character.  Within quoted fields, a quote
+    mark is entered as &amp;quot;&amp;quot;.&lt;/li&gt;
+    &lt;li&gt;Selected delimiters.  Each record is split into fields using one or more  delimiter character.
+    Quote characters are used for fields which may contain delimiters.  Escape characters may be used 
+    to treat the following character as a normal character (ie to include delimiter, quote, and 
+    new line characters in text fields).  The use of delimiter, quote, and escape characters is detailed &lt;a href=&quot;#csv&quot;&gt;below&lt;/a&gt;.
+    &lt;li&gt;Regular expression.  Each line is split into fields using a &amp;quot;regular expression&amp;quot; delimiter.
+    The use of regular expressions is details &lt;a href=&quot;#regexp&quot;&gt;below&lt;/a&gt;.
+&lt;/ul&gt;
+&lt;h5&gt;Record and field options&lt;/h5&gt;
+&lt;p&gt;The following options affect the selection of records and fields from the data file&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Number of header lines to discard: used to ignore header lines at the beginning of the text file&lt;/li&gt;
+    &lt;li&gt;First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.&lt;/li&gt;
+    &lt;li&gt;Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). &lt;/li&gt;
+    &lt;li&gt;Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
+    affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
+    single delimiter.  Quoted fields are never discarded.&lt;/li&gt;
+    &lt;li&gt;Decimal separator is comma: if selected then commas instead of points are used as the decimal separator in real numbers.  For
+    example &lt;tt&gt;-51,354&lt;/tt&gt; is equivalent to -51.354.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5&gt;Geometry definition&lt;/h5&gt;
+&lt;p&gt;The geometry is can be define as one of&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Point coordinates: each feature is represented as a point defined by X and Y coordinates.&lt;/li&gt;
+    &lt;li&gt;Well known text (WKT) geometry: each feature is represented as a well known text string, for example
+    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  See details of the &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt; format.
+    &lt;li&gt;No geometry (attribute only table): records will not be displayed on the map, but can be viewed
+    in the attribute table and joined to other layers in QGIS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For point coordinates the following options apply:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;X field: specifies the field containing the X coordinate&lt;/li&gt;
+    &lt;li&gt;Y field: specifies the field containing the Y coordinate&lt;/li&gt;
+    &lt;li&gt;DMS angles: if selected coordinates are represented as degrees/minutes/seconds
+    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
+    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
+    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
+    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Geometry field: the field containing the well known text definition.&lt;/li&gt;
+    &lt;li&gt;Geometry type: one of &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or &amp;quot;Polygon&amp;quot;.
+    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
+    which geometry type is displayed in text files containing multiple geometry types. Records containing
+   other geometry types are discarded.   
+    If &amp;quot;Detect&amp;quot; is selected then the type of the first geometry in the file will be used.
+    &amp;quot;Point&amp;quot; includes POINT and MULTIPOINT WKT types, &amp;quot;Line&amp;quot; includes LINESTRING and
+    MULTLINESTRING WKT types, and &amp;quot;Polygon&amp;quot; includes POLYGON and MULTIPOLYGON WKT types.
+&lt;/ul&gt;
+&lt;h5&gt;Layer settings&lt;/h5&gt;
+&lt;p&gt;Layer settings control the way the layer is managed in QGIS.  The options available are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
+This option may be useful for files larger than a few megabytes in size.&lt;/li&gt;
+&lt;li&gt;Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
+from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
+for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
+&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
+reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
+extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
+application will change the file. &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Records are split into fields using three character sets: 
+delimiter characters, quote characters, and escape characters.  
+Other characters in the record are considered as data, split into
+fields by delimiter characters. 
+Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
+&lt;/p&gt;
+&lt;p&gt;
+Quote and escape characters cannot be the same as delimiter characters - they
+will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
+if they are.&lt;/p&gt;
+&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
+is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
+can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
+&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
+contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
+start and end with the same quote character.  Quote characters cannot occur within a field unless they
+are escaped.&lt;/p&gt;
+&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
+(that is, to stop it being treated as a new line, delimiter, or quote character).  
+&lt;/p&gt;
+&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
+&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
+&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
+of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
+&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
+If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
+ then these are extracted as fields. 
+ If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
+In this case the regular expression is matched against each line.  If the line does not match it is discarded
+as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
+is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
+unintuitive) means of loading data with fixed width fields.  For example the 
+expression
+&lt;pre&gt;
+^(.{5})(.{10})(.{20})(.{20})
+&lt;/pre&gt;
+&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
+Lines less than 55 characters long will be discarded.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+The delimited text layer recognizes the following 
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
+&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
+It will accept geometries with
+a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;
+It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
+system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
+preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
+In both cases the SRID is ignored.
+&lt;/p&gt;
+
+
+
+&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;/h4&gt; 
+&lt;p&gt;Each record in the delimited text file is split into fields representing
+attributes of the record.  Usually the attribute names are taken from the first
+data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
+Also if records have more fields than are defined in the header record then these
+will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
+QGIS may override 
+the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
+or are duplicated.
+&lt;/p&gt;
+&lt;p&gt;
+In addition to the attributes explicitly in the data file QGIS assigns a unique 
+feature id to each record which is the line number in the source file on which
+the record starts.  
+&lt;/p&gt;
+&lt;p&gt;
+Each attribute also has a data type, one of string (text), integer, or real number.
+The data type is inferred from the content of the fields - if every non blank value
+is a valid integer then the type is integer, otherwise if it is a valid real
+number then the type is real, otherwise the type is string.  Note that this is
+based on the content of the fields - quoting fields does not change the way they
+are interpreted.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;/h4&gt; 
+&lt;pre&gt;
+X;Y;ELEV
+-300120;7689960;13
+-654360;7562040;52
+1640;7512840;3
+&lt;/pre&gt;
+&lt;p&gt;This file:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
+&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
+&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
+&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;/h4&gt;
+&lt;pre&gt;
+id|wkt
+1|POINT(172.0702250 -43.6031036)
+2|POINT(172.0702250 -43.6031036)
+3|POINT(172.1543206 -43.5731302)
+4|POINT(171.9282585 -43.5493308)
+5|POINT(171.8827359 -43.5875983)
+&lt;/pre&gt;
+&lt;p&gt;This file:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Has two fields defined in the header row: id and wkt.
+  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
+  &lt;li&gt;Specifies each point using the WKT notation
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
+The pattern is:
+&lt;/p&gt;
+&lt;pre&gt;
+from PyQt4.QtCore import QUrl, QString
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+
+# Define the data source
+filename=&quot;test.csv&quot;
+uri=QUrl.fromLocalFile(filename)
+uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
+uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
+uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
+# ... other delimited text parameters
+layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
+# Add the layer to the map
+if layer.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer( layer )
+&lt;/pre&gt;
+&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
+&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
+The following options can be added
+&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
+       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
+       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
+       no default for regexp files.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
+       Additional fields in each record will be discarded. The default is 0 - include all fields.
+       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
+       used.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
+       specified then a dialog box may request this information from the user
+       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
+&lt;/ul&gt;
+
+
+</source>
         <translation type="unfinished">&lt;h3&gt;デリミテッドテキストレイヤプラグイン&lt;/h3&gt;
 x,y座標が含まれている値が区切り文字（空白やカンマ等）で区切られているテキストファイルをロードして表示します.
 &lt;p&gt;
@@ -60758,7 +61385,7 @@ X;Y;ELEV&lt;br/&gt;
 &lt;/ol&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="364"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="377"/>
         <source>&lt;h3&gt;Open Vector Layer Dialog&lt;/h3&gt;
 
 The open vector layer dialog is used to add vector data to the QGIS map view. Vector data are spatial data described using geometries of points, lines and polygons (enclosed areas).&lt;/p&gt;
@@ -60773,7 +61400,7 @@ Detailed description how to proceed with vector data is described in chapter 5 &
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="371"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="384"/>
         <source>&lt;h3&gt;Add PostGIS Tables&lt;/h3&gt;
 This dialog allows you to add PostGIS layers (tables with a geometry column) to the QGIS map canvas.
 &lt;p&gt;
@@ -60851,7 +61478,7 @@ Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="408"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="421"/>
         <source>&lt;h3&gt;Create a New PostgreSQL Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a PostgreSQL database.
 &lt;p&gt;
@@ -60907,7 +61534,7 @@ PostGISの新しい接続を作るためにはデータベースサーバのホ�
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="441"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="454"/>
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
@@ -60916,7 +61543,7 @@ PostGISの新しい接続を作るためにはデータベースサーバのホ�
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="444"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="457"/>
         <source>&lt;h3&gt;Create New Vector Layer&lt;/h3&gt;
 To create a new layer for editing, choose &lt;label&gt;New Vector Layer&lt;/label&gt; from the &lt;label&gt;Layer&lt;/label&gt; menu.&lt;br/&gt;
 With this dialog you can create a shape file layer.
@@ -60943,7 +61570,7 @@ In this section you can see the list of attributes. To delete one of them, click
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="456"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="469"/>
         <source>&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
 This dialog allows you to work with vector layer settings and properties. There are seven tabs:
 &lt;p&gt;
@@ -61203,7 +61830,7 @@ QGISでは地物の属性にもとずいたアクションを提供できます.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="595"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="608"/>
         <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
 You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
 &lt;h4&gt;Database&lt;/h4&gt;
@@ -61252,7 +61879,7 @@ Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="618"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="631"/>
         <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
 The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; General&lt;/label&gt;.&lt;p&gt;
 
@@ -61310,7 +61937,7 @@ The vector layer needs to be in editing mode, before you can click on the &lt;la
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="670"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="683"/>
         <source>&lt;h3&gt;Create a new WMS connection&lt;/h3&gt;
 WMS layers can be added quite simply, as long as you know the URL to access the WMS server, you have a serviceable connection to that server, and the server understands HTTP as the data transport mechanism.&lt;p&gt;
 QGIS currently can act as a WMS client that understands WMS 1.1, 1.1.1 and 1.3 servers.
@@ -61389,14 +62016,14 @@ WMSサーバからデータをダウンロードしている間WMSプラグイ�
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="708"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="721"/>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
         <translation type="unfinished">&lt;h3&gt;データベースコネクション&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="710"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="723"/>
         <source>&lt;h3&gt;Add SQL Anywhere Tables&lt;/h3&gt;
 This dialog allows you to add SQL Anywhere layers (tables with a geometry column) to the QGIS map canvas.
 &lt;p&gt;
@@ -61438,7 +62065,7 @@ Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="748"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="761"/>
         <source>&lt;h3&gt;Add SpatiaLite Tables&lt;/h3&gt;
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
@@ -61449,7 +62076,7 @@ The connections you define will be remembered for further use and available to c
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="752"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="765"/>
         <source>&lt;h3&gt;Spatial Bookmarks&lt;/h3&gt;
 Spatial Bookmarks allow you to &quot;bookmark&quot; a geographic location and return to it later.
 &lt;p&gt;
@@ -61527,7 +62154,7 @@ To update the extent of a bookmark, click on it then click the &lt;label&gt;Upda
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="792"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="805"/>
         <source>&lt;h3&gt;Copyright Label Plugin&lt;/h3&gt;
 Draws a copyright label with information.&lt;br/&gt;
 You can add any random text to the map not only a copyright label.
@@ -61594,7 +62221,7 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="824"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="837"/>
         <source>&lt;h3&gt;Field Calculator&lt;/h3&gt;
 The field calculator allows you to update fields with expressions.
 
@@ -61658,7 +62285,7 @@ The field calculator allows you to update fields with expressions.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="884"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="897"/>
         <source>&lt;h3&gt;Identify Features&lt;/h3&gt;
 &lt;p&gt;
 The results dialog shows all the features identified within the search tolerance. To see the results details, expand the feature information on the left of each feature.
@@ -61680,7 +62307,7 @@ Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Set
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="894"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="907"/>
         <source>&lt;h3&gt;Scale bar Plugin&lt;/h3&gt;
 Draws a scale bar on the map.
 &lt;p&gt;
@@ -61719,14 +62346,14 @@ QGISでは地図フレームと同じ単位でのみ縮尺を表示できます.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="913"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="926"/>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
         <translation type="unfinished">&lt;h3&gt;新OGRデータベース接続ダイアログ&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="915"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="928"/>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
 There are two measure tools: length and area. With them, you can measure both distances and areas on the map canvas. Currently the tools provide results in metric units only. A single right mouse click stops the measuring, while two right mouse clicks starts measuring anew.
 &lt;h4&gt;Measuring Lengths&lt;/h4&gt;
@@ -61743,7 +62370,7 @@ To measure areas, select the tool and click to create the area. The total area i
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="922"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="935"/>
         <source>&lt;h3&gt;Road graph plugin settings&lt;/h3&gt;
 &lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any polyline layer and plots this path over the road network.&lt;/p&gt;
 &lt;p&gt;
@@ -61778,7 +62405,7 @@ To measure areas, select the tool and click to create the area. The total area i
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="953"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="966"/>
         <source>&lt;h3&gt; North Arrow Plugin&lt;/h3&gt;
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
@@ -61789,7 +62416,7 @@ At present there is only one style available. You can adjust the angle of the ar
 現時点では１種類のスタイルだけが利用可能です. QGISが自動的に設定する矢印の角度を調整することが可能です. もしQGISが決定した方向を選択した場合は最適な矢印の方向を示すようにします. 矢印を配置する場所については地図キャンバスの4隅を指定する4個のオプションがあります.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="957"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="970"/>
         <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
 &lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
 raster of an input point vector layer.  The density is calculated based on the
@@ -61847,7 +62474,7 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1011"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1024"/>
         <source>&lt;h3&gt;Save vector layer as...&lt;/h3&gt;
 
 &lt;p&gt;This dialog allows you to save vector data in various formats using GDAL/OGR.
@@ -61865,7 +62492,7 @@ See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector fo
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1025"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1038"/>
         <source>&lt;h3&gt;Print Composer&lt;/h3&gt;
 
 &lt;p&gt;
@@ -61892,7 +62519,7 @@ Click on one of the icons along the top of the composer window to select what ty
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1037"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1050"/>
         <source>&lt;h3&gt;Python Plugin Installer&lt;/h3&gt;
 Downloads and installs plugins from remote repositories.
 &lt;br/&gt;&lt;br/&gt;
@@ -62050,14 +62677,14 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1106"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1119"/>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
         <translation type="unfinished">&lt;h3&gt;スタイルマネージャ&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1108"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1121"/>
         <source>&lt;h3&gt;Custom Coordinate Reference System Definition&lt;/h3&gt;
 If QGIS does not provide the coordinate reference system you need, you can define a custom CRS. &lt;p&gt;
 To define a CRS, select &lt;label&gt;Custom CRS&lt;/label&gt; from the &lt;label&gt;Edit&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; (KDE, Windows) menu. Custom CRS are stored in your QGIS user database. In addition to your custom CRS, this database also contains your spatial bookmarks and other custom data.
@@ -62093,7 +62720,183 @@ QGISでカスタムCRSを定義する場合Proj.4投影ライブラリを理解�
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1125"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1138"/>
+        <source>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;head&gt;
+	&lt;title&gt;Help Python Console&lt;/title&gt;
+	&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+	
+	&lt;style&gt;
+		body{
+    		font-family: &apos;Trebuchet MS&apos;, sans-serif;
+    		font-size : 12px;
+		}
+		#header{
+    		background: #f6f6f6;
+    		border-bottom: 3px solid #000;
+    		width: 100%;
+		}
+		#headerTool td{
+    		background: #f6f6f6;
+    		/*width: 100%;*/
+		}
+		._titleP {
+			padding: 5px;
+			font-size: 15px;
+			font-weight: bold;
+			color: #000;
+		}
+		._title {
+			font-size: 20px;
+			font-weight: bold;
+			color: #000;
+		}
+	&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;table id=&quot;header&quot;&gt;
+		&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/imgHelpDialog.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;span class=&quot;_title&quot;&gt;Python Console for QGIS&lt;/span&gt;
+		&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;/table&gt;
+		&lt;table&gt;
+		&lt;tr&gt;
+			&lt;td&gt;
+				&lt;p align=&quot;justify&quot;&gt;
+					Python Console based on PyQScintilla2.
+					&lt;br&gt;&lt;br&gt;
+					To access the QGIS environment from this console 
+						  use qgis.utils.iface object (instance of QgisInterface class). 
+						  To import the class QgisInterface can also use the dedicated 
+						  button on the toolbar on the left.
+				&lt;/p&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/imgHelpConsole.png&quot; /&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;
+				&lt;p align=&quot;justify&quot;&gt;
+					The console is split in two main panes, output and input areas. 
+					       Both are resizable by using the horizontal splitter. 
+					       Output area pane is a widget read-only which shows the commands output. 
+					       You can drag and drop or copy text into input area 
+					       (no matter if selected text contains &gt;&gt;&gt; or ...). 
+					       Use &apos;Share on codepad&apos; from contextual menu for sharing snippets code. 
+					       The context menu looks like the image below.
+					&lt;img src=&quot;qrc:/images/themes/default/console/imgHelpMenu.png&quot;&gt;&lt;br&gt;
+					Input area pane is the interactive python shell for input commands.
+				&lt;/p&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+	&lt;table id=&quot;header&quot;&gt;
+		&lt;tr&gt;
+		&lt;td&gt;
+			&lt;span class=&quot;_titleP&quot;&gt;Features&lt;/span&gt;
+		&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+	&lt;p align=&quot;justify&quot;&gt;
+		&lt;ul&gt;
+		&lt;li&gt;Auto-completion and highlighting syntax for the following APIs:
+			&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS-master&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+			&lt;/ol&gt;
+		&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;CTRL+SPACE to view the auto-completion list.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;CTRL+ALT+SPACE to view the command history list.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Open QGIS API documentation by typing &apos;_api&apos;.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Open PyQGIS Cookbook by typing &apos;_pyqgis&apos;.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Saves the command history by typing &apos;_save&apos; or closing the widget. 
+						  This command saves the history command in the file ~/.qgis2/console_history.txt&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Clears the command history by typing &lt;b&gt;_clear&lt;/b&gt;. 
+						  This command clears the command history from file ~/.qgis2/console_history.txt&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Clears completely command history by typing &apos;_clearAll&apos;. 
+						  This command clears completely the command history. It has an irreversible effect.&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/p&gt;
+	&lt;table id=&quot;header&quot;&gt;
+		&lt;tr&gt;
+		&lt;td&gt;
+			&lt;span class=&quot;_titleP&quot;&gt;Toolbar&lt;/span&gt;
+		&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+	&lt;p&gt;The following is a description of the tools in the toolbar:&lt;/p&gt;
+	&lt;table width=&quot;100%&quot; border=&quot;0&quot; id=&quot;headerTool&quot;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Tool to clear python console&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconIfaceConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to import iface class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSextanteConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to import Sextante class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to import PyQt4.QtCore class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconScriptConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconOpenConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to open a python script and load in console&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSaveConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to save a python script&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1310"/>
         <source>&lt;h3&gt;Options&lt;/h3&gt;
 This dialog allows you to select some basic options for QGIS. There are eight tabs:
 &lt;p&gt;
@@ -62246,7 +63049,7 @@ QGISはもはや最初にロードされたレイヤの空間参照系を地図�
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1199"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1384"/>
         <source>&lt;h3&gt;Create a New SQL Anywhere Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a
 SQL Anywhere database.
@@ -62282,9 +63085,9 @@ SQL Anywhere database.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1231"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1416"/>
         <source>&lt;h3&gt;Finding shortest path&lt;/h3&gt;
-&lt;p&gt;Road graph is a C++ plugin for Quantum GIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Plugins &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Plugins &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#howto&quot;&gt;How to&lt;/a&gt;&lt;br/&gt;
 &lt;/p&gt;
@@ -62301,7 +63104,7 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1246"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1431"/>
         <source>&lt;h3&gt;Create a New Oracle Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a Oracle database.
 &lt;p&gt;
@@ -63220,7 +64023,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation>Quantum　GISのバージョンが検出されました: </translation>
+        <translation type="obsolete">Quantum　GISのバージョンが検出されました: </translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
@@ -63236,6 +64039,10 @@ Plugin will not be enabled.</source>
     <message>
         <source>Vect&amp;or</source>
         <translation type="obsolete">ベクタ(&amp;t)</translation>
+    </message>
+    <message>
+        <source>QGIS version detected: </source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
@@ -67745,54 +68552,54 @@ Convert a string into Qt data type.
         <translation>トポロジルールの設定</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/rulesDialog.ui" line="22"/>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="20"/>
         <source>Current Rules</source>
         <translation>現在のルール</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/rulesDialog.ui" line="30"/>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="112"/>
         <source>Rule</source>
         <translation>ルール</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/rulesDialog.ui" line="35"/>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="117"/>
         <source>Layer #1</source>
         <translation>レイヤ #1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/rulesDialog.ui" line="40"/>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="122"/>
         <source>Layer #2</source>
         <translation>レイヤ #2</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/rulesDialog.ui" line="45"/>
-        <location filename="../src/plugins/topology/rulesDialog.ui" line="109"/>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="66"/>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="127"/>
         <source>Tolerance</source>
         <translation>許容範囲</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/rulesDialog.ui" line="50"/>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="132"/>
         <source>Layer1ID</source>
         <translation>レイヤ1ID</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/rulesDialog.ui" line="55"/>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="137"/>
         <source>Layer2ID</source>
         <translation>レイヤ2ID</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/rulesDialog.ui" line="69"/>
-        <location filename="../src/plugins/topology/rulesDialog.ui" line="88"/>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="33"/>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="52"/>
         <source>No layer</source>
         <translation>レイヤがありません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/rulesDialog.ui" line="123"/>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="93"/>
         <source>Add New Rule</source>
         <translation>新ルールの追加</translation>
     </message>
     <message>
-        <location filename="../src/plugins/topology/rulesDialog.ui" line="130"/>
+        <location filename="../src/plugins/topology/rulesDialog.ui" line="100"/>
         <source>Delete Rule</source>
         <translation>ルールの削除</translation>
     </message>

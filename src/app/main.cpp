@@ -95,9 +95,9 @@ typedef SInt32 SRefCon;
  */
 void usage( std::string const & appName )
 {
-  std::cerr << "Quantum GIS - " << VERSION << " '" << RELEASE_NAME << "' ("
+  std::cerr << "QGIS - " << VERSION << " '" << RELEASE_NAME << "' ("
             << QGSVERSION << ")\n"
-            << "Quantum GIS (QGIS) is a viewer for spatial data sets, including\n"
+            << "QGIS is a viewer for spatial data sets, including\n"
             << "raster and vector data.\n"
             << "Usage: " << appName <<  " [options] [FILES]\n"
             << "  options:\n"

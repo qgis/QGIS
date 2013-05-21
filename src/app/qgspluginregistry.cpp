@@ -250,7 +250,7 @@ void QgsPluginRegistry::loadPythonPlugin( QString packageName )
     // if plugin is not compatible, disable it
     if ( ! isPythonPluginCompatible( packageName ) )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Plugin \"%1\" is not compatible with this version of Quantum GIS.\nIt will be disabled." ).arg( packageName ),
+      QgsMessageLog::logMessage( QObject::tr( "Plugin \"%1\" is not compatible with this version of QGIS.\nIt will be disabled." ).arg( packageName ),
                                  QObject::tr( "Plugins" ) );
       settings.setValue( "/PythonPlugins/" + packageName, false );
       return;

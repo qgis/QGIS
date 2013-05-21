@@ -116,7 +116,7 @@ class Editor(QsciScintilla):
         #self.setMinimumWidth(300)
 
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-        self.setMatchedBraceBackgroundColor(QColor("#c6c6c6"))
+        self.setMatchedBraceBackgroundColor(QColor("#b7f907"))
 
         # Folding
         self.setFolding(QsciScintilla.PlainFoldStyle)
@@ -271,53 +271,76 @@ class Editor(QsciScintilla):
         iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
         iconFind = QgsApplication.getThemeIcon("console/iconSearchEditorConsole.png")
         iconSyntaxCk = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
-        hideEditorAction = menu.addAction("Hide Editor",
-                                     self.hideEditor)
+        iconObjInsp = QgsApplication.getThemeIcon("console/iconClassBrowserConsole.png")
+        hideEditorAction = menu.addAction(QCoreApplication.translate("PythonConsole", "Hide Editor"),
+                                          self.hideEditor)
         menu.addSeparator()
-        syntaxCheck = menu.addAction(iconSyntaxCk, "Check Syntax",
+        syntaxCheck = menu.addAction(iconSyntaxCk,
+                                     QCoreApplication.translate("PythonConsole",
+                                                                "Check Syntax"),
                                      self.syntaxCheck, 'Ctrl+4')
         menu.addSeparator()
         runSelected = menu.addAction(iconRun,
-                                     "Enter selected",
+                                     QCoreApplication.translate("PythonConsole",
+                                                                "Enter selected"),
                                      self.runSelectedCode, 'Ctrl+E')
         runScript = menu.addAction(iconRunScript,
-                                   "Run Script",
+                                   QCoreApplication.translate("PythonConsole",
+                                                              "Run Script"),
                                    self.runScriptCode, 'Shift+Ctrl+E')
         menu.addSeparator()
-        undoAction = menu.addAction("Undo", self.undo, QKeySequence.Undo)
-        redoAction = menu.addAction("Redo", self.redo, 'Ctrl+Shift+Z')
+        undoAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                               "Undo"),
+                                    self.undo, QKeySequence.Undo)
+        redoAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                               "Redo"),
+                                    self.redo, 'Ctrl+Shift+Z')
         menu.addSeparator()
         findAction = menu.addAction(iconFind,
-                                    "Find Text",
+                                    QCoreApplication.translate("PythonConsole",
+                                                               "Find Text"),
                                     self.showFindWidget)
         menu.addSeparator()
-        cutAction = menu.addAction("Cut",
+        cutAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                              "Cut"),
                                     self.cut,
                                     QKeySequence.Cut)
-        copyAction = menu.addAction("Copy",
+        copyAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                               "Copy"),
                                     self.copy,
                                     QKeySequence.Copy)
-        pasteAction = menu.addAction("Paste", self.paste, QKeySequence.Paste)
+        pasteAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                                "Paste"),
+                                     self.paste, QKeySequence.Paste)
         menu.addSeparator()
-        commentCodeAction = menu.addAction(iconCommentEditor, "Comment",
+        commentCodeAction = menu.addAction(iconCommentEditor,
+                                           QCoreApplication.translate("PythonConsole",
+                                                                      "Comment"),
                                            self.parent.pc.commentCode, 'Ctrl+3')
-        uncommentCodeAction = menu.addAction(iconUncommentEditor, "Uncomment",
+        uncommentCodeAction = menu.addAction(iconUncommentEditor,
+                                             QCoreApplication.translate("PythonConsole",
+                                                                        "Uncomment"),
                                              self.parent.pc.uncommentCode,
                                              'Shift+Ctrl+3')
         menu.addSeparator()
         codePadAction = menu.addAction(iconCodePad,
-                                        "Share on codepad",
-                                        self.codepad)
+                                       QCoreApplication.translate("PythonConsole",
+                                                                  "Share on codepad"),
+                                       self.codepad)
         menu.addSeparator()
-        showCodeInspection = menu.addAction("Hide/Show Object list",
+        showCodeInspection = menu.addAction(iconObjInsp,
+                                            QCoreApplication.translate("PythonConsole",
+                                                                       "Hide/Show Object Inspector"),
                                             self.objectListEditor)
         menu.addSeparator()
-        selectAllAction = menu.addAction("Select All",
+        selectAllAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                                    "Select All"),
                                          self.selectAll,
                                          QKeySequence.SelectAll)
         menu.addSeparator()
         settingsDialog = menu.addAction(iconSettings,
-                                        "Settings",
+                                        QCoreApplication.translate("PythonConsole",
+                                                                   "Settings"),
                                         self.parent.pc.openSettings)
         syntaxCheck.setEnabled(False)
         pasteAction.setEnabled(False)
@@ -328,6 +351,7 @@ class Editor(QsciScintilla):
         selectAllAction.setEnabled(False)
         undoAction.setEnabled(False)
         redoAction.setEnabled(False)
+        showCodeInspection.setEnabled(False)
         if self.hasSelectedText():
             runSelected.setEnabled(True)
             copyAction.setEnabled(True)
@@ -342,6 +366,9 @@ class Editor(QsciScintilla):
             redoAction.setEnabled(True)
         if QApplication.clipboard().text():
             pasteAction.setEnabled(True)
+        if self.settings.value("pythonConsole/enableObjectInsp",
+                                False).toBool():
+            showCodeInspection.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
 
     def findText(self, forward):
@@ -613,11 +640,12 @@ class Editor(QsciScintilla):
             return True
 
     def keyPressEvent(self, e):
-        t = unicode(e.text())
-        ## Close bracket automatically
-        if t in self.opening:
-            i = self.opening.index(t)
-            self.insert(self.closing[i])
+        if self.settings.value("pythonConsole/autoCloseBracketEditor", True).toBool():
+            t = unicode(e.text())
+            ## Close bracket automatically
+            if t in self.opening:
+                i = self.opening.index(t)
+                self.insert(self.closing[i])
         QsciScintilla.keyPressEvent(self, e)
 
     def focusInEvent(self, e):
@@ -1145,11 +1173,12 @@ class EditorTabWidget(QTabWidget):
         objInspectorEnabled = self.settings.value("pythonConsole/enableObjectInsp",
                                                   False).toBool()
         listObj = self.parent.objectListButton
-        listObj.setChecked(objInspectorEnabled)
+        if self.parent.listClassMethod.isVisible():
+            listObj.setChecked(objInspectorEnabled)
         listObj.setEnabled(objInspectorEnabled)
         if objInspectorEnabled:
             cW = self.currentWidget()
-            if cW:
+            if cW and not self.parent.listClassMethod.isVisible():
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 self.listObject(cW)
                 QApplication.restoreOverrideCursor()
