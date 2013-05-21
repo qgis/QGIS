@@ -8,6 +8,7 @@ Building QGIS from source - step by step
 %! preproc      : TUT_URL   https://qgis.org
 %! PostProc(html): '(?i)(<pre>)' '<div class="code">\1'
 %! PostProc(html): '(?i)(</pre>)' '\1</div>'
+%! PostProc(html):  \(R\)   &reg;
 % Next line will replace tabs with 2 spaces in txt generated outputs
 %! PostProc(txt): '(?i)(\t)' '  '
 %! encoding: iso-8859-1

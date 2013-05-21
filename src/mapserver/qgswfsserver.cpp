@@ -822,6 +822,11 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           req.setFilterRect( searchRect )
           .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
         }
+        else
+        {
+          req.setFlags( QgsFeatureRequest::NoGeometry );
+          mWithGeom = false;
+        }
         QgsFeatureIterator fit = layer->getFeatures( req );
         QgsExpression *mFilter = new QgsExpression( expFilter );
         if ( mFilter->hasParserError() )
@@ -936,6 +941,11 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               req.setFilterRect( searchRect )
               .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
             }
+            else
+            {
+              req.setFlags( QgsFeatureRequest::NoGeometry );
+              mWithGeom = false;
+            }
             QgsFeatureIterator fit = layer->getFeatures( req );
             while ( fit.nextFeature( feature ) && featureCounter < maxFeat )
             {
@@ -967,9 +977,15 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           req.setFilterRect( searchRect )
           .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
         }
+        else
+        {
+          req.setFlags( QgsFeatureRequest::NoGeometry );
+          mWithGeom = false;
+        }
         QgsFeatureIterator fit = layer->getFeatures( req );
         while ( fit.nextFeature( feature ) && featureCounter < maxFeat )
         {
+          mErrors << QString( "The feature %2 of layer for the TypeName '%1'" ).arg( tnStr ).arg( featureCounter );
           if ( featureCounter == 0 )
             startGetFeature( request, format, layerCrs, &searchRect );
 
