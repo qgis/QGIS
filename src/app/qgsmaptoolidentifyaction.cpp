@@ -19,6 +19,7 @@
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
+#include "qgshighlight.h"
 #include "qgslogger.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgsmapcanvas.h"
@@ -33,7 +34,6 @@
 #include "qgsmaplayerregistry.h"
 #include "qgisapp.h"
 #include "qgsrendererv2.h"
-#include "qgsrubberband.h"
 
 #include <QSettings>
 #include <QMessageBox>
@@ -204,11 +204,10 @@ void QgsMapToolIdentifyAction::handleMenuHover()
         QList<IdentifyResult>::const_iterator idListIt = idList.constBegin();
         for ( ; idListIt != idList.constEnd(); ++idListIt )
         {
-          QgsRubberBand* rb = new QgsRubberBand( mCanvas );
-          rb->setColor( QColor( 255, 0, 0 ) );
-          rb->setWidth( 2 );
-          rb->setToGeometry( idListIt->mFeature.geometry(), vl );
-          mRubberBands.append( rb );
+          QgsHighlight* hl = new QgsHighlight( mCanvas, idListIt->mFeature.geometry(), vl );
+          hl->setColor( QColor( 255, 0, 0 ) );
+          hl->setWidth( 2 );
+          mRubberBands.append( hl );
         }
       }
     }
@@ -217,7 +216,7 @@ void QgsMapToolIdentifyAction::handleMenuHover()
 
 void QgsMapToolIdentifyAction::deleteRubberBands()
 {
-  QList<QgsRubberBand*>::const_iterator it = mRubberBands.constBegin();
+  QList<QgsHighlight*>::const_iterator it = mRubberBands.constBegin();
   for ( ; it != mRubberBands.constEnd(); ++it )
   {
     delete *it;

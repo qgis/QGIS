@@ -27,10 +27,10 @@
 #include <QObject>
 #include <QPointer>
 
+class QgsHighlight;
 class QgsIdentifyResultsDialog;
 class QgsMapLayer;
 class QgsRasterLayer;
-class QgsRubberBand;
 class QgsVectorLayer;
 class QMenu;
 
@@ -80,7 +80,7 @@ class QgsMapToolIdentifyAction : public QgsMapToolIdentify
     //! layer id map for layer select mode
     QMap< QgsMapLayer*, QList<IdentifyResult> > mLayerIdResults;
     //! rubber bands for layer select mode
-    QList<QgsRubberBand*> mRubberBands;
+    QList<QgsHighlight*> mRubberBands;
 
     QgsIdentifyResultsDialog *resultsDialog();
 
