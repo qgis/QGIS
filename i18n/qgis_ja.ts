@@ -63225,7 +63225,7 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation type="unfinished">&lt;h1&gt;ヒートマッププラグイン　ヘルプ&lt;/h1&gt;
+        <translation>&lt;h1&gt;ヒートマッププラグイン　ヘルプ&lt;/h1&gt;
 &lt;p&gt;ヒートマッププラグインはカーネル密度推定を使用して、ポイントのベクトルデータから、その密度を示すラスタデータ（ヒートマップ）を作成します。
 密度はその場所のポイント数に基づき計算されます。多くのポイントが密集していると大きな値になります。ヒートマップにより「ホットスポット」や
 ポイントの密集地を簡単に認識できるようになります。&lt;/p&gt;
