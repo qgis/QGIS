@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Wednesday April 24, 2013</H3>
+<H3>Tuesday May 21, 2013</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Change : Saturday December 08, 2012
-Last Updated: Wednesday April 24, 2013
+Last Updated: Tuesday May 21, 2013
+Last Change : Tuesday May 21, 2013
 </P>
 <DIV CLASS="toc">
 
@@ -883,7 +883,7 @@ The optional products are not necessary.  In the process the Windows SDKs for
 Visual Studio 2008 will also be downloaded and installed.
 </P>
 <P>
-You also need the Microsoft Windows Server® 2003 R2 Platform SDK (for setupapi):
+You also need the Microsoft Windows Server&reg; 2003 R2 Platform SDK (for setupapi):
 </P>
 	<BLOCKQUOTE>
 	<A HREF="http://download.microsoft.com/download/f/a/d/fad9efde-8627-4e7a-8812-c351ba099151/PSDK-x86.exe">http://download.microsoft.com/download/f/a/d/fad9efde-8627-4e7a-8812-c351ba099151/PSDK-x86.exe</A>
@@ -1750,7 +1750,7 @@ of Xcode, regardless of using a separate DMG installer for just the tools.
 Xcode 4.3+ also introduces the clang frontend to the LLVM compiler as default.
 </P>
 <P>
-<B>Note:</B> In XCODE 4.5 installed from the app store, you need to install the 
+<B>Note:</B> In XCODE 4.5 installed from the app store, you need to install the
 command line tools from XCode -&gt; Preferences -&gt; Downloads and choose command line tools.
 </P>
 <P>
@@ -2175,7 +2175,7 @@ The plugin allows QScintilla2 widgets to be used within QtDesigner.
 
 <div class="code"><PRE>
 cd &lt;QScintilla2 source directory&gt;
-cd designer-Qt4
+cd designer-Qt4Qt5
 qmake -spec macx-g++ designer.pro
 make
 sudo make install
@@ -2202,7 +2202,7 @@ cd to the source folder.  Then for your chosen Python:
 </P>
 
 <div class="code"><PRE>
-python configure.py -n /usr/local/Qt-4.8/qsci
+python configure.py -n /usr/local/Qt4.8/qsci
 yes
 </PRE></div>
 
@@ -2215,7 +2215,7 @@ More configuration is needed to install outside the system path:
 </P>
 
 <div class="code"><PRE>
-python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin -n /usr/local/Qt-4.8/qsci
+python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin -n /usr/local/Qt4.8/qsci -v /usr/local/share/sip/PyQt4
 </PRE></div>
 
 <P>
@@ -2234,7 +2234,7 @@ If you are using 32-bit Qt (Qt Carbon):
 
 <div class="code"><PRE>
 python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
--n /usr/local/Qt-4.8/qsci --use-arch i386
+-n /usr/local/Qt4.8/qsci -v /usr/local/share/sip/PyQt4 --use-arch i386
 </PRE></div>
 
 <P>
@@ -2243,7 +2243,7 @@ For 64-bit Qt (Qt Cocoa), use this configure line:
 
 <div class="code"><PRE>
 python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
--n /usr/local/Qt-4.8/qsci --use-arch x86_64
+-n /usr/local/Qt4.8/qsci -v /usr/local/share/sip/PyQt4 --use-arch x86_64
 </PRE></div>
 
 <P>
@@ -2255,7 +2255,7 @@ But you don't need the arch option:
 </P>
 
 <div class="code"><PRE>
-python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin -n /usr/local/Qt-4.8/qsci
+python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin -n /usr/local/Qt4.8/qsci -v /usr/local/share/sip/PyQt4
 </PRE></div>
 
 <P>
