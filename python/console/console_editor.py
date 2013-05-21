@@ -514,8 +514,8 @@ class Editor(QsciScintilla):
                         else:
                             raise e
             if tmp:
-                tmpFileTr = QCoreApplication.translate('PythonConsole', ' [Temporary file saved in ')
-                file = file + tmpFileTr + dir + ']'
+                tmpFileTr = QCoreApplication.translate('PythonConsole', ' [Temporary file saved in %1]').arg(dir)
+                file = file + tmpFileTr
             if _traceback:
                 msgTraceTr = QCoreApplication.translate('PythonConsole', '## Script error: %1').arg(file)
                 print "## %s" % datetime.datetime.now()
@@ -608,7 +608,7 @@ class Editor(QsciScintilla):
                 source = source.encode('utf-8')
             if type(filename) == type(u""):
                 filename = filename.encode('utf-8')
-            compile(source, filename, 'exec')
+            compile(source, str(filename), 'exec')
         except SyntaxError, detail:
             s = traceback.format_exception_only(SyntaxError, detail)
             fn = detail.filename

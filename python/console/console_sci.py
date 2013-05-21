@@ -31,7 +31,7 @@ import os
 import code
 
 from qgis.core import QgsApplication
-from ui_console_history_dlg import Ui_HistoryDialog
+from ui_console_history_dlg import Ui_HistoryDialogPythonConsole
 
 _init_commands = ["from qgis.core import *", "import qgis.utils",
                   "from qgis.utils import iface"]
@@ -562,7 +562,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             prompt = getCmdString[0:4]
             sys.stdout.write(prompt+txt+'\n')
 
-class HistoryDialog(QDialog, Ui_HistoryDialog):
+class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
     def __init__(self, parent):
         QDialog.__init__(self, parent)
         self.setupUi(self)
