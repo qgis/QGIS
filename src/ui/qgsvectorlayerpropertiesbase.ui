@@ -234,7 +234,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_General">
           <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -264,15 +264,12 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>785</width>
-                <height>755</height>
+                <width>793</width>
+                <height>784</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
+               <property name="margin">
                 <number>0</number>
                </property>
                <item>
@@ -468,11 +465,11 @@
                   <string notr="true">vectorgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="_5">
-                  <property name="verticalSpacing">
-                   <number>6</number>
-                  </property>
                   <property name="margin">
                    <number>11</number>
+                  </property>
+                  <property name="verticalSpacing">
+                   <number>6</number>
                   </property>
                   <item row="0" column="4">
                    <widget class="QLabel" name="textLabel1_2_2_2">
@@ -706,8 +703,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>785</width>
-                <height>755</height>
+                <width>793</width>
+                <height>784</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -800,15 +797,12 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>125</width>
-                <height>36</height>
+                <width>793</width>
+                <height>784</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
+               <property name="margin">
                 <number>0</number>
                </property>
                <item>
@@ -877,15 +871,12 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>85</width>
-                <height>16</height>
+                <width>793</width>
+                <height>784</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
+               <property name="margin">
                 <number>0</number>
                </property>
                <item>
@@ -932,15 +923,12 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>563</width>
-                <height>199</height>
+                <width>793</width>
+                <height>784</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
+               <property name="margin">
                 <number>0</number>
                </property>
                <item>
@@ -1106,15 +1094,12 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>85</width>
-                <height>16</height>
+                <width>793</width>
+                <height>784</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
+               <property name="margin">
                 <number>0</number>
                </property>
                <item>
@@ -1167,15 +1152,12 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>189</width>
-                <height>154</height>
+                <width>793</width>
+                <height>784</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
+               <property name="margin">
                 <number>0</number>
                </property>
                <item>
@@ -1282,21 +1264,12 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>85</width>
-                <height>16</height>
+                <width>793</width>
+                <height>784</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_24">
-               <property name="leftMargin">
-                <number>12</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>12</number>
-               </property>
-               <property name="bottomMargin">
+               <property name="margin">
                 <number>0</number>
                </property>
                <item>
@@ -1343,15 +1316,12 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>195</width>
-                <height>267</height>
+                <width>793</width>
+                <height>784</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
+               <property name="margin">
                 <number>0</number>
                </property>
                <item>
