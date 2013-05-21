@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
 #include "qgscursors.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
@@ -251,6 +252,29 @@ void QgsMapToolIdentifyAction::fillLayerSelectionMenu( QMenu& menu )
   {
     QAction* action = new QAction( resultIt.key()->name(), 0 );
     action->setData( resultIt.key()->id() );
+    //add point/line/polygon icon
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( resultIt.key() );
+    if ( vl )
+    {
+      switch ( vl->geometryType() )
+      {
+        case QGis::Point:
+          action->setIcon( QgsApplication::getThemeIcon( "/mIconPointLayer.png" ) );
+          break;
+        case QGis::Line:
+          action->setIcon( QgsApplication::getThemeIcon( "/mIconLineLayer.png" ) );
+          break;
+        case QGis::Polygon:
+          action->setIcon( QgsApplication::getThemeIcon( "/mIconPolygonLayer.png" ) );
+          break;
+        default:
+          break;
+      }
+    }
+    else if ( resultIt.key()->type() == QgsMapLayer::RasterLayer )
+    {
+      action->setIcon( QgsApplication::getThemeIcon( "/mIconRaster.png" ) );
+    }
     QObject::connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
     menu.addAction( action );
   }
