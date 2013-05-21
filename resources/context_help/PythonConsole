@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Help Python Console</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	
+	<style>
+		body{
+    		font-family: 'Trebuchet MS', sans-serif;
+    		font-size : 12px;
+		}
+		#header{
+    		background: #f6f6f6;
+    		border-bottom: 3px solid #000;
+    		width: 100%;
+		}
+		#headerTool td{
+    		background: #f6f6f6;
+    		/*width: 100%;*/
+		}
+		._titleP {
+			padding: 5px;
+			font-size: 15px;
+			font-weight: bold;
+			color: #000;
+		}
+		._title {
+			font-size: 20px;
+			font-weight: bold;
+			color: #000;
+		}
+	</style>
+</head>
+<body>
+	<table id="header">
+		<tr>
+		<td>
+			<img src="qrc:/images/themes/default/console/imgHelpDialog.png" />
+		</td>
+		<td>
+			<span class="_title">#header.title#</span>
+		</td>
+		</tr>
+		</table>
+		<table>
+		<tr>
+			<td>
+				<p align="justify">
+					#header.subject#
+					<br><br>
+					#header.subject.main#
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td><img src="qrc:/images/themes/default/console/imgHelpConsole.png" /></td>
+		</tr>
+		<tr>
+			<td>
+				<p align="justify">
+					#header.subject.A#
+					<img src="qrc:/images/themes/default/console/imgHelpMenu.png"><br>
+					#header.subject.B#
+				</p>
+			</td>
+		</tr>
+	</table>
+	<table id="header">
+		<tr>
+		<td>
+			<span class="_titleP">#features#</span>
+		</td>
+		</tr>
+	</table>
+	<p align="justify">
+		<ul>
+		<li>#features.title#
+			<ol>
+				<li>Python</li>
+				<li>PyQGIS-master</li>
+				<li>PyQt4</li>
+				<li>QScintilla2</li>
+				<li>osgeo-gdal-ogr</li>
+			</ol>
+		</li>
+		<br>
+		<li>#features.a#</li>
+		<br>
+		<li>#features.b#</li>
+		<br>
+		<li>#features.api.doc#</li>
+		<br>
+		<li>#features.pyqgis.doc#</li>
+		<br>
+		<li>#features.c#</li>
+		<br>
+		<li>#features.d#</li>
+		<br>
+		<li>#features.e#</li>
+		</ul>
+	</p>
+	<table id="header">
+		<tr>
+		<td>
+			<span class="_titleP">#toolbar#</span>
+		</td>
+		</tr>
+	</table>
+	<p>#toolbar.title#</p>
+	<table width="100%" border="0" id="headerTool">
+		<tr>
+			<td><img src="qrc:/images/themes/default/console/iconClearConsole.png" /></td>
+			<td colspan="2">#toolbar.clear#</td>
+		</tr>
+		<tr>
+			<td><img src="qrc:/images/themes/default/console/iconClassConsole.png" /></td>
+			<td><img src="qrc:/images/themes/default/console/iconIfaceConsole.png" /></td>
+			<td>#toolbar.iface#</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><img src="qrc:/images/themes/default/console/iconSextanteConsole.png" /></td>
+			<td>#toolbar.sextante#</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><img src="qrc:/images/themes/default/console/iconQtCoreConsole.png" /></td>
+			<td>#toolbar.qtcore#</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><img src="qrc:/images/themes/default/console/iconQtGuiConsole.png" /></td>
+			<td>#toolbar.qtgui#</td>
+		</tr>
+		<tr>
+			<td><img src="qrc:/images/themes/default/console/iconScriptConsole.png" /></td>
+			<td><img src="qrc:/images/themes/default/console/iconOpenConsole.png" /></td>
+			<td>#toolbar.script.open#</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><img src="qrc:/images/themes/default/console/iconSaveConsole.png" /></td>
+			<td>#toolbar.script.save#</td>
+		</tr>
+		<tr>
+			<td><img src="qrc:/images/themes/default/console/iconSettingsConsole.png" /></td>
+			<td colspan="2">#toolbar.settings#</td>
+		</tr>
+		<tr>
+			<td><img src="qrc:/images/themes/default/console/iconHelpConsole.png" /></td>
+			<td colspan="2">#toolbar.help#</td>
+		</tr>
+		<tr>
+			<td><img src="qrc:/images/themes/default/console/iconRunConsole.png" /></td>
+			<td colspan="2">#toolbar.run#</td>
+		</tr>
+	</table>
+</body>
+</html>

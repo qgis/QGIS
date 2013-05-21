@@ -2,12 +2,12 @@
 /* $Id:$ */               
 #endif /* DOXYGEN_SKIP */                                                       
 
-/*! \mainpage Quantum GIS
+/*! \mainpage QGIS
 
 \section index_intro Introduction
 \htmlonly<img src="http://hub.qgis.org/projects/quantum-gis/repository/revisions/master/entry/images/icons/qgis-icon-60x60.png" alt="QGIS"
-align="left"><a href="http://qgis.org">Quantum GIS</a>\endhtmlonly\latexonly
-Quantum GIS \endlatexonly  (QGIS) is a user friendly Open Source Geographic
+align="left"><a href="http://qgis.org">QGIS</a>\endhtmlonly\latexonly
+QGIS \endlatexonly  is a user friendly Open Source Geographic
 Information System (GIS) that runs on Linux, Unix, Mac OSX, and Windows. QGIS
 supports vector, raster, and database formats. QGIS is licensed under the GNU
 General Public License. QGIS lets you browse and create map data on your
@@ -21,7 +21,7 @@ welcome.
 
 \section index_APIStability Earlier versions of the API
 
-Earlier version of the documentation are also available on the Quantum GIS
+Earlier version of the documentation are also available on the QGIS
 website:
 
 <ul>

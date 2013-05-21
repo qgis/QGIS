@@ -103,7 +103,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
 //////////
 
-#define DEFAULT_SVGMARKER_NAME         "/symbol/Star1.svg"
+#define DEFAULT_SVGMARKER_NAME         "/crosses/Star1.svg"
 #define DEFAULT_SVGMARKER_SIZE         2*DEFAULT_POINT_SIZE
 #define DEFAULT_SVGMARKER_ANGLE        0
 

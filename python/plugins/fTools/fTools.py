@@ -120,7 +120,7 @@ class fToolsPlugin:
   def initGui(self):
     if int(self.QgisVersion) < 1:
       QMessageBox.warning(self.iface.getMainWindow(), "fTools",
-      QCoreApplication.translate("fTools", "Quantum GIS version detected: ") +unicode(self.QgisVersion)+".xx\n"
+      QCoreApplication.translate("fTools", "QGIS version detected: ") +unicode(self.QgisVersion)+".xx\n"
       + QCoreApplication.translate("fTools", "This version of fTools requires at least QGIS version 1.0.0\nPlugin will not be enabled."))
       return None
     QObject.connect(self.iface, SIGNAL("currentThemeChanged (QString)"), self.updateThemeIcons)

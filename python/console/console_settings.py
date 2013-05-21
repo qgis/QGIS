@@ -36,7 +36,6 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.restoreSettings()
         self.initialCheck()
         self.autoCompletionOptions()
-        self.fontConfig()
 
         self.addAPIpath.setIcon(QIcon(":/images/themes/default/symbologyAdd.png"))
         self.addAPIpath.setToolTip(QCoreApplication.translate("PythonConsole", "Add API path"))
@@ -124,25 +123,13 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         for index in reversed(listItemSel):
             self.tableWidget.removeRow(index.row())
 
-    def fontConfig(self):
-        #fontFamily = ['Courier','Monospace','Aurulent Sans','Bitstream Vera Serif']
-        #for i in range(0, len(fontFamily)):
-            #self.comboBox.addItem(fontFamily[i])
-        settings = QSettings()
-        self.fontComboBox.setCurrentIndex(settings.value("pythonConsole/fontfamilyindex").toInt()[0])
-        self.fontComboBoxEditor.setCurrentIndex(settings.value("pythonConsole/fontfamilyindexEditor").toInt()[0])
-
     def saveSettings(self):
         settings = QSettings()
         settings.setValue("pythonConsole/preloadAPI", QVariant(self.preloadAPI.isChecked()))
         settings.setValue("pythonConsole/autoSaveScript", QVariant(self.autoSaveScript.isChecked()))
-        fontFamilyIndex = self.fontComboBox.currentIndex()
-        settings.setValue("pythonConsole/fontfamilyindex", QVariant(fontFamilyIndex))
+
         fontFamilyText = self.fontComboBox.currentText()
         settings.setValue("pythonConsole/fontfamilytext", QVariant(fontFamilyText))
-
-        fontFamilyIndexEditor = self.fontComboBoxEditor.currentIndex()
-        settings.setValue("pythonConsole/fontfamilyindexEditor", QVariant(fontFamilyIndexEditor))
         fontFamilyTextEditor = self.fontComboBoxEditor.currentText()
         settings.setValue("pythonConsole/fontfamilytextEditor", QVariant(fontFamilyTextEditor))
 
@@ -176,11 +163,17 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/autoCompleteEnabledEditor", QVariant(self.autoCompleteEnabledEditor.isChecked()))
         settings.setValue("pythonConsole/autoCompleteEnabled", QVariant(self.autoCompleteEnabled.isChecked()))
         settings.setValue("pythonConsole/enableObjectInsp", QVariant(self.enableObjectInspector.isChecked()))
+        settings.setValue("pythonConsole/autoCloseBracket", QVariant(self.autoCloseBracket.isChecked()))
+        settings.setValue("pythonConsole/autoCloseBracketEditor", QVariant(self.autoCloseBracketEditor.isChecked()))
 
     def restoreSettings(self):
         settings = QSettings()
         self.spinBox.setValue(settings.value("pythonConsole/fontsize", 10).toInt()[0])
         self.spinBoxEditor.setValue(settings.value("pythonConsole/fontsizeEditor", 10).toInt()[0])
+        self.fontComboBox.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytext",
+                                                              "Monospace").toString()))
+        self.fontComboBoxEditor.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytextEditor",
+                                                                    "Monospace").toString()))
         self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True).toBool())
         itemTable = settings.value("pythonConsole/userAPI").toStringList()
         for i in range(len(itemTable)):
@@ -198,6 +191,8 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.autoCompleteEnabledEditor.setChecked(settings.value("pythonConsole/autoCompleteEnabledEditor", True).toBool())
         self.autoCompleteEnabled.setChecked(settings.value("pythonConsole/autoCompleteEnabled", True).toBool())
         self.enableObjectInspector.setChecked(settings.value("pythonConsole/enableObjectInsp", False).toBool())
+        self.autoCloseBracketEditor.setChecked(settings.value("pythonConsole/autoCloseBracketEditor", True).toBool())
+        self.autoCloseBracket.setChecked(settings.value("pythonConsole/autoCloseBracket", True).toBool())
 
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
             self.autoCompFromDoc.setChecked(True)

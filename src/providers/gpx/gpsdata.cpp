@@ -351,7 +351,7 @@ void QgsGPSData::writeXML( QTextStream& stream )
 {
   stream.setCodec( QTextCodec::codecForName( "UTF8" ) );
   stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-  << "<gpx version=\"1.0\" creator=\"Quantum GIS\">\n";
+  << "<gpx version=\"1.0\" creator=\"QGIS\">\n";
   for ( WaypointIterator wIter = waypoints.begin();
         wIter != waypoints.end(); ++wIter )
     wIter->writeXML( stream );

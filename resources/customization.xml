@@ -1357,8 +1357,8 @@
     <widget class="QTabWidget" label="" objectName="tabWidget">
       <widget class="QWidget" label="About" objectName="Widget2">
         <widget class="QLabel" label="" objectName="qgisIcon"/>
-        <widget class="QLabel" label="&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt; p, li { white-space: pre-wrap; } &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt; &lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;Quantum GIS (QGIS)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" objectName="TextLabel4"/>
-        <widget class="QLabel" label="Quantum GIS is licensed under the GNU General Public License" objectName="label"/>
+        <widget class="QLabel" label="&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt; p, li { white-space: pre-wrap; } &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt; &lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;QGIS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" objectName="TextLabel4"/>
+        <widget class="QLabel" label="QGIS is licensed under the GNU General Public License" objectName="label"/>
         <widget class="QLabel" label="http://www.gnu.org/licenses" objectName="label_2"/>
         <widget class="QPushButton" label="QGIS Home Page" objectName="btnQgisHome"/>
         <widget class="QPushButton" label="Join our user mailing list" objectName="btnQgisUser"/>

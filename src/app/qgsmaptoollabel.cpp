@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgsmaptoollabel.h"
+#include "qgsdatadefined.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrubberband.h"
@@ -124,12 +126,15 @@ QgsVectorLayer* QgsMapToolLabel::currentLayer()
 
 QgsPalLayerSettings& QgsMapToolLabel::currentLabelSettings( bool* ok )
 {
+  //QgsDebugMsg( "entered" );
   QgsVectorLayer* vlayer = currentLayer();
   if ( vlayer )
   {
+    //QgsDebugMsg( "has vlayer" );
     QgsPalLabeling* labelEngine = dynamic_cast<QgsPalLabeling*>( mCanvas->mapRenderer()->labelingEngine() );
     if ( labelEngine )
     {
+      //QgsDebugMsg( "has labelEngine" );
       if ( ok )
       {
         *ok = true;
@@ -142,7 +147,8 @@ QgsPalLayerSettings& QgsMapToolLabel::currentLabelSettings( bool* ok )
   {
     *ok = false;
   }
-  return mInvalidLabelSettings;
+
+  return const_cast<QgsPalLayerSettings&>( mInvalidLabelSettings );
 }
 
 QString QgsMapToolLabel::currentLabelText( int trunc )
@@ -198,29 +204,28 @@ void QgsMapToolLabel::currentAlignment( QString& hali, QString& vali )
   hali = "Left";
   vali = "Bottom";
 
+  QgsVectorLayer* vlayer = currentLayer();
+  if ( !vlayer )
+  {
+    return;
+  }
+
   QgsFeature f;
   if ( !currentFeature( f ) )
   {
     return;
   }
 
-  bool settingsOk;
-  QgsPalLayerSettings& labelSettings = currentLabelSettings( &settingsOk );
-  if ( settingsOk )
+  int haliIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Hali, vlayer );
+  if ( haliIndx != -1 )
   {
-    QMap< QgsPalLayerSettings::DataDefinedProperties, QString > ddProperties = labelSettings.dataDefinedProperties;
+    hali = f.attribute( haliIndx ).toString();
+  }
 
-    QMap< QgsPalLayerSettings::DataDefinedProperties, QString >::const_iterator haliIter = ddProperties.find( QgsPalLayerSettings::Hali );
-    if ( haliIter != ddProperties.constEnd() )
-    {
-      hali = f.attribute( *haliIter ).toString();
-    }
-
-    QMap< QgsPalLayerSettings::DataDefinedProperties, QString >::const_iterator valiIter = ddProperties.find( QgsPalLayerSettings::Vali );
-    if ( valiIter != ddProperties.constEnd() )
-    {
-      vali = f.attribute( *valiIter ).toString();
-    }
+  int valiIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Vali, vlayer );
+  if ( valiIndx != -1 )
+  {
+    vali = f.attribute( valiIndx ).toString();
   }
 }
 
@@ -243,66 +248,66 @@ QFont QgsMapToolLabel::labelFontCurrentFeature()
   QgsVectorLayer* vlayer = currentLayer();
 
   bool labelSettingsOk;
-  QgsPalLayerSettings& layerSettings = currentLabelSettings( &labelSettingsOk );
+  QgsPalLayerSettings& labelSettings = currentLabelSettings( &labelSettingsOk );
 
   if ( labelSettingsOk && vlayer )
   {
-    font = layerSettings.textFont;
+    font = labelSettings.textFont;
 
     QgsFeature f;
     if ( vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mCurrentLabelPos.featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
     {
-      QMap< QgsPalLayerSettings::DataDefinedProperties, QString > ddProperties = layerSettings.dataDefinedProperties;
-
       //size
-      QMap< QgsPalLayerSettings::DataDefinedProperties, QString >::const_iterator sizeIt = ddProperties.find( QgsPalLayerSettings::Size );
-      if ( sizeIt != ddProperties.constEnd() )
+      int sizeIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Size, vlayer );
+      if ( sizeIndx != -1 )
       {
-        if ( layerSettings.fontSizeInMapUnits )
+        if ( labelSettings.fontSizeInMapUnits )
         {
-          font.setPixelSize( layerSettings.sizeToPixel( f.attribute( *sizeIt ).toDouble(),
+          font.setPixelSize( labelSettings.sizeToPixel( f.attribute( sizeIndx ).toDouble(),
                              QgsRenderContext(), QgsPalLayerSettings::MapUnits, true ) );
         }
         else
         {
-          font.setPointSizeF( f.attribute( *sizeIt ).toDouble() );
+          font.setPointSizeF( f.attribute( sizeIndx ).toDouble() );
         }
       }
 
       //family
-      QMap< QgsPalLayerSettings::DataDefinedProperties, QString >::const_iterator familyIt = ddProperties.find( QgsPalLayerSettings::Family );
-      if ( familyIt != ddProperties.constEnd() )
+      int fmIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Family, vlayer );
+      if ( fmIndx != -1 )
       {
-        font.setFamily( f.attribute( *sizeIt ).toString() );
+        font.setFamily( f.attribute( fmIndx ).toString() );
       }
 
       //underline
-      QMap< QgsPalLayerSettings::DataDefinedProperties, QString >::const_iterator underlineIt = ddProperties.find( QgsPalLayerSettings::Underline );
-      if ( familyIt != ddProperties.constEnd() )
+      int ulIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Underline, vlayer );
+      if ( ulIndx != -1 )
       {
-        font.setUnderline( f.attribute( *underlineIt ).toBool() );
+        font.setUnderline( f.attribute( ulIndx ).toBool() );
       }
 
       //strikeout
-      QMap< QgsPalLayerSettings::DataDefinedProperties, QString >::const_iterator strikeoutIt = ddProperties.find( QgsPalLayerSettings::Strikeout );
-      if ( strikeoutIt != ddProperties.constEnd() )
+      int soIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Strikeout, vlayer );
+      if ( soIndx != -1 )
       {
-        font.setStrikeOut( f.attribute( *strikeoutIt ).toBool() );
+        font.setStrikeOut( f.attribute( soIndx ).toBool() );
       }
 
       //bold
-      QMap< QgsPalLayerSettings::DataDefinedProperties, QString >::const_iterator boldIt = ddProperties.find( QgsPalLayerSettings::Bold );
-      if ( boldIt != ddProperties.constEnd() )
+      int boIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Bold, vlayer );
+      if ( boIndx != -1 )
       {
-        font.setBold( f.attribute( *boldIt ).toBool() );
+        font.setBold( f.attribute( boIndx ).toBool() );
       }
 
       //italic
-      QMap< QgsPalLayerSettings::DataDefinedProperties, QString >::const_iterator italicIt = ddProperties.find( QgsPalLayerSettings::Italic );
-      if ( italicIt != ddProperties.constEnd() )
+      int itIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Italic, vlayer );
+      if ( itIndx != -1 )
       {
-        font.setItalic( f.attribute( *italicIt ).toBool() );
+        font.setItalic( f.attribute( itIndx ).toBool() );
       }
+
+      // TODO: Add other font data defined values (word spacing, etc.)
     }
   }
 
@@ -312,11 +317,11 @@ QFont QgsMapToolLabel::labelFontCurrentFeature()
 bool QgsMapToolLabel::preserveRotation()
 {
   bool labelSettingsOk;
-  QgsPalLayerSettings& layerSettings = currentLabelSettings( &labelSettingsOk );
+  QgsPalLayerSettings& labelSettings = currentLabelSettings( &labelSettingsOk );
 
   if ( labelSettingsOk )
   {
-    return layerSettings.preserveRotation;
+    return labelSettings.preserveRotation;
   }
 
   return true; // default, so there is no accidental data loss
@@ -358,8 +363,8 @@ bool QgsMapToolLabel::rotationPoint( QgsPoint& pos, bool ignoreUpsideDown, bool 
     valiString = "Half";
   }
 
-  QFont labelFont = labelFontCurrentFeature();
-  QFontMetricsF labelFontMetrics( labelFont );
+//  QFont labelFont = labelFontCurrentFeature();
+  QFontMetricsF labelFontMetrics( mCurrentLabelPos.labelFont );
 
   //label text?
   QString labelText = currentLabelText();
@@ -372,7 +377,12 @@ bool QgsMapToolLabel::rotationPoint( QgsPoint& pos, bool ignoreUpsideDown, bool 
   }
 
   double labelSizeX, labelSizeY;
-  labelSettings.calculateLabelSize( &labelFontMetrics, labelText, labelSizeX, labelSizeY );
+  QgsFeature f;
+  if ( !currentFeature( f ) )
+  {
+    return false;
+  }
+  labelSettings.calculateLabelSize( &labelFontMetrics, labelText, labelSizeX, labelSizeY, &f );
 
   double xdiff = 0;
   double ydiff = 0;
@@ -420,6 +430,39 @@ bool QgsMapToolLabel::rotationPoint( QgsPoint& pos, bool ignoreUpsideDown, bool 
   return true;
 }
 
+int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::DataDefinedProperties p, const QgsVectorLayer* vlayer ) const
+{
+
+  QgsPalLabeling* labelEngine = dynamic_cast<QgsPalLabeling*>( mCanvas->mapRenderer()->labelingEngine() );
+  if ( !labelEngine )
+  {
+    return -1;
+  }
+  QgsDebugMsg( QString( "dataDefinedProperties layer id:%1" ).arg( vlayer->id() ) );
+  QgsPalLayerSettings& labelSettings = labelEngine->layer( vlayer->id() );
+
+  QgsDebugMsg( QString( "dataDefinedProperties count:%1" ).arg( labelSettings.dataDefinedProperties.size() ) );
+
+  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator dIt = labelSettings.dataDefinedProperties.find( p );
+  if ( dIt != labelSettings.dataDefinedProperties.constEnd() )
+  {
+    //QgsDebugMsg( "found data defined" );
+    QgsDataDefined* dd = dIt.value();
+
+    QString ddField = dd->field();
+    //QgsDebugMsg( "testing for active" );
+
+    // can only modify attributes that are data defined with a mapped field
+    if ( dd->isActive() && !dd->useExpression() && !ddField.isEmpty() )
+    {
+      //QgsDebugMsg( "looking up index" );
+      return vlayer->fieldNameIndex( ddField );
+    }
+  }
+
+  return -1;
+}
+
 bool QgsMapToolLabel::dataDefinedPosition( QgsVectorLayer* vlayer, int featureId, double& x, bool& xSuccess, double& y, bool& ySuccess, int& xCol, int& yCol ) const
 {
   xSuccess = false;
@@ -462,44 +505,18 @@ bool QgsMapToolLabel::layerIsRotatable( const QgsMapLayer* layer, int& rotationC
   {
     return false;
   }
-  // new data defined by field name (QGIS 2.0+)
-  QVariant newRotation = layer->customProperty( "labeling/dataDefined/Rotation" );
-  if ( newRotation.isValid() )
-  {
-    QString fieldName = newRotation.toString();
-    if ( !fieldName.isEmpty() )
-    {
-      int rotCol = vlayer->fieldNameIndex( fieldName );
-      if ( rotCol == -1 )
-      {
-        return false;
-      }
-      rotationCol = rotCol;
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-  }
-  // old data defined by field index (< QGIS 2.0)
-  QVariant oldRotation = layer->customProperty( "labeling/dataDefinedProperty14" );
 
-  if ( !oldRotation.isValid() )
+  int rotCol = dataDefinedColumnIndex( QgsPalLayerSettings::Rotation, vlayer );
+  if ( rotCol != -1 )
   {
-    return false;
+    rotationCol = rotCol;
+    return true;
   }
 
-  bool rotationOk;
-  rotationCol = oldRotation.toInt( &rotationOk );
-  if ( !rotationOk )
-  {
-    return false;
-  }
-  return true;
+  return false;
 }
 
-bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, int featureId, double& rotation, bool& rotationSuccess, bool ignoreXY )
+bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, int featureId, double& rotation, bool& rotationSuccess, bool ignoreXY ) const
 {
   rotationSuccess = false;
   if ( !vlayer )
@@ -535,7 +552,7 @@ bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, int featureId
   return true;
 }
 
-bool QgsMapToolLabel::dataDefinedShowHide( QgsVectorLayer* vlayer, int featureId, int& show, bool& showSuccess, int& showCol )
+bool QgsMapToolLabel::dataDefinedShowHide( QgsVectorLayer* vlayer, int featureId, int& show, bool& showSuccess, int& showCol ) const
 {
   showSuccess = false;
   if ( !vlayer )
@@ -581,48 +598,22 @@ bool QgsMapToolLabel::labelMoveable( const QgsMapLayer* ml, int& xCol, int& yCol
   {
     return false;
   }
+
   bool xColOk = false;
   bool yColOk = false;
-  QVariant xColumn, yColumn;
 
-  // new data defined by field name (QGIS 2.0+)
-  xColumn = ml->customProperty( "labeling/dataDefined/PositionX" );
-  if ( xColumn.isValid() )
+  int xColumn = dataDefinedColumnIndex( QgsPalLayerSettings::PositionX, vlayer );
+  if ( xColumn != -1 )
   {
-    QString fieldName = xColumn.toString();
-    if ( !fieldName.isEmpty() )
-    {
-      int xColmn = vlayer->fieldNameIndex( fieldName );
-      if ( xColmn == -1 )
-      {
-        return false;
-      }
-      xCol = xColmn;
-      xColOk = true;
-    }
-    else
-    {
-      return false;
-    }
+    xCol = xColumn;
+    xColOk = true;
   }
-  yColumn = ml->customProperty( "labeling/dataDefined/PositionY" );
-  if ( yColumn.isValid() )
+
+  int yColumn = dataDefinedColumnIndex( QgsPalLayerSettings::PositionY, vlayer );
+  if ( yColumn != -1 )
   {
-    QString fieldName = yColumn.toString();
-    if ( !fieldName.isEmpty() )
-    {
-      int yColmn = vlayer->fieldNameIndex( fieldName );
-      if ( yColmn == -1 )
-      {
-        return false;
-      }
-      yCol = yColmn;
-      yColOk = true;
-    }
-    else
-    {
-      return false;
-    }
+    yCol = yColumn;
+    yColOk = true;
   }
 
   if ( xColOk && yColOk )
@@ -630,31 +621,7 @@ bool QgsMapToolLabel::labelMoveable( const QgsMapLayer* ml, int& xCol, int& yCol
     return true;
   }
 
-  // old data defined by field index (< QGIS 2.0)
-
-  xColumn = ml->customProperty( "labeling/dataDefinedProperty9" );
-  if ( !xColumn.isValid() )
-  {
-    return false;
-  }
-  xCol = xColumn.toInt( &xColOk );
-  if ( !xColOk )
-  {
-    return false;
-  }
-
-  yColumn = ml->customProperty( "labeling/dataDefinedProperty10" );
-  if ( !yColumn.isValid() )
-  {
-    return false;
-  }
-  yCol = yColumn.toInt( &yColOk );
-  if ( !yColOk )
-  {
-    return false;
-  }
-
-  return true;
+  return false;
 }
 
 bool QgsMapToolLabel::layerCanPin( const QgsMapLayer* ml, int& xCol, int& yCol ) const
@@ -666,47 +633,19 @@ bool QgsMapToolLabel::layerCanPin( const QgsMapLayer* ml, int& xCol, int& yCol )
 
 bool QgsMapToolLabel::layerCanShowHide( const QgsMapLayer* ml, int& showCol ) const
 {
+  //QgsDebugMsg( "entered" );
   const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( ml );
   if ( !vlayer || !vlayer->isEditable() )
   {
     return false;
   }
-  QVariant showColumn;
 
-  // new data defined by field name (QGIS 2.0+)
-  showColumn = ml->customProperty( "labeling/dataDefined/Show" );
-  if ( showColumn.isValid() )
+  int showColmn = dataDefinedColumnIndex( QgsPalLayerSettings::Show, vlayer );
+  if ( showColmn != -1 )
   {
-    QString fieldName = showColumn.toString();
-    if ( !fieldName.isEmpty() )
-    {
-      int showColmn = vlayer->fieldNameIndex( fieldName );
-      if ( showColmn == -1 )
-      {
-        return false;
-      }
-      showCol = showColmn;
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+    showCol = showColmn;
+    return true;
   }
 
-  // old data defined by field index (< QGIS 2.0)
-  bool showColOk;
-
-  showColumn = ml->customProperty( "labeling/dataDefinedProperty15" );
-  if ( !showColumn.isValid() )
-  {
-    return false;
-  }
-  showCol = showColumn.toInt( &showColOk );
-  if ( !showColOk )
-  {
-    return false;
-  }
-
-  return true;
+  return false;
 }

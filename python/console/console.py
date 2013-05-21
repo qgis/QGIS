@@ -26,9 +26,8 @@ from qgis.utils import iface
 from console_sci import ShellScintilla
 from console_output import ShellOutputScintilla
 from console_editor import EditorTabWidget
-from console_help import HelpDialog
 from console_settings import optionsDialog
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsContextHelp
 from qgis.gui import QgsFilterLineEdit
 
 import sys
@@ -93,7 +92,6 @@ class PythonConsoleWidget(QWidget):
         self.settings = QSettings()
 
         self.options = optionsDialog(self)
-        self.helpDlg = HelpDialog(self)
 
         self.shell = ShellScintilla(self)
         self.setFocusProxy(self.shell)
@@ -221,7 +219,7 @@ class PythonConsoleWidget(QWidget):
         self.runScriptEditorButton.setToolTip(runScriptEditorBt)
         self.runScriptEditorButton.setText(runScriptEditorBt)
         ## Action Run Script (subprocess)
-        commentEditorBt = QCoreApplication.translate("PythonConsole", "Comment code")
+        commentEditorBt = QCoreApplication.translate("PythonConsole", "Comment")
         self.commentEditorButton = QAction(self)
         self.commentEditorButton.setCheckable(False)
         self.commentEditorButton.setEnabled(True)
@@ -231,7 +229,7 @@ class PythonConsoleWidget(QWidget):
         self.commentEditorButton.setToolTip(commentEditorBt)
         self.commentEditorButton.setText(commentEditorBt)
         ## Action Run Script (subprocess)
-        uncommentEditorBt = QCoreApplication.translate("PythonConsole", "Uncomment code")
+        uncommentEditorBt = QCoreApplication.translate("PythonConsole", "Uncomment")
         self.uncommentEditorButton = QAction(self)
         self.uncommentEditorButton.setCheckable(False)
         self.uncommentEditorButton.setEnabled(True)
@@ -252,7 +250,7 @@ class PythonConsoleWidget(QWidget):
         self.objectListButton.setToolTip(objList)
         self.objectListButton.setText(objList)
         ## Action for Find text
-        findText = QCoreApplication.translate("PythonConsole", "Find text")
+        findText = QCoreApplication.translate("PythonConsole", "Find Text")
         self.findTextButton = QAction(self)
         self.findTextButton.setCheckable(True)
         self.findTextButton.setEnabled(True)
@@ -675,8 +673,7 @@ class PythonConsoleWidget(QWidget):
                 self.updateTabListScript(pathFileName, action='remove')
 
     def openHelp(self):
-        self.helpDlg.show()
-        self.helpDlg.activateWindow()
+        QgsContextHelp.run( "PythonConsole" )
 
     def openSettings(self):
         self.options.exec_()
@@ -704,6 +701,7 @@ class PythonConsoleWidget(QWidget):
                                QVariant(self.tabListScript))
 
     def saveSettingsConsole(self):
+        self.settings.setValue("pythonConsole/splitterConsole", self.splitter.saveState())
         self.settings.setValue("pythonConsole/splitterObj", self.splitterObj.saveState())
         self.settings.setValue("pythonConsole/splitterEditor", self.splitterEditor.saveState())
 
@@ -712,6 +710,7 @@ class PythonConsoleWidget(QWidget):
     def restoreSettingsConsole(self):
         storedTabScripts = self.settings.value("pythonConsole/tabScripts")
         self.tabListScript = storedTabScripts.toList()
+        self.splitter.restoreState(self.settings.value("pythonConsole/splitterConsole").toByteArray())
         self.splitterEditor.restoreState(self.settings.value("pythonConsole/splitterEditor").toByteArray())
         self.splitterObj.restoreState(self.settings.value("pythonConsole/splitterObj").toByteArray())
 

@@ -12,14 +12,14 @@
               <se:GraphicFill>
                 <se:Graphic>
                   <se:ExternalGraphic>
-                    <OnlineResource xlink:type="simple" xlink:href="C:/Program Files/qgis1.8.0/./svg/accommodation/accommodation_camping.svg"/>
+                    <OnlineResource xlink:type="simple" xlink:href="file:accommodation/accommodation_camping.svg"/>
                     <Format>image/svg+xml</Format>
                   </se:ExternalGraphic>
                   <se:Size>6</se:Size>
                   <se:SvgParameter name="stroke">#000000</se:SvgParameter>
                   <se:SvgParameter name="stroke-width">3</se:SvgParameter>
                   <se:Rotation>
-                    <ogc:Literal>4</ogc:Literal>
+                    <ogc:Literal>3</ogc:Literal>
                   </se:Rotation>
                 </se:Graphic>
               </se:GraphicFill>
