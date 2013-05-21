@@ -258,7 +258,7 @@ void QgsMapToolIdentifyAction::fillLayerSelectionMenu( QMenu& menu )
 
 void QgsMapToolIdentifyAction::execLayerSelectionMenu( QMenu& menu, const QPoint& pos, QList<IdentifyResult>& resultList )
 {
-  QAction* selectedAction = menu.exec( pos );
+  QAction* selectedAction = menu.exec( QPoint( pos.x() + 5, pos.y() + 5 ) );
   if ( selectedAction )
   {
     QgsMapLayer* selectedLayer = QgsMapLayerRegistry::instance()->mapLayer( selectedAction->data().toString() );
