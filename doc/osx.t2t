@@ -78,7 +78,7 @@ of Xcode, regardless of using a separate DMG installer for just the tools.
 
 Xcode 4.3+ also introduces the clang frontend to the LLVM compiler as default.
 
-**Note:** In XCODE 4.5 installed from the app store, you need to install the 
+**Note:** In XCODE 4.5 installed from the app store, you need to install the
 command line tools from XCode -> Preferences -> Downloads and choose command line tools.
 
 http://clang.llvm.org/
@@ -407,7 +407,7 @@ The plugin allows QScintilla2 widgets to be used within QtDesigner.
 
 ```
 cd <QScintilla2 source directory>
-cd designer-Qt4
+cd designer-Qt4Qt5
 qmake -spec macx-g++ designer.pro
 make
 sudo make install
@@ -427,7 +427,7 @@ cd to the source folder.  Then for your chosen Python:
 __python.org Python__
 
 ```
-python configure.py -n /usr/local/Qt-4.8/qsci
+python configure.py -n /usr/local/Qt4.8/qsci
 yes
 ```
 
@@ -437,7 +437,7 @@ PyQt wants to install in the system path -- this is not a good idea.
 More configuration is needed to install outside the system path:
 
 ```
-python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin -n /usr/local/Qt-4.8/qsci
+python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin -n /usr/local/Qt4.8/qsci -v /usr/local/share/sip/PyQt4
 ```
 
 __Snow Leopard system Python__
@@ -452,14 +452,14 @@ If you are using 32-bit Qt (Qt Carbon):
 
 ```
 python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
--n /usr/local/Qt-4.8/qsci --use-arch i386
+-n /usr/local/Qt4.8/qsci -v /usr/local/share/sip/PyQt4 --use-arch i386
 ```
 
 For 64-bit Qt (Qt Cocoa), use this configure line:
 
 ```
 python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
--n /usr/local/Qt-4.8/qsci --use-arch x86_64
+-n /usr/local/Qt4.8/qsci -v /usr/local/share/sip/PyQt4 --use-arch x86_64
 ```
 
 __Lion and Mt. Lion system Python__
@@ -468,7 +468,7 @@ Similar to Snow Leopard, you should install outside the system Python path.
 But you don't need the arch option:
 
 ```
-python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin -n /usr/local/Qt-4.8/qsci
+python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin -n /usr/local/Qt4.8/qsci -v /usr/local/share/sip/PyQt4
 ```
 
 __continue...__
