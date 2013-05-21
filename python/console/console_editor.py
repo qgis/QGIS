@@ -485,16 +485,20 @@ class Editor(QsciScintilla):
         return tmpFileName
 
     def _runSubProcess(self, filename, tmp=False):
-        dir, name = os.path.split(unicode(filename))
+        dir = QFileInfo(filename).path()
+        file = QFileInfo(filename).fileName()
+        name = QFileInfo(filename).baseName()
         if dir not in sys.path:
             sys.path.append(dir)
+        if name in sys.modules:
+            reload(sys.modules[name])
         try:
             ## set creationflags for running command without shell window
             if sys.platform.startswith('win'):
-                p = subprocess.Popen(['python', str(filename)], shell=False, stdin=subprocess.PIPE,
+                p = subprocess.Popen(['python', unicode(filename)], shell=False, stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE, stdout=subprocess.PIPE, creationflags=0x08000000)
             else:
-                p = subprocess.Popen(['python', str(filename)], shell=False, stdin=subprocess.PIPE,
+                p = subprocess.Popen(['python', unicode(filename)], shell=False, stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE, stdout=subprocess.PIPE)
             out, _traceback = p.communicate()
 
@@ -511,18 +515,18 @@ class Editor(QsciScintilla):
                             raise e
             if tmp:
                 tmpFileTr = QCoreApplication.translate('PythonConsole', ' [Temporary file saved in ')
-                name = name + tmpFileTr + dir + ']'
+                file = file + tmpFileTr + dir + ']'
             if _traceback:
-                msgTraceTr = QCoreApplication.translate('PythonConsole', '## Script error: %1').arg(name)
+                msgTraceTr = QCoreApplication.translate('PythonConsole', '## Script error: %1').arg(file)
                 print "## %s" % datetime.datetime.now()
-                print msgTraceTr
+                print unicode(msgTraceTr)
                 sys.stderr.write(_traceback)
                 p.stderr.close()
             else:
                 msgSuccessTr = QCoreApplication.translate('PythonConsole',
-                                                          '## Script executed successfully: %1').arg(name)
+                                                          '## Script executed successfully: %1').arg(file)
                 print "## %s" % datetime.datetime.now()
-                print msgSuccessTr
+                print unicode(msgSuccessTr)
                 sys.stdout.write(out)
                 p.stdout.close()
             del p
@@ -602,7 +606,9 @@ class Editor(QsciScintilla):
             #source = open(filename, 'r').read() + '\n'
             if type(source) == type(u""):
                 source = source.encode('utf-8')
-            compile(source, str(filename), 'exec')
+            if type(filename) == type(u""):
+                filename = filename.encode('utf-8')
+            compile(source, filename, 'exec')
         except SyntaxError, detail:
             s = traceback.format_exception_only(SyntaxError, detail)
             fn = detail.filename
@@ -1126,6 +1132,8 @@ class EditorTabWidget(QTabWidget):
                             else:
                                 classItem.setText(0, name)
                                 classItem.setToolTip(0, name)
+                            if sys.platform.startswith('win'):
+                                classItem.setSizeHint(0, QSize(18, 18))
                             classItem.setText(1, str(class_data.lineno))
                             iconClass = QgsApplication.getThemeIcon("console/iconClassTreeWidgetConsole.png")
                             classItem.setIcon(0, iconClass)
@@ -1137,6 +1145,8 @@ class EditorTabWidget(QTabWidget):
                                 methodItem.setToolTip(0, meth)
                                 iconMeth = QgsApplication.getThemeIcon("console/iconMethodTreeWidgetConsole.png")
                                 methodItem.setIcon(0, iconMeth)
+                                if sys.platform.startswith('win'):
+                                    methodItem.setSizeHint(0, QSize(18, 18))
                                 classItem.addChild(methodItem)
                                 dictObject[meth] = lineno
                             self.parent.listClassMethod.addTopLevelItem(classItem)
@@ -1149,6 +1159,8 @@ class EditorTabWidget(QTabWidget):
                             funcItem.setToolTip(0, func_name)
                             iconFunc = QgsApplication.getThemeIcon("console/iconFunctionTreeWidgetConsole.png")
                             funcItem.setIcon(0, iconFunc)
+                            if sys.platform.startswith('win'):
+                                funcItem.setSizeHint(0, QSize(18, 18))
                             dictObject[func_name] = data.lineno
                             self.parent.listClassMethod.addTopLevelItem(funcItem)
                     if found:

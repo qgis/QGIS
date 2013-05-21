@@ -586,6 +586,8 @@ class HistoryDialog(QDialog, Ui_HistoryDialog):
         self.model.clear()
         for i in self.parent.history:
             item = QStandardItem(i)
+            if sys.platform.startswith('win'):
+                item.setSizeHint(QSize(18, 18))
             self.model.appendRow(item)
 
         self.listView.setModel(self.model)
