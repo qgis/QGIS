@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>HistoryDialog</class>
- <widget class="QDialog" name="HistoryDialog">
+ <class>HistoryDialogPythonConsole</class>
+ <widget class="QDialog" name="HistoryDialogPythonConsole">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -69,7 +69,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>HistoryDialog</receiver>
+   <receiver>HistoryDialogPythonConsole</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -85,7 +85,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>HistoryDialog</receiver>
+   <receiver>HistoryDialogPythonConsole</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
