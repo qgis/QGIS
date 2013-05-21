@@ -2506,11 +2506,9 @@ void QgsPalLayerSettings::parseTextBuffer()
 
   // data defined draw buffer?
   bool drawBuffer = bufferDraw;
-  bool newStyleTrigger = false;
   if ( dataDefinedValEval( "bool", QgsPalLayerSettings::BufferDraw, exprVal ) )
   {
     drawBuffer = exprVal.toBool();
-    newStyleTrigger = true;
   }
 
   // data defined buffer size?

@@ -7950,7 +7950,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
     bool canDeleteFeatures = dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures;
     bool canAddAttributes = dprovider->capabilities() & QgsVectorDataProvider::AddAttributes;
-    bool canDeleteAttributes = dprovider->capabilities() & QgsVectorDataProvider::DeleteAttributes;
     bool canAddFeatures = dprovider->capabilities() & QgsVectorDataProvider::AddFeatures;
     bool canSupportEditing = dprovider->capabilities() & QgsVectorDataProvider::EditingCapabilities;
     bool canChangeGeometry = dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries;
