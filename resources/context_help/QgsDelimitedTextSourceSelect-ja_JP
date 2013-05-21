@@ -3,17 +3,17 @@
 <p>
 <a href="#re">概要</a><br/>
 <a href="#creating">デリミティッドテキストレイヤの作成</a><br/>
-<a href="#csv">区切り文字と引用符とエスケープ文字はどう働くか</a><br />
-<a href="#regexp">How regular expression delimiters work</a><br />
-<a href="#wkt">How WKT text is interpreted</a><br />
-<a href="#attributes">Attributes in delimited text files</a><br />
-<a href="#example">Example of a text file with X,Y point coordinates</a><br/>
-<a href="#wkt_example">Example of a text file with WKT geometries</a><br/>
-<a href="#python">Using delimited text layers in Python</a><br/>
+<a href="#csv">デリミタとクォート文字とエスケープ文字はどう機能するか</a><br />
+<a href="#regexp">正規表現デリミタはどう機能するか</a><br />
+<a href="#wkt">WKTテキストはどう解釈されるか</a><br />
+<a href="#attributes">デリミティッドテキストファイルの属性</a><br />
+<a href="#example">X, Yポイント座標を持つテキストファイルの例</a><br/>
+<a href="#wkt_example">WKTジオメトリを持つテキストファイルの例</a><br/>
+<a href="#python">Pythonでデリミティッドテキストレイヤを使うには</a><br/>
 </p>
 
 <h4><a name="re">概要</a></h4>
-<p>&quot;デリミティッドテキストファイル&quot;とは各レコードが新しい行で始まりコンマのような区切り文字でフィールドに分けられたデータです.
+<p>&quot;デリミティッドテキストファイル&quot;とは各レコードが新しい行で始まりコンマのような区切り文字(デリミタ)でフィールドに分けられたデータです.
 このファイルタイプは一般的に表計算ソフト(例えばCSVファイル)やデータベースからエクスポートされます.
 一般的には最初の行にはフィールドの名前を持ちます.
 </p>
@@ -45,12 +45,12 @@ QGISプロジェクトを異機種間で移動して使う必要がある場合�
 <h5>ファイル形式の指定</h5>
 <p>ファイル形式には次の形式があります
 <ul>
-    <li>CSVファイル形式.  これは表計算ソフトで一般的に使われる形式です.フィールドはコンマ文字で境され、&quot;文字(引用符)で囲まれます.
-    引用符で囲まれたフィールドでは引用符は&quot;&quot;として入力することができます.</li>
-    <li>選択された区切り文字.  各レコードは1つかそれ以上の区切り文字を用いてフィールドに分けられます.
-    引用符は区切り文字を含むフィールドに使用されます.
-    エスケープ文字は次の文字を通常の文字として扱う(区切り文字や引用符、改行文字をテキストフィールドに含める)ために使用できます.
-    区切り文字や引用符、エスケープ文字の使い方は<a href="#csv">下/a>に詳しく述べられています.
+    <li>CSVファイル形式.  これは表計算ソフトで一般的に使われる形式です.フィールドはコンマ文字で境され、&quot;文字(ダブルクォート)で囲まれます.
+    ダブルクォートで囲まれたフィールドではダブルクォートは&quot;&quot;として入力することができます.</li>
+    <li>選択された区切り文字.  各レコードは1つかそれ以上のデリミタを用いてフィールドに分けられます.
+    クォート文字は区切り文字を含むフィールドに使用されます.
+    エスケープ文字は次の文字を通常の文字として扱う(デリミタやクォート文字、改行文字をテキストフィールドに含める)ために使用できます.
+    デリミタやクォート文字、エスケープ文字の使い方は<a href="#csv">下/a>に詳しく述べられています.
     <li>正規表現. 各行は&quot;正規表現&quot; デリミタを用いてフィールドに分けられます.
     正規表現の使い方は<a href="#regexp">下</a>に詳しく述べられています.
 </ul>
@@ -60,165 +60,155 @@ QGISプロジェクトを異機種間で移動して使う必要がある場合�
 <ul>
     <li>無視するヘッダー行数: テキストファイルの先頭部分のヘッダ行を無視するために使われます</li>
     <li>最初のレコードはフィールド名を保持している: チェックされている場合、ファイルの(無視された行の後の)最初のレコードはデータレコードではなくフィールド名として解釈されます.</li>
-    <li>前後の空白削除: チェックされている場合、各フィールドから先頭と末尾の空白が削除されます(引用符で囲まれたフィールドを除く).</li>
+    <li>前後の空白削除: チェックされている場合、各フィールドから先頭と末尾の空白が削除されます(クォート文字で囲まれたフィールドを除く).</li>
     <li>空フィールドを削除: チェックされている場合、(前後の空白削除の後に)空のフィールドは破棄されます.
     これはフィールドへのデータ配置に影響を与え、連続した区切り文字を単一の区切り文字として処理することに相当します.
-    引用符で囲まれたフィールドは決して破棄されません.</li>
+    クォート文字で囲まれたフィールドは決して破棄されません.</li>
     <li>コンマを小数点区切りに指定: チェックされている場合、コンマはポイント(ピリオド)の代わりに実数の小数区切り文字に使われます.
     例えば<tt>-51,354</tt>は-51.354と等しくなります.
     </li>
 </ul>
-<h5>Geometry definition</h5>
-<p>The geometry is can be define as one of</p>
+<h5>ジオメトリ定義</h5>
+<p>ジオメトリは次のいずれかとして定義できます.</p>
 <ul>
-    <li>Point coordinates: each feature is represented as a point defined by X and Y coordinates.</li>
-    <li>Well known text (WKT) geometry: each feature is represented as a well known text string, for example
-    <tt>POINT(1.525622 51.20836)</tt>.  See details of the <a href="#wkt">well known text</a> format.
-    <li>No geometry (attribute only table): records will not be displayed on the map, but can be viewed
-    in the attribute table and joined to other layers in QGIS</li>
+    <li>ポイント座標: 各地物はX, Y座標で定義されるポイントとして表現されます.</li>
+    <li>Well known text (WKT)ジオメトリ: 各地物はWell known textとして表現されます. 例えば
+    <tt>POINT(1.525622 51.20836)</tt>.  詳細は<a href="#wkt">well known text</a>形式を参照して下さい.
+    <li>ジオメトリなし (属性のみのテーブル): レコードは地図には表示されませんが属性テーブルで表示できます.
+    QGISの他のレイヤと結合することもできます.</li>
 </ul>
-<p>For point coordinates the following options apply:</p>
+<p>ポイント座標の場合は次のオプションが適用されます:</p>
 <ul>
-    <li>X field: specifies the field containing the X coordinate</li>
-    <li>Y field: specifies the field containing the Y coordinate</li>
-    <li>DMS angles: if selected coordinates are represented as degrees/minutes/seconds
-    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
-    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
-    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
-    generally discarded.  For example <tt>N41d54'01.54&quot;</tt> is a valid coordinate.
+    <li>Xフィールド: X座標を含んでいるフィールドを指定します</li>
+    <li>Yフィールド: Y座標を含んでいるフィールドを指定します</li>
+    <li>度分秒を使用: チェックされている場合、座標は度/分/秒または度/分で表されています.
+    QGISは度/分/秒の解釈に非常に寛容です. 正しいDMS座標は3つの数値フィールドとオプションで半球の接頭辞か接尾辞を含みます (N, Eまたは+は正, S, Wまたは-は負).
+    数字ではない追加的な文字は一般的に破棄されます. 例えば<tt>N41d54'01.54&quot;</tt>は有効な座標です.
     </li>
 </ul>
-<p>For well known text geometry the following options apply:</p>
+<p>Well known textジオメトリの場合は次のオプションが適用されます:</p>
 <ul>
-    <li>Geometry field: the field containing the well known text definition.</li>
-    <li>Geometry type: one of &quot;Detect&quot; (detect), &quot;Point&quot;, &quot;Line&quot;, or &quot;Polygon&quot;.
-    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
-    which geometry type is displayed in text files containing multiple geometry types. Records containing
-   other geometry types are discarded.   
-    If &quot;Detect&quot; is selected then the type of the first geometry in the file will be used.
-    &quot;Point&quot; includes POINT and MULTIPOINT WKT types, &quot;Line&quot; includes LINESTRING and
-    MULTLINESTRING WKT types, and &quot;Polygon&quot; includes POLYGON and MULTIPOLYGON WKT types.
+    <li>ジオメトリフィールド: Well known text定義を含んでいるフィールド.</li>
+    <li>ジオメトリタイプ: &quot;検出する&quot;, &quot;点&quot;, &quot;ライン&quot;, &quot;ポリゴン&quot;から選択します.
+QGISレイヤは一つのジオメトリ地物タイプ(点, ラインまたはポリゴン)を表示することができます.
+このオプションはテキストファイルが複数のジオメトリタイプを含んでいる場合にどのジオメトリタイプを表示するか選択します.
+他のジオメトリタイプのレコードは破棄されます.
+&quot;Detect&quot;が選択された場合、ファイルの最初のジオメトリのタイプが使用されます.
+&quot;Point&quot;はPOINTとMULTIPOINTのWKTタイプを含みます.
+&quot;Line&quot;はLINESTRINGとMULTILINESTRINGのWKTタイプを含みます.
+&quot;Polygon&quot;はPOLYGONとMULTIPOLYGONのWKTタイプを含みます.
 </ul>
-<h5>Layer settings</h5>
-<p>Layer settings control the way the layer is managed in QGIS.  The options available are:</p>
+<h5>レイヤ設定</h5>
+<p>レイヤ設定はQGISでレイヤが扱われる方法を管理します. 次のオプションが利用可能です:</p>
 <ul>
-<li>Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
-This option may be useful for files larger than a few megabytes in size.</li>
-<li>Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
-from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
-for which all not geometries are valid).  The index will only be created when a subset is defined.</li>
-<li>Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
-reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
-extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
-application will change the file. </li>
+<li>空間インデックスを利用する. 空間オブジェクトの表示と選択のパフォーマンスを良くするために空間インデックスを作成します.
+このオプションはサイズが数メガバイトより大きなファイルに役立つでしょう.</li>
+<li>サブセットインデックスを利用する. レコードのサブセットが使われている場合インデックスを作成する
+(レイヤプロパティダイアログからサブセット文字列を明示的に設定する場合や、全てのジオメトリが有効ではないファイルの中でジオメトリが有効な地物の暗黙のサブセット).
+インデックスはサブセットが定義されている時のみ作成されます.</li>
+<li>ファイル監視. このオプションがチェックされている場合、QGISは他のアプリケーションによるファイルの変更を監視し、変更された時にファイルを読み直します.
+地図はユーザによってリフレッシュされるまで更新されませんが、インデックスと領域はリロードされます.このオプションはインデックスが利用されていて他のアプリケーションがファイルを変更しそうであればチェックされるべきです.</li>
 </ul>
 
-<h4><a name="csv">How the delimiter, quote, and escape characters work</a></h4>
-<p>Records are split into fields using three character sets: 
-delimiter characters, quote characters, and escape characters.  
-Other characters in the record are considered as data, split into
-fields by delimiter characters. 
-Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
+<h4><a name="csv">デリミタとクォート文字とエスケープ文字はどう機能するか</a></h4>
+<p>レコードは3つの文字のセットを用いてフィールドに分けられます:
+デリミタ, クォート文字, そしてエスケープ文字です. その他の文字はデータとみなされ区切り文字によってフィールドに分けられます.
+クォート文字はペアで用いてそのあいだのテキストをデータとして扱われるようにします. エスケープ文字はそれに続く文字をデータとして扱われるようにします.
 </p>
 <p>
-Quote and escape characters cannot be the same as delimiter characters - they
-will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
-if they are.</p>
-<p>The delimiter characters are used to mark the end of each field.  If more than one delimiter character
-is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
-can override the delimiter character, so that it is treated as a normal data character.</p>
-<p>Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
-contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
-start and end with the same quote character.  Quote characters cannot occur within a field unless they
-are escaped.</p>
-<p>Escape characters which are not quote characters force the following character to be treated as data.  
-(that is, to stop it being treated as a new line, delimiter, or quote character).  
+クォート文字とエスケープ文字はデリミタと同じではいけません.
+もしそうであればそれらは無視されます.
+エスケープ文字はクォート文字と同じでもよいですが、異なるふるまいをします.</p>
+<p>デリミタは各フィールドの終わりのマークとして使われます. もし1つより多くのデリミタが定義されている場合はどれか1つの文字がフィールドの終わりのしるしとなります.
+クォート文字とエスケープ文字は通常の文字として扱われるようにするためにデリミタを上書きすることができます.</p>
+<p>クォート文字はクォート文字で囲まれたフィールドの最初と最後のマークに用いられます.
+クォート文字で囲まれたフィールドにはデリミタを含むことができ、テキストファイルの複数行にわたることができます.
+フィールドがクォート文字で囲まれている場合、同じクォート文字で始まり、終わらなければいけません.
+クォート文字はエスケープされなければフィールドの中には現れません.</p>
+<p>クォート文字ではないエスケープ文字はそれに続く文字をデータとして扱われるようにします.
+(それは改行文字やデリミタ、クォート文字として扱われないようにするためです)
 </p>
-<p>Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
-<tt>'</tt> is a quote and escape character, then the string
-<tt>'Smith''s&nbsp;Creek'</tt> will represent the value Smith's&nbsp;Creek.
+<p>クォート文字でもあるエスケープ文字にはより限られた効果があります.
+それらはクォート文字の中にだけ適用され、それら自身のみエスケープします.
+例えば、もし<tt>'</tt>がクォート文字でありエスケープ文字でもあるときは、
+文字列<tt>'Smith''s&nbsp;Creek'</tt>はSmith's&nbsp;Creekの値を表します.
 </p>
 
 
-<h4><a name="regexp">How regular expression delimiters work</a></h4>
-<p>Regular expressions are mini-language used to represent character patterns.  There are many variations
-of regular expression syntax - QGIS uses the syntax provided by the <a href="http://qt-project.org/doc/qt-4.8/qregexp.html">QRegExp</a> class of the <a href="http://qt.digia.com">Qt</a> framework.</p>
-<p>In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
-If the regular expression contains capture groups (eg <tt>(cat|dog)</tt>)
- then these are extracted as fields. 
- If this is not desired then use non-capturing groups (eg <tt>(?:cat|dog)</tt>).
+<h4><a name="regexp">正規表現デリミタはどう機能するか</a></h4>
+<p>正規表現は文字パターンを表すために使用されるミニ言語です.
+正規表現の構文には多くのバリエーションがあります.
+QGISは<a href="http://qt.digia.com">Qt</a>フレームワークの<a href="http://qt-project.org/doc/qt-4.8/qregexp.html">QRegExp</a>クラスによって提供される構文を使用します.</p>
+<p>正規表現デリミティッドファイルでは各行はレコードとして扱われます.
+行の中でそれぞれの正規表現のマッチはフィールドの終わりとして扱われます.
+もし正規表現がキャプチャグループ(例 <tt>(cat|dog)</tt>)を含む場合はそれらはフィールドとして抜き出されます.
+これを望まない時はキャプチャしないグループ(例 <tt>(?:cat|dog)</tt>)を使います.
 </p>
-<p>The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with <tt>^</tt>).
-In this case the regular expression is matched against each line.  If the line does not match it is discarded
-as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
-is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
-unintuitive) means of loading data with fixed width fields.  For example the 
-expression
+<p>正規表現が行の始めにアンカーされている場合は異なる扱われ方がされます(パターンが<tt>^</tt>で始まる場合です).
+この場合正規表現は各行に対してマッチします.
+行がマッチない時は不正なレコードとして破棄されます.
+正規表現のそれぞれのキャプチャグループはフィールドとして扱われます.
+キャプチャグループがない場合はその正規表現は有効ではありません.
+例としては(やや直感的でないが)固定幅のフィールドを持つデータを読み込むのに使うことができます.
+例えば正規表現
 <pre>
 ^(.{5})(.{10})(.{20})(.{20})
 </pre>
-<p>will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
-Lines less than 55 characters long will be discarded.
+<p>は各行から幅が文字数5, 10, 20, 20の4つのフィールドが抜き出されます.
+長さ55文字に満たない行は破棄されます.
 </p>
 
 
-<h4><a name="wkt">How WKT text is interpreted</a></h4>
+<h4><a name="wkt">WKTテキストはどう解釈されるか</a></h4>
 <p>
-The delimited text layer recognizes the following 
-<a href="http://en.wikipedia.org/wiki/Well-known_text">well known text</a> types - 
-<tt>POINT</tt>, <tt>MULTIPOINT</tt>, <tt>LINESTRING</tt>, <tt>MULTILINESTRING</tt>, <tt>POLYGON</tt>, and <tt>MULTIPOLYGON</tt>.  
-It will accept geometries with
-a Z coordinate (eg <tt>POINT&nbsp;Z</tt>), a measure (<tt>POINT&nbsp;M</tt>), or both (<tt>POINT&nbsp;ZM</tt>).
+デリミティッドテキストレイヤは次の<a href="http://en.wikipedia.org/wiki/Well-known_text">well known text</a>タイプを認識します.
+<tt>POINT</tt>, <tt>MULTIPOINT</tt>, <tt>LINESTRING</tt>, <tt>MULTILINESTRING</tt>, <tt>POLYGON</tt>, それに<tt>MULTIPOLYGON</tt>です.
+Z座標を持つジオメトリ(例 <tt>POINT&nbsp;Z</tt>)や計測値を持つジオメトリ(<tt>POINT&nbsp;M</tt>)，その両方を持つジオメトリ(<tt>POINT&nbsp;ZM</tt>)を受け入れます.
 </p>
 <p>
-It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
-system id (eg <tt>SRID=4326;POINT(175.3&nbsp;41.2)</tt>), and a variant used by Informix in which the WKT is 
-preceded by an integer spatial reference id (eg <tt>1 POINT(175.3&nbsp;41.2)</tt>).
-In both cases the SRID is ignored.
+ジオメトリが空間参照システムIDの後にあるPostGIS EWKT(例 <tt>SRID=4326;POINT(175.3&nbsp;41.2)</tt>)や
+ジオメトリが整数の空間参照IDの後にあるInformixで使われるWKT(例 <tt>1 POINT(175.3&nbsp;41.2)</tt>)を扱うこともできます
+どちらの場合もSRIDは無視されます.
 </p>
 
 
 
-<h4><a name="attributes">Attributes in delimited text files</a></h4> 
-<p>Each record in the delimited text file is split into fields representing
-attributes of the record.  Usually the attribute names are taken from the first
-data record in the file.  However if this does not contain attribute names, then they will be named <tt>field_1</tt>, <tt>field_2</tt>, and so on.  
-Also if records have more fields than are defined in the header record then these
-will be named <tt>field_#</tt>, where # is the field number (note that empty fields at the end of a record are ignored).
-QGIS may override 
-the names in the text file if they are numbers, or have names like <tt>field_#</tt>,
-or are duplicated.
+<h4><a name="attributes">デリミティッドテキストファイルの属性</a></h4>
+<p>デリミティッドテキストファイルの各レコードはレコードの属性を表すフィールドに分けられます.
+通常属性名はファイルの最初のデータレコードから取得されます.
+しかし属性名が含まれていない場合は<tt>field_1</tt>, <tt>field_2</tt>というように名付けられます.
+レコードがヘッダレコードで定義されたフィールドより多くのフィールドを有する場合には、それらは<tt>field_#</tt>と名付けられます. ここで#はフィールド番号です
+(レコードの終わりの空のフィールドは無視されることに注意して下さい).
+テキストファイルのフィールド名が番号である場合や<tt>field_#</tt>といった名前である場合、重複した名前である場合にはQGISは名前を上書きします.
 </p>
 <p>
-In addition to the attributes explicitly in the data file QGIS assigns a unique 
-feature id to each record which is the line number in the source file on which
-the record starts.  
+データファイル内の明示的な属性に加えてQGISは各レコードにユニークな地物IDを割り当てます.
+それはソースファイルにおけるレコードが始まる行の行番号です.
 </p>
 <p>
-Each attribute also has a data type, one of string (text), integer, or real number.
-The data type is inferred from the content of the fields - if every non blank value
-is a valid integer then the type is integer, otherwise if it is a valid real
-number then the type is real, otherwise the type is string.  Note that this is
-based on the content of the fields - quoting fields does not change the way they
-are interpreted.
+各属性は文字列(テキスト), 整数または実数のうちの1つのデータ型を持ちます.
+データ型はフィールドの内容から推測されます.
+すべての空ではない値が有効な整数の場合は整数型となり、それが実数であれば実数型となります.
+そうでなければ文字列になります.
+これはフィールドの内容に基づくことに注意して下さい.フィールドをクォート文字で囲んだとしても解釈の方法は変更されません.
 </p>
 
 
-<h4><a name="example">Example of a text file with X,Y point coordinates</a></h4> 
+<h4><a name="example">X, Yポイント座標を持つテキストファイルのサンプル</a></h4> 
 <pre>
 X;Y;ELEV
 -300120;7689960;13
 -654360;7562040;52
 1640;7512840;3
 </pre>
-<p>This file:</p>
+<p>このファイルは:</p>
 <ul>
-<li> Uses <b>;</b> as delimiter. Any character can be used to delimit the fields.</li>
-<li>The first row is the header row. It contains the field names X, Y and ELEV.</li>
-<li>The x coordinates are contained in the X field.</li>
-<li>The y coordinates are contained in the Y field.</li>
+<li> <b>;</b>をデリミタに用いています. どんな文字でもフィールドを区切るのに用いることができます.</li>
+<li>最初の行はヘッダ行です. フィールド名としてX, Y, ELEVを含みます.</li>
+<li>x座標はXフィールドに含まれます.</li>
+<li>y座標はYフィールドに含まれます.</li>
 </ul>
-<h4><a name="wkt_example">Example of a text file with WKT geometries</a></h4>
+<h4><a name="wkt_example">WKTジオメトリを持つテキストファイルの例</a></h4>
 <pre>
 id|wkt
 1|POINT(172.0702250 -43.6031036)
@@ -227,16 +217,16 @@ id|wkt
 4|POINT(171.9282585 -43.5493308)
 5|POINT(171.8827359 -43.5875983)
 </pre>
-<p>This file:</p>
+<p>このファイルは:</p>
 <ul>
-  <li>Has two fields defined in the header row: id and wkt.
-  <li>Uses <b>|</b> as a delimiter.</li>
-  <li>Specifies each point using the WKT notation
+  <li>ヘッダ行に定義された2つのフィールドid, wktを持ちます.
+  <li><b>|</b>をデリミタとして用いています.</li>
+  <li>各ポイントをWKT表記を用いて指定しています.
 </ul>
 
-<h4><a name="python">Using delimited text layers in Python</a></h4>
-<p>Delimited text data sources can be creating from Python in a similar way to other vector layers.
-The pattern is:
+<h4><a name="python">Pythonでデリミティッドテキストレイヤを使うには</a></h4>
+<p>他のベクタレイヤと同様の方法でデリミティッドテキストデータソースをPythonから作成することができます.
+サンプル:
 </p>
 <pre>
 from PyQt4.QtCore import QUrl, QString
@@ -254,9 +244,9 @@ layer=QgsVectorLayer(QString(uri.toEncoded()),"Test CSV layer","delimitedtext")
 if layer.isValid():
     QgsMapLayerRegistry.instance().addMapLayer( layer )
 </pre>
-<p>This could be used to load the second example file above.</p>
-<p>The configuration of the delimited text layer is defined by adding query items to the uri.
-The following options can be added
+<p>これは上の二番目のサンプルファイルをロードするのに使うことができます.</p>
+<p>デリミティッドテキストレイヤの構成はクエリ要素をURIに追加することで定義できます.
+次のオプションを追加することができます
 </p>
 <ul>
     <li><tt>encoding=..</tt> defines the file encoding.  The default is &quot;UTF-8&quot;</li>
