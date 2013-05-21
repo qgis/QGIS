@@ -412,14 +412,14 @@ void QgisApp::validateSrs( QgsCoordinateReferenceSystem &srs )
     // XXX TODO: Change project to store selected CS as 'projectCRS' not 'selectedWkt'
     authid = QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs().authid();
     QgsDebugMsg( "Layer srs set from project: " + authid );
-    QgisApp::instance()->statusBar()->showMessage( QObject::tr( "CRS undefined - defaulting to project CRS" ) );
+    QgisApp::instance()->statusBar()->showMessage( tr( "CRS undefined - defaulting to project CRS" ) );
     srs.createFromOgcWmsCrs( authid );
   }
   else ///Projections/defaultBehaviour==useGlobal
   {
     authid = mySettings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
     srs.createFromOgcWmsCrs( authid );
-    QgisApp::instance()->statusBar()->showMessage( QObject::tr( "CRS undefined - defaulting to default CRS: %1" ).arg( authid ) );
+    QgisApp::instance()->statusBar()->showMessage( tr( "CRS undefined - defaulting to default CRS: %1" ).arg( authid ) );
   }
 }
 
@@ -4225,8 +4225,8 @@ void QgisApp::modifyAnnotation()
 
 void QgisApp::labeling()
 {
-  QgsMapLayer* layer = activeLayer();
-  if ( layer == NULL || layer->type() != QgsMapLayer::VectorLayer )
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( activeLayer() );
+  if ( !vlayer )
   {
     messageBar()->pushMessage( tr( "Labeling Options" ),
                                tr( "Please select a vector layer first" ),
@@ -4235,7 +4235,6 @@ void QgisApp::labeling()
     return;
   }
 
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
 
   QDialog *dlg = new QDialog( this );
   dlg->setWindowTitle( tr( "Layer labeling settings" ) );
@@ -4274,7 +4273,7 @@ void QgisApp::labeling()
 
   delete dlg;
 
-  activateDeactivateLayerRelatedActions( layer );
+  activateDeactivateLayerRelatedActions( vlayer );
 }
 
 void QgisApp::fieldCalculator()
@@ -4339,7 +4338,7 @@ void QgisApp::saveAsRasterFile()
 
     QProgressDialog pd( 0, tr( "Abort..." ), 0, 0 );
     // Show the dialo immediately because cloning pipe can take some time (WCS)
-    pd.setLabelText( QObject::tr( "Reading raster" ) );
+    pd.setLabelText( tr( "Reading raster" ) );
     pd.show();
     pd.setWindowModality( Qt::WindowModal );
 
@@ -5281,22 +5280,20 @@ void QgisApp::deselectAll()
 
 void QgisApp::selectByExpression()
 {
-  QgsVectorLayer* vlayer = NULL;
-  if ( !mMapCanvas->currentLayer()
-       || NULL == ( vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() ) ) )
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+  if( !vlayer )
   {
     messageBar()->pushMessage(
-      QObject::tr( "No active vector layer" ),
-      QObject::tr( "To select features, choose a vector layer in the legend" ),
+      tr( "No active vector layer" ),
+      tr( "To select features, choose a vector layer in the legend" ),
       QgsMessageBar::INFO,
       messageTimeout() );
+    return;
   }
-  else
-  {
-    QgsExpressionSelectionDialog* dlg = new QgsExpressionSelectionDialog( vlayer );
-    dlg->setAttribute( Qt::WA_DeleteOnClose );
-    dlg->show();
-  }
+
+  QgsExpressionSelectionDialog* dlg = new QgsExpressionSelectionDialog( vlayer );
+  dlg->setAttribute( Qt::WA_DeleteOnClose );
+  dlg->show();
 }
 
 void QgisApp::addRing()
@@ -7880,6 +7877,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionSelectFreehand->setEnabled( false );
     mActionSelectRadius->setEnabled( false );
     mActionIdentify->setEnabled( QSettings().value( "/Map/identifyMode", 0 ).toInt() != 0 );
+    mActionSelectByExpression->setEnabled( false );
+    mActionLabeling->setEnabled( false );
     mActionOpenTable->setEnabled( false );
     mActionOpenFieldCalc->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
@@ -7957,6 +7956,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionLocalHistogramStretch->setEnabled( false );
     mActionFullHistogramStretch->setEnabled( false );
     mActionZoomActualSize->setEnabled( false );
+    mActionLabeling->setEnabled( true );
 
     mActionSelect->setEnabled( true );
     mActionSelectRectangle->setEnabled( true );
@@ -7964,6 +7964,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionSelectFreehand->setEnabled( true );
     mActionSelectRadius->setEnabled( true );
     mActionIdentify->setEnabled( true );
+    mActionSelectByExpression->setEnabled( true );
     mActionOpenTable->setEnabled( true );
     mActionLayerSaveAs->setEnabled( true );
     mActionLayerSelectionSaveAs->setEnabled( true );
@@ -8140,6 +8141,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionSimplifyFeature->setEnabled( false );
     mActionReshapeFeatures->setEnabled( false );
     mActionSplitFeatures->setEnabled( false );
+    mActionLabeling->setEnabled( false );
 
     //NOTE: This check does not really add any protection, as it is called on load not on layer select/activate
     //If you load a layer with a provider and idenitfy ability then load another without, the tool would be disabled for both
