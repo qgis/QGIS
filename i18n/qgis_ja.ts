@@ -62850,7 +62850,288 @@ The following options can be added
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;デリミティッドテキストレイヤ&lt;/h3&gt;
+デリミティッドテキストファイルを読み込んで表示します
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;概要&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;デリミティッドテキストレイヤの作成&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#csv&quot;&gt;デリミタとクォート文字とエスケープ文字はどう機能するか&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#regexp&quot;&gt;正規表現デリミタはどう機能するか&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#wkt&quot;&gt;WKTテキストはどう解釈されるか&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#attributes&quot;&gt;デリミティッドテキストファイルの属性&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#example&quot;&gt;X, Yポイント座標を持つテキストファイルの例&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#wkt_example&quot;&gt;WKTジオメトリを持つテキストファイルの例&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#python&quot;&gt;Pythonでデリミティッドテキストレイヤを使うには&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;概要&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;&amp;quot;デリミティッドテキストファイル&amp;quot;とは各レコードが新しい行で始まりコンマ等の区切り文字(デリミタ)でフィールドに分けられたデータです.
+このファイルタイプは一般的に表計算ソフト(例えばCSVファイルとして)やデータベースからエクスポートされます.
+一般的には最初の行にはフィールドの名前を持ちます.
+&lt;/p&gt;
+&lt;p&gt;
+デリミティッドテキストファイルはQGISにレイヤとして読み込むことができます.
+レコードはX, Y座標で定義されたポイントとして空間的に表示することができます.
+またWell Known Text (WKT)という任意の複雑なポイントやライン，ポリゴンを表すジオメトリの定義を用いて空間的に表示することもできます.
+ファイルは属性のみのテーブルとして読み込むこともできます. それはQGISで他のテーブルに結合することができます.
+&lt;/p&gt;
+&lt;p&gt;
+ファイルにはジオメトリ定義に加えてテキストや整数、実数フィールドを含むことができます.
+QGISはフィールドの内容に基づいてそのタイプを選びます.
+&lt;/p&gt;
+&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;デリミティッドテキストレイヤの作成&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;デリミティッドテキストレイヤを作成するにはデータファイルを選び、形式(どのように各レコードがフィールドに分けられているか)を定義して、ジオメトリがどう表されているか定義します.
+下で詳述されるように、これはデリミティッドテキストダイアログで行うことができます.
+ダイアログボックスには形式オプションがどう適用されるかを示すファイルの先頭部分のサンプルが表示されます.
+&lt;/p&gt;
+&lt;h5&gt;データファイルの選択&lt;/h5&gt;
+&lt;p&gt;データファイルを選択するには&amp;quot;参照...&amp;quot;ボタンを使います.
+ファイルが選択されたらレイヤ名はファイル名に基づいて自動的に入力されます.
+レイヤ名はQGISの凡例でデータを表すのに使われます.
+&lt;/p&gt;
+&lt;p&gt;
+デフォルトではファイルのエンコーディングはUTF-8が選ばれていますが、他のエンコーディングを選ぶこともできます.
+例えば&amp;quot;System&amp;quot;を選べばオペレーションシステムのデフォルトエンコーディングを使用します.
+QGISプロジェクトを異機種間で移動して使う必要がある場合は、明示的なエンコーディングを使用する方が安全です.
+&lt;/p&gt;
+&lt;h5&gt;ファイル形式の指定&lt;/h5&gt;
+&lt;p&gt;ファイル形式には次の形式があります
+&lt;ul&gt;
+    &lt;li&gt;CSVファイル形式.  これは表計算ソフトで一般的に使われる形式です.フィールドはコンマ文字で境され、&amp;quot;文字(ダブルクォート)で囲まれます.
+    ダブルクォートで囲まれたフィールドではダブルクォートは&amp;quot;&amp;quot;として入力することができます.&lt;/li&gt;
+    &lt;li&gt;選択された区切り文字.  各レコードは1つかそれ以上のデリミタを用いてフィールドに分けられます.
+    クォート文字はデリミタを含むフィールドに使用されます.
+    エスケープ文字は次の文字を通常の文字として扱う(デリミタやクォート文字、改行文字をテキストフィールドに含める)ために使用できます.
+    デリミタやクォート文字、エスケープ文字の使い方は&lt;a href=&quot;#csv&quot;&gt;下&lt;/a&gt;に詳しく述べられています.
+    &lt;li&gt;正規表現. 各行は&amp;quot;正規表現&amp;quot; デリミタを用いてフィールドに分けられます.
+    正規表現の使い方は&lt;a href=&quot;#regexp&quot;&gt;下&lt;/a&gt;に詳しく述べられています.
+&lt;/ul&gt;
+
+&lt;h5&gt;レコードオプションとフィールドオプション&lt;/h5&gt;
+&lt;p&gt;次のオプションはデータファイルからのレコードとフィールドの選抜に影響します&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;無視するヘッダー行数: テキストファイルの先頭部分のヘッダ行を無視するために使われます&lt;/li&gt;
+    &lt;li&gt;最初のレコードはフィールド名を保持している: チェックされている場合、ファイルの(無視された行の後の)最初のレコードはデータレコードではなくフィールド名として解釈されます.&lt;/li&gt;
+    &lt;li&gt;前後の空白削除: チェックされている場合、各フィールドから先頭と末尾の空白が削除されます(クォート文字で囲まれたフィールドを除く).&lt;/li&gt;
+    &lt;li&gt;空フィールドを削除: チェックされている場合、(前後の空白削除の後に)空のフィールドは破棄されます.
+    これはフィールドへのデータ配置に影響を与え、連続したデリミタを単一のデリミタとして処理することに相当します.
+    クォート文字で囲まれたフィールドは決して破棄されません.&lt;/li&gt;
+    &lt;li&gt;コンマを小数点区切りに指定: チェックされている場合、ポイント(ピリオド)の代わりにコンマが実数の小数区切り文字に使われます.
+    例えば&lt;tt&gt;-51,354&lt;/tt&gt;は-51.354と等しくなります.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5&gt;ジオメトリ定義&lt;/h5&gt;
+&lt;p&gt;ジオメトリは次のいずれかとして定義できます.&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;ポイント座標: 各地物はX, Y座標で定義されるポイントとして表現されます.&lt;/li&gt;
+    &lt;li&gt;Well known text (WKT)ジオメトリ: 各地物はWell known textとして表現されます. 例えば
+    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  詳細は&lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt;形式を参照して下さい.
+    &lt;li&gt;ジオメトリなし (属性のみのテーブル): レコードは地図には表示されませんが属性テーブルで表示できます.
+    QGISの他のレイヤと結合することもできます.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;ポイント座標の場合は次のオプションが適用されます:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Xフィールド: X座標を含んでいるフィールドを指定します&lt;/li&gt;
+    &lt;li&gt;Yフィールド: Y座標を含んでいるフィールドを指定します&lt;/li&gt;
+    &lt;li&gt;度分秒を使用: チェックされている場合、座標は度/分/秒または度/分で表されています.
+    QGISは度/分/秒の解釈に非常に寛容です. 正しいDMS座標は3つの数値フィールドとオプションで半球の接頭辞か接尾辞を含みます (N, Eまたは+は正, S, Wまたは-は負).
+    その他の数字ではない文字は一般的に破棄されます. 例えば&lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt;は有効な座標です.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Well known textジオメトリの場合は次のオプションが適用されます:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;ジオメトリフィールド: Well known text定義を含んでいるフィールド.&lt;/li&gt;
+    &lt;li&gt;ジオメトリタイプ: &amp;quot;検出する&amp;quot;, &amp;quot;点&amp;quot;, &amp;quot;ライン&amp;quot;, &amp;quot;ポリゴン&amp;quot;から選択します.
+QGISレイヤは一つのジオメトリ地物タイプ(点, ラインまたはポリゴン)を表示することができます.
+このオプションはテキストファイルが複数のジオメトリタイプを含んでいる場合にどのジオメトリタイプを表示するか選択します.
+他のジオメトリタイプのレコードは破棄されます.
+&amp;quot;Detect&amp;quot;が選択された場合、ファイルの最初のジオメトリのタイプが使用されます.
+&amp;quot;Point&amp;quot;はPOINTとMULTIPOINTのWKTタイプを含みます.
+&amp;quot;Line&amp;quot;はLINESTRINGとMULTILINESTRINGのWKTタイプを含みます.
+&amp;quot;Polygon&amp;quot;はPOLYGONとMULTIPOLYGONのWKTタイプを含みます.
+&lt;/ul&gt;
+&lt;h5&gt;レイヤ設定&lt;/h5&gt;
+&lt;p&gt;レイヤ設定はQGISでレイヤが扱われる方法を管理します. 次のオプションが利用可能です:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;空間インデックスを利用する. 空間オブジェクトの表示と選択のパフォーマンスを良くするために空間インデックスを作成します.
+このオプションはサイズが数メガバイトより大きなファイルに役立つでしょう.&lt;/li&gt;
+&lt;li&gt;サブセットインデックスを利用する. レコードのサブセットが使われている場合インデックスを作成する
+(レイヤプロパティダイアログからサブセット文字列を明示的に設定する場合や、全てのジオメトリが有効ではないファイルの中でジオメトリが有効な地物の暗黙のサブセット).
+インデックスはサブセットが定義されている時のみ作成されます.&lt;/li&gt;
+&lt;li&gt;ファイル監視. このオプションがチェックされている場合、QGISは他のアプリケーションによるファイルの変更を監視し、変更された時にファイルを読み直します.
+地図はユーザによってリフレッシュされるまで更新されませんが、インデックスと領域はリロードされます.このオプションはインデックスが利用されていて他のアプリケーションがファイルを変更しそうであればチェックされるべきです.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;デリミタとクォート文字とエスケープ文字はどう機能するか&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;レコードは3つの文字のセットを用いてフィールドに分けられます:
+デリミタ, クォート文字, そしてエスケープ文字です. その他の文字はデータとみなされ区切り文字によってフィールドに分けられます.
+クォート文字はペアで用いてそのあいだのテキストをデータとして扱われるようにします. エスケープ文字はそれに続く文字をデータとして扱われるようにします.
+&lt;/p&gt;
+&lt;p&gt;
+クォート文字とエスケープ文字はデリミタと同じではいけません.
+もしそうであればそれらは無視されます.
+エスケープ文字はクォート文字と同じでもよいですが、異なるふるまいをします.&lt;/p&gt;
+&lt;p&gt;デリミタは各フィールドの終わりのマークとして使われます. もし1つより多くのデリミタが定義されている場合はどれか1つの文字がフィールドの終わりのしるしとなります.
+クォート文字とエスケープ文字は通常の文字として扱われるようにするためにデリミタを上書きすることができます.&lt;/p&gt;
+&lt;p&gt;クォート文字はクォート文字で囲まれたフィールドの最初と最後のマークに用いられます.
+クォート文字で囲まれたフィールドにはデリミタを含むことができ、テキストファイルの複数行にわたることができます.
+フィールドがクォート文字で囲まれている場合、同じクォート文字で始まり、終わらなければいけません.
+クォート文字はエスケープされなければフィールドの中には現れません.&lt;/p&gt;
+&lt;p&gt;クォート文字ではないエスケープ文字はそれに続く文字をデータとして扱われるようにします.
+(それは改行文字やデリミタ、クォート文字として扱われないようにするためです)
+&lt;/p&gt;
+&lt;p&gt;クォート文字でもあるエスケープ文字にはより限られた効果があります.
+それらはクォート文字の中にだけ適用され、それら自身のみエスケープします.
+例えば、もし&lt;tt&gt;&apos;&lt;/tt&gt;がクォート文字でありエスケープ文字でもあるときは、
+文字列&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt;はSmith&apos;s&amp;nbsp;Creekの値を表します.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;正規表現デリミタはどう機能するか&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;正規表現は文字パターンを表すために使用されるミニ言語です.
+正規表現の構文には多くのバリエーションがあります.
+QGISは&lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt;フレームワークの&lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt;クラスによって提供される構文を使用します.&lt;/p&gt;
+&lt;p&gt;正規表現デリミティッドファイルでは各行はレコードとして扱われます.
+行の中でそれぞれの正規表現のマッチはフィールドの終わりとして扱われます.
+もし正規表現がキャプチャグループ(例 &lt;tt&gt;(cat|dog)&lt;/tt&gt;)を含む場合はそれらはフィールドとして抜き出されます.
+これを望まない時はキャプチャしないグループ(例 &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;)を使います.
+&lt;/p&gt;
+&lt;p&gt;正規表現が行の始めにアンカーされている場合は異なる扱われ方がされます(パターンが&lt;tt&gt;^&lt;/tt&gt;で始まる場合です).
+この場合正規表現は各行に対してマッチします.
+行がマッチない時は不正なレコードとして破棄されます.
+正規表現のそれぞれのキャプチャグループはフィールドとして扱われます.
+キャプチャグループがない場合はその正規表現は有効ではありません.
+例としては(やや直感的でないが)固定幅のフィールドを持つデータを読み込むのに使うことができます.
+例えば正規表現
+&lt;pre&gt;
+^(.{5})(.{10})(.{20})(.{20})
+&lt;/pre&gt;
+&lt;p&gt;は各行から幅が文字数5, 10, 20, 20の4つのフィールドが抜き出されます.
+長さ55文字に満たない行は破棄されます.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;WKTテキストはどう解釈されるか&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+デリミティッドテキストレイヤは次の&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt;タイプを認識します.
+&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, それに&lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;です.
+Z座標を持つジオメトリ(例 &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;)や計測値を持つジオメトリ(&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;)，その両方を持つジオメトリ(&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;)を受け入れます.
+&lt;/p&gt;
+&lt;p&gt;
+ジオメトリが空間参照システムIDの後にあるPostGIS EWKT(例 &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;)や
+ジオメトリが整数の空間参照IDの後にあるInformixで使われるWKT(例 &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;)を扱うこともできます
+どちらの場合もSRIDは無視されます.
+&lt;/p&gt;
+
+
+
+&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;デリミティッドテキストファイルの属性&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;デリミティッドテキストファイルの各レコードはレコードの属性を表すフィールドに分けられます.
+通常属性名はファイルの最初のデータレコードから取得されます.
+しかし属性名が含まれていない場合は&lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;というように名付けられます.
+レコードがヘッダレコードで定義されたフィールドより多くのフィールドを有する場合には、それらは&lt;tt&gt;field_#&lt;/tt&gt;と名付けられます. ここで#はフィールド番号です
+(レコードの終わりの空のフィールドは無視されることに注意して下さい).
+テキストファイルのフィールド名が番号である場合や&lt;tt&gt;field_#&lt;/tt&gt;といった名前である場合、重複した名前である場合にはQGISは名前を上書きします.
+&lt;/p&gt;
+&lt;p&gt;
+データファイル内の明示的な属性に加えてQGISは各レコードにユニークな地物IDを割り当てます.
+それはソースファイルにおけるレコードが始まる行の行番号です.
+&lt;/p&gt;
+&lt;p&gt;
+各属性は文字列(テキスト), 整数または実数のうちの1つのデータ型を持ちます.
+データ型はフィールドの内容から推測されます.
+すべての空ではない値が有効な整数の場合は整数型となり、それが実数であれば実数型となります.
+そうでなければ文字列になります.
+これはフィールドの内容に基づくことに注意して下さい.フィールドをクォート文字で囲んだとしても解釈の方法は変更されません.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;X, Yポイント座標を持つテキストファイルの例&lt;/a&gt;&lt;/h4&gt; 
+&lt;pre&gt;
+X;Y;ELEV
+-300120;7689960;13
+-654360;7562040;52
+1640;7512840;3
+&lt;/pre&gt;
+&lt;p&gt;このファイルは:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;b&gt;;&lt;/b&gt;をデリミタに用いています. どんな文字でもフィールドを区切るのに用いることができます.&lt;/li&gt;
+&lt;li&gt;最初の行はヘッダ行です. フィールド名としてX, Y, ELEVを含みます.&lt;/li&gt;
+&lt;li&gt;x座標はXフィールドに含まれます.&lt;/li&gt;
+&lt;li&gt;y座標はYフィールドに含まれます.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;WKTジオメトリを持つテキストファイルの例&lt;/a&gt;&lt;/h4&gt;
+&lt;pre&gt;
+id|wkt
+1|POINT(172.0702250 -43.6031036)
+2|POINT(172.0702250 -43.6031036)
+3|POINT(172.1543206 -43.5731302)
+4|POINT(171.9282585 -43.5493308)
+5|POINT(171.8827359 -43.5875983)
+&lt;/pre&gt;
+&lt;p&gt;このファイルは:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;ヘッダ行に定義された2つのフィールドid, wktを持ちます.
+  &lt;li&gt;&lt;b&gt;|&lt;/b&gt;をデリミタとして用いています.&lt;/li&gt;
+  &lt;li&gt;各ポイントをWKT表記を用いて指定しています.
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Pythonでデリミティッドテキストレイヤを使うには&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;他のベクタレイヤと同様の方法でデリミティッドテキストデータソースをPythonから作成することができます.
+サンプル:
+&lt;/p&gt;
+&lt;pre&gt;
+from PyQt4.QtCore import QUrl, QString
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+
+# Define the data source
+filename=&quot;test.csv&quot;
+uri=QUrl.fromLocalFile(filename)
+uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
+uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
+uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
+# ... other delimited text parameters
+layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
+# Add the layer to the map
+if layer.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer( layer )
+&lt;/pre&gt;
+&lt;p&gt;これは上の二番目のサンプルファイルをロードするのに使うことができます.&lt;/p&gt;
+&lt;p&gt;デリミティッドテキストレイヤの構成はクエリ要素をURIに追加することで定義できます.
+次のオプションを追加することができます
+&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; ファイルエンコーディングを定義します.  デフォルトは&amp;quot;UTF-8&amp;quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; デリミタのタイプを定義します. 有効な値はcsv, regexp, whitespace (regexpの特別な場合).
+       デフォルトはcsv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; csv形式ファイルやregexp(正規表現)形式ファイルで用いられるデリミタを定義します.
+       CSVファイルではデフォルトは,(コンマ). regexpファイルにはデフォルトはありません.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (csvファイル) フィールドを囲むクォート文字を定義します. デフォルトは&amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (csvファイル) これに続く文字を特殊な意味をエスケープするのに用いる文字を定義します. デフォルトは&amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; ファイルの先頭から破棄する行数を定義します. デフォルトは0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; 最初のデータレコードがフィールド名を含んでいるかどうか定義します.デフォルトはyes.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; クォート文字で囲まれていないフィールドから先頭と末尾の空白を削除するかどうか定義します. デフォルトはno.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; ファイルから読み込まれるフィールドの最大数を定義します.
+       はみ出したフィールドは破棄されます. デフォルトは0で全てのフィールドが読み込まれます
+       (このオプションはデリミティッドテキストダイアログボックスにはありません).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; クォート文字で囲まれていない(trimFieldsが適用された後で)空のフィールドが破棄されるかどうか定義します. デフォルトはno.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; 数値フィールドで小数点として使われる代わりの文字を指定します. デフォルトはポイント(ピリオド)です.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; well known textジオメトリ定義を含むフィールドの名前かインデックス(1から始まる)を指定します.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; X座標を含むフィールドの名前かインデックス(1から始まる)を指定します(wktFieldが定義されていない場合にのみ適用されます).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; Y座標を含むフィールドの名前かインデックス(1から始まる)を指定します(wktFieldが定義されていない場合にのみ適用されます).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; wktフィールドのジオメトリのタイプを指定します. noneを指定すると属性のみのテーブルとして読み込まれます. デフォルトはauto.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; 使用されるレコードのサブセットを特定するのに用いる式を指定します.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; ベクタレイヤで使用する座標システムをQgsCoordinateReferenceSystem.createFromStringに受け入れられる形式(例えば &amp;quot;EPSG:4167&amp;quot;)で指定する.
+       これが指定されない場合はレイヤが読み込まれる時にユーザから情報の入力を求めるダイアログが開きます(QGISのCRS設定による).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; 初期ファイルスキャンの間にプロバイダがサブセットを定義するインデックスを構築するかどうか指定する.
+       インデックスは明示的に定義されたサブセットとジオメトリ定義が有効な地物の暗黙のサブセットの両方に適用されます.
+       デフォルトではサブセットインデックスが適用可能な場合にはそれが構築されます.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; 初期ファイルスキャンの間にプロバイダが空間インデックスを構築するかどうか指定する.
+       デフォルトでは空間インデックスは構築されません.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; 他のアプリケーションによるファイルの変更を監視するためにプロバイダがファイルシステムウォッチャーを使用するかどうか指定する.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; レイヤ読み込み中のエラーをダイアログボックスで表示するかどうか指定します(どちらにせよQGISログには書かれます). デフォルトはnoです.このオプションはGUIからは利用できません.&lt;/li&gt;
+&lt;/ul&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1304"/>
@@ -63055,7 +63336,26 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;最短経路探索&lt;/h3&gt;
+&lt;p&gt;道路グラフはQGISのためのC++プラグインです. ラインレイヤ上の2つの点の間の最短経路を計算して道路ネットワークの上に最短経路を描画します.
+プラグインを利用する前にメニュー&lt;label&gt;ベクタ &amp;rarr; 道路グラフ &amp;rarr; 設定&lt;/label&gt;で設定を行なって下さい.&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#howto&quot;&gt;使用方法&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;a name=&quot;howto&quot;&gt;
+&lt;h4&gt;使用方法&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;開始点と終了点のフィールドの隣のボタンを使ってマップキャンバスから座標を取得することができます. 
+&lt;label&gt;計算&lt;/label&gt;ボタンを押すと&lt;label&gt;判定基準&lt;/label&gt;コンボボックスで選択された最適化基準を用いて最短経路計算が実行されます. 
+&lt;label&gt;エクスポート&lt;/label&gt;ボタンで計算されたパスを新しいベクタレイヤにエクスポートできます. 
+&lt;label&gt;クリア&lt;/label&gt;ボタンは全てのフィールドの内容を消し, マップキャンバスからポイントと計算されたパスを削除します.
+
+&lt;h5&gt;注意&lt;/h5&gt;
+&lt;p&gt;経路の開始点と終了点を道路ネットワークに結びつけるために道路グラフプラグインはグラフの最近傍点か弧を選択します. 
+実際にはそれは道路ネットワークのどんな部分にも結びつけることができます. 
+それでも、経路とその特性は開始点から道路ネットワークまでの距離と道路ネットワークから終了点までの距離を考慮しません.&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="412"/>
