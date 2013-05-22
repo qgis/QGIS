@@ -62508,7 +62508,58 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h1&gt;ヒートマッププラグインヘルプ&lt;/h1&gt;
+&lt;p&gt;ヒートマッププラグインでは入力ポイントベクタレイヤから密度(ヒートマップ)ラスタを作成するのにカーネル密度推定を利用します. 密度は The density is calculated based on the
+number of points in a location, with larger numbers of clustered points resulting
+in larger values. ヒートマップを使うと簡単に&quot;ホットスポット&quot;と点の集合を見つけることができます.&lt;/p&gt;
+
+&lt;h2&gt;ダイアログパラメータ&lt;/h2&gt;
+
+&lt;h3&gt;入力ポイントレイヤ&lt;/h3&gt;
+&lt;p&gt;入力は常にポイントタイプのベクタレイヤです. キャンバスにロードされているすべてのポイントレイヤがドロップダウンリストに表示されます. ドロップダウンボタンをクリックして必要なレイヤを選択して下さい.&lt;/p&gt;
+
+&lt;h3&gt;出力ラスタ&lt;/h3&gt;
+&lt;p&gt;出力ラスタの場所とファイル名は出力ラスタテキストボックスの隣にある&lt;label&gt;...&lt;/label&gt; ボタンをクリックすると指定できます.&lt;br/&gt;
+&lt;b&gt;注:&lt;/b&gt; 指定が無い場合ファイル形式は選択された出力形式に依存して自動的に付加されます.&lt;/p&gt;
+
+&lt;h3&gt;出力形式&lt;/h3&gt;
+&lt;p&gt;GDALでサポートされるすべてのファイル形式が利用可能でドロップダウンリストで選べます. あなたのファイルで必要な形式をクリックして選択して下さい.&lt;br/&gt;
+&lt;b&gt;注:&lt;/b&gt; GeoTiff and ERDAS Imagine .img formats are recommended. Some formats make the application crash. Kindly stick to the recommended formats until the crash issue is resolved or use other formats if you know GDAL supports it completely.&lt;/p&gt;
+
+&lt;h3&gt;半径 (バンド幅)&lt;/h3&gt;
+&lt;p&gt;Used to specify the heatmap search radius (or kernel bandwidth) in meters or map units. The radius specifies the distance around a point at which the influence
+  of the point will be felt. Larger values result in greater smoothing, but smaller values may show finer details and variation in point density.&lt;/p&gt;
+
+&lt;h3&gt;Advanced Options&lt;/h3&gt;
+
+&lt;h4&gt;Rows and Columns&lt;/h4&gt;
+&lt;p&gt;Used to change the dimensions of the output raster file. These values are also linked to the &lt;b&gt;Cell size X&lt;/b&gt; and &lt;b&gt;Cell size Y&lt;/b&gt; values. 
+Increasing the number of rows or colums will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
+are also linked, so doubling the number of rows will automatically double the number of columns and the cell sizes will also be halved. The geographical area of the output raster will remain the same!&lt;/p&gt;
+
+&lt;h4&gt;Cell size X and Y&lt;/h4&gt;
+&lt;p&gt;Control the geographic size of each pixel in the output raster. Changing these values will also change the number of Rows and Columns in the output
+  raster.&lt;/p&gt;
+  
+&lt;h4&gt;Kernel shape&lt;/h4&gt;
+&lt;p&gt;The kernel shape controls the rate at which the influence of a point decreases as the distance from the point increases. Different kernels decay at
+different rates, so a triweight kernel gives features greater weight for distances closer to the point then the Epanechnikov kernel does. Consequently,
+triweight results in &quot;sharper&quot; hotspots, and Epanechnikov results in &quot;smoother&quot; hotspots. A number of standard kernel functions are available in QGIS,
+which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4&gt;Decay ratio&lt;/h4&gt;
+&lt;p&gt;For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.&lt;/p&gt;
+
+&lt;h4&gt;Use radius from field&lt;/h4&gt;
+&lt;p&gt;Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.&lt;/p&gt;
+
+&lt;h4&gt;Use weight from field&lt;/h4&gt;
+&lt;p&gt;Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.&lt;/p&gt;
+
+&lt;h2&gt;Further Details&lt;/h2&gt;
+&lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
+
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1131"/>
