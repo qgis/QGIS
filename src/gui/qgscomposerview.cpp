@@ -100,9 +100,24 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         break;
       }
 
-      selectedItem->setSelected( true );
-      QGraphicsView::mousePressEvent( e );
-      emit selectedItemChanged( selectedItem );
+      if (( e->modifiers() & Qt::ShiftModifier ) && ( selectedItem->selected() ) )
+      {
+        //SHIFT-clicking a selected item deselects it
+        selectedItem->setSelected( false );
+
+        //Check if we have any remaining selected items, and if so, update the item panel
+        QList<QgsComposerItem*> selectedItems = composition()->selectedComposerItems();
+        if ( selectedItems.size() > 0 )
+        {
+          emit selectedItemChanged( selectedItems.at( 0 ) );
+        }
+      }
+      else
+      {
+        selectedItem->setSelected( true );
+        QGraphicsView::mousePressEvent( e );
+        emit selectedItemChanged( selectedItem );
+      }
       break;
     }
 
