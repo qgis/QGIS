@@ -67,13 +67,13 @@
     </message>
     <message>
         <source>Wrong value</source>
-        <translatorcomment>Valor de parâmetro errado</translatorcomment>
         <translation>Valor errado</translation>
     </message>
     <message>
         <source>Wrong parameter value:
 %1</source>
-        <translation></translation>
+        <translation>Valor de parâmetro errado:
+%1</translation>
     </message>
 </context>
 <context>
