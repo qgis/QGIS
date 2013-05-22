@@ -373,7 +373,7 @@ QImage* QgsWMSServer::getLegendGraphics()
     currentY += layerSpace;
   }
 
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsMapLayerRegistry::instance()->clearMapLayers();
   delete theImage;
   return paintImage;
 }
@@ -649,7 +649,7 @@ QImage* QgsWMSServer::getMap()
   clearFeatureSelections( selectedLayerIdList );
 
   QgsDebugMsg( "clearing filters" );
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsMapLayerRegistry::instance()->clearMapLayers();
 
 #ifdef QGISDEBUG
   theImage->save( QDir::tempPath() + QDir::separator() + "lastrender.png" );
