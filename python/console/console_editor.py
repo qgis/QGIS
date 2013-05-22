@@ -282,7 +282,7 @@ class Editor(QsciScintilla):
         menu.addSeparator()
         runSelected = menu.addAction(iconRun,
                                      QCoreApplication.translate("PythonConsole",
-                                                                "Enter selected"),
+                                                                "Run selected"),
                                      self.runSelectedCode, 'Ctrl+E')
         runScript = menu.addAction(iconRunScript,
                                    QCoreApplication.translate("PythonConsole",
@@ -550,9 +550,9 @@ class Editor(QsciScintilla):
         filename = tabWidget.path
 
         msgEditorBlank = QCoreApplication.translate('PythonConsole',
-                                                    'Hey, type something for running !')
+                                                    'Hey, type something to run!')
         msgEditorUnsaved = QCoreApplication.translate('PythonConsole',
-                                                      'You have to save the file before running.')
+                                                      'You have to save the file before running it.')
         if not autoSave:
             if filename is None:
                 if not self.isModified():
@@ -1021,7 +1021,7 @@ class EditorTabWidget(QTabWidget):
             txtSaveOnRemove = QCoreApplication.translate("PythonConsole",
                                                          "Python Console: Save File")
             txtMsgSaveOnRemove = QCoreApplication.translate("PythonConsole",
-                                                            "The file <b>'%1'</b> has been modified, save changes ?") \
+                                                            "The file <b>'%1'</b> has been modified, save changes?") \
                                                             .arg(self.tabText(tab))
             res = QMessageBox.question( self, txtSaveOnRemove,
                                         txtMsgSaveOnRemove,
