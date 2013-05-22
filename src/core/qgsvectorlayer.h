@@ -619,6 +619,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Select not selected features and deselect selected ones */
     void invertSelection();
 
+    /** Select all the features */
+    void selectAll();
+
     /**
      * Invert selection of features found within the search rectangle (in layer's coordinates)
      *
