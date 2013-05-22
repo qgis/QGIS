@@ -13,8 +13,8 @@
 </p>
 
 <h4><a name="re">概要</a></h4>
-<p>&quot;デリミティッドテキストファイル&quot;とは各レコードが新しい行で始まりコンマのような区切り文字(デリミタ)でフィールドに分けられたデータです.
-このファイルタイプは一般的に表計算ソフト(例えばCSVファイル)やデータベースからエクスポートされます.
+<p>&quot;デリミティッドテキストファイル&quot;とは各レコードが新しい行で始まりコンマ等の区切り文字(デリミタ)でフィールドに分けられたデータです.
+このファイルタイプは一般的に表計算ソフト(例えばCSVファイルとして)やデータベースからエクスポートされます.
 一般的には最初の行にはフィールドの名前を持ちます.
 </p>
 <p>
@@ -30,7 +30,7 @@ QGISはフィールドの内容に基づいてそのタイプを選びます.
 <h4><a name="creating">デリミティッドテキストレイヤの作成</a></h4>
 <p>デリミティッドテキストレイヤを作成するにはデータファイルを選び、形式(どのように各レコードがフィールドに分けられているか)を定義して、ジオメトリがどう表されているか定義します.
 下で詳述されるように、これはデリミティッドテキストダイアログで行うことができます.
-ダイアログボックスには形式オプションがどう適用されるかを示すファイルの先頭部分のサンプルを表示されます.
+ダイアログボックスには形式オプションがどう適用されるかを示すファイルの先頭部分のサンプルが表示されます.
 </p>
 <h5>データファイルの選択</h5>
 <p>データファイルを選択するには&quot;参照...&quot;ボタンを使います.
@@ -48,9 +48,9 @@ QGISプロジェクトを異機種間で移動して使う必要がある場合�
     <li>CSVファイル形式.  これは表計算ソフトで一般的に使われる形式です.フィールドはコンマ文字で境され、&quot;文字(ダブルクォート)で囲まれます.
     ダブルクォートで囲まれたフィールドではダブルクォートは&quot;&quot;として入力することができます.</li>
     <li>選択された区切り文字.  各レコードは1つかそれ以上のデリミタを用いてフィールドに分けられます.
-    クォート文字は区切り文字を含むフィールドに使用されます.
+    クォート文字はデリミタを含むフィールドに使用されます.
     エスケープ文字は次の文字を通常の文字として扱う(デリミタやクォート文字、改行文字をテキストフィールドに含める)ために使用できます.
-    デリミタやクォート文字、エスケープ文字の使い方は<a href="#csv">下/a>に詳しく述べられています.
+    デリミタやクォート文字、エスケープ文字の使い方は<a href="#csv">下</a>に詳しく述べられています.
     <li>正規表現. 各行は&quot;正規表現&quot; デリミタを用いてフィールドに分けられます.
     正規表現の使い方は<a href="#regexp">下</a>に詳しく述べられています.
 </ul>
@@ -62,9 +62,9 @@ QGISプロジェクトを異機種間で移動して使う必要がある場合�
     <li>最初のレコードはフィールド名を保持している: チェックされている場合、ファイルの(無視された行の後の)最初のレコードはデータレコードではなくフィールド名として解釈されます.</li>
     <li>前後の空白削除: チェックされている場合、各フィールドから先頭と末尾の空白が削除されます(クォート文字で囲まれたフィールドを除く).</li>
     <li>空フィールドを削除: チェックされている場合、(前後の空白削除の後に)空のフィールドは破棄されます.
-    これはフィールドへのデータ配置に影響を与え、連続した区切り文字を単一の区切り文字として処理することに相当します.
+    これはフィールドへのデータ配置に影響を与え、連続したデリミタを単一のデリミタとして処理することに相当します.
     クォート文字で囲まれたフィールドは決して破棄されません.</li>
-    <li>コンマを小数点区切りに指定: チェックされている場合、コンマはポイント(ピリオド)の代わりに実数の小数区切り文字に使われます.
+    <li>コンマを小数点区切りに指定: チェックされている場合、ポイント(ピリオド)の代わりにコンマが実数の小数区切り文字に使われます.
     例えば<tt>-51,354</tt>は-51.354と等しくなります.
     </li>
 </ul>
@@ -83,7 +83,7 @@ QGISプロジェクトを異機種間で移動して使う必要がある場合�
     <li>Yフィールド: Y座標を含んでいるフィールドを指定します</li>
     <li>度分秒を使用: チェックされている場合、座標は度/分/秒または度/分で表されています.
     QGISは度/分/秒の解釈に非常に寛容です. 正しいDMS座標は3つの数値フィールドとオプションで半球の接頭辞か接尾辞を含みます (N, Eまたは+は正, S, Wまたは-は負).
-    数字ではない追加的な文字は一般的に破棄されます. 例えば<tt>N41d54'01.54&quot;</tt>は有効な座標です.
+    その他の数字ではない文字は一般的に破棄されます. 例えば<tt>N41d54'01.54&quot;</tt>は有効な座標です.
     </li>
 </ul>
 <p>Well known textジオメトリの場合は次のオプションが適用されます:</p>
@@ -194,7 +194,7 @@ Z座標を持つジオメトリ(例 <tt>POINT&nbsp;Z</tt>)や計測値を持つ�
 </p>
 
 
-<h4><a name="example">X, Yポイント座標を持つテキストファイルのサンプル</a></h4> 
+<h4><a name="example">X, Yポイント座標を持つテキストファイルの例</a></h4> 
 <pre>
 X;Y;ELEV
 -300120;7689960;13
@@ -249,33 +249,33 @@ if layer.isValid():
 次のオプションを追加することができます
 </p>
 <ul>
-    <li><tt>encoding=..</tt> defines the file encoding.  The default is &quot;UTF-8&quot;</li>
-    <li><tt>type=(csv|regexp|whitespace)</tt> defines the delimiter type.  Valid values are csv, 
-       regexp, and whitespace (which is just a special case of regexp).  The default is csv.</li>
-       <li><tt>delimiter=...</tt> defines the delimiters that will be used for csv formatted files, 
-       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
-       no default for regexp files.</li>
-       <li><tt>quote=..</tt> (for csv files) defines the characters used to quote fields. The default is &quot;</li>
-       <li><tt>escape=..</tt> (for csv files) defines the characters used to escape the special meaning of the next character. The default is &quot;</li>
-       <li><tt>skipLines=#</tt> defines the number of lines to discard from the beginning of the file. The default is 0.</li>
-       <li><tt>useHeader=(yes|no)</tt> defines whether the first data record contains the names of the data fields. The default is yes.</li>
-       <li><tt>trimFields=(yes|no)</tt> defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.</li>
-       <li><tt>maxFields=#</tt> defines the maximum number of fields that will be loaded from the file.  
-       Additional fields in each record will be discarded. The default is 0 - include all fields.
-       (This option is not available from the delimited text layer dialog box).</li>
-       <li><tt>skipEmptyFields=(yes|no)</tt> defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.</li>
-       <li><tt>decimalPoint=.</tt> specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.</li>
-       <li><tt>wktField=fieldname</tt> specifies the name or number (starting at 1) of the field containing a well known text geometry definition</li>
-       <li><tt>xField=fieldname</tt> specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)</li>
-       <li><tt>yField=fieldname</tt> specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)</li>
-       <li><tt>geomType=(auto|point|line|polygon|none)</tt> specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.</li>
-       <li><tt>subset=expression</tt> specifies an expression used to identify a subset of the records that will be 
-       used.</li>
-       <li><tt>crs=...</tt> specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &quot;EPSG:4167&quot;).  If this is not 
-       specified then a dialog box may request this information from the user
-       when the layer is loaded (depending on QGIS CRS settings).</li>
-       <li><tt>subsetIndex=(yes|no)</tt> specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.</li>
-       <li><tt>spatialIndex=(yes|no)</tt> specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. </li>
-       <li><tt>watchFile=(yes|no)</tt> specifies whether the provider should use a file system watcher to monitor for changes to the file.</li>
-       <li><tt>quiet=(yes|no)</tt> specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI</li>
+    <li><tt>encoding=..</tt> ファイルエンコーディングを定義します.  デフォルトは&quot;UTF-8&quot;</li>
+    <li><tt>type=(csv|regexp|whitespace)</tt> デリミタのタイプを定義します. 有効な値はcsv, regexp, whitespace (regexpの特別な場合).
+       デフォルトはcsv.</li>
+       <li><tt>delimiter=...</tt> csv形式ファイルやregexp(正規表現)形式ファイルで用いられるデリミタを定義します.
+       CSVファイルではデフォルトは,(コンマ). regexpファイルにはデフォルトはありません.</li>
+       <li><tt>quote=..</tt> (csvファイル) フィールドを囲むクォート文字を定義します. デフォルトは&quot;</li>
+       <li><tt>escape=..</tt> (csvファイル) これに続く文字を特殊な意味をエスケープするのに用いる文字を定義します. デフォルトは&quot;</li>
+       <li><tt>skipLines=#</tt> ファイルの先頭から破棄する行数を定義します. デフォルトは0.</li>
+       <li><tt>useHeader=(yes|no)</tt> 最初のデータレコードがフィールド名を含んでいるかどうか定義します.デフォルトはyes.</li>
+       <li><tt>trimFields=(yes|no)</tt> クォート文字で囲まれていないフィールドから先頭と末尾の空白を削除するかどうか定義します. デフォルトはno.</li>
+       <li><tt>maxFields=#</tt> ファイルから読み込まれるフィールドの最大数を定義します.
+       はみ出したフィールドは破棄されます. デフォルトは0で全てのフィールドが読み込まれます
+       (このオプションはデリミティッドテキストダイアログボックスにはありません).</li>
+       <li><tt>skipEmptyFields=(yes|no)</tt> クォート文字で囲まれていない(trimFieldsが適用された後で)空のフィールドが破棄されるかどうか定義します. デフォルトはno.</li>
+       <li><tt>decimalPoint=.</tt> 数値フィールドで小数点として使われる代わりの文字を指定します. デフォルトはポイント(ピリオド)です.</li>
+       <li><tt>wktField=fieldname</tt> well known textジオメトリ定義を含むフィールドの名前かインデックス(1から始まる)を指定します.</li>
+       <li><tt>xField=fieldname</tt> X座標を含むフィールドの名前かインデックス(1から始まる)を指定します(wktFieldが定義されていない場合にのみ適用されます).</li>
+       <li><tt>yField=fieldname</tt> Y座標を含むフィールドの名前かインデックス(1から始まる)を指定します(wktFieldが定義されていない場合にのみ適用されます).</li>
+       <li><tt>geomType=(auto|point|line|polygon|none)</tt> wktフィールドのジオメトリのタイプを指定します. noneを指定すると属性のみのテーブルとして読み込まれます. デフォルトはauto.</li>
+       <li><tt>subset=expression</tt> 使用されるレコードのサブセットを特定するのに用いる式を指定します.</li>
+       <li><tt>crs=...</tt> ベクタレイヤで使用する座標システムをQgsCoordinateReferenceSystem.createFromStringに受け入れられる形式(例えば &quot;EPSG:4167&quot;)で指定する.
+       これが指定されない場合はレイヤが読み込まれる時にユーザから情報の入力を求めるダイアログが開きます(QGISのCRS設定による).</li>
+       <li><tt>subsetIndex=(yes|no)</tt> 初期ファイルスキャンの間にプロバイダがサブセットを定義するインデックスを構築するかどうか指定する.
+       インデックスは明示的に定義されたサブセットとジオメトリ定義が有効な地物の暗黙のサブセットの両方に適用されます.
+       デフォルトではサブセットインデックスが適用可能な場合にはそれが構築されます.</li>
+       <li><tt>spatialIndex=(yes|no)</tt> 初期ファイルスキャンの間にプロバイダが空間インデックスを構築するかどうか指定する.
+       デフォルトでは空間インデックスは構築されません.</li>
+       <li><tt>watchFile=(yes|no)</tt> 他のアプリケーションによるファイルの変更を監視するためにプロバイダがファイルシステムウォッチャーを使用するかどうか指定する.</li>
+       <li><tt>quiet=(yes|no)</tt> レイヤ読み込み中のエラーをダイアログボックスで表示するかどうか指定します(どちらにせよQGISログには書かれます). デフォルトはnoです.このオプションはGUIからは利用できません.</li>
 </ul>
