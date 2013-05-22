@@ -1581,7 +1581,7 @@ QList<QgsExpression::Function*> QgsExpression::specialColumns()
   QList<Function*> defs;
   for ( QMap<QString, QVariant>::const_iterator it = gmSpecialColumns.begin(); it != gmSpecialColumns.end(); ++it )
   {
-    defs << new StaticFunction( it.key(), 0, 0, QObject::tr( "Record" ) );
+    defs << new StaticFunction( it.key(), 0, 0, "Record" );
   }
   return defs;
 }
