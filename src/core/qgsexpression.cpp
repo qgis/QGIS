@@ -2243,7 +2243,10 @@ QVariant QgsExpression::NodeColumnRef::eval( QgsExpression* /*parent*/, QgsFeatu
 {
   if ( f )
   {
-    return f->attribute( mIndex );
+    if ( mIndex >= 0 )
+      return f->attribute( mIndex );
+    else
+      return f->attribute( mName );
   }
   return QVariant( "[" + mName + "]" );
 }
