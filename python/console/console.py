@@ -612,21 +612,22 @@ class PythonConsoleWidget(QWidget):
     def openScriptFile(self):
         lastDirPath = self.settings.value("pythonConsole/lastDirPath").toString()
         openFileTr = QCoreApplication.translate("PythonConsole", "Open File")
-        filename = QFileDialog.getOpenFileName(
+        fileList = QFileDialog.getOpenFileNames(
                         self, openFileTr, lastDirPath, "Script file (*.py)")
-        if not filename.isEmpty():
-            for i in range(self.tabEditorWidget.count()):
-                tabWidget = self.tabEditorWidget.widget(i)
-                if tabWidget.path == filename:
-                    self.tabEditorWidget.setCurrentWidget(tabWidget)
-                    break
-            else:
-                tabName = filename.split('/')[-1]
-                self.tabEditorWidget.newTabEditor(tabName, filename)
+        if not fileList.isEmpty():
+            for pyFile in fileList:
+                for i in range(self.tabEditorWidget.count()):
+                    tabWidget = self.tabEditorWidget.widget(i)
+                    if tabWidget.path == pyFile:
+                        self.tabEditorWidget.setCurrentWidget(tabWidget)
+                        break
+                else:
+                    tabName = QFileInfo(pyFile).fileName()
+                    self.tabEditorWidget.newTabEditor(tabName, pyFile)
 
-        lastDirPath = QFileInfo(filename).path()
-        self.settings.setValue("pythonConsole/lastDirPath", QVariant(filename))
-        self.updateTabListScript(filename, action='append')
+                    lastDirPath = QFileInfo(pyFile).path()
+                    self.settings.setValue("pythonConsole/lastDirPath", QVariant(pyFile))
+                    self.updateTabListScript(pyFile, action='append')
 
     def saveScriptFile(self):
         tabWidget = self.tabEditorWidget.currentWidget()
