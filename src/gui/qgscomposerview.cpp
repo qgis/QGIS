@@ -38,6 +38,7 @@
 #include "qgscomposerattributetable.h"
 #include "qgslogger.h"
 #include "qgsaddremovemultiframecommand.h"
+#include "qgspaperitem.h"
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f )
     : QGraphicsView( parent )
@@ -591,6 +592,77 @@ void QgsComposerView::deleteSelectedItems()
     if ( composition() )
     {
       composition()->removeComposerItem( *itemIt );
+    }
+  }
+}
+
+void QgsComposerView::selectAll()
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  //select all items in composer
+  QList<QGraphicsItem *> itemList = composition()->items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    QgsComposerItem* mypItem = dynamic_cast<QgsComposerItem *>( *itemIt );
+    QgsPaperItem* paperItem = dynamic_cast<QgsPaperItem*>( *itemIt );
+    if ( mypItem && !paperItem )
+    {
+      if ( !mypItem->positionLock() )
+      {
+        mypItem->setSelected( true );
+      }
+      else
+      {
+        //deselect all locked items
+        mypItem->setSelected( false );
+      }
+      emit selectedItemChanged( mypItem );
+    }
+  }
+}
+
+void QgsComposerView::selectNone()
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  composition()->clearSelection();
+}
+
+void QgsComposerView::selectInvert()
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  //check all items in composer
+  QList<QGraphicsItem *> itemList = composition()->items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    QgsComposerItem* mypItem = dynamic_cast<QgsComposerItem *>( *itemIt );
+    QgsPaperItem* paperItem = dynamic_cast<QgsPaperItem*>( *itemIt );
+    if ( mypItem && !paperItem )
+    {
+      //flip selected state for items (and deselect any locked items)
+      if ( mypItem->selected() || mypItem->positionLock() )
+      {
+
+        mypItem->setSelected( false );
+      }
+      else
+      {
+        mypItem->setSelected( true );
+        emit selectedItemChanged( mypItem );
+      }
     }
   }
 }

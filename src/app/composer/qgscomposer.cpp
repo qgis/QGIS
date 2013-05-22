@@ -234,6 +234,10 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   editMenu->addAction( mActionPaste );
   //TODO : "Ctrl+Shift+V" is one way to paste in place, but on some platforms you can use Shift+Ins and F18
   editMenu->addAction( mActionPasteInPlace );
+  editMenu->addSeparator();
+  editMenu->addAction( mActionSelectAll );
+  editMenu->addAction( mActionDeselectAll );
+  editMenu->addAction( mActionInvertSelection );
 
   QMenu *viewMenu = menuBar()->addMenu( tr( "View" ) );
   viewMenu->addAction( mActionZoomIn );
@@ -1748,6 +1752,30 @@ void QgsComposer::on_mActionDeleteSelection_triggered()
   if ( mView )
   {
     mView->deleteSelectedItems();
+  }
+}
+
+void QgsComposer::on_mActionSelectAll_triggered()
+{
+  if ( mView )
+  {
+    mView->selectAll();
+  }
+}
+
+void QgsComposer::on_mActionDeselectAll_triggered()
+{
+  if ( mView )
+  {
+    mView->selectNone();
+  }
+}
+
+void QgsComposer::on_mActionInvertSelection_triggered()
+{
+  if ( mView )
+  {
+    mView->selectInvert();
   }
 }
 

@@ -104,6 +104,15 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**Deletes selected items*/
     void deleteSelectedItems();
 
+    /**Selects all items*/
+    void selectAll();
+
+    /**Deselects all items*/
+    void selectNone();
+
+    /**Inverts current selection*/
+    void selectInvert();
+
     QgsComposerView::Tool currentTool() const {return mCurrentTool;}
     void setCurrentTool( QgsComposerView::Tool t ) {mCurrentTool = t;}
 
