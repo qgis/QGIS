@@ -63,16 +63,17 @@
     <name>ConfigDialog</name>
     <message>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation>Procurar...</translation>
     </message>
     <message>
         <source>Wrong value</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Valor de parâmetro errado</translatorcomment>
+        <translation>Valor errado</translation>
     </message>
     <message>
         <source>Wrong parameter value:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -102,12 +103,13 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="124"/>
         <source>Coordinate in your selected CRS (lat,lon or east,north)</source>
-        <translation type="unfinished">Coordenadas no CRS selecionado (Lat, Long ou Leste, Norte)</translation>
+        <translatorcomment>de acordo com o </translatorcomment>
+        <translation>Coordenadas no SRC selecionado (lat, long ou este, norte)</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="128"/>
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
-        <translation type="unfinished">Coordendas no sistema de coordenadas do mapa (Lat,Long ou Leste, Norte)</translation>
+        <translation>Coordenadas no sistema de coordenadas do mapa (lat, long ou este, norte)</translation>
     </message>
     <message>
         <source>Coordinate in your selected CRS</source>
@@ -11528,7 +11530,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="545"/>
         <source>Browser (2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Navegador (2)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="613"/>
@@ -11937,7 +11939,7 @@ SQL: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="6535"/>
         <location filename="../src/app/qgisapp.cpp" line="6544"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Para alterar o brilho ou contraste, tem de ter selecionada uma camada matricial.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6671"/>
@@ -11953,7 +11955,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6804"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
-        <translation type="unfinished"></translation>
+        <translation>O projeto contém camada(s) em edição com alterações por gravar, que NÃO serão gravadas!</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6828"/>
@@ -11963,7 +11965,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6829"/>
         <source>Do you want to save the current project?%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Deseja guardar o projecto atual?%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7412"/>
@@ -11979,14 +11981,14 @@ SQL: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="8240"/>
         <location filename="../src/app/qgisapp.cpp" line="8415"/>
         <source>Error adding valid layer to map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro a adicionar camada válida ao mapa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8241"/>
         <location filename="../src/app/qgisapp.cpp" line="8416"/>
         <location filename="../src/app/qgisapp.cpp" line="8436"/>
         <source>Raster layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada matricial</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8437"/>
@@ -13571,7 +13573,8 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
         <location filename="../src/app/qgisapp.cpp" line="2174"/>
         <source>Update of view in private qgis.db failed.
 %1</source>
-        <translation type="unfinished">Falha na atualização da visualização em qgis.db (modo privado)</translation>
+        <translation>Falha na atualização da vista no qgis.db privado
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2315"/>
@@ -13632,7 +13635,7 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2415"/>
         <source>QScintilla2 Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Versão QScintilla2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2418"/>
@@ -13657,7 +13660,7 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3000"/>
         <source>Oracle</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3000"/>
@@ -13697,17 +13700,17 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3322"/>
         <source>Failed to open: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao abrir: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3345"/>
         <source>Not valid project file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro de projecto inválido: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3358"/>
         <source>Project failed to open: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao abrir projecto: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3365"/>
@@ -13717,7 +13720,7 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3372"/>
         <source>File not found: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro não encontrado: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3469"/>
@@ -13729,7 +13732,7 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3504"/>
         <source>Loading project: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>A carregar projecto: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3572"/>
