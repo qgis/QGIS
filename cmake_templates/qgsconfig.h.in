@@ -35,5 +35,7 @@
 
 #cmakedefine HAVE_PYTHON
 
+#cmakedefine MAPSERVER_SKIP_ECW
+
 #endif
 
