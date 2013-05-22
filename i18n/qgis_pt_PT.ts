@@ -56,7 +56,7 @@
     <message>
         <location filename="../src/gui/symbology-ng/characterwidget.cpp" line="124"/>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Value: 0x%3</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Caracter: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Valor: 0x%3</translation>
     </message>
 </context>
 <context>
@@ -668,17 +668,17 @@ columns</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="14"/>
         <source>Eliminate sliver polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar polígonos fragmento</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="20"/>
         <source>common boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>limite comum</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="27"/>
         <source>Merge selection with the neighbouring polygon with the largest</source>
-        <translation type="unfinished"></translation>
+        <translation>Juntar seleção ao polígono vizinho com maior</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="43"/>
@@ -700,17 +700,17 @@ columns</source>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="35"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="143"/>
         <source>Browse</source>
-        <translation type="unfinished">Pesquisar</translation>
+        <translation>Procurar</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="100"/>
         <source>Selected features:</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementos selecionados:</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="107"/>
         <source>area</source>
-        <translation type="unfinished">area</translation>
+        <translation>área</translation>
     </message>
     <message>
         <source>OGR Converter</source>
@@ -1006,7 +1006,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="76"/>
         <source>Std. Dev.</source>
-        <translation>Desvio Padrão</translation>
+        <translation> Des. Pad.</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="16"/>
@@ -1069,7 +1069,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="37"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="161"/>
         <source>Use only selected features</source>
-        <translation type="unfinished">Usar apenas elementos selecionados</translation>
+        <translation>Usar apenas elementos selecionados</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="14"/>
@@ -1422,7 +1422,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="169"/>
         <source>Align extents and resolution to selected raster layer</source>
-        <translation type="unfinished">Alinhar a extensão e a resolução da camada raster selecionada</translation>
+        <translation>Alinhar extensão e resolução à camada raster selecionada</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="179"/>
@@ -1487,7 +1487,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="120"/>
         <source>Save errors location</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar localização dos erros</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="127"/>
@@ -1513,19 +1513,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="unfinished">adicionando à selecção atual</translation>
+        <translation>a adicionar à selecção atual</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="unfinished">removendo da seleção atual</translation>
+        <translation>a remover da seleção atual</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">Selecionar por localização</translation>
+        <translation>Selecionar por localização</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="unfinished">Selecionar elementos em:</translation>
+        <translation>Selecionar elementos em:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
@@ -1533,7 +1533,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="unfinished">Modificar seleção atual por:</translation>
+        <translation>Modificar seleção atual por:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
@@ -1609,7 +1609,7 @@ Você gostaria de adicioná-lo a Lista de Camadas?</translation>
     </message>
     <message>
         <source>No Valid CRS selected</source>
-        <translation type="unfinished">SRC selecionado inválido</translation>
+        <translation>SRC selecionado inválido</translation>
     </message>
     <message>
         <source>Output spatial reference system is not valid</source>
@@ -1695,11 +1695,11 @@ Tem a certeza que quer prosseguir?</translation>
     </message>
     <message>
         <source>Use selected features only</source>
-        <translation type="unfinished">Usar apenas elementos selecionados</translation>
+        <translation>Usar apenas elementos selecionados</translation>
     </message>
     <message>
         <source>Select directory with shapefiles to merge</source>
-        <translation type="unfinished">Selecione a pasta com os ficheiros shapefiles a juntar</translation>
+        <translation>Selecione pasta com os shapefiles a juntar</translation>
     </message>
     <message>
         <source>No shapefiles found</source>
@@ -1707,7 +1707,7 @@ Tem a certeza que quer prosseguir?</translation>
     </message>
     <message>
         <source>There are no shapefiles in this directory. Please select another one.</source>
-        <translation type="unfinished">Não existem shapefiles nesta pasta. Selecione outra pasta.</translation>
+        <translation>Não existem shapefiles nesta pasta. Selecione outra pasta.</translation>
     </message>
     <message>
         <source>Select files to merge</source>
@@ -1743,46 +1743,48 @@ Tem a certeza que quer prosseguir?</translation>
     </message>
     <message>
         <source>Selected features: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementos selecionados: %1</translation>
     </message>
     <message>
         <source>Eliminate</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar</translation>
     </message>
     <message>
         <source>No selection in input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada de entrada sem seleção</translation>
     </message>
     <message>
         <source>Commit error:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro de commit:
+ %1</translation>
     </message>
     <message>
         <source>Error creating output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro ao criar ficheiro de saída</translation>
     </message>
     <message>
         <source>Could not delete features</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível apagar elementos</translation>
     </message>
     <message>
         <source>Could not replace geometry of feature with id %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível substituir geometria do elemento com id %1</translation>
     </message>
     <message>
         <source>Could not eliminate features with these ids:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível eliminar os elementos com os ids:
+%1</translation>
     </message>
     <message>
         <source>Could not add features</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível adicionar elementos</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %1</source>
-        <translation type="unfinished">Criado ficheiro shapefile de saída:
+        <translation>Shapefile de saída criado:
 %1</translation>
     </message>
     <message>
@@ -1931,11 +1933,11 @@ Todos aqueles que relataram bugs / correções / sugestões / comentários / etc
     </message>
     <message>
         <source>Please select the projection system that defines the current layer.</source>
-        <translation type="unfinished">Selecione o sistema de coordenadas que define a camada atual.</translation>
+        <translation>Selecione o sistema de coordenadas que define a camada atual.</translation>
     </message>
     <message>
         <source>Layer CRS information will be updated to the selected CRS.</source>
-        <translation type="unfinished">Informação do SRC da camada será atualizada para o SRC selecionado.</translation>
+        <translation>Informação do SRC da camada será atualizada para o SRC selecionado.</translation>
     </message>
     <message>
         <source>Created output shapefiles in folder:
@@ -1949,7 +1951,7 @@ Todos aqueles que relataram bugs / correções / sugestões / comentários / etc
     </message>
     <message>
         <source>There are no shapefiles with the given geometry type. Please select an available geometry type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não existem shapefiles com o tipo de geometria escolhido. Por favor escolha um tipo de geometria disponível.</translation>
     </message>
     <message>
         <source>Please specify input polygon vector layer</source>
@@ -2033,11 +2035,11 @@ Todos aqueles que relataram bugs / correções / sugestões / comentários / etc
     </message>
     <message>
         <source>Please select a raster layer</source>
-        <translation type="unfinished">Por favor selecione uma camada raster</translation>
+        <translation>Por favor selecione uma camada raster</translation>
     </message>
     <message>
         <source>Unable to compute extents aligned on selected raster layer</source>
-        <translation type="unfinished">Impossível calcular a extensão alinhada com a camada raster selecionada</translation>
+        <translation>Impossível calcular a extensão alinhada com a camada raster selecionada</translation>
     </message>
     <message>
         <source>Densify geometries</source>
@@ -2108,7 +2110,7 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="20"/>
         <source>Select by layers in the folder</source>
-        <translation type="unfinished">Selecionar por camadas na pasta</translation>
+        <translation>Selecionar por camadas na pasta</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="29"/>
@@ -2174,12 +2176,12 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="22"/>
         <source>Select files from disk</source>
-        <translation type="unfinished">Selecionar ficheiros do disco</translation>
+        <translation>Selecionar ficheiros do disco</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="29"/>
         <source>Select files...</source>
-        <translation type="unfinished">Selecionar ficheiros...</translation>
+        <translation>Selecionar ficheiros...</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="53"/>
@@ -2189,7 +2191,7 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="60"/>
         <source>Select none</source>
-        <translation type="unfinished">Nada selecionado</translation>
+        <translation>Selecionar nada</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="67"/>
