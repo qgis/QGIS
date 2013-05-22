@@ -742,10 +742,10 @@ class EditorTab(QWidget):
         self.newEditor.recolor()
 
     def save(self, fileName=None):
+        index = self.tw.indexOf(self)
         if fileName:
             self.path = fileName
         if self.path is None:
-            index = self.tw.currentIndex()
             saveTr = QCoreApplication.translate('PythonConsole',
                                                 'Python Console: Save file')
             self.path = str(QFileDialog().getSaveFileName(self,
@@ -756,6 +756,7 @@ class EditorTab(QWidget):
             if len(self.path) == 0:
                 self.path = None
                 return
+            self.tw.setCurrentWidget(self)
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'Script was correctly saved.')
             self.pc.callWidgetMessageBarEditor(msgText, 0, True)
@@ -782,8 +783,8 @@ class EditorTab(QWidget):
         if self.newEditor.isReadOnly():
             self.newEditor.setReadOnly(False)
         fN = path.split('/')[-1]
-        self.tw.setTabTitle(self.tw.currentIndex(), fN)
-        self.tw.setTabToolTip(self.tw.currentIndex(), path)
+        self.tw.setTabTitle(index, fN)
+        self.tw.setTabToolTip(index, path)
         self.newEditor.setModified(False)
         self.pc.saveFileButton.setEnabled(False)
         self.newEditor.lastModified = QFileInfo(path).lastModified()
@@ -931,7 +932,7 @@ class EditorTabWidget(QTabWidget):
             saveAction = menu.addAction("Save",
                                         cW.save)
             saveAsAction = menu.addAction("Save As",
-                                          self.parent.saveAsScriptFile)
+                                          self.saveAs)
             closeTabAction.setEnabled(False)
             closeAllTabAction.setEnabled(False)
             closeOthersTabAction.setEnabled(False)
@@ -957,7 +958,11 @@ class EditorTabWidget(QTabWidget):
             self._removeTab(i)
         self.newTabEditor(tabName='Untitled-0')
         self._removeTab(0)
-
+        
+    def saveAs(self):
+        idx = self.idx
+        self.parent.saveAsScriptFile(idx)
+    
     def enableSaveIfModified(self, tab):
         tabWidget = self.widget(tab)
         if tabWidget:

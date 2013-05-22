@@ -640,8 +640,10 @@ class PythonConsoleWidget(QWidget):
                                                  .arg(unicode(tabWidget.path)).arg(error.strerror)
             self.callWidgetMessageBarEditor(msgText, 2, False)
 
-    def saveAsScriptFile(self):
+    def saveAsScriptFile(self, index=None):
         tabWidget = self.tabEditorWidget.currentWidget()
+        if index:
+            tabWidget = self.tabEditorWidget.widget(index)
         index = self.tabEditorWidget.currentIndex()
         if tabWidget is None:
             return
