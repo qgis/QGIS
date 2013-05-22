@@ -3056,7 +3056,7 @@ Install it and try again.</source>
     </message>
     <message>
         <source>QGIS version detected: </source>
-        <translation type="unfinished"></translation>
+        <translation>QGISバージョンが検出されました:</translation>
     </message>
     <message>
         <source>Projections</source>
@@ -5819,12 +5819,12 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../python/console/console_history_dlg.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">ダイアログ</translation>
+        <translation>ダイアログ</translation>
     </message>
     <message>
         <location filename="../python/console/console_history_dlg.ui" line="45"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation>再ロード</translation>
     </message>
 </context>
 <context>
@@ -8320,15 +8320,15 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Comment</source>
-        <translation type="unfinished">コメント</translation>
+        <translation>コメント</translation>
     </message>
     <message>
         <source>Uncomment</source>
-        <translation type="unfinished"></translation>
+        <translation>アンコメント</translation>
     </message>
     <message>
         <source>Find Text</source>
-        <translation type="unfinished"></translation>
+        <translation>テキスト検索</translation>
     </message>
     <message>
         <source>Show editor</source>
@@ -12109,17 +12109,17 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="313"/>
         <source>QGIS </source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="415"/>
         <source>CRS undefined - defaulting to project CRS</source>
-        <translation type="unfinished">CRSが定義されていません - プロジェクトのCRSが初期値になります</translation>
+        <translation>CRSが定義されていません - プロジェクトのCRSが初期値になります</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="422"/>
         <source>CRS undefined - defaulting to default CRS: %1</source>
-        <translation type="unfinished">CRSが定義されていません - デフォルトのCRSが初期値になります: %1</translation>
+        <translation>CRSが定義されていません - デフォルトのCRSが初期値になります: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="450"/>
@@ -12136,7 +12136,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="585"/>
         <source>QGIS - %1 (&apos;%2&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS - %1 (&apos;%2&apos;)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="588"/>
@@ -14459,7 +14459,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4341"/>
         <source>Reading raster</source>
-        <translation type="unfinished">ラスタデータを読み込み中</translation>
+        <translation>ラスタデータを読み込み中</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4416"/>
@@ -14607,12 +14607,12 @@ Error: %1</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5287"/>
         <source>No active vector layer</source>
-        <translation type="unfinished">アクティブなベクタレイヤがありません</translation>
+        <translation>アクティブなベクタレイヤがありません</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5288"/>
         <source>To select features, choose a vector layer in the legend</source>
-        <translation type="unfinished">要素を選択するには、凡例からベクタレイヤを選択してください</translation>
+        <translation>要素を選択するには、凡例からベクタレイヤを選択してください</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5332"/>
@@ -15163,7 +15163,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="14"/>
         <source>About QGIS</source>
-        <translation type="unfinished">QGIS について</translation>
+        <translation>QGIS について</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="58"/>
@@ -21318,7 +21318,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="153"/>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="188"/>
@@ -22721,67 +22721,67 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="110"/>
         <source>Description...</source>
-        <translation type="unfinished"></translation>
+        <translation>説明...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="112"/>
         <source>Edit expression...</source>
-        <translation type="unfinished"></translation>
+        <translation>式の編集...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="114"/>
         <source>Copy expression</source>
-        <translation type="unfinished"></translation>
+        <translation>式のコピー</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="123"/>
         <source>String</source>
-        <translation type="unfinished">文字列</translation>
+        <translation>文字列</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="127"/>
         <source>Int</source>
-        <translation type="unfinished"></translation>
+        <translation>整数</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="131"/>
         <source>Double</source>
-        <translation type="unfinished"></translation>
+        <translation>倍精度実数</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="137"/>
         <source>Field types: </source>
-        <translation type="unfinished"></translation>
+        <translation>フィールドタイプ:</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="157"/>
         <source>string</source>
-        <translation type="unfinished"></translation>
+        <translation>文字列</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="161"/>
         <source>integer</source>
-        <translation type="unfinished"></translation>
+        <translation>整数</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="165"/>
         <source>double</source>
-        <translation type="unfinished">２重</translation>
+        <translation>倍</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="170"/>
         <source>unknown type</source>
-        <translation type="unfinished"></translation>
+        <translation>不明なタイプ</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="229"/>
         <source>Deactivate</source>
-        <translation type="unfinished"></translation>
+        <translation>非活性化</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="229"/>
         <source>Activate</source>
-        <translation type="unfinished"></translation>
+        <translation>活性化</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="336"/>
@@ -22792,7 +22792,7 @@ and current file is [%3]</source>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="375"/>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="429"/>
         <source>undefined</source>
-        <translation type="unfinished"></translation>
+        <translation>未定義</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="386"/>
@@ -22812,12 +22812,12 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="416"/>
         <source>yes</source>
-        <translation type="unfinished">はい</translation>
+        <translation>はい</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="416"/>
         <source>no</source>
-        <translation type="unfinished">いいえ</translation>
+        <translation>いいえ</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="420"/>
@@ -22832,12 +22832,12 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="431"/>
         <source>expression</source>
-        <translation type="unfinished"></translation>
+        <translation>式</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="431"/>
         <source>field</source>
-        <translation type="unfinished">フィールド</translation>
+        <translation>フィールド</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="434"/>
@@ -22847,7 +22847,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="537"/>
         <source>string </source>
-        <translation type="unfinished"></translation>
+        <translation>文字列</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="542"/>
@@ -25662,7 +25662,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="60"/>
         <source>Division operator</source>
-        <translation type="unfinished"></translation>
+        <translation>除算演算子</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="61"/>
@@ -32058,7 +32058,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="76"/>
         <source>QGIS Help</source>
-        <translation type="unfinished">QGIS ヘルプ</translation>
+        <translation>QGIS ヘルプ</translation>
     </message>
 </context>
 <context>
@@ -33160,7 +33160,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="745"/>
         <source>string </source>
-        <translation type="unfinished"></translation>
+        <translation>文字列</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="750"/>
@@ -33629,7 +33629,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4450"/>
         <source>Distance</source>
-        <translation type="unfinished">距離</translation>
+        <translation>距離</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4656"/>
@@ -33640,17 +33640,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4682"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4702"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4738"/>
         <source>Coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>座標</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4767"/>
@@ -33670,7 +33670,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4966"/>
         <source>Label options</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5111"/>
@@ -33840,7 +33840,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="565"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4932"/>
         <source>Rendering</source>
-        <translation type="unfinished">レンダリング</translation>
+        <translation>レンダリング</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="681"/>
@@ -33858,7 +33858,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2836"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3472"/>
         <source>Blend mode</source>
-        <translation type="unfinished">混合モード</translation>
+        <translation>混合モード</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1092"/>
@@ -33879,7 +33879,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1251"/>
         <source>B</source>
-        <translation type="unfinished">B</translation>
+        <translation>B</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1289"/>
@@ -33890,7 +33890,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1293"/>
         <source>I</source>
-        <translation type="unfinished">I</translation>
+        <translation>I</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1342"/>
@@ -34075,7 +34075,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="81"/>
         <source>Edit expression</source>
-        <translation type="unfinished"></translation>
+        <translation>式の編集</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="114"/>
@@ -34130,12 +34130,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2722"/>
         <source>Fill color</source>
-        <translation type="unfinished">塗りつぶしカラー</translation>
+        <translation>塗りつぶしカラー</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2742"/>
         <source>Border color</source>
-        <translation type="unfinished">ボーダーカラー</translation>
+        <translation>ボーダーカラー</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3207"/>
@@ -53685,7 +53685,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="282"/>
         <source>File not found</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルがみつかりません</translation>
     </message>
     <message>
         <source>Invalid file</source>
@@ -60865,7 +60865,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="120"/>
         <source>Relative path</source>
-        <translation type="unfinished"></translation>
+        <translation>相対パス</translation>
     </message>
 </context>
 <context>
@@ -64944,7 +64944,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>QGIS version detected: </source>
-        <translation type="unfinished"></translation>
+        <translation>QGISバージョンが検出されました:</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
