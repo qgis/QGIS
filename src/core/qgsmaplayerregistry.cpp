@@ -130,11 +130,15 @@ void QgsMapLayerRegistry::removeMapLayers( QStringList theLayerIds )
   }
 }
 
+void QgsMapLayerRegistry::clearMapLayers()
+{
+  mMapLayers.clear();
+} // QgsMapLayerRegistry::clearMapLayers()
+
 void QgsMapLayerRegistry::removeMapLayer( const QString& theLayerId )
 {
   removeMapLayers( QStringList( theLayerId ) );
 }
-
 
 void QgsMapLayerRegistry::removeAllMapLayers()
 {

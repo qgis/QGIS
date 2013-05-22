@@ -98,6 +98,16 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
 
     /**
      * @brief
+     * Clears the map layer registry silently. No signals are emitted,
+     * no layer is deleted. Whatever this is suitable for... The WMS
+     * server makes use of this.
+     *
+     * Not available in python
+     */
+    void clearMapLayers();
+
+    /**
+     * @brief
      * Remove a set of layers from the registry
      *
      * Any canvases using the affected layers will need to remove them
