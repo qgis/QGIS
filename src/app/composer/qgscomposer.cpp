@@ -203,6 +203,44 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   composerMenu->addAction( mActionQuit );
   QObject::connect( mActionQuit, SIGNAL( triggered() ), this, SLOT( close() ) );
 
+  //cut/copy/paste actions. Note these are not included in the ui file
+  //as ui files have no support for QKeySequence shortcuts
+  mActionCut = new QAction( tr( "Cu&t" ), this );
+  mActionCut->setShortcuts( QKeySequence::Cut );
+  mActionCut->setStatusTip( tr( "Cut" ) );
+  QObject::connect( mActionCut, SIGNAL( triggered() ), this, SLOT( actionCutTriggered() ) );
+  mActionCopy = new QAction( tr( "&Copy" ), this );
+  mActionCopy->setShortcuts( QKeySequence::Copy );
+  mActionCopy->setStatusTip( tr( "Copy" ) );
+  QObject::connect( mActionCopy, SIGNAL( triggered() ), this, SLOT( actionCopyTriggered() ) );
+  mActionPaste = new QAction( tr( "&Paste" ), this );
+  mActionPaste->setShortcuts( QKeySequence::Paste );
+  mActionPaste->setStatusTip( tr( "Paste" ) );
+  QObject::connect( mActionPaste, SIGNAL( triggered() ), this, SLOT( actionPasteTriggered() ) );
+
+  QMenu *editMenu = menuBar()->addMenu( tr( "Edit" ) );
+  editMenu->addAction( mActionUndo );
+  editMenu->addAction( mActionRedo );
+  editMenu->addSeparator();
+
+  //Backspace should also trigger delete selection
+  QShortcut* backSpace = new QShortcut( QKeySequence( "Backspace" ), this );
+  connect( backSpace, SIGNAL( activated() ), mActionDeleteSelection, SLOT( trigger() ) );
+  editMenu->addAction( mActionDeleteSelection );
+  editMenu->addSeparator();
+
+  editMenu->addAction( mActionCut );
+  editMenu->addAction( mActionCopy );
+  editMenu->addAction( mActionPaste );
+  //TODO : "Ctrl+Shift+V" is one way to paste in place, but on some platforms you can use Shift+Ins and F18
+  editMenu->addAction( mActionPasteInPlace );
+  editMenu->addSeparator();
+  editMenu->addAction( mActionSelectAll );
+  editMenu->addAction( mActionDeselectAll );
+  editMenu->addAction( mActionInvertSelection );
+  editMenu->addAction( mActionSelectNextBelow );
+  editMenu->addAction( mActionSelectNextAbove );
+
   QMenu *viewMenu = menuBar()->addMenu( tr( "View" ) );
   viewMenu->addAction( mActionZoomIn );
   viewMenu->addAction( mActionZoomOut );
@@ -225,22 +263,20 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mToolbarMenu->addAction( mItemToolbar->toggleViewAction() );
 
   QMenu *layoutMenu = menuBar()->addMenu( tr( "Layout" ) );
-  layoutMenu->addAction( mActionUndo );
-  layoutMenu->addAction( mActionRedo );
-  layoutMenu->addSeparator();
   layoutMenu->addAction( mActionAddNewMap );
   layoutMenu->addAction( mActionAddNewLabel );
   layoutMenu->addAction( mActionAddNewScalebar );
   layoutMenu->addAction( mActionAddNewLegend );
   layoutMenu->addAction( mActionAddImage );
-  layoutMenu->addAction( mActionSelectMoveItem );
-  layoutMenu->addAction( mActionMoveItemContent );
-
   layoutMenu->addAction( mActionAddArrow );
   layoutMenu->addAction( mActionAddTable );
   layoutMenu->addSeparator();
+  layoutMenu->addAction( mActionSelectMoveItem );
+  layoutMenu->addAction( mActionMoveItemContent );
+  layoutMenu->addSeparator();
   layoutMenu->addAction( mActionGroupItems );
   layoutMenu->addAction( mActionUngroupItems );
+  layoutMenu->addSeparator();
   layoutMenu->addAction( mActionRaiseItems );
   layoutMenu->addAction( mActionLowerItems );
   layoutMenu->addAction( mActionMoveItemsToTop );
@@ -1599,6 +1635,96 @@ void QgsComposer::on_mActionUngroupItems_triggered()
   if ( mView )
   {
     mView->ungroupItems();
+  }
+}
+
+void QgsComposer::actionCutTriggered()
+{
+  if ( mView )
+  {
+    mView->copyItems( QgsComposerView::ClipboardModeCut );
+  }
+}
+
+void QgsComposer::actionCopyTriggered()
+{
+  if ( mView )
+  {
+    mView->copyItems( QgsComposerView::ClipboardModeCopy );
+  }
+}
+
+void QgsComposer::actionPasteTriggered()
+{
+  if ( mView )
+  {
+    QPointF pt = mView->mapToScene( mView->mapFromGlobal( QCursor::pos() ) );
+    //TODO - use a better way of determining whether paste was triggered by keystroke
+    //or menu item
+    if (( pt.x() < 0 ) || ( pt.y() < 0 ) )
+    {
+      mView->pasteItems( QgsComposerView::PasteModeCenter );
+    }
+    else
+    {
+      mView->pasteItems( QgsComposerView::PasteModeCursor );
+    }
+  }
+}
+
+void QgsComposer::on_mActionPasteInPlace_triggered()
+{
+  if ( mView )
+  {
+    mView->pasteItems( QgsComposerView::PasteModeInPlace );
+  }
+}
+
+void QgsComposer::on_mActionDeleteSelection_triggered()
+{
+  if ( mView )
+  {
+    mView->deleteSelectedItems();
+  }
+}
+
+void QgsComposer::on_mActionSelectAll_triggered()
+{
+  if ( mView )
+  {
+    mView->selectAll();
+  }
+}
+
+void QgsComposer::on_mActionDeselectAll_triggered()
+{
+  if ( mView )
+  {
+    mView->selectNone();
+  }
+}
+
+void QgsComposer::on_mActionInvertSelection_triggered()
+{
+  if ( mView )
+  {
+    mView->selectInvert();
+  }
+}
+
+void QgsComposer::on_mActionSelectNextAbove_triggered()
+{
+  if ( mView )
+  {
+    mView->selectNextAbove();
+  }
+}
+
+void QgsComposer::on_mActionSelectNextBelow_triggered()
+{
+  if ( mView )
+  {
+    mView->selectNextBelow();
   }
 }
 

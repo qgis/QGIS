@@ -68,6 +68,25 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
       MoveItemContent //move content of item (e.g. content of map)
     };
 
+    enum ClipboardMode
+    {
+      ClipboardModeCut,
+      ClipboardModeCopy
+    };
+
+    enum PasteMode
+    {
+      PasteModeCursor,
+      PasteModeCenter,
+      PasteModeInPlace
+    };
+
+    enum ZValueDirection
+    {
+      ZValueBelow,
+      ZValueAbove
+    };
+
     QgsComposerView( QWidget* parent = 0, const char* name = 0, Qt::WFlags f = 0 );
 
     /**Add an item group containing the selected items*/
@@ -75,6 +94,30 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     /**Ungroups the selected items*/
     void ungroupItems();
+
+    /**Cuts or copies the selected items*/
+    void copyItems( ClipboardMode mode );
+
+    /**Pastes items from clipboard*/
+    void pasteItems( PasteMode mode );
+
+    /**Deletes selected items*/
+    void deleteSelectedItems();
+
+    /**Selects all items*/
+    void selectAll();
+
+    /**Deselects all items*/
+    void selectNone();
+
+    /**Inverts current selection*/
+    void selectInvert();
+
+    /**Selects next item with zValue below current selection*/
+    void selectNextBelow();
+
+    /**Selects next item with zValue above current selection*/
+    void selectNextAbove();
 
     QgsComposerView::Tool currentTool() const {return mCurrentTool;}
     void setCurrentTool( QgsComposerView::Tool t ) {mCurrentTool = t;}
@@ -135,6 +178,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     /** Draw a shape on the canvas */
     void addShape( Tool currentTool );
+
+    /**Selects the next item by zValue in a specified direction*/
+    void selectNextByZValue( ZValueDirection direction );
 
     //void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 

@@ -131,6 +131,11 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Returns the topmost composer item. Ignores mPaperItem*/
     QgsComposerItem* composerItemAt( const QPointF & position );
 
+    /**Returns the highest composer item with a zValue less than a specified value. Ignores mPaperItem
+      @note Added in QGIS 2.0
+    */
+    QgsComposerItem* composerItemAt( const QPointF & position, const int belowZValue );
+
     /** Returns the page number (0-bsaed) given a coordinate */
     int pageNumberAt( const QPointF& position ) const;
 
@@ -175,6 +180,12 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
       @param theUuid A QString representing the UUID of the item to
       **/
     const QgsComposerItem* getComposerItemByUuid( QString theUuid ) const;
+
+    /**Returns a composer item given its zValue.
+      @note added in 2.0
+      @param zValue An integer representing the zValue of the item to find
+      **/
+    QgsComposerItem* getComposerItemByZValue( const int zValue );
 
     int printResolution() const {return mPrintResolution;}
     void setPrintResolution( int dpi ) {mPrintResolution = dpi;}

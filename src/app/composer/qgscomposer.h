@@ -207,6 +207,36 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Group selected items
     void on_mActionGroupItems_triggered();
 
+    //! Cut item(s)
+    void actionCutTriggered();
+
+    //! Copy item(s)
+    void actionCopyTriggered();
+
+    //! Paste item(s)
+    void actionPasteTriggered();
+
+    //! Paste in place item(s)
+    void on_mActionPasteInPlace_triggered();
+
+    //! Delete selected item(s)
+    void on_mActionDeleteSelection_triggered();
+
+    //! Select all items
+    void on_mActionSelectAll_triggered();
+
+    //! Deselect all items
+    void on_mActionDeselectAll_triggered();
+
+    //! Invert selection
+    void on_mActionInvertSelection_triggered();
+
+    //! Select next item below
+    void on_mActionSelectNextAbove_triggered();
+
+    //! Select next item above
+    void on_mActionSelectNextBelow_triggered();
+
     //! Ungroup selected item group
     void on_mActionUngroupItems_triggered();
 
@@ -367,6 +397,11 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Window menu action to select this window
     QAction *mWindowAction;
+
+    //! Copy/cut/paste actions
+    QAction *mActionCut;
+    QAction *mActionCopy;
+    QAction *mActionPaste;
 
     //! Page & Printer Setup
     QPrinter mPrinter;

@@ -38,6 +38,7 @@
 #include "qgscomposerattributetable.h"
 #include "qgslogger.h"
 #include "qgsaddremovemultiframecommand.h"
+#include "qgspaperitem.h"
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f )
     : QGraphicsView( parent )
@@ -88,21 +89,69 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       //select/deselect items and pass mouse event further
     case Select:
     {
+      QgsComposerItem* selectedItem;
+      QgsComposerItem* previousSelectedItem;
+      int currentZValue = 0;
+
+      if ( e->modifiers() & Qt::ControlModifier )
+      {
+        //CTRL modifier, so we are trying to select the next item below the current one
+
+        //find zValue of currently selected item
+        QList<QgsComposerItem*> selectedItems = composition()->selectedComposerItems();
+        if ( selectedItems.size() > 0 )
+        {
+          previousSelectedItem = selectedItems.at( 0 );
+          currentZValue = previousSelectedItem->zValue();
+        }
+      }
+
       if ( !( e->modifiers() & Qt::ShiftModifier ) ) //keep selection if shift key pressed
       {
         composition()->clearSelection();
       }
 
-      //select topmost item at position of event
-      QgsComposerItem* selectedItem = composition()->composerItemAt( scenePoint );
+      if ( currentZValue > 0 )
+      {
+        //select highest item with a z value below previously selected item at position of event
+        selectedItem = composition()->composerItemAt( scenePoint, currentZValue );
+
+        //if we didn't find a lower item we'll use the top-most as fall-back
+        //this duplicates mapinfo/illustrator/etc behaviour where ctrl-clicks are "cyclic"
+        if ( !selectedItem )
+        {
+          selectedItem = composition()->composerItemAt( scenePoint );
+        }
+      }
+      else
+      {
+        //select topmost item at position of event
+        selectedItem = composition()->composerItemAt( scenePoint );
+      }
+
       if ( !selectedItem )
       {
         break;
       }
 
-      selectedItem->setSelected( true );
-      QGraphicsView::mousePressEvent( e );
-      emit selectedItemChanged( selectedItem );
+      if (( e->modifiers() & Qt::ShiftModifier ) && ( selectedItem->selected() ) )
+      {
+        //SHIFT-clicking a selected item deselects it
+        selectedItem->setSelected( false );
+
+        //Check if we have any remaining selected items, and if so, update the item panel
+        QList<QgsComposerItem*> selectedItems = composition()->selectedComposerItems();
+        if ( selectedItems.size() > 0 )
+        {
+          emit selectedItemChanged( selectedItems.at( 0 ) );
+        }
+      }
+      else
+      {
+        selectedItem->setSelected( true );
+        QGraphicsView::mousePressEvent( e );
+        emit selectedItemChanged( selectedItem );
+      }
       break;
     }
 
@@ -472,10 +521,8 @@ void QgsComposerView::mouseDoubleClickEvent( QMouseEvent* e )
   e->ignore();
 }
 
-void QgsComposerView::keyPressEvent( QKeyEvent * e )
+void QgsComposerView::copyItems( ClipboardMode mode )
 {
-  //TODO : those should be actions (so we could also display menu items and/or toolbar items)
-
   if ( !composition() )
   {
     return;
@@ -484,90 +531,256 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
   QList<QgsComposerItem*> composerItemList = composition()->selectedComposerItems();
   QList<QgsComposerItem*>::iterator itemIt = composerItemList.begin();
 
-  if ( e->matches( QKeySequence::Copy ) || e->matches( QKeySequence::Cut ) )
+  QDomDocument doc;
+  QDomElement documentElement = doc.createElement( "ComposerItemClipboard" );
+  for ( ; itemIt != composerItemList.end(); ++itemIt )
   {
-    QDomDocument doc;
-    QDomElement documentElement = doc.createElement( "ComposerItemClipboard" );
-    for ( ; itemIt != composerItemList.end(); ++itemIt )
+    // copy each item in a group
+    QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup*>( *itemIt );
+    if ( itemGroup && composition() )
     {
-      // copy each item in a group
-      QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup*>( *itemIt );
-      if ( itemGroup && composition() )
+      QSet<QgsComposerItem*> groupedItems = itemGroup->items();
+      QSet<QgsComposerItem*>::iterator it = groupedItems.begin();
+      for ( ; it != groupedItems.end(); ++it )
       {
-        QSet<QgsComposerItem*> groupedItems = itemGroup->items();
-        QSet<QgsComposerItem*>::iterator it = groupedItems.begin();
-        for ( ; it != groupedItems.end(); ++it )
-        {
-          ( *it )->writeXML( documentElement, doc );
-        }
-      }
-      ( *itemIt )->writeXML( documentElement, doc );
-      if ( e->matches( QKeySequence::Cut ) )
-      {
-        composition()->removeComposerItem( *itemIt );
+        ( *it )->writeXML( documentElement, doc );
       }
     }
-    doc.appendChild( documentElement );
-
-    //if it's a copy, we have to remove the UUIDs since we don't want any duplicate UUID
-    if ( e->matches( QKeySequence::Copy ) )
+    ( *itemIt )->writeXML( documentElement, doc );
+    if ( mode == ClipboardModeCut )
     {
-      // remove all uuid attributes
-      QDomNodeList composerItemsNodes = doc.elementsByTagName( "ComposerItem" );
-      for ( int i = 0; i < composerItemsNodes.count(); ++i )
-      {
-        QDomNode composerItemNode = composerItemsNodes.at( i );
-        if ( composerItemNode.isElement() )
-        {
-          composerItemNode.toElement().removeAttribute( "uuid" );
-        }
-      }
+      composition()->removeComposerItem( *itemIt );
     }
-
-    QMimeData *mimeData = new QMimeData;
-    mimeData->setData( "text/xml", doc.toByteArray() );
-    QClipboard *clipboard = QApplication::clipboard();
-    clipboard->setMimeData( mimeData );
   }
+  doc.appendChild( documentElement );
 
-  //TODO : "Ctrl+Shift+V" is one way to paste, but on some platefoms you can use Shift+Ins and F18
-  if ( e->matches( QKeySequence::Paste ) || ( e->key() == Qt::Key_V && e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::ShiftModifier ) )
+  //if it's a copy, we have to remove the UUIDs since we don't want any duplicate UUID
+  if ( mode == ClipboardModeCopy )
   {
-    QDomDocument doc;
-    QClipboard *clipboard = QApplication::clipboard();
-    if ( doc.setContent( clipboard->mimeData()->data( "text/xml" ) ) )
+    // remove all uuid attributes
+    QDomNodeList composerItemsNodes = doc.elementsByTagName( "ComposerItem" );
+    for ( int i = 0; i < composerItemsNodes.count(); ++i )
     {
-      QDomElement docElem = doc.documentElement();
-      if ( docElem.tagName() == "ComposerItemClipboard" )
+      QDomNode composerItemNode = composerItemsNodes.at( i );
+      if ( composerItemNode.isElement() )
       {
-        if ( composition() )
-        {
-          QPointF pt = mapToScene( mapFromGlobal( QCursor::pos() ) );
-          bool pasteInPlace = ( e->modifiers() & Qt::ShiftModifier );
-          composition()->addItemsFromXML( docElem, doc, 0, true, &pt, pasteInPlace );
-        }
+        composerItemNode.toElement().removeAttribute( "uuid" );
       }
     }
   }
 
-  //delete selected items
-  if ( e->key() == Qt::Key_Delete || e->key() == Qt::Key_Backspace )
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setData( "text/xml", doc.toByteArray() );
+  QClipboard *clipboard = QApplication::clipboard();
+  clipboard->setMimeData( mimeData );
+}
+
+void QgsComposerView::pasteItems( PasteMode mode )
+{
+  if ( !composition() )
   {
-    for ( ; itemIt != composerItemList.end(); ++itemIt )
+    return;
+  }
+
+  QDomDocument doc;
+  QClipboard *clipboard = QApplication::clipboard();
+  if ( doc.setContent( clipboard->mimeData()->data( "text/xml" ) ) )
+  {
+    QDomElement docElem = doc.documentElement();
+    if ( docElem.tagName() == "ComposerItemClipboard" )
     {
       if ( composition() )
       {
-        composition()->removeComposerItem( *itemIt );
+        QPointF pt;
+        if ( mode == PasteModeCursor )
+        {
+          // place items at cursor position
+          pt = mapToScene( mapFromGlobal( QCursor::pos() ) );
+        }
+        else
+        {
+          // place items in center of viewport
+          pt = mapToScene( viewport()->rect().center() );
+        }
+        bool pasteInPlace = mode == PasteModeInPlace;
+        composition()->addItemsFromXML( docElem, doc, 0, true, &pt, pasteInPlace );
       }
     }
   }
+}
 
-  else if ( e->key() == Qt::Key_Left )
+void QgsComposerView::deleteSelectedItems()
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  QList<QgsComposerItem*> composerItemList = composition()->selectedComposerItems();
+  QList<QgsComposerItem*>::iterator itemIt = composerItemList.begin();
+
+  //delete selected items
+  for ( ; itemIt != composerItemList.end(); ++itemIt )
+  {
+    if ( composition() )
+    {
+      composition()->removeComposerItem( *itemIt );
+    }
+  }
+}
+
+void QgsComposerView::selectAll()
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  //select all items in composer
+  QList<QGraphicsItem *> itemList = composition()->items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    QgsComposerItem* mypItem = dynamic_cast<QgsComposerItem *>( *itemIt );
+    QgsPaperItem* paperItem = dynamic_cast<QgsPaperItem*>( *itemIt );
+    if ( mypItem && !paperItem )
+    {
+      mypItem->setSelected( true );
+      emit selectedItemChanged( mypItem );
+    }
+  }
+}
+
+void QgsComposerView::selectNone()
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  composition()->clearSelection();
+}
+
+void QgsComposerView::selectInvert()
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  //check all items in composer
+  QList<QGraphicsItem *> itemList = composition()->items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    QgsComposerItem* mypItem = dynamic_cast<QgsComposerItem *>( *itemIt );
+    QgsPaperItem* paperItem = dynamic_cast<QgsPaperItem*>( *itemIt );
+    if ( mypItem && !paperItem )
+    {
+      //flip selected state for items
+      if ( mypItem->selected() )
+      {
+        mypItem->setSelected( false );
+      }
+      else
+      {
+        mypItem->setSelected( true );
+        emit selectedItemChanged( mypItem );
+      }
+    }
+  }
+}
+
+void QgsComposerView::selectNextBelow()
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  selectNextByZValue( ZValueBelow );
+}
+
+void QgsComposerView::selectNextAbove()
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  selectNextByZValue( ZValueAbove );
+}
+
+void QgsComposerView::selectNextByZValue( ZValueDirection direction )
+{
+  //get z value of first currently selection item
+  int currentZValue = 0;
+  QgsComposerItem* previousSelectedItem;
+  QList<QgsComposerItem*> selectedItems = composition()->selectedComposerItems();
+  if ( selectedItems.size() > 0 )
+  {
+    previousSelectedItem = selectedItems.at( 0 );
+    currentZValue = previousSelectedItem->zValue();
+  }
+
+  if ( currentZValue == 0 )
+  {
+    return;
+  }
+
+  int targetZValue = 0;
+  if ( direction == ZValueBelow )
+  {
+    //looking for the next item below this one, so decrease z value
+    targetZValue = currentZValue - 1;
+    if ( targetZValue < 1 )
+    {
+      return;
+    }
+  }
+  else
+  {
+    //looking for the next item above this one, so increase z value
+    targetZValue = currentZValue + 1;
+  }
+
+  //select item with target z value
+  QgsComposerItem* selectedItem = composition()->getComposerItemByZValue( targetZValue );
+
+  if ( !selectedItem )
+  {
+    return;
+  }
+
+  //ok, found a good target item
+  composition()->clearSelection();
+  selectedItem->setSelected( true );
+  emit selectedItemChanged( selectedItem );
+}
+
+void QgsComposerView::keyPressEvent( QKeyEvent * e )
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  QList<QgsComposerItem*> composerItemList = composition()->selectedComposerItems();
+  QList<QgsComposerItem*>::iterator itemIt = composerItemList.begin();
+
+  double increment = 1.0;
+  if ( e->modifiers() & Qt::ShiftModifier )
+  {
+    //holding shift while pressing cursor keys results in a big step
+    increment = 10.0;
+  }
+
+  if ( e->key() == Qt::Key_Left )
   {
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
       ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
-      ( *itemIt )->move( -1.0, 0.0 );
+      ( *itemIt )->move( -1 * increment, 0.0 );
       ( *itemIt )->endCommand();
     }
   }
@@ -576,7 +789,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
       ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
-      ( *itemIt )->move( 1.0, 0.0 );
+      ( *itemIt )->move( increment, 0.0 );
       ( *itemIt )->endCommand();
     }
   }
@@ -585,7 +798,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
       ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
-      ( *itemIt )->move( 0.0, 1.0 );
+      ( *itemIt )->move( 0.0, increment );
       ( *itemIt )->endCommand();
     }
   }
@@ -594,7 +807,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
       ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
-      ( *itemIt )->move( 0.0, -1.0 );
+      ( *itemIt )->move( 0.0, -1 * increment );
       ( *itemIt )->endCommand();
     }
   }
