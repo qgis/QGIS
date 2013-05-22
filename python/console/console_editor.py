@@ -116,7 +116,7 @@ class Editor(QsciScintilla):
         #self.setMinimumWidth(300)
 
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-        self.setMatchedBraceBackgroundColor(QColor("#c6c6c6"))
+        self.setMatchedBraceBackgroundColor(QColor("#b7f907"))
 
         # Folding
         self.setFolding(QsciScintilla.PlainFoldStyle)
@@ -271,53 +271,76 @@ class Editor(QsciScintilla):
         iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
         iconFind = QgsApplication.getThemeIcon("console/iconSearchEditorConsole.png")
         iconSyntaxCk = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
-        hideEditorAction = menu.addAction("Hide Editor",
-                                     self.hideEditor)
+        iconObjInsp = QgsApplication.getThemeIcon("console/iconClassBrowserConsole.png")
+        hideEditorAction = menu.addAction(QCoreApplication.translate("PythonConsole", "Hide Editor"),
+                                          self.hideEditor)
         menu.addSeparator()
-        syntaxCheck = menu.addAction(iconSyntaxCk, "Check Syntax",
+        syntaxCheck = menu.addAction(iconSyntaxCk,
+                                     QCoreApplication.translate("PythonConsole",
+                                                                "Check Syntax"),
                                      self.syntaxCheck, 'Ctrl+4')
         menu.addSeparator()
         runSelected = menu.addAction(iconRun,
-                                     "Enter selected",
+                                     QCoreApplication.translate("PythonConsole",
+                                                                "Enter selected"),
                                      self.runSelectedCode, 'Ctrl+E')
         runScript = menu.addAction(iconRunScript,
-                                   "Run Script",
+                                   QCoreApplication.translate("PythonConsole",
+                                                              "Run Script"),
                                    self.runScriptCode, 'Shift+Ctrl+E')
         menu.addSeparator()
-        undoAction = menu.addAction("Undo", self.undo, QKeySequence.Undo)
-        redoAction = menu.addAction("Redo", self.redo, 'Ctrl+Shift+Z')
+        undoAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                               "Undo"),
+                                    self.undo, QKeySequence.Undo)
+        redoAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                               "Redo"),
+                                    self.redo, 'Ctrl+Shift+Z')
         menu.addSeparator()
         findAction = menu.addAction(iconFind,
-                                    "Find Text",
+                                    QCoreApplication.translate("PythonConsole",
+                                                               "Find Text"),
                                     self.showFindWidget)
         menu.addSeparator()
-        cutAction = menu.addAction("Cut",
+        cutAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                              "Cut"),
                                     self.cut,
                                     QKeySequence.Cut)
-        copyAction = menu.addAction("Copy",
+        copyAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                               "Copy"),
                                     self.copy,
                                     QKeySequence.Copy)
-        pasteAction = menu.addAction("Paste", self.paste, QKeySequence.Paste)
+        pasteAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                                "Paste"),
+                                     self.paste, QKeySequence.Paste)
         menu.addSeparator()
-        commentCodeAction = menu.addAction(iconCommentEditor, "Comment",
+        commentCodeAction = menu.addAction(iconCommentEditor,
+                                           QCoreApplication.translate("PythonConsole",
+                                                                      "Comment"),
                                            self.parent.pc.commentCode, 'Ctrl+3')
-        uncommentCodeAction = menu.addAction(iconUncommentEditor, "Uncomment",
+        uncommentCodeAction = menu.addAction(iconUncommentEditor,
+                                             QCoreApplication.translate("PythonConsole",
+                                                                        "Uncomment"),
                                              self.parent.pc.uncommentCode,
                                              'Shift+Ctrl+3')
         menu.addSeparator()
         codePadAction = menu.addAction(iconCodePad,
-                                        "Share on codepad",
-                                        self.codepad)
+                                       QCoreApplication.translate("PythonConsole",
+                                                                  "Share on codepad"),
+                                       self.codepad)
         menu.addSeparator()
-        showCodeInspection = menu.addAction("Hide/Show Object list",
+        showCodeInspection = menu.addAction(iconObjInsp,
+                                            QCoreApplication.translate("PythonConsole",
+                                                                       "Hide/Show Object Inspector"),
                                             self.objectListEditor)
         menu.addSeparator()
-        selectAllAction = menu.addAction("Select All",
+        selectAllAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                                    "Select All"),
                                          self.selectAll,
                                          QKeySequence.SelectAll)
         menu.addSeparator()
         settingsDialog = menu.addAction(iconSettings,
-                                        "Settings",
+                                        QCoreApplication.translate("PythonConsole",
+                                                                   "Settings"),
                                         self.parent.pc.openSettings)
         syntaxCheck.setEnabled(False)
         pasteAction.setEnabled(False)
@@ -328,6 +351,7 @@ class Editor(QsciScintilla):
         selectAllAction.setEnabled(False)
         undoAction.setEnabled(False)
         redoAction.setEnabled(False)
+        showCodeInspection.setEnabled(False)
         if self.hasSelectedText():
             runSelected.setEnabled(True)
             copyAction.setEnabled(True)
@@ -342,6 +366,9 @@ class Editor(QsciScintilla):
             redoAction.setEnabled(True)
         if QApplication.clipboard().text():
             pasteAction.setEnabled(True)
+        if self.settings.value("pythonConsole/enableObjectInsp",
+                                False).toBool():
+            showCodeInspection.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
 
     def findText(self, forward):
@@ -458,16 +485,20 @@ class Editor(QsciScintilla):
         return tmpFileName
 
     def _runSubProcess(self, filename, tmp=False):
-        dir, name = os.path.split(unicode(filename))
+        dir = QFileInfo(filename).path()
+        file = QFileInfo(filename).fileName()
+        name = QFileInfo(filename).baseName()
         if dir not in sys.path:
             sys.path.append(dir)
+        if name in sys.modules:
+            reload(sys.modules[name])
         try:
             ## set creationflags for running command without shell window
             if sys.platform.startswith('win'):
-                p = subprocess.Popen(['python', str(filename)], shell=False, stdin=subprocess.PIPE,
+                p = subprocess.Popen(['python', unicode(filename)], shell=False, stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE, stdout=subprocess.PIPE, creationflags=0x08000000)
             else:
-                p = subprocess.Popen(['python', str(filename)], shell=False, stdin=subprocess.PIPE,
+                p = subprocess.Popen(['python', unicode(filename)], shell=False, stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE, stdout=subprocess.PIPE)
             out, _traceback = p.communicate()
 
@@ -484,18 +515,18 @@ class Editor(QsciScintilla):
                             raise e
             if tmp:
                 tmpFileTr = QCoreApplication.translate('PythonConsole', ' [Temporary file saved in ')
-                name = name + tmpFileTr + dir + ']'
+                file = file + tmpFileTr + dir + ']'
             if _traceback:
-                msgTraceTr = QCoreApplication.translate('PythonConsole', '## Script error: %1').arg(name)
+                msgTraceTr = QCoreApplication.translate('PythonConsole', '## Script error: %1').arg(file)
                 print "## %s" % datetime.datetime.now()
-                print msgTraceTr
+                print unicode(msgTraceTr)
                 sys.stderr.write(_traceback)
                 p.stderr.close()
             else:
                 msgSuccessTr = QCoreApplication.translate('PythonConsole',
-                                                          '## Script executed successfully: %1').arg(name)
+                                                          '## Script executed successfully: %1').arg(file)
                 print "## %s" % datetime.datetime.now()
-                print msgSuccessTr
+                print unicode(msgSuccessTr)
                 sys.stdout.write(out)
                 p.stdout.close()
             del p
@@ -575,7 +606,9 @@ class Editor(QsciScintilla):
             #source = open(filename, 'r').read() + '\n'
             if type(source) == type(u""):
                 source = source.encode('utf-8')
-            compile(source, str(filename), 'exec')
+            if type(filename) == type(u""):
+                filename = filename.encode('utf-8')
+            compile(source, filename, 'exec')
         except SyntaxError, detail:
             s = traceback.format_exception_only(SyntaxError, detail)
             fn = detail.filename
@@ -613,11 +646,12 @@ class Editor(QsciScintilla):
             return True
 
     def keyPressEvent(self, e):
-        t = unicode(e.text())
-        ## Close bracket automatically
-        if t in self.opening:
-            i = self.opening.index(t)
-            self.insert(self.closing[i])
+        if self.settings.value("pythonConsole/autoCloseBracketEditor", True).toBool():
+            t = unicode(e.text())
+            ## Close bracket automatically
+            if t in self.opening:
+                i = self.opening.index(t)
+                self.insert(self.closing[i])
         QsciScintilla.keyPressEvent(self, e)
 
     def focusInEvent(self, e):
@@ -1098,6 +1132,8 @@ class EditorTabWidget(QTabWidget):
                             else:
                                 classItem.setText(0, name)
                                 classItem.setToolTip(0, name)
+                            if sys.platform.startswith('win'):
+                                classItem.setSizeHint(0, QSize(18, 18))
                             classItem.setText(1, str(class_data.lineno))
                             iconClass = QgsApplication.getThemeIcon("console/iconClassTreeWidgetConsole.png")
                             classItem.setIcon(0, iconClass)
@@ -1109,6 +1145,8 @@ class EditorTabWidget(QTabWidget):
                                 methodItem.setToolTip(0, meth)
                                 iconMeth = QgsApplication.getThemeIcon("console/iconMethodTreeWidgetConsole.png")
                                 methodItem.setIcon(0, iconMeth)
+                                if sys.platform.startswith('win'):
+                                    methodItem.setSizeHint(0, QSize(18, 18))
                                 classItem.addChild(methodItem)
                                 dictObject[meth] = lineno
                             self.parent.listClassMethod.addTopLevelItem(classItem)
@@ -1121,6 +1159,8 @@ class EditorTabWidget(QTabWidget):
                             funcItem.setToolTip(0, func_name)
                             iconFunc = QgsApplication.getThemeIcon("console/iconFunctionTreeWidgetConsole.png")
                             funcItem.setIcon(0, iconFunc)
+                            if sys.platform.startswith('win'):
+                                funcItem.setSizeHint(0, QSize(18, 18))
                             dictObject[func_name] = data.lineno
                             self.parent.listClassMethod.addTopLevelItem(funcItem)
                     if found:
@@ -1145,11 +1185,12 @@ class EditorTabWidget(QTabWidget):
         objInspectorEnabled = self.settings.value("pythonConsole/enableObjectInsp",
                                                   False).toBool()
         listObj = self.parent.objectListButton
-        listObj.setChecked(objInspectorEnabled)
+        if self.parent.listClassMethod.isVisible():
+            listObj.setChecked(objInspectorEnabled)
         listObj.setEnabled(objInspectorEnabled)
         if objInspectorEnabled:
             cW = self.currentWidget()
-            if cW:
+            if cW and not self.parent.listClassMethod.isVisible():
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 self.listObject(cW)
                 QApplication.restoreOverrideCursor()

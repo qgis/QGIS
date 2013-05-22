@@ -67,13 +67,10 @@ class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialog
     /**Insert changed value into mChangedProperties*/
     void insertChangedValue( QgsPalLayerSettings::DataDefinedProperties p, QVariant value );
 
-    /**Returns true if any font related setting is contained in mDataDefinedProperties*/
-    bool labelFontEditingPossible() const;
-
     QgsMapRenderer* mMapRenderer;
 
     QgsAttributeMap mChangedProperties;
-    QMap< QgsPalLayerSettings::DataDefinedProperties, QString > mDataDefinedProperties;
+    QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > mDataDefinedProperties;
     QFont mLabelFont;
 
     /**Label field for the current layer (or -1 if none)*/

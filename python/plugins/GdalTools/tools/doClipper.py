@@ -61,7 +61,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
       self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
       self.connect(self.maskSelector, SIGNAL("selectClicked()"), self.fillMaskFileEdit)
-      self.connect(self.extentSelector, SIGNAL("newExtentDefined()"), self.checkRun)
+      self.connect(self.extentSelector, SIGNAL("newExtentDefined()"), self.extentChanged)
       self.connect(self.extentSelector, SIGNAL("selectionStarted()"), self.checkRun)
 
       self.connect(self.extentModeRadio, SIGNAL("toggled(bool)"), self.switchClippingMode)
@@ -90,6 +90,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       else:
         enabler = not self.maskSelector.filename().isEmpty()
       self.base.enableRun( enabler )
+
+  def extentChanged(self):
+      self.activateWindow()
+      self.raise_()
+      self.checkRun()
 
   def onLayersChanged(self):
       self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )

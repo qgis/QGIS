@@ -111,6 +111,16 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QCheckBox" name="mRelativePathChkBx">
+       <property name="toolTip">
+        <string>Generated path will be relative to current SVG search directories or to Project file</string>
+       </property>
+       <property name="text">
+        <string>Relative path</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>

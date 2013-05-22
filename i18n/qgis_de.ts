@@ -2095,8 +2095,8 @@ Geometriespate - Spalte mit eindeutigen ganzahligen Werden</translation>
         <translation>Die gewählte Datei hat kein von OGR unterstütztes Format</translation>
     </message>
     <message>
-        <source>Quantum GIS version detected: </source>
-        <translation>Festgestellte Quantum GIS-Version: </translation>
+        <source>QGIS version detected: </source>
+        <translation>Festgestellte QGIS-Version: </translation>
     </message>
     <message>
         <source>Plugin error</source>
@@ -4484,19 +4484,6 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     </message>
 </context>
 <context>
-    <name>Help</name>
-    <message>
-        <location filename="../python/console/console_help.ui" line="14"/>
-        <source>Dialog</source>
-        <translation>Dialog</translation>
-    </message>
-    <message>
-        <location filename="../python/console/console_help.ui" line="39"/>
-        <source>about:blank</source>
-        <translation>about:blank</translation>
-    </message>
-</context>
-<context>
     <name>HelpEditionDialog</name>
     <message>
         <source>Outputs</source>
@@ -4516,6 +4503,16 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <message>
         <source>Create test</source>
         <translation>Test erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_history_dlg.ui" line="14"/>
+        <source>Dialog</source>
+        <translation>Dialog</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_history_dlg.ui" line="45"/>
+        <source>Reload</source>
+        <translation>Neuladen</translation>
     </message>
 </context>
 <context>
@@ -5979,19 +5976,19 @@ Falsche Zeile: %1</translation>
         <translation>Skript ausführen</translation>
     </message>
     <message>
-        <source>Comment code</source>
-        <translation>Code kommentieren</translation>
-    </message>
-    <message>
-        <source>Uncomment code</source>
-        <translation>Code auskommentieren</translation>
-    </message>
-    <message>
         <source>Object Inspector</source>
         <translation>Objektinspektor</translation>
     </message>
     <message>
-        <source>Find text</source>
+        <source>Comment</source>
+        <translation>Auskommentieren</translation>
+    </message>
+    <message>
+        <source>Uncomment</source>
+        <translation>Einkommentieren</translation>
+    </message>
+    <message>
+        <source>Find Text</source>
         <translation>Text suchen</translation>
     </message>
     <message>
@@ -6041,6 +6038,18 @@ Falsche Zeile: %1</translation>
     <message>
         <source>Find Previous</source>
         <translation>Vorherigen finden</translation>
+    </message>
+    <message>
+        <source>Case Sensitive</source>
+        <translation>Groß-/Kleinschreibung beachten</translation>
+    </message>
+    <message>
+        <source>Whole Word</source>
+        <translation>Ganzes Wort</translation>
+    </message>
+    <message>
+        <source>Wrap Around</source>
+        <translation>Zeilenumbruch</translation>
     </message>
     <message>
         <source>Open File</source>
@@ -6373,42 +6382,11 @@ Falsche Zeile: %1</translation>
         <translation>Felder und Werte</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1435"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1436"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1437"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1438"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1439"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1440"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1441"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1442"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1443"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1444"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1445"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1446"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1447"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1448"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1449"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1450"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1451"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1452"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1453"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1454"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1455"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1456"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1457"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1458"/>
         <location filename="../src/core/qgsexpression.cpp" line="2371"/>
         <source>Math</source>
         <translation>Mathematik</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1459"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1460"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1461"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1462"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1463"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1464"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1465"/>
         <location filename="../src/core/qgsexpression.cpp" line="2372"/>
         <source>Conversions</source>
         <translation>Umwandlungen</translation>
@@ -6419,109 +6397,35 @@ Falsche Zeile: %1</translation>
         <translation>Fehlende Gruppe %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1466"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1467"/>
         <location filename="../src/core/qgsexpression.cpp" line="2369"/>
         <source>Conditionals</source>
         <translation>Bedingungen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1468"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1469"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1470"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1471"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1472"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1473"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1474"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1475"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1476"/>
         <location filename="../src/core/qgsexpression.cpp" line="2373"/>
         <source>Date and Time</source>
         <translation>Datum und Zeit</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1477"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1478"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1479"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1480"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1481"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1482"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1483"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1484"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1485"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1486"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1487"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1488"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1489"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1490"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1491"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1492"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1493"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1494"/>
         <location filename="../src/core/qgsexpression.cpp" line="2374"/>
         <source>String</source>
         <translation>Zeichenketten</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1495"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1496"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1497"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1498"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1499"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1500"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1501"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1502"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1503"/>
         <location filename="../src/core/qgsexpression.cpp" line="2375"/>
         <source>Color</source>
         <translation>Farbe</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1504"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1505"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1506"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1507"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1508"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1509"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1510"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1511"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1512"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1513"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1514"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1515"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1516"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1517"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1518"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1519"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1520"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1521"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1522"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1523"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1524"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1525"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1526"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1527"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1528"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1529"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1530"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1531"/>
         <location filename="../src/core/qgsexpression.cpp" line="2376"/>
         <source>Geometry</source>
         <translation>Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1532"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1533"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1534"/>
         <location filename="../src/core/qgsexpression.cpp" line="1584"/>
         <location filename="../src/core/qgsexpression.cpp" line="2377"/>
         <source>Record</source>
         <translation>Datensatz</translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1535"/>
-        <source>Special</source>
-        <translation>Speziell</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="1681"/>
@@ -7236,9 +7140,9 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="253"/>
-        <source>Plugin &quot;%1&quot; is not compatible with this version of Quantum GIS.
+        <source>Plugin &quot;%1&quot; is not compatible with this version of QGIS.
 It will be disabled.</source>
-        <translation>Erweiterung &quot;%1&quot; ist nicht mit dieser Version von Quantum GIS kompatibel.
+        <translation>Erweiterung &quot;%1&quot; ist nicht mit dieser Version von QGIS kompatibel.
 Sie wird deaktiviert.</translation>
     </message>
     <message>
@@ -8438,23 +8342,23 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <translation>Daten auf einem 3D-Globus überlagern</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3794"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3815"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3840"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3797"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3818"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3843"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="64"/>
         <source>Unable to load %1 provider</source>
         <translation>Kann Datenlieferant %1 nicht laden</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3802"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3823"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3848"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3805"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3826"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3851"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="73"/>
         <source>Provider %1 has no %2 method</source>
         <translation>Datenlieferant %1 hat keine Methode %2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3904"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3907"/>
         <source>Loaded from Provider</source>
         <translation>Aus Datenlieferanten geladen</translation>
     </message>
@@ -9295,9 +9199,9 @@ SQL: %1</translation>
         <translation>QGIS-Server nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8278"/>
-        <location filename="../src/app/qgisapp.cpp" line="8379"/>
-        <location filename="../src/app/qgisapp.cpp" line="8453"/>
+        <location filename="../src/app/qgisapp.cpp" line="8277"/>
+        <location filename="../src/app/qgisapp.cpp" line="8378"/>
+        <location filename="../src/app/qgisapp.cpp" line="8452"/>
         <source>Invalid Layer</source>
         <translation>Ungültiger Layer</translation>
     </message>
@@ -9362,7 +9266,7 @@ SQL: %1</translation>
         <translation>Zeichnen der Karte einschalten</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8202"/>
+        <location filename="../src/app/qgisapp.cpp" line="8201"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Öffnen einer GDAL-Rasterdatenquelle</translation>
     </message>
@@ -9550,20 +9454,20 @@ SQL: %1</translation>
         <translation>Ausdehnung:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8296"/>
-        <location filename="../src/app/qgisapp.cpp" line="8471"/>
+        <location filename="../src/app/qgisapp.cpp" line="8295"/>
+        <location filename="../src/app/qgisapp.cpp" line="8470"/>
         <source>Error adding valid layer to map canvas</source>
         <translation>Fehler beim Hinzufügen eines gültigen Layers zur Karte</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8297"/>
-        <location filename="../src/app/qgisapp.cpp" line="8472"/>
-        <location filename="../src/app/qgisapp.cpp" line="8492"/>
+        <location filename="../src/app/qgisapp.cpp" line="8296"/>
+        <location filename="../src/app/qgisapp.cpp" line="8471"/>
+        <location filename="../src/app/qgisapp.cpp" line="8491"/>
         <source>Raster layer</source>
         <translation>Raster-Layer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8493"/>
+        <location filename="../src/app/qgisapp.cpp" line="8492"/>
         <source>Unsupported Data Source</source>
         <translation>Nicht unterstütztes Datenformat</translation>
     </message>
@@ -9577,8 +9481,8 @@ SQL: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="5616"/>
         <location filename="../src/app/qgisapp.cpp" line="5668"/>
         <location filename="../src/app/qgisapp.cpp" line="5698"/>
-        <location filename="../src/app/qgisapp.cpp" line="8298"/>
-        <location filename="../src/app/qgisapp.cpp" line="8473"/>
+        <location filename="../src/app/qgisapp.cpp" line="8297"/>
+        <location filename="../src/app/qgisapp.cpp" line="8472"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
@@ -9635,18 +9539,18 @@ SQL: %1</translation>
         <translation>Aktueller Kartenmaßstab</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8646"/>
+        <location filename="../src/app/qgisapp.cpp" line="8645"/>
         <source>Project file is older</source>
         <translation>Projektdatei ist älter</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8644"/>
+        <location filename="../src/app/qgisapp.cpp" line="8643"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;Einstellungen:Optionen:Allgemein&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8645"/>
+        <location filename="../src/app/qgisapp.cpp" line="8644"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>Beim Öffnen einer Projektdatei, die mit einer älteren QGIS-Version erstellt wurde, warnen</translation>
     </message>
@@ -9697,16 +9601,16 @@ SQL: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="450"/>
-        <source>Multiple instances of Quantum GIS application object detected.
+        <source>Multiple instances of QGIS application object detected.
 Please contact the developers.
 </source>
-        <translation>Mehrere Instanzen der Quantum GIS-Anwendung wurden festgestellt.
+        <translation>Mehrere Instanzen der QGIS-Anwendung wurden festgestellt.
 Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="313"/>
-        <source>Quantum GIS </source>
-        <translation>Quantum GIS </translation>
+        <source>QGIS </source>
+        <translation>QGIS </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1027"/>
@@ -9963,12 +9867,12 @@ Fehler: %3
         <translation>http://www.qgis.org/de/kommerzieller-support.html</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8650"/>
+        <location filename="../src/app/qgisapp.cpp" line="8649"/>
         <source>This project file was saved by an older version of QGIS</source>
         <translation>Die Projektdatei wurde mit einer älteren QGIS-Version gespeichert</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8867"/>
+        <location filename="../src/app/qgisapp.cpp" line="8866"/>
         <source>
 
 Always ignore these errors?</source>
@@ -9977,7 +9881,7 @@ Always ignore these errors?</source>
 Diese Fehler immer ignorieren?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8871"/>
+        <location filename="../src/app/qgisapp.cpp" line="8870"/>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
         <translation>
@@ -10472,34 +10376,34 @@ Fehler: %2
         <translation>Kartenkoordinaten für den aktuell sichtbaren Ausschnitt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8791"/>
+        <location filename="../src/app/qgisapp.cpp" line="8790"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8792"/>
+        <location filename="../src/app/qgisapp.cpp" line="8791"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>Dieser Layer hat keine Eigenschaftendialog.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8824"/>
+        <location filename="../src/app/qgisapp.cpp" line="8823"/>
         <source>Authentication required</source>
         <translation>Authentifikation erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8840"/>
+        <location filename="../src/app/qgisapp.cpp" line="8839"/>
         <source>Proxy authentication required</source>
         <translation>Proxy-Authentifikation erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8851"/>
+        <location filename="../src/app/qgisapp.cpp" line="8850"/>
         <source>SSL errors occured accessing URL %1:</source>
         <translation>SSL-Fehler beim Zugriff auf URL %1:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="585"/>
-        <source>Quantum GIS - %1 (&apos;%2&apos;)</source>
-        <translation>Quantum GIS - %1 (&apos;%2&apos;)</translation>
+        <source>QGIS - %1 (&apos;%2&apos;)</source>
+        <translation>QGIS - %1 (&apos;%2&apos;)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2553"/>
@@ -10545,12 +10449,12 @@ Fehler: %2
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8488"/>
+        <location filename="../src/app/qgisapp.cpp" line="8487"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 ist keine unterstützte Rasterdatenquelle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8628"/>
+        <location filename="../src/app/qgisapp.cpp" line="8627"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation>&lt;p&gt;Diese Projektdatei wurde mit einer älteren QGIS-Version gespeichert. Beim Speichern dieser Projektdatei wird QGIS es auf die aktuelle Version aktualisieren und sie damit unter Umständen für ältere QGIS-Versionen unbrauchbar machen. &lt;p&gt;Obwohl die QGIS-Entwickler versuchen Rückwärtskompatibilität zu erhalten, könnten dabei einige Informationen der alten Projektdatei verloren gehen. Um die Qualität von QGIS zu verbessern, würden wir es begrüßen, wenn Sie einen Fehler unter %3 melden würden. Bitte legen Sie die alte Projektdatei bei und nennen Sie die QGIS-Version mit der Sie diesen Fehler entdeckt haben. &lt;p&gt;Um diese Warnung in Zukunft zu unterdrücken, entfernen Sie bitte das Häkchen in &apos;%5&apos; im Menü %4.&lt;p&gt;Version der Projektdatei: %1&lt;br&gt;Aktuelle QGIS-Version: %2</translation>
     </message>
@@ -10591,8 +10495,8 @@ Fehler: %2
     <name>QgsAbout</name>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="14"/>
-        <source>About Quantum GIS</source>
-        <translation>Über Quantum GIS</translation>
+        <source>About QGIS</source>
+        <translation>Über QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="147"/>
@@ -10642,19 +10546,19 @@ Fehler: %2
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="86"/>
-        <source>Quantum GIS is licensed under the GNU General Public License</source>
-        <translation>Quantum GIS ist unter der GNU General Public License lizenziert</translation>
+        <source>QGIS is licensed under the GNU General Public License</source>
+        <translation>QGIS ist unter der GNU General Public License lizenziert</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="58"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;Quantum GIS (QGIS)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;QGIS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;Quantum GIS (QGIS)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;QGIS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="99"/>
@@ -10907,7 +10811,7 @@ Benutzer-DB-Pfad:		%9
 		</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="624"/>
+        <location filename="../src/core/qgsapplication.cpp" line="622"/>
         <source></source>
         <comment>match indentation of application state</comment>
         <translation></translation>
@@ -11772,7 +11676,7 @@ Benutzer-DB-Pfad:		%9
 <context>
     <name>QgsAttributeTableModel</name>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="435"/>
+        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="436"/>
         <source>feature id</source>
         <translation>Objektkennung</translation>
     </message>
@@ -15836,8 +15740,8 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <name>QgsComposerView</name>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="153"/>
-        <source>Quantum GIS</source>
-        <translation>Quantum GIS</translation>
+        <source>QGIS</source>
+        <translation>QGIS</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="289"/>
@@ -16958,6 +16862,200 @@ und aktuelle Datei ist [%3]</translation>
         <location filename="../src/ui/symbollayer/qgsdashspacedialogbase.ui" line="56"/>
         <source>Space</source>
         <translation>Zwischenraum</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDataDefinedButton</name>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="110"/>
+        <source>Description...</source>
+        <translation>Beschreibung...</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="112"/>
+        <source>Edit expression...</source>
+        <translation>Ausdruck bearbeiten...</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="114"/>
+        <source>Copy expression</source>
+        <translation>Ausdruck kopieren</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="123"/>
+        <source>String</source>
+        <translation>Zeichenkette</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="127"/>
+        <source>Int</source>
+        <translation>Ganze Zahl</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="131"/>
+        <source>Double</source>
+        <translation>Fließkommazahl</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="137"/>
+        <source>Field types: </source>
+        <translation>Feldtypen: </translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="157"/>
+        <source>string</source>
+        <translation>Zeichenkette</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="161"/>
+        <source>integer</source>
+        <translation>Ganze Zahl</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="165"/>
+        <source>double</source>
+        <translation>Fließkomma</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="170"/>
+        <source>unknown type</source>
+        <translation>Unbekannter Typ</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="229"/>
+        <source>Deactivate</source>
+        <translation>Abschalten</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="229"/>
+        <source>Activate</source>
+        <translation>Einschalten</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="336"/>
+        <source>Data definition description</source>
+        <translation>Datendefinierte Beschreibung</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="375"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="429"/>
+        <source>undefined</source>
+        <translation>undefiniert</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="386"/>
+        <source>Expression parse error: %1</source>
+        <translation>Ausdrucksfehler: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="399"/>
+        <source>&apos;%1&apos; field missing</source>
+        <translation>Feld &apos;%1&apos; fehlt</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="416"/>
+        <source>&lt;b&gt;Active: &lt;/b&gt;%1&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;i&gt;(ctrl|right-click toggles)&lt;/i&gt;&lt;br&gt;</source>
+        <translation>&lt;b&gt;Aktiv: &lt;/b&gt;%1&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;i&gt;(Strg|Rechtsklick schaltet um)&lt;/i&gt;&lt;br&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="416"/>
+        <source>yes</source>
+        <translation>ja</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="416"/>
+        <source>no</source>
+        <translation>nein</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="420"/>
+        <source>&lt;b&gt;Expected input:&lt;/b&gt;&lt;br&gt;%1&lt;br&gt;</source>
+        <translation>&lt;b&gt;Erwartete Eingabe:&lt;/b&gt;&lt;br&gt;%1&lt;br&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="425"/>
+        <source>&lt;b&gt;Valid input types:&lt;/b&gt;&lt;br&gt;%1&lt;br&gt;</source>
+        <translation>&lt;b&gt;Gültige Eingabetypen:&lt;/b&gt;&lt;br&gt;%1&lt;br&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="431"/>
+        <source>expression</source>
+        <translation>Ausdruck</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="431"/>
+        <source>field</source>
+        <translation>Feld</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="434"/>
+        <source>&lt;b&gt;Current definition%1:&lt;/b&gt;&lt;br&gt;%2</source>
+        <translation>&lt;b&gt;Aktuelle Definition %1:&lt;/b&gt;&lt;br&gt;%2</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="537"/>
+        <source>string </source>
+        <translation>Zeichenkette </translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="542"/>
+        <source>bool [&lt;b&gt;1&lt;/b&gt;=True|&lt;b&gt;0&lt;/b&gt;=False]</source>
+        <translation>bool [&lt;b&gt;1&lt;/b&gt;=Wahr|&lt;b&gt;0&lt;/b&gt;=Falsch]</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="547"/>
+        <source>string of variable length</source>
+        <translation>Zeichenkette variabler Länge</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="552"/>
+        <source>int [&amp;lt;= 0 =&amp;gt;]</source>
+        <translation>Ganze Zahl [&amp;le; 0 &amp;ge;]</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="557"/>
+        <source>int [&amp;gt;= 0]</source>
+        <translation>Ganze Zahl [&amp;ge; 0]</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="562"/>
+        <source>int [&amp;gt;= 1]</source>
+        <translation>Ganze Zahl [&amp;ge; 1]</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="567"/>
+        <source>double [&amp;lt;= 0.0 =&amp;gt;]</source>
+        <translation>Fließkommazahl [&amp;lt;= 0.0 =&amp;gt;]</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="572"/>
+        <source>double [&amp;gt;= 0.0]</source>
+        <translation>Fließkommazahl [&amp;ge; 0.0]</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="577"/>
+        <source>double coord [&lt;b&gt;X,Y&lt;/b&gt;] as &amp;lt;= 0.0 =&amp;gt;</source>
+        <translation>Fließkommakoordinate [&lt;b&gt;X,Y&lt;/b&gt;] als &amp;le; 0.0 &amp;ge;</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="582"/>
+        <source>double [-180.0 - 180.0]</source>
+        <translation>Fließkommazahl [-180.0 - 180.0]</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="587"/>
+        <source>int [0-100]</source>
+        <translation>Ganze Zahl [0-100]</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="602"/>
+        <source>string [&lt;b&gt;r,g,b&lt;/b&gt;] as int 0-255</source>
+        <translation>Zeichenkette [&lt;b&gt;r,g,b&lt;/b&gt;] als ganze Zahl 0-255</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="607"/>
+        <source>string [&lt;b&gt;r,g,b,a&lt;/b&gt;] as int 0-255</source>
+        <translation>Zeichenkette [&lt;b&gt;r,g,b,a&lt;/b&gt;] als ganze Zahl 0-255</translation>
     </message>
 </context>
 <context>
@@ -19113,6 +19211,66 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsExpressionBuilderWidget</name>
     <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="57"/>
+        <source>Addition operator</source>
+        <translation>Additionsoperator</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="58"/>
+        <source>Subtraction operator</source>
+        <translation>Subtraktionsoperator</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="59"/>
+        <source>Multiplication operator</source>
+        <translation>Multiplikationsoperator</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="60"/>
+        <source>Division operator</source>
+        <translation>Divisionsoperator</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="61"/>
+        <source>Modulo operator</source>
+        <translation>Modulo-Operator</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="62"/>
+        <source>Power operator</source>
+        <translation>Potenzoperator</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="63"/>
+        <source>Equal operator</source>
+        <translation>Gleich-Operator</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="64"/>
+        <source>Greater as operator</source>
+        <translation>Größer-Als-Operator</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="65"/>
+        <source>Less than operator</source>
+        <translation>Kleiner-Als-Operator</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="66"/>
+        <source>Unequal operator</source>
+        <translation>Ungleich-Operator</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="67"/>
+        <source>Less or equal operator</source>
+        <translation>Kleiner-Gleich-Operator</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="68"/>
+        <source>Greater or equal operator</source>
+        <translation>Größer-Gleich-Operator</translation>
+    </message>
+    <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="71"/>
         <source>(String Concatenation)</source>
         <translation>(Zeichenverkettung)</translation>
@@ -19417,175 +19575,174 @@ Der Ausdruck ist ungültig (siehe (mehr Information) für Näheres)</translation
         <translation>Beschriftung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="292"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="291"/>
         <source>Id</source>
         <translation>Id</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="293"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="292"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="294"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="293"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="295"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="294"/>
         <source>Length</source>
         <translation>Länge</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="296"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="295"/>
         <source>Precision</source>
         <translation>Genauigkeit</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="297"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="296"/>
         <source>Comment</source>
         <translation>Kommentar</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="298"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="297"/>
         <source>Edit widget</source>
         <translation>Bearbeitungselement</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="301"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="300"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="558"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="618"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="565"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="604"/>
         <source>Name conflict</source>
         <translation>Namenskonflikt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="558"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="618"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="565"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="604"/>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
         <translation>Das Attribut konnte nicht eingefügt werden, da der Name bereits vorhanden ist.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="570"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="577"/>
         <source>Added attribute</source>
         <translation>Attribut hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="595"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="639"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="624"/>
         <source>Deleted attribute</source>
         <translation>Attribut gelöscht</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="712"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="696"/>
         <source>Line edit</source>
         <translation>Eingabezeile</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="713"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="697"/>
         <source>Unique values</source>
         <translation>Eindeutige Werte</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="714"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="698"/>
         <source>Unique values editable</source>
         <translation>Eindeutige Werte (bearbeitbar)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="715"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="699"/>
         <source>Classification</source>
         <translation>Klassifikation</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="716"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="700"/>
         <source>Value map</source>
         <translation>Wertabbildung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="717"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="701"/>
         <source>Edit range</source>
         <translation>Eingabezeile mit Bereich</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="718"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="702"/>
         <source>Slider range</source>
         <translation>Schieberbereich</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="719"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="703"/>
         <source>Dial range</source>
         <translation>Drehreglerbereich</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="720"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="704"/>
         <source>File name</source>
         <translation>Dateiname</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="721"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="705"/>
         <source>Enumeration</source>
         <translation>Aufzählung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="722"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="706"/>
         <source>Immutable</source>
         <translation>Unveränderbar</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="723"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="707"/>
         <source>Hidden</source>
         <translation>Versteckt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="724"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="708"/>
         <source>Checkbox</source>
         <translation>Kontrollkästchen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="725"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="709"/>
         <source>Text edit</source>
         <translation>Texteditor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="726"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="710"/>
         <source>Calendar</source>
         <translation>Kalender</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="727"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="711"/>
         <source>Value relation</source>
         <translation>Wertbeziehung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="728"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="712"/>
         <source>UUID generator</source>
         <translation>UUID-Generator</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="729"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="713"/>
         <source>Photo</source>
         <translation>Foto</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="730"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="714"/>
         <source>Web view</source>
         <translation>Webansicht</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="731"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="715"/>
         <source>Color</source>
         <translation>Farbe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="772"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="756"/>
         <source>Select edit form</source>
         <translation>Bearbeitungsformular wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="772"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="756"/>
         <source>UI file</source>
         <translation>UI-Dateien</translation>
     </message>
@@ -24945,8 +25102,8 @@ in Zeile %2, Spalte %3</translation>
     <name>QgsHelpViewer</name>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="76"/>
-        <source>Quantum GIS Help</source>
-        <translation>Quantum GIS Hilfe</translation>
+        <source>QGIS Help</source>
+        <translation>QGIS Hilfe</translation>
     </message>
 </context>
 <context>
@@ -25124,7 +25281,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="410"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="550"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="551"/>
         <source>(Derived)</source>
         <translation>(abgeleitet)</translation>
     </message>
@@ -25135,95 +25292,95 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="428"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="591"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="711"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="592"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="712"/>
         <source>Edit feature form</source>
         <translation>Objektformular bearbeiten</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="428"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="591"/>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="711"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="592"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="712"/>
         <source>View feature form</source>
         <translation>Objektformular anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="495"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="496"/>
         <source>Format</source>
         <translation>Format</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="717"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="718"/>
         <source>Zoom to feature</source>
         <translation>Zum Objekt zoomen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="718"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="719"/>
         <source>Copy feature</source>
         <translation>Objekt kopieren</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="721"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="722"/>
         <source>Copy attribute value</source>
         <translation>Attributwert kopieren</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="722"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="723"/>
         <source>Copy feature attributes</source>
         <translation>Objektattribute kopieren</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="735"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="736"/>
         <source>Copy GetFeatureInfo request URL</source>
         <translation>GetFeatureInfo-Abfrage-URL kopieren</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="743"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="744"/>
         <source>Clear results</source>
         <translation>Ergebnisse löschen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="744"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="745"/>
         <source>Clear highlights</source>
         <translation>Hervorhebungen löschen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="745"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="746"/>
         <source>Highlight all</source>
         <translation>Alle hervorheben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="746"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="747"/>
         <source>Highlight layer</source>
         <translation>Layer hervorheben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="747"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="748"/>
         <source>Layer properties...</source>
         <translation>Layereigenschaften...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="749"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="750"/>
         <source>Expand all</source>
         <translation>Alle ausklappen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="750"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="751"/>
         <source>Collapse all</source>
         <translation>Alle einklappen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1225"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1226"/>
         <source>Attribute changes</source>
         <translation>Attributänderungen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1376"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1377"/>
         <source>Cannot not print</source>
         <translation>Kann nicht drucken</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1376"/>
+        <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1377"/>
         <source>Cannot print this item</source>
         <translation>Kann dieses Element nicht drucken</translation>
     </message>
@@ -25757,23 +25914,23 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
 <context>
     <name>QgsLabelPropertyDialog</name>
     <message>
-        <location filename="../src/app/qgslabelpropertydialog.cpp" line="74"/>
+        <location filename="../src/app/qgslabelpropertydialog.cpp" line="75"/>
         <source>Expression result</source>
         <translation>Ausdrucksergebnis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelpropertydialog.cpp" line="366"/>
-        <location filename="../src/app/qgslabelpropertydialog.cpp" line="368"/>
+        <location filename="../src/app/qgslabelpropertydialog.cpp" line="388"/>
+        <location filename="../src/app/qgslabelpropertydialog.cpp" line="390"/>
         <source>Label font</source>
         <translation>Schriftart</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelpropertydialog.cpp" line="112"/>
+        <location filename="../src/app/qgslabelpropertydialog.cpp" line="113"/>
         <source>Font color</source>
         <translation>Schriftfarbe</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelpropertydialog.cpp" line="113"/>
+        <location filename="../src/app/qgslabelpropertydialog.cpp" line="114"/>
         <source>Buffer color</source>
         <translation>Pufferfarbe</translation>
     </message>
@@ -25881,1016 +26038,1092 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
 <context>
     <name>QgsLabelingGui</name>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="886"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="745"/>
+        <source>string </source>
+        <translation>Zeichenkette </translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgslabelinggui.cpp" line="750"/>
+        <source>[&lt;b&gt;family&lt;/b&gt;|&lt;b&gt;family[foundry]&lt;/b&gt;],&lt;br&gt;e.g. Helvetica or Helvetica [Cronyx]</source>
+        <translation>[&lt;b&gt;Familie&lt;/b&gt;|&lt;b&gt;Familie[Hersteller]&lt;/b&gt;]&lt;br&gt;z.B. Helvetica oder Helvetica [Cronyx]</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgslabelinggui.cpp" line="755"/>
+        <source>[&lt;b&gt;font style name&lt;/b&gt;|&lt;b&gt;Ignore&lt;/b&gt;],&lt;br&gt;e.g. Bold Condensed or Light Italic</source>
+        <translation>[&lt;b&gt;Schriftstilname&lt;/b&gt;|&lt;b&gt;Ignorieren&lt;/b&gt;],&lt;br&gt;z.B. Fett schmal oder Leicht kursiv</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgslabelinggui.cpp" line="799"/>
+        <source>double [0.0-10.0]</source>
+        <translation>Fließkommazahl [0.0 - 10.0]</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgslabelinggui.cpp" line="821"/>
+        <source>int [0-20]</source>
+        <translation>Ganze Zahl [0-20]</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgslabelinggui.cpp" line="910"/>
+        <source>int [0-2000]</source>
+        <translation>Ganze Zahl [0-2000]</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgslabelinggui.cpp" line="922"/>
+        <source>int&lt;br&gt;</source>
+        <translation>Ganze Zahl&lt;br&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgslabelinggui.cpp" line="937"/>
+        <source>double coord [&lt;b&gt;in,out&lt;/b&gt; as 20.0-60.0,20.0-95.0]</source>
+        <translation>Fließkommakoordinate [&lt;b&gt;in,out&lt;/b&gt; als 20.0-60.0,20.0-95.0]</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgslabelinggui.cpp" line="967"/>
+        <source>int [1-1000]</source>
+        <translation>Ganze Zahl [1-1000]</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgslabelinggui.cpp" line="969"/>
+        <source>int [1-10000]</source>
+        <translation>Ganze Zahl [1-10000]</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1081"/>
         <source> (not found!)</source>
         <translation> (nicht gefunden!)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="932"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1127"/>
         <source>Text/Buffer sample</source>
         <translation>Text-/Pufferbeispiel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="939"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1134"/>
         <source> @ %1 pts (using map units)</source>
         <translation> @ %1 Pkt (in Karteneinheiten)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="952"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1147"/>
         <source> @ %1 pts (using map units, BUFFER IN MILLIMETERS)</source>
         <translation> @ %1 Pkt (in Karteneinheiten, PUFFER IN MILLIMETERN)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="971"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1166"/>
         <source> (BUFFER NOT SHOWN, in map units)</source>
         <translation> (PUFFER NICHT ANGEZEIGT, in Karteneinheiten)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1019"/>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1214"/>
         <source>Expression based label</source>
         <translation>Ausdrucksbeschriftung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1113"/>
-        <source>Mixed Case</source>
-        <translation>Gemischte Groß-/Kleinschreibung</translation>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1323"/>
+        <source>No change</source>
+        <translation>Keine Änderung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1114"/>
-        <source>All Uppercase</source>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1324"/>
+        <source>All uppercase</source>
         <translation>Nur Großbuchstaben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1115"/>
-        <source>All Lowercase</source>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1325"/>
+        <source>All lowercase</source>
         <translation>Nur Kleinbuchstaben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1119"/>
-        <source>Title Case</source>
-        <translation>Titelform</translation>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1329"/>
+        <source>Capitalize first letter</source>
+        <translation>Erstes Zeichen groß</translation>
     </message>
     <message>
-        <location filename="../src/app/qgslabelinggui.cpp" line="1303"/>
-        <source>Select SVG symbol</source>
-        <translation>SVG-Symbol wählen</translation>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1471"/>
+        <source>Size%1</source>
+        <translation>Größe%1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1471"/>
+        <source> X</source>
+        <translation> X</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgslabelinggui.cpp" line="1521"/>
+        <source>File not found</source>
+        <translation>Datei nicht gefunden</translation>
     </message>
 </context>
 <context>
     <name>QgsLabelingGuiBase</name>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="20"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="14"/>
         <source>Layer labeling settings</source>
         <translation>Layerbeschriftungseinstellungen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="96"/>
-        <source>Expression</source>
-        <translation>Ausdruck</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="152"/>
-        <source>Label settings</source>
-        <translation>Beschriftungseinstellungen</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="347"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="350"/>
         <source>Size for sample text in map units</source>
         <translation>Größe des Beispieltexts in Karteneinheiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="406"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="403"/>
         <source>Sample background color</source>
         <translation>Beispielhintergrundfarbe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="449"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1381"/>
         <source>Multiple lines</source>
         <translation>Mehrzeilig</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="475"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1439"/>
         <source>Wrap on character</source>
         <translation>Bei Zeichen umbrechen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="526"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1468"/>
         <source>Line height spacing for multi-line text</source>
         <translation>Zeilenhöhe bei mehrzeiligem Text</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="554"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1496"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4745"/>
         <source>Alignment</source>
         <translation>Ausrichtung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="570"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1506"/>
         <source>Paragraph style alignment of multi-line text</source>
         <translation>Absatzstilausrichtung mehrzeiligen Texts</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1170"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="843"/>
         <source>Available typeface styles</source>
         <translation>Verfügbare Schriftartstile</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1195"/>
-        <source>Underlined Text</source>
-        <translation>Unterstrichener Text</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1223"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1194"/>
         <source>Strikeout text</source>
         <translation>Durchgestrichener Text</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="929"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="964"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="694"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1105"/>
         <source>Space in pixels or map units, relative to size unit choice</source>
         <translation>Abstand in Pixel oder Karteneinheiten relativ zur Größeneinheitenwahl</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="951"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="991"/>
         <source>Type case</source>
         <translation>Schriftart Groß-/Kleinschreibung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="887"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="792"/>
         <source>Capitalization style of text</source>
         <translation>Großschreibungstil des Texts</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1550"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1710"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4656"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5342"/>
+        <source>Data defined</source>
+        <translation>Datendefiniert</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4682"/>
+        <source>X</source>
+        <translation>X</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4702"/>
+        <source>Y</source>
+        <translation>Y</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4738"/>
+        <source>Coordinate</source>
+        <translation>Koordinate</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4767"/>
+        <source>Preserve data rotation values</source>
+        <translation>Datenrotationswerte erhalten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4791"/>
+        <source>horizontal</source>
+        <translation>horizontal</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4811"/>
+        <source>vertical</source>
+        <translation>vertikal</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4844"/>
+        <source>( Define attribute fields to enable labeling map tools )</source>
+        <translation>( Um Beschriftungswerkzeuge zu aktiven Attributfelder festlegen )</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4966"/>
+        <source>Label options</source>
+        <translation>Beschriftungsoptionen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5046"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5171"/>
         <source>Minimum </source>
         <translation>Minimum </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1620"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1682"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5072"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5206"/>
         <source>Maximum </source>
         <translation>Maximum </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1793"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1842"/>
         <source>Formatted numbers</source>
         <translation>Zahlenformatierung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1831"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1877"/>
         <source>Decimal places </source>
         <translation>Dezimalstellen </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1841"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1907"/>
         <source>Show plus sign</source>
         <translation>Plus-Vorzeichen anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="655"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2018"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2075"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2558"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2662"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2753"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2978"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3692"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2273"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2511"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2844"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2956"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3048"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3325"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3358"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4306"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4421"/>
         <source>mm</source>
         <translation>mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="660"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1312"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2023"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2080"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2563"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2667"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2758"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2983"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3697"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1026"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2278"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2516"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2849"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2961"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3053"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3330"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3363"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4311"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4426"/>
         <source>map units</source>
         <translation>Karteneinheiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="744"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1022"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2103"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2397"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4432"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="802"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2180"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2605"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3502"/>
         <source>Transparency</source>
         <translation>Transparenz</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="788"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1066"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2149"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2179"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2339"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="972"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2164"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2645"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3459"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3542"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="286"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="289"/>
         <source>Sample text</source>
         <translation>Beispieltext</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="305"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="308"/>
         <source>Reset sample text</source>
         <translation>Beispieltext zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="529"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1471"/>
         <source> line</source>
         <translation> Zeile</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="574"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3776"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1513"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1612"/>
         <source>Left</source>
         <translation>Links</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="579"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1518"/>
         <source>Center</source>
         <translation>Zentriert</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="584"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3738"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1523"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1667"/>
         <source>Right</source>
         <translation>Rechts</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4564"/>
-        <source>Multi-line align</source>
-        <translation>Mehrzeilig ausrichten</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="504"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4415"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1452"/>
         <source>Line height</source>
         <translation>Linienhöhe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="913"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4540"/>
-        <source>Letter spacing</source>
-        <translation>Zeichensperrung</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="900"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4550"/>
-        <source>Word spacing</source>
-        <translation>Wortsperrung</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1137"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="770"/>
         <source>Style</source>
         <translation>Stil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1307"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1021"/>
         <source>points</source>
         <translation>Punkte</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1198"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1156"/>
         <source>U</source>
         <translation>U</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1226"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1197"/>
         <source>S</source>
         <translation>S</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="695"/>
-        <source>Color area inside of pen stroke</source>
-        <translation>Farbbereich im Stiftstrich</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3039"/>
-        <source>Advanced</source>
-        <translation>Erweitert</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3877"/>
-        <source>Options</source>
-        <translation>Optionen</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3899"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5441"/>
         <source>Label every part of multi-part features</source>
         <translation>Alle Teile mehrteiliger Objekte beschriften</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3892"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5448"/>
         <source>Merge connected lines to avoid duplicate labels</source>
         <translation>Anschließende Linien verbinden, um doppelte Beschriftungen zu vermeiden</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3957"/>
-        <source>Features don&apos;t act as obstacles for labels</source>
-        <translation>Objekte sind kein Hindernis für Beschriftungen</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1471"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3126"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="550"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="553"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1728"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3656"/>
         <source>Placement</source>
         <translation>Platzierung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3399"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3464"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4245"/>
-        <source>Label distance</source>
-        <translation>Beschriftungsabstand</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2903"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3370"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3814"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4235"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2464"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4501"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4731"/>
         <source>Rotation</source>
         <translation>Drehung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3353"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3846"/>
-        <source>degrees</source>
-        <translation>Grad</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4516"/>
-        <source>Capitalization</source>
-        <translation>Großschreibung</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4596"/>
-        <source>Add label columns to attribute table</source>
-        <translation>Beschriftungespalten zur Attributetabelle hinzufügen</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4612"/>
-        <source>About data defined values</source>
-        <translation>Über datendefinierte Werte</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="48"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="36"/>
         <source>Label this layer with</source>
         <translation>Layer beschriften mit</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="855"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="493"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="618"/>
         <source>Text style</source>
         <translation>Textstil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1260"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="815"/>
         <source>Font</source>
         <translation>Schriftart</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1099"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="913"/>
         <source>TextLabel</source>
         <translation>Textbeschriftung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="106"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="308"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1086"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1372"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1439"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="311"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="710"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="722"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="853"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="860"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="867"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="874"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="881"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="900"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1034"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1070"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1121"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1166"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1207"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1261"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1303"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1409"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1426"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1531"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1565"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1650"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1660"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1705"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1715"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1780"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1794"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1849"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1897"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1914"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1992"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2040"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2047"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2194"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2201"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2233"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2240"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2396"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2471"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2500"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2524"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2531"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2551"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2595"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2657"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2674"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2729"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2749"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2786"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2807"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2881"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2901"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2908"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2918"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2978"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2985"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3061"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3123"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3227"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3554"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3561"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3568"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3575"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3582"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3589"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3596"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3603"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3610"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3617"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4001"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4022"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4265"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4344"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4351"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4460"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4467"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4533"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4594"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4689"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4709"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4754"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4798"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4818"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4999"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5059"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5088"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5118"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5187"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5222"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5276"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5283"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="822"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1244"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2213"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4449"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1004"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2070"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3492"/>
         <source>Color</source>
         <translation>Farbe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="597"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1901"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2595"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="514"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="517"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2757"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3439"/>
         <source>Buffer</source>
         <translation>Puffer</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="806"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1117"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4439"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="735"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2253"/>
         <source>Size</source>
         <translation>Größe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3930"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5534"/>
         <source> mm</source>
         <translation> mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="264"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="289"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="249"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="292"/>
         <source>Lorem Ipsum</source>
         <translation>Lorom Ipsum</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3345"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3493"/>
-        <source>In map units</source>
-        <translation>In Karteneinheiten</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3075"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4854"/>
         <source>Priority</source>
         <translation>Priorität</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3090"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4869"/>
         <source>Low</source>
         <translation>Niedrig</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3116"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4895"/>
         <source>High</source>
         <translation>Hoch</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1526"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4992"/>
         <source>Scale-based visibility</source>
         <translation>Maßstabsabhängige Darstellung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3914"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5111"/>
+        <source>Pixel size-based visibility (labels in map units)</source>
+        <translation>Sicherbarkeit nach Pixelgröße (Beschriftung in Karteneinheiten)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5426"/>
+        <source>Feature options</source>
+        <translation>Objektoptionen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5541"/>
         <source>Suppress labeling of features smaller than</source>
         <translation>Objekte nicht beschriften, wenn kürzer als</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3340"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3488"/>
-        <source>In mm</source>
-        <translation>In mm</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1652"/>
-        <source>Pixel size-based visibility</source>
-        <translation>Pixelgrößenabhängige Sichtbarkeit</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1676"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5200"/>
         <source>Labels will not show if larger than this on screen</source>
         <translation>Größere Beschriftungen werden nicht angezeigt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1679"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1707"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5168"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5203"/>
         <source> px</source>
         <translation> px</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1704"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5165"/>
         <source>Labels will not show if smaller than this on screen</source>
         <translation>Kleinere Beschriftungen werden nicht angezeigt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1385"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1569"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1607"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1732"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1745"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1634"/>
         <source>&lt;</source>
         <translation>&lt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1777"/>
-        <source> Label in Map Units </source>
-        <translation> Beschriftung in Karteneinheiten </translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1407"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1588"/>
-        <source> Label </source>
-        <translation> Beschriftung </translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="180"/>
-        <source>Text/Buffer sample</source>
-        <translation>Text-/Pufferbeispiel</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="672"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2481"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2080"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2703"/>
         <source>Pen join style</source>
         <translation>Stiftübergangsstil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1325"/>
-        <source>Line direction symbols</source>
-        <translation>Linienrichtungssymbol</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1354"/>
-        <source>Symbol(s)</source>
-        <translation>Symbol(e)</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1426"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1689"/>
         <source>&gt;</source>
         <translation>&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1484"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1747"/>
         <source>left/right</source>
         <translation>links/rechts</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1500"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1763"/>
         <source>above</source>
         <translation>über</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1507"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1770"/>
         <source>below</source>
         <translation>unter</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1514"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1787"/>
         <source>Reverse direction</source>
         <translation>Rückwärts</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1857"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3162"/>
         <source>Drop shadow</source>
         <translation>Schattenwurf</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1929"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3479"/>
         <source>Offset</source>
         <translation>Versatz</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2166"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3281"/>
         <source>Scale</source>
         <translation>Maßstab </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1906"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2282"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="526"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="529"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2331"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3444"/>
         <source>Background</source>
         <translation>Hintergrund</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2404"/>
-        <source>Select SVG symbol</source>
-        <translation>SVG-Symbol wählen</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2430"/>
-        <source>Fill</source>
-        <translation>Füllung</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2437"/>
-        <source>Size X,Y</source>
-        <translation>Größe X,Y</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2491"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2793"/>
         <source>Load symbol parameters</source>
         <translation>Symbolparameter laden</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2568"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2854"/>
         <source>% of length</source>
         <translation>% der Länge</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2600"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2857"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2762"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2873"/>
         <source>Fixed</source>
         <translation>Fest</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2690"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3068"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4389"/>
         <source>Offset X,Y</source>
         <translation>X-,Y-Versatz</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2790"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3001"/>
         <source>Rectangle</source>
         <translation>Rechteck</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2795"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3006"/>
         <source>Square</source>
         <translation>Quadratisch</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2800"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3011"/>
         <source>Ellipse</source>
         <translation>Ellipse</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2805"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3016"/>
         <source>Circle</source>
         <translation>Kreis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2810"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3021"/>
         <source>SVG</source>
         <translation>SVG</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2833"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2581"/>
         <source>Shape</source>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2847"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2863"/>
         <source>Sync with label</source>
         <translation>Mit Beschriftung abgleichen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2852"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2868"/>
         <source>Offset of label</source>
         <translation>Beschriftungsversatz</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2910"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2421"/>
         <source>Radius X,Y</source>
         <translation>X-,Y-Radius</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2948"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2800"/>
         <source>Border width</source>
         <translation>Randbreite</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2991"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2969"/>
         <source>symbol units</source>
         <translation>Symboleinheiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3019"/>
-        <source>Border</source>
-        <translation>Rahmen</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3503"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3934"/>
         <source>Line orientation dependent position</source>
         <translation>Linienrichtungsabhängige Position</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4116"/>
-        <source>Use label background size in collision calculations</source>
-        <translation>Beschriftungshintergrundgröße in Kollisionsberechnungen benutzen</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4135"/>
-        <source>Data defined settings</source>
-        <translation>Datendefinierte Einstellungen</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4200"/>
-        <source>Buffer transparency</source>
-        <translation>Puffertransparenz</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4292"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4761"/>
         <source>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</source>
         <translation>Abhaken, um den berechneten Winkel der Beschriftungsfunktion beim Anpinnen und NULL beim Lösen zu speichern</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4298"/>
-        <source>Preserve existing rotation values during label pin/unpin operations</source>
-        <translation>Vorhandene Drehwinkel über Anpinnen/Lösen erhalten</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4324"/>
-        <source>Display properties</source>
-        <translation>Anzeigeeigenschaften</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4356"/>
-        <source>Minimum scale</source>
-        <translation>Minimalmaßstab</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4366"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5312"/>
         <source>Show label</source>
         <translation>Beschriftung anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4380"/>
-        <source>Maximum scale</source>
-        <translation>Minimalmaßstab</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4397"/>
-        <source>Font properties</source>
-        <translation>Schriftarteigenschaften</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4459"/>
-        <source>Bold</source>
-        <translation>Fett</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4469"/>
-        <source>Italic</source>
-        <translation>Kursiv</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4479"/>
-        <source>Underline</source>
-        <translation>Unterstrichen</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4499"/>
-        <source>Font family</source>
-        <translation>Schriftfamilie</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4217"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3887"/>
         <source>Position</source>
         <translation>Position</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3980"/>
-        <source>Automated placement settings</source>
-        <translation>Einstellung der automatischen Plazierung</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3160"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3733"/>
         <source>Around point</source>
         <translation>Um Punkt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="708"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="983"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2254"/>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2362"/>
-        <source>Blending mode</source>
-        <translation>Mischmodus</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1875"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3452"/>
         <source>Draw under</source>
         <translation>Zeichnen unter</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1891"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3429"/>
         <source>Lowest label component</source>
         <translation>Niedrigste Beschriftungskomponente</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1896"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="490"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3434"/>
         <source>Text</source>
         <translation>Text</translation>
     </message>
     <message utf8="true">
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1969"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3407"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4520"/>
         <source>˚</source>
         <translation>°</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="1982"/>
-        <source>@</source>
-        <translation>@</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2037"/>
-        <source>Global</source>
-        <translation>Global</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2046"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3288"/>
         <source>Blur radius</source>
         <translation>Radius verschmieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="2094"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3301"/>
         <source>Blur only alpha pixels</source>
         <translation>Nur transparente Pixel verschmieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3170"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3743"/>
         <source>Offset from point</source>
         <translation>Abstand vom Punkt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3181"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3776"/>
         <source>Parallel</source>
         <translation>Parallel</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3191"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3763"/>
         <source>Curved</source>
         <translation>Gebogen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3198"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="81"/>
+        <source>Edit expression</source>
+        <translation>Ausdruck bearbeiten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="114"/>
+        <source>Automated placement settings (apply to all layers)</source>
+        <translation>Automatische Plazierungseinstellungen (gilt für alle Layer)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="171"/>
+        <source>Text/Buffer Sample</source>
+        <translation>Text/Puffer Beispiel</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="502"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="505"/>
+        <source>Formatting</source>
+        <translation>Formatierung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="538"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="541"/>
+        <source>Shadow</source>
+        <translation>Schatten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="562"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="565"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4932"/>
+        <source>Rendering</source>
+        <translation>Darstellung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="681"/>
+        <source>letter</source>
+        <translation>Buchstabe</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1041"/>
+        <source>Spacing</source>
+        <translation>Zwischenräume</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1077"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2187"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2836"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3472"/>
+        <source>Blend mode</source>
+        <translation>Mischmodi</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1092"/>
+        <source>word</source>
+        <translation>Wort</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1153"/>
+        <source>Underlined text</source>
+        <translation>Unterstrichener Text</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1247"/>
+        <source>Bold text
+(data defined only, overrides Style)</source>
+        <translation>Fetter Text
+(nur datendefiniert, überschreibt Stil)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1251"/>
+        <source>B</source>
+        <translation>F</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1289"/>
+        <source>Italic text
+(data defined only, overrides Style)</source>
+        <translation>Kursiver Text
+(nur datendefiniert, überschreibt Stil)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1293"/>
+        <source>I</source>
+        <translation>K</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1342"/>
+        <source>Text formatting</source>
+        <translation>Textformatierung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1578"/>
+        <source>Line direction symbol</source>
+        <translation>Linienrichtungssymbol</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="1953"/>
+        <source>Text buffer</source>
+        <translation>Textpuffer</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2005"/>
+        <source>Draw text buffer</source>
+        <translation>Textpuffer zeichnen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2289"/>
+        <source>Color buffer&apos;s fill</source>
+        <translation>Pufferfüllung einfärben</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2376"/>
+        <source>Draw background</source>
+        <translation>Hintergrund zeichnen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2567"/>
+        <source>Size X</source>
+        <translation>Größe X</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2574"/>
+        <source>Size type</source>
+        <translation>Größenart</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2588"/>
+        <source>Size Y</source>
+        <translation>Größe Y</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2722"/>
+        <source>Fill color</source>
+        <translation>Füllfarbe</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="2742"/>
+        <source>Border color</source>
+        <translation>Randfarbe</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3207"/>
+        <source>Draw drop shadow</source>
+        <translation>Schattenwurf zeichnen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3344"/>
+        <source>Label&apos;s rotation is ignored</source>
+        <translation>Beschriftungsdrehung wird ignoriert</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3347"/>
+        <source>Use global shadow</source>
+        <translation>Globalen Schatten verwenden</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3786"/>
         <source>Horizontal</source>
         <translation>Horizontal</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3209"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3806"/>
         <source>Offset from centroid</source>
         <translation>Abstand vom Zentrum</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3219"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3822"/>
         <source>Around centroid</source>
         <translation>Um Zentrum</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3226"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3829"/>
         <source>Horizontal (slow)</source>
         <translation>Horizontal (langsam)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3233"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3836"/>
         <source>Free (slow)</source>
         <translation>Frei (langsam)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3240"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3849"/>
         <source>Using perimeter</source>
         <translation>Nach Umfang</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3290"/>
-        <source>Centroid of</source>
-        <translation>Zentroid von</translation>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5554"/>
+        <source>Discourage labels from covering features</source>
+        <translation>Möglichst keine Objekte durch Beschriftungen verdecken</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3306"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3978"/>
         <source>visible polygon</source>
         <translation>sichtbarem Polygon</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3322"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3994"/>
         <source>whole polygon</source>
         <translation>ganzem Polygon</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3426"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3902"/>
         <source>Above line</source>
         <translation>Über Linie</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3436"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3918"/>
         <source>On line</source>
         <translation>Auf Linie</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3443"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3925"/>
         <source>Below line</source>
         <translation>Unter Linie</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3572"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="3962"/>
+        <source>Centroid</source>
+        <translation>Zentroid</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4045"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4065"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4085"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4105"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4125"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4145"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4165"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4185"/>
+        <source>abc</source>
+        <translation>abc</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4213"/>
+        <source>Quadrant</source>
+        <translation>Quadrant</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4450"/>
+        <source>Distance</source>
+        <translation>Entfernung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4607"/>
         <source>outside</source>
         <translation>außen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3585"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4574"/>
         <source>inside</source>
         <translation>innen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3639"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="4633"/>
         <source>Maximum angle between curved characters</source>
         <translation>Größter Winkel zwischen Zeichen auf Kurven</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3663"/>
-        <source>X </source>
-        <translation>X </translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3714"/>
-        <source>Y </source>
-        <translation>Y </translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3745"/>
-        <source>Above Right</source>
-        <translation>Oben rechts</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3752"/>
-        <source>Above Left</source>
-        <translation>Oben links</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3759"/>
-        <source>Over</source>
-        <translation>Über</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3769"/>
-        <source>Above</source>
-        <translation>Oben</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3783"/>
-        <source>Below Left</source>
-        <translation>Unten links</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3790"/>
-        <source>Below</source>
-        <translation>Unten</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3797"/>
-        <source>Below Right</source>
-        <translation>Unten rechts</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="3989"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5241"/>
         <source>Show all labels for this layer (including colliding labels)</source>
         <translation>Alle Beschriftungen auf diesem Layer anzeigen (einschließlich kollidierender)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4004"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5413"/>
         <source>Show upside-down labels</source>
         <translation>Kopfstehende Beschriftungen anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4017"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5374"/>
         <source>never</source>
         <translation>nie</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4033"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5390"/>
         <source>when rotation defined</source>
         <translation>bei definiertem Winkel</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4046"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5361"/>
         <source>always</source>
         <translation>immer</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4063"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5499"/>
         <source>Limit number of features to be labeled to</source>
         <translation>Obergrenze der zu beschriftenden Objekte</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4079"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5483"/>
         <source>Number of features sent to labeling engine, though not all may be labeled</source>
         <translation>Anzahl der Objekte, die die Beschriftung durchlaufen, aber evtl. nicht beschriftet werden</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4252"/>
-        <source>X Coordinate</source>
-        <translation>X-Koordinate</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4262"/>
-        <source>Y Coordinate</source>
-        <translation>Y-Koordinate</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4272"/>
-        <source>Horizontal alignment</source>
-        <translation>Horizontale Ausrichtung</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4282"/>
-        <source>Vertical alignment</source>
-        <translation>Vertikale Ausrichtung</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4342"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="5296"/>
         <source>Always show</source>
         <translation>Immer anzeigen</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4489"/>
-        <source>Strikeout</source>
-        <translation>Durchgestrichen</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4162"/>
-        <source>Buffer properties</source>
-        <translation>Puffereigenschaften</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4177"/>
-        <source>Buffer size</source>
-        <translation>Puffergröße</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabelingguibase.ui" line="4187"/>
-        <source>Buffer color</source>
-        <translation>Pufferfarbe</translation>
     </message>
 </context>
 <context>
@@ -33422,7 +33655,7 @@ The error message from the database was:
 SQL: %2</source>
         <translation>Konnte Abfrage nicht ausführen.
 Die Datenbankfehlermeldung war:
-%2.
+%1.
 SQL: %2</translation>
     </message>
     <message>
@@ -34498,8 +34731,8 @@ Fehler: %2</translation>
         <translation>Dieses Repositorium ist deaktiviert</translation>
     </message>
     <message>
-        <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation>Diese Repositorium wurde wegen Inkompatibilität zu Ihrer Quantum GIS-Version blockiert</translation>
+        <source>This repository is blocked due to incompatibility with your QGIS version</source>
+        <translation>Diese Repositorium wurde wegen Inkompatibilität zu Ihrer QGIS-Version blockiert</translation>
     </message>
     <message>
         <source>orphans</source>
@@ -34601,7 +34834,7 @@ Fehler: %2</translation>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
         <translation>Die Erweiterung scheint installiert worden zu sein, aber der Ort konnte nicht festgestellt werden. Wahrscheinlich enthielt das Erweiterungspaket ein falsch benanntes Verzeichnis.
-Bitte durchsuchen Sie die Liste der installierten Erweiterung. Dies bedeutet außerdem, dass es nicht möglich ist festzustellen, dass die Erweiterung installiert ist und ob es Updates gibt. Nichtsdestotrotz könnte die Erweiterung funktionieren. Bitte kontaktieren Sie den Erweiterungsautor und setzen Ihn davon in Kenntnis.</translation>
+Bitte durchsuchen Sie die Liste der installierten Erweiterung. Dies bedeutet außerdem, dass es nicht möglich ist festzustellen, dass die Erweiterung installiert ist und ob es Updates gibt. Nichtsdestotrotz könnte die Erweiterung funktionieren. Bitte kontaktieren Sie den Erweiterungsautor und setzen ihn davon in Kenntnis.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
@@ -34640,8 +34873,8 @@ Bitte durchsuchen Sie die Liste der installierten Erweiterung. Dies bedeutet au�
         <translation>Sind Sie sicher, dass die folgendes Repositorium entfernen wollen?</translation>
     </message>
     <message>
-        <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation>Diese Erweiterung ist inkompatibel mit Ihrer Quantum GIS-Version und wird wahrscheinlich nicht funktionieren.</translation>
+        <source>This plugin is incompatible with your QGIS version and probably won&apos;t work.</source>
+        <translation>Diese Erweiterung ist inkompatibel mit Ihrer QGIS-Version und wird wahrscheinlich nicht funktionieren.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
@@ -34660,8 +34893,8 @@ Hier die Fehlermeldung:</translation>
         <translation>Diese Erweiterung ist defekt</translation>
     </message>
     <message>
-        <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation>Diese Erweiterung benötigt eine neuere Quantum GIS-Version</translation>
+        <source>This plugin requires a newer version of QGIS</source>
+        <translation>Diese Erweiterung benötigt eine neuere QGIS-Version</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
@@ -34672,8 +34905,8 @@ Hier die Fehlermeldung:</translation>
         <translation>Erweiterung erfolgreich neu installiert</translation>
     </message>
     <message>
-        <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation>Diese Erweiterung ist für eine neuere Version von Quantum GIS bestimmt. Die minimal erforderliche Version ist:</translation>
+        <source>The plugin is designed for a newer version of QGIS. The minimum required version is:</source>
+        <translation>Diese Erweiterung ist für eine neuere Version von QGIS bestimmt. Die minimal erforderliche Version ist:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
@@ -34685,9 +34918,9 @@ Hier die Fehlermeldung:</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
-For more information, please visit its homepage and Quantum GIS wiki.</source>
+For more information, please visit its homepage and QGIS wiki.</source>
         <translation>Das benötigte Python-Modul ist nicht installiert.
-Für weitere Informationen besuchen Sie bitte dessen Homepage und das Quantum GIS-Wiki.</translation>
+Für weitere Informationen besuchen Sie bitte dessen Homepage und das QGIS-Wiki.</translation>
     </message>
     <message>
         <source>Python plugin installed.
@@ -34697,13 +34930,13 @@ Sie müssen es noch im Erweiterungsmanager aktivieren.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
-You need to restart Quantum GIS in order to reload it.</source>
+You need to restart QGIS in order to reload it.</source>
         <translation>Python-Erweiterung neu installiert.
-Sie müssen Quantum GIS neu startet, um es neuzuladen.</translation>
+Sie müssen QGIS neu startet, um es neuzuladen.</translation>
     </message>
     <message>
-        <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation>Python-Erweiterung deinstalliert. Beachten Sie, dass Sie Quantum GIS u.U. neu starten müssen, um es komplett zu entfernen.</translation>
+        <source>Python plugin uninstalled. Note that you may need to restart QGIS in order to remove it completely.</source>
+        <translation>Python-Erweiterung deinstalliert. Beachten Sie, dass Sie QGIS u.U. neu starten müssen, um es komplett zu entfernen.</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -34982,12 +35215,12 @@ Sie müssen Quantum GIS neu startet, um es neuzuladen.</translation>
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, Quantum GIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Installer window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, QGIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Installer window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hinweis:&lt;/span&gt; Wenn diese Funktion aktiv ist, wird Quantum GIS Sie immer informieren, wenn eine neue Erweiterung oder ein Erweiterungsupdate verfügbar ist. Anderenfalls erfolgt die Repositorienabfrage beim Öffnen des Erweiterungsinstallationsfensters.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hinweis:&lt;/span&gt; Wenn diese Funktion aktiv ist, wird QGIS Sie immer informieren, wenn eine neue Erweiterung oder ein Erweiterungsupdate verfügbar ist. Anderenfalls erfolgt die Repositorienabfrage beim Öffnen des Erweiterungsinstallationsfensters.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="564"/>
@@ -35804,8 +36037,8 @@ SQL: %3</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1026"/>
-        <source>The table has no column suitable for use as a key. Quantum GIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
-        <translation>Die Tabelle hat keine Spalten, die sich als Schlüssels eignen. Quantum GIS benötigt einen Primärschlüssel, einen PostgreSQL OID oder CTID für Tabellen.</translation>
+        <source>The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
+        <translation>Die Tabelle hat keine Spalten, die sich als Schlüssels eignen. QGIS benötigt einen Primärschlüssel, einen PostgreSQL OID oder CTID für Tabellen.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1064"/>
@@ -42015,12 +42248,12 @@ Wollen Sie die Relation [%2] überschreiben?</translation>
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? Quantum GIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; for more details. In the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsors page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? QGIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; for more details. In the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsors page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;Wir arbeiten wirklich hart, um diese Software für Sie zu erstellen. Haben Sie all die coolen Funktionen gesehen? Wird Ihnen wohlig warm, wenn Sie damit arbeiten? Quantum GIS ist das Produkt eines Teams das sich ihm aus Spaß and Freude verschrieben hat. Wir möchten dass Sie es kopieren und weitergeben und es so vielen Leute wie möglich zugänglich machen. Wenn Sie mit QGIS Geld sparen oder Sie unsere Arbeit gut finden und die Möglichkeit haben uns finanziell zu unterstützen, überlegen Sie sich bitte, ob Sie die Entwicklung von Quantum GIS nicht vielleicht auch unterstützen wollen. Wir verwenden das Geld unserer Sponsoren um Reise- und sonstige Kosten unserer halbjährlichen Entwicklertreffen und allgemeine Kosten zu decken. Nähere Details finden Sie auf der &lt;/span&gt;&lt;a href=&quot;http://qgis.org/de/sponsoring.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS-Sponsoren-Webseite&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;.  Auf der &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsoren-Seite&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; sehen Sie die guten Menschen und Firmen, die uns finanziell helfen - ein ganz großes Dankeschön ihnen allen!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;Wir arbeiten wirklich hart, um diese Software für Sie zu erstellen. Haben Sie all die coolen Funktionen gesehen? Wird Ihnen wohlig warm, wenn Sie damit arbeiten? QGIS ist das Produkt eines Teams das sich ihm aus Spaß and Freude verschrieben hat. Wir möchten dass Sie es kopieren und weitergeben und es so vielen Leute wie möglich zugänglich machen. Wenn Sie mit QGIS Geld sparen oder Sie unsere Arbeit gut finden und die Möglichkeit haben uns finanziell zu unterstützen, überlegen Sie sich bitte, ob Sie die Entwicklung von QGIS nicht vielleicht auch unterstützen wollen. Wir verwenden das Geld unserer Sponsoren um Reise- und sonstige Kosten unserer halbjährlichen Entwicklertreffen und allgemeine Kosten zu decken. Nähere Details finden Sie auf der &lt;/span&gt;&lt;a href=&quot;http://qgis.org/de/sponsoring.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS-Sponsoren-Webseite&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;.  Auf der &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsoren-Seite&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; sehen Sie die guten Menschen und Firmen, die uns finanziell helfen - ein ganz großes Dankeschön ihnen allen!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -42049,10 +42282,10 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="136"/>
         <source>The source relation %1 has no column suitable for use as a unique key.
 
-Quantum GIS requires that the relation has an integer column no larger than 32 bits containing unique values. </source>
+QGIS requires that the relation has an integer column no larger than 32 bits containing unique values. </source>
         <translation>Die Quellrelation %1 hat keine Spalte, die als eindeutiger Schlüssel geeignet ist.
 
-Quantum GIS verlangt, dass ein Relation eine ganzzahlige Spalte nicht breiter als 32 Bit hat, die eindeutige Werte enthält. </translation>
+QGIS verlangt, dass ein Relation eine ganzzahlige Spalte nicht breiter als 32 Bit hat, die eindeutige Werte enthält. </translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="221"/>
@@ -42128,8 +42361,8 @@ Quantum GIS verlangt, dass ein Relation eine ganzzahlige Spalte nicht breiter al
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1520"/>
-        <source>Column %1 has a geometry type of %2, which Quantum GIS does not currently support.</source>
-        <translation>Spalte %1 hat den Geometrietyp %2, den Quantum GIS derzeit nicht unterstützt.</translation>
+        <source>Column %1 has a geometry type of %2, which QGIS does not currently support.</source>
+        <translation>Spalte %1 hat den Geometrietyp %2, den QGIS derzeit nicht unterstützt.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1528"/>
@@ -42138,8 +42371,8 @@ Quantum GIS verlangt, dass ein Relation eine ganzzahlige Spalte nicht breiter al
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1529"/>
-        <source>Column %1 is not restricted to a single SRID, which Quantum GIS requires.</source>
-        <translation>Spalte %1 ist nicht auf eine einzelne SRID beschränkt, was Quantum GIS verlangt.</translation>
+        <source>Column %1 is not restricted to a single SRID, which QGIS requires.</source>
+        <translation>Spalte %1 ist nicht auf eine einzelne SRID beschränkt, was QGIS verlangt.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1560"/>
@@ -42153,13 +42386,13 @@ Quantum GIS verlangt, dass ein Relation eine ganzzahlige Spalte nicht breiter al
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1822"/>
-        <source>Because Quantum GIS supports only planar data, the SQL Anywhere data provider will transform the data to the compatible planar projection (SRID=%1).</source>
-        <translation>Weil Quantum GIS nur ebene Daten unterstützt, wird der SQL-Anywhere-Datenlieferant die Daten in die kompatible Ebenenprojektion (SRID=%1) transformieren.</translation>
+        <source>Because QGIS supports only planar data, the SQL Anywhere data provider will transform the data to the compatible planar projection (SRID=%1).</source>
+        <translation>Weil QGIS nur ebene Daten unterstützt, wird der SQL-Anywhere-Datenlieferant die Daten in die kompatible Ebenenprojektion (SRID=%1) transformieren.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1839"/>
-        <source>Because Quantum GIS supports only planar data and no compatible planar projection was found, the SQL Anywhere data provider will attempt to transform the data to planar WGS 84 (SRID=%1).</source>
-        <translation>Weil Quantum GIS nur ebene Daten unterstützt und keine kompatible Ebenenprojektion gefunden wurde, wird der SQL-Anywhere-Datenlieferant versuchen die Daten in die Ebenenprojektion WGS 84 (SRID=%1) zu transformieren.</translation>
+        <source>Because QGIS supports only planar data and no compatible planar projection was found, the SQL Anywhere data provider will attempt to transform the data to planar WGS 84 (SRID=%1).</source>
+        <translation>Weil QGIS nur ebene Daten unterstützt und keine kompatible Ebenenprojektion gefunden wurde, wird der SQL-Anywhere-Datenlieferant versuchen die Daten in die Ebenenprojektion WGS 84 (SRID=%1) zu transformieren.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1847"/>
@@ -42677,23 +42910,23 @@ Es gab ein Problem mit Ihrer Symboldatenbank.</translation>
 <context>
     <name>QgsSvgCache</name>
     <message>
-        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="300"/>
+        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="305"/>
         <source>SVG request failed [error: %1 - url: %2]</source>
         <translation>SVG-Abfrage gescheitert [Fehler: %1 - URL %2]</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="300"/>
-        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="323"/>
+        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="305"/>
+        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="328"/>
         <source>SVG</source>
         <translation>SVG</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="323"/>
+        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="328"/>
         <source>SVG request error [status: %1 - reason phrase: %2]</source>
         <translation>SVG-Abfragefehler [Status: %1 - Grund: %2]</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="731"/>
+        <location filename="../src/core/symbology-ng/qgssvgcache.cpp" line="736"/>
         <source>%1 of %2 bytes of svg image downloaded.</source>
         <translation>%1 von %2 Bytes des SVG-Bilds geladen.</translation>
     </message>
@@ -42749,12 +42982,12 @@ Es gab ein Problem mit Ihrer Symboldatenbank.</translation>
 <context>
     <name>QgsSvgSelectorGroupsModel</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="103"/>
+        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="104"/>
         <source>App Symbols</source>
         <translation>Anw.-symbole</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="107"/>
+        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="108"/>
         <source>User Symbols</source>
         <translation>Ben.-symbole</translation>
     </message>
@@ -42762,36 +42995,19 @@ Es gab ein Problem mit Ihrer Symboldatenbank.</translation>
 <context>
     <name>QgsSvgSelectorWidget</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="228"/>
+        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="257"/>
         <source>Select SVG file</source>
         <translation>SVG-Datei wählen</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="230"/>
+        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="259"/>
         <source>SVG files</source>
         <translation>SVG-Dateien</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="241"/>
-        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="271"/>
-        <source>Invalid file</source>
-        <translation>Ungültige Datei</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="241"/>
-        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="271"/>
-        <source>Error, file does not exist or is not readable</source>
-        <translation>Fehler, Datei existiert nicht oder ist nicht lesbar</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="267"/>
-        <source>Invalid file url</source>
-        <translation>Ungültige Datei-URL</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="267"/>
-        <source>Error, file URL is invalid</source>
-        <translation>Fehler, Datei-URL ist ungültig</translation>
+        <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="282"/>
+        <source>File not found</source>
+        <translation>Datei nicht gefunden</translation>
     </message>
 </context>
 <context>
@@ -42999,8 +43215,8 @@ Es gab ein Problem mit Ihrer Symboldatenbank.</translation>
     <name>QgsTipFactory</name>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="29"/>
-        <source>Quantum GIS is open source</source>
-        <translation>Quantum GIS ist quelloffen und frei</translation>
+        <source>QGIS is open source</source>
+        <translation>QGIS ist quelloffen und frei</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="40"/>
@@ -43009,8 +43225,8 @@ Es gab ein Problem mit Ihrer Symboldatenbank.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="41"/>
-        <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case studies section&lt;/a&gt; of the Quantum GIS home page (http://http://www.qgis.org/en/community/qgis-case-studies.html).</source>
-        <translation>Wenn Sie eine wissenschaftliche Arbeit oder einen anderen Artikel, der sich auf QGIS bezieht, verfassen, würden wir Ihre Arbeit sehr gerne in die Rubrik &lt;a href=&quot;http://www.qgis.org/de/gemeinschaft/qgis-fallstudien.html&quot;&gt;Fallstudien &lt;/a&gt; auf der Quantum GIS-Homepage aufnehmen (http://www.qgis.org/de/gemeinschaft/qgis-fallstudien.html).</translation>
+        <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case studies section&lt;/a&gt; of the QGIS home page (http://http://www.qgis.org/en/community/qgis-case-studies.html).</source>
+        <translation>Wenn Sie eine wissenschaftliche Arbeit oder einen anderen Artikel, der sich auf QGIS bezieht, verfassen, würden wir Ihre Arbeit sehr gerne in die Rubrik &lt;a href=&quot;http://www.qgis.org/de/gemeinschaft/qgis-fallstudien.html&quot;&gt;Fallstudien &lt;/a&gt; auf der QGIS-Homepage aufnehmen (http://www.qgis.org/de/gemeinschaft/qgis-fallstudien.html).</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="47"/>
@@ -43028,119 +43244,109 @@ Es gab ein Problem mit Ihrer Symboldatenbank.</translation>
         <translation>QGIS-Mailinglisten</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="65"/>
-        <source>Is it &apos;QGIS&apos; or &apos;Quantum GIS&apos;?</source>
-        <translation>Heißt es &apos;QGIS&apos; oder &apos;Quantum GIS&apos;?</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="66"/>
-        <source>Both are correct. For articles we suggest you write &apos;Quantum GIS (QGIS) is ....&apos; and then refer to it as QGIS thereafter.</source>
-        <translation>Beides ist richtig. In Artikeln sollten Sie &apos;Quantum GIS (QGIS) ist...&apos; schreiben und danach von QGIS sprechen.</translation>
+        <location filename="../src/app/qgstipfactory.cpp" line="69"/>
+        <source>How do I refer to QGIS?</source>
+        <translation>Wie beziehe ich mich auf QGIS?</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="70"/>
-        <source>How do I refer to Quantum GIS?</source>
-        <translation>Wie beziehe ich mich auf Quantum GIS?</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="71"/>
         <source>QGIS is spelled in all caps. We have various subprojects of the QGIS project and it will help to avoid confusion if you refer to each by its name:&lt;ul&gt;&lt;li&gt;QGIS Library - this is the C++ library that contains the core logic that is used to build the QGIS user interface and other applications.&lt;/li&gt;&lt;li&gt;QGIS Application - this is the desktop application that you know and love so much :-).&lt;/li&gt;&lt;li&gt;QGIS Mapserver - this is a server-side application based on the QGIS Library that will serve up your .qgs projects using the WMS protocol.&lt;/li&gt;&lt;/ul&gt;</source>
         <translation>QGIS wird komplett groß geschrieben. Wie haben diverse Unterprojekte im QGIS-Projekt und es wird Verwirrung vermeiden, wenn folgende Begriffe benutzt werden:&lt;ul&gt;&lt;li&gt;QGIS-Bibliothek - ist eine C++-Bibliothek, die die Grundlogik enthält, mit der die QGIS-Benutzeroberfläche und andere Anwendungen erstellt sind&lt;/li&gt;&lt;li&gt;QGIS-Applikation - ist die Desktop-Applikation, die Sie kennen und so lieben. :-)&lt;/li&gt;&lt;li&gt;QGIS-Mapserver - dies ist eine serverseitige Anwendung, die auf der QGIS-Bibliothek basiert und Ihre .qgs-Projekte über das WMS-Protokoll verfügbar macht.&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="86"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="85"/>
         <source>You can add a current date variable to your map layout. Create a regular text label and add the string $CURRENT_DATE(yyyy-MM-dd) to the text box. See the &lt;a href=&quot;http://doc.qt.nokia.com/latest/qdate.html#toString&quot;&gt;QDate::toString format documentation&lt;/a&gt; for the possible date formats.</source>
         <translation>Sie können das aktuelle Datum Ihrem Kartenlayout hinzufügen.  Legen Sie eine normale Beschriftung an und ergänzen das Wort $CURRENT_DATE(yyyy-MM-dd) zum Textfeld. Mögliche Formate siehe &lt;a href=&quot;http://doc.qt.nokia.com/latest/qdate.html#toString&quot;&gt;Formatdokumentation QDate::toString&lt;/a&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="94"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="93"/>
         <source>In the print composer tool bar you can find two buttons for moving elements. The left one (a selection cursor with the hand symbol) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item &amp;rarr; General Options &amp;rarr; Position and Size&lt;/strong&gt;. For easier positioning you can also set specific anchor points of the element within this dialogue. The other move tool (the globe icon combined with the hand icon) allows one to move the map content within a map frame.</source>
         <translation>In der Werkzeugleiste der Druckzusammenstellung finden Sie zwei Knöpfe zum Verschieben von Elementen. Das linke (ein Auswahlcursor mit einer Hand) wählt und verschiebt eine Element im Layout.  Nach der Auswahl des Elements mit diesem Werkzeug können Sie es auch mit den Pfeiltasten verschieben. Für genaue Positionierung können Sie den Dialog &lt;strong&gt;Position und Größe&lt;/strong&gt; verwenden, den Sie unter &lt;strong&gt;Element &amp;rarr; Allgemeine Optionen &amp;rarr; Position und Größe&lt;/strong&gt;. Für einfache Positionierung können Sie bestimmte Ankerpunkte das Elements innerhalb des Dialogs setzen.  Das andere Verschiebungswerkzeug (Erdball-Icon mit einer Hand kombiniert) erlauft das Verschieben des Karteninhalts innerhalb des Kartenrahmens.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="109"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="108"/>
         <source>By left clicking an element in the layout view you can select it, by right clicking an element you can lock it. A lock symbol will appear in the upper left corner of the selected element. This prevents the element from accidentally being moved with the mouse. While in a locked state, you cannot move an element with the mouse but you can still move it with the arrow keys or by absolutely positioning it by setting its &lt;strong&gt;Position and Size&lt;/strong&gt;.</source>
         <translation>Durch einen Linksklick auf ein Element in der Layoutansicht können Sie es wählen, durch Rechtsklick auf ein Element können Sie es sperren. Ein Schloß erscheint in der obenlinks im gewählten Element. Dies verhindert, dass das Element versehentlich mit der Maus bewegt wird. Im gesperrten Zustand, können Sie das Element nicht mit der Maus bewegen, es aber immer noch mit den Pfeiltasten oder durch setzen seiner absolute Position in seinen Eigenschaften in &lt;strong&gt;Position und Größe&lt;/strong&gt; verschieben.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="120"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="119"/>
         <source>You can rotate a map by setting its rotation value in the &lt;strong&gt;Item tab &amp;rarr; Map&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool, the button with the little camera icon. QGIS comes with a selection of north arrows. After the placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
         <translation>Sie können Karten durch Setzen des Drehwinkels im Abschnitt &lt;string&gt;Element-Reiter &amp;rarr; Karte&lt;/strong&gt; drehen. Um einen Nordpfeil in Ihrem Layout zu platzieren können Sie &lt;strong&gt;Bild hinzufügen&lt;/strong&gt; (dem Knopf mit der kleinen Kamera) verwenden.  QGIS enthälteine Auswahl von Nordpfeilen. Nach der Platzierung des Nordpfeils im Layout können Sie ihn mit einem bestimmten Kartenrahmen über das Häkchen &lt;strong&gt;Mit Karte abgleichen&lt;/strong&gt; und der Auswahl des Kartenrahmens wählen. Wann immer Sie den Drehwinkel der verknüpften Karte ändern, wird der Nordpfeil automatisch mitgedreht.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="133"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="132"/>
         <source>If you want to place a text label as a placeholder for the current scale, linked to a map frame, you need to place a scalebar and set the style to &apos;Numeric&apos;. You also need to select the map frame, if there is more than one.</source>
         <translation>Wenn Sie eine Beschriftung als eine Platzhalter für den aktuellen Maßstab platzieren wollen, verbunden mit einem Kartenrahmen, müssen Sie eine Maßstabsleiste mit dem Stil &apos;Nummerisch&apos; setzen.  Außerdem müssen Sie einen Kartenrahmen wählen, wenn es mehrere gibt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="140"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="139"/>
         <source>Using the mouse scroll wheel</source>
         <translation>Benutzung des Mausrads</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="141"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="140"/>
         <source>You can use the scroll wheel on your mouse to zoom in, out and pan the map. Scroll forwards to zoom in, scroll backwards to zoom out and press and hold the scroll wheel down to pan the map. You can configure options for scroll wheel behaviour in the Options panel.</source>
         <translation>Sie können das Scrollrad Ihrer Maus zum Hinein-, Hinauszoomen und zum Verschieben der Karte benutzen. Vorwärts scrollen zoomt hinein, rückwärts zoomt heraus und das Drücken des Scrollrads verschiebt die Karte. Sie können das Verhalten des Scrollrads in den Optionen einstellen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="148"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="147"/>
         <source>Stopping rendering</source>
         <translation>Abbruch des Zeichnens</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="149"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="148"/>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;esc&apos; (the escape key), or click the small red &apos;X&apos; icon in the status bar to the bottom right of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
         <translation>Manchmal haben Sie große Datenbestände bei denen das Zeichnen ewig dauert. Sie können &apos;Esc&apos; drücken oder auf das kleine rote &apos;X&apos; Icon in der Statusleiste unten links im Fenster klicken, um das Zeichnen abzubrechen. Wenn Sie mehrere Aktionen durchführen (z.B. um Darstellungsoptionen zu ändern) und wollen das Zeichnen währenddessen ausschalten, können Sie das Häkchen &apos;Zeichnen&apos; unten rechts in der Statuszeile entfernen. Vergessen Sie nicht es wieder zu aktivieren, wenn Sie fertig sind, sonst wird die Karte nicht wieder gezeichnet!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="160"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="159"/>
         <source>Join intersected polylines when rendering</source>
         <translation>Kreuzenden Polylinen beim Zeichnen verbinden</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="161"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="160"/>
         <source>When applying layered styles to a polyline layer, you can join intersecting lines together simply by enabling symbol levels. The image below shows a before (left) and after (right) view of an intersection when symbol levels are enabled.</source>
         <translation>Wenn ein geschichteter Stil auf einem Polylinienlayer verwendet wird, kann man Kreuzungen einfach durch die Aktivierung von Symbolebenen anzeigen.  Das Bild unten zeigt eine Kreuzung vor (links) und nach (rechts) der Aktivierung von Symbolenebenen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="169"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="168"/>
         <source>Auto-enable on the fly projection</source>
         <translation>automatisch KBS-Spontantransformation als Voreinstellung aktivieren</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="170"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="169"/>
         <source>In the options dialog, under the CRS tab, you can set QGIS so that whenever you create a new project, &apos;on the fly projection&apos; is enabled automatically and a pre-selected Coordinate Reference System of your choice is used.</source>
         <translation>Im Optionen Dialog unter KBS kann QGIS so eingestellt werden das jedes neue Projekt KBS-Spontantransformation verwendet und ein voreingestelltes Koordinatensystem ihrer Wahl verwendet wird.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="177"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="176"/>
         <source>Sponsor QGIS</source>
         <translation>Unterstütze QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="178"/>
-        <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
-        <translation>Wenn QGIS hilft Geld zu sparen oder Sie Ihre Arbeit lieben und die finanziellen Möglichkeiten haben zu helfen denken Sie bitte darüber nach die Entwicklung von Quantum GIS zu unterstützen. Das Geld unserer Sponsoren wird dazu verwendet um Fahrtkosten und Kosten unserer Entwicklertreffen zu decken und auch um die allgemeinen Kosten des Projekts zu decken. Bitte gehen Sie auf  &lt;a href=&quot;http://www.qgis.org/de/sponsoring.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; für nähere Einzelheiten.</translation>
+        <location filename="../src/app/qgstipfactory.cpp" line="177"/>
+        <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
+        <translation>Wenn QGIS hilft Geld zu sparen oder Sie Ihre Arbeit lieben und die finanziellen Möglichkeiten haben zu helfen denken Sie bitte darüber nach die Entwicklung von QGIS zu unterstützen. Das Geld unserer Sponsoren wird dazu verwendet um Fahrtkosten und Kosten unserer Entwicklertreffen zu decken und auch um die allgemeinen Kosten des Projekts zu decken. Bitte gehen Sie auf  &lt;a href=&quot;http://www.qgis.org/de/sponsoring.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; für nähere Einzelheiten.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="187"/>
+        <source>QGIS has Plugins!</source>
+        <translation>QGIS hat Erweiterungen!</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="188"/>
-        <source>Quantum GIS has Plugins!</source>
-        <translation>Quantum GIS hat Erweiterungen!</translation>
+        <source>QGIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage Plugins menu. In addition there are over 150 Python plugins contributed by the user community that can be installed from the Plugins-&gt;Fetch Python Plugins menu. Don&apos;t miss out on all QGIS has to offer---check out the plugins and see what they can do for you.</source>
+        <translation>QGIS hat Erweiterungen. QGIS wird mit einigen Kernerweiterungen geliefert, die Sie im Menü Erweiterungen/Erweiterungen verwalten durchsehen können. Zudem gibt es über 150 von der Benutzergemeinschaft beigetragene Python-Erweiterungen, die über Erweiterungen/Python-Erweiterung herunterladen können. Verpassen Sie nicht was QGIS zu bieten hat - gucken Sie sich um und prüfen Sie, was sie für Sie tun können.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="189"/>
-        <source>Quantum GIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage Plugins menu. In addition there are over 150 Python plugins contributed by the user community that can be installed from the Plugins-&gt;Fetch Python Plugins menu. Don&apos;t miss out on all QGIS has to offer---check out the plugins and see what they can do for you.</source>
-        <translation>Quantum GIS hat Erweiterungen. QGIS wird mit einigen Kernerweiterungen geliefert, die Sie im Menü Erweiterungen/Erweiterungen verwalten durchsehen können. Zudem gibt es über 150 von der Benutzergemeinschaft beigetragene Python-Erweiterungen, die über Erweiterungen/Python-Erweiterung herunterladen können. Verpassen Sie nicht was QGIS zu bieten hat - gucken Sie sich um und prüfen Sie, was sie für Sie tun können.</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="85"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="84"/>
         <source>Add the current date to a map layout</source>
         <translation>Aktuelles Datum zum Kartenlayout hinzufügen</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="30"/>
-        <source>Quantum GIS is open source software. This means that the software source code can be freely viewed and modified. The GPL places a restriction that any modifications you make must be made available in source form to whoever you give modified versions to, and that you can not create a new version of Quantum GIS under a &apos;closed source&apos; license. Visit &lt;a href=&quot;http://qgis.org&quot;&gt; the QGIS home page (http://qgis.org)&lt;/a&gt; for more information.</source>
-        <translation>Quantum GIS ist quelloffene, freie Software. Dies bedeutet, dass der Quellcode der Software frei eingesehen und verändert werden kann. Durch die GPL ist dies allerdings in soweit beschränkt, dass Sie Ihre Änderungen jedem dem Sie geänderten Versionen geben in Quelltextform zur Verfügung stellen müssen und Sie keine neue Version von Quantum GIS unter einer &quot;geschlossenen&quot; Lizenz erstellen dürfen. Besuchen Sie die &lt;a href=&quot;http://qgis.org&quot;&gt;QGIS Homepage (http://qgis.org)&lt;/a&gt; für weitere Informationen.</translation>
+        <source>QGIS is open source software. This means that the software source code can be freely viewed and modified. The GPL places a restriction that any modifications you make must be made available in source form to whoever you give modified versions to, and that you can not create a new version of QGIS under a &apos;closed source&apos; license. Visit &lt;a href=&quot;http://qgis.org&quot;&gt; the QGIS home page (http://qgis.org)&lt;/a&gt; for more information.</source>
+        <translation>QGIS ist quelloffene, freie Software. Dies bedeutet, dass der Quellcode der Software frei eingesehen und verändert werden kann. Durch die GPL ist dies allerdings in soweit beschränkt, dass Sie Ihre Änderungen jedem dem Sie geänderten Versionen geben in Quelltextform zur Verfügung stellen müssen und Sie keine neue Version von QGIS unter einer &quot;geschlossenen&quot; Lizenz erstellen dürfen. Besuchen Sie die &lt;a href=&quot;http://qgis.org&quot;&gt;QGIS Homepage (http://qgis.org)&lt;/a&gt; für weitere Informationen.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="57"/>
@@ -43148,22 +43354,32 @@ Es gab ein Problem mit Ihrer Symboldatenbank.</translation>
         <translation>Wenn Sie Hilfe bei der Benutzung von QGIS brauchen, gibt es eine englische Anwender-Mailingliste, wo die Anwender sich gegenseitig helfen können. Wir haben außerdem eine englische Entwickler-Mailingliste, auf der über die Codebasis diskutiert werden kann.  Details zum Abonnement stehen in der Abteilung &lt;a href=&quot;http://www.qgis.org/de/gemeinschaft/mailinglisten.html&quot;&gt;Gemeinschaft&lt;/a&gt; auf der QGIS-Homepage (http://www.qgis.org/de/gemeinschaft/mailinglisten.html).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="93"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="65"/>
+        <source>Is it &apos;QGIS&apos; or &apos;Quantum GIS&apos;?</source>
+        <translation>Heißt es &apos;QGIS&apos; oder &apos;Quantum GIS&apos;?</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="66"/>
+        <source>Both used to be correct, but we recently decided to just use &apos;QGIS&apos;.  For articles we suggest you write &apos;QGIS is ....&apos;</source>
+        <translation>Beides waren richtig. Wir haben aber kürzlich beschlossen nur noch &apos;QGIS&apos; zu verwenden. In Artikeln sollten Sie &apos;QGIS ist...&apos; schreiben</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="92"/>
         <source>Moving Elements and Maps in the Print Composer</source>
         <translation>Elemente und Karten der Druckzusammenstellung verschieben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="108"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="107"/>
         <source>Lock an element in the layout view</source>
         <translation>Sperren eines Elements in der Layoutansicht</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="119"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="118"/>
         <source>Rotating a map and linking a north arrow</source>
         <translation>Drehen von Karten und Verknüpfung eines Nordpfeils</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="132"/>
+        <location filename="../src/app/qgstipfactory.cpp" line="131"/>
         <source>Numeric scale value in map layout linked to map frame</source>
         <translation>Numerischer Maßstabswerte im Kartenlayout verbunden mit Kartenrahmen</translation>
     </message>
@@ -43659,136 +43875,136 @@ p, li { white-space: pre-wrap; }
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2545"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2548"/>
         <source>ERROR: no provider</source>
         <translation>FEHLER: kein Datenlieferant</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2551"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2554"/>
         <source>ERROR: layer not editable</source>
         <translation>FEHLER: Layer ist nicht veränderbar</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2568"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2571"/>
         <source>Commit errors:
   %1</source>
         <translation>Commit-Fehler:
   %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3488"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3491"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3494"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3497"/>
         <source>Layer comment</source>
         <translation>Layerkommentar</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3501"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3504"/>
         <source>Storage type of this layer</source>
         <translation>Speichertyp dieses Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3507"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3510"/>
         <source>Source for this layer</source>
         <translation>Quelle dieses Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3524"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3527"/>
         <source>Geometry type of the features in this layer</source>
         <translation>Geometrietyp der Objekte dieses Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3533"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3536"/>
         <source>Primary key attributes</source>
         <translation>Primärschlüsselattribute</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3544"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3547"/>
         <source>The number of features in this layer</source>
         <translation>Anzahl der Objekte dieses Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3549"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3552"/>
         <source>Editing capabilities of this layer</source>
         <translation>Bearbeitungsmöglichkeiten dieses Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3558"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3561"/>
         <source>Extents</source>
         <translation>Ausdehnung</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3562"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3565"/>
         <source>In layer spatial reference system units</source>
         <translation>In Bezugssystemeinheiten des Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3628"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3663"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3631"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3666"/>
         <source>In project spatial reference system units</source>
         <translation>In Bezugssystemeinheiten des Projekts</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3641"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3644"/>
         <source>Layer Spatial Reference System</source>
         <translation>Räumliches Bezugssystem des Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3652"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3655"/>
         <source>Project (Output) Spatial Reference System</source>
         <translation>Räumliches Bezugssystem des Projekts (Ausgabe)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3674"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3677"/>
         <source>Attribute field info</source>
         <translation>Attributfeldinformationen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3916"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3919"/>
         <source>Error: qgis element could not be found</source>
         <translation>Fehler: Element qgis wurde nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3611"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3630"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3614"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3633"/>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
         <translation>xMin,yMin %1;%2 : xMax,yMax %3;%4</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3616"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3619"/>
         <source>unknown extent</source>
         <translation>Unbekannte Ausmaße</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3665"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3668"/>
         <source>(Invalid transformation of layer extents)</source>
         <translation>(Transformation der Layerausdehnung ungültig)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3680"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3683"/>
         <source>Field</source>
         <translation>Feld</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3683"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3686"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3686"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3689"/>
         <source>Length</source>
         <translation>Länge</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3689"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3692"/>
         <source>Precision</source>
         <translation>Genauigkeit</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3692"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3695"/>
         <source>Comment</source>
         <translation>Kommentar</translation>
     </message>
@@ -44100,41 +44316,41 @@ p, li { white-space: pre-wrap; }
         <translation>Layereigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1512"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1460"/>
         <source>Restore Default Style</source>
         <translation>Stilvorgaben wiederherstellen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1498"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1446"/>
         <source>Save As Default</source>
         <translation>Als Vorgabe speichern</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1433"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1381"/>
         <source>Properties</source>
         <translation>Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1505"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1453"/>
         <source>Load Style ...</source>
         <translation>Stil laden...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1519"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1467"/>
         <source>Save Style ...</source>
         <translation>Stil speichern...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="101"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="104"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="692"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="689"/>
         <source>Style</source>
         <translation>Stil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="137"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="140"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="885"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="857"/>
         <source>Fields</source>
         <translation>Felder</translation>
     </message>
@@ -44146,218 +44362,218 @@ p, li { white-space: pre-wrap; }
         <translation>Allgemein</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="400"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="403"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="406"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
         <translation>Koordinatenbezugsssystem der Geometrie des Layers angeben.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="125"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="128"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="808"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="783"/>
         <source>Labels (deprecated)</source>
         <translation>Beschriftung (alt)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="149"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="152"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="940"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="909"/>
         <source>Display</source>
         <translation>Anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="281"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="278"/>
         <source>Layer info</source>
         <translation>Layerinformation</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="323"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="320"/>
         <source>Layer source</source>
         <translation>Layerquelle</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="348"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="345"/>
         <source>Data source encoding</source>
         <translation>Datenquellenkodierung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="376"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="373"/>
         <source>Coordinate reference system</source>
         <translation>Koordinatenbezugssystem</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="409"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="406"/>
         <source>Specify...</source>
         <translation>Festlegen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="420"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="417"/>
         <source>Create spatial index</source>
         <translation>Räumlichen Index erzeugen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="427"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="424"/>
         <source>Update extents</source>
         <translation>Ausmaße aktualisieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="459"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="456"/>
         <source>Scale dependent visibility</source>
         <translation>Maßstabsabhängige Sichtbarkeit</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="486"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="483"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Minimum&lt;br&gt;(exclusive)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Minimum&lt;br&gt;(exklusiv)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="536"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="533"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Maximum&lt;br&gt;(inclusive)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Maximum&lt;br&gt;(inklusive)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="614"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="611"/>
         <source>Feature subset</source>
         <translation>Objektuntermenge</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="971"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="937"/>
         <source>Map Tip display text</source>
         <translation>Kartentippanzeigetext</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="991"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="957"/>
         <source>Inserts an expression into the action</source>
         <translation>Einen Ausdruck in die Aktion einfügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="994"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="960"/>
         <source>Insert expression...</source>
         <translation>Ausdruck einfügen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1020"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="986"/>
         <source>The valid attribute names for this layer</source>
         <translation>Die gültigen Attributnamen für diesen Layer</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1036"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1002"/>
         <source>Inserts the selected field into the action</source>
         <translation>Fügt das gewählte Feld in die Aktion ein</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1039"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1005"/>
         <source>Insert field</source>
         <translation>Attribut einfügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1057"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1023"/>
         <source>HTML</source>
         <translation>HTML</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1081"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1047"/>
         <source>Field</source>
         <translation>Feld</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="290"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="287"/>
         <source>Layer name</source>
         <translation>Layername</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="316"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="313"/>
         <source>displayed as</source>
         <translation>angezeigt als</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1382"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1330"/>
         <source>Description</source>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1410"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1358"/>
         <source>Title</source>
         <translation>Titel</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1417"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1365"/>
         <source>Abstract</source>
         <translation>Zusammenfassung</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="173"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="176"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1175"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1138"/>
         <source>Joins</source>
         <translation>Verknüpfungen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1216"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1176"/>
         <source>Join layer</source>
         <translation>Joinlayer</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1221"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1181"/>
         <source>Join field</source>
         <translation>Verknüpfungsfeld</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1226"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1186"/>
         <source>Target field</source>
         <translation>Zielfeld</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="185"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="188"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1290"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1250"/>
         <source>Diagrams</source>
         <translation>Diagramme</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="655"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="652"/>
         <source>Query Builder</source>
         <translation>Abfrageerstellung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="480"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="477"/>
         <source>Minimum scale, i.e. maximum scale denominator. This limit is exclusive, that means the layer will not be displayed on this scale.</source>
         <translation>Kleinster Maßstab, d.h. größter Maßstabsnenner. Die Grenze ist ausschließlich, d.h. der Layer wird bei diesem Maßstab nicht mehr angezeigt.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="533"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="530"/>
         <source>Maximum scale, i.e. minimum scale denominator. This limit is inclusive, that means the layer will be displayed on this scale.</source>
         <translation>Größter Maßstab (d.h. kleinster Maßstabsnenner). Diese Grenze ist einschließlich, d.h. der Layer wird bis zu diesem Maßstab angezeigt.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="503"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="510"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="500"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="507"/>
         <source>Current</source>
         <translation>Aktuell</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="197"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="200"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1351"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1302"/>
         <source>Metadata</source>
         <translation>Metadaten</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="113"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="116"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="753"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="750"/>
         <source>Labels</source>
         <translation>Beschriftungen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="845"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="817"/>
         <source>Display labels</source>
         <translation>Beschriftungen anzeigen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="161"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="164"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1114"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1080"/>
         <source>Actions</source>
         <translation>Aktionen</translation>
     </message>
@@ -45248,8 +45464,8 @@ Antwort war:
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="476"/>
-        <source>WCS server version %1 is not supported by Quantum GIS (supported versions: 1.0.0, 1.1.0, 1.1.2)</source>
-        <translation>WCS-Serverversion %1 wird nicht von Quantum GIS unterstützt (unterstützte Versionen: 1.0.0, 1.1.0, 1.1.2)</translation>
+        <source>WCS server version %1 is not supported by QGIS (supported versions: 1.0.0, 1.1.0, 1.1.2)</source>
+        <translation>WCS-Serverversion %1 wird nicht von QGIS unterstützt (unterstützte Versionen: 1.0.0, 1.1.0, 1.1.2)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="738"/>
@@ -47197,67 +47413,67 @@ Beschreibung: %3</translation>
 <context>
     <name>SettingsDialogPythonConsole</name>
     <message>
-        <location filename="../python/console/console_settings.ui" line="248"/>
+        <location filename="../python/console/console_settings.ui" line="255"/>
         <source>Console</source>
         <translation>Konsole</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="84"/>
-        <location filename="../python/console/console_settings.ui" line="256"/>
+        <location filename="../python/console/console_settings.ui" line="360"/>
         <source>Font</source>
         <translation>Schriftart</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="104"/>
-        <location filename="../python/console/console_settings.ui" line="276"/>
+        <location filename="../python/console/console_settings.ui" line="380"/>
         <source>Size</source>
         <translation>Größe</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="138"/>
-        <location filename="../python/console/console_settings.ui" line="310"/>
+        <location filename="../python/console/console_settings.ui" line="261"/>
         <source>Autocompletion</source>
         <translation>Autovervollständigung</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="149"/>
-        <location filename="../python/console/console_settings.ui" line="321"/>
+        <location filename="../python/console/console_settings.ui" line="272"/>
         <source>Autocompletion enabled</source>
         <translation>Autovervollständigung an</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="174"/>
-        <location filename="../python/console/console_settings.ui" line="346"/>
+        <location filename="../python/console/console_settings.ui" line="297"/>
         <source>Threshold</source>
         <translation>Schellenwert</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="197"/>
-        <location filename="../python/console/console_settings.ui" line="369"/>
+        <location filename="../python/console/console_settings.ui" line="320"/>
         <source>Get autocompletion from current document</source>
         <translation>Autovervollständigung aus aktuellem Dokument holen</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="200"/>
-        <location filename="../python/console/console_settings.ui" line="372"/>
+        <location filename="../python/console/console_settings.ui" line="323"/>
         <source>from Document</source>
         <translation>aus Dokument</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="207"/>
-        <location filename="../python/console/console_settings.ui" line="379"/>
+        <location filename="../python/console/console_settings.ui" line="330"/>
         <source>Get autocompletion from installed APIs</source>
         <translation>Autovervollständigung aus installierten APIs</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="210"/>
-        <location filename="../python/console/console_settings.ui" line="382"/>
+        <location filename="../python/console/console_settings.ui" line="333"/>
         <source>from APIs files</source>
         <translation>aus API-Dateien</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="223"/>
-        <location filename="../python/console/console_settings.ui" line="395"/>
+        <location filename="../python/console/console_settings.ui" line="346"/>
         <source>from Doc and APIs</source>
         <translation>aus Doku und API</translation>
     </message>
@@ -47267,24 +47483,30 @@ Beschreibung: %3</translation>
         <translation>Objektinspektor einschalten (Umschaltung zwischen Reitern kann langsam sein)</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="416"/>
+        <location filename="../python/console/console_settings.ui" line="245"/>
+        <location filename="../python/console/console_settings.ui" line="414"/>
+        <source>Automatic parentheses insertion</source>
+        <translation>Automatisch Klammern einfügen</translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="430"/>
         <source>Using preloaded APIs file</source>
         <translation>API-Dateien vorladen</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="410"/>
-        <location filename="../python/console/console_settings.ui" line="544"/>
+        <location filename="../python/console/console_settings.ui" line="424"/>
+        <location filename="../python/console/console_settings.ui" line="558"/>
         <source>APIs</source>
         <translation>APIs</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="549"/>
+        <location filename="../python/console/console_settings.ui" line="563"/>
         <source>Path</source>
         <translation>Pfad</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="220"/>
-        <location filename="../python/console/console_settings.ui" line="392"/>
+        <location filename="../python/console/console_settings.ui" line="343"/>
         <source>Get autocompletion from current document and installed APIs</source>
         <translation>Autovervollständigung aus aktuellem Dokument und installierten APIs holen</translation>
     </message>
@@ -48298,6 +48520,16 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
         <source>...</source>
         <translation>...</translation>
     </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="117"/>
+        <source>Generated path will be relative to current SVG search directories or to Project file</source>
+        <translation>Erzeugter Pfad wird relativ zu aktuellem SVG-Suchverzeichnisse oder Projektdatei sein</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="120"/>
+        <source>Relative path</source>
+        <translation>Relativer Pfad</translation>
+    </message>
 </context>
 <context>
     <name>WidgetVectorFieldBase</name>
@@ -48682,6 +48914,343 @@ Diese Werte werden in das Mapfile an den passenden Stellen eingetragen, um Dinge
 </translation>
     </message>
     <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="79"/>
+        <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
+Loads and displays delimited text files
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;Overview&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overview&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;A &amp;quot;delimited text file&amp;quot; contains data in which each record starts on a new line, and 
+is split into fields by a delimiter such as a comma.  
+This type of file is commonly exported from spreadsheets (for example CSV files) or databases.  
+Typically the first line of a delimited text file contains the names of the fields.  
+&lt;/p&gt;
+&lt;p&gt;
+Delimited text files can be loaded into QGIS as a layer. 
+The records can be displayed spatially either as a point
+defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
+describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
+only table, which can then be joined to other tables in QGIS.
+&lt;/p&gt;
+&lt;p&gt;
+In addition to the geometry definition the file can contain text, integer, and real number fields.  QGIS
+will choose the type of field based on its contents. 
+&lt;/p&gt;
+&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
+be split into fields), and defining the geometry is represented.  
+This is managed with the delimited text dialog as detailed below.  
+The dialog box displays a sample from the beginning of the file which shows how the format
+options have been applied.
+&lt;/p&gt;
+&lt;h5&gt;Choosing the data file&lt;/h5&gt;
+&lt;p&gt;Use the &amp;quot;Browse...&amp;quot; button to select the data file.  Once the file is selected the
+layer name will automatically be populated based on the file name.  The layer name is used to represent
+the data in the QGIS legend.  
+&lt;/p&gt;
+&lt;p&gt;
+By default files are assumed to be encoded as UTF-8.  However other file
+encodings can be selected.  For example &amp;quot;System&amp;quot; uses the default encoding for the operating system.  
+It is safer to use an explicit coding if the QGIS project needs to be portable.
+&lt;/p&gt;
+&lt;h5&gt;Specifying the file format&lt;/h5&gt;
+&lt;p&gt;The file format can be one of
+&lt;ul&gt;
+    &lt;li&gt;CSV file format.  This is a format commonly used by spreadsheets, in which fields are delimited
+    by a comma character, and quoted using a &amp;quot;(quote) character.  Within quoted fields, a quote
+    mark is entered as &amp;quot;&amp;quot;.&lt;/li&gt;
+    &lt;li&gt;Selected delimiters.  Each record is split into fields using one or more  delimiter character.
+    Quote characters are used for fields which may contain delimiters.  Escape characters may be used 
+    to treat the following character as a normal character (ie to include delimiter, quote, and 
+    new line characters in text fields).  The use of delimiter, quote, and escape characters is detailed &lt;a href=&quot;#csv&quot;&gt;below&lt;/a&gt;.
+    &lt;li&gt;Regular expression.  Each line is split into fields using a &amp;quot;regular expression&amp;quot; delimiter.
+    The use of regular expressions is details &lt;a href=&quot;#regexp&quot;&gt;below&lt;/a&gt;.
+&lt;/ul&gt;
+&lt;h5&gt;Record and field options&lt;/h5&gt;
+&lt;p&gt;The following options affect the selection of records and fields from the data file&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Number of header lines to discard: used to ignore header lines at the beginning of the text file&lt;/li&gt;
+    &lt;li&gt;First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.&lt;/li&gt;
+    &lt;li&gt;Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). &lt;/li&gt;
+    &lt;li&gt;Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
+    affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
+    single delimiter.  Quoted fields are never discarded.&lt;/li&gt;
+    &lt;li&gt;Decimal separator is comma: if selected then commas instead of points are used as the decimal separator in real numbers.  For
+    example &lt;tt&gt;-51,354&lt;/tt&gt; is equivalent to -51.354.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5&gt;Geometry definition&lt;/h5&gt;
+&lt;p&gt;The geometry is can be define as one of&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Point coordinates: each feature is represented as a point defined by X and Y coordinates.&lt;/li&gt;
+    &lt;li&gt;Well known text (WKT) geometry: each feature is represented as a well known text string, for example
+    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  See details of the &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt; format.
+    &lt;li&gt;No geometry (attribute only table): records will not be displayed on the map, but can be viewed
+    in the attribute table and joined to other layers in QGIS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For point coordinates the following options apply:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;X field: specifies the field containing the X coordinate&lt;/li&gt;
+    &lt;li&gt;Y field: specifies the field containing the Y coordinate&lt;/li&gt;
+    &lt;li&gt;DMS angles: if selected coordinates are represented as degrees/minutes/seconds
+    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
+    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
+    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
+    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Geometry field: the field containing the well known text definition.&lt;/li&gt;
+    &lt;li&gt;Geometry type: one of &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or &amp;quot;Polygon&amp;quot;.
+    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
+    which geometry type is displayed in text files containing multiple geometry types. Records containing
+   other geometry types are discarded.   
+    If &amp;quot;Detect&amp;quot; is selected then the type of the first geometry in the file will be used.
+    &amp;quot;Point&amp;quot; includes POINT and MULTIPOINT WKT types, &amp;quot;Line&amp;quot; includes LINESTRING and
+    MULTLINESTRING WKT types, and &amp;quot;Polygon&amp;quot; includes POLYGON and MULTIPOLYGON WKT types.
+&lt;/ul&gt;
+&lt;h5&gt;Layer settings&lt;/h5&gt;
+&lt;p&gt;Layer settings control the way the layer is managed in QGIS.  The options available are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
+This option may be useful for files larger than a few megabytes in size.&lt;/li&gt;
+&lt;li&gt;Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
+from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
+for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
+&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
+reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
+extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
+application will change the file. &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Records are split into fields using three character sets: 
+delimiter characters, quote characters, and escape characters.  
+Other characters in the record are considered as data, split into
+fields by delimiter characters. 
+Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
+&lt;/p&gt;
+&lt;p&gt;
+Quote and escape characters cannot be the same as delimiter characters - they
+will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
+if they are.&lt;/p&gt;
+&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
+is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
+can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
+&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
+contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
+start and end with the same quote character.  Quote characters cannot occur within a field unless they
+are escaped.&lt;/p&gt;
+&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
+(that is, to stop it being treated as a new line, delimiter, or quote character).  
+&lt;/p&gt;
+&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
+&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
+&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
+of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
+&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
+If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
+ then these are extracted as fields. 
+ If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
+In this case the regular expression is matched against each line.  If the line does not match it is discarded
+as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
+is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
+unintuitive) means of loading data with fixed width fields.  For example the 
+expression
+&lt;pre&gt;
+^(.{5})(.{10})(.{20})(.{20})
+&lt;/pre&gt;
+&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
+Lines less than 55 characters long will be discarded.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+The delimited text layer recognizes the following 
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
+&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
+It will accept geometries with
+a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;
+It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
+system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
+preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
+In both cases the SRID is ignored.
+&lt;/p&gt;
+
+
+
+&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;/h4&gt; 
+&lt;p&gt;Each record in the delimited text file is split into fields representing
+attributes of the record.  Usually the attribute names are taken from the first
+data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
+Also if records have more fields than are defined in the header record then these
+will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
+QGIS may override 
+the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
+or are duplicated.
+&lt;/p&gt;
+&lt;p&gt;
+In addition to the attributes explicitly in the data file QGIS assigns a unique 
+feature id to each record which is the line number in the source file on which
+the record starts.  
+&lt;/p&gt;
+&lt;p&gt;
+Each attribute also has a data type, one of string (text), integer, or real number.
+The data type is inferred from the content of the fields - if every non blank value
+is a valid integer then the type is integer, otherwise if it is a valid real
+number then the type is real, otherwise the type is string.  Note that this is
+based on the content of the fields - quoting fields does not change the way they
+are interpreted.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;/h4&gt; 
+&lt;pre&gt;
+X;Y;ELEV
+-300120;7689960;13
+-654360;7562040;52
+1640;7512840;3
+&lt;/pre&gt;
+&lt;p&gt;This file:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
+&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
+&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
+&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;/h4&gt;
+&lt;pre&gt;
+id|wkt
+1|POINT(172.0702250 -43.6031036)
+2|POINT(172.0702250 -43.6031036)
+3|POINT(172.1543206 -43.5731302)
+4|POINT(171.9282585 -43.5493308)
+5|POINT(171.8827359 -43.5875983)
+&lt;/pre&gt;
+&lt;p&gt;This file:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Has two fields defined in the header row: id and wkt.
+  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
+  &lt;li&gt;Specifies each point using the WKT notation
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
+The pattern is:
+&lt;/p&gt;
+&lt;pre&gt;
+from PyQt4.QtCore import QUrl, QString
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+
+# Define the data source
+filename=&quot;test.csv&quot;
+uri=QUrl.fromLocalFile(filename)
+uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
+uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
+uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
+# ... other delimited text parameters
+layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
+# Add the layer to the map
+if layer.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer( layer )
+&lt;/pre&gt;
+&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
+&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
+The following options can be added
+&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
+       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
+       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
+       no default for regexp files.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
+       Additional fields in each record will be discarded. The default is 0 - include all fields.
+       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
+       used.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
+       specified then a dialog box may request this information from the user
+       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
+&lt;/ul&gt;
+
+
+</source>
+        <translation>&lt;h3&gt;Textdatei als Layer importiere&lt;/h3&gt;
+Lädt und stellt eine Textdatei im CSV-Format, die x- und y-Koordinaten hat, dar. 
+&lt;p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;Anforderungen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#example&quot;&gt;Beispiel einer gültigen Textdatei&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#notes&quot;&gt;Bemerkungen&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;re&quot;&gt;
+&lt;h4&gt;Anforderungen&lt;/h4&gt;
+&lt;/a&gt;
+Um eine Textdatei als Layer anzuzeigen, muß sie folgende Daten enthalten: 
+&lt;ol&gt;
+&lt;li&gt;Eine Titelzeile mit den Namen der Felder. Dies muß die erste Zeile der Textdatei sein.&lt;/li&gt;
+&lt;li&gt;Die Titelzeile muss ein X-Feld und ein Y-Feld enthalten. Diese Felder können beliebige Namen haben.&lt;/li&gt;
+&lt;li&gt;Die &lt;B&gt;x-&lt;/B&gt; und &lt;B&gt;y-&lt;/B&gt;Koordinaten müssen als (Dezimal)Zahl angegeben sein. Das Koordinatensystem ist unwichtig.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;a name=&quot;example&quot;&gt;
+&lt;h4&gt;Beispiel einer gültigen Textdatei&lt;/h4&gt; 
+&lt;/a&gt;
+X;Y;HOEHE&lt;br/&gt;
+-300120;7689960;13&lt;br/&gt;
+-654360;7562040;52&lt;br/&gt;
+1640;7512840;3&lt;br/&gt;
+[...]&lt;br/&gt;
+&lt;a name=&quot;notes&quot;&gt;
+&lt;h4&gt;Bemerkungen&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ol&gt;
+&lt;li&gt;Der Beispieltext nutzt &lt;b&gt;;&lt;/b&gt; als Trennzeichen. Jedes andere Zeichen kann als Trennzeichen benutzt werden.&lt;/li&gt;
+&lt;li&gt;Die erste Zeile ist die Titelzeile. Sie enthält die Felder X, Y und HOEHE.&lt;/li&gt;
+&lt;li&gt;Es werden keine Anführungszeichen (&quot;) benutzt, um die Textfelder zu trennen.&lt;/li&gt;
+&lt;li&gt;Die X-Koordinaten sind im Feld X.&lt;/li&gt;
+&lt;li&gt;Die Y-Koordinaten sind im Feld Y.&lt;/li&gt;
+&lt;/ol&gt;
+</translation>
+    </message>
+    <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="377"/>
         <source>&lt;h3&gt;Open Vector Layer Dialog&lt;/h3&gt;
 
@@ -49057,7 +49626,7 @@ Für jeden Vektorlayer kann in QGIS eine Transparenz eingestellt werden. Dies er
 
 &lt;h5&gt;Stilvorgaben speichern&lt;/h5&gt;
 Wenn Sie Ihren Layer gestaltet haben, können Sie Ihre Gestaltung in einer gesonderten Datei (mit Endung &lt;code&gt;*.qml&lt;/code&gt;) speichern.  Benutzen Sie dazu den Knopf &lt;label&gt;Stil speichern...&lt;/label&gt;.  Dass &lt;label&gt;Stil laden...&lt;/label&gt; Ihren gespeicherten Stil wieder läd, sollte klar sein.
-&lt;p&gt;Wenn Sie wann immer Sie den Layer laden den gleichen Stil verwenden wollen, können Sie Ihn über den Knopf &lt;label&gt;Als Vorgabe speichern&lt;/label&gt; voreinstellen.  Außerdem können Sie mit dem Knopf &lt;label&gt;Stilvorgaben wiederherstellen&lt;/label&gt; Ihre Änderungen jederzeit zurücknehmen, wenn Sie mit Ihnen nicht glücklich sind. 
+&lt;p&gt;Wenn Sie wann immer Sie den Layer laden den gleichen Stil verwenden wollen, können Sie ihn über den Knopf &lt;label&gt;Als Vorgabe speichern&lt;/label&gt; voreinstellen.  Außerdem können Sie mit dem Knopf &lt;label&gt;Stilvorgaben wiederherstellen&lt;/label&gt; Ihre Änderungen jederzeit zurücknehmen, wenn Sie mit Ihnen nicht glücklich sind. 
 
 &lt;a name=&quot;labels&quot;&gt;
 &lt;h4&gt;Beschriftungen&lt;/h4&gt;
@@ -49190,534 +49759,6 @@ Klicken Sie auf &lt;label&gt;OK&lt;/label&gt; um den Layer anzulegen und den Dia
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="79"/>
-        <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
-Loads and displays delimited text files
-&lt;p&gt;
-&lt;a href=&quot;#re&quot;&gt;Overview&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;br/&gt;
-&lt;/p&gt;
-
-&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overview&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;A &amp;quot;delimited text file&amp;quot; contains data in which each record starts on a new line, and 
-is split into fields by a delimiter such as a comma.  
-This type of file is commonly exported from spreadsheets (for example CSV files) or databases.  
-Typically the first line of a delimited text file contains the names of the fields.  
-&lt;/p&gt;
-&lt;p&gt;
-Delimited text files can be loaded into QGIS as a layer. 
-The records can be displayed spatially either as a point
-defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
-describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
-only table, which can then be joined to other tables in QGIS.
-&lt;/p&gt;
-&lt;p&gt;
-In addition to the geometry definition the file can contain text, integer, and real number fields.  QGIS
-will choose the type of field based on its contents. 
-&lt;/p&gt;
-&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
-be split into fields), and defining the geometry is represented.  
-This is managed with the delimited text dialog as detailed below.  
-The dialog box displays a sample from the beginning of the file which shows how the format
-options have been applied.
-&lt;/p&gt;
-&lt;h5&gt;Choosing the data file&lt;/h5&gt;
-&lt;p&gt;Use the &amp;quot;Browse...&amp;quot; button to select the data file.  Once the file is selected the
-layer name will automatically be populated based on the file name.  The layer name is used to represent
-the data in the QGIS legend.  
-&lt;/p&gt;
-&lt;p&gt;
-By default files are assumed to be encoded as UTF-8.  However other file
-encodings can be selected.  For example &amp;quot;System&amp;quot; uses the default encoding for the operating system.  
-It is safer to use an explicit coding if the QGIS project needs to be portable.
-&lt;/p&gt;
-&lt;h5&gt;Specifying the file format&lt;/h5&gt;
-&lt;p&gt;The file format can be one of
-&lt;ul&gt;
-    &lt;li&gt;CSV file format.  This is a format commonly used by spreadsheets, in which fields are delimited
-    by a comma character, and quoted using a &amp;quot;(quote) character.  Within quoted fields, a quote
-    mark is entered as &amp;quot;&amp;quot;.&lt;/li&gt;
-    &lt;li&gt;Selected delimiters.  Each record is split into fields using one or more  delimiter character.
-    Quote characters are used for fields which may contain delimiters.  Escape characters may be used 
-    to treat the following character as a normal character (ie to include delimiter, quote, and 
-    new line characters in text fields).  The use of delimiter, quote, and escape characters is detailed &lt;a href=&quot;#csv&quot;&gt;below&lt;/a&gt;.
-    &lt;li&gt;Regular expression.  Each line is split into fields using a &amp;quot;regular expression&amp;quot; delimiter.
-    The use of regular expressions is details &lt;a href=&quot;#regexp&quot;&gt;below&lt;/a&gt;.
-&lt;/ul&gt;
-&lt;h5&gt;Record and field options&lt;/h5&gt;
-&lt;p&gt;The following options affect the selection of records and fields from the data file&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Number of header lines to discard: used to ignore header lines at the beginning of the text file&lt;/li&gt;
-    &lt;li&gt;First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.&lt;/li&gt;
-    &lt;li&gt;Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). &lt;/li&gt;
-    &lt;li&gt;Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
-    affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
-    single delimiter.  Quoted fields are never discarded.&lt;/li&gt;
-    &lt;li&gt;Decimal point is comma: if selected then commas are used as the decimal point in real numbers.  For
-    example &lt;tt&gt;-51,354&lt;/tt&gt; is equivalent to -51.354.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5&gt;Geometry definition&lt;/h5&gt;
-&lt;p&gt;The geometry is can be define as one of&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Point coordinates: each feature is represented as a point defined by X and Y coordinates.&lt;/li&gt;
-    &lt;li&gt;Well known text (WKT) geometry: each feature is represented as a well known text string, for example
-    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  See details of the &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt; format.
-    &lt;li&gt;No geometry (attribute only table): records will not be displayed on the map, but can be viewed
-    in the attribute table and joined to other layers in QGIS&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For point coordinates the following options apply:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;X field: specifies the field containing the X coordinate&lt;/li&gt;
-    &lt;li&gt;Y field: specifies the field containing the Y coordinate&lt;/li&gt;
-    &lt;li&gt;DMS angles: if selected coordinates are represented as degrees/minutes/seconds
-    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
-    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
-    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
-    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Geometry field: the field containing the well known text definition.&lt;/li&gt;
-    &lt;li&gt;Geometry type: one of &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or &amp;quot;Polygon&amp;quot;.
-    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
-    which geometry type is displayed in text files containing multiple geometry types. Records containing
-   other geometry types are discarded.   
-    If &amp;quot;Detect&amp;quot; is selected then the type of the first geometry in the file will be used.
-    &amp;quot;Point&amp;quot; includes POINT and MULTIPOINT WKT types, &amp;quot;Line&amp;quot; includes LINESTRING and
-    MULTLINESTRING WKT types, and &amp;quot;Polygon&amp;quot; includes POLYGON and MULTIPOLYGON WKT types.
-&lt;/ul&gt;
-&lt;h5&gt;Layer settings&lt;/h5&gt;
-&lt;p&gt;Layer settings control the way the layer is managed in QGIS.  The options available are:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
-This option may be useful for files larger than a few megabytes in size.&lt;/li&gt;
-&lt;li&gt;Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
-from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
-for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
-&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
-reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
-extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
-application will change the file. &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Records are split into fields using three character sets: 
-delimiter characters, quote characters, and escape characters.  
-Other characters in the record are considered as data, split into
-fields by delimiter characters. 
-Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
-&lt;/p&gt;
-&lt;p&gt;
-Quote and escape characters cannot be the same as delimiter characters - they
-will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
-if they are.&lt;/p&gt;
-&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
-is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
-can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
-&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
-contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
-start and end with the same quote character.  Quote characters cannot occur within a field unless they
-are escaped.&lt;/p&gt;
-&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
-(that is, to stop it being treated as a new line, delimiter, or quote character).  
-&lt;/p&gt;
-&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
-&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
-&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
-of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
-&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
-If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
- then these are extracted as fields. 
- If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
-In this case the regular expression is matched against each line.  If the line does not match it is discarded
-as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
-is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
-unintuitive) means of loading data with fixed width fields.  For example the 
-expression
-&lt;pre&gt;
-^(.{5})(.{10})(.{20})(.{20})
-&lt;/pre&gt;
-&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
-Lines less than 55 characters long will be discarded.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;
-The delimited text layer recognizes the following 
-&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
-&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
-It will accept geometries with
-a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;
-It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
-system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
-preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
-In both cases the SRID is ignored.
-&lt;/p&gt;
-
-
-
-&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;/h4&gt; 
-&lt;p&gt;Each record in the delimited text file is split into fields representing
-attributes of the record.  Usually the attribute names are taken from the first
-data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
-Also if records have more fields than are defined in the header record then these
-will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
-QGIS may override 
-the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
-or are duplicated.
-&lt;/p&gt;
-&lt;p&gt;
-In addition to the attributes explicitly in the data file QGIS assigns a unique 
-feature id to each record which is the line number in the source file on which
-the record starts.  
-&lt;/p&gt;
-&lt;p&gt;
-Each attribute also has a data type, one of string (text), integer, or real number.
-The data type is inferred from the content of the fields - if every non blank value
-is a valid integer then the type is integer, otherwise if it is a valid real
-number then the type is real, otherwise the type is string.  Note that this is
-based on the content of the fields - quoting fields does not change the way they
-are interpreted.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;/h4&gt; 
-&lt;pre&gt;
-X;Y;ELEV
--300120;7689960;13
--654360;7562040;52
-1640;7512840;3
-&lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
-&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
-&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
-&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;/h4&gt;
-&lt;pre&gt;
-id|wkt
-1|POINT(172.0702250 -43.6031036)
-2|POINT(172.0702250 -43.6031036)
-3|POINT(172.1543206 -43.5731302)
-4|POINT(171.9282585 -43.5493308)
-5|POINT(171.8827359 -43.5875983)
-&lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Has two fields defined in the header row: id and wkt.
-  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
-  &lt;li&gt;Specifies each point using the WKT notation
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
-The pattern is:
-&lt;/p&gt;
-&lt;pre&gt;
-from PyQt4.QtCore import QUrl, QString
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
-
-# Define the data source
-filename=&quot;test.csv&quot;
-uri=QUrl.fromLocalFile(filename)
-uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
-uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
-uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
-# ... other delimited text parameters
-layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
-# Add the layer to the map
-if layer.isValid():
-    QgsMapLayerRegistry.instance().addMapLayer( layer )
-&lt;/pre&gt;
-&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
-&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
-The following options can be added
-&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
-    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
-       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
-       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
-       no default for regexp files.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
-       Additional fields in each record will be discarded. The default is 0 - include all fields.
-       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
-       used.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
-       specified then a dialog box may request this information from the user
-       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
-&lt;/ul&gt;
-
-
-</source>
-        <translation>&lt;h3&gt;Getrennter Textlayer&lt;/h3&gt;
-Läd und zeigt getrennten Text ans
-&lt;p&gt;
-&lt;a href=&quot;#re&quot;&gt;Überblick&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#creating&quot;&gt;Erzeugung eines getrennten Textlayers&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#csv&quot;&gt;Wie Trenn-, Anführungs- und Ausnahmezeichen funktionieren&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#regexp&quot;&gt;Wie reguläre Ausdrücke als Trennzeichen funktionieren&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#wkt&quot;&gt;Wie WKT interpretiert wird&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#attributes&quot;&gt;Attribute in getrennten Textdateien&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#example&quot;&gt;Beispiel einer Textdatei mit X,Y-Punktkoordinaten&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#wkt_example&quot;&gt;Beispiel einer Textdatei mit WKT-Geometrien&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#python&quot;&gt;Getrennte Textdateilayern in Python benutzen&lt;/a&gt;&lt;br/&gt;
-&lt;/p&gt;
-
-&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Überblick&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Eine &amp;quot;getrennter Textdatei&amp;quot; enthält Daten in denen jeder Datensatz in einer neuen Zeile beginnt, die durch Trennzeichen wie ein Komma in Felder aufgeteilt ist.
-Dieser Dateityp wird üblicherweise von Tabellenkalkulationen (z.B. CSV-Dateien) oder Datenbanken ausgegeben.  
-Normalerweise enthält die erste Zeile einer getrennten Textdatei die Feldnamen.  
-&lt;/p&gt;
-&lt;p&gt;
-Getrennte Textdateien können in QGIS als Layer geladen werden. 
-Die Datensätze können räumlich entweder als durch X- und Y-Koordinaten definierte Punktkoordinaten oder als Well-Known-Text-Geometriedefinition (WKT), die Punkte, Linien und Polygone beliebiger Komplexität beschreibt, dargestellt werden. Die Datei kann auch nur als Attributtabelle geladen werden, die mit anderen Tabellen in QGIS verknüpft werden können.
-&lt;/p&gt;
-&lt;p&gt;
-Zusätzlich zur Geometriedefinition kann die Datei Text, ganze und Fließkommazahlen enthalten. QGIS wird den Feldtyp nach dem Inhalt wählen. 
-&lt;/p&gt;
-&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Getrennten Textlayer erzeugen&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Zur Erzeugung eines getrennten Textlayers muß eine Datei gewählt, das Format definiert (wie jeder Datensatz in Felder aufgeteilt wird) und festgelegt werden wird die Geometrierepräsentation angegeben werden.  
-Dies wird über den im folgenden beschriebenen Getrennter Textdialog eingegeben.  
-Der dialog zeigt ein Beispiele am Anfang der Datei an, die zeigen wie sich die Einstellungen auswirken.
-&lt;/p&gt;
-&lt;h5&gt;Dateiauswahl&lt;/h5&gt;
-&lt;p&gt;Klicken Sie auf den &amp;quot;Durchsuchen...&amp;quot;-Knopf um die Datei zu wählen.  Sobald die Datei gewählt ist, wird der Layername automatisch mit dem Dateinamen gefüllt.  Der Layername wird benutzt, um die Daten in der Legende anzuzeigen.  
-&lt;/p&gt;
-&lt;p&gt;
-Normalerweise wird davon ausgegangen, dass die Dateien in UTF-8 kodiert sind.  Es können jedoch andere Kodierungen gewählt werden.  Z.B. nutzt &amp;quot;System&amp;quot; die voreingestellte Kodierung des Betriebssystems. 
-Es ist sicherer eine explizite Kodierung anzugeben, wenn das QGIS-Projekt portierbar sein muß.
-&lt;/p&gt;
-&lt;h5&gt;Dateiformat festlegen&lt;/h5&gt;
-&lt;p&gt;Folgende Dateiformat sind verfügbar:
-&lt;ul&gt;
-    &lt;li&gt;CSV-Dateiformat.  Dies ist ein Format, das üblicherweise von Tabellenkalkulationen benutzt wird. Hier sind die Felder durch ein Komma begrenzt und durch das Anführungszeichen &amp;quot; umschlossen.  Zwischen den Anführungszeichen wird ein Anführungszeichen durch &amp;quot;&amp;quot; eingegeben.&lt;/li&gt;
-    &lt;li&gt;Gewählte Trennzeichen.  Jeder Datensatz wird durch ein oder mehrere Trennzeichen in Felder ausgeteilt.
-    Anführungszeichen werden für Felder verwendet, die Trennzeichen enthalten können.  Ausnahmezeichen könnten verwendet werden, um das darauffolgenden Zeichen als normales Zeichen (um Trennzeichen, Anführungszeichen und Zeilenumbrüche in Textfelden anzugeben).  Die Verwendung von Trenn-, Anführungs- und Ausnahmezeichen ist  &lt;a href=&quot;#csv&quot;&gt;unten&lt;/a&gt; näher ausgeführt.
-    &lt;li&gt;Regulärer Ausdruck.  Jede Zeile wird mit &amp;quot;regulären Ausdrücken&amp;quot; als Trennzeichen in Felder aufgeteilt.
-    Der Verwendung von regulären Ausdrücken ist &lt;a href=&quot;#regexp&quot;&gt;unten&lt;/a&gt; näher ausgeführt.
-&lt;/ul&gt;
-&lt;h5&gt;Datensatz und Feldoptionen&lt;/h5&gt;
-&lt;p&gt;Die folgenden Optionen beeinflussen die Auswahl von Datensätzen und Feldern aus der Datei&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Anzahl der zu überspringenden führenden Zeilen: um führende Zeilen zu ignorieren&lt;/li&gt;
-    &lt;li&gt;Erster Datensatz enthält Feldnamen: wenn gewählt wird die erste Zeile (nach den ignorierten Zeilen) als Feldnamenzeile statt Datenzeile interpretiert.&lt;/li&gt;
-    &lt;li&gt;Felder kürzen: wenn gewählt, werden führende und schließende Leerzeichen abgeschnitten (außer für Felder in Anführungszeichen).&lt;/li&gt;
-    &lt;li&gt;Leere Felder verwerfen: wenn gewählt, werden leere Felder (nach Kürzung) verworfen.  Dies beeinflußt die Zurordnung der Daten zu Feldern und entspricht der Behandlung von aufeinanderfolgenden Trennzeichen als ein Trennzeichen.  Felder in Anführungszeichen werden nie verworfen.&lt;/li&gt;
-    &lt;li&gt;Dezimaltrennzeichen ist Komma: wenn gewählt, werden Kommata statt Punkte als Dezimaltrennzeichen in Fließkommazahlen verwendet.  Beispiel &lt;tt&gt;-51,354&lt;/tt&gt; entspricht -51.354.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5&gt;Geometrie-Definition&lt;/h5&gt;
-&lt;p&gt;Folgende Geometriedefinitionen sind verfügbar:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Punktkoordinaten: jedes Objekt wird als durch X- und Y-Koordinaten repräsentiert.&lt;/li&gt;
-    &lt;li&gt;Well-Known-Text-Geometrie (WKT): jedes Objekt wird durch eine WKT-Zeichenkette repräsentiert, z.B.
-    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  Siehe &lt;a href=&quot;#wkt&quot;&gt;Well-Known-Text&lt;/a&gt;-Format.
-    &lt;li&gt;Keine Geometrie (Nur Attributtabelle): Datensätze werden nicht in der Karte angezeigt, können aber in der Attributtabelle angezeigt und mit anderen Tabellen in QGIS verknüpft werden.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Für Punktkoordinaten gelten folgenden Einstellungen:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;X-Feld: gibt das Feld an, das die X-Koordinate enthält&lt;/li&gt;
-    &lt;li&gt;Y Feld: gibt das Feld an, das die Y-Koordinate enthält&lt;/li&gt;
-    &lt;li&gt;DMS-Winkel: wenn gewählt, werden Koordinaten in Grad/Minute/Sekunde oder Grad/Minute repräsentiert. QGIS ist bei der Interpretation von Grad/Minuten/Sekunden ser nachsichtig. Eine gültige DMS-Koordinaten enthält drei numerische Felder mit einem optionalen Hemisphärenpräfix oder -suffix (N, E oder + sind positiv, S, W oder - sind  negativ).  Weitere nicht numerische Zeichen werden verworfen.  Z.B. ist &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; eine gültige Koordinate.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Für Well-Known-Text-Geometrien gelten folgende Einstellungen:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Geometriefeld: das Feld, dass die Well-Known-Text-Definition enthält.&lt;/li&gt;
-    &lt;li&gt;Geometrietyp: &amp;quot;Bestimmen&amp;quot; (bestimmen), &amp;quot;Punkt&amp;quot;, &amp;quot;Linie&amp;quot;, oder &amp;quot;Polygon&amp;quot;. QGIS-Layer können nur einen Geometrietyp ( Punkt, Linie oder Polygon) darstellen. Diese Einstellung legt fest welcher Geometrietyp angezeigt wird, wenn eine Datei mehrere Geometrietypen enthält. Datensätze die davon abweichen werden verworfen. Wenn &amp;quot;Bestimmen&amp;quot; gewählt ist, wird der Geometrietyp der ersten Geometrie der Datei verwendet.
-    &amp;quot;Punkt&amp;quot; umfaßt POINT und MULTIPOINT WKT-Typen, &amp;quot;Line&amp;quot; umfaßt LINESTRING und MULTLINESTRING WKT-Typen und &amp;quot;Polygon&amp;quot; umfaßt POLYGON und MULTIPOLYGON WKT-Typen.
-&lt;/ul&gt;
-&lt;h5&gt;Layereinstellungen&lt;/h5&gt;
-&lt;p&gt;Layereinstellungen steuern wie ein Layer in QGIS behandelt wird.  Folgende Einstellungen sind verfügbar:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Räumlichen Index nutzen. Einen räumlichen Index erzeugen, der die Anzeige- und räumliche Auswahlgeschwindigkeit verbessert.
-Diese Option kann für Dateien sinnvoll sein, deren Größe einige MB übersteigt.&lt;/li&gt;
-&lt;li&gt;Untermengen-Index nutzen. Einen Index erzeugen, wenn eine Untermenge verwendet wird (entweder durch die Angabe eines Filters in den Layereigenschaftendialog oder implizite Untermenge, wenn nicht alle Geometrien gültig sind).  Der Index wird nur erzeugt, wenn eine Untermenge definiert ist.&lt;/li&gt;
-&lt;li&gt;Datei überwachen.  Wenn dies eingestellt ist, überwacht QGIS die Datei auf Änderungen durch Applikationen und läd sie neue, wenn es geändert wird.  Die Karte wird nicht neugezeichnet bis der Benutzer sie aktualisiert, aber Indizes und Ausmaße werden neugeladen.  Diese Option sollte gewählt werden, wenn Indizes benutzt werden und es wahrscheinlich ist, dass anderen Applikationen die Datei ändern.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;Wie Trenn-, Anführungs- und Ausnahmezeichen verwendet werden&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Datensätze werden durch drei Zeichenarten in Felder aufgeteilt: 
-Trenn-, Anführungs- und Ausnahmezeichen.  
-Andere Zeichen im Datensatz werden als Daten betrachtet und durch Trennzeichen in Felder aufgeteilt. Anführungszeichen treten gepaart auf und bewriken das der Text dazwischen wie Daten behandelt wird.  Ausnahmezeichen bewirken, dass darauffolgede Zeichen als Daten behandelt werden.   
-&lt;/p&gt;
-&lt;p&gt;
-Anführungs- und Ausnahmezeichen dürfen keine Trennzeichen sein - sie werden ignoriert, wenn sie es sind. Ausnahmezeichen können auch Anführungszeichen sein, verhalten sich aber unterschiedlich, wenn sie es sind.&lt;/p&gt;
-&lt;p&gt;Trennzeichen markieren die Feldenden.  Wenn mehr als ein Trennzeichen definiert ist, kann ein jedes das Feldende markieren. Die Anführungs- und Ausnahmezeichen   übersteuern das Trennzeichen, sodaß es als normales Datenzeichen behandelt wird.&lt;/p&gt;
-&lt;p&gt;Anführungszeichen können verwendet werden, um den Anfang und das Ende von Feldern zu markieren. Solche Felder können Trennzeichen enthalten und über mehrere Zeilen der Textdatei gehen. Wenn ein Feld in Anführungszeichen steht müssen die Anführungszeichen an beiden Ende übereinstimmen. Anführungszeichen für nicht in einem vorkommen außer sie sind mit einem Ausnahmezeichen versehen.&lt;/p&gt;
-&lt;p&gt;Ausnahmezeichen, die keine Anführungszeichen sind sorgen dafür, dass das folgende Zeichen als Datenzeichen behandelt wird (d.h. nicht mehr als Zeilenumbruch, Trenn- oder Anführungszeichen behandelt wird).  
-&lt;/p&gt;
-&lt;p&gt;Ausnahmezeichen, die auch Anführungszeichen sind, haben einen sehr viel begrenzden Effekt.  Sie wirken nur innerhalb von Anführungszeichen und nehme nur sich selbst aus. Wenn beispielsweise 
-&lt;tt&gt;&apos;&lt;/tt&gt; ein Anführungs- und Ausnahmezeichen ist, repräsentiert die Zeichenkette
-&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; den Wert Smith&apos;s&amp;nbsp;Creek.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;Wie reguläre Ausdrücke funktionieren&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Reguläre Ausdrücke sind eine Minisprache um Zeichenmuster auszudrücken.  Es gibt viele Syntaxvarianten für reguläre Ausdrücke - QGIS nutzt die Syntax der Klasse &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; des &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; Frameworks.&lt;/p&gt;
-&lt;p&gt;In einer durch regulären Ausdruck getrennten Datei wird jede Zeile als Datensatz behandelt.  Jeder Treffer des regulären Ausdrucks in der Zeile wird als Feldende behandelt. Wenn der reguläre Ausdruck Erfassungsgruppen (engl. capture groups; z.B. &lt;tt&gt;(cat|dog)&lt;/tt&gt;) enthält werden diese als Felder extrahiert. Wenn dies nicht gewünscht ist, sollten Nicht-Erfassungsgruppen (z.B. &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;) verwendet werden.
-&lt;/p&gt;
-&lt;p&gt;Der reguläre Ausdruck wird anders behandelt, wenn es sich auf den Anfang der Zeile bezieht (d.h, wenn das Muster mit &lt;tt&gt;^&lt;/tt&gt; beginnt).
-In diesem Fall wird der Ausdruck auf jede Zeile angewendet. Wenn die Zeile kein Treffer ist, wird sie als ungültige Datensatz verworfen.  Jede Erfassungsgruppe im Ausdruck wird als Feld behandelt.  Der reguläre Ausdruck ist ungültig, wenn er keine Erfassungsgruppen enthält.  Zum Beispiel kann folgendes als ein (etwas uneingängiges) Mittel zum Laden von Daten mit festen Feldbreite verwendet werden:
-&lt;pre&gt;
-^(.{5})(.{10})(.{20})(.{20})
-&lt;/pre&gt;
-&lt;p&gt;extrahiert vier Felder der Breiten 5, 10, 20 und 20 Zeichen einer jeden Zeile.  
-Zeilen mit weniger als 55 Zeichen werden verworfen.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;Wie WKT-Texte interpretiert werden&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;
-Ein getrennter Textlayer erkennt folgende &lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;Well-Known-Text&lt;/a&gt;-Typen - 
-&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
-Es akzeptiert Geometrien mit einer Z-Koordinate (z.B. &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), eine Messung (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;) oder beides (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;
-Es unterstützt auch die PostGIS-EWKT-Variante, in der die Geometrie mit einer räumlichen Referenzsystem-ID eingeleitet wird (z.B. &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;) und die Informix-Variante in der eine WKT nur mit einer ganzzahligen räumlichen Referenzsystem-ID eingeleitet wird (z.B. &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
-In beiden Fällen wird die SRID ignoriert.
-&lt;/p&gt;
-
-
-
-&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attribute in getrennten Textdateien&lt;/a&gt;&lt;/h4&gt; 
-&lt;p&gt;Jeder Datensatz wird in Felder aufgeteilt, die die Attribute des Datensatzes repräsentieren.  Normalerweise werden die Attributname der ersten Zeile entnommen.  Wenn sie keine Feldnamen enthält werden sie mit &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt; usw. benannt.  
-Auch wenn es mehr Datensätzen mehr Felder als die in der Kopfzeile definierten hat, werden diese mit &lt;tt&gt;field_#&lt;/tt&gt; benannt, wobei # die Feldnummer ist (zu beachten ist, das leere Felder am Ende des Datensatzes ignoriert werden).
-QGIS kann andere Feldnamen verwenden, wenn die Namen in der Textdateien Zahlen sind oder Namen wie &lt;tt&gt;field_#&lt;/tt&gt; haben oder doppelt vorkommen.
-&lt;/p&gt;
-&lt;p&gt;
-Zusätzlich zu den Attributen, die explizit in der Datei vorkommen, vergibt QGIS jedem Datensatz die Zeilennummer in der er beginnt als eindeutige Objektkennung.  
-&lt;/p&gt;
-&lt;p&gt;
-Jedes Attribut hat auch einen Datentyp aus Zeichenkette (String, Text), ganzer Zahl oder Fließkommazahl.
-Der Datentyp wird aus dem Inhalt des Felds hergeleitet -wenn jeder nicht leere Wert eine ganze Zahl ist der Feldtyp Ganzzahl, wenn er eine gültige Fließkommazahl ist, ist der Feldtype Fließkommazahl und sonst ist der Typ Zeichenkette .  Zu beachten ist, das dies auf den Inhalten der Felder basiert, Anführungszeichen beeinflußen die Interpretation der Werte nicht.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Beispiel für eine Textdatei mit X-,Y-Punktkoordinaten&lt;/a&gt;&lt;/h4&gt; 
-&lt;pre&gt;
-X;Y;ELEV
--300120;7689960;13
--654360;7562040;52
-1640;7512840;3
-&lt;/pre&gt;
-&lt;p&gt;Die Datei:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt; benutzt &lt;b&gt;;&lt;/b&gt; als Trennzeichen. Jedes Zeichen kann als Trennzeichen für Felder verwendet werden.&lt;/li&gt;
-&lt;li&gt;Die erste Zeile ist die Kopfzeile. Es enthält die Feldnamen X, Y und ELEV.&lt;/li&gt;
-&lt;li&gt;Die X-Koordinaten stehen im Feld X.&lt;/li&gt;
-&lt;li&gt;Die Y Koordinaten stehen im Feld Y.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Beispiel für eine Textdatei mit WKT-Geometrien&lt;/a&gt;&lt;/h4&gt;
-&lt;pre&gt;
-id|wkt
-1|POINT(172.0702250 -43.6031036)
-2|POINT(172.0702250 -43.6031036)
-3|POINT(172.1543206 -43.5731302)
-4|POINT(171.9282585 -43.5493308)
-5|POINT(171.8827359 -43.5875983)
-&lt;/pre&gt;
-&lt;p&gt;Diese Datei&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;hat zwei Felder in der Kopfzeile: id und wkt.
-  &lt;li&gt;nutzt &lt;b&gt;|&lt;/b&gt; als Trennzeichen.&lt;/li&gt;
-  &lt;li&gt;gibt jeden Punkt in WKT-Notation an
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Getrennte Textlayer mit Python verwenden&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Getrennte Textlayerdatenquellen können mit Python in ähnlicher Weise wie andere Vektorlayer erzeugt werden.
-Das Muster ist:
-&lt;/p&gt;
-&lt;pre&gt;
-from PyQt4.QtCore import QUrl, QString
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
-
-# Define the data source
-filename=&quot;test.csv&quot;
-uri=QUrl.fromLocalFile(filename)
-uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
-uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
-uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
-# ... other delimited text parameters
-layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
-# Add the layer to the map
-if layer.isValid():
-    QgsMapLayerRegistry.instance().addMapLayer( layer )
-&lt;/pre&gt;
-&lt;p&gt;Dies könnte zum Laden des &lt;a href=&quot;#wkt_example&quot;&gt;zweiten&lt;/a&gt; Beispiels oben verwendet werden.&lt;/p&gt;
-&lt;p&gt;Die Konfiguration wird durch die Query-Items in der URI festgelegt.
-Die folgenden Optionen können verwendet werden
-&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; legt die Dateikodierung fest.  Voreingestellt ist &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
-    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; legt den Trennzeichentyp fest.  Gültige Werte sind  csv, 
-       regexp, und whitespace (das nur ein Sonderfall von regexp ist).  Voreingestellt ist csv.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; legt das Trennzeichen, das für CSV oder regexp formatierte Dateien verwendet wird, fest.  Voreingestellt ist CSV-Dateien ist &lt;tt&gt;,&lt;/tt&gt;.  Für regexp gibt es keine Voreinstellung.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (für CSV-Dateien) legt die Anführungszeichen fest. Voreingestellt ist &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (für CSV-Dateien) legt Ausnahmezeichen fest, das das folgende Zeichen von ihrer Sonderbedeutung ausnimmt. Voreingestellt ist &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; legt die Anzahl der Zeilen fest, die am Anfang der Datei übersprungen werden sollen. Voreingestellt ist 0.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; legt fest, ob der erste Datensatz Feldnamen enthält. Voreingestellt ist yes.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; legt fest, ob führende oder schließende Leerzeichen abgeschnitten von nicht mit Anführungszeichen umschlossenen Felder abgeschnitten werden sollen. Voreingestellt ist no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; legt die Feldhöchstzahl fest, die aus der Datei geladen werden. Weitere Felder in den Datensätzen werden verworfen.Voreingestellt ist 0 - alle Felder einschließen
-       (Diese Option ist in der Dialogbox nicht vorhanden).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; legt fest, ob leere nicht in Anführungszeichen stehende Felder verworfen werden (angewendet nach trimFields). Voreingestellt ist no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; legt einen alternatives Zeichen als Dezimaltrennerzeichen in numerischen Feldern fest.  Voreingestellt ist Punkt (&lt;tt&gt;.&lt;/tt&gt;).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;wktField=feldname&lt;/tt&gt; legt den Namen oder die Feldnummer (beginnend mit 1) des Feldes fest, das eine WKT-Geometrie enthält&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;xField=feldname&lt;/tt&gt; legt den Name oder die Feldnummer (beginnend mit 1) des Feldes fest, das die X-Koordinate enthält (gilt nur, wenn kein wktField angegeben ist)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;yField=feldname&lt;/tt&gt; legt den Name oder die Feldnummer (beginnend mit 1) des Feldes fest, das die Y-Koordinate enthält (gilt nur, wenn kein wktField angegeben ist)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; legt den Geometrietyp der WKT-Felder an oder &lt;tt&gt;none&lt;/t&gt;, um nur die Attributtabelle zu laden.  Voreingestellt ist auto.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; legt einen Ausdruck fest, der die zu verwendende Untermenge der Datensätze identifiziert.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; legt das zu verwendende Koordinatensystem des Vektorlayers in einem durch QgsCoordinateReferenceSystem.createFromString (z.B. &amp;quot;EPSG:4167&amp;quot;) akzeptierten Formats fest.  Wenn dies nicht angegeben ist, kann die ein Dialog diese vom Benutzer erfragen (abhängig von der QGIS-KBS-Einstellung)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; legt fest, das der Datenlieferanz einen Index beim ersten Laden aufbauen soll, um die Untermenge festzulegen.  Der Index kommt bei explizit definierten Untermengen und implizite Untermenge mit gültigen Geometrien zu Anwendung.  Voreingestellt ist, dass der Index, wenn möglicht erstellt wird.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; legt fest, das ein räumlicher Index beim ersten Lesen der Datei erstellt werden soll.  Voreingestellt ist, dass kein Index erstellt wird. &lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; legt fest, dass der Datenlieferant das Dateisystem auf Dateiänderungen überwachen soll.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; legt fest, ob Fehler beim Laden des Layers in einem Dialog angezeigt werden sollen (in jedem Fall werden sie in QGIS-Protokoll geschrieben). Voreingestellt ist no.  Diese Option ist in der Oberfläche nicht verfügbar&lt;/li&gt;
-&lt;/ul&gt;
-
-
-</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="631"/>
         <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
 The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; General&lt;/label&gt;.&lt;p&gt;
@@ -49774,51 +49815,29 @@ The vector layer needs to be in editing mode, before you can click on the &lt;la
         <translation>&lt;h3&gt;Attributtabelle&lt;/h3&gt;
 Die Attributtabelle zeigt Objekte des gewählten Layers an.  Jede Zeile stelle ein Objekt auf der Karte mit seinem Attributen in mehreren Spalten.  Die Objekt in der Tabelle können durchsucht, ausgewählt, verschieben und auch bearbeitet werden.  Die Attributtabelle erscheint normalerweise als separates Fenster.   Wenn Sie es geöffnet haben, aber es nicht mehr sehen können, ist es vermutlich unter dem QGIS-Hauptfenster verschwunden.  Sie können das Fenster auch gedockt anzeigen indem Sie unter &lt;label&gt;Einstellungen &gt; Optionen &gt; Allgemein&lt;/label&gt; ein Häkchen bei &lt;label&gt;Attributtabelle gedockt öffnen&lt;/label&gt; setzen.&lt;p&gt;
 
-Im Fenstertitel werden die Gesamtzahl der Objekt des Layers, die Anzahl der gefilterten Objekt und Anzahl der gewählten Objekte des Layers angezeigt&lt;p&gt;
-
-Die Anzahl  des Tabellenobjekts ist in der führenden Spalte angegeben&lt;p&gt;
+Die Nummer des Tabellenobjekts ist in der führenden Spalte angegeben&lt;p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#Selecting&quot;&gt;Auswählen&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#Sorting&quot;&gt;Sortieren&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Filtering&quot;&gt;Filtern&lt;/a&gt;&lt;br/
-&lt;a href=&quot;#Editing&quot;&gt;Bearbeiten&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#FieldCalc&quot;&gt;Feldrechner&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Searching&quot;&gt;Suchen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Field&quot;&gt;Feldrechner&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;Selecting&quot;&gt;
 &lt;h4&gt;Auswählen&lt;/h4&gt;
 &lt;/a&gt;
- Multiple non-subsequent rows can be selected by holding the &lt;label&gt;Ctrl&lt;/label&gt; key.&lt;br&gt;
-
-Zeilen können durch Klicken auf die Zeilennummer auf der linken Seite der Zeile ausgewählt werden.  Aufeinanderfolgende Zeilen können durch halten der Maustaste und bewegen der Maus zum anderen Ende der Auswahl gewählt werden.  Mehrere nicht aufeinander folgende Zeilen können durch das Drücken von &lt;label&gt;Strg&lt;/label&gt; gewählt werden.&lt;br&gt;Die Auswahl einer Zeile ändern die aktuelle Cursorposition nicht.  Mehrere Zeilen können durch Drücken der Taste &lt;label&gt;Strg&lt;/label&gt; gewählt werden.  Eine fortlaufende Auswahl kann durch Drücken der Taste &lt;label&gt;Umschalt&lt;/label&gt; und Klicken auf mehrere Zeilentitel auf der linken Seite der Zeile erreicht werden.   Damit werden alle Zeilen zwischen der aktuellen und der angeklickten Zeile werden gewählt.
+Zeilen können durch Klicken auf die Zeilennummer auf der linken Seite der Zeile ausgewählt werden.  Die Auswahl einer Zeile ändern die aktuelle Cursorposition nicht.  Mehrere Zeilen können durch Drücken der Taste &lt;label&gt;Strg&lt;/label&gt; gewählt werden.  Eine fortlaufende Auswahl kann durch Drücken der Taste &lt;label&gt;Umschalt&lt;/label&gt; und Klicken auf mehrere Zeilentitel auf der linken Seite der Zeile erreicht werden.   Damit werden alle Zeilen zwischen der aktuellen und der angeklickten Zeile werden gewählt.
 
 &lt;a name=&quot;Sorting&quot;&gt;
 &lt;h4&gt;Sortieren&lt;/h4&gt;
 &lt;/a&gt;
-Jede Spalte kann durch Klick auf den Spaltentitel sortiert werden.  Ein kleiner Pfeil zeigt die Sortierreihenfolge an (Nach unten bedeutet absteigende Werte von oben nach unten und nach oben aufsteigende Werte von oben nach unten).&lt;br&gt; Aktivieren Sie den Knopf &lt;label&gt;Gewählte nach oben&lt;/label&gt; um die gewählten Zeilen unabhängig von der aktuellen Sortierspalte immer oben anzuzeigen.
+Jede Spalte kann durch Klick auf den Spaltentitel sortiert werden.  Ein kleiner Pfeil zeigt die Sortierreihenfolge an (Nach unten bedeutet absteigende Werte von oben nach unten und nach oben aufsteigende Werte von oben nach unten).&lt;br&gt; Benutzen Sie den Knopf &lt;label&gt;Ausgewählte nach oben&lt;/label&gt; um die gewählten Tabellenzeilen als erste anzuzeigen.  Um nur die gewählten Datensätze anzuzeigen haken Sie das Kontrollkästchen &lt;label&gt;Nur gewählte Datensätze zeigen&lt;/label&gt; ab.
 
-&lt;a name=&quot;Filtering&quot;&gt;
-&lt;h4&gt;Filtern&lt;/h4&gt;
+&lt;a name=&quot;Searching&quot;&gt;
+&lt;h4&gt;Suchen&lt;/h4&gt;
 &lt;/a&gt;
-Um nur durch Teile der Daten zu navigieren, kann der Filter-Knopf unten links verwendet werden. Die folgenden Optionen sind verfügbar.
-&lt;h5&gt;Alle Objekte anzeigen&lt;/h5&gt;
-Alle Objekte des Layers anzeigen.
-&lt;h5&gt;Gewählte Objekte anzeigen&lt;/h5&gt;
-Alle gerade gewählten Objekte anzeigen.
-&lt;h5&gt;Auf Karte sichtbare Objekte anzeigen&lt;/h5&gt;
-Alle Objekte anzeigen, die gerade in der Karte zu sehen sind. Es wird der aktuelle Ausschnitte und maßstababhängige Darstellung berücksichtigt.
-&lt;h5&gt;Neue und bearbeitetete Objekte anzeigen&lt;/h5&gt;
-Zeigt nur die neuen und bearbeiten Objekte an. In diesem Modus werden Objekte mit nicht gesicherten Änderunge angezeigt und ist dazu eine gute Möglichkeit Änderungen vor dem Speichern zu prüfen. Zu beachten ist, das gelöschte Objekte in diesem Modus nicht angezeigt werden.
-&lt;h5&gt;Spaltenfilter&lt;/h5&gt;
-Einfacher Filter, der die Filterung nach einem Attribut erlaubt. Wenn das Attribut Text enthält, suchte es auch nach Teilen. Daher werden bei Suche nach &lt;b&gt;man&lt;/b&gt; auch Datensätze mit &lt;b&gt;woman&lt;/b&gt; angezeigt. Nach dem Ändern des Filtertexts drücken Sie die Eingabetaste oder Klicken Sie auf &lt;label&gt;Anwenden&lt;/label&gt;. Sie können auch das Kontrollkästchen &lt;label&gt;Groß-/Kleinschreibung beachten&lt;/label&gt; aktivieren, damit ihr Filter auch auf &lt;b&gt;Night&lt;/b&gt; paßt, wenn Sie nach &lt;b&gt;night&lt;/b&gt; suchen.   
-&lt;h5&gt;Erweiterter Filter&lt;/h5&gt;
-Für komplexere Suchen stellt dieser Modus einen mächtigen Ausdruckseditor bereit, der einer SQL-WHERE-Klausel entspricht. Näheres finden Sie in der Hilfe zum Ausdruckseditor.
+Für eine einfache Suche nach Attribute einer Spalte kann das &lt;label&gt;Suche nach&lt;/label&gt; eingesetzt werden.  Wählen Sie das Feld (Spalte), das durchsucht werden soll aus der Auswahlliste und klicken Sie auf den Knopf &lt;label&gt;Suchen&lt;/label&gt;.&lt;br&gt; Für komplexere Suche verwenden Sie bitte &lt;label&gt;Erweitere Suche&lt;/label&gt; Dieser Knopf öffnet den Abfrageeditor und erlaubt Ihnen Zeilen zu wählen, die zu einer SQL-ähnlichen Where-Klausel passen.
 
-&lt;a name=&quot;Editing&quot;&gt;
-&lt;h4&gt;Bearbeiten&lt;/h4&gt;
-&lt;/a&gt;
-Um Werte zu bearbeiten müssen Sie den Layer erst in den Bearbeitungsmodus versetzen. Um den Bearbeitungsmodus umzuschalten klicken Sie auf Bleistift-Knopf &lt;label&gt;Bearbeitungsmodus umschalten&lt;/label&gt;oder drücken &lt;label&gt;Strg + E&lt;/label&gt;. Danach klicken Sie doppelt auf den Wert, den Sie bearbeiten wollen oder platzieren Sie den Cursor auf ihn und benutzen die &lt;label&gt;Leertaste&lt;/label&gt;. Sie können die Bearbeitungselemente im Reiter Felder in den &lt;label&gt;Vektorlayereigenschaften&lt;/label&gt; einstellen.
-
-&lt;a name=&quot;FieldCalc&quot;&gt;
+&lt;a name=&quot;Field&quot;&gt;
 &lt;h4&gt;Feldrechner&lt;/h4&gt;
 &lt;/a&gt;
 Der Knopf &lt;label&gt;Feldrechner&lt;/label&gt; in der Attributtabelle ermöglicht Berechnungen auf mit vorhandenen Attributwerten oder definierten Funktionen.  Z.B.  kann die Länge oder Fläche von Geometrieobjekten berechnet werden.&lt;br/&gt;
@@ -50729,7 +50748,7 @@ Wenn die Installation scheitert, wird der Grund dafür in einem Warnungsdialog a
 &lt;p&gt;Für Windows-Installationsanweisungen besuchen Sie bitte die Homepage des Moduls.  Wenn Sie einen Proxy benutzen, müssen Sie ihn unter &lt;label&gt;Bearbeiten&lt;/label&gt; &gt; &lt;label&gt;Optionen&lt;/label&gt; (GNOME, OSX) oder &lt;label&gt;Einstellungen&lt;/label&gt; &gt; &lt;label&gt;Optionen&lt;/label&gt; (KDE, Windows) auf dem Reiter &lt;label&gt;Netzwerk &amp;amp; Proxy&lt;/label&gt; angeben.&lt;/p&gt;
 
 &lt;p align=&apos;justify&apos;&gt;
-&lt;label&gt;Erweiterung deinstallieren&lt;/label&gt; ist nur verfügbar, wenn die gewählte Erweiterung keine Kernerweiterung ist.  Bei Kernerweiterungen, die Sie aktualisiert haben, können Sie die Aktualisierung mit &lt;label&gt;Erweiterung deinstallieren&lt;/label&gt; zurücknehmen  und zur mit Quantum GIS installieren Version zurückkehren.  Diese Version kann allerdings nicht deinstalliert werden.&lt;/p&gt;
+&lt;label&gt;Erweiterung deinstallieren&lt;/label&gt; ist nur verfügbar, wenn die gewählte Erweiterung keine Kernerweiterung ist.  Bei Kernerweiterungen, die Sie aktualisiert haben, können Sie die Aktualisierung mit &lt;label&gt;Erweiterung deinstallieren&lt;/label&gt; zurücknehmen  und zur mit QGIS installieren Version zurückkehren.  Diese Version kann allerdings nicht deinstalliert werden.&lt;/p&gt;
 
 &lt;a name=&quot;retab&quot;&gt;
 &lt;h4&gt;Reiter Repositorys&lt;/h4&gt;
@@ -50761,6 +50780,343 @@ sollen.&lt;/li&gt;
 &lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;
 &lt;tr&gt;&lt;td&gt;Hinweis: Experimentelle Erweiterungen sind grundsätzlich ungeeignet für den Produktionsbetrieb. Diese Erweiterung befinden sich in einer frühen Entwicklungsphase und sollten als &quot;unvollständig&quot; oder &quot;Machbarkeitstudie&quot; angesehen werden.  Das QGIS-Entwicklerteam empfiehlt deren Installation außer zu Testzwecken nicht. 
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1138"/>
+        <source>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;head&gt;
+	&lt;title&gt;Help Python Console&lt;/title&gt;
+	&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+	
+	&lt;style&gt;
+		body{
+    		font-family: &apos;Trebuchet MS&apos;, sans-serif;
+    		font-size : 12px;
+		}
+		#header{
+    		background: #f6f6f6;
+    		border-bottom: 3px solid #000;
+    		width: 100%;
+		}
+		#headerTool td{
+    		background: #f6f6f6;
+    		/*width: 100%;*/
+		}
+		._titleP {
+			padding: 5px;
+			font-size: 15px;
+			font-weight: bold;
+			color: #000;
+		}
+		._title {
+			font-size: 20px;
+			font-weight: bold;
+			color: #000;
+		}
+	&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;table id=&quot;header&quot;&gt;
+		&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/imgHelpDialog.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;span class=&quot;_title&quot;&gt;Python Console for QGIS&lt;/span&gt;
+		&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;/table&gt;
+		&lt;table&gt;
+		&lt;tr&gt;
+			&lt;td&gt;
+				&lt;p align=&quot;justify&quot;&gt;
+					Python Console based on PyQScintilla2.
+					&lt;br&gt;&lt;br&gt;
+					To access the QGIS environment from this console 
+						  use qgis.utils.iface object (instance of QgisInterface class). 
+						  To import the class QgisInterface can also use the dedicated 
+						  button on the toolbar on the left.
+				&lt;/p&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/imgHelpConsole.png&quot; /&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;
+				&lt;p align=&quot;justify&quot;&gt;
+					The console is split in two main panes, output and input areas. 
+					       Both are resizable by using the horizontal splitter. 
+					       Output area pane is a widget read-only which shows the commands output. 
+					       You can drag and drop or copy text into input area 
+					       (no matter if selected text contains &gt;&gt;&gt; or ...). 
+					       Use &apos;Share on codepad&apos; from contextual menu for sharing snippets code. 
+					       The context menu looks like the image below.
+					&lt;img src=&quot;qrc:/images/themes/default/console/imgHelpMenu.png&quot;&gt;&lt;br&gt;
+					Input area pane is the interactive python shell for input commands.
+				&lt;/p&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+	&lt;table id=&quot;header&quot;&gt;
+		&lt;tr&gt;
+		&lt;td&gt;
+			&lt;span class=&quot;_titleP&quot;&gt;Features&lt;/span&gt;
+		&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+	&lt;p align=&quot;justify&quot;&gt;
+		&lt;ul&gt;
+		&lt;li&gt;Auto-completion and highlighting syntax for the following APIs:
+			&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS-master&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+			&lt;/ol&gt;
+		&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;CTRL+SPACE to view the auto-completion list.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;CTRL+ALT+SPACE to view the command history list.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Open QGIS API documentation by typing &apos;_api&apos;.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Open PyQGIS Cookbook by typing &apos;_pyqgis&apos;.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Saves the command history by typing &apos;_save&apos; or closing the widget. 
+						  This command saves the history command in the file ~/.qgis2/console_history.txt&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Clears the command history by typing &lt;b&gt;_clear&lt;/b&gt;. 
+						  This command clears the command history from file ~/.qgis2/console_history.txt&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Clears completely command history by typing &apos;_clearAll&apos;. 
+						  This command clears completely the command history. It has an irreversible effect.&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/p&gt;
+	&lt;table id=&quot;header&quot;&gt;
+		&lt;tr&gt;
+		&lt;td&gt;
+			&lt;span class=&quot;_titleP&quot;&gt;Toolbar&lt;/span&gt;
+		&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+	&lt;p&gt;The following is a description of the tools in the toolbar:&lt;/p&gt;
+	&lt;table width=&quot;100%&quot; border=&quot;0&quot; id=&quot;headerTool&quot;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Tool to clear python console&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconIfaceConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to import iface class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSextanteConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to import Sextante class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to import PyQt4.QtCore class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconScriptConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconOpenConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to open a python script and load in console&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSaveConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to save a python script&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</source>
+        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//DE&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;head&gt;
+	&lt;title&gt;Python-Konsolenhilfe&lt;/title&gt;
+	&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+	
+	&lt;style&gt;
+		body{
+    		font-family: &apos;Trebuchet MS&apos;, sans-serif;
+    		font-size : 12px;
+		}
+		#header{
+    		background: #f6f6f6;
+    		border-bottom: 3px solid #000;
+    		width: 100%;
+		}
+		#headerTool td{
+    		background: #f6f6f6;
+    		/*width: 100%;*/
+		}
+		._titleP {
+			padding: 5px;
+			font-size: 15px;
+			font-weight: bold;
+			color: #000;
+		}
+		._title {
+			font-size: 20px;
+			font-weight: bold;
+			color: #000;
+		}
+	&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;table id=&quot;header&quot;&gt;
+		&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/imgHelpDialog.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;span class=&quot;_title&quot;&gt;Python-Konsole für QGIS&lt;/span&gt;
+		&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;/table&gt;
+		&lt;table&gt;
+		&lt;tr&gt;
+			&lt;td&gt;
+				&lt;p align=&quot;justify&quot;&gt;
+					Auf PyQScintilla2 basierende Python-Konsole
+					&lt;br&gt;&lt;br&gt;
+					Das Objekt qgis.utils.iface (Instanz der Klasse QgisInterface) ermöglicht den Zugriff auf die QGIS-Umgebung von der Konsole aus. Über den defür bestimmten Knopf in der Werkzeugleiste kann die Klasse QgisInterface geladen werden.
+				&lt;/p&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/imgHelpConsole.png&quot; /&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;
+				&lt;p align=&quot;justify&quot;&gt;
+					Die Konsole ist die beiden Hauptbereiche Ein- und Ausgabebereich aufgeteilt. Beide sind mit dem horziontalen Trenner in der Größe veränderbar. Der Ausgabebereich ist schreibgeschützt und zeigt die Befehlsausgaben an. Sie können per Drag&amp;amp;Drop benutzen oder Text in den Eingabebereich kopieren (ob der Text &gt;&gt;&gt; or ...) enthält spielt keine Rolle). Benutzen Sie &apos;Auf Codepad teilen&apos; aus dem Kontextmenü um Codeschnippsel zu teilen. Das Kontextmenü sieht wie das nachfolgende Bild aus.
+&lt;img src=&quot;qrc:/images/themes/default/console/imgHelpMenu.png&quot;&gt;&lt;br&gt;
+Der Eingabebereich ist die inaktive Python-Shell zur Befehlseingabe.&lt;/p&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+	&lt;table id=&quot;header&quot;&gt;
+		&lt;tr&gt;
+		&lt;td&gt;
+			&lt;span class=&quot;_titleP&quot;&gt;Funktionen&lt;/span&gt;
+		&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+	&lt;p align=&quot;justify&quot;&gt;
+		&lt;ul&gt;
+		&lt;li&gt;Auto-Vervollständigung und Syntaxhervorhebung der folgenden Programmierschnittstellen:
+			&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS-master&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+			&lt;/ol&gt;
+		&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Strg+Leertaste zur Anzeige der Verfolgständigungsliste.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Strg+Alt+Leertaste um die Befehlshistorie anzuzeigen.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Die QGIS-API-Dokumentation kann durch die Eingabe von &apos;_api&apos; geöffnet werden.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Das QGIS-Python-Kochbuch kann durch die Eingabe von &apos;_pyqgis&apos; geöffnet werden.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Zum Speichern der Befehlshistorie &apos;_save&apos; eingeben oder das Konsolfenster schließen. 
+						  Dieser Befehl speichert die Historie in ~/.qgis2/console_history.txt&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Zum Löschen der Befehlshistorie &apos;_clear&apos; eingeben. 
+						  Dieser Befehl löscht die Befehlshistorie aus ~/.qgis2/console_history.txt&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;Zum kompletten Löschen der Befehlshistorie &apos;_clearAll&apos; eingeben. 
+						  Dieser Befehl löscht die ganze Befehlshistorie. Er ist nicht zurückzunehmen.&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/p&gt;
+	&lt;table id=&quot;header&quot;&gt;
+		&lt;tr&gt;
+		&lt;td&gt;
+			&lt;span class=&quot;_titleP&quot;&gt;Werkzeugleiste&lt;/span&gt;
+		&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+	&lt;p&gt;Im folgende Beschreibungen der Werkzeuge in der Leiste:&lt;/p&gt;
+	&lt;table width=&quot;100%&quot; border=&quot;0&quot; id=&quot;headerTool&quot;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Löschen der Python-Konsole&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconIfaceConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Import der Klasse iface&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSextanteConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Import der Klasse Sextante&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Werkzeug um die Klasse PyQt4.QtCore zu laden&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Werkzeug um die Klasse PyQt4.QtGui zu laden&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconScriptConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconOpenConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Laden eines Pythonscripts in die Konsole&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSaveConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Speichern eines Pythonscripts.&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Einstellungen&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Hilfe&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Zum Ausführen eines Befehls (wie Eingabe von Enter)&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 </translation>
     </message>
     <message>
@@ -50808,7 +51164,7 @@ Ein Benutzer-KBS in QGIS zu definieren erfordert gutes Verständnis der PROJ.4-P
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1138"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1310"/>
         <source>&lt;h3&gt;Options&lt;/h3&gt;
 This dialog allows you to select some basic options for QGIS. There are eight tabs:
 &lt;p&gt;
@@ -50970,7 +51326,7 @@ Haken Sie &lt;label&gt;Proxy für Webzugriff benutzen an&lt;/label&gt; und setze
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1212"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1384"/>
         <source>&lt;h3&gt;Create a New SQL Anywhere Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a
 SQL Anywhere database.
@@ -51037,9 +51393,9 @@ SQL-Anywhere-Datenbank vorzunehmen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1244"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1416"/>
         <source>&lt;h3&gt;Finding shortest path&lt;/h3&gt;
-&lt;p&gt;Road graph is a C++ plugin for Quantum GIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Plugins &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Plugins &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#howto&quot;&gt;How to&lt;/a&gt;&lt;br/&gt;
 &lt;/p&gt;
@@ -51070,7 +51426,7 @@ Durch Klick auf &lt;label&gt;Berechnen&lt;/label&gt; wird der kürzeste Weg mit 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1259"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1431"/>
         <source>&lt;h3&gt;Create a New Oracle Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a Oracle database.
 &lt;p&gt;
@@ -52022,8 +52378,8 @@ Base Path (i.e. keep only filename from attribute)</source>
 <context>
     <name>fTools</name>
     <message>
-        <source>Quantum GIS version detected: </source>
-        <translation>Festgestellte Quantum GIS-Version: </translation>
+        <source>QGIS version detected: </source>
+        <translation>Festgestellte QGIS-Version: </translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
@@ -52521,7 +52877,7 @@ Double click to add field name to expression string.
 Right-Click on field name to open context menu sample value loading options.
 </source>
         <translation>&lt;h3&gt;Feld&lt;/h3&gt;
-Klicken Sie den Feldnamen doppelt um Ihn dem Ausdruck hinzuzuf&amp;uuml;gen.
+Klicken Sie den Feldnamen doppelt um ihn dem Ausdruck hinzuzuf&amp;uuml;gen.
 &lt;br&gt;&lt;br&gt;
 Per Rechtsklick auf den Feldnamen k&amp;ouml;nnen Sie ein Kontextmen&amp;uuml; mit Optionen zum Laden von Beispielwerten &amp;ouml;ffnen.
 </translation>

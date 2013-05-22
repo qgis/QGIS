@@ -1,10 +1,10 @@
-Quantum GIS (QGIS)
+QGIS
 Building QGIS from source - step by step
-Wednesday April 24, 2013
+Tuesday May 21, 2013
 
 
-Last Change : Saturday December 08, 2012
-Last Updated: Wednesday April 24, 2013
+Last Updated: Tuesday May 21, 2013
+Last Change : Tuesday May 21, 2013
 
 
   1. Introduction
@@ -22,7 +22,7 @@ Last Updated: Wednesday April 24, 2013
   4. Building on Windows
     4.1. Building with Microsoft Visual Studio
     4.2. Building using MinGW
-    4.3. Creation of MSYS environment for compilation of Quantum GIS
+    4.3. Creation of MSYS environment for compilation of QGIS
   5. Building on MacOS X
     5.1. Install Developer Tools
     5.2. Install Qt4 from disk image
@@ -48,10 +48,10 @@ Last Updated: Wednesday April 24, 2013
   ===============
 
 This document is the original installation guide of the described software 
-Quantum GIS. The software and hardware descriptions named in this 
+QGIS. The software and hardware descriptions named in this 
 document are in most cases registered trademarks and are therefore subject 
-to the legal requirements. Quantum GIS is subject to the GNU General Public 
-License. Find more information on the Quantum GIS Homepage:
+to the legal requirements. QGIS is subject to the GNU General Public 
+License. Find more information on the QGIS Homepage:
 http://www.qgis.org
 
 The details, that are given in this document have been written and verified 
@@ -61,13 +61,13 @@ liable to any duties or guarantees. The editors and publishers do not take
 any responsibility or liability for failures and their consequences. You are 
 always welcome for indicating possible mistakes.
 
-You can download this document as part of the Quantum GIS 'User and 
+You can download this document as part of the QGIS 'User and 
 Installation Guide' in HTML and PDF format via http://www.qgis.org. A current 
 version is also available at:
 http://www.qgis.org/api/INSTALL.html
 
 Translations of this document can also be downloaded at the documentation area 
-of the Quantum GIS project at http://www.qgis.org. More information is 
+of the QGIS project at http://www.qgis.org. More information is 
 available via http://wiki.qgis.org/qgiswiki/DocumentationWritersCorner. 
 
 Please visit http://qgis.org for information on joining our mailing lists 
@@ -557,7 +557,7 @@ The free (as in free beer) Express Edition installer is available under:
 The optional products are not necessary.  In the process the Windows SDKs for
 Visual Studio 2008 will also be downloaded and installed.
 
-You also need the Microsoft Windows Server® 2003 R2 Platform SDK (for setupapi):
+You also need the Microsoft Windows Server(R) 2003 R2 Platform SDK (for setupapi):
 
   http://download.microsoft.com/download/f/a/d/fad9efde-8627-4e7a-8812-c351ba099151/PSDK-x86.exe
 
@@ -865,7 +865,7 @@ http://msysgit.googlecode.com/files/Git-1.7.4-preview20110204.exe
     4.2.6. CMake
     ============
 
-CMake is build system used by Quantum GIS. Download it from here:
+CMake is build system used by QGIS. Download it from here:
 
 http://www.cmake.org/files/v2.8/cmake-2.8.2-win32-x86.exe
 
@@ -954,8 +954,8 @@ tree. Read the READMEfile there and follow the instructions. Next right click
 on qgis.nsi and choose the option 'Compile NSIS Script'. 
 
 
-  4.3. Creation of MSYS environment for compilation of Quantum GIS
-  ================================================================
+  4.3. Creation of MSYS environment for compilation of QGIS
+  =========================================================
 
 
     4.3.1. Initial setup
@@ -1228,7 +1228,7 @@ of Xcode, regardless of using a separate DMG installer for just the tools.
 
 Xcode 4.3+ also introduces the clang frontend to the LLVM compiler as default.
 
-Note: In XCODE 4.5 installed from the app store, you need to install the 
+Note: In XCODE 4.5 installed from the app store, you need to install the
 command line tools from XCode -> Preferences -> Downloads and choose command line tools.
 
 http://clang.llvm.org/
@@ -1545,7 +1545,7 @@ building QGIS.
 The plugin allows QScintilla2 widgets to be used within QtDesigner.
 
   cd <QScintilla2 source directory>
-  cd designer-Qt4
+  cd designer-Qt4Qt5
   qmake -spec macx-g++ designer.pro
   make
   sudo make install
@@ -1565,7 +1565,7 @@ cd to the source folder.  Then for your chosen Python:
 
 python.org Python
 
-  python configure.py -n /usr/local/Qt-4.8/qsci
+  python configure.py -n /usr/local/Qt4.8/qsci
   yes
 
 Leopard system Python
@@ -1573,7 +1573,7 @@ Leopard system Python
 PyQt wants to install in the system path -- this is not a good idea.
 More configuration is needed to install outside the system path:
 
-  python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin -n /usr/local/Qt-4.8/qsci
+  python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin -n /usr/local/Qt4.8/qsci -v /usr/local/share/sip/PyQt4
 
 Snow Leopard system Python
 
@@ -1586,19 +1586,19 @@ Substitute '2.7' for python version and 10.7 for SDK version below for Lion.
 If you are using 32-bit Qt (Qt Carbon):
 
   python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
-  -n /usr/local/Qt-4.8/qsci --use-arch i386
+  -n /usr/local/Qt4.8/qsci -v /usr/local/share/sip/PyQt4 --use-arch i386
 
 For 64-bit Qt (Qt Cocoa), use this configure line:
 
   python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
-  -n /usr/local/Qt-4.8/qsci --use-arch x86_64
+  -n /usr/local/Qt4.8/qsci -v /usr/local/share/sip/PyQt4 --use-arch x86_64
 
 Lion and Mt. Lion system Python
 
 Similar to Snow Leopard, you should install outside the system Python path.
 But you don't need the arch option:
 
-  python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin -n /usr/local/Qt-4.8/qsci
+  python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin -n /usr/local/Qt4.8/qsci -v /usr/local/share/sip/PyQt4
 
 continue...
 

@@ -150,8 +150,9 @@ class RectangleMapTool(QgsMapToolEmitPoint):
 
   def canvasReleaseEvent(self, e):
       self.isEmittingPoint = False
-      if self.rectangle() != None:
-        self.emit( SIGNAL("rectangleCreated()") )
+      #if self.rectangle() != None:
+      #  self.emit( SIGNAL("rectangleCreated()") )
+      self.emit( SIGNAL("rectangleCreated()") )
 
   def canvasMoveEvent(self, e):
       if not self.isEmittingPoint:

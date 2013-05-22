@@ -62,6 +62,7 @@ qgscolordialog.cpp
 qgscomposerview.cpp
 qgscomposerruler.cpp
 qgscursors.cpp
+qgsdatadefinedbutton.cpp
 qgsdetaileditemdelegate.cpp
 qgsdetaileditemwidget.cpp
 qgsdetaileditemdata.cpp
@@ -180,6 +181,7 @@ qgsbusyindicatordialog.h
 qgscharacterselectdialog.h
 qgscolordialog.h
 qgscomposerview.h
+qgsdatadefinedbutton.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
 qgsdialog.h
@@ -232,6 +234,7 @@ qgsbusyindicatordialog.h
 qgscharacterselectdialog.h
 qgscolordialog.h
 qgscursors.h
+qgsdatadefinedbutton.h
 qgsencodingfiledialog.h
 qgsfiledropedit.h
 qgsgenericprojectionselector.h

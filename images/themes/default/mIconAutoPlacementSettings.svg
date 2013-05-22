@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 15.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0"
+	 id="autoplacement" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" inkscape:version="0.48.2 r9819" sodipodi:docname="mActionRotateLabel.svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" inkscape:export-filename="/mnt/home1/robert/svn/graphics/trunk/toolbar-icons/24x24/label-rotate.png" xmlns:svg="http://www.w3.org/2000/svg" inkscape:export-ydpi="90" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:export-xdpi="90"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="18px"
+	 viewBox="4 7 24 18" enable-background="new 4 7 24 18" xml:space="preserve">
+<g id="svg5692">
+	<g id="g6905" transform="translate(-18,-16)">
+		
+			<path id="path2844" inkscape:export-filename="E:\Program Files\QGIS-Dev\themes\gis-0.1.1\path2844.png" inkscape:export-ydpi="90" inkscape:export-xdpi="90" sodipodi:nodetypes="cccccccc" fill="#82A0B4" stroke="#3C5A6E" stroke-linejoin="round" d="
+			M30.61,39.576l3.495-3.5h-2.331v-2.334h-2.331v2.334H27.11L30.61,39.576z"/>
+		<path id="path2846" sodipodi:nodetypes="cccccccc" fill="#82A0B4" stroke="#3C5A6E" stroke-linejoin="round" d="M22.652,31.623
+			l3.5,3.497v-2.332h2.333v-2.331h-2.333v-2.334L22.652,31.623z"/>
+		<path id="path2848" sodipodi:nodetypes="cccccccc" fill="#82A0B4" stroke="#3C5A6E" stroke-linejoin="round" d="M30.61,23.664
+			l3.495,3.5h-2.331v2.333h-2.331v-2.333H27.11L30.61,23.664z"/>
+		<path id="path2850" sodipodi:nodetypes="cccccccc" fill="#82A0B4" stroke="#3C5A6E" stroke-linejoin="round" d="M38.563,31.623
+			l-3.502,3.497v-2.332h-2.333v-2.331h2.333v-2.334L38.563,31.623z"/>
+	</g>
+</g>
+<path id="path7183" fill="#FCE94F" stroke="#C4A000" stroke-linecap="round" stroke-linejoin="round" d="M23.949,14.637v3.083
+	c-0.163,0.059-0.325,0.125-0.48,0.198l-2.176-2.177l-2.572,2.573l2.177,2.176c-0.073,0.154-0.14,0.317-0.198,0.48h-3.08v3.617h3.08
+	c0.058,0.161,0.125,0.326,0.198,0.48l-2.177,2.176l2.572,2.571l2.176-2.176c0.155,0.073,0.317,0.14,0.48,0.198v3.08h3.617v-3.08
+	c0.163-0.059,0.325-0.125,0.48-0.198l2.176,2.176l2.571-2.571l-2.176-2.176c0.072-0.154,0.141-0.319,0.198-0.48h3.08V20.97h-3.08
+	c-0.059-0.163-0.125-0.325-0.198-0.48l2.176-2.176l-2.571-2.573l-2.176,2.177c-0.153-0.073-0.319-0.141-0.48-0.198v-3.083H23.949z
+	 M25.758,20.603c1.2,0,2.176,0.975,2.176,2.176c0,1.2-0.976,2.176-2.176,2.176c-1.201,0-2.176-0.976-2.176-2.176
+	C23.582,21.577,24.557,20.603,25.758,20.603z"/>
+</svg>

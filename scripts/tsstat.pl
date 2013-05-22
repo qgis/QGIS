@@ -89,6 +89,7 @@ my $maxn;
 
 for my $i (<i18n/qgis_*.ts>) {
 	my ($langcode) = $i =~ /i18n\/qgis_(.*).ts/;
+	next if $langcode eq "en";
 
 	my $name;
 	if($langcode =~ /(.*)_(.*)/) {
