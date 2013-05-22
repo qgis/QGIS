@@ -458,7 +458,7 @@
     </iconset>
    </property>
    <property name="text">
-    <string>Undo</string>
+    <string>&amp;Undo</string>
    </property>
    <property name="toolTip">
     <string>Revert last change</string>
@@ -473,7 +473,7 @@
      <normaloff>:/images/themes/default/mActionRedo.png</normaloff>:/images/themes/default/mActionRedo.png</iconset>
    </property>
    <property name="text">
-    <string>Redo</string>
+    <string>&amp;Redo</string>
    </property>
    <property name="toolTip">
     <string>Restore last change</string>
@@ -614,7 +614,37 @@
    <property name="shortcut">
     <string>Del</string>
    </property>
-  </action>  
+  </action>
+  <action name="mActionDeselectAll">
+   <property name="text">
+    <string>De&amp;select All</string>
+   </property>
+   <property name="toolTip">
+    <string>Deselect all</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="mActionSelectAll">
+   <property name="text">
+    <string>Select &amp;All</string>
+   </property>
+   <property name="toolTip">
+    <string>Select all items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="mActionInvertSelection">
+   <property name="text">
+    <string>&amp;Invert Selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Invert selection</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../../images/images.qrc"/>
