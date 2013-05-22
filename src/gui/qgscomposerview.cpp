@@ -560,10 +560,8 @@ void QgsComposerView::pasteItems( PasteMode mode )
   }
 }
 
-void QgsComposerView::keyPressEvent( QKeyEvent * e )
+void QgsComposerView::deleteSelectedItems()
 {
-  //TODO : those should be actions (so we could also display menu items and/or toolbar items)
-
   if ( !composition() )
   {
     return;
@@ -573,18 +571,26 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
   QList<QgsComposerItem*>::iterator itemIt = composerItemList.begin();
 
   //delete selected items
-  if ( e->key() == Qt::Key_Delete || e->key() == Qt::Key_Backspace )
+  for ( ; itemIt != composerItemList.end(); ++itemIt )
   {
-    for ( ; itemIt != composerItemList.end(); ++itemIt )
+    if ( composition() )
     {
-      if ( composition() )
-      {
-        composition()->removeComposerItem( *itemIt );
-      }
+      composition()->removeComposerItem( *itemIt );
     }
   }
+}
 
-  else if ( e->key() == Qt::Key_Left )
+void QgsComposerView::keyPressEvent( QKeyEvent * e )
+{
+  if ( !composition() )
+  {
+    return;
+  }
+
+  QList<QgsComposerItem*> composerItemList = composition()->selectedComposerItems();
+  QList<QgsComposerItem*>::iterator itemIt = composerItemList.begin();
+
+  if ( e->key() == Qt::Key_Left )
   {
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
