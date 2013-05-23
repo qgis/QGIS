@@ -118,7 +118,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.setAutoCompletionThreshold(threshold)
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI').toString()
         autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True).toBool()
-        self.setAutoCompletionThreshold(threshold)
         if autoCompEnabled:
             if radioButtonSource == 'fromDoc':
                 self.setAutoCompletionSource(self.AcsDocument)
