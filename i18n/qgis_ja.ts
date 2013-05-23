@@ -9396,7 +9396,7 @@ It will be disabled.</source>
         <location filename="../src/app/qgspluginregistry.cpp" line="253"/>
         <source>Plugin &quot;%1&quot; is not compatible with this version of QGIS.
 It will be disabled.</source>
-        <translation>プラグイン &quot;%1&quot;はこのバージョンのQuantum GISでは互換性がありません.
+        <translation>プラグイン &quot;%1&quot;はこのバージョンのQGISでは互換性がありません.
 これは無効になります.</translation>
     </message>
     <message>
@@ -12127,7 +12127,7 @@ Errors: %3
         <source>Multiple instances of QGIS application object detected.
 Please contact the developers.
 </source>
-        <translation>Quantum GISアプリケーションの複数のインスタンスが検出されました。
+        <translation>QGISアプリケーションの複数のインスタンスが検出されました。
 開発者に連絡してください。</translation>
     </message>
     <message>
@@ -15181,7 +15181,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsabout.ui" line="86"/>
         <source>QGIS is licensed under the GNU General Public License</source>
-        <translation>Quantum GIS のライセンスは GNU 一般公衆利用許諾契約書(GNU General Public License) です</translation>
+        <translation>QGIS のライセンスは GNU 一般公衆利用許諾契約書(GNU General Public License) です</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="166"/>
@@ -43449,21 +43449,21 @@ Here is the error message:</source>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your QGIS version</source>
-        <translation>このリポジトリはアナタのQuantum GISのバージョンと互換性がないのでブロックされました</translation>
+        <translation>このリポジトリはあなたのQGISのバージョンと互換性がないのでブロックされました</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your QGIS version and probably won&apos;t work.</source>
-        <translation>このプラグインはあなたのQuantum GISのバージョンに適合しません.多分これは動作しません.</translation>
+        <translation>このプラグインはあなたのQGISのバージョンに適合しません.多分これは動作しません.</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and QGIS wiki.</source>
         <translation>必要なPythonモジュールがインストールされていません.
-詳しい情報はプラグインのホームページかQuantum GIS wikiを参照してください.</translation>
+詳しい情報はプラグインのホームページかQGIS wikiを参照してください.</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of QGIS</source>
-        <translation>プラグインを使用するにはより新しいバージョンのQuantum GISが必要です</translation>
+        <translation>プラグインを使用するにはより新しいバージョンのQGISが必要です</translation>
     </message>
     <message>
         <source>at least</source>
@@ -43541,15 +43541,15 @@ Now you need to enable it in Plugin Manager.</source>
         <source>Python plugin reinstalled.
 You need to restart QGIS in order to reload it.</source>
         <translation>Pythonプラグインが再インストールされました。
-これをリロードするためにQuantum GISを再起動させる必要があります。</translation>
+これをリロードするためにQGISを再起動させる必要があります。</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of QGIS. The minimum required version is:</source>
-        <translation>プラグインは新しいバージョンのQuantum GIS用に設計されました。最低必要なバージョンは:</translation>
+        <translation>プラグインは新しいバージョンのQGIS用に設計されました。最低必要なバージョンは:</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart QGIS in order to remove it completely.</source>
-        <translation>Pythonプラグインがアンインストールされました。完全に削除するためにはQuantum GISを再起動する必要があります。</translation>
+        <translation>Pythonプラグインがアンインストールされました。完全に削除するためにはQGISを再起動する必要があります。</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
@@ -44838,7 +44838,7 @@ Database error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1026"/>
         <source>The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
-        <translation>このテーブルはキーとして適切なカラムがありません.Quantum GISではPostgreSQLのoidやctidのようなプライマリキーが必要です.</translation>
+        <translation>このテーブルはキーとして適切なカラムがありません.QGISではPostgreSQLのoidやctidのようなプライマリキーが必要です.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1054"/>
@@ -52924,7 +52924,7 @@ Quantum GISでは32bit以下の整数をリレーションのユニーク値と�
 QGIS requires that the relation has an integer column no larger than 32 bits containing unique values. </source>
         <translation>%1のソースリレーションはユニークキーに適したカラムがありません
 
-Quantum GISでは32bit以下の整数をリレーションのユニーク値として持つ必要があります.</translation>
+QGISでは32bit以下の整数をリレーションのユニーク値として持つ必要があります.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="284"/>
@@ -52984,22 +52984,22 @@ Quantum GISでは32bit以下の整数をリレーションのユニーク値と�
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1520"/>
         <source>Column %1 has a geometry type of %2, which QGIS does not currently support.</source>
-        <translation>カラム%1のジオメトリタイプ%2は Quantum GISでは現在サポートされていません.</translation>
+        <translation>カラム%1のジオメトリタイプ%2は QGISでは現在サポートされていません.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1529"/>
         <source>Column %1 is not restricted to a single SRID, which QGIS requires.</source>
-        <translation>カラム%1は単一のSRIDに限定されていません,Quantum GISではSRIDは１つである必要があります.</translation>
+        <translation>カラム%1は単一のSRIDに限定されていません,QGISではSRIDは１つである必要があります.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1822"/>
         <source>Because QGIS supports only planar data, the SQL Anywhere data provider will transform the data to the compatible planar projection (SRID=%1).</source>
-        <translation>Quantum GISは平面的データのみをサポートしているのでSQL Anywhereデータプロバイダは平面投影互換データに変換を行います(SRID=%1).</translation>
+        <translation>QGISは平面的データのみをサポートしているのでSQL Anywhereデータプロバイダは平面投影互換データに変換を行います(SRID=%1).</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1839"/>
         <source>Because QGIS supports only planar data and no compatible planar projection was found, the SQL Anywhere data provider will attempt to transform the data to planar WGS 84 (SRID=%1).</source>
-        <translation>Quantum GISは平面的データのみをサポートしていて互換性の無い平面投影が検出されました.SQL Anywhereデータプロバイダは平面データWGS 84(SRID=%1)への変換を試みます.</translation>
+        <translation>QGISは平面的データのみをサポートしていて互換性の無い平面投影が検出されました.SQL Anywhereデータプロバイダは平面データWGS 84(SRID=%1)への変換を試みます.</translation>
     </message>
     <message>
         <source>Column %1 has a geometry type of %2, which Quantum GIS does not currently support.</source>
