@@ -186,7 +186,6 @@ class Editor(QsciScintilla):
         threshold = self.settings.value("pythonConsole/autoCompThresholdEditor", 2).toInt()[0]
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI').toString()
         autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor", True).toBool()
-
         self.setAutoCompletionThreshold(threshold)
         if autoCompEnabled:
             if radioButtonSource == 'fromDoc':
@@ -958,11 +957,11 @@ class EditorTabWidget(QTabWidget):
             self._removeTab(i)
         self.newTabEditor(tabName='Untitled-0')
         self._removeTab(0)
-        
+
     def saveAs(self):
         idx = self.idx
         self.parent.saveAsScriptFile(idx)
-    
+
     def enableSaveIfModified(self, tab):
         tabWidget = self.widget(tab)
         if tabWidget:
