@@ -133,7 +133,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         AutoincrementalField(), Explode(), FieldsPyculator(), EquivalentNumField(),
                         PointsLayerFromTable(), StatisticsByCategories(), Polygonize(),
                         # ------ raster ------
-                        CreateConstantRaster(), RasterLayerStatistics()
+                        #CreateConstantRaster(), 
+                        RasterLayerStatistics()
                         # ------ graphics ------
                         #VectorLayerHistogram(), VectorLayerScatterplot(), RasterLayerHistogram(),
                         #MeanAndStdDevPlot(), BarPlot(), PolarPlot()

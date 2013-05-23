@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.gdal.GdalUtils import GdalUtils
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -29,6 +28,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from os import path
 from sextante.core.SextanteConfig import SextanteConfig
+from sextante.gdal.GdalUtils import GdalUtils
+
 
 class QGisLayers:
     '''This class contains method to communicate SEXTANTE with the QGIS interface,
