@@ -448,86 +448,96 @@
         <translation>SQLウィンドウ</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="27"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="29"/>
         <source>SQL query:</source>
         <translation>SQLクエリ:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="53"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="55"/>
+        <source>Store</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="62"/>
+        <source>Delete</source>
+        <translation type="unfinished">削除</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="90"/>
         <source>&amp;Execute (F5)</source>
         <translation>実行(F5)(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="56"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="93"/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="83"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="120"/>
         <source>&amp;Clear</source>
         <translation>(&amp;C)クリア</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="96"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="133"/>
         <source>Result:</source>
         <translation>結果:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="136"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="173"/>
         <source>Load as new layer</source>
         <translation>新レイヤとしてロードする</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="156"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="193"/>
         <source>Column with unique 
 integer values</source>
         <translation>整数のユニークな
 値で構成されるカラム</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="180"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="217"/>
         <source>Geometry column</source>
         <translation>ジオメトリカラム</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="222"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="259"/>
         <source>Retrieve 
 columns</source>
         <translation>カラムを
 読み出す</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="234"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="271"/>
         <source>Layer name (prefix)</source>
         <translation>レイヤ名(接頭辞)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="257"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="294"/>
         <source>Type</source>
         <translation>タイプ</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="267"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="304"/>
         <source>Vector</source>
         <translation>ベクタ</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="277"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="314"/>
         <source>Raster</source>
         <translation>ラスタ</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="303"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="340"/>
         <source>Load now!</source>
         <translation>今ロードする!</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="315"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="352"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id.  Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IDによる選択を行わない.  特に負荷のかかる検索・ビュー作成を行なう場合においては、IDによる検索よりも先頭から順に検索を行ったほうがより早い場合があります.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="318"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="355"/>
         <source>Avoid selecting by feature id</source>
         <translation>IDによる検索を行わない</translation>
     </message>
@@ -5817,14 +5827,25 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <translation>テストの作成</translation>
     </message>
     <message>
+        <source>Dialog</source>
+        <translation type="obsolete">ダイアログ</translation>
+    </message>
+    <message>
+        <source>Reload</source>
+        <translation type="obsolete">再ロード</translation>
+    </message>
+</context>
+<context>
+    <name>HistoryDialogPythonConsole</name>
+    <message>
         <location filename="../python/console/console_history_dlg.ui" line="14"/>
         <source>Dialog</source>
-        <translation>ダイアログ</translation>
+        <translation type="unfinished">ダイアログ</translation>
     </message>
     <message>
         <location filename="../python/console/console_history_dlg.ui" line="45"/>
         <source>Reload</source>
-        <translation>再ロード</translation>
+        <translation type="unfinished">再ロード</translation>
     </message>
 </context>
 <context>
@@ -6125,6 +6146,16 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <location filename="../src/ui/qgisapp.ui" line="1123"/>
         <source>Layer Labeling Options</source>
         <translation>レイヤラベリングオプション</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="1132"/>
+        <source>Shapefile Layer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="1144"/>
+        <source>SpatiaLite Layer...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1189"/>
@@ -6760,9 +6791,8 @@ Shift+クリックで非表示
         <translation>ラベリング</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1132"/>
         <source>New Shapefile Layer...</source>
-        <translation>新しいシェープファイルレイヤ...</translation>
+        <translation type="obsolete">新しいシェープファイルレイヤ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1135"/>
@@ -6770,9 +6800,8 @@ Shift+クリックで非表示
         <translation>Ctrl+Shift+N</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1144"/>
         <source>New SpatiaLite Layer ...</source>
-        <translation>新しいSpatialiteレイヤ...</translation>
+        <translation type="obsolete">新しいSpatialiteレイヤ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1147"/>
@@ -8401,6 +8430,208 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <message>
         <source>The file &lt;b&gt;%1&lt;/b&gt; could not be saved. Error: %2</source>
         <translation>ファイル &lt;b&gt;%1&lt;/b&gt; を保存できませんでした.エラー: %2</translation>
+    </message>
+    <message>
+        <source>Hide Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check Syntax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Run selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Run Script</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished">取り消し</translation>
+    </message>
+    <message>
+        <source>Redo</source>
+        <translation type="unfinished">再実行</translation>
+    </message>
+    <message>
+        <source>Share on codepad</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide/Show Object Inspector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select All</source>
+        <translation type="unfinished">全部を選択する</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;&quot;%1&quot;&lt;/b&gt; was not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>URL copied to clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection error: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> [Temporary file saved in %1]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>## Script error: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>## Script executed successfully: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot execute file %1. Error: %2
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hey, type something to run!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You have to save the file before running it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Syntax ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file &lt;b&gt;&quot;%1&quot;&lt;/b&gt; has been deleted or is not accessible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file &lt;b&gt;&quot;%1&quot;&lt;/b&gt; has been changed and reloaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file &lt;b&gt;&quot;%1&quot;&lt;/b&gt; is read only, please save to different file first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python Console: Save file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Script was correctly saved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click on button to restore all tabs from last session.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore tabs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">閉じる</translation>
+    </message>
+    <message>
+        <source>List all tabs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file %1 could not be opened. Error: %2
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Untitled-%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python Console: Save File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file &lt;b&gt;&apos;%1&apos;&lt;/b&gt; has been modified, save changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to restore the file: 
+%1
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python %1 on %2
+## Type help(iface) for more info and list of methods.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide/Show Toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History saved successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Session and file history cleared successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History cleared successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Command History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear Session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python Console - Command History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Double click on item to execute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add API path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove API path</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Failed to save %1: %2</source>
@@ -10859,43 +11090,42 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation>&apos;%1:%2:%3:%4:%5&apos;をカラーに変換出来ません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2371"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2374"/>
         <source>Math</source>
         <translation>計算</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2372"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2375"/>
         <source>Conversions</source>
         <translation>変換</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2369"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2372"/>
         <source>Conditionals</source>
         <translation>条件</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2373"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2376"/>
         <source>Date and Time</source>
         <translation>日付と時刻</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2374"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2377"/>
         <source>String</source>
         <translation>文字列</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2375"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2378"/>
         <source>Color</source>
         <translation>色</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2376"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2379"/>
         <source>Geometry</source>
         <translation>ジオメトリ</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1584"/>
-        <location filename="../src/core/qgsexpression.cpp" line="2377"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2380"/>
         <source>Record</source>
         <translation>レコード</translation>
     </message>
@@ -10930,27 +11160,27 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation>[サポートされていない　タイプ;%1; 値:%2]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2261"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2264"/>
         <source>Column &apos;%1&apos; not found</source>
         <translation>カラム&apos;%1&apos;が見つかりません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2359"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2362"/>
         <source>function help for %1 missing</source>
         <translation>%1の関数ヘルプはありません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2368"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2371"/>
         <source>Operators</source>
         <translation>演算子</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2370"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2373"/>
         <source>Fields and Values</source>
         <translation>フィールドと値</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2380"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2383"/>
         <source>Missing group %1</source>
         <translation>グループ%1がありません</translation>
     </message>
@@ -10959,23 +11189,23 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation type="obsolete">カラム  &apos;%1&apos;&apos; がみつかりません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3797"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3818"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3843"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3814"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3835"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3860"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="64"/>
         <source>Unable to load %1 provider</source>
         <translation>%1プロバイダーをロードできません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3805"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3826"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3851"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3822"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3843"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3868"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="73"/>
         <source>Provider %1 has no %2 method</source>
         <translation>%1プロバイダには%2メソッドがありません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3907"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3924"/>
         <source>Loaded from Provider</source>
         <translatorcomment>QgsVectorLayerPropertiesにも同じメッセージ.翻訳を合わせる.</translatorcomment>
         <translation>プロバイダからロードしました</translation>
@@ -26137,174 +26367,174 @@ p, li { white-space: pre-wrap; }
         <translation>ラベル</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="291"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="293"/>
         <source>Id</source>
         <translation>Id</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="292"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="294"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="293"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="295"/>
         <source>Type</source>
         <translation>タイプ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="294"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="296"/>
         <source>Length</source>
         <translation>長さ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="295"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="297"/>
         <source>Precision</source>
         <translation>精度</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="296"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="298"/>
         <source>Comment</source>
         <translation>コメント</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="297"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="299"/>
         <source>Edit widget</source>
         <translation>ウィジェットの編集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="300"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="302"/>
         <source>Alias</source>
         <translation>別名</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="565"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="604"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="567"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="606"/>
         <source>Name conflict</source>
         <translation>名前の衝突</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="565"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="604"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="567"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="606"/>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
         <translation>属性は追加されませんでした。指定された名前はテーブル内に既に存在しています。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="577"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="579"/>
         <source>Added attribute</source>
         <translation>追加された属性</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="624"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="626"/>
         <source>Deleted attribute</source>
         <translation>削除された属性</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="696"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="698"/>
         <source>Line edit</source>
         <translation>行編集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="697"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="699"/>
         <source>Unique values</source>
         <translation>ユニーク値</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="698"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="700"/>
         <source>Unique values editable</source>
         <translation>ユニーク値編集可能</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="699"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="701"/>
         <source>Classification</source>
         <translation>分類</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="700"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="702"/>
         <source>Value map</source>
         <translation>バリューマップ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="701"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="703"/>
         <source>Edit range</source>
         <translation>編集レンジ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="702"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="704"/>
         <source>Slider range</source>
         <translation>スライダーレンジ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="703"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="705"/>
         <source>Dial range</source>
         <translation>ダイアル範囲</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="704"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="706"/>
         <source>File name</source>
         <translation>ファイル名</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="705"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="707"/>
         <source>Enumeration</source>
         <translation>列挙</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="706"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="708"/>
         <source>Immutable</source>
         <translation>変わらない</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="707"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="709"/>
         <source>Hidden</source>
         <translation>非表示</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="708"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="710"/>
         <source>Checkbox</source>
         <translation>チェックボックス</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="709"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="711"/>
         <source>Text edit</source>
         <translation>テキスト編集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="710"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="712"/>
         <source>Calendar</source>
         <translation>カレンダー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="711"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="713"/>
         <source>Value relation</source>
         <translation>値のリレーション</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="712"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="714"/>
         <source>UUID generator</source>
         <translation>UUIDジェネレータ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="713"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="715"/>
         <source>Photo</source>
         <translation>写真</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="714"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="716"/>
         <source>Web view</source>
         <translation>ウェブ表示</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="715"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="717"/>
         <source>Color</source>
         <translation>色</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="756"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="758"/>
         <source>Select edit form</source>
         <translation>編集フォームを選ぶ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="756"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="758"/>
         <source>UI file</source>
         <translation>UIファイル</translation>
     </message>
@@ -43448,6 +43678,10 @@ Here is the error message:</source>
         <translation type="obsolete">プラグインを使用するには新しいバージョンのQuantum GISが必要です</translation>
     </message>
     <message>
+        <source>The plugins will be installed to %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>This repository is blocked due to incompatibility with your QGIS version</source>
         <translation>このリポジトリはあなたのQGISのバージョンと互換性がないのでブロックされました</translation>
     </message>
@@ -43818,9 +44052,8 @@ p, li { white-space: pre-wrap; }
         <translation>削除</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="56"/>
         <source>The plugins will be installed to ~/.qgis/python/plugins</source>
-        <translation>プラグインは ~/.qgis/python/plugins にインストールされます</translation>
+        <translation type="obsolete">プラグインは ~/.qgis/python/plugins にインストールされます</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="82"/>
@@ -54802,12 +55035,12 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsVectorLayer</name>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2548"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2565"/>
         <source>ERROR: no provider</source>
         <translation>エラー: プロバイダがありません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2554"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2571"/>
         <source>ERROR: layer not editable</source>
         <translation>エラー: レイヤは編集不可です</translation>
     </message>
@@ -54933,17 +55166,17 @@ Should the existing classes be deleted before classification?</source>
   プロバイダエラー:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="1046"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="1063"/>
         <source>Updating feature count for layer %1</source>
         <translation>レイヤの地物の数を更新中です %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="1046"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="1063"/>
         <source>Abort</source>
         <translation>取り消し</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2571"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2588"/>
         <source>Commit errors:
   %1</source>
         <translation>コミットエラー:
@@ -54986,13 +55219,13 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">レイヤの空間参照系の単位:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3614"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3633"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3631"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3650"/>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
         <translation>xMin,yMin %1,%2 : xMax,yMax %3,%4</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3619"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3636"/>
         <source>unknown extent</source>
         <translation>領域が不明</translation>
     </message>
@@ -55009,7 +55242,7 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">プロジェクト（出力）空間参照系:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3668"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3685"/>
         <source>(Invalid transformation of layer extents)</source>
         <translation>(レイヤ領域の不正な座標変換)</translation>
     </message>
@@ -55018,103 +55251,103 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">属性フィールド情報:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3491"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3508"/>
         <source>General</source>
         <translation>一般情報</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3497"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3514"/>
         <source>Layer comment</source>
         <translation>レイヤコメント</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3504"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3521"/>
         <source>Storage type of this layer</source>
         <translation>このレイヤのストレージタイプ</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3510"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3527"/>
         <source>Source for this layer</source>
         <translation>このレイヤのソース</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3527"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3544"/>
         <source>Geometry type of the features in this layer</source>
         <translation>このレイヤの地物のジオメトリタイプ</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3536"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3553"/>
         <source>Primary key attributes</source>
         <translation>プライマリキーカラム名</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3547"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3564"/>
         <source>The number of features in this layer</source>
         <translation>このレイヤの地物数</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3552"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3569"/>
         <source>Editing capabilities of this layer</source>
         <translation>このレイヤは編集可能か</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3561"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3578"/>
         <source>Extents</source>
         <translation>領域</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3565"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3582"/>
         <source>In layer spatial reference system units</source>
         <translation>レイヤ空間参照システムの単位で</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3631"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3666"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3648"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3683"/>
         <source>In project spatial reference system units</source>
         <translation>プロジェクト空間座標系の単位で</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3644"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3661"/>
         <source>Layer Spatial Reference System</source>
         <translation>レイヤ空間参照システム</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3655"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3672"/>
         <source>Project (Output) Spatial Reference System</source>
         <translation>プロジェクト(出力)空間参照システム</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3677"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3694"/>
         <source>Attribute field info</source>
         <translation>属性フィールド情報</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3683"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3700"/>
         <source>Field</source>
         <translation>フィールド</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3686"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3703"/>
         <source>Type</source>
         <translation>タイプ</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3689"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3706"/>
         <source>Length</source>
         <translation>長さ</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3692"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3709"/>
         <source>Precision</source>
         <translation>精度</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3695"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3712"/>
         <source>Comment</source>
         <translation>コメント</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3919"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3936"/>
         <source>Error: qgis element could not be found</source>
         <translation>エラー: qgisエレメントが見つかりません</translation>
     </message>
@@ -59586,94 +59819,96 @@ SQL Anywhereエラーコード %2
 <context>
     <name>SettingsDialogPythonConsole</name>
     <message>
-        <location filename="../python/console/console_settings.ui" line="255"/>
+        <location filename="../python/console/console_settings.ui" line="233"/>
         <source>Console</source>
         <translation>コンソール</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="84"/>
-        <location filename="../python/console/console_settings.ui" line="360"/>
+        <location filename="../python/console/console_settings.ui" line="241"/>
         <source>Font</source>
         <translation>フォント</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="104"/>
-        <location filename="../python/console/console_settings.ui" line="380"/>
+        <location filename="../python/console/console_settings.ui" line="261"/>
         <source>Size</source>
         <translation>大きさ</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="138"/>
-        <location filename="../python/console/console_settings.ui" line="261"/>
+        <location filename="../python/console/console_settings.ui" line="302"/>
         <source>Autocompletion</source>
         <translation>自動入力補完</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="149"/>
-        <location filename="../python/console/console_settings.ui" line="272"/>
         <source>Autocompletion enabled</source>
-        <translation>自動入力補完 ON</translation>
+        <translation type="obsolete">自動入力補完 ON</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="174"/>
-        <location filename="../python/console/console_settings.ui" line="297"/>
         <source>Threshold</source>
-        <translation>補完開始文字数</translation>
+        <translation type="obsolete">補完開始文字数</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="197"/>
-        <location filename="../python/console/console_settings.ui" line="320"/>
+        <location filename="../python/console/console_settings.ui" line="175"/>
+        <location filename="../python/console/console_settings.ui" line="362"/>
         <source>Get autocompletion from current document</source>
         <translation>自動入力補完を現在のドキュメントから行う</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="200"/>
-        <location filename="../python/console/console_settings.ui" line="323"/>
+        <location filename="../python/console/console_settings.ui" line="178"/>
+        <location filename="../python/console/console_settings.ui" line="365"/>
         <source>from Document</source>
         <translation>ドキュメントから</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="207"/>
-        <location filename="../python/console/console_settings.ui" line="330"/>
+        <location filename="../python/console/console_settings.ui" line="185"/>
+        <location filename="../python/console/console_settings.ui" line="349"/>
         <source>Get autocompletion from installed APIs</source>
         <translation>自動入力補完をインストールされたAPIから行う</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="210"/>
-        <location filename="../python/console/console_settings.ui" line="333"/>
+        <location filename="../python/console/console_settings.ui" line="188"/>
+        <location filename="../python/console/console_settings.ui" line="352"/>
         <source>from APIs files</source>
         <translation>APIファイルから</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="223"/>
-        <location filename="../python/console/console_settings.ui" line="346"/>
+        <location filename="../python/console/console_settings.ui" line="201"/>
+        <location filename="../python/console/console_settings.ui" line="342"/>
         <source>from Doc and APIs</source>
         <translation>文書とAPIから</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="235"/>
+        <location filename="../python/console/console_settings.ui" line="213"/>
         <source>Enable Object Inspector (switching between tabs may be slow)</source>
         <translation>オブジェクトインスペクタを有効にする(タブの間を切り替えています 多分遅いです)</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="245"/>
-        <location filename="../python/console/console_settings.ui" line="414"/>
+        <location filename="../python/console/console_settings.ui" line="223"/>
+        <location filename="../python/console/console_settings.ui" line="295"/>
         <source>Automatic parentheses insertion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="430"/>
+        <location filename="../python/console/console_settings.ui" line="386"/>
         <source>Using preloaded APIs file</source>
         <translation>事前のロードされたAPIファイルを利用している</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="424"/>
-        <location filename="../python/console/console_settings.ui" line="558"/>
+        <location filename="../python/console/console_settings.ui" line="380"/>
+        <location filename="../python/console/console_settings.ui" line="514"/>
         <source>APIs</source>
         <translation>API</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="563"/>
+        <location filename="../python/console/console_settings.ui" line="156"/>
+        <location filename="../python/console/console_settings.ui" line="320"/>
+        <source>Autocompletion threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/console/console_settings.ui" line="519"/>
         <source>Path</source>
         <translation>パス</translation>
     </message>
@@ -59682,8 +59917,8 @@ SQL Anywhereエラーコード %2
         <translation type="obsolete">APIから</translation>
     </message>
     <message>
-        <location filename="../python/console/console_settings.ui" line="220"/>
-        <location filename="../python/console/console_settings.ui" line="343"/>
+        <location filename="../python/console/console_settings.ui" line="198"/>
+        <location filename="../python/console/console_settings.ui" line="339"/>
         <source>Get autocompletion from current document and installed APIs</source>
         <translation>自動入力補完を現在のドキュメント、インストールされたAPIから行う</translation>
     </message>
@@ -59713,6 +59948,10 @@ APIから</translation>
     <message>
         <source>Using preloaded API file</source>
         <translation type="obsolete">プリロードされたAPIファイルを使用</translation>
+    </message>
+    <message>
+        <source>Settings Python Console</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -71389,6 +71628,17 @@ Convert a string into Qt data type.
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="445"/>
         <source>Zero-crossing edge detection raster function for image processing</source>
         <translation>イメージ解析のラスタ機能でゼロ交点エッジが検出されました</translation>
+    </message>
+</context>
+<context>
+    <name>optionsDialog</name>
+    <message>
+        <source>Warning!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify API file or check &quot;Use preloaded API files&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
