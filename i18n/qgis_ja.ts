@@ -39180,7 +39180,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="351"/>
         <source>Date &amp; Time</source>
-        <translation>日付と時間</translation>
+        <translation>日付と時刻</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="396"/>
@@ -66405,15 +66405,16 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;toreal 関数&lt;/h3&gt;
-Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
+        <translation>&lt;h3&gt;toreal 関数&lt;/h3&gt;
+文字列を実数に変換します. 実数に変換できない場合は変換されません (例えば &apos;123.56asd&apos;は無効です). 
+変換の結果よりフィールドの精度が小さい場合、&lt;!--変更を保存した後に--&gt;数値は四捨五入されます.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      toreal(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to real number.&lt;/p&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; string. 実数に変換する文字列.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -66728,14 +66729,14 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;todatetime() 関数&lt;/h3&gt;
-Convert a string into Qt data time type.
+        <translation>&lt;h3&gt;todatetime() 関数&lt;/h3&gt;
+文字列をQt 日時型に変換します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;todatetime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string in Qt date time format.
+&lt;code&gt;string&lt;/code&gt; - Qt 日時フォーマットの文字列.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
@@ -66772,7 +66773,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - date or datetime. 週を取得しようとする日付.
+&lt;code&gt;date&lt;/code&gt; - dateまたはdatetime. 週を取得しようとする日付.
 &lt;br&gt;
 &lt;code&gt;Interval&lt;/code&gt; - Interval. 週数を取得しようとするインターバル.
 
@@ -67487,15 +67488,15 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;tostring 関数&lt;/h3&gt;
-Converts a number to string.
+        <translation>&lt;h3&gt;tostring 関数&lt;/h3&gt;
+数値を文字列に変換します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      tostring(&lt;i&gt;number&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;number&lt;/i&gt; &amp;rarr; is integer or real.  The number to convert to string.&lt;/p&gt;
+&lt;i&gt;number&lt;/i&gt; &amp;rarr; integerまたはreal. 文字列に変換する数値.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -68083,14 +68084,13 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;tointerval() 関数&lt;/h3&gt;
-Converts a string to a interval type.  Can be used to take days, hours, month, etc off a date. 
-
+        <translation>&lt;h3&gt;tointerval() 関数&lt;/h3&gt;
+文字列をインターバル型に変換します. 日数や時間数, 月数などを日付から取得するのに使用できます.
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;tointerval(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. Format {n} days {n} hours {n} months
+&lt;code&gt;string&lt;/code&gt; - 文字列. フォーマットの例は{n} days {n} hours {n} months. 他にyears, weeks, hours, minutes, seconds.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
@@ -68221,14 +68221,14 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;totime() 関数&lt;/h3&gt;
-Convert a string into Qt time type.
+        <translation>&lt;h3&gt;totime() 関数&lt;/h3&gt;
+文字列をQt 時刻型に変換する.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;totime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string in Qt time format.
+&lt;code&gt;string&lt;/code&gt; - Qt 時刻フォーマットの文字列.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
@@ -68450,8 +68450,8 @@ may not give the expected results if you move your Quantum project.
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
-        <translation type="unfinished">&lt;h3&gt;変換 グループ&lt;/h3&gt;
-This group contains functions to convert on data type to another e.g string to integer, integer to string.
+        <translation>&lt;h3&gt;変換 グループ&lt;/h3&gt;
+このグループはデータ型を他のデータ型に変換する関数を含みます. 例. 文字列を整数に, 整数を文字列に.
 </translation>
     </message>
     <message>
@@ -68691,15 +68691,15 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;toint 関数&lt;/h3&gt;
-Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
+        <translation>&lt;h3&gt;toint 関数&lt;/h3&gt;
+文字列を整数に変換します. 整数に変換できない場合は変換されません (例えば &apos;123asd&apos;は無効です).
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to integer number.&lt;/p&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; string. 整数に変換する文字列.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -69026,13 +69026,13 @@ Convert a string into Qt data type.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
         <translation>&lt;h3&gt;todate() 関数&lt;/h3&gt;
-文字列をQt date型に変換します.
+文字列をQt 日付型に変換します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;todate(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - Qt日付フォーマットの文字列.
+&lt;code&gt;string&lt;/code&gt; - Qt 日付フォーマットの文字列.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
