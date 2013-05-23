@@ -24,7 +24,6 @@
 #define DEFAULT_SIMPLEMARKER_BORDERCOLOR  QColor(0,0,0)
 #define DEFAULT_SIMPLEMARKER_SIZE         DEFAULT_POINT_SIZE
 #define DEFAULT_SIMPLEMARKER_ANGLE        0
-#define DEFAULT_SCALE_METHOD              QgsSymbolV2::ScaleArea
 
 #include <QPen>
 #include <QBrush>

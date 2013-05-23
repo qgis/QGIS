@@ -158,7 +158,7 @@ QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( QString attrName, Qg
     mMode( Custom ),
     mSourceSymbol( NULL ),
     mSourceColorRamp( NULL ),
-    mScaleMethod( QgsSymbolV2::ScaleArea ),
+    mScaleMethod( DEFAULT_SCALE_METHOD ),
     mRotationFieldIdx( -1 ),
     mSizeScaleFieldIdx( -1 )
 {
