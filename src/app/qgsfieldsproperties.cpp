@@ -283,7 +283,9 @@ void QgsFieldsProperties::loadRows()
   disconnect( mAttributesList, SIGNAL( cellChanged( int, int ) ), this, SLOT( attributesListCellChanged( int, int ) ) );
   const QgsFields &fields = mLayer->pendingFields();
 
+  mIndexedWidgets.clear();
   mAttributesList->clear();
+  mAttributesList->setRowCount( 0 );
 
   mAttributesList->setColumnCount( attrColCount );
   mAttributesList->setSelectionBehavior( QAbstractItemView::SelectRows );

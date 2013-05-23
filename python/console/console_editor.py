@@ -186,7 +186,6 @@ class Editor(QsciScintilla):
         threshold = self.settings.value("pythonConsole/autoCompThresholdEditor", 2).toInt()[0]
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI').toString()
         autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor", True).toBool()
-
         self.setAutoCompletionThreshold(threshold)
         if autoCompEnabled:
             if radioButtonSource == 'fromDoc':
@@ -282,7 +281,7 @@ class Editor(QsciScintilla):
         menu.addSeparator()
         runSelected = menu.addAction(iconRun,
                                      QCoreApplication.translate("PythonConsole",
-                                                                "Enter selected"),
+                                                                "Run selected"),
                                      self.runSelectedCode, 'Ctrl+E')
         runScript = menu.addAction(iconRunScript,
                                    QCoreApplication.translate("PythonConsole",
@@ -514,8 +513,8 @@ class Editor(QsciScintilla):
                         else:
                             raise e
             if tmp:
-                tmpFileTr = QCoreApplication.translate('PythonConsole', ' [Temporary file saved in ')
-                file = file + tmpFileTr + dir + ']'
+                tmpFileTr = QCoreApplication.translate('PythonConsole', ' [Temporary file saved in %1]').arg(dir)
+                file = file + tmpFileTr
             if _traceback:
                 msgTraceTr = QCoreApplication.translate('PythonConsole', '## Script error: %1').arg(file)
                 print "## %s" % datetime.datetime.now()
@@ -550,9 +549,9 @@ class Editor(QsciScintilla):
         filename = tabWidget.path
 
         msgEditorBlank = QCoreApplication.translate('PythonConsole',
-                                                    'Hey, type something for running !')
+                                                    'Hey, type something to run!')
         msgEditorUnsaved = QCoreApplication.translate('PythonConsole',
-                                                      'You have to save the file before running.')
+                                                      'You have to save the file before running it.')
         if not autoSave:
             if filename is None:
                 if not self.isModified():
@@ -608,7 +607,7 @@ class Editor(QsciScintilla):
                 source = source.encode('utf-8')
             if type(filename) == type(u""):
                 filename = filename.encode('utf-8')
-            compile(source, filename, 'exec')
+            compile(source, str(filename), 'exec')
         except SyntaxError, detail:
             s = traceback.format_exception_only(SyntaxError, detail)
             fn = detail.filename
@@ -742,10 +741,10 @@ class EditorTab(QWidget):
         self.newEditor.recolor()
 
     def save(self, fileName=None):
+        index = self.tw.indexOf(self)
         if fileName:
             self.path = fileName
         if self.path is None:
-            index = self.tw.currentIndex()
             saveTr = QCoreApplication.translate('PythonConsole',
                                                 'Python Console: Save file')
             self.path = str(QFileDialog().getSaveFileName(self,
@@ -756,6 +755,7 @@ class EditorTab(QWidget):
             if len(self.path) == 0:
                 self.path = None
                 return
+            self.tw.setCurrentWidget(self)
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'Script was correctly saved.')
             self.pc.callWidgetMessageBarEditor(msgText, 0, True)
@@ -782,8 +782,8 @@ class EditorTab(QWidget):
         if self.newEditor.isReadOnly():
             self.newEditor.setReadOnly(False)
         fN = path.split('/')[-1]
-        self.tw.setTabTitle(self.tw.currentIndex(), fN)
-        self.tw.setTabToolTip(self.tw.currentIndex(), path)
+        self.tw.setTabTitle(index, fN)
+        self.tw.setTabToolTip(index, path)
         self.newEditor.setModified(False)
         self.pc.saveFileButton.setEnabled(False)
         self.newEditor.lastModified = QFileInfo(path).lastModified()
@@ -931,7 +931,7 @@ class EditorTabWidget(QTabWidget):
             saveAction = menu.addAction("Save",
                                         cW.save)
             saveAsAction = menu.addAction("Save As",
-                                          self.parent.saveAsScriptFile)
+                                          self.saveAs)
             closeTabAction.setEnabled(False)
             closeAllTabAction.setEnabled(False)
             closeOthersTabAction.setEnabled(False)
@@ -957,6 +957,10 @@ class EditorTabWidget(QTabWidget):
             self._removeTab(i)
         self.newTabEditor(tabName='Untitled-0')
         self._removeTab(0)
+
+    def saveAs(self):
+        idx = self.idx
+        self.parent.saveAsScriptFile(idx)
 
     def enableSaveIfModified(self, tab):
         tabWidget = self.widget(tab)
@@ -1021,7 +1025,7 @@ class EditorTabWidget(QTabWidget):
             txtSaveOnRemove = QCoreApplication.translate("PythonConsole",
                                                          "Python Console: Save File")
             txtMsgSaveOnRemove = QCoreApplication.translate("PythonConsole",
-                                                            "The file <b>'%1'</b> has been modified, save changes ?") \
+                                                            "The file <b>'%1'</b> has been modified, save changes?") \
                                                             .arg(self.tabText(tab))
             res = QMessageBox.question( self, txtSaveOnRemove,
                                         txtMsgSaveOnRemove,

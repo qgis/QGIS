@@ -266,7 +266,7 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="238"/>
         <source>Create spatial index</source>
-        <translation>Opret spatialt indeks</translation>
+        <translation>Opret spatielt indeks</translation>
     </message>
 </context>
 <context>
@@ -332,7 +332,7 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="103"/>
         <source>Options</source>
-        <translation>Muligheder</translation>
+        <translation>Indstillinger</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="111"/>
@@ -443,7 +443,7 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="202"/>
         <source>Options</source>
-        <translation>Muligheder</translation>
+        <translation>Indstillinger</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="208"/>
@@ -478,7 +478,7 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="308"/>
         <source>Create spatial index</source>
-        <translation>Opret spatialt indeks</translation>
+        <translation>Opret spatielt indeks</translation>
     </message>
 </context>
 <context>
@@ -646,7 +646,7 @@ columns</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="171"/>
         <source>Add spatial index</source>
-        <translation>Tilføj spatialt indeks</translation>
+        <translation>Tilføj spatielt indeks</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="191"/>
@@ -1026,7 +1026,7 @@ columns</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="14"/>
         <source>Random Selection Tool</source>
-        <translation>Værktøj til tilfældig markering</translation>
+        <translation>Værktøj til tilfældig selektion</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="23"/>
@@ -1067,7 +1067,7 @@ columns</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="35"/>
         <source>Input spatial reference system</source>
-        <translation>Input spatial reference system</translation>
+        <translation>Input spatielt referencesystem</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="49"/>
@@ -1182,7 +1182,7 @@ columns</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="14"/>
         <source>Build spatial index</source>
-        <translation>Byg spatialt indeks</translation>
+        <translation>Byg spatielt indeks</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="22"/>
@@ -1212,7 +1212,7 @@ columns</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="17"/>
         <source>Spatial Join</source>
-        <translation>Spatialt join</translation>
+        <translation>Spatielt join</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="28"/>
@@ -1282,7 +1282,7 @@ columns</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="14"/>
         <source>Random Selection From Within Subsets</source>
-        <translation>Tilfældig markering inde fra delsæt</translation>
+        <translation>Tilfældig selektion inde fra delsæt</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="39"/>
@@ -1578,7 +1578,7 @@ Dette kan medføre uventede resultater.</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation>Sammensæt attributter via lokation</translation>
+        <translation>Tilføj attibutter via spatielt overlap</translation>
     </message>
     <message>
         <source>Please specify target vector layer</source>
@@ -1640,7 +1640,7 @@ Følgende feltnavne er længere end 10 tegn:
     </message>
     <message>
         <source>Random selection</source>
-        <translation>Tilfældig markering</translation>
+        <translation>Tilfældig selektion</translation>
     </message>
     <message>
         <source>Random Points</source>
@@ -1694,19 +1694,19 @@ Vil du tilføje det nye lag til oversigten?</translation>
     </message>
     <message>
         <source>creating new selection</source>
-        <translation>opretter ny markering</translation>
+        <translation>opretter ny selektion</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation>tilføjer til nuværende markering</translation>
+        <translation>tilføjer til nuværende selektion</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation>fjerner fra nuværende markering</translation>
+        <translation>fjerner fra nuværende selektion</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation>Vælg via lokation</translation>
+        <translation>Spatiel analyse</translation>
     </message>
     <message>
         <source>Select features in:</source>
@@ -1718,7 +1718,7 @@ Vil du tilføje det nye lag til oversigten?</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation>Ændr nuværende markering via:</translation>
+        <translation>Ændr nuværende selektion via:</translation>
     </message>
     <message>
         <source>Use selected features only</source>
@@ -1730,7 +1730,7 @@ Vil du tilføje det nye lag til oversigten?</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation>Tilfældig markering inden i delsæt</translation>
+        <translation>Tilfældig selektion inden i delsæt</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
@@ -2628,7 +2628,7 @@ Dette plugin vil ikke være aktiveret.</translation>
     </message>
     <message>
         <source>Projections</source>
-        <translation>Projektioner</translation>
+        <translation>Koordinatreferencesystemer (CRS)</translation>
     </message>
     <message>
         <source>Warp (Reproject)</source>
@@ -2640,7 +2640,7 @@ Dette plugin vil ikke være aktiveret.</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation>Tildel projektion</translation>
+        <translation>Tildel CRS</translation>
     </message>
     <message>
         <source>Add projection info to the raster</source>
@@ -2648,7 +2648,7 @@ Dette plugin vil ikke være aktiveret.</translation>
     </message>
     <message>
         <source>Extract projection</source>
-        <translation>Udtræk projektion</translation>
+        <translation>Udtræk CRS</translation>
     </message>
     <message>
         <source>Extract projection information from raster(s)</source>
@@ -2656,7 +2656,7 @@ Dette plugin vil ikke være aktiveret.</translation>
     </message>
     <message>
         <source>Conversion</source>
-        <translation>Konvertering</translation>
+        <translation>Formatkonvertering</translation>
     </message>
     <message>
         <source>Rasterize (Vector to raster)</source>
@@ -2704,11 +2704,11 @@ Dette plugin vil ikke være aktiveret.</translation>
     </message>
     <message>
         <source>Contour</source>
-        <translation>Kontur</translation>
+        <translation>Konturering</translation>
     </message>
     <message>
         <source>Builds vector contour lines from a DEM</source>
-        <translation>Bygger vektor-kontur-linjer fra en DEM</translation>
+        <translation>Bygger vektor-kontureringslinjer fra en DEM</translation>
     </message>
     <message>
         <source>Clipper</source>
@@ -2773,7 +2773,7 @@ Dette plugin vil ikke være aktiveret.</translation>
     </message>
     <message>
         <source>Build Virtual Raster (Catalog)</source>
-        <translation>Byg virtuel raster (katalog)</translation>
+        <translation>Generér virtuel raster (katalog)</translation>
     </message>
     <message>
         <source>Builds a VRT from a list of datasets</source>
@@ -2797,7 +2797,7 @@ Dette plugin vil ikke være aktiveret.</translation>
     </message>
     <message>
         <source>Build overviews (Pyramids)</source>
-        <translation>Bygger oversigter (Pyramider)</translation>
+        <translation>Generér oversigtsraster (Pyramider)</translation>
     </message>
     <message>
         <source>Builds or rebuilds overview images</source>
@@ -2805,11 +2805,11 @@ Dette plugin vil ikke være aktiveret.</translation>
     </message>
     <message>
         <source>Tile index</source>
-        <translation>Feltindeks</translation>
+        <translation>Tile-indeks</translation>
     </message>
     <message>
         <source>Build a shapefile as a raster tileindex</source>
-        <translation>Bygger en shapefil som et indeks af raster</translation>
+        <translation>Bygger en shapefil som et tile-indeks af raster</translation>
     </message>
     <message>
         <source>GdalTools settings</source>
@@ -2952,7 +2952,7 @@ Vil du afslutte den alligevel?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="29"/>
         <source>&amp;Load into canvas when finished</source>
-        <translation>&amp;Indlæs i kanvas efter afslutning</translation>
+        <translation>&amp;Indlæs i projekt efter afslutning</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="66"/>
@@ -3005,11 +3005,11 @@ Vil du afslutte den alligevel?</translation>
     </message>
     <message>
         <source>Output size or resolution required</source>
-        <translation type="unfinished"></translation>
+        <translation>Størrelse eller opløsning på output påkrævet</translation>
     </message>
     <message>
         <source>The output file doesn&apos;t exist. You must set up the output size or resolution to create it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Outputfilen findes ikke. Du skal indstille output-størrelsen eller -opløsningen for at oprette den.</translation>
     </message>
     <message>
         <source>Select the output directory to save the results to</source>
@@ -3119,7 +3119,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     </message>
     <message>
         <source>Select where to save the TileIndex output</source>
-        <translation>Vælg, hvor Feltindeks-outputtet skal gemmes</translation>
+        <translation>Vælg, hvor Tile-indeks-outputtet skal gemmes</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -3172,11 +3172,11 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     </message>
     <message>
         <source>Select the input file for Contour</source>
-        <translation>Vælg inputfilen til Kontur</translation>
+        <translation>Vælg inputfilen til Konturering</translation>
     </message>
     <message>
         <source>Select where to save the Contour output</source>
-        <translation>Vælg, hvor Kontur-outputtet skal gemmes</translation>
+        <translation>Vælg, hvor Konturerings-outputtet skal gemmes</translation>
     </message>
     <message>
         <source>Select the input file for Warp</source>
@@ -3401,7 +3401,7 @@ når der trykkes på værktøjsdialogens hjælpeknap.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="20"/>
         <source>Build Virtual Raster (Catalog)</source>
-        <translation>Byg virtuel raster (katalog)</translation>
+        <translation>Generér virtuel raster (katalog)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="31"/>
@@ -3523,17 +3523,17 @@ når der trykkes på værktøjsdialogens hjælpeknap.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="20"/>
         <source>Contour</source>
-        <translation>Kontur</translation>
+        <translation>Konturering</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="38"/>
         <source>&amp;Output file for contour lines (vector)</source>
-        <translation>&amp;Outputfil til konturlinjer (vektor)</translation>
+        <translation>&amp;Outputfil til kontureringslinjer (vektor)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="48"/>
         <source>I&amp;nterval between contour lines</source>
-        <translation>I&amp;nterval mellem konturlinjer</translation>
+        <translation>I&amp;nterval mellem kontureringslinjer</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="73"/>
@@ -4041,7 +4041,7 @@ når der trykkes på værktøjsdialogens hjælpeknap.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="156"/>
         <source>Overviews in TIFF format with JPEG compression</source>
-        <translation>Oversigter i TIFF-format med JPEG-kompression</translation>
+        <translation>Oversigter i TIFF-format med JPEG-komprimering</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="116"/>
@@ -4107,7 +4107,7 @@ som direkte kan bruges med Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="59"/>
         <source>Desired SRS</source>
-        <translation>Ønsket SRS</translation>
+        <translation>Ønsket CRS</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="66"/>
@@ -4195,27 +4195,27 @@ som direkte kan bruges med Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="76"/>
         <source>Keep existing raster size and resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Behold eksisterende rasterstørrelse og -opløsning</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="86"/>
         <source>Raster size in pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterstørrelse i pixels</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="157"/>
         <source>Raster resolution in map units per pixel</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasteropløsning i kortenheder pr. pixel</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="185"/>
         <source>Horizontal</source>
-        <translation type="unfinished">Horisontal</translation>
+        <translation>Horisontal</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="211"/>
         <source>Vertical</source>
-        <translation type="unfinished">Vertikal</translation>
+        <translation>Vertikal</translation>
     </message>
     <message>
         <source>New size (required if output file doens&apos;t exist)</source>
@@ -4249,7 +4249,7 @@ som direkte kan bruges med Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="14"/>
         <source>Raster tile index</source>
-        <translation>Raster-feltindeks</translation>
+        <translation>Raster-tile-indeks</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="22"/>
@@ -4264,7 +4264,7 @@ som direkte kan bruges med Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="49"/>
         <source>Tile index field</source>
-        <translation>Felt til feltindeks</translation>
+        <translation>Felt til tile-indeks</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="59"/>
@@ -4284,13 +4284,13 @@ som direkte kan bruges med Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="20"/>
         <source>Translate (Convert format)</source>
-        <translation>Oversæt (konvertér format)</translation>
+        <translation>Formatkonvertering</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="72"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="83"/>
         <source>&amp;Target SRS</source>
-        <translation>&amp;Mål-SRS</translation>
+        <translation>&amp;Mål-CRS</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="106"/>
@@ -4384,7 +4384,7 @@ Den &apos;grå&apos; værdi (fra GDAL 1.7.0) giver mulighed for at udvide et dat
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="55"/>
         <source>&amp;Source SRS</source>
-        <translation>&amp;Kilde-SRS</translation>
+        <translation>&amp;Kilde-CRS</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="111"/>
@@ -4438,7 +4438,7 @@ Den &apos;grå&apos; værdi (fra GDAL 1.7.0) giver mulighed for at udvide et dat
     </message>
     <message>
         <source>&amp;Output directory for contour lines (shapefile)</source>
-        <translation>&amp;Outputmappe til konturlinjer (shapefil)</translation>
+        <translation>&amp;Outputmappe til kontureringslinjer (shapefil)</translation>
     </message>
 </context>
 <context>
@@ -4545,7 +4545,7 @@ Den &apos;grå&apos; værdi (fra GDAL 1.7.0) giver mulighed for at udvide et dat
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation>Polygon fra lagomrids</translation>
+        <translation>Polygon fra kortudsnit</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -4651,7 +4651,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation>Ingen objekter valgt, afvælg &apos;Brug valgte&apos; eller lav en ny markering</translation>
+        <translation>Ingen objekter valgt, afvælg &apos;Brug valgte&apos; eller lav en ny selektion</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
@@ -4811,7 +4811,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="199"/>
         <source>Settings for 3D globe</source>
-        <translation>Indstillinger for 3D klode</translation>
+        <translation>Indstillinger for 3D-klode</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="200"/>
@@ -5560,7 +5560,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="942"/>
         <source>Measure Area</source>
-        <translation>Mål areal</translation>
+        <translation>Mål afstand</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="945"/>
@@ -5585,12 +5585,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="978"/>
         <source>Zoom to Layer</source>
-        <translation>Zoom til lag</translation>
+        <translation>Zoom til lagomrids</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="987"/>
         <source>Zoom to Selection</source>
-        <translation>Zoom til markering</translation>
+        <translation>Zoom til udvalg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="990"/>
@@ -5600,12 +5600,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="999"/>
         <source>Zoom Last</source>
-        <translation>Sidste zoom</translation>
+        <translation>Zoom forrige</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1008"/>
         <source>Zoom Next</source>
-        <translation>Forrige zoom</translation>
+        <translation>Zoom næste</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1017"/>
@@ -5680,7 +5680,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1119"/>
         <source>Layer Labeling Options</source>
-        <translation>Muligheder for etiketværktøj</translation>
+        <translation>Indstillinger for etiketværktøj</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1128"/>
@@ -5903,7 +5903,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1282"/>
         <source>Save Selection as Vector File...</source>
-        <translation>Gem markering som vektorfil...</translation>
+        <translation>Gem udvalg som vektorfil...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1291"/>
@@ -5928,7 +5928,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1307"/>
         <source>Set Project CRS from Layer</source>
-        <translation>Sæt projektets projektion ud fra laget</translation>
+        <translation>Sæt projekt-CRS ud fra laget</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1537"/>
@@ -6126,7 +6126,7 @@ Virker på det aktuelle redigérbare lag</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1385"/>
         <source>Toggle Full Screen Mode</source>
-        <translation>Vis fuld skærm</translation>
+        <translation>Slå fuld skærm til/fra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1388"/>
@@ -6136,7 +6136,7 @@ Virker på det aktuelle redigérbare lag</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1397"/>
         <source>Project Properties...</source>
-        <translation>Projekt-indstillinger...</translation>
+        <translation>Projektegenskaber...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1400"/>
@@ -6146,7 +6146,7 @@ Virker på det aktuelle redigérbare lag</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1409"/>
         <source>Options...</source>
-        <translation>Indstillinger...</translation>
+        <translation>Generelle indstillinger...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1421"/>
@@ -6334,7 +6334,7 @@ Virker på det aktuelle redigérbare lag</translation>
         <location filename="../src/ui/qgisapp.ui" line="1690"/>
         <location filename="../src/ui/qgisapp.ui" line="1693"/>
         <source>Pan Map to Selection</source>
-        <translation>Zoom til markering</translation>
+        <translation>Zoom til selektion</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1705"/>
@@ -7658,7 +7658,7 @@ Du ser sandsynligvis denne besked, fordi du ikke har nogen DISPLAY-miljøvariabe
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="122"/>
         <location filename="../src/app/qgsmaptoolshowhidelabels.cpp" line="214"/>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
-        <translation>Markering kommer udenfor lagets koordinatsystem.</translation>
+        <translation>Selektion kommer udenfor lagets koordinatsystem.</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="241"/>
@@ -9365,12 +9365,12 @@ Kun %1 af %2 objekter skrevet.</translation>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="48"/>
         <source>Spatial Query Plugin</source>
-        <translation>Spatial forespørgselsplugin</translation>
+        <translation>Spatielt forespørgselsplugin</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="49"/>
         <source>A plugin that makes spatial queries on vector layers</source>
-        <translation>En plugin, som laver spatiale forespørgsler på vektorlag</translation>
+        <translation>Et plugin, som laver spatielle forespørgsler på vektorlag</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitplugin.cpp" line="33"/>
@@ -10119,7 +10119,7 @@ Vil du angive stien (GISBASE) til din GRASS-installation?</translation>
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="749"/>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library.</source>
-        <translation>At bygge interne pyramide-oversigter er ikke understøtter på rasterlag med JPEG-kompression og dit nuværende libtiff-bibliotek.</translation>
+        <translation>At bygge interne pyramide-oversigter er ikke understøtter på rasterlag med JPEG-komprimering og dit nuværende libtiff-bibliotek.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsfeature.cpp" line="190"/>
@@ -10728,22 +10728,22 @@ Kontakt udviklerne af programmet.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1522"/>
         <source>Scale </source>
-        <translation>Målestoksforhold </translation>
+        <translation>Målforhold </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1523"/>
         <source>Current map scale</source>
-        <translation>Nuværende målestoksforhold</translation>
+        <translation>Nuværende målforhold</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1536"/>
         <source>Displays the current map scale</source>
-        <translation>Viser det aktuelle målestoksforhold</translation>
+        <translation>Viser det aktuelle målforhold</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1537"/>
         <source>Current map scale (formatted as x:y)</source>
-        <translation>Aktuelt målestoksforhold (formatteret som x:y)</translation>
+        <translation>Aktuelt målforhold (formatteret som x:y)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1548"/>
@@ -11801,7 +11801,7 @@ Fejl: %3
         <location filename="../src/app/qgisapp.cpp" line="8578"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
-        <translation>&lt;tt&gt;Indstillinger:Muligheder:Generelt&lt;/tt&gt;</translation>
+        <translation>&lt;tt&gt;Indstillinger:Generelle indstillinger:Generelt&lt;/tt&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8579"/>
@@ -12639,7 +12639,7 @@ Bruger-DB-sti:	%9
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="384"/>
         <source>(no selection)</source>
-        <translation>(ingen markering)</translation>
+        <translation>(ingen selektion)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="755"/>
@@ -12811,7 +12811,7 @@ Bruger-DB-sti:	%9
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="188"/>
         <source>Move selection to top (Ctrl+T)</source>
-        <translation>Flyt markering til toppen (Ctrl+T)</translation>
+        <translation>Flyt selektion til toppen (Ctrl+T)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="204"/>
@@ -12821,7 +12821,7 @@ Bruger-DB-sti:	%9
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="214"/>
         <source>Invert selection (Ctrl+R)</source>
-        <translation>Invertér markering (Ctrl+R)</translation>
+        <translation>Invertér selektion (Ctrl+R)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="230"/>
@@ -13445,7 +13445,7 @@ Bruger-DB-sti:	%9
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="726"/>
         <source>Allow multiple selections</source>
-        <translation>Tillad flere markeringer</translation>
+        <translation>Tillad flere selektioner</translation>
     </message>
     <message>
         <source>Filter column</source>
@@ -13687,7 +13687,7 @@ Database:%2</translation>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="224"/>
         <source>Reprojected extent is empty.</source>
-        <translation>Reprojekteret omrids er tomt.</translation>
+        <translation>Reprojiceret omrids er tomt.</translation>
     </message>
 </context>
 <context>
@@ -13695,7 +13695,7 @@ Database:%2</translation>
     <message>
         <location filename="../src/ui/qgsbookmarksbase.ui" line="14"/>
         <source>Geospatial Bookmarks</source>
-        <translation>Geospatiale bogmærker</translation>
+        <translation>Geospatielle bogmærker</translation>
     </message>
 </context>
 <context>
@@ -13945,7 +13945,7 @@ Database:%2</translation>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="191"/>
         <source>Options</source>
-        <translation>Muligheder</translation>
+        <translation>Indstillinger</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="220"/>
@@ -14329,7 +14329,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="227"/>
         <source>Layout</source>
-        <translation>Layout</translation>
+        <translation>Design</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="252"/>
@@ -14344,7 +14344,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="311"/>
         <source>Composition</source>
-        <translation>Sammensætning</translation>
+        <translation>Sideopsætning</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="315"/>
@@ -14769,7 +14769,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="76"/>
         <source>Paper Navigation</source>
-        <translation>Papirnavigering</translation>
+        <translation>Visning</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="91"/>
@@ -14799,7 +14799,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="147"/>
         <source>Zoom full</source>
-        <translation>Zoom helt ud</translation>
+        <translation>Fuld zoom</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="156"/>
@@ -14829,12 +14829,12 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="183"/>
         <source>Add new map</source>
-        <translation>Tilføj nyt kort</translation>
+        <translation>Indsæt ny kortramme</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="192"/>
         <source>Add Label</source>
-        <translation>Tilføj etiket</translation>
+        <translation>Tilføj tekst</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="195"/>
@@ -14899,7 +14899,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="273"/>
         <source>Refresh view</source>
-        <translation>Gentegn visning</translation>
+        <translation>Gentegn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="282"/>
@@ -14944,17 +14944,17 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="314"/>
         <source>Raise</source>
-        <translation>Forøg</translation>
+        <translation>Flyt frem</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="317"/>
         <source>Raise selected items</source>
-        <translation>Forøg valgte elementer</translation>
+        <translation>Rækkefølge</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="322"/>
         <source>Lower</source>
-        <translation>Formindsk</translation>
+        <translation>Flyt tilbage</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="325"/>
@@ -15024,7 +15024,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="435"/>
         <source>Add Table</source>
-        <translation>Tilføj tabel</translation>
+        <translation>Tilføj attributtabel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="438"/>
@@ -15221,7 +15221,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="462"/>
         <source>Revert last change</source>
-        <translation>Omgør sidste ændring</translation>
+        <translation>Fortryd</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="465"/>
@@ -15491,7 +15491,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="244"/>
         <source>Thickness</source>
-        <translation>Tykkelse</translation>
+        <translation>Linjebredde</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="260"/>
@@ -16549,7 +16549,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="102"/>
         <source>Update preview</source>
-        <translation>Opdatér eksempel</translation>
+        <translation>Opdatér layout</translation>
     </message>
     <message>
         <source>Width</source>
@@ -16664,12 +16664,12 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="627"/>
         <source>Overview</source>
-        <translation>Oversigt</translation>
+        <translation>Oversigtskort</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="645"/>
         <source>Overview frame</source>
-        <translation>Oversigtsramme</translation>
+        <translation>Vælg oversigtskort</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="655"/>
@@ -16684,7 +16684,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="168"/>
         <source>Extents</source>
-        <translation>Omrids</translation>
+        <translation>Kortudsnit(mbr)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="241"/>
@@ -16709,7 +16709,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="231"/>
         <source>Set to map canvas extent</source>
-        <translation>Sæt til kortkanvas-omrids</translation>
+        <translation>Sæt til kortudsnit(mbr)</translation>
     </message>
     <message>
         <source>Grid</source>
@@ -17608,7 +17608,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="20"/>
         <source>Vector Legend Options</source>
-        <translation>Muligheder for vektortegnforklaring</translation>
+        <translation>Indstillinger for vektortegnforklaring</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="48"/>
@@ -17691,7 +17691,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="289"/>
         <source>Move item content</source>
-        <translation>Flyt elementindhold</translation>
+        <translation>Panorér kort i rammen</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="307"/>
@@ -18115,7 +18115,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="83"/>
         <source>Presets</source>
-        <translation>Forindstillinger</translation>
+        <translation>Papirstørrelse</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="103"/>
@@ -18130,12 +18130,12 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="161"/>
         <source>Units</source>
-        <translation>Enheder</translation>
+        <translation>Enhed</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="203"/>
         <source>Orientation</source>
-        <translation>Orientering</translation>
+        <translation>Papirretning</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="232"/>
@@ -18198,7 +18198,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="429"/>
         <source>Snap to alignments</source>
-        <translation>Fastgør til justeringer</translation>
+        <translation>Fastgør til justeringslinjer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="450"/>
@@ -18420,7 +18420,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="550"/>
         <source>The source spatial reference system (CRS) is not valid. The coordinates can not be reprojected. The CRS is: %1</source>
-        <translation>Kildekoordinatsystemet (CRS) er ikke gyldigt. Koordinaterne kan ikke reprojekteres. CRS&apos;et er: %1</translation>
+        <translation>Kildekoordinatsystemet (CRS) er ikke gyldigt. Koordinaterne kan ikke reprojiceres. CRS&apos;et er: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="552"/>
@@ -18431,7 +18431,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="557"/>
         <source>The destination spatial reference system (CRS) is not valid. The coordinates can not be reprojected. The CRS is: %1</source>
-        <translation>Destinationskoordinatsystemet (CRS) er ikke gyldigt. Koordinaterne kan ikke reprojekteres. CRS&apos;et er: %1</translation>
+        <translation>Destinationskoordinatsystemet (CRS) er ikke gyldigt. Koordinaterne kan ikke reprojiceres. CRS&apos;et er: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="587"/>
@@ -18523,7 +18523,7 @@ og den aktuelle fil er [%3]</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="139"/>
         <source>Selections by theme</source>
-        <translation>Markeringer via tema</translation>
+        <translation>Udvalg via tema</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="140"/>
@@ -18590,7 +18590,7 @@ og den aktuelle fil er [%3]</translation>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="185"/>
         <source>Selection and preview</source>
-        <translation>Markering og eksempel</translation>
+        <translation>Udvalg og eksempel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="191"/>
@@ -20778,7 +20778,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="679"/>
         <source>Options</source>
-        <translation>Muligheder</translation>
+        <translation>Indstillinger</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="691"/>
@@ -22388,7 +22388,7 @@ grå = ingen data
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="191"/>
         <source>Options</source>
-        <translation>Muligheder</translation>
+        <translation>Indstillinger</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="205"/>
@@ -25671,7 +25671,7 @@ på linje %2 kolonne %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="20"/>
         <source>Options</source>
-        <translation>Muligheder</translation>
+        <translation>Indstillinger</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="25"/>
@@ -26115,7 +26115,7 @@ på linje %2 kolonne %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="560"/>
         <source>Cannot reproject previously set region, default region set.</source>
-        <translation>Kan ikke reprojektere tidligere satte region, standardregion sat.</translation>
+        <translation>Kan ikke reprojicere tidligere satte region, standardregion sat.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="687"/>
@@ -26162,12 +26162,12 @@ på linje %2 kolonne %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="893"/>
         <source>Cannot reproject selected region.</source>
-        <translation>Kan ikke reprojektere den valgte region.</translation>
+        <translation>Kan ikke reprojicere den valgte region.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="986"/>
         <source>Cannot reproject region</source>
-        <translation>Kan ikke reprojektere region</translation>
+        <translation>Kan ikke reprojicere region</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1207"/>
@@ -28805,7 +28805,7 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3877"/>
         <source>Options</source>
-        <translation>Muligheder</translation>
+        <translation>Generelle indstillinger</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3899"/>
@@ -29515,7 +29515,7 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="323"/>
         <source>&amp;Zoom to Layer Extent</source>
-        <translation>&amp;Zoom til lagomrids</translation>
+        <translation>&amp;Zoom til kortudsnit</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="326"/>
@@ -29566,7 +29566,7 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="394"/>
         <source>Save Selection As...</source>
-        <translation>Gem markering som...</translation>
+        <translation>Gem udvalg som...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="401"/>
@@ -29670,7 +29670,7 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="41"/>
         <source>Clear selection</source>
-        <translation>Ryd markering</translation>
+        <translation>Ryd selektion</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="47"/>
@@ -30141,7 +30141,7 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="57"/>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="184"/>
         <source>No feature selected. Please select a feature with the selection tool or in the attribute table</source>
-        <translation>Intet objekt valgt. Vælg et objekt md markeringsværktøjet eller i attributtabellen</translation>
+        <translation>Intet objekt valgt. Vælg et objekt md selektionsværktøjet eller i attributtabellen</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="61"/>
@@ -30659,7 +30659,7 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="99"/>
         <source>No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings-&gt;Options-&gt;Digitizing-&gt;Serch radius for vertex edits</source>
         <translatorcomment>Typo in source: &apos;Serch&apos;</translatorcomment>
-        <translation>Intet punktobjekt blev fundet på den klikkede position. Klik tættere på objektet, eller forøg søgetolerancen under Indstillinger-&gt;Muligheder-&gt;Digitalisering-&gt;Søgeradius for hjørneredigeringer</translation>
+        <translation>Intet punktobjekt blev fundet på den klikkede position. Klik tættere på objektet, eller forøg søgetolerancen under Indstillinger-&gt;Generelle indstillinger-&gt;Digitalisering-&gt;Søgeradius for hjørneredigeringer</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="113"/>
@@ -30765,7 +30765,7 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="79"/>
         <source>If there are selected features, the split tool only applies to the selected ones. If you like to split all features under the split line, clear the selection</source>
-        <translation>Hvis der er valgte objekter, anvendes opdelingsværktøjet kun på de valgte. Hvis du vil opdele alle objekter under delingslinjen, skal du rydde markeringen</translation>
+        <translation>Hvis der er valgte objekter, anvendes opdelingsværktøjet kun på de valgte. Hvis du vil opdele alle objekter under delingslinjen, skal du rydde selektionen</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="83"/>
@@ -31260,7 +31260,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui" line="72"/>
         <source>Remove feature from selection</source>
-        <translation>Fjern objekt fra markering</translation>
+        <translation>Fjern objekt fra selektion</translation>
     </message>
 </context>
 <context>
@@ -32301,7 +32301,7 @@ Udvidet fejlinformation:
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="422"/>
         <source>Failed to create the spatial index. The database returned:
 %1</source>
-        <translation>Det mislykkedes at oprette det spatiale indeks. Databasen returnerede:
+        <translation>Det mislykkedes at oprette det spatielle indeks. Databasen returnerede:
 %1</translation>
     </message>
     <message>
@@ -32773,7 +32773,7 @@ Udvidet fejlinformation:
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="124"/>
         <source>&amp;Load into canvas when finished</source>
-        <translation>&amp;Indlæs i kanvas efter afslutning</translation>
+        <translation>&amp;Indlæs i projekt efter afslutning</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="45"/>
@@ -33143,7 +33143,7 @@ Udvidet fejlinformation:
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="289"/>
         <source>Options</source>
-        <translation>Muligheder</translation>
+        <translation>Indstillinger</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="295"/>
@@ -33153,7 +33153,7 @@ Udvidet fejlinformation:
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="311"/>
         <source>Tile size</source>
-        <translation>Feltstørrelse</translation>
+        <translation>Tile-størrelse</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="324"/>
@@ -33235,7 +33235,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="436"/>
         <source>Tilesets</source>
-        <translation>Feltsæt</translation>
+        <translation>Tile-sæt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="466"/>
@@ -33289,7 +33289,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
         <location filename="../src/core/qgsofflineediting.cpp" line="284"/>
         <source>Unable to initialize SpatialMetadata:
 </source>
-        <translation>Kunne ikke initialisere spatiale metadata:</translation>
+        <translation>Kunne ikke initialisere spatielle metadata:</translation>
     </message>
     <message>
         <location filename="../src/core/qgsofflineediting.cpp" line="319"/>
@@ -34189,7 +34189,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="555"/>
         <source>Selection color</source>
-        <translation>Markeringsfarve</translation>
+        <translation>Selektionsfarve</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="310"/>
@@ -34267,7 +34267,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="20"/>
         <source>Options</source>
-        <translation>Muligheder</translation>
+        <translation>Generelle indstillinger</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="85"/>
@@ -34328,7 +34328,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2156"/>
         <source>Selection color</source>
-        <translation>Markeringsfarve</translation>
+        <translation>Selektionsfarve</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2143"/>
@@ -34636,7 +34636,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1686"/>
         <source>RGB band selection</source>
-        <translation>RGB- båndmarkering</translation>
+        <translation>RGB- båndselektion</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1709"/>
@@ -34656,7 +34656,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3797"/>
         <source>Default expiration period for WMS-C/WMTS tiles (hours)</source>
-        <translation>Standard-udløbsperiode for WMS-C/WMTS-felter (timer)</translation>
+        <translation>Standard-udløbsperiode for WMS-C/WMTS-tiles (timer)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1755"/>
@@ -35233,7 +35233,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3581"/>
         <source>Automatically enable &apos;on the fly&apos; reprojection if CRS of a new added layer differ from CRS of layer(s) already present. CRS of present layer(s) will be used.</source>
-        <translation>Slå automatisk realtids-reprojektion til, hvis et nyt lags CRS afviger fra de(t) aktuelle lags CRS. Aktuelle lags CRS vil  blive brugt.</translation>
+        <translation>Aktivér automatisk CRS-transformation, hvis et nyt lags CRS afviger fra de(t) aktuelle lags CRS. Aktuelle lags CRS vil  blive brugt.</translation>
     </message>
     <message>
         <source>Automatically enable &apos;on the fly&apos; reprojection  if layers have different CRS</source>
@@ -35242,7 +35242,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3601"/>
         <source>Enable &apos;on the &amp;fly&apos; reprojection by default</source>
-        <translation>Slå &amp;realtids-reprojektion til som standard</translation>
+        <translation>&amp;Aktivér automatisk CRS-transformation som standard</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3489"/>
@@ -35288,7 +35288,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3657"/>
         <source>Override system locale</source>
-        <translation>Overskriv systemets landekode</translation>
+        <translation>Overtrumf systemets landekode</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3666"/>
@@ -35395,7 +35395,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3584"/>
         <source>Automatically enable &apos;on the fly&apos; reprojection if layers have different CRS</source>
-        <translation>Slå automatisk realtids-reprojektion til, hvis lag har forskellige CRS&apos;er</translation>
+        <translation>Aktivér automatisk CRS-transformation, hvis lag har forskellige CRS&apos;er</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3859"/>
@@ -35548,7 +35548,7 @@ fejl:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="244"/>
         <source>Unable to get list of spatially enabled tables from the database</source>
-        <translation>Kunne ikke hente liste over spatiale tabeller fra databasen</translation>
+        <translation>Kunne ikke hente liste over spatielle tabeller fra databasen</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="373"/>
@@ -35785,12 +35785,12 @@ fejl:%2
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="128"/>
         <source>Restrict the search to the public schema for spatial tables not in the geometry_columns table</source>
-        <translation>Begræns søgning til det offentlige skema for spatiale tabellen, som ikke er i geometry_columns-tabellen</translation>
+        <translation>Begræns søgning til det offentlige skema for spatielle tabeller, som ikke er i geometry_columns-tabellen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="131"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When searching for spatial tables restrict the search to tables that are owner by the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Begræns søgningen til tabeller, der ejes af brugeren, ved søgning efter spatiale tabeller.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Begræns søgningen til tabeller, der ejes af brugeren, ved søgning efter spatielle tabeller.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="134"/>
@@ -35835,7 +35835,7 @@ fejl:%2
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="201"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Når laget sættes op, er diverse metadata påkrævet for Oracle-tabellen. Dette inkluderer information såsom tabellens rækkeantal, geometritype og spatiale omrids af data i geometrikolonnen. Hvis tabellen indeholder et stort antal rækker, kan bestemmelse af metadata være tidskrævende.&lt;/p&gt;&lt;p&gt;Ved at aktivere denne funktion udføres flg. hurtige metadatahandlinger:&lt;/p&gt;&lt;p&gt;1) Rækkeantal bestemmes fra all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Tabelomrids bestemmes altid med SDO_TUNE.EXTENTS_OF-funktionen, selv hvis et lagfilter anvendes.&lt;/p&gt;&lt;p&gt;3) Tabelgeometrien bestemmes fra de første 100 ikke-null-geometrirækker i tabellen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Når laget sættes op, er diverse metadata påkrævet for Oracle-tabellen. Dette inkluderer information såsom tabellens rækkeantal, geometritype og spatielle omrids af data i geometrikolonnen. Hvis tabellen indeholder et stort antal rækker, kan bestemmelse af metadata være tidskrævende.&lt;/p&gt;&lt;p&gt;Ved at aktivere denne funktion udføres flg. hurtige metadatahandlinger:&lt;/p&gt;&lt;p&gt;1) Rækkeantal bestemmes fra all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Tabelomrids bestemmes altid med SDO_TUNE.EXTENTS_OF-funktionen, selv hvis et lagfilter anvendes.&lt;/p&gt;&lt;p&gt;3) Tabelgeometrien bestemmes fra de første 100 ikke-null-geometrirækker i tabellen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="204"/>
@@ -35989,7 +35989,7 @@ fejl:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="625"/>
         <source>Other spatial field %1.%2.%3 ignored</source>
-        <translation>Andet spatialt felt %1.%2.%3 ignoreret</translation>
+        <translation>Andet spatielt felt %1.%2.%3 ignoreret</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="639"/>
@@ -35999,17 +35999,17 @@ fejl:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="661"/>
         <source>Invalid spatial index %1 on column %2.%3.%4 found - expect poor performance.</source>
-        <translation>Ugyldigt spatialt indeks %1 på kolonne %2.%3.%4 fundet - forvent dårlig ydeevne.</translation>
+        <translation>Ugyldigt spatielt indeks %1 på kolonne %2.%3.%4 fundet - forvent dårlig ydeevne.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="676"/>
         <source>No spatial index on column %1.%2.%3 found - expect poor performance.</source>
-        <translation>Intet spatialt indekt på kolonne %1.%2.%3 fundet - forvent dårlig ydeevne.</translation>
+        <translation>Intet spatielt indekt på kolonne %1.%2.%3 fundet - forvent dårlig ydeevne.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="685"/>
         <source>Probing for spatial index on column %1.%2.%3 failed [%4]</source>
-        <translation>Undersøgelse af spatialt indeks på kolonne %1.%2.%3 mislykkedes [%4]</translation>
+        <translation>Undersøgelse af spatelt indeks på kolonne %1.%2.%3 mislykkedes [%4]</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="701"/>
@@ -36294,7 +36294,7 @@ Fejl: %4</translation>
         <source>Creation spatial index failed.
 SQL:%1
 Error: %2</source>
-        <translation>Oprettelse af spatialt indeks mislykkedes.
+        <translation>Oprettelse af spatielt indeks mislykkedes.
 SQL:%1
 Fejl: %2</translation>
     </message>
@@ -36303,7 +36303,7 @@ Fejl: %2</translation>
         <source>Rebuild of spatial index failed.
 SQL:%1
 Error: %2</source>
-        <translation>Genopbygning af spatialt indeks mislykkedes.
+        <translation>Genopbygning af spatielt indeks mislykkedes.
 SQL:%1
 Fejl: %2</translation>
     </message>
@@ -36988,7 +36988,7 @@ Fejl: %2</translation>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="199"/>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="284"/>
         <source>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</source>
-        <translation>Begræns de viste tabeller til dem, som findes i lagregistrene (geometry_columns, geography_columns, topology.layer). Dette kan gøre den indledende visning af spatiale tabeller hurtigere.</translation>
+        <translation>Begræns de viste tabeller til dem, som findes i lagregistrene (geometry_columns, geography_columns, topology.layer). Dette kan gøre den indledende visning af spatielle tabeller hurtigere.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="202"/>
@@ -37015,12 +37015,12 @@ Fejl: %2</translation>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="209"/>
         <source>Restrict the search to the public schema for spatial tables not in the geometry_columns table</source>
-        <translation>Begræns søgning til det offentlige skema for spatiale tabellen, som ikke er i geometry_columns-tabellen</translation>
+        <translation>Begræns søgning til det offentlige skema for spatielle tabeller, som ikke er i geometry_columns-tabellen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="212"/>
         <source>When searching for spatial tables that are not in the geometry_columns tables, restrict the search to tables that are in the public schema (for some databases this can save lots of time)</source>
-        <translation>Når der søges efter spatiale tabeller, der ikke er i geometry_columns-tabellerne, begræns søgning til tabeller, som er i det offentlige skema (dette kan spare meget tid for nogle databaser)</translation>
+        <translation>Når der søges efter spatielle tabeller, der ikke er i geometry_columns-tabellerne, begræns søgning til tabeller, som er i det offentlige skema (dette kan spare meget tid for nogle databaser)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="215"/>
@@ -37060,7 +37060,7 @@ Fejl: %2</translation>
 &lt;/html&gt;</source>
         <translation>&lt;html&gt;
 &lt;body&gt;
-&lt;p&gt;Når laget er opsat, er diverse metadata påkrævet til PostGIS-tabellen. Deette omfatter information, såsom tabellens rækkeantal, geometritype og spatiale omrids af dataene i geometrikolonnen. Hvis tabellen indehoder et stort antal rækker, kan bestemmelse af disse metadata tage lang tid.&lt;/p&gt;
+&lt;p&gt;Når laget er opsat, er diverse metadata påkrævet til PostGIS-tabellen. Deette omfatter information, såsom tabellens rækkeantal, geometritype og spatielle omrids af dataene i geometrikolonnen. Hvis tabellen indehoder et stort antal rækker, kan bestemmelse af disse metadata tage lang tid.&lt;/p&gt;
 &lt;p&gt;Ved at aktivere denne mulighed, bliver de flg. hurtige tabel-metadata-handlinger udført:&lt;/p&gt;
 &lt;p&gt;1) Rækkeantal er afgjort fra tabelstatistik, hentet fra kørsel af PostgreSQLs tabel-analyse-funktion.&lt;/p&gt;
 &lt;p&gt;2) Tabelomrids afgøres altid med PostGIS-funktionen estimated_extent, selv om et lagfilter er anvendt.&lt;/p&gt;
@@ -37283,7 +37283,7 @@ Check beskedloggen for mulige fejl.</translation>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="31"/>
         <source>Spatial Type</source>
-        <translation>Spatialtype</translation>
+        <translation>Spatiel type</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="33"/>
@@ -37861,7 +37861,7 @@ Quantum GIS skal genstartes for at genindlæse det.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="455"/>
         <source>Options</source>
-        <translation>Muligheder</translation>
+        <translation>Indstillinger</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="458"/>
@@ -38441,7 +38441,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="240"/>
         <source>Your PostGIS installation has no GEOS support. Feature selection and identification will not work properly. Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation>Din PostGIS-installation har ingen GEOS-understøttelse. Objektmarkering og identifikation vil ikke virke korrekt. Installér PostGIS med GEOS-understøttelse (http://geos.refractions.net)</translation>
+        <translation>Din PostGIS-installation har ingen GEOS-understøttelse. Objektselektion og -identifikation vil ikke virke korrekt. Installér PostGIS med GEOS-understøttelse (http://geos.refractions.net)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="292"/>
@@ -38485,7 +38485,7 @@ Fejlmeddelelsen fra databasen var:
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="600"/>
         <source>Unable to get list of spatially enabled tables from the database</source>
-        <translation>Kunne ikke hente liste over spatiale tabeller fra databasen</translation>
+        <translation>Kunne ikke hente liste over spatielle tabeller fra databasen</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="644"/>
@@ -39090,7 +39090,7 @@ Vælg Ignorér for at fortsætte indlæsning uden de manglende lag. Vælg Afbryd
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="168"/>
         <source>Selection color</source>
-        <translation>Markeringsfarve</translation>
+        <translation>Selektionsfarve</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="810"/>
@@ -39240,7 +39240,7 @@ Fortsæt?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="279"/>
         <source>Selection color</source>
-        <translation>Markeringsfarve</translation>
+        <translation>Selektionsfarve</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="314"/>
@@ -39418,7 +39418,7 @@ Fortsæt?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="793"/>
         <source>Enable &apos;on the fly&apos; CRS transformation</source>
-        <translation>Slå realtidstransformering til for CRS</translation>
+        <translation>Aktivér automatisk CRS-transformation</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="112"/>
@@ -39478,7 +39478,7 @@ Fortsæt?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1150"/>
         <source>Options</source>
-        <translation>Muligheder</translation>
+        <translation>Generelle indstillinger</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1221"/>
@@ -40156,7 +40156,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="70"/>
         <source>Current layer extent</source>
-        <translation>Aktuelt lagomrids</translation>
+        <translation>Aktuelt kortudsnit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="92"/>
@@ -40400,19 +40400,19 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="54"/>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="70"/>
         <source>No compression</source>
-        <translation>Ingen kompression</translation>
+        <translation>Ingen komprimering</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="57"/>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="73"/>
         <source>Low compression</source>
-        <translation>Lav kompression</translation>
+        <translation>Lav komprimering</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="60"/>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="76"/>
         <source>High compression</source>
-        <translation>Høj kompression</translation>
+        <translation>Høj komprimering</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="63"/>
@@ -40771,7 +40771,7 @@ Klik på hjælpeknappen for at få gyldige oprettelsesmuligheder til dette forma
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="305"/>
         <source>Could not reproject view extent: %1</source>
-        <translation>Kunne ikke reprojektere visningsomrids: %1</translation>
+        <translation>Kunne ikke reprojicere visningsomrids: %1</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="305"/>
@@ -40783,7 +40783,7 @@ Klik på hjælpeknappen for at få gyldige oprettelsesmuligheder til dette forma
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="315"/>
         <source>Could not reproject layer extent: %1</source>
-        <translation>Kunne ikke reprojektere lagomrids: %1</translation>
+        <translation>Kunne ikke reprojicere kortudsnit: %1</translation>
     </message>
     <message>
         <source>Cannot read data</source>
@@ -40954,7 +40954,7 @@ Klik på hjælpeknappen for at få gyldige oprettelsesmuligheder til dette forma
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="573"/>
         <source>Layer Extent (layer original source projection)</source>
-        <translation>Lagomrids (original kildeprojektion for lag)</translation>
+        <translation>Kortudsnit (original kildeprojektion for lag)</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="583"/>
@@ -41263,7 +41263,7 @@ Klik på hjælpeknappen for at få gyldige oprettelsesmuligheder til dette forma
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="968"/>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library.</source>
-        <translation>At bygge interne pyramide-oversigter er ikke understøtter på rasterlag med JPEG-kompression og dit nuværende libtiff-bibliotek.</translation>
+        <translation>At bygge interne pyramide-oversigter er ikke understøtter på rasterlag med JPEG-komprimering og dit nuværende libtiff-bibliotek.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1196"/>
@@ -42087,7 +42087,7 @@ datasæt med maksimumbredde og -højde angivet herunder.</translation>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="330"/>
         <source>Layer extent</source>
-        <translation>Lagomrids</translation>
+        <translation>Kortudsnit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="359"/>
@@ -42132,7 +42132,7 @@ datasæt med maksimumbredde og -højde angivet herunder.</translation>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="476"/>
         <source>VRT Tiles</source>
-        <translation>VRT-felter</translation>
+        <translation>VRT-tiles</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="531"/>
@@ -42147,7 +42147,7 @@ datasæt med maksimumbredde og -højde angivet herunder.</translation>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="488"/>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="498"/>
         <source>Maximum number of columns in one tile.</source>
-        <translation>Maksimalt antal kolonner i ét felt.</translation>
+        <translation>Maksimalt antal kolonner i én tile.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="491"/>
@@ -42158,7 +42158,7 @@ datasæt med maksimumbredde og -højde angivet herunder.</translation>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="505"/>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="515"/>
         <source>Maximum number of rows in one tile.</source>
-        <translation>Maksimalt antal rækker i ét felt.</translation>
+        <translation>Maksimalt antal rækker i én tile.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="508"/>
@@ -44600,7 +44600,7 @@ men medfører bedre ydeevne herefter.</translation>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="89"/>
         <source>The spatial query requires at least two vector layers</source>
-        <translation>Den spatiale forespørgsel kræver mindst 2 vektorlag</translation>
+        <translation>Den spatielle forespørgsel kræver mindst 2 vektorlag</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="167"/>
@@ -44675,17 +44675,17 @@ men medfører bedre ydeevne herefter.</translation>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="503"/>
         <source>Create new selection</source>
-        <translation>Opret ny markering</translation>
+        <translation>Opret ny selektion</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="511"/>
         <source>Add to current selection</source>
-        <translation>Tilføj til aktuel markering</translation>
+        <translation>Tilføj til aktuel selektion</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="514"/>
         <source>Remove from current selection</source>
-        <translation>Fjern fra aktuel markering</translation>
+        <translation>Fjern fra aktuel selektion</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="523"/>
@@ -44715,7 +44715,7 @@ men medfører bedre ydeevne herefter.</translation>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="693"/>
         <source>Map &quot;%1&quot; &quot;on the fly&quot; transformation.</source>
-        <translation>Kort &quot;%1&quot; realtidstransformering.</translation>
+        <translation>Automatisk CRS-transformation for kort &quot;%1&quot;.</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="693"/>
@@ -44802,7 +44802,7 @@ Kortets CRS er %1.
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="32"/>
         <source>Spatial Query</source>
-        <translation>Spatial forespørgsel</translation>
+        <translation>Spatiel forespørgsel</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="45"/>
@@ -44940,7 +44940,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="90"/>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="99"/>
         <source>&amp;Spatial Query</source>
-        <translation>&amp;Spatial forespørgsel</translation>
+        <translation>&amp;Spatiel forespørgsel</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="114"/>
@@ -45211,7 +45211,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="474"/>
         <source>&lt;p&gt;The chosen database does not have PostGIS installed, but this is required for storage of spatial data.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Den valgte database har ikke PostGIS installeret, men dette påkrævet for at gemme spatiale data.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Den valgte database har ikke PostGIS installeret, men dette påkrævet for at gemme spatielle data.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="518"/>
@@ -45687,7 +45687,7 @@ Quantum GIS kræver, at relationen har en heltalskolonne, som ikke er større en
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1777"/>
         <source>Error loading SRS definition</source>
-        <translation>Fejl ved indlæsning af SRS-definition</translation>
+        <translation>Fejl ved indlæsning af CRS-definition</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1822"/>
@@ -45702,7 +45702,7 @@ Quantum GIS kræver, at relationen har en heltalskolonne, som ikke er større en
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1847"/>
         <source>Limited Support of Round Earth SRS</source>
-        <translation>Begrænset understøttelse af Round Earth SRS</translation>
+        <translation>Begrænset understøttelse af Round Earth CRS</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1848"/>
@@ -45711,7 +45711,7 @@ Quantum GIS kræver, at relationen har en heltalskolonne, som ikke er større en
 Updates to geometry values will be disabled, and query performance may be poor because spatial indexes will not be utilized. To improve performance, consider creating a spatial index on a new (possibly computed) column containing a planar projection of these geometries. For help, refer to the descriptions of the ST_SRID(INT) and ST_Transform(INT) methods in the SQL Anywhere documentation.</source>
         <translation>Kolonnen %1 (%2) indeholder geometrier, som tilhører et Round Earth-koordinatsystem (SRID=%3). %4
 
-Opdateringer af geometriværdier vil blive slået fra, og forespørgselsydeevnen kan være dårlig, da spatiale indekser ikke bruges. For at forbedre ydeevnen bør der oprettes et spatialt indeks på en ny (muligvis beregnet) kolonne, som indeholder en planprojektion af disse geometrier. Referer til beskrivelsen af ST_SRID(INT)- og ST_Transform(INT)-metoderne i SQL Anywhere-dokumentationen for hjælp.</translation>
+Opdateringer af geometriværdier vil blive slået fra, og forespørgselsydeevnen kan være dårlig, da spatielle indekser ikke bruges. For at forbedre ydeevnen bør der oprettes et spatielt indeks på en ny (muligvis beregnet) kolonne, som indeholder en planprojektion af disse geometrier. Referer til beskrivelsen af ST_SRID(INT)- og ST_Transform(INT)-metoderne i SQL Anywhere-dokumentationen for hjælp.</translation>
     </message>
 </context>
 <context>
@@ -45724,7 +45724,7 @@ Opdateringer af geometriværdier vil blive slået fra, og forespørgselsydeevnen
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="44"/>
         <source>Clear selection</source>
-        <translation>Ryd markering</translation>
+        <translation>Ryd selektion</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="61"/>
@@ -46061,7 +46061,7 @@ Overskriv?</translation>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="889"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1338"/>
         <source>Invalid Selection</source>
-        <translation>Ugyldig markering</translation>
+        <translation>Ugyldig selektion</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="890"/>
@@ -46085,7 +46085,7 @@ Vælg &apos;Smart-gruppe&apos; for at oprette en ny gruppe.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="951"/>
         <source>Invalid selection</source>
-        <translation>Ugyldig markering</translation>
+        <translation>Ugyldig selektion</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="952"/>
@@ -46376,7 +46376,7 @@ Der var et problem med til din symboldatabase.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="404"/>
         <source>Invalid Selection!</source>
-        <translation>Ugyldig markering!</translation>
+        <translation>Ugyldig selektion!</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="404"/>
@@ -46579,7 +46579,7 @@ Der var et problem med til din symboldatabase.</translation>
     <message>
         <location filename="../src/providers/wms/qgstilescalewidget.cpp" line="142"/>
         <source>Tile scale</source>
-        <translation>Feltskala</translation>
+        <translation>Tile-skala</translation>
     </message>
 </context>
 <context>
@@ -46661,12 +46661,12 @@ Der var et problem med til din symboldatabase.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="93"/>
         <source>Moving Elements and Maps in the Print Composer</source>
-        <translation>Flytter elementer og kort i Printlayoutet</translation>
+        <translation>Flytte elementer og kort i Printlayoutet</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="94"/>
         <source>In the print composer tool bar you can find two buttons for moving elements. The left one (a selection cursor with the hand symbol) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item &amp;rarr; General Options &amp;rarr; Position and Size&lt;/strong&gt;. For easier positioning you can also set specific anchor points of the element within this dialogue. The other move tool (the globe icon combined with the hand icon) allows one to move the map content within a map frame.</source>
-        <translation>I printlayout-værktøjslinjen kan du finde 2 knapper til at flytte elementer. Den venstre (en markeringsmarkør med håndsymbolet) vælger og flytter elementer i layoutet. Efter du har valgt elementer med dette værktøj, kan du flytte dem rundt med piletasterne. For præcis positionering, brug &lt;strong&gt;Position og størrelse&lt;/strong&gt;-dialogen, som kan findes i tabben &lt;strong&gt;Element &amp;rarr; Generelle muligheder &amp;rarr; Position og størrelse&lt;/strong&gt;. For nemmere positionering kan du også sætte specifikke forankringspunkter til elementet i denne dialog. Det andet flytteværkføj (klodeikonet kombineret med håndikonet) tillader at flytte kortindholdet indenfor en kortramme.</translation>
+        <translation>I printlayout-værktøjslinjen kan du finde 2 knapper til at flytte elementer. Den venstre (en selektionsmarkør med håndsymbolet) vælger og flytter elementer i layoutet. Efter du har valgt elementer med dette værktøj, kan du flytte dem rundt med piletasterne. For præcis positionering, brug &lt;strong&gt;Position og størrelse&lt;/strong&gt;-dialogen, som kan findes i tabben &lt;strong&gt;Element &amp;rarr; Generelle muligheder &amp;rarr; Position og størrelse&lt;/strong&gt;. For nemmere positionering kan du også sætte specifikke forankringspunkter til elementet i denne dialog. Det andet flytteværkføj (klodeikonet kombineret med håndikonet) tillader at flytte kortindholdet indenfor en kortramme.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="108"/>
@@ -46681,7 +46681,7 @@ Der var et problem med til din symboldatabase.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="119"/>
         <source>Rotating a map and linking a north arrow</source>
-        <translation>Rotaring af et kort og sammenkædning af en nordpil</translation>
+        <translation>Rotering af et kort og sammenkædning af en nordpil</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="120"/>
@@ -46706,7 +46706,7 @@ Der var et problem med til din symboldatabase.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="141"/>
         <source>You can use the scroll wheel on your mouse to zoom in, out and pan the map. Scroll forwards to zoom in, scroll backwards to zoom out and press and hold the scroll wheel down to pan the map. You can configure options for scroll wheel behaviour in the Options panel.</source>
-        <translation>Du kan bruge dit musehjul til at zoome ind, ud og panorere på kortet. Scroll fremad for at zoome ind, scroll tilbage for at zoome ud, og tryk og hold hjulet nede for at panorere på kortet. Du kan konfigurere muligheder for musehjulsopførsel i panelet Muligheder.</translation>
+        <translation>Du kan bruge dit musehjul til at zoome ind, ud og panorere på kortet. Scroll fremad for at zoome ind, scroll tilbage for at zoome ud, og tryk og hold hjulet nede for at panorere på kortet. Du kan konfigurere indstillinger for musehjulsopførsel i panelet Generelle indstillinger.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="148"/>
@@ -46716,7 +46716,7 @@ Der var et problem med til din symboldatabase.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="149"/>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;esc&apos; (the escape key), or click the small red &apos;X&apos; icon in the status bar to the bottom right of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
-        <translation>Nogle gange har du et meget stort datasæt, som tager evigheder at tegne. Du kan trykke &apos;Esc&apos; eller klikke på det lille røde &apos;X&apos;-ikon i statuslinjen nederst til højre i vinduet på et vilkårligt tidspunkt for at stoppe rendering. Hvis du vil udføre flere handlinger (fx ændring af symbologi-muligheder) og ønsker at slå kortrendering midlertidigt fra, mens du gør det, kan du afmarkering &apos;Render&apos;-checkboksen nederst til højre i statuslinjen. Glem ikke at aktivere den igen, når du er klar til at lade kortet tegne sig selv igen!</translation>
+        <translation>Nogle gange har du et meget stort datasæt, som tager evigheder at tegne. Du kan trykke &apos;Esc&apos; eller klikke på det lille røde &apos;X&apos;-ikon i statuslinjen nederst til højre i vinduet på et vilkårligt tidspunkt for at stoppe rendering. Hvis du vil udføre flere handlinger (fx ændring af symbologi-muligheder) og ønsker at slå kortrendering midlertidigt fra, mens du gør det, kan du afmarkere &apos;Render&apos;-checkboksen nederst til højre i statuslinjen. Glem ikke at aktivere den igen, når du er klar til at lade kortet tegne sig selv igen!</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="160"/>
@@ -46731,12 +46731,12 @@ Der var et problem med til din symboldatabase.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="169"/>
         <source>Auto-enable on the fly projection</source>
-        <translation>Slå automatisk realtidsprojektion til</translation>
+        <translation>Aktivér automatisk CRS-transformation</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="170"/>
         <source>In the options dialog, under the CRS tab, you can set QGIS so that whenever you create a new project, &apos;on the fly projection&apos; is enabled automatically and a pre-selected Coordinate Reference System of your choice is used.</source>
-        <translation>I muligheder-dialogen, under &apos;CRS&apos;-tabben, kan du indstille QGIS, så realtidsprojektion automatisk slået til, når du opretter et nyt projekt, og et forudvalgt koordinatsystem er brugt efter dit valg.</translation>
+        <translation>I indstillingsdialogen, under &apos;CRS&apos;-tabben, kan du indstille QGIS, så CRS-transformation automatisk er slået til, når du opretter et nyt projekt, og et forudvalgt koordinatsystem er brugt efter dit valg.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="177"/>
@@ -46888,7 +46888,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="81"/>
         <source>Compression:</source>
-        <translation>Kompression:</translation>
+        <translation>Komprimering:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="101"/>
@@ -46906,7 +46906,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="122"/>
         <source>Target SRS:</source>
-        <translation>Mål-SRS:</translation>
+        <translation>Mål-CRS:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="143"/>
@@ -46946,7 +46946,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="260"/>
         <source>Load in QGIS when done</source>
-        <translation>Indlæs i QGIS ved afslutning</translation>
+        <translation>Indlæs i projekt ved afslutning</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="37"/>
@@ -47134,7 +47134,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="181"/>
         <source>Create Spatial Index</source>
-        <translation>Opret spatial indeks</translation>
+        <translation>Opret spatielt indeks</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="187"/>
@@ -47519,7 +47519,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3580"/>
         <source>(Invalid transformation of layer extents)</source>
-        <translation>(Ugyldig transformering af lagomrids)</translation>
+        <translation>(Ugyldig transformering af kortudsnit)</translation>
     </message>
     <message>
         <source>Attribute field info:</source>
@@ -47931,12 +47931,12 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="492"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="497"/>
         <source>Spatial Index</source>
-        <translation>Spatialt indeks</translation>
+        <translation>Spatielt indeks</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="492"/>
         <source>Creation of spatial index successful</source>
-        <translation>Oprettelse af spatialt indeks lykkedes</translation>
+        <translation>Oprettelse af spatielt indeks lykkedes</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="497"/>
@@ -48376,7 +48376,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="403"/>
         <source>Create spatial index</source>
-        <translation>Opret spatialt indeks</translation>
+        <translation>Opret spatielt indeks</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="410"/>
@@ -49019,8 +49019,8 @@ objekter</translation>
         <source>Options (%n coordinate reference systems available)</source>
         <comment>crs count</comment>
         <translation>
-            <numerusform>Muligheder (%n koordinatsystem tilgængelig)</numerusform>
-            <numerusform>Muligheder (%n koordinatsystemer tilgængelige)</numerusform>
+            <numerusform>Indstillinger (%n koordinatsystem tilgængelig)</numerusform>
+            <numerusform>Indstillinger (%n koordinatsystemer tilgængelige)</numerusform>
         </translation>
     </message>
     <message>
@@ -49031,12 +49031,12 @@ objekter</translation>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="902"/>
         <source>Select layer(s) or a tileset</source>
-        <translation>Vælg lag eller et feltsæt</translation>
+        <translation>Vælg lag eller et tile-sæt</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="907"/>
         <source>Select either layer(s) or a tileset</source>
-        <translation>Vælg enten lag eller et feltsæt</translation>
+        <translation>Vælg enten lag eller et tile-sæt</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="912"/>
@@ -49074,7 +49074,7 @@ objekter</translation>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="940"/>
         <source>Tileset selected</source>
-        <translation>Feltsæt valgt</translation>
+        <translation>Tile-sæt valgt</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1034"/>
@@ -49211,7 +49211,7 @@ objekter</translation>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="207"/>
         <source>Options</source>
-        <translation>Muligheder</translation>
+        <translation>Indstillinger</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="213"/>
@@ -49231,7 +49231,7 @@ objekter</translation>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="249"/>
         <source>Tile size</source>
-        <translation>Feltstørrelse</translation>
+        <translation>Tile-størrelse</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="262"/>
@@ -49283,7 +49283,7 @@ objekter</translation>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="340"/>
         <source>Tilesets</source>
-        <translation>Feltsæt</translation>
+        <translation>Tile-sæt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="367"/>
@@ -49293,7 +49293,7 @@ objekter</translation>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="382"/>
         <source>Tileset</source>
-        <translation>Feltsæt</translation>
+        <translation>Tile-sæt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="387"/>
@@ -49853,8 +49853,8 @@ Svar var:
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
         <translation>
-            <numerusform>%n feltforespørgsel i baggrunden</numerusform>
-            <numerusform>%n feltforespørgsler i baggrunden</numerusform>
+            <numerusform>%n tile-forespørgsel i baggrunden</numerusform>
+            <numerusform>%n tile-forespørgsler i baggrunden</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -49900,7 +49900,7 @@ Svar var:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1128"/>
         <source>Tile request error</source>
-        <translation>Fejl ved feltforespørgsel</translation>
+        <translation>Fejl ved tile-forespørgsel</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1128"/>
@@ -50009,7 +50009,7 @@ Svar var:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3103"/>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
-        <translation>Handlingsforespørgsel indeholder et SRS, som ikke tilbydes af et eller flere lag i forespørgslen.</translation>
+        <translation>Handlingsforespørgsel indeholder et CRS, som ikke tilbydes af et eller flere lag i forespørgslen.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3107"/>
@@ -50238,12 +50238,12 @@ Svar var:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3562"/>
         <source>Tile Layer Properties</source>
-        <translation>Feltlagsegenskaber</translation>
+        <translation>Tile-lagsegenskaber</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3687"/>
         <source>Tile Layer Count</source>
-        <translation>Feltlags-antal</translation>
+        <translation>Tile-lags-antal</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3719"/>
@@ -50253,7 +50253,7 @@ Svar var:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3728"/>
         <source>Tile templates</source>
-        <translation>Feltskabeloner</translation>
+        <translation>Tile-skabeloner</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3740"/>
@@ -50263,7 +50263,7 @@ Svar var:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3787"/>
         <source>Tileset Properties</source>
-        <translation>Feltsæt-egenskaber</translation>
+        <translation>Tile-sæt-egenskaber</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3833"/>
@@ -50273,7 +50273,7 @@ Svar var:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3860"/>
         <source>Available Tilesets</source>
-        <translation>Tilgængelige feltsæt</translation>
+        <translation>Tilgængelige tile-sæt</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3931"/>
@@ -50328,32 +50328,32 @@ Svar var:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="455"/>
         <source>Number of tile layers must be one</source>
-        <translation>Antal feltlag skal være ét</translation>
+        <translation>Antal tile-lag skal være ét</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="467"/>
         <source>Tile layer not found</source>
-        <translation>Feltlag ikke fundet</translation>
+        <translation>Tile-lag ikke fundet</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="523"/>
         <source>Tile layer or tile matrix set not found</source>
-        <translation>Feltlag eller feltmatricesæt ikke fundet</translation>
+        <translation>Tile-lag eller tile-matricesæt ikke fundet</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="978"/>
         <source>Getting tiles.</source>
-        <translation>Henter felter.</translation>
+        <translation>Henter tiles.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1144"/>
         <source>Tile request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation>Feltforespørgselsfejl (Titel: %1, Fejl: %2, URL: %3)</translation>
+        <translation>Tile-forespørgselsfejl (Titel: %1, Fejl: %2, URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1150"/>
         <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
-        <translation>Feltforespørgselsfejl (Status: %1,  Content-Type:%2; Længde:%3; URL: %4)</translation>
+        <translation>Tile-forespørgselsfejl (Status: %1,  Content-Type:%2; Længde:%3; URL: %4)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1203"/>
@@ -50363,7 +50363,7 @@ Svar var:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1226"/>
         <source>Tile request failed [error:%1 url:%2]</source>
-        <translation>Feltforespørgselsfejl (Fejl: %1, URL: %2)</translation>
+        <translation>Tile-forespørgselsfejl (Fejl: %1, URL: %2)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1230"/>
@@ -50896,27 +50896,27 @@ Svar var:
     </message>
     <message>
         <source>&amp;SEXTANTE toolbox</source>
-        <translation>&amp;SEXTANTE, værktøjskasse</translation>
+        <translation>&amp;SEXTANTE værktøjskasse</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE modeler</source>
-        <translation>&amp;SEXTANTE, modellør</translation>
+        <translation>&amp;SEXTANTE modelgenerering</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE history and log</source>
-        <translation>&amp;SEXTANTE, Historik og log</translation>
+        <translation>&amp;SEXTANTE Historik og log</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE options and configuration</source>
-        <translation>&amp;SEXTANTE, muligheder og indstillinger</translation>
+        <translation>&amp;SEXTANTE muligheder og indstillinger</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE results viewer</source>
-        <translation>&amp;SEXTANTE, resultatvisning</translation>
+        <translation>&amp;SEXTANTE resultatvisning</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE commander</source>
-        <translation>&amp;SEXTANTE, kommandoer</translation>
+        <translation>&amp;SEXTANTE kommandoer</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE help</source>
@@ -51397,7 +51397,7 @@ Beskrivelse: %3</translation>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="148"/>
         <source>Selection</source>
-        <translation>Markering</translation>
+        <translation>Selektion</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="160"/>
@@ -51733,7 +51733,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>List unique values</source>
-        <translation>Oplist unikke værdier</translation>
+        <translation>Vis unikke værdier</translation>
     </message>
     <message>
         <source>Unique values</source>
@@ -53387,7 +53387,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="165"/>
         <source>Options</source>
-        <translation>Muligheder</translation>
+        <translation>Indstillinger</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="171"/>
@@ -53599,7 +53599,7 @@ basis-sti (dvs. behold kun filnavn fra attribut)</translation>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="823"/>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
-        <translation>At klikke på Gem vil gemme indstillingen uden at lukke Muligheder-panelet. At klikke på Gendan standarder vil nulstille alle felter til deres standardindindstillinger. Det har den samme effekt, som hvis klikker på alle &quot;Nulstil til standard&quot;-knapperne. </translation>
+        <translation>At klikke på Gem vil gemme indstillingen uden at lukke Indstillingspanelet. At klikke på Gendan standarder vil nulstille alle felter til deres standardindindstillinger. Det har den samme effekt, som hvis klikker på alle &quot;Nulstil til standard&quot;-knapperne. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="834"/>
@@ -53734,11 +53734,11 @@ Plugin vil ikke blive slået til.</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation>Tilfældig markering</translation>
+        <translation>Tilfældigt udvalg</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation>Tilfældig markering inden i delsæt</translation>
+        <translation>Tilfældig selektion inden i delsæt</translation>
     </message>
     <message>
         <source>Random points</source>
@@ -53754,19 +53754,19 @@ Plugin vil ikke blive slået til.</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation>Vælg via lokation</translation>
+        <translation>Spatiel analyse</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation>Polygon fra lagomrids</translation>
+        <translation>Polygon fra kortudsnit</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation>&amp;Geoprocesseringsværktøjer</translation>
+        <translation>&amp;Geoproces-værktøjer</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation>Konveks(e) hylster(e)</translation>
+        <translation>Konveks skal</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
@@ -53862,7 +53862,7 @@ Plugin vil ikke blive slået til.</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation>Sammensæt attributter via lokation</translation>
+        <translation>Tilføj attributter via spatielt overlap</translation>
     </message>
     <message>
         <source>Split vector layer</source>
@@ -53874,7 +53874,7 @@ Plugin vil ikke blive slået til.</translation>
     </message>
     <message>
         <source>Create spatial index</source>
-        <translation>Dan spatialt indeks</translation>
+        <translation>Dan spatielt indeks</translation>
     </message>
     <message>
         <source>Vect&amp;or</source>
@@ -54478,7 +54478,7 @@ Plugin vil ikke blive slået til.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="118"/>
         <source>Create random cell values with spatial dependence</source>
-        <translation>Opret tilfældige celleværdier med spatial afhængighed</translation>
+        <translation>Opret tilfældige celleværdier med spatiel afhængighed</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="119"/>
@@ -54548,17 +54548,17 @@ Plugin vil ikke blive slået til.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="132"/>
         <source>Create surface from rasterized contours</source>
-        <translation>Opret overflade fra rasteriserede konturer</translation>
+        <translation>Opret overflade fra rasteriserede kontureringer</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="133"/>
         <source>Create vector contour from raster at specified levels</source>
-        <translation>Opret vektorkontur fra rastere på angivne niveauer</translation>
+        <translation>Opret vektorkonturering fra rastere på angivne niveauer</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="134"/>
         <source>Create vector contour from raster at specified steps</source>
-        <translation>Opret vektorkontur fra rastere på angivne trin</translation>
+        <translation>Opret vektorkonturering fra rastere på angivne trin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="135"/>
@@ -54573,7 +54573,7 @@ Plugin vil ikke blive slået til.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="137"/>
         <source>Cut network by cost isolines</source>
-        <translation>Beskær netværk med omkostnings-konturlinjer</translation>
+        <translation>Beskær netværk med omkostnings-kontureringslinjer</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="138"/>
@@ -55018,7 +55018,7 @@ Plugin vil ikke blive slået til.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="226"/>
         <source>Generate vector contour lines</source>
-        <translation>Dan vektorkonturlinjer</translation>
+        <translation>Dan vektorkontureringslinjer</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="227"/>
@@ -55880,12 +55880,12 @@ Plugin vil ikke blive slået til.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="398"/>
         <source>Spatial analysis</source>
-        <translation>Spatial analyse</translation>
+        <translation>Spatiel analyse</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="399"/>
         <source>Spatial models</source>
-        <translation>Spatiale modeller</translation>
+        <translation>Spatielle modeller</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="400"/>

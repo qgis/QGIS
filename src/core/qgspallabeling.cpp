@@ -1181,20 +1181,20 @@ QVariant QgsPalLayerSettings::dataDefinedValue( DataDefinedProperties p, QgsFeat
   bool useExpression = dd->useExpression();
   QString field = dd->field();
 
-  //QgsDebugMsg( QString( "isActive:" ) + isActive ? "1" : "0" );
-  //QgsDebugMsg( QString( "useExpression:" ) + useExpression ? "1" : "0" );
-  //QgsDebugMsg( QString( "expression:" ) + dd->expressionString() );
-  //QgsDebugMsg( QString( "field:" ) + field );
+  //QgsDebugMsgLevel( QString( "isActive:" ) + isActive ? "1" : "0", 4 );
+  //QgsDebugMsgLevel( QString( "useExpression:" ) + useExpression ? "1" : "0", 4 );
+  //QgsDebugMsgLevel( QString( "expression:" ) + dd->expressionString(), 4 );
+  //QgsDebugMsgLevel( QString( "field:" ) + field, 4 );
 
   if ( useExpression && dd->expressionIsPrepared() )
   {
     QgsExpression* expr = dd->expression();
-    //QgsDebugMsg( QString( "expr columns:" ) + expr->referencedColumns().join( "," ) );
+    //QgsDebugMsgLevel( QString( "expr columns:" ) + expr->referencedColumns().join( "," ), 4 );
 
     result = expr->evaluate( &f );
     if ( expr->hasEvalError() )
     {
-      QgsDebugMsg( QString( "Evaluate error:" ) + expr->evalErrorString() );
+      QgsDebugMsgLevel( QString( "Evaluate error:" ) + expr->evalErrorString(), 4 );
       return QVariant();
     }
   }
@@ -1219,8 +1219,8 @@ bool QgsPalLayerSettings::dataDefinedEvaluate( DataDefinedProperties p, QVariant
 
   if ( result.isValid() ) // filter NULL values? i.e. && !result.isNull()
   {
-    //QgsDebugMsg( QString( "result type:" ) + QString( result.typeName() ) );
-    //QgsDebugMsg( QString( "result string:" ) + result.toString() );
+    //QgsDebugMsgLevel( QString( "result type:" ) + QString( result.typeName() ), 4 );
+    //QgsDebugMsgLevel( QString( "result string:" ) + result.toString(), 4 );
     exprVal = result;
     return true;
   }
@@ -1462,7 +1462,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   // data defined show label? defaults to show label if not 0
   if ( dataDefinedEvaluate( QgsPalLayerSettings::Show, exprVal ) )
   {
-    QgsDebugMsg( QString( "exprVal Show:%1" ).arg( exprVal.toBool() ? "true" : "false" ) );
+    QgsDebugMsgLevel( QString( "exprVal Show:%1" ).arg( exprVal.toBool() ? "true" : "false" ), 4 );
     if ( !exprVal.toBool() )
     {
       return;
@@ -1473,7 +1473,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   bool useScaleVisibility = scaleVisibility;
   if ( dataDefinedEvaluate( QgsPalLayerSettings::ScaleVisibility, exprVal ) )
   {
-    QgsDebugMsg( QString( "exprVal ScaleVisibility:%1" ).arg( exprVal.toBool() ? "true" : "false" ) );
+    QgsDebugMsgLevel( QString( "exprVal ScaleVisibility:%1" ).arg( exprVal.toBool() ? "true" : "false" ), 4 );
     useScaleVisibility = exprVal.toBool();
   }
 
@@ -1483,7 +1483,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     double minScale = scaleMin;
     if ( dataDefinedEvaluate( QgsPalLayerSettings::MinScale, exprVal ) )
     {
-      QgsDebugMsg( QString( "exprVal MinScale:%1" ).arg( exprVal.toDouble() ) );
+      QgsDebugMsgLevel( QString( "exprVal MinScale:%1" ).arg( exprVal.toDouble() ), 4 );
       bool conversionOk;
       double mins = exprVal.toDouble( &conversionOk );
       if ( conversionOk )
@@ -1500,7 +1500,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     double maxScale = scaleMax;
     if ( dataDefinedEvaluate( QgsPalLayerSettings::MaxScale, exprVal ) )
     {
-      QgsDebugMsg( QString( "exprVal MaxScale:%1" ).arg( exprVal.toDouble() ) );
+      QgsDebugMsgLevel( QString( "exprVal MaxScale:%1" ).arg( exprVal.toDouble() ), 4 );
       bool conversionOk;
       double maxs = exprVal.toDouble( &conversionOk );
       if ( conversionOk )
@@ -1522,7 +1522,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   if ( dataDefinedEvaluate( QgsPalLayerSettings::FontSizeUnit, exprVal ) )
   {
     QString units = exprVal.toString().trimmed();
-    QgsDebugMsg( QString( "exprVal Font units:%1" ).arg( units ) );
+    QgsDebugMsgLevel( QString( "exprVal Font units:%1" ).arg( units ), 4 );
     if ( !units.isEmpty() )
     {
       fontunits = _decodeUnits( units );
@@ -1533,7 +1533,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   double fontSize = labelFont.pointSizeF(); // font size doesn't have its own class data member
   if ( dataDefinedEvaluate( QgsPalLayerSettings::Size, exprVal ) )
   {
-    QgsDebugMsg( QString( "exprVal Size:%1" ).arg( exprVal.toDouble() ) );
+    QgsDebugMsgLevel( QString( "exprVal Size:%1" ).arg( exprVal.toDouble() ), 4 );
     bool ok;
     double size = exprVal.toDouble( &ok );
     if ( ok )
@@ -1562,7 +1562,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     bool useFontLimitPixelSize = fontLimitPixelSize;
     if ( dataDefinedEvaluate( QgsPalLayerSettings::FontLimitPixel, exprVal ) )
     {
-      QgsDebugMsg( QString( "exprVal FontLimitPixel:%1" ).arg( exprVal.toBool() ? "true" : "false" ) );
+      QgsDebugMsgLevel( QString( "exprVal FontLimitPixel:%1" ).arg( exprVal.toBool() ? "true" : "false" ), 4 );
       useFontLimitPixelSize = exprVal.toBool();
     }
 
@@ -1573,7 +1573,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
       {
         bool ok;
         int sizeInt = exprVal.toInt( &ok );
-        QgsDebugMsg( QString( "exprVal FontMinPixel:%1" ).arg( sizeInt ) );
+        QgsDebugMsgLevel( QString( "exprVal FontMinPixel:%1" ).arg( sizeInt ), 4 );
         if ( ok )
         {
           fontMinPixel = sizeInt;
@@ -1585,7 +1585,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
       {
         bool ok;
         int sizeInt = exprVal.toInt( &ok );
-        QgsDebugMsg( QString( "exprVal FontMaxPixel:%1" ).arg( sizeInt ) );
+        QgsDebugMsgLevel( QString( "exprVal FontMaxPixel:%1" ).arg( sizeInt ), 4 );
         if ( ok )
         {
           fontMaxPixel = sizeInt;
@@ -1618,7 +1618,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     QgsExpression* exp = getLabelExpression();
     if ( exp->hasParserError() )
     {
-      QgsDebugMsg( QString( "Expression parser error:%1" ).arg( exp->parserErrorString() ) );
+      QgsDebugMsgLevel( QString( "Expression parser error:%1" ).arg( exp->parserErrorString() ), 4 );
       return;
     }
     exp->setScale( context.rendererScale() );
@@ -1626,7 +1626,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     QVariant result = exp->evaluate( &f ); // expression prepared in QgsPalLabeling::prepareLayer()
     if ( exp->hasEvalError() )
     {
-      QgsDebugMsg( QString( "Expression parser eval error:%1" ).arg( exp->evalErrorString() ) );
+      QgsDebugMsgLevel( QString( "Expression parser eval error:%1" ).arg( exp->evalErrorString() ), 4 );
       return;
     }
     labelText = result.toString();
@@ -1641,7 +1641,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   if ( dataDefinedEvaluate( QgsPalLayerSettings::NumFormat, exprVal ) )
   {
     formatnum = exprVal.toBool();
-    QgsDebugMsg( QString( "exprVal NumFormat:%1" ).arg( formatnum ? "true" : "false" ) );
+    QgsDebugMsgLevel( QString( "exprVal NumFormat:%1" ).arg( formatnum ? "true" : "false" ), 4 );
   }
 
   // format number if label text is coercible to a number
@@ -1653,7 +1653,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     {
       bool ok;
       int dInt = exprVal.toInt( &ok );
-      QgsDebugMsg( QString( "exprVal NumDecimals:%1" ).arg( dInt ) );
+      QgsDebugMsgLevel( QString( "exprVal NumDecimals:%1" ).arg( dInt ), 4 );
       if ( ok && dInt > 0 ) // needs to be positive
       {
         decimalPlaces = dInt;
@@ -1665,7 +1665,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     if ( dataDefinedEvaluate( QgsPalLayerSettings::NumPlusSign, exprVal ) )
     {
       signPlus = exprVal.toBool();
-      QgsDebugMsg( QString( "exprVal NumPlusSign:%1" ).arg( signPlus ? "true" : "false" ) );
+      QgsDebugMsgLevel( QString( "exprVal NumPlusSign:%1" ).arg( signPlus ? "true" : "false" ), 4 );
     }
 
     QVariant textV = QVariant( labelText );
@@ -1704,7 +1704,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     if ( dataDefinedEvaluate( QgsPalLayerSettings::CurvedCharAngleInOut, exprVal ) )
     {
       QString ptstr = exprVal.toString().trimmed();
-      QgsDebugMsg( QString( "exprVal CurvedCharAngleInOut:%1" ).arg( ptstr ) );
+      QgsDebugMsgLevel( QString( "exprVal CurvedCharAngleInOut:%1" ).arg( ptstr ), 4 );
 
       if ( !ptstr.isEmpty() )
       {
@@ -1741,7 +1741,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   if ( dataDefinedEvaluate( QgsPalLayerSettings::CentroidWhole, exprVal ) )
   {
     QString str = exprVal.toString().trimmed();
-    QgsDebugMsg( QString( "exprVal CentroidWhole:%1" ).arg( str ) );
+    QgsDebugMsgLevel( QString( "exprVal CentroidWhole:%1" ).arg( str ), 4 );
 
     if ( !str.isEmpty() )
     {
@@ -1821,7 +1821,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   {
     bool ok;
     int quadInt = exprVal.toInt( &ok );
-    QgsDebugMsg( QString( "exprVal OffsetQuad:%1" ).arg( quadInt ) );
+    QgsDebugMsgLevel( QString( "exprVal OffsetQuad:%1" ).arg( quadInt ), 4 );
     if ( ok && 0 <= quadInt && quadInt <= 8 )
     {
       quadOff = ( QuadrantPosition )quadInt;
@@ -1874,7 +1874,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   if ( dataDefinedEvaluate( QgsPalLayerSettings::OffsetXY, exprVal ) )
   {
     QString ptstr = exprVal.toString().trimmed();
-    QgsDebugMsg( QString( "exprVal OffsetXY:%1" ).arg( ptstr ) );
+    QgsDebugMsgLevel( QString( "exprVal OffsetXY:%1" ).arg( ptstr ), 4 );
 
     if ( !ptstr.isEmpty() )
     {
@@ -1889,7 +1889,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   if ( dataDefinedEvaluate( QgsPalLayerSettings::OffsetUnits, exprVal ) )
   {
     QString units = exprVal.toString().trimmed();
-    QgsDebugMsg( QString( "exprVal OffsetUnits:%1" ).arg( units ) );
+    QgsDebugMsgLevel( QString( "exprVal OffsetUnits:%1" ).arg( units ), 4 );
     if ( !units.isEmpty() )
     {
       offinmapunits = ( _decodeUnits( units ) == QgsPalLayerSettings::MapUnits );
@@ -1929,7 +1929,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   {
     bool ok;
     double rotD = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal Rotation:%1" ).arg( rotD ) );
+    QgsDebugMsgLevel( QString( "exprVal Rotation:%1" ).arg( rotD ), 4 );
     if ( ok )
     {
       dataDefinedRotation = true;
@@ -1940,13 +1940,13 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   if ( dataDefinedEvaluate( QgsPalLayerSettings::PositionX, exprVal ) )
   {
     xPos = exprVal.toDouble( &ddXPos );
-    QgsDebugMsg( QString( "exprVal PositionX:%1" ).arg( xPos ) );
+    QgsDebugMsgLevel( QString( "exprVal PositionX:%1" ).arg( xPos ), 4 );
 
     if ( dataDefinedEvaluate( QgsPalLayerSettings::PositionY, exprVal ) )
     {
       //data defined position. But field values could be NULL -> positions will be generated by PAL
       yPos = exprVal.toDouble( &ddYPos );
-      QgsDebugMsg( QString( "exprVal PositionY:%1" ).arg( yPos ) );
+      QgsDebugMsgLevel( QString( "exprVal PositionY:%1" ).arg( yPos ), 4 );
 
       if ( ddXPos && ddYPos )
       {
@@ -1966,7 +1966,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
         if ( dataDefinedEvaluate( QgsPalLayerSettings::Hali, exprVal ) )
         {
           QString haliString = exprVal.toString();
-          QgsDebugMsg( QString( "exprVal Hali:%1" ).arg( haliString ) );
+          QgsDebugMsgLevel( QString( "exprVal Hali:%1" ).arg( haliString ), 4 );
           if ( haliString.compare( "Center", Qt::CaseInsensitive ) == 0 )
           {
             xdiff -= labelX / 2.0;
@@ -1981,7 +1981,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
         if ( dataDefinedEvaluate( QgsPalLayerSettings::Vali, exprVal ) )
         {
           QString valiString = exprVal.toString();
-          QgsDebugMsg( QString( "exprVal Vali:%1" ).arg( valiString ) );
+          QgsDebugMsgLevel( QString( "exprVal Vali:%1" ).arg( valiString ), 4 );
           if ( valiString.compare( "Bottom", Qt::CaseInsensitive ) != 0 )
           {
             if ( valiString.compare( "Top", Qt::CaseInsensitive ) == 0
@@ -2056,7 +2056,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
 
   // store the label's calculated font for later use during painting
 #if QT_VERSION >= 0x040800
-  QgsDebugMsg( QString( "PAL font stored definedFont: %1, Style: %2" ).arg( labelFont.toString() ).arg( labelFont.styleName() ) );
+  QgsDebugMsgLevel( QString( "PAL font stored definedFont: %1, Style: %2" ).arg( labelFont.toString() ).arg( labelFont.styleName() ), 4 );
 #endif
   lbl->setDefinedFont( labelFont );
 
@@ -2071,7 +2071,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   catch ( std::exception &e )
   {
     Q_UNUSED( e );
-    QgsDebugMsg( QString( "Ignoring feature %1 due PAL exception:" ).arg( f.id() ) + QString::fromLatin1( e.what() ) );
+    QgsDebugMsgLevel( QString( "Ignoring feature %1 due PAL exception:" ).arg( f.id() ) + QString::fromLatin1( e.what() ), 4 );
     return;
   }
 
@@ -2100,7 +2100,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   if ( dataDefinedEvaluate( QgsPalLayerSettings::DistanceUnits, exprVal ) )
   {
     QString units = exprVal.toString().trimmed();
-    QgsDebugMsg( QString( "exprVal DistanceUnits:%1" ).arg( units ) );
+    QgsDebugMsgLevel( QString( "exprVal DistanceUnits:%1" ).arg( units ), 4 );
     if ( !units.isEmpty() )
     {
       distinmapunit = ( _decodeUnits( units ) == QgsPalLayerSettings::MapUnits );
@@ -2142,7 +2142,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
     if ( valType == QString( "bool" ) )
     {
       bool bol = exprVal.toBool();
-      QgsDebugMsg( dbgStr.arg( bol ? "true" : "false" ) );
+      QgsDebugMsgLevel( dbgStr.arg( bol ? "true" : "false" ), 4 );
       dataDefinedValues.insert( p, QVariant( bol ) );
       return true;
     }
@@ -2150,7 +2150,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
     {
       bool ok;
       int size = exprVal.toInt( &ok );
-      QgsDebugMsg( dbgStr.arg( size ) );
+      QgsDebugMsgLevel( dbgStr.arg( size ), 4 );
 
       if ( ok )
       {
@@ -2162,7 +2162,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
     {
       bool ok;
       int size = exprVal.toInt( &ok );
-      QgsDebugMsg( dbgStr.arg( size ) );
+      QgsDebugMsgLevel( dbgStr.arg( size ), 4 );
 
       if ( ok && size > 0 )
       {
@@ -2174,7 +2174,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
     {
       bool ok;
       double size = exprVal.toDouble( &ok );
-      QgsDebugMsg( dbgStr.arg( size ) );
+      QgsDebugMsgLevel( dbgStr.arg( size ), 4 );
 
       if ( ok )
       {
@@ -2186,7 +2186,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
     {
       bool ok;
       double size = exprVal.toDouble( &ok );
-      QgsDebugMsg( dbgStr.arg( size ) );
+      QgsDebugMsgLevel( dbgStr.arg( size ), 4 );
 
       if ( ok && size > 0.0 )
       {
@@ -2198,7 +2198,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
     {
       bool ok;
       double rot = exprVal.toDouble( &ok );
-      QgsDebugMsg( dbgStr.arg( rot ) );
+      QgsDebugMsgLevel( dbgStr.arg( rot ), 4 );
       if ( ok )
       {
         if ( rot < -180.0 && rot >= -360 )
@@ -2220,7 +2220,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
     {
       bool ok;
       int size = exprVal.toInt( &ok );
-      QgsDebugMsg( dbgStr.arg( size ) );
+      QgsDebugMsgLevel( dbgStr.arg( size ), 4 );
       if ( ok && size >= 0 && size <= 100 )
       {
         dataDefinedValues.insert( p, QVariant( size ) );
@@ -2230,7 +2230,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
     if ( valType == QString( "string" ) )
     {
       QString str = exprVal.toString(); // don't trim whitespace
-      QgsDebugMsg( dbgStr.arg( str ) );
+      QgsDebugMsgLevel( dbgStr.arg( str ), 4 );
 
       dataDefinedValues.insert( p, QVariant( str ) ); // let it stay empty if it is
       return true;
@@ -2238,7 +2238,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
     if ( valType == QString( "units" ) )
     {
       QString unitstr = exprVal.toString().trimmed();
-      QgsDebugMsg( dbgStr.arg( unitstr ) );
+      QgsDebugMsgLevel( dbgStr.arg( unitstr ), 4 );
 
       if ( !unitstr.isEmpty() )
       {
@@ -2249,7 +2249,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
     if ( valType == QString( "color" ) )
     {
       QString colorstr = exprVal.toString().trimmed();
-      QgsDebugMsg( dbgStr.arg( colorstr ) );
+      QgsDebugMsgLevel( dbgStr.arg( colorstr ), 4 );
       QColor color = QgsSymbolLayerV2Utils::decodeColor( colorstr );
 
       if ( color.isValid() )
@@ -2261,7 +2261,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
     if ( valType == QString( "joinstyle" ) )
     {
       QString joinstr = exprVal.toString().trimmed();
-      QgsDebugMsg( dbgStr.arg( joinstr ) );
+      QgsDebugMsgLevel( dbgStr.arg( joinstr ), 4 );
 
       if ( !joinstr.isEmpty() )
       {
@@ -2272,7 +2272,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
     if ( valType == QString( "blendmode" ) )
     {
       QString blendstr = exprVal.toString().trimmed();
-      QgsDebugMsg( dbgStr.arg( blendstr ) );
+      QgsDebugMsgLevel( dbgStr.arg( blendstr ), 4 );
 
       if ( !blendstr.isEmpty() )
       {
@@ -2283,7 +2283,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
     if ( valType == QString( "pointf" ) )
     {
       QString ptstr = exprVal.toString().trimmed();
-      QgsDebugMsg( dbgStr.arg( ptstr ) );
+      QgsDebugMsgLevel( dbgStr.arg( ptstr ), 4 );
 
       if ( !ptstr.isEmpty() )
       {
@@ -2312,7 +2312,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
   if ( dataDefinedEvaluate( QgsPalLayerSettings::Family, exprVal ) )
   {
     QString family = exprVal.toString().trimmed();
-    QgsDebugMsg( QString( "exprVal Font family:%1" ).arg( family ) );
+    QgsDebugMsgLevel( QString( "exprVal Font family:%1" ).arg( family ), 4 );
 
     // testing for mFontDB.families().contains( ddFontFamily ) doesn't always work,
     // because the families list needs looped to test for 'family [foundry]'
@@ -2328,7 +2328,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
   if ( dataDefinedEvaluate( QgsPalLayerSettings::FontStyle, exprVal ) )
   {
     QString fontstyle = exprVal.toString().trimmed();
-    QgsDebugMsg( QString( "exprVal Font style:%1" ).arg( fontstyle ) );
+    QgsDebugMsgLevel( QString( "exprVal Font style:%1" ).arg( fontstyle ), 4 );
     ddFontStyle = fontstyle;
   }
 
@@ -2337,7 +2337,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
   if ( dataDefinedEvaluate( QgsPalLayerSettings::Bold, exprVal ) )
   {
     bool bold = exprVal.toBool();
-    QgsDebugMsg( QString( "exprVal Font bold:%1" ).arg( bold ? "true" : "false" ) );
+    QgsDebugMsgLevel( QString( "exprVal Font bold:%1" ).arg( bold ? "true" : "false" ), 4 );
     ddBold = bold;
   }
 
@@ -2346,7 +2346,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
   if ( dataDefinedEvaluate( QgsPalLayerSettings::Italic, exprVal ) )
   {
     bool italic = exprVal.toBool();
-    QgsDebugMsg( QString( "exprVal Font italic:%1" ).arg( italic ? "true" : "false" ) );
+    QgsDebugMsgLevel( QString( "exprVal Font italic:%1" ).arg( italic ? "true" : "false" ), 4 );
     ddItalic = italic;
   }
 
@@ -2416,7 +2416,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
   {
     bool ok;
     double wspacing = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal FontWordSpacing:%1" ).arg( wspacing ) );
+    QgsDebugMsgLevel( QString( "exprVal FontWordSpacing:%1" ).arg( wspacing ), 4 );
     if ( ok )
     {
       wordspace = wspacing;
@@ -2430,7 +2430,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
   {
     bool ok;
     double lspacing = exprVal.toDouble( &ok );
-    QgsDebugMsg( QString( "exprVal FontLetterSpacing:%1" ).arg( lspacing ) );
+    QgsDebugMsgLevel( QString( "exprVal FontLetterSpacing:%1" ).arg( lspacing ), 4 );
     if ( ok )
     {
       letterspace = lspacing;
@@ -2443,7 +2443,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
   if ( dataDefinedEvaluate( QgsPalLayerSettings::FontCase, exprVal ) )
   {
     QString fcase = exprVal.toString().trimmed();
-    QgsDebugMsg( QString( "exprVal FontCase:%1" ).arg( fcase ) );
+    QgsDebugMsgLevel( QString( "exprVal FontCase:%1" ).arg( fcase ), 4 );
 
     if ( !fcase.isEmpty() )
     {
@@ -2475,7 +2475,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
   if ( dataDefinedEvaluate( QgsPalLayerSettings::Strikeout, exprVal ) )
   {
     bool strikeout = exprVal.toBool();
-    QgsDebugMsg( QString( "exprVal Font strikeout:%1" ).arg( strikeout ? "true" : "false" ) );
+    QgsDebugMsgLevel( QString( "exprVal Font strikeout:%1" ).arg( strikeout ? "true" : "false" ), 4 );
     labelFont.setStrikeOut( strikeout );
   }
 
@@ -2483,7 +2483,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
   if ( dataDefinedEvaluate( QgsPalLayerSettings::Underline, exprVal ) )
   {
     bool underline = exprVal.toBool();
-    QgsDebugMsg( QString( "exprVal Font underline:%1" ).arg( underline ? "true" : "false" ) );
+    QgsDebugMsgLevel( QString( "exprVal Font underline:%1" ).arg( underline ? "true" : "false" ), 4 );
     labelFont.setUnderline( underline );
   }
 
@@ -2578,7 +2578,7 @@ void QgsPalLayerSettings::parseTextFormatting()
   if ( dataDefinedEvaluate( QgsPalLayerSettings::MultiLineAlignment, exprVal ) )
   {
     QString str = exprVal.toString().trimmed();
-    QgsDebugMsg( QString( "exprVal MultiLineAlignment:%1" ).arg( str ) );
+    QgsDebugMsgLevel( QString( "exprVal MultiLineAlignment:%1" ).arg( str ), 4 );
 
     if ( !str.isEmpty() )
     {
@@ -2616,7 +2616,7 @@ void QgsPalLayerSettings::parseTextFormatting()
     if ( dataDefinedEvaluate( QgsPalLayerSettings::DirSymbPlacement, exprVal ) )
     {
       QString str = exprVal.toString().trimmed();
-      QgsDebugMsg( QString( "exprVal DirSymbPlacement:%1" ).arg( str ) );
+      QgsDebugMsgLevel( QString( "exprVal DirSymbPlacement:%1" ).arg( str ), 4 );
 
       if ( !str.isEmpty() )
       {
@@ -2679,7 +2679,7 @@ void QgsPalLayerSettings::parseShapeBackground()
   if ( dataDefinedEvaluate( QgsPalLayerSettings::ShapeKind, exprVal ) )
   {
     QString skind = exprVal.toString().trimmed();
-    QgsDebugMsg( QString( "exprVal ShapeKind:%1" ).arg( skind ) );
+    QgsDebugMsgLevel( QString( "exprVal ShapeKind:%1" ).arg( skind ), 4 );
 
     if ( !skind.isEmpty() )
     {
@@ -2712,7 +2712,7 @@ void QgsPalLayerSettings::parseShapeBackground()
   if ( dataDefinedEvaluate( QgsPalLayerSettings::ShapeSVGFile, exprVal ) )
   {
     QString svgfile = exprVal.toString().trimmed();
-    QgsDebugMsg( QString( "exprVal ShapeSVGFile:%1" ).arg( svgfile ) );
+    QgsDebugMsgLevel( QString( "exprVal ShapeSVGFile:%1" ).arg( svgfile ), 4 );
 
     // '' empty paths are allowed
     svgPath = svgfile;
@@ -2724,7 +2724,7 @@ void QgsPalLayerSettings::parseShapeBackground()
   if ( dataDefinedEvaluate( QgsPalLayerSettings::ShapeSizeType, exprVal ) )
   {
     QString stype = exprVal.toString().trimmed();
-    QgsDebugMsg( QString( "exprVal ShapeSizeType:%1" ).arg( stype ) );
+    QgsDebugMsgLevel( QString( "exprVal ShapeSizeType:%1" ).arg( stype ), 4 );
 
     if ( !stype.isEmpty() )
     {
@@ -2789,7 +2789,7 @@ void QgsPalLayerSettings::parseShapeBackground()
   if ( dataDefinedEvaluate( QgsPalLayerSettings::ShapeRotationType, exprVal ) )
   {
     QString rotstr = exprVal.toString().trimmed();
-    QgsDebugMsg( QString( "exprVal ShapeRotationType:%1" ).arg( rotstr ) );
+    QgsDebugMsgLevel( QString( "exprVal ShapeRotationType:%1" ).arg( rotstr ), 4 );
 
     if ( !rotstr.isEmpty() )
     {
@@ -2895,7 +2895,7 @@ void QgsPalLayerSettings::parseDropShadow()
   if ( dataDefinedEvaluate( QgsPalLayerSettings::ShadowUnder, exprVal ) )
   {
     QString str = exprVal.toString().trimmed();
-    QgsDebugMsg( QString( "exprVal ShadowUnder:%1" ).arg( str ) );
+    QgsDebugMsgLevel( QString( "exprVal ShadowUnder:%1" ).arg( str ), 4 );
 
     if ( !str.isEmpty() )
     {
@@ -3033,7 +3033,7 @@ void QgsPalLabeling::clearActiveLayer( QgsVectorLayer* layer )
 
 int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx )
 {
-  QgsDebugMsg( "PREPARE LAYER " + layer->id() );
+  QgsDebugMsgLevel( "PREPARE LAYER " + layer->id(), 4 );
   Q_ASSERT( mMapRenderer != NULL );
 
   // start with a temporary settings class, find out labeling info
@@ -3051,7 +3051,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
     QgsExpression exp( lyrTmp.fieldName );
     if ( exp.hasEvalError() )
     {
-      QgsDebugMsg( "Prepare error:" + exp.evalErrorString() );
+      QgsDebugMsgLevel( "Prepare error:" + exp.evalErrorString(), 4 );
       return 0;
     }
   }
@@ -3080,11 +3080,11 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
     exp->prepare( layer->pendingFields() );
     if ( exp->hasEvalError() )
     {
-      QgsDebugMsg( "Prepare error:" + exp->evalErrorString() );
+      QgsDebugMsgLevel( "Prepare error:" + exp->evalErrorString(), 4 );
     }
     foreach ( QString name, exp->referencedColumns() )
     {
-      QgsDebugMsg( "REFERENCED COLUMN = " + name );
+      QgsDebugMsgLevel( "REFERENCED COLUMN = " + name, 4 );
       attrIndices.insert( layer->fieldNameIndex( name ) );
     }
   }
@@ -3117,7 +3117,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
     // this will return columns for expressions or field name, depending upon what is set to be used
     QStringList cols = dd->referencedColumns( layer ); // <-- prepares any expressions, too
 
-    //QgsDebugMsg( QString( "Data defined referenced columns:" ) + cols.join( "," ) );
+    //QgsDebugMsgLevel( QString( "Data defined referenced columns:" ) + cols.join( "," ), 4 );
     foreach ( QString name, cols )
     {
       attrIndices.insert( layer->fieldNameIndex( name ) );
@@ -3333,7 +3333,7 @@ void QgsPalLabeling::registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& 
   catch ( std::exception &e )
   {
     Q_UNUSED( e );
-    QgsDebugMsg( QString( "Ignoring feature %1 due PAL exception:" ).arg( feat.id() ) + QString::fromLatin1( e.what() ) );
+    QgsDebugMsgLevel( QString( "Ignoring feature %1 due PAL exception:" ).arg( feat.id() ) + QString::fromLatin1( e.what() ), 4 );
     return;
   }
 
@@ -3735,7 +3735,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   catch ( std::exception& e )
   {
     Q_UNUSED( e );
-    QgsDebugMsg( "PAL EXCEPTION :-( " + QString::fromLatin1( e.what() ) );
+    QgsDebugMsgLevel( "PAL EXCEPTION :-( " + QString::fromLatin1( e.what() ), 4 );
     //mActiveLayers.clear(); // clean up
     return;
   }
@@ -3764,7 +3764,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   // find the solution
   labels = mPal->solveProblem( problem, mShowingAllLabels );
 
-  QgsDebugMsg( QString( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( labels->size() ) );
+  QgsDebugMsgLevel( QString( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( labels->size() ), 4 );
   t.restart();
 
   painter->setRenderHint( QPainter::Antialiasing );
@@ -3819,8 +3819,8 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     QFont dFont = palGeometry->definedFont();
     // following debug is >= Qt 4.8 only ( because of QFont::styleName() )
 #if QT_VERSION >= 0x040800
-    QgsDebugMsg( QString( "PAL font tmpLyr: %1, Style: %2" ).arg( tmpLyr.textFont.toString() ).arg( QFontInfo( tmpLyr.textFont ).styleName() ) );
-    QgsDebugMsg( QString( "PAL font definedFont: %1, Style: %2" ).arg( dFont.toString() ).arg( dFont.styleName() ) );
+    QgsDebugMsgLevel( QString( "PAL font tmpLyr: %1, Style: %2" ).arg( tmpLyr.textFont.toString() ).arg( QFontInfo( tmpLyr.textFont ).styleName() ), 4 );
+    QgsDebugMsgLevel( QString( "PAL font definedFont: %1, Style: %2" ).arg( dFont.toString() ).arg( dFont.styleName() ), 4 );
 #endif
     tmpLyr.textFont = dFont;
 
@@ -3883,7 +3883,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   // Reset composition mode for further drawing operations
   painter->setCompositionMode( QPainter::CompositionMode_SourceOver );
 
-  QgsDebugMsg( QString( "LABELING draw:  %1 ms" ).arg( t.elapsed() ) );
+  QgsDebugMsgLevel( QString( "LABELING draw:  %1 ms" ).arg( t.elapsed() ), 4 );
 
   delete problem;
   delete labels;
@@ -3897,10 +3897,10 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
       delete *git;
     if ( lyr.limitNumLabels )
     {
-      QgsDebugMsg( QString( "mFeaturesToLabel: %1" ).arg( lyr.mFeaturesToLabel ) );
-      QgsDebugMsg( QString( "maxNumLabels: %1" ).arg( lyr.maxNumLabels ) );
-      QgsDebugMsg( QString( "mFeatsSendingToPal: %1" ).arg( lyr.mFeatsSendingToPal ) );
-      QgsDebugMsg( QString( "mFeatsRegPal: %1" ).arg( lyr.geometries.count() ) );
+      QgsDebugMsgLevel( QString( "mFeaturesToLabel: %1" ).arg( lyr.mFeaturesToLabel ), 4 );
+      QgsDebugMsgLevel( QString( "maxNumLabels: %1" ).arg( lyr.maxNumLabels ), 4 );
+      QgsDebugMsgLevel( QString( "mFeatsSendingToPal: %1" ).arg( lyr.mFeatsSendingToPal ), 4 );
+      QgsDebugMsgLevel( QString( "mFeatsRegPal: %1" ).arg( lyr.geometries.count() ), 4 );
     }
     lyr.geometries.clear();
   }
@@ -4111,7 +4111,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
       }
     }
 
-    //QgsDebugMsg( "drawLabel " + txt );
+    //QgsDebugMsgLevel( "drawLabel " + txt, 4 );
 
     QStringList multiLineList = txt.split( wrapchr );
     int lines = multiLineList.size();
@@ -4153,7 +4153,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
           labelWidthDiff /= 2;
         }
         xMultiLineOffset = labelWidthDiff;
-        //QgsDebugMsg( QString( "xMultiLineOffset: %1" ).arg( xMultiLineOffset ) );
+        //QgsDebugMsgLevel( QString( "xMultiLineOffset: %1" ).arg( xMultiLineOffset ), 4 );
       }
 
       double yMultiLineOffset = ( lines - 1 - i ) * labelHeight * tmpLyr.multilineHeight;
@@ -4282,7 +4282,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
 {
   QPainter* p = context.painter();
   double labelWidth = component.size().x(), labelHeight = component.size().y();
-  //QgsDebugMsg( QString( "Background label rotation: %1" ).arg( component.rotation() ) );
+  //QgsDebugMsgLevel( QString( "Background label rotation: %1" ).arg( component.rotation() ), 4 );
 
   // shared calculations between shapes and SVG
 
@@ -4656,7 +4656,7 @@ void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
     //       when this shadow function is used for something other than labels
 
     // it's 0-->cw-->360 for labels
-    //QgsDebugMsg( QString( "Shadow aggregated label rotation (degrees): %1" ).arg( component.rotation() + component.rotationOffset() ) );
+    //QgsDebugMsgLevel( QString( "Shadow aggregated label rotation (degrees): %1" ).arg( component.rotation() + component.rotationOffset() ), 4 );
     angleRad -= ( component.rotation() * M_PI / 180 + component.rotationOffset() * M_PI / 180 );
   }
 

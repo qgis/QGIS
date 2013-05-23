@@ -179,6 +179,12 @@ int main( int argc, char * argv[] )
   }
 #endif
 
+#if defined(MAPSERVER_SKIP_ECW)
+  QgsDebugMsg( "Skipping GDAL ECW drivers in server." );
+  QgsApplication::skipGdalDriver( "ECW" );
+  QgsApplication::skipGdalDriver( "JP2ECW" );
+#endif
+
   QDomImplementation::setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
 
   // Instantiate the plugin directory so that providers are loaded

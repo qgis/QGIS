@@ -299,7 +299,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       index = 1
     self.comboInterval.setCurrentIndex(index)
     self.populateMostWidgets()
-
+    self.pluginDir.setText( self.tr( "The plugins will be installed to %1" ).arg( QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "python/plugins" ) )
 
   # ----------------------------------------- #
   def getAllAvailablePlugins(self):

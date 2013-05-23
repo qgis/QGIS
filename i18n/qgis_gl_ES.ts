@@ -5018,12 +5018,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="206"/>
         <source>Creating heatmap</source>
-        <translation type="unfinished"></translation>
+        <translation>Creando Mapa de Calor</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="206"/>
         <source>Abort</source>
-        <translation type="unfinished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <source>Point layer error</source>
@@ -5146,7 +5146,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="130"/>
         <source>Rows</source>
-        <translation type="unfinished">Ringleiras</translation>
+        <translation>Ringleiras</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="140"/>
@@ -5156,7 +5156,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="150"/>
         <source>Columns</source>
-        <translation type="unfinished">Columnas</translation>
+        <translation>Columnas</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="160"/>
@@ -5695,7 +5695,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2074"/>
         <source>Need Support?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Precisa Asistencia?</translation>
     </message>
     <message>
         <source>Save Edits</source>
@@ -6729,23 +6729,25 @@ Prema na tecla ALT para alterna-las etiquetas seleccionadas entre o estado engan
     </message>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro E/S</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %1</source>
-        <translation type="unfinished">Incapaz de garda-las edicións. Razón:
+        <translation>Incapaz de garda-las edicións. Razón:
  %1</translation>
     </message>
     <message>
         <source>Can&apos;t save model</source>
-        <translation type="unfinished"></translation>
+        <translation>Non se pode garda-lo modelo</translation>
     </message>
     <message>
         <source>This model can&apos;t be saved in its original location
 (probably you do not have permission to do it).
 Please, use the &apos;Save as...&apos; option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Este modelo non pode gardarse na súa ubicación orixinal
+(probablemente non teña permiso para facelo).
+Utilice a opción &apos;Gardar como...&apos;.</translation>
     </message>
     <message>
         <source>Model saved</source>
@@ -7687,7 +7689,7 @@ Remedie esta situación primeiro, porque o Plugin OSM non sabe que capa será o 
     </message>
     <message>
         <source>Save As...</source>
-        <translation type="unfinished">Gardar como...</translation>
+        <translation>Gardar como...</translation>
     </message>
     <message>
         <source>Cut</source>
@@ -7719,7 +7721,7 @@ Remedie esta situación primeiro, porque o Plugin OSM non sabe que capa será o 
     </message>
     <message>
         <source>Find text</source>
-        <translation type="unfinished"></translation>
+        <translation>Atopar texto</translation>
     </message>
     <message>
         <source>Show editor</source>
@@ -7739,31 +7741,31 @@ Remedie esta situación primeiro, porque o Plugin OSM non sabe que capa será o 
     </message>
     <message>
         <source>Enter text to find...</source>
-        <translation type="unfinished"></translation>
+        <translation>Introduza texto a atopar...</translation>
     </message>
     <message>
         <source>Find Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Atopar seguinte</translation>
     </message>
     <message>
         <source>Find Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Atopar Previo</translation>
     </message>
     <message>
         <source>Open File</source>
-        <translation type="unfinished">Abrir arquivo</translation>
+        <translation>Abrir arquivo</translation>
     </message>
     <message>
         <source>Save Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro ó gardar</translation>
     </message>
     <message>
         <source>Failed to save %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallou ó gardar %1: %2</translation>
     </message>
     <message>
         <source>Save File As</source>
-        <translation type="unfinished"></translation>
+        <translation>Gardar ficheiro como</translation>
     </message>
     <message>
         <source>Manage Script</source>
@@ -8451,7 +8453,7 @@ Erro(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="1159"/>
         <source>Cannot convert &apos;%1:%2:%3:%4:%5&apos; to color</source>
-        <translation type="unfinished">Non se pode convertir &apos;%1:%2:%3:%4&apos; a cor {1:%2:%3:%4:%5&apos;?}</translation>
+        <translation>Non se pode convertir  &apos;%1:%2:%3:%4:%5&apos; a cor</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="1236"/>
@@ -9081,12 +9083,12 @@ Só %1 de %2 entidades escritas.</translation>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3794"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="73"/>
         <source>Provider %1 has no %2 method</source>
-        <translation type="unfinished"></translation>
+        <translation>O provedor %1 non ten método %2</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3850"/>
         <source>Loaded from Provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargado dende o provedor</translation>
     </message>
     <message>
         <source>Provider %1 has no createEmptyLayer method</source>
@@ -10365,60 +10367,60 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3264"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de gardar estilo de capa. Non é posible crear a táboa de destinos na base de datos. Poida que sexa debido ós permisos da táboa (usuario=%1). Contacte co administrador da base de datos</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3312"/>
         <source>Save style in database</source>
-        <translation type="unfinished"></translation>
+        <translation>Gardar estilo na base de datos</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3313"/>
         <source>A style named &quot;%1&quot; already exists in the database for this layer. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Xa existe un estilo nomeado &quot;%1&quot; na base de datos desta capa. ¿Desexa sobreescribilo?</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3317"/>
         <source>Operation aborted. No changes were made in the database</source>
-        <translation type="unfinished"></translation>
+        <translation>Operación cancelada. Non se fixo ningún cambio na base de datos</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3363"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de gardar estilo de capa. Non é posible insertar un novo rexistro na táboa de estilos. Poida que sexa debido ós permisos da táboa (usuario=%1). Contacte co administrador da base de datos.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3408"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3472"/>
         <source>Connection to database failed using username: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallou a conexión á base de datos utilizando o nome de usuario: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3426"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3451"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3480"/>
         <source>Error executing query: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro execuando consulta: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3427"/>
         <source>Error executing the select query for related styles. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro executando a consulta de selección para os estilos relatados. A consulta foi rexistrada</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3452"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro executando a consulta de selección para os estilos non relatados. A consulta foi rexistrada</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3481"/>
         <source>Error executing the select query. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro executando a consulta de selección. A consulta foi rexistrada</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3491"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro de consistencia na táboa &apos;%1&apos;. A id do estilo debe ser única</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1675"/>
@@ -10939,13 +10941,13 @@ SQL: %1</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="717"/>
         <source>Save style to DB (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gardar estilo na BD (%1)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="867"/>
         <source>Could not save symbology because:
 %1</source>
-        <translation type="unfinished">Non se pode garda-la simboloxía porque:
+        <translation>Non se pode garda-la simboloxía porque:
 %1</translation>
     </message>
 </context>
@@ -12194,12 +12196,12 @@ Erros: %3
         <location filename="../src/app/qgisapp.cpp" line="6572"/>
         <source>en</source>
         <comment>documentation language</comment>
-        <translation type="unfinished"></translation>
+        <translation>inglés</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6590"/>
         <source>http://www.qgis.org/en/commercial-support.html</source>
-        <translation type="unfinished"></translation>
+        <translation>http://www.qgis.org/en/commercial-support.html</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6841"/>
@@ -15313,7 +15315,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1058"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1226"/>
         <source>The given output directory is not writable. Cancelling.</source>
-        <translation type="unfinished"></translation>
+        <translation>O directorio de saída aportado non é escribible. Cancelando.</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="963"/>
@@ -15440,17 +15442,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2119"/>
         <source>Project contains blend modes</source>
-        <translation type="unfinished"></translation>
+        <translation>O proxecto contén modos de fusión</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2120"/>
         <source>Blend modes are enabled in this project, which cannot be printed as vectors. Printing as a raster is recommended.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hai modos de fusión activados neste proxecto, os cales non poes ser impresos como vectores. Recoméndase a impresión como ráster.</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2121"/>
         <source>Print as raster</source>
-        <translation type="unfinished">Imprimir coma ráster</translation>
+        <translation>Imprimir coma ráster</translation>
     </message>
     <message>
         <source>Content of template file is not valid</source>
@@ -16859,27 +16861,27 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="147"/>
         <source>Update legend. User defined labels are preserved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizar lenda. As etiquetas definidas polo usuario serán preservadas.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="150"/>
         <source>Update item</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizar elemento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="163"/>
         <source>Update whole legend. Layers are added/removed according to main application legend. User defined labels will be deleted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizar toda a lenda. As capas serán engadidas/eliminadas de acordo coa lenda xeral do programa. As etiquetas definidas polo usuario serán eliminadas.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="166"/>
         <source>Update all</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizar todo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="255"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="371"/>
@@ -17633,12 +17635,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="669"/>
         <source>Overview blending mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista xeral do modo de fusión</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="679"/>
         <source>Invert overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Invertir vista xeral</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="168"/>
@@ -20071,22 +20073,22 @@ e o ficheiro actual está en [%3]</translation>
     <message>
         <location filename="../src/ui/qgsdatadefinedsymboldialogbase.ui" line="92"/>
         <source>Help</source>
-        <translation type="unfinished">Axuda</translation>
+        <translation>Axuda</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="168"/>
         <source>double</source>
-        <translation type="unfinished"></translation>
+        <translation>doble</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="173"/>
         <source>&apos;&lt;red&gt;,&lt;green&gt;,&lt;blue&gt;,&lt;alpha&gt;&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;&lt;red&gt;,&lt;green&gt;,&lt;blue&gt;,&lt;alpha&gt;&apos;</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="183"/>
         <source>&apos;&lt;filename&gt;&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;&lt;filename&gt;&apos;</translation>
     </message>
 </context>
 <context>
@@ -21017,7 +21019,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="642"/>
         <source>Invalid subset string %1 for %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadea de subconxunto %1 non válida para %2</translation>
     </message>
 </context>
 <context>
@@ -21115,7 +21117,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="690"/>
         <source>%1 badly formatted records discarded</source>
-        <translation type="unfinished"></translation>
+        <translation>Descartados os rexistros %1 mal formateados</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="695"/>
@@ -21135,7 +21137,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="710"/>
         <source>%1 badly formatted records discarded from sample data</source>
-        <translation type="unfinished"></translation>
+        <translation>Descartados os rexistros %1 mal formateados dos datos de mostra</translation>
     </message>
     <message>
         <source>Well Known Text files</source>
@@ -21805,12 +21807,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="339"/>
         <source>Bar length: Scale linearly, such as the following value matches the specified size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lonxitude da barra: Escalar liñalmente, tanto coma os seguintes valores coincidan co tamaño especificado.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="346"/>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Escalar liñalmente entre 0 e o seguinte valor de atributo / tamaño de diagrama:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="403"/>
@@ -21820,17 +21822,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="494"/>
         <source>Diagrams: No attributes added.</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagramas: ningún atributo engadido.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="527"/>
         <source>Interpolation value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor de interpolación</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="528"/>
         <source>You did not specify an interpolation value. A default value of %1 has been set.</source>
-        <translation type="unfinished"></translation>
+        <translation>Non especificou un valor de interpolación. Un valor predeterminado de %1 foi establecido.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="53"/>
@@ -21988,7 +21990,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="431"/>
         <source>The attribute value you enter here will correspond to the size entered in the field &quot;Size&quot; and the choosen &quot;Size unit&quot;.
 Leave empty to automatically apply the maximum value.</source>
-        <translation type="unfinished"></translation>
+        <translation>O valor de atributo que introduciu corresponde co tamaño introducido no campo &quot;Tamaño&quot; e o &quot;Tamaño de unidade&quot; escollida.
+Deixar baleiro para aplicar automaticamente o máximo valor.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="459"/>
@@ -24637,7 +24640,7 @@ Seleccione de novo un ficheiro válido.</translation>
     <message>
         <location filename="../src/providers/postgres/qgscolumntypethread.cpp" line="57"/>
         <source>Scanning column %1.%2.%3...</source>
-        <translation type="unfinished"></translation>
+        <translation>Escaneando columna %1.%2.%3...</translation>
     </message>
 </context>
 <context>
@@ -28653,12 +28656,12 @@ na liña %2 columna %3</translation>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="44"/>
         <source>Handle Bad layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Manipular capas malas</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="45"/>
         <source>%1 of %2 bad layers were not not fixable.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 de %2 capas malas non son correxibles.</translation>
     </message>
 </context>
 <context>
@@ -31077,7 +31080,7 @@ Isto pode ser un problema de conexión da súa rede ou do servidor WMS.</numerus
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="228"/>
         <source>following %1 items
 not displayed</source>
-        <translation type="unfinished"></translation>
+        <translation>Non amosados os %1 seguintes elementos</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="342"/>
@@ -31223,27 +31226,27 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="20"/>
         <source>Add column</source>
-        <translation type="unfinished">Engadir columna</translation>
+        <translation>Engadir columna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="31"/>
         <source>Styles related to the layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Estilos relacionados coa capa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="45"/>
         <source>Other styles on the database</source>
-        <translation type="unfinished"></translation>
+        <translation>Outros estilos na base de datos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="76"/>
         <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="89"/>
         <source>Load Style</source>
-        <translation type="unfinished">Cargar estilo</translation>
+        <translation>Cargar estilo</translation>
     </message>
 </context>
 <context>
@@ -32679,7 +32682,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="710"/>
         <source>&apos;vertex&apos;|&apos;lastvertex&apos;|&apos;firstvertex&apos;|&apos;centerpoint&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;vértice&apos;|&apos;últimovértice&apos;|&apos;primeirovértice&apos;|&apos;puntocentral&apos;</translation>
     </message>
 </context>
 <context>
@@ -36749,17 +36752,17 @@ Sempre rede: cargar sempre dende a rede e non comprobar se a caché ten unha ent
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1509"/>
         <source>Ignore shapefile encoding declaration</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignora-la declaración de codificación do shapefile</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1512"/>
         <source>Disable OGR on-the-fly conversion from declared encoding to UTF-8</source>
-        <translation type="unfinished"></translation>
+        <translation>Deshabilitar OGR na conversión sobre a marcha da codificación explicitada a UTF-8</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1526"/>
         <source>Add Oracle layers with double click and select in extended mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Engadir capas Oracle con doble clic e seleccionar en modo estendido</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2008"/>
@@ -37221,17 +37224,17 @@ Desaparecidos algúns dos obxectos do modelo ui:</translation>
     <message>
         <location filename="../src/providers/oracle/qgsoraclecolumntypethread.cpp" line="48"/>
         <source>Retrieving tables of %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Recuperando táboas de %1...</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclecolumntypethread.cpp" line="65"/>
         <source>Scanning column %1.%2.%3...</source>
-        <translation type="unfinished"></translation>
+        <translation>Escaneando columna %1.%2.%3...</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclecolumntypethread.cpp" line="83"/>
         <source>Table retrieval finished.</source>
-        <translation type="unfinished"></translation>
+        <translation>Finalizou a recuperación de táboas.</translation>
     </message>
 </context>
 <context>
@@ -37534,17 +37537,17 @@ error:%2
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="115"/>
         <source>Restrict the displayed tables to those that are in the all_sdo_geom_metadata table</source>
-        <translation type="unfinished"></translation>
+        <translation>Restrinxi-las táboas amosadas a aquelas que están na táboa all_sdo_geom_metadata</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="128"/>
         <source>When searching for spatial tables restrict the search to tables that are owned by the user.</source>
-        <translation type="unfinished"></translation>
+        <translation>Na procura de táboas espaciais restrinxi-la busca a táboas propiedade do usuario.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="131"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When searching for spatial tables restrict the search to tables that are owned by the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cando se busca en táboas espaciais restrinxe a busca a táboas que son propiedade do usuario.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="134"/>
@@ -38140,8 +38143,8 @@ Erro: %2</translation>
 SQL:%3
 Error: %4</source>
         <translation>Non se poden insertar metadatos para %1.%2.
-SQL:%1
-Erro: %2</translation>
+SQL:%3
+Erro: %4</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2282"/>
@@ -38991,7 +38994,7 @@ Erro: %2
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="450"/>
         <source>Retrieving tables from %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Recuperando táboas de %1...</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="484"/>
@@ -39008,7 +39011,7 @@ Comprobe as mensaxes de advertencia para posibles erros.</translation>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="532"/>
         <source>Table retrieval finished.</source>
-        <translation type="unfinished"></translation>
+        <translation>Finalizou a recuperación de táboas.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="537"/>
@@ -42433,7 +42436,7 @@ Clique no botón de axuda para obte-las opcións de creación válidas para este
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="154"/>
         <source>Actions</source>
-        <translation type="unfinished">Accións</translation>
+        <translation>Accións</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="169"/>
@@ -42473,22 +42476,22 @@ Clique no botón de axuda para obte-las opcións de creación válidas para este
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="108"/>
         <source>Min/Max options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcións Mín/Máx</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="111"/>
         <source>Always show min/max markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Amosar sempre marcadores mín/máx</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="116"/>
         <source>Zoom to min/max</source>
-        <translation type="unfinished"></translation>
+        <translation>Achegar a mín/máx</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="121"/>
         <source>Update style to min/max</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizar estilo a mín/máx</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="187"/>
@@ -42525,7 +42528,7 @@ Clique no botón de axuda para obte-las opcións de creación válidas para este
     <message>
         <location filename="../src/ui/qgsrasterhistogramwidgetbase.ui" line="101"/>
         <source>Set min/max style for</source>
-        <translation type="unfinished"></translation>
+        <translation>Establecer estilo mín/máx para</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterhistogramwidgetbase.ui" line="145"/>
@@ -45764,32 +45767,32 @@ desviación estándar ×</translation>
     <message>
         <location filename="../src/app/qgssavestyletodbdialog.cpp" line="50"/>
         <source>Save style in database</source>
-        <translation type="unfinished"></translation>
+        <translation>Gardar estilo na base de datos</translation>
     </message>
     <message>
         <location filename="../src/app/qgssavestyletodbdialog.cpp" line="50"/>
         <source>A name is mandatory</source>
-        <translation type="unfinished"></translation>
+        <translation>É obrigatorio un nome</translation>
     </message>
     <message>
         <location filename="../src/app/qgssavestyletodbdialog.cpp" line="61"/>
         <source>Attach Qt Designer UI file</source>
-        <translation type="unfinished"></translation>
+        <translation>Achegar ficheiro UI do Deseñador Qt</translation>
     </message>
     <message>
         <location filename="../src/app/qgssavestyletodbdialog.cpp" line="61"/>
         <source>Qt Designer UI file .ui</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro .ui do Deseñador Qt</translation>
     </message>
     <message>
         <location filename="../src/app/qgssavestyletodbdialog.cpp" line="82"/>
         <source>Wrong file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro erróneo</translation>
     </message>
     <message>
         <location filename="../src/app/qgssavestyletodbdialog.cpp" line="83"/>
         <source>The selected file does not appear to be a valid Qt Designer UI file.</source>
-        <translation type="unfinished"></translation>
+        <translation>O ficheiro seleccionado non semella ser un ficheiro UI do Deseñador Qt.</translation>
     </message>
 </context>
 <context>
@@ -45797,37 +45800,37 @@ desviación estándar ×</translation>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="14"/>
         <source>Add column</source>
-        <translation type="unfinished">Engadir columna</translation>
+        <translation>Engadir columna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="23"/>
         <source>Description</source>
-        <translation type="unfinished">Descrición</translation>
+        <translation>Descrición</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="33"/>
         <source>UI</source>
-        <translation type="unfinished"></translation>
+        <translation>UI</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="43"/>
         <source>Style Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome do estilo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="66"/>
         <source>Use as default style for this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilizar estilo predeterminado para esta capa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="88"/>
         <source>Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="97"/>
         <source>Optionally pick an input form for attribute editing (QT Designer UI format), it will be stored in the database</source>
-        <translation type="unfinished"></translation>
+        <translation>Coller opcionalmente un formulacio de entrada para a edición de atributos (formato IU do Deseñador QT), que será almacenado na base de datos</translation>
     </message>
 </context>
 <context>
@@ -49869,7 +49872,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="51"/>
         <source>Continuous</source>
-        <translation type="unfinished">Contínuo</translation>
+        <translation>Contínuo</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="123"/>
@@ -50308,7 +50311,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3862"/>
         <source>Error: qgis element could not be found</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro: elemento de QGIS non pode ser atopado</translation>
     </message>
 </context>
 <context>
@@ -50716,55 +50719,55 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="150"/>
         <source>Load from file</source>
-        <translation type="unfinished">Cargar dende ficheiro</translation>
+        <translation>Cargar dende ficheiro</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="151"/>
         <source>Load from database</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar dende base de datos</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="159"/>
         <source>Save in database (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gardar na base de datos (%1)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="561"/>
         <source>Load default style from: </source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar estilo predeterminado dende: </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="563"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="620"/>
         <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="564"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="621"/>
         <source>Local database</source>
-        <translation type="unfinished"></translation>
+        <translation>Base de datos local</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="565"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="622"/>
         <source>Datasource database</source>
-        <translation type="unfinished"></translation>
+        <translation>Base de datos das Fontes de datos</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="579"/>
         <source>Loaded from Provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargado dende o provedor</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="582"/>
         <source>No default style was found for this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Non se atopou estilo predeterminado para esta capa</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="618"/>
         <source>Save default style to: </source>
-        <translation type="unfinished"></translation>
+        <translation>Gardar estilo predeterminado en: </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="682"/>
@@ -50774,7 +50777,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="739"/>
         <source>Style saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Estilo gardado</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="763"/>
@@ -50786,12 +50789,12 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="851"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="860"/>
         <source>Error occured retrieving styles from database</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocorreu un erro na recuperación de estilos dende a base de datos</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="861"/>
         <source>The retrieved style is not a valid named style. Error message: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>O estilo recuperado non é un estilo cun nome válido. Mensaxe de erro: %1</translation>
     </message>
     <message>
         <source>UI file</source>
@@ -51218,7 +51221,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="323"/>
         <source>Layer source</source>
-        <translation type="unfinished">Fonte da capa</translation>
+        <translation>Fonte da capa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="348"/>
@@ -54471,7 +54474,7 @@ Descrición: %3</translation>
     <message>
         <location filename="../python/console/console_settings.ui" line="59"/>
         <source>Console</source>
-        <translation type="unfinished">Consola</translation>
+        <translation>Consola</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="67"/>
@@ -54489,85 +54492,85 @@ Descrición: %3</translation>
         <location filename="../python/console/console_settings.ui" line="121"/>
         <location filename="../python/console/console_settings.ui" line="290"/>
         <source>Autocompletion</source>
-        <translation type="unfinished"></translation>
+        <translation>Autocompletado</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="132"/>
         <location filename="../python/console/console_settings.ui" line="301"/>
         <source>Autocompletion enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Autocompletado activado</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="157"/>
         <location filename="../python/console/console_settings.ui" line="326"/>
         <source>Threshold</source>
-        <translation type="unfinished"></translation>
+        <translation>Limiar</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="180"/>
         <location filename="../python/console/console_settings.ui" line="349"/>
         <source>Get autocompletion from current document</source>
-        <translation type="unfinished"></translation>
+        <translation>Autocompletado dende o presente documento</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="183"/>
         <location filename="../python/console/console_settings.ui" line="352"/>
         <source>from Document</source>
-        <translation type="unfinished"></translation>
+        <translation>Dende o Documento</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="190"/>
         <location filename="../python/console/console_settings.ui" line="359"/>
         <source>Get autocompletion from installed APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>Autocompletado dende as APIs instaladas</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="193"/>
         <location filename="../python/console/console_settings.ui" line="362"/>
         <source>from APIs files</source>
-        <translation type="unfinished"></translation>
+        <translation>Dende ficheiros das APIs</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="203"/>
         <location filename="../python/console/console_settings.ui" line="372"/>
         <source>Get autocompletion from current document and installed APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>Autocompletado dende o presente documento e APIs instaladas</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="206"/>
         <location filename="../python/console/console_settings.ui" line="375"/>
         <source>from Doc and APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>Dende Documentos e APIs</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="221"/>
         <source>Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="227"/>
         <source>Auto-save script before running</source>
-        <translation type="unfinished"></translation>
+        <translation>Script de auto-gardado antes do funcionamento</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="390"/>
         <source>API</source>
-        <translation type="unfinished"></translation>
+        <translation>API</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="396"/>
         <source>Using preloaded APIs file</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilizar ficheiro precargado das APIs</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="515"/>
         <source>APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>APIs</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="520"/>
         <source>Path</source>
-        <translation type="unfinished">Ruta</translation>
+        <translation>Ruta</translation>
     </message>
     <message>
         <source>API file</source>
