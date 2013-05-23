@@ -10876,7 +10876,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2373"/>
         <source>Date and Time</source>
-        <translation>日時</translation>
+        <translation>日付と時刻</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2374"/>
@@ -39185,7 +39185,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="351"/>
         <source>Date &amp; Time</source>
-        <translation>日付と時間</translation>
+        <translation>日付と時刻</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="396"/>
@@ -63560,7 +63560,178 @@ To measure areas, select the tool and click to create the area. The total area i
 &lt;/body&gt;
 &lt;/html&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;head&gt;
+	&lt;title&gt;Pythonコンソールヘルプ&lt;/title&gt;
+	&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+	
+	&lt;style&gt;
+		body{
+    		font-family: &apos;Trebuchet MS&apos;, sans-serif;
+    		font-size : 12px;
+		}
+		#header{
+    		background: #f6f6f6;
+    		border-bottom: 3px solid #000;
+    		width: 100%;
+		}
+		#headerTool td{
+    		background: #f6f6f6;
+    		/*width: 100%;*/
+		}
+		._titleP {
+			padding: 5px;
+			font-size: 15px;
+			font-weight: bold;
+			color: #000;
+		}
+		._title {
+			font-size: 20px;
+			font-weight: bold;
+			color: #000;
+		}
+	&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;table id=&quot;header&quot;&gt;
+		&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/imgHelpDialog.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;span class=&quot;_title&quot;&gt;Pythonコンソール for QGIS&lt;/span&gt;
+		&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;/table&gt;
+		&lt;table&gt;
+		&lt;tr&gt;
+			&lt;td&gt;
+				&lt;p align=&quot;justify&quot;&gt;
+					PythonコンソールはPyQScintilla2をもとにして作成されています.
+					&lt;br&gt;&lt;br&gt;
+					このコンソールからQGIS環境にアクセスするには qgis.utils.iface オブジェクト(QgisInterfaceクラスのインスタンス)を使用して下さい. 
+					QgisInterfaceクラスのインポートは左側のツールバーにある専用ボタンからも行えます.
+				&lt;/p&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/imgHelpConsole.png&quot; /&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;
+				&lt;p align=&quot;justify&quot;&gt;
+					コンソールは出力領域と入力領域の2つのメインパネルに分割されます. 
+					どちらも水平スプリッタを使用してサイズ変更が可能です. 
+					出力領域パネルはコマンドの出力を表示する読み取り専用のウィジェットです. 
+					入力領域にはテキストをドラッグ&amp;ドロップしたりコピーしたりすることができます 
+					(選択されたテキストに&gt;&gt;&gt;や...が含まれていても構いません). 
+					スニペットコードを共有するにはコンテキストメニューから&apos;codepadで共有&apos;を使用して下さい. 
+					コンテキストメニューは下の画像のように見えます. &lt;br&gt;
+					&lt;img src=&quot;qrc:/images/themes/default/console/imgHelpMenu.png&quot;&gt;&lt;br&gt;
+					入力領域パネルはコマンドを入力するためのインタラクティブなPythonシェルです.
+				&lt;/p&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+	&lt;table id=&quot;header&quot;&gt;
+		&lt;tr&gt;
+		&lt;td&gt;
+			&lt;span class=&quot;_titleP&quot;&gt;特徴&lt;/span&gt;
+		&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+	&lt;p align=&quot;justify&quot;&gt;
+		&lt;ul&gt;
+		&lt;li&gt;次のAPIで自動補完と構文ハイライトが利用できます:
+			&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS-master&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+			&lt;/ol&gt;
+		&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;CTRL+SPACEで自動補完リストを表示します.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;CTRL+ALT+SPACEでコマンド履歴リストを表示します.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;QGIS APIドキュメントを開くには&apos;_api&apos;とタイプします.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;PyQGIS Cookbookを開くには&apos;_pyqgis&apos;とタイプします.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;コマンド履歴を保存するには&apos;_save&apos;とタイプするかウィジェットを閉じます. 
+		このコマンドはコマンド履歴を~/.qgis2/console_history.txtファイルに保存します.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;コマンド履歴をクリアするには&lt;b&gt;_clear&lt;/b&gt;とタイプします. 
+		このコマンドは~/.qgis2/console_history.txtファイルからコマンド履歴をクリアします.&lt;/li&gt;
+		&lt;br&gt;
+		&lt;li&gt;完全にコマンド履歴をクリアするには&apos;_clearAll&apos;とタイプします. 
+		このコマンドはコマンド履歴を完全にクリアします. 完全にクリアすると元に戻せません.&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/p&gt;
+	&lt;table id=&quot;header&quot;&gt;
+		&lt;tr&gt;
+		&lt;td&gt;
+			&lt;span class=&quot;_titleP&quot;&gt;ツールバー&lt;/span&gt;
+		&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+	&lt;p&gt;以下はツールバーのボタンの説明です:&lt;/p&gt;
+	&lt;table width=&quot;100%&quot; border=&quot;0&quot; id=&quot;headerTool&quot;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Pythonコンソールをクリアします&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;!--
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconIfaceConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;ifaceクラスをインポートします&lt;/td&gt;
+		&lt;/tr&gt;
+--&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSextanteConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Sextanteクラスをインポートします&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;PyQt4.QtCoreクラスをインポートします&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;PyQt4.QtGuiクラスをインポートします&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconScriptConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconOpenConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Pythonスクリプトを開きコンソールに読み込みます&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSaveConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Pythonスクリプトを保存します&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;設定&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;ヘルプ&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;コマンドの実行 (Enterキーを押すのと同様)&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1273"/>
@@ -65718,12 +65889,11 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;age() 関数&lt;/h3&gt;
-Returns the difference between two dates.
+        <translation>&lt;h3&gt;age() 関数&lt;/h3&gt;
+2つの日時の差を返します.
 &lt;br&gt;&lt;br&gt;
-The difference is returned as a &lt;code&gt;Interval&lt;/code&gt; 
-and needs to be used with one of the following functions
-in order to extract useful information:
+差は&lt;code&gt;Interval&lt;/code&gt;として返されます. 
+有効な情報を取得するためには次の関数の1つを用いる必要があります:
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;year&lt;/code&gt;
 &lt;li&gt;&lt;code&gt;month&lt;/code&gt;
@@ -65740,9 +65910,9 @@ in order to extract useful information:
 &lt;code&gt;age(datetime,string)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. A string in date format.
+&lt;code&gt;string&lt;/code&gt; - 文字列. 日付フォーマットの文字列.
 &lt;br&gt;
-&lt;code&gt;datetime&lt;/code&gt; - is date or datetime. A date or datetime type.
+&lt;code&gt;datetime&lt;/code&gt; - dateまたはdatetime. 日付型または日時型の値.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -65787,18 +65957,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;year() 関数&lt;/h3&gt;
-Extract the year part from a date, or the number of years
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;year() 関数&lt;/h3&gt;
+日付からは年を取得し、&lt;code&gt;Interval&lt;/code&gt;からは年数を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;year(date)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;year(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is date or datetime. The date to extract the year from.
+&lt;code&gt;date&lt;/code&gt; - dateまたはdatetime. 年を取得しようとする日付.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of years from.
+&lt;code&gt;Interval&lt;/code&gt; - Interval. 年数を取得しようとするインターバル.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -65860,18 +66029,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;minute() 関数&lt;/h3&gt;
-Extract the minute from a datetime or time, or the number of minutes
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;minute() 関数&lt;/h3&gt;
+日時または時刻からは分を取得し、&lt;code&gt;Interval&lt;/code&gt;からは分の数を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;minute(datetime)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;minute(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is datetime or time. The date to extract the minute from.
+&lt;code&gt;date&lt;/code&gt; - datetimeまたはtime. 分を取得しようとする日時.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of minutes from.
+&lt;code&gt;Interval&lt;/code&gt; - Interval. 分の数を取得しようとするインターバル.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -66242,15 +66410,16 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;toreal 関数&lt;/h3&gt;
-Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
+        <translation>&lt;h3&gt;toreal 関数&lt;/h3&gt;
+文字列を実数に変換します. 実数に変換できない場合は変換されません (例えば &apos;123.56asd&apos;は無効です). 
+変換の結果よりフィールドの精度が小さい場合、&lt;!--変更を保存した後に--&gt;数値は四捨五入されます.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      toreal(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to real number.&lt;/p&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; string. 実数に変換する文字列.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -66279,18 +66448,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;month() 関数&lt;/h3&gt;
-Extract the month part from a date, or the number of months
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;month() 関数&lt;/h3&gt;
+日付からは月を取得し、&lt;code&gt;Interval&lt;/code&gt;からは月数を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;month(date)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;month(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is date or datetime. The date to extract the month from.
+&lt;code&gt;date&lt;/code&gt; - dateまたはdatetime. 月を取得しようとする日付.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of months from.
+&lt;code&gt;Interval&lt;/code&gt; - Interval. 月数を取得しようとするインターバル.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -66566,14 +66734,14 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;todatetime() 関数&lt;/h3&gt;
-Convert a string into Qt data time type.
+        <translation>&lt;h3&gt;todatetime() 関数&lt;/h3&gt;
+文字列をQt 日時型に変換します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;todatetime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string in Qt date time format.
+&lt;code&gt;string&lt;/code&gt; - Qt 日時フォーマットの文字列.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
@@ -66602,18 +66770,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;week() 関数&lt;/h3&gt;
-Extract the week number from a date, or the number of weeks
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;week() 関数&lt;/h3&gt;
+日付からは週を取得し、&lt;code&gt;Interval&lt;/code&gt;からは週の数を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;week(date)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;week(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is date or datetime. The date to extract the week from.
+&lt;code&gt;date&lt;/code&gt; - dateまたはdatetime. 週を取得しようとする日付.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of weeks from.
+&lt;code&gt;Interval&lt;/code&gt; - Interval. 週数を取得しようとするインターバル.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -66718,8 +66885,8 @@ Returns the feature id of the current row.
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation type="unfinished">&lt;h3&gt;日時 グループ&lt;/h3&gt;
-This group contains functions for handling date and time data.
+        <translation>&lt;h3&gt;日付と時刻 グループ&lt;/h3&gt;
+このグループは日付と時刻データを扱う関数を含みます.
 </translation>
     </message>
     <message>
@@ -67326,15 +67493,15 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;tostring 関数&lt;/h3&gt;
-Converts a number to string.
+        <translation>&lt;h3&gt;tostring 関数&lt;/h3&gt;
+数値を文字列に変換します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      tostring(&lt;i&gt;number&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;number&lt;/i&gt; &amp;rarr; is integer or real.  The number to convert to string.&lt;/p&gt;
+&lt;i&gt;number&lt;/i&gt; &amp;rarr; integerまたはreal. 文字列に変換する数値.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -67754,8 +67921,8 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$now 関数&lt;/h3&gt;
-Returns the current date and time
+        <translation>&lt;h3&gt;$now 関数&lt;/h3&gt;
+現在の日時を返します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$now&lt;/pre&gt;
@@ -67858,18 +68025,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;day() 関数&lt;/h3&gt;
-Extract the day from a date, or the number of days
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;day() 関数&lt;/h3&gt;
+日付からは日を取得し、&lt;code&gt;Interval&lt;/code&gt;からは日数を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;day(date)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;day(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is date or datetime. The date to extract the day from.
+&lt;code&gt;date&lt;/code&gt; - dateまたはdatetime. 日を取得しようとする日付.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of days from.
+&lt;code&gt;Interval&lt;/code&gt; - Interval. 日数を取得しようとするインターバル.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -67923,14 +68089,13 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;tointerval() 関数&lt;/h3&gt;
-Converts a string to a interval type.  Can be used to take days, hours, month, etc off a date. 
-
+        <translation>&lt;h3&gt;tointerval() 関数&lt;/h3&gt;
+文字列をインターバル型に変換します. 日数や時間数, 月数などを日付から取得するのに使用できます.
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;tointerval(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. Format {n} days {n} hours {n} months
+&lt;code&gt;string&lt;/code&gt; - 文字列. フォーマットの例は{n} days {n} hours {n} months. 他にyears, weeks, hours, minutes, seconds.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
@@ -68061,14 +68226,14 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;totime() 関数&lt;/h3&gt;
-Convert a string into Qt time type.
+        <translation>&lt;h3&gt;totime() 関数&lt;/h3&gt;
+文字列をQt 時刻型に変換する.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;totime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string in Qt time format.
+&lt;code&gt;string&lt;/code&gt; - Qt 時刻フォーマットの文字列.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
@@ -68290,8 +68455,8 @@ may not give the expected results if you move your Quantum project.
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
-        <translation type="unfinished">&lt;h3&gt;変換 グループ&lt;/h3&gt;
-This group contains functions to convert on data type to another e.g string to integer, integer to string.
+        <translation>&lt;h3&gt;変換 グループ&lt;/h3&gt;
+このグループはデータ型を他のデータ型に変換する関数を含みます. 例. 文字列を整数に, 整数を文字列に.
 </translation>
     </message>
     <message>
@@ -68355,18 +68520,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;second() 関数&lt;/h3&gt;
-Extract the seconds from a datetime or time, or the number of seconds
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;second() 関数&lt;/h3&gt;
+日時または時刻からは秒を取得し、&lt;code&gt;Interval&lt;/code&gt;からは秒数を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;second(datetime)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;second(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is datetime or time. The date to extract the second from.
+&lt;code&gt;date&lt;/code&gt; - datetimeまたはtime. 秒を取得しようとする日時.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of seconds from.
+&lt;code&gt;Interval&lt;/code&gt; - Interval. 秒数を取得しようとするインターバル.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -68532,15 +68696,15 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;toint 関数&lt;/h3&gt;
-Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
+        <translation>&lt;h3&gt;toint 関数&lt;/h3&gt;
+文字列を整数に変換します. 整数に変換できない場合は変換されません (例えば &apos;123asd&apos;は無効です).
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to integer number.&lt;/p&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; string. 整数に変換する文字列.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -68705,14 +68869,14 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;xat 関数&lt;/h3&gt;
-Retrieves a x coordinate of the current feature
+        <translation>&lt;h3&gt;xat 関数&lt;/h3&gt;
+現在の地物のx座標を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;xat(i)&lt;/code&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+&lt;code&gt;i&lt;code&gt; - 整数. ラインの点のインデックス (インデックスは0から始まる; 負の値は末尾から-i番目).
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
@@ -68776,18 +68940,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;hour() 関数&lt;/h3&gt;
-Extract the hour from a datetime or time, or the number of hours
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;hour() 関数&lt;/h3&gt;
+日時または時刻からは時を取得し、&lt;code&gt;Interval&lt;/code&gt;からは時間数を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;hour(datetime)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;hour(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is datetime or time. The date to extract the hour from.
+&lt;code&gt;date&lt;/code&gt; - datetimeまたはtime. 時を取得しようとする日時.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of hours from.
+&lt;code&gt;Interval&lt;/code&gt; - Interval. 時間数を取得しようとするインターバル.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -68812,14 +68975,14 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;yat 関数&lt;/h3&gt;
-Retrieves a y coordinate of the current feature
+        <translation>&lt;h3&gt;yat 関数&lt;/h3&gt;
+現在の地物のy座標を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;yat(i)&lt;/code&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+&lt;code&gt;i&lt;code&gt; - 整数. ラインの点のインデックス (インデックスは0から始まる; 負の値は末尾から-i番目).
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
@@ -68839,8 +69002,8 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;$pi constant&lt;/h3&gt;
-Returns pi as value for calculations
+        <translation>&lt;h3&gt;$pi 定数&lt;/h3&gt;
+円周率の値を返します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$pi&lt;/pre&gt;
@@ -68867,14 +69030,14 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;todate() 関数&lt;/h3&gt;
-Convert a string into Qt data type.
+        <translation>&lt;h3&gt;todate() 関数&lt;/h3&gt;
+文字列をQt 日付型に変換します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;todate(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string in Qt date format.
+&lt;code&gt;string&lt;/code&gt; - Qt 日付フォーマットの文字列.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
