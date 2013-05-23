@@ -22867,52 +22867,52 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="552"/>
         <source>int [&amp;lt;= 0 =&amp;gt;]</source>
-        <translation type="unfinished"></translation>
+        <translation>int [&amp;lt;= 0 =&amp;gt;]</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="557"/>
         <source>int [&amp;gt;= 0]</source>
-        <translation type="unfinished"></translation>
+        <translation>int [&amp;gt;= 0]</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="562"/>
         <source>int [&amp;gt;= 1]</source>
-        <translation type="unfinished"></translation>
+        <translation>int [&amp;gt;= 1]</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="567"/>
         <source>double [&amp;lt;= 0.0 =&amp;gt;]</source>
-        <translation type="unfinished"></translation>
+        <translation>double [&amp;lt;= 0.0 =&amp;gt;]</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="572"/>
         <source>double [&amp;gt;= 0.0]</source>
-        <translation type="unfinished"></translation>
+        <translation>double [&amp;gt;= 0.0]</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="577"/>
         <source>double coord [&lt;b&gt;X,Y&lt;/b&gt;] as &amp;lt;= 0.0 =&amp;gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>double coord [&lt;b&gt;X,Y&lt;/b&gt;] as &amp;lt;= 0.0 =&amp;gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="582"/>
         <source>double [-180.0 - 180.0]</source>
-        <translation type="unfinished"></translation>
+        <translation>double [-180.0 - 180.0]</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="587"/>
         <source>int [0-100]</source>
-        <translation type="unfinished"></translation>
+        <translation>int [0-100]</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="602"/>
         <source>string [&lt;b&gt;r,g,b&lt;/b&gt;] as int 0-255</source>
-        <translation type="unfinished"></translation>
+        <translation>string [&lt;b&gt;r,g,b&lt;/b&gt;] as int 0-255</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="607"/>
         <source>string [&lt;b&gt;r,g,b,a&lt;/b&gt;] as int 0-255</source>
-        <translation type="unfinished"></translation>
+        <translation>string [&lt;b&gt;r,g,b,a&lt;/b&gt;] as int 0-255</translation>
     </message>
 </context>
 <context>
@@ -25652,17 +25652,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="57"/>
         <source>Addition operator</source>
-        <translation type="unfinished"></translation>
+        <translation>加算演算子</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="58"/>
         <source>Subtraction operator</source>
-        <translation type="unfinished"></translation>
+        <translation>減算演算子</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="59"/>
         <source>Multiplication operator</source>
-        <translation type="unfinished"></translation>
+        <translation>乗算演算子</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="60"/>
@@ -25672,42 +25672,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="61"/>
         <source>Modulo operator</source>
-        <translation type="unfinished"></translation>
+        <translation>剰余演算子</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="62"/>
         <source>Power operator</source>
-        <translation type="unfinished"></translation>
+        <translation>累乗演算子</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="63"/>
         <source>Equal operator</source>
-        <translation type="unfinished"></translation>
+        <translation>等値演算子</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="64"/>
         <source>Greater as operator</source>
-        <translation type="unfinished"></translation>
+        <translation>より大きい</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="65"/>
         <source>Less than operator</source>
-        <translation type="unfinished"></translation>
+        <translation>より小さい</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="66"/>
         <source>Unequal operator</source>
-        <translation type="unfinished"></translation>
+        <translation>非等値演算子</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="67"/>
         <source>Less or equal operator</source>
-        <translation type="unfinished"></translation>
+        <translation>より小さいまたは等しい</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="68"/>
         <source>Greater or equal operator</source>
-        <translation type="unfinished"></translation>
+        <translation>より大きいまたは等しい</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="315"/>
@@ -33180,37 +33180,37 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="799"/>
         <source>double [0.0-10.0]</source>
-        <translation type="unfinished"></translation>
+        <translation>double [0.0-10.0]</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="821"/>
         <source>int [0-20]</source>
-        <translation type="unfinished"></translation>
+        <translation>int [0-20]</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="910"/>
         <source>int [0-2000]</source>
-        <translation type="unfinished"></translation>
+        <translation>int [0-2000]</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="922"/>
         <source>int&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>int&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="937"/>
         <source>double coord [&lt;b&gt;in,out&lt;/b&gt; as 20.0-60.0,20.0-95.0]</source>
-        <translation type="unfinished"></translation>
+        <translation>double coord [&lt;b&gt;in,out&lt;/b&gt; as 20.0-60.0,20.0-95.0]</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="967"/>
         <source>int [1-1000]</source>
-        <translation type="unfinished"></translation>
+        <translation>int [1-1000]</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="969"/>
         <source>int [1-10000]</source>
-        <translation type="unfinished"></translation>
+        <translation>int [1-10000]</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1127"/>
@@ -33240,37 +33240,37 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1323"/>
         <source>No change</source>
-        <translation type="unfinished"></translation>
+        <translation>変更無し</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1324"/>
         <source>All uppercase</source>
-        <translation type="unfinished"></translation>
+        <translation>全て大文字</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1325"/>
         <source>All lowercase</source>
-        <translation type="unfinished"></translation>
+        <translation>全て小文字</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1329"/>
         <source>Capitalize first letter</source>
-        <translation type="unfinished"></translation>
+        <translation>最初の文字を大文字にする</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1471"/>
         <source>Size%1</source>
-        <translation type="unfinished"></translation>
+        <translation>サイズ%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1471"/>
         <source> X</source>
-        <translation type="unfinished"></translation>
+        <translation> X</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1521"/>
         <source>File not found</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルがみつかりません</translation>
     </message>
     <message>
         <source>Mixed Case</source>
@@ -33400,7 +33400,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4791"/>
         <source>horizontal</source>
-        <translation type="unfinished">水平に</translation>
+        <translation>水平に</translation>
     </message>
     <message>
         <source>over centroid</source>
@@ -33612,7 +33612,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3962"/>
         <source>Centroid</source>
-        <translation type="unfinished"></translation>
+        <translation>中心点</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4045"/>
@@ -33624,12 +33624,12 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4165"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4185"/>
         <source>abc</source>
-        <translation type="unfinished"></translation>
+        <translation>abc</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4213"/>
         <source>Quadrant</source>
-        <translation type="unfinished"></translation>
+        <translation>象限</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4450"/>
@@ -33640,7 +33640,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4656"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5342"/>
         <source>Data defined</source>
-        <translation type="unfinished"></translation>
+        <translation>データで定義された</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4682"/>
@@ -33665,7 +33665,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4811"/>
         <source>vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4844"/>
@@ -34085,17 +34085,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="114"/>
         <source>Automated placement settings (apply to all layers)</source>
-        <translation type="unfinished"></translation>
+        <translation>自動配置の設定(全レイヤの適用)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="171"/>
         <source>Text/Buffer Sample</source>
-        <translation type="unfinished"></translation>
+        <translation>テキスト/バッファサンプル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1578"/>
         <source>Line direction symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>線方向シンボル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1953"/>
@@ -43449,20 +43449,21 @@ Here is the error message:</source>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your QGIS version</source>
-        <translation type="unfinished"></translation>
+        <translation>このリポジトリはアナタのQuantum GISのバージョンと互換性がないのでブロックされました</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your QGIS version and probably won&apos;t work.</source>
-        <translation type="unfinished"></translation>
+        <translation>このプラグインはあなたのQuantum GISのバージョンに適合しません.多分これは動作しません.</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and QGIS wiki.</source>
-        <translation type="unfinished"></translation>
+        <translation>必要なPythonモジュールがインストールされていません.
+詳しい情報はプラグインのホームページかQuantum GIS wikiを参照してください.</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインを使用するにはより新しいバージョンのQuantum GISが必要です</translation>
     </message>
     <message>
         <source>at least</source>
@@ -43539,15 +43540,16 @@ Now you need to enable it in Plugin Manager.</source>
     <message>
         <source>Python plugin reinstalled.
 You need to restart QGIS in order to reload it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pythonプラグインが再インストールされました。
+これをリロードするためにQuantum GISを再起動させる必要があります。</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of QGIS. The minimum required version is:</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインは新しいバージョンのQuantum GIS用に設計されました。最低必要なバージョンは:</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart QGIS in order to remove it completely.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pythonプラグインがアンインストールされました。完全に削除するためにはQuantum GISを再起動する必要があります。</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
@@ -44836,7 +44838,7 @@ Database error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1026"/>
         <source>The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
-        <translation type="unfinished"></translation>
+        <translation>このテーブルはキーとして適切なカラムがありません.Quantum GISではPostgreSQLのoidやctidのようなプライマリキーが必要です.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1054"/>
@@ -52920,7 +52922,9 @@ Quantum GISでは32bit以下の整数をリレーションのユニーク値と�
         <source>The source relation %1 has no column suitable for use as a unique key.
 
 QGIS requires that the relation has an integer column no larger than 32 bits containing unique values. </source>
-        <translation type="unfinished"></translation>
+        <translation>%1のソースリレーションはユニークキーに適したカラムがありません
+
+Quantum GISでは32bit以下の整数をリレーションのユニーク値として持つ必要があります.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="284"/>
@@ -52980,22 +52984,22 @@ QGIS requires that the relation has an integer column no larger than 32 bits con
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1520"/>
         <source>Column %1 has a geometry type of %2, which QGIS does not currently support.</source>
-        <translation type="unfinished"></translation>
+        <translation>カラム%1のジオメトリタイプ%2は Quantum GISでは現在サポートされていません.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1529"/>
         <source>Column %1 is not restricted to a single SRID, which QGIS requires.</source>
-        <translation type="unfinished"></translation>
+        <translation>カラム%1は単一のSRIDに限定されていません,Quantum GISではSRIDは１つである必要があります.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1822"/>
         <source>Because QGIS supports only planar data, the SQL Anywhere data provider will transform the data to the compatible planar projection (SRID=%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GISは平面的データのみをサポートしているのでSQL Anywhereデータプロバイダは平面投影互換データに変換を行います(SRID=%1).</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1839"/>
         <source>Because QGIS supports only planar data and no compatible planar projection was found, the SQL Anywhere data provider will attempt to transform the data to planar WGS 84 (SRID=%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GISは平面的データのみをサポートしていて互換性の無い平面投影が検出されました.SQL Anywhereデータプロバイダは平面データWGS 84(SRID=%1)への変換を試みます.</translation>
     </message>
     <message>
         <source>Column %1 has a geometry type of %2, which Quantum GIS does not currently support.</source>
