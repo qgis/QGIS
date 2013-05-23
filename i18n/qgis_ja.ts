@@ -10875,7 +10875,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2373"/>
         <source>Date and Time</source>
-        <translation>日時</translation>
+        <translation>日付と時刻</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2374"/>
@@ -65884,12 +65884,11 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;age() 関数&lt;/h3&gt;
-Returns the difference between two dates.
+        <translation>&lt;h3&gt;age() 関数&lt;/h3&gt;
+2つの日時の差を返します.
 &lt;br&gt;&lt;br&gt;
-The difference is returned as a &lt;code&gt;Interval&lt;/code&gt; 
-and needs to be used with one of the following functions
-in order to extract useful information:
+差は&lt;code&gt;Interval&lt;/code&gt;として返されます. 
+有効な情報を取得するためには次の関数の1つを用いる必要があります:
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;year&lt;/code&gt;
 &lt;li&gt;&lt;code&gt;month&lt;/code&gt;
@@ -65906,9 +65905,9 @@ in order to extract useful information:
 &lt;code&gt;age(datetime,string)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. A string in date format.
+&lt;code&gt;string&lt;/code&gt; - 文字列. 日付フォーマットの文字列.
 &lt;br&gt;
-&lt;code&gt;datetime&lt;/code&gt; - is date or datetime. A date or datetime type.
+&lt;code&gt;datetime&lt;/code&gt; - dateまたはdatetime. 日付型または日時型の値.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -65953,18 +65952,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;year() 関数&lt;/h3&gt;
-Extract the year part from a date, or the number of years
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;year() 関数&lt;/h3&gt;
+日付からは年を取得し、&lt;code&gt;Interval&lt;/code&gt;からは年数を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;year(date)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;year(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is date or datetime. The date to extract the year from.
+&lt;code&gt;date&lt;/code&gt; - dateまたはdatetime. 年を取得しようとする日付.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of years from.
+&lt;code&gt;Interval&lt;/code&gt; - Interval. 年数を取得しようとするインターバル.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -66026,18 +66024,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;minute() 関数&lt;/h3&gt;
-Extract the minute from a datetime or time, or the number of minutes
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;minute() 関数&lt;/h3&gt;
+日時または時刻からは分を取得し、&lt;code&gt;Interval&lt;/code&gt;からは分の数を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;minute(datetime)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;minute(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is datetime or time. The date to extract the minute from.
+&lt;code&gt;date&lt;/code&gt; - datetimeまたはtime. 分を取得しようとする日時.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of minutes from.
+&lt;code&gt;Interval&lt;/code&gt; - Interval. 分の数を取得しようとするインターバル.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -66445,18 +66442,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;month() 関数&lt;/h3&gt;
-Extract the month part from a date, or the number of months
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;month() 関数&lt;/h3&gt;
+日付からは月を取得し、&lt;code&gt;Interval&lt;/code&gt;からは月数を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;month(date)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;month(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is date or datetime. The date to extract the month from.
+&lt;code&gt;date&lt;/code&gt; - dateまたはdatetime. 月を取得しようとする日付.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of months from.
+&lt;code&gt;Interval&lt;/code&gt; - Interval. 月数を取得しようとするインターバル.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -66768,18 +66764,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;week() 関数&lt;/h3&gt;
-Extract the week number from a date, or the number of weeks
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;week() 関数&lt;/h3&gt;
+日付からは週を取得し、&lt;code&gt;Interval&lt;/code&gt;からは週の数を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;week(date)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;week(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is date or datetime. The date to extract the week from.
+&lt;code&gt;date&lt;/code&gt; - date or datetime. 週を取得しようとする日付.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of weeks from.
+&lt;code&gt;Interval&lt;/code&gt; - Interval. 週数を取得しようとするインターバル.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -66884,8 +66879,8 @@ Returns the feature id of the current row.
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation type="unfinished">&lt;h3&gt;日時 グループ&lt;/h3&gt;
-This group contains functions for handling date and time data.
+        <translation>&lt;h3&gt;日付と時刻 グループ&lt;/h3&gt;
+このグループは日付と時刻データを扱う関数を含みます.
 </translation>
     </message>
     <message>
@@ -67920,8 +67915,8 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$now 関数&lt;/h3&gt;
-Returns the current date and time
+        <translation>&lt;h3&gt;$now 関数&lt;/h3&gt;
+現在の日時を返します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$now&lt;/pre&gt;
@@ -68024,18 +68019,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;day() 関数&lt;/h3&gt;
-Extract the day from a date, or the number of days
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;day() 関数&lt;/h3&gt;
+日付からは日を取得し、&lt;code&gt;Interval&lt;/code&gt;からは日数を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;day(date)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;day(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is date or datetime. The date to extract the day from.
+&lt;code&gt;date&lt;/code&gt; - dateまたはdatetime. 日を取得しようとする日付.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of days from.
+&lt;code&gt;Interval&lt;/code&gt; - Interval. 日数を取得しようとするインターバル.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -68521,18 +68515,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;second() 関数&lt;/h3&gt;
-Extract the seconds from a datetime or time, or the number of seconds
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;second() 関数&lt;/h3&gt;
+日時または時刻からは秒を取得し、&lt;code&gt;Interval&lt;/code&gt;からは秒数を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;second(datetime)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;second(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is datetime or time. The date to extract the second from.
+&lt;code&gt;date&lt;/code&gt; - datetimeまたはtime. 秒を取得しようとする日時.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of seconds from.
+&lt;code&gt;Interval&lt;/code&gt; - Interval. 秒数を取得しようとするインターバル.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -68871,14 +68864,14 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;xat 関数&lt;/h3&gt;
-Retrieves a x coordinate of the current feature
+        <translation>&lt;h3&gt;xat 関数&lt;/h3&gt;
+現在の地物のx座標を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;xat(i)&lt;/code&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+&lt;code&gt;i&lt;code&gt; - 整数. ラインの点のインデックス (インデックスは0から始まる; 負の値は末尾から-i番目).
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
@@ -68942,18 +68935,17 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;hour() 関数&lt;/h3&gt;
-Extract the hour from a datetime or time, or the number of hours
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;hour() 関数&lt;/h3&gt;
+日時または時刻からは時を取得し、&lt;code&gt;Interval&lt;/code&gt;からは時間数を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;hour(datetime)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;hour(Interval)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is datetime or time. The date to extract the hour from.
+&lt;code&gt;date&lt;/code&gt; - datetimeまたはtime. 時を取得しようとする日時.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of hours from.
+&lt;code&gt;Interval&lt;/code&gt; - Interval. 時間数を取得しようとするインターバル.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -68978,14 +68970,14 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;yat 関数&lt;/h3&gt;
-Retrieves a y coordinate of the current feature
+        <translation>&lt;h3&gt;yat 関数&lt;/h3&gt;
+現在の地物のy座標を取得します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;yat(i)&lt;/code&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+&lt;code&gt;i&lt;code&gt; - 整数. ラインの点のインデックス (インデックスは0から始まる; 負の値は末尾から-i番目).
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
@@ -69005,8 +68997,8 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;$pi constant&lt;/h3&gt;
-Returns pi as value for calculations
+        <translation>&lt;h3&gt;$pi 定数&lt;/h3&gt;
+円周率の値を返します
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$pi&lt;/pre&gt;
@@ -69033,14 +69025,14 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;todate() 関数&lt;/h3&gt;
-Convert a string into Qt data type.
+        <translation>&lt;h3&gt;todate() 関数&lt;/h3&gt;
+文字列をQt date型に変換します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;todate(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string in Qt date format.
+&lt;code&gt;string&lt;/code&gt; - Qt日付フォーマットの文字列.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
