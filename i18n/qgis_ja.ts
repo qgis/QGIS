@@ -455,12 +455,12 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="55"/>
         <source>Store</source>
-        <translation type="unfinished"></translation>
+        <translation>保存</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="62"/>
         <source>Delete</source>
-        <translation type="unfinished">削除</translation>
+        <translation>削除</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="90"/>
@@ -4190,7 +4190,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="573"/>
         <source>Metrics</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Power:</source>
@@ -5840,12 +5840,12 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../python/console/console_history_dlg.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">ダイアログ</translation>
+        <translation>ダイアログ</translation>
     </message>
     <message>
         <location filename="../python/console/console_history_dlg.ui" line="45"/>
         <source>Reload</source>
-        <translation type="unfinished">再ロード</translation>
+        <translation>再ロード</translation>
     </message>
 </context>
 <context>
@@ -6150,12 +6150,12 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1132"/>
         <source>Shapefile Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>シェープファイルレイヤ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1144"/>
         <source>SpatiaLite Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Spatialiteレイヤ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1189"/>
@@ -8433,43 +8433,43 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Hide Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>エディタを隠す</translation>
     </message>
     <message>
         <source>Check Syntax</source>
-        <translation type="unfinished"></translation>
+        <translation>構文チェック</translation>
     </message>
     <message>
         <source>Run selected</source>
-        <translation type="unfinished"></translation>
+        <translation>選択を実行</translation>
     </message>
     <message>
         <source>Run Script</source>
-        <translation type="unfinished"></translation>
+        <translation>スクリプト実行</translation>
     </message>
     <message>
         <source>Undo</source>
-        <translation type="unfinished">取り消し</translation>
+        <translation>取り消し</translation>
     </message>
     <message>
         <source>Redo</source>
-        <translation type="unfinished">再実行</translation>
+        <translation>やり直し</translation>
     </message>
     <message>
         <source>Share on codepad</source>
-        <translation type="unfinished"></translation>
+        <translation>codepadで共有</translation>
     </message>
     <message>
         <source>Hide/Show Object Inspector</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクトインスペクタの表示/非表示</translation>
     </message>
     <message>
         <source>Select All</source>
-        <translation type="unfinished">全部を選択する</translation>
+        <translation>全てを選択</translation>
     </message>
     <message>
         <source>&lt;b&gt;&quot;%1&quot;&lt;/b&gt; was not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;&quot;%1&quot;&lt;/b&gt; は見つかりませんでした.</translation>
     </message>
     <message>
         <source>URL copied to clipboard.</source>
@@ -8477,7 +8477,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Connection error: </source>
-        <translation type="unfinished"></translation>
+        <translation>接続エラー: </translation>
     </message>
     <message>
         <source> [Temporary file saved in %1]</source>
@@ -12981,7 +12981,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2632"/>
         <source>Select zip layers to add...</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2646"/>
@@ -18043,7 +18043,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1152"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2114"/>
         <source>Don&apos;t show this message again</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1184"/>
@@ -18235,7 +18235,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1455"/>
         <source>Duplicate Composer</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1456"/>
@@ -19728,7 +19728,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="320"/>
         <source>Show feature count for each class of vector layer.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="371"/>
@@ -20435,13 +20435,13 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="320"/>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="363"/>
         <source>X </source>
-        <translation>X</translation>
+        <translation>X </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="333"/>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="376"/>
         <source>Y </source>
-        <translation></translation>
+        <translation>Y </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="437"/>
@@ -24696,7 +24696,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="454"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="457"/>
         <source>The number of lines to discard from the beginning of the file</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="473"/>
@@ -33905,7 +33905,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4966"/>
         <source>Label options</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5111"/>
@@ -51862,7 +51862,7 @@ but implies better performance thereafter.</source>
         <source>Unexpected error when working with: %1
 
 %2</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>seems to be a valid SQLite DB, but not a SpatiaLite&apos;s one ...</source>
@@ -65051,7 +65051,7 @@ CNR, Milan Unit (Information Technology), Construction Technologies Institute.
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="98"/>
         <source>The description of the selected query.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="47"/>
