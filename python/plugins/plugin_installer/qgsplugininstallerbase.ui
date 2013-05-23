@@ -48,12 +48,12 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="label_3">
+      <widget class="QLabel" name="pluginDir">
        <property name="whatsThis">
         <string/>
        </property>
        <property name="text">
-        <string>The plugins will be installed to ~/.qgis/python/plugins</string>
+        <string></string>
        </property>
       </widget>
      </item>
