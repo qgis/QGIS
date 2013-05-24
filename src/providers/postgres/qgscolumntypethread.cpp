@@ -77,7 +77,7 @@ void QgsGeomColumnTypeThread::run()
 
       if ( !layerProperty.geometryColName.isNull() &&
            ( layerProperty.types.value( 0, QGis::WKBUnknown ) == QGis::WKBUnknown ||
-             layerProperty.srids.value( 0, 0 ) == 0 ) )
+             layerProperty.srids.value( 0, 0 ) <= 0 ) )
       {
         if ( dontResolveType )
         {

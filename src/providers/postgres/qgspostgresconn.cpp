@@ -380,6 +380,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString type = result.PQgetvalue( idx, 3 );
       QString srid = result.PQgetvalue( idx, 4 );
       QString relkind = result.PQgetvalue( idx, 5 );
+      if ( srid.isEmpty() || srid == "0" )
+        srid = "-1";
 
       QgsDebugMsg( QString( "%1 : %2.%3.%4: %5 %6 %7" )
                    .arg( gtableName )
@@ -570,7 +572,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QgsDebugMsg( QString( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
 
       layerProperty.types = QList<QGis::WkbType>() << QGis::WKBUnknown;
-      layerProperty.srids = QList<int>() << 0;
+      layerProperty.srids = QList<int>() << -1;
       layerProperty.schemaName = schema;
       layerProperty.tableName = table;
       layerProperty.geometryColName = QString::null;
