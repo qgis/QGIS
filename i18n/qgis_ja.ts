@@ -8555,7 +8555,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Untitled-%1</source>
-        <translation type="unfinished"></translation>
+        <translation>無題の-%1</translation>
     </message>
     <message>
         <source>Python Console: Save File</source>
@@ -8576,7 +8576,8 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
         <source>Python %1 on %2
 ## Type help(iface) for more info and list of methods.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Python %1 オン %2
+## 詳しい情報とメソッドのリストが必要な場合は help(iface)とタイプして下さい.</translation>
     </message>
     <message>
         <source>Hide/Show Toolbar</source>
@@ -23043,7 +23044,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="416"/>
         <source>&lt;b&gt;Active: &lt;/b&gt;%1&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;i&gt;(ctrl|right-click toggles)&lt;/i&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;アクティブ: &lt;/b&gt;%1&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;i&gt;(ctrl|right-click トグル切替)&lt;/i&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="416"/>
@@ -23058,7 +23059,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="420"/>
         <source>&lt;b&gt;Expected input:&lt;/b&gt;&lt;br&gt;%1&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;予想される入力:&lt;/b&gt;&lt;br&gt;%1&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="425"/>
@@ -33892,7 +33893,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4767"/>
         <source>Preserve data rotation values</source>
-        <translation type="unfinished"></translation>
+        <translation>回転の値を保存する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4811"/>
@@ -33902,22 +33903,22 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4844"/>
         <source>( Define attribute fields to enable labeling map tools )</source>
-        <translation type="unfinished"></translation>
+        <translation>( ラべリングマップツールを有効にするため属性フィールドを定義する )</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4966"/>
         <source>Label options</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベルオプション</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5111"/>
         <source>Pixel size-based visibility (labels in map units)</source>
-        <translation type="unfinished"></translation>
+        <translation>ピクセルサイズベースの可視属性（地図単位のラベル)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5426"/>
         <source>Feature options</source>
-        <translation type="unfinished"></translation>
+        <translation>地物オプション</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5534"/>
@@ -34064,7 +34065,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="502"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="505"/>
         <source>Formatting</source>
-        <translation type="unfinished"></translation>
+        <translation>書式化中</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="538"/>
@@ -34082,7 +34083,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="681"/>
         <source>letter</source>
-        <translation type="unfinished"></translation>
+        <translation>レター</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1041"/>
@@ -34192,7 +34193,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5554"/>
         <source>Discourage labels from covering features</source>
-        <translation type="unfinished"></translation>
+        <translation>重なる地物のラベルを表示しない</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="843"/>
@@ -34384,12 +34385,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3344"/>
         <source>Label&apos;s rotation is ignored</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベルの回転は無視されました</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3347"/>
         <source>Use global shadow</source>
-        <translation type="unfinished"></translation>
+        <translation>グローバルシャドウの利用</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3786"/>
@@ -59902,7 +59903,7 @@ SQL Anywhereエラーコード %2
         <location filename="../python/console/console_settings.ui" line="223"/>
         <location filename="../python/console/console_settings.ui" line="295"/>
         <source>Automatic parentheses insertion</source>
-        <translation type="unfinished"></translation>
+        <translation>自動括弧挿入</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="386"/>
@@ -59919,7 +59920,7 @@ SQL Anywhereエラーコード %2
         <location filename="../python/console/console_settings.ui" line="156"/>
         <location filename="../python/console/console_settings.ui" line="320"/>
         <source>Autocompletion threshold</source>
-        <translation type="unfinished"></translation>
+        <translation>オートコンプリートのしきい値</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="519"/>
