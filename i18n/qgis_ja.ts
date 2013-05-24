@@ -4190,7 +4190,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="573"/>
         <source>Metrics</source>
-        <translation type="unfinished"></translation>
+        <translation>メトリックス</translation>
     </message>
     <message>
         <source>Power:</source>
@@ -8473,7 +8473,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>URL copied to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>URLはクリップボードにコピーされました.</translation>
     </message>
     <message>
         <source>Connection error: </source>
@@ -8481,7 +8481,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source> [Temporary file saved in %1]</source>
-        <translation type="unfinished"></translation>
+        <translation> [一時ファイルは%1に保存されました]</translation>
     </message>
     <message>
         <source>## Script error: %1</source>
@@ -12981,7 +12981,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2632"/>
         <source>Select zip layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation>追加するzipレイヤの選択...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2646"/>
@@ -18043,7 +18043,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1152"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2114"/>
         <source>Don&apos;t show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation>このメッセージを再度表示しない</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1184"/>
@@ -18235,7 +18235,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1455"/>
         <source>Duplicate Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>コンポーザ複製</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1456"/>
@@ -19728,7 +19728,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="320"/>
         <source>Show feature count for each class of vector layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>ベクタレイヤのクラスごとに地物数を表示する.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="371"/>
@@ -24696,7 +24696,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="454"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="457"/>
         <source>The number of lines to discard from the beginning of the file</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルの先頭から破棄する行数</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="473"/>
@@ -25860,7 +25860,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="74"/>
         <source>&apos;Dia&apos; || Diameter</source>
-        <translation>&apos;Dia&apos; || 直径</translation>
+        <translatorcomment>推測による修正</translatorcomment>
+        <translation>&apos;Dia&apos; || &apos;meter&apos;</translation>
     </message>
     <message>
         <source>Fields</source>
@@ -43679,7 +43680,7 @@ Here is the error message:</source>
     </message>
     <message>
         <source>The plugins will be installed to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインは%1にインストールされます</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your QGIS version</source>
@@ -44008,7 +44009,11 @@ You need to restart Quantum GIS in order to reload it.</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, QGIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Installer window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;注:&lt;/span&gt; この機能が有効な場合, QGISは新しいプラグインやプラグインのアップデート情報をあなたに知らせます。またプラグインインストーラウィンドウを開く度にリポジトリから情報を取得します.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Add third party plugin repositories to the list</source>
@@ -51862,7 +51867,9 @@ but implies better performance thereafter.</source>
         <source>Unexpected error when working with: %1
 
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>予期しないエラーです: %1
+
+%2</translation>
     </message>
     <message>
         <source>seems to be a valid SQLite DB, but not a SpatiaLite&apos;s one ...</source>
@@ -52992,7 +52999,11 @@ Do you want to overwrite the [%2] relation?</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? QGIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; for more details. In the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsors page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;この素晴らしいソフトウェアを開発するために私たちは本当にハードに働いています. このソフトウェアのクールな機能を見て下さい このソフトウェアの心地よさを感じて下さい. QGISは決意を持った開発者チームの奉仕的活動で作られています. 私たちはこのソフトウェアをコピー&amp;amp;共有することでできるだけ多くの人に使ってもらいたいです.  QGISを使うことにによってあなたがお金を節約できたり、あなたが私達の仕事を気に入ってお金に余裕がある場合はQGIS開発のスポンサーになることを検討して下さい. 私たちはスポンサーによって支払われたお金を年に2回開催するハックフェストの旅費と関連費用やプロジェクトの目的一般に利用します. 是非&lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS スポンサーWebページ&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;を参照して詳しい情報を見て下さい. &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;スポンサーWebページ&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;で私達を財政的に支えてくれているすばらしい人達と企業のリストを見られます - 多大な謝意をささげます!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -54329,27 +54340,27 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="29"/>
         <source>QGIS is open source</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS はオープンソースです</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="30"/>
         <source>QGIS is open source software. This means that the software source code can be freely viewed and modified. The GPL places a restriction that any modifications you make must be made available in source form to whoever you give modified versions to, and that you can not create a new version of QGIS under a &apos;closed source&apos; license. Visit &lt;a href=&quot;http://qgis.org&quot;&gt; the QGIS home page (http://qgis.org)&lt;/a&gt; for more information.</source>
-        <translation type="unfinished"></translation>
+        <translation>QGISはオープンソースソフトウェアです.これはこのソフトウェアのソースコードを自由に見て改造できることを意味します.GPLには次のような制約があります.あなたがするどんな改造でも改造版を与える人には誰にでもソース形式で利用できるようにする必要があります.またあなたは&apos;クローズドソース&apos;ライセンスでQGISの新しいバージョンを作ってはいけません.&lt;a href=&quot;http://qgis.org&quot;&gt;QGISホームページ(http://qgis.org)&lt;/a&gt;を訪問してさらに詳しい情報を参照して下さい.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="41"/>
         <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case studies section&lt;/a&gt; of the QGIS home page (http://http://www.qgis.org/en/community/qgis-case-studies.html).</source>
-        <translation type="unfinished"></translation>
+        <translation>もしあなたが科学論文を書いたり他の著作でQGISを参照するようなことがあった場合,私たちはあなたの著作をQGISホームページの&lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;ケーススタディセクション&lt;/a&gt;(http://http://www.qgis.org/en/community/qgis-case-studies.html)に収録したいです。</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="66"/>
         <source>Both used to be correct, but we recently decided to just use &apos;QGIS&apos;.  For articles we suggest you write &apos;QGIS is ....&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>両方とも正しいですが最近私たちは&apos;QGIS&apos;を使うことに決めました. 論文や記事では&apos;QGIS&apos;と記述することをお勧めします</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="69"/>
         <source>How do I refer to QGIS?</source>
-        <translation type="unfinished"></translation>
+        <translation>QGISについてどのように紹介すればいいでしょうか?</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="70"/>
@@ -54454,17 +54465,17 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="177"/>
         <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
-        <translation type="unfinished"></translation>
+        <translation>もしQGISを使ってお金の節約ができたり、あなたが私たちの活動を気に入ってくれてお金に余裕があるならば、是非QGISの開発スポンサーになることを検討して下さい.私たちはスポンサーが払っていただいたお金を年2回のハックフェストの旅費や関連費用やプロジェクトの目的のための様々な費用に使います.是非&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt;の詳細情報を参照して下さい.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="187"/>
         <source>QGIS has Plugins!</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS にはプラグインがあります!</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="188"/>
         <source>QGIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage Plugins menu. In addition there are over 150 Python plugins contributed by the user community that can be installed from the Plugins-&gt;Fetch Python Plugins menu. Don&apos;t miss out on all QGIS has to offer---check out the plugins and see what they can do for you.</source>
-        <translation type="unfinished"></translation>
+        <translation>QGISはプラグインによって機能を拡張できます.QGISはいくつかのコアプラグインを同梱して出荷されます,それらはメニュープラグイン-&gt;プラグインの管理で見ることができます.加えてコミュニティによって追加された150以上のPythonプラグインがあります.それらはメニュープラグイン-&gt;Pythonプラグインを呼び出すを使ってインストールできます.QGISが提供するすべてを見逃さないでください---プラグインをチェックしてどのように利用できるか見て下さい.</translation>
     </message>
     <message>
         <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
@@ -57561,7 +57572,7 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="476"/>
         <source>WCS server version %1 is not supported by QGIS (supported versions: 1.0.0, 1.1.0, 1.1.2)</source>
-        <translation type="unfinished"></translation>
+        <translation>WCSサーババージョン%1はQGISではサポートされていません(サポートされるバージョンは1.0.0, 1.1.0, 1.1.2です)</translation>
     </message>
     <message>
         <source>WCS server version %1 is not supported by Quantum GIS (supported versions: 1.0.0, 1.1.0, 1.1.2)</source>
@@ -61108,7 +61119,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="117"/>
         <source>Generated path will be relative to current SVG search directories or to Project file</source>
-        <translation type="unfinished"></translation>
+        <translation>生成されたパスは現在のSVG検索ディレクトリかプロジェクトファイルからの相対パスです</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="120"/>
@@ -65051,7 +65062,7 @@ CNR, Milan Unit (Information Technology), Construction Technologies Institute.
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="98"/>
         <source>The description of the selected query.</source>
-        <translation type="unfinished"></translation>
+        <translation>選択されたクエリの説明.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="47"/>
