@@ -2230,7 +2230,7 @@ Sicuro di voler proseguire?</translation>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgModeler.ui" line="68"/>
         <source>Algorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritmi</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgModeler.ui" line="80"/>
@@ -2524,24 +2524,26 @@ colonna geometrica - colonna con valori interi univoci</translation>
     <name>EditRScriptDialog</name>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore di I/O</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile salvare le modifiche. Causa:
+ %1</translation>
     </message>
 </context>
 <context>
     <name>EditScriptDialog</name>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore di I/O</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile salvare le modifiche. Causa:
+ %1</translation>
     </message>
 </context>
 <context>
@@ -2731,7 +2733,7 @@ Installalo e riprova.</translation>
     </message>
     <message>
         <source>QGIS version detected: </source>
-        <translation type="unfinished"></translation>
+        <translation>Versione di QGIS rilevata: </translation>
     </message>
     <message>
         <source>Projections</source>
@@ -3070,11 +3072,11 @@ Vuoi comunque terminarlo?</translation>
     </message>
     <message>
         <source>Output size or resolution required</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserisci la dimensione o risoluzione di output</translation>
     </message>
     <message>
         <source>The output file doesn&apos;t exist. You must set up the output size or resolution to create it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il file di output non esiste. Definisci la dimensione o risoluzione di output per crearlo.</translation>
     </message>
     <message>
         <source>Select the files to analyse</source>
@@ -3314,7 +3316,11 @@ and python executables.
 
 MacOS users usually need to set it to something like
 /Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
-        <translation type="unfinished"></translation>
+        <translation>Una lista di path separati da virgola (Linux e MacOS) o 
+da punto e virgola (Windows) a eseguibili e moduli python.
+
+Gli utenti MacOS di solito devono configurarlo con
+/Library/Frameworks/GDAL.framework/Versions/1.8/Programs</translation>
     </message>
     <message>
         <source>A list of colon-separated (Linux and MacOS) or
@@ -4904,12 +4910,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="29"/>
         <source>Input point layer</source>
-        <translation type="unfinished">Vettore punti in input</translation>
+        <translation>Vettore punti in input</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="39"/>
         <source>Output raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster in output</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="52"/>
@@ -4941,7 +4947,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="130"/>
         <source>Rows</source>
-        <translation type="unfinished">Righe</translation>
+        <translation>Righe</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="140"/>
@@ -4951,7 +4957,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="150"/>
         <source>Columns</source>
-        <translation type="unfinished">Colonne</translation>
+        <translation>Colonne</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="160"/>
@@ -5358,7 +5364,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1286"/>
         <source>Save Selection as Vector File...</source>
-        <translation>Salva la selezione come vettore...</translation>
+        <translation>Salva la selezione con nome...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1311"/>
