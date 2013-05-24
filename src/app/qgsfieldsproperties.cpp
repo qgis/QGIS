@@ -200,6 +200,7 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   connect( mAttributesTree, SIGNAL( itemSelectionChanged() ), this, SLOT( onAttributeSelectionChanged() ) );
   connect( mAttributesList, SIGNAL( itemSelectionChanged() ), this, SLOT( onAttributeSelectionChanged() ) );
 
+  mAttributesList->sortByColumn( 0, Qt::AscendingOrder );
   mAttributesTree->setHeaderLabels( QStringList() << tr( "Label" ) );
 
   leEditForm->setText( layer->editForm() );
@@ -315,7 +316,7 @@ void QgsFieldsProperties::loadRows()
 
 void QgsFieldsProperties::setRow( int row, int idx, const QgsField &field )
 {
-  mAttributesList->setItem( row, attrIdCol, new QTableWidgetItem( QString::number( idx ) ) );
+  mAttributesList->setItem( row, attrIdCol, new QTableWidgetItem( idx ) );
   mIndexedWidgets.insert( idx, mAttributesList->item( row, 0 ) );
   mAttributesList->setItem( row, attrNameCol, new QTableWidgetItem( field.name() ) );
   mAttributesList->setItem( row, attrTypeCol, new QTableWidgetItem( field.typeName() ) );
@@ -553,7 +554,7 @@ void QgsFieldsProperties::attributeAdded( int idx )
 
   for ( int i = idx; i < mIndexedWidgets.count(); i++ )
   {
-    mIndexedWidgets[i]->setText( QString::number( i ) );
+    mIndexedWidgets[i]->setData( Qt::DisplayRole, i );
   }
 
   mAttributesList->setCurrentCell( row, idx );
@@ -567,7 +568,7 @@ void QgsFieldsProperties::attributeDeleted( int idx )
   mIndexedWidgets.removeAt( idx );
   for ( int i = idx; i < mIndexedWidgets.count(); i++ )
   {
-    mIndexedWidgets[i]->setText( QString::number( i ) );
+    mIndexedWidgets[i]->setData( Qt::DisplayRole, i );
   }
 }
 
