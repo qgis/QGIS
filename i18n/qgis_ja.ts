@@ -8485,73 +8485,73 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>## Script error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>## スクリプトエラー: %1</translation>
     </message>
     <message>
         <source>## Script executed successfully: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>## スクリプト実行成功: %1</translation>
     </message>
     <message>
         <source>Cannot execute file %1. Error: %2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル %1を実行できません. エラー: %2</translation>
     </message>
     <message>
         <source>Hey, type something to run!</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘイ,何か入力して実行しよう!</translation>
     </message>
     <message>
         <source>You have to save the file before running it.</source>
-        <translation type="unfinished"></translation>
+        <translation>実行する前にファイルを保存する必要があります.</translation>
     </message>
     <message>
         <source>Syntax ok</source>
-        <translation type="unfinished"></translation>
+        <translation>文法はok</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;%1&quot;&lt;/b&gt; has been deleted or is not accessible</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル &lt;b&gt;&quot;%1&quot;&lt;/b&gt; は削除されたかアクセスできません</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;%1&quot;&lt;/b&gt; has been changed and reloaded</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル &lt;b&gt;&quot;%1&quot;&lt;/b&gt; は変更されてリロードされました</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;%1&quot;&lt;/b&gt; is read only, please save to different file first.</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル &lt;b&gt;&quot;%1&quot;&lt;/b&gt; は読み込み専用です.最初に他のファイルに保存して下さい.</translation>
     </message>
     <message>
         <source>Python Console: Save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Pythonコンソール:ファイル保存</translation>
     </message>
     <message>
         <source>Script was correctly saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>スクリプトは正しく保存されました.</translation>
     </message>
     <message>
         <source>Click on button to restore all tabs from last session.</source>
-        <translation type="unfinished"></translation>
+        <translation>ボタンをクリックして最後のセッションのすべてのタブを復活する.</translation>
     </message>
     <message>
         <source>Restore tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>タブの復活</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">閉じる</translation>
+        <translation>閉じる</translation>
     </message>
     <message>
         <source>List all tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>全てのタブのリスト</translation>
     </message>
     <message>
         <source>New Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>新しいエディタ</translation>
     </message>
     <message>
         <source>The file %1 could not be opened. Error: %2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル %1 を開けません. エラー: %2</translation>
     </message>
     <message>
         <source>Untitled-%1</source>
@@ -8559,17 +8559,18 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Python Console: Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>Pythonコンソール:ファイル保存</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&apos;%1&apos;&lt;/b&gt; has been modified, save changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル &lt;b&gt;&apos;%1&apos;&lt;/b&gt;は変更されています.変更を保存しますか?</translation>
     </message>
     <message>
         <source>Unable to restore the file: 
 %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルのリストアができません: 
+%1</translation>
     </message>
     <message>
         <source>Python %1 on %2
@@ -8579,59 +8580,59 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Hide/Show Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>非表示/表示ツールバー</translation>
     </message>
     <message>
         <source>Show Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>エディタの表示</translation>
     </message>
     <message>
         <source>Enter Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>選択の入力</translation>
     </message>
     <message>
         <source>History saved successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>ヒストリの保存に成功しました.</translation>
     </message>
     <message>
         <source>Session and file history cleared successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>セッションとファイルヒストリのクリアに成功しました.</translation>
     </message>
     <message>
         <source>History cleared successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>ヒストリのクリアに成功しました.</translation>
     </message>
     <message>
         <source>Command History</source>
-        <translation type="unfinished"></translation>
+        <translation>コマンドヒストリ</translation>
     </message>
     <message>
         <source>Show</source>
-        <translation type="unfinished"></translation>
+        <translation>表示</translation>
     </message>
     <message>
         <source>Clear File</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルのクリア</translation>
     </message>
     <message>
         <source>Clear Session</source>
-        <translation type="unfinished"></translation>
+        <translation>セッションのクリア</translation>
     </message>
     <message>
         <source>Python Console - Command History</source>
-        <translation type="unfinished"></translation>
+        <translation>Pythonコンソール - コマンドヒストリ</translation>
     </message>
     <message>
         <source>Double click on item to execute</source>
-        <translation type="unfinished"></translation>
+        <translation>実行するアイテムをダブルクリックする</translation>
     </message>
     <message>
         <source>Add API path</source>
-        <translation type="unfinished"></translation>
+        <translation>APIパスの追加</translation>
     </message>
     <message>
         <source>Remove API path</source>
-        <translation type="unfinished"></translation>
+        <translation>APIパスの削除</translation>
     </message>
     <message>
         <source>Failed to save %1: %2</source>
