@@ -155,7 +155,7 @@ def delimitedTextData( testname, filename, requests, verbose, **params ):
         basename = os.path.basename(filepath)
         if not basename.startswith('test'):
             basename='file'
-        uri = uri.replace(filepath,basename)
+        uri = re.sub(r'^file\:\/\/[^\?]*','file://'+basename,uri)
         fields = []
         data = {}
         if layer.isValid():
