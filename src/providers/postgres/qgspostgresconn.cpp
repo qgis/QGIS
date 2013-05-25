@@ -571,7 +571,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
       QgsDebugMsg( QString( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
 
-      layerProperty.types = QList<QGis::WkbType>() << QGis::WKBUnknown;
+      layerProperty.types = QList<QGis::WkbType>() << QGis::WKBNoGeometry;
       layerProperty.srids = QList<int>() << -1;
       layerProperty.schemaName = schema;
       layerProperty.tableName = table;
