@@ -56,7 +56,7 @@ void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
       wkbType = QGis::WKBNoGeometry;
     }
 
-    bool selectable = wkbType == QGis::WKBNoGeometry || ( wkbType != QGis::WKBUnknown && srid > 0 );
+    bool selectable = wkbType == QGis::WKBNoGeometry || ( wkbType != QGis::WKBUnknown && srid >= 0 );
 
     QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
     QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QGis::WKBUnknown ? tr( "Select..." ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
