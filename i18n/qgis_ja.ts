@@ -33403,12 +33403,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="750"/>
         <source>[&lt;b&gt;family&lt;/b&gt;|&lt;b&gt;family[foundry]&lt;/b&gt;],&lt;br&gt;e.g. Helvetica or Helvetica [Cronyx]</source>
-        <translation type="unfinished"></translation>
+        <translation>[&lt;b&gt;ファミリー&lt;/b&gt;|&lt;b&gt;ファミリー[提供者]&lt;/b&gt;],&lt;br&gt;例. Helvetica または Helvetica [Cronyx]</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="755"/>
         <source>[&lt;b&gt;font style name&lt;/b&gt;|&lt;b&gt;Ignore&lt;/b&gt;],&lt;br&gt;e.g. Bold Condensed or Light Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>[&lt;b&gt;フォントスタイル名&lt;/b&gt;|&lt;b&gt;無視&lt;/b&gt;],&lt;br&gt;例. Bold Condensed または Light Italic</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="799"/>
@@ -66322,8 +66322,8 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;$length 関数&lt;/h3&gt;
-Returns the length of the current feature.
+        <translation>&lt;h3&gt;$length 関数&lt;/h3&gt;
+カレント地物の長さを返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$length&lt;/pre&gt;
@@ -66341,9 +66341,9 @@ Returns the length of the current feature.
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
 </source>
-        <translation type="unfinished">
+        <translation>
 &lt;h3&gt;色 グループ&lt;/h3&gt;
-This group contains functions for manipulating colors
+このグループには色を操作する関数があります
 </translation>
     </message>
     <message>
@@ -71649,11 +71649,11 @@ Convert a string into Qt data type.
     <name>optionsDialog</name>
     <message>
         <source>Warning!</source>
-        <translation type="unfinished"></translation>
+        <translation>警告!</translation>
     </message>
     <message>
         <source>Please specify API file or check &quot;Use preloaded API files&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>APIファイルを指定するか &quot;プリロードされたAPIファイルを使う&quot;をチェックして下さい</translation>
     </message>
 </context>
 <context>
