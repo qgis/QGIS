@@ -65928,19 +65928,19 @@ Returns a string representation of a color based on its red, green, blue, and al
 &lt;!-- Show example of function.--&gt;
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">
+        <translation>
 &lt;h3&gt;color_rgba() 関数&lt;/h3&gt;
-Returns a string representation of a color based on its red, green, blue, and alpha (transparency) components
+赤、緑、青、アルファ(透過度)の要素に基づいて色を表す文字列を返します
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      color_rgba(&lt;i&gt;red, green, blue, alpha&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  red&lt;/i&gt; &amp;rarr; the red component as an integer value from 0 to 255.&lt;br&gt;
-&lt;i&gt;  green&lt;/i&gt; &amp;rarr; the green component as an integer value from 0 to 255.&lt;br&gt;
-&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; the blue component as an integer value from 0 to 255.&lt;br&gt;
-&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).&lt;br&gt;
+&lt;i&gt;  red&lt;/i&gt; &amp;rarr; 赤の要素. 0から255までの整数の値.&lt;br&gt;
+&lt;i&gt;  green&lt;/i&gt; &amp;rarr; 緑の要素. 0から255までの整数の値.&lt;br&gt;
+&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; 青の要素. 0から255までの整数の値.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; アルファ値. 0(完全に透明)から255(不透明)までの整数の値.&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -66492,14 +66492,14 @@ Converts a string to lower case letters.
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;lower() 関数&lt;/h3&gt;
-Converts a string to lower case letters.
+        <translation>&lt;h3&gt;lower() 関数&lt;/h3&gt;
+文字列を小文字に変換します.
 
 &lt;p&gt;&lt;h4&gt;  Syntax&lt;/h4&gt;
      lower(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;  Arguments&lt;/h4&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to lower case.&lt;/p&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; 小文字に変換する文字列.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
@@ -66547,8 +66547,8 @@ to.
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
-        <translation type="unfinished">&lt;h3&gt;文字列 グループ&lt;/h3&gt;
-This group contains functions that operate on strings e.g replace, convert to upper case.
+        <translation>&lt;h3&gt;文字列 グループ&lt;/h3&gt;
+このグループには文字列を操作する関数があります. 例. 文字列置換. 大文字への変換.
 </translation>
     </message>
     <message>
@@ -66632,20 +66632,20 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 &lt;!-- Show example of function.--&gt;
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">
+        <translation>
 &lt;h3&gt;color_cmyka() 関数&lt;/h3&gt;
-Returns a string representation of a color based on its cyan, magenta, yellow, black and alpha (transparency) components
+シアン、マゼンタ、イエロー、ブラック、アルファ(透過度)の要素に基づいて色を表す文字列を返します
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      color_cmyka(&lt;i&gt;cyan, magenta, yellow, black, alpha&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; the cyan component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; the magenta component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  yellow&lt;/i&gt; &amp;rarr; the yellow component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  black&lt;/i&gt; &amp;rarr; the black component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).&lt;br&gt;
+&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; シアンの要素. 0から100までの整数のパーセント.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; マゼンタの要素. 0から100までの整数のパーセント.&lt;br&gt;
+&lt;i&gt;  yellow&lt;/i&gt; &amp;rarr; イエローの要素. 0から100までの整数のパーセント.&lt;br&gt;
+&lt;i&gt;  black&lt;/i&gt; &amp;rarr; ブラックの要素. 0から100までの整数のパーセント.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; アルファ値. 0(完全に透明)から255(不透明)までの整数の値.&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -66927,15 +66927,15 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;trim() 関数&lt;/h3&gt;
-Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
+        <translation>&lt;h3&gt;trim() 関数&lt;/h3&gt;
+文字列から先頭と末尾の空白(スペースやタブなど)を削除します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      trim(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string. The string to trim.&lt;/p&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; トリムする文字列.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -66960,17 +66960,17 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;#ffaa00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;color_hsv() 関数&lt;/h3&gt;
-Returns a string representation of a color based on its hue, saturation, and value attributes
+        <translation>&lt;h3&gt;color_hsv() 関数&lt;/h3&gt;
+色相、彩度、明度に基づいて色を表す文字列を返します
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      color_hsv(&lt;i&gt;hue, saturation, value&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
-&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; the value percentage of the color as an integer from 0 to 100.&lt;br&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; 色相. 0から360までの整数.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; 彩度. 0から100までの整数のパーセント.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; 明度. 0から100までの整数のパーセント.&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -67196,19 +67196,19 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">
+        <translation>
 &lt;h3&gt;color_cmyk() 関数&lt;/h3&gt;
-Returns a string representation of a color based on its cyan, magenta, yellow and black components
+シアン、マゼンタ、イエロー、ブラックの要素に基づいて色を表す文字列を返します
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      color_cmyk(&lt;i&gt;cyan, magenta, yellow, black&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; the cyan component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; the magenta component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  yellow&lt;/i&gt; &amp;rarr; the yellow component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  black&lt;/i&gt; &amp;rarr; the black component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; シアンの要素. 0から100までの整数のパーセント.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; マゼンタの要素. 0から100までの整数のパーセント.&lt;br&gt;
+&lt;i&gt;  yellow&lt;/i&gt; &amp;rarr; イエローの要素. 0から100までの整数のパーセント.&lt;br&gt;
+&lt;i&gt;  black&lt;/i&gt; &amp;rarr; ブラックの要素. 0から100までの整数のパーセント.&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -67346,15 +67346,15 @@ Converts a string to upper case letters.
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;upper() 関数&lt;/h3&gt;
-Converts a string to upper case letters.
+        <translation>&lt;h3&gt;upper() 関数&lt;/h3&gt;
+文字列を大文字に変換します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      upper(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to upper case.&lt;/p&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; 大文字に変換する文字列.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -67421,15 +67421,15 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;length() 関数&lt;/h3&gt;
-Returns the length of a string.
+        <translation>&lt;h3&gt;length() 関数&lt;/h3&gt;
+文字列の長さ(文字数)を返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      length(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to count the length of.&lt;/p&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; 文字数を数える文字列.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -67554,18 +67554,18 @@ Returns a string representation of a color based on its hue, saturation, lightne
 &lt;!-- Show example of function.--&gt;
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;color_hsla() 関数&lt;/h3&gt;
-Returns a string representation of a color based on its hue, saturation, lightness and alpha (transparency) attributes
+        <translation>&lt;h3&gt;color_hsla() 関数&lt;/h3&gt;
+色相、彩度、輝度、アルファ(透過度)に基づいて色を表す文字列を返します
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      color_hsla(&lt;i&gt;hue, saturation, lightness, alpha&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
-&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; the lightness percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).&lt;br&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; 色相. 0から360までの整数.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; 彩度. 0から100までの整数のパーセント.&lt;br&gt;
+&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; 輝度. 0から100までの整数のパーセント.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; アルファ値. 0(完全に透明)から255(不透明)までの整数の値.&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -68379,18 +68379,18 @@ Returns a string representation of a color based on its hue, saturation, value a
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;color_hsva() 関数&lt;/h3&gt;
-Returns a string representation of a color based on its hue, saturation, value and alpha (transparency) attributes
+        <translation>&lt;h3&gt;color_hsva() 関数&lt;/h3&gt;
+色相、彩度、明度、アルファ(透過度)に基づいて色を表す文字列を返します
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      color_hsva(&lt;i&gt;hue, saturation, value, alpha&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
-&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; the value percentage of the color as an integer from 0 to 100.&lt;br&gt;
-&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).&lt;br&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; 色相. 0から360までの整数.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; 彩度. 0から100までの整数のパーセント.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; 明度. 0から100までの整数のパーセント.&lt;br&gt;
+&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; アルファ値. 0(完全に透明)から255(不透明)までの整数の値.&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -68575,16 +68575,15 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;title() 関数&lt;/h3&gt;
-Converts all words of a string to title case (all words lower case with leading
-capital letter).
+        <translation>&lt;h3&gt;title() 関数&lt;/h3&gt;
+文字列に含まれる全ての単語をタイトルケース(先頭が大文字で後に小文字が続く)に変換する.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      title(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to convert to title case.&lt;/p&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; タイトルケースに変換する文字列.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -68686,25 +68685,25 @@ The color ramps available vary between QGIS installations.  This function
 may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished">
+        <translation>
 &lt;h3&gt;ramp_color() 関数&lt;/h3&gt;
-Returns a string representing a color from a color ramp. 
+色階調から色を表す文字列を返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      ramp_color(&lt;i&gt;ramp_name,value&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  ramp_name&lt;/i&gt; &amp;rarr; the name of the color ramp as a string, for example &apos;Spectral&apos;.&lt;br&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; the position on the ramp to select the color from as a real number between 0 and 1.&lt;br&gt;
+&lt;i&gt;  ramp_name&lt;/i&gt; &amp;rarr; 色階調の名前を表す文字列. 例えば、&apos;Spectral&apos;.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; 選択する色の階調での位置. 0から1の間の実数.&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      ramp_color(&apos;Spectral&apos;,0.3) &amp;rarr; &apos;#fdbe73&apos;&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Note:&lt;/h4&gt;
-The color ramps available vary between QGIS installations.  This function
-may not give the expected results if you move your Quantum project.
+&lt;p&gt;&lt;h4&gt;注:&lt;/h4&gt;
+利用できる色階調はインストールされたQGISによって異なります.
+あなたがプロジェクトを他のQGISに移動した場合、この関数は期待される結果を与えないかもしれません.
 &lt;/p&gt;
 </translation>
     </message>
@@ -69022,17 +69021,17 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;color_hsl() 関数&lt;/h3&gt;
-Returns a string representation of a color based on its hue, saturation, and lightness attributes
+        <translation>&lt;h3&gt;color_hsl() 関数&lt;/h3&gt;
+色相、彩度、輝度に基づいて色を表す文字列を返します
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      color_hsl(&lt;i&gt;hue, saturation, lightness&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
-&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; the lightness percentage of the color as an integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; 色相. 0から360までの整数.&lt;br&gt;
+&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; 彩度. 0から100までの整数のパーセント.&lt;br&gt;
+&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; 輝度. 0から100までの整数のパーセント.&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -69058,18 +69057,18 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">
+        <translation>
 &lt;h3&gt;color_rgb() 関数&lt;/h3&gt;
-Returns a string representation of a color based on its red, green, and blue components
+赤、緑、青の要素に基づいて色を表す文字列を返します
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      color_rgb(&lt;i&gt;red, green, blue&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  red&lt;/i&gt; &amp;rarr; the red component as an integer value from 0 to 255.&lt;br&gt;
-&lt;i&gt;  green&lt;/i&gt; &amp;rarr; the green component as an integer value from 0 to 255.&lt;br&gt;
-&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; the blue component as an integer value from 0 to 255.&lt;br&gt;
+&lt;i&gt;  red&lt;/i&gt; &amp;rarr; 赤の要素. 0から255までの整数の値.&lt;br&gt;
+&lt;i&gt;  green&lt;/i&gt; &amp;rarr; 緑の要素. 0から255までの整数の値.&lt;br&gt;
+&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; 青の要素. 0から255までの整数の値.&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -69158,17 +69157,17 @@ Returns a string with the the supplied string replaced.
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;replace() 関数&lt;/h3&gt;
-Returns a string with the the supplied string replaced.
+        <translation>&lt;h3&gt;replace() 関数&lt;/h3&gt;
+与えられた文字列を置き換えた文字列を返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      replace(&lt;i&gt;string,before,after&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
-&lt;i&gt;  before&lt;/i&gt; &amp;rarr; is string.  The string to replace.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace &lt;i&gt;before&lt;/i&gt;&lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; 対象の文字列.&lt;br&gt;
+&lt;i&gt;  before&lt;/i&gt; &amp;rarr; 置換される文字列.&lt;br&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; &lt;i&gt;before&lt;/i&gt;を置換する文字列.&lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
