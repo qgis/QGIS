@@ -66187,10 +66187,10 @@ Double click to add field name to expression string.
 &lt;br&gt;&lt;br&gt;
 Right-Click on field name to open context menu sample value loading options.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Field&lt;/h3&gt;
-Double click to add field name to expression string.
+        <translation>&lt;h3&gt;フィールド&lt;/h3&gt;
+式にフィールド名を追加するにはダブルクリックして下さい.
 &lt;br&gt;&lt;br&gt;
-Right-Click on field name to open context menu sample value loading options.
+コンテキストメニューのサンプル値のロードオプションを開くにはフィールド名を右クリックして下さい.
 </translation>
     </message>
     <message>
@@ -67144,7 +67144,7 @@ None
 This group contains functions for handling date and time data.
 </source>
         <translation>&lt;h3&gt;日付と時刻 グループ&lt;/h3&gt;
-このグループは日付と時刻データを扱う関数を含みます.
+このグループには日付と時刻データを扱う関数があります.
 </translation>
     </message>
     <message>
@@ -67367,7 +67367,7 @@ Converts a string to upper case letters.
 This group contains functions that operate on record identifiers.
 </source>
         <translation type="unfinished">&lt;h3&gt;レコード グループ&lt;/h3&gt;
-This group contains functions that operate on record identifiers.
+このグループにはレコード識別子を操作する関数があります.
 </translation>
     </message>
     <message>
@@ -68714,7 +68714,7 @@ may not give the expected results if you move your Quantum project.
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
         <translation>&lt;h3&gt;変換 グループ&lt;/h3&gt;
-このグループはデータ型を他のデータ型に変換する関数を含みます. 例. 文字列を整数に, 整数を文字列に.
+このグループにはデータ型を他のデータ型に変換する関数があります. 例. 文字列を整数に, 整数を文字列に.
 </translation>
     </message>
     <message>
@@ -68931,10 +68931,10 @@ Contains a list of fields from the layer.  Sample values can also be accessed vi
 Select the field name from the list then right-click to access context menu with options to load sample values from the selected field.
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;フィールドと値&lt;/h3&gt;
-Contains a list of fields from the layer.  Sample values can also be accessed via right-click.
+        <translation>&lt;h3&gt;フィールドと値&lt;/h3&gt;
+レイヤに含まれるフィールドのリストです. サンプル値は右クリックでアクセスすることもできます.
 &lt;br&gt;&lt;br&gt;
-Select the field name from the list then right-click to access context menu with options to load sample values from the selected field.
+リストからフィールド名を選択して右クリックすると選択されたフィールドからのサンプル値のロードオプションを含むコンテキストメニューにアクセスできます.
 
 </translation>
     </message>
