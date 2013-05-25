@@ -27368,84 +27368,94 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
 <context>
     <name>QgsLegend</name>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="223"/>
-        <location filename="../src/app/legend/qgslegend.cpp" line="2994"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="224"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="3050"/>
         <source>group</source>
         <translation>Gruppe</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="831"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="832"/>
         <source>&amp;Properties</source>
         <translation>&amp;Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="835"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="836"/>
         <source>&amp;Make to Toplevel Item</source>
         <translation>In oberste Ebene &amp;bringen</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="841"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="842"/>
         <source>Zoom to Group</source>
         <translation>Zur Gruppe zoomen</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="844"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="845"/>
         <source>&amp;Remove</source>
         <translation>&amp;Entfernen</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="847"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="848"/>
         <source>&amp;Set Group CRS</source>
         <translation>KBS für Gruppe &amp;setzen</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="860"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="861"/>
         <source>&amp;Group Selected</source>
         <translation>&amp;Gewählte gruppieren</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="868"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="869"/>
         <source>Copy Style</source>
         <translation>Stil kopieren</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="871"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="872"/>
         <source>Paste Style</source>
         <translation>Stil einfügen</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="875"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="876"/>
         <source>&amp;Add New Group</source>
         <translation>&amp;Neue Gruppe hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="876"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="877"/>
         <source>&amp;Expand All</source>
         <translation>Alles ausklapp&amp;en</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="877"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="878"/>
         <source>&amp;Collapse All</source>
         <translation>&amp;Alles zusammenfalten</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="879"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="880"/>
         <source>&amp;Update Drawing Order</source>
         <translation>&amp;Zeichenreihenfolge aktualisieren</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="758"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="1994"/>
+        <source>Not fully defined drawing order set to legend order.</source>
+        <translation>Nicht vollständig definierte Layeranzeigereihenfolge auf Legendenreihenfolge gesetzt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/legend/qgslegend.cpp" line="1994"/>
+        <source>Legend</source>
+        <translation>Legende</translation>
+    </message>
+    <message>
+        <location filename="../src/app/legend/qgslegend.cpp" line="759"/>
         <source>Legend context</source>
         <translation>Legendenkontext</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="852"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="853"/>
         <source>Re&amp;name</source>
         <translation>Umbe&amp;nennen</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="217"/>
-        <location filename="../src/app/legend/qgslegend.cpp" line="2989"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="218"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="3045"/>
         <source>sub-group</source>
         <translation>Untergruppe</translation>
     </message>
@@ -33380,6 +33390,11 @@ Fehler:%2
         <translation>Nur in der Metadatentabelle suchen</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="211"/>
+        <source>Only list the existing geometry types and don&apos;t offer to add others.</source>
+        <translation>Nur vorhandene Geometrietypen anzeigen und nicht das Hinzufügen von anderen anbieten.</translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="217"/>
         <source>Only existing geometry types</source>
         <translation>Nur vorhandene Geometrietypen</translation>
@@ -33436,7 +33451,6 @@ Fehler:%2
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="51"/>
-        <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="211"/>
         <source>Use estimated table statistics for the layer metadata.</source>
         <translation>Geschätzte Tabellenstatistik für die Tabellen-Metadaten verwenden.</translation>
     </message>
