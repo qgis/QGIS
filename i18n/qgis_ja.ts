@@ -11047,7 +11047,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/core/qgsexpression.cpp" line="452"/>
         <location filename="../src/core/qgsexpression.cpp" line="485"/>
         <source>Domain max must be greater than domain min</source>
-        <translation>領域最大値は領域最小より大きくなければいけません</translation>
+        <translation>範囲最大値は範囲最小値より大きくなければいけません</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="490"/>
@@ -12288,12 +12288,12 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1559"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
-        <translation>チェックされている場合、地図レイヤはナビゲーションコマンドなどのイベント時にレンダリングされます。チェックされていない場合、レンダリングされません。これにより、レンダリングせずに多くのレイヤを追加してシンボル化することができます。</translation>
+        <translation>チェックされている場合、地図レイヤはナビゲーションコマンドなどのイベント時にレンダリングされます。チェックされていない場合、レンダリングされません。これによりレンダリングが行われる前に多くのレイヤを追加してシンボル化することができます。</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1563"/>
         <source>Toggle map rendering</source>
-        <translation>地図レンダリングを循環</translation>
+        <translation>地図レンダリング切替</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2396"/>
@@ -24584,7 +24584,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="585"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="588"/>
         <source>Use a spatial index to improve performance of displaying and spatially selecting features</source>
-        <translation>表示と地物の空間的高速化のために空間院でクスを利用する</translation>
+        <translation>地物の表示と空間的選択を高速化するために空間インデックスを利用する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="591"/>
@@ -65895,7 +65895,7 @@ None
 
 </source>
         <translation>&lt;h3&gt;$rownum 関数&lt;/h3&gt;
-現在の行数を返します.
+現在の行番号を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$rownum&lt;/pre&gt;
