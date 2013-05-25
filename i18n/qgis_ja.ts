@@ -5694,7 +5694,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="140"/>
         <source>Cell size X</source>
-        <translation>セルサイズ X</translation>
+        <translation>セルサイズX</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="150"/>
@@ -8353,7 +8353,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Uncomment</source>
-        <translation>アンコメント</translation>
+        <translation>コメント解除</translation>
     </message>
     <message>
         <source>Find Text</source>
@@ -10406,7 +10406,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="42"/>
         <source>To select features, choose a vector layer in the legend</source>
-        <translation>要素を選択するには、凡例からベクタレイヤを選択してください</translation>
+        <translation>地物を選択するには、凡例からベクタレイヤを選択してください</translation>
     </message>
     <message>
         <source>CRS undefined - defaulting to default CRS</source>
@@ -14846,7 +14846,7 @@ Error: %1</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5288"/>
         <source>To select features, choose a vector layer in the legend</source>
-        <translation>要素を選択するには、凡例からベクタレイヤを選択してください</translation>
+        <translation>地物を選択するには、凡例からベクタレイヤを選択してください</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5332"/>
@@ -19307,7 +19307,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="316"/>
         <source>Uuid (read-only)</source>
-        <translation>Uuid(リードオンリィ)</translation>
+        <translation>Uuid(リードオンリー)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="333"/>
@@ -24397,7 +24397,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="807"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="810"/>
         <source>Comma character is one of the delimiters</source>
-        <translation>デリミタとしてカンマを使用</translation>
+        <translation>デリミタとしてコンマを使用</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="820"/>
@@ -25070,17 +25070,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="301"/>
         <source>Unknown diagram type.</source>
-        <translation>不明な図表のタイプ.</translation>
+        <translation>不明なダイアグラムのタイプ.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="302"/>
         <source>The diagram type &apos;%1&apos; is unknown. A default type is selected for you.</source>
-        <translation>%1 の図表タイプは不明なため既定のタイプが選択されます.</translation>
+        <translation>%1 のダイアグラムタイプは不明なため既定のタイプが選択されます.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="346"/>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
-        <translation>スケールは0と以下の属性値/図表サイズの間の値をとります:</translation>
+        <translation>スケールは0と以下の属性値/ダイアグラムサイズの間の値をとります:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="403"/>
@@ -25120,7 +25120,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="495"/>
         <source>You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams.</source>
-        <translation>図表レイヤに属性が追加されませんでした. 図表上に表示または非表示するために属性を指定してください.</translation>
+        <translation>ダイアグラムレイヤに属性が追加されませんでした. ダイアグラム上に表示または非表示するために属性を指定してください.</translation>
     </message>
 </context>
 <context>
@@ -25128,12 +25128,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="20"/>
         <source>Display diagrams</source>
-        <translation>図表の表示</translation>
+        <translation>ダイアグラムの表示</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="52"/>
         <source>Diagram type</source>
-        <translation>図表タイプ</translation>
+        <translation>ダイアグラムタイプ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="75"/>
@@ -25234,7 +25234,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="389"/>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
-        <translation>スケールは0と以下の属性値/図表サイズの間の値をとります:</translation>
+        <translation>スケールは0と以下の属性値/ダイアグラムサイズの間の値をとります:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="407"/>
@@ -25267,7 +25267,7 @@ Leave empty to automatically apply the maximum value.</source>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="471"/>
         <source>Will scale diagrams with a size smaller than the minimum size to the minimum size</source>
-        <translation>最小サイズ以下の場合、最小サイズに図表を拡大します</translation>
+        <translation>最小サイズ以下の場合、最小サイズにダイアグラムを拡大します</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="474"/>
@@ -33560,17 +33560,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1842"/>
         <source>Formatted numbers</source>
-        <translation>整形された数値</translation>
+        <translation>数値の書式</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1877"/>
         <source>Decimal places </source>
-        <translation>小数の位置</translation>
+        <translation>小数点以下桁数</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1907"/>
         <source>Show plus sign</source>
-        <translation>正の符号表示</translation>
+        <translation>正の符号を表示する</translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -34065,7 +34065,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="502"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="505"/>
         <source>Formatting</source>
-        <translation>書式化中</translation>
+        <translation>整形</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="538"/>
@@ -34135,7 +34135,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1342"/>
         <source>Text formatting</source>
-        <translation>テキスト整形中</translation>
+        <translation>テキスト整形</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1381"/>
@@ -34755,7 +34755,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5374"/>
         <source>never</source>
-        <translation>一度も無い</translation>
+        <translation>なし</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5390"/>
@@ -40963,7 +40963,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2008"/>
         <source>Debugging</source>
-        <translation>デバッギング</translation>
+        <translation>デバッグ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2014"/>
@@ -64222,7 +64222,7 @@ See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector fo
 &lt;li&gt;OGRはそれがサポートする様々な形式のための様々なオプションを用意しています.
 データソース生成オプションを設定するには&lt;label&gt;データソース&lt;/label&gt;フィールドを用いて下さい. レイヤ生成オプションを設定するには&lt;label&gt;レイヤ&lt;/label&gt;フィールドを用いて下さい. 1行につき1つのオプションを入力します.
  例えば, &lt;code&gt;SPATIALITE=yes&lt;/code&gt;を&lt;label&gt;データソース&lt;/label&gt;に入力するとSQLiteドライバを用いてspatialiteデータベースを作成できます.
- &lt;code&gt;GEOMETRY=AS_XY&lt;/code&gt;を&lt;label&gt;レイヤ&lt;/label&gt;に入力するとCSV(カンマ区切りファイル)ドライバはポイントジオメトリのX, Y要素をエクスポートします.
+ &lt;code&gt;GEOMETRY=AS_XY&lt;/code&gt;を&lt;label&gt;レイヤ&lt;/label&gt;に入力するとCSV(コンマ区切りファイル)ドライバはポイントジオメトリのX, Y要素をエクスポートします.
 &lt;/ul&gt;
 
 サポートされている形式の一覧と利用可能なオプションは&lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt;を参照して下さい.
