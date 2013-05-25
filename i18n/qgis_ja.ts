@@ -5979,7 +5979,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="297"/>
         <source>Digitizing</source>
-        <translation>デジタイジング</translation>
+        <translation>デジタイズ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="318"/>
@@ -6984,7 +6984,7 @@ Shift+クリックで非表示
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1646"/>
         <source>&quot;Creates a north arrow that is displayed on the map canvas&quot;</source>
-        <translation>”地図キャンバスに表示される北向き矢印を作ります&quot;</translation>
+        <translation>&quot;地図キャンバスに表示される北向き矢印を作ります&quot;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1655"/>
@@ -13315,7 +13315,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4572"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
-        <translation>カレントレイヤは編集できません.デジタイジングツールバーで&apos;編集開始&apos;を選択して下さい.</translation>
+        <translation>カレントレイヤは編集できません.デジタイズツールバーで&apos;編集開始&apos;を選択して下さい.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5041"/>
@@ -27529,7 +27529,7 @@ gray = no data
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="840"/>
         <source>Digitizing</source>
-        <translation>デジタイジング</translation>
+        <translation>デジタイズ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="870"/>
@@ -36309,7 +36309,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="99"/>
         <source>No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings-&gt;Options-&gt;Digitizing-&gt;Serch radius for vertex edits</source>
-        <translation>クリックした地点に点が無い地物を検出しました。地物の近くをクリックするか検索許容値を拡大してください。許容値は設定-&gt;オプション-&gt;デジタイジング-&gt;頂点編集用検索範囲で設定できます</translation>
+        <translation>クリックした地点に点が無い地物を検出しました。地物の近くをクリックするか検索許容値を拡大してください。許容値は設定-&gt;オプション-&gt;デジタイズ-&gt;頂点編集用検索範囲で設定できます</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="113"/>
@@ -40284,7 +40284,7 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsoptionsbase.ui" line="160"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2820"/>
         <source>Digitizing</source>
-        <translation>デジタイジング</translation>
+        <translation>デジタイズ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="614"/>
@@ -41305,7 +41305,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3013"/>
         <source>Default snapping tolerance</source>
-        <translation>デフォルトスナッピング許容値</translation>
+        <translation>デフォルトスナップ許容値</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3030"/>
@@ -51468,7 +51468,7 @@ enhancement</source>
     <message>
         <location filename="../src/app/qgssnappingdialog.cpp" line="60"/>
         <source>Snapping and Digitizing Options</source>
-        <translation>スナップとデジタイジングオプション</translation>
+        <translation>スナップとデジタイズオプション</translation>
     </message>
     <message>
         <location filename="../src/app/qgssnappingdialog.cpp" line="164"/>
@@ -51543,7 +51543,7 @@ enhancement</source>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="85"/>
         <source>Enable snapping on intersection</source>
-        <translation>交差部でスナッピングを有効にする</translation>
+        <translation>交差部でスナップを有効にする</translation>
     </message>
 </context>
 <context>
@@ -64532,7 +64532,7 @@ Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, u
 &lt;a href=&quot;#ren&quot;&gt;レンダリング &amp; SVG&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#map&quot;&gt;マップツールズ&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#over&quot;&gt;オーバーレイ&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#digit&quot;&gt;デジタイジング&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#digit&quot;&gt;デジタイズ&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#crs&quot;&gt;CRS&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#loc&quot;&gt;ロケール&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#net&quot;&gt;ネットワークとプロキシ&lt;/a&gt;&lt;br/&gt;
@@ -64572,18 +64572,18 @@ QGISでは多くの方法でレンダリングプロセスをコントロール�
 ラベルの配置アルゴリズムを定義できます.  &lt;label&gt;中央点 (fastest)&lt;/label&gt;, &lt;label&gt;チェイン (fast)&lt;/label&gt;, &lt;label&gt;ポップミュージックタブチェイン (遅い)&lt;/label&gt;, &lt;label&gt;ポップミュージックタブ (遅い)&lt;/label&gt; and &lt;label&gt;ポップミュージックチェイン (とても遅い)&lt;/label&gt;の中から選択して下さい.
 
 &lt;a name=&quot;digit&quot;&gt;
-&lt;h4&gt;デジタイジング&lt;/h4&gt;
+&lt;h4&gt;デジタイズ&lt;/h4&gt;
 &lt;/a&gt;
 &lt;h5&gt;ラバーバンド&lt;/h5&gt;
-&lt;label&gt;デジタイジング&lt;/label&gt;タブでは入力ラインの太さと色を設定できます.
-&lt;h5&gt;スナッピング&lt;/h5&gt;
-ここではプロジェクト全体でのスナッピング許容値を定義できます. &lt;p&gt;
-&lt;label&gt;頂点&lt;/label&gt;, &lt;label&gt;セグメント&lt;/label&gt;または &lt;label&gt;頂点とセグメント&lt;/label&gt;の中からデフォルトを選べます. また頂点編集で利用するスナッピングの既定値や検索半径を定義できます. 許容値は地図上の単位かピクセル数で定義できます.ピクセルを選択するとズーム操作によって許容値が変わらないという利点があります . &lt;p&gt;
-レイヤ別のスナッピング許容値は &lt;label&gt;設定&lt;/label&gt; &lt;!--(または &lt;label&gt;ファイル&lt;/label&gt;)--&gt; &lt;label&gt;プロジェクトプロパティ...&lt;/label&gt;を選択すると定義できます.  &lt;label&gt;一般情報&lt;/label&gt; タブの, セクション &lt;label&gt;デジタイジング&lt;/label&gt;で&lt;label&gt;スナップオプション...&lt;/label&gt;をクリックするとレイヤ単位のスナッピングモードの有効化と許容値の調整を行うことができます.
+&lt;label&gt;デジタイズ&lt;/label&gt;タブでは入力ラインの太さと色を設定できます.
+&lt;h5&gt;スナップ&lt;/h5&gt;
+ここではプロジェクト全体でのスナップ許容値を定義できます. &lt;p&gt;
+&lt;label&gt;頂点&lt;/label&gt;, &lt;label&gt;セグメント&lt;/label&gt;または &lt;label&gt;頂点とセグメント&lt;/label&gt;の中からデフォルトを選べます. また頂点編集で利用するスナップの既定値や検索半径を定義できます. 許容値は地図上の単位かピクセル数で定義できます.ピクセルを選択するとズーム操作によって許容値が変わらないという利点があります . &lt;p&gt;
+レイヤ別のスナップ許容値は &lt;label&gt;設定&lt;/label&gt; &lt;!--(または &lt;label&gt;ファイル&lt;/label&gt;)--&gt; &lt;label&gt;プロジェクトプロパティ...&lt;/label&gt;を選択すると定義できます.  &lt;label&gt;一般情報&lt;/label&gt; タブの, セクション &lt;label&gt;デジタイズ&lt;/label&gt;で&lt;label&gt;スナップオプション...&lt;/label&gt;をクリックするとレイヤ単位のスナップモードの有効化と許容値の調整を行うことができます.
 &lt;h5&gt;頂点マーク&lt;/h5&gt;
 マーカースタイルを &lt;label&gt;半透明の円&lt;/label&gt;, &lt;label&gt;十字&lt;/label&gt; or &lt;label&gt;無し&lt;/label&gt;から選択できます、またサイズを指定できます; また選択されている地物のみのマーカーを設定することもできます.
 &lt;h5&gt;属性値の入力&lt;/h5&gt;
-デフォルトで新規の地物をデジタイジングした後QGISはその地物の属性値の入力を求めてきます. &lt;label&gt;地物が作成された後の属性ポップアップウィンドウ表示をやめる&lt;/label&gt; をクリックすると属性入力は後の処理にすることができます.
+デフォルトで新規の地物をデジタイズした後QGISはその地物の属性値の入力を求めてきます. &lt;label&gt;地物が作成された後の属性ポップアップウィンドウ表示をやめる&lt;/label&gt; をクリックすると属性入力は後の処理にすることができます.
 &lt;a name=&quot;crs&quot;&gt;
 &lt;h4&gt;CRS&lt;/h4&gt;
 &lt;/a&gt;
