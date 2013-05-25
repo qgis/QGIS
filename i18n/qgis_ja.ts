@@ -66098,10 +66098,10 @@ Note: This function is only available in some contexts and will be 0 otherwise.
 
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$scale 関数&lt;/h3&gt;
-Returns the current scale of the map canvas.
+        <translation>&lt;h3&gt;$scale 関数&lt;/h3&gt;
+カレントマップキャンパスの縮尺を返します.
 &lt;br&gt;
-Note: This function is only available in some contexts and will be 0 otherwise. 
+注: この関数はいくつかのコンテキストでのみ利用可能です,利用できない場合は0が返ってきますe. 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;$scale&lt;/code&gt;&lt;br&gt;
 
@@ -66566,15 +66566,15 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;abs() 関数&lt;/h3&gt;
-Returns the absolute value of a number.&lt;br&gt;
+        <translation>&lt;h3&gt;abs() 関数&lt;/h3&gt;
+数値の絶対値を返します.&lt;br&gt;
 
 
 &lt;h4&gt;構文&lt;/h4&gt;
 abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - a number.&lt;br&gt;
+&lt;code&gt;value&lt;/code&gt; - 数値.&lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
@@ -66897,8 +66897,8 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$area 関数&lt;/h3&gt;
-Returns the area size of the current feature.
+        <translation>&lt;h3&gt;$area 関数&lt;/h3&gt;
+カレント地物の面積を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$area&lt;/pre&gt;
@@ -67124,8 +67124,8 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$id 関数&lt;/h3&gt;
-Returns the feature id of the current row.
+        <translation>&lt;h3&gt;$id 関数&lt;/h3&gt;
+カレント行の地物idを返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$id&lt;/pre&gt;
@@ -67721,8 +67721,8 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$x 関数&lt;/h3&gt;
-Returns the x coordinate of the current feature.
+        <translation>&lt;h3&gt;$x 関数&lt;/h3&gt;
+カレント地物のx座標を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$x&lt;/pre&gt;
@@ -68257,8 +68257,8 @@ return a result.
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Conditions グループ&lt;/h3&gt;
-This group contains functions that operate on condition.
+        <translation>&lt;h3&gt;Conditions グループ&lt;/h3&gt;
+このグループには条件演算子が所属しています.
 </translation>
     </message>
     <message>
@@ -68722,8 +68722,8 @@ This group contains functions to convert on data type to another e.g string to i
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
-        <translation type="unfinished">&lt;h3&gt;演算子 グループ&lt;/h3&gt;
-This group contains operators e.g + - * 
+        <translation>&lt;h3&gt;演算子 グループ&lt;/h3&gt;
+このグループには演算子が所属しています 例えば + - * 
 </translation>
     </message>
     <message>
@@ -68741,8 +68741,8 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$page 関数&lt;/h3&gt;
-Returns the current page number within a composition.
+        <translation>&lt;h3&gt;$page 関数&lt;/h3&gt;
+コンポジションの中でのカレントページ番号を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$page&lt;/pre&gt;
@@ -68814,8 +68814,8 @@ None
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$y 関数&lt;/h3&gt;
-Returns the y coordinate of the current feature.
+        <translation>&lt;h3&gt;$y 関数&lt;/h3&gt;
+カレント地物のy座標を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$y&lt;/pre&gt;
