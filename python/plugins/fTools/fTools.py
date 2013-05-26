@@ -189,15 +189,12 @@ class fToolsPlugin:
 
     self.updateThemeIcons("theme")
 
-    self.tmpAct = QAction( self.iface.mainWindow() )
-    self.iface.addPluginToVectorMenu( "tmp", self.tmpAct )
     self.menu = self.iface.vectorMenu()
     self.menu.addMenu( self.analysisMenu )
     self.menu.addMenu( self.researchMenu )
     self.menu.addMenu( self.geoMenu )
     self.menu.addMenu( self.conversionMenu )
     self.menu.addMenu( self.dataManageMenu )
-    self.iface.removePluginVectorMenu( "tmp", self.tmpAct )
 
     QObject.connect(self.distMatrix, SIGNAL("triggered()"), self.dodistMatrix)
     QObject.connect(self.sumLines, SIGNAL("triggered()"), self.dosumLines)
@@ -246,14 +243,11 @@ class fToolsPlugin:
     QObject.connect(self.spatialIndex, SIGNAL("triggered()"), self.doSpatIndex)
 
   def unload(self):
-    self.iface.addPluginToVectorMenu( "tmp", self.tmpAct )
     self.menu.removeAction( self.analysisMenu.menuAction() )
     self.menu.removeAction( self.researchMenu.menuAction() )
     self.menu.removeAction( self.geoMenu.menuAction() )
     self.menu.removeAction( self.conversionMenu.menuAction() )
     self.menu.removeAction( self.dataManageMenu.menuAction() )
-    self.iface.removePluginVectorMenu( "tmp", self.tmpAct )
-
 
   def doSimplify(self):
     d = doSimplify.Dialog(self.iface, 1)
