@@ -1,5 +1,5 @@
 /***************************************************************************
-      qgsdelimitedtextprovider.h  -  Data provider for delimted text
+      qgsdelimitedtextprovider.h  -  Data provider for delimited text
                              -------------------
     begin                : 2004-02-27
     copyright            : (C) 2004 by Gary E.Sherman
@@ -200,6 +200,14 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * @return True if point is within the rectangle
     */
     bool boundsCheck( QgsGeometry *geom );
+
+    /**
+     * Try to read field types from CSVT (or equialent xxxT) file.
+     * @param filename The name of the file from which to read the field types
+     * @param message  Pointer to a string to receive a status message
+     * @return A list of field type strings, empty if not found or not valid
+     */
+    QStringList readCsvtFieldTypes( QString filename, QString *message = 0 );
 
   private slots:
 

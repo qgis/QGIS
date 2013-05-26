@@ -233,7 +233,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 
   // text buffer
   bufferDraw = false;
-  bufferDrawOld = false; // on when old style buffer triggered by just size is found
   bufferSize = 1.0;
   bufferSizeInMapUnits = false;
   bufferColor = Qt::white;
@@ -755,6 +754,13 @@ void QgsPalLayerSettings::readDataDefinedProperty( QgsVectorLayer* layer,
     {
       //upgrade any existing property to field name-based
       layer->setCustomProperty( newPropertyName, QVariant( updateDataDefinedString( ddString ) ) );
+
+      // fix for buffer drawing triggered off of just its data defined size in the past (<2.0)
+      if ( oldIndx == 7 ) // old bufferSize enum
+      {
+        bufferDraw = true;
+        layer->setCustomProperty( "labeling/bufferDraw", true );
+      }
     }
 
     // remove old-style field index-based property
@@ -849,7 +855,6 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
 
   // fix for buffer being keyed off of just its size in the past
   QVariant drawBuffer = layer->customProperty( "labeling/bufferDraw", QVariant() );
-  bufferDrawOld = !drawBuffer.isValid();
   if ( drawBuffer.isValid() )
   {
     bufferDraw = drawBuffer.toBool();
@@ -2511,23 +2516,16 @@ void QgsPalLayerSettings::parseTextBuffer()
     drawBuffer = exprVal.toBool();
   }
 
+  if ( !drawBuffer )
+  {
+    return;
+  }
+
   // data defined buffer size?
   double bufrSize = bufferSize;
   if ( dataDefinedValEval( "doublepos", QgsPalLayerSettings::BufferSize, exprVal ) )
   {
     bufrSize = exprVal.toDouble();
-  }
-
-  // FIXME: find better solution for temporarily turning on buffer, when previously defined by size
-  // fix for buffer being keyed off of just its size in the past
-//  if ( bufrSize > 0.0 && bufferDrawOld )
-//  {
-//    drawBuffer = bufferDraw = true;
-//  }
-
-  if ( !drawBuffer )
-  {
-    return;
   }
 
   // data defined buffer transparency?

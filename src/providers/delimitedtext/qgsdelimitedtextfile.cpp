@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdelimitedtextfile.cpp -  Data provider for delimted text
+  qgsdelimitedtextfile.cpp -  Data provider for delimited text
   -------------------
           begin                : 2012-01-20
           copyright            : (C) 201 by Chris Crook
