@@ -29,16 +29,21 @@ from .html_elems import HtmlParagraph, HtmlTable
 class BaseError(Exception):
 	"""Base class for exceptions in the plugin."""
 	def __init__(self, e):
-		msg = e if isinstance(e, (str,unicode,QString)) else e.message
+		if isinstance(e, Exception):
+			msg = e.args[0] if len(e.args) > 0 else ''
+		else:
+			msg = e
 
 		try:
 			msg = unicode( msg )
 		except UnicodeDecodeError:
 			msg = unicode( msg, 'utf-8' )
+
+		self.msg = msg
 		Exception.__init__(self, msg)
 
 	def __unicode__(self):
-		return self.message
+		return self.msg
 
 	def __str__(self):
 		return unicode(self).encode('utf-8')
@@ -55,7 +60,7 @@ class DbError(BaseError):
 		self.query = unicode( query ) if query != None else None
 
 	def __unicode__(self):
-		if self.query == None:
+		if self.query is None:
 			return BaseError.__unicode__(self)
 
 		msg = u"Error:\n%s" % BaseError.__unicode__(self)
