@@ -79,7 +79,7 @@ typedef SInt32 SRefCon;
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 
-#if defined(Q_OS_UNIX) && !defined(ANDROID)
+#if defined(linux) && !defined(ANDROID)
 #include <unistd.h>
 #include <execinfo.h>
 #include <signal.h>
@@ -195,7 +195,7 @@ LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
 }
 #endif
 
-#if defined(Q_OS_UNIX) && !defined(ANDROID)
+#if defined(linux) && !defined(ANDROID)
 void qgisCrash( int signal )
 {
   qFatal( "QGIS died on signal %d", signal );
@@ -232,7 +232,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
            || 0 == strncmp( msg, "QPainter::", 10 ) )
       {
 #if 0
-#if defined(Q_OS_UNIX) && !defined(ANDROID)
+#if defined(linux) && !defined(ANDROID)
         fprintf( stderr, "Stacktrace (run through c++filt):\n" );
         void *buffer[256];
         int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
@@ -254,7 +254,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
     case QtFatalMsg:
     {
       fprintf( stderr, "Fatal: %s\n", msg );
-#if defined(Q_OS_UNIX) && !defined(ANDROID)
+#if defined(linux) && !defined(ANDROID)
       ( void ) write( STDERR_FILENO, "Stacktrace (run through c++filt):\n", 34 );
       void *buffer[256];
       int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
@@ -276,7 +276,7 @@ int main( int argc, char *argv[] )
 #endif  // _MSC_VER
 #endif  // WIN32
 
-#if defined(Q_OS_UNIX) && !defined(ANDROID)
+#if defined(linux) && !defined(ANDROID)
   // Set up the custom qWarning/qDebug custom handler
   qInstallMsgHandler( myMessageOutput );
 
