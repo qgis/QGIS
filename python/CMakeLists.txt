@@ -131,7 +131,7 @@ IF(WITH_QSCIAPI)
   FILE(WRITE "${QGIS_PYTHON_API_FILE}" "")
 
   # run update/concatenate command after last python module is built (currently python_module_qgis_gui)
-  ADD_CUSTOM_COMMAND(TARGET python-module-qgis-gui
+  ADD_CUSTOM_COMMAND(TARGET python_module_qgis_gui
     POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_SOURCE_DIR}/cmake/QsciAPI.cmake"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
