@@ -1,5 +1,5 @@
 /***************************************************************************
-      qgsdelimitedtextprovider.h  -  Data provider for delimted text
+      qgsdelimitedtextprovider.h  -  Data provider for delimited text
                              -------------------
     begin                : 2004-02-27
     copyright            : (C) 2004 by Gary E.Sherman

@@ -79,14 +79,14 @@ typedef SInt32 SRefCon;
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 
-#if defined(linux) && !defined(ANDROID)
+#if defined(Q_OS_UNIX) && !defined(ANDROID)
 #include <unistd.h>
 #include <execinfo.h>
 #include <signal.h>
 #endif
 
 // (if Windows/Mac, use icon from resource)
-#if ! defined(Q_WS_WIN) && ! defined(Q_WS_MAC)
+#if !defined(Q_WS_WIN) && !defined(Q_WS_MAC)
 #include "../../images/themes/default/qgis.xpm" // Linux
 #include <QIcon>
 #endif
@@ -195,7 +195,7 @@ LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
 }
 #endif
 
-#ifdef Q_OS_UNIX
+#if defined(Q_OS_UNIX) && !defined(ANDROID)
 void qgisCrash( int signal )
 {
   qFatal( "QGIS died on signal %d", signal );
@@ -232,7 +232,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
            || 0 == strncmp( msg, "QPainter::", 10 ) )
       {
 #if 0
-#if defined(linux) && ! defined(ANDROID)
+#if defined(Q_OS_UNIX) && !defined(ANDROID)
         fprintf( stderr, "Stacktrace (run through c++filt):\n" );
         void *buffer[256];
         int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
@@ -254,7 +254,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
     case QtFatalMsg:
     {
       fprintf( stderr, "Fatal: %s\n", msg );
-#if defined(linux) && !defined(ANDROID)
+#if defined(Q_OS_UNIX) && !defined(ANDROID)
       ( void ) write( STDERR_FILENO, "Stacktrace (run through c++filt):\n", 34 );
       void *buffer[256];
       int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
@@ -276,7 +276,7 @@ int main( int argc, char *argv[] )
 #endif  // _MSC_VER
 #endif  // WIN32
 
-#if !defined(ANDROID) && !defined(_MSC_VER)
+#if defined(Q_OS_UNIX) && !defined(ANDROID)
   // Set up the custom qWarning/qDebug custom handler
   qInstallMsgHandler( myMessageOutput );
 
@@ -593,7 +593,7 @@ int main( int argc, char *argv[] )
   QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
 
 // (if Windows/Mac, use icon from resource)
-#if ! defined(Q_WS_WIN) && ! defined(Q_WS_MAC)
+#if !defined(Q_WS_WIN) && !defined(Q_WS_MAC)
   myApp.setWindowIcon( QPixmap( qgis_xpm ) );        // Linux
 #endif
 
