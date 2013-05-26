@@ -66524,16 +66524,16 @@ to.
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;format_number() 関数&lt;/h3&gt;
-Returns a number formatted with the locale separator for thousands. 
-Also truncates the number to the number of supplied places. 
+        <translation>&lt;h3&gt;format_number() 関数&lt;/h3&gt;
+ローカルの区切り文字で1000単位に区切りをいれた整形数値を返します. 
+また指定した桁数で数値を切り捨てします. 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;format_number(number,places)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;number&lt;/code&gt; - is number. The number to be formatted.
+&lt;code&gt;number&lt;/code&gt; - 数値. 整形される数値です.
 &lt;br&gt;
-&lt;code&gt;places&lt;/code&gt; - is int. The number of decimal places to truncate the string
+&lt;code&gt;places&lt;/code&gt; - 整数値. 小数点以下の桁数,指定桁数以下は切り捨てられます
 to.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
