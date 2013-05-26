@@ -122,9 +122,8 @@ void QgsPGConnectionItem::setLayerType( QgsPostgresLayerProperty layerProperties
   for ( int i = 0; i < layerProperties.size(); i++ )
   {
     QgsPostgresLayerProperty layerProperty = layerProperties.at( i );
-
     if ( layerProperty.types[0] == QGis::WKBUnknown ||
-        (!layerProperty.geometryColName.isEmpty() && layerProperty.srids[0] < 0 ) )
+         ( !layerProperty.geometryColName.isEmpty() && layerProperty.srids[0] == INT_MIN ) )
       continue;
 
     if ( !schemaItem )
