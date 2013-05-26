@@ -66068,7 +66068,7 @@ Concatenates several strings to one.
 &lt;!-- Show example of function.--&gt;
      concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
-        <translation type="unfinished">&lt;h3&gt;concat() 関数&lt;/h3&gt;
+        <translation>&lt;h3&gt;concat() 関数&lt;/h3&gt;
 複数の文字列を1つに結合する.
 
 &lt;h4&gt;構文&lt;/h4&gt;
@@ -66076,7 +66076,7 @@ Concatenates several strings to one.
 
 &lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  a string.&lt;br&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; 文字列.&lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -66398,16 +66398,16 @@ Returns the portion of a string which matches a supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;regexp_substr() 関数&lt;/h3&gt;
-Returns the portion of a string which matches a supplied regular expression.
+        <translation>&lt;h3&gt;regexp_substr() 関数&lt;/h3&gt;
+指定された正規表現にマッチする文字列の一部を返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      regexp_substr(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The input string.&lt;br&gt;
-&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to match against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character).&lt;br&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; 入力文字列.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; 検索に用いる正規表現. バックスラッシュ文字は二重エスケープする必要があります (例. &quot;&amp;#92;&amp;#92;s&quot; は空白スペース文字にマッチします).&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -66432,16 +66432,16 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 &lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;left() 関数&lt;/h3&gt;
-Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters of the string.
+        <translation>&lt;h3&gt;left() 関数&lt;/h3&gt;
+文字列の左端の&lt;i&gt;n&lt;/i&gt;個の文字が含まれる文字列を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;left(string, length)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. The string.
+&lt;code&gt;string&lt;/code&gt; - 文字列.
 &lt;br&gt;
-&lt;code&gt;length&lt;/code&gt; - is int. The number of characters from the left to return.
+&lt;code&gt;length&lt;/code&gt; - 左端から取得する文字数.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -66524,17 +66524,16 @@ to.
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;format_number() 関数&lt;/h3&gt;
-Returns a number formatted with the locale separator for thousands. 
-Also truncates the number to the number of supplied places. 
+        <translation>&lt;h3&gt;format_number() 関数&lt;/h3&gt;
+3桁毎にロケール桁区切り文字で区切られた数を返します.
+さらに小数点以下を指定された桁数で切りつめます.
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;format_number(number,places)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;number&lt;/code&gt; - is number. The number to be formatted.
+&lt;code&gt;number&lt;/code&gt; - 書式化する数.
 &lt;br&gt;
-&lt;code&gt;places&lt;/code&gt; - is int. The number of decimal places to truncate the string
-to.
+&lt;code&gt;places&lt;/code&gt; - 小数点以下桁数.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -66596,16 +66595,16 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;format() 関数&lt;/h3&gt;
-Format a string using supplied arguments. 
+        <translation>&lt;h3&gt;format() 関数&lt;/h3&gt;
+与えられた引数を使用して文字列をフォーマットします.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;format(&apos;string&apos;, arg, [arg...n])&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string.  String with Qt QString place holders.  Use %1, %2, etc for placeholders. Placeholders can be repeated. 
+&lt;code&gt;string&lt;/code&gt; - Qt QStringのプレースホルダーを含む文字列. プレースホルダーには%1, %2などが使用できます. プレースホルダーは繰り返し使用できます. 
 &lt;br&gt;
-&lt;code&gt;arg [arg...n]&lt;/code&gt; - any type. Any number of args. 
+&lt;code&gt;arg [arg...n]&lt;/code&gt; - 任意のタイプ. 任意の数の引数.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -67236,19 +67235,18 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;rpad() 関数&lt;/h3&gt;
-Returns a string with supplied width padded
-using the fill character.
+        <translation>&lt;h3&gt;rpad() 関数&lt;/h3&gt;
+埋め込み文字を用いて指定された幅に右寄せで揃えられた文字列を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;rpad(string, width, fill)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. The string.
+&lt;code&gt;string&lt;/code&gt; - 文字列.
 &lt;br&gt;
-&lt;code&gt;width&lt;/code&gt; - is int. The length of the new string.
+&lt;code&gt;width&lt;/code&gt; - 新しい文字列の長さ.
 &lt;br&gt;
-&lt;code&gt;fill&lt;/code&gt; - is char. The character to padd the remaining space with. 
+&lt;code&gt;fill&lt;/code&gt; - 空白を埋める文字.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -67276,19 +67274,18 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;lpad() 関数&lt;/h3&gt;
-Returns a string with supplied width padded
-using the fill character.
+        <translation>&lt;h3&gt;lpad() 関数&lt;/h3&gt;
+埋め込み文字を用いて指定された幅に左寄せで揃えられた文字列を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;lpad(string, length, fill)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. The string.
+&lt;code&gt;string&lt;/code&gt; - 文字列.
 &lt;br&gt;
-&lt;code&gt;length&lt;/code&gt; - is int. The length of the new string.
+&lt;code&gt;length&lt;/code&gt; - 新しい文字列の長さ.
 &lt;br&gt;
-&lt;code&gt;fill&lt;/code&gt; - is char. The character to padd the remaining space with. 
+&lt;code&gt;fill&lt;/code&gt; - 空白を埋める文字.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -67313,17 +67310,17 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- Show example of function.--&gt;
      regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;regexp_replace() 関数&lt;/h3&gt;
-Returns a string with the supplied regular expression replaced.
+        <translation>&lt;h3&gt;regexp_replace() 関数&lt;/h3&gt;
+指定された正規表現が置き換えられた文字列を返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      regexp_replace(&lt;i&gt;string,regex,after&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
-&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character).&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; 対象の文字列.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; 置換される正規表現. バックスラッシュ文字は二重エスケープする必要があります. (例. &quot;&amp;#92;&amp;#92;s&quot; は空白スペース文字にマッチします).&lt;br&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; 指定された正規表現のいずれかにマッチする部分を置換する文字列. &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, 等を用いてキャプチャグループを置換文字列に挿入することができます.&lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -67366,7 +67363,7 @@ Converts a string to upper case letters.
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
-        <translation type="unfinished">&lt;h3&gt;レコード グループ&lt;/h3&gt;
+        <translation>&lt;h3&gt;レコード グループ&lt;/h3&gt;
 このグループにはレコード識別子を操作する関数があります.
 </translation>
     </message>
@@ -67388,16 +67385,16 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;right() 関数&lt;/h3&gt;
-Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters of the string.
+        <translation>&lt;h3&gt;right() 関数&lt;/h3&gt;
+文字列の右端の&lt;i&gt;n&lt;/i&gt;個の文字が含まれる文字列を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;right(string, pos)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. The string.
+&lt;code&gt;string&lt;/code&gt; - 文字列.
 &lt;br&gt;
-&lt;code&gt;length&lt;/code&gt; - is int. The number of characters from the right to return.
+&lt;code&gt;length&lt;/code&gt; - 右端から取得する文字数.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -67988,172 +67985,173 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;format_date() 関数&lt;/h3&gt;
-Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
+        <translation>&lt;h3&gt;format_date() 関数&lt;/h3&gt;
+日付型または文字列をカスタム文字列フォーマットに書式化します. Qtの日付時刻フォーマット文字列を使用しています. &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;を参照して下さい.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;format_date(&apos;string&apos;, &apos;format_string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. Date/Time/DateTime string.
+&lt;code&gt;string&lt;/code&gt; - Date/Time/DateTimeの文字列.
 &lt;br&gt;
-&lt;code&gt;format_string&lt;/code&gt; - is string. String template used to format the string.
+&lt;code&gt;format_string&lt;/code&gt; - 文字列を書式化するのに用いるテンプレート文字列.
 
+  &lt;p&gt;フォーマット文字列の日付の部分に用いられる指定子:&lt;/p&gt;
   &lt;table&gt;
     &lt;thead&gt;
       &lt;tr&gt;
-        &lt;th&gt;Expression&lt;/th&gt;
+        &lt;th&gt;書式指定子&lt;/th&gt;
 
-        &lt;th&gt;Output&lt;/th&gt;
+        &lt;th&gt;出力&lt;/th&gt;
       &lt;/tr&gt;
     &lt;/thead&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;d&lt;/td&gt;
 
-      &lt;td&gt;the day as number without a leading zero (1 to 31)&lt;/td&gt;
+      &lt;td&gt;桁揃えしない日にち (1 to 31)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;dd&lt;/td&gt;
 
-      &lt;td&gt;the day as number with a leading zero (01 to 31)&lt;/td&gt;
+      &lt;td&gt;0で桁を揃えた日にち (01 to 31)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;ddd&lt;/td&gt;
 
-      &lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos; to &apos;Sun&apos;). Uses &lt;a href=
-      &quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
+      &lt;td&gt;ローカライズされた省略された曜日名 (例. &apos;月&apos; ～ &apos;日&apos;). &lt;a href=
+      &quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;()を使用.&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;dddd&lt;/td&gt;
 
-      &lt;td&gt;the long localized day name (e.g. &apos;Monday&apos; to &apos;Sunday&apos;). Uses &lt;a href=
-      &quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
+      &lt;td&gt;ローカライズされた長い曜日名 (例. &apos;月曜日&apos; ～ &apos;日曜日&apos;). &lt;a href=
+      &quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;()を使用.&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;M&lt;/td&gt;
 
-      &lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;
+      &lt;td&gt;桁揃えしない月 (1-12)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;MM&lt;/td&gt;
 
-      &lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;
+      &lt;td&gt;0で桁を揃えた月 (01-12)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;MMM&lt;/td&gt;
 
-      &lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos; to &apos;Dec&apos;). Uses &lt;a href=
-      &quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
+      &lt;td&gt;ローカライズされた省略された月の名前 (例. &apos;1&apos; ～ &apos;12&apos;). &lt;a href=
+      &quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;()を使用.&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;MMMM&lt;/td&gt;
 
-      &lt;td&gt;the long localized month name (e.g. &apos;January&apos; to &apos;December&apos;). Uses &lt;a href=
-      &quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
+      &lt;td&gt;ローカライズされた長い月の名前 (例. &apos;1月&apos; ～ &apos;12月&apos;). &lt;a href=
+      &quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;()を使用.&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;yy&lt;/td&gt;
 
-      &lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;
+      &lt;td&gt;2桁の年 (00-99)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;yyyy&lt;/td&gt;
 
-      &lt;td&gt;the year as four digit number&lt;/td&gt;
+      &lt;td&gt;4桁の年&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/table&gt;
 
-  &lt;p&gt;These expressions may be used for the time part of the format string:&lt;/p&gt;
+  &lt;p&gt;フォーマット文字列の時刻の部分に用いられる指定子:&lt;/p&gt;
 
   &lt;table&gt;
     &lt;thead&gt;
       &lt;tr&gt;
-        &lt;th&gt;Expression&lt;/th&gt;
+        &lt;th&gt;指定子&lt;/th&gt;
 
-        &lt;th&gt;Output&lt;/th&gt;
+        &lt;th&gt;出力&lt;/th&gt;
       &lt;/tr&gt;
     &lt;/thead&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;h&lt;/td&gt;
 
-      &lt;td&gt;the hour without a leading zero (0 to 23 or 1 to 12 if AM/PM display)&lt;/td&gt;
+      &lt;td&gt;桁揃えしない時 (0 ～ 23, AM/PM表示の場合は 1 ～ 12)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;hh&lt;/td&gt;
 
-      &lt;td&gt;the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)&lt;/td&gt;
+      &lt;td&gt;0で桁を揃えた時 (00 ～ 23, AM/PM表示の場合は 01 ～ 12)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;H&lt;/td&gt;
 
-      &lt;td&gt;the hour without a leading zero (0 to 23, even with AM/PM display)&lt;/td&gt;
+      &lt;td&gt;桁揃えしない時 (0 ～ 23, AM/PM表示の場合でも)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;HH&lt;/td&gt;
 
-      &lt;td&gt;the hour with a leading zero (00 to 23, even with AM/PM display)&lt;/td&gt;
+      &lt;td&gt;0で桁を揃えた時 (00 ～ 23, AM/PM表示の場合でも)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;m&lt;/td&gt;
 
-      &lt;td&gt;the minute without a leading zero (0 to 59)&lt;/td&gt;
+      &lt;td&gt;桁揃えしない分 (0 to 59)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;mm&lt;/td&gt;
 
-      &lt;td&gt;the minute with a leading zero (00 to 59)&lt;/td&gt;
+      &lt;td&gt;0で桁を揃えた分 (00 to 59)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;s&lt;/td&gt;
 
-      &lt;td&gt;the second without a leading zero (0 to 59)&lt;/td&gt;
+      &lt;td&gt;桁揃えしない秒 (0 to 59)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;ss&lt;/td&gt;
 
-      &lt;td&gt;the second with a leading zero (00 to 59)&lt;/td&gt;
+      &lt;td&gt;0で桁を揃えた秒 (00 to 59)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;z&lt;/td&gt;
 
-      &lt;td&gt;the milliseconds without leading zeroes (0 to 999)&lt;/td&gt;
+      &lt;td&gt;桁揃えしないミリ秒 (0 to 999)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;zzz&lt;/td&gt;
 
-      &lt;td&gt;the milliseconds with leading zeroes (000 to 999)&lt;/td&gt;
+      &lt;td&gt;0で桁を揃えたミリ秒 (000 to 999)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;AP or A&lt;/td&gt;
+      &lt;td&gt;AP または A&lt;/td&gt;
 
-      &lt;td&gt;interpret as an AM/PM time. &lt;i&gt;AP&lt;/i&gt; must be either &quot;AM&quot; or &quot;PM&quot;.&lt;/td&gt;
+      &lt;td&gt;時刻をAM/PMとして解釈する. &lt;i&gt;AP&lt;/i&gt; は &quot;AM&quot; か &quot;PM&quot; のどちらかになります.&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;ap or a&lt;/td&gt;
+      &lt;td&gt;ap または a&lt;/td&gt;
 
-      &lt;td&gt;Interpret as an AM/PM time. &lt;i&gt;ap&lt;/i&gt; must be either &quot;am&quot; or &quot;pm&quot;.&lt;/td&gt;
+      &lt;td&gt;時刻をAM/PMとして解釈する. &lt;i&gt;ap&lt;/i&gt; は &quot;am&quot; か &quot;pm&quot;  のどちらかになります.&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/table&gt;
 
@@ -68450,18 +68448,18 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;strpos() 関数&lt;/h3&gt;
-Return the index of a regular expression in a string.
+        <translation>&lt;h3&gt;strpos() 関数&lt;/h3&gt;
+文字列内に指定された正規表現が現れる位置を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
      strpos(&lt;i&gt;haystack&lt;/i&gt;, &lt;i&gt;needle&lt;/i&gt;)
 &lt;br&gt;&lt;br&gt;
-Returns -1 if the expression isn&apos;t found.
+正規表現が見つからなければ-1を返します.
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  haystack&lt;/i&gt; &amp;rarr; is string.  The string that is to be searched.&lt;br&gt;
-&lt;i&gt;  needle&lt;/i&gt; &amp;rarr; is number.  The regular expression to look for.&lt;br&gt;
+&lt;i&gt;  haystack&lt;/i&gt; &amp;rarr; 検索対象の文字列.&lt;br&gt;
+&lt;i&gt;  needle&lt;/i&gt; &amp;rarr; 検索する正規表現.&lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -68986,17 +68984,17 @@ Return a part of a string
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;substr() 関数&lt;/h3&gt;
-Return a part of a string
+        <translation>&lt;h3&gt;substr() 関数&lt;/h3&gt;
+文字列の一部を返します
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      substr(&lt;i&gt;string,startpos,length&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The full string.&lt;br&gt;
-&lt;i&gt;  startpos&lt;/i&gt; &amp;rarr; is number.  The start position to extract from.&lt;br&gt;
-&lt;i&gt;  length&lt;/i&gt; &amp;rarr; is number.  The length of the string to extract.&lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; 文字列.&lt;br&gt;
+&lt;i&gt;  startpos&lt;/i&gt; &amp;rarr; 取り出しの開始位置.&lt;br&gt;
+&lt;i&gt;  length&lt;/i&gt; &amp;rarr; 取り出す文字列の長さ(文字数).&lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
