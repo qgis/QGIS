@@ -321,9 +321,13 @@ class PGTableField(TableField):
 class PGTableConstraint(TableConstraint):
 	def __init__(self, row, table):
 		TableConstraint.__init__(self, table)
-		self.name, constr_type, self.isDefferable, self.isDeffered, columns = row[:5]
+		self.name, constr_type_str, self.isDefferable, self.isDeffered, columns = row[:5]
 		self.columns = map(int, columns.split(' '))
-		self.type = TableConstraint.types[constr_type]   # convert to enum
+
+		if constr_type_str in TableConstraint.types:
+			self.type = TableConstraint.types[constr_type_str]
+		else:
+			self.type = TableConstraint.TypeUnknown
 
 		if self.type == TableConstraint.TypeCheck:
 			self.checkSource = row[5]
