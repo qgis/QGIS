@@ -378,10 +378,15 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString schemaName = result.PQgetvalue( idx, 1 );
       QString column = result.PQgetvalue( idx, 2 );
       QString type = result.PQgetvalue( idx, 3 );
-      QString srid = result.PQgetvalue( idx, 4 );
+      QString ssrid = result.PQgetvalue( idx, 4 );
       QString relkind = result.PQgetvalue( idx, 5 );
-      if ( srid.isEmpty() || srid == "0" )
-        srid = "-1";
+
+      int srid = ssrid.isEmpty() ? INT_MIN : ssrid.toInt();
+      if ( majorVersion() >= 2 && srid == 0 )
+      {
+        // 0 doesn't constraint => detect
+        srid = INT_MIN;
+      }
 
       QgsDebugMsg( QString( "%1 : %2.%3.%4: %5 %6 %7" )
                    .arg( gtableName )
@@ -396,7 +401,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.geometryColName = column;
       layerProperty.geometryColType = columnType;
       layerProperty.types = QList<QGis::WkbType>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
-      layerProperty.srids = QList<int>() << srid.toInt();
+      layerProperty.srids = QList<int>() << srid;
       layerProperty.sql = "";
 
       if ( relkind == "v" )
@@ -572,7 +577,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QgsDebugMsg( QString( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
 
       layerProperty.types = QList<QGis::WkbType>() << QGis::WKBNoGeometry;
-      layerProperty.srids = QList<int>() << -1;
+      layerProperty.srids = QList<int>() << INT_MIN;
       layerProperty.schemaName = schema;
       layerProperty.tableName = table;
       layerProperty.geometryColName = QString::null;

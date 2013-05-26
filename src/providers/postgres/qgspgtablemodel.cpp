@@ -56,7 +56,7 @@ void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
       wkbType = QGis::WKBNoGeometry;
     }
 
-    bool selectable = wkbType == QGis::WKBNoGeometry || ( wkbType != QGis::WKBUnknown && srid >= 0 );
+    bool selectable = wkbType == QGis::WKBNoGeometry || ( wkbType != QGis::WKBUnknown && srid != INT_MIN );
 
     QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
     QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QGis::WKBUnknown ? tr( "Select..." ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
@@ -70,7 +70,7 @@ void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
     QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
     QStandardItem *sridItem  = new QStandardItem( wkbType != QGis::WKBNoGeometry ? QString::number( srid ) : "" );
-    sridItem->setEditable( wkbType != QGis::WKBNoGeometry && srid < 0 );
+    sridItem->setEditable( wkbType != QGis::WKBNoGeometry && srid == INT_MIN );
     if ( sridItem->isEditable() )
     {
       sridItem->setText( tr( "Enter..." ) );
@@ -250,7 +250,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
     if ( ok && geomType != QGis::WKBNoGeometry )
     {
       int srid = idx.sibling( idx.row(), dbtmSrid ).data().toInt( &ok );
-      ok &= srid >= 0;
+      ok &= srid != INT_MIN;
     }
 
     QStringList pkCols = idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();
