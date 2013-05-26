@@ -5297,7 +5297,7 @@ void QgisApp::deselectAll()
 void QgisApp::selectByExpression()
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
-  if( !vlayer )
+  if ( !vlayer )
   {
     messageBar()->pushMessage(
       tr( "No active vector layer" ),

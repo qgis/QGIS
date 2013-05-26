@@ -1222,7 +1222,7 @@ void QgsDelimitedTextProvider::fetchAttribute( QgsFeature& feature, int fieldIdx
         }
         else
         {
-          dvalue = QString(value).replace( mDecimalPoint, "." ).toDouble( &ok );
+          dvalue = QString( value ).replace( mDecimalPoint, "." ).toDouble( &ok );
         }
       }
       if ( ok )
