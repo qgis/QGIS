@@ -1212,7 +1212,7 @@ void QgsDelimitedTextProvider::fetchAttribute( QgsFeature& feature, int fieldIdx
     }
     case QVariant::Double:
     {
-      int dvalue;
+      double dvalue;
       bool ok = false;
       if ( ! value.isEmpty() )
       {
@@ -1222,7 +1222,7 @@ void QgsDelimitedTextProvider::fetchAttribute( QgsFeature& feature, int fieldIdx
         }
         else
         {
-          dvalue = QVariant( QString( value ).replace( mDecimalPoint, "." ) ).toDouble( &ok );
+          dvalue = QString(value).replace( mDecimalPoint, "." ).toDouble( &ok );
         }
       }
       if ( ok )
