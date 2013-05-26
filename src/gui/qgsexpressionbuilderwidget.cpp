@@ -58,9 +58,9 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   registerItem( "Operators", "-", " -" , tr( "Subtraction operator" ) );
   registerItem( "Operators", "*", " * ", tr( "Multiplication operator" ) );
   registerItem( "Operators", "/", " / ", tr( "Division operator" ) );
-  registerItem( "Operators", "%", " % ", tr( "Modulo operator"  ) );
+  registerItem( "Operators", "%", " % ", tr( "Modulo operator" ) );
   registerItem( "Operators", "^", " ^ ", tr( "Power operator" ) );
-  registerItem( "Operators", "=", " = ", tr( "Equal operator"  ) );
+  registerItem( "Operators", "=", " = ", tr( "Equal operator" ) );
   registerItem( "Operators", ">", " > ", tr( "Greater as operator" ) );
   registerItem( "Operators", "<", " < ", tr( "Less than operator" ) );
   registerItem( "Operators", "<>", " <> ", tr( "Unequal operator" ) );

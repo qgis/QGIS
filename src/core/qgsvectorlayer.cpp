@@ -814,19 +814,19 @@ void QgsVectorLayer::invertSelection()
 
 void QgsVectorLayer::selectAll()
 {
-    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                          .setFlags( QgsFeatureRequest::NoGeometry )
-                                          .setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                        .setFlags( QgsFeatureRequest::NoGeometry )
+                                        .setSubsetOfAttributes( QgsAttributeList() ) );
 
-    QgsFeatureIds ids;
+  QgsFeatureIds ids;
 
-    QgsFeature fet;
-    while ( fit.nextFeature( fet ) )
-    {
-      ids << fet.id();
-    }
+  QgsFeature fet;
+  while ( fit.nextFeature( fet ) )
+  {
+    ids << fet.id();
+  }
 
-    setSelectedFeatures( ids );
+  setSelectedFeatures( ids );
 }
 
 void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle & rect )

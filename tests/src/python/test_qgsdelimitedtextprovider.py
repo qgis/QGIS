@@ -169,7 +169,7 @@ def delimitedTextData( testname, filename, requests, verbose, **params ):
                     r( layer )
                     continue
                 rfields,rtypes, rdata = layerData(layer,r,nr*1000)
-                if len(rfields) > len(fields): 
+                if len(rfields) > len(fields):
                     fields = rfields
                     fieldTypes=rtypes
                 data.update(rdata)
