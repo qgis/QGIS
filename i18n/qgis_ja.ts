@@ -66609,8 +66609,8 @@ None
 &lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$feature 関数&lt;/h3&gt;
-In atlas generation, returns the current feature number that is iterated over on the coverage layer.
+        <translation>&lt;h3&gt;$feature 関数&lt;/h3&gt;
+アトラス生成においてカバレッジレイヤ上でイテレートされる現在の地物番号を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$feature&lt;/pre&gt;
@@ -66888,15 +66888,14 @@ Returns arcustanget of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;atan() 関数&lt;/h3&gt;
-Returns arcustanget of a value in radians.
-
+        <translation>&lt;h3&gt;atan() 関数&lt;/h3&gt;
+逆正接の値をラジアンで返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      atan(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; tan of an angle.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; 角度の正接.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
@@ -67002,15 +67001,15 @@ This function takes one argument.
 &lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;log10() 関数&lt;/h3&gt;
-Returns the value of the base 10 logarithm of the passed expression.
+        <translation>&lt;h3&gt;log10() 関数&lt;/h3&gt;
+10を底とする対数の値を返します.
 &lt;br&gt;
-This function takes one argument.
+この関数は1つの引数をとります.
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;log10(value)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;code&gt;value&lt;/code&gt; - 正の数.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
@@ -67102,15 +67101,14 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;tan() 関数&lt;/h3&gt;
-Returns tangent of an angle.
-
+        <translation>&lt;h3&gt;tan() 関数&lt;/h3&gt;
+角度の正接を返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      tan(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; angle in radians.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; ラジアン単位の角度.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
@@ -67369,8 +67367,8 @@ from a &lt;code&gt;Interval&lt;/code&gt;
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
-        <translation type="unfinished">&lt;h3&gt;計算 グループ&lt;/h3&gt;
-This group contains math functions e.g square root, sin and cos
+        <translation>&lt;h3&gt;計算 グループ&lt;/h3&gt;
+このグループには数学の関数があります. 例. 平方根. 正弦. 余弦.
 </translation>
     </message>
     <message>
@@ -67800,8 +67798,8 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$numfeatures 関数&lt;/h3&gt;
-In atlas generation, returns the total number of features within the coverage layer.
+        <translation>&lt;h3&gt;$numfeatures 関数&lt;/h3&gt;
+アトラス生成においてカバレッジレイヤの総地物数を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$numfeatures&lt;/pre&gt;
@@ -68089,14 +68087,14 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Function ceil()&lt;/h3&gt;
-Rounds a number upwards.
+        <translation>&lt;h3&gt;ceil() 関数&lt;/h3&gt;
+小数点以下を切り上げた数値を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;ceil(value)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;code&gt;value&lt;/code&gt; - 数値.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
@@ -68121,15 +68119,15 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation type="unfinished">&lt;h3&gt;min() 関数&lt;/h3&gt;
-Returns the smallest value in a set of values.
+        <translation>&lt;h3&gt;min() 関数&lt;/h3&gt;
+一連の値の中で最小の値を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
      min(&lt;i&gt;value&lt;i&gt;[,&lt;i&gt;value&lt;/i&gt;...])
 
 &lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; a number.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; 数値.&lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -68154,15 +68152,15 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Funktion ln()&lt;/h3&gt;
-Returns the value of the natural logarithm of the passed expression.
+        <translation>&lt;h3&gt;ln() 関数&lt;/h3&gt;
+自然対数の値を返します.
 &lt;br&gt;
-This function takes one argument.
+この関数は1つの引数をとります.
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;ln(value)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;code&gt;value&lt;/code&gt; - 正の数値.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
@@ -68256,15 +68254,14 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;asin() 関数&lt;/h3&gt;
-Returns arcussinus of a value in radians.
-
+        <translation>&lt;h3&gt;asin() 関数&lt;/h3&gt;
+逆正弦の値をラジアンで返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      asin(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; sin of an angle.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; 角度の正弦.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
@@ -68328,15 +68325,14 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;sqrt() 関数&lt;/h3&gt;
-Returns square root of a value
-
+        <translation>&lt;h3&gt;sqrt() 関数&lt;/h3&gt;
+平方根を返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      sqrt(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; number.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; 数値.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
@@ -68955,15 +68951,14 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;exp() 関数&lt;/h3&gt;
-Returns exponential of an value.
-
+        <translation>&lt;h3&gt;exp() 関数&lt;/h3&gt;
+自然対数のべき乗を返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      exp(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; number.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; 数値.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
@@ -69051,14 +69046,14 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Function floor()&lt;/h3&gt;
-Rounds a number downwards.
+        <translation>&lt;h3&gt;floor() 関数&lt;/h3&gt;
+小数点以下を切り捨てた数値を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;floor(value)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;code&gt;value&lt;/code&gt; - 数値.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
@@ -69151,15 +69146,15 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation type="unfinished">&lt;h3&gt;max() 関数&lt;/h3&gt;
-Returns the largest value in a set of values.
+        <translation>&lt;h3&gt;max() 関数&lt;/h3&gt;
+一連の値の中で最小の値を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
      max(&lt;i&gt;value&lt;i&gt;[,&lt;i&gt;value&lt;/i&gt;...])
 
 &lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; a number.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; 数値.&lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -69181,15 +69176,14 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;acos() 関数&lt;/h3&gt;
-Returns arcuscosinus of a value in radians.
-
+        <translation>&lt;h3&gt;acos() 関数&lt;/h3&gt;
+逆余弦の値をラジアンで返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      acos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; cos of an angle.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; 角度の余弦.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
@@ -69479,15 +69473,14 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;cos() 関数&lt;/h3&gt;
-Returns cosinus of an angle.
-
+        <translation>&lt;h3&gt;cos() 関数&lt;/h3&gt;
+角度の余弦を返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      cos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; angle in radians.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; ラジアン単位の角度.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
@@ -69512,16 +69505,16 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;log() 関数&lt;/h3&gt;
-Returns the value of the logarithm of the passed value and base.
+        <translation>&lt;h3&gt;log() 関数&lt;/h3&gt;
+渡された値と底の対数の値を返します.
 &lt;br&gt;
-This function takes two arguments.
+この関数は2つの引数をとります.
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;log(base, value)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;base&lt;/code&gt; - any positive number.&lt;br&gt;
-&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;code&gt;base&lt;/code&gt; - 正の数値.&lt;br&gt;
+&lt;code&gt;value&lt;/code&gt; - 正の数値.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
@@ -69545,15 +69538,14 @@ Returns sinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;sin() 関数&lt;/h3&gt;
-Returns sinus of an angle.
-
+        <translation>&lt;h3&gt;sin() 関数&lt;/h3&gt;
+角度の正弦を返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      sin(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; angle in radians.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; ラジアン単位の角度.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
