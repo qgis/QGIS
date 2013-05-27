@@ -143,7 +143,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/plugin.svg</normaloff>:/images/themes/default/propertyicons/plugin.svg</iconset>
+            <normaloff>:/images/themes/default/propertyicons/plugin-upgrade.svg</normaloff>:/images/themes/default/propertyicons/plugin-upgrade.svg</iconset>
           </property>
           <property name="flags">
            <set>ItemIsSelectable|ItemIsEnabled</set>
@@ -158,7 +158,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/plugin.svg</normaloff>:/images/themes/default/propertyicons/plugin.svg</iconset>
+            <normaloff>:/images/themes/default/propertyicons/plugin-new.svg</normaloff>:/images/themes/default/propertyicons/plugin-new.svg</iconset>
           </property>
           <property name="flags">
            <set>ItemIsSelectable|ItemIsEnabled</set>
@@ -173,7 +173,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/plugin.svg</normaloff>:/images/themes/default/propertyicons/plugin.svg</iconset>
+            <normaloff>:/images/themes/default/propertyicons/plugin-incompatible.svg</normaloff>:/images/themes/default/propertyicons/plugin-incompatible.svg</iconset>
           </property>
           <property name="flags">
            <set>ItemIsSelectable|ItemIsEnabled</set>
