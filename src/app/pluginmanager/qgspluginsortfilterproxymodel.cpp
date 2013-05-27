@@ -17,11 +17,9 @@
 #include "qgspluginsortfilterproxymodel.h"
 #include "qgslogger.h"
 
-QgsPluginSortFilterProxyModel::QgsPluginSortFilterProxyModel(QObject *parent)
-     : QSortFilterProxyModel(parent)
+QgsPluginSortFilterProxyModel::QgsPluginSortFilterProxyModel( QObject *parent ) : QSortFilterProxyModel( parent )
 {
 }
-
 
 
 
@@ -34,8 +32,7 @@ bool QgsPluginSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModel
 
 
 
-
-void QgsPluginSortFilterProxyModel::setAcceptedStatuses( QStringList statuses)
+void QgsPluginSortFilterProxyModel::setAcceptedStatuses( QStringList statuses )
 {
   mAcceptedStatuses = statuses;
   invalidateFilter();
@@ -43,11 +40,10 @@ void QgsPluginSortFilterProxyModel::setAcceptedStatuses( QStringList statuses)
 
 
 
-
 bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
 {
   if ( mAcceptedStatuses.contains( "invalid" )
-    && sourceModel()->data(index, PLUGIN_ERROR_ROLE).toString().isEmpty() )
+    && sourceModel()->data( index, PLUGIN_ERROR_ROLE ).toString().isEmpty() )
   {
     // Don't accept if the "invalid" filter is set and the plugin is ok
     return false;
@@ -67,13 +63,12 @@ bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
 
 
 
-
-int QgsPluginSortFilterProxyModel::countWithCurrentStatus(  )
+int QgsPluginSortFilterProxyModel::countWithCurrentStatus( )
 {
   int result = 0;
-  for (int i=0; i < sourceModel()->rowCount(); ++i)
+  for ( int i=0; i < sourceModel()->rowCount(); ++i )
   {
-    QModelIndex idx = sourceModel()->index(i, 0);
+    QModelIndex idx = sourceModel()->index( i, 0 );
     if ( filterByStatus( idx ) )
     {
       result++ ;
@@ -84,12 +79,13 @@ int QgsPluginSortFilterProxyModel::countWithCurrentStatus(  )
 
 
 
-
 void QgsPluginSortFilterProxyModel::sortPluginsByName( )
 {
   sort( 0, Qt::AscendingOrder );
   setSortRole( Qt::DisplayRole );
 }
+
+
 
 void QgsPluginSortFilterProxyModel::sortPluginsByDownloads( )
 {
@@ -97,17 +93,23 @@ void QgsPluginSortFilterProxyModel::sortPluginsByDownloads( )
   setSortRole( PLUGIN_DOWNLOADS_ROLE );
 }
 
+
+
 void QgsPluginSortFilterProxyModel::sortPluginsByVote( )
 {
   sort( 0, Qt::DescendingOrder );
   setSortRole( PLUGIN_VOTE_ROLE );
 }
 
+
+
 void QgsPluginSortFilterProxyModel::sortPluginsByStatus( )
 {
   sort( 0, Qt::DescendingOrder );
   setSortRole( PLUGIN_STATUS_ROLE );
 }
+
+
 
 void QgsPluginSortFilterProxyModel::sortPluginsByRepository( )
 {

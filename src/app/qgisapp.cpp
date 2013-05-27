@@ -629,11 +629,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    // pass the python utils to plugin manager
+    // pass the python utils to the plugin manager
     mPluginManager -> setPythonUtils( mPythonUtils );
     // initialize the plugin installer to start fetching repositories in background
-    QgsPythonRunner::run( "import pyplugin_installer");
-    QgsPythonRunner::run( "pyplugin_installer.initPluginInstaller()");
+    QgsPythonRunner::run( "import pyplugin_installer" );
+    QgsPythonRunner::run( "pyplugin_installer.initPluginInstaller()" );
   }
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
@@ -6299,7 +6299,7 @@ void QgisApp::showPluginManager()
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    // A detour to the plugin manager via the plugin installer to test if fetching repositories is over.
+    // Call pluginManagerInterface()->showPluginManager() as soon as the plugin installer says the remote data is fetched.
     QgsPythonRunner::run( "pyplugin_installer.instance().showPluginManagerWhenReady()");
   }
   else

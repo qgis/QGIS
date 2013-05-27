@@ -22,7 +22,7 @@
 
 /** \ingroup gui
  * QgsPluginManagerInterface
- * Abstract base class to make QgsPluginManager available to plugins.
+ * Abstract base class to make QgsPluginManager available to pyplugin_installer.
  */
 class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
 {
@@ -36,31 +36,25 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
     //! Destructor
     ~QgsAppPluginManagerInterface();
 
-    //! remove metadata of all python plugins from the registry (c++ plugins stay)
+    //! remove python plugins from the metadata registry (c++ plugins stay)
     void clearPythonPluginMetadata();
 
     //! add a single plugin to the metadata registry
-    void addPluginMetadata( QMap<QString,QString> metadata );
+    void addPluginMetadata( QMap<QString, QString> metadata );
 
-    //! refresh listView model and textView content
+    //! refresh plugin list model (and metadata browser content if necessary)
     void reloadModel();
 
-    //! get given plugin metadata
+    //! return given plugin metadata
     QMap<QString, QString> * pluginMetadata( QString key );
 
     //! clear the repository listWidget
     void clearRepositoryList();
 
     //! add repository to the repository listWidget
-    void addToRepositoryList( QMap<QString,QString> repository );
+    void addToRepositoryList( QMap<QString, QString> repository );
 
-  public slots:
-
-    //! show the Plugin Manager window when remote repositories are fetched.
-    //! Display a progress dialog when fetching.
-    void showPluginManagerWhenReady( );
-
-    //! promptly show the Plugin Manager window and optionally open tab tabIndex:
+    //! show the Plugin Manager window and optionally open tab tabIndex
     void showPluginManager( int tabIndex = -1 );
 
   private:

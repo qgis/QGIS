@@ -29,14 +29,7 @@ QgsAppPluginManagerInterface::~QgsAppPluginManagerInterface()
 }
 
 
-//! show the Plugin Manager window when remote repositories are fetched.
-//! Display a progress dialog when fetching.
-void QgsAppPluginManagerInterface::showPluginManagerWhenReady( )
-{
-}
-
-
-//! promptly show the Plugin Manager window and optionally open tab tabIndex:
+//! show the Plugin Manager window and optionally open tab tabIndex
 void QgsAppPluginManagerInterface::showPluginManager( int tabIndex )
 {
   mPluginManager->getCppPluginDescriptions();
@@ -45,14 +38,14 @@ void QgsAppPluginManagerInterface::showPluginManager( int tabIndex )
   //! switch to tab, if specified ( -1 means not specified )
   if ( tabIndex > -1 )
   {
-  mPluginManager->selectTabItem( tabIndex );
+    mPluginManager->selectTabItem( tabIndex );
   }
 
   mPluginManager->exec();
 }
 
 
-//! remove metadata of all python plugins from the registry (c++ plugins stay)
+//! remove python plugins from the metadata registry (c++ plugins stay)
 void QgsAppPluginManagerInterface::clearPythonPluginMetadata()
 {
   mPluginManager->clearPythonPluginMetadata();
@@ -60,28 +53,26 @@ void QgsAppPluginManagerInterface::clearPythonPluginMetadata()
 
 
 //! add a single plugin to the metadata registry
-void QgsAppPluginManagerInterface::addPluginMetadata( QMap<QString,QString> metadata )
+void QgsAppPluginManagerInterface::addPluginMetadata( QMap<QString, QString> metadata )
 {
-  if ( metadata.isEmpty() || !metadata.contains("id") )
+  if ( metadata.isEmpty() || !metadata.contains( "id" ) )
   {
-     QgsDebugMsg( "Warning: incomplete metadata" );
-     return;
+    QgsDebugMsg( "Warning: incomplete metadata" );
+    return;
   }
-  mPluginManager->addPluginMetadata( metadata.value("id"), metadata );
+  mPluginManager->addPluginMetadata( metadata.value( "id" ), metadata );
 }
 
 
-//! refresh listView model and textView content
+//! refresh plugin list model (and metadata browser content if necessary)
 void QgsAppPluginManagerInterface::reloadModel()
 {
   mPluginManager->reloadModelData();
 }
 
 
-
-
-//! get given plugin metadata
-QMap<QString,QString> * QgsAppPluginManagerInterface::pluginMetadata( QString key )
+//! return given plugin metadata
+QMap<QString, QString> * QgsAppPluginManagerInterface::pluginMetadata( QString key )
 {
   return mPluginManager->pluginMetadata( key );
 }
@@ -95,8 +86,7 @@ void QgsAppPluginManagerInterface::clearRepositoryList()
 
 
 //! add repository to the repository listWidget
-void QgsAppPluginManagerInterface::addToRepositoryList( QMap<QString,QString> repository )
+void QgsAppPluginManagerInterface::addToRepositoryList( QMap<QString, QString> repository )
 {
   mPluginManager->addToRepositoryList( repository );
 }
-
