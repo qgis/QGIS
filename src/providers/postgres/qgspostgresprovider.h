@@ -309,6 +309,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     QString pkParamWhereClause( int offset, const char* alias = 0 ) const;
     QString whereClause( QgsFeatureId featureId ) const;
+    QString filterWhereClause() const;
 
     bool hasSufficientPermsAndCapabilities();
 

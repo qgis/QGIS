@@ -25,32 +25,29 @@
    </iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+   <item row="3" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QLabel" name="label_5">
+      <widget class="QLabel" name="label">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
        <property name="text">
-        <string>Filter</string>
+        <string>Selected CRS:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QgsFilterLineEdit" name="leSearch"/>
+      <widget class="QLineEdit" name="teSelected">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
     </layout>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Recently used coordinate reference systems</string>
-     </property>
-    </widget>
    </item>
    <item row="2" column="0">
     <widget class="QSplitter" name="splitter">
@@ -189,7 +186,34 @@
      </widget>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Filter</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsFilterLineEdit" name="leSearch"/>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Recently used coordinate reference systems</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
     <widget class="QTextEdit" name="teProjection">
      <property name="minimumSize">
       <size>

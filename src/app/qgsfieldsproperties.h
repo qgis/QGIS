@@ -47,6 +47,24 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
     Q_OBJECT
 
   public:
+    class FieldConfig
+    {
+      public:
+        FieldConfig();
+        FieldConfig( QgsVectorLayer* layer, int idx );
+
+        bool mEditable;
+        QgsVectorLayer::ValueRelationData mValueRelationData;
+        QMap<QString, QVariant> mValueMap;
+        QgsVectorLayer::RangeData mRange;
+        QPair<QString, QString> mCheckedState;
+        QgsVectorLayer::EditType mEditType;
+        QPushButton* mButton;
+        QString mDateFormat;
+        QSize mWidgetSize;
+    };
+
+  public:
     QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent = 0 );
 
     ~QgsFieldsProperties();
@@ -101,19 +119,13 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
     void editingToggled();
 
   protected:
+    FieldConfig configForRow( int row );
+    void setConfigForRow( int row, FieldConfig cfg );
+
     QgsVectorLayer* mLayer;
     QgsAttributesTree* mAttributesTree;
     QTableWidget* mAttributesList;
 
-    QMap<int, bool> mFieldEditables;
-    QMap<int, QgsVectorLayer::ValueRelationData> mValueRelationData;
-    QMap<int, QMap<QString, QVariant> > mValueMaps;
-    QMap<int, QgsVectorLayer::RangeData> mRanges;
-    QMap<int, QPair<QString, QString> > mCheckedStates;
-    QMap<int, QgsVectorLayer::EditType> mEditTypeMap;
-    QMap<int, QPushButton*> mButtonMap;
-    QMap<int, QString> mDateFormat;
-    QMap<int, QSize> mWidgetSize;
     // Holds all the first column items (header: id) of the table.
     // The index in the list is the fieldIdx, and therefore acts as a mapping
     // between fieldIdx and QTableWidgetItem->row()
@@ -140,5 +152,7 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
     static QgsVectorLayer::EditType editTypeFromButtonText( QString text );
 
 };
+
+Q_DECLARE_METATYPE( QgsFieldsProperties::FieldConfig )
 
 #endif // QGSFIELDSPROPERTIES_H

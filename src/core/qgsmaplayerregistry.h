@@ -20,6 +20,7 @@
 #define QGSMAPLAYERREGISTRY_H
 
 #include <QMap>
+#include <QSet>
 #include <QObject>
 #include <QStringList>
 class QString;
@@ -58,10 +59,13 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * The layersAdded() and layersWasAdded() signals will be emitted in any case.
      * The legendLayersAdded() signal only if addToLegend is true.
      *
-     * @param theMapLayers A list of layer which should be added to the registry
-     * @param addToLegend  If true (by default), the layers will be added to the
-     *                     legend and to the main canvas. If you have a private
-     *                     layer, you can set this parameter to false to hide it.
+     * @param theMapLayers  A list of layer which should be added to the registry
+     * @param addToLegend   If true (by default), the layers will be added to the
+     *                      legend and to the main canvas. If you have a private
+     *                      layer, you can set this parameter to false to hide it.
+     * @param takeOwnership Ownership will be transferred to the layer registry.
+     *                      If you specify false here, you have take care of deleting
+     *                      the layers yourself. Not available in python.
      *
      * @return QList<QgsMapLayer *> - a list of the map layers that were added
      *         successfully. If a layer is invalid, or already exists in the registry,
@@ -71,7 +75,8 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * @note Added in QGIS 1.8
      */
     QList<QgsMapLayer *> addMapLayers( QList<QgsMapLayer *> theMapLayers,
-                                       bool addToLegend = true );
+                                       bool addToLegend = true,
+                                       bool takeOwnership = true );
 
     /**
      * @brief
@@ -86,6 +91,9 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * @param addToLegend If true (by default), the layer will be added to the
      *                    legend and to the main canvas. If you have a private
      *                    you can set this parameter to false to hide it.
+     * @param takeOwnership Ownership will be transferred to the layer registry.
+     *                      If you specify false here, you have take care of deleting
+     *                      the layer yourself. Not available in python.
      *
      * @return NULL if unable to add layer, otherwise pointer to newly added layer
      *
@@ -94,17 +102,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * @note As a side-effect QgsProject is made dirty.
      * @note Use addMapLayers if adding more than one layer at a time
      */
-    QgsMapLayer* addMapLayer( QgsMapLayer * theMapLayer, bool addToLegend = true );
-
-    /**
-     * @brief
-     * Clears the map layer registry silently. No signals are emitted,
-     * no layer is deleted. Whatever this is suitable for... The WMS
-     * server makes use of this.
-     *
-     * Not available in python
-     */
-    void clearMapLayers();
+    QgsMapLayer* addMapLayer( QgsMapLayer * theMapLayer, bool addToLegend = true, bool takeOwnership = true );
 
     /**
      * @brief
@@ -230,6 +228,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     static QgsMapLayerRegistry* mInstance;
 
     QMap<QString, QgsMapLayer*> mMapLayers;
+    QSet<QgsMapLayer*> mOwnedLayers;
 
     /** debugging member
         invoked when a connect() is made to this object

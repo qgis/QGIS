@@ -516,6 +516,35 @@ QString QgsPostgresProvider::whereClause( QgsFeatureId featureId ) const
   return whereClause;
 }
 
+QString QgsPostgresProvider::filterWhereClause() const
+{
+  QString where;
+  QString delim = " WHERE ";
+
+  if ( !mSqlWhereClause.isEmpty() )
+  {
+    where += delim + "(" + mSqlWhereClause + ")";
+    delim = " AND ";
+  }
+
+  if ( !mRequestedSrid.isEmpty() && ( mRequestedSrid != mDetectedSrid || mRequestedSrid.toInt() == 0 ) )
+  {
+    where += delim + QString( "%1(%2%3)=%4" )
+             .arg( mConnectionRO->majorVersion() < 2 ? "srid" : "st_srid" )
+             .arg( quotedIdentifier( mGeometryColumn ) )
+             .arg( mSpatialColType == sctGeography ? "::geography" : "" )
+             .arg( mRequestedSrid );
+    delim = " AND ";
+  }
+
+  if ( mRequestedGeomType != QGis::WKBUnknown && mRequestedGeomType != mDetectedGeomType )
+  {
+    where += delim + QgsPostgresConn::postgisTypeFilter( mGeometryColumn, mRequestedGeomType, mSpatialColType == sctGeography );
+    delim = " AND ";
+  }
+
+  return where;
+}
 
 void QgsPostgresProvider::setExtent( QgsRectangle& newExtent )
 {
@@ -1128,14 +1157,10 @@ bool QgsPostgresProvider::uniqueData( QString query, QString colName )
 {
   Q_UNUSED( query );
   // Check to see if the given column contains unique data
-  QString sql = QString( "SELECT count(distinct %1)=count(%1) FROM %2" )
+  QString sql = QString( "SELECT count(distinct %1)=count(%1) FROM %2%3" )
                 .arg( quotedIdentifier( colName ) )
-                .arg( mQuery );
-
-  if ( !mSqlWhereClause.isEmpty() )
-  {
-    sql += " WHERE " + mSqlWhereClause;
-  }
+                .arg( mQuery )
+                .arg( filterWhereClause() );
 
   QgsPostgresResult unique = mConnectionRO->PQexec( sql );
 
@@ -2323,12 +2348,7 @@ long QgsPostgresProvider::featureCount() const
   }
   else
   {
-    sql = QString( "SELECT count(*) FROM %1" ).arg( mQuery );
-
-    if ( !mSqlWhereClause.isEmpty() )
-    {
-      sql += " WHERE " + mSqlWhereClause;
-    }
+    sql = QString( "SELECT count(*) FROM %1%2" ).arg( mQuery ).arg( filterWhereClause() );
   }
 
   QgsPostgresResult result = mConnectionRO->PQexec( sql );
@@ -2410,13 +2430,11 @@ QgsRectangle QgsPostgresProvider::extent()
 
     if ( ext.isEmpty() )
     {
-      sql = QString( "SELECT %1(%2) FROM %3" )
+      sql = QString( "SELECT %1(%2) FROM %3%4" )
             .arg( mConnectionRO->majorVersion() < 2 ? "extent" : "st_extent" )
             .arg( quotedIdentifier( mGeometryColumn ) )
-            .arg( mQuery );
-
-      if ( !mSqlWhereClause.isEmpty() )
-        sql += QString( " WHERE %1" ).arg( mSqlWhereClause );
+            .arg( mQuery )
+            .arg( filterWhereClause() );
 
       result = mConnectionRO->PQexec( sql );
       if ( result.PQresultStatus() != PGRES_TUPLES_OK )

@@ -64,13 +64,11 @@
         <file>themes/default/cap_round.png</file>
         <file>themes/default/cap_square.png</file>
         <file>themes/default/clearInput.png</file>
-        <file>themes/default/console/iconAboutConsole.png</file>
         <file>themes/default/console/iconClassConsole.png</file>
         <file>themes/default/console/iconClearConsole.png</file>
         <file>themes/default/console/iconCodepadConsole.png</file>
         <file>themes/default/console/iconHelpConsole.png</file>
         <file>themes/default/console/iconHideToolConsole.png</file>
-        <file>themes/default/console/iconIfaceConsole.png</file>
         <file>themes/default/console/iconOpenConsole.png</file>
         <file>themes/default/console/iconQtCoreConsole.png</file>
         <file>themes/default/console/iconQtGuiConsole.png</file>
@@ -84,7 +82,6 @@
         <file>themes/default/console/imgHelpMenu.png</file>
         <file>themes/default/console/iconTabEditorConsole.png</file>
         <file>themes/default/console/iconNewTabEditorConsole.png</file>
-        <file>themes/default/console/iconCloseTabEditorConsole.png</file>
         <file>themes/default/console/iconRestoreTabsConsole.png</file>
         <file>themes/default/console/iconFileTabsMenuConsole.png</file>
         <file>themes/default/console/iconShowEditorConsole.png</file>

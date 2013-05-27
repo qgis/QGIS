@@ -2,6 +2,7 @@
 def test_002_load_csv_file():
     wanted={}
     wanted['uri']=u'file://test.csv?geomType=none&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -66,6 +67,7 @@ def test_002_load_csv_file():
 def test_003_field_naming():
     wanted={}
     wanted['uri']=u'file://testfields.csv?geomType=none&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -92,6 +94,7 @@ def test_003_field_naming():
 def test_004_max_fields():
     wanted={}
     wanted['uri']=u'file://testfields.csv?geomType=none&maxFields=7&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -113,6 +116,7 @@ def test_004_max_fields():
 def test_005_load_whitespace():
     wanted={}
     wanted['uri']=u'file://test.space?geomType=none&type=whitespace'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -183,6 +187,7 @@ def test_005_load_whitespace():
 def test_006_quote_escape():
     wanted={}
     wanted['uri']=u'file://test.pipe?geomType=none&quote="&delimiter=|&escape=\\'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -273,6 +278,7 @@ def test_006_quote_escape():
 def test_007_multiple_quote():
     wanted={}
     wanted['uri']=u'file://test.quote?geomType=none&quote=\'"&type=csv&escape="\''
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -337,6 +343,7 @@ def test_007_multiple_quote():
 def test_008_badly_formed_quotes():
     wanted={}
     wanted['uri']=u'file://test.badquote?geomType=none&quote="&type=csv&escape="'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text']
     wanted['data']={
         4L: {
             'id': u'3',
@@ -360,6 +367,7 @@ def test_008_badly_formed_quotes():
 def test_009_skip_lines():
     wanted={}
     wanted['uri']=u'file://test2.csv?geomType=none&skipLines=2&type=csv&useHeader=no'
+    wanted['fieldTypes']=['integer', 'text', 'text']
     wanted['data']={
         3L: {
             'id': u'3',
@@ -379,14 +387,15 @@ def test_009_skip_lines():
 def test_010_read_coordinates():
     wanted={}
     wanted['uri']=u'file://testpt.csv?yField=geom_y&xField=geom_x&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'double', 'double']
     wanted['data']={
         2L: {
             'id': u'1',
             'description': u'Basic point',
-            'geom_x': u'10',
-            'geom_y': u'20',
+            'geom_x': u'10.5',
+            'geom_y': u'20.82',
             '#fid': 2L,
-            '#geometry': 'POINT(10.0 20.0)',
+            '#geometry': 'POINT(10.5 20.82)',
             },
         3L: {
             'id': u'2',
@@ -417,6 +426,7 @@ def test_010_read_coordinates():
 def test_011_read_wkt():
     wanted={}
     wanted['uri']=u'file://testwkt.csv?delimiter=|&type=csv&wktField=geom_wkt'
+    wanted['fieldTypes']=['integer', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -462,6 +472,7 @@ def test_011_read_wkt():
 def test_012_read_wkt_point():
     wanted={}
     wanted['uri']=u'file://testwkt.csv?geomType=point&delimiter=|&type=csv&wktField=geom_wkt'
+    wanted['fieldTypes']=['integer', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -507,6 +518,7 @@ def test_012_read_wkt_point():
 def test_013_read_wkt_line():
     wanted={}
     wanted['uri']=u'file://testwkt.csv?geomType=line&delimiter=|&type=csv&wktField=geom_wkt'
+    wanted['fieldTypes']=['integer', 'text']
     wanted['data']={
         4L: {
             'id': u'3',
@@ -552,6 +564,7 @@ def test_013_read_wkt_line():
 def test_014_read_wkt_polygon():
     wanted={}
     wanted['uri']=u'file://testwkt.csv?geomType=polygon&delimiter=|&type=csv&wktField=geom_wkt'
+    wanted['fieldTypes']=['integer', 'text']
     wanted['data']={
         6L: {
             'id': u'5',
@@ -579,6 +592,7 @@ def test_014_read_wkt_polygon():
 def test_015_read_dms_xy():
     wanted={}
     wanted['uri']=u'file://testdms.csv?yField=lat&xField=lon&type=csv&xyDms=yes'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text']
     wanted['data']={
         3L: {
             'id': u'1',
@@ -749,6 +763,7 @@ def test_015_read_dms_xy():
 def test_016_decimal_point():
     wanted={}
     wanted['uri']=u'file://testdp.csv?yField=geom_y&xField=geom_x&type=csv&delimiter=;&decimalPoint=,'
+    wanted['fieldTypes']=['integer', 'text', 'double', 'double', 'double', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -779,6 +794,7 @@ def test_016_decimal_point():
 def test_017_regular_expression_1():
     wanted={}
     wanted['uri']=u'file://testre.txt?geomType=none&trimFields=Y&delimiter=RE(?:GEXP)?&type=regexp'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -805,6 +821,7 @@ def test_017_regular_expression_1():
 def test_018_regular_expression_2():
     wanted={}
     wanted['uri']=u'file://testre.txt?geomType=none&trimFields=Y&delimiter=(RE)(GEXP)?&type=regexp'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -843,6 +860,7 @@ def test_018_regular_expression_2():
 def test_019_regular_expression_3():
     wanted={}
     wanted['uri']=u'file://testre2.txt?geomType=none&trimFields=Y&delimiter=^(.{5})(.{30})(.{5,})&type=regexp'
+    wanted['fieldTypes']=['integer', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -871,6 +889,7 @@ def test_019_regular_expression_3():
 def test_020_regular_expression_4():
     wanted={}
     wanted['uri']=u'file://testre3.txt?geomType=none&delimiter=x?&type=regexp'
+    wanted['fieldTypes']=['text', 'text', 'text', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'f',
@@ -894,6 +913,7 @@ def test_020_regular_expression_4():
 def test_021_regular_expression_5():
     wanted={}
     wanted['uri']=u'file://testre3.txt?geomType=none&delimiter=\\b&type=regexp'
+    wanted['fieldTypes']=['text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'fi',
@@ -913,6 +933,7 @@ def test_021_regular_expression_5():
 def test_022_utf8_encoded_file():
     wanted={}
     wanted['uri']=u'file://testutf8.csv?geomType=none&delimiter=|&type=csv&encoding=utf-8'
+    wanted['fieldTypes']=['integer', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -930,6 +951,7 @@ def test_022_utf8_encoded_file():
 def test_023_latin1_encoded_file():
     wanted={}
     wanted['uri']=u'file://testlatin1.csv?geomType=none&delimiter=|&type=csv&encoding=latin1'
+    wanted['fieldTypes']=['integer', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -947,6 +969,7 @@ def test_023_latin1_encoded_file():
 def test_024_filter_rect_xy():
     wanted={}
     wanted['uri']=u'file://testextpt.txt?yField=y&delimiter=|&type=csv&xField=x'
+    wanted['fieldTypes']=['integer', 'text', 'integer', 'integer']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -990,6 +1013,7 @@ def test_024_filter_rect_xy():
 def test_025_filter_rect_wkt():
     wanted={}
     wanted['uri']=u'file://testextw.txt?delimiter=|&type=csv&wktField=wkt'
+    wanted['fieldTypes']=['integer', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -1049,6 +1073,7 @@ def test_025_filter_rect_wkt():
 def test_026_filter_fid():
     wanted={}
     wanted['uri']=u'file://test.csv?geomType=none&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text']
     wanted['data']={
         3L: {
             'id': u'2',
@@ -1087,6 +1112,7 @@ def test_026_filter_fid():
 def test_027_filter_attributes():
     wanted={}
     wanted['uri']=u'file://test.csv?geomType=none&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'',
@@ -1196,6 +1222,7 @@ def test_027_filter_attributes():
 def test_028_substring_test():
     wanted={}
     wanted['uri']=u'file://test.csv?geomType=none&type=csv&subset=id%20%25%202%20%3D%201'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -1233,6 +1260,7 @@ def test_028_substring_test():
 def test_029_file_watcher():
     wanted={}
     wanted['uri']=u'file://file?geomType=none&type=csv&watchFile=yes'
+    wanted['fieldTypes']=['integer', 'text']
     wanted['data']={
         3L: {
             'id': u'2',
@@ -1355,6 +1383,7 @@ def test_029_file_watcher():
 def test_030_filter_rect_xy_spatial_index():
     wanted={}
     wanted['uri']=u'file://testextpt.txt?spatialIndex=Y&yField=y&delimiter=|&type=csv&xField=x'
+    wanted['fieldTypes']=['integer', 'text', 'integer', 'integer']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -1542,6 +1571,7 @@ def test_030_filter_rect_xy_spatial_index():
 def test_031_filter_rect_wkt_spatial_index():
     wanted={}
     wanted['uri']=u'file://testextw.txt?spatialIndex=Y&delimiter=|&type=csv&wktField=wkt'
+    wanted['fieldTypes']=['integer', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -1673,6 +1703,7 @@ def test_031_filter_rect_wkt_spatial_index():
 def test_032_filter_rect_wkt_create_spatial_index():
     wanted={}
     wanted['uri']=u'file://testextw.txt?delimiter=|&type=csv&wktField=wkt'
+    wanted['fieldTypes']=['integer', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -1866,9 +1897,11 @@ def test_032_filter_rect_wkt_create_spatial_index():
         ]
     return wanted
 
+
 def test_033_reset_subset_string():
     wanted={}
     wanted['uri']=u'file://test.csv?geomType=none&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -2021,6 +2054,140 @@ def test_033_reset_subset_string():
             'info': u'',
             'field_5': u'',
             '#fid': 10L,
+            '#geometry': 'None',
+            },
+        }
+    wanted['log']=[
+        ]
+    return wanted
+
+
+def test_034_csvt_file():
+    wanted={}
+    wanted['uri']=u'file://testcsvt.csv?geomType=none&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'integer', 'double', 'text', 'text', 'text']
+    wanted['data']={
+        2L: {
+            'id': u'1',
+            'description': u'Test csvt 1',
+            'f1': u'1',
+            'f2': u'1.2',
+            'f3': u'01',
+            'f4': u'text',
+            'f5': u'times',
+            '#fid': 2L,
+            '#geometry': 'None',
+            },
+        3L: {
+            'id': u'2',
+            'description': u'Test csvt 2',
+            'f1': u'3',
+            'f2': u'1.5',
+            'f3': u'99',
+            'f4': u'23.5',
+            'f5': u'80',
+            '#fid': 3L,
+            '#geometry': 'None',
+            },
+        }
+    wanted['log']=[
+        ]
+    return wanted
+
+
+def test_035_csvt_file2():
+    wanted={}
+    wanted['uri']=u'file://testcsvt2.txt?geomType=none&delimiter=|&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'integer', 'double', 'integer', 'text', 'integer']
+    wanted['data']={
+        2L: {
+            'id': u'1',
+            'description': u'Test csvt 1',
+            'f1': u'1',
+            'f2': u'1.2',
+            'f3': u'1',
+            'f4': u'text',
+            'f5': u'0',
+            '#fid': 2L,
+            '#geometry': 'None',
+            },
+        3L: {
+            'id': u'2',
+            'description': u'Test csvt 2',
+            'f1': u'3',
+            'f2': u'1.5',
+            'f3': u'99',
+            'f4': u'23.5',
+            'f5': u'80',
+            '#fid': 3L,
+            '#geometry': 'None',
+            },
+        }
+    wanted['log']=[
+        ]
+    return wanted
+
+
+def test_036_csvt_file_invalid_types():
+    wanted={}
+    wanted['uri']=u'file://testcsvt3.csv?geomType=none&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'integer', 'double', 'integer', 'text', 'text']
+    wanted['data']={
+        2L: {
+            'id': u'1',
+            'description': u'Test csvt 1',
+            'f1': u'1',
+            'f2': u'1.2',
+            'f3': u'1',
+            'f4': u'text',
+            'f5': u'times',
+            '#fid': 2L,
+            '#geometry': 'None',
+            },
+        3L: {
+            'id': u'2',
+            'description': u'Test csvt 2',
+            'f1': u'3',
+            'f2': u'1.5',
+            'f3': u'99',
+            'f4': u'23.5',
+            'f5': u'80',
+            '#fid': 3L,
+            '#geometry': 'None',
+            },
+        }
+    wanted['log']=[
+        u'Errors in file file',
+        u'File type string in testcsvt3.csvt is not correctly formatted',
+        ]
+    return wanted
+
+
+def test_037_csvt_file_invalid_file():
+    wanted={}
+    wanted['uri']=u'file://testcsvt4.csv?geomType=none&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'integer', 'double', 'integer', 'text', 'text']
+    wanted['data']={
+        2L: {
+            'id': u'1',
+            'description': u'Test csvt 1',
+            'f1': u'1',
+            'f2': u'1.2',
+            'f3': u'1',
+            'f4': u'text',
+            'f5': u'times',
+            '#fid': 2L,
+            '#geometry': 'None',
+            },
+        3L: {
+            'id': u'2',
+            'description': u'Test csvt 2',
+            'f1': u'3',
+            'f2': u'1.5',
+            'f3': u'99',
+            'f4': u'23.5',
+            'f5': u'80',
+            '#fid': 3L,
             '#geometry': 'None',
             },
         }

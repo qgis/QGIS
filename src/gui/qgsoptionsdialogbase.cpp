@@ -74,10 +74,10 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi )
   connect( mOptStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( optionsStackedWidget_CurrentChanged( int ) ) );
   connect( mOptStackedWidget, SIGNAL( widgetRemoved( int ) ), this, SLOT( optionsStackedWidget_WidgetRemoved( int ) ) );
 
+  mInit = true;
+
   if ( restoreUi )
     restoreOptionsBaseUi();
-
-  mInit = true;
 }
 
 void QgsOptionsDialogBase::restoreOptionsBaseUi()

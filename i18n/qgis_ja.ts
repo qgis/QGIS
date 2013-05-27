@@ -6148,14 +6148,12 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <translation>レイヤラベリングオプション</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1132"/>
         <source>Shapefile Layer...</source>
-        <translation>シェープファイルレイヤ...</translation>
+        <translation type="obsolete">シェープファイルレイヤ...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1144"/>
         <source>SpatiaLite Layer...</source>
-        <translation>Spatialiteレイヤ...</translation>
+        <translation type="obsolete">Spatialiteレイヤ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1189"/>
@@ -6791,8 +6789,9 @@ Shift+クリックで非表示
         <translation>ラベリング</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgisapp.ui" line="1132"/>
         <source>New Shapefile Layer...</source>
-        <translation type="obsolete">新しいシェープファイルレイヤ...</translation>
+        <translation type="unfinished">新しいシェープファイルレイヤ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1135"/>
@@ -6800,8 +6799,9 @@ Shift+クリックで非表示
         <translation>Ctrl+Shift+N</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgisapp.ui" line="1144"/>
         <source>New SpatiaLite Layer ...</source>
-        <translation type="obsolete">新しいSpatialiteレイヤ...</translation>
+        <translation type="unfinished">新しいSpatialiteレイヤ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1147"/>
@@ -10774,7 +10774,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1542"/>
         <location filename="../src/providers/postgres/qgspostgresfeatureiterator.cpp" line="53"/>
-        <location filename="../src/providers/postgres/qgspostgresfeatureiterator.cpp" line="299"/>
+        <location filename="../src/providers/postgres/qgspostgresfeatureiterator.cpp" line="295"/>
         <source>PostgreSQL</source>
         <translation>PostgreSQL</translation>
     </message>
@@ -11271,10 +11271,10 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2384"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2872"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2843"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3167"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3230"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3368"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2861"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3185"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3248"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3386"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="140"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5132"/>
         <source>Connection to database failed</source>
@@ -11287,7 +11287,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2583"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2966"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2984"/>
         <source>Creation of data source %1 failed: 
 %2</source>
         <translation>データソース %1 の作成に失敗しました: 
@@ -11295,7 +11295,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2617"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2984"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3002"/>
         <source>Loading of the layer %1 failed</source>
         <translation>レイヤ%1のロードに失敗しました</translation>
     </message>
@@ -11331,68 +11331,68 @@ You are seeing this message most likely because you have no DISPLAY environment 
 %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3182"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3210"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3200"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3228"/>
         <source>Unable to delete layer %1: 
 %2</source>
         <translation>レイヤ%1を削除できませんでした
 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3254"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3272"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>レイヤスタイルを保存出来ません. データベース上にテーブルを保存出来ません. テーブルのパーミッションに問題があります（user=%1）. データベースの管理者に問い合わせてください</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3302"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3320"/>
         <source>Save style in database</source>
         <translation>スタイルをデータベースに保存</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3303"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3321"/>
         <source>A style named &quot;%1&quot; already exists in the database for this layer. Do you want to overwrite it?</source>
         <translation>このレイヤの&quot;%1&quot;という名前のスタイルはデータベースに存在します.上書きしますか?</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3307"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3325"/>
         <source>Operation aborted. No changes were made in the database</source>
         <translation>操作は中断されました.データベースに変更は加えられませんでした</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3353"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3371"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
         <translation>レイヤスタイルを保存出来ません. スタイルテーブルに新規レコードを追加できません. テーブルのパーミッションに問題があります（user=%1）. データベースの管理者に問い合わせてください. </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3398"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3462"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3416"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3480"/>
         <source>Connection to database failed using username: %1</source>
         <translation>ユーザ名%1によるデータベースへの接続に失敗しました</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3416"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3441"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3470"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3434"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3459"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3488"/>
         <source>Error executing query: %1</source>
         <translation>クエリ実行エラー: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3417"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3435"/>
         <source>Error executing the select query for related styles. The query was logged</source>
         <translation>関連するスタイルのクエリに失敗しました. クエリは記録されました</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3442"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3460"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
         <translation>関連していないスタイルのクエリに失敗しました. クエリは記録されました</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3471"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3489"/>
         <source>Error executing the select query. The query was logged</source>
         <translation>SELECTクエリの実行に失敗しました. クエリは記録されました</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3481"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3499"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
         <translation>テーブル&apos;%1&apos;の整合性エラー. スタイルIDはユニークである必要があります</translation>
     </message>
@@ -11404,14 +11404,14 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1709"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2696"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3020"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3038"/>
         <source>Unsupported type for field %1</source>
         <translation>フィールド%1はサポートされていない型です</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1723"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2715"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3040"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3058"/>
         <source>Creation of fields failed</source>
         <translation>フィールドの作成に失敗しました</translation>
     </message>
@@ -11814,7 +11814,7 @@ Database error: %2</source>
         <translation>PostGIS</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresfeatureiterator.cpp" line="299"/>
+        <location filename="../src/providers/postgres/qgspostgresfeatureiterator.cpp" line="295"/>
         <source>Trying to fetch geometry on a layer without geometry.</source>
         <translation>ジオメトリを持たないレイヤからジオメトリのフェッチを試みます.</translation>
     </message>
@@ -24150,85 +24150,90 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">エラー</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="234"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="213"/>
+        <source>File type string in %1 is not correctly formatted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="312"/>
         <source>File cannot be opened or delimiter parameters are not valid</source>
         <translation>ファイルが開けないか, デリミタの指定が不正です</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="249"/>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="258"/>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="262"/>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="887"/>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="896"/>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="900"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="327"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="336"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="340"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="983"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="992"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="996"/>
         <source>%0 field %1 is not defined in delimited text file</source>
         <translation>%0 フィールド %1 はデリミティッドテキストファイル内に定義されていません</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="301"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="379"/>
         <source>Invalid record format at line %1</source>
         <translation>不正なレコード形式が以下の行にあります %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="378"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="456"/>
         <source>Invalid WKT at line %1</source>
         <translation>不正なWKTが以下の行にあります %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="425"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="503"/>
         <source>Invalid X or Y fields at line %1</source>
         <translation>不正なXまたはYフィールドが以下の行にあります %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="517"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="613"/>
         <source>%1 records discarded due to invalid format</source>
         <translation>%1 レコードが不正なフォーマットのため削除されました</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="519"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="615"/>
         <source>%1 records discarded due to missing geometry definitions</source>
         <translation>%1 レコードがジオメトリ定義が無いため削除されました</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="521"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="617"/>
         <source>%1 records discarded due to invalid geometry definitions</source>
         <translation>%1 レコードが不正なジオメトリ定義のため削除されました</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="523"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="619"/>
         <source>%1 records discarded due to incompatible geometry types</source>
         <translation>%1 レコードが非互換なジオメトリ型のため削除されました</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="712"/>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="731"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="808"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="827"/>
         <source>Errors in file %1</source>
         <translation>エラーが以下の行にあります %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="719"/>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="738"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="815"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="834"/>
         <source>The following lines were not loaded into QGIS due to errors:</source>
         <translation>エラーのため以下の行はQGISに読み込まれませんでした:</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="723"/>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="742"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="819"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="838"/>
         <source>There are %1 additional errors in the file</source>
         <translation>%1 個のエラーがあります</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="730"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="826"/>
         <source>Delimited text file errors</source>
         <translation>デリミティッドテキストファイルエラー</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="789"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="885"/>
         <source>Invalid subset string %1 for %2</source>
         <translation>不正なサブセット文字列 %1 が%2 内にあります</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="957"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="1053"/>
         <source>The file has been updated by another application - reloading</source>
         <translation>ファイルが他のアプリケーションによって更新されました - リロードします</translation>
     </message>
@@ -26365,179 +26370,179 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsFieldsProperties</name>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="203"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="204"/>
         <source>Label</source>
         <translation>ラベル</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="293"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="294"/>
         <source>Id</source>
         <translation>Id</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="294"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="295"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="295"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="296"/>
         <source>Type</source>
         <translation>タイプ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="296"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="297"/>
         <source>Length</source>
         <translation>長さ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="297"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="298"/>
         <source>Precision</source>
         <translation>精度</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="298"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="299"/>
         <source>Comment</source>
         <translation>コメント</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="299"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="300"/>
         <source>Edit widget</source>
         <translation>ウィジェットの編集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="302"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="303"/>
         <source>Alias</source>
         <translation>別名</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="567"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="606"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="584"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="653"/>
         <source>Name conflict</source>
         <translation>名前の衝突</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="567"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="606"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="584"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="653"/>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
         <translation>属性は追加されませんでした。指定された名前はテーブル内に既に存在しています。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="579"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="596"/>
         <source>Added attribute</source>
         <translation>追加された属性</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="626"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="673"/>
         <source>Deleted attribute</source>
         <translation>削除された属性</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="698"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="745"/>
         <source>Line edit</source>
         <translation>行編集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="699"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="746"/>
         <source>Unique values</source>
         <translation>ユニーク値</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="700"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="747"/>
         <source>Unique values editable</source>
         <translation>ユニーク値編集可能</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="701"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="748"/>
         <source>Classification</source>
         <translation>分類</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="702"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="749"/>
         <source>Value map</source>
         <translation>バリューマップ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="703"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="750"/>
         <source>Edit range</source>
         <translation>編集レンジ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="704"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="751"/>
         <source>Slider range</source>
         <translation>スライダーレンジ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="705"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="752"/>
         <source>Dial range</source>
         <translation>ダイアル範囲</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="706"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="753"/>
         <source>File name</source>
         <translation>ファイル名</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="707"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="754"/>
         <source>Enumeration</source>
         <translation>列挙</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="708"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="755"/>
         <source>Immutable</source>
         <translation>変わらない</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="709"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="756"/>
         <source>Hidden</source>
         <translation>非表示</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="710"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="757"/>
         <source>Checkbox</source>
         <translation>チェックボックス</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="711"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="758"/>
         <source>Text edit</source>
         <translation>テキスト編集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="712"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="759"/>
         <source>Calendar</source>
         <translation>カレンダー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="713"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="760"/>
         <source>Value relation</source>
         <translation>値のリレーション</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="714"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="761"/>
         <source>UUID generator</source>
         <translation>UUIDジェネレータ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="715"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="762"/>
         <source>Photo</source>
         <translation>写真</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="716"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="763"/>
         <source>Web view</source>
         <translation>ウェブ表示</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="717"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="764"/>
         <source>Color</source>
         <translation>色</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="758"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="805"/>
         <source>Select edit form</source>
         <translation>編集フォームを選ぶ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="758"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="805"/>
         <source>UI file</source>
         <translation>UIファイル</translation>
     </message>
@@ -34886,83 +34891,93 @@ This may be a problem in your network connection or at the WMS server.</source>
 <context>
     <name>QgsLegend</name>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="217"/>
-        <location filename="../src/app/legend/qgslegend.cpp" line="2989"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="218"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="3045"/>
         <source>sub-group</source>
         <translation>サブグループ</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="223"/>
-        <location filename="../src/app/legend/qgslegend.cpp" line="2994"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="224"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="3050"/>
         <source>group</source>
         <translation>グループ</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="831"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="832"/>
         <source>&amp;Properties</source>
         <translation>プロパティ(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="835"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="836"/>
         <source>&amp;Make to Toplevel Item</source>
         <translation>アイテムをトップレベルに移動する(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="841"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="842"/>
         <source>Zoom to Group</source>
         <translation>グループにズームする</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="844"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="845"/>
         <source>&amp;Remove</source>
         <translation>削除(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="847"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="848"/>
         <source>&amp;Set Group CRS</source>
         <translation>グループCRSの設定(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="860"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="861"/>
         <source>&amp;Group Selected</source>
         <translation>選択されたレイヤをグループにする(&amp;G)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="868"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="869"/>
         <source>Copy Style</source>
         <translation>スタイルコピー</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="871"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="872"/>
         <source>Paste Style</source>
         <translation>スタイルペースト</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="875"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="876"/>
         <source>&amp;Add New Group</source>
         <translation>新規グループ追加(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="876"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="877"/>
         <source>&amp;Expand All</source>
         <translation>すべてを展開する(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="877"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="878"/>
         <source>&amp;Collapse All</source>
         <translation>すべてを折りたたむ(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="879"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="880"/>
         <source>&amp;Update Drawing Order</source>
         <translation>描画順序を更新する(&amp;U)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/legend/qgslegend.cpp" line="1994"/>
+        <source>Not fully defined drawing order set to legend order.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/legend/qgslegend.cpp" line="1994"/>
+        <source>Legend</source>
+        <translation type="unfinished">凡例</translation>
     </message>
     <message>
         <source>&amp;Make to toplevel item</source>
         <translation type="obsolete">アイテムをトップレベルに移動(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="758"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="759"/>
         <source>Legend context</source>
         <translation>凡例コンテキスト</translation>
     </message>
@@ -34975,7 +34990,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="obsolete">グループCRSを設定する(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="852"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="853"/>
         <source>Re&amp;name</source>
         <translation>改名(&amp;n)</translation>
     </message>
@@ -35589,14 +35604,14 @@ not displayed</source>
 <context>
     <name>QgsMapRenderer</name>
     <message>
-        <location filename="../src/core/qgsmaprenderer.cpp" line="861"/>
-        <location filename="../src/core/qgsmaprenderer.cpp" line="883"/>
+        <location filename="../src/core/qgsmaprenderer.cpp" line="873"/>
+        <location filename="../src/core/qgsmaprenderer.cpp" line="895"/>
         <source>Transform error caught: %1</source>
         <translation>変換エラー発生: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaprenderer.cpp" line="861"/>
-        <location filename="../src/core/qgsmaprenderer.cpp" line="883"/>
+        <location filename="../src/core/qgsmaprenderer.cpp" line="873"/>
+        <location filename="../src/core/qgsmaprenderer.cpp" line="895"/>
         <source>CRS</source>
         <translation>CRS</translation>
     </message>
@@ -35930,12 +35945,12 @@ not displayed</source>
 <context>
     <name>QgsMapToolCapture</name>
     <message>
-        <location filename="../src/app/qgsmaptoolcapture.cpp" line="327"/>
+        <location filename="../src/app/qgsmaptoolcapture.cpp" line="329"/>
         <source>Validation started.</source>
         <translation>検証が開始されました.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolcapture.cpp" line="363"/>
+        <location filename="../src/app/qgsmaptoolcapture.cpp" line="365"/>
         <source>Validation finished.</source>
         <translation>検証が終了しました.</translation>
     </message>
@@ -39120,7 +39135,7 @@ Always network: always load from network and do not check if the cache has a val
 <context>
     <name>QgsOfflineEditing</name>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="78"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="79"/>
         <source>Could not open the spatialite database</source>
         <translation>spatialiteデータベースを開けませんでした</translation>
     </message>
@@ -39129,31 +39144,31 @@ Always network: always load from network and do not check if the cache has a val
         <translation type="obsolete">新しい場所にテンプレートデータベースをコピーできません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="284"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="285"/>
         <source>Unable to initialize SpatialMetadata:
 </source>
         <translation>空間メタデータを初期化できません:
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="319"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="320"/>
         <source>Could not create a new database
 </source>
         <translation>新しいメタデータを作れませんでした
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="329"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="330"/>
         <source>Unable to activate FOREIGN_KEY constraints</source>
         <translation>FOREIGN_KEY制約を有効にできません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="419"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="420"/>
         <source>Unknown data type %1</source>
         <translation>不明なデータタイプ%1です</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="450"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="451"/>
         <source>QGIS wkbType %1 not supported</source>
         <translation>QGISではwkbタイプ%1をサポートしていません</translation>
     </message>
@@ -39186,12 +39201,12 @@ Always network: always load from network and do not check if the cache has a val
         <translation type="obsolete">%v　/ %mの地物ジオメトリが更新されます</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="787"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="788"/>
         <source>Offline Editing Plugin</source>
         <translation>オフライン編集プラグイン</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsofflineediting.cpp" line="799"/>
+        <location filename="../src/core/qgsofflineediting.cpp" line="800"/>
         <source>Could not open the spatialite logging database</source>
         <translation>spatialiteロギングデータベースを開けません</translation>
     </message>
@@ -41701,6 +41716,11 @@ SQL:%1
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;空間テーブルを検索時に指定ユーザの所有テーブルのみに検索を制限する.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="211"/>
+        <source>Only list the existing geometry types and don&apos;t offer to add others.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="217"/>
         <source>Only existing geometry types</source>
         <translation>存在するジオメトリタイプのみ</translation>
@@ -41764,7 +41784,6 @@ SQL:%1
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="51"/>
-        <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="211"/>
         <source>Use estimated table statistics for the layer metadata.</source>
         <translation>レイヤメタデータに推定されたテーブル統計値を利用する.</translation>
     </message>
@@ -44613,24 +44632,24 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="223"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="240"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="292"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="419"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="473"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="560"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="588"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="599"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="643"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="657"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="755"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="778"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="836"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="842"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="852"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="858"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="863"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="869"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="874"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1517"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1526"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="426"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="480"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="567"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="595"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="606"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="650"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="664"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="762"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="785"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="843"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="849"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="859"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="865"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="870"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="876"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="881"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1524"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1533"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
@@ -44665,12 +44684,12 @@ error:%3
 エラー:%3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="419"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="426"/>
         <source>Database connection was successful, but the accessible tables could not be determined.</source>
         <translation>データベース接続は成功しました.しかしアクセス可能なテーブルを特定できません.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="471"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="478"/>
         <source>Database connection was successful, but the accessible tables could not be determined. The error message from the database was:
 %1
 </source>
@@ -44679,7 +44698,7 @@ error:%3
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="558"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="565"/>
         <source>Database connection was successful, but the accessible tables could not be determined.
 The error message from the database was:
 %1</source>
@@ -44688,56 +44707,56 @@ The error message from the database was:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="588"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="595"/>
         <source>Database connection was successful, but no accessible tables were found.  Please verify that you have SELECT privilege on a table carrying PostGIS geometry.</source>
         <translation>データベース接続は成功しましたがアクセスできるテーブルがみつかりません.PostGISのジオメトリを持つテーブルのSELECT権限を確かめて下さい.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="599"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="606"/>
         <source>Unable to get list of spatially enabled tables from the database</source>
         <translation>データベースから空間情報が利用できるテーブルリストが取得できません</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="643"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="650"/>
         <source>Retrieval of postgis version failed</source>
         <translation>postgisバージョンの読み取りに失敗しました</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="657"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="664"/>
         <source>Could not parse postgis version string &apos;%1&apos;</source>
         <translation>Postgisバージョン文字列を解析できませんでした &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="753"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="760"/>
         <source>Connection error: %1 returned %2 [%3]</source>
         <translation>接続エラー %1 リターン %2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="776"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="783"/>
         <source>Erroneous query: %1 returned %2 [%3]</source>
         <translation>間違ったクエリ %1  リターン %2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="789"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="796"/>
         <source>Query failed: %1
 Error: no result buffer</source>
         <translation>クエリが失敗しました %1
 エラー　リザルトバッファがありません</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="793"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="800"/>
         <source>Not logged query failed: %1
 Error: no result buffer</source>
         <translation>ログされていないクエリ失敗 %1
 エラー　リザルトバッファがありません</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="832"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="839"/>
         <source>Query: %1 returned %2 [%3]</source>
         <translation>クエリ %1 リターン %2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="840"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="847"/>
         <source>%1 cursor states lost.
 SQL: %2
 Result: %3 (%4)</source>
@@ -44746,98 +44765,98 @@ SQL:%2
 結果:%3 (%4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="852"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="859"/>
         <source>resetting bad connection.</source>
         <translation>不正な接続をリセットしています.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="858"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="865"/>
         <source>retry after reset succeeded.</source>
         <translation>リセットが成功した後にリトライする.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="863"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="870"/>
         <source>retry after reset failed again.</source>
         <translation>リセットが失敗した後に再度リトライする.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="869"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="876"/>
         <source>connection still bad after reset.</source>
         <translation>リセット後も接続が不正.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="874"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="881"/>
         <source>bad connection, not retrying.</source>
         <translation>不正な接続.リトライしない.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1316"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1323"/>
         <source>Point</source>
         <translation>点</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1324"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1331"/>
         <source>Line</source>
         <translation>ライン</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1332"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1339"/>
         <source>Polygon</source>
         <translation>ポリゴン</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1339"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1346"/>
         <source>No Geometry</source>
         <translation>ジオメトリ無し</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1354"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1361"/>
         <source>None</source>
         <translation>なし</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1356"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1363"/>
         <source>Geometry</source>
         <translation>ジオメトリ</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1358"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1365"/>
         <source>Geography</source>
         <translation>ジオグラフィ</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1360"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1367"/>
         <source>TopoGeometry</source>
         <translation>トポジオメトリ</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1516"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1526"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1523"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1533"/>
         <source>Query could not be canceled [%1]</source>
         <translation>クエリがキャンセルできません [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1516"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1523"/>
         <source>PQgetCancel failed</source>
         <translation>PQgetCancelに失敗しました</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1320"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1327"/>
         <source>Multipoint</source>
         <translation>マルチポイント</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1328"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1335"/>
         <source>Multiline</source>
         <translation>マルチライン</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1336"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1343"/>
         <source>Multipolygon</source>
         <translation>マルチポリゴン</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1342"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1349"/>
         <source>Unknown Geometry</source>
         <translation>不明なジオメトリ</translation>
     </message>
@@ -44908,7 +44927,7 @@ SQL:%2
         <translation type="obsolete">地物追加中にエラー発生</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="808"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="837"/>
         <source>Unable to access the %1 relation.
 The error message from the database was:
 %2.
@@ -44919,7 +44938,7 @@ SQL: %3</source>
 SQL %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="866"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="895"/>
         <source>Unable to determine table access privileges for the %1 relation.
 The error message from the database was:
 %2.
@@ -44945,24 +44964,24 @@ SQL %3</translation>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="145"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="204"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="347"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="540"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="698"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="758"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="777"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="783"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="811"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="822"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="870"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="920"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="569"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="727"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="787"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="806"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="812"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="840"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="851"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="899"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="949"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1026"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1049"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1054"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1059"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1064"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1117"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1434"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2444"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="978"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1055"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1078"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1083"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1088"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1093"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1146"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1459"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2462"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
@@ -45029,23 +45048,23 @@ Database error: %2</source>
         <translation type="obsolete">1個ではなく%1 の地物がみつかりました</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="540"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="569"/>
         <source>FAILURE: Field %1 not found.</source>
         <translation>エラー: フィールド%1が見つかりません.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="695"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="749"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="724"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="778"/>
         <source>unexpected formatted field type &apos;%1&apos; for field %2</source>
         <translation>フィールド%2のフィールドタイプ&apos;%1&apos;は期待されていない形式です</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="758"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="787"/>
         <source>Field %1 ignored, because of unsupported type %2</source>
         <translation>フィールド%1は無視されました,何故ならば%2という型はサポートされていないからです</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="920"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="949"/>
         <source>The custom query is not a select query.</source>
         <translation>カスタムクエリはselectクエリではありません.</translation>
     </message>
@@ -45054,7 +45073,7 @@ Database error: %2</source>
         <translation type="obsolete">このテーブルはキーとして適切なカラムがありません.Quantum GISではPostgreSQLのoidやctidのようなプライマリキーが必要です.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1049"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1078"/>
         <source>Primary key field &apos;%1&apos; for view not unique.</source>
         <translation>ビューのプライマリキーフィールド &apos;%1&apos;はユニークではありません.</translation>
     </message>
@@ -45073,87 +45092,87 @@ Database error: %2</source>
         <translation>PostgreSQLレイヤのプライマリキータイプが不明です.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="777"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="806"/>
         <source>Field %1 ignored, because of unsupported type type %2</source>
         <translation>フィールド%1は無視されました.なぜならば%2タイプはサポートされていないからです</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1026"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1055"/>
         <source>The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
         <translation>このテーブルはキーとして適切なカラムがありません.QGISではPostgreSQLのoidやctidのようなプライマリキーが必要です.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1054"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1083"/>
         <source>Key field &apos;%1&apos; for view not found.</source>
         <translation>Viewのキーフィールド&apos;%1&apos;がみつかりません.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1059"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1088"/>
         <source>No key field for view given.</source>
         <translation>viewにキーフィールドがありません.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1064"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1093"/>
         <source>Unexpected relation type &apos;%1&apos;.</source>
         <translation>予期せぬリレーションタイプ &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1117"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1146"/>
         <source>No key field for query given.</source>
         <translation>クエリにキーフィールドがありません.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1430"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1455"/>
         <source>Could not find topology of layer %1.%2.%3</source>
         <translation>レイヤ%1.%2.%3のトポロジが見つかりません</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1756"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1781"/>
         <source>PostGIS error while adding features: %1</source>
         <translation>地物追加中のPostGISエラー: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1813"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1838"/>
         <source>PostGIS error while deleting features: %1</source>
         <translation>地物削除中のPostGISエラー: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1876"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1901"/>
         <source>PostGIS error while adding attributes: %1</source>
         <translation>属性追加中のPostGISエラー: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1923"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1948"/>
         <source>PostGIS error while deleting attributes: %1</source>
         <translation>属性削除中のPostGISエラー: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2028"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2053"/>
         <source>PostGIS error while changing attributes: %1</source>
         <translation>属性変更中のPostGISエラー: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2230"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2255"/>
         <source>PostGIS error while changing geometry values: %1</source>
         <translation>ジオメトリの値変更中のPostGISエラー: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2444"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2462"/>
         <source>result of extents query invalid: %1</source>
         <translation>領域クエリの結果が不正です: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2683"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2701"/>
         <source>Geometry type and srid for empty column %1 of %2 undefined.</source>
         <translation>内容が無いカラム%2 の %1ジオメトリタイプとsridが定義されていません.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2711"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2729"/>
         <source>Feature type or srid for %1 of %2 could not be determined or was not requested.</source>
         <translation>%2の%1の地物タイプまたはsridは判明しないかリクエストされていません.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2734"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2752"/>
         <source>Editing and adding disabled for 2D+ layer (%1; %2)</source>
         <translation>2D+layer (%1; %2)では編集と追加は禁止されています</translation>
     </message>
@@ -45184,7 +45203,7 @@ PostGIS を GEOS サポート付きでインストールしてください (http
         <translation type="obsolete">曖昧なフィールドです!</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="783"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="812"/>
         <source>Duplicate field %1 found
 </source>
         <translation>重複フィールド%1がありました</translation>
@@ -45194,7 +45213,7 @@ PostGIS を GEOS サポート付きでインストールしてください (http
         <translation type="obsolete">PostgreSQLは復旧中です</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="822"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="851"/>
         <source>PostgreSQL is still in recovery after a database crash
 (or you are connected to a (read-only) slave).
 Write accesses will be denied.</source>
@@ -45207,7 +45226,7 @@ Write accesses will be denied.</source>
         <translation type="obsolete">検索を実行できません</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="947"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="976"/>
         <source>Unable to execute the query.
 The error message from the database was:
 %1.
@@ -46174,17 +46193,17 @@ Proceed?</source>
         <translation type="obsolete">全ての</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="489"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="490"/>
         <source>User Defined Coordinate Systems</source>
         <translation>ユーザ定義座標系</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="565"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="566"/>
         <source>Geographic Coordinate Systems</source>
         <translation>地理座標系</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="574"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="575"/>
         <source>Projected Coordinate Systems</source>
         <translation>投影座標系</translation>
     </message>
@@ -46197,12 +46216,12 @@ Proceed?</source>
         <translation type="obsolete">合致する投影法はありません.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="986"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="990"/>
         <source>Resource Location Error</source>
         <translation>リソース位置エラー</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="987"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="991"/>
         <source>Error reading database file from: 
  %1
 Because of this the projection selector will not work...</source>
@@ -46213,8 +46232,8 @@ Because of this the projection selector will not work...</source>
 <context>
     <name>QgsProjectionSelectorBase</name>
     <message>
-        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="101"/>
-        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="178"/>
+        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="98"/>
+        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="175"/>
         <source>Authority ID</source>
         <translation>ID</translation>
     </message>
@@ -46227,7 +46246,7 @@ Because of this the projection selector will not work...</source>
         <translation type="obsolete">Find</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="154"/>
+        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="151"/>
         <source>Hide deprecated CRSs</source>
         <translation>一致しない空間参照システムを隠す</translation>
     </message>
@@ -46253,29 +46272,34 @@ Because of this the projection selector will not work...</source>
         <translation>空間参照システム選択</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="33"/>
+        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="39"/>
+        <source>Selected CRS:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="194"/>
         <source>Filter</source>
         <translation>フィルター</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="51"/>
+        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="212"/>
         <source>Recently used coordinate reference systems</source>
         <translation>最近使用した座標参照システム</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="96"/>
-        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="173"/>
+        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="93"/>
+        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="170"/>
         <source>Coordinate Reference System</source>
         <translation>空間参照システム</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="106"/>
-        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="183"/>
+        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="103"/>
+        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="180"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="129"/>
+        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="126"/>
         <source>Coordinate reference systems of the world</source>
         <translation>世界中の空間参照システム</translation>
     </message>
@@ -61379,7 +61403,7 @@ Run topology check again.</source>
 <context>
     <name>context_help</name>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="717"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="733"/>
         <source>&lt;h3&gt;Project Properties&lt;/h3&gt;
 This dialog allows you to set a number of properties related to the &lt;label&gt;Project&lt;/label&gt;. A Project is a saved set of layers and their settings, as well as other information required to restore the project from disk.&lt;p&gt;
 
@@ -61848,7 +61872,7 @@ X;Y;ELEV&lt;br/&gt;
 &lt;/ol&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="538"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="554"/>
         <source>&lt;h3&gt;Open Vector Layer Dialog&lt;/h3&gt;
 
 The open vector layer dialog is used to add vector data to the QGIS map view. Vector data are spatial data described using geometries of points, lines and polygons (enclosed areas).&lt;/p&gt;
@@ -61865,7 +61889,7 @@ QGISはPostgreSQLデータベースのPostGISレイヤやSpatiaLiteレイヤを�
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="501"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="517"/>
         <source>&lt;h3&gt;Add PostGIS Tables&lt;/h3&gt;
 This dialog allows you to add PostGIS layers (tables with a geometry column) to the QGIS map canvas.
 &lt;p&gt;
@@ -61942,7 +61966,7 @@ Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="414"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="430"/>
         <source>&lt;h3&gt;Create a New PostgreSQL Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a PostgreSQL database.
 &lt;p&gt;
@@ -62012,7 +62036,7 @@ This dialog allows you to define the settings for a connection to a PostgreSQL d
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="630"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="646"/>
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
@@ -62021,7 +62045,7 @@ This dialog allows you to define the settings for a connection to a PostgreSQL d
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="549"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="565"/>
         <source>&lt;h3&gt;Create New Vector Layer&lt;/h3&gt;
 To create a new layer for editing, choose &lt;label&gt;New Vector Layer&lt;/label&gt; from the &lt;label&gt;Layer&lt;/label&gt; menu.&lt;br/&gt;
 With this dialog you can create a shape file layer.
@@ -62048,7 +62072,7 @@ In this section you can see the list of attributes. To delete one of them, click
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="759"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="775"/>
         <source>&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
 This dialog allows you to work with vector layer settings and properties. There are seven tabs:
 &lt;p&gt;
@@ -62333,7 +62357,7 @@ QGISでは地物の属性にもとづいたアクションを提供できます.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1364"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1380"/>
         <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
 You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
 &lt;h4&gt;Database&lt;/h4&gt;
@@ -62382,7 +62406,7 @@ Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1221"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1237"/>
         <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
 The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; General&lt;/label&gt;.&lt;p&gt;
 
@@ -62494,7 +62518,7 @@ The vector layer needs to be in editing mode, before you can click on the &lt;la
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="679"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="695"/>
         <source>&lt;h3&gt;Create a new WMS connection&lt;/h3&gt;
 WMS layers can be added quite simply, as long as you know the URL to access the WMS server, you have a serviceable connection to that server, and the server understands HTTP as the data transport mechanism.&lt;p&gt;
 QGIS currently can act as a WMS client that understands WMS 1.1, 1.1.1 and 1.3 servers.
@@ -62580,7 +62604,7 @@ WMSサーバからデータをダウンロードしている間WMSプラグイ�
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1183"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1199"/>
         <source>&lt;h3&gt;Add SQL Anywhere Tables&lt;/h3&gt;
 This dialog allows you to add SQL Anywhere layers (tables with a geometry column) to the QGIS map canvas.
 &lt;p&gt;
@@ -62658,7 +62682,7 @@ Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1387"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1403"/>
         <source>&lt;h3&gt;Add SpatiaLite Tables&lt;/h3&gt;
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
@@ -62669,7 +62693,7 @@ The connections you define will be remembered for further use and available to c
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1431"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1447"/>
         <source>&lt;h3&gt;Spatial Bookmarks&lt;/h3&gt;
 Spatial Bookmarks allow you to &quot;bookmark&quot; a geographic location and return to it later.
 &lt;p&gt;
@@ -62814,7 +62838,6 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="114"/>
         <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
 Loads and displays delimited text files
 &lt;p&gt;
@@ -63113,7 +63136,7 @@ The following options can be added
 
 
 </source>
-        <translation>&lt;h3&gt;デリミティッドテキストレイヤ&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;デリミティッドテキストレイヤ&lt;/h3&gt;
 デリミティッドテキストファイルを読み込んで表示します
 &lt;p&gt;
 &lt;a href=&quot;#re&quot;&gt;概要&lt;/a&gt;&lt;br/&gt;
@@ -63397,7 +63420,7 @@ if layer.isValid():
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1304"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1320"/>
         <source>&lt;h3&gt;Field Calculator&lt;/h3&gt;
 The field calculator allows you to update fields with expressions.
 
@@ -63520,7 +63543,7 @@ The field calculator allows you to update fields with expressions.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="972"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="988"/>
         <source>&lt;h3&gt;Identify Features&lt;/h3&gt;
 &lt;p&gt;
 The results dialog shows all the features identified within the search tolerance. To see the results details, expand the feature information on the left of each feature.
@@ -63621,14 +63644,629 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="412"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="114"/>
+        <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
+Loads and displays delimited text files
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;Overview&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overview&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;A &amp;quot;delimited text file&amp;quot; contains data in which each record starts on a new line, and 
+is split into fields by a delimiter such as a comma.  
+This type of file is commonly exported from spreadsheets (for example CSV files) or databases.  
+Typically the first line of a delimited text file contains the names of the fields.  
+&lt;/p&gt;
+&lt;p&gt;
+Delimited text files can be loaded into QGIS as a layer. 
+The records can be displayed spatially either as a point
+defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
+describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
+only table, which can then be joined to other tables in QGIS.
+&lt;/p&gt;
+&lt;p&gt;
+In addition to the geometry definition the file can contain text, integer, and real number fields.  By default 
+QGIS will choose the type of field based on its the non blank values of the field.  If all can be interpreted
+as integer then the type will be integer, if all can be interpreted as real numbers then the type will
+be double, otherwise the type will be text.
+&lt;/p&gt;
+&lt;p&gt;
+QGIS can also read the types from an OGR CSV driver compatible &amp;quot;csvt&amp;quot; file.  
+This is a file alongside the data file, but with a &amp;quot;t&amp;quot; appended to the file name. 
+The file should just contain one linewhich lists the type of each field. 
+Valid types are &amp;quot;integer&amp;quot;, &amp;quot;real&amp;quot;, &amp;quot;string&amp;quot;, &amp;quot;date&amp;quot;, &amp;quot;time&amp;quot;, and &amp;quot;datetime&amp;quot;. The date, time, and datetime types are treated as strings in QGIS.
+Each type may be followed by a width and precision, for example &amp;quot;real(10.4)&amp;quot;.
+The list of types are separated by commas, regardless of the delimiter used in the data file.  An
+example of a valid format file would be:
+&lt;/p&gt;
+
+&lt;pre&gt;
+&amp;quot;integer&amp;quot;,&amp;quot;string&amp;quot;,&amp;quot;string(20)&amp;quot;,&amp;quot;real(20.4)&amp;quot;
+&lt;/pre&gt;
+
+&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
+be split into fields), and defining the geometry is represented.  
+This is managed with the delimited text dialog as detailed below.  
+The dialog box displays a sample from the beginning of the file which shows how the format
+options have been applied.
+&lt;/p&gt;
+&lt;h5&gt;Choosing the data file&lt;/h5&gt;
+&lt;p&gt;Use the &amp;quot;Browse...&amp;quot; button to select the data file.  Once the file is selected the
+layer name will automatically be populated based on the file name.  The layer name is used to represent
+the data in the QGIS legend.  
+&lt;/p&gt;
+&lt;p&gt;
+By default files are assumed to be encoded as UTF-8.  However other file
+encodings can be selected.  For example &amp;quot;System&amp;quot; uses the default encoding for the operating system.  
+It is safer to use an explicit coding if the QGIS project needs to be portable.
+&lt;/p&gt;
+&lt;h5&gt;Specifying the file format&lt;/h5&gt;
+&lt;p&gt;The file format can be one of
+&lt;ul&gt;
+    &lt;li&gt;CSV file format.  This is a format commonly used by spreadsheets, in which fields are delimited
+    by a comma character, and quoted using a &amp;quot;(quote) character.  Within quoted fields, a quote
+    mark is entered as &amp;quot;&amp;quot;.&lt;/li&gt;
+    &lt;li&gt;Selected delimiters.  Each record is split into fields using one or more  delimiter character.
+    Quote characters are used for fields which may contain delimiters.  Escape characters may be used 
+    to treat the following character as a normal character (ie to include delimiter, quote, and 
+    new line characters in text fields).  The use of delimiter, quote, and escape characters is detailed &lt;a href=&quot;#csv&quot;&gt;below&lt;/a&gt;.
+    &lt;li&gt;Regular expression.  Each line is split into fields using a &amp;quot;regular expression&amp;quot; delimiter.
+    The use of regular expressions is details &lt;a href=&quot;#regexp&quot;&gt;below&lt;/a&gt;.
+&lt;/ul&gt;
+&lt;h5&gt;Record and field options&lt;/h5&gt;
+&lt;p&gt;The following options affect the selection of records and fields from the data file&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Number of header lines to discard: used to ignore header lines at the beginning of the text file&lt;/li&gt;
+    &lt;li&gt;First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.&lt;/li&gt;
+    &lt;li&gt;Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). &lt;/li&gt;
+    &lt;li&gt;Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
+    affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
+    single delimiter.  Quoted fields are never discarded.&lt;/li&gt;
+    &lt;li&gt;Decimal separator is comma: if selected then commas instead of points are used as the decimal separator in real numbers.  For
+    example &lt;tt&gt;-51,354&lt;/tt&gt; is equivalent to -51.354.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5&gt;Geometry definition&lt;/h5&gt;
+&lt;p&gt;The geometry is can be define as one of&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Point coordinates: each feature is represented as a point defined by X and Y coordinates.&lt;/li&gt;
+    &lt;li&gt;Well known text (WKT) geometry: each feature is represented as a well known text string, for example
+    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  See details of the &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt; format.
+    &lt;li&gt;No geometry (attribute only table): records will not be displayed on the map, but can be viewed
+    in the attribute table and joined to other layers in QGIS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For point coordinates the following options apply:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;X field: specifies the field containing the X coordinate&lt;/li&gt;
+    &lt;li&gt;Y field: specifies the field containing the Y coordinate&lt;/li&gt;
+    &lt;li&gt;DMS angles: if selected coordinates are represented as degrees/minutes/seconds
+    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
+    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
+    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
+    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Geometry field: the field containing the well known text definition.&lt;/li&gt;
+    &lt;li&gt;Geometry type: one of &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or &amp;quot;Polygon&amp;quot;.
+    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
+    which geometry type is displayed in text files containing multiple geometry types. Records containing
+   other geometry types are discarded.   
+    If &amp;quot;Detect&amp;quot; is selected then the type of the first geometry in the file will be used.
+    &amp;quot;Point&amp;quot; includes POINT and MULTIPOINT WKT types, &amp;quot;Line&amp;quot; includes LINESTRING and
+    MULTLINESTRING WKT types, and &amp;quot;Polygon&amp;quot; includes POLYGON and MULTIPOLYGON WKT types.
+&lt;/ul&gt;
+&lt;h5&gt;Layer settings&lt;/h5&gt;
+&lt;p&gt;Layer settings control the way the layer is managed in QGIS.  The options available are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
+This option may be useful for files larger than a few megabytes in size.&lt;/li&gt;
+&lt;li&gt;Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
+from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
+for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
+&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
+reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
+extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
+application will change the file. &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Records are split into fields using three character sets: 
+delimiter characters, quote characters, and escape characters.  
+Other characters in the record are considered as data, split into
+fields by delimiter characters. 
+Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
+&lt;/p&gt;
+&lt;p&gt;
+Quote and escape characters cannot be the same as delimiter characters - they
+will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
+if they are.&lt;/p&gt;
+&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
+is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
+can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
+&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
+contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
+start and end with the same quote character.  Quote characters cannot occur within a field unless they
+are escaped.&lt;/p&gt;
+&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
+(that is, to stop it being treated as a new line, delimiter, or quote character).  
+&lt;/p&gt;
+&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
+&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
+&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
+of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
+&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
+If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
+ then these are extracted as fields. 
+ If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
+In this case the regular expression is matched against each line.  If the line does not match it is discarded
+as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
+is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
+unintuitive) means of loading data with fixed width fields.  For example the 
+expression
+&lt;pre&gt;
+^(.{5})(.{10})(.{20})(.{20})
+&lt;/pre&gt;
+&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
+Lines less than 55 characters long will be discarded.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+The delimited text layer recognizes the following 
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
+&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
+It will accept geometries with
+a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;
+It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
+system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
+preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
+In both cases the SRID is ignored.
+&lt;/p&gt;
+
+
+
+&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;/h4&gt; 
+&lt;p&gt;Each record in the delimited text file is split into fields representing
+attributes of the record.  Usually the attribute names are taken from the first
+data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
+Also if records have more fields than are defined in the header record then these
+will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
+QGIS may override 
+the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
+or are duplicated.
+&lt;/p&gt;
+&lt;p&gt;
+In addition to the attributes explicitly in the data file QGIS assigns a unique 
+feature id to each record which is the line number in the source file on which
+the record starts.  
+&lt;/p&gt;
+&lt;p&gt;
+Each attribute also has a data type, one of string (text), integer, or real number.
+The data type is inferred from the content of the fields - if every non blank value
+is a valid integer then the type is integer, otherwise if it is a valid real
+number then the type is real, otherwise the type is string.  Note that this is
+based on the content of the fields - quoting fields does not change the way they
+are interpreted.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;/h4&gt; 
+&lt;pre&gt;
+X;Y;ELEV
+-300120;7689960;13
+-654360;7562040;52
+1640;7512840;3
+&lt;/pre&gt;
+&lt;p&gt;This file:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
+&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
+&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
+&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;/h4&gt;
+&lt;pre&gt;
+id|wkt
+1|POINT(172.0702250 -43.6031036)
+2|POINT(172.0702250 -43.6031036)
+3|POINT(172.1543206 -43.5731302)
+4|POINT(171.9282585 -43.5493308)
+5|POINT(171.8827359 -43.5875983)
+&lt;/pre&gt;
+&lt;p&gt;This file:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Has two fields defined in the header row: id and wkt.
+  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
+  &lt;li&gt;Specifies each point using the WKT notation
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
+The pattern is:
+&lt;/p&gt;
+&lt;pre&gt;
+from PyQt4.QtCore import QUrl, QString
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+
+# Define the data source
+filename=&quot;test.csv&quot;
+uri=QUrl.fromLocalFile(filename)
+uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
+uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
+uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
+# ... other delimited text parameters
+layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
+# Add the layer to the map
+if layer.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer( layer )
+&lt;/pre&gt;
+&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
+&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
+The following options can be added
+&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
+       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
+       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
+       no default for regexp files.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
+       Additional fields in each record will be discarded. The default is 0 - include all fields.
+       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
+       used.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
+       specified then a dialog box may request this information from the user
+       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
+&lt;/ul&gt;
+
+
+</source>
+        <translation>&lt;h3&gt;デリミティッドテキストレイヤ&lt;/h3&gt;
+デリミティッドテキストファイルを読み込んで表示します
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;概要&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;デリミティッドテキストレイヤの作成&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#csv&quot;&gt;デリミタとクォート文字とエスケープ文字はどう機能するか&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#regexp&quot;&gt;正規表現デリミタはどう機能するか&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#wkt&quot;&gt;WKTテキストはどう解釈されるか&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#attributes&quot;&gt;デリミティッドテキストファイルの属性&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#example&quot;&gt;X, Yポイント座標を持つテキストファイルの例&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#wkt_example&quot;&gt;WKTジオメトリを持つテキストファイルの例&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#python&quot;&gt;Pythonでデリミティッドテキストレイヤを使うには&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;概要&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;&amp;quot;デリミティッドテキストファイル&amp;quot;とは各レコードが新しい行で始まりコンマ等の区切り文字(デリミタ)でフィールドに分けられたデータです.
+このファイルタイプは一般的に表計算ソフト(例えばCSVファイルとして)やデータベースからエクスポートされます.
+一般的には最初の行にはフィールドの名前を持ちます.
+&lt;/p&gt;
+&lt;p&gt;
+デリミティッドテキストファイルはQGISにレイヤとして読み込むことができます.
+レコードはX, Y座標で定義されたポイントとして空間的に表示することができます.
+またWell Known Text (WKT)という任意の複雑なポイントやライン，ポリゴンを表すジオメトリの定義を用いて空間的に表示することもできます.
+ファイルは属性のみのテーブルとして読み込むこともできます. それはQGISで他のテーブルに結合することができます.
+&lt;/p&gt;
+&lt;p&gt;
+ファイルにはジオメトリ定義に加えてテキストや整数、実数フィールドを含むことができます.
+デフォルトではQGISはフィールドの空ではない値に基づいてそのタイプを選びます.
+全ての値が整数として解釈できる場合は整数型となり、全ての値が実数として解釈できる場合は倍精度数型となります. そうでなければテキスト型になります.
+&lt;/p&gt;
+&lt;p&gt;
+QGISはOGR CSVドライバと互換性のある&amp;quot;csvt&amp;quot;ファイルからフィールドのタイプを読むことができます.
+これはデータファイルのそばにあるファイルですがファイル名(拡張子)に&amp;quot;t&amp;quot;が追加されます.
+このファイルは各フィールドのタイプが列挙されている1行を含まなければなりません.
+有効なタイプは&amp;quot;integer&amp;quot;, &amp;quot;real&amp;quot;, &amp;quot;string&amp;quot;, &amp;quot;date&amp;quot;, &amp;quot;time&amp;quot;そして&amp;quot;datetime&amp;quot;です.
+date型やtime型, datetime型はQGISで文字列として扱われます.
+それぞれのタイプには幅と精度が続くことがあります. 例えば&amp;quot;real(10.4)&amp;quot;.
+タイプのリストはデータファイルで使われているデリミタとはかかわりなくコンマで区切られます.
+次は有効なフォーマットのファイルの例です:
+&lt;/p&gt;
+
+&lt;pre&gt;
+&amp;quot;integer&amp;quot;,&amp;quot;string&amp;quot;,&amp;quot;string(20)&amp;quot;,&amp;quot;real(20.4)&amp;quot;
+&lt;/pre&gt;
+
+&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;デリミティッドテキストレイヤの作成&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;デリミティッドテキストレイヤを作成するにはデータファイルを選び、形式(どのように各レコードがフィールドに分けられているか)を定義して、ジオメトリがどう表されているか定義します.
+下で詳述されるように、これはデリミティッドテキストダイアログで行うことができます.
+ダイアログボックスには形式オプションがどう適用されるかを示すファイルの先頭部分のサンプルが表示されます.
+&lt;/p&gt;
+&lt;h5&gt;データファイルの選択&lt;/h5&gt;
+&lt;p&gt;データファイルを選択するには&amp;quot;参照...&amp;quot;ボタンを使います.
+ファイルが選択されたらレイヤ名はファイル名に基づいて自動的に入力されます.
+レイヤ名はQGISの凡例でデータを表すのに使われます.
+&lt;/p&gt;
+&lt;p&gt;
+デフォルトではファイルのエンコーディングはUTF-8が選ばれていますが、他のエンコーディングを選ぶこともできます.
+例えば&amp;quot;System&amp;quot;を選べばオペレーションシステムのデフォルトエンコーディングを使用します.
+QGISプロジェクトを異機種間で移動して使う必要がある場合は、明示的なエンコーディングを使用する方が安全です.
+&lt;/p&gt;
+&lt;h5&gt;ファイル形式の指定&lt;/h5&gt;
+&lt;p&gt;ファイル形式には次の形式があります
+&lt;ul&gt;
+    &lt;li&gt;CSVファイル形式.  これは表計算ソフトで一般的に使われる形式です.フィールドはコンマ文字で境され、&amp;quot;文字(ダブルクォート)で囲まれます.
+    ダブルクォートで囲まれたフィールドではダブルクォートは&amp;quot;&amp;quot;として入力することができます.&lt;/li&gt;
+    &lt;li&gt;選択された区切り文字.  各レコードは1つかそれ以上のデリミタを用いてフィールドに分けられます.
+    クォート文字はデリミタを含むフィールドに使用されます.
+    エスケープ文字は次の文字を通常の文字として扱う(デリミタやクォート文字、改行文字をテキストフィールドに含める)ために使用できます.
+    デリミタやクォート文字、エスケープ文字の使い方は&lt;a href=&quot;#csv&quot;&gt;下&lt;/a&gt;に詳しく述べられています.
+    &lt;li&gt;正規表現. 各行は&amp;quot;正規表現&amp;quot; デリミタを用いてフィールドに分けられます.
+    正規表現の使い方は&lt;a href=&quot;#regexp&quot;&gt;下&lt;/a&gt;に詳しく述べられています.
+&lt;/ul&gt;
+
+&lt;h5&gt;レコードオプションとフィールドオプション&lt;/h5&gt;
+&lt;p&gt;次のオプションはデータファイルからのレコードとフィールドの選抜に影響します&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;無視するヘッダー行数: テキストファイルの先頭部分のヘッダ行を無視するために使われます&lt;/li&gt;
+    &lt;li&gt;最初のレコードはフィールド名を保持している: チェックされている場合、ファイルの(無視された行の後の)最初のレコードはデータレコードではなくフィールド名として解釈されます.&lt;/li&gt;
+    &lt;li&gt;前後の空白削除: チェックされている場合、各フィールドから先頭と末尾の空白が削除されます(クォート文字で囲まれたフィールドを除く).&lt;/li&gt;
+    &lt;li&gt;空フィールドを削除: チェックされている場合、(前後の空白削除の後に)空のフィールドは破棄されます.
+    これはフィールドへのデータ配置に影響を与え、連続したデリミタを単一のデリミタとして処理することに相当します.
+    クォート文字で囲まれたフィールドは決して破棄されません.&lt;/li&gt;
+    &lt;li&gt;コンマを小数点区切りに指定: チェックされている場合、ポイント(ピリオド)の代わりにコンマが実数の小数区切り文字に使われます.
+    例えば&lt;tt&gt;-51,354&lt;/tt&gt;は-51.354と等しくなります.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5&gt;ジオメトリ定義&lt;/h5&gt;
+&lt;p&gt;ジオメトリは次のいずれかとして定義できます.&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;ポイント座標: 各地物はX, Y座標で定義されるポイントとして表現されます.&lt;/li&gt;
+    &lt;li&gt;Well known text (WKT)ジオメトリ: 各地物はWell known textとして表現されます. 例えば
+    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  詳細は&lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt;形式を参照して下さい.
+    &lt;li&gt;ジオメトリなし (属性のみのテーブル): レコードは地図には表示されませんが属性テーブルで表示できます.
+    QGISの他のレイヤと結合することもできます.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;ポイント座標の場合は次のオプションが適用されます:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Xフィールド: X座標を含んでいるフィールドを指定します&lt;/li&gt;
+    &lt;li&gt;Yフィールド: Y座標を含んでいるフィールドを指定します&lt;/li&gt;
+    &lt;li&gt;度分秒を使用: チェックされている場合、座標は度/分/秒または度/分で表されています.
+    QGISは度/分/秒の解釈に非常に寛容です. 正しいDMS座標は3つの数値フィールドとオプションで半球の接頭辞か接尾辞を含みます (N, Eまたは+は正, S, Wまたは-は負).
+    その他の数字ではない文字は一般的に破棄されます. 例えば&lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt;は有効な座標です.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Well known textジオメトリの場合は次のオプションが適用されます:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;ジオメトリフィールド: Well known text定義を含んでいるフィールド.&lt;/li&gt;
+    &lt;li&gt;ジオメトリタイプ: &amp;quot;検出する&amp;quot;, &amp;quot;点&amp;quot;, &amp;quot;ライン&amp;quot;, &amp;quot;ポリゴン&amp;quot;から選択します.
+QGISレイヤは一つのジオメトリ地物タイプ(点, ラインまたはポリゴン)を表示することができます.
+このオプションはテキストファイルが複数のジオメトリタイプを含んでいる場合にどのジオメトリタイプを表示するか選択します.
+他のジオメトリタイプのレコードは破棄されます.
+&amp;quot;Detect&amp;quot;が選択された場合、ファイルの最初のジオメトリのタイプが使用されます.
+&amp;quot;Point&amp;quot;はPOINTとMULTIPOINTのWKTタイプを含みます.
+&amp;quot;Line&amp;quot;はLINESTRINGとMULTILINESTRINGのWKTタイプを含みます.
+&amp;quot;Polygon&amp;quot;はPOLYGONとMULTIPOLYGONのWKTタイプを含みます.
+&lt;/ul&gt;
+&lt;h5&gt;レイヤ設定&lt;/h5&gt;
+&lt;p&gt;レイヤ設定はQGISでレイヤが扱われる方法を管理します. 次のオプションが利用可能です:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;空間インデックスを利用する. 空間オブジェクトの表示と選択のパフォーマンスを良くするために空間インデックスを作成します.
+このオプションはサイズが数メガバイトより大きなファイルに役立つでしょう.&lt;/li&gt;
+&lt;li&gt;サブセットインデックスを利用する. レコードのサブセットが使われている場合インデックスを作成する
+(レイヤプロパティダイアログからサブセット文字列を明示的に設定する場合や、全てのジオメトリが有効ではないファイルの中でジオメトリが有効な地物の暗黙のサブセット).
+インデックスはサブセットが定義されている時のみ作成されます.&lt;/li&gt;
+&lt;li&gt;ファイル監視. このオプションがチェックされている場合、QGISは他のアプリケーションによるファイルの変更を監視し、変更された時にファイルを読み直します.
+地図はユーザによってリフレッシュされるまで更新されませんが、インデックスと領域はリロードされます.このオプションはインデックスが利用されていて他のアプリケーションがファイルを変更しそうであればチェックされるべきです.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;デリミタとクォート文字とエスケープ文字はどう機能するか&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;レコードは3つの文字のセットを用いてフィールドに分けられます:
+デリミタ, クォート文字, そしてエスケープ文字です. その他の文字はデータとみなされ区切り文字によってフィールドに分けられます.
+クォート文字はペアで用いてそのあいだのテキストをデータとして扱われるようにします. エスケープ文字はそれに続く文字をデータとして扱われるようにします.
+&lt;/p&gt;
+&lt;p&gt;
+クォート文字とエスケープ文字はデリミタと同じではいけません.
+もしそうであればそれらは無視されます.
+エスケープ文字はクォート文字と同じでもよいですが、異なるふるまいをします.&lt;/p&gt;
+&lt;p&gt;デリミタは各フィールドの終わりのマークとして使われます. もし1つより多くのデリミタが定義されている場合はどれか1つの文字がフィールドの終わりのしるしとなります.
+クォート文字とエスケープ文字は通常の文字として扱われるようにするためにデリミタを上書きすることができます.&lt;/p&gt;
+&lt;p&gt;クォート文字はクォート文字で囲まれたフィールドの最初と最後のマークに用いられます.
+クォート文字で囲まれたフィールドにはデリミタを含むことができ、テキストファイルの複数行にわたることができます.
+フィールドがクォート文字で囲まれている場合、同じクォート文字で始まり、終わらなければいけません.
+クォート文字はエスケープされなければフィールドの中には現れません.&lt;/p&gt;
+&lt;p&gt;クォート文字ではないエスケープ文字はそれに続く文字をデータとして扱われるようにします.
+(それは改行文字やデリミタ、クォート文字として扱われないようにするためです)
+&lt;/p&gt;
+&lt;p&gt;クォート文字でもあるエスケープ文字にはより限られた効果があります.
+それらはクォート文字の中にだけ適用され、それら自身のみエスケープします.
+例えば、もし&lt;tt&gt;&apos;&lt;/tt&gt;がクォート文字でありエスケープ文字でもあるときは、
+文字列&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt;はSmith&apos;s&amp;nbsp;Creekの値を表します.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;正規表現デリミタはどう機能するか&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;正規表現は文字パターンを表すために使用されるミニ言語です.
+正規表現の構文には多くのバリエーションがあります.
+QGISは&lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt;フレームワークの&lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt;クラスによって提供される構文を使用します.&lt;/p&gt;
+&lt;p&gt;正規表現デリミティッドファイルでは各行はレコードとして扱われます.
+行の中でそれぞれの正規表現のマッチはフィールドの終わりとして扱われます.
+もし正規表現がキャプチャグループ(例 &lt;tt&gt;(cat|dog)&lt;/tt&gt;)を含む場合はそれらはフィールドとして抜き出されます.
+これを望まない時はキャプチャしないグループ(例 &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;)を使います.
+&lt;/p&gt;
+&lt;p&gt;正規表現が行の始めにアンカーされている場合は異なる扱われ方がされます(パターンが&lt;tt&gt;^&lt;/tt&gt;で始まる場合です).
+この場合正規表現は各行に対してマッチします.
+行がマッチない時は不正なレコードとして破棄されます.
+正規表現のそれぞれのキャプチャグループはフィールドとして扱われます.
+キャプチャグループがない場合はその正規表現は有効ではありません.
+例としては(やや直感的でないが)固定幅のフィールドを持つデータを読み込むのに使うことができます.
+例えば正規表現
+&lt;pre&gt;
+^(.{5})(.{10})(.{20})(.{20})
+&lt;/pre&gt;
+&lt;p&gt;は各行から幅が文字数5, 10, 20, 20の4つのフィールドが抜き出されます.
+長さ55文字に満たない行は破棄されます.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;WKTテキストはどう解釈されるか&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+デリミティッドテキストレイヤは次の&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt;タイプを認識します.
+&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, それに&lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;です.
+Z座標を持つジオメトリ(例 &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;)や計測値を持つジオメトリ(&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;)，その両方を持つジオメトリ(&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;)を受け入れます.
+&lt;/p&gt;
+&lt;p&gt;
+ジオメトリが空間参照システムIDの後にあるPostGIS EWKT(例 &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;)や
+ジオメトリが整数の空間参照IDの後にあるInformixで使われるWKT(例 &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;)を扱うこともできます
+どちらの場合もSRIDは無視されます.
+&lt;/p&gt;
+
+
+
+&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;デリミティッドテキストファイルの属性&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;デリミティッドテキストファイルの各レコードはレコードの属性を表すフィールドに分けられます.
+通常属性名はファイルの最初のデータレコードから取得されます.
+しかし属性名が含まれていない場合は&lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;というように名付けられます.
+レコードがヘッダレコードで定義されたフィールドより多くのフィールドを有する場合には、それらは&lt;tt&gt;field_#&lt;/tt&gt;と名付けられます. ここで#はフィールド番号です
+(レコードの終わりの空のフィールドは無視されることに注意して下さい).
+テキストファイルのフィールド名が番号である場合や&lt;tt&gt;field_#&lt;/tt&gt;といった名前である場合、重複した名前である場合にはQGISは名前を上書きします.
+&lt;/p&gt;
+&lt;p&gt;
+データファイル内の明示的な属性に加えてQGISは各レコードにユニークな地物IDを割り当てます.
+それはソースファイルにおけるレコードが始まる行の行番号です.
+&lt;/p&gt;
+&lt;p&gt;
+各属性は文字列(テキスト), 整数または実数のうちの1つのデータ型を持ちます.
+データ型はフィールドの内容から推測されます.
+すべての空ではない値が有効な整数の場合は整数型となり、それが実数であれば実数型となります.
+そうでなければ文字列になります.
+これはフィールドの内容に基づくことに注意して下さい.フィールドをクォート文字で囲んだとしても解釈の方法は変更されません.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;X, Yポイント座標を持つテキストファイルの例&lt;/a&gt;&lt;/h4&gt; 
+&lt;pre&gt;
+X;Y;ELEV
+-300120;7689960;13
+-654360;7562040;52
+1640;7512840;3
+&lt;/pre&gt;
+&lt;p&gt;このファイルは:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;b&gt;;&lt;/b&gt;をデリミタに用いています. どんな文字でもフィールドを区切るのに用いることができます.&lt;/li&gt;
+&lt;li&gt;最初の行はヘッダ行です. フィールド名としてX, Y, ELEVを含みます.&lt;/li&gt;
+&lt;li&gt;x座標はXフィールドに含まれます.&lt;/li&gt;
+&lt;li&gt;y座標はYフィールドに含まれます.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;WKTジオメトリを持つテキストファイルの例&lt;/a&gt;&lt;/h4&gt;
+&lt;pre&gt;
+id|wkt
+1|POINT(172.0702250 -43.6031036)
+2|POINT(172.0702250 -43.6031036)
+3|POINT(172.1543206 -43.5731302)
+4|POINT(171.9282585 -43.5493308)
+5|POINT(171.8827359 -43.5875983)
+&lt;/pre&gt;
+&lt;p&gt;このファイルは:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;ヘッダ行に定義された2つのフィールドid, wktを持ちます.
+  &lt;li&gt;&lt;b&gt;|&lt;/b&gt;をデリミタとして用いています.&lt;/li&gt;
+  &lt;li&gt;各ポイントをWKT表記を用いて指定しています.
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Pythonでデリミティッドテキストレイヤを使うには&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;他のベクタレイヤと同様の方法でデリミティッドテキストデータソースをPythonから作成することができます.
+サンプル:
+&lt;/p&gt;
+&lt;pre&gt;
+from PyQt4.QtCore import QUrl, QString
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+
+# Define the data source
+filename=&quot;test.csv&quot;
+uri=QUrl.fromLocalFile(filename)
+uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
+uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
+uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
+# ... other delimited text parameters
+layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
+# Add the layer to the map
+if layer.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer( layer )
+&lt;/pre&gt;
+&lt;p&gt;これは上の二番目のサンプルファイルをロードするのに使うことができます.&lt;/p&gt;
+&lt;p&gt;デリミティッドテキストレイヤの構成はクエリ要素をURIに追加することで定義できます.
+次のオプションを追加することができます
+&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; ファイルエンコーディングを定義します.  デフォルトは&amp;quot;UTF-8&amp;quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; デリミタのタイプを定義します. 有効な値はcsv, regexp, whitespace (regexpの特別な場合).
+       デフォルトはcsv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; csv形式ファイルやregexp(正規表現)形式ファイルで用いられるデリミタを定義します.
+       CSVファイルではデフォルトは,(コンマ). regexpファイルにはデフォルトはありません.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (csvファイル) フィールドを囲むクォート文字を定義します. デフォルトは&amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (csvファイル) これに続く文字を特殊な意味をエスケープするのに用いる文字を定義します. デフォルトは&amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; ファイルの先頭から破棄する行数を定義します. デフォルトは0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; 最初のデータレコードがフィールド名を含んでいるかどうか定義します.デフォルトはyes.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; クォート文字で囲まれていないフィールドから先頭と末尾の空白を削除するかどうか定義します. デフォルトはno.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; ファイルから読み込まれるフィールドの最大数を定義します.
+       はみ出したフィールドは破棄されます. デフォルトは0で全てのフィールドが読み込まれます
+       (このオプションはデリミティッドテキストダイアログボックスにはありません).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; クォート文字で囲まれていない(trimFieldsが適用された後で)空のフィールドが破棄されるかどうか定義します. デフォルトはno.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; 数値フィールドで小数点として使われる代わりの文字を指定します. デフォルトはポイント(ピリオド)です.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; well known textジオメトリ定義を含むフィールドの名前かインデックス(1から始まる)を指定します.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; X座標を含むフィールドの名前かインデックス(1から始まる)を指定します(wktFieldが定義されていない場合にのみ適用されます).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; Y座標を含むフィールドの名前かインデックス(1から始まる)を指定します(wktFieldが定義されていない場合にのみ適用されます).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; wktフィールドのジオメトリのタイプを指定します. noneを指定すると属性のみのテーブルとして読み込まれます. デフォルトはauto.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; 使用されるレコードのサブセットを特定するのに用いる式を指定します.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; ベクタレイヤで使用する座標システムをQgsCoordinateReferenceSystem.createFromStringに受け入れられる形式(例えば &amp;quot;EPSG:4167&amp;quot;)で指定する.
+       これが指定されない場合はレイヤが読み込まれる時にユーザから情報の入力を求めるダイアログが開きます(QGISのCRS設定による).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; 初期ファイルスキャンの間にプロバイダがサブセットを定義するインデックスを構築するかどうか指定する.
+       インデックスは明示的に定義されたサブセットとジオメトリ定義が有効な地物の暗黙のサブセットの両方に適用されます.
+       デフォルトではサブセットインデックスが適用可能な場合にはそれが構築されます.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; 初期ファイルスキャンの間にプロバイダが空間インデックスを構築するかどうか指定する.
+       デフォルトでは空間インデックスは構築されません.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; 他のアプリケーションによるファイルの変更を監視するためにプロバイダがファイルシステムウォッチャーを使用するかどうか指定する.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; レイヤ読み込み中のエラーをダイアログボックスで表示するかどうか指定します(どちらにせよQGISログには書かれます). デフォルトはnoです.このオプションはGUIからは利用できません.&lt;/li&gt;
+&lt;/ul&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="428"/>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;新OGRデータベース接続ダイアログ&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="752"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="768"/>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
 There are two measure tools: length and area. With them, you can measure both distances and areas on the map canvas. Currently the tools provide results in metric units only. A single right mouse click stops the measuring, while two right mouse clicks starts measuring anew.
 &lt;h4&gt;Measuring Lengths&lt;/h4&gt;
@@ -63645,7 +64283,7 @@ To measure areas, select the tool and click to create the area. The total area i
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="994"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1010"/>
         <source>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
 &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
 &lt;head&gt;
@@ -63992,7 +64630,7 @@ To measure areas, select the tool and click to create the area. The total area i
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1273"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1289"/>
         <source>&lt;h3&gt;Road graph plugin settings&lt;/h3&gt;
 &lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any polyline layer and plots this path over the road network.&lt;/p&gt;
 &lt;p&gt;
@@ -64067,7 +64705,7 @@ To measure areas, select the tool and click to create the area. The total area i
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="545"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="561"/>
         <source>&lt;h3&gt; North Arrow Plugin&lt;/h3&gt;
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
@@ -64078,7 +64716,7 @@ At present there is only one style available. You can adjust the angle of the ar
 現時点では１種類のスタイルだけが利用可能です. 矢印の角度を調整したりQGISに自動的に方向を決定させたりすることが可能です. もしQGISに方向を決定させるように選択した場合は矢印がどの方向を向くべきか推測されます. 矢印を配置する場所については地図キャンバスの4隅に対応する4個の選択肢があります.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="447"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="463"/>
         <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
 &lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
 raster of an input point vector layer.  The density is calculated based on the
@@ -64194,7 +64832,7 @@ QGISでは標準的なカーネル関数を利用できます。それらの詳�
 &lt;p&gt;作者にコンタクトを取ってください。aruntheguy at gmail dot com&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="665"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="681"/>
         <source>&lt;h3&gt;Save vector layer as...&lt;/h3&gt;
 
 &lt;p&gt;This dialog allows you to save vector data in various formats using GDAL/OGR.
@@ -64229,7 +64867,7 @@ See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector fo
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="982"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="998"/>
         <source>&lt;h3&gt;Print Composer&lt;/h3&gt;
 
 &lt;p&gt;
@@ -64255,7 +64893,7 @@ Click on one of the icons along the top of the composer window to select what ty
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="561"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="577"/>
         <source>&lt;h3&gt;Python Plugin Installer&lt;/h3&gt;
 Downloads and installs plugins from remote repositories.
 &lt;br/&gt;&lt;br/&gt;
@@ -64413,7 +65051,7 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1166"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1182"/>
         <source>&lt;h3&gt;Custom Coordinate Reference System Definition&lt;/h3&gt;
 If QGIS does not provide the coordinate reference system you need, you can define a custom CRS. &lt;p&gt;
 To define a CRS, select &lt;label&gt;Custom CRS&lt;/label&gt; from the &lt;label&gt;Edit&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; (KDE, Windows) menu. Custom CRS are stored in your QGIS user database. In addition to your custom CRS, this database also contains your spatial bookmarks and other custom data.
@@ -64449,7 +65087,7 @@ QGISでカスタムCRSを定義する場合Proj.4投影ライブラリを理解�
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="898"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="914"/>
         <source>&lt;h3&gt;Options&lt;/h3&gt;
 This dialog allows you to select some basic options for QGIS. There are eight tabs:
 &lt;p&gt;
@@ -64601,7 +65239,7 @@ QGISはもはや最初にロードされたレイヤの空間参照系を地図�
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="633"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="649"/>
         <source>&lt;h3&gt;Create a New SQL Anywhere Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a
 SQL Anywhere database.
@@ -64704,7 +65342,7 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1391"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1407"/>
         <source>&lt;h3&gt;Create a New Oracle Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a Oracle database.
 &lt;p&gt;
@@ -65971,8 +66609,8 @@ None
 &lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$feature 関数&lt;/h3&gt;
-In atlas generation, returns the current feature number that is iterated over on the coverage layer.
+        <translation>&lt;h3&gt;$feature 関数&lt;/h3&gt;
+アトラス生成においてカバレッジレイヤ上でイテレートされる現在の地物番号を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$feature&lt;/pre&gt;
@@ -66250,15 +66888,14 @@ Returns arcustanget of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;atan() 関数&lt;/h3&gt;
-Returns arcustanget of a value in radians.
-
+        <translation>&lt;h3&gt;atan() 関数&lt;/h3&gt;
+逆正接の値をラジアンで返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      atan(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; tan of an angle.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; 角度の正接.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
@@ -66364,15 +67001,15 @@ This function takes one argument.
 &lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;log10() 関数&lt;/h3&gt;
-Returns the value of the base 10 logarithm of the passed expression.
+        <translation>&lt;h3&gt;log10() 関数&lt;/h3&gt;
+10を底とする対数の値を返します.
 &lt;br&gt;
-This function takes one argument.
+この関数は1つの引数をとります.
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;log10(value)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;code&gt;value&lt;/code&gt; - 正の数.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
@@ -66464,15 +67101,14 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;tan() 関数&lt;/h3&gt;
-Returns tangent of an angle.
-
+        <translation>&lt;h3&gt;tan() 関数&lt;/h3&gt;
+角度の正接を返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      tan(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; angle in radians.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; ラジアン単位の角度.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
@@ -66731,8 +67367,8 @@ from a &lt;code&gt;Interval&lt;/code&gt;
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
-        <translation type="unfinished">&lt;h3&gt;計算 グループ&lt;/h3&gt;
-This group contains math functions e.g square root, sin and cos
+        <translation>&lt;h3&gt;計算 グループ&lt;/h3&gt;
+このグループには数学の関数があります. 例. 平方根. 正弦. 余弦.
 </translation>
     </message>
     <message>
@@ -67162,8 +67798,8 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$numfeatures 関数&lt;/h3&gt;
-In atlas generation, returns the total number of features within the coverage layer.
+        <translation>&lt;h3&gt;$numfeatures 関数&lt;/h3&gt;
+アトラス生成においてカバレッジレイヤの総地物数を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;pre&gt;$numfeatures&lt;/pre&gt;
@@ -67451,14 +68087,14 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Function ceil()&lt;/h3&gt;
-Rounds a number upwards.
+        <translation>&lt;h3&gt;ceil() 関数&lt;/h3&gt;
+小数点以下を切り上げた数値を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;ceil(value)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;code&gt;value&lt;/code&gt; - 数値.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
@@ -67483,15 +68119,15 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation type="unfinished">&lt;h3&gt;min() 関数&lt;/h3&gt;
-Returns the smallest value in a set of values.
+        <translation>&lt;h3&gt;min() 関数&lt;/h3&gt;
+一連の値の中で最小の値を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
      min(&lt;i&gt;value&lt;i&gt;[,&lt;i&gt;value&lt;/i&gt;...])
 
 &lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; a number.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; 数値.&lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -67516,15 +68152,15 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Funktion ln()&lt;/h3&gt;
-Returns the value of the natural logarithm of the passed expression.
+        <translation>&lt;h3&gt;ln() 関数&lt;/h3&gt;
+自然対数の値を返します.
 &lt;br&gt;
-This function takes one argument.
+この関数は1つの引数をとります.
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;ln(value)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;code&gt;value&lt;/code&gt; - 正の数値.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
@@ -67618,15 +68254,14 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;asin() 関数&lt;/h3&gt;
-Returns arcussinus of a value in radians.
-
+        <translation>&lt;h3&gt;asin() 関数&lt;/h3&gt;
+逆正弦の値をラジアンで返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      asin(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; sin of an angle.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; 角度の正弦.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
@@ -67692,7 +68327,6 @@ Returns square root of a value
 </source>
         <translation>&lt;h3&gt;sqrt() 関数&lt;/h3&gt;
 値の平方根を返します
-
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      sqrt(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
@@ -68317,15 +68951,14 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;exp() 関数&lt;/h3&gt;
-Returns exponential of an value.
-
+        <translation>&lt;h3&gt;exp() 関数&lt;/h3&gt;
+自然対数のべき乗を返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      exp(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; number.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; 数値.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
@@ -68413,14 +69046,14 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Function floor()&lt;/h3&gt;
-Rounds a number downwards.
+        <translation>&lt;h3&gt;floor() 関数&lt;/h3&gt;
+小数点以下を切り捨てた数値を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;floor(value)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;code&gt;value&lt;/code&gt; - 数値.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
@@ -68513,15 +69146,15 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation type="unfinished">&lt;h3&gt;max() 関数&lt;/h3&gt;
-Returns the largest value in a set of values.
+        <translation>&lt;h3&gt;max() 関数&lt;/h3&gt;
+一連の値の中で最小の値を返します.
 
 &lt;h4&gt;構文&lt;/h4&gt;
      max(&lt;i&gt;value&lt;i&gt;[,&lt;i&gt;value&lt;/i&gt;...])
 
 &lt;h4&gt;引数&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; a number.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; 数値.&lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -68543,15 +69176,14 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;acos() 関数&lt;/h3&gt;
-Returns arcuscosinus of a value in radians.
-
+        <translation>&lt;h3&gt;acos() 関数&lt;/h3&gt;
+逆余弦の値をラジアンで返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      acos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; cos of an angle.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; 角度の余弦.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
@@ -68841,15 +69473,14 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;cos() 関数&lt;/h3&gt;
-Returns cosinus of an angle.
-
+        <translation>&lt;h3&gt;cos() 関数&lt;/h3&gt;
+角度の余弦を返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      cos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; angle in radians.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; ラジアン単位の角度.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
@@ -68874,16 +69505,16 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;log() 関数&lt;/h3&gt;
-Returns the value of the logarithm of the passed value and base.
+        <translation>&lt;h3&gt;log() 関数&lt;/h3&gt;
+渡された値と底の対数の値を返します.
 &lt;br&gt;
-This function takes two arguments.
+この関数は2つの引数をとります.
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;log(base, value)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;base&lt;/code&gt; - any positive number.&lt;br&gt;
-&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;code&gt;base&lt;/code&gt; - 正の数値.&lt;br&gt;
+&lt;code&gt;value&lt;/code&gt; - 正の数値.
 &lt;br&gt;
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
@@ -68908,14 +69539,13 @@ Returns sinus of an angle.
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;sin() 関数&lt;/h3&gt;
-角度のsin値を返します.
-
+角度の正弦を返します.
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      sin(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; ラディアン単位の角度.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; ラジアン単位の角度.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;

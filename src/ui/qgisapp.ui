@@ -1129,7 +1129,7 @@
      <normaloff>:/images/themes/default/mActionNewVectorLayer.png</normaloff>:/images/themes/default/mActionNewVectorLayer.png</iconset>
    </property>
    <property name="text">
-    <string>Shapefile Layer...</string>
+    <string>New Shapefile Layer...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+N</string>
@@ -1141,7 +1141,7 @@
      <normaloff>:/images/themes/default/mActionNewVectorLayer.png</normaloff>:/images/themes/default/mActionNewVectorLayer.png</iconset>
    </property>
    <property name="text">
-    <string>SpatiaLite Layer...</string>
+    <string>New SpatiaLite Layer ...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+A</string>
