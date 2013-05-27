@@ -46,14 +46,15 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
 		self.mode = self.ASK_FOR_INPUT_MODE if self.inLayer is None else self.HAS_INPUT_MODE
 
-		# updates of UI
-		self.setupWorkingMode( self.mode )
-
-		self.connect(self.cboSchema, SIGNAL("currentIndexChanged(int)"), self.populateTables)
 		self.populateSchemas()
 		self.populateTables()
 		self.populateLayers()
 		self.populateEncodings()
+
+		# updates of UI
+		self.setupWorkingMode( self.mode )
+		self.connect(self.cboSchema, SIGNAL("currentIndexChanged(int)"), self.populateTables)
+
 
 
 	def setupWorkingMode(self, mode):
