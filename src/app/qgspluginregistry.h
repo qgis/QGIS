@@ -34,7 +34,7 @@ class QString;
 *
 * plugin key is:
 * - C++ plugins: base name of plugin library, e.g. libgrassplugin
-* - Python plugins: module name (directory) of plugin, e.g. plugin_installer
+* - Python plugins: module name (directory) of plugin, e.g. db_manager
 */
 class QgsPluginRegistry
 {

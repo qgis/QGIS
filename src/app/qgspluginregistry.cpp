@@ -100,7 +100,7 @@ QgisPlugin *QgsPluginRegistry::plugin( QString key )
 {
   QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.find( key );
   if ( it == mPlugins.end() )
-    return 0;
+    return NULL;
 
   // note: not used by python plugins
 
@@ -109,7 +109,12 @@ QgisPlugin *QgsPluginRegistry::plugin( QString key )
 
 bool QgsPluginRegistry::isPythonPlugin( QString key )
 {
-  return mPythonUtils && mPythonUtils->isEnabled() && mPythonUtils->isPluginLoaded( key );
+  if ( mPythonUtils && mPythonUtils->isEnabled() )
+  {
+    if ( mPythonUtils->isPluginLoaded( key ) )
+      return true;
+  }
+  return false;
 }
 
 void QgsPluginRegistry::addPlugin( QString key, QgsPluginMetadata metadata )
@@ -267,19 +272,29 @@ void QgsPluginRegistry::loadPythonPlugin( QString packageName )
 
 void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
 {
-  // first check to see if its already loaded
+  QSettings settings;
+
   QString baseName = QFileInfo( theFullPathName ).baseName();
+
+  // first check to see if its already loaded
   if ( isLoaded( baseName ) )
+  {
+    // plugin is loaded
+    // QMessageBox::warning(this, "Already Loaded", description + " is already loaded");
     return;
+  }
 
   QLibrary myLib( theFullPathName );
-  if ( !myLib.load() )
+
+  QString myError; //we will only show detailed diagnostics if something went wrong
+  myError += QObject::tr( "Library name is %1\n" ).arg( myLib.fileName() );
+
+  bool loaded = myLib.load();
+  if ( !loaded )
   {
     QgsMessageLog::logMessage( QObject::tr( "Failed to load %1 (Reason: %2)" ).arg( myLib.fileName() ).arg( myLib.errorString() ), QObject::tr( "Plugins" ) );
     return;
   }
-
-  QString myError( QObject::tr( "Library name is %1\n" ).arg( myLib.fileName() ) );
 
   myError += QObject::tr( "Attempting to resolve the classFactory function\n" );
 
@@ -294,57 +309,59 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
     {
       // UI only -- doesn't use mapcanvas
       create_ui *cf = ( create_ui * ) cast_to_fptr( myLib.resolve( "classFactory" ) );
-      if ( !cf )
+      if ( cf )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Unable to find the class factory for %1." ).arg( theFullPathName ), QObject::tr( "Plugins" ) );
-        break;
-      }
+        QgisPlugin *pl = cf( mQgisInterface );
+        if ( pl )
+        {
+          pl->initGui();
+          // add it to the plugin registry
+          addPlugin( baseName, QgsPluginMetadata( myLib.fileName(), pName(), pl ) );
+          //add it to the qsettings file [ts]
+          settings.setValue( "/Plugins/" + baseName, true );
+          QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName() ).arg( myLib.fileName() ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
 
-      QSettings settings;
-      QgisPlugin *pl = cf( mQgisInterface );
-      if ( !pl )
-      {
-        // something went wrong
-        QMessageBox::warning( mQgisInterface->mainWindow(), QObject::tr( "Error Loading Plugin" ),
-                              QObject::tr( "There was an error loading a plugin."
-                                           "The following diagnostic information may help the QGIS developers resolve the issue:\n%1." )
-                              .arg( myError ) );
-        //disable it to the qsettings file [ts]
-        settings.setValue( "/Plugins/" + baseName, false );
-        break;
-      }
-
-      pl->initGui();
-      // add it to the plugin registry
-      addPlugin( baseName, QgsPluginMetadata( myLib.fileName(), pName(), pl ) );
-      //add it to the qsettings file [ts]
-      settings.setValue( "/Plugins/" + baseName, true );
-      QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName() ).arg( myLib.fileName() ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
-
-      QObject *o = dynamic_cast<QObject *>( pl );
-      if ( !o )
-        break;
-
-      QgsDebugMsg( QString( "plugin object name: %1" ).arg( o->objectName() ) );
-      if ( o->objectName().isEmpty() )
-      {
+          QObject *o = dynamic_cast<QObject *>( pl );
+          if ( o )
+          {
+            QgsDebugMsg( QString( "plugin object name: %1" ).arg( o->objectName() ) );
+            if ( o->objectName().isEmpty() )
+            {
 #ifndef WIN32
-        baseName = baseName.mid( 3 );
+              baseName = baseName.mid( 3 );
 #endif
-        QgsDebugMsg( QString( "object name to %1" ).arg( baseName ) );
-        o->setObjectName( QString( "qgis_plugin_%1" ).arg( baseName ) );
-        QgsDebugMsg( QString( "plugin object name now: %1" ).arg( o->objectName() ) );
-      }
+              QgsDebugMsg( QString( "object name to %1" ).arg( baseName ) );
+              o->setObjectName( QString( "qgis_plugin_%1" ).arg( baseName ) );
+              QgsDebugMsg( QString( "plugin object name now: %1" ).arg( o->objectName() ) );
+            }
 
-      if ( !o->parent() )
-      {
-        QgsDebugMsg( QString( "setting plugin parent" ) );
-        o->setParent( QgisApp::instance() );
+            if ( !o->parent() )
+            {
+              QgsDebugMsg( QString( "setting plugin parent" ) );
+              o->setParent( QgisApp::instance() );
+            }
+            else
+            {
+              QgsDebugMsg( QString( "plugin parent already set" ) );
+            }
+          }
+        }
+        else
+        {
+          // something went wrong
+          QMessageBox::warning( mQgisInterface->mainWindow(), QObject::tr( "Error Loading Plugin" ),
+                                QObject::tr( "There was an error loading a plugin."
+                                             "The following diagnostic information may help the QGIS developers resolve the issue:\n%1." )
+                                .arg( myError ) );
+          //disable it to the qsettings file [ts]
+          settings.setValue( "/Plugins/" + baseName, false );
+        }
       }
       else
       {
-        QgsDebugMsg( QString( "plugin parent already set" ) );
+        QgsMessageLog::logMessage( QObject::tr( "Unable to find the class factory for %1." ).arg( theFullPathName ), QObject::tr( "Plugins" ) );
       }
+
     }
     break;
     default:
@@ -434,64 +451,62 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
     }
   }
 
-  if ( !mPythonUtils || !mPythonUtils->isEnabled() )
-    return;
-
-  // check for python plugins system-wide
-  QStringList pluginList = mPythonUtils->pluginList();
-  QgsDebugMsg( "Loading python plugins" );
-
-  QStringList corePlugins = QStringList();
-  corePlugins << "plugin_installer";
-  corePlugins << "fTools";
-  corePlugins << "GdalTools";
-  corePlugins << "db_manager";
-
-  // make the required core plugins enabled by default:
-  for ( int i = 0; i < corePlugins.size(); i++ )
+  if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    if ( !mySettings.contains( "/PythonPlugins/" + corePlugins[i] ) )
+    // check for python plugins system-wide
+    QStringList pluginList = mPythonUtils->pluginList();
+    QgsDebugMsg( "Loading python plugins" );
+
+    QStringList corePlugins = QStringList();
+    corePlugins << "fTools";
+    corePlugins << "GdalTools";
+    corePlugins << "db_manager";
+
+    // make the required core plugins enabled by default:
+    for ( int i = 0; i < corePlugins.size(); i++ )
     {
-      mySettings.setValue( "/PythonPlugins/" + corePlugins[i], true );
+      if ( !mySettings.contains( "/PythonPlugins/" + corePlugins[i] ) )
+      {
+        mySettings.setValue( "/PythonPlugins/" + corePlugins[i], true );
+      }
     }
-  }
 
-  for ( int i = 0; i < pluginList.size(); i++ )
-  {
-    QString packageName = pluginList[i];
+    for ( int i = 0; i < pluginList.size(); i++ )
+    {
+      QString packageName = pluginList[i];
 
-    // TODO: apply better solution for #5879
-    // start - temporary fix for issue #5879
+      // TODO: apply better solution for #5879
+      // start - temporary fix for issue #5879
+      if ( QgsApplication::isRunningFromBuildDir() )
+      {
+        if ( corePlugins.contains( packageName ) )
+        {
+          QgsApplication::setPkgDataPath( QString( "" ) );
+        }
+        else
+        {
+          QgsApplication::setPkgDataPath( QgsApplication::buildSourcePath() );
+        }
+      }
+      // end - temporary fix for issue #5879, more below
+
+      if ( checkPythonPlugin( packageName ) )
+      {
+        // check if the plugin was active on last session
+
+        if ( mySettings.value( "/PythonPlugins/" + packageName ).toBool() )
+        {
+          loadPythonPlugin( packageName );
+        }
+      }
+    }
+    // start - temporary fix for issue #5879, more above
     if ( QgsApplication::isRunningFromBuildDir() )
     {
-      if ( corePlugins.contains( packageName ) )
-      {
-        QgsApplication::setPkgDataPath( QString( "" ) );
-      }
-      else
-      {
-        QgsApplication::setPkgDataPath( QgsApplication::buildSourcePath() );
-      }
+      QgsApplication::setPkgDataPath( QgsApplication::buildSourcePath() );
     }
-    // end - temporary fix for issue #5879, more below
-
-    if ( checkPythonPlugin( packageName ) )
-    {
-      // check if the plugin was active on last session
-
-      if ( mySettings.value( "/PythonPlugins/" + packageName ).toBool() )
-      {
-        loadPythonPlugin( packageName );
-      }
-    }
+    // end - temporary fix for issue #5879
   }
-
-  // start - temporary fix for issue #5879, more above
-  if ( QgsApplication::isRunningFromBuildDir() )
-  {
-    QgsApplication::setPkgDataPath( QgsApplication::buildSourcePath() );
-  }
-  // end - temporary fix for issue #5879
 
   QgsDebugMsg( "Plugin loading completed" );
 }
@@ -500,7 +515,8 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
 bool QgsPluginRegistry::checkCppPlugin( QString pluginFullPath )
 {
   QLibrary myLib( pluginFullPath );
-  if ( !myLib.load() )
+  bool loaded = myLib.load();
+  if ( ! loaded )
   {
     QgsMessageLog::logMessage( QObject::tr( "Failed to load %1 (Reason: %2)" ).arg( myLib.fileName() ).arg( myLib.errorString() ), QObject::tr( "Plugins" ) );
     return false;
@@ -511,7 +527,7 @@ bool QgsPluginRegistry::checkCppPlugin( QString pluginFullPath )
   category_t *  myCategory = ( category_t * )  cast_to_fptr( myLib.resolve( "category" ) );
   version_t *  myVersion = ( version_t * ) cast_to_fptr( myLib.resolve( "version" ) );
 
-  if ( myName && myDescription && myVersion && myCategory )
+  if ( myName && myDescription && myVersion  && myCategory )
     return true;
 
   QgsDebugMsg( "Failed to get name, description, category or type for " + myLib.fileName() );
