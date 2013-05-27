@@ -68421,23 +68421,23 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;round() 関数&lt;/h3&gt;
-Rounds a number to number of decimal places.
+        <translation>&lt;h3&gt;round() 関数&lt;/h3&gt;
+指定された数の桁数で数値を丸めます.
 &lt;br&gt;
-This function can take one or two arguments depending on what is needed.
+この関数は必要に応じて1個または2個の引数を利用します.
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;round(decimal,places)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;round(decimal)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
-&lt;code&gt;decimal&lt;/code&gt; - is decimal. The decimal number to be rounded.
+&lt;code&gt;decimal&lt;/code&gt; - 10進数. 丸められる10進数数値.
 &lt;br&gt;
-&lt;code&gt;places&lt;/code&gt; - is int. The number of places to round decimal too. Can be negative.
+&lt;code&gt;places&lt;/code&gt; - 整数. 10進数を丸める桁数.負の値も可.
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;round(1234.567, 2 ) &amp;rarr; 1234.57&lt;/code&gt;&lt;br&gt;
-use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;br&gt;
+use &lt;code&gt;round(decimal)&lt;/code&gt; 一番近い整数に丸められますr&lt;br&gt;
 &lt;code&gt;round(1234.567) &amp;rarr; 1235&lt;/code&gt;&lt;br&gt;
 
 
