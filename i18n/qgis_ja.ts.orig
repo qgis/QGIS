@@ -68423,17 +68423,30 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 </source>
         <translation>&lt;h3&gt;round() 関数&lt;/h3&gt;
-指定した桁数になるように数値を四捨五入します.
+<<<<<<< HEAD
+指定された数の桁数で数値を丸めます.
 &lt;br&gt;
 この関数は必要に応じて1個または2個の引数を利用します.
+=======
+指定した小数点以下桁数になるように数値を四捨五入します.
+
+&lt;br&gt;
+この関数は必要に応じて1つまたは2つの引数を取ります.
+>>>>>>> update function_help translation
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;round(decimal,places)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;round(decimal)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;引数&lt;/h4&gt;
+<<<<<<< HEAD
 &lt;code&gt;decimal&lt;/code&gt; - 10進数. 丸められる10進数数値.
 &lt;br&gt;
 &lt;code&gt;places&lt;/code&gt; - 整数. 10進数を丸める桁数.負の値も可.
+=======
+&lt;code&gt;decimal&lt;/code&gt; - 四捨五入される小数値.
+&lt;br&gt;
+&lt;code&gt;places&lt;/code&gt; - 小数点以下桁数. 負の数も指定できます.
+>>>>>>> update function_help translation
 
 &lt;h4&gt;サンプル&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -69275,6 +69288,7 @@ This function takes two arguments.
 </source>
         <translation>&lt;h3&gt;rand() 関数&lt;/h3&gt;
 最小値と最大値の引数で指定された範囲内(境界値を含む)でランダムな整数を返します.
+
 &lt;br&gt;
 この関数は2つの引数をとります.
 &lt;h4&gt;構文&lt;/h4&gt;
@@ -69722,6 +69736,7 @@ This function takes two arguments.
 </source>
         <translation>&lt;h3&gt;randf() 関数&lt;/h3&gt;
 最小値と最大値の引数で指定された範囲内(境界値を含む)でランダムな浮動小数点数を返します.
+Returns a random float within the range specified by the minimum and maximum argument (inclusive).
 &lt;br&gt;
 This function takes two arguments.
 &lt;h4&gt;構文&lt;/h4&gt;
