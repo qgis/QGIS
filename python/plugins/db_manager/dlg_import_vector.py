@@ -46,6 +46,9 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
 		self.mode = self.ASK_FOR_INPUT_MODE if self.inLayer is None else self.HAS_INPUT_MODE
 
+		# used to delete the inlayer whether created inside this dialog
+		self.inLayerMustBeDestroyed = False
+
 		self.populateSchemas()
 		self.populateTables()
 		self.populateLayers()
@@ -107,11 +110,13 @@ class DlgImportVector(QDialog, Ui_Dialog):
 				self.cboInputLayer.addItem( layer.name(), index )
 
 	def deleteInputLayer(self):
-		""" destroy the input layer instance, but only if it was
+		""" unset the input layer, then destroy it but only if it was
 			created from this dialog """
 		if self.mode == self.ASK_FOR_INPUT_MODE and self.inLayer:
-			self.inLayer.deleteLater()
+			if self.inLayerMustBeDestroyed:
+				self.inLayer.deleteLater()
 			self.inLayer = None
+			self.inLayerMustBeDestroyed = False
 			return True
 		return False
 
@@ -119,7 +124,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 		vectorFormats = qgis.core.QgsProviderRegistry.instance().fileVectorFilters()
 		# get last used dir and format
 		settings = QSettings()
-                lastDir = settings.value("/db_manager/lastUsedDir", "").toString()
+		lastDir = settings.value("/db_manager/lastUsedDir", "").toString()
 		lastVectorFormat = settings.value("/UI/lastVectorFileFilter", "").toString()
 		# ask for a filename
 		filename = QFileDialog.getOpenFileName(self, "Choose the file to import", lastDir, vectorFormats, lastVectorFormat)
@@ -159,10 +164,12 @@ class DlgImportVector(QDialog, Ui_Dialog):
 				return False
 
 			self.inLayer = layer
+			self.inLayerMustBeDestroyed = True
 
 		else:
 			legendIndex = self.cboInputLayer.itemData( index ).toInt()[0]
 			self.inLayer = iface.legendInterface().layers()[ legendIndex ]
+			self.inLayerMustBeDestroyed = False
 
 		# update the output table name
 		self.cboTable.setEditText(self.inLayer.name())
