@@ -24,6 +24,7 @@
 
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <climits>
 
 QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause );
 

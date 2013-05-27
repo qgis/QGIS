@@ -24,6 +24,7 @@
 #include "qgspgtablemodel.h"
 
 #include <QSettings>
+#include <climits>
 
 // for htonl
 #ifdef Q_OS_WIN
