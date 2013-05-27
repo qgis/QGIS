@@ -4835,16 +4835,6 @@
                            </layout>
                           </widget>
                          </item>
-                         <item row="3" column="0" colspan="2">
-                          <widget class="QLabel" name="mDefineFieldsNoteLabel">
-                           <property name="styleSheet">
-                            <string notr="true">font-style: italic;</string>
-                           </property>
-                           <property name="text">
-                            <string>( Define attribute fields to enable labeling map tools )</string>
-                           </property>
-                          </widget>
-                         </item>
                         </layout>
                        </widget>
                       </item>

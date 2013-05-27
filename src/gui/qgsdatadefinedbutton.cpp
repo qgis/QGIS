@@ -76,6 +76,7 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
   mDataTypes = datatypes;
   mInputDescription = description;
   mFullDescription = QString( "" );
+  mUsageInfo = QString( "" );
   mCurrentDefinition = QString( "" );
 
   mActionExpression = 0;
@@ -109,9 +110,10 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
 
   mActionDescription = new QAction( tr( "Description..." ), this );
 
-  mActionExpDialog = new QAction( tr( "Edit expression..." ), this );
-
-  mActionCopyExpr = new QAction( tr( "Copy expression" ), this );
+  mActionExpDialog = new QAction( tr( "Edit..." ), this );
+  mActionPasteExpr = new QAction( tr( "Paste" ), this );
+  mActionCopyExpr = new QAction( tr( "Copy" ), this );
+  mActionClearExpr = new QAction( tr( "Clear" ), this );
 
   // set up data types string
   mActionDataTypes = 0;
@@ -120,21 +122,21 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
   QStringList ts;
   if ( mDataTypes.testFlag( AnyType ) || mDataTypes.testFlag( String ) )
   {
-    ts << tr( "String" );
+    ts << tr( "string" );
   }
   if ( mDataTypes.testFlag( AnyType ) || mDataTypes.testFlag( Int ) )
   {
-    ts << tr( "Int" );
+    ts << tr( "int" );
   }
   if ( mDataTypes.testFlag( AnyType ) || mDataTypes.testFlag( Double ) )
   {
-    ts << tr( "Double" );
+    ts << tr( "double" );
   }
 
   if ( !ts.isEmpty() )
   {
     mDataTypesString = ts.join( ", " );
-    mActionDataTypes = new QAction( tr( "Field types: " ) + mDataTypesString, this );
+    mActionDataTypes = new QAction( tr( "Field type: " ) + mDataTypesString, this );
 
     // list fields and types in submenu, since there may be many
     mActionDataTypes->setMenu( mFieldsMenu );
@@ -208,6 +210,13 @@ void QgsDataDefinedButton::aboutToShowMenu()
 
   bool hasExp = !getExpression().isEmpty();
   bool hasField = !getField().isEmpty();
+  QString ddTitle = tr( "Data defined override" );
+
+  QAction* ddTitleAct = mDefineMenu->addAction( ddTitle );
+  QFont titlefont = ddTitleAct->font();
+  titlefont.setItalic( true );
+  ddTitleAct->setFont( titlefont );
+  ddTitleAct->setEnabled( false );
 
   bool addActiveAction = false;
   if ( useExpression() && hasExp )
@@ -222,36 +231,70 @@ void QgsDataDefinedButton::aboutToShowMenu()
     addActiveAction = mFieldNameList.contains( getField() );
   }
 
-  bool addTopSep = false;
   if ( addActiveAction )
   {
+    ddTitleAct->setText( ddTitle + " (" + ( useExpression() ? tr( "expression" ) : tr( "field" ) ) + ")" );
     mDefineMenu->addAction( mActionActive );
     mActionActive->setText( isActive() ? tr( "Deactivate" ) : tr( "Activate" ) );
     mActionActive->setData( QVariant( isActive() ? false : true ) );
-    addTopSep = true;
   }
 
   if ( !mFullDescription.isEmpty() )
   {
     mDefineMenu->addAction( mActionDescription );
-    addTopSep = true;
   }
 
-  if ( addTopSep )
+  mDefineMenu->addSeparator();
+
+  if ( mActionDataTypes )
   {
+    QAction* fieldTitleAct = mDefineMenu->addAction( tr( "Attribute field" ) );
+    fieldTitleAct->setFont( titlefont );
+    fieldTitleAct->setEnabled( false );
+
+    mDefineMenu->addAction( mActionDataTypes );
+
+    mFieldsMenu->clear();
+
+    if ( mFieldNameList.size() > 0 )
+    {
+
+      for ( int j = 0; j < mFieldNameList.count(); ++j )
+      {
+        QString fldname = mFieldNameList.at( j );
+        QAction* act = mFieldsMenu->addAction( fldname + "    (" + mFieldTypeList.at( j ) + ")" );
+        act->setData( QVariant( fldname ) );
+        if ( getField() == fldname )
+        {
+          act->setCheckable( true );
+          act->setChecked( !useExpression() );
+        }
+      }
+    }
+    else
+    {
+      QAction* act = mFieldsMenu->addAction( tr( "No matching field types found" ) );
+      act->setEnabled( false );
+    }
+
     mDefineMenu->addSeparator();
   }
 
-  mDefineMenu->addAction( mActionExpDialog );
+  QAction* exprTitleAct = mDefineMenu->addAction( tr( "Expression" ) );
+  exprTitleAct->setFont( titlefont );
+  exprTitleAct->setEnabled( false );
 
   if ( hasExp )
   {
     QString expString = getExpression();
-    if ( expString.length() > 100 )
+    if ( expString.length() > 35 )
     {
-      expString.truncate( 100 );
+      expString.truncate( 35 );
       expString.append( "..." );
     }
+
+    expString.prepend( tr( "Current: " ) );
+
     if ( !mActionExpression )
     {
       mActionExpression = new QAction( expString, this );
@@ -261,34 +304,18 @@ void QgsDataDefinedButton::aboutToShowMenu()
     {
       mActionExpression->setText( expString );
     }
-
-    mDefineMenu->addAction( mActionCopyExpr );
     mDefineMenu->addAction( mActionExpression );
     mActionExpression->setChecked( useExpression() );
+
+    mDefineMenu->addAction( mActionExpDialog );
+    mDefineMenu->addAction( mActionCopyExpr );
+    mDefineMenu->addAction( mActionPasteExpr );
+    mDefineMenu->addAction( mActionClearExpr );
   }
-
-  if ( mFieldNameList.size() > 0 )
+  else
   {
-    mDefineMenu->addSeparator();
-
-    if ( mActionDataTypes )
-    {
-      mDefineMenu->addAction( mActionDataTypes );
-    }
-
-    mFieldsMenu->clear();
-
-    for ( int j = 0; j < mFieldNameList.count(); ++j )
-    {
-      QString fldname = mFieldNameList.at( j );
-      QAction* act = mFieldsMenu->addAction( fldname + "    (" + mFieldTypeList.at( j ) + ")" );
-      act->setData( QVariant( fldname ) );
-      if ( getField() == fldname )
-      {
-        act->setCheckable( true );
-        act->setChecked( !useExpression() );
-      }
-    }
+    mDefineMenu->addAction( mActionExpDialog );
+    mDefineMenu->addAction( mActionPasteExpr );
   }
 
 }
@@ -318,15 +345,40 @@ void QgsDataDefinedButton::menuActionTriggered( QAction* action )
   {
     QApplication::clipboard()->setText( getExpression() );
   }
-  else // a field name clicked
+  else if ( action == mActionPasteExpr )
   {
-    if ( getField() != action->text() )
+    QString exprString = QApplication::clipboard()->text();
+    if ( !exprString.isEmpty() )
     {
-      setField( action->data().toString() );
+      setExpression( exprString );
+      setUseExpression( true );
+      setActive( true );
+      updateGui();
     }
-    setUseExpression( false );
-    setActive( true );
+  }
+  else if ( action == mActionClearExpr )
+  {
+    // only deactivate if defined expression is being used
+    if ( isActive() && useExpression() )
+    {
+      setUseExpression( false );
+      setActive( false );
+    }
+    setExpression( QString( "" ) );
     updateGui();
+  }
+  else if ( mFieldsMenu->actions().contains( action ) )  // a field name clicked
+  {
+    if ( action->isEnabled() )
+    {
+      if ( getField() != action->text() )
+      {
+        setField( action->data().toString() );
+      }
+      setUseExpression( false );
+      setActive( true );
+      updateGui();
+    }
   }
 }
 
@@ -383,7 +435,7 @@ void QgsDataDefinedButton::updateGui()
     {
       setActive( false );
       icon = mIconDataDefineExpressionError;
-      deftip = tr( "Expression parse error: %1" ).arg( exp.parserErrorString() );
+      deftip = tr( "Parse error: %1" ).arg( exp.parserErrorString() );
       newDef = "";
     }
   }
@@ -411,9 +463,14 @@ void QgsDataDefinedButton::updateGui()
   }
 
   // build full description for tool tip and popup dialog
-  mFullDescription = QString( "" );
+  mFullDescription = tr( "<b><u>Data defined override</u></b><br>" );
 
   mFullDescription += tr( "<b>Active: </b>%1&nbsp;&nbsp;&nbsp;<i>(ctrl|right-click toggles)</i><br>" ).arg( isActive() ? tr( "yes" ) : tr( "no" ) );
+
+  if ( !mUsageInfo.isEmpty() )
+  {
+    mFullDescription += tr( "<b>Usage:</b><br>%1<br>" ).arg( mUsageInfo );
+  }
 
   if ( !mInputDescription.isEmpty() )
   {
@@ -429,6 +486,13 @@ void QgsDataDefinedButton::updateGui()
   if ( deftip != tr( "undefined" ) )
   {
     deftype = QString( " (%1)" ).arg( useExpression() ? tr( "expression" ) : tr( "field" ) );
+  }
+
+  // truncate long expressions, or tool tip may be too wide for screen
+  if ( deftip.length() > 75 )
+  {
+    deftip.truncate( 75 );
+    deftip.append( "..." );
   }
 
   mFullDescription += tr( "<b>Current definition%1:</b><br>%2" ).arg( deftype ).arg( deftip );
