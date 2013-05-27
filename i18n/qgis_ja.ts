@@ -67690,15 +67690,15 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;sqrt() 関数&lt;/h3&gt;
-Returns square root of a value
+        <translation>&lt;h3&gt;sqrt() 関数&lt;/h3&gt;
+値の平方根を返します
 
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      sqrt(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; number.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; 数値.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
@@ -68907,15 +68907,15 @@ Returns sinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;sin() 関数&lt;/h3&gt;
-Returns sinus of an angle.
+        <translation>&lt;h3&gt;sin() 関数&lt;/h3&gt;
+角度のsin値を返します.
 
 
 &lt;p&gt;&lt;h4&gt;構文&lt;/h4&gt;
      sin(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;引数&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; angle in radians.&lt;/p&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; ラディアン単位の角度.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;サンプル&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
