@@ -67,7 +67,6 @@ class QAuthenticator;
 
 class QgsBrowserDockWidget;
 class QgsSnappingDialog;
-class QgsPluginManager;
 class QgsGPSInformationWidget;
 
 class QgsDecorationItem;
