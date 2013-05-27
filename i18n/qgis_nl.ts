@@ -1739,19 +1739,19 @@ Weet u zeker dat u door wilt?</translation>
     </message>
     <message>
         <source>Eliminate sliver polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Opruimen polygoon splinters</translation>
     </message>
     <message>
         <source>common boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>gemeenschappelijke grens</translation>
     </message>
     <message>
         <source>Merge selection with the neighbouring polygon with the largest</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectie samenvoegen met naastgelegen polygoon met grootste</translation>
     </message>
     <message>
         <source>Selected features:</source>
-        <translation type="unfinished"></translation>
+        <translation>Geselecteerde objecten:</translation>
     </message>
     <message>
         <source>area</source>
@@ -1759,49 +1759,51 @@ Weet u zeker dat u door wilt?</translation>
     </message>
     <message>
         <source>Save errors location</source>
-        <translation type="unfinished"></translation>
+        <translation>Opslaan locatie-fouten</translation>
     </message>
     <message>
         <source>There are no shapefiles with the given geometry type. Please select an available geometry type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen shape bestanden gevonden met gegeven type geometrie. Selecteer een beschikbare type geometrie.</translation>
     </message>
     <message>
         <source>Selected features: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Geselecteerde objecten: %1</translation>
     </message>
     <message>
         <source>Eliminate</source>
-        <translation type="unfinished"></translation>
+        <translation>Opruimen</translation>
     </message>
     <message>
         <source>No selection in input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen selectie in invoerlaag</translation>
     </message>
     <message>
         <source>Commit error:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Commit fouten:
+ %1</translation>
     </message>
     <message>
         <source>Error creating output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij aanmaken uitvoerbestand</translation>
     </message>
     <message>
         <source>Could not delete features</source>
-        <translation type="unfinished"></translation>
+        <translation>De objecten konden niet worden verwijderd</translation>
     </message>
     <message>
         <source>Could not replace geometry of feature with id %1</source>
-        <translation type="unfinished"></translation>
+        <translation>De geometrie van object met id %1 kon niet worden vervangen</translation>
     </message>
     <message>
         <source>Could not eliminate features with these ids:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>De ojecten met volgende id&apos;s konden niet worden verwijderd:
+%1</translation>
     </message>
     <message>
         <source>Could not add features</source>
-        <translation type="unfinished"></translation>
+        <translation>Objecten konden niet worden toegevoegd</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -1884,15 +1886,15 @@ Weet u zeker dat u door wilt?</translation>
     <name>DlgConfig</name>
     <message>
         <source>SEXTANTE options</source>
-        <translation type="unfinished"></translation>
+        <translation>SEXTANTE opties</translation>
     </message>
     <message>
         <source>Enter setting name to filter list</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef naam instelling als filter</translation>
     </message>
     <message>
         <source>Setting</source>
-        <translation type="unfinished"></translation>
+        <translation>Instelling</translation>
     </message>
     <message>
         <source>Value</source>
@@ -2070,19 +2072,19 @@ Weet u zeker dat u door wilt?</translation>
     <name>DlgHelpEdition</name>
     <message>
         <source>Help editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Help editor</translation>
     </message>
     <message>
         <source>about:blank</source>
-        <translation type="unfinished">about:blank</translation>
+        <translation>over:niets</translation>
     </message>
     <message>
         <source>Select element to edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer element om te bewerken</translation>
     </message>
     <message>
         <source>Element description</source>
-        <translation type="unfinished"></translation>
+        <translation>Element beschrijving</translation>
     </message>
 </context>
 <context>
@@ -2159,27 +2161,27 @@ Weet u zeker dat u door wilt?</translation>
     <name>DlgModeler</name>
     <message>
         <source>SEXTANTE modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>SEXTANTE modeler</translation>
     </message>
     <message>
         <source>Inputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Invoer</translation>
     </message>
     <message>
         <source>Algorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritmen</translation>
     </message>
     <message>
         <source>Enter algorithm name to filter list</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef naam algoritme als filter</translation>
     </message>
     <message>
         <source>Enter model name here</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef naam van het model</translation>
     </message>
     <message>
         <source>Enter group name here</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef naam van de groep</translation>
     </message>
 </context>
 <context>
@@ -2966,11 +2968,11 @@ Deaktiveer de &quot;Gebruik doorsnede extent&quot;-optie om een niet leeg result
     </message>
     <message>
         <source>Copy</source>
-        <translation>Kopïeren</translation>
+        <translation>Kopiëren</translation>
     </message>
     <message>
         <source>Copy all</source>
-        <translation>Alles kopïeren</translation>
+        <translation>Alles kopiëren</translation>
     </message>
     <message>
         <source>Select the file to analyse</source>
@@ -3178,11 +3180,11 @@ Deaktiveer de &quot;Gebruik doorsnede extent&quot;-optie om een niet leeg result
     </message>
     <message>
         <source>Output size or resolution required</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoergrootte of resolutie verplicht</translation>
     </message>
     <message>
         <source>The output file doesn&apos;t exist. You must set up the output size or resolution to create it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Het uitvoerbestand bestaat niet. Er dient een uitvoerformaat of resolutie gegeven te worden om deze aan te maken.</translation>
     </message>
 </context>
 <context>
@@ -3325,17 +3327,24 @@ and python executables.
 
 MacOS users usually need to set it to something like
 /Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
-        <translation type="unfinished"></translation>
+        <translation>Een lijst met dubbele punt gescheiden (Linux en MacOS) of
+puntkomma gescheiden (Windows) paden naar zowel de
+binaire als python programma&apos;s.
+
+Voor MacOS-gebruikers is dit meestal iets als
+/Library/Frameworks/GDAL.framework/Versions/1.8/Programs</translation>
     </message>
     <message>
         <source>A list of colon-separated (Linux and MacOS) or
 semicolon-separated (Windows) paths to python modules.</source>
-        <translation type="unfinished"></translation>
+        <translation>Een lijst met dubbele punt-gescheiden (Linux en MacOS) of
+puntkomma gescheiden (Windows) paden naar python modules.</translation>
     </message>
     <message>
         <source>Useful to open local GDAL documentation instead of online help
 when pressing on the tool dialog&apos;s Help button.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuttig om lokale GDAL documentatie te openen in plaats van online help
+wanneer de knop Help in het dialoog scherm wordt ingedrukt.</translation>
     </message>
 </context>
 <context>
@@ -4151,35 +4160,35 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Mode Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Modus Opties</translation>
     </message>
     <message>
         <source>old</source>
-        <translation type="unfinished"></translation>
+        <translation>oud</translation>
     </message>
     <message>
         <source>new</source>
-        <translation type="unfinished"></translation>
+        <translation>nieuw</translation>
     </message>
     <message>
         <source>Keep existing raster size and resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Behoud bestaande rastergrootte en resolutie</translation>
     </message>
     <message>
         <source>Raster size in pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>Rastergrootte in pixels</translation>
     </message>
     <message>
         <source>Raster resolution in map units per pixel</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster resolutie in kaarteenheden per pixel</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished">Horizontaal</translation>
+        <translation>Horizontaal</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished">Verticaal</translation>
+        <translation>Verticaal</translation>
     </message>
 </context>
 <context>
@@ -4576,11 +4585,11 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     </message>
     <message>
         <source>Unload Globe</source>
-        <translation type="unfinished"></translation>
+        <translation>Globe verwijderen</translation>
     </message>
     <message>
         <source>Unload globe</source>
-        <translation type="unfinished"></translation>
+        <translation>Globe verwijderen</translation>
     </message>
 </context>
 <context>
@@ -4741,59 +4750,59 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     </message>
     <message>
         <source>Output raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer raster</translation>
     </message>
     <message>
         <source>Output format</source>
-        <translation type="unfinished">Uitvoerformaat</translation>
+        <translation>Uitvoerformaat</translation>
     </message>
     <message>
         <source>Cell size X</source>
-        <translation type="unfinished"></translation>
+        <translation>Celgrootte X</translation>
     </message>
     <message>
         <source>Cell size Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Celgrootte Y</translation>
     </message>
     <message>
         <source>Use radius from field</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik straal uit veld</translation>
     </message>
     <message>
         <source>Use weight from field</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik gewicht uit veld</translation>
     </message>
     <message>
         <source>0.0</source>
-        <translation type="unfinished">0.0</translation>
+        <translation>0.0</translation>
     </message>
     <message>
         <source>Decay ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>Afnamewaarde</translation>
     </message>
     <message>
         <source>Quartic (biweight)</source>
-        <translation type="unfinished"></translation>
+        <translation>Quartic (biweight)</translation>
     </message>
     <message>
         <source>Triangular</source>
-        <translation type="unfinished"></translation>
+        <translation>Triangulair</translation>
     </message>
     <message>
         <source>Uniform</source>
-        <translation type="unfinished"></translation>
+        <translation>Uniform</translation>
     </message>
     <message>
         <source>Triweight</source>
-        <translation type="unfinished"></translation>
+        <translation>Triweight</translation>
     </message>
     <message>
         <source>Epanechnikov</source>
-        <translation type="unfinished"></translation>
+        <translation>Epanechnikov</translation>
     </message>
     <message>
         <source>Kernel shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Kernel vorm</translation>
     </message>
 </context>
 <context>
@@ -4822,11 +4831,11 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     </message>
     <message>
         <source>Clear history and log</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder historie en log</translation>
     </message>
     <message>
         <source>Create test</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanmaken Test</translation>
     </message>
 </context>
 <context>
@@ -5771,30 +5780,33 @@ Actief op all aan te passen layers</translation>
     </message>
     <message>
         <source>Local Cumulative Cut Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokale Cumulatieve Strekking</translation>
     </message>
     <message>
         <source>Local cumulative cut stretch using current extent, default limits and estimated values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokale Cumulatieve Strekking waarbij volledige grootte, standaard limieten en geschatte waarden wordt gebruikt.</translation>
     </message>
     <message>
         <source>Full Dataset Cumulative Cut Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Volledige Cumulatieve Strekking</translation>
     </message>
     <message>
         <source>Cumulative cut stretch using full dataset extent, default limits and estimated values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cumulatieve Strekking waarbij volledige grootte van de dataset, standaard limieten en geschatte waarden wordt gebruikt.</translation>
     </message>
     <message>
         <source>Show/Hide Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon/Verberg Labels</translation>
     </message>
     <message>
         <source>Show/Hide Labels
 Click or marquee on feature to show label
 Shift+click or marquee on label to hide it
 Acts on currently active editable layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon/Verberg Labels
+Klik op object om label te tonen
+Shift+klik op label om deze te verbergen
+Werkt voor huidige actieve bewerkbare laag</translation>
     </message>
     <message>
         <source>Html Annotation</source>
@@ -5830,79 +5842,79 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Rollback for All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Terugdraaien voor Alle Lagen</translation>
     </message>
     <message>
         <source>Cancel for All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Afbreken voor Alle Lagen</translation>
     </message>
     <message>
         <source>Rollback for Selected Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Terugdraaien voor Geselecteerde Laag/lagen</translation>
     </message>
     <message>
         <source>Current Edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Huidige Wijzigingen</translation>
     </message>
     <message>
         <source>Cancel for Selected Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Afbreken voor Huidige Laag/lagen</translation>
     </message>
     <message>
         <source>Save Layer Edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Opslaan Wijzigingen Laag</translation>
     </message>
     <message>
         <source>Rotate Feature(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Draai Object(en)</translation>
     </message>
     <message>
         <source>&amp;Download data</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Download data</translation>
     </message>
     <message>
         <source>&amp;Import topology from XML</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Importeer topologie van XML</translation>
     </message>
     <message>
         <source>&amp;Export topology to SpatiaLite</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exporteer topologie naar Spatialite</translation>
     </message>
     <message>
         <source>Increase brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Lichtsterkte verhogen</translation>
     </message>
     <message>
         <source>Decrease brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Lichtsterkte verlagen</translation>
     </message>
     <message>
         <source>Increase contrast</source>
-        <translation type="unfinished"></translation>
+        <translation>Contrast verhogen</translation>
     </message>
     <message>
         <source>Decrease contrast</source>
-        <translation type="unfinished"></translation>
+        <translation>Contrast verlagen</translation>
     </message>
     <message>
         <source>Select By Expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteren met Expressie</translation>
     </message>
     <message>
         <source>Select features using an expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteren van objecten gebruik makend van een reguliere expressie</translation>
     </message>
     <message>
         <source>P&amp;roject</source>
-        <translation type="unfinished"></translation>
+        <translation>P&amp;roject</translation>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Open Recent</translation>
     </message>
     <message>
         <source>New From Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuw van Template</translation>
     </message>
     <message>
         <source>&amp;New</source>
@@ -5910,7 +5922,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>&amp;Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Open...</translation>
     </message>
     <message>
         <source>&amp;Save</source>
@@ -5929,111 +5941,115 @@ Acts on currently active editable layer</source>
     <name>ModelerDialog</name>
     <message>
         <source>Edit model help</source>
-        <translation type="unfinished"></translation>
+        <translation>Bewerk model help</translation>
     </message>
     <message>
         <source>Run</source>
-        <translation type="unfinished">Uitvoeren</translation>
+        <translation>Uitvoeren</translation>
     </message>
     <message>
         <source>Execute current model</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoeren huidig model</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation type="unfinished">Open</translation>
+        <translation>Open</translation>
     </message>
     <message>
         <source>Open existing model</source>
-        <translation type="unfinished"></translation>
+        <translation>Open bestaand model</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">Opslaan</translation>
+        <translation>Opslaan</translation>
     </message>
     <message>
         <source>Save current model</source>
-        <translation type="unfinished"></translation>
+        <translation>Opslaan huidig model</translation>
     </message>
     <message>
         <source>Save as ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Opslaan als ...</translation>
     </message>
     <message>
         <source>Save current model as</source>
-        <translation type="unfinished"></translation>
+        <translation>Huidig model opslaan als</translation>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoek...</translation>
     </message>
     <message>
         <source>Empty model</source>
-        <translation type="unfinished"></translation>
+        <translation>Leeg model</translation>
     </message>
     <message>
         <source>Model doesn&apos;t contains any algorithms and/or parameters and can&apos;t be executed</source>
-        <translation type="unfinished"></translation>
+        <translation>Het model bevat geen algoritmes en/of parameters en kan niet worden uitgevoerd</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Waarschuwing</translation>
+        <translation>Waarschuwing</translation>
     </message>
     <message>
         <source>Please enter group and model names before saving</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef voor het opslaan groep en model een naam</translation>
     </message>
     <message>
         <source>Save Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Opslaan Model</translation>
     </message>
     <message>
         <source>SEXTANTE models (*.model)</source>
-        <translation type="unfinished"></translation>
+        <translation>SEXTANTE modellen (*.model)</translation>
     </message>
     <message>
         <source>Model saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Model opgeslagen</translation>
     </message>
     <message>
         <source>Model was correctly saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Model is correct opgeslagen.</translation>
     </message>
     <message>
         <source>Open Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Open Model</translation>
     </message>
     <message>
         <source>Could not open model</source>
-        <translation type="unfinished"></translation>
+        <translation>Model kan niet worden geopend</translation>
     </message>
     <message>
         <source>The selected model could not be loaded.
 Wrong line: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Het geselecteerde model kon niet worden geladen.
+Fout in regel: %1</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">Parameters</translation>
+        <translation>Parameters</translation>
     </message>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished"></translation>
+        <translation>I/O fout</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Wijzigingen opslaan niet mogelijk. Reden:
+ %1</translation>
     </message>
     <message>
         <source>Can&apos;t save model</source>
-        <translation type="unfinished"></translation>
+        <translation>Het model kan niet worden opgeslagen</translation>
     </message>
     <message>
         <source>This model can&apos;t be saved in its original location
 (probably you do not have permission to do it).
 Please, use the &apos;Save as...&apos; option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dit model kan niet worden opgeslagen op huidige locatie
+(waarschijnlijk betreft dit een rechtenprobleem).
+U kunt de optie &apos;Opslaan als...&apos; gebruiken.</translation>
     </message>
 </context>
 <context>
@@ -7034,15 +7050,15 @@ gebruikt u het  qgis.utils.iface object (een instantie van QgisInterface class).
     </message>
     <message>
         <source>Import Sextante class</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeren klasse Sextante</translation>
     </message>
     <message>
         <source>Import PyQt.QtCore class</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeren klasse PyQt.QtCore</translation>
     </message>
     <message>
         <source>Import PyQt.QtGui class</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeren klasse PyQt.QtGui</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -7066,7 +7082,7 @@ gebruikt u het  qgis.utils.iface object (een instantie van QgisInterface class).
     </message>
     <message>
         <source>Copy</source>
-        <translation>Kopïeren</translation>
+        <translation>Kopiëren</translation>
     </message>
     <message>
         <source>Paste</source>
@@ -7078,51 +7094,51 @@ gebruikt u het  qgis.utils.iface object (een instantie van QgisInterface class).
     </message>
     <message>
         <source>Comment code</source>
-        <translation type="unfinished"></translation>
+        <translation>Toevoegen Commentaartekens</translation>
     </message>
     <message>
         <source>Uncomment code</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijderen Commentaartekens</translation>
     </message>
     <message>
         <source>Object browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Object browser</translation>
     </message>
     <message>
         <source>Find text</source>
-        <translation type="unfinished"></translation>
+        <translation>Vind tekst</translation>
     </message>
     <message>
         <source>Show editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon editor</translation>
     </message>
     <message>
         <source>Enter text to find...</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef zoektekst ...</translation>
     </message>
     <message>
         <source>Find Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Vindt Volgende</translation>
     </message>
     <message>
         <source>Find Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Vindt Vorige</translation>
     </message>
     <message>
         <source>Open File</source>
-        <translation type="unfinished">Bestand Openen</translation>
+        <translation>Bestand Openen</translation>
     </message>
     <message>
         <source>Save Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij Opslaan</translation>
     </message>
     <message>
         <source>Failed to save %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Kon niet opslaan %1: %2</translation>
     </message>
     <message>
         <source>Save File As</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand Opslaan Als</translation>
     </message>
 </context>
 <context>
@@ -7164,58 +7180,58 @@ gebruikt u het  qgis.utils.iface object (een instantie van QgisInterface class).
     <message>
         <source>Unable to initialize</source>
         <comment>QOCISpatialDriver</comment>
-        <translation type="unfinished"></translation>
+        <translation>Initialiseren niet mogelijk</translation>
     </message>
     <message>
         <source>Unable to logon</source>
-        <translation type="unfinished"></translation>
+        <translation>Inloggen niet mogelijk</translation>
     </message>
     <message>
         <source>Unable to begin transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>De transactie opzetten mislukt</translation>
     </message>
     <message>
         <source>Unable to commit transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>De transactie afronden mislukt</translation>
     </message>
     <message>
         <source>Unable to rollback transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>De transactie terugdraaien mislukt</translation>
     </message>
 </context>
 <context>
     <name>QOCISpatialResult</name>
     <message>
         <source>Unable to bind column for batch execute</source>
-        <translation type="unfinished"></translation>
+        <translation>Het koppelen van een kolom voor batch verwerking lukt niet</translation>
     </message>
     <message>
         <source>Unable to execute batch statement</source>
-        <translation type="unfinished"></translation>
+        <translation>Het uitvoeren van een batch opdracht mislukt</translation>
     </message>
     <message>
         <source>Unable to goto next</source>
-        <translation type="unfinished"></translation>
+        <translation>Ga naar Volgende lukt niet</translation>
     </message>
     <message>
         <source>Unable to alloc statement</source>
-        <translation type="unfinished"></translation>
+        <translation>De alloc opdracht lukt niet</translation>
     </message>
     <message>
         <source>Unable to prepare statement</source>
-        <translation type="unfinished"></translation>
+        <translation>De prepare opdracht lukt niet</translation>
     </message>
     <message>
         <source>Unable to get statement type</source>
-        <translation type="unfinished"></translation>
+        <translation>De get opdrachttype lukt niet</translation>
     </message>
     <message>
         <source>Unable to bind value</source>
-        <translation type="unfinished"></translation>
+        <translation>koppelen van de waarde mislukt</translation>
     </message>
     <message>
         <source>Unable to execute statement</source>
-        <translation type="unfinished"></translation>
+        <translation>De execute opdracht mislukt</translation>
     </message>
 </context>
 <context>
@@ -9085,28 +9101,29 @@ Fout(%2): %3</translation>
     </message>
     <message>
         <source>Singleband color data</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkelbands kleur data</translation>
     </message>
     <message>
         <source>Special</source>
-        <translation type="unfinished"></translation>
+        <translation>Speciaal</translation>
     </message>
     <message>
         <source>Diagram Overlay (Legacy)</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagram &apos;Overlay&apos; (oud)</translation>
     </message>
     <message>
         <source>Version 0.0.1 (Legacy)</source>
-        <translation type="unfinished"></translation>
+        <translation>Versie 0.0.1 (oud)</translation>
     </message>
     <message>
         <source>To select features, choose a vector layer in the legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Om objecten te selecteren, kies een vectorlaag in de legenda</translation>
     </message>
     <message>
         <source>Plugin &quot;%1&quot; is not compatible with this version of Quantum GIS.
 It will be disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin &quot;%1&quot; is incompatibel met deze versie van QGIS.
+Deze zal daarom niet actief worden.</translation>
     </message>
     <message>
         <source>Undefined</source>
@@ -9126,386 +9143,391 @@ It will be disabled.</source>
     </message>
     <message>
         <source>Subgroup</source>
-        <translation type="unfinished"></translation>
+        <translation>Subgroep</translation>
     </message>
     <message>
         <source>Symbol</source>
-        <translation type="unfinished">Symbool</translation>
+        <translation>Symbool</translation>
     </message>
     <message>
         <source>Symbol label</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbool label</translation>
     </message>
     <message>
         <source>Attribute index %1 out of bounds [0;%2[</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribuut index %1 ligt buiten bereik [0;%2]</translation>
     </message>
     <message>
         <source>Failed to transform a point while drawing a feature with ID &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij de transformatie van een punt tijdens het tekenen van object met ID &apos;%1&apos;. Wegschrijven gestopt. (Exceptie: %2)</translation>
     </message>
     <message>
         <source>Mapinfo TAB</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapinfo TAB</translation>
     </message>
     <message>
         <source>Mapinfo MIF</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapinfo MIF</translation>
     </message>
     <message>
         <source>SpatiaLite</source>
-        <translation type="unfinished">SpatialLite</translation>
+        <translation>SpatialLite</translation>
     </message>
     <message>
         <source>Failed to transform, writing stopped. (Exception: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout tijdens transformatie, wegschrijven gestopt. (Exceptie: %1)</translation>
     </message>
     <message>
         <source>Import was canceled at %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeren geanulleerd bij %1 van %2</translation>
     </message>
     <message>
         <source>Building Pyramids...</source>
-        <translation type="unfinished"></translation>
+        <translation>Piramides bouwen...</translation>
     </message>
     <message>
         <source>All Ramps</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Kleurenverlopen</translation>
     </message>
     <message>
         <source>Topology Checker</source>
-        <translation type="unfinished"></translation>
+        <translation>Topologie Checker</translation>
     </message>
     <message>
         <source>A Plugin for finding topological errors in vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Een plugin voor het vinden van topologische fouten in vectorlagen</translation>
     </message>
     <message>
         <source>Using fix %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik oplossing %1.</translation>
     </message>
     <message>
         <source>Topology plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Topologie plugin</translation>
     </message>
     <message>
         <source>intersecting geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>intersectie van geometriëen</translation>
     </message>
     <message>
         <source>features too close</source>
-        <translation type="unfinished"></translation>
+        <translation>objecten te dichtbij elkaar</translation>
     </message>
     <message>
         <source>point not covered by segment</source>
-        <translation type="unfinished"></translation>
+        <translation>punt niet op lijnsegment</translation>
     </message>
     <message>
         <source>segment too short</source>
-        <translation type="unfinished"></translation>
+        <translation>lijnsegment is te kort</translation>
     </message>
     <message>
         <source>invalid geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>foute geometrie</translation>
     </message>
     <message>
         <source>dangling end</source>
-        <translation type="unfinished"></translation>
+        <translation>Losliggend lijneind</translation>
     </message>
     <message>
         <source>duplicate geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>dubbelle geometrie</translation>
     </message>
     <message>
         <source>pseudo node</source>
-        <translation type="unfinished"></translation>
+        <translation>pseudo node</translation>
     </message>
     <message>
         <source>overlaps</source>
-        <translation type="unfinished"></translation>
+        <translation>overlapping</translation>
     </message>
     <message>
         <source>gaps</source>
-        <translation type="unfinished"></translation>
+        <translation>gaten</translation>
     </message>
     <message>
         <source>point not covered</source>
-        <translation type="unfinished"></translation>
+        <translation>punt ligt nergens op</translation>
     </message>
     <message>
         <source>line ends not covered by point</source>
-        <translation type="unfinished"></translation>
+        <translation>geen punt op lijneinden</translation>
     </message>
     <message>
         <source>point not in polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>punt niet in polygoon</translation>
     </message>
     <message>
         <source>polygon does not contain point</source>
-        <translation type="unfinished"></translation>
+        <translation>polygoon bevat geen punt</translation>
     </message>
     <message>
         <source>multipart feature</source>
-        <translation type="unfinished"></translation>
+        <translation>object bestaat uit meerdere delen</translation>
     </message>
     <message>
         <source>Already active iterator on this provider was closed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Actieve iterator voor deze provider is beëindigd.</translation>
     </message>
     <message>
         <source>Delimited text</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekengescheiden tekst</translation>
     </message>
     <message>
         <source>GPX</source>
-        <translation type="unfinished"></translation>
+        <translation>GPX</translation>
     </message>
     <message>
         <source>Memory provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Memory provider</translation>
     </message>
     <message>
         <source>Fetching features failed.
 SQL:%1
 Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ophalen van objecten mislukt.
+SQL:%1
+Fout: %2</translation>
     </message>
     <message>
         <source>Oracle</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle</translation>
     </message>
     <message>
         <source>No owner name found</source>
-        <translation type="unfinished"></translation>
+        <translation>Naam eigenaar niet gevonden</translation>
     </message>
     <message>
         <source>Field name clash found (%1 not remappable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Veld naam conflict gevonden (%1 kan niet opnieuw toegekend worden)</translation>
     </message>
     <message>
         <source>%1 not owner of the table %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 niet de eigenaar van tabel %2.</translation>
     </message>
     <message>
         <source>Unable determine number of geometry columns of layer %1.%2: 
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Het aantal geometriekolommen kon niet bepaald worden voor laag %1.%2: 
+%3</translation>
     </message>
     <message>
         <source>Unable to delete layer %1.%2: 
 %3</source>
-        <translation type="unfinished">Bestand verwijderen niet mogelijk %1: 
-%3 {1.%2:?}</translation>
+        <translation>Verwijderen van laag niet mogelijk voor %1.%2: 
+%3</translation>
     </message>
     <message>
         <source>Unable to clean metadata %1.%2: 
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Het verwijderen van metadata is niet mogelijk voor %1.%2: 
+%3</translation>
     </message>
     <message>
         <source>Fetching from cursor %1 failed
 Database error: %2</source>
-        <translation type="unfinished">Ophalen vanaf cursor %1 mislukt
+        <translation>Ophalen met database cursor %1 mislukt
 Databasefout: %2</translation>
     </message>
     <message>
         <source>PostGIS</source>
-        <translation type="unfinished">PostGIS</translation>
+        <translation>PostGIS</translation>
     </message>
     <message>
         <source>Trying to fetch geometry on a layer without geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Probeer geometrie op te halen van een laag zonder geometrie.</translation>
     </message>
     <message>
         <source>SQLite error: %2
 SQL: %1</source>
-        <translation type="unfinished">SQLite fout: %2
+        <translation>SQLite fout: %2
 SQL: %1</translation>
     </message>
     <message>
         <source>SQLite error getting feature: %1</source>
-        <translation type="unfinished">SQLite fout bij ophalen van object: %1</translation>
+        <translation>SQLite fout bij ophalen van object: %1</translation>
     </message>
     <message>
         <source>Unable to delete table %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Kan tabel %1 niet verwijderen
+</translation>
     </message>
     <message>
         <source>Error describing bind parameters</source>
-        <translation type="unfinished">Fout in het samenstellen van de verbindingsparameters</translation>
+        <translation>Fout definitie van verbindingsparameters</translation>
     </message>
     <message>
         <source>Error binding parameters</source>
-        <translation type="unfinished">Fout in de verbindingparameters</translation>
+        <translation>Fout in de verbindingparameters</translation>
     </message>
     <message>
         <source>WFS</source>
-        <translation type="unfinished">WFS</translation>
+        <translation>WFS</translation>
     </message>
     <message>
         <source>minidump written to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>minidump geschreven naar %1</translation>
     </message>
     <message>
         <source>writing of minidump to %1 failed (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>schrijven van minidump van %1 mislukt (%2)</translation>
     </message>
     <message>
         <source>creation of minidump to %1 failed (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>aanmaken van minidump naar %1 mislukt(%2)</translation>
     </message>
     <message>
         <source>Crash dumped</source>
-        <translation type="unfinished"></translation>
+        <translation>Vastloper opgeslagen in logbestand</translation>
     </message>
     <message>
         <source>Save style to DB (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Opslaan van stijl naar DB (%1)</translation>
     </message>
     <message>
         <source>Cannot convert &apos;%1:%2:%3&apos; to color</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan &apos;%1:%2:%3&apos; niet omzetten naar kleur</translation>
     </message>
     <message>
         <source>Cannot convert &apos;%1:%2:%3:%4&apos; to color</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan &apos;%1:%2:%3:%4&apos; niet omzetten naar kleur</translation>
     </message>
     <message>
         <source>&quot;%1&quot; is not a valid color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; is niet een valide kleurverloop</translation>
     </message>
     <message>
         <source>Cannot convert &apos;%1:%2:%3:%4:%5&apos; to color</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan &apos;%1:%2:%3:%4:%5&apos; niet omzetten naar kleur</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Kleur</translation>
+        <translation>Kleur</translation>
     </message>
     <message>
         <source>Could not save symbology because:
 %1</source>
-        <translation type="unfinished">Symbologie kan niet worden opgeslagen omdat:
+        <translation>Symbologie kan niet worden opgeslagen omdat:
 %1</translation>
     </message>
     <message>
         <source>Provider %1 has no %2 method</source>
-        <translation type="unfinished"></translation>
+        <translation>Provider %1 heeft geen methode %2</translation>
     </message>
     <message>
         <source>Loaded from Provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Geladen van Provider</translation>
     </message>
     <message>
         <source>Nearest Neighbour</source>
-        <translation type="unfinished">Nearest neighbour</translation>
+        <translation>Dichtsbijzijnde Buur</translation>
     </message>
     <message>
         <source>Average</source>
-        <translation type="unfinished">Gemiddelde</translation>
+        <translation>Gemiddelde</translation>
     </message>
     <message>
         <source>Gauss</source>
-        <translation type="unfinished"></translation>
+        <translation>Gauss</translation>
     </message>
     <message>
         <source>Cubic</source>
-        <translation type="unfinished">Cubic</translation>
+        <translation>Kubiek</translation>
     </message>
     <message>
         <source>Mode</source>
-        <translation type="unfinished">Modus</translation>
+        <translation>Modus</translation>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished">Geen</translation>
+        <translation>Geen</translation>
     </message>
     <message>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
-        <translation type="unfinished"></translation>
+        <translation>Het is niet mogelijk om de laagstijl op te slaan. Het is niet mogelijk om in de doeldatabase een tabel aan te maken. Wellicht is dit eer rechtenprobleem (gebruiker=%1). Neem contact op met de database administrator</translation>
     </message>
     <message>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
-        <translation type="unfinished"></translation>
+        <translation>Het is niet mogelijk om de laagstijl op te slaan. Het is niet mogelijk om een record op te slaan in de doeldatabase. Wellicht is dit eer rechtenprobleem (gebruiker=%1). Neem contact op met de database administrator.</translation>
     </message>
     <message>
         <source>Connection to database failed using username: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Connectie naar database mislukt bij gebruik van gebruikersname: %1</translation>
     </message>
     <message>
         <source>Error executing query: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout tijdens uitvoeren van query: %1</translation>
     </message>
     <message>
         <source>Error executing the select query for related styles. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout tijdens uitvoeren van de geselecteerde query voor gerelateerde stijlen. De query is gelogd</translation>
     </message>
     <message>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout tijdens uitvoeren van de geselecteerde query voor niet-gerelateerde stijlen. De query is gelogd</translation>
     </message>
     <message>
         <source>Error executing the select query. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout tijdens uitvoeren van de geselecteerde query. De query is gelogd</translation>
     </message>
     <message>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
-        <translation type="unfinished"></translation>
+        <translation>Consistentie fout in tabel &apos;%1&apos;. Stijl ID dient uniek te zijn</translation>
     </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
     <message>
         <source>Error opening database</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout tijdens openen database</translation>
     </message>
     <message>
         <source>Error closing database</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout tijdens sluiten database</translation>
     </message>
     <message>
         <source>Unable to begin transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>De transactie opzetten mislukt</translation>
     </message>
     <message>
         <source>Unable to commit transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>De transactie afronden mislukt</translation>
     </message>
     <message>
         <source>Unable to rollback transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>De transactie terugdraaien mislukt</translation>
     </message>
 </context>
 <context>
     <name>QSpatiaLiteResult</name>
     <message>
         <source>Unable to fetch row</source>
-        <translation type="unfinished"></translation>
+        <translation>Ophalen van een regel is mislukt</translation>
     </message>
     <message>
         <source>No query</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen query</translation>
     </message>
     <message>
         <source>Unable to execute statement</source>
-        <translation type="unfinished"></translation>
+        <translation>Opdracht kon niet worden uitgevoerd</translation>
     </message>
     <message>
         <source>Unable to execute multiple statements at a time</source>
-        <translation type="unfinished"></translation>
+        <translation>Het tegelijkertijd uitvoeren van meerdere opdrachten is mislukt</translation>
     </message>
     <message>
         <source>Unable to reset statement</source>
-        <translation type="unfinished"></translation>
+        <translation>Niet mogelijk om opdracht te resetten</translation>
     </message>
     <message>
         <source>Unable to bind parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Het binden van parameters is mislukt</translation>
     </message>
     <message>
         <source>Parameter count mismatch</source>
-        <translation type="unfinished"></translation>
+        <translation>Het aantal gegeven parameters komt niet overeen met verwachte aantal</translation>
     </message>
 </context>
 <context>
@@ -11769,239 +11791,243 @@ QWT Version: %1.</source>
     </message>
     <message>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position. The format is lat,lon or east,north</source>
-        <translation type="unfinished"></translation>
+        <translation>Toont de kaartcoördinaten op de plek van de cursor. De coördinaten wordt constant ververst wanneer de muis wordt bewogen. De coördinaten kunnen worden aangepast om het kaartbeeld te centreren naar gegeven positie. Het formaat is latitute,longitude of oost,noord</translation>
     </message>
     <message>
         <source>Current map coordinate (lat,lon or east,north)</source>
-        <translation type="unfinished"></translation>
+        <translation>Huidige kaart coördinaat (latitude,longitude of oost,noord)</translation>
     </message>
     <message>
         <source>Update of view in private qgis.db failed.
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Bijwerken van view in eigen qgis.db mislukt.
+%1</translation>
     </message>
     <message>
         <source>&lt; Blank &gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt; Leeg &gt;</translation>
     </message>
     <message>
         <source>PROJ.4 Version</source>
-        <translation type="unfinished"></translation>
+        <translation>PROJ.4 Versie</translation>
     </message>
     <message>
         <source>Select zip layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer gezipte lagen om toe te voegen...</translation>
     </message>
     <message>
         <source>Vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector</translation>
     </message>
     <message>
         <source>WCS</source>
-        <translation type="unfinished"></translation>
+        <translation>WCS</translation>
     </message>
     <message>
         <source>Cannot get WCS select dialog from provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>Probleem bij het maken van een WCS-selecteerdialoog voor provider.</translation>
     </message>
     <message>
         <source>Layer labeling settings</source>
-        <translation type="unfinished">Instellingen Laag-labeling</translation>
+        <translation>Instellingen voor het labelen van Laag</translation>
     </message>
     <message>
         <source>Browser</source>
-        <translation type="unfinished">Browser</translation>
+        <translation>Browser</translation>
     </message>
     <message>
         <source>Browser (2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Browser (2)</translation>
     </message>
     <message>
         <source>Current Edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Huidige Wijzigingen</translation>
     </message>
     <message>
         <source>QScintilla2 Version</source>
-        <translation type="unfinished"></translation>
+        <translation>QScintilla2 Versie</translation>
     </message>
     <message>
         <source>Oracle</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle</translation>
     </message>
     <message>
         <source>Cannot get Oracle select dialog from provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>Probleem bij het maken van een Oracle-selecteerdialoog voor provider.</translation>
     </message>
     <message>
         <source>Default failed to open: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Default openen mislukt: %1</translation>
     </message>
     <message>
         <source>Default not found: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Default niet gevonden: %1</translation>
     </message>
     <message>
         <source>Open Template Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Open Template Project</translation>
     </message>
     <message>
         <source>Auto-open Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto-open Project</translation>
     </message>
     <message>
         <source>Failed to open: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Openen van: %1 mislukt</translation>
     </message>
     <message>
         <source>Not valid project file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Project bestand: %1 is niet valide</translation>
     </message>
     <message>
         <source>Project failed to open: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Openen van project: %1 mislukt</translation>
     </message>
     <message>
         <source>Default template has been reopened: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Default template is opnieuw geopend: %1</translation>
     </message>
     <message>
         <source>File not found: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand niet gevonden: %1</translation>
     </message>
     <message>
         <source>Loading project: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Bezig met laden project: %1</translation>
     </message>
     <message>
         <source>Security warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Beveiligingswaarschuwing</translation>
     </message>
     <message>
         <source>project macros have been disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>project macro&apos;s zijn uitgeschakeld.</translation>
     </message>
     <message>
         <source>Enable macros</source>
-        <translation type="unfinished"></translation>
+        <translation>Macro&apos;s activeren voor gebruik</translation>
     </message>
     <message>
         <source>Project loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Project geladen</translation>
     </message>
     <message>
         <source>Labeling Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Labelopties</translation>
     </message>
     <message>
         <source>Please select a vector layer first</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer eerst een vectorlaag</translation>
     </message>
     <message>
         <source>Cannot write raster error code: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan niet schrijven naar raster fout code: %1</translation>
     </message>
     <message>
         <source>Create unique print composer title</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanmaken unieke titel print composer</translation>
     </message>
     <message>
         <source>(title generated if left empty)</source>
-        <translation type="unfinished"></translation>
+        <translation>(indien leeg wordt een titel gegenereerd)</translation>
     </message>
     <message>
         <source>Composer title</source>
-        <translation type="unfinished"></translation>
+        <translation>Composer titel</translation>
     </message>
     <message>
         <source>Title can not be empty!</source>
-        <translation type="unfinished"></translation>
+        <translation>Titel moet gegeven zijn!</translation>
     </message>
     <message>
         <source>Title already exists!</source>
-        <translation type="unfinished"></translation>
+        <translation>Titel bestaat al!</translation>
     </message>
     <message>
         <source> copy</source>
-        <translation type="unfinished"></translation>
+        <translation> Kopiëren</translation>
     </message>
     <message>
         <source>Could not %1 changes to layer %2
 
 Errors: %3
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Kon niet %1 wijzigingen naar laag %2
+
+Fouten: %3
+</translation>
     </message>
     <message>
         <source>rollback</source>
-        <translation type="unfinished"></translation>
+        <translation>terugdraaien</translation>
     </message>
     <message>
         <source>cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>annuleren</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">Opslaan</translation>
+        <translation>Opslaan</translation>
     </message>
     <message>
         <source>all</source>
-        <translation type="unfinished"></translation>
+        <translation>alles</translation>
     </message>
     <message>
         <source>Rollback</source>
-        <translation type="unfinished"></translation>
+        <translation>Terugdraaien</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Annuleren</translation>
+        <translation>Annuleren</translation>
     </message>
     <message>
         <source>Current edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Huidige wijzigingen</translation>
     </message>
     <message>
         <source>%1 current changes for %2 layer(s)?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 huidige wijzigingen voor %2 laag/lagen?</translation>
     </message>
     <message>
         <source>copy</source>
-        <translation type="unfinished"></translation>
+        <translation>kopiëren</translation>
     </message>
     <message>
         <source>Plugin layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin laag</translation>
     </message>
     <message>
         <source>Memory layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Memory laag</translation>
     </message>
     <message>
         <source>Duplicate layer: </source>
-        <translation type="unfinished"></translation>
+        <translation>Duplicaat laag: </translation>
     </message>
     <message>
         <source>%1 (duplication resulted in invalid layer)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (duplicaat resulteert in invalide laag)</translation>
     </message>
     <message>
         <source>%1 (%2type unsupported)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (%2type niet ondersteund)</translation>
     </message>
     <message>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Om de lichtsterkte of contrast te wijzigen, moet een rasterlaag geselecteerd zijn.</translation>
     </message>
     <message>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
-        <translation type="unfinished"></translation>
+        <translation>Het project heeft laag/lagen in modus bewerken met nog niet opgeslagen wijzigingen die NIET zullen worden opgeslagen!</translation>
     </message>
     <message>
         <source>Do you want to save the current project?%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Wilt u het huidige project opslaan?%1</translation>
     </message>
     <message>
         <source>Error adding valid layer to map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout toevoegen valide laag aan de kaart</translation>
     </message>
     <message>
         <source>Raster layer</source>
@@ -12148,7 +12174,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Essen (Germany), Developer meeting 2012</source>
-        <translation type="unfinished"></translation>
+        <translation>Essen (Germany), Developer meeting 2012</translation>
     </message>
 </context>
 <context>
@@ -12235,19 +12261,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create category</source>
-        <translation type="unfinished"></translation>
+        <translation>Categorie aanmaken</translation>
     </message>
     <message>
         <source>as</source>
-        <translation type="unfinished"></translation>
+        <translation>als</translation>
     </message>
     <message>
         <source>a tab</source>
-        <translation type="unfinished"></translation>
+        <translation>een tabblad</translation>
     </message>
     <message>
         <source>a group in container</source>
-        <translation type="unfinished"></translation>
+        <translation>een groep in een container</translation>
     </message>
 </context>
 <context>
@@ -12258,7 +12284,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select background color</source>
-        <translation type="unfinished">Selecteer achtergrondkleur</translation>
+        <translation>Selecteer achtergrondkleur</translation>
     </message>
 </context>
 <context>
@@ -12359,19 +12385,19 @@ Gebruikers DB Pad:	%9
     <name>QgsAtlasComposition</name>
     <message>
         <source>Filename parsing error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestandsnaam parsing fout: %1</translation>
     </message>
     <message>
         <source>Feature filter parser error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Object filter parser fout: %1</translation>
     </message>
     <message>
         <source>Feature filter eval error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Object filter eval fout: %1</translation>
     </message>
     <message>
         <source>Filename eval error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestandsnaam eval fout: %1</translation>
     </message>
 </context>
 <context>
@@ -12382,94 +12408,94 @@ Gebruikers DB Pad:	%9
     </message>
     <message>
         <source>Expression based filename</source>
-        <translation type="unfinished"></translation>
+        <translation>Expressie gebasseerde bestandsnaam</translation>
     </message>
     <message>
         <source>Expression based filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Expressie gebasseerde filter</translation>
     </message>
 </context>
 <context>
     <name>QgsAtlasCompositionWidgetBase</name>
     <message>
         <source>Hidden coverage layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Verborgen coverage laag</translation>
     </message>
     <message>
         <source>Output filename expression</source>
-        <translation type="unfinished"></translation>
+        <translation>expressie Uitvoer bestandsnaam</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Coverage layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Coverage laag</translation>
     </message>
     <message>
         <source>Fixed scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaste schaal</translation>
     </message>
     <message>
         <source>Single file export when possible</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteren naar enkel bestand indien mogelijk</translation>
     </message>
     <message>
         <source>Generate an atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>Genereer een atlas</translation>
     </message>
     <message>
         <source>Atlas Generation</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlas Generatie</translation>
     </message>
     <message>
         <source>Configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuratie</translation>
     </message>
     <message>
         <source>Composer map</source>
-        <translation type="unfinished">Layouter kaart</translation>
+        <translation>Layouter kaart</translation>
     </message>
     <message>
         <source>Visibility</source>
-        <translation type="unfinished">Zichtbaarheid</translation>
+        <translation>Zichtbaarheid</translation>
     </message>
     <message>
         <source>Feature sorting</source>
-        <translation type="unfinished"></translation>
+        <translation>Object sortering</translation>
     </message>
     <message>
         <source>Sort by</source>
-        <translation type="unfinished"></translation>
+        <translation>Sorteren op</translation>
     </message>
     <message>
         <source>Sort direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Sorteerrichting</translation>
     </message>
     <message>
         <source>Feature filtering</source>
-        <translation type="unfinished"></translation>
+        <translation>Object filtering</translation>
     </message>
     <message>
         <source>Filter with</source>
-        <translation type="unfinished"></translation>
+        <translation>Filter met</translation>
     </message>
     <message>
         <source>Scaling</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschaling</translation>
     </message>
     <message>
         <source>Margin around feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Marge rond object</translation>
     </message>
     <message>
         <source>%</source>
-        <translation type="unfinished">%</translation>
+        <translation>%</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer</translation>
     </message>
 </context>
 <context>
@@ -13173,83 +13199,83 @@ Gebruikers DB Pad:	%9
     </message>
     <message>
         <source>Select features using an expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer objecten m.b.v. reguliere expressie</translation>
     </message>
     <message>
         <source>The filter defines, which features are currently shown in the list or on the table</source>
-        <translation type="unfinished"></translation>
+        <translation>De filter definieert welke objecten er momenteel getoond worden in de lijst of in de tabel</translation>
     </message>
     <message>
         <source>Filter</source>
-        <translation type="unfinished">Filter</translation>
+        <translation>Filter</translation>
     </message>
     <message>
         <source>Filters the visible features according to the current filter selection and filter string.</source>
-        <translation type="unfinished"></translation>
+        <translation>Filter de zichtbare objecten volgens huidige filterselectie en filtertekst.</translation>
     </message>
     <message>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Toepassen</translation>
     </message>
     <message>
         <source>Attribute View</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributenoverzicht</translation>
     </message>
     <message>
         <source>Table View</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabeloverzicht</translation>
     </message>
     <message>
         <source>Advanced Filter (Expression)</source>
-        <translation type="unfinished"></translation>
+        <translation>Geavanceerd Filter (Expressie)</translation>
     </message>
     <message>
         <source>Use the Expression Builder to define the filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik de Expression Builder om een filter te definiëren</translation>
     </message>
     <message>
         <source>Ctrl+F</source>
-        <translation type="unfinished">Ctrl+F</translation>
+        <translation>Ctrl+F</translation>
     </message>
     <message>
         <source>Show Features Visible On Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon Objecten Zichtbaar Op Kaart</translation>
     </message>
     <message>
         <source>Column Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolom Filter</translation>
     </message>
     <message>
         <source>Filter all the features which have been edited but not yet saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Filter alle objecten die zijn gewijzigd maar nog niet opgeslagen</translation>
     </message>
     <message>
         <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributen tabel - %1 :: Objecten totaal: %2, gefilterd: %3, geselecteerd: %4</translation>
     </message>
     <message>
         <source>Expression based filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Expressie gebasseerd filter</translation>
     </message>
     <message>
         <source>Attribute error</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribuut fout</translation>
     </message>
     <message>
         <source>Error filtering</source>
-        <translation type="unfinished"></translation>
+        <translation>Filteren van fouten</translation>
     </message>
     <message>
         <source>Show All Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon Alle Objecten</translation>
     </message>
     <message>
         <source>Show Selected Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon Geselecteerde Objecten</translation>
     </message>
     <message>
         <source>Show Edited and New Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon Gewijzigde en Nieuwe Objecten</translation>
     </message>
 </context>
 <context>
@@ -13566,11 +13592,11 @@ Foutmelding: %2</translation>
     <name>QgsBlendModeComboBox</name>
     <message>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normaal</translation>
     </message>
     <message>
         <source>Lighten</source>
-        <translation type="unfinished"></translation>
+        <translation>Lichter maken</translation>
     </message>
     <message>
         <source>Screen</source>
@@ -13582,39 +13608,39 @@ Foutmelding: %2</translation>
     </message>
     <message>
         <source>Addition</source>
-        <translation type="unfinished">Optellen</translation>
+        <translation>Toevoegen</translation>
     </message>
     <message>
         <source>Darken</source>
-        <translation type="unfinished"></translation>
+        <translation>Donkerder maken</translation>
     </message>
     <message>
         <source>Multiply</source>
-        <translation type="unfinished"></translation>
+        <translation>Vermenigvuldigen</translation>
     </message>
     <message>
         <source>Burn</source>
-        <translation type="unfinished"></translation>
+        <translation>Branden</translation>
     </message>
     <message>
         <source>Overlay</source>
-        <translation type="unfinished">Overlay</translation>
+        <translation>Overlay</translation>
     </message>
     <message>
         <source>Soft light</source>
-        <translation type="unfinished"></translation>
+        <translation>Zacht licht</translation>
     </message>
     <message>
         <source>Hard light</source>
-        <translation type="unfinished"></translation>
+        <translation>Hard licht</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">Difference</translation>
+        <translation>Verschil</translation>
     </message>
     <message>
         <source>Subtract</source>
-        <translation type="unfinished"></translation>
+        <translation>Aftrekken</translation>
     </message>
 </context>
 <context>
@@ -13625,7 +13651,7 @@ Foutmelding: %2</translation>
     </message>
     <message>
         <source>Really Delete?</source>
-        <translation>Bevestig verwijderen?</translation>
+        <translation>Echt verwijderen?</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
@@ -13906,31 +13932,31 @@ Database: %2</translation>
     </message>
     <message>
         <source>Add a directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Voeg een folder toe</translation>
     </message>
     <message>
         <source>Add directory to favourites</source>
-        <translation type="unfinished"></translation>
+        <translation>Voeg folder toe aan favorieten</translation>
     </message>
     <message>
         <source>Filter Pattern Syntax</source>
-        <translation type="unfinished"></translation>
+        <translation>Filterpatroon Syntax</translation>
     </message>
     <message>
         <source>Wildcard(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Wildcard(s)</translation>
     </message>
     <message>
         <source>Regular Expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Reguliere Expressie</translation>
     </message>
     <message>
         <source>Fast scan this dir.</source>
-        <translation type="unfinished"></translation>
+        <translation>Scan snel deze folder.</translation>
     </message>
     <message>
         <source>Directory Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Folder Eigenschappen</translation>
     </message>
 </context>
 <context>
@@ -14007,7 +14033,7 @@ Database: %2</translation>
     </message>
     <message>
         <source>Project home</source>
-        <translation type="unfinished"></translation>
+        <translation>Project home</translation>
     </message>
 </context>
 <context>
@@ -14177,26 +14203,26 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>High number of classes!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoog aantal classen!</translation>
     </message>
     <message>
         <source>Classification would yield %1 entries which might not be expected. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Classificatie zal %1 klassen opleveren wat wellicht onverwacht is. Doorgaan?</translation>
     </message>
 </context>
 <context>
     <name>QgsCharacterSelectorBase</name>
     <message>
         <source>Character Selector</source>
-        <translation type="unfinished"></translation>
+        <translation>Lettertype-kiezer</translation>
     </message>
     <message>
         <source>Font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lettertype:</translation>
     </message>
     <message>
         <source>Current font family and style</source>
-        <translation type="unfinished"></translation>
+        <translation>Huidige lettertype familie en stijl</translation>
     </message>
 </context>
 <context>
@@ -14424,27 +14450,27 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Atlas generation</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlas-generatie</translation>
     </message>
     <message>
         <source>Empty filename pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Lege bestandsnaam patroon</translation>
     </message>
     <message>
         <source>The filename pattern is empty. A default one will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestandsnaampatroon is leeg. Er wordt een standaardnaam gebruikt.</translation>
     </message>
     <message>
         <source>Directory where to save PDF files</source>
-        <translation type="unfinished"></translation>
+        <translation>Map waar de pdf-bestanden worden opgeslagen</translation>
     </message>
     <message>
         <source>Unable to write into the directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan niet worden geschreven in de map</translation>
     </message>
     <message>
         <source>Rendering maps...</source>
-        <translation type="unfinished"></translation>
+        <translation>Genereren van kaarten...</translation>
     </message>
     <message>
         <source>Abort</source>
@@ -14452,67 +14478,67 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Atlas processing error</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlasproductie-fout</translation>
     </message>
     <message>
         <source>Directory where to save image files</source>
-        <translation type="unfinished"></translation>
+        <translation>Map waar de afbeeldingen worden opgeslagen</translation>
     </message>
     <message>
         <source>Image format: </source>
-        <translation type="unfinished"></translation>
+        <translation>Afbeeldingsformaat: </translation>
     </message>
     <message>
         <source>Directory where to save SVG files</source>
-        <translation type="unfinished"></translation>
+        <translation>Map waar de SVG-bestanden worden opgeslagen</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Sluiten</translation>
+        <translation>Sluiten</translation>
     </message>
     <message>
         <source>Print Composers</source>
-        <translation type="unfinished">Print Layouter</translation>
+        <translation>Print Layouter</translation>
     </message>
     <message>
         <source>Window</source>
-        <translation type="unfinished">Venster</translation>
+        <translation>Venster</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">Help</translation>
+        <translation>Help</translation>
     </message>
     <message>
         <source> copy</source>
-        <translation type="unfinished"></translation>
+        <translation>kopiëren</translation>
     </message>
     <message>
         <source>Duplicating composer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Layout wordt gedupliceerd...</translation>
     </message>
     <message>
         <source>Duplicate Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Dupliceer layout</translation>
     </message>
     <message>
         <source>Composer duplication failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplicatie van layout is mislukt.</translation>
     </message>
     <message>
         <source>Composer error</source>
-        <translation type="unfinished"></translation>
+        <translation>Layouter-fout</translation>
     </message>
     <message>
         <source>Error, could not create new composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout, er kon geen nieuwe layout worden gemaakt</translation>
     </message>
     <message>
         <source>Loading template into composer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Templatewordt geladen in de layout...</translation>
     </message>
     <message>
         <source>The given output directory is not writable. Cancelling.</source>
-        <translation type="unfinished"></translation>
+        <translation>De opgegeven map is niet schrijfbaar. Opdracht wordt geannuleerd.</translation>
     </message>
 </context>
 <context>
@@ -14610,35 +14636,35 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Main properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Algemene eigenschappen</translation>
     </message>
     <message>
         <source>Line width</source>
-        <translation type="unfinished">Lijndikte</translation>
+        <translation>Lijndikte</translation>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation>mm</translation>
     </message>
     <message>
         <source>Arrow head width</source>
-        <translation type="unfinished"></translation>
+        <translation>Pijlpunt-breedte</translation>
     </message>
     <message>
         <source>Color...</source>
-        <translation type="unfinished">Kleur...</translation>
+        <translation>Kleur...</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished">Standaard</translation>
+        <translation>Standaard</translation>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished">Geen</translation>
+        <translation>Geen</translation>
     </message>
     <message>
         <source>SVG</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG</translation>
     </message>
 </context>
 <context>
@@ -14929,31 +14955,31 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Add html frame</source>
-        <translation type="unfinished"></translation>
+        <translation>html-object toevoegen</translation>
     </message>
     <message>
         <source>Composer</source>
-        <translation type="unfinished">Layouter</translation>
+        <translation>Layouter</translation>
     </message>
     <message>
         <source>Paper Navigation</source>
-        <translation type="unfinished"></translation>
+        <translation>Papiernavigatie</translation>
     </message>
     <message>
         <source>Composer Item Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Onderdeel-acties</translation>
     </message>
     <message>
         <source>Composer Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Layouter onderdelen</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
-        <translation type="unfinished">Ctrl+P</translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <source>Zoom full</source>
-        <translation type="unfinished"></translation>
+        <translation>Volledig zoomen</translation>
     </message>
     <message>
         <source>Zoom in</source>
@@ -14965,131 +14991,131 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Export as image</source>
-        <translation type="unfinished"></translation>
+        <translation>Opslaan als afbeelding</translation>
     </message>
     <message>
         <source>Add image</source>
-        <translation type="unfinished"></translation>
+        <translation>Afbeelding toevoegen</translation>
     </message>
     <message>
         <source>Load from Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Uit template laden</translation>
     </message>
     <message>
         <source>Load from template</source>
-        <translation type="unfinished"></translation>
+        <translation>Uit template laden</translation>
     </message>
     <message>
         <source>Save as Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Als template opslaan</translation>
     </message>
     <message>
         <source>Align Left</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Align Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Midden uitlijnen</translation>
     </message>
     <message>
         <source>Align Right</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Align Top</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Align Center Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Midden vertikaal uitlijnen</translation>
     </message>
     <message>
         <source>Align Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Onderkant uitlijnen</translation>
     </message>
     <message>
         <source>Add Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Pijl toevoegen</translation>
     </message>
     <message>
         <source>Add Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel toevoegen</translation>
     </message>
     <message>
         <source>Add attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribuuttabel toevoegen</translation>
     </message>
     <message>
         <source>Page setup</source>
-        <translation type="unfinished"></translation>
+        <translation>Pagina-instellingen</translation>
     </message>
     <message>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished">Ctrl+Shift+P</translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
         <source>Add rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechthoek toevoegen</translation>
     </message>
     <message>
         <source>Add triangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Driehoek toevoegen</translation>
     </message>
     <message>
         <source>Add ellipse</source>
-        <translation type="unfinished"></translation>
+        <translation>Ellipse toevoegen</translation>
     </message>
     <message>
         <source>Add HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML toevoegen</translation>
     </message>
     <message>
         <source>Composer Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Layouter manager</translation>
     </message>
     <message>
         <source>Composer manager</source>
-        <translation type="unfinished">Layouter manager</translation>
+        <translation>Layouter manager</translation>
     </message>
     <message>
         <source>&amp;New Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nieuwe print Layouter</translation>
     </message>
     <message>
         <source>New composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuwe Layouter</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
-        <translation type="unfinished">Ctrl+N</translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <source>&amp;Save Project</source>
-        <translation type="unfinished">Project op&amp;slaan</translation>
+        <translation>Project op&amp;slaan</translation>
     </message>
     <message>
         <source>Save project</source>
-        <translation type="unfinished"></translation>
+        <translation>Project opslaan</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished">Ctrl+S</translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <source>&amp;Duplicate Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dupliceer layout</translation>
     </message>
     <message>
         <source>Duplicate composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Dupliceer layout</translation>
     </message>
     <message>
         <source>New from Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuw van Template</translation>
     </message>
     <message>
         <source>New from template</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuw van Template</translation>
     </message>
 </context>
 <context>
@@ -15151,15 +15177,15 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>HTML Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML-object</translation>
     </message>
     <message>
         <source>HTML frame</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML-object</translation>
     </message>
     <message>
         <source>Main properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Algemene eigenschappen</translation>
     </message>
 </context>
 <context>
@@ -15201,7 +15227,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Item background toggled</source>
-        <translation type="unfinished"></translation>
+        <translation>Object achtergrond omgezet</translation>
     </message>
     <message>
         <source>Select background color</source>
@@ -15248,67 +15274,67 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Global Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Globale opties</translation>
     </message>
     <message>
         <source>Position and size</source>
-        <translation type="unfinished"></translation>
+        <translation>Positie en grootte</translation>
     </message>
     <message>
         <source>Reference point</source>
-        <translation type="unfinished"></translation>
+        <translation>Referentiepunt</translation>
     </message>
     <message>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">Breedte</translation>
+        <translation>Breedte</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished">Hoogte</translation>
+        <translation>Hoogte</translation>
     </message>
     <message>
         <source>Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Frame</translation>
     </message>
     <message>
         <source>Thickness</source>
-        <translation type="unfinished"></translation>
+        <translation>Dikte</translation>
     </message>
     <message>
         <source>Color...</source>
-        <translation type="unfinished">Kleur...</translation>
+        <translation>Kleur...</translation>
     </message>
     <message>
         <source>Background</source>
-        <translation type="unfinished">Achtergrond</translation>
+        <translation>Achtergrond</translation>
     </message>
     <message>
         <source>Uuid (read-only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Uuid (alleen-lezen)</translation>
     </message>
     <message>
         <source>Id</source>
-        <translation type="unfinished">Id</translation>
+        <translation>Id</translation>
     </message>
     <message>
         <source>Rendering</source>
-        <translation type="unfinished">Rendering</translation>
+        <translation>Rendering</translation>
     </message>
     <message>
         <source>Blending mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Meng-modus</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished">Transparantie</translation>
+        <translation>Transparantie</translation>
     </message>
 </context>
 <context>
@@ -15319,7 +15345,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Label text changed</source>
-        <translation>Labeltekst aangepast</translation>
+        <translation>Label-tekst aangepast</translation>
     </message>
     <message>
         <source>Label font changed</source>
@@ -15327,11 +15353,11 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Label margin changed</source>
-        <translation>Labelmarge aangepast</translation>
+        <translation>Label-marge aangepast</translation>
     </message>
     <message>
         <source>Label alignment changed</source>
-        <translation>Labeluitlijning aangepast</translation>
+        <translation>Label-uitlijning aangepast</translation>
     </message>
     <message>
         <source>Label id changed</source>
@@ -15339,15 +15365,15 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Label rotation changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Label-rotatie aangepast</translation>
     </message>
     <message>
         <source>Insert expression</source>
-        <translation type="unfinished">Voer expressie in</translation>
+        <translation>Voer expressie in</translation>
     </message>
     <message>
         <source>Label text HTML state changed</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML-modus van label is gewijzigd</translation>
     </message>
 </context>
 <context>
@@ -15422,43 +15448,43 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Insert an expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Voer een formule in</translation>
     </message>
     <message>
         <source>Main properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Algemene eigenschappen</translation>
     </message>
     <message>
         <source>Render as HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>Renderen als HTML</translation>
     </message>
     <message>
         <source>Alignment</source>
-        <translation type="unfinished">Uitlijning</translation>
+        <translation>Uitlijning</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished">Verticaal</translation>
+        <translation>Verticaal</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished">Horizontaal</translation>
+        <translation>Horizontaal</translation>
     </message>
     <message>
         <source>Display</source>
-        <translation type="unfinished">Tonen</translation>
+        <translation>Tonen</translation>
     </message>
     <message>
         <source>Margin</source>
-        <translation type="unfinished">Margin</translation>
+        <translation>Marge</translation>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message utf8="true">
         <source> °</source>
-        <translation type="unfinished"></translation>
+        <translation> °</translation>
     </message>
 </context>
 <context>
@@ -15574,27 +15600,27 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Item</source>
-        <translation type="unfinished">Onderdeel</translation>
+        <translation>Onderdeel</translation>
     </message>
     <message>
         <source>Title style</source>
-        <translation type="unfinished"></translation>
+        <translation>Titelstijl</translation>
     </message>
     <message>
         <source>Legend column count</source>
-        <translation type="unfinished"></translation>
+        <translation>Aantal legenda-kolommen</translation>
     </message>
     <message>
         <source>Legend split layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaartlagen splitsenin legenda</translation>
     </message>
     <message>
         <source>Legend equal column width</source>
-        <translation type="unfinished"></translation>
+        <translation>Gelijke kolombreedtes</translation>
     </message>
     <message>
         <source>Legend font color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Legenda tekstkleur gewijzigd</translation>
     </message>
 </context>
 <context>
@@ -15701,107 +15727,107 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Legend Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Legenda-opties</translation>
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished">Legenda</translation>
+        <translation>Legenda</translation>
     </message>
     <message>
         <source>Main properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Algemene eigenschappen</translation>
     </message>
     <message>
         <source>Show feature count for each class of vector layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon aantal objecten per elke klasse voor vector-kaartlagen</translation>
     </message>
     <message>
         <source>Fonts</source>
-        <translation type="unfinished"></translation>
+        <translation>Lettertypes</translation>
     </message>
     <message>
         <source>Subgroup Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Subgroep lettertype...</translation>
     </message>
     <message>
         <source>Font color...</source>
-        <translation type="unfinished">Lettertype kleur...</translation>
+        <translation>Lettertype kleur...</translation>
     </message>
     <message>
         <source>Columns</source>
-        <translation type="unfinished">Kolommen</translation>
+        <translation>Kolommen</translation>
     </message>
     <message>
         <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Aantal</translation>
     </message>
     <message>
         <source>Equal column widths</source>
-        <translation type="unfinished"></translation>
+        <translation>Gelijke kolombreedtes</translation>
     </message>
     <message>
         <source>Allow to split layer items into multiple columns.</source>
-        <translation type="unfinished"></translation>
+        <translation>Splitsen van klasses van een kaartlaag over meerdere kolommen toestaan.</translation>
     </message>
     <message>
         <source>Split layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaartlagen splitsen</translation>
     </message>
     <message>
         <source>Symbol</source>
-        <translation type="unfinished">Symbool</translation>
+        <translation>Symbool</translation>
     </message>
     <message>
         <source>Symbol width</source>
-        <translation type="unfinished">Symboolbreedte</translation>
+        <translation>Symboolbreedte</translation>
     </message>
     <message>
         <source>Symbol height</source>
-        <translation type="unfinished">Symboolhoogte</translation>
+        <translation>Symboolhoogte</translation>
     </message>
     <message>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Tussenruimte</translation>
     </message>
     <message>
         <source>Space above text using group style.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruimte boven tekst bij een groepstijl.</translation>
     </message>
     <message>
         <source>Group Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Groepruimte</translation>
     </message>
     <message>
         <source>Space above text using subgroup style.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruimte boven tekst bij een subgroepstijl.</translation>
     </message>
     <message>
         <source>Subgroup space</source>
-        <translation type="unfinished"></translation>
+        <translation>Subgroepruimte</translation>
     </message>
     <message>
         <source>Space above symbol and symbol label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruimte boven symbool en symbool-label.</translation>
     </message>
     <message>
         <source>Symbol space</source>
-        <translation type="unfinished"></translation>
+        <translation>Symboolruimte</translation>
     </message>
     <message>
         <source>Space between symbol icon and symbol label (symbol label left margin).</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruimte tussen symbool en symbool-label (symbool-label linkermarge).</translation>
     </message>
     <message>
         <source>Icon label space</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbool-labelruimte</translation>
     </message>
     <message>
         <source>Box space</source>
-        <translation type="unfinished"></translation>
+        <translation>Legenda-ruimte</translation>
     </message>
     <message>
         <source>Column space</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolomruimte</translation>
     </message>
 </context>
 <context>
@@ -15840,67 +15866,67 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>&amp;Duplicate</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dupliceren</translation>
     </message>
     <message>
         <source>Specific</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifiek</translation>
     </message>
     <message>
         <source>Template error</source>
-        <translation type="unfinished"></translation>
+        <translation>Sjabloon-fout</translation>
     </message>
     <message>
         <source>Error, template file not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout, sjabloon-bestand niet gevonden</translation>
     </message>
     <message>
         <source>Error, could not read file</source>
-        <translation type="unfinished">Fout, kan bestand niet lezen</translation>
+        <translation>Fout, kan bestand niet lezen</translation>
     </message>
     <message>
         <source>Composer error</source>
-        <translation type="unfinished"></translation>
+        <translation>Layouter-fout</translation>
     </message>
     <message>
         <source>Error, could not create composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout, er kon geen nieuwe layout worden gemaakt</translation>
     </message>
     <message>
         <source>Loading template into composer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sjabloon wordt geladen in de layout...</translation>
     </message>
     <message>
         <source>Error, could not load template file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout, sjabloon-bestand kan niet worden geopend</translation>
     </message>
     <message>
         <source>Choose template</source>
-        <translation type="unfinished"></translation>
+        <translation>Kies sjabloon</translation>
     </message>
     <message>
         <source>Composer templates</source>
-        <translation type="unfinished">Layouter sjablonen</translation>
+        <translation>Layouter-sjablonen</translation>
     </message>
     <message>
         <source>File system error</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestandssysteemfout</translation>
     </message>
     <message>
         <source>Error, could not open or create local directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout, de lokale map kan niet worden geopend of gemaakt</translation>
     </message>
     <message>
         <source> copy</source>
-        <translation type="unfinished"></translation>
+        <translation> kopie</translation>
     </message>
     <message>
         <source>Duplicating composer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Layout wordt gedupliceerd...</translation>
     </message>
     <message>
         <source>Duplicate Composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dupliceer layout</translation>
     </message>
     <message>
         <source>Composer duplication failed.</source>
@@ -17809,29 +17835,29 @@ p, li { white-space: pre-wrap; }
     <name>QgsCptCityColorRampV2Dialog</name>
     <message>
         <source>Selections by theme</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Selecties op thema</translation>
     </message>
     <message>
         <source>All by author</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alles naar Auteur</translation>
     </message>
     <message>
         <source>You can download a more complete set of cpt-city gradients by installing the &quot;Color Ramp Manager&quot; plugin (you must enable Experimental plugins in the plugin manager).
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">U kunt een meer complete set met cpt-city gradienten downloaden door de&quot;Color Ramp Manager&quot; plugin te installeren (u dient daarvoor &quot;Experimental plugins&quot; in the plugin manager aan te vinken). </translation>
     </message>
     <message>
         <source>%1 directory details</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 folder details</translation>
     </message>
     <message>
         <source>%1 gradient details</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 gradient details</translation>
     </message>
     <message>
         <source>All Ramps (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alle Kleurenverlopen (%1)</translation>
     </message>
     <message>
         <source>Error - cpt-city gradient files not found.
@@ -17845,7 +17871,17 @@ You can install the entire cpt-city archive or a selection for QGIS.
 
 This file can be found at [%2]
 and current file is [%3]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fout - cpt-city gradientbestanden niet gevonden..
+
+U kunt ze op twee manieren installeren:
+
+1) Installeer de &quot;Color Ramp Manager&quot; python plugin (u dient daarvoor &quot;Experimental plugins&quot; in the plugin manager aan te vinken) en gebruik deze om het laatste cpt-city pakket te downloaden.
+U kunt het gehele cpt-city archief installeren of een selectie voor QGIS.
+
+2) Download het complete archief (in svg formaat) en unzip het in uw &quot;QGIS settings&quot; map [%1] .
+
+Dit bestand kan gevonden worden in [%2]
+en het huidige bestand is [%3]</translation>
     </message>
 </context>
 <context>
@@ -17860,7 +17896,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>Licentie</translation>
     </message>
     <message>
         <source>Palette</source>
@@ -18391,7 +18427,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Kleur</translation>
+        <translation>Kleur</translation>
     </message>
 </context>
 <context>
@@ -18791,7 +18827,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot get Delimited Text select dialog from provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>Probleem bij het maken van een Tekengescheiden tekst-selecteerdialoog voor provider.</translation>
     </message>
 </context>
 <context>
@@ -19013,51 +19049,51 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Invalid record format at line %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldig recordformaat in regel %1</translation>
     </message>
     <message>
         <source>Invalid WKT at line %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige WKT in regel %1</translation>
     </message>
     <message>
         <source>Invalid X or Y fields at line %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldig X of Y veld in regel %1</translation>
     </message>
     <message>
         <source>%1 records discarded due to invalid format</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 records overgeslagen vanwege ongeldig formaat</translation>
     </message>
     <message>
         <source>%1 records discarded due to missing geometry definitions</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 records overgeslagen vanwege ontbrekende geometrie definities</translation>
     </message>
     <message>
         <source>%1 records discarded due to invalid geometry definitions</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 records overgeslagen vanwege ongeldige geometrie definities</translation>
     </message>
     <message>
         <source>%1 records discarded due to incompatible geometry types</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 records overgeslagen vanwege niet overeenkomende geometrie typen</translation>
     </message>
     <message>
         <source>Errors in file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fouten in bestand %1</translation>
     </message>
     <message>
         <source>The following lines were not loaded into QGIS due to errors:</source>
-        <translation type="unfinished"></translation>
+        <translation>De volgende regels zijn niet in QGIS geladen vanwege fouten:</translation>
     </message>
     <message>
         <source>There are %1 additional errors in the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Er zijn nog %1 fouten in het bestand</translation>
     </message>
     <message>
         <source>Delimited text file errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Fouten tekengescheiden tekstbestand</translation>
     </message>
     <message>
         <source>Invalid subset string %1 for %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige tekst subset %1 voor %2</translation>
     </message>
 </context>
 <context>
@@ -19088,79 +19124,79 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No delimiters set</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen scheidingstekens gegeven</translation>
     </message>
     <message>
         <source>Please one or more characters to use as the delimiter, or choose a different delimiter type</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef één of meerdere karakter als scheidingstekens, of kies een ander type scheidingsteken</translation>
     </message>
     <message>
         <source>Invalid regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige reguliere expressie</translation>
     </message>
     <message>
         <source>Please enter a valid regular expression as the delimiter, or choose a different delimiter type</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef een geldige reguliere expressie als scheidingsteken, of kies een ander type scheidingsteken</translation>
     </message>
     <message>
         <source>Invalid delimited text file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldig tekengescheiden tekstbestand</translation>
     </message>
     <message>
         <source>Please enter a valid file and delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef een geldig bestand en scheidingsteken</translation>
     </message>
     <message>
         <source>Please select an input file</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer een invoerbestand</translation>
     </message>
     <message>
         <source>File %1 does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand %1 bestaat niet</translation>
     </message>
     <message>
         <source>Please enter a layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen een laagnaam</translation>
     </message>
     <message>
         <source>At least one delimiter character must be specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Ten minste één tekengescheiden teken moet gegeven zijn</translation>
     </message>
     <message>
         <source>Regular expression is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>De reguliere expressie is niet geldig</translation>
     </message>
     <message>
         <source>^.. expression needs capture groups</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">^.. expressie heeft &apos;capture groups&apos; nodig</translation>
     </message>
     <message>
         <source>Definition of filename and delimiters is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Definitie van bestandsnaam en scheidingstekens is niet geldig</translation>
     </message>
     <message>
         <source>No data found in file</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen gegevens gevonden in bestand</translation>
     </message>
     <message>
         <source>%1 badly formatted records discarded</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 niet goed opgebouwde records overgeslagen</translation>
     </message>
     <message>
         <source>X and Y field names must be selected</source>
-        <translation type="unfinished"></translation>
+        <translation>X en Y veldnamen moeten geselecteerd worden</translation>
     </message>
     <message>
         <source>X and Y field names cannot be the same</source>
-        <translation type="unfinished"></translation>
+        <translation>X en Y veldnamen kunnen niet gelijk zijn</translation>
     </message>
     <message>
         <source>The WKT field name must be selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Het WKT veldnaam dient geselecteerd te worden</translation>
     </message>
     <message>
         <source>%1 badly formatted records discarded from sample data</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 niet goed geformateerde records overgeslagen van voorbeeldgegevens</translation>
     </message>
 </context>
 <context>
@@ -19315,103 +19351,103 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The file a comma separated value file, fields delimited by commas and quoted by &quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand, een comma gescheiden waarden bestand, velden gescheiden door commas en voor aanhalingsteken gebruik &quot;</translation>
     </message>
     <message>
         <source>CSV (comma separated values) format</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV (Comma gescheiden waarden) formaat</translation>
     </message>
     <message>
         <source>Comma character is one of the delimiters</source>
-        <translation type="unfinished"></translation>
+        <translation>Het comma karakter is één van de scheidingstekens</translation>
     </message>
     <message>
         <source>Tab character is one of the delimiters</source>
-        <translation type="unfinished"></translation>
+        <translation>Het Tab karakter is één van de scheidingstekens</translation>
     </message>
     <message>
         <source>Space character is one of the delimiters</source>
-        <translation type="unfinished"></translation>
+        <translation>De spatie is één van de scheidingstekens</translation>
     </message>
     <message>
         <source>Colon character is one of the delimiters</source>
-        <translation type="unfinished"></translation>
+        <translation>De dubbele punt is één van de scheidingstekens</translation>
     </message>
     <message>
         <source>Semicolon character is one of the delimiters</source>
-        <translation type="unfinished"></translation>
+        <translation>De punt comma is één van de scheidingtekens</translation>
     </message>
     <message>
         <source>Other delimiters</source>
-        <translation type="unfinished"></translation>
+        <translation>Overige scheidingtekens</translation>
     </message>
     <message>
         <source>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Quote</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanhalingsteken</translation>
     </message>
     <message>
         <source>The quote character(s) enclose fields which may include delimiters and new lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Het aanhalingsteken wordt gebruikt om velden te omgeven die scheidingstekens en regelafbrekingtekens bevatten</translation>
     </message>
     <message>
         <source>&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;</translation>
     </message>
     <message>
         <source>Escape</source>
-        <translation type="unfinished"></translation>
+        <translation>Escape</translation>
     </message>
     <message>
         <source>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Het escape karakter zorgt ervoor dat het volgende karakter als een normaal karakter wordt zien (dus niet als een scheidingsteken, aanhalingsteken of regelafbrekingsteken). Indien het escape karakter gelijk is aan het aanhalingsteken zal het alleen het escape teken alleen werken voor het escape teken en alleen binnen aanhalingstekens.</translation>
     </message>
     <message>
         <source>Regular expression used to split each line into fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Regular expressies kunnen gebruikt worden om een regel op te delen in velden</translation>
     </message>
     <message>
         <source>File format </source>
-        <translation type="unfinished"></translation>
+        <translation>Bestandsformaat</translation>
     </message>
     <message>
         <source>Geometry definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometrie definitie</translation>
     </message>
     <message>
         <source>Geometry is a point defined by X and Y coordinate fields</source>
-        <translation type="unfinished"></translation>
+        <translation>De geometrie kan een punt zijn gedefinieerd door X en Y coördinaat velden</translation>
     </message>
     <message>
         <source>Point coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Punt coördinaten</translation>
     </message>
     <message>
         <source>X and Y coordinates are expressed in degrees/minutes/seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>X en Y coordinaten kunnen in graden/minuten/seconden gegeven worden</translation>
     </message>
     <message>
         <source>DMS coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>DMS coördinaten</translation>
     </message>
     <message>
         <source>Geometry is read as a well known text string from the selected fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometrie kan ook gegeven worden als Well Known Text (WKT) voor geselecteerde velden</translation>
     </message>
     <message>
         <source>Well known text (WKT) </source>
-        <translation type="unfinished"></translation>
+        <translation>Well known text (WKT)</translation>
     </message>
     <message>
         <source>Geometry field</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometrie veld</translation>
     </message>
     <message>
         <source>Name of the field containing well known text value</source>
-        <translation type="unfinished"></translation>
+        <translation>Naam van het veld welke een well known text bevat</translation>
     </message>
     <message>
         <source>Geometry type</source>
@@ -19419,7 +19455,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Detect</source>
-        <translation type="unfinished"></translation>
+        <translation>Detecteren</translation>
     </message>
     <message>
         <source>Point</source>
@@ -19435,71 +19471,71 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The file contains only attribute information - it will not be displayed on the map</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand bevat alleen attribuut informatie - er zal niets getoond worden op de kaart</translation>
     </message>
     <message>
         <source>No geometry (attribute only table)</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen geometrieen (alleen attributen tabel)</translation>
     </message>
     <message>
         <source>Encoding</source>
-        <translation type="unfinished">Encoding</translation>
+        <translation>Encoding</translation>
     </message>
     <message>
         <source>Select the file encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer de encoding gebruikt voor het bestand</translation>
     </message>
     <message>
         <source>Sample data</source>
-        <translation type="unfinished"></translation>
+        <translation>Voorbeelddata</translation>
     </message>
     <message>
         <source>Record options</source>
-        <translation type="unfinished"></translation>
+        <translation>Record opties</translation>
     </message>
     <message>
         <source>Number of header lines to discard</source>
-        <translation type="unfinished"></translation>
+        <translation>Aantal kopregels die overgeslagen kunnen worden</translation>
     </message>
     <message>
         <source>The number of lines to discard from the beginning of the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Het aantal regels die overgeslagen dienen te worden vanaf het begin van het bestand</translation>
     </message>
     <message>
         <source>Field names are read from the first record.  If not selected then fields are numbered</source>
-        <translation type="unfinished"></translation>
+        <translation>Veld namen worden gelezen van de eerste regel. Wanneer niet geselecteer zullen de velden genummerd worden</translation>
     </message>
     <message>
         <source>First record has field names</source>
-        <translation type="unfinished"></translation>
+        <translation>De eerste regel bevat veldnamen</translation>
     </message>
     <message>
         <source>Field options</source>
-        <translation type="unfinished"></translation>
+        <translation>Veld opties</translation>
     </message>
     <message>
         <source>Trim leading and trailing spaces from fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder spaties voor en achter de tekst van het veld</translation>
     </message>
     <message>
         <source>Trim fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijderen van velden</translation>
     </message>
     <message>
         <source>Discard empty fields in each record</source>
-        <translation type="unfinished"></translation>
+        <translation>Sla lege velden over in elk record</translation>
     </message>
     <message>
         <source>Discard empty fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Sla lege velden over</translation>
     </message>
     <message>
         <source>Number fields use comma for a decimal separator</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik de comma als decimaal scheidingsteken voor numerieke velden</translation>
     </message>
     <message>
         <source>Decimal separator is comma</source>
-        <translation type="unfinished"></translation>
+        <translation>Decimaal scheidingsteken is de comma</translation>
     </message>
 </context>
 <context>
@@ -19627,7 +19663,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>x-height</source>
-        <translation type="unfinished"></translation>
+        <translation>x-hoogte</translation>
     </message>
     <message>
         <source>Area</source>
@@ -19635,7 +19671,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Diameter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Diameter</translation>
     </message>
     <message>
         <source>None</source>
@@ -19643,19 +19679,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unknown diagram type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Onbekend diagram type.</translation>
     </message>
     <message>
         <source>The diagram type &apos;%1&apos; is unknown. A default type is selected for you.</source>
-        <translation type="unfinished"></translation>
+        <translation>Het diagram type &apos;%1&apos; is onbekend. Een standaard type is voor u geselecteerd.</translation>
     </message>
     <message>
         <source>Transparency: %1%</source>
-        <translation type="unfinished">Transparantie: %1%</translation>
+        <translation>Transparantie: %1%</translation>
     </message>
     <message>
         <source>Background color</source>
-        <translation type="unfinished">Achtergrondkleur</translation>
+        <translation>Achtergrondkleur</translation>
     </message>
     <message>
         <source>Pen color</source>
@@ -19663,43 +19699,43 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams.</source>
-        <translation type="unfinished"></translation>
+        <translation>U heeft geen attributen toegevoegd aan deze diagramlaag. Selecteer de attribuutvelden waarmee de diagrammen worden getoond of schakel diagrammen uit.</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type="unfinished">Boven</translation>
+        <translation>Boven</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Rechts</translation>
+        <translation>Rechts</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="unfinished">Onder</translation>
+        <translation>Onder</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Links</translation>
+        <translation>Links</translation>
     </message>
     <message>
         <source>Bar length: Scale linearly, such as the following value matches the specified size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Staaflengte: Lineaire verschaling, zodat volgende waarde overeenkomt met de gespecificeerde grootte.</translation>
     </message>
     <message>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
-        <translation type="unfinished">Lineair schalen tussen 0 en de volgende attribuutwaarde/diagram grootte:</translation>
+        <translation>Lineair schalen tussen 0 en de volgende attribuutwaarde/diagram grootte:</translation>
     </message>
     <message>
         <source>Diagrams: No attributes added.</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagrammen: Geen attributen toegevoegd.</translation>
     </message>
     <message>
         <source>Interpolation value</source>
-        <translation type="unfinished"></translation>
+        <translation>Geïnterpoleerde waarde</translation>
     </message>
     <message>
         <source>You did not specify an interpolation value. A default value of %1 has been set.</source>
-        <translation type="unfinished"></translation>
+        <translation>U heeft geen geïnterpoleerde waarde gegeven. De standaardwaarde %1 is ingevuld.</translation>
     </message>
 </context>
 <context>
@@ -19746,19 +19782,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Bar width</source>
-        <translation type="unfinished"></translation>
+        <translation>Staafbreedte</translation>
     </message>
     <message>
         <source>Transparency 0%</source>
-        <translation type="unfinished"></translation>
+        <translation>Transparantie 0%</translation>
     </message>
     <message>
         <source>Only show diagrams with a size inside the specified range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon alleen diagrammen met een grootte binnen gegeven grenswaarden.</translation>
     </message>
     <message>
         <source>Hide diagrams with a size outside the specified range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verberg diagrammen met een grootte buiten gegeven grenswaarden.</translation>
     </message>
     <message>
         <source>Scale dependent visibility</source>
@@ -19774,7 +19810,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>grootte</translation>
     </message>
     <message>
         <source>Fixed size</source>
@@ -19794,23 +19830,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Find maximum value</source>
-        <translation type="unfinished"></translation>
+        <translation>Vind de maximum waarde</translation>
     </message>
     <message>
         <source>Scale</source>
-        <translation type="unfinished">Schaal </translation>
+        <translation>Schaal</translation>
     </message>
     <message>
         <source>Will scale diagrams with a size smaller than the minimum size to the minimum size</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagrammen die kleiner zouden zijn dan de minimale grootte automatisch verschalen naar minimale grootte</translation>
     </message>
     <message>
         <source>Increase size of small diagrams</source>
-        <translation type="unfinished"></translation>
+        <translation>Vergroot kleine diagrammen</translation>
     </message>
     <message>
         <source>Minimum size</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimale grootte</translation>
     </message>
     <message>
         <source>Position</source>
@@ -19818,7 +19854,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Placement</source>
-        <translation type="unfinished"></translation>
+        <translation>Plaatsing</translation>
     </message>
     <message>
         <source>Line Options</source>
@@ -19842,7 +19878,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Automated placement settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Instellingen automatische plaatsing</translation>
     </message>
     <message>
         <source>Options</source>
@@ -19850,11 +19886,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Label placement</source>
-        <translation type="unfinished"></translation>
+        <translation>Plaatsing van label</translation>
     </message>
     <message>
         <source>Bar Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Staaf-oriëntatie</translation>
     </message>
     <message>
         <source>Up</source>
@@ -19862,7 +19898,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Omlaag</translation>
     </message>
     <message>
         <source>Right</source>
@@ -19878,15 +19914,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Available attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschikbare attributen</translation>
     </message>
     <message>
         <source>Assigned attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Toegekende attributen</translation>
     </message>
     <message>
         <source>Drag and drop to reorder</source>
-        <translation type="unfinished"></translation>
+        <translation>Volgorde aanpassen via &apos;drag and drop&apos;</translation>
     </message>
     <message>
         <source>Color</source>
@@ -19894,12 +19930,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start Angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Beginhoek</translation>
     </message>
     <message>
         <source>The attribute value you enter here will correspond to the size entered in the field &quot;Size&quot; and the choosen &quot;Size unit&quot;.
 Leave empty to automatically apply the maximum value.</source>
-        <translation type="unfinished"></translation>
+        <translation>De attribuutwaarde die hier wordt ingevuld zal overeenkomen met de waarde die het veld &quot;Grootte&quot; en de gekozen &quot;Grootte eenheid&quot;.
+Leeglaten wanneer automatisch de maximum veldwaarde dient te worden gebruikt.</translation>
     </message>
 </context>
 <context>
@@ -20030,17 +20067,19 @@ Leave empty to automatically apply the maximum value.</source>
     </message>
     <message>
         <source>Expression based preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Expressie gebaseerde voorvertoning</translation>
     </message>
     <message>
         <source>Could not set preview column</source>
-        <translation type="unfinished"></translation>
+        <translation>Voorvertoningskolom kon niet worden ingesteld</translation>
     </message>
     <message>
         <source>Could not set column &apos;%1&apos; as preview column.
 Parser error:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolom &apos;%1&apos; kan niet worden gebruik als voorvertoningskolom.
+Parser fout:
+%2</translation>
     </message>
     <message>
         <source>Run action</source>
@@ -20052,7 +20091,7 @@ Parser error:
     </message>
     <message>
         <source>Loading features...</source>
-        <translation type="unfinished"></translation>
+        <translation>Laad objecten...</translation>
     </message>
     <message>
         <source>Abort</source>
@@ -20218,23 +20257,23 @@ Parser error:
     </message>
     <message>
         <source>Show all labels and features for all layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon alle labels en objecten voor alle lagen</translation>
     </message>
     <message>
         <source>Show candidates (for debugging)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon candidaten (om te debuggen)</translation>
     </message>
     <message>
         <source>(i.e. including colliding objects)</source>
-        <translation type="unfinished"></translation>
+        <translation>(b.v. inclusief elkaar overlappende objecten)</translation>
     </message>
     <message>
         <source>Save settings with project</source>
-        <translation type="unfinished"></translation>
+        <translation>Opslaan instellingen met project</translation>
     </message>
     <message>
         <source>Show shadow rectangles (for debugging)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon schaduwrechthoeken (om te debuggen)</translation>
     </message>
 </context>
 <context>
@@ -20268,7 +20307,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Always show details</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon altijd details</translation>
     </message>
     <message>
         <source>Details &gt;&gt;</source>
@@ -20358,11 +20397,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Conditionals</source>
-        <translation type="unfinished">Voorwaarden</translation>
+        <translation>Voorwaarden</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type="unfinished">Zoek</translation>
+        <translation>Zoek</translation>
     </message>
 </context>
 <context>
@@ -20441,42 +20480,42 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Load all unique values</source>
-        <translation type="unfinished">Laad alle unieke waarden</translation>
+        <translation>Laad alle unieke waarden</translation>
     </message>
     <message>
         <source>Load 10 sample values</source>
-        <translation type="unfinished"></translation>
+        <translation>Laad 10 voorbeeld waarden</translation>
     </message>
 </context>
 <context>
     <name>QgsExpressionSelectionDialogBase</name>
     <message>
         <source>Select By Expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteren met een Expressie</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Sluiten</translation>
+        <translation>Sluiten</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Select</source>
-        <translation type="unfinished">Selecteren</translation>
+        <translation>Selecteren</translation>
     </message>
     <message>
         <source>Add to selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Toevoegen aan selectie</translation>
     </message>
     <message>
         <source>Remove from selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijderen van selectie</translation>
     </message>
     <message>
         <source>Select within selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteren binnen selectie</translation>
     </message>
 </context>
 <context>
@@ -20523,7 +20562,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please enter a field name</source>
-        <translation>Geef een geldige veldnaam a.u.b</translation>
+        <translation type="unfinished">Geef een geldige veldnaam</translation>
     </message>
     <message>
         <source>
@@ -20532,7 +20571,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Not available for layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Niet beschikbaar voor laag</translation>
     </message>
 </context>
 <context>
@@ -20770,7 +20809,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Slider range</source>
-        <translation>Schuiver waarden</translation>
+        <translation>Schuifschaal waarden</translation>
     </message>
     <message>
         <source>Dial range</source>
@@ -20837,11 +20876,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsFieldsPropertiesBase</name>
     <message>
         <source>Field calculator</source>
-        <translation type="unfinished">Veld berekening</translation>
+        <translation>Veld calculator</translation>
     </message>
     <message>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished">Klik om modus &apos;tabelwijzigen&apos; om te zetten</translation>
+        <translation>Klik om modus &apos;tabel bewerken&apos; om te zetten</translation>
     </message>
     <message>
         <source>Toggle editing mode</source>
@@ -20901,11 +20940,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Provide ui-file</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen een ui-bestand</translation>
     </message>
     <message>
         <source>Attribute editor layout:</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribuut editor layout:</translation>
     </message>
     <message>
         <source>QGIS forms can have a Python function that is called when the form is opened.  
@@ -20920,11 +20959,22 @@ An example is (in module MyForms.py):
 Reference in Python Init Function like so: MyForms.open
 
 MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS formulieren kunnen een Python functie bevatten die wordt aangeroepen wanneer het formulier wordt geopend.
+Gebruik deze functie voor het toevoegen van extra logica aan de QGIS formulier.
+
+Een voorbeeld is meegeleverd in de python module MyForms.py:
+
+          def open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
+
+Er dient als volgt een referentie te worden toegevoegd aan de python init functie: MyForms.open
+
+MyForms.py moet aanwezig zijn in PYTHONPATH, .qgis/python, of in de projectfolder.</translation>
     </message>
     <message>
         <source>Python Init function</source>
-        <translation type="unfinished"></translation>
+        <translation>Python Init functie</translation>
     </message>
 </context>
 <context>
@@ -20950,7 +21000,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
     </message>
     <message>
         <source>Form annotation</source>
-        <translation type="unfinished">Formulier annotatie</translation>
+        <translation>Formulier annotatie</translation>
     </message>
 </context>
 <context>
@@ -22071,27 +22121,27 @@ Selecteer alstublieft een geldig bestand.</translation>
     </message>
     <message>
         <source>Format not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulier wordt niet ondersteund</translation>
     </message>
     <message>
         <source>Cannot read data</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan data niet lezen</translation>
     </message>
     <message>
         <source>Cannot get GDAL raster band: %1</source>
-        <translation type="unfinished">Geen toegang tot GDAL raster-band: %1</translation>
+        <translation>Geen toegang tot GDAL raster-band: %1</translation>
     </message>
     <message>
         <source>Dimensions</source>
-        <translation type="unfinished">Dimensies</translation>
+        <translation>Dimensies</translation>
     </message>
     <message>
         <source>Origin</source>
-        <translation type="unfinished"></translation>
+        <translation>Oorsprong</translation>
     </message>
     <message>
         <source>Pixel Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Pixelgrootte</translation>
     </message>
 </context>
 <context>
@@ -22556,11 +22606,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished">Geen</translation>
+        <translation>Geen</translation>
     </message>
     <message>
         <source>Coordinate of image(column/line)</source>
-        <translation type="unfinished"></translation>
+        <translation>Coördinaat van afbeelding(kolom/regel)</translation>
     </message>
 </context>
 <context>
@@ -22719,11 +22769,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Local histogram stretch</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">lokale histogram strekking</translation>
     </message>
     <message>
         <source>Full histogram stretch</source>
-        <translation type="unfinished">Volledige histogram</translation>
+        <translation type="unfinished">Volledige histogram strekking</translation>
     </message>
 </context>
 <context>
@@ -23046,7 +23096,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Quantile (Equal Count)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kwantiel (Gelijke Telling)</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -24186,11 +24236,11 @@ op regel %2 kolom %3</translation>
     </message>
     <message>
         <source>%1 (band %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (band %2)</translation>
     </message>
     <message>
         <source>Cannot get provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen toegang tot provider</translation>
     </message>
 </context>
 <context>
@@ -24295,35 +24345,35 @@ op regel %2 kolom %3</translation>
     </message>
     <message>
         <source>Region</source>
-        <translation type="unfinished">Regio</translation>
+        <translation>Regio</translation>
     </message>
     <message>
         <source>Input layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Invoerlagen</translation>
     </message>
     <message>
         <source>Current map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Huidige kaartvenster</translation>
     </message>
     <message>
         <source>Cannot set region</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan de regio niet instellen</translation>
     </message>
     <message>
         <source>Cannot get selected layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan niet bij de geselecteerde laag</translation>
     </message>
     <message>
         <source>Cannot get provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen toegang tot provider</translation>
     </message>
     <message>
         <source>The layer CRS (defined in QGIS) and data source CRS differ. We are not yet able to pass the layer CRS to GRASS module. Please set correct data source CRS or change layer CRS to data source CRS.</source>
-        <translation type="unfinished"></translation>
+        <translation>De CRS van de laag (zoals gedefiniëerd in QGIS) en de CRS opgenomen in het bronbestand verschillen. De laag CRS kan niet doorgegeven worden aan de GRASS module. Verander de CRS in het bronbestand of wijzig de CRS van de laag naar die van het bronbestand.</translation>
     </message>
     <message>
         <source>Cannot get raster provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen toegang tot de raster provider</translation>
     </message>
 </context>
 <context>
@@ -24828,19 +24878,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>cellhd file %1 does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>cellhd Bestand %1 bestaat niet</translation>
     </message>
     <message>
         <source>Groups not yet supported</source>
-        <translation type="unfinished">Groepen nog niet ondersteund</translation>
+        <translation>Groepen nog niet ondersteund</translation>
     </message>
     <message>
         <source>Format not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Formaat wordt niet ondersteund</translation>
     </message>
     <message>
         <source>Cannot read data</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan data niet lezen</translation>
     </message>
 </context>
 <context>
@@ -25100,7 +25150,7 @@ of verander de hier getoonde waarden</translation>
     </message>
     <message>
         <source>GRASS Tools</source>
-        <translation>GRASS Gereedschappen</translation>
+        <translation>GRASS Gereedschap</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -25136,34 +25186,34 @@ in regel %2 kolom %3</translation>
     </message>
     <message>
         <source>GRASS Direct Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS Direct Gereedschap</translation>
     </message>
     <message>
         <source>Modules Tree</source>
-        <translation type="unfinished">Module-boom</translation>
+        <translation>Modulen Boom</translation>
     </message>
     <message>
         <source>Modules List</source>
-        <translation type="unfinished">Module-lijst</translation>
+        <translation>Modulen Lijst</translation>
     </message>
     <message>
         <source>Direct Modules Tree</source>
-        <translation type="unfinished"></translation>
+        <translation>Direct Modulen Boom</translation>
     </message>
     <message>
         <source>Direct Modules List</source>
-        <translation type="unfinished"></translation>
+        <translation>Direct Modulen Lijst</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassToolsBase</name>
     <message>
         <source>Grass Tools</source>
-        <translation>Grass Gereedschappen</translation>
+        <translation>Grass Gereedschap</translation>
     </message>
     <message>
         <source>Modules Tree</source>
-        <translation>Module-boom</translation>
+        <translation>Modulen Boom</translation>
     </message>
     <message>
         <source>1</source>
@@ -25179,11 +25229,11 @@ in regel %2 kolom %3</translation>
     </message>
     <message>
         <source>Direct Modules Tree</source>
-        <translation type="unfinished"></translation>
+        <translation>Direct Modulen Boom</translation>
     </message>
     <message>
         <source>Direct Modules List</source>
-        <translation type="unfinished"></translation>
+        <translation>Direct Modulen Lijst</translation>
     </message>
 </context>
 <context>
@@ -25531,27 +25581,27 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>Expand tree.</source>
-        <translation type="unfinished"></translation>
+        <translation>Boom uitklappen.</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Collapse tree.</source>
-        <translation type="unfinished"></translation>
+        <translation>Boom inklappen.</translation>
     </message>
     <message>
         <source>New results will be expanded by default.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuwe resultaten zullen standaard worden uitgebreid.</translation>
     </message>
     <message>
         <source>Copy selected feature to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiëer geselecteerde objecten naar clipboard.</translation>
     </message>
     <message>
         <source>Print selected HTML response.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geselecteerde HTML antwoord afdrukken.</translation>
     </message>
 </context>
 <context>
@@ -25606,35 +25656,35 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>Copy GetFeatureInfo request URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiëer GetFeatureInfo request URL</translation>
     </message>
     <message>
         <source>Clear results</source>
-        <translation type="unfinished">Resultaten leegmaken</translation>
+        <translation type="unfinished">Wis Resultaat</translation>
     </message>
     <message>
         <source>Clear highlights</source>
-        <translation type="unfinished">Accentueringen verwijderen</translation>
+        <translation type="unfinished">Wis Highligths</translation>
     </message>
     <message>
         <source>Highlight all</source>
-        <translation type="unfinished">Alles accentueren</translation>
+        <translation type="unfinished">Alles highlighten</translation>
     </message>
     <message>
         <source>Highlight layer</source>
-        <translation type="unfinished">Accentueer-laag</translation>
+        <translation type="unfinished">Highlight-laag</translation>
     </message>
     <message>
         <source>Layer properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Laag eigenschappen...</translation>
     </message>
     <message>
         <source>Expand all</source>
-        <translation type="unfinished">Alles uitklappen</translation>
+        <translation>Alles uitklappen</translation>
     </message>
     <message>
         <source>Collapse all</source>
-        <translation type="unfinished">Alles inklappen</translation>
+        <translation>Alles inklappen</translation>
     </message>
     <message>
         <source>Attribute changes</source>
@@ -25642,11 +25692,11 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>Cannot not print</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan niet afdrukken</translation>
     </message>
     <message>
         <source>Cannot print this item</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan dit onderdeel niet afdrukken</translation>
     </message>
 </context>
 <context>
@@ -26174,31 +26224,31 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>Display</source>
-        <translation type="unfinished">Tonen</translation>
+        <translation>Tonen</translation>
     </message>
     <message>
         <source>Show label</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon label</translation>
     </message>
     <message>
         <source>Max </source>
-        <translation type="unfinished"></translation>
+        <translation>Max </translation>
     </message>
     <message>
         <source>Min </source>
-        <translation type="unfinished"></translation>
+        <translation>Min </translation>
     </message>
     <message>
         <source>Scale-based</source>
-        <translation type="unfinished"></translation>
+        <translation>Schaal-gebaseerd</translation>
     </message>
     <message>
         <source>Ignores priority and permits collisions/overlaps</source>
-        <translation type="unfinished"></translation>
+        <translation>Prioriteit negeren en toestaan botsingen/overlappingen</translation>
     </message>
     <message>
         <source>Always show (exceptions above)</source>
-        <translation type="unfinished"></translation>
+        <translation>Altijd tonen (uitzonderingen hierboven)</translation>
     </message>
 </context>
 <context>
@@ -26217,7 +26267,7 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source> (not found!)</source>
-        <translation type="unfinished"></translation>
+        <translation> (niet gevonden!)</translation>
     </message>
     <message>
         <source>Sample</source>
@@ -26225,39 +26275,39 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>Mixed Case</source>
-        <translation type="unfinished"></translation>
+        <translation>hoofd- en kleine letters</translation>
     </message>
     <message>
         <source>All Uppercase</source>
-        <translation type="unfinished"></translation>
+        <translation>Alles in hoofdletters</translation>
     </message>
     <message>
         <source>All Lowercase</source>
-        <translation type="unfinished"></translation>
+        <translation>Alles in kleine letters</translation>
     </message>
     <message>
         <source>Title Case</source>
-        <translation type="unfinished"></translation>
+        <translation>Beginnend met hoofdletter</translation>
     </message>
     <message>
         <source>Text/Buffer sample</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekst/Buffer voorbeeld</translation>
     </message>
     <message>
         <source> @ %1 pts (using map units)</source>
-        <translation type="unfinished"></translation>
+        <translation> @ %1 pts (using map units)</translation>
     </message>
     <message>
         <source> @ %1 pts (using map units, BUFFER IN MILLIMETERS)</source>
-        <translation type="unfinished"></translation>
+        <translation> @ %1 pts (using map units, BUFFER IN MILLIMETERS)</translation>
     </message>
     <message>
         <source> (BUFFER NOT SHOWN, in map units)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Select SVG symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer SVG symbool</translation>
     </message>
 </context>
 <context>
@@ -26584,355 +26634,355 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>Expression</source>
-        <translation type="unfinished">Expressie</translation>
+        <translation>Expressie</translation>
     </message>
     <message>
         <source>Sample text</source>
-        <translation type="unfinished">Voorbeeld tekst</translation>
+        <translation>Voorbeeldtekst</translation>
     </message>
     <message>
         <source>Reset sample text</source>
-        <translation type="unfinished"></translation>
+        <translation>Herstel voorbeeldtekst</translation>
     </message>
     <message>
         <source>Size for sample text in map units</source>
-        <translation type="unfinished"></translation>
+        <translation>Grootte voorbeeldtekst in kaarteenheden</translation>
     </message>
     <message>
         <source>Sample background color</source>
-        <translation type="unfinished"></translation>
+        <translation>Voorbeeld achtergrondkleur</translation>
     </message>
     <message>
         <source>Multiple lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Meerdere tekstregels</translation>
     </message>
     <message>
         <source>Wrap on character</source>
-        <translation type="unfinished"></translation>
+        <translation>Afbrekingsteken</translation>
     </message>
     <message>
         <source>Line height</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekstregel hoogte</translation>
     </message>
     <message>
         <source>Line height spacing for multi-line text</source>
-        <translation type="unfinished"></translation>
+        <translation>Regelafstand bij gebruik meerdere regels</translation>
     </message>
     <message>
         <source> line</source>
-        <translation type="unfinished"></translation>
+        <translation> regel</translation>
     </message>
     <message>
         <source>Alignment</source>
-        <translation type="unfinished">Uitlijning</translation>
+        <translation>Uitlijning</translation>
     </message>
     <message>
         <source>Paragraph style alignment of multi-line text</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitlijning in paragrafen of meerdere tekstregels</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Links</translation>
+        <translation>Links</translation>
     </message>
     <message>
         <source>Center</source>
-        <translation type="unfinished">Centreren</translation>
+        <translation>Centreren</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Rechts</translation>
+        <translation>Rechts</translation>
     </message>
     <message>
         <source>Available typeface styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschikbare tekstopmaak</translation>
     </message>
     <message>
         <source>Underlined Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Onderstreept</translation>
     </message>
     <message>
         <source>U</source>
-        <translation type="unfinished"></translation>
+        <translation>U</translation>
     </message>
     <message>
         <source>Strikeout text</source>
-        <translation type="unfinished"></translation>
+        <translation>Doorgestreept</translation>
     </message>
     <message>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation>S</translation>
     </message>
     <message>
         <source>points</source>
-        <translation type="unfinished"></translation>
+        <translation>punten</translation>
     </message>
     <message>
         <source>map units</source>
-        <translation type="unfinished"></translation>
+        <translation>kaarteenheden</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type="unfinished">Stijl</translation>
+        <translation>Stijl</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished">Transparantie</translation>
+        <translation>Transparantie</translation>
     </message>
     <message>
         <source> %</source>
-        <translation type="unfinished"></translation>
+        <translation> %</translation>
     </message>
     <message>
         <source>Word spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Woord-afstand</translation>
     </message>
     <message>
         <source>Letter spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Letter-afstand</translation>
     </message>
     <message>
         <source>Space in pixels or map units, relative to size unit choice</source>
-        <translation type="unfinished"></translation>
+        <translation>Afstand in pixels of kaarteenheden, relatief aan keuze formaat-eenheid</translation>
     </message>
     <message>
         <source>Type case</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoofd- of kleine letters</translation>
     </message>
     <message>
         <source>Capitalization style of text</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekst beginnen met een hoofdletter</translation>
     </message>
     <message>
         <source>mm</source>
-        <translation type="unfinished">mm</translation>
+        <translation>mm</translation>
     </message>
     <message>
         <source>Color area inside of pen stroke</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebied binnen pennenstreek inkleuren</translation>
     </message>
     <message>
         <source>Automated placement settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Instellingen automatische plaatsing</translation>
     </message>
     <message>
         <source>Around point</source>
-        <translation type="unfinished"></translation>
+        <translation>Rondom punt</translation>
     </message>
     <message>
         <source>Offset from point</source>
-        <translation type="unfinished"></translation>
+        <translation>Op afstand vanaf punt</translation>
     </message>
     <message>
         <source>Parallel</source>
-        <translation type="unfinished"></translation>
+        <translation>Parallel</translation>
     </message>
     <message>
         <source>Curved</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebogen</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished">Horizontaal</translation>
+        <translation>Horizontaal</translation>
     </message>
     <message>
         <source>Offset from centroid</source>
-        <translation type="unfinished"></translation>
+        <translation>Op afstand van centroïde</translation>
     </message>
     <message>
         <source>Around centroid</source>
-        <translation type="unfinished"></translation>
+        <translation>Rondom centroïde</translation>
     </message>
     <message>
         <source>Horizontal (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontaal (langzaam)</translation>
     </message>
     <message>
         <source>Free (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrij (langzaam)</translation>
     </message>
     <message>
         <source>Using perimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik omtrek</translation>
     </message>
     <message>
         <source>Centroid of</source>
-        <translation type="unfinished"></translation>
+        <translation>Centroïde van</translation>
     </message>
     <message>
         <source>visible polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>zichtbare polygoon</translation>
     </message>
     <message>
         <source>whole polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>gehele polygoon</translation>
     </message>
     <message>
         <source>Above line</source>
-        <translation type="unfinished">Boven lijn</translation>
+        <translation>Boven lijn</translation>
     </message>
     <message>
         <source>On line</source>
-        <translation type="unfinished">Op lijn</translation>
+        <translation>Op lijn</translation>
     </message>
     <message>
         <source>Below line</source>
-        <translation type="unfinished"></translation>
+        <translation>Onder lijn</translation>
     </message>
     <message>
         <source>X </source>
-        <translation type="unfinished"></translation>
+        <translation>X </translation>
     </message>
     <message>
         <source>Y </source>
-        <translation type="unfinished"></translation>
+        <translation>Y </translation>
     </message>
     <message>
         <source>Above Right</source>
-        <translation type="unfinished">Rechtsboven</translation>
+        <translation>Rechtsboven</translation>
     </message>
     <message>
         <source>Above Left</source>
-        <translation type="unfinished">Linksboven</translation>
+        <translation>Linksboven</translation>
     </message>
     <message>
         <source>Over</source>
-        <translation type="unfinished">Over</translation>
+        <translation>Over</translation>
     </message>
     <message>
         <source>Above</source>
-        <translation type="unfinished">Boven</translation>
+        <translation>Boven</translation>
     </message>
     <message>
         <source>Below Left</source>
-        <translation type="unfinished">Linksonder</translation>
+        <translation>Linksonder</translation>
     </message>
     <message>
         <source>Below</source>
-        <translation type="unfinished">Onder</translation>
+        <translation>Onder</translation>
     </message>
     <message>
         <source>Below Right</source>
-        <translation type="unfinished">Rechtsonder</translation>
+        <translation>Rechtsonder</translation>
     </message>
     <message>
         <source>Buffer transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Buffer transparantie</translation>
     </message>
     <message>
         <source>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvinken voor labeling engine afhankelijke rotatie rond vast punt en NULL wanneer vast punt wordt verwijderd</translation>
     </message>
     <message>
         <source>Preserve existing rotation values during label pin/unpin operations</source>
-        <translation type="unfinished"></translation>
+        <translation>Behoud huidige rotatiewaarden tijdens label zetten vast punt of vast punt loszetten</translation>
     </message>
     <message>
         <source>Display properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon eigenschappen</translation>
     </message>
     <message>
         <source>Minimum scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum schaal</translation>
     </message>
     <message>
         <source>Show label</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon label</translation>
     </message>
     <message>
         <source>Maximum scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum schaal</translation>
     </message>
     <message>
         <source>Capitalization</source>
-        <translation type="unfinished"></translation>
+        <translation>Laat beginnen met hoofdletters</translation>
     </message>
     <message>
         <source>Multi-line align</source>
-        <translation type="unfinished"></translation>
+        <translation>Meerdere regels uitlijnen</translation>
     </message>
     <message>
         <source>Add label columns to attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Voeg label kolom toe aan attributen tabel</translation>
     </message>
     <message>
         <source>About data defined values</source>
-        <translation type="unfinished"></translation>
+        <translation>Over afgeleide attribuutwaarden</translation>
     </message>
     <message>
         <source>Text/Buffer sample</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekst/Buffer voorbeeld</translation>
     </message>
     <message>
         <source>Pen join style</source>
-        <translation type="unfinished"></translation>
+        <translation>Pen verbindingstijl</translation>
     </message>
     <message>
         <source>Blending mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Blending modus</translation>
     </message>
     <message>
         <source>Line direction symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Richtingsymbool lijn</translation>
     </message>
     <message>
         <source>Symbol(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbool/Symbolen</translation>
     </message>
     <message>
         <source>&lt;</source>
-        <translation type="unfinished">&lt;</translation>
+        <translation>&lt;</translation>
     </message>
     <message>
         <source> Label </source>
-        <translation type="unfinished"></translation>
+        <translation> Label </translation>
     </message>
     <message>
         <source>&gt;</source>
-        <translation type="unfinished">&gt;</translation>
+        <translation>&gt;</translation>
     </message>
     <message>
         <source>left/right</source>
-        <translation type="unfinished"></translation>
+        <translation>links/rechts</translation>
     </message>
     <message>
         <source>above</source>
-        <translation type="unfinished"></translation>
+        <translation>boven</translation>
     </message>
     <message>
         <source>below</source>
-        <translation type="unfinished"></translation>
+        <translation>onder</translation>
     </message>
     <message>
         <source>Reverse direction</source>
-        <translation type="unfinished">Omgekeerde richting</translation>
+        <translation>Omgekeerde richting</translation>
     </message>
     <message>
         <source>Pixel size-based visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Pixel gebaseerde zichtbaarheid</translation>
     </message>
     <message>
         <source>Labels will not show if larger than this on screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Labels zullen niet getoond worden indien groter dan deze op het venster</translation>
     </message>
     <message>
         <source> px</source>
-        <translation type="unfinished"></translation>
+        <translation> px</translation>
     </message>
     <message>
         <source>Labels will not show if smaller than this on screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Labels zullen niet getoond worden indien kleiner dan deze op het venster</translation>
     </message>
     <message>
         <source> Label in Map Units </source>
-        <translation type="unfinished"></translation>
+        <translation> Label in Kaarteenheden </translation>
     </message>
     <message>
         <source>Drop shadow</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder schaduw</translation>
     </message>
     <message>
         <source>Offset</source>
-        <translation type="unfinished">Verspringing</translation>
+        <translation>Verspringing</translation>
     </message>
     <message>
         <source>%</source>
@@ -26940,167 +26990,167 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>Scale</source>
-        <translation type="unfinished">Schaal </translation>
+        <translation>Schaal</translation>
     </message>
     <message>
         <source>Background</source>
-        <translation type="unfinished">Achtergrond</translation>
+        <translation>Achtergrond</translation>
     </message>
     <message>
         <source>Select SVG symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer SVG symbool</translation>
     </message>
     <message>
         <source>Fill</source>
-        <translation type="unfinished">Vulling</translation>
+        <translation>Vulling</translation>
     </message>
     <message>
         <source>Size X,Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Grootte X,Y</translation>
     </message>
     <message>
         <source>Load symbol parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Laad symbool parameters</translation>
     </message>
     <message>
         <source>% of length</source>
-        <translation type="unfinished"></translation>
+        <translation>% van lengte</translation>
     </message>
     <message>
         <source>Fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Vast</translation>
     </message>
     <message>
         <source>Offset X,Y</source>
-        <translation type="unfinished">Verspring X,Y</translation>
+        <translation>Op afstand X,Y</translation>
     </message>
     <message>
         <source>Rectangle</source>
-        <translation type="unfinished">Rechthoek</translation>
+        <translation>Rechthoek</translation>
     </message>
     <message>
         <source>Square</source>
-        <translation type="unfinished">Rechthoekig</translation>
+        <translation>Vierkant</translation>
     </message>
     <message>
         <source>Ellipse</source>
-        <translation type="unfinished">Ellipse</translation>
+        <translation>Ellips</translation>
     </message>
     <message>
         <source>Circle</source>
-        <translation type="unfinished"></translation>
+        <translation>Circel</translation>
     </message>
     <message>
         <source>SVG</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG</translation>
     </message>
     <message>
         <source>Shape</source>
-        <translation type="unfinished">Vorm</translation>
+        <translation>Vorm</translation>
     </message>
     <message>
         <source>Sync with label</source>
-        <translation type="unfinished"></translation>
+        <translation>Met label synchroniseren</translation>
     </message>
     <message>
         <source>Offset of label</source>
-        <translation type="unfinished"></translation>
+        <translation>Op afstand van label</translation>
     </message>
     <message>
         <source>Radius X,Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius X,Y</translation>
     </message>
     <message>
         <source>Border width</source>
-        <translation type="unfinished">Randbreedte</translation>
+        <translation>Randbreedte</translation>
     </message>
     <message>
         <source>symbol units</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbool eenheden</translation>
     </message>
     <message>
         <source>Border</source>
-        <translation type="unfinished">Rand</translation>
+        <translation>Rand</translation>
     </message>
     <message>
         <source>outside</source>
-        <translation type="unfinished"></translation>
+        <translation>buiten</translation>
     </message>
     <message>
         <source>inside</source>
-        <translation type="unfinished"></translation>
+        <translation>binnen</translation>
     </message>
     <message>
         <source>Maximum angle between curved characters</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximale hoek tussen bochtvolgende karakters</translation>
     </message>
     <message>
         <source>Show all labels for this layer (including colliding labels)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon alle label voor deze laag (inclusief conflicterende labels)</translation>
     </message>
     <message>
         <source>Show upside-down labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon labels die ondersteboven staan</translation>
     </message>
     <message>
         <source>never</source>
-        <translation type="unfinished">nooit</translation>
+        <translation>nooit</translation>
     </message>
     <message>
         <source>when rotation defined</source>
-        <translation type="unfinished"></translation>
+        <translation>wanneer rotatie is gegeven</translation>
     </message>
     <message>
         <source>always</source>
-        <translation type="unfinished">altijd</translation>
+        <translation>altijd</translation>
     </message>
     <message>
         <source>Limit number of features to be labeled to</source>
-        <translation type="unfinished"></translation>
+        <translation>Stel het maximale aantal te labelen objecten in op</translation>
     </message>
     <message>
         <source>Number of features sent to labeling engine, though not all may be labeled</source>
-        <translation type="unfinished"></translation>
+        <translation>Aantal objecten naar labeling engine, deze krijgen wellicht niet allemaal een label</translation>
     </message>
     <message>
         <source>Use label background size in collision calculations</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik label achtergrondgrootte voor het berekenen van conflicterende labels</translation>
     </message>
     <message>
         <source>Always show</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon altijd</translation>
     </message>
     <message>
         <source>Draw under</source>
-        <translation type="unfinished"></translation>
+        <translation>Eronder tekenen</translation>
     </message>
     <message>
         <source>Lowest label component</source>
-        <translation type="unfinished"></translation>
+        <translation>Laagste label component</translation>
     </message>
     <message>
         <source>Text</source>
-        <translation type="unfinished">Tekst</translation>
+        <translation>Tekst</translation>
     </message>
     <message utf8="true">
         <source>˚</source>
-        <translation type="unfinished"></translation>
+        <translation>˚</translation>
     </message>
     <message>
         <source>@</source>
-        <translation type="unfinished">@</translation>
+        <translation>@</translation>
     </message>
     <message>
         <source>Global</source>
-        <translation type="unfinished"></translation>
+        <translation>Globaal</translation>
     </message>
     <message>
         <source>Blur radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius vervagen</translation>
     </message>
     <message>
         <source>Blur only alpha pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>Alleen alpha-pixels vervagen</translation>
     </message>
 </context>
 <context>
@@ -27309,16 +27359,17 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>&amp;Duplicate</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dupliceren</translation>
     </message>
     <message>
         <source>&amp;Filter...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Filter...</translation>
     </message>
     <message>
         <source>following %1 items
 not displayed</source>
-        <translation type="unfinished"></translation>
+        <translation>Volgende %1 onderdelen
+worden niet getoond</translation>
     </message>
 </context>
 <context>
@@ -27389,11 +27440,11 @@ not displayed</source>
     </message>
     <message>
         <source>Styles related to the layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Stijlen gerelateerd aan laag</translation>
     </message>
     <message>
         <source>Other styles on the database</source>
-        <translation type="unfinished"></translation>
+        <translation>Andere stijlen van de database</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -27514,15 +27565,15 @@ not displayed</source>
     </message>
     <message>
         <source>The file is not an WCS connections exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dit bestand is geen WCS-verbindingen uitwisselbestand.</translation>
     </message>
     <message>
         <source>The file is not an %1 connections exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dit bestand is geen %1 verbindingen uitwisselbestand.</translation>
     </message>
     <message>
         <source>The file is not an Oracle connections exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dit bestand is geen Oracle-verbindingen uitwisselbestand.</translation>
     </message>
 </context>
 <context>
@@ -27561,15 +27612,15 @@ not displayed</source>
     </message>
     <message>
         <source>Canvas refresh: %1 ms</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaartvenster versen: %1 ms</translation>
     </message>
     <message>
         <source>, sender &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>, verzender &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Rendering</source>
-        <translation type="unfinished">Rendering</translation>
+        <translation>Rendering</translation>
     </message>
 </context>
 <context>
@@ -27603,11 +27654,11 @@ not displayed</source>
     </message>
     <message>
         <source>X / East:</source>
-        <translation type="unfinished"></translation>
+        <translation>X / Oost:</translation>
     </message>
     <message>
         <source>Y / North:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y / Noord:</translation>
     </message>
 </context>
 <context>
@@ -27776,11 +27827,11 @@ not displayed</source>
     </message>
     <message>
         <source>The feature cannot be added because it&apos;s geometry is empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Object kon niet worden toegevoegd omdat deze geen geometrie bevat</translation>
     </message>
     <message>
         <source>The feature cannot be added because it&apos;s geometry collapsed due to intersection avoidance</source>
-        <translation type="unfinished"></translation>
+        <translation>Het object kan niet worden toegevoegd omdat geometrie is in elkaar gedrukt om doorsnijding te voorkomen</translation>
     </message>
 </context>
 <context>
@@ -28046,7 +28097,7 @@ not displayed</source>
     </message>
     <message>
         <source>Use &apos;Toggle Editing&apos; to make it editable</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik &apos;Bewerken aan/uitzetten&apos; om te bewerken</translation>
     </message>
 </context>
 <context>
@@ -28138,19 +28189,19 @@ not displayed</source>
     </message>
     <message>
         <source>No active layer. To identify features, you must choose an active layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen actieve laag. Selecteer een laag om kaartobjecten te identificeren.</translation>
     </message>
     <message>
         <source>Perimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>Omtrek</translation>
     </message>
     <message>
         <source>no data</source>
-        <translation type="unfinished"></translation>
+        <translation>geen data</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Fout</translation>
+        <translation>Fout</translation>
     </message>
 </context>
 <context>
@@ -28698,43 +28749,43 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>The calculations are based on:</source>
-        <translation type="unfinished"></translation>
+        <translation>De calculaties zijn gebaseerd op:</translation>
     </message>
     <message>
         <source>Project CRS transformation is turned off.</source>
-        <translation type="unfinished"></translation>
+        <translation>Project CRS transformatie is uitgezet.</translation>
     </message>
     <message>
         <source>Canvas units setting is taken from project properties setting (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Eenheden van kaartvenster zijn ingesteld vanuit project eigenschappen (%1).</translation>
     </message>
     <message>
         <source>Ellipsoidal calculation is not possible, as project CRS is undefined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ellipsoïde berekening isn niet mogelijk aangezien de project CRS niet is ingesteld.</translation>
     </message>
     <message>
         <source>Project CRS transformation is turned on and ellipsoidal calculation is selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Project-CRS transformatie is ingeschakeld en ellipsoïdische calculatie is geselecteerd</translation>
     </message>
     <message>
         <source>The coordinates are transformed to the chosen ellipsoid (%1), and the result is in meters</source>
-        <translation type="unfinished"></translation>
+        <translation>De coördinaten worden getransformeerd naar de gekozen ellipsoïde (%1), en het resultaat is in meters</translation>
     </message>
     <message>
         <source>Project CRS transformation is turned on but ellipsoidal calculation is not selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Project-CRS transformatie is ingeschakeld maar ellipsoïdische calculatie is niet geselecteerd</translation>
     </message>
     <message>
         <source>The canvas units setting is taken from the project CRS (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Eenheden van kaartvenster zijn ingesteld vanuit project-eigenschappen (%1).</translation>
     </message>
     <message>
         <source>Segments [%1]</source>
-        <translation type="unfinished"></translation>
+        <translation>Segmenten [%1]</translation>
     </message>
     <message>
         <source>Finally, the value is converted from %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uiteindelijk wordt de waarde geconverteerd van %1 naar %2.</translation>
     </message>
 </context>
 <context>
@@ -28843,15 +28894,15 @@ eigenschappen
     </message>
     <message>
         <source>Remaining messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Overgebleven berichten</translation>
     </message>
     <message>
         <source>Close all</source>
-        <translation type="unfinished"></translation>
+        <translation>Alles sluiten</translation>
     </message>
     <message>
         <source>more</source>
-        <translation type="unfinished"></translation>
+        <translation>meer</translation>
     </message>
 </context>
 <context>
@@ -29381,18 +29432,18 @@ eigenschappen
     <message>
         <source>Contrast
 enhancement</source>
-        <translation type="unfinished"></translation>
+        <translation>Contrastverbetering</translation>
     </message>
     <message>
         <source>Min/max</source>
-        <translation type="unfinished"></translation>
+        <translation>Min/max</translation>
     </message>
 </context>
 <context>
     <name>QgsNetworkAccessManager</name>
     <message>
         <source>Network request %1 timed out</source>
-        <translation type="unfinished">Netwerkaanvraag %1 </translation>
+        <translation>Netwerkaanvraag %1 duurt te lang</translation>
     </message>
     <message>
         <source>Network</source>
@@ -29418,24 +29469,25 @@ enhancement</source>
     </message>
     <message>
         <source>Create a new %1 connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuwe %1-verbinding aanmaken</translation>
     </message>
     <message>
         <source>Ignore GetCoverage URI reported in capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Negeer de GetCoverage URI uit de capabilities</translation>
     </message>
     <message>
         <source>Ignore axis orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Negeer as-oriëntatie</translation>
     </message>
     <message>
         <source>Saving passwords</source>
-        <translation type="unfinished">Wachtwoorden opslaan</translation>
+        <translation>Wachtwoorden opslaan</translation>
     </message>
     <message>
         <source>WARNING: You have entered a password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.
 Note: giving the password is optional. It will be requested interactivly, when needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>WAARSCHUWING: Je hebt een wachtwoord ingevoerd. Het wordt als leesbare tekst opgeslagen in je projectbestanden en in je gebruikersmap. Indien je niet wil dat dit gebeurt, druk dan op Annuleren.
+Opmerking: het wachtwoord invoeren is optioneel. Er wordt interactief naar gevraagd indien nodig.</translation>
     </message>
 </context>
 <context>
@@ -29490,19 +29542,19 @@ Note: giving the password is optional. It will be requested interactivly, when n
     </message>
     <message>
         <source>Ignore axis orientation (WMS 1.3/WMTS)</source>
-        <translation type="unfinished"></translation>
+        <translation>Negeer as-oriëntatie (WMS 1.3/WMTS)</translation>
     </message>
     <message>
         <source>Invert axis orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>As-oriëntatie omdraaien</translation>
     </message>
     <message>
         <source>Referer</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijzing</translation>
     </message>
     <message>
         <source>Smooth pixmap transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Gelikte pixmap-transformatie</translation>
     </message>
 </context>
 <context>
@@ -30092,15 +30144,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsOSMDownload</name>
     <message>
         <source>No query has been specified.</source>
-        <translation type="unfinished"></translation>
+        <translation>Er is geen query opgegeven.</translation>
     </message>
     <message>
         <source>There is already a pending request for data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Er is al een hangend verzoek voor data.</translation>
     </message>
     <message>
         <source>Cannot open output file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Openen van uitvoerbestand mislukt: %1</translation>
     </message>
 </context>
 <context>
@@ -30164,133 +30216,136 @@ p, li { white-space: pre-wrap; }
     <name>QgsOSMExportDialog</name>
     <message>
         <source>Export OpenStreetMap topology to SpatiaLite</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer OpenStreetMap-topologie naar SpatiaLite</translation>
     </message>
     <message>
         <source>Input DB file</source>
-        <translation type="unfinished"></translation>
+        <translation>Input DB-bestand</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Export type</source>
-        <translation type="unfinished"></translation>
+        <translation>Export-type</translation>
     </message>
     <message>
         <source>Points (nodes)</source>
-        <translation type="unfinished"></translation>
+        <translation>Punten (nodes)</translation>
     </message>
     <message>
         <source>Polylines (open ways)</source>
-        <translation type="unfinished"></translation>
+        <translation>Polygonen (open ways)</translation>
     </message>
     <message>
         <source>Polygons (closed ways)</source>
-        <translation type="unfinished"></translation>
+        <translation>Polygonen (closed ways)</translation>
     </message>
     <message>
         <source>Output layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer laagnaam</translation>
     </message>
     <message>
         <source>Exported tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Geëxporteerde-tags</translation>
     </message>
     <message>
         <source>Load from DB</source>
-        <translation type="unfinished"></translation>
+        <translation>Vanuit DB laden</translation>
     </message>
     <message>
         <source>&amp;Load into canvas when finished</source>
-        <translation type="unfinished">Na afloop in kaartvenster &amp;Laden</translation>
+        <translation>Na afloop in kaartvenster &amp;Laden</translation>
     </message>
     <message>
         <source>Tag</source>
-        <translation type="unfinished"></translation>
+        <translation>Tag</translation>
     </message>
     <message>
         <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Aantal</translation>
     </message>
     <message>
         <source>SQLite databases (*.db)</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite databases (*.db)</translation>
     </message>
     <message>
         <source>Unable to open database:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Openen database misukt:
+%1</translation>
     </message>
     <message>
         <source>OpenStreetMap export</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMap export</translation>
     </message>
     <message>
         <source>Export has been successful.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteren is gelukt.</translation>
     </message>
     <message>
         <source>OpenStreetMap import</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMap import</translation>
     </message>
     <message>
         <source>Failed to export OSM data:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteren OSM data mislukt:
+%1</translation>
     </message>
 </context>
 <context>
     <name>QgsOSMImportDialog</name>
     <message>
         <source>OpenStreetMap Import</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMap import</translation>
     </message>
     <message>
         <source>Input XML file (.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Invoer XML-bestand (.osm)</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Output SpatiaLite DB file</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer SpatiaLite DB bestand</translation>
     </message>
     <message>
         <source>Create connection (SpatiaLite) after import</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak connectie (SpatiaLite) na import</translation>
     </message>
     <message>
         <source>Connection name</source>
-        <translation type="unfinished"></translation>
+        <translation>Naam van verbinding</translation>
     </message>
     <message>
         <source>OpenStreetMap files (*.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMap bestanden (*.osm)</translation>
     </message>
     <message>
         <source>SQLite databases (*.db)</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite databases (*.db)</translation>
     </message>
     <message>
         <source>OpenStreetMap import</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMap import</translation>
     </message>
     <message>
         <source>Output database file exists already. Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer databasebestand bestaat al. Overschrijven?</translation>
     </message>
     <message>
         <source>Failed to import OSM data:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM data importeren mislukt:
+%1</translation>
     </message>
     <message>
         <source>Import has been successful.</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeren is geslaagd.</translation>
     </message>
 </context>
 <context>
@@ -30319,48 +30374,48 @@ p, li { white-space: pre-wrap; }
     <name>QgsOWSSourceSelect</name>
     <message>
         <source>&amp;Add</source>
-        <translation type="unfinished">&amp;Toevoegen</translation>
+        <translation>&amp;Toevoegen</translation>
     </message>
     <message>
         <source>Add selected layers to map</source>
-        <translation type="unfinished">Voeg geselecteerde lagen toe aan kaart</translation>
+        <translation>Voeg geselecteerde lagen toe aan kaart</translation>
     </message>
     <message>
         <source>Always cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Altijd cachen</translation>
     </message>
     <message>
         <source>Prefer cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Bij voorkeur cachen</translation>
     </message>
     <message>
         <source>Prefer network</source>
-        <translation type="unfinished"></translation>
+        <translation>Bij voorkeur netwerk</translation>
     </message>
     <message>
         <source>Always network</source>
-        <translation type="unfinished"></translation>
+        <translation>Altijd netwerk</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished">Weet u zeker dat u de %1 verbinding wilt verwijderen inclusief alle eraan verbonden instellingen?</translation>
+        <translation>Weet u zeker dat u de %1 verbinding wilt verwijderen inclusief alle eraan verbonden instellingen?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijderen Bevestigen</translation>
     </message>
     <message>
         <source>Load connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbindingen laden</translation>
     </message>
     <message>
         <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished">XML bestanden (*.xml *.XML)</translation>
+        <translation>XML-bestanden (*.xml *.XML)</translation>
     </message>
     <message numerus="yes">
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Ruimtelijke Referentie Systemen (%n beschikbaar)</numerusform>
             <numerusform>Ruimtelijke Referentie Systemen (%n beschikbaar)</numerusform>
         </translation>
@@ -30368,35 +30423,36 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Could not understand the response:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Antwoord niet duidelijk:
+%1</translation>
     </message>
     <message>
         <source>WMS proxies</source>
-        <translation type="unfinished">WMS proxies</translation>
+        <translation>WMS-proxies</translation>
     </message>
     <message>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
-        <translation type="unfinished">Er zijn verschillende WMS-servers toegevoegd aan de server-lijst. Wanneer u een internetverbinding heeft via een web-proxy moet u die aangeven in de proxyinstellingen van de QGIS-optie dialoog.</translation>
+        <translation>Er zijn verschillende WMS-servers toegevoegd aan de server-lijst. Wanneer u een internetverbinding heeft via een web-proxy moet u die aangeven in de proxyinstellingen van de QGIS-optie dialoog.</translation>
     </message>
     <message>
         <source>parse error at row %1, column %2: %3</source>
-        <translation type="unfinished">Lees/parseerfout in regel %1, kolom %2: %3</translation>
+        <translation>Lees/parseerfout in regel %1, kolom %2: %3</translation>
     </message>
     <message>
         <source>network error: %1</source>
-        <translation type="unfinished">Netwerkfout: %1</translation>
+        <translation>Netwerkfout: %1</translation>
     </message>
     <message>
         <source>The %1 connection already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished">De %1 verbinding bestaat al. Wilt u het overschrijven?</translation>
+        <translation>De %1 verbinding bestaat al. Wilt u die overschrijven?</translation>
     </message>
     <message>
         <source>Confirm Overwrite</source>
-        <translation type="unfinished">Bevestig Overschrijven</translation>
+        <translation>Bevestig overschrijven</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">Ruimtelijk Referentie Systeem</translation>
+        <translation>Ruimtelijk referentie systeem</translation>
     </message>
 </context>
 <context>
@@ -30694,11 +30750,11 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Converting to offline project</source>
-        <translation type="unfinished"></translation>
+        <translation>Converteren naar offline project</translation>
     </message>
     <message>
         <source>Synchronizing to remote layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchronizeren met externe lagen</translation>
     </message>
     <message>
         <source>%v / %m features copied</source>
@@ -30924,15 +30980,15 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Onbekend</translation>
     </message>
     <message>
         <source>Date</source>
-        <translation type="unfinished">Datum</translation>
+        <translation>Datum</translation>
     </message>
     <message>
         <source>Date &amp; Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Datum en Tijd</translation>
     </message>
 </context>
 <context>
@@ -31093,15 +31149,15 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     <name>QgsOpstionDialogTemplate</name>
     <message>
         <source>Options Dialog Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Optiesdialoog-sjabloon</translation>
     </message>
     <message>
         <source>Section</source>
-        <translation type="unfinished"></translation>
+        <translation>Sectie</translation>
     </message>
     <message>
         <source>GroupBox</source>
-        <translation type="unfinished"></translation>
+        <translation>Groepbox</translation>
     </message>
 </context>
 <context>
@@ -31276,7 +31332,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>None / Planimetric</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen / planimetrisch</translation>
     </message>
     <message>
         <source>Cumulative pixel count cut</source>
@@ -31284,99 +31340,99 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Minimum / maximum</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum / maximum</translation>
     </message>
     <message>
         <source>Mean +/- standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Gemiddelde +/- standaardafwijking</translation>
     </message>
     <message>
         <source>Save default project</source>
-        <translation type="unfinished"></translation>
+        <translation>standaard projectbestand opslaan</translation>
     </message>
     <message>
         <source>You must set a default project</source>
-        <translation type="unfinished"></translation>
+        <translation>Stel eerst een standaardproject in</translation>
     </message>
     <message>
         <source>Current project saved as default</source>
-        <translation type="unfinished"></translation>
+        <translation>Huidige project als standaardproject opgeslagen</translation>
     </message>
     <message>
         <source>Error saving current project as default</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het opslaan van het huidige project als standaardproject</translation>
     </message>
     <message>
         <source>Choose a directory to store project template files</source>
-        <translation type="unfinished"></translation>
+        <translation>Kies een map om projectsjablonen op te slaan</translation>
     </message>
     <message>
         <source>Create Options - %1 Driver</source>
-        <translation type="unfinished"></translation>
+        <translation>Schrijf-opties - %1 driver</translation>
     </message>
     <message>
         <source>Create Options - pyramids</source>
-        <translation type="unfinished"></translation>
+        <translation>Schrijf-opties - pyramides</translation>
     </message>
     <message>
         <source>Enter scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Voer schaal in</translation>
     </message>
     <message>
         <source>Scale denominator</source>
-        <translation type="unfinished"></translation>
+        <translation>Schaalgetal</translation>
     </message>
     <message>
         <source>Load scales</source>
-        <translation type="unfinished"></translation>
+        <translation>Schalen laden</translation>
     </message>
     <message>
         <source>XML files (*.xml *.XML)</source>
-        <translation type="unfinished">XML bestanden (*.xml *.XML)</translation>
+        <translation>XML bestanden (*.xml *.XML)</translation>
     </message>
     <message>
         <source>Save scales</source>
-        <translation type="unfinished"></translation>
+        <translation>Schalen opslaan</translation>
     </message>
     <message>
         <source>not present</source>
-        <translation type="unfinished"></translation>
+        <translation>niet aanwezig</translation>
     </message>
     <message>
         <source>System value: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Systeemwaarde: %1</translation>
     </message>
     <message>
         <source>Show features visible on map</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon objecten zichtbaar op kaart</translation>
     </message>
     <message>
         <source>Choose project file to open at launch</source>
-        <translation type="unfinished"></translation>
+        <translation>Kies een projectbestand dat geopend wordt bij het starten</translation>
     </message>
     <message>
         <source>QGis files</source>
-        <translation type="unfinished">QGIS bestanden</translation>
+        <translation>QGIS bestanden</translation>
     </message>
     <message>
         <source>Overwrite</source>
-        <translation type="unfinished">Overschrijven</translation>
+        <translation>Overschrijf</translation>
     </message>
     <message>
         <source>If Undefined</source>
-        <translation type="unfinished"></translation>
+        <translation>Indien niet gedefiniëerd</translation>
     </message>
     <message>
         <source>Unset</source>
-        <translation type="unfinished"></translation>
+        <translation>Definitie verwijderen</translation>
     </message>
     <message>
         <source>Prepend</source>
-        <translation type="unfinished"></translation>
+        <translation>Voorvoegen</translation>
     </message>
     <message>
         <source>Append</source>
-        <translation type="unfinished"></translation>
+        <translation>Toevoegen</translation>
     </message>
 </context>
 <context>
@@ -32031,95 +32087,95 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Create new project from default project</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak een nieuw project op basis van het standaardproject</translation>
     </message>
     <message>
         <source>Set current project as default</source>
-        <translation type="unfinished"></translation>
+        <translation>Huidige project als standaardproject opslaan</translation>
     </message>
     <message>
         <source>Reset default</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard terugzetten</translation>
     </message>
     <message>
         <source>Template folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Sjabloonmap</translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished">Bladeren</translation>
+        <translation>Bladeren</translation>
     </message>
     <message>
         <source>Reset</source>
-        <translation type="unfinished">Terug naar beginwaarden</translation>
+        <translation>Terug naar beginwaarde</translation>
     </message>
     <message>
         <source>Enable macros</source>
-        <translation type="unfinished"></translation>
+        <translation>macro&apos;s toestaan</translation>
     </message>
     <message>
         <source>Never</source>
-        <translation type="unfinished">Nooit</translation>
+        <translation>Nooit</translation>
     </message>
     <message>
         <source>Ask</source>
-        <translation type="unfinished"></translation>
+        <translation>Vragen</translation>
     </message>
     <message>
         <source>For this session only</source>
-        <translation type="unfinished"></translation>
+        <translation>Alleen voor deze sessie</translation>
     </message>
     <message>
         <source>Always (not recommended)</source>
-        <translation type="unfinished"></translation>
+        <translation>Altijd (wordt afgeraden)</translation>
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished">Lettertype</translation>
+        <translation>Lettertype</translation>
     </message>
     <message>
         <source>Qt default</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt standaard</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Naam</translation>
+        <translation>Naam</translation>
     </message>
     <message>
         <source>ext</source>
-        <translation type="unfinished"></translation>
+        <translation>ext</translation>
     </message>
     <message>
         <source>Flags</source>
-        <translation type="unfinished"></translation>
+        <translation>acties</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished">Omschrijving</translation>
+        <translation>Omschrijving</translation>
     </message>
     <message>
         <source>Edit Pyramids Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Pyramide-opties aanpassen</translation>
     </message>
     <message>
         <source>Edit Create Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Schrijf-opties aanpassen</translation>
     </message>
     <message>
         <source>Single band gray</source>
-        <translation type="unfinished">Enkelbands grijs</translation>
+        <translation>Enkelbands grijs</translation>
     </message>
     <message>
         <source>Multi band color (byte / band) </source>
-        <translation type="unfinished"></translation>
+        <translation>Multiband kleur (byte / band) </translation>
     </message>
     <message>
         <source>Multi band color (&gt; byte / band) </source>
-        <translation type="unfinished"></translation>
+        <translation>Multiband kleur (&gt; byte / band) </translation>
     </message>
     <message>
         <source>Limits (minimum/maximum)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bereik (minimum/maximum)</translation>
     </message>
     <message>
         <source>Cumulative pixel count cut limits</source>
@@ -32127,281 +32183,284 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished">-</translation>
+        <translation>-</translation>
     </message>
     <message>
         <source>Standard deviation multiplier</source>
-        <translation type="unfinished"></translation>
+        <translation>Vermenigvuldigingsfactor voor standaardafwijking</translation>
     </message>
     <message>
         <source>Predefined scales</source>
-        <translation type="unfinished"></translation>
+        <translation>Vooraf ingestelde schalen</translation>
     </message>
     <message>
         <source>Automatically enable &apos;on the fly&apos; reprojection if CRS of a new added layer differ from CRS of layer(s) already present. CRS of present layer(s) will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisch &apos;on the fly&apos;-herprojectie inschakelen wanneer een kaartlaag wordt toegevoegd met een andere CRS dan de aanwezige kaartlagen. CRS van de aanwezige kaartlagen zal worden gebruikt.</translation>
     </message>
     <message>
         <source>Default expiration period for WMS-C/WMTS tiles (hours)</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard verlooptijd van WMS-C/WMTS tegels (uur)</translation>
     </message>
     <message>
         <source>System</source>
-        <translation type="unfinished"></translation>
+        <translation>Systeem</translation>
     </message>
     <message>
         <source>Data Sources</source>
-        <translation type="unfinished"></translation>
+        <translation>Databronnen</translation>
     </message>
     <message>
         <source>Data sources</source>
-        <translation type="unfinished"></translation>
+        <translation>Databronnen</translation>
     </message>
     <message>
         <source>Canvas &amp; Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaartvenster &amp; Legenda</translation>
     </message>
     <message>
         <source>Canvas and legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaartvenster and legenda</translation>
     </message>
     <message>
         <source>Map Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaartgereedschap</translation>
     </message>
     <message>
         <source>Timeout for timed messages or dialogs</source>
-        <translation type="unfinished"></translation>
+        <translation>Zichtbaarheidstijd voor berichten of dialogen</translation>
     </message>
     <message>
         <source> s</source>
-        <translation type="unfinished"></translation>
+        <translation> s</translation>
     </message>
     <message>
         <source>Bold group box titles</source>
-        <translation type="unfinished"></translation>
+        <translation>Vette groepbox-titels</translation>
     </message>
     <message>
         <source>QGIS-styled group boxes</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS-stijl groepboxen</translation>
     </message>
     <message>
         <source>Use live-updating color chooser dialogs</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik kleurkeuze-dialogen die direct updaten</translation>
     </message>
     <message>
         <source>New</source>
-        <translation type="unfinished">Nieuw</translation>
+        <translation>Nieuw</translation>
     </message>
     <message>
         <source>Most recent</source>
-        <translation type="unfinished"></translation>
+        <translation>Meest recente</translation>
     </message>
     <message>
         <source>Specific</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifiek</translation>
     </message>
     <message>
         <source>Open project on launch</source>
-        <translation type="unfinished"></translation>
+        <translation>Open project bij het opstarten</translation>
     </message>
     <message>
         <source>Prompt to save project and data source changes when required</source>
-        <translation type="unfinished"></translation>
+        <translation>Vraag om het project en wijzigingen in brondata op te slaan indien nodig</translation>
     </message>
     <message>
         <source>Environment</source>
-        <translation type="unfinished"></translation>
+        <translation>Systeemvariabelen</translation>
     </message>
     <message>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Toepassen</translation>
     </message>
     <message>
         <source>Variable</source>
-        <translation type="unfinished"></translation>
+        <translation>Variabele</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Waarde</translation>
+        <translation>Waarde</translation>
     </message>
     <message>
         <source>Current environment variables (read-only - bold indicates modified at startup)</source>
-        <translation type="unfinished"></translation>
+        <translation>Huidige systeemvariabelen (alleen lezen - vet betekent aangepast tijdens opstarten)</translation>
     </message>
     <message>
         <source>Show only QGIS-specific variables</source>
-        <translation type="unfinished"></translation>
+        <translation>Alleen QGIS-specifieke variabelen tonen</translation>
     </message>
     <message>
         <source>Use custom variables (restart required - include separators)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik aangepaste variabelen (herstart noodzakelijk - voeg scheidingstekens toe)</translation>
     </message>
     <message>
         <source>Feature attributes and table</source>
-        <translation type="unfinished"></translation>
+        <translation>Object-attributen en tabel</translation>
     </message>
     <message>
         <source>Data source handling</source>
-        <translation type="unfinished"></translation>
+        <translation>Omgang met databron</translation>
     </message>
     <message>
         <source>Prompt for raster sublayers when opening</source>
-        <translation type="unfinished"></translation>
+        <translation>Vraag om sublayers van raster tijdens het openen</translation>
     </message>
     <message>
         <source>Better graphics performance at the cost of loosing the possibility to cancel rendering and incremental feature drawing</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>&apos;and incremental feature drawing&apos; niet meevertaald omdat ik geen idee heb... (Ray)</translatorcomment>
+        <translation>Hogere grafische prestaties ten koste van de mogelijkheid om het renderen te annuleren</translation>
     </message>
     <message>
         <source>Enable back buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Backbuffer&apos; inschakelen</translation>
     </message>
     <message>
         <source>Debugging</source>
-        <translation type="unfinished"></translation>
+        <translation>Debuggen</translation>
     </message>
     <message>
         <source>Show these events in the Log Message panel (under Rendering tab)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon deze acties in het log-berichtenpaneel (onder Renderen-tab)</translation>
     </message>
     <message>
         <source>Map canvas refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaartvenster-update</translation>
     </message>
     <message>
         <source>Map canvas &amp; legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaartvenster &amp; legenda</translation>
     </message>
     <message>
         <source>Default map appearance (overridden by project properties)</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaardwaarden kaart (worden door projectwaarden overschreven)</translation>
     </message>
     <message>
         <source>Layer legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Laaglegenda</translation>
     </message>
     <message>
         <source>Capitalise layer names</source>
-        <translation type="unfinished"></translation>
+        <translation>Laagnamen in hoofdletters</translation>
     </message>
     <message>
         <source>Bold layer names</source>
-        <translation type="unfinished"></translation>
+        <translation>Laagnamen vet</translation>
     </message>
     <message>
         <source>Display classification attribute names</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon classificatie-attribuutnamen</translation>
     </message>
     <message>
         <source>Bold group names</source>
-        <translation type="unfinished"></translation>
+        <translation>Groepnamen vet</translation>
     </message>
     <message>
         <source>Create raster icons (may be slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster iconen aanmaken</translation>
     </message>
     <message>
         <source>Legend item styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Legenda-onderdeelstijlen</translation>
     </message>
     <message>
         <source>Overlay position</source>
-        <translation type="unfinished"></translation>
+        <translation>Overlay-positie</translation>
     </message>
     <message>
         <source>Feature creation</source>
-        <translation type="unfinished"></translation>
+        <translation>Objectcreatie</translation>
     </message>
     <message>
         <source>Open snapping options in a dock window (QGIS restart required)</source>
-        <translation type="unfinished"></translation>
+        <translation>Open snap-opties in een &apos;dock window&apos; (QGIS herstart vereist)</translation>
     </message>
     <message>
         <source>Curve offset tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Lijnverspring-gereedschap</translation>
     </message>
     <message>
         <source>Miter limit</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximale puntlengte bij scherpe hoeken</translation>
     </message>
     <message>
         <source>Join style</source>
-        <translation type="unfinished">Verbindingstijl</translation>
+        <translation>Verbindingstijl</translation>
     </message>
     <message>
         <source>Quadrant segments</source>
-        <translation type="unfinished"></translation>
+        <translation>Segmenten per kwadrant</translation>
     </message>
     <message>
         <source>GDAL driver options</source>
-        <translation type="unfinished"></translation>
+        <translation>GDAL driver opties</translation>
     </message>
     <message>
         <source>GDAL drivers</source>
-        <translation type="unfinished"></translation>
+        <translation>GDAL drivers</translation>
     </message>
     <message>
         <source>Coordinate Reference System (CRS)</source>
-        <translation type="unfinished">Ruimtelijk Referentie Systeem (CRS)</translation>
+        <translation>Ruimtelijk Referentie Systeem (CRS)</translation>
     </message>
     <message>
         <source>CRS for new layers</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS voor nieuwe kaartlagen</translation>
     </message>
     <message>
         <source>When a new layer is created, or when a layer is loaded that has no CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Wanneer een nieuwe laag is aangemaakt, of wanneer een laag zonderCRS is geladen</translation>
     </message>
     <message>
         <source>Default CRS for new projects</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard CRS voor nieuwe projecten</translation>
     </message>
     <message>
         <source>Automatically enable &apos;on the fly&apos; reprojection if layers have different CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisch &apos;on the fly&apos;-herprojectie inschakelen indien kaartlagen verschillen van CRS</translation>
     </message>
     <message>
         <source>Ignore shapefile encoding declaration</source>
-        <translation type="unfinished"></translation>
+        <translation>Vastgelegde shapefile-codering negeren</translation>
     </message>
     <message>
         <source>Disable OGR on-the-fly conversion from declared encoding to UTF-8</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR &apos;on the fly&apos;-conversie van vastgelegde codering naar UTF-8 uitschakelen</translation>
     </message>
     <message>
         <source>Add predefined scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Voorgedefinieerde schaal toevoegen</translation>
     </message>
     <message>
         <source>Remove selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder selectie</translation>
     </message>
     <message>
         <source>Insert default scales</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard-schalen toevoegen</translation>
     </message>
     <message>
         <source>Import from file</source>
-        <translation type="unfinished">Van bestand importeren</translation>
+        <translation>Van bestand importeren</translation>
     </message>
     <message>
         <source>Export to file</source>
-        <translation type="unfinished">Naar bestand exporteren</translation>
+        <translation>Naar bestand exporteren</translation>
     </message>
 </context>
 <context>
     <name>QgsOptionsDialogBase</name>
     <message>
         <source>Missing objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Ontbrekende objecten</translation>
     </message>
     <message>
         <source>Base options dialog could not be initialized.
 
 Missing some of the .ui template objects:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Het basisopties-dialoog kan niet worden gegenereerd.
+
+Sommige van de ui-sjablonen ontbreken:</translation>
     </message>
 </context>
 <context>
@@ -32578,7 +32637,7 @@ fout:%2</translation>
     <name>QgsOracleNewConnectionBase</name>
     <message>
         <source>Create a New Oracle connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak een nieuwe Oracle-verbinding</translation>
     </message>
     <message>
         <source>Connection Information</source>
@@ -32626,48 +32685,48 @@ fout:%2</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When searching for spatial tables restrict the search to tables that are owner by the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translatorcomment>Beperk de zoekaktie naar tabellen met ruimtelijke informatie tot tabellen die niet in de tabel &apos;geometry_columns&apos; voorkomen</translatorcomment>
-        <translation type="unfinished"></translation>
+        <translatorcomment>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Beperk de zoekaktie naar tabellen met ruimtelijke informatie tot tabellen waarvan de gebruiker eigenaar is.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translatorcomment>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Beperk de zoekaktie naar tabellen met ruimtelijke informatie tot tabellen waarvan de gebruiker eigenaar is.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Only look for user&apos;s tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Alleen zoeken naar tabellen van de gebruiker</translation>
     </message>
     <message>
         <source>Also list tables with no geometry</source>
-        <translation type="unfinished">Ook tabellen zonder geometrie tonen</translation>
+        <translation>Ook tabellen zonder geometrie tonen</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished">Poort</translation>
+        <translation>Poort</translation>
     </message>
     <message>
         <source>1521</source>
-        <translation type="unfinished">1521</translation>
+        <translation>1521</translation>
     </message>
     <message>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished">&amp;Test Verbinding</translation>
+        <translation>&amp;Test Verbinding</translation>
     </message>
     <message>
         <source>Save Password</source>
-        <translation type="unfinished">Wachtwoord Opslaan</translation>
+        <translation>Wachtwoord Opslaan</translation>
     </message>
     <message>
         <source>Host</source>
-        <translation type="unfinished">Host</translation>
+        <translation>Host</translation>
     </message>
     <message>
         <source>Use estimated table statistics for the layer metadata.</source>
-        <translation type="unfinished">Gebruik &apos;estimated table statistics&apos; voor de metadata van de laag.</translation>
+        <translation>Gebruik geschatte tabelstatistieken voor de metadata van de laag.</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Als de laag wordt aangemaakt is verschillende metadata nodig van de Oracle-tabe, zoals het aantal rijen, geometrie-type en de extent.Wanneer de tabel een groot aantal rijen bevat duurt het lang om deze data te verzamelen.&lt;/p&gt;&lt;p&gt;Door deze optie aan te vinken worden een aantal snelle tabelstatistiek-acties uitgevoerd:&lt;/p&gt;&lt;p&gt;1) Aantal rijen wordt opgemaakt uit all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Extent wordt altijd verkregen met de SDO_TUNE.EXTENTS_OF-functie ook als er een laag-filter is toegepast.&lt;/p&gt;&lt;p&gt;3) Het geometrie-type wordt opgemaakt uit de eerste 100 niet-lege geometrie-waarden in de tabel.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Use estimated table metadata</source>
-        <translation type="unfinished">Gebruik &apos;estimated table statistics&apos;</translation>
+        <translation>Gebruik geschatte tebelstatistieken</translation>
     </message>
 </context>
 <context>
@@ -32756,79 +32815,85 @@ fout:%2</translation>
     </message>
     <message>
         <source>Loading comment for table %1.%2 failed [%3]</source>
-        <translation type="unfinished"></translation>
+        <translation>Laden van commentaar voor tabel %1.%2 mislukt [%3]</translation>
     </message>
     <message>
         <source>Loading comment for columns of table %1.%2 failed [%3]</source>
-        <translation type="unfinished"></translation>
+        <translation>Laden van commentaar voor tabelkolommen %1.%2 mislukt [%3]</translation>
     </message>
     <message>
         <source>Other spatial field %1.%2.%3 ignored</source>
-        <translation type="unfinished"></translation>
+        <translation>Ander ruimtelijk veld %1.%2.%3 genegeerd</translation>
     </message>
     <message>
         <source>Loading field types for table %1.%2 failed [%3]</source>
-        <translation type="unfinished"></translation>
+        <translation>Laden van veldtypes voor tabel %1.%2 mislukt [%3]</translation>
     </message>
     <message>
         <source>Invalid spatial index %1 on column %2.%3.%4 found - expect poor performance.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige ruimtelijke index %1 op kolom %2.%3.%4 gevonden - verwacht slechte prestaties.</translation>
     </message>
     <message>
         <source>No spatial index on column %1.%2.%3 found - expect poor performance.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige ruimtelijke index op kolom %1.%2.%3 gevonden - verwacht slechte prestaties.</translation>
     </message>
     <message>
         <source>Probing for spatial index on column %1.%2.%3 failed [%4]</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoeken naar ruimtelijke index op kolom %1.%2.%3 mislukt [%4]</translation>
     </message>
     <message>
         <source>Retrieving fields from &apos;%1&apos; failed [%2]</source>
-        <translation type="unfinished"></translation>
+        <translation>Verkrijgen van velden van &apos;%1&apos; mislukt [%2]</translation>
     </message>
     <message>
         <source>Unable to determine geometry column access privileges for column %1.%2.
 The error message from the database was:
 %3.
 SQL: %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Probleem bij het verkrijgen van geometrie-kolom toegangsrechten voor kolom %1.%2.
+De foutmelding van de database was:
+%3.
+SQL: %4</translation>
     </message>
     <message>
         <source>Unable to determine table access privileges for the table %1.
 The error message from the database was:
 %2.
 SQL: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Probleem bij het verkrijgen van tabel-toegangsrechten voor tabel %1.
+De foutmelding van de database was:
+%2.
+SQL: %3</translation>
     </message>
     <message>
         <source>The custom query is not a select query.</source>
-        <translation type="unfinished">De aangemaakte query is geen &apos;select query&apos;.</translation>
+        <translation>De aangemaakte query is geen &apos;select query&apos;.</translation>
     </message>
     <message>
         <source>Unable to execute the query.
 The error message from the database was:
 %1.
 SQL: %2</source>
-        <translation type="unfinished">Uitvoer van query mislukt.
-Te foutmelding van de database was:
+        <translation>Uitvoer van query mislukt.
+De foutmelding van de database was:
 %1.
 SQL: %2</translation>
     </message>
     <message>
         <source>Primary key field %1 not found in %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Sleutelveld %1 niet gevonden in %2</translation>
     </message>
     <message>
         <source>Primary key field &apos;%1&apos; for view not unique.</source>
-        <translation type="unfinished">Primaire sleutelveld &apos;%1&apos; voor de &apos;view&apos; niet uniek.</translation>
+        <translation>Sleutelveld &apos;%1&apos; voor de &apos;view&apos; is niet uniek.</translation>
     </message>
     <message>
         <source>Key field &apos;%1&apos; for view not found.</source>
-        <translation type="unfinished">Sleutelveld &apos;%1&apos; voor &apos;view&apos; niet gevonden.</translation>
+        <translation>Sleutelveld &apos;%1&apos; voor &apos;view&apos; niet gevonden.</translation>
     </message>
     <message>
         <source>No key field for view given.</source>
-        <translation type="unfinished">Geen sleutelveld voor de gegeven &apos;view&apos;.</translation>
+        <translation>Geen sleutelveld voor de gegeven &apos;view&apos;.</translation>
     </message>
     <message>
         <source>No key field for query given.</source>
@@ -32836,212 +32901,241 @@ SQL: %2</translation>
     </message>
     <message>
         <source>Evaluation of default value failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Berekenen van standaardwaarde mislukt</translation>
     </message>
     <message>
         <source>Could not start transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Transactie kon niet worden gestart</translation>
     </message>
     <message>
         <source>Could not prepare insert statement</source>
-        <translation type="unfinished"></translation>
+        <translation>Voorbereiden van toevoegactie mislukt</translation>
     </message>
     <message>
         <source>Could not insert feature %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Object %1 kon niet worden toegevoegd</translation>
     </message>
     <message>
         <source>Could not commit transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Transactie kan niet worden doorgevoerd</translation>
     </message>
     <message>
         <source>Oracle error while adding features: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle-fout bij het toevoegen van objecten: %1</translation>
     </message>
     <message>
         <source>Could not rollback transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Transactie kan niet worden teruggedraaid</translation>
     </message>
     <message>
         <source>Deletion of feature %1 failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijderen van object %1 mislukt</translation>
     </message>
     <message>
         <source>Oracle error while deleting features: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle-fout bij het verwijderen van objecten: %1</translation>
     </message>
     <message>
         <source>Adding attribute %1 failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Toevoegen van attribuut %1 mislukt</translation>
     </message>
     <message>
         <source>Setting comment on %1 failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Commentaar toevoegen op %1 mislukt</translation>
     </message>
     <message>
         <source>Oracle error while adding attributes: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle-fout bij het toevoegen van attributen: %1</translation>
     </message>
     <message>
         <source>Dropping column %1 failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijderen van kolom %1 mislukt</translation>
     </message>
     <message>
         <source>Oracle error while deleting attributes: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle-fout bij het verwijderen van attributen: %1</translation>
     </message>
     <message>
         <source>Update of feature %1 failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Wijzigen van object %1 mislukt</translation>
     </message>
     <message>
         <source>Oracle error while changing attributes: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle-fout bij het wijzigen van attributen: %1</translation>
     </message>
     <message>
         <source>Could not prepare update statement.</source>
-        <translation type="unfinished"></translation>
+        <translation>Voorbereiden van wijzig-actie mislukt.</translation>
     </message>
     <message>
         <source>Oracle error while changing geometry values: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle-fout bij het bewerken van geometriewaarden: %1</translation>
     </message>
     <message>
         <source>Could not retrieve extents: %1
 SQL: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan de extents niet verkrijgen: %1
+SQL: %2</translation>
     </message>
     <message>
         <source>Could not execute query.
 The error message from the database was:
 %1.
 SQL: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer van query mislukt.
+De foutmelding van de database was:
+%1.
+SQL: %2</translation>
     </message>
     <message>
         <source>Could not retrieve SRID of %1.
 The error message from the database was:
 %2.
 SQL: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan de SRID van %1 niet verkrijgen.
+De foutmelding van de database was:
+%2.
+SQL: %3</translation>
     </message>
     <message>
         <source>Could not determine SRID of %1.
 The error message from the database was:
 %2.
 SQL: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan de SRID van %1 niet opmaken.
+De foutmelding van de database was:
+%2.
+SQL: %3</translation>
     </message>
     <message>
         <source>%1 has no valid geometry types.
 SQL: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 heeft geen geldige geometrie-types.
+SQL: %2</translation>
     </message>
     <message>
         <source>Could not determine geometry type of %1.
 The error message from the database was:
 %2.
 SQL: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan het geometrie-type van %1 niet opmaken.
+De foutmelding van de database was:
+%2.
+SQL: %3</translation>
     </message>
     <message>
         <source>Geometry type and srid for empty column %1 of %2 undefined.</source>
-        <translation type="unfinished">Geometrietype en srid voor lege kolom %1 van %2 niet gedifinieerd.</translation>
+        <translation>Geometrietype en SRID voor lege kolom %1 van %2 niet gedefinieerd.</translation>
     </message>
     <message>
         <source>Feature type or srid for %1 of %2 could not be determined or was not requested.</source>
-        <translation type="unfinished">Objecttype of srid voor %1 of %2 kon niet worden bepaald of werd niet gevraagd.</translation>
+        <translation>Objecttype of srid voor %1 of %2 kon niet worden bepaald of werd niet gevraagd.</translation>
     </message>
     <message>
         <source>Editing and adding disabled for 2D+ layer (%1; %2)</source>
-        <translation type="unfinished">Editing and adding disabled for 2D+ layer (%1; %2)</translation>
+        <translation>Wijzigen en toevoegen uitgeschakeld voor 2D+ laag (%1; %2)</translation>
     </message>
     <message>
         <source>Could not update metadata for %1.%2.
 SQL:%1
 Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan de metadata niet updaten voor %1.%2.
+SQL:%1
+Fout: %2</translation>
     </message>
     <message>
         <source>Could not insert metadata for %1.%2.
 SQL:%3
 Error: %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan de metadata niet toevoegen voor %1.%2.
+SQL:%3
+Fout: %4</translation>
     </message>
     <message>
         <source>Creation spatial index failed.
 SQL:%1
 Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanmaken van ruimtelijke index mislukt.
+SQL:%1
+Fout: %2</translation>
     </message>
     <message>
         <source>Rebuild of spatial index failed.
 SQL:%1
 Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Opnieuw aanmaken van ruimtelijke index mislukt.
+SQL:%1
+Fout: %2</translation>
     </message>
     <message>
         <source>Could not determine table existence.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan niet opmaken of tabel bestaat.</translation>
     </message>
     <message>
         <source>Table %1 could not be dropped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel %1 kan niet worden verwijderd.</translation>
     </message>
     <message>
         <source>Table %1 already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel %1 bestaat al.</translation>
     </message>
     <message>
         <source>Table creation failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel aanmaken mislukt.</translation>
     </message>
     <message>
         <source>Could not lookup authid %1:%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan authid %1:%2 niet verkijgen</translation>
     </message>
     <message>
         <source>Could not lookup WKT.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan WKT niet verkrijgen.</translation>
     </message>
     <message>
         <source>Could not determine new srid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan nieuwe SRID niet verkrijgen.</translation>
     </message>
     <message>
         <source>CRS not found and could not be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS niet gevonden en kan niet worden aangemaakt.</translation>
     </message>
     <message>
         <source>Could not insert metadata.</source>
-        <translation type="unfinished"></translation>
+        <translation>Metadata kan niet worden toegevoegd.</translation>
     </message>
     <message>
         <source>Drop created table %1 failed.
 SQL:%2
 Error: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijderen van nieuwe tabel %1 mislukt.
+SQL:%2
+Fout: %3</translation>
     </message>
     <message>
         <source>Oracle SRID %1 not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle SRID %1 niet gevonden.</translation>
     </message>
     <message>
         <source>Lookup of Oracle SRID %1 failed.
 SQL:%2
 Error:%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Opzoeken van Oracle SRID %1 mislukt.
+SQL:%2
+Fout:%3</translation>
     </message>
     <message>
         <source>Oracle error: %1
 SQL: %2
 Error: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle-fout: %1
+SQL: %2
+Fout: %3</translation>
     </message>
     <message>
         <source>Oracle error: %1
 Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle-fout: %1
+Fout: %2</translation>
     </message>
 </context>
 <context>
@@ -33839,21 +33933,21 @@ geometrische objecten.</translation>
     </message>
     <message>
         <source>&amp;Set Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filter In&amp;stellen</translation>
     </message>
     <message>
         <source>Set Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filter instellen</translation>
     </message>
     <message>
         <source>Could not open the Postgres/PostGIS Provider.
 Check message log for possible errors.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan de Postgres/PostGIS-provider niet openen. Controleer het berichten-log op fouten.</translation>
     </message>
     <message>
         <source>No accessible tables or views found.
 Check the message log for possible errors.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen toegankelijke tabellen of views gevonden. Controleer het berichten-log op fouten.</translation>
     </message>
 </context>
 <context>
@@ -33970,11 +34064,11 @@ Check the message log for possible errors.</source>
     </message>
     <message>
         <source>Spatial Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometrietype</translation>
     </message>
     <message>
         <source>Primary Key</source>
-        <translation type="unfinished"></translation>
+        <translation>Primaire sleutel</translation>
     </message>
 </context>
 <context>
@@ -35075,27 +35169,27 @@ Resultaat: %3 (%4)</translation>
     </message>
     <message>
         <source>Query could not be canceled [%1]</source>
-        <translation type="unfinished"></translation>
+        <translation>Query kan niet worden geannuleerd [%1]</translation>
     </message>
     <message>
         <source>PQgetCancel failed</source>
-        <translation type="unfinished"></translation>
+        <translation>PQgetCancel mislukt</translation>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished">Geen</translation>
+        <translation>Geen</translation>
     </message>
     <message>
         <source>Geometry</source>
-        <translation type="unfinished">Geometrie</translation>
+        <translation>Geometrie</translation>
     </message>
     <message>
         <source>Geography</source>
-        <translation type="unfinished"></translation>
+        <translation>Geografie</translation>
     </message>
     <message>
         <source>TopoGeometry</source>
-        <translation type="unfinished"></translation>
+        <translation>TopoGeometrie</translation>
     </message>
 </context>
 <context>
@@ -35489,23 +35583,23 @@ Databasefout: %2</translation>
     </message>
     <message>
         <source>FAILURE: Field %1 not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>FOUT: Veld %1 niet gevonden.</translation>
     </message>
     <message>
         <source>invalid PostgreSQL topology layer</source>
-        <translation type="unfinished"></translation>
+        <translation>ongeldige PostgreSQL topologielaag</translation>
     </message>
     <message>
         <source>Date</source>
-        <translation type="unfinished">Datum</translation>
+        <translation>Datum</translation>
     </message>
     <message>
         <source>Field %1 ignored, because of unsupported type type %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Veld%1 genegeerd vanwege niet-ondersteund type %2</translation>
     </message>
     <message>
         <source>Could not find topology of layer %1.%2.%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan geen topologie vinden voor laag %1.%2.%3</translation>
     </message>
 </context>
 <context>
@@ -35585,7 +35679,7 @@ Resultaat: %3 (%4)</translation>
     </message>
     <message>
         <source>Loading layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Laden van laag %1</translation>
     </message>
 </context>
 <context>
@@ -35699,23 +35793,23 @@ Doorgaan?</translation>
     </message>
     <message>
         <source>Enter scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Voer schaal in</translation>
     </message>
     <message>
         <source>Scale denominator</source>
-        <translation type="unfinished"></translation>
+        <translation>Schaalgetal</translation>
     </message>
     <message>
         <source>Load scales</source>
-        <translation type="unfinished"></translation>
+        <translation>Schalen laden</translation>
     </message>
     <message>
         <source>XML files (*.xml *.XML)</source>
-        <translation type="unfinished">XML bestanden (*.xml *.XML)</translation>
+        <translation>XML-bestanden (*.xml *.XML)</translation>
     </message>
     <message>
         <source>Save scales</source>
-        <translation type="unfinished"></translation>
+        <translation>Schalen opslaan</translation>
     </message>
     <message>
         <source>Transparency %1%</source>
@@ -35723,35 +35817,35 @@ Doorgaan?</translation>
     </message>
     <message>
         <source>Select a valid symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer een geldig symbool</translation>
     </message>
     <message>
         <source>Invalid symbol : </source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldig symbool : </translation>
     </message>
     <message>
         <source>Measure tool (CRS transformation: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Meetgereedschap (CRS-transformatie %1)</translation>
     </message>
     <message>
         <source>Canvas units (CRS transformation: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaartvenster eenheden (CRS-transformatie %1)</translation>
     </message>
     <message>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>UIT</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation type="unfinished"></translation>
+        <translation>AAN</translation>
     </message>
     <message>
         <source>Select print composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer print layouter</translation>
     </message>
     <message>
         <source>Composer Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Layouter-titel</translation>
     </message>
     <message>
         <source>Select restricted layers and groups</source>
@@ -35759,15 +35853,15 @@ Doorgaan?</translation>
     </message>
     <message>
         <source>Parameters :</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameters :</translation>
     </message>
     <message>
         <source>Parameters:</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameters:</translation>
     </message>
     <message>
         <source>Can only use ellipsoidal calculations when CRS transformation is enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik van ellipsoïdische berekeningen kan alleen als CRS-transformatie is ingeschakeld</translation>
     </message>
 </context>
 <context>
@@ -36018,59 +36112,59 @@ Doorgaan?</translation>
     </message>
     <message>
         <source>Used when CRS transformation is turned off</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruikt wanneer CRS-transformatie is uitgeschakeld</translation>
     </message>
     <message>
         <source>Canvas units</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaarteenheden</translation>
     </message>
     <message>
         <source>Degree</source>
-        <translation type="unfinished"></translation>
+        <translation>Graden</translation>
     </message>
     <message>
         <source>Degree display</source>
-        <translation type="unfinished"></translation>
+        <translation>Graden tonen</translation>
     </message>
     <message>
         <source>Degrees, Minutes</source>
-        <translation type="unfinished"></translation>
+        <translation>Graden, Minuten</translation>
     </message>
     <message>
         <source>Project scales</source>
-        <translation type="unfinished"></translation>
+        <translation>Projectschalen</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Marker</source>
-        <translation type="unfinished">Marker</translation>
+        <translation>Puntsymbool</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Lijn</translation>
+        <translation>Lijn</translation>
     </message>
     <message>
         <source>Fill</source>
-        <translation type="unfinished">Vulling</translation>
+        <translation>Vulling</translation>
     </message>
     <message>
         <source>Color Ramp</source>
-        <translation type="unfinished">Kleurverloop</translation>
+        <translation>Kleurverloop</translation>
     </message>
     <message>
         <source>Style Manager</source>
-        <translation type="unfinished">Stijl manager</translation>
+        <translation>Stijlmanager</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished">Opties</translation>
+        <translation>Opties</translation>
     </message>
     <message>
         <source>Assign random colors to symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Willekeurige kleuren aan symbolen toekennen</translation>
     </message>
     <message>
         <source>Opacity</source>
@@ -36078,144 +36172,145 @@ Doorgaan?</translation>
     </message>
     <message>
         <source>Macros</source>
-        <translation type="unfinished"></translation>
+        <translation>Macro&apos;s</translation>
     </message>
     <message>
         <source>Python macros</source>
-        <translation type="unfinished"></translation>
+        <translation>Python-macro&apos;s</translation>
     </message>
     <message>
         <source>Unselect all</source>
-        <translation type="unfinished">Deselecteer alles</translation>
+        <translation>Deselecteer alles</translation>
     </message>
     <message>
         <source>Select all</source>
-        <translation type="unfinished">Alles selecteren</translation>
+        <translation>Selecteer alles</translation>
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished">CRS</translation>
+        <translation>CRS</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">Ruimtelijk Referentie Systeem</translation>
+        <translation>Ruimtelijk Referentie Systeem</translation>
     </message>
     <message>
         <source>Identify layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Identficeerbare lagen</translation>
     </message>
     <message>
         <source>Default styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard stijlen</translation>
     </message>
     <message>
         <source>OWS server</source>
-        <translation type="unfinished"></translation>
+        <translation>OWS Server</translation>
     </message>
     <message>
         <source>Measure tool</source>
-        <translation type="unfinished">Meetgereedschap</translation>
+        <translation>Meetgereedschap</translation>
     </message>
     <message>
         <source>Ellipsoid
 (for distance calculations)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ellipsoïde
+(voor afstandberekeningen)</translation>
     </message>
     <message>
         <source>Semi-major</source>
-        <translation type="unfinished"></translation>
+        <translation>Lange as</translation>
     </message>
     <message>
         <source>Semi-minor</source>
-        <translation type="unfinished"></translation>
+        <translation>Korte as</translation>
     </message>
     <message>
         <source>Project layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Project-lagen</translation>
     </message>
     <message>
         <source>Defaut styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard stijlen</translation>
     </message>
     <message>
         <source>Default symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard symbolen</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished">Transparantie</translation>
+        <translation>Transparantie</translation>
     </message>
     <message>
         <source> %</source>
-        <translation type="unfinished"></translation>
+        <translation> %</translation>
     </message>
     <message>
         <source>Service capabilitities</source>
-        <translation type="unfinished"></translation>
+        <translation>Service Capabilties</translation>
     </message>
     <message>
         <source>Fees</source>
-        <translation type="unfinished">Kosten</translation>
+        <translation>Kosten</translation>
     </message>
     <message>
         <source>Access constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Toegangsbeperkingen</translation>
     </message>
     <message>
         <source>Keyword list</source>
-        <translation type="unfinished"></translation>
+        <translation>Sleutelwoordenlijst</translation>
     </message>
     <message>
         <source>WMS capabilitities</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS-capabilitities</translation>
     </message>
     <message>
         <source>Exclude layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaartlagen uitsluiten</translation>
     </message>
     <message>
         <source>Advertised URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Geadverteerde URL</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">Breedte</translation>
+        <translation>Breedte</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished">Hoogte</translation>
+        <translation>Hoogte</translation>
     </message>
     <message>
         <source>Maximums for GetMap request</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximums voor GetMap-request</translation>
     </message>
     <message>
         <source>Advertised extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Geadverteerde extent</translation>
     </message>
     <message>
         <source>CRS restrictions</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS-beperkingen</translation>
     </message>
     <message>
         <source>Exclude composers</source>
-        <translation type="unfinished"></translation>
+        <translation>Layouters uitsluiten</translation>
     </message>
     <message>
         <source>WFS capabilitities</source>
-        <translation type="unfinished"></translation>
+        <translation>WFS-capabilitities</translation>
     </message>
     <message>
         <source>Update</source>
-        <translation type="unfinished">Bijwerken</translation>
+        <translation>Bijwerken</translation>
     </message>
     <message>
         <source>Insert</source>
-        <translation type="unfinished"></translation>
+        <translation>Toevoegen</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">Verwijderen</translation>
+        <translation>Verwijderen</translation>
     </message>
 </context>
 <context>
@@ -36515,7 +36610,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Use unfiltered layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik ongefilterde data</translation>
     </message>
 </context>
 <context>
@@ -36776,19 +36871,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Format not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Formaat wordt niet ondersteund</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Waarde</translation>
+        <translation>Waarde</translation>
     </message>
     <message>
         <source>Html</source>
-        <translation type="unfinished"></translation>
+        <translation>Html</translation>
     </message>
     <message>
         <source>Feature</source>
-        <translation type="unfinished">Object</translation>
+        <translation>Object</translation>
     </message>
 </context>
 <context>
@@ -36799,55 +36894,55 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No compression</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen compressie</translation>
     </message>
     <message>
         <source>Low compression</source>
-        <translation type="unfinished"></translation>
+        <translation>Lage compressie</translation>
     </message>
     <message>
         <source>High compression</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoge compressie</translation>
     </message>
     <message>
         <source>Cannot get create options for driver %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan geen schrijf-opties krijgen voor driver %1</translation>
     </message>
     <message>
         <source>No help available</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen hulp beschikbaar</translation>
     </message>
     <message>
         <source>Valid</source>
-        <translation type="unfinished">Geldig</translation>
+        <translation>Geldig</translation>
     </message>
     <message>
         <source>Profile name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Profielnaam:</translation>
     </message>
     <message>
         <source>Use simple interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik simpele interface</translation>
     </message>
     <message>
         <source>Use table interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik tabel-interface</translation>
     </message>
     <message>
         <source>JPEG compression</source>
-        <translation type="unfinished"></translation>
+        <translation>JPEG-compressie</translation>
     </message>
     <message>
         <source>For details on pyramids options please see the following pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Kijk voor details over pyramide-opties op de vogende pagina&apos;s</translation>
     </message>
     <message>
         <source>cannot validate pyramid options</source>
-        <translation type="unfinished"></translation>
+        <translation>kan de pyramide-opties niet valideren</translation>
     </message>
     <message>
         <source>Cannot validate creation options</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan de schrijf-opties niet valideren</translation>
     </message>
     <message>
         <source>Invalid %1:
@@ -36855,15 +36950,19 @@ p, li { white-space: pre-wrap; }
 %2
 
 Click on help button to get valid creation options for this format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldig %1:
+
+%2
+
+Klik op de help knop om geldige schrijf-opties voor dit type te verkrijgen.</translation>
     </message>
     <message>
         <source>pyramid creation option</source>
-        <translation type="unfinished"></translation>
+        <translation>pyramide schrijf-optie</translation>
     </message>
     <message>
         <source>creation option</source>
-        <translation type="unfinished"></translation>
+        <translation>schrijf-optie</translation>
     </message>
 </context>
 <context>
@@ -36925,63 +37024,63 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <source>Show min/max markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon min/max-symbolen</translation>
     </message>
     <message>
         <source>Show all bands</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon alle banden</translation>
     </message>
     <message>
         <source>Show RGB/Gray band(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon RGB/Grijs-band(en)</translation>
     </message>
     <message>
         <source>Show selected band</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon geselecteerde band</translation>
     </message>
     <message>
         <source>Reset</source>
-        <translation type="unfinished">Terug naar beginwaarden</translation>
+        <translation>Terug naar beginwaarden</translation>
     </message>
     <message>
         <source>Load min/max</source>
-        <translation type="unfinished"></translation>
+        <translation>Laad min/max</translation>
     </message>
     <message>
         <source>Estimate (faster)</source>
-        <translation type="unfinished">Schatten (sneller)</translation>
+        <translation>Schatten (sneller)</translation>
     </message>
     <message>
         <source>Actual (slower)</source>
-        <translation type="unfinished">Actuele (langzamer)</translation>
+        <translation>Werkelijke (langzamer)</translation>
     </message>
     <message>
         <source>Current extent</source>
-        <translation type="unfinished">Huidige extent</translation>
+        <translation>Huidige extent</translation>
     </message>
     <message>
         <source>Use stddev (1.0)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik stddef (1.0)</translation>
     </message>
     <message>
         <source>Use stddev (custom)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik stddef (aangepast)</translation>
     </message>
     <message>
         <source>Load for each band</source>
-        <translation type="unfinished"></translation>
+        <translation>Laad voor iedere band</translation>
     </message>
     <message>
         <source>Recompute Histogram</source>
-        <translation type="unfinished"></translation>
+        <translation>Histogram herberekenen</translation>
     </message>
     <message>
         <source>Band %1</source>
-        <translation type="unfinished">Band %1</translation>
+        <translation>Band %1</translation>
     </message>
     <message>
         <source>Choose a file name to save the map image as</source>
-        <translation type="unfinished"></translation>
+        <translation>Kies een bestandsnaam voor het opslaan van de kaart als</translation>
     </message>
 </context>
 <context>
@@ -37290,79 +37389,79 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <source>Cannot instantiate the &apos;%1&apos; data provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan de &apos;%1&apos;-dataprovider niet instantiëren</translation>
     </message>
     <message>
         <source>Provider is not valid (provider: %1, URI: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Provider is ongeldig (provider: %1, URI: %2)</translation>
     </message>
     <message>
         <source>Driver</source>
-        <translation type="unfinished">Stuurbestand (driver)</translation>
+        <translation>Stuurbestand (driver)</translation>
     </message>
     <message>
         <source>Data Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Data-type</translation>
     </message>
     <message>
         <source>Byte - Eight bit unsigned integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Byte - Acht bit positieve integer</translation>
     </message>
     <message>
         <source>UInt16 - Sixteen bit unsigned integer </source>
-        <translation type="unfinished"></translation>
+        <translation>Byte - Acht bit &apos;unsigned&apos; integer </translation>
     </message>
     <message>
         <source>Int16 - Sixteen bit signed integer </source>
-        <translation type="unfinished"></translation>
+        <translation>Int16 - Zestien bit &apos;signed&apos; integer </translation>
     </message>
     <message>
         <source>UInt32 - Thirty two bit unsigned integer </source>
-        <translation type="unfinished"></translation>
+        <translation>UInt32 - 32 bit &apos;unsigned&apos; integer </translation>
     </message>
     <message>
         <source>Int32 - Thirty two bit signed integer </source>
-        <translation type="unfinished"></translation>
+        <translation>Int32 - 32 bit &apos;signed&apos; integer </translation>
     </message>
     <message>
         <source>Float32 - Thirty two bit floating point </source>
-        <translation type="unfinished"></translation>
+        <translation>Float32 - 32 bit-decimaal getal</translation>
     </message>
     <message>
         <source>Float64 - Sixty four bit floating point </source>
-        <translation type="unfinished"></translation>
+        <translation>Float64 - 64 bit-decimaal getal </translation>
     </message>
     <message>
         <source>CInt16 - Complex Int16 </source>
-        <translation type="unfinished"></translation>
+        <translation>CInt16 - Complexe Int16</translation>
     </message>
     <message>
         <source>CInt32 - Complex Int32 </source>
-        <translation type="unfinished"></translation>
+        <translation>CInt32 - Complexe Int32</translation>
     </message>
     <message>
         <source>CFloat32 - Complex Float32 </source>
-        <translation type="unfinished"></translation>
+        <translation>CFloat32 - Complexe Float32 </translation>
     </message>
     <message>
         <source>CFloat64 - Complex Float64 </source>
-        <translation type="unfinished"></translation>
+        <translation>CFloat64 - Complexe Float64 </translation>
     </message>
     <message>
         <source>Pyramid overviews</source>
-        <translation type="unfinished"></translation>
+        <translation>Pyramide overzichten</translation>
     </message>
     <message>
         <source>Layer Spatial Reference System</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruimtelijk referentie systeem van kaartlaag</translation>
     </message>
     <message>
         <source>Layer Extent (layer original source projection)</source>
-        <translation type="unfinished"></translation>
+        <translation>Laag-extent (projectie van originele laag-bron)</translation>
     </message>
     <message>
         <source>Project Spatial Reference System</source>
-        <translation type="unfinished"></translation>
+        <translation>Project Ruimtelijk Referentie Systeem</translation>
     </message>
 </context>
 <context>
@@ -37907,7 +38006,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Style</source>
-        <translation type="unfinished">Stijl</translation>
+        <translation>Stijl</translation>
     </message>
     <message>
         <source>Three band color</source>
@@ -38007,7 +38106,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Current</source>
-        <translation type="unfinished">Huidige</translation>
+        <translation>Huidige</translation>
     </message>
     <message>
         <source>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</source>
@@ -38290,27 +38389,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Render type</source>
-        <translation type="unfinished"></translation>
+        <translation>Rendertype</translation>
     </message>
     <message>
         <source>Resampling</source>
-        <translation type="unfinished"></translation>
+        <translation>Resample</translation>
     </message>
     <message>
         <source>Use original source no data value.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik nodata-waarde van de originele bron</translation>
     </message>
     <message>
         <source>No data value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodata-waarde:</translation>
     </message>
     <message>
         <source>Original data source no data value, if exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodata-waarde van de originele bron, als deze bestaat.</translation>
     </message>
     <message>
         <source>&lt;src no data value&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;src nodata waarde&gt;</translation>
     </message>
     <message>
         <source>Additional user defined no data value.</source>
@@ -39718,27 +39817,27 @@ standard deviation ×</source>
     <name>QgsSaveStyleToDbDialog</name>
     <message>
         <source>Save style in database</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sla stijl op in database</translation>
     </message>
     <message>
         <source>A name is mandatory</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Een naam is verplicht</translation>
     </message>
     <message>
         <source>Attach Qt Designer UI file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Voeg Qt Designer UI bestand bij</translation>
     </message>
     <message>
         <source>Qt Designer UI file .ui</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Qt Designer UI bestand .ui</translation>
     </message>
     <message>
         <source>Wrong file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verkeerd bestand</translation>
     </message>
     <message>
         <source>The selected file does not appear to be a valid Qt Designer UI file.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Het geselecteere bestand blijkt geen geldig Qt Designer UI bestand te zijn.</translation>
     </message>
 </context>
 <context>
@@ -42495,19 +42594,19 @@ There was a problem with your symbol database.</source>
     <name>QgsSvgCache</name>
     <message>
         <source>SVG request failed [error: %1 - url: %2]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SVG verzoek mislukt [fout: %1 - url: %2]</translation>
     </message>
     <message>
         <source>SVG</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SVG</translation>
     </message>
     <message>
         <source>SVG request error [status: %1 - reason phrase: %2]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SVG verzoek fout [status: %1 - omschrijving: %2]</translation>
     </message>
     <message>
         <source>%1 of %2 bytes of svg image downloaded.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 van %2 bytes van svg figuur gedownload.</translation>
     </message>
 </context>
 <context>
@@ -42553,11 +42652,11 @@ There was a problem with your symbol database.</source>
     <name>QgsSvgSelectorGroupsModel</name>
     <message>
         <source>App Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">App Symbolen</translation>
     </message>
     <message>
         <source>User Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gebruiker Symbolen</translation>
     </message>
 </context>
 <context>
@@ -44725,11 +44824,11 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>displayed as</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Weergegeven als</translation>
     </message>
     <message>
         <source>Layer info</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Laaginfo</translation>
     </message>
     <message>
         <source>Data source encoding</source>
@@ -44749,7 +44848,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Update extents</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Extents vernieuwen</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Minimum&lt;br&gt;(exclusive)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -44761,7 +44860,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Feature subset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Object subset</translation>
     </message>
     <message>
         <source>Description</source>
@@ -44804,15 +44903,15 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>No symbology</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geen symbologie</translation>
     </message>
     <message>
         <source>Feature symbology</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objectsymbologie</translation>
     </message>
     <message>
         <source>Symbol layer symbology</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Symboollaag symbologie</translation>
     </message>
 </context>
 <context>
@@ -45183,7 +45282,7 @@ Kaartobjecten</translation>
     </message>
     <message>
         <source>Use title for layer name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gebruik titel voor laagnaam</translation>
     </message>
 </context>
 <context>
@@ -45733,7 +45832,7 @@ Antwoord was:
     </message>
     <message>
         <source>Getting map via WCS.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kaart via WCS ophalen.</translation>
     </message>
     <message>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
@@ -45765,11 +45864,11 @@ Antwoord was:
     </message>
     <message>
         <source>No data received</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geen data ontvangen</translation>
     </message>
     <message>
         <source>Cannot create memory file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kan geen geheugenbestand maken</translation>
     </message>
     <message>
         <source>Map request failed [error:%1 url:%2]</source>
@@ -45817,7 +45916,7 @@ Response was:
     </message>
     <message>
         <source>Request contains an invalid parameter value.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verzoek bevat een niet geldige parameterwaarde.</translation>
     </message>
     <message>
         <source>No other exceptionCode specified by this service and server applies to this exception.</source>
@@ -45841,7 +45940,7 @@ Response was:
     </message>
     <message>
         <source>The WCS vendor also reported: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">De WMS bouwer meldde ook: </translation>
     </message>
     <message>
         <source>composed error message &apos;%1&apos;.</source>
@@ -45857,7 +45956,7 @@ Response was:
     </message>
     <message>
         <source>Name (identifier)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Naam (identifier)</translation>
     </message>
     <message>
         <source>Title</source>
@@ -45901,11 +46000,11 @@ Response was:
     </message>
     <message>
         <source>Available in format</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Beschikbaar in formaat</translation>
     </message>
     <message>
         <source>Coverages</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Coverages</translation>
     </message>
     <message>
         <source>Cache Stats</source>
@@ -45969,7 +46068,7 @@ Response was:
     </message>
     <message>
         <source>Format not supported</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Formaat wordt niet ondersteund</translation>
     </message>
     <message>
         <source>Read data error</source>
@@ -46515,7 +46614,7 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>GetTileUrl</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GetTileUrl</translation>
     </message>
     <message>
         <source>Tile templates</source>
@@ -46527,15 +46626,15 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>WMTS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">WMTS</translation>
     </message>
     <message>
         <source>WMS-C</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">WMS-C</translation>
     </message>
     <message>
         <source>Available Styles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Beschikbare Stijlen</translation>
     </message>
     <message>
         <source>Available Tilesets</source>
@@ -46547,11 +46646,11 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>Cannot calculate extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kan extent niet berekenen</translation>
     </message>
     <message>
         <source>Cannot set CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kan CRS niet instellen</translation>
     </message>
     <message>
         <source>Number of tile layers must be one</source>
@@ -46567,11 +46666,11 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>Returned image is flawed [Content-Type:%1; URL: %2]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ontvangen image is misvormd [Content-Type:%1; URL: %2]</translation>
     </message>
     <message>
         <source>Returned image is flawed [Content-Type:%1; URL:%2]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ontvangen image is misvormd [Content-type:%1; URL:%2]</translation>
     </message>
     <message>
         <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)</source>
@@ -46591,7 +46690,7 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>Format not supported</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Formaat wordt niet ondersteund</translation>
     </message>
     <message>
         <source>Get feature info request error (Title:%1; Error:%2; URL: %3)</source>
@@ -46599,11 +46698,11 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>GML schema is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GML schema is ongeldig</translation>
     </message>
     <message>
         <source>GML is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GML is ongeldig</translation>
     </message>
     <message>
         <source>Cannot parse getfeatureinfo: %1</source>
@@ -47047,7 +47146,7 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;SEXTANTE gereedschap</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE modeler</source>
@@ -47055,7 +47154,7 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE history and log</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;SEXTANTE historie en log</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE commander</source>
@@ -47400,7 +47499,7 @@ Omschrijving: %3</translation>
     </message>
     <message>
         <source>&amp;Set Filter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Filter In&amp;stellen</translation>
     </message>
 </context>
 <context>
@@ -47551,7 +47650,7 @@ Omschrijving: %3</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Formaat</translation>
     </message>
     <message>
         <source>Browse</source>
@@ -47567,23 +47666,23 @@ Omschrijving: %3</translation>
     </message>
     <message>
         <source>Autocompletion</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Automatisch aanvullen</translation>
     </message>
     <message>
         <source>Autocompletion enabled</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Automatisch aanvullen ingeschakeld</translation>
     </message>
     <message>
         <source>Threshold</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Drempelwaarde</translation>
     </message>
     <message>
         <source>Get autocompletion from current document</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verkrijg automatisch aanvullen van het huidige document</translation>
     </message>
     <message>
         <source>from Document</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">van Document</translation>
     </message>
     <message>
         <source>Get autocompletion from installed APIs</source>
@@ -47591,7 +47690,7 @@ Omschrijving: %3</translation>
     </message>
     <message>
         <source>from API files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">van API bestanden</translation>
     </message>
     <message>
         <source>Get autocompletion from current document and installed APIs</source>
@@ -47599,11 +47698,11 @@ Omschrijving: %3</translation>
     </message>
     <message>
         <source>from Doc and API</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Van Doc en API</translation>
     </message>
     <message>
         <source>Editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Editor</translation>
     </message>
     <message>
         <source>Auto-save script before running</source>
@@ -47611,7 +47710,7 @@ Omschrijving: %3</translation>
     </message>
     <message>
         <source>API</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">API</translation>
     </message>
 </context>
 <context>
@@ -47647,16 +47746,16 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Enter algorithm name to filter list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geef naam algoritme als filter</translation>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zoek...</translation>
     </message>
     <message>
         <source>Click here to learn more
 about SEXTANTE</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Klik hier om meer te leren over SEXTANTE</translation>
     </message>
 </context>
 <context>
@@ -47768,15 +47867,15 @@ about SEXTANTE</source>
     <name>Topol</name>
     <message>
         <source>TopologyChecker</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Topologie Checker</translation>
     </message>
     <message>
         <source>Topology Checker for vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Topologie Checker voor vectorlaag</translation>
     </message>
     <message>
         <source>&amp;Topology Checker</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Topologie Checker</translation>
     </message>
 </context>
 <context>
@@ -48240,7 +48339,7 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Data-bepaalde eigenschappen...</translation>
     </message>
 </context>
 <context>
@@ -48421,11 +48520,11 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Dash pattern unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Streepjes patroon eenheid</translation>
     </message>
     <message>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Data-bepaalde eigenschappen...</translation>
     </message>
 </context>
 <context>
@@ -48535,7 +48634,7 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>SVG Groups</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SVG Groepen</translation>
     </message>
     <message>
         <source>Millimeter</source>
@@ -48559,7 +48658,7 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Data-bepaalde eigenschappen...</translation>
     </message>
 </context>
 <context>
@@ -48675,89 +48774,92 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     <name>checkDock</name>
     <message>
         <source>Topology Checker</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Topologie Checker</translation>
     </message>
     <message>
         <source>Validate All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Valideer alle</translation>
     </message>
     <message>
         <source>Validate Extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Valideer Extent</translation>
     </message>
     <message>
         <source>Toggle Error Markers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Foutsymbolen omzetten</translation>
     </message>
     <message>
         <source>Topology not checked yet</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Topologie nog niet gechekt</translation>
     </message>
     <message>
         <source>Configure</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Configureer</translation>
     </message>
     <message>
         <source>Select automatic fix</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Selecteer automatische fix</translation>
     </message>
     <message>
         <source>Fix!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fix!</translation>
     </message>
     <message>
         <source>No errors were found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geen fouten gevonden</translation>
     </message>
     <message>
         <source>Invalid first layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ongeldige eerste laag</translation>
     </message>
     <message>
         <source>Topology plugin</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Topologie plugin</translation>
     </message>
     <message>
         <source>Invalid first geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ongeldige eerste geometrie</translation>
     </message>
     <message>
         <source>Topology test</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Topologie test</translation>
     </message>
     <message>
         <source>Feature not found in the layer.
 The layer has probably changed.
 Run topology check again.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Object niet gevonden in de laag.
+De laag is waarschijnlijk veranderd.
+Doe nogmaals de topologie check.</translation>
     </message>
     <message>
         <source>Invalid second layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ongeldige tweede laag</translation>
     </message>
     <message>
         <source>Invalid second geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ongeldige tweede geometrie</translation>
     </message>
     <message>
         <source>Invalid conflict</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ongeldig conflict</translation>
     </message>
     <message>
         <source>%1 errors were found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 fouten gevonden</translation>
     </message>
     <message>
         <source>Topology fix error</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Translation not shure!</translatorcomment>
+        <translation type="unfinished">Toplogie herstel fout</translation>
     </message>
     <message>
         <source>Fixing failed!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fixing mislukt!</translation>
     </message>
     <message>
         <source>Layer %1 not found in registry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Laag %1 niet in register gevonden.</translation>
     </message>
     <message>
         <source>Abort</source>
@@ -49658,7 +49760,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Eliminate sliver polygons</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Opruimen polygoon splinters</translation>
     </message>
 </context>
 <context>
@@ -49689,11 +49791,11 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Point x ordinate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Punt x-coördinaat</translation>
     </message>
     <message>
         <source>Point y ordinate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Punt y-coördinaat</translation>
     </message>
 </context>
 <context>
@@ -51582,71 +51684,71 @@ Plugin wordt niet geladen.</translation>
     <name>topolTest</name>
     <message>
         <source>Invalid second geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ongeldige tweede geometrie.</translation>
     </message>
     <message>
         <source>Topology plugin</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Topologie plugin</translation>
     </message>
     <message>
         <source>Invalid first geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ongeldige eerste geometrie.</translation>
     </message>
     <message>
         <source>First geometry invalid in line test.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eerste geometrie ongeldig in line test.</translation>
     </message>
     <message>
         <source>Failed to import first geometry into GEOS in line test.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Import eerste geometrie in GEOS in line test mislukt.</translation>
     </message>
     <message>
         <source>Invalid second geometry in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ongeldige tweede geometrie in &quot;dangling line test&quot;.</translation>
     </message>
     <message>
         <source>Failed to import second geometry into GEOS in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Import tweede geometrie in GEOS &quot;in dangling line test&quot; msilukt.</translation>
     </message>
     <message>
         <source>Skipping invalid second geometry of feature %1 in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Overslaan van ongeldige tweede geometrie van object %1 in dangling line test.</translation>
     </message>
     <message>
         <source>Skipping invalid first geometry in pseudo line test.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Overslaan van ongeldige eerste geometrie in pseudo line test.</translation>
     </message>
     <message>
         <source>Failed to import first geometry into GEOS in pseudo line test.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Import eerste geometrie in GEOS in pseudo line test mislukt.</translation>
     </message>
     <message>
         <source>Invalid geometry in validity test.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ongeldige geometrie in validity test.</translation>
     </message>
     <message>
         <source>Invalid geometry in covering test.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ongeldige geometrie in covering test.</translation>
     </message>
     <message>
         <source>Second geometry missing.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ontbrekende tweede geometrie.</translation>
     </message>
     <message>
         <source>No second geometry missing or GEOS import failed.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geen ontbrekende tweede geometrie of GEOS import mislukt.</translation>
     </message>
     <message>
         <source>Missing geometry in multipart check.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ontbrekende geometrie in multipart check.</translation>
     </message>
     <message>
         <source>First layer not found in registry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eerste laag niet in register gevonden.</translation>
     </message>
     <message>
         <source>Second layer not found in registry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tweede laag niet gevonden in register.</translation>
     </message>
 </context>
 <context>
