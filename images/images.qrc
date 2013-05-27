@@ -407,7 +407,10 @@
         <file>themes/default/propertyicons/network_and_proxy.png</file>
         <file>themes/default/propertyicons/overlay.png</file>
         <file>themes/default/propertyicons/plugin.svg</file>
+        <file>themes/default/propertyicons/plugin-incompatible.svg</file>
         <file>themes/default/propertyicons/plugin-installed.svg</file>
+        <file>themes/default/propertyicons/plugin-new.svg</file>
+        <file>themes/default/propertyicons/plugin-upgrade.svg</file>
         <file>themes/default/propertyicons/plugins.svg</file>
         <file>themes/default/propertyicons/pyramids.png</file>
         <file>themes/default/propertyicons/rendering.png</file>
@@ -418,7 +421,7 @@
         <file>themes/default/qgis.xpm</file>
         <file>themes/default/rendererCategorizedSymbol.png</file>
         <file>themes/default/rendererGraduatedSymbol.png</file>
-        <file>themes/default/rendererSingleSymbol.png</file>        
+        <file>themes/default/rendererSingleSymbol.png</file>
         <file>themes/default/repositoryConnected.png</file>
         <file>themes/default/repositoryDisabled.png</file>
         <file>themes/default/repositoryUnavailable.png</file>
