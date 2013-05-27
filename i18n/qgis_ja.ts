@@ -4,10 +4,6 @@
 <context>
     <name>CharacterWidget</name>
     <message>
-        <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1%2&lt;/span&gt;&lt;p&gt;Value: 0x%3&quot;&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1%2&lt;/span&gt;&lt;p&gt;値: 0x%3&quot;&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/gui/symbology-ng/characterwidget.cpp" line="124"/>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Value: 0x%3</source>
         <translation>&lt;p&gt;文字: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;値: 0x%3</translation>
@@ -65,14 +61,6 @@
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
         <translatorcomment>経度,緯度の順は実際の表示順に合わせました</translatorcomment>
         <translation>マップキャンバスが参照する座標系の座標(経度,緯度または東,北)</translation>
-    </message>
-    <message>
-        <source>Coordinate in your selected CRS</source>
-        <translation type="obsolete">選択したCRSでの座標</translation>
-    </message>
-    <message>
-        <source>Coordinate in map canvas coordinate reference system</source>
-        <translation type="obsolete">地図キャンバス内の空間参照システムの座標</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="131"/>
@@ -628,10 +616,6 @@ columns</source>
 <context>
     <name>Dialog</name>
     <message>
-        <source>Connect</source>
-        <translation type="obsolete">接続</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="14"/>
         <source>Eliminate sliver polygons</source>
         <translation>微細ポリゴンを除去する</translation>
@@ -677,92 +661,6 @@ columns</source>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="107"/>
         <source>area</source>
         <translation>面積</translation>
-    </message>
-    <message>
-        <source>OGR Converter</source>
-        <translation type="obsolete">OGRコンバーター</translation>
-    </message>
-    <message>
-        <source>Open OGR file</source>
-        <translation type="obsolete">OGRファイルを開く</translation>
-    </message>
-    <message>
-        <source>OGR File Data Source (*.*)</source>
-        <translation type="obsolete">OGRファイルデータソース(*.*)</translation>
-    </message>
-    <message>
-        <source>Open Directory</source>
-        <translation type="obsolete">ディレクトリを開く</translation>
-    </message>
-    <message>
-        <source>Input OGR dataset is missing!</source>
-        <translation type="obsolete">入力OGRデータセットが指定されていません</translation>
-    </message>
-    <message>
-        <source>Input OGR layer name is missing!</source>
-        <translation type="obsolete">入力OGRレイヤ名が指定されていません</translation>
-    </message>
-    <message>
-        <source>Target OGR format not selected!</source>
-        <translation type="obsolete">変換先OGRフォーマットが選択されていません</translation>
-    </message>
-    <message>
-        <source>Output OGR dataset is missing!</source>
-        <translation type="obsolete">出力OGRデータセットが指定されていません</translation>
-    </message>
-    <message>
-        <source>Output OGR layer name is missing!</source>
-        <translation type="obsolete">出力OGRレイヤ名が指定されていません</translation>
-    </message>
-    <message>
-        <source>Choose a file name to save to</source>
-        <translation type="obsolete">保存するファイル名選択</translation>
-    </message>
-    <message>
-        <source>Could not establish connection to: &apos;%1&apos;</source>
-        <translation type="obsolete">&apos;%1&apos;に接続できません</translation>
-    </message>
-    <message>
-        <source>Successfully translated layer &apos;%1&apos;</source>
-        <translation type="obsolete">レイヤ&apos;%1&apos;の変換に成功しました</translation>
-    </message>
-    <message>
-        <source>Failed to translate layer &apos;%1&apos;</source>
-        <translation type="obsolete">レイヤ&apos;%1&apos;の変換に失敗しました</translation>
-    </message>
-    <message>
-        <source>Successfully connected to: &apos;%1&apos;</source>
-        <translation type="obsolete">&apos;%1&apos;への接続に成功しました</translation>
-    </message>
-    <message>
-        <source>fTools About</source>
-        <translation type="obsolete">fToolsについて</translation>
-    </message>
-    <message>
-        <source>fTools</source>
-        <translation type="obsolete">fTools</translation>
-    </message>
-    <message>
-        <source>Version x.x-xxxxxx</source>
-        <translation type="obsolete">バージョン x.x-xxxxxx</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">ヘルプ</translation>
-    </message>
-    <message>
-        <source>Web</source>
-        <translation type="obsolete">ウェッブ</translation>
     </message>
     <message>
         <source>Close</source>
@@ -901,38 +799,14 @@ p, li { white-space: pre-wrap; }
         <translation>出力シェープファイル</translation>
     </message>
     <message>
-        <source>Join Attributes</source>
-        <translation type="obsolete">属性の結合</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="28"/>
         <source>Target vector layer</source>
         <translation>対象ベクタレイヤ</translation>
     </message>
     <message>
-        <source>Target join field</source>
-        <translation type="obsolete">対象結合フィールド</translation>
-    </message>
-    <message>
-        <source>Join data</source>
-        <translation type="obsolete">データの結合</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="42"/>
         <source>Join vector layer</source>
         <translation>ベクタレイヤを結合する</translation>
-    </message>
-    <message>
-        <source>Join dbf table</source>
-        <translation type="obsolete">dbfテーブルを結合する</translation>
-    </message>
-    <message>
-        <source>Join field</source>
-        <translation type="obsolete">フィールドを結合する</translation>
-    </message>
-    <message>
-        <source>Encoding</source>
-        <translation type="obsolete">エンコーディング</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="188"/>
@@ -948,10 +822,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="204"/>
         <source>Keep all records (including non-matching target records)</source>
         <translation>全てのレコードを残す（マッチしない対象レコードも含む）</translation>
-    </message>
-    <message>
-        <source>Keep all records (includeing non-matching target records)</source>
-        <translation type="obsolete">全てのレコードを残す（マッチしない対象レコードも含む）</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="16"/>
@@ -1019,10 +889,6 @@ p, li { white-space: pre-wrap; }
         <translation>最近傍(k)の点群のみを使う</translation>
     </message>
     <message>
-        <source>Use only the nearest (k) target points:</source>
-        <translation type="obsolete">最近傍(k)の点群のみを使う:</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="149"/>
         <source>Output distance matrix</source>
         <translation>距離行列の出力</translation>
@@ -1084,10 +950,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="32"/>
         <source>Input Boundary Layer</source>
         <translation>範囲レイヤの入力</translation>
-    </message>
-    <message>
-        <source>Minimum distance between points</source>
-        <translation type="obsolete">点間の最小距離</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="42"/>
@@ -1193,17 +1055,9 @@ p, li { white-space: pre-wrap; }
         <translation>空間参照システムをインポートする</translation>
     </message>
     <message>
-        <source>Import spatial reference system:</source>
-        <translation type="obsolete">空間参照システムをインポートする:</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="17"/>
         <source>Generate Regular Points</source>
         <translation>規則的な点群を作ります</translation>
-    </message>
-    <message>
-        <source>buttonGroup</source>
-        <translation type="obsolete">ボタングループ</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="26"/>
@@ -1248,10 +1102,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="119"/>
         <source>Use this point spacing</source>
         <translation>この間隔を使う</translation>
-    </message>
-    <message>
-        <source>buttonGroup_2</source>
-        <translation type="obsolete">ボタングループ_2</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="171"/>
@@ -1301,10 +1151,6 @@ p, li { white-space: pre-wrap; }
         <translation>空間結合</translation>
     </message>
     <message>
-        <source>Join attributes</source>
-        <translation type="obsolete">属性を結合する</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="54"/>
         <source>Attribute Summary</source>
         <translation>属性の集計方法</translation>
@@ -1343,10 +1189,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="129"/>
         <source>Median</source>
         <translation>中央値</translation>
-    </message>
-    <message>
-        <source>Output Shapefile:</source>
-        <translation type="obsolete">出力シェープファイル:</translation>
     </message>
     <message>
         <source>Line intersections</source>
@@ -1468,10 +1310,6 @@ p, li { white-space: pre-wrap; }
         <translation>エラーの位置を保存する</translation>
     </message>
     <message>
-        <source>OGR Layer Converter</source>
-        <translation type="obsolete">OGRレイヤコンバータ</translation>
-    </message>
-    <message>
         <source>Please specify input line layer</source>
         <translation>入力ラインレイヤを指定してください</translation>
     </message>
@@ -1505,37 +1343,12 @@ Would you like to add the new layer to the TOC?</source>
         <translation>空間参照系を指定してください</translation>
     </message>
     <message>
-        <source>Created projected shapefile:
-%1
-
-Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">以下の投影されたshapefileが作成されました:
-%1
-これを新しいレイヤとしてTOCに追加しますか?</translation>
-    </message>
-    <message>
-        <source>Choose output CRS:</source>
-        <translation type="obsolete">出力空間参照システム選択:</translation>
-    </message>
-    <message>
-        <source>Please select the projection system to be used by the output layer.</source>
-        <translation type="obsolete">出力レイヤに指定する投影法を選択して下さい.</translation>
-    </message>
-    <message>
-        <source>Output layer will be projected from it&apos;s current CRS to the output CRS.</source>
-        <translation type="obsolete">出力レイヤはカレントCRSから出力CRSに投影されます.</translation>
-    </message>
-    <message>
         <source>No Valid CRS selected</source>
         <translation>有効なCRSが選択されていません</translation>
     </message>
     <message>
         <source>Output spatial reference system is not valid</source>
         <translation>出力空間参照システムが不正です</translation>
-    </message>
-    <message>
-        <source>Identical output spatial reference system chosen</source>
-        <translation type="obsolete">出力空間参照システムを選択して下さい</translation>
     </message>
     <message>
         <source>Please specify target vector layer</source>
@@ -1554,18 +1367,6 @@ Following field names are longer than 10 characters:
 %1</translation>
     </message>
     <message>
-        <source>Please specify target join field</source>
-        <translation type="obsolete">結合する対象フィールドを選択して下さい</translation>
-    </message>
-    <message>
-        <source>Please specify join field</source>
-        <translation type="obsolete">結合するフィールドを選択して下さい</translation>
-    </message>
-    <message>
-        <source>Please specify input table</source>
-        <translation type="obsolete">入力テーブルを選択して下さい</translation>
-    </message>
-    <message>
         <source>Created output shapefile:
 %1
 
@@ -1573,18 +1374,6 @@ Would you like to add the new layer to the TOC?</source>
         <translation>以下の出力シェープファイルが作成されました:
 %1
 これを新しいレイヤとしてTOCに追加しますか?</translation>
-    </message>
-    <message>
-        <source>Join Table</source>
-        <translation type="obsolete">テーブル結合</translation>
-    </message>
-    <message>
-        <source>Input table does not exist</source>
-        <translation type="obsolete">入力テーブルがありません</translation>
-    </message>
-    <message>
-        <source>joined fields</source>
-        <translation type="obsolete">結合されたフィールド</translation>
     </message>
     <message>
         <source>Mean coordinates</source>
@@ -1820,10 +1609,6 @@ This may cause unexpected results.</source>
         <translation>選択された地物のみを使う</translation>
     </message>
     <message>
-        <source>Select files to merge</source>
-        <translation type="obsolete">結合するファイルを選択してください</translation>
-    </message>
-    <message>
         <source>Input files</source>
         <translation>入力ファイル</translation>
     </message>
@@ -1934,10 +1719,6 @@ were reduced to %2 vertices after simplification</source>
 %1</translation>
     </message>
     <message>
-        <source>Unable to read input table!</source>
-        <translation type="obsolete">入力テーブルを読み込めません!</translation>
-    </message>
-    <message>
         <source>Identical output spatial reference system chosen
 
 Are you sure you want to proceed?</source>
@@ -2033,84 +1814,6 @@ Are you sure you want to proceed?</source>
         <translation>マップキャンバスに結果を追加する</translation>
     </message>
     <message>
-        <source>
-The goal of fTools is to provide a one-stop resource for many common vector-based GIS tasks, without the need for additional software, libraries, or complex workarounds.
-
-fTools is designed to extend the functionality of Quantum GIS using only core QGIS and python libraries. It provides a growing suite of spatial data management and analysis functions that are both quick and functional. In addition, the geoprocessing functions of  Dr. Horst Duester and Stefan Ziegler have been incorporated to further facilitate and streamline GIS based research and analysis.
-
-If you would like to report a bug, make suggestions for improving fTools, or have a question about the tools, please email me: carson.farmer@gmail.com
-
-LICENSING INFORMATION:
-fTools is copyright (C) 2009  Carson J.Q. Farmer
-Geoprocessing functions adapted from &apos;Geoprocessing Plugin&apos;,
-(C) 2008 by Dr. Horst Duester, Stefan Ziegler
-
-licensed under the terms of GNU GPL 2
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-fTools DEVELOPERS:
-Carson J. Q. Farmer
-Alexander Bruy
-**If you have contributed code to fTools and I haven&apos;t mentioned your name here, please contact me and I will add your name.
-
-ACKNOWLEDGEMENTS:
-The following individuals (whether they know it or not) have contributed ideas, help, testing, code, and guidence towards this project, and I thank them.
-Hawthorn Beyer
-Borys Jurgiel
-Tim Sutton
-Barry Rowlingson
-Horst Duester and Stefan Ziegler
-Paolo Cavallini
-Aaron Racicot
-Colin Robertson
-Agustin Lobo
-Jurgen E. Fischer
-QGis developer and user communities
-Folks on #qgis at freenode.net
-All those who have reported bugs/fixes/suggestions/comments/etc.
-</source>
-        <translation type="obsolete">
-fToolsの目的は多くの共通のベクターベースGISタスクのために追加ソフトウェアやライブラリ、または複雑な回避方法を利用しないでワンストップリソースを提供することです.
-
-fToolsはQGISのコア機能とpythonライブラリのみを利用したQuantumGISの拡張機能として設計されています.急速に機能が増えつつある空間データ管理と解析機能を提供しています.加えてDr. Horst Duester and Stefan Zieglerによるジオプロセッシング機能が併合されてGISベースの調査と解析がさらに効率的に利用できるようになりました.
-
-バグの報告や助言をいただければfToolsは進化します,またツールに質問がある場合私carson.farmer@gmail.comまでメールをください
-
-LICENSING INFORMATION:
-fTools is copyright (C) 2009  Carson J.Q. Farmer
-Geoprocessing functions adapted from &apos;Geoprocessing Plugin&apos;,
-(C) 2008 by Dr. Horst Duester, Stefan Ziegler
-
-licensed under the terms of GNU GPL 2
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-fTools 開発者:
-Carson J. Q. Farmer
-Alexander Bruy
-**もしあなたがfToolsにコードをコントリビュートしていて私があなたの名前をここに書いていない場合は連絡をください。あなたの名前を追加します.
-
-謝辞:
-以下の人たち（彼らが知っていようがいまいが)がアイデア、ヘルプ、テスト、コードと指標をこのプロジェクトにコントリビュートしてくれました.彼らに感謝します.
-Hawthorn Beyer
-Borys Jurgiel
-Tim Sutton
-Barry Rowlingson
-Horst Duester and Stefan Ziegler
-Paolo Cavallini
-Aaron Racicot
-Colin Robertson
-Agustin Lobo
-Jurgen E. Fischer
-QGis developer and user communities
-Folks on #qgis at freenode.net
-All those who have reported bugs/fixes/suggestions/comments/etc.
-</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="14"/>
         <source>Simplify geometries</source>
         <translation>ジオメトリを簡素化します</translation>
@@ -2168,72 +1871,6 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     </message>
 </context>
 <context>
-    <name>DlgAbout</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">ダイアログ</translation>
-    </message>
-    <message>
-        <source>about:blank</source>
-        <translation type="obsolete">アバウト:空白</translation>
-    </message>
-</context>
-<context>
-    <name>DlgAddGeometryColumn</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">ダイアログ</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名称</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">タイプ</translation>
-    </message>
-    <message>
-        <source>POINT</source>
-        <translation type="obsolete">点</translation>
-    </message>
-    <message>
-        <source>LINESTRING</source>
-        <translation type="obsolete">ラインストリング</translation>
-    </message>
-    <message>
-        <source>POLYGON</source>
-        <translation type="obsolete">ポリゴン</translation>
-    </message>
-    <message>
-        <source>MULTIPOINT</source>
-        <translation type="obsolete">マルチポイント</translation>
-    </message>
-    <message>
-        <source>MULTILINESTRING</source>
-        <translation type="obsolete">マルチラインストリング</translation>
-    </message>
-    <message>
-        <source>MULTIPOLYGON</source>
-        <translation type="obsolete">マルチポリゴン</translation>
-    </message>
-    <message>
-        <source>GEOMETRYCOLLECTION</source>
-        <translation type="obsolete">ジオメトリコレクション</translation>
-    </message>
-    <message>
-        <source>Dimensions</source>
-        <translation type="obsolete">次元</translation>
-    </message>
-    <message>
-        <source>SRID</source>
-        <translation type="obsolete">SRID</translation>
-    </message>
-    <message>
-        <source>-1</source>
-        <translation type="obsolete">-1</translation>
-    </message>
-</context>
-<context>
     <name>DlgConfig</name>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgConfig.ui" line="14"/>
@@ -2254,173 +1891,6 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
         <location filename="../python/plugins/sextante/ui/DlgConfig.ui" line="42"/>
         <source>Value</source>
         <translation>値</translation>
-    </message>
-</context>
-<context>
-    <name>DlgCreateConstraint</name>
-    <message>
-        <source>Add constraint</source>
-        <translation type="obsolete">制約を追加する</translation>
-    </message>
-    <message>
-        <source>Column</source>
-        <translation type="obsolete">カラム</translation>
-    </message>
-    <message>
-        <source>Primary key</source>
-        <translation type="obsolete">主キー</translation>
-    </message>
-    <message>
-        <source>Unique</source>
-        <translation type="obsolete">ユニーク</translation>
-    </message>
-</context>
-<context>
-    <name>DlgCreateIndex</name>
-    <message>
-        <source>Create index</source>
-        <translation type="obsolete">インデックス作成</translation>
-    </message>
-    <message>
-        <source>Column</source>
-        <translation type="obsolete">カラム</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名称</translation>
-    </message>
-</context>
-<context>
-    <name>DlgCreateTable</name>
-    <message>
-        <source>Create Table</source>
-        <translation type="obsolete">テーブル作成</translation>
-    </message>
-    <message>
-        <source>Schema</source>
-        <translation type="obsolete">スキーマ</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名称</translation>
-    </message>
-    <message>
-        <source>Add field</source>
-        <translation type="obsolete">フィールド追加</translation>
-    </message>
-    <message>
-        <source>Delete field</source>
-        <translation type="obsolete">フィールド削除</translation>
-    </message>
-    <message>
-        <source>Up</source>
-        <translation type="obsolete">アップ</translation>
-    </message>
-    <message>
-        <source>Down</source>
-        <translation type="obsolete">ダウン</translation>
-    </message>
-    <message>
-        <source>Primary key</source>
-        <translation type="obsolete">主キー</translation>
-    </message>
-    <message>
-        <source>Create geometry column</source>
-        <translation type="obsolete">ジオメトリカラムの作成</translation>
-    </message>
-    <message>
-        <source>POINT</source>
-        <translation type="obsolete">点</translation>
-    </message>
-    <message>
-        <source>LINESTRING</source>
-        <translation type="obsolete">ラインストリング</translation>
-    </message>
-    <message>
-        <source>POLYGON</source>
-        <translation type="obsolete">ポリゴン</translation>
-    </message>
-    <message>
-        <source>MULTIPOINT</source>
-        <translation type="obsolete">マルチポイント</translation>
-    </message>
-    <message>
-        <source>MULTILINESTRING</source>
-        <translation type="obsolete">マルチラインストリング</translation>
-    </message>
-    <message>
-        <source>MULTIPOLYGON</source>
-        <translation type="obsolete">マルチポリゴン</translation>
-    </message>
-    <message>
-        <source>GEOMETRYCOLLECTION</source>
-        <translation type="obsolete">ジオメトリコレクション</translation>
-    </message>
-    <message>
-        <source>geom</source>
-        <translation type="obsolete">geom</translation>
-    </message>
-    <message>
-        <source>Dimensions</source>
-        <translation type="obsolete">次元</translation>
-    </message>
-    <message>
-        <source>SRID</source>
-        <translation type="obsolete">SRID</translation>
-    </message>
-    <message>
-        <source>-1</source>
-        <translation type="obsolete">-1</translation>
-    </message>
-    <message>
-        <source>Create spatial index</source>
-        <translation type="obsolete">空間インデックスの作成</translation>
-    </message>
-</context>
-<context>
-    <name>DlgDbError</name>
-    <message>
-        <source>Database Error</source>
-        <translation type="obsolete">データベースエラー</translation>
-    </message>
-    <message>
-        <source>An error occured:</source>
-        <translation type="obsolete">エラーが発生しました</translation>
-    </message>
-    <message>
-        <source>An error occured when executing a query:</source>
-        <translation type="obsolete">クエリ実行中にエラーが発生しました:</translation>
-    </message>
-    <message>
-        <source>Query:</source>
-        <translation type="obsolete">クエリ:</translation>
-    </message>
-</context>
-<context>
-    <name>DlgFieldProperties</name>
-    <message>
-        <source>Field properties</source>
-        <translation type="obsolete">フィールドプロパティ</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名称</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">タイプ</translation>
-    </message>
-    <message>
-        <source>Can be NULL</source>
-        <translation type="obsolete">NULL値を許容する</translation>
-    </message>
-    <message>
-        <source>Default value</source>
-        <translation type="obsolete">既定値</translation>
-    </message>
-    <message>
-        <source>Length</source>
-        <translation type="obsolete">長さ</translation>
     </message>
 </context>
 <context>
@@ -2452,69 +1922,6 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
         <location filename="../python/plugins/sextante/ui/DlgHistory.ui" line="14"/>
         <source>History and log</source>
         <translation>ヒストリとログ</translation>
-    </message>
-</context>
-<context>
-    <name>DlgImportVector</name>
-    <message>
-        <source>Import vector layer</source>
-        <translation type="obsolete">ベクタレイヤのインポート</translation>
-    </message>
-    <message>
-        <source>Schema:</source>
-        <translation type="obsolete">スキーマ:</translation>
-    </message>
-    <message>
-        <source>Table:</source>
-        <translation type="obsolete">テーブル:</translation>
-    </message>
-    <message>
-        <source>Action</source>
-        <translation type="obsolete">アクション</translation>
-    </message>
-    <message>
-        <source>Create new table</source>
-        <translation type="obsolete">新テーブルの作成</translation>
-    </message>
-    <message>
-        <source>Drop existing one</source>
-        <translation type="obsolete">既存のものの削除</translation>
-    </message>
-    <message>
-        <source>Append data into table</source>
-        <translation type="obsolete">テーブルにデータを追加する</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">オプション</translation>
-    </message>
-    <message>
-        <source>Primary key:</source>
-        <translation type="obsolete">主キー</translation>
-    </message>
-    <message>
-        <source>Geometry column:</source>
-        <translation type="obsolete">ジオメトリカラム:</translation>
-    </message>
-    <message>
-        <source>Source SRID:</source>
-        <translation type="obsolete">ソースSRID:</translation>
-    </message>
-    <message>
-        <source>Target SRID:</source>
-        <translation type="obsolete">ターゲットSRID:</translation>
-    </message>
-    <message>
-        <source>Encoding:</source>
-        <translation type="obsolete">エンコード:</translation>
-    </message>
-    <message>
-        <source>Create single-part geometries instead of multi-part</source>
-        <translation type="obsolete">マルチパートの代わりにシングルパートジオメトリを作る</translation>
-    </message>
-    <message>
-        <source>Create spatial index</source>
-        <translation type="obsolete">空間インデックスの作成</translation>
     </message>
 </context>
 <context>
@@ -2566,78 +1973,6 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
 <context>
     <name>DlgSqlWindow</name>
     <message>
-        <source>SQL window</source>
-        <translation type="obsolete">SQLウィンドウ</translation>
-    </message>
-    <message>
-        <source>SQL query:</source>
-        <translation type="obsolete">SQLクエリ:</translation>
-    </message>
-    <message>
-        <source>&amp;Execute (F5)</source>
-        <translation type="obsolete">実行(F5)(&amp;E)</translation>
-    </message>
-    <message>
-        <source>F5</source>
-        <translation type="obsolete">F5</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation type="obsolete">(&amp;C)クリア</translation>
-    </message>
-    <message>
-        <source>Result:</source>
-        <translation type="obsolete">結果:</translation>
-    </message>
-    <message>
-        <source>Load as new layer</source>
-        <translation type="obsolete">新レイヤとしてロードする</translation>
-    </message>
-    <message>
-        <source>Column with unique 
-integer values</source>
-        <translation type="obsolete">整数のユニークな
-値で構成されるカラム</translation>
-    </message>
-    <message>
-        <source>Retrieve 
-columns</source>
-        <translation type="obsolete">カラムを
-読み出す</translation>
-    </message>
-    <message>
-        <source>Column with unique integer values</source>
-        <translation type="obsolete">整数固有値で構成されるカラム</translation>
-    </message>
-    <message>
-        <source>Geometry column</source>
-        <translation type="obsolete">ジオメトリカラム</translation>
-    </message>
-    <message>
-        <source>Retrieve columns</source>
-        <translation type="obsolete">カラムを読み出す</translation>
-    </message>
-    <message>
-        <source>Layer name (prefix)</source>
-        <translation type="obsolete">レイヤ名(接頭辞)</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">タイプ</translation>
-    </message>
-    <message>
-        <source>Vector</source>
-        <translation type="obsolete">ベクタ</translation>
-    </message>
-    <message>
-        <source>Raster</source>
-        <translation type="obsolete">ラスタ</translation>
-    </message>
-    <message>
-        <source>Load now!</source>
-        <translation type="obsolete">今ロードする!</translation>
-    </message>
-    <message>
         <source>Sorry</source>
         <translation>すいません</translation>
     </message>
@@ -2646,124 +1981,6 @@ columns</source>
 geometry column - column with unique integer values</source>
         <translation>必須フィールド ジオメトリカラム - 整数固有値によって構成されるカラム
 を埋めなければいけません</translation>
-    </message>
-    <message>
-        <source>You must fill the required fields: geometry column - column with unique integer values</source>
-        <translation type="obsolete">必須フィールド ジオメトリカラム - 整数固有値によって構成されるカラム　を埋めなければいけません</translation>
-    </message>
-</context>
-<context>
-    <name>DlgSymbolV2Properties</name>
-    <message>
-        <source>Symbol properties</source>
-        <translation type="obsolete">シンボルプロパティ</translation>
-    </message>
-    <message>
-        <source>Symbol layer properties</source>
-        <translation type="obsolete">シンボルレイヤプロパティ</translation>
-    </message>
-    <message>
-        <source>This symbol layer doesn&apos;t have GUI for settings.</source>
-        <translation type="obsolete">このシンボルレイヤは設定用GUIがありません。</translation>
-    </message>
-    <message>
-        <source>Symbol preview</source>
-        <translation type="obsolete">シンボルプレビュー</translation>
-    </message>
-    <message>
-        <source>Symbol layer type</source>
-        <translation type="obsolete">シンボルレイヤタイプ</translation>
-    </message>
-    <message>
-        <source>Symbol layers</source>
-        <translation type="obsolete">シンボルレイヤ群</translation>
-    </message>
-    <message>
-        <source>Add symbol layer</source>
-        <translation type="obsolete">シンボルレイヤの追加</translation>
-    </message>
-    <message>
-        <source>Remove symbol layer</source>
-        <translation type="obsolete">シンボルレイヤの削除</translation>
-    </message>
-    <message>
-        <source>Lock layer&apos;s color</source>
-        <translation type="obsolete">レイヤカラーのロック</translation>
-    </message>
-    <message>
-        <source>Move up</source>
-        <translation type="obsolete">上に移動</translation>
-    </message>
-    <message>
-        <source>Move down</source>
-        <translation type="obsolete">下に移動</translation>
-    </message>
-</context>
-<context>
-    <name>DlgTableProperties</name>
-    <message>
-        <source>Table properties</source>
-        <translation type="obsolete">テーブルプロパティ</translation>
-    </message>
-    <message>
-        <source>Columns</source>
-        <translation type="obsolete">カラム</translation>
-    </message>
-    <message>
-        <source>Table columns:</source>
-        <translation type="obsolete">テーブルカラム;</translation>
-    </message>
-    <message>
-        <source>Add column</source>
-        <translation type="obsolete">カラムの追加</translation>
-    </message>
-    <message>
-        <source>Add geometry column</source>
-        <translation type="obsolete">ジオメトリカラムの追加</translation>
-    </message>
-    <message>
-        <source>Edit column</source>
-        <translation type="obsolete">カラムの編集</translation>
-    </message>
-    <message>
-        <source>Delete column</source>
-        <translation type="obsolete">カラムを削除</translation>
-    </message>
-    <message>
-        <source>Constraints</source>
-        <translation type="obsolete">制約</translation>
-    </message>
-    <message>
-        <source>Primary, foreign keys, unique and check constraints:</source>
-        <translation type="obsolete">プライマリ,外部キー,ユニーク,チェック制約:</translation>
-    </message>
-    <message>
-        <source>Add primary key / unique</source>
-        <translation type="obsolete">主キー/ユニークキーの追加</translation>
-    </message>
-    <message>
-        <source>Delete constraint</source>
-        <translation type="obsolete">制約の削除</translation>
-    </message>
-    <message>
-        <source>Indexes</source>
-        <translation type="obsolete">インデックス</translation>
-    </message>
-    <message>
-        <source>Indexes defined for this table:</source>
-        <translation type="obsolete">このテーブル用に定義されているインデックス</translation>
-    </message>
-    <message>
-        <source>Add index</source>
-        <translation type="obsolete">インデックスの追加</translation>
-    </message>
-    <message>
-        <source>Add spatial index</source>
-        <translation type="obsolete">空間インデックスの追加</translation>
-    </message>
-    <message>
-        <source>Delete index</source>
-        <translation type="obsolete">インデックスの削除</translation>
     </message>
 </context>
 <context>
@@ -2863,22 +2080,10 @@ geometry column - column with unique integer values</source>
 <context>
     <name>GdalTools</name>
     <message>
-        <source>Quantum GIS version detected: </source>
-        <translation type="obsolete">Quantum　GISのバージョンが検出されました: </translation>
-    </message>
-    <message>
         <source>This version of Gdal Tools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
         <translation>このバージョンのGdalツールはバージョン1.0.0以上のQGISが必要です
 プラグインは有効になりません.</translation>
-    </message>
-    <message>
-        <source>&amp;Raster</source>
-        <translation type="obsolete">ラスタ(&amp;R)</translation>
-    </message>
-    <message>
-        <source>Build Virtual Raster (catalog)</source>
-        <translation type="obsolete">仮想ラスタの構築(カタログ)</translation>
     </message>
     <message>
         <source>Builds a VRT from a list of datasets</source>
@@ -2893,16 +2098,8 @@ Plugin will not be enabled.</source>
         <translation>DEMからベクタ等高線を作成する</translation>
     </message>
     <message>
-        <source>Rasterize</source>
-        <translation type="obsolete">ラスタ化</translation>
-    </message>
-    <message>
         <source>Burns vector geometries into a raster</source>
         <translation>ベクタジオメトリをラスタに焼き付ける</translation>
-    </message>
-    <message>
-        <source>Polygonize</source>
-        <translation type="obsolete">ポリゴン化</translation>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
@@ -2925,10 +2122,6 @@ Plugin will not be enabled.</source>
         <translation>小さいラスタポリゴンを除去します</translation>
     </message>
     <message>
-        <source>Proximity</source>
-        <translation type="obsolete">近接図</translation>
-    </message>
-    <message>
         <source>Produces a raster proximity map</source>
         <translation>ラスタ近接図を作成します</translation>
     </message>
@@ -2941,24 +2134,12 @@ Plugin will not be enabled.</source>
         <translation>ほとんど黒/白の境界を的確な値に変換する</translation>
     </message>
     <message>
-        <source>Warp</source>
-        <translation type="obsolete">ワープ</translation>
-    </message>
-    <message>
         <source>Warp an image into a new coordinate system</source>
         <translation>画像を新しい座標系に変換する</translation>
     </message>
     <message>
-        <source>Grid</source>
-        <translation type="obsolete">グリッド</translation>
-    </message>
-    <message>
         <source>Create raster from the scattered data</source>
         <translation>散在したデータからラスタを作成する</translation>
-    </message>
-    <message>
-        <source>Translate</source>
-        <translation type="obsolete">変換</translation>
     </message>
     <message>
         <source>Converts raster data between different formats</source>
@@ -2979,10 +2160,6 @@ Plugin will not be enabled.</source>
     <message>
         <source>Add projection info to the raster</source>
         <translation>ラスタへの投影法情報追加</translation>
-    </message>
-    <message>
-        <source>Build overviews</source>
-        <translation type="obsolete">オーバービューの作成</translation>
     </message>
     <message>
         <source>Build Virtual Raster (Catalog)</source>
@@ -3117,28 +2294,12 @@ Install it and try again.</source>
         <translation>Gdal Toolsに関する多彩な設定</translation>
     </message>
     <message>
-        <source>About GdalTools</source>
-        <translation type="obsolete">GdalToolsについて</translation>
-    </message>
-    <message>
-        <source>Displays information about Gdal Tools</source>
-        <translation type="obsolete">Gdal Toolsに関する情報を表示します</translation>
-    </message>
-    <message>
         <source>&amp;Input directory</source>
         <translation>入力ディレクトリ(&amp;I)</translation>
     </message>
     <message>
         <source>&amp;Output directory</source>
         <translation>出力ディレクトリ(&amp;O)</translation>
-    </message>
-    <message>
-        <source>&amp;Input directory:</source>
-        <translation type="obsolete">入力ディレクトリ(&amp;I):</translation>
-    </message>
-    <message>
-        <source>&amp;Output directory:</source>
-        <translation type="obsolete">出力ディレクトリ(&amp;O):</translation>
     </message>
     <message>
         <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
@@ -3196,54 +2357,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="122"/>
         <source>Close</source>
         <translation>閉じる</translation>
-    </message>
-    <message>
-        <source>
-(using GDAL v. %1)</source>
-        <translation type="obsolete">
-（GAL v %1を利用しています)</translation>
-    </message>
-    <message>
-        <source>GDAL Tools (AKA Raster Tools) is a plugin for QuantumGIS aiming at making life simpler for users of GDAL Utilities, providing a simplified graphical interface for most commonly used programs.
-
-The plugin is being developed by Faunalia (http://faunalia.it) with help from GIS-lab (http://gis-lab.info).
-Icons by Robert Szczepanek.
-Sponsorship by Silvio Grosso was much appreciated.
-
-Please help us by testing the tools, reporting eventual issues, improving the code, or providing financial support.
-
-DEVELOPERS:
-  Faunalia
-    Paolo Cavallini
-    Giuseppe Sucameli
-    Lorenzo Masini
-  GIS-lab
-    Maxim Dubinin
-    Alexander Bruy
-icons by Robert Szepanek
-
-HOMEPAGE:
-http://trac.faunalia.it/GdalTools-plugin</source>
-        <translation type="obsolete">GDALツールズ (AKAラスタツールズ)はGDALユーティリティのユーザの仕事を楽にするためのQuantumGISのプラグインです.このプログラムでは多くのプログラム用に簡単なグラフィカルインターフェースを提供しています.
-
-このプラグインはFaunalia (http://faunalia.it) が開発を行いました.またGIS-lab (http://gis-lab.info)の助力を受けました.
-Robert Szczepanekによってアイコンが作られました.
-Silvio Grossoによるスポンサーシップには感謝します.
-
-ツールのテストや評価の報告、コードの改良や財政の支援等の助力をお願いします.
-
-開発者:
-  Faunalia
-    Paolo Cavallini
-    Giuseppe Sucameli
-    Lorenzo Masini
-  GIS-lab
-    Maxim Dubinin
-    Alexander Bruy
-アイコン Robert Szepanek
-
-HOMEPAGE:
-http://trac.faunalia.it/GdalTools-plugin</translation>
     </message>
 </context>
 <context>
@@ -3303,10 +2416,6 @@ Do you want terminate it anyway?</source>
         <translation>処理が完了しました.</translation>
     </message>
     <message>
-        <source>Elaboration completed.</source>
-        <translation type="obsolete">処理が完了しました.</translation>
-    </message>
-    <message>
         <source>%1 not created.</source>
         <translation>%1は作成されませんでした.</translation>
     </message>
@@ -3340,10 +2449,6 @@ Do you want terminate it anyway?</source>
         <translation>パレットイメージを24bit RGBに変換する</translation>
     </message>
     <message>
-        <source>Band to convert:</source>
-        <translation type="obsolete">変換するバンド:</translation>
-    </message>
-    <message>
         <source>Select the input file for convert</source>
         <translation>変換するファイルを選択して下さい</translation>
     </message>
@@ -3366,10 +2471,6 @@ Do you want terminate it anyway?</source>
     <message>
         <source>Select the input file for Near Black</source>
         <translation>黒補正を行う入力ファイルを選択してください</translation>
-    </message>
-    <message>
-        <source>No active raster layers. You must add almost one raster layer to continue.</source>
-        <translation type="obsolete">アクティブなラスタレイヤがありません.継続するためにはラスタレイヤを追加する必要があります.</translation>
     </message>
     <message>
         <source>Select the input file</source>
@@ -3432,10 +2533,6 @@ Do you want terminate it anyway?</source>
         <translation>解析するファイルを選択して下さい</translation>
     </message>
     <message>
-        <source>Select the cutline file</source>
-        <translation type="obsolete">カットラインファイルを選択して下さい</translation>
-    </message>
-    <message>
         <source>Select the input file for Grid</source>
         <translation>グリッドのための入力ファイルを選択して下さい</translation>
     </message>
@@ -3486,14 +2583,6 @@ Do you want terminate it anyway?</source>
     <message>
         <source>Select the input file for Rasterize</source>
         <translation>ラスタライズする入力ファイルを選択してください</translation>
-    </message>
-    <message>
-        <source>Output size required</source>
-        <translation type="obsolete">出力サイズの指定が必要です</translation>
-    </message>
-    <message>
-        <source>The output file doesn&apos;t exist. You must set up the output size to create it.</source>
-        <translation type="obsolete">出力ファイルは存在しません.それを作成するためには出力サイズを指定する必要があります.</translation>
     </message>
     <message>
         <source>Select the input directory with files for convert</source>
@@ -3680,10 +2769,6 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <translation>Gdalツールの設定</translation>
     </message>
     <message>
-        <source>Path to the GDAL binaries</source>
-        <translation type="obsolete">GDALバイナリのパス</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="22"/>
         <source>Path to the GDAL executables</source>
         <translation>GDAL実行ファイルのパス</translation>
@@ -3716,36 +2801,6 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="168"/>
         <source>GDAL driver path</source>
         <translation>GDALドライバパス</translation>
-    </message>
-    <message>
-        <source>GDAL pymod path</source>
-        <translation type="obsolete">GDAL pythonモジュールパス</translation>
-    </message>
-    <message>
-        <source>A list of colon-separated (Linux and MacOS) or 
-semicolon-separated (Windows) paths to both binaries 
-and python executables.
-
-MacOS users usually need to set it to something like
-/Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
-        <translation type="obsolete">コロンで区切られた(LinuxとMac)または
-セミコロンで区切られた(Windows)パスのリストはバイナリと
-python実行モジュール用です.
-
-MacOSユーザは通常これを以下のように設定する必要があります
-/Library/Frameworks/GDAL.framework/Versions/1.8/Programs</translation>
-    </message>
-    <message>
-        <source>A list of colon-separated (Linux and MacOS) or 
-semicolon-separated (Windows) paths to python modules.</source>
-        <translation type="obsolete">コロンで区切られた(LinuxとMac)または
-セミコロンで区切られた(Windows)パスのリストはpythonモジュール用です.</translation>
-    </message>
-    <message>
-        <source>Useful to open local GDAL documentation instead of online help 
-when pressing on the tool dialog&apos;s Help button.</source>
-        <translation type="obsolete">ツールダイアログのヘルプボタンをクリックすると
-便利なことにオンラインヘルプの代わりにローカルのGDAL文書を開きます.</translation>
     </message>
     <message>
         <source>A list of colon-separated (Linux and MacOS) or
@@ -3789,24 +2844,12 @@ when pressing on the tool dialog&apos;s Help button.</source>
 <context>
     <name>GdalToolsWidget</name>
     <message>
-        <source>Build Virtual Raster</source>
-        <translation type="obsolete">仮想ラスタの構築</translation>
-    </message>
-    <message>
-        <source>&amp;Input files:</source>
-        <translation type="obsolete">入力ファイル(&amp;I):</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="86"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="91"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="74"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="102"/>
         <source>Select...</source>
         <translation>選択...</translation>
-    </message>
-    <message>
-        <source>&amp;Output file:</source>
-        <translation type="obsolete">出力ファイル(&amp;O):</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="20"/>
@@ -3882,14 +2925,6 @@ when pressing on the tool dialog&apos;s Help button.</source>
         <translation>投影法の異なりを許す</translation>
     </message>
     <message>
-        <source>&amp;Resolution:</source>
-        <translation type="obsolete">解像度(&amp;R):</translation>
-    </message>
-    <message>
-        <source>&amp;Source No Data:</source>
-        <translation type="obsolete">ソースデータ無し(&amp;S):</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="20"/>
         <source>Clipper</source>
         <translation>クリッパー</translation>
@@ -3918,54 +2953,10 @@ when pressing on the tool dialog&apos;s Help button.</source>
         <translation>出力アルファバンドを作る</translation>
     </message>
     <message>
-        <source>&amp;No data value:</source>
-        <translation type="obsolete">データが無い値&amp;N:</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="38"/>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="48"/>
         <source>&amp;No data value</source>
         <translation>データが無い値（&amp;N）</translation>
-    </message>
-    <message>
-        <source>Re-Enable Clipping</source>
-        <translation type="obsolete">クリッピングを再度有効にする</translation>
-    </message>
-    <message>
-        <source>Select the extent by drag &amp; drop on canvas</source>
-        <translation type="obsolete">キャンバス上をドラッグ &amp; ドロップで領域を選択</translation>
-    </message>
-    <message>
-        <source>or change the extent coordinates</source>
-        <translation type="obsolete">または領域座標の変更</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation type="obsolete">1</translation>
-    </message>
-    <message>
-        <source>2</source>
-        <translation type="obsolete">2</translation>
-    </message>
-    <message>
-        <source>or change the extent coordinates:</source>
-        <translation type="obsolete">または領域座標の変更:</translation>
-    </message>
-    <message>
-        <source>1:</source>
-        <translation type="obsolete">1:</translation>
-    </message>
-    <message>
-        <source>x</source>
-        <translation type="obsolete">x</translation>
-    </message>
-    <message>
-        <source>y</source>
-        <translation type="obsolete">y</translation>
-    </message>
-    <message>
-        <source>2:</source>
-        <translation type="obsolete">2:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="104"/>
@@ -3976,18 +2967,6 @@ when pressing on the tool dialog&apos;s Help button.</source>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="20"/>
         <source>Contour</source>
         <translation>等高線</translation>
-    </message>
-    <message>
-        <source>&amp;Input file (raster):</source>
-        <translation type="obsolete">入力ファイル(ラスタ)(&amp;I):</translation>
-    </message>
-    <message>
-        <source>&amp;Output directory for contour lines (shapefile):</source>
-        <translation type="obsolete">等高線(shapefile)出力ディレクトリ(&amp;O):</translation>
-    </message>
-    <message>
-        <source>&amp;Attribute name:</source>
-        <translation type="obsolete">属性カラム名(&amp;A):</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="55"/>
@@ -4026,10 +3005,6 @@ when pressing on the tool dialog&apos;s Help button.</source>
         <translation>ELEV</translation>
     </message>
     <message>
-        <source>I&amp;nterval between contour lines:</source>
-        <translation type="obsolete">等高線の間隔(I&amp;):</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="20"/>
         <source>Convert RGB image to paletted</source>
         <translation>RGBイメージをパレットに変換します</translation>
@@ -4063,25 +3038,9 @@ when pressing on the tool dialog&apos;s Help button.</source>
         <translation>変換するバンド</translation>
     </message>
     <message>
-        <source>&amp;Input file:</source>
-        <translation type="obsolete">入力ファイル(&amp;I):</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="55"/>
         <source>Number of colors</source>
         <translation>色数</translation>
-    </message>
-    <message>
-        <source>Grid</source>
-        <translation type="obsolete">グリッド</translation>
-    </message>
-    <message>
-        <source>&amp;Z Field:</source>
-        <translation type="obsolete">&amp;Z フィールド:</translation>
-    </message>
-    <message>
-        <source>&amp;Algorithm:</source>
-        <translation type="obsolete">アルゴリズム(&amp;A):</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="38"/>
@@ -4191,42 +3150,6 @@ when pressing on the tool dialog&apos;s Help button.</source>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="573"/>
         <source>Metrics</source>
         <translation>メトリックス</translation>
-    </message>
-    <message>
-        <source>Power:</source>
-        <translation type="obsolete">指数:</translation>
-    </message>
-    <message>
-        <source>Smoothing:</source>
-        <translation type="obsolete">補正:</translation>
-    </message>
-    <message>
-        <source>Radius1:</source>
-        <translation type="obsolete">半径1:</translation>
-    </message>
-    <message>
-        <source>Radius2:</source>
-        <translation type="obsolete">半径2:</translation>
-    </message>
-    <message>
-        <source>Angle:</source>
-        <translation type="obsolete">角度:</translation>
-    </message>
-    <message>
-        <source>Max points:</source>
-        <translation type="obsolete">最大点:</translation>
-    </message>
-    <message>
-        <source>Min points:</source>
-        <translation type="obsolete">最少点:</translation>
-    </message>
-    <message>
-        <source>No data:</source>
-        <translation type="obsolete">データ無し:</translation>
-    </message>
-    <message>
-        <source>Metrics:</source>
-        <translation type="obsolete">メトリックス:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="587"/>
@@ -4417,10 +3340,6 @@ when pressing on the tool dialog&apos;s Help button.</source>
         <translation>生成オプション(&amp;C)</translation>
     </message>
     <message>
-        <source>&amp;Creation Options:</source>
-        <translation type="obsolete">生成オプション(&amp;C):</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="20"/>
         <source>Near Black</source>
         <translation>黒補正</translation>
@@ -4431,17 +3350,9 @@ when pressing on the tool dialog&apos;s Help button.</source>
         <translation>黒（または白）の値からの距離(&amp;f)</translation>
     </message>
     <message>
-        <source>How &amp;far from black (or white):</source>
-        <translation type="obsolete">黒（または白)からどのくらい離れているか(&amp;f):</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="70"/>
         <source>Search for nearly &amp;white (255) pixels instead of black ones</source>
         <translation>黒のピクセルではなくほとんど白(255)のピクセルを検索する(&amp;w)</translation>
-    </message>
-    <message>
-        <source>Add overview</source>
-        <translation type="obsolete">全体図に追加</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="20"/>
@@ -4547,10 +3458,6 @@ JPEG品質を設定できます.</translation>
         <translation>JPEG品質(1-100)</translation>
     </message>
     <message>
-        <source>JPEG Quality (1-100):</source>
-        <translation type="obsolete">JPEG品質(1-100):</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="77"/>
         <source>Alternate overview format using Erdas Imagine format, 
 placing the overviews in an associated .aux file 
@@ -4563,10 +3470,6 @@ Imagine,ArcGIS,GDALの直接利用に適しています.</translation>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="82"/>
         <source>Use Imagine format (.aux file)</source>
         <translation>Imagine形式を利用する(aux ファイル)</translation>
-    </message>
-    <message>
-        <source>Polygonize</source>
-        <translation type="obsolete">ポリゴン化</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="20"/>
@@ -4589,17 +3492,9 @@ Imagine,ArcGIS,GDALの直接利用に適しています.</translation>
         <translation>マスクを使う</translation>
     </message>
     <message>
-        <source>&amp;Output file for polygons (shapefile):</source>
-        <translation type="obsolete">ポリゴンを出力するファイル(shapefile)(&amp;O):</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="59"/>
         <source>DN</source>
         <translation>DN</translation>
-    </message>
-    <message>
-        <source>&amp;Field name:</source>
-        <translation type="obsolete">フィールド名(&amp;F):</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="20"/>
@@ -4617,10 +3512,6 @@ Imagine,ArcGIS,GDALの直接利用に適しています.</translation>
         <translation>望ましいSRS</translation>
     </message>
     <message>
-        <source>Desired SRS:</source>
-        <translation type="obsolete">望ましいSRS:</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="66"/>
         <source>Output will be:
 - new GeoTiff if input file is not GeoTiff
@@ -4636,18 +3527,6 @@ Imagine,ArcGIS,GDALの直接利用に適しています.</translation>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="32"/>
         <source>Recurse subdirectories</source>
         <translation>サブディレクトリを再帰処理</translation>
-    </message>
-    <message>
-        <source>Proximity</source>
-        <translation type="obsolete">近接図</translation>
-    </message>
-    <message>
-        <source>&amp;Values:</source>
-        <translation type="obsolete">値(&amp;V):</translation>
-    </message>
-    <message>
-        <source>&amp;Dist units:</source>
-        <translation type="obsolete">距離単位(&amp;D):</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="20"/>
@@ -4696,22 +3575,6 @@ Imagine,ArcGIS,GDALの直接利用に適しています.</translation>
         <translation>0</translation>
     </message>
     <message>
-        <source>&amp;Max dist:</source>
-        <translation type="obsolete">最大距離(&amp;M):</translation>
-    </message>
-    <message>
-        <source>&amp;No data:</source>
-        <translation type="obsolete">データ無し(&amp;N):</translation>
-    </message>
-    <message>
-        <source>&amp;Fixed buf val:</source>
-        <translation type="obsolete">指定されたバッファ値(&amp;F):</translation>
-    </message>
-    <message>
-        <source>Rasterize</source>
-        <translation type="obsolete">ラスタ化</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="20"/>
         <source>Rasterize (Vector to raster)</source>
         <translation>ラスタ化(ベクタのラスタ化)</translation>
@@ -4757,26 +3620,6 @@ Imagine,ArcGIS,GDALの直接利用に適しています.</translation>
         <translation>垂直</translation>
     </message>
     <message>
-        <source>New size (required if output file doens&apos;t exist)</source>
-        <translation type="obsolete">新しいサイズ（出力ファイルが存在しない場合必要）</translation>
-    </message>
-    <message>
-        <source>&amp;Output file for rasterized vectors (raster, must exists)</source>
-        <translation type="obsolete">ベクタをラスタ化した出力ファイル(ラスタが存在しなければなりません(&amp;O)</translation>
-    </message>
-    <message>
-        <source>&amp;Input file (shapefile):</source>
-        <translation type="obsolete">入力ファイル(shapefile)(&amp;I):</translation>
-    </message>
-    <message>
-        <source>&amp;Output file for rasterized vectors (raster, must exists):</source>
-        <translation type="obsolete">ベクタをラスタ化した出力ファイル(ラスタが存在しなければなりません(&amp;O):</translation>
-    </message>
-    <message>
-        <source>&amp;Attribute field:</source>
-        <translation type="obsolete">属性フィールド(&amp;A):</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="20"/>
         <source>Sieve</source>
         <translation>ふるい</translation>
@@ -4802,34 +3645,10 @@ Imagine,ArcGIS,GDALの直接利用に適しています.</translation>
         <translation>8</translation>
     </message>
     <message>
-        <source>&amp;Threshold:</source>
-        <translation type="obsolete">しきい値(&amp;T):</translation>
-    </message>
-    <message>
-        <source>&amp;Pixel connections:</source>
-        <translation type="obsolete">ピクセルの連結(&amp;P):</translation>
-    </message>
-    <message>
-        <source>Translate</source>
-        <translation type="obsolete">変換</translation>
-    </message>
-    <message>
-        <source>&amp;Input Layer:</source>
-        <translation type="obsolete">入力レイヤ(&amp;I):</translation>
-    </message>
-    <message>
-        <source>&amp;Target SRS:</source>
-        <translation type="obsolete">ターゲットSRS(&amp;T):</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="106"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="122"/>
         <source>Percentage to resize image. This will change pixel size/image resolution accordingly: 25% will create an image with pixels 4x larger.</source>
         <translation>リサイズイメージの比率. この値はピクセルサイズ/イメージ解像度にしたがって変わります.25%を指定するとイメージのピクセルは４倍になります.</translation>
-    </message>
-    <message>
-        <source>Outsize:</source>
-        <translation type="obsolete">出力サイズ:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="125"/>
@@ -4851,10 +3670,6 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
         <translation>1バンドでカラーテーブルを利用しているデータセットを3(RGB)または4(RGBA)バンドのデータセットとして表示する.
 JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデータセットの出力ドライバに利用すると便利です.
 グレイ値（GDAL1.7.0以上でサポート）はグレイレベルのカラーデーブルで構成されているデータセットをグレイインデクスドデータセットとして表示可能にします.</translation>
-    </message>
-    <message>
-        <source>Expand:</source>
-        <translation type="obsolete">拡張:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="20"/>
@@ -4945,18 +3760,10 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
         <translation>Prj領域</translation>
     </message>
     <message>
-        <source>Srcwin:</source>
-        <translation type="obsolete">Src領域:</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="201"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="211"/>
         <source>Selects a subwindow from the source image for copying (like -srcwin) but with the corners given in georeferenced coordinates. (Enter ulx uly lrx lry)</source>
         <translation>コピーする元領域のイメージサブウィンドウを（Src領域:と同じように）選択します しかし角はジオレファレンスされた座標で指定してください（左上x 左上Y 右下x 右下y の座標を入力して下さい)</translation>
-    </message>
-    <message>
-        <source>Prjwin:</source>
-        <translation type="obsolete">Prj領域:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="218"/>
@@ -4973,18 +3780,6 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="55"/>
         <source>Output format</source>
         <translation>出力形式</translation>
-    </message>
-    <message>
-        <source>Warp</source>
-        <translation type="obsolete">ワープ</translation>
-    </message>
-    <message>
-        <source>&amp;Source SRS:</source>
-        <translation type="obsolete">ソースSRS(&amp;S):</translation>
-    </message>
-    <message>
-        <source>&amp;Resampling method:</source>
-        <translation type="obsolete">リサンプリングメソッド(&amp;R):</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="20"/>
@@ -5017,21 +3812,9 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
         <translation>ランチョシュ</translation>
     </message>
     <message>
-        <source>Cutline</source>
-        <translation type="obsolete">カットライン</translation>
-    </message>
-    <message>
-        <source>&amp;Memory used for caching:</source>
-        <translation type="obsolete">キャッシュに利用するメモリ(&amp;M):</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="168"/>
         <source>MB</source>
         <translation>MB</translation>
-    </message>
-    <message>
-        <source>Set no data value</source>
-        <translation type="obsolete">データ無しの値を設定して下さい</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="55"/>
@@ -5058,14 +3841,6 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="199"/>
         <source>Resize</source>
         <translation>リサイズ</translation>
-    </message>
-    <message>
-        <source>Image width</source>
-        <translation type="obsolete">画像幅</translation>
-    </message>
-    <message>
-        <source>Image height</source>
-        <translation type="obsolete">画像高さ</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="260"/>
@@ -5191,10 +3966,6 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
                                  閉じられているかどうか確認して下さい.続けますか?</translation>
     </message>
     <message>
-        <source>Simplify geometries</source>
-        <translation type="obsolete">ジオメトリの簡素化</translation>
-    </message>
-    <message>
         <source>Polygon centroids</source>
         <translation>ポリゴンの中心点</translation>
     </message>
@@ -5237,10 +4008,6 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
     <message>
         <source>Output polygon shapefile</source>
         <translation>ポリゴンのシェープファイル出力</translation>
-    </message>
-    <message>
-        <source>Geoprocessing</source>
-        <translation type="obsolete">空間演算中</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
@@ -5287,16 +4054,6 @@ Would you like to add the new layer to the TOC?</source>
 Please choose larger tolerance...</source>
         <translation>指定許容値での計算に失敗しました
 さらに大きい許容値を選択して下さい...</translation>
-    </message>
-    <message>
-        <source>Created output shapefile:
-%1
-
-Would you like to add the new layer to the TOC?</source>
-        <translatorcomment>TOCはどう翻訳するか不明</translatorcomment>
-        <translation type="obsolete">以下の出力シェープファイルが作成されました:
-%1
-これを新しいレイヤとしてTOCに追加しますか?</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
@@ -5479,10 +4236,6 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
 <context>
     <name>GlobePlugin</name>
     <message>
-        <source>Globe</source>
-        <translation type="obsolete">地球儀</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="193"/>
         <source>Launch Globe</source>
         <translation>地球儀起動</translation>
@@ -5569,14 +4322,6 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <translation>中断</translation>
     </message>
     <message>
-        <source>Point layer error</source>
-        <translation type="obsolete">ポイントレイヤエラー</translation>
-    </message>
-    <message>
-        <source>Could not identify the vector data provider.</source>
-        <translation type="obsolete">ベクタデータプロバイダを指定できません.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="219"/>
         <source>Heatmap generation aborted</source>
         <translation>ヒートマップ作成が中断しました</translation>
@@ -5633,21 +4378,9 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <translation>ヒートマッププラグイン</translation>
     </message>
     <message>
-        <source>Input Point Vector</source>
-        <translation type="obsolete">入力ポイントベクタ</translation>
-    </message>
-    <message>
-        <source>Output Raster</source>
-        <translation type="obsolete">出力ラスタ</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="52"/>
         <source>...</source>
         <translation>...</translation>
-    </message>
-    <message>
-        <source>Output Format</source>
-        <translation type="obsolete">出力形式</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="29"/>
@@ -5757,52 +4490,9 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <translation>カーネル関数の形状</translation>
     </message>
     <message>
-        <source>Decay Ratio</source>
-        <translation type="obsolete">減衰比</translation>
-    </message>
-    <message>
-        <source>0.1</source>
-        <translation type="obsolete">0.1</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="113"/>
         <source>Advanced</source>
         <translation>アドバンスト</translation>
-    </message>
-    <message>
-        <source>Row</source>
-        <translation type="obsolete">行</translation>
-    </message>
-    <message>
-        <source>Cell Size X</source>
-        <translation type="obsolete">セルサイズ　X</translation>
-    </message>
-    <message>
-        <source>Column</source>
-        <translation type="obsolete">カラム</translation>
-    </message>
-    <message>
-        <source>Cell Size Y</source>
-        <translation type="obsolete">セルサイズY</translation>
-    </message>
-    <message>
-        <source>Use Radius from field</source>
-        <translation type="obsolete">半径にフィールド値を使う</translation>
-    </message>
-    <message>
-        <source>Use Weight from field</source>
-        <translation type="obsolete">重みにフィールド値を使う</translation>
-    </message>
-</context>
-<context>
-    <name>Help</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">ダイアログ</translation>
-    </message>
-    <message>
-        <source>about:blank</source>
-        <translation type="obsolete">アバウト:空白</translation>
     </message>
 </context>
 <context>
@@ -5825,14 +4515,6 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <source>Create test</source>
         <translation>テストの作成</translation>
-    </message>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">ダイアログ</translation>
-    </message>
-    <message>
-        <source>Reload</source>
-        <translation type="obsolete">再ロード</translation>
     </message>
 </context>
 <context>
@@ -5869,21 +4551,9 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
 <context>
     <name>MainWindow</name>
     <message>
-        <source>QGIS</source>
-        <translation type="obsolete">QGIS</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="25"/>
         <source>&amp;Edit</source>
         <translation>編集(&amp;E)</translation>
-    </message>
-    <message>
-        <source>&amp;File</source>
-        <translation type="obsolete">ファイル(&amp;F)</translation>
-    </message>
-    <message>
-        <source>&amp;Open Recent Projects</source>
-        <translation type="obsolete">最近利用したプロジェクトを開く(&amp;O)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="63"/>
@@ -6032,17 +4702,9 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <translation>ウェブ</translation>
     </message>
     <message>
-        <source>&amp;New Project</source>
-        <translation type="obsolete">新規プロジェクト(&amp;N)</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="485"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
-    </message>
-    <message>
-        <source>&amp;Open Project...</source>
-        <translation type="obsolete">プロジェクトを開く(&amp;O)...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="497"/>
@@ -6050,17 +4712,9 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <source>&amp;Save Project</source>
-        <translation type="obsolete">プロジェクトを保存(&amp;S)</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="509"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
-    </message>
-    <message>
-        <source>Save Project &amp;As...</source>
-        <translation type="obsolete">プロジェクトを名前をつけて保存(&amp;A)...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="521"/>
@@ -6146,14 +4800,6 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <location filename="../src/ui/qgisapp.ui" line="1123"/>
         <source>Layer Labeling Options</source>
         <translation>レイヤラベリングオプション</translation>
-    </message>
-    <message>
-        <source>Shapefile Layer...</source>
-        <translation type="obsolete">シェープファイルレイヤ...</translation>
-    </message>
-    <message>
-        <source>SpatiaLite Layer...</source>
-        <translation type="obsolete">Spatialiteレイヤ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1189"/>
@@ -6296,10 +4942,6 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <translation>デリミティッドテキストレイヤを追加する</translation>
     </message>
     <message>
-        <source>Save Edits</source>
-        <translation type="obsolete">編集を保存する</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="1281"/>
         <source>Save As...</source>
         <translation>名前をつけて保存...</translation>
@@ -6440,14 +5082,6 @@ Shift+クリックで非表示
         <translation>Htmlアノテーション</translation>
     </message>
     <message>
-        <source>Composer manager...</source>
-        <translation type="obsolete">コンポーザーマネージャ...</translation>
-    </message>
-    <message>
-        <source>Exit</source>
-        <translation type="obsolete">終了</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="563"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
@@ -6503,33 +5137,9 @@ Shift+クリックで非表示
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <source>Capture Point</source>
-        <translation type="obsolete">点を入力</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="641"/>
         <source>Ctrl+.</source>
         <translation>Ctrl+.</translation>
-    </message>
-    <message>
-        <source>Capture Line</source>
-        <translation type="obsolete">線を入力</translation>
-    </message>
-    <message>
-        <source>Ctrl+/</source>
-        <translation type="obsolete">Ctrl+/</translation>
-    </message>
-    <message>
-        <source>Capture Polygon</source>
-        <translation type="obsolete">ポリゴンを入力</translation>
-    </message>
-    <message>
-        <source>Ctrl+?</source>
-        <translation type="obsolete">Ctrl+?</translation>
-    </message>
-    <message>
-        <source>Add feature</source>
-        <translation type="obsolete">地物追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="653"/>
@@ -6577,14 +5187,6 @@ Shift+クリックで非表示
         <translation>部分の削除</translation>
     </message>
     <message>
-        <source>Merge selected features</source>
-        <translation type="obsolete">選択地物の結合</translation>
-    </message>
-    <message>
-        <source>Merge attributes of selected features</source>
-        <translation type="obsolete">選択された地物の属性を結合する</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="776"/>
         <source>Node Tool</source>
         <translation>ノードツール</translation>
@@ -6623,30 +5225,6 @@ Shift+クリックで非表示
         <location filename="../src/ui/qgisapp.ui" line="835"/>
         <source>Ctrl+-</source>
         <translation>Ctrl+-</translation>
-    </message>
-    <message>
-        <source>Select single feature</source>
-        <translation type="obsolete">1個の地物を選択する</translation>
-    </message>
-    <message>
-        <source>Select features by rectangle</source>
-        <translation type="obsolete">長方形領域による地物選択</translation>
-    </message>
-    <message>
-        <source>Select features by polygon</source>
-        <translation type="obsolete">ポリゴンによる地物選択</translation>
-    </message>
-    <message>
-        <source>Select features by freehand</source>
-        <translation type="obsolete">フリーハンドによる地物選択</translation>
-    </message>
-    <message>
-        <source>Select features by radius</source>
-        <translation type="obsolete">半径指定による地物選択</translation>
-    </message>
-    <message>
-        <source>Deselect features from all layers</source>
-        <translation type="obsolete">すべてのレイヤから地物選択を取り消す</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="916"/>
@@ -6775,10 +5353,6 @@ Shift+クリックで非表示
         <translation>文字注記</translation>
     </message>
     <message>
-        <source>Form annotation</source>
-        <translation type="obsolete">注記フォーム</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="1111"/>
         <source>Move Annotation</source>
         <translation>注記移動</translation>
@@ -6834,10 +5408,6 @@ Shift+クリックで非表示
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <source>Add PostGIS Layer...</source>
-        <translation type="obsolete">PostGISレイヤの追加...</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="1192"/>
         <source>Ctrl+Shift+D</source>
         <translation>Ctrl+Shift+D</translation>
@@ -6873,30 +5443,14 @@ Shift+クリックで非表示
         <translation>属性テーブルのオープン</translation>
     </message>
     <message>
-        <source>Toggle editing</source>
-        <translation type="obsolete">編集モード変更</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="1264"/>
         <source>Toggles the editing state of the current layer</source>
         <translation>カレントレイヤの編集モードを切り替える</translation>
     </message>
     <message>
-        <source>Save edits</source>
-        <translation type="obsolete">編集を保存する</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="1276"/>
         <source>Save edits to current layer, but continue editing</source>
         <translation>カレントレイヤへの編集を保存した後,編集作業を続けます</translation>
-    </message>
-    <message>
-        <source>Save as...</source>
-        <translation type="obsolete">名前をつけて保存...</translation>
-    </message>
-    <message>
-        <source>Save Selection as vector file...</source>
-        <translation type="obsolete">選択部分をベクタファイルとして保存する...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1295"/>
@@ -6917,14 +5471,6 @@ Shift+クリックで非表示
         <location filename="../src/ui/qgisapp.ui" line="1306"/>
         <source>Ctrl+Shift+C</source>
         <translation>Ctrl+Shift+C</translation>
-    </message>
-    <message>
-        <source>Set project CRS from layer</source>
-        <translation type="obsolete">レイヤのCRSをプロジェクトに設定する</translation>
-    </message>
-    <message>
-        <source>Tile scale slider</source>
-        <translation type="obsolete">タイルスケールスライダー</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1351"/>
@@ -7019,10 +5565,6 @@ Shift+クリックで非表示
         <translation>選択部分に地図をパンする</translation>
     </message>
     <message>
-        <source>Live GPS tracking</source>
-        <translation type="obsolete">ライブGPSトラッキング</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="1316"/>
         <source>Properties...</source>
         <translation>プロパティ...</translation>
@@ -7072,10 +5614,6 @@ Shift+クリックで非表示
         <location filename="../src/ui/qgisapp.ui" line="1342"/>
         <source>Add All to Overview</source>
         <translation>全体図に全て追加</translation>
-    </message>
-    <message>
-        <source>Remove All From Overview</source>
-        <translation type="obsolete">全体図から全て削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1360"/>
@@ -7209,10 +5747,6 @@ Shift+クリックで非表示
         <translation>ラベルを変更する</translation>
     </message>
     <message>
-        <source>Style manager...</source>
-        <translation type="obsolete">スタイルマネージャ...</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="1568"/>
         <source>Python Console</source>
         <translation>Pythonコンソール</translation>
@@ -7221,10 +5755,6 @@ Shift+クリックで非表示
         <location filename="../src/ui/qgisapp.ui" line="1577"/>
         <source>Full histogram stretch</source>
         <translation>全ヒストグラムを拡大</translation>
-    </message>
-    <message>
-        <source>Stretch histogram to full dataset</source>
-        <translation type="obsolete">ヒストグラムを全データセットに拡大する</translation>
     </message>
 </context>
 <context>
@@ -7343,64 +5873,6 @@ Wrong line: %1</source>
     </message>
 </context>
 <context>
-    <name>OgrConverterGuiBase</name>
-    <message>
-        <source>OGR Layer Converter</source>
-        <translation type="obsolete">OGRレイヤコンバータ</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">変換元データ</translation>
-    </message>
-    <message>
-        <source>Format</source>
-        <translation type="obsolete">形式</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="obsolete">ファイル</translation>
-    </message>
-    <message>
-        <source>Directory</source>
-        <translation type="obsolete">ディレクトリ</translation>
-    </message>
-    <message>
-        <source>Remote source</source>
-        <translation type="obsolete">リモートソース</translation>
-    </message>
-    <message>
-        <source>Dataset</source>
-        <translation type="obsolete">データセット</translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="obsolete">ブラウズ</translation>
-    </message>
-    <message>
-        <source>Layer</source>
-        <translation type="obsolete">レイヤ</translation>
-    </message>
-    <message>
-        <source>Target</source>
-        <translation type="obsolete">変換先</translation>
-    </message>
-</context>
-<context>
-    <name>OgrPlugin</name>
-    <message>
-        <source>Run OGR Layer Converter</source>
-        <translation type="obsolete">OGRレイヤコンバータを起動する</translation>
-    </message>
-    <message>
-        <source>OG&amp;R Converter</source>
-        <translation type="obsolete">OGRコンバータ(&amp;R)</translation>
-    </message>
-    <message>
-        <source>Translates vector layers between formats supported by OGR library</source>
-        <translation type="obsolete">ベクタレイヤをOGRライブラリでサポートされている形式間で変換する</translation>
-    </message>
-</context>
-<context>
     <name>OracleConnectGuiBase</name>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="14"/>
@@ -7436,807 +5908,6 @@ Wrong line: %1</source>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="85"/>
         <source>Save Password</source>
         <translation>パスワード保存</translation>
-    </message>
-</context>
-<context>
-    <name>OsmAddRelationDlg</name>
-    <message>
-        <source>Create OSM relation</source>
-        <translation type="obsolete">OSMリレーションの作成</translation>
-    </message>
-    <message>
-        <source>Relation type:</source>
-        <translation type="obsolete">リレーションタイプ:</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Properties</source>
-        <translation type="obsolete">プロパティ</translation>
-    </message>
-    <message>
-        <source>Members</source>
-        <translation type="obsolete">メンバー</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation type="obsolete">作成</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>Show type description</source>
-        <translation type="obsolete">タイプ記述の表示</translation>
-    </message>
-    <message>
-        <source>Shows brief description of selected relation type.</source>
-        <translation type="obsolete">選択されたリレーションタイプについての簡単な説明を表示します.</translation>
-    </message>
-    <message>
-        <source>Generate tags</source>
-        <translation type="obsolete">タグの作成</translation>
-    </message>
-    <message>
-        <source>Fills tag table with tags that are typical for relation of specified type.</source>
-        <translation type="obsolete">指定タイプのリレーションに適したタグをタグテーブルに記入してください.</translation>
-    </message>
-    <message>
-        <source>Remove all selected tags</source>
-        <translation type="obsolete">選択しているタグの削除</translation>
-    </message>
-    <message>
-        <source>Removes all selected tags.</source>
-        <translation type="obsolete">選択しているタグの削除</translation>
-    </message>
-    <message>
-        <source>Select member on map</source>
-        <translation type="obsolete">地図上でメンバーの選択</translation>
-    </message>
-    <message>
-        <source>Starts process of selecting next relation member on map.</source>
-        <translation type="obsolete">地図上で次に接続する要素を選択する作業を開始する</translation>
-    </message>
-    <message>
-        <source>Remove all selected members</source>
-        <translation type="obsolete">全ての選択メンバーの削除</translation>
-    </message>
-    <message>
-        <source>Removes all selected members.</source>
-        <translation type="obsolete">全ての選択メンバーの削除</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">保存</translation>
-    </message>
-    <message>
-        <source>Edit OSM relation</source>
-        <translation type="obsolete">OSMリレーションの編集</translation>
-    </message>
-    <message>
-        <source>for grouping boundaries and marking enclaves / exclaves</source>
-        <translation type="obsolete">境界線のグループ化と穴あき/飛び地のマーキング</translation>
-    </message>
-    <message>
-        <source>to put holes into areas (might have to be renamed, see article)</source>
-        <translation type="obsolete">領域への穴の追加(名前の変更が必要でしょう)</translation>
-    </message>
-    <message>
-        <source>any kind of turn restriction</source>
-        <translation type="obsolete">右折、左折の制限</translation>
-    </message>
-    <message>
-        <source>like bus routes, cycle routes and numbered highways</source>
-        <translation type="obsolete">バス路線,サイクル路線と番号付きハイウェイ</translation>
-    </message>
-    <message>
-        <source>traffic enforcement devices; speed cameras, redlight cameras, weight checks, ...</source>
-        <translation type="obsolete">交通規制デバイス,スピードカメラ,レッドライトカメラ,重量チェック,....</translation>
-    </message>
-    <message>
-        <source>OSM Information</source>
-        <translation type="obsolete">OSM情報</translation>
-    </message>
-</context>
-<context>
-    <name>OsmDownloadDlg</name>
-    <message>
-        <source>Download OSM data</source>
-        <translation type="obsolete">OSMデータのダウンロード</translation>
-    </message>
-    <message>
-        <source>Extent</source>
-        <translation type="obsolete">範囲</translation>
-    </message>
-    <message>
-        <source>Latitude:</source>
-        <translation type="obsolete">緯度:</translation>
-    </message>
-    <message>
-        <source>   From</source>
-        <translation type="obsolete">   から</translation>
-    </message>
-    <message>
-        <source>To</source>
-        <translation type="obsolete">へ</translation>
-    </message>
-    <message>
-        <source>Longitude:</source>
-        <translation type="obsolete">経度:</translation>
-    </message>
-    <message>
-        <source>&lt;nothing&gt;</source>
-        <translation type="obsolete">&lt;無&gt;</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Download to:</source>
-        <translation type="obsolete">ダウンロード先:</translation>
-    </message>
-    <message>
-        <source>Open data automatically after download</source>
-        <translation type="obsolete">ダウンロード後自動的にデータを開く</translation>
-    </message>
-    <message>
-        <source>Replace current data (current layer will be removed)</source>
-        <translation type="obsolete">現データの置き換え（カレントレイヤは削除されます)</translation>
-    </message>
-    <message>
-        <source>Use custom renderer</source>
-        <translation type="obsolete">カスタムレンダラーの使用</translation>
-    </message>
-    <message>
-        <source>Download</source>
-        <translation type="obsolete">ダウンロード</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>OSM Download</source>
-        <translation type="obsolete">OSMダウンロード</translation>
-    </message>
-    <message>
-        <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">ファイル保存ができません %1:%2.</translation>
-    </message>
-    <message>
-        <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="obsolete">OpenStreetMapサーバーの反応を待っています...</translation>
-    </message>
-    <message>
-        <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="obsolete">ダウンロードプロセス失敗。OpenStreetMapサーバーのレスポンス:%1 - %2</translation>
-    </message>
-    <message>
-        <source>Check your internet connection</source>
-        <translation type="obsolete">あなたのインターネット接続設定をチェックして下さい</translation>
-    </message>
-    <message>
-        <source>OSM Download Error</source>
-        <translation type="obsolete">OSMダウンロードエラー</translation>
-    </message>
-    <message>
-        <source>Download failed: %1.</source>
-        <translation type="obsolete">ダウンロード失敗:%1.</translation>
-    </message>
-    <message>
-        <source>Choose file to save</source>
-        <translation type="obsolete">保存するファイルを指定して下さい</translation>
-    </message>
-    <message>
-        <source>OSM Files (*.osm)</source>
-        <translation type="obsolete">OSMファイル(*.osm)</translation>
-    </message>
-    <message>
-        <source>Getting data</source>
-        <translation type="obsolete">データ取得中</translation>
-    </message>
-    <message>
-        <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="obsolete">あなたがOSMデータをダウンロードしているオープンストリートマップサーバー(~ api.openstreetmap.org) は取得できるデータ量の制限があります.それについては以下に記述があります &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; またダウンロードする領域の緯度あるいは経度が0.25度以上のものはダウンロードできません..注　QuantumGISでの作業では自由に領域設定を行えます、しかしオープンストリートマップサーバーは制限をこえるダウンロード要求をすべて拒絶します. </translation>
-    </message>
-    <message>
-        <source>Both extents are too large!</source>
-        <translation type="obsolete">緯度、経度の領域が広すぎぎます!</translation>
-    </message>
-    <message>
-        <source>Latitude extent is too large!</source>
-        <translation type="obsolete">緯度方向の領域が広すぎます!</translation>
-    </message>
-    <message>
-        <source>Longitude extent is too large!</source>
-        <translation type="obsolete">経度方向の領域が広すぎます!</translation>
-    </message>
-    <message>
-        <source>OK! Area is probably acceptable to server.</source>
-        <translation type="obsolete">OK!領域は多分サーバーに受け付けられました。</translation>
-    </message>
-</context>
-<context>
-    <name>OsmFeatureDW</name>
-    <message>
-        <source>OSM Feature Dock Widget</source>
-        <translation type="obsolete">OSM地物ドックウィジェット</translation>
-    </message>
-    <message>
-        <source>OSM Feature</source>
-        <translation type="obsolete">OSM地物</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Create point</source>
-        <translation type="obsolete">点の作成</translation>
-    </message>
-    <message>
-        <source>Create line</source>
-        <translation type="obsolete">線の作成</translation>
-    </message>
-    <message>
-        <source>Create polygon</source>
-        <translation type="obsolete">ポリゴンの作成</translation>
-    </message>
-    <message>
-        <source>Create relation</source>
-        <translation type="obsolete">リレーションの作成</translation>
-    </message>
-    <message>
-        <source>Undo</source>
-        <translation type="obsolete">取り消し</translation>
-    </message>
-    <message>
-        <source>Redo</source>
-        <translation type="obsolete">再実行</translation>
-    </message>
-    <message>
-        <source>Show/Hide OSM Edit History</source>
-        <translation type="obsolete">OSM編集履歴の表示/非表示</translation>
-    </message>
-    <message>
-        <source>Feature:</source>
-        <translation type="obsolete">地物:</translation>
-    </message>
-    <message>
-        <source>TYPE, ID:</source>
-        <translation type="obsolete">TYPE,ID;</translation>
-    </message>
-    <message>
-        <source>CREATED:</source>
-        <translation type="obsolete">作成日時：</translation>
-    </message>
-    <message>
-        <source>USER:</source>
-        <translation type="obsolete">ユーザー:</translation>
-    </message>
-    <message>
-        <source>unknown</source>
-        <translation type="obsolete">不明</translation>
-    </message>
-    <message>
-        <source>Properties</source>
-        <translation type="obsolete">プロパティ</translation>
-    </message>
-    <message>
-        <source>Remove selected tags</source>
-        <translation type="obsolete">選択タグの削除</translation>
-    </message>
-    <message>
-        <source>Relations</source>
-        <translation type="obsolete">リレーション</translation>
-    </message>
-    <message>
-        <source>Add relation</source>
-        <translation type="obsolete">リレーションの追加</translation>
-    </message>
-    <message>
-        <source>Edit relation</source>
-        <translation type="obsolete">リレーションの編集</translation>
-    </message>
-    <message>
-        <source>Remove relation</source>
-        <translation type="obsolete">リレーションの削除</translation>
-    </message>
-    <message>
-        <source>Relation tags:</source>
-        <translation type="obsolete">リレーションタグ:</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation type="obsolete">1</translation>
-    </message>
-    <message>
-        <source>Relation members:</source>
-        <translation type="obsolete">メンバーのリレーション</translation>
-    </message>
-    <message>
-        <source>Identify feature</source>
-        <translation type="obsolete">地物情報表示</translation>
-    </message>
-    <message>
-        <source>Move feature</source>
-        <translation type="obsolete">地物移動</translation>
-    </message>
-    <message>
-        <source>Remove this feature</source>
-        <translation type="obsolete">この地物の削除</translation>
-    </message>
-    <message>
-        <source>OSM Plugin</source>
-        <translation type="obsolete">OSMプラグイン</translation>
-    </message>
-    <message>
-        <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="obsolete">&apos;OSMリレーション作成&apos;ダイアログはカレントOSMデータベースに変更が加えられたため自動的に閉じました.</translation>
-    </message>
-    <message>
-        <source>Choose OSM feature first.</source>
-        <translation type="obsolete">OSM地物を最初に選択してください.</translation>
-    </message>
-    <message>
-        <source>Choose relation for editing first.</source>
-        <translation type="obsolete">編集するリレーションを最初に選択してください.</translation>
-    </message>
-    <message>
-        <source>Snapping ON. Hold Ctrl to disable it.</source>
-        <translation type="obsolete">スナッピングON Ctrlキーをホールドすると無効にできます.</translation>
-    </message>
-    <message>
-        <source>Hide OSM Edit History</source>
-        <translation type="obsolete">OSM編集履歴を隠します</translation>
-    </message>
-    <message>
-        <source>Show OSM Edit History</source>
-        <translation type="obsolete">OSM編集履歴を表示します</translation>
-    </message>
-</context>
-<context>
-    <name>OsmImportDlg</name>
-    <message>
-        <source>Import data to OSM</source>
-        <translation type="obsolete">OSMにデータをインポートする</translation>
-    </message>
-    <message>
-        <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
-        <translation type="obsolete">このダイアログでロードされたQGISレイヤをアクティブOSMデータとしてインポートできます。</translation>
-    </message>
-    <message>
-        <source>Layer</source>
-        <translation type="obsolete">レイヤ</translation>
-    </message>
-    <message>
-        <source>Import only current selection</source>
-        <translation type="obsolete">カレント選択のみをインポートする</translation>
-    </message>
-    <message>
-        <source>Layer doesn&apos;t exist</source>
-        <translation type="obsolete">レイヤが存在しません</translation>
-    </message>
-    <message>
-        <source>The selected layer doesn&apos;t exist anymore!</source>
-        <translation type="obsolete">選択されたレイヤは存在しません!</translation>
-    </message>
-    <message>
-        <source>Importing features...</source>
-        <translation type="obsolete">地物を取り込んできます...</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>Import</source>
-        <translation type="obsolete">インポート</translation>
-    </message>
-    <message>
-        <source>Import has been completed.</source>
-        <translation type="obsolete">インポートが完了しました.</translation>
-    </message>
-</context>
-<context>
-    <name>OsmLoadDlg</name>
-    <message>
-        <source>Load OSM</source>
-        <translation type="obsolete">OSMをロードする</translation>
-    </message>
-    <message>
-        <source>OpenStreetMap file to load:</source>
-        <translation type="obsolete">ロードするOpenStreetMapファイル</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Add columns for tags:</source>
-        <translation type="obsolete">タグのためのカラムを追加する</translation>
-    </message>
-    <message>
-        <source>Use custom renderer</source>
-        <translation type="obsolete">カスタムレンダラーの利用</translation>
-    </message>
-    <message>
-        <source>Replace current data (current layers will be removed)</source>
-        <translation type="obsolete">カレントデータの置き換え（カレントレイヤは削除されます）</translation>
-    </message>
-    <message>
-        <source>Choose an Open Street Map file</source>
-        <translation type="obsolete">オープンストリートマップファイルを選んで下さい</translation>
-    </message>
-    <message>
-        <source>OSM Files (*.osm)</source>
-        <translation type="obsolete">OSMファイル(*.osm)</translation>
-    </message>
-    <message>
-        <source>OSM Load</source>
-        <translation type="obsolete">OSMロード</translation>
-    </message>
-    <message>
-        <source>Please enter path to OSM data file.</source>
-        <translation type="obsolete">OSMデータファイルのパスを入力して下さい.</translation>
-    </message>
-    <message>
-        <source>Path to OSM file is invalid: %1.</source>
-        <translation type="obsolete">OSMファイルのパスが不正です:%1.</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">エラー</translation>
-    </message>
-    <message>
-        <source>Layers of OSM file &quot;%1&quot; are loaded already.</source>
-        <translation type="obsolete">OSMファイル&quot;%1&quot;のレイヤはすでにロードされています.</translation>
-    </message>
-    <message>
-        <source>Failed to load polygon layer.</source>
-        <translation type="obsolete">ポリゴンレイヤのロードに失敗しました</translation>
-    </message>
-    <message>
-        <source>Failed to load line layer.</source>
-        <translation type="obsolete">ラインレイヤのロードに失敗しました</translation>
-    </message>
-    <message>
-        <source>Failed to load point layer.</source>
-        <translation type="obsolete">ポイントレイヤのロードに失敗しました</translation>
-    </message>
-    <message>
-        <source>Could not connect to setRenderer signal.</source>
-        <translation type="obsolete">setRendererシグナルに接続できませんでした.</translation>
-    </message>
-    <message>
-        <source>Failed to load layers: %1</source>
-        <translation type="obsolete">レイヤ%1のロードに失敗しました</translation>
-    </message>
-</context>
-<context>
-    <name>OsmPlugin</name>
-    <message>
-        <source>Load OSM from file</source>
-        <translation type="obsolete">OSMをファイルからロードします</translation>
-    </message>
-    <message>
-        <source>Load OpenStreetMap from file</source>
-        <translation type="obsolete">OpenStreetMapをファイルからロードします</translation>
-    </message>
-    <message>
-        <source>Import data from a layer</source>
-        <translation type="obsolete">レイヤからデータをインポートします</translation>
-    </message>
-    <message>
-        <source>Import data from a layer to OpenStreetMap</source>
-        <translation type="obsolete">レイヤからOpenStreetMapにデータをインポートします</translation>
-    </message>
-    <message>
-        <source>Save OSM to file</source>
-        <translation type="obsolete">OSMをファイルに保存します</translation>
-    </message>
-    <message>
-        <source>Save OpenStreetMap to file</source>
-        <translation type="obsolete">OpenStreetMapをファイルに保存します</translation>
-    </message>
-    <message>
-        <source>Download OSM data</source>
-        <translation type="obsolete">OSMデータのダウンロード</translation>
-    </message>
-    <message>
-        <source>Download OpenStreetMap data</source>
-        <translation type="obsolete">OpenStreetMap データをダウンロードする</translation>
-    </message>
-    <message>
-        <source>Upload OSM data</source>
-        <translation type="obsolete">OSMデータアップロード</translation>
-    </message>
-    <message>
-        <source>Upload OpenStreetMap data</source>
-        <translation type="obsolete">OpenStreetMap データをアップロードする</translation>
-    </message>
-    <message>
-        <source>Show/Hide OSM Feature Manager</source>
-        <translation type="obsolete">OSM地物マネージャの表示/非表示</translation>
-    </message>
-    <message>
-        <source>Show/Hide OpenStreetMap Feature Manager</source>
-        <translation type="obsolete">OpenStreetMap地物マネージャの表示/非表示</translation>
-    </message>
-    <message>
-        <source>Sorry</source>
-        <translation type="obsolete">すいません</translation>
-    </message>
-    <message>
-        <source>You don&apos;t have OSM provider installed!</source>
-        <translation type="obsolete">あなたはまだOSMプロバイダをインストールしていません!</translation>
-    </message>
-    <message>
-        <source>OSM Save to file</source>
-        <translation type="obsolete">OSMをファイルに保存する</translation>
-    </message>
-    <message>
-        <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
-Please change this situation first, because OSM Plugin doesn&apos;t know what to save.</source>
-        <translation type="obsolete">OSMデータがロード/ダウンロードされていません またはレイヤパネルでOSMレイヤが選択されていません.
-最初に状態を変えて下さい,なぜならばOSMプラグインはどのレイヤを保存していいかわからないからです.</translation>
-    </message>
-    <message>
-        <source>OSM Upload</source>
-        <translation type="obsolete">OSMアップロード</translation>
-    </message>
-    <message>
-        <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
-Please change this situation first, because OSM Plugin doesn&apos;t know what to upload.</source>
-        <translation type="obsolete">OSMデータがロード/ダウンロードされていません またはレイヤパネルでOSMレイヤが選択されていません.
-最初に状態を変えて下さい,なぜならばOSMプラグインは何をアップロードしていいかわからないからです.</translation>
-    </message>
-    <message>
-        <source>OSM Import</source>
-        <translation type="obsolete">OSMインポート</translation>
-    </message>
-    <message>
-        <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
-Please change this situation first, because OSM Plugin doesn&apos;t know what layer will be destination of the import.</source>
-        <translation type="obsolete">OSMデータがロード/ダウンロードされていません またはレイヤパネルでOSMレイヤが選択されていません.
-最初に状態を変えて下さい,なぜならばOSMプラグインはどのレイヤがインポート先かわからないからです.</translation>
-    </message>
-    <message>
-        <source>There are currently no available vector layers.</source>
-        <translation type="obsolete">現在利用できるベクタレイヤがありません.</translation>
-    </message>
-</context>
-<context>
-    <name>OsmSaveDlg</name>
-    <message>
-        <source>Save OSM</source>
-        <translation type="obsolete">OSMの保存</translation>
-    </message>
-    <message>
-        <source>Where to save:</source>
-        <translation type="obsolete">保存する場所;</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Features to save:</source>
-        <translation type="obsolete">保存する地物:</translation>
-    </message>
-    <message>
-        <source>Points</source>
-        <translation type="obsolete">点</translation>
-    </message>
-    <message>
-        <source>Lines</source>
-        <translation type="obsolete">ライン</translation>
-    </message>
-    <message>
-        <source>Polygons</source>
-        <translation type="obsolete">ポリゴン</translation>
-    </message>
-    <message>
-        <source>Relations</source>
-        <translation type="obsolete">リレーション</translation>
-    </message>
-    <message>
-        <source>Tags</source>
-        <translation type="obsolete">タグ</translation>
-    </message>
-    <message>
-        <source>Choose an Open Street Map file</source>
-        <translation type="obsolete">オープンストリートマップファイルを選んで下さい</translation>
-    </message>
-    <message>
-        <source>OSM Files (*.osm)</source>
-        <translation type="obsolete">OSMファイル(*.osm)</translation>
-    </message>
-    <message>
-        <source>Save OSM to file</source>
-        <translation type="obsolete">OSMをファイルに保存します</translation>
-    </message>
-    <message>
-        <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">ファイル%1:%2に保存できません.</translation>
-    </message>
-    <message>
-        <source>Initializing...</source>
-        <translation type="obsolete">初期化中...</translation>
-    </message>
-    <message>
-        <source>Saving nodes...</source>
-        <translation type="obsolete">ノードの保存中...</translation>
-    </message>
-    <message>
-        <source>Saving lines...</source>
-        <translation type="obsolete">線の保存中...</translation>
-    </message>
-    <message>
-        <source>Saving polygons...</source>
-        <translation type="obsolete">ポリゴンの保存中...</translation>
-    </message>
-    <message>
-        <source>Saving relations...</source>
-        <translation type="obsolete">リレーションの保存中...</translation>
-    </message>
-</context>
-<context>
-    <name>OsmUndoRedoDW</name>
-    <message>
-        <source>OSM Edit History</source>
-        <translation type="obsolete">OSM編集履歴</translation>
-    </message>
-    <message>
-        <source>Clear all</source>
-        <translation type="obsolete">前クリア</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Undo</source>
-        <translation type="obsolete">取り消し</translation>
-    </message>
-    <message>
-        <source>Redo</source>
-        <translation type="obsolete">再実行</translation>
-    </message>
-</context>
-<context>
-    <name>OsmUploadDlg</name>
-    <message>
-        <source>Upload</source>
-        <translation type="obsolete">アップロード</translation>
-    </message>
-    <message>
-        <source>OSM Upload</source>
-        <translation type="obsolete">OSMアップロード</translation>
-    </message>
-    <message>
-        <source>Uploading data...</source>
-        <translation type="obsolete">データアップデート中...</translation>
-    </message>
-    <message>
-        <source>Node addition failed.</source>
-        <translation type="obsolete">ノード追加に失敗しました.</translation>
-    </message>
-    <message>
-        <source>Node update failed.</source>
-        <translation type="obsolete">ノード更新に失敗しました.</translation>
-    </message>
-    <message>
-        <source>Node deletion failed.</source>
-        <translation type="obsolete">ノード削除に失敗しました.</translation>
-    </message>
-    <message>
-        <source>Way addition failed.</source>
-        <translation type="obsolete">ウェイ追加に失敗しました.</translation>
-    </message>
-    <message>
-        <source>Way update failed.</source>
-        <translation type="obsolete">ウェイ更新に失敗しました.</translation>
-    </message>
-    <message>
-        <source>Way deletion failed.</source>
-        <translation type="obsolete">ウェイ削除に失敗しました.</translation>
-    </message>
-    <message>
-        <source>Relation addition failed.</source>
-        <translation type="obsolete">リレーション追加に失敗しました.</translation>
-    </message>
-    <message>
-        <source>Relation update failed.</source>
-        <translation type="obsolete">リレーション更新に失敗しました.</translation>
-    </message>
-    <message>
-        <source>Relation deletion failed.</source>
-        <translation type="obsolete">リレーション削除に失敗しました.</translation>
-    </message>
-    <message>
-        <source>Connection to OpenStreetMap server cannot be established. Please check your proxy settings, firewall settings and try again.</source>
-        <translation type="obsolete">OpenStreetMapサーバへの接続を確立できません.プロキシやファイヤウォールの設定をチェックして再度試みて下さい.</translation>
-    </message>
-    <message>
-        <source>Changeset closing failed.</source>
-        <translation type="obsolete">チェンジセットのクローズに失敗しました</translation>
-    </message>
-    <message>
-        <source>Upload process failed. OpenStreetMap server response: %1 - %2.</source>
-        <translation type="obsolete">アップロードプロセスに失敗しました. OpenStreetMapサーバレスポンス: %1 - %2.</translation>
-    </message>
-    <message>
-        <source>Authentication failed. Please try again with correct login and password.</source>
-        <translation type="obsolete">認証に失敗しました.正しいログイン名とパスワードで再度試して下さい.</translation>
-    </message>
-    <message>
-        <source>Setting host failed.</source>
-        <translation type="obsolete">ホストの設定に失敗しました</translation>
-    </message>
-    <message>
-        <source>Setting user and password failed.</source>
-        <translation type="obsolete">ユーザ名とパスワードの設定に失敗しました</translation>
-    </message>
-    <message>
-        <source>Setting proxy failed.</source>
-        <translation type="obsolete">プロキシの設定に失敗しました</translation>
-    </message>
-    <message>
-        <source>Upload OSM data</source>
-        <translation type="obsolete">OSMデータアップロード</translation>
-    </message>
-    <message>
-        <source>Ready for upload</source>
-        <translation type="obsolete">アップロード準備</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation type="obsolete">1</translation>
-    </message>
-    <message>
-        <source>2</source>
-        <translation type="obsolete">2</translation>
-    </message>
-    <message>
-        <source>3</source>
-        <translation type="obsolete">3</translation>
-    </message>
-    <message>
-        <source>4</source>
-        <translation type="obsolete">4</translation>
-    </message>
-    <message>
-        <source>5</source>
-        <translation type="obsolete">5</translation>
-    </message>
-    <message>
-        <source>Comment on your changes:</source>
-        <translation type="obsolete">あなたの変更についてのコメント:</translation>
-    </message>
-    <message>
-        <source>OSM account</source>
-        <translation type="obsolete">OSMアカウント</translation>
-    </message>
-    <message>
-        <source>Username:</source>
-        <translation type="obsolete">ユーザー名:</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">パスワード:</translation>
-    </message>
-    <message>
-        <source>Show password</source>
-        <translation type="obsolete">パスワード表示</translation>
-    </message>
-    <message>
-        <source>Save password</source>
-        <translation type="obsolete">パスワード保存</translation>
     </message>
 </context>
 <context>
@@ -8304,10 +5975,6 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
         <translation>保存</translation>
     </message>
     <message>
-        <source>Save As..</source>
-        <translation type="obsolete">名前をつけて保存..</translation>
-    </message>
-    <message>
         <source>Save As...</source>
         <translation>名前を付けて保存...</translation>
     </message>
@@ -8328,24 +5995,8 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
         <translation>スクリプト実行</translation>
     </message>
     <message>
-        <source>Comment code</source>
-        <translation type="obsolete">コードのコメント</translation>
-    </message>
-    <message>
-        <source>Uncomment code</source>
-        <translation type="obsolete">コードのアンコメント</translation>
-    </message>
-    <message>
-        <source>Object browser</source>
-        <translation type="obsolete">オブジェクトブラウザ</translation>
-    </message>
-    <message>
         <source>Object Inspector</source>
         <translation>オブジェクトインスペクタ</translation>
-    </message>
-    <message>
-        <source>Find text</source>
-        <translation type="obsolete">テキスト検索</translation>
     </message>
     <message>
         <source>Comment</source>
@@ -8636,41 +6287,12 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
         <translation>APIパスの削除</translation>
     </message>
     <message>
-        <source>Failed to save %1: %2</source>
-        <translation type="obsolete">保存に失敗しました %1: %2</translation>
-    </message>
-    <message>
         <source>Save File As</source>
         <translation>名前をつけて保存</translation>
     </message>
     <message>
         <source>Python Console</source>
         <translation>Pythonコンソール</translation>
-    </message>
-    <message>
-        <source>To access Quantum GIS environment from this console
-use qgis.utils.iface object (instance of QgisInterface class).
-
-</source>
-        <translation type="obsolete">このコンソールからQuantum GIS環境にアクセスするためには
-qgis.utils.ifaceオブジェクト（QgisInterfaceクラスのインスタンス）を利用して下さい.
-
-</translation>
-    </message>
-</context>
-<context>
-    <name>QFileDialog</name>
-    <message>
-        <source>Save experiment report to portable document format (.pdf)</source>
-        <translation type="obsolete">作業レポートをPDFファイルで保存する(.pdf)</translation>
-    </message>
-    <message>
-        <source>Load layer properties from style file (.qml)</source>
-        <translation type="obsolete">レイヤプロパティをスタイルファイルから読み込む(.qml)</translation>
-    </message>
-    <message>
-        <source>Save layer properties as style file (.qml)</source>
-        <translation type="obsolete">レイヤプロパティをスタイルファイルとして保存する(.qml)</translation>
     </message>
 </context>
 <context>
@@ -8801,62 +6423,6 @@ qgis.utils.ifaceオブジェクト（QgisInterfaceクラスのインスタンス
         <translation>ロードに失敗しました %1: %2</translation>
     </message>
     <message>
-        <source>Expected operator, got scalar value!</source>
-        <translation type="obsolete">スカラー値がオペレータとして必要でした!</translation>
-    </message>
-    <message>
-        <source>Unexpected state when evaluating operator!</source>
-        <translation type="obsolete">オペレータを評価中に予期せぬ状態になりました!</translation>
-    </message>
-    <message>
-        <source>Could not retrieve value of list value</source>
-        <translation type="obsolete">リストの値から値を取得できませんでした</translation>
-    </message>
-    <message>
-        <source>Unknown operator: %1</source>
-        <translation type="obsolete">不明なオペレータ: %1</translation>
-    </message>
-    <message>
-        <source>Division by zero.</source>
-        <translation type="obsolete">0で割り算をしました</translation>
-    </message>
-    <message>
-        <source>Unknown token: %1</source>
-        <translation type="obsolete">不明なトークン: %1</translation>
-    </message>
-    <message>
-        <source>Expression error: %1</source>
-        <translation type="obsolete">式のエラー:%1</translation>
-    </message>
-    <message>
-        <source>Unknown error %1: %2</source>
-        <translation type="obsolete">不明なエラー:%1:%2</translation>
-    </message>
-    <message>
-        <source>Geometry is 0</source>
-        <translation type="obsolete">ジオメトリが0です</translation>
-    </message>
-    <message>
-        <source>Index %1 out of range [0;%2[</source>
-        <translation type="obsolete">インデックス %1 は範囲外です [0;%2[</translation>
-    </message>
-    <message>
-        <source>Operator doesn&apos;t match the argument types.</source>
-        <translation type="obsolete">演算子が引数の型にマッチしません.</translation>
-    </message>
-    <message>
-        <source>Error in power function</source>
-        <translation type="obsolete">累乗関数内でエラーが発生しました</translation>
-    </message>
-    <message>
-        <source>Value &apos;%1&apos; is not numeric</source>
-        <translation type="obsolete">値&apos;%1&apos;は数値ではありません</translation>
-    </message>
-    <message>
-        <source>Unknown error!</source>
-        <translation type="obsolete">不明なエラー!</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgslabelattributes.cpp" line="62"/>
         <source>Label</source>
         <translation>ラベル</translation>
@@ -8921,14 +6487,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>GISBASEが指定されていないとGRASSデータは利用できません.</translation>
     </message>
     <message>
-        <source>CopyrightLabel</source>
-        <translation type="obsolete">著作権ラベル</translation>
-    </message>
-    <message>
-        <source>Draws copyright information</source>
-        <translation type="obsolete">著作権情報を表示する</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="54"/>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="39"/>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="72"/>
@@ -8952,18 +6510,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>バージョン0.2</translation>
     </message>
     <message>
-        <source>Loads and displays delimited text files containing x,y coordinates</source>
-        <translation type="obsolete">x y 座標が含まれたデリミテッドテキストファイルをロードして表示する</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="21"/>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="50"/>
         <source>Layers</source>
         <translation>レイヤ</translation>
-    </message>
-    <message>
-        <source>Add Delimited Text Layer</source>
-        <translation type="obsolete">デリミテッドテキストレイヤを追加する</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="51"/>
@@ -8987,22 +6537,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>GRASSレイヤ</translation>
     </message>
     <message>
-        <source>NorthArrow</source>
-        <translation type="obsolete">北向き矢印</translation>
-    </message>
-    <message>
-        <source>Displays a north arrow overlayed onto the map</source>
-        <translation type="obsolete">地図上に北向き矢印を表示する</translation>
-    </message>
-    <message>
-        <source>ScaleBar</source>
-        <translation type="obsolete">スケールバー</translation>
-    </message>
-    <message>
-        <source>Draws a scale bar</source>
-        <translation type="obsolete">スケールバーを描画する</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spit/qgsspitplugin.cpp" line="33"/>
         <source>SPIT</source>
         <translation>SPIT</translation>
@@ -9013,30 +6547,14 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>シェープファイルをPostgreSQL/PostGISへインポートするツール</translation>
     </message>
     <message>
-        <source>WFS plugin</source>
-        <translation type="obsolete">WFSプラグイン</translation>
-    </message>
-    <message>
-        <source>Adds WFS layers to the QGIS canvas</source>
-        <translation type="obsolete">QGISのキャンバスにWFSレイヤを追加する</translation>
-    </message>
-    <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="207"/>
         <source>Python error</source>
         <translation>Pythonのエラー</translation>
     </message>
     <message>
-        <source> km2</source>
-        <translation type="obsolete"> km2</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="858"/>
         <source> ha</source>
         <translation> ha</translation>
-    </message>
-    <message>
-        <source> m2</source>
-        <translation type="obsolete"> m2</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="152"/>
@@ -9129,14 +6647,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/core/qgsdistancearea.cpp" line="948"/>
         <source> unknown</source>
         <translation>不明</translation>
-    </message>
-    <message>
-        <source>Regular expressions on numeric values don&apos;t make sense. Use comparison instead.</source>
-        <translation type="obsolete">数値の正規表現では大文字小文字は関係さりません。代わりに比較を使ってください。</translation>
-    </message>
-    <message>
-        <source>Geoprocessing functions for working with PostgreSQL/PostGIS layers</source>
-        <translation type="obsolete">PostgreSQL/PostGIS レイヤで利用する空間演算関数</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="127"/>
@@ -9473,18 +6983,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>領域を読みこみません</translation>
     </message>
     <message>
-        <source>PostgreSQL Geoprocessing</source>
-        <translation type="obsolete">PostgreSQLの空間演算</translation>
-    </message>
-    <message>
-        <source>Quick Print</source>
-        <translation type="obsolete">クイックプリント</translation>
-    </message>
-    <message>
-        <source>Quick Print is a plugin to quickly print a map with minimal effort.</source>
-        <translation type="obsolete">クイックプリントは最少の労力ですばやく地図を印刷するプラグインです</translation>
-    </message>
-    <message>
         <location filename="../src/analysis/interpolation/qgsgridfilewriter.cpp" line="66"/>
         <location filename="../src/analysis/interpolation/qgstininterpolator.cpp" line="99"/>
         <source>Abort</source>
@@ -9590,14 +7088,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Version 0.001</translation>
     </message>
     <message>
-        <source>OGR Layer Converter</source>
-        <translation type="obsolete">OGRレイヤコンバータ</translation>
-    </message>
-    <message>
-        <source>Translates vector layers between formats supported by OGR library</source>
-        <translation type="obsolete">ベクタレイヤをOGRライブラリでサポートされている形式間で変換する</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="241"/>
         <source>Python is not enabled in QGIS.</source>
         <translation>QGISでPythonを利用できません.</translation>
@@ -9618,12 +7108,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="948"/>
         <source>Plugins</source>
         <translation>プラグイン</translation>
-    </message>
-    <message>
-        <source>Plugin &quot;%1&quot; is not compatible with this version of Quantum GIS.
-It will be disabled.</source>
-        <translation type="obsolete">プラグイン &quot;%1&quot;はこのバージョンのQuantum GISでは互換性がありません.
-これは無効になります.</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="253"/>
@@ -9699,10 +7183,6 @@ It will be disabled.</source>
 %1
 </source>
         <translation>%1にはQGISデータプロバイダプラグインはありません</translation>
-    </message>
-    <message>
-        <source>Referenced column wasn&apos;t found: %1</source>
-        <translation type="obsolete">%1には参照されているカラムがありませんでした。</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="114"/>
@@ -9886,10 +7366,6 @@ It will be disabled.</source>
         <translation>通常のデリバティブを推定しています...</translation>
     </message>
     <message>
-        <source>Could not open CRS database %1&lt;br&gt;Error(%2): %3</source>
-        <translation type="obsolete">CRSデータベース%1を開けませんでした&lt;br&gt;エラー(%2) %3</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1372"/>
         <source>Could not open CRS database %1
 Error(%2): %3</source>
@@ -9966,10 +7442,6 @@ Error(%2): %3</source>
         <translation>北</translation>
     </message>
     <message>
-        <source>Diagram Overlay</source>
-        <translation type="obsolete">グラフのオーバーレイ</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="29"/>
         <source>Diagram Overlay (Legacy)</source>
         <translation>ダイアグラムオーバーレイ（旧）</translation>
@@ -9983,10 +7455,6 @@ Error(%2): %3</source>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="32"/>
         <source>Version 0.0.1 (Legacy)</source>
         <translation>バージョン0.0.1（旧）</translation>
-    </message>
-    <message>
-        <source>Version 0.0.1</source>
-        <translation type="obsolete">バージョン 0.0.1</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="30"/>
@@ -10013,13 +7481,6 @@ Error(%2): %3</source>
         <source>Point displacement</source>
         <translation>点の移動</translation>
     </message>
-    <message numerus="yes">
-        <source>%n geometry error(s) found.</source>
-        <comment>number of geometry errors</comment>
-        <translation type="obsolete">
-            <numerusform>%n個のジオメトリエラーがありました.</numerusform>
-        </translation>
-    </message>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="355"/>
         <source>invalid line</source>
@@ -10029,14 +7490,6 @@ Error(%2): %3</source>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="67"/>
         <source>segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7</source>
         <translation>ポリゴン%3のリング%2のセグメント%1はポリゴン%6のリング%5のセグメント%4と点%7で交差します</translation>
-    </message>
-    <message>
-        <source>stopping validation after more than 100 errors</source>
-        <translation type="obsolete">100件以上のエラーがあるので検証を中止します</translation>
-    </message>
-    <message>
-        <source>ring %1 with less than three points</source>
-        <translation type="obsolete">%1のリングは3個未満の点で構成されています</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="87"/>
@@ -10262,18 +7715,6 @@ Error(%2): %3</source>
         <translation>座標変換に失敗しました,書き込みを中止します.（例外: %1）</translation>
     </message>
     <message>
-        <source>Geography Markup Language (GML)</source>
-        <translation type="obsolete">Geography Markup Language(GML)</translation>
-    </message>
-    <message>
-        <source>Generic Mapping Tools (GMT)</source>
-        <translation type="obsolete">Generic Mapping Tools(GMT)</translation>
-    </message>
-    <message>
-        <source>GPS eXchange Format</source>
-        <translation type="obsolete">GPS eXchange Format</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1118"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1493"/>
         <source>INTERLIS 1</source>
@@ -10284,10 +7725,6 @@ Error(%2): %3</source>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1498"/>
         <source>INTERLIS 2</source>
         <translation>INTELIS 2</translation>
-    </message>
-    <message>
-        <source>Keyhole Markup Language (KML)</source>
-        <translation type="obsolete">Keyhole Markup Language(KML)</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1512"/>
@@ -10305,10 +7742,6 @@ Error(%2): %3</source>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1546"/>
         <source>S-57 Base file</source>
         <translation>S-57 Base file</translation>
-    </message>
-    <message>
-        <source>Spatial Data Transfer Standard (SDTS)</source>
-        <translation type="obsolete">Spatial Data Transfer Standard (SDTS)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1175"/>
@@ -10329,10 +7762,6 @@ Error(%2): %3</source>
         <translation>Geoconcept</translation>
     </message>
     <message>
-        <source>Invalid feature geometry</source>
-        <translation type="obsolete">不正な地物ジオメトリ</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="616"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="627"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="643"/>
@@ -10343,10 +7772,6 @@ Error(%2): %3</source>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="662"/>
         <source>Feature creation error (OGR error: %1)</source>
         <translation>地物作成エラー（OGRエラー:%1)</translation>
-    </message>
-    <message>
-        <source>Failed to transform a point while drawing a feature of type &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
-        <translation type="obsolete">&apos;%1&apos;の型の地物を描画している時に変換に失敗しました.書き込みは中止されました（エクセプション %2)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="843"/>
@@ -10369,10 +7794,6 @@ Only %1 of %2 features written.</source>
 %2中%1の地物のみが書き込まれました.</translation>
     </message>
     <message>
-        <source>Groups not yet supported</source>
-        <translation type="obsolete">グループはまだサポートしていません</translation>
-    </message>
-    <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="188"/>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="242"/>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="290"/>
@@ -10380,37 +7801,9 @@ Only %1 of %2 features written.</source>
         <translation>ラスタの描画ができません</translation>
     </message>
     <message>
-        <source>Displacement plugin</source>
-        <translation type="obsolete">移動プラグイン</translation>
-    </message>
-    <message>
-        <source>Adds a new renderer that automatically handles point displacement in case they have the same position</source>
-        <translation type="obsolete">同一位置にある点を自動的に移動して描画する機能をもつ新しいレンダラの追加　</translation>
-    </message>
-    <message>
-        <source>Point Displacement</source>
-        <translation type="obsolete">点の移動</translation>
-    </message>
-    <message>
-        <source>CRS undefined - defaulting to project CRS</source>
-        <translation type="obsolete">CRSが定義されていません - プロジェクトのCRSが初期値になります</translation>
-    </message>
-    <message>
-        <source>CRS undefined - defaulting to default CRS: %1</source>
-        <translation type="obsolete">CRSが定義されていません - デフォルトのCRSが初期値になります: %1</translation>
-    </message>
-    <message>
-        <source>Reading raster</source>
-        <translation type="obsolete">ラスタデータを読み込み中</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="42"/>
         <source>To select features, choose a vector layer in the legend</source>
         <translation>地物を選択するには、凡例からベクタレイヤを選択してください</translation>
-    </message>
-    <message>
-        <source>CRS undefined - defaulting to default CRS</source>
-        <translation type="obsolete">CRSが定義されていません - デフォルトのCRSが初期値になります</translation>
     </message>
     <message>
         <location filename="../src/gui/qgstextannotationitem.cpp" line="22"/>
@@ -10436,10 +7829,6 @@ Only %1 of %2 features written.</source>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="102"/>
         <source>Intersects</source>
         <translation>交差</translation>
-    </message>
-    <message>
-        <source>Disjoint</source>
-        <translation type="obsolete">接合していない</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="103"/>
@@ -10490,10 +7879,6 @@ Only %1 of %2 features written.</source>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="49"/>
         <source>A plugin that makes spatial queries on vector layers</source>
         <translation>ベクタレイヤに対する空間検索を行うプラグイン</translation>
-    </message>
-    <message>
-        <source>SQLite DB (*.sqlite *.db);;All files (*)</source>
-        <translation type="obsolete">SQLite DB(*.sqlite *.db);;全ファイル (*)</translation>
     </message>
     <message>
         <location filename="../src/app/main.cpp" line="178"/>
@@ -10595,10 +7980,6 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation>アクティブなベクタレイヤがありません</translation>
     </message>
     <message>
-        <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation type="obsolete">地物を選択するためには凡例のベクタレイヤ名をクリックして選択する必要があります</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="121"/>
         <location filename="../src/app/qgsmaptoolshowhidelabels.cpp" line="213"/>
         <source>CRS Exception</source>
@@ -10624,10 +8005,6 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="323"/>
         <source>Frequency</source>
         <translation>フリーケンシー</translation>
-    </message>
-    <message>
-        <source>Choose a file name to save the map image as</source>
-        <translation type="obsolete">地図イメージとして保存するファイル名を選択してください</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="30"/>
@@ -10686,10 +8063,6 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation>ESRI Shapefiles</translation>
     </message>
     <message>
-        <source>GMT</source>
-        <translation type="obsolete">GMT</translation>
-    </message>
-    <message>
         <location filename="../src/providers/gpx/qgsgpxfeatureiterator.cpp" line="34"/>
         <source>GPX</source>
         <translation>GPX</translation>
@@ -10736,10 +8109,6 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1489"/>
         <source>Informix DataBlade</source>
         <translation>Informix DataBlade</translation>
-    </message>
-    <message>
-        <source>INGRES</source>
-        <translation type="obsolete">INGRES</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1503"/>
@@ -10809,10 +8178,6 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation>%1.qpjファイルの作成に失敗しました</translation>
     </message>
     <message>
-        <source>Spatial Data Transfer Standard</source>
-        <translation type="obsolete">Spatial Data transfer Standard</translation>
-    </message>
-    <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1563"/>
         <source>UK. NTF2</source>
         <translation>UK NTF2</translation>
@@ -10836,22 +8201,6 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1616"/>
         <source>All files</source>
         <translation>全ファイル</translation>
-    </message>
-    <message>
-        <source>Cannot open GDAL dataset </source>
-        <translation type="obsolete">GDALデータセットを開けません</translation>
-    </message>
-    <message>
-        <source>Cannot get GDAL raster band : </source>
-        <translation type="obsolete">GDALラスタバンドを取得できません:</translation>
-    </message>
-    <message>
-        <source>Cannot open GDAL MEM dataset </source>
-        <translation type="obsolete">GDAL MEMデータセットを開けません</translation>
-    </message>
-    <message>
-        <source>Cannot ChunkAndWarpImage : </source>
-        <translation type="obsolete">イメージの切り取りと変形ができません : </translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2345"/>
@@ -11132,10 +8481,6 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation>レコード</translation>
     </message>
     <message>
-        <source>Special</source>
-        <translation type="obsolete">特殊</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsexpression.cpp" line="1681"/>
         <location filename="../src/core/qgsexpression.cpp" line="1693"/>
         <source>No root node! Parsing failed?</source>
@@ -11187,10 +8532,6 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation>グループ%1がありません</translation>
     </message>
     <message>
-        <source>Column &apos;%1&apos;&apos; not found</source>
-        <translation type="obsolete">カラム  &apos;%1&apos;&apos; がみつかりません</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3814"/>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3835"/>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3860"/>
@@ -11211,10 +8552,6 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <source>Loaded from Provider</source>
         <translatorcomment>QgsVectorLayerPropertiesにも同じメッセージ.翻訳を合わせる.</translatorcomment>
         <translation>プロバイダからロードしました</translation>
-    </message>
-    <message>
-        <source>Provider %1 has no createEmptyLayer method</source>
-        <translation type="obsolete">プロバイダ%1にはデータ無しレイヤを作るメソッドがありません</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="104"/>
@@ -12017,14 +9354,6 @@ SQL: %1</translation>
         <translation>レイヤ</translation>
     </message>
     <message>
-        <source>Version</source>
-        <translation type="obsolete">バージョン</translation>
-    </message>
-    <message>
-        <source>Use QNetworkAccessManager instead of QgsHttpTransaction (including caching and dynamic authentication to website and proxies)</source>
-        <translation type="obsolete">QgsHttpTransactionの代わりに QNetworkAccessManagerを使います(キャッシングとウェッブサイトとプロキシのダイナミック認証を含みます)</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="2547"/>
         <location filename="../src/app/qgisapp.cpp" line="2554"/>
         <source>Invalid Data Source</source>
@@ -12214,10 +9543,6 @@ Errors: %3
         <translation>現在の編集</translation>
     </message>
     <message>
-        <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation type="obsolete">%1は無効なレイヤでロードできません。</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="4587"/>
         <source>Problem deleting features</source>
         <translation>地物削除中の問題</translation>
@@ -12248,10 +9573,6 @@ Errors: %3
         <translation>レンダ</translation>
     </message>
     <message>
-        <source>QGis files (*.qgs)</source>
-        <translation type="obsolete">QGis ファイル (*.qgs)</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="3674"/>
         <source>Choose a QGIS project file</source>
         <translation>QGIS プロジェクトファイルを選択</translation>
@@ -12270,10 +9591,6 @@ Errors: %3
         <location filename="../src/app/qgisapp.cpp" line="489"/>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
         <translation>地図キャンバス。ラスタやベクタの地図が追加された際には、ここに表示されます</translation>
-    </message>
-    <message>
-        <source>&amp;Plugins</source>
-        <translation type="obsolete">プラグイン(&amp;P)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1464"/>
@@ -12304,10 +9621,6 @@ Errors: %3
         <location filename="../src/app/qgisapp.cpp" line="2397"/>
         <source>Running against GDAL/OGR</source>
         <translation>実行中のGDAL/OGRバージョン</translation>
-    </message>
-    <message>
-        <source>QGIS Project Read Error</source>
-        <translation type="obsolete">QGIS プロジェクト読み込み時にエラー</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6447"/>
@@ -12399,431 +9712,6 @@ Please contact the developers.
         <translation>QGIS準備完了!</translation>
     </message>
     <message>
-        <source>&amp;New Project</source>
-        <translation type="obsolete">新規プロジェクト(&amp;N)</translation>
-    </message>
-    <message>
-        <source>Ctrl+N</source>
-        <comment>New Project</comment>
-        <translation type="obsolete">Ctrl+N</translation>
-    </message>
-    <message>
-        <source>New Project</source>
-        <translation type="obsolete">新規プロジェクト</translation>
-    </message>
-    <message>
-        <source>&amp;Open Project...</source>
-        <translation type="obsolete">プロジェクトを開く(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Ctrl+O</source>
-        <comment>Open a Project</comment>
-        <translation type="obsolete">Ctrl+O</translation>
-    </message>
-    <message>
-        <source>Open a Project</source>
-        <translation type="obsolete">プロジェクトを開く</translation>
-    </message>
-    <message>
-        <source>&amp;Save Project</source>
-        <translation type="obsolete">プロジェクトを保存(&amp;S)</translation>
-    </message>
-    <message>
-        <source>Ctrl+S</source>
-        <comment>Save Project</comment>
-        <translation type="obsolete">Ctrl+S</translation>
-    </message>
-    <message>
-        <source>Save Project</source>
-        <translation type="obsolete">プロジェクトを保存</translation>
-    </message>
-    <message>
-        <source>Save Project &amp;As...</source>
-        <translation type="obsolete">プロジェクトを名前をつけて保存(&amp;A)...</translation>
-    </message>
-    <message>
-        <source>Save Project under a new name</source>
-        <translation type="obsolete">新しい名前でプロジェクトを保存する</translation>
-    </message>
-    <message>
-        <source>Save as Image...</source>
-        <translation type="obsolete">イメージで保存</translation>
-    </message>
-    <message>
-        <source>Save map as image</source>
-        <translation type="obsolete">地図をイメージで保存</translation>
-    </message>
-    <message>
-        <source>Exit</source>
-        <translation type="obsolete">終了</translation>
-    </message>
-    <message>
-        <source>Ctrl+Q</source>
-        <comment>Exit QGIS</comment>
-        <translation type="obsolete">Ctrl+Q</translation>
-    </message>
-    <message>
-        <source>Exit QGIS</source>
-        <translation type="obsolete">QGISを終了</translation>
-    </message>
-    <message>
-        <source>Move Feature(s)</source>
-        <translation type="obsolete">地物の移動</translation>
-    </message>
-    <message>
-        <source>Text Annotation</source>
-        <translation type="obsolete">文字注記</translation>
-    </message>
-    <message>
-        <source>Form annotation</source>
-        <translation type="obsolete">注記フォーム</translation>
-    </message>
-    <message>
-        <source>Move Annotation</source>
-        <translation type="obsolete">注記移動</translation>
-    </message>
-    <message>
-        <source>New Shapefile Layer...</source>
-        <translation type="obsolete">新しいシェープファイルレイヤ...</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+N</source>
-        <comment>Create a New Shapefile layer</comment>
-        <translation type="obsolete">Ctrl+Shift+N</translation>
-    </message>
-    <message>
-        <source>Create a New Shapefile layer</source>
-        <translation type="obsolete">新しいシェープファイルレイヤを作る</translation>
-    </message>
-    <message>
-        <source>New SpatiaLite Layer ...</source>
-        <translation type="obsolete">新しいSpatialiteレイヤ...</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+A</source>
-        <comment>Create a New SpatiaLite Layer </comment>
-        <translation type="obsolete">Ctrl+Shift+A</translation>
-    </message>
-    <message>
-        <source>Create a New SpatiaLite Layer </source>
-        <translation type="obsolete">新しいSpatialiteレイヤを作成する</translation>
-    </message>
-    <message>
-        <source>Add a Vector Layer</source>
-        <translation type="obsolete">ベクタレイヤを追加</translation>
-    </message>
-    <message>
-        <source>Add a Raster Layer</source>
-        <translation type="obsolete">ラスタレイヤを追加</translation>
-    </message>
-    <message>
-        <source>Add a PostGIS Layer</source>
-        <translation type="obsolete">PostGIS レイヤの追加</translation>
-    </message>
-    <message>
-        <source>Remove Layer</source>
-        <translation type="obsolete">レイヤを除く</translation>
-    </message>
-    <message>
-        <source>Ctrl+D</source>
-        <comment>Remove a Layer</comment>
-        <translation type="obsolete">Ctrl+D</translation>
-    </message>
-    <message>
-        <source>Remove a Layer</source>
-        <translation type="obsolete">レイヤを除く</translation>
-    </message>
-    <message>
-        <source>Show all layers in the overview map</source>
-        <translation type="obsolete">全てのレイヤを全体図に表示する</translation>
-    </message>
-    <message>
-        <source>Remove All From Overview</source>
-        <translation type="obsolete">全体図から全て削除</translation>
-    </message>
-    <message>
-        <source>Remove all layers from overview map</source>
-        <translation type="obsolete">全てのレイヤを全体図から削除する</translation>
-    </message>
-    <message>
-        <source>Show All Layers</source>
-        <translation type="obsolete">全てのレイヤを表示</translation>
-    </message>
-    <message>
-        <source>Show all layers</source>
-        <translation type="obsolete">全てのレイヤを表示</translation>
-    </message>
-    <message>
-        <source>Hide All Layers</source>
-        <translation type="obsolete">全てのレイヤを隠す</translation>
-    </message>
-    <message>
-        <source>Hide all layers</source>
-        <translation type="obsolete">全てのレイヤを隠す</translation>
-    </message>
-    <message>
-        <source>Project Properties...</source>
-        <translation type="obsolete">プロジェクトのプロパティ</translation>
-    </message>
-    <message>
-        <source>Set project properties</source>
-        <translation type="obsolete">プロジェクトのプロパティを設定する</translation>
-    </message>
-    <message>
-        <source>Options...</source>
-        <translation type="obsolete">オプション</translation>
-    </message>
-    <message>
-        <source>Change various QGIS options</source>
-        <translation type="obsolete">QGISのオプションを変更する</translation>
-    </message>
-    <message>
-        <source>Help Contents</source>
-        <translation type="obsolete">QGIS ヘルプ</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <comment>Help Documentation</comment>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Help Documentation</source>
-        <translation type="obsolete">ヘルプドキュメント</translation>
-    </message>
-    <message>
-        <source>Ctrl+H</source>
-        <comment>QGIS Home Page</comment>
-        <translation type="obsolete">Ctrl+N</translation>
-    </message>
-    <message>
-        <source>QGIS Home Page</source>
-        <translation type="obsolete">QGIS ホームページ</translation>
-    </message>
-    <message>
-        <source>About</source>
-        <translation type="obsolete">QGIS について</translation>
-    </message>
-    <message>
-        <source>About QGIS</source>
-        <translation type="obsolete">QGIS について</translation>
-    </message>
-    <message>
-        <source>Check Qgis Version</source>
-        <translation type="obsolete">QGIS のバージョンを確認</translation>
-    </message>
-    <message>
-        <source>Check if your QGIS version is up to date (requires internet access)</source>
-        <translation type="obsolete">QGISのバージョンがアップデートされているか検証する（インターネットアクセスが必要)</translation>
-    </message>
-    <message>
-        <source>Refresh</source>
-        <translation type="obsolete">再読み込み</translation>
-    </message>
-    <message>
-        <source>Ctrl+R</source>
-        <comment>Refresh Map</comment>
-        <translation type="obsolete">Ctrl+R</translation>
-    </message>
-    <message>
-        <source>Refresh Map</source>
-        <translation type="obsolete">地図再読み込み</translation>
-    </message>
-    <message>
-        <source>Zoom In</source>
-        <translation type="obsolete">拡大</translation>
-    </message>
-    <message>
-        <source>Ctrl++</source>
-        <comment>Zoom In</comment>
-        <translation type="obsolete">Ctrl++</translation>
-    </message>
-    <message>
-        <source>Zoom Out</source>
-        <translation type="obsolete">縮小</translation>
-    </message>
-    <message>
-        <source>Ctrl+-</source>
-        <comment>Zoom Out</comment>
-        <translation type="obsolete">Ctrl+-</translation>
-    </message>
-    <message>
-        <source>Zoom Full</source>
-        <translation type="obsolete">全域表示</translation>
-    </message>
-    <message>
-        <source>Zoom to Full Extents</source>
-        <translation type="obsolete">全領域表示</translation>
-    </message>
-    <message>
-        <source>Pan Map</source>
-        <translation type="obsolete">地図移動</translation>
-    </message>
-    <message>
-        <source>Pan the map</source>
-        <translation type="obsolete">地図を移動する</translation>
-    </message>
-    <message>
-        <source>Zoom Last</source>
-        <translation type="obsolete">直前の表示領域にズーム</translation>
-    </message>
-    <message>
-        <source>Zoom to Last Extent</source>
-        <translation type="obsolete">直前の表示領域にズームする</translation>
-    </message>
-    <message>
-        <source>Zoom to Layer</source>
-        <translation type="obsolete">選択レイヤの領域にズーム</translation>
-    </message>
-    <message>
-        <source>Identify Features</source>
-        <translation type="obsolete">地物情報表示</translation>
-    </message>
-    <message>
-        <source>Click on features to identify them</source>
-        <translation type="obsolete">地物をクリックして情報を表示する</translation>
-    </message>
-    <message>
-        <source>Select Features</source>
-        <translation type="obsolete">地物を選択する</translation>
-    </message>
-    <message>
-        <source>Measure Line </source>
-        <translation type="obsolete">線の長さを測る</translation>
-    </message>
-    <message>
-        <source>Measure a Line</source>
-        <translation type="obsolete">線の長さを測る</translation>
-    </message>
-    <message>
-        <source>Measure Area</source>
-        <translation type="obsolete">面積を測る</translation>
-    </message>
-    <message>
-        <source>Measure an Area</source>
-        <translation type="obsolete">面積を測る</translation>
-    </message>
-    <message>
-        <source>Show Bookmarks</source>
-        <translation type="obsolete">ブックマーク一覧を見る</translation>
-    </message>
-    <message>
-        <source>New Bookmark...</source>
-        <translation type="obsolete">新しいブックマーク....</translation>
-    </message>
-    <message>
-        <source>Ctrl+B</source>
-        <comment>New Bookmark</comment>
-        <translation type="obsolete">Ctrl+B</translation>
-    </message>
-    <message>
-        <source>New Bookmark</source>
-        <translation type="obsolete">新しいブックマーク</translation>
-    </message>
-    <message>
-        <source>Add WMS Layer...</source>
-        <translation type="obsolete">WMSレイヤの追加</translation>
-    </message>
-    <message>
-        <source>Add current layer to overview map</source>
-        <translation type="obsolete">カレントレイヤを全体図に追加する</translation>
-    </message>
-    <message>
-        <source>Open the plugin manager</source>
-        <translation type="obsolete">プラグインマネージャを開く</translation>
-    </message>
-    <message>
-        <source>Capture Point</source>
-        <translation type="obsolete">点を入力</translation>
-    </message>
-    <message>
-        <source>Capture Points</source>
-        <translation type="obsolete">点（複数）を入力</translation>
-    </message>
-    <message>
-        <source>Capture Line</source>
-        <translation type="obsolete">線を入力</translation>
-    </message>
-    <message>
-        <source>Capture Lines</source>
-        <translation type="obsolete">線（複数）を入力</translation>
-    </message>
-    <message>
-        <source>Capture Polygon</source>
-        <translation type="obsolete">ポリゴンを入力</translation>
-    </message>
-    <message>
-        <source>Capture Polygons</source>
-        <translation type="obsolete">ポリゴン（複数）を入力</translation>
-    </message>
-    <message>
-        <source>Delete Selected</source>
-        <translation type="obsolete">選択物の削除</translation>
-    </message>
-    <message>
-        <source>Add Vertex</source>
-        <translation type="obsolete">頂点の追加</translation>
-    </message>
-    <message>
-        <source>Delete Vertex</source>
-        <translation type="obsolete">頂点の削除</translation>
-    </message>
-    <message>
-        <source>Move Vertex</source>
-        <translation type="obsolete">頂点の移動</translation>
-    </message>
-    <message>
-        <source>&amp;File</source>
-        <translation type="obsolete">ファイル(&amp;F)</translation>
-    </message>
-    <message>
-        <source>&amp;Open Recent Projects</source>
-        <translation type="obsolete">最近利用したプロジェクトを開く(&amp;O)</translation>
-    </message>
-    <message>
-        <source>&amp;View</source>
-        <translation type="obsolete">ビュー(&amp;V)</translation>
-    </message>
-    <message>
-        <source>&amp;Layer</source>
-        <translation type="obsolete">レイヤ(&amp;L)</translation>
-    </message>
-    <message>
-        <source>&amp;Settings</source>
-        <translation type="obsolete">設定(&amp;S)</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">ヘルプ(&amp;H)</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="obsolete">ファイル</translation>
-    </message>
-    <message>
-        <source>Manage Layers</source>
-        <translation type="obsolete">レイヤ管理</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">ヘルプ</translation>
-    </message>
-    <message>
-        <source>Digitizing</source>
-        <translation type="obsolete">デジタイズ</translation>
-    </message>
-    <message>
-        <source>Map Navigation</source>
-        <translation type="obsolete">地図ナビゲーション</translation>
-    </message>
-    <message>
-        <source>Attributes</source>
-        <translation type="obsolete">属性</translation>
-    </message>
-    <message>
-        <source>Plugins</source>
-        <translation type="obsolete">プラグイン</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="1595"/>
         <source>Ready</source>
         <translation>準備</translation>
@@ -12844,35 +9732,6 @@ Please contact the developers.
         <translation>エラー</translation>
     </message>
     <message>
-        <source>Ctrl+?</source>
-        <comment>Help Documentation (Mac)</comment>
-        <translation type="obsolete">Ctrl+?</translation>
-    </message>
-    <message>
-        <source>Cut Features</source>
-        <translation type="obsolete">地物の切り取り</translation>
-    </message>
-    <message>
-        <source>Cut selected features</source>
-        <translation type="obsolete">選択地物の切り取り</translation>
-    </message>
-    <message>
-        <source>Copy Features</source>
-        <translation type="obsolete">地物のコピー</translation>
-    </message>
-    <message>
-        <source>Copy selected features</source>
-        <translation type="obsolete">選択地物のコピー</translation>
-    </message>
-    <message>
-        <source>Paste Features</source>
-        <translation type="obsolete">地物の貼り付け</translation>
-    </message>
-    <message>
-        <source>Paste selected features</source>
-        <translation type="obsolete">選択地物の貼り付け</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="604"/>
         <source>Checking provider plugins</source>
         <translation>プロバイダのプラグインをチェックしています</translation>
@@ -12886,10 +9745,6 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="1298"/>
         <source>Window</source>
         <translation>Window</translation>
-    </message>
-    <message>
-        <source>Vect&amp;or</source>
-        <translation type="obsolete">ベクタ(&amp;t)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1317"/>
@@ -13013,18 +9868,6 @@ Please contact the developers.
         <translation>レイヤは編集不可です</translation>
     </message>
     <message>
-        <source>Toggle editing</source>
-        <translation type="obsolete">編集モード変更</translation>
-    </message>
-    <message>
-        <source>Toggles the editing state of the current layer</source>
-        <translation type="obsolete">カレントレイヤの編集モードを変更する</translation>
-    </message>
-    <message>
-        <source>Add Ring</source>
-        <translation type="obsolete">リングの追加</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="1526"/>
         <source>Scale </source>
         <translation>縮尺</translation>
@@ -13059,246 +9902,6 @@ Please contact the developers.
         <translation>マウスカーソル位置の地図座標</translation>
     </message>
     <message>
-        <source>Save As</source>
-        <translation type="obsolete">名前をつけて保存</translation>
-    </message>
-    <message>
-        <source>Whats new in Version 1.5.0 &apos;Tethys&apos;?</source>
-        <translation type="obsolete">バージョン1.5.0 Tethysの新機能は何でしょう?</translation>
-    </message>
-    <message>
-        <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.4.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series. In all other cases we recommend that you use this version.</source>
-        <translation type="obsolete">注意点　このリリースは私たちの &apos;最先端&apos;リリースシリーズです.それゆえQGIS1.0.ｘやQGIS1.4.0に比較すると新しい機能と拡張されたプログラマチックインターフェースが実装されています.もしクールで新しいけどテストされていない機能よりも固定されたユーザーインターフェース、プログラムAPIや長期間のサポートがあなたにとって重要な場合はQGISの長期サポート（LTS)版1.0.xリリースシリーズを利用することをおすすめします.その他の場合はこのバージョンを利用することをおすすめします.</translation>
-    </message>
-    <message>
-        <source>This release includes over 350 bug fixes, over 40 new features. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
-        <translation type="obsolete">このリリースでは350箇所以上のバグ修正,40個以上の新規機能を含みます.繰り返しますが,全ての変更点を文書化することは不可能です,それゆえ新規機能の箇条書きリストをここに提供します.</translation>
-    </message>
-    <message>
-        <source>Main GUI</source>
-        <translation type="obsolete">メインGUI</translation>
-    </message>
-    <message>
-        <source>There is a new angle measuring tool that allows you to interactively measure angles against the map backdrop.</source>
-        <translation type="obsolete">新しい角度計測ツールは地図を背景にして対話的に角度を計測できます.</translation>
-    </message>
-    <message>
-        <source>Live GPS Tracking tool</source>
-        <translation type="obsolete">ライブGPSトラッキングツール</translation>
-    </message>
-    <message>
-        <source>User configurable WMS search server</source>
-        <translation type="obsolete">ユーザが構成可能なWMS検索サーバー</translation>
-    </message>
-    <message>
-        <source>Allow editing of invalid geometry in node tool</source>
-        <translation type="obsolete">ノードツールで不正なジオメトリを編集可能にしました</translation>
-    </message>
-    <message>
-        <source>Choice between mm and map units for new symbology. Scaling to use new symbology in print composer as well</source>
-        <translation type="obsolete">新シンボロジーで単位をmmと地図単位の間で選択可能のなりました.またプリントコンポーザーでも新シンボロジーのスケーリングが利用可能になりました</translation>
-    </message>
-    <message>
-        <source>SVG fill symbol layer for polygon textures</source>
-        <translation type="obsolete">ポリゴンのテクスチャとしてSVG塗りつぶしシンボルが利用できるようになりました</translation>
-    </message>
-    <message>
-        <source>Font marker symbol layer</source>
-        <translation type="obsolete">シンボルレイヤでフォントマーカーが利用可能になりました</translation>
-    </message>
-    <message>
-        <source>Added --noplugins command line options to avoid restoring the plugins. Useful when a plugin misbehaves and causes QGIS to crash during startup</source>
-        <translation type="obsolete">--noplugin というコマンドラインオプションがプラグインも復旧を回避するために追加されました.プラグインの動作がおかしくてQGISが起動時に落ちるような場合便利です</translation>
-    </message>
-    <message>
-        <source>Allow hiding of deprecated CRSes</source>
-        <translation type="obsolete">非推奨のCRSを表示しない機能</translation>
-    </message>
-    <message>
-        <source>Add point displacement renderer plugin - allows points to be shifted to avoid colliding with other points</source>
-        <translation type="obsolete">点の再配置を行うレンダラプラグインの追加 - ポイントが他のポイントと重なる場合移動する機能</translation>
-    </message>
-    <message>
-        <source>Allow saving vector layers as ogr vector files</source>
-        <translation type="obsolete">ベクタレイヤをogrベクタファイルで保存する機能</translation>
-    </message>
-    <message>
-        <source>Raster provider: reduce debugging noise</source>
-        <translation type="obsolete">ノイズを減少させるラスタプロバイダ</translation>
-    </message>
-    <message>
-        <source>Allow adding parts to multi points and lines</source>
-        <translation type="obsolete">マルチポイントとラインに部品を追加する機能</translation>
-    </message>
-    <message>
-        <source>Text and form annotation tools are now in gui and app</source>
-        <translation type="obsolete">テキストとフォームの注記ツールがguiで利用できます</translation>
-    </message>
-    <message>
-        <source>Added possibility to place a set of default composer templates in pkgDataPath/composer_templates</source>
-        <translation type="obsolete">pkgDataPath/composer_templatesにデフォルトコンポーザテンプレートを保存する機能を追加</translation>
-    </message>
-    <message>
-        <source>Gradient color ramps now support multiple stops - for adding intermediate colors</source>
-        <translation type="obsolete">連続色ランプが複数の停止点をサポートします - 中間色が追加されました</translation>
-    </message>
-    <message>
-        <source>Center map if user clicks into the map</source>
-        <translation type="obsolete">ユーザが地図の中をクリックするとその点が地図の中心になります</translation>
-    </message>
-    <message>
-        <source>New plugin for carrying out spatial selections</source>
-        <translation type="obsolete">空間選択を実行する新しいプラグイン</translation>
-    </message>
-    <message>
-        <source>Data-defined size and rotation for single symbol renderer in symbology-ng</source>
-        <translation type="obsolete">新しいシンボロジーで単一のシンボルの大きさや表示角度をデータで定義できる機能を追加しました</translation>
-    </message>
-    <message>
-        <source>IdentifyAsHtml to raster layer and use it in identify</source>
-        <translation type="obsolete">ラスタレイヤの地点情報をhtmlで取得でき、これを地点情報として使えます</translation>
-    </message>
-    <message>
-        <source>Export legend groups and layers with legendinterface and use this information to display groups in the composer legend.</source>
-        <translation type="obsolete">凡例グループとレイヤを凡例インターフェースでエクスポートできます.この情報をコンポーザの凡例として表示に使えます.</translation>
-    </message>
-    <message>
-        <source>Show selected feature count in status bar </source>
-        <translation type="obsolete">ステータスバーに選択した地物の数を表示します</translation>
-    </message>
-    <message>
-        <source>Query option added to layer menu to subset vector layers</source>
-        <translation type="obsolete">レイヤメニューにサブセットベクタレイヤのための検索オプションを追加しました</translation>
-    </message>
-    <message>
-        <source>Option to label only selected features (on the &apos;old&apos; labelling tool)</source>
-        <translation type="obsolete">選択されている地物のラベルに対してのみ有効なオプションの追加（’古い&apos;ラベリングツール)</translation>
-    </message>
-    <message>
-        <source>Load/save queries created in the query builder.</source>
-        <translation type="obsolete">クエリビルダで作成したクエリをロード/保存する機能を追加しました.</translation>
-    </message>
-    <message>
-        <source>Manual adding of categories in symbology-ng.</source>
-        <translation type="obsolete">新シンボロジーで手作業によるカテゴリの追加ができます.</translation>
-    </message>
-    <message>
-        <source>Georeferencer: possibility to configure if residuals should be showed in pixels or map units</source>
-        <translation type="obsolete">ジオレファレンサーで未処理をピクセル又は地図上の単位で表示設定ができるようになりました　</translation>
-    </message>
-    <message>
-        <source>Delimited text provider: allow empty values in numeric columns</source>
-        <translation type="obsolete">デリミテッドテキストプロバイダーの数値カラムで空の値を利用できるようになりました</translation>
-    </message>
-    <message>
-        <source>Added rule-based renderer for symbology-ng</source>
-        <translation type="obsolete">新シンボロジーにルールに基づいたレンダラーが追加されました</translation>
-    </message>
-    <message>
-        <source>Ability to create spatial lite databases from within QGIS</source>
-        <translation type="obsolete">QGIS内部でspatial liteデータベースを作成する機能</translation>
-    </message>
-    <message>
-        <source>Inclusion of GDAL Raster tools plugin into QGIS core</source>
-        <translation type="obsolete">GDALラスターツールプラグインをQGIS coreプラグインに含めました</translation>
-    </message>
-    <message>
-        <source>New python console (with history)</source>
-        <translation type="obsolete">ヒストリ付きの新しいpythonコンソール</translation>
-    </message>
-    <message>
-        <source>Add validation to capture tool</source>
-        <translation type="obsolete">座標入力ツールにチェック機能が追加されました</translation>
-    </message>
-    <message>
-        <source>Allow postgres layers without saved username &amp;amp; password by asking for credentials</source>
-        <translation type="obsolete">証明書を要求することでpostgresレイヤをユーザー名 &amp;amp; パスワード無しで保存できるようになりました</translation>
-    </message>
-    <message>
-        <source>Support NULL values in search strings</source>
-        <translation type="obsolete">検索文字列でNULL値をサポートしました</translation>
-    </message>
-    <message>
-        <source>Optionally add new layers to the selected group</source>
-        <translation type="obsolete">新規レイヤを選択したグループに追加するオプション</translation>
-    </message>
-    <message>
-        <source>Map composer can add attribute tables in layouts. It is possibile to show only visible features in composer table or all features</source>
-        <translation type="obsolete">マップコンポーザーで属性テーブルをレイアウトに追加できるようになりました.この機能は表示されている地物のみの表示か全ての地物の表示が可能です</translation>
-    </message>
-    <message>
-        <source>Identify tool attribute form now non-modal in view mode (since r12796)</source>
-        <translation type="obsolete">地物情報表示ツールの表示がノンモーダルモードになりました(r12796以降)</translation>
-    </message>
-    <message>
-        <source>Identified features&apos; highlight disappear when window is deactivate or closed and reappears when reactivated.</source>
-        <translation type="obsolete">地物情報特定ウィンドのウィンドウがアクティブでなくなる時や閉じる時、再表示や再アクティブの時の&apos;ハイライトがなくなりました.</translation>
-    </message>
-    <message>
-        <source>WMS and WMS-C Support</source>
-        <translation type="obsolete">WMSとWMS-Cのサポート</translation>
-    </message>
-    <message>
-        <source>WMS-C support, new spatial authorities, wms selection improvements</source>
-        <translation type="obsolete">WMS-Cがサポートされました.新しい空間情報源です.wmsの選択が改善されました</translation>
-    </message>
-    <message>
-        <source>Resolved EPSG dependency in spatial reference systems and included french IGNF definitions in srs.db</source>
-        <translation type="obsolete">空間参照システムのEPSGの依存関係が解決しました.フランスのIGNFがsrsデータベースに含まれました</translation>
-    </message>
-    <message>
-        <source>WMS provider makes requests asynchronously through QNetworkAccessManager now</source>
-        <translation type="obsolete">WMSプロバイダーはQNetworkAccessManagerを利用して非同期リクエストを発行しています</translation>
-    </message>
-    <message>
-        <source>WMS selection allows inserting of all layers of a branch</source>
-        <translation type="obsolete">WMSの選択で全てのレイヤブランチを選択可能にしました</translation>
-    </message>
-    <message>
-        <source>WMS has support for more MIME types</source>
-        <translation type="obsolete">WMSでサポートするMIMEタイプを増やしました</translation>
-    </message>
-    <message>
-        <source>Added load/save to WMS dialog</source>
-        <translation type="obsolete">WMSダイアログにロード/保存を追加しました</translation>
-    </message>
-    <message>
-        <source>WMS-C scale slider gui added and more selection improvements</source>
-        <translation type="obsolete">WMS-Cスケールスライダーguiが追加されました 選択機能が改良されました</translation>
-    </message>
-    <message>
-        <source>API Updates</source>
-        <translation type="obsolete">APIのアップデート</translation>
-    </message>
-    <message>
-        <source>QgsDataProvider &amp;amp; QgsMapLayer: add dataChanged() signal, so that a provider can signal that the datasource changed</source>
-        <translation type="obsolete">QgsDataProvider &amp;amp; QgsMapLayer:にdataChanged()シグナルが追加されました.それによってそれらのプロバイダはデータソースの変更シグナルを発行できます</translation>
-    </message>
-    <message>
-        <source>Allow opening layer properties from plugins</source>
-        <translation type="obsolete">プラグインからレイヤプロパティのオープン許可</translation>
-    </message>
-    <message>
-        <source>Support for custom plugin layers.</source>
-        <translation type="obsolete">カスタムプラグインレイヤのサポート.</translation>
-    </message>
-    <message>
-        <source>Allow refreshing of plugins programmatically</source>
-        <translation type="obsolete">プラグインの更新をプログラムで行う機能ができました</translation>
-    </message>
-    <message>
-        <source>Support for custom plugin directories using the QGIS_PLUGINPATH environment variable. More paths can be passed, separated by semicolon.</source>
-        <translation type="obsolete">カスタムプラグインを置くディレクトリを環境変数 QGIS_PLUGINPATHで指定できます.セミコロンで区切って複数のパスを指定できます.</translation>
-    </message>
-    <message>
-        <source>Legend interface added to retrieve layers in legend order</source>
-        <translation type="obsolete">凡例の順番でレイヤを読み出すために凡例のインターフェースが追加されました</translation>
-    </message>
-    <message>
-        <source>Support more GEOS operators</source>
-        <translation type="obsolete">さらに多くのGEOS機能操作のサポート</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="2546"/>
         <source>%1 doesn&apos;t have any layers</source>
         <translation>%1にはレイヤがありません</translation>
@@ -13307,10 +9910,6 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="3562"/>
         <source>Unable to open project</source>
         <translation>プロジェクトを開けません</translation>
-    </message>
-    <message>
-        <source>Please select a vector layer first.</source>
-        <translation type="obsolete">ベクタレイヤを最初に選択して下さい.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4572"/>
@@ -13330,26 +9929,10 @@ Please contact the developers.
         <translation>結合操作がキャンセルされました</translation>
     </message>
     <message>
-        <source>Invalid scale</source>
-        <translation type="obsolete">無効な縮尺</translation>
-    </message>
-    <message>
-        <source>Network error while communicating with server</source>
-        <translation type="obsolete">サーバー接続中のネットワークエラー</translation>
-    </message>
-    <message>
-        <source>Unknown network socket error</source>
-        <translation type="obsolete">不明なネットワークソケットエラー</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="6539"/>
         <location filename="../src/app/qgisapp.cpp" line="6548"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>ヒストグラムを拡張するためにラスタレイヤを選択する必要があります.</translation>
-    </message>
-    <message>
-        <source>To perform a local histogram stretch, you need to have a grayscale or multiband (multiband single layer, singleband grayscale or multiband color)  raster layer selected.</source>
-        <translation type="obsolete">ローカルヒストグラムを拡大するためにはグレイスケールまたはマルチバンド（マルチバンドシングルレイヤ,シングルバンドグレイスケールまたはマルチバンドカラー）ラスタレイヤを選択する必要があります.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6736"/>
@@ -13368,41 +9951,9 @@ Please contact the developers.
         <translation>保存しますか？</translation>
     </message>
     <message>
-        <source>Do you want to save the current project?</source>
-        <translation type="obsolete">現在のプロジェクトを保存しますか？</translation>
-    </message>
-    <message>
-        <source>Current CRS: %1</source>
-        <translation type="obsolete">カレントCRS %1</translation>
-    </message>
-    <message>
-        <source>Inactive project CRS: %1</source>
-        <translation type="obsolete">無効なプロジェクトCRS %1</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="8494"/>
         <source>Unsupported Data Source</source>
         <translation>サポートされていないデータソース</translation>
-    </message>
-    <message>
-        <source>Enter a name for the new bookmark:</source>
-        <translation type="obsolete">新しいブックマークの名前を入力してください</translation>
-    </message>
-    <message>
-        <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
-        <translation type="obsolete">ブックマークを作れません。ユーザデータベースが無いか壊れています。</translation>
-    </message>
-    <message>
-        <source>Split Features</source>
-        <translation type="obsolete">地物を分割する</translation>
-    </message>
-    <message>
-        <source>Map Tips</source>
-        <translation type="obsolete">マップチップス</translation>
-    </message>
-    <message>
-        <source>Show information about a feature when the mouse is hovered over it</source>
-        <translation type="obsolete">マウスカーソルが上にある時に地物の情報が表示されます</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1527"/>
@@ -13426,32 +9977,9 @@ Please contact the developers.
         <translation>オープンしたプロジェクトファイルを古いバージョンで保存する時は警告してください</translation>
     </message>
     <message>
-        <source>Toggle fullscreen mode</source>
-        <translation type="obsolete">フルスクリーンモード切替</translation>
-    </message>
-    <message>
-        <source>Resource Location Error</source>
-        <translation type="obsolete">リソース位置エラー</translation>
-    </message>
-    <message>
-        <source>Error reading icon resources from: 
- %1
- Quitting...</source>
-        <translation type="obsolete">アイコンリソースを%1から読み込み時にエラーが発生しました。終了しています...</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="1975"/>
         <source>Overview</source>
         <translation>全体図</translation>
-    </message>
-    <message>
-        <source>You are using QGIS version %1 built against code revision %2.</source>
-        <translation type="obsolete">ご利用中のQGISは　バージョン　%1 です　レビジョン %2 のコードでビルドされました</translation>
-    </message>
-    <message>
-        <source>
-This binary was compiled against Qt %1,and is currently running against Qt %2</source>
-        <translation type="obsolete">このバイナリはQt%1を利用してコンパイルされています。現在Qt%2が動作しています</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1552"/>
@@ -13462,274 +9990,6 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
         <location filename="../src/app/qgisapp.cpp" line="449"/>
         <source>Multiple Instances of QgisApp</source>
         <translation>複数のQgisAppインスタンス</translation>
-    </message>
-    <message>
-        <source>Multiple instances of Quantum GIS application object detected.
-Please contact the developers.
-</source>
-        <translation type="obsolete">Quantum GISアプリケーションの複数のインスタンスが検出されました。
-開発者に連絡してください。</translation>
-    </message>
-    <message>
-        <source>Shift+Ctrl+S</source>
-        <comment>Save Project under a new name</comment>
-        <translation type="obsolete">Shift+Ctrl+S</translation>
-    </message>
-    <message>
-        <source>&amp;Undo</source>
-        <translation type="obsolete">取り消し(&amp;U)</translation>
-    </message>
-    <message>
-        <source>Ctrl+Z</source>
-        <translation type="obsolete">Ctrl+Z</translation>
-    </message>
-    <message>
-        <source>Undo the last operation</source>
-        <translation type="obsolete">最後の処理の取り消し</translation>
-    </message>
-    <message>
-        <source>Cu&amp;t</source>
-        <translation type="obsolete">切り取り(&amp;t)</translation>
-    </message>
-    <message>
-        <source>Quantum GIS </source>
-        <translation type="obsolete">Quantum GIS </translation>
-    </message>
-    <message>
-        <source>Ctrl+X</source>
-        <translation type="obsolete">Ctrl+X</translation>
-    </message>
-    <message>
-        <source>Cut the current selection&apos;s contents to the clipboard</source>
-        <translation type="obsolete">選択中のコンテンツを切り取りクリップボードに格納する</translation>
-    </message>
-    <message>
-        <source>&amp;Copy</source>
-        <translation type="obsolete">コピー(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Ctrl+C</source>
-        <translation type="obsolete">Ctrl+C</translation>
-    </message>
-    <message>
-        <source>Copy the current selection&apos;s contents to the clipboard</source>
-        <translation type="obsolete">選択されているコンテンツをクリップボードにコピーします</translation>
-    </message>
-    <message>
-        <source>&amp;Paste</source>
-        <translation type="obsolete">貼り付け(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Ctrl+V</source>
-        <translation type="obsolete">Ctrl+V</translation>
-    </message>
-    <message>
-        <source>Paste the clipboard&apos;s contents into the current selection</source>
-        <translation type="obsolete">クリップボードのコンテンツをカレントセレクションに貼付けします</translation>
-    </message>
-    <message>
-        <source>&amp;Redo</source>
-        <translation type="obsolete">再実行(&amp;R)</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+Z</source>
-        <translation type="obsolete">Ctrl+Shift+Z</translation>
-    </message>
-    <message>
-        <source>Redo the last operation</source>
-        <translation type="obsolete">最後の操作を再実行する</translation>
-    </message>
-    <message>
-        <source>Merge selected features</source>
-        <translation type="obsolete">選択地物の結合</translation>
-    </message>
-    <message>
-        <source>Merge attributes of selected features</source>
-        <translation type="obsolete">選択された地物の属性を結合します</translation>
-    </message>
-    <message>
-        <source>Node Tool</source>
-        <translation type="obsolete">ノードツール</translation>
-    </message>
-    <message>
-        <source>Snapping Options...</source>
-        <translation type="obsolete">スナップオプション...</translation>
-    </message>
-    <message>
-        <source>Manage the background snapping options</source>
-        <translation type="obsolete">バックグラウンドのスナップオプションの管理</translation>
-    </message>
-    <message>
-        <source>, hold ctrl to add/subtract current selection</source>
-        <translation type="obsolete">,ctrlを押し続けると現在の選択に追加/削除ができます</translation>
-    </message>
-    <message>
-        <source>Select single feature</source>
-        <translation type="obsolete">1個の地物を選択します</translation>
-    </message>
-    <message>
-        <source>Select single features</source>
-        <translation type="obsolete">1個の地物を選択します</translation>
-    </message>
-    <message>
-        <source>, hold shift to select by containment</source>
-        <translation type="obsolete">,shiftを押し続けると制約付き選択ができます</translation>
-    </message>
-    <message>
-        <source>Select features by rectangle</source>
-        <translation type="obsolete">長方形領域による地物選択</translation>
-    </message>
-    <message>
-        <source>Select features by polygon</source>
-        <translation type="obsolete">ポリゴンによる地物選択</translation>
-    </message>
-    <message>
-        <source>Select features by freehand</source>
-        <translation type="obsolete">フリーハンドによる地物選択</translation>
-    </message>
-    <message>
-        <source>Select features by radius</source>
-        <translation type="obsolete">半径指定による地物選択</translation>
-    </message>
-    <message>
-        <source>Zoom to Selection</source>
-        <translation type="obsolete">選択部分のズーム</translation>
-    </message>
-    <message>
-        <source>Ctrl+J</source>
-        <comment>Zoom to Selection</comment>
-        <translation type="obsolete">Ctrl+J</translation>
-    </message>
-    <message>
-        <source>Zoom Actual Size</source>
-        <translation type="obsolete">実際のサイズにズームする</translation>
-    </message>
-    <message>
-        <source>Zoom to Actual Size</source>
-        <translation type="obsolete">実際のサイズにズームする</translation>
-    </message>
-    <message>
-        <source>Labeling</source>
-        <translation type="obsolete">ラベリング</translation>
-    </message>
-    <message>
-        <source>Raster calculator ...</source>
-        <translation type="obsolete">ラスタ計算機...</translation>
-    </message>
-    <message>
-        <source>Add Vector Layer...</source>
-        <translation type="obsolete">ベクタレイヤの追加...</translation>
-    </message>
-    <message>
-        <source>Add Raster Layer...</source>
-        <translation type="obsolete">ラスタレイヤの追加...</translation>
-    </message>
-    <message>
-        <source>Add PostGIS Layer...</source>
-        <translation type="obsolete">PostGISレイヤの追加...</translation>
-    </message>
-    <message>
-        <source>Add a Web Mapping Server Layer</source>
-        <translation type="obsolete">Web　Mapping Serviceレイヤの追加</translation>
-    </message>
-    <message>
-        <source>Open Attribute Table</source>
-        <translation type="obsolete">属性テーブルのオープン</translation>
-    </message>
-    <message>
-        <source>Save edits to current layer, but continue editing</source>
-        <translation type="obsolete">カレントレイヤへの編集を保存した後,編集作業を続けます</translation>
-    </message>
-    <message>
-        <source>Remove Layer(s)</source>
-        <translation type="obsolete">レイヤ（群）の削除</translation>
-    </message>
-    <message>
-        <source>Ctrl+D</source>
-        <comment>Remove Layer(s)</comment>
-        <translation type="obsolete">Ctrl+D</translation>
-    </message>
-    <message>
-        <source>Set CRS of Layer(s)</source>
-        <translation type="obsolete">レイヤのCRSを設定する</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+C</source>
-        <comment>Set CRS of Layer(s)</comment>
-        <translation type="obsolete">Ctrl+Shift+C</translation>
-    </message>
-    <message>
-        <source>Live GPS tracking</source>
-        <translation type="obsolete">ライブGPSトラッキング</translation>
-    </message>
-    <message>
-        <source>Show GPS tool</source>
-        <translation type="obsolete">GPSツール表示</translation>
-    </message>
-    <message>
-        <source>Properties...</source>
-        <translation type="obsolete">プロパティ</translation>
-    </message>
-    <message>
-        <source>Set properties of the current layer</source>
-        <translation type="obsolete">カレントレイヤのプロパティをセットする</translation>
-    </message>
-    <message>
-        <source>Query...</source>
-        <translation type="obsolete">検索...</translation>
-    </message>
-    <message>
-        <source>Set subset query of the current layer</source>
-        <translation type="obsolete">カレントレイヤに対するサブセットクエリを設定する</translation>
-    </message>
-    <message>
-        <source>Add to Overview</source>
-        <translation type="obsolete">全体図に追加</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+O</source>
-        <comment>Add current layer to overview map</comment>
-        <translation type="obsolete">Ctrl+Shift+O</translation>
-    </message>
-    <message>
-        <source>Add All to Overview</source>
-        <translation type="obsolete">全体図に全て追加</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+U</source>
-        <comment>Show all layers</comment>
-        <translation type="obsolete">Ctrl+Shift+U</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+H</source>
-        <comment>Hide all layers</comment>
-        <translation type="obsolete">Ctrl+Shift+H</translation>
-    </message>
-    <message>
-        <source>Manage Plugins...</source>
-        <translation type="obsolete">プラグインの管理</translation>
-    </message>
-    <message>
-        <source>Toggle Full Screen Mode</source>
-        <translation type="obsolete">フルスクリーンモードへ切り替え</translation>
-    </message>
-    <message>
-        <source>Ctrl+F</source>
-        <comment>Toggle fullscreen mode</comment>
-        <translation type="obsolete">Ctrl+F</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+P</source>
-        <comment>Set project properties</comment>
-        <translation type="obsolete">Ctrl+Shift+P</translation>
-    </message>
-    <message>
-        <source>Custom CRS...</source>
-        <translation type="obsolete">カスタムCRS...</translation>
-    </message>
-    <message>
-        <source>Manage custom coordinate reference systems</source>
-        <translation type="obsolete">カスタム座標参照系の管理</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1027"/>
@@ -13768,69 +10028,9 @@ Please contact the developers.
         <translation>開いているすべてのウィンドウを前面に</translation>
     </message>
     <message>
-        <source>Local Histogram Stretch</source>
-        <translation type="obsolete">ローカルヒストグラムの広がり</translation>
-    </message>
-    <message>
-        <source>Stretch histogram of active raster to view extents</source>
-        <translation type="obsolete">アクティブラスタの領域を見えるようにするためにヒストグラムを伸ばす</translation>
-    </message>
-    <message>
-        <source>API documentation</source>
-        <translation type="obsolete">API文書</translation>
-    </message>
-    <message>
-        <source>QGIS Sponsors!</source>
-        <translation type="obsolete">QGISスポンサー!</translation>
-    </message>
-    <message>
-        <source>QGIS Sponsors</source>
-        <translation type="obsolete">QGISスポンサー</translation>
-    </message>
-    <message>
-        <source>Move Label</source>
-        <translation type="obsolete">ラベルの移動</translation>
-    </message>
-    <message>
-        <source>Move labels interactively</source>
-        <translation type="obsolete">ラベルの対話型移動</translation>
-    </message>
-    <message>
-        <source>Rotate Label</source>
-        <translation type="obsolete">ラベルの回転</translation>
-    </message>
-    <message>
-        <source>Rotate labels interactively</source>
-        <translation type="obsolete">ラベルの対話型回転</translation>
-    </message>
-    <message>
-        <source>Change label</source>
-        <translation type="obsolete">ラベルの変更</translation>
-    </message>
-    <message>
-        <source>Change label properties</source>
-        <translation type="obsolete">ラベルプロパティの変更</translation>
-    </message>
-    <message>
-        <source>Style manager...</source>
-        <translation type="obsolete">スタイルマネージャ...</translation>
-    </message>
-    <message>
-        <source>Show style manager V2</source>
-        <translation type="obsolete">スタイルマネージャV2表示</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="1147"/>
         <source>Failed to open Python console:</source>
         <translation>Pythomコンソールのオープンに失敗しました:</translation>
-    </message>
-    <message>
-        <source>Print Composers</source>
-        <translation type="obsolete">プリントコンポーザ</translation>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation type="obsolete">編集(&amp;E)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1245"/>
@@ -13841,22 +10041,6 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="1247"/>
         <source>Toolbars</source>
         <translation>ツールバー</translation>
-    </message>
-    <message>
-        <source>Select</source>
-        <translation type="obsolete">選択</translation>
-    </message>
-    <message>
-        <source>Measure</source>
-        <translation type="obsolete">計測</translation>
-    </message>
-    <message>
-        <source>New</source>
-        <translation type="obsolete">新規</translation>
-    </message>
-    <message>
-        <source>&amp;Window</source>
-        <translation type="obsolete">ウィンドウ(&amp;W)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8868"/>
@@ -13876,10 +10060,6 @@ Always ignore these errors?</source>
         </translation>
     </message>
     <message>
-        <source>Select Tools</source>
-        <translation type="obsolete">選択ツール</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="1479"/>
         <source>Toggle extents and mouse position display</source>
         <translation>切り替えで表示が広がりマウス位置が表示されます</translation>
@@ -13894,14 +10074,6 @@ Always ignore these errors?</source>
         <location filename="../src/app/qgisapp.cpp" line="1494"/>
         <source>Current map coordinate</source>
         <translation>現在の地図の座標</translation>
-    </message>
-    <message>
-        <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
-        <translation type="obsolete">カーソル位置の地図座標を表示します。表示はマウスが動くたびに更新されます。また指定した位置を中心にして地図表示領域を変更することができます。</translation>
-    </message>
-    <message>
-        <source>Current map coordinate (formatted as x,y)</source>
-        <translation type="obsolete">現在の地図の座標(x,y形式）</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1586"/>
@@ -13953,205 +10125,6 @@ Always ignore these errors?</source>
 %1</translation>
     </message>
     <message>
-        <source>
-This copy of QGIS has been built with GDAL/OGR %1.</source>
-        <translation type="obsolete">
-このQGISはGDAL/OGR %1を利用してビルドされました.</translation>
-    </message>
-    <message>
-        <source>
-This copy of QGIS has been built without PostgreSQL support.</source>
-        <translation type="obsolete">
-このQGISはPostgreSQLのサポート抜きでビルドされています.</translation>
-    </message>
-    <message>
-        <source>
-This copy of QGIS has been built with SpatiaLite support (%1).</source>
-        <translation type="obsolete">このQGISのコピーはSpatiaLiteのサポート付きでビルドされています（%1).</translation>
-    </message>
-    <message>
-        <source>
-This copy of QGIS has been built with QWT support (%1).</source>
-        <translation type="obsolete">
-このQGISはQWT（%1)のサポート付きでビルドされました.</translation>
-    </message>
-    <message>
-        <source>
-This copy of QGIS has been built without QWT support.</source>
-        <translation type="obsolete">
-このQGISはQWTのサポート抜きでビルドされました.</translation>
-    </message>
-    <message>
-        <source>
-This copy of QGIS writes debugging output.</source>
-        <translation type="obsolete">
-このQGISはデバッグ情報を出力します.</translation>
-    </message>
-    <message utf8="true">
-        <source>What&apos;s new in Version 1.6.0 &apos;Capiapó&apos;?</source>
-        <translation type="obsolete">Version 1.6.0 &apos;Capiapóの新機能は&apos;?</translation>
-    </message>
-    <message>
-        <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.5.0. We recommend that you use this version over previous releases.</source>
-        <translation type="obsolete">このリリースは私たちの&apos;最先端&apos;リリースシリーズであることに注意して下さい. QGIS1.0.xとQGIS1.5.0に対して新しい機能やプログラムインターフェースの拡張が加えられています.私たちは以前のリリースよりこのバージョンを利用することを推奨します.</translation>
-    </message>
-    <message>
-        <source>This release includes over 177 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
-        <translation type="obsolete">このリリースは117個以上のバグ修正と多くの機能追加、拡張がなされました.すべてのことをここに記述することは不可能なので主要な新機能について箇条書きにします.</translation>
-    </message>
-    <message>
-        <source>General Improvements</source>
-        <translation type="obsolete">一般的な改善</translation>
-    </message>
-    <message>
-        <source>Added gpsd support to live gps tracking.</source>
-        <translation type="obsolete">gpsライブトラッキングにgpsdのサポートを追加しました.</translation>
-    </message>
-    <message>
-        <source>A new plugin has been included that allows for offline editing.</source>
-        <translation type="obsolete">オフライン編集が実行できる新しいプラグインが追加されました.</translation>
-    </message>
-    <message>
-        <source>Field calculator will now insert NULL feature value in case of calculation error instead of stopping and reverting calculation for all features.</source>
-        <translation type="obsolete">フィールド計算機はエラーが発生した場合に停止して全ての地物の計算を元に戻すのではなくNULLの地物を挿入します.</translation>
-    </message>
-    <message>
-        <source>Update srs.db to include grid reference.</source>
-        <translation type="obsolete">srs.dbはグリッド参照を追加して更新されました.</translation>
-    </message>
-    <message>
-        <source>Added a native (C++) raster calculator implementation which can deal with large rasters efficiently.</source>
-        <translation type="obsolete">C++を利用したネイティブラスタ計算機が実装されました.これは効率的に巨大ラスタを扱います.</translation>
-    </message>
-    <message>
-        <source>Improved interaction with extents widget in statusbar so that the text contents of the widget can be copied and pasted.</source>
-        <translation type="obsolete">ステータスバーの領域ウィジェットでテキストのコピーアンドペーストができるように改善されました.</translation>
-    </message>
-    <message>
-        <source>Many improvements and new operators to the field calculator including field concatenation, row counter etc.</source>
-        <translation type="obsolete">フィールド計算機には多くの改善と新しい演算子が追加されました.それにはフィールドの連結や行数カウンタ等が含まれます.</translation>
-    </message>
-    <message>
-        <source>Added --configpath option that overrides the default path (~/.qgis) for user configuration and forces QSettings to use this directory, too. This allows users to e.g. carry QGIS installation on a flash drive together with all plugins and settings.</source>
-        <translation type="obsolete">--configpathオプションが追加されました.これはユーザ設定とQSettingsのデフォルトパス（~/.qgis)をこのディレクトリでオーバーライドします.これによってユーザはたとえばQGISのインストールを全てのプラグインと設定情報と一緒にフラッシュドライブで持ち運ぶことができます.</translation>
-    </message>
-    <message>
-        <source>Experimental WFS-T support. Additionally ported wfs to network manager.</source>
-        <translation type="obsolete">実験的なWFS-Tサポート.ネットワークマネージャにwfsが追加で移植されました.</translation>
-    </message>
-    <message>
-        <source>Georeferencer has had many tidy ups and improvements.</source>
-        <translation type="obsolete">ジオレファレンサに多くの整理と改善が加えられました.</translation>
-    </message>
-    <message>
-        <source>Support for long int in attribute dialog and editor.</source>
-        <translation type="obsolete">long int型が属性ダイアログとエディタでサポートされました.</translation>
-    </message>
-    <message>
-        <source>The QGIS Mapserver project has been incorporated into the main SVN repository and packages are being made available. QGIS Mapserver allows you to serve your QGIS project files via the OGC WMS protocol.</source>
-        <translation type="obsolete">QGIS MapserverプロジェクトがメインSVNレポジトリに統合され,パッケージが利用可能になりました.QGIS MapserverではQGISのプロジェクトファイルを使ってOGC WMSプロトコルの配信ができます.</translation>
-    </message>
-    <message>
-        <source>Read More.</source>
-        <translation type="obsolete">さらに読んで下さい.</translation>
-    </message>
-    <message>
-        <source>Select and measure toolbar flyouts and submenus.</source>
-        <translation type="obsolete">選択と計測ツールバーがフライアウトとサブメニューになりました.</translation>
-    </message>
-    <message>
-        <source>Support has been added for non-spatial tables (currently OGR, delimited text and PostgreSQL providers). These tables can be used for field lookups or just generally browsed and edited using the table view.</source>
-        <translation type="obsolete">空間情報が無いテーブル(OGR,デリミテッドテキスト,PostgreSQLプロバイダ)のサポートが追加されました.これらのテーブルはフィールドの検索,閲覧,編集がテーブルビューで行えます.</translation>
-    </message>
-    <message>
-        <source>Added search string support for feature ids ($id) and various other search related improvements.</source>
-        <translation type="obsolete">検索に地物のid($id)が利用できるようになりました,また他の多彩な検索関係機能が改善されました.</translation>
-    </message>
-    <message>
-        <source>Added reload method to map layers and provider interface. Like this, caching providers (currently WMS and WFS) can synchronize with changes in the datasource.</source>
-        <translation type="obsolete">地図のレイヤとプロバイダインターフェースのリロードメソッドが追加されました.同じようにキャッシングするプロバイダ（現在はWMSとWFS)でデータソース内の変更と同期する機能が追加されました.</translation>
-    </message>
-    <message>
-        <source>Table of contents (TOC) improvements</source>
-        <translation type="obsolete">コンテンツテーブル(TOC)が改良されました</translation>
-    </message>
-    <message>
-        <source>Added a new option to the raster legend menu that will stretch the current layer using the min and max pixel values of the current extent.</source>
-        <translation type="obsolete">ラスタ凡例メニューに新たなオプションが追加されました.これはカレントレイヤを現在の領域のピクセルの最小値,最大値で拡張します.</translation>
-    </message>
-    <message>
-        <source>When writing vector files using the table of contents context menu&apos;s &apos;Save as&apos; option, you can now specify OGR creation options.</source>
-        <translation type="obsolete">TOCのコンテキストメニューの&apos;名前をつけて保存のオプションでOGR作成オプションを選択できるようになりました.</translation>
-    </message>
-    <message>
-        <source>In the table of contents, it is now possible to select and remove or move several layers at once.</source>
-        <translation type="obsolete">TOCで複数のレイヤを一度に選択,削除,移動できるようになりました.</translation>
-    </message>
-    <message>
-        <source>Labelling (New generation only)</source>
-        <translation type="obsolete">ラベリング(新機能のみ)</translation>
-    </message>
-    <message>
-        <source>Data defined label position.</source>
-        <translation type="obsolete">ラベルの位置をデータで定義できるようになりました.</translation>
-    </message>
-    <message>
-        <source>Line wrapping, data defined font and buffer settings.</source>
-        <translation type="obsolete">ラインの被覆.フォントと縁取りの設定をデータで定義できるようになりました.</translation>
-    </message>
-    <message>
-        <source>Layer properties and symbology</source>
-        <translation type="obsolete">レイヤプロパティとシンボロジー</translation>
-    </message>
-    <message>
-        <source>Three new classification modes added to graduated symbol renderer (version 2), including Natural Breaks (Jenks), Standard Deviations, and Pretty Breaks (based on pretty from the R statistical environment). </source>
-        <translation type="obsolete">グラデーションレンダラ（バージョン2）に3個の新しい分類モードが追加されました.自然なブレーク(Jenks) 標準偏差 プリティブレーク(R統計環境のprettyにもとづく）.</translation>
-    </message>
-    <message>
-        <source>Improved loading speed of the symbol properties dialog.</source>
-        <translation type="obsolete">シンボルプロパティダイアログのローディングスピードが改善しました.</translation>
-    </message>
-    <message>
-        <source>Data-defined rotation and size for categorized and graduated renderer (symbology-ng).</source>
-        <translation type="obsolete">レンダラの分類とグラデーションでデータ定義の回転とサイズが利用できます（新シンボロジ).</translation>
-    </message>
-    <message>
-        <source>Use size scale also for line symbols to modify line width.</source>
-        <translation type="obsolete">ラインシンボルでもラインの幅を修正するためにサイズスケールが利用できるようになりました.</translation>
-    </message>
-    <message>
-        <source>Replaced raster histogram implementation with one based on Qwt. Added option to save histogram as image file. Show actual pixel values on x axis of raster histogram.</source>
-        <translation type="obsolete">ラスタヒストグラムがQwtを利用したものに置き換えられました.イメージファイルとしてヒストグラムを保存するオプションが追加されました.ラスタヒストグラムのx軸にピクセルの実際の値が表示されます.</translation>
-    </message>
-    <message>
-        <source>Added ability to interactively select pixels from the canvas to populate the transparency table in the raster layer properties dialog.</source>
-        <translation type="obsolete">ラスタレイヤプロパティダイアログに透過性テーブルを定着させるためにキャンバスからピクセルを対話式に選択する機能が追加されました.</translation>
-    </message>
-    <message>
-        <source>Allow creation of color ramps in vector color ramp combo box.</source>
-        <translation type="obsolete">ベクタカラーランプコンボボックスを使ってカラーランプを作ることができるようになりました.</translation>
-    </message>
-    <message>
-        <source>Added &apos;style manager...&apos; button to symbol selector so that users will find the style manager more easily.</source>
-        <translation type="obsolete">シンボルセレクタに&apos;スタイルマネージャ...&apos;ボタンが追加され,ユーザはスタイルマネージャをさらに簡単に見つけることができるようになりました.</translation>
-    </message>
-    <message>
-        <source>Map Composer</source>
-        <translation type="obsolete">マップコンポーザ</translation>
-    </message>
-    <message>
-        <source>add capability to show and manipulate composer item width/ height in item position dialog.</source>
-        <translation type="obsolete">コンポーザアイテムの幅/高さをポジションダイアログで操作する機能が追加されました.</translation>
-    </message>
-    <message>
-        <source>Composer items can now be deleted with the backspace key.</source>
-        <translation type="obsolete">コンポーザアイテムがバックスペースキーで削除できるようになりました.</translation>
-    </message>
-    <message>
-        <source>Sorting for composer attribute table (several columns and ascending / descending).</source>
-        <translation type="obsolete">コンポーザ属性テーブルのソート機能(それぞれのカラムで昇順/降順).</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="2710"/>
         <source>Select raster layers to add...</source>
         <translation>追加するラスタレイヤの選択...</translation>
@@ -14160,328 +10133,6 @@ This copy of QGIS writes debugging output.</source>
         <location filename="../src/app/qgisapp.cpp" line="2738"/>
         <source>Raster</source>
         <translation>ラスタ</translation>
-    </message>
-    <message>
-        <source>
-GDAL/OGR Version: %1.</source>
-        <translation type="obsolete">
-GDAL/OGRバージョン %1.</translation>
-    </message>
-    <message>
-        <source>
-PostgreSQL Client Version: %1.</source>
-        <translation type="obsolete">
-PostgreSQLクライアント %1.</translation>
-    </message>
-    <message>
-        <source>
-No PostgreSQL support.</source>
-        <translation type="obsolete">
-PostgreSQLのサポートがありません.</translation>
-    </message>
-    <message>
-        <source>
-SpatiaLite Version: %1.</source>
-        <translation type="obsolete">
-SpatiaLite バージョン %1.</translation>
-    </message>
-    <message>
-        <source>
-No SpatiaLite support.</source>
-        <translation type="obsolete">SpatiaLiteのサポートがありません.</translation>
-    </message>
-    <message>
-        <source>
-QWT Version: %1.</source>
-        <translation type="obsolete">QWTバージョン %1.</translation>
-    </message>
-    <message utf8="true">
-        <source>What&apos;s new in Version 1.7.0 &apos;Wrocław&apos;?</source>
-        <translation type="obsolete">Version 1.7.0 &apos;Wrocraw&apos;の新機能は&apos;?</translation>
-    </message>
-    <message utf8="true">
-        <source>This release is named after the town of Wrocław in Poland. The Department of Climatology and Atmosphere Protection, University of Wrocław kindly hosted our last developer meeting in November 2010. Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.6.0. As with any software, there may be bugs and issues that we were not able to fix in time for the release. We therefore recommend that you test this version before rolling it out en-masse to your users.</source>
-        <translation type="obsolete">このリリースはポーランドのWroclawという町にちなんで名づけられました.The Department of Climatology and Atmosphere Protection, University of Wrocław は2010年11月に開催された私達のデベロッパーミーティングを親切にホストしてくれました.これは私達の先進的なリリースであることに注意して下さい.このリリースは新しい機能とQGIS1.0．xからQGIS1.6.0まで続くプログラミングインターフェースの拡張を含みます.他のソフトウェアと同じように,このリリースでは修正が間に合わなかったバグがあるでしょう.私たちはあなたのユーザーにこれを広める前にテストを行うことを推奨します.</translation>
-    </message>
-    <message>
-        <source>This release includes over 277 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
-        <translation type="obsolete">このリリースは277個以上のバグ修正と多くの機能追加、拡張がなされました.すべてのことをここに記述することは不可能なので主要な新機能について箇条書きにします. </translation>
-    </message>
-    <message>
-        <source>Symbology labels and diagrams</source>
-        <translation type="obsolete">シンボロジーラベルとダイアグラム</translation>
-    </message>
-    <message>
-        <source>New symbology now used by default!</source>
-        <translation type="obsolete">新しいシンボロジがデフォルトになりました!</translation>
-    </message>
-    <message>
-        <source>Diagram system that uses the same smart placement system as labeling-ng</source>
-        <translation type="obsolete">ダイアグラムシステムがラベリングと同じスマート配置システムを利用しています</translation>
-    </message>
-    <message>
-        <source>Export and import of styles (symbology-ng).</source>
-        <translation type="obsolete">スタイルのインポートとエクスポート機能（新しいシンボロジ）.</translation>
-    </message>
-    <message>
-        <source>Labels for rules in rule-based renderers.</source>
-        <translation type="obsolete">ルールベースレンダラにおけるラベルルール.</translation>
-    </message>
-    <message>
-        <source>Ability to set label distance in map units.</source>
-        <translation type="obsolete">ラベルの距離を地図上の単位で設定する機能.</translation>
-    </message>
-    <message>
-        <source>Rotation for svg fills.</source>
-        <translation type="obsolete">svg塗りつぶしで回転が利用できます.</translation>
-    </message>
-    <message>
-        <source>Font marker can have an X,Y offset.</source>
-        <translation type="obsolete">フォントマーカーでXYオフセットが利用できます.</translation>
-    </message>
-    <message>
-        <source>Allow the line symbol layers to be used for outline of polygon (fill) symbols.</source>
-        <translation type="obsolete">ラインシンボルレイヤでポリゴン（塗りつぶし）シンボルがアウトラインとして利用できるようになりました.</translation>
-    </message>
-    <message>
-        <source>Option to put marker on the central point of a line.</source>
-        <translation type="obsolete">ラインの中心点としてマーカーを置くオプションができました.</translation>
-    </message>
-    <message>
-        <source>Option to put marker only on first/last vertex of a line.</source>
-        <translation type="obsolete">ラインの先頭または最後の点にマーカーを置くオプションができました.</translation>
-    </message>
-    <message>
-        <source>Added &quot;centroid fill&quot; symbol layer which draws a marker on polygon&apos;s centroid.</source>
-        <translation type="obsolete">ポリゴンのセントロイドとして描画されたマーカーのシンボルレイヤにセントロイドﾞフィル機能が追加されました.</translation>
-    </message>
-    <message>
-        <source>Allow the marker line symbol layer to draw markers on each vertex.</source>
-        <translation type="obsolete">それぞれの頂点上にマーカーを書くマーカーラインが書けるようになりました.</translation>
-    </message>
-    <message>
-        <source>Move/rotate/change label edit tools to interactively change data defined label properties.</source>
-        <translation type="obsolete">データ定義ラベルプロパティでラベルの移動/回転/変更編集を対話的に行えるツールができました.</translation>
-    </message>
-    <message>
-        <source>New Tools</source>
-        <translation type="obsolete">新しいツール</translation>
-    </message>
-    <message>
-        <source>Added GUI for gdaldem.</source>
-        <translation type="obsolete">gdaldemのGUIが追加されました.</translation>
-    </message>
-    <message>
-        <source>Added &apos;Lines to polygons&apos; tool to vector menu.</source>
-        <translation type="obsolete">ベクタメニューに’ラインをポリゴンにする&apos;が追加されました.</translation>
-    </message>
-    <message>
-        <source>Added field calculator with functions like $x, $y and $perimeter.</source>
-        <translation type="obsolete">フィールド計算機に$X,$yや$perimeterのような関数が追加されました.</translation>
-    </message>
-    <message>
-        <source>Added voronoi polygon tool to Vector menu.</source>
-        <translation type="obsolete">ベクタメニューにボロノイポリゴンツールが追加されました.</translation>
-    </message>
-    <message>
-        <source>User interface updates</source>
-        <translation type="obsolete">ユーザインターフェースの更新</translation>
-    </message>
-    <message>
-        <source>Allow managing missing layers in a list.</source>
-        <translation type="obsolete">リストで消失したレイヤに対する処理が追加されました.</translation>
-    </message>
-    <message>
-        <source>Zoom to group of layers.</source>
-        <translation type="obsolete">レイヤグループへのズーム.</translation>
-    </message>
-    <message>
-        <source>&apos;Tip of the day&apos; on startup. You can en/disable tips in the options panel.</source>
-        <translation type="obsolete">起動時に&apos;今日のチップ&apos;が表示されます.この機能はオプションパネルで有効/無効を設定できます!.</translation>
-    </message>
-    <message>
-        <source>Better organisation of menus, separate database menu added.</source>
-        <translation type="obsolete">メニュー構成の改良.データベースメニューが分離されました.</translation>
-    </message>
-    <message>
-        <source>Add ability to show number of features in legend classes. Accessible via right-click legend menu.</source>
-        <translation type="obsolete">凡例クラスで地物の数を表示できるようになりました.この機能は凡例メニューで右ボタンクリックで設定できます.</translation>
-    </message>
-    <message>
-        <source>General clean-ups and usability improvements.</source>
-        <translation type="obsolete">全般の改良とユーザビリティの向上.</translation>
-    </message>
-    <message>
-        <source>CRS Handling</source>
-        <translation type="obsolete">CRS操作</translation>
-    </message>
-    <message>
-        <source>Show active crs in status bar.</source>
-        <translation type="obsolete">アクティブなCRSがステータスバーに表示されます.</translation>
-    </message>
-    <message>
-        <source>Assign layer CRS to project (in the legend context menu).</source>
-        <translation type="obsolete">レイヤのCRSをプロジェクトに割り当てる（凡例コンテキストメニューで）.</translation>
-    </message>
-    <message>
-        <source>Select default CRS for new projects.</source>
-        <translation type="obsolete">新プロジェクトのデフォルトCRSを選択する.</translation>
-    </message>
-    <message>
-        <source>Allow setting CRS for multiple layers at once.</source>
-        <translation type="obsolete">複数のレイヤに一度にCRSを割り当てる.</translation>
-    </message>
-    <message>
-        <source>Default to last selection when prompting for CRS.</source>
-        <translation type="obsolete">CRS選択時に最後に選択したものをデフォルトにする.</translation>
-    </message>
-    <message>
-        <source>Rasters</source>
-        <translation type="obsolete">ラスタ</translation>
-    </message>
-    <message>
-        <source>Added AND and OR operator for raster calculator</source>
-        <translation type="obsolete">ラスタ計算機にANDとOR演算子を加えた</translation>
-    </message>
-    <message>
-        <source>On-the-fly reprojection of rasters added!</source>
-        <translation type="obsolete">ラスタのオンザフライリプロジェクションが追加されました!</translation>
-    </message>
-    <message>
-        <source>Proper implementation of raster providers.</source>
-        <translation type="obsolete">ラスタプロバイダの適切な実装.</translation>
-    </message>
-    <message>
-        <source>Added raster toolbar with histogram stretch functions.</source>
-        <translation type="obsolete">ラスタツールバーにヒストグラム伸長機能が追加されました.</translation>
-    </message>
-    <message>
-        <source>Providers and Data Handling</source>
-        <translation type="obsolete">プロバイダとデータハンドリング</translation>
-    </message>
-    <message>
-        <source>New SQLAnywhere vector provider.</source>
-        <translation type="obsolete">新しいSQLAnywhereベクタプロバイダー.</translation>
-    </message>
-    <message>
-        <source>Table join support.</source>
-        <translation type="obsolete">テーブル結合のサポート.</translation>
-    </message>
-    <message>
-        <source>Feature form updates</source>
-        <translation type="obsolete">地物フォームの更新</translation>
-    </message>
-    <message>
-        <source>Make NULL value string representation configurable.</source>
-        <translation type="obsolete">NULLの値文字列を再度構成できるようになりました.</translation>
-    </message>
-    <message>
-        <source>Fix feature updates in feature form from attribute table.</source>
-        <translation type="obsolete">属性テーブルの地物フォームで地物の更新ができるようになりました.</translation>
-    </message>
-    <message>
-        <source>Add support for NULL values in value maps (comboboxes).</source>
-        <translation type="obsolete">バリューマップ（コンボボックス等）でNULL値がサポートされました.</translation>
-    </message>
-    <message>
-        <source>Use layer names instead of ids in drop down list when loading value maps from layers.</source>
-        <translation type="obsolete">レイヤからバリューマップをドロップダウンリストにロードする時にidの代わりにレイヤ名が使用されます.</translation>
-    </message>
-    <message>
-        <source>Support feature form expression fields: line edits on the form which name prefix &quot;expr_&quot; are evaluated. Their value is interpreted as field calculator string and replaced with the calculated value.</source>
-        <translation type="obsolete">地物フォームフィールドの行編集で&quot;expr_&quot;で始る名前は式として評価されます.値はフィールド計算機として処理され、計算された値に置き換えられます.</translation>
-    </message>
-    <message>
-        <source>Support searching for NULL in attribute table.</source>
-        <translation type="obsolete">属性テーブルでNULLの検索がサポートされました.</translation>
-    </message>
-    <message>
-        <source>Attribute editing improvements</source>
-        <translation type="obsolete">属性編集機能の改善</translation>
-    </message>
-    <message>
-        <source>Improved interactive attribute editing in table (adding/deleting features, attribute update).</source>
-        <translation type="obsolete">テーブルの対話型属性編集機能が向上しました（追加/削除地物,属性の更新).</translation>
-    </message>
-    <message>
-        <source>Allow adding of geometryless features.</source>
-        <translation type="obsolete">ジオメトリが無い地物が扱えるようになりました.</translation>
-    </message>
-    <message>
-        <source>Fixed attribute undo/redo.</source>
-        <translation type="obsolete">属性のアンドゥ/リドゥ.</translation>
-    </message>
-    <message>
-        <source>Improved attribute handling.</source>
-        <translation type="obsolete">属性操作の改善.</translation>
-    </message>
-    <message>
-        <source>Optionally re-use entered attribute values for next digitized feature.</source>
-        <translation type="obsolete">次にデジタイズする地物で入力した属性値を再利用するオプションができました.</translation>
-    </message>
-    <message>
-        <source>Allow merging/assigning attribute values to a set of features.</source>
-        <translation type="obsolete">複数の地物で属性の値を結合したり割り当てたりする機能ができました.</translation>
-    </message>
-    <message>
-        <source>Allow OGR &apos;save as&apos; without attributes (for eg. DGN/DXF).</source>
-        <translation type="obsolete">OGRの’名前をつけて保存&apos;で属性無し保存ができます（例えばDGN/DXF用）.</translation>
-    </message>
-    <message>
-        <source>Api and Developer Centric</source>
-        <translation type="obsolete">APIと開発者の中心</translation>
-    </message>
-    <message>
-        <source>Refactored attribute dialog calls to QgsFeatureAttribute.</source>
-        <translation type="obsolete">属性ダイアログのQgsFeatureAttributeコールがリファクタされました.</translation>
-    </message>
-    <message>
-        <source>Added QgsVectorLayer::featureAdded signal.</source>
-        <translation type="obsolete"> QgsVectorLayer::featureAddedシグナルが追加されました.</translation>
-    </message>
-    <message>
-        <source>Layer menu function added.</source>
-        <translation type="obsolete">レイヤメニュー機能が追加されました.</translation>
-    </message>
-    <message>
-        <source>Added option to load c++ plugins from user  specified directories. Requires application restart to activate.</source>
-        <translation type="obsolete">C++プラグインをユーザ指定のディレクトリからロードするオプションが追加されました.これを有効にするためにはアプリケーションの再起動が必要です.</translation>
-    </message>
-    <message>
-        <source>Completely new geometry checking tool for fTools. Significantly faster, more relevant error messages, and now supports zooming to errors. See the new QgsGeometry.validateGeometry function</source>
-        <translation type="obsolete">ｆToolsのジオメトリチェックツールが完璧になりました.大変高速ににエラーメッセージが適切になりエラー箇所にズームできるようになりました.新しいQgsGeometryのvalidateGeometry関数をご覧ください</translation>
-    </message>
-    <message>
-        <source>QGIS Mapserver</source>
-        <translation type="obsolete">QGIS Mapserver</translation>
-    </message>
-    <message>
-        <source>Ability to specify wms service capabilities in the properties section of the project file (instead of wms_metadata.xml file).</source>
-        <translation type="obsolete">wmsサービスの機能をプロジェクトファイルのプロパティセクションで特定できるようになりました（wmsメタデータxmlファイルの代わりに）.</translation>
-    </message>
-    <message>
-        <source>Support for wms printing with GetPrint-Request.</source>
-        <translation type="obsolete">wms印刷でGetPrint-Requestがサポートされました.</translation>
-    </message>
-    <message>
-        <source>Support for icons of plugins in the plugin manager dialog.</source>
-        <translation type="obsolete">プラグインマネージャダイアログでプラグインのアイコンがサポートされました.</translation>
-    </message>
-    <message>
-        <source>Removed quickprint plugin - use easyprint plugin rather from plugin repo.</source>
-        <translation type="obsolete">クイックプリントプラグインが削除されました - プラグインレポジトリのイージープリントプラグインを使って下さい.</translation>
-    </message>
-    <message>
-        <source>Removed ogr converter plugin - use &apos;save as&apos; context menu rather.</source>
-        <translation type="obsolete">ogrコンバータプラグインが削除されました - コンテキストメニューの &apos;save as&apos;を使って下さい.</translation>
-    </message>
-    <message>
-        <source>Printing</source>
-        <translation type="obsolete">印刷</translation>
-    </message>
-    <message>
-        <source>Undo/Redo support for the print composer</source>
-        <translation type="obsolete">プリントコンポーザでアンドゥ/リドゥがサポートされました</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2815"/>
@@ -14512,10 +10163,6 @@ QWT Version: %1.</source>
         <location filename="../src/app/qgisapp.cpp" line="2972"/>
         <source>Cannot get SpatiaLite select dialog from provider.</source>
         <translation>SpatiaLite選択ダイアログをプロバイダから取得できません.</translation>
-    </message>
-    <message>
-        <source>DelimitedText</source>
-        <translation type="obsolete">デリミテッドテキスト</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2992"/>
@@ -14904,30 +10551,6 @@ Error: %1</source>
         <translation>GPS情報</translation>
     </message>
     <message>
-        <source>Tile scale</source>
-        <translation type="obsolete">タイルスケール</translation>
-    </message>
-    <message>
-        <source>Python Console</source>
-        <translation type="obsolete">Pythonコンソール</translation>
-    </message>
-    <message>
-        <source>To perform a local histogram stretch, you need to have a raster layer selected.</source>
-        <translation type="obsolete">ローカルヒストグラムを拡張するためにはラスタレイヤを選択して下さい.</translation>
-    </message>
-    <message>
-        <source>No Raster Layer Selected</source>
-        <translation type="obsolete">ラスタレイヤが選択されていません</translation>
-    </message>
-    <message>
-        <source>No Valid Raster Layer Selected</source>
-        <translation type="obsolete">有効なラスタレイヤが選択されていません</translation>
-    </message>
-    <message>
-        <source>To perform a local histogram stretch, you need to have a grayscale (multiband single layer, or singleband grayscale) raster layer selected.</source>
-        <translation type="obsolete">ローカルヒストグラムを拡張するためにはグレイスケールラスタレイヤ(マルチバンドのシングルレイヤまたはシングルバンドのグレイスケール)を選択する必要があります.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="6737"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>レイヤ%1は正しいレイヤではないので地図に追加できません</translation>
@@ -15019,189 +10642,9 @@ Error: %1</source>
         <translation>URL%1アクセス中にSSLエラーが発生しました:</translation>
     </message>
     <message>
-        <source>
-
-Ignore errors?</source>
-        <translation type="obsolete">
-
-エラーを無視しますか?</translation>
-    </message>
-    <message>
-        <source>SSL errors occured</source>
-        <translation type="obsolete">SSLエラーが発生しました</translation>
-    </message>
-    <message>
-        <source>Quantum GIS - %1 (&apos;%2&apos;)</source>
-        <translation type="obsolete">Quantum GIS - %1 (&apos;%2&apos;)</translation>
-    </message>
-    <message>
-        <source>&amp;New Print Composer</source>
-        <translation type="obsolete">新コンポーザマネージャ(&amp;N)</translation>
-    </message>
-    <message>
-        <source>Ctrl+P</source>
-        <comment>New Print Composer</comment>
-        <translation type="obsolete">Ctrl+P</translation>
-    </message>
-    <message>
-        <source>New Print Composer</source>
-        <translation type="obsolete">新プリントコンポーザー</translation>
-    </message>
-    <message>
-        <source>Composer manager...</source>
-        <translatorcomment>
-</translatorcomment>
-        <translation type="obsolete">コンポーザーマネージャ...</translation>
-    </message>
-    <message>
-        <source>Composer manager</source>
-        <translation type="obsolete">コンポーザーマネージャ</translation>
-    </message>
-    <message>
-        <source>Ctrl+.</source>
-        <comment>Capture Points</comment>
-        <translation type="obsolete">Ctrl+.</translation>
-    </message>
-    <message>
-        <source>Ctrl+/</source>
-        <comment>Capture Lines</comment>
-        <translation type="obsolete">Ctrl+/</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+/</source>
-        <comment>Capture Polygons</comment>
-        <translation type="obsolete">Ctrl+Shift+/</translation>
-    </message>
-    <message>
-        <source>Reshape Features</source>
-        <translation type="obsolete">地物の変形</translation>
-    </message>
-    <message>
-        <source>Add Part</source>
-        <translation type="obsolete">部分の追加</translation>
-    </message>
-    <message>
-        <source>Add part to multipolygon</source>
-        <translation type="obsolete">マルチポリゴンの部分追加</translation>
-    </message>
-    <message>
-        <source>Click a vertex of the ring to delete</source>
-        <translation type="obsolete">リングの頂点を削除するためにクリックする</translation>
-    </message>
-    <message>
-        <source>Click a vertex of the part to delete</source>
-        <translation type="obsolete">部分の頂点を削除するためにクリックする</translation>
-    </message>
-    <message>
-        <source>Rotate Point Symbols</source>
-        <translation type="obsolete">ポイントシンボルを回転する</translation>
-    </message>
-    <message>
-        <source>Deselect features from all layers</source>
-        <translation type="obsolete">すべてのレイヤから地物選択を取り消す</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+I</source>
-        <comment>Click on features to identify them</comment>
-        <translation type="obsolete">Ctrl+Shift+I</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+M</source>
-        <comment>Measure a Line</comment>
-        <translation type="obsolete">Ctrl+Shift+M</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+J</source>
-        <comment>Measure an Area</comment>
-        <translation type="obsolete">Ctrl+Shift+J</translation>
-    </message>
-    <message>
-        <source>Measure Angle</source>
-        <translation type="obsolete">角度の計測</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+F</source>
-        <comment>Zoom to Full Extents</comment>
-        <translation type="obsolete">Ctrl+Shift+F</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+B</source>
-        <comment>Show Bookmarks</comment>
-        <translation type="obsolete">Ctrl+Shift+B</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+V</source>
-        <comment>Add a Vector Layer</comment>
-        <translation type="obsolete">Ctrl+Shift+V</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+R</source>
-        <comment>Add a Raster Layer</comment>
-        <translation type="obsolete">Ctrl+Shift+R</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+D</source>
-        <comment>Add a PostGIS Layer</comment>
-        <translation type="obsolete">Ctrl+Shift+D</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+L</source>
-        <comment>Add a SpatiaLite Layer</comment>
-        <translation type="obsolete">Ctrl+Shift+L</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+W</source>
-        <comment>Add a Web Mapping Server Layer</comment>
-        <translation type="obsolete">Ctrl+Shift+W</translation>
-    </message>
-    <message>
-        <source>Save edits</source>
-        <translation type="obsolete">編集を保存する</translation>
-    </message>
-    <message>
-        <source>Save as...</source>
-        <translation type="obsolete">名前をつけて保存...</translation>
-    </message>
-    <message>
-        <source>Save the current layer as a vector file</source>
-        <translation type="obsolete">カレントレイヤをベクタファイルとして保存する</translation>
-    </message>
-    <message>
-        <source>Save Selection as vector file...</source>
-        <translation type="obsolete">選択部分をベクタファイルとして保存する...</translation>
-    </message>
-    <message>
-        <source>Save the selection as a vector file</source>
-        <translation type="obsolete">選択部分をベクタファイルとして保存する</translation>
-    </message>
-    <message>
-        <source>Tile scale slider</source>
-        <translation type="obsolete">タイルスケールスライダー</translation>
-    </message>
-    <message>
-        <source>Show tile scale slider</source>
-        <translation type="obsolete">タイルスケールスライダを表示する</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="1313"/>
         <source>&amp;Database</source>
         <translation>データベース(&amp;D)</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">ラベル</translation>
-    </message>
-    <message>
-        <source>
-This copy of QGIS has been built with PostgreSQL support (%1).</source>
-        <translation type="obsolete">
-このQGISはPostgreSQLのサポートつきでビルドされています(%1).</translation>
-    </message>
-    <message>
-        <source>
-This copy of QGIS has been built with QWT %1.</source>
-        <translation type="obsolete">
-このQGISはQWT(%1)を利用してビルドされています.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2553"/>
@@ -15237,18 +10680,10 @@ Errors: %2
 エラー:%2</translation>
     </message>
     <message>
-        <source>QGIS - Changes in SVN since last release</source>
-        <translation type="obsolete">QGIS-最後のリリース以来のSVN内の変更</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="6452"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>QGISバージョンサーバーと通信できません %1 　</translation>
-    </message>
-    <message>
-        <source>%1 is not a valid or recognized raster data source</source>
-        <translation type="obsolete">%1は正しく認識できるラスタデータソースではありません</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8489"/>
@@ -15274,74 +10709,13 @@ Errors: %2
         </translation>
     </message>
     <message>
-        <source>Add SpatiaLite Layer...</source>
-        <translation type="obsolete">SpatiaLiteレイヤの追加...</translation>
-    </message>
-    <message>
-        <source>Add a SpatiaLite Layer</source>
-        <translation type="obsolete">SpatiaLiteレイヤの追加</translation>
-    </message>
-    <message>
-        <source>
-This copy of QGIS has been built without SpatiaLite support.</source>
-        <translation type="obsolete">
-このQGISのコピーはSpatiaLiteのサポート無しでビルドされています.</translation>
-    </message>
-    <message>
-        <source>Zoom Next</source>
-        <translation type="obsolete">次表示領域へズーム</translation>
-    </message>
-    <message>
-        <source>Zoom to Forward Extent</source>
-        <translation type="obsolete">次の表示領域へズームする</translation>
-    </message>
-    <message>
-        <source>Simplify Feature</source>
-        <translation type="obsolete">地物の簡素化</translation>
-    </message>
-    <message>
-        <source>Delete Ring</source>
-        <translation type="obsolete">リングの削除</translation>
-    </message>
-    <message>
-        <source>Delete Part</source>
-        <translation type="obsolete">部分の削除</translation>
-    </message>
-    <message>
-        <source>Configure shortcuts...</source>
-        <translation type="obsolete">ショートカットの構成...</translation>
-    </message>
-    <message>
-        <source>Configure shortcuts</source>
-        <translation type="obsolete">ショートカットの構成</translation>
-    </message>
-    <message>
-        <source>Advanced Digitizing</source>
-        <translation type="obsolete">先進的なデジタイズ</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="59"/>
         <source>&amp;Raster</source>
         <translation>ラスタ(&amp;R)</translation>
     </message>
 </context>
 <context>
-    <name>QgisAppBase</name>
-    <message>
-        <source>QGIS</source>
-        <translation type="obsolete">QGIS</translation>
-    </message>
-</context>
-<context>
     <name>QgisAppInterface</name>
-    <message>
-        <source>Feature form edit</source>
-        <translation type="obsolete">地物編集フォーム</translation>
-    </message>
-    <message>
-        <source>Run actions</source>
-        <translation type="obsolete">アクションを実行する</translation>
-    </message>
     <message>
         <location filename="../src/app/qgisappinterface.cpp" line="562"/>
         <source>Attributes changed</source>
@@ -15350,10 +10724,6 @@ This copy of QGIS has been built without SpatiaLite support.</source>
 </context>
 <context>
     <name>QgsAbout</name>
-    <message>
-        <source>About Quantum GIS</source>
-        <translation type="obsolete">Quantum GIS について</translation>
-    </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="147"/>
         <location filename="../src/ui/qgsabout.ui" line="245"/>
@@ -15374,10 +10744,6 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <location filename="../src/ui/qgsabout.ui" line="34"/>
         <source>About</source>
         <translation>About</translation>
-    </message>
-    <message>
-        <source>Version</source>
-        <translation type="obsolete">バージョン</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="156"/>
@@ -15426,28 +10792,6 @@ p, li { white-space: pre-wrap; }
         <translation>開発者</translation>
     </message>
     <message>
-        <source>Name</source>
-        <translation type="obsolete">名称</translation>
-    </message>
-    <message>
-        <source>Sponsors</source>
-        <translation type="obsolete">スポンサー</translation>
-    </message>
-    <message>
-        <source>Quantum GIS is licensed under the GNU General Public License</source>
-        <translation type="obsolete">Quantum GIS のライセンスは GNU 一般公衆利用許諾契約書(GNU General Public License) です</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;Quantum GIS (QGIS)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;Quantum GIS (QGIS)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsabout.ui" line="99"/>
         <source>http://www.gnu.org/licenses</source>
         <translation>http://www.gnu.org/licenses/licenses.ja.html</translation>
@@ -15458,33 +10802,9 @@ p, li { white-space: pre-wrap; }
         <translation>私たちのユーザーメーリングリストに参加してください</translation>
     </message>
     <message>
-        <source>&lt;p&gt;QGIS sponsorship programme:contribute to QGIS development&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;QGIS開発に寄与するためのQGISスポンサーシッププログラム&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Website</source>
-        <translation type="obsolete">ウェッブサイト</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;The following individuals and institutions have contributed money to fund QGIS development and other project costs&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;以下の個人と機関からQGIS開発やその他プロジェクトのための費用に使われる基金に寄付をいただきました&lt;/p&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsabout.cpp" line="129"/>
         <source>&lt;p&gt;For a list of individuals and institutions who have contributed money to fund QGIS development and other project costs see &lt;a href=&quot;http://qgis.org/en/sponsorship/donors.html&quot;&gt;http://qgis.org/en/sponsorship/donors.html&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;QGISの開発とその他のプロジェクトにかかる費用を寄付した個人と機関のリストは次のWEBページで閲覧できます &lt;a href=&quot;http://qgis.org/en/sponsorship/donors.html&quot;&gt;http://qgis.org/en/sponsorship/donors.html&lt;/a&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;The following have contributed to QGIS by translating the user interface or documentation&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;以下の方々はユーザーインターフェースやドキュメントの翻訳作業でQGISに貢献していただきました&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Language</source>
-        <translation type="obsolete">言語</translation>
-    </message>
-    <message>
-        <source>Names</source>
-        <translation type="obsolete">名前</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="212"/>
@@ -15527,10 +10847,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsAddAttrDialogBase</name>
-    <message>
-        <source>Add Attribute</source>
-        <translation type="obsolete">属性を追加</translation>
-    </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="14"/>
         <source>Add column</source>
@@ -15653,10 +10969,6 @@ p, li { white-space: pre-wrap; }
         <translation>フォーム</translation>
     </message>
     <message>
-        <source>Map position fixed</source>
-        <translation type="obsolete">固定された地図の位置</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="20"/>
         <source>Fixed map position</source>
         <translation>固定された地図の位置</translation>
@@ -15719,27 +11031,6 @@ QGIS_PREFIX_PATH 環境変数			%1
 デフォルトテーマパス	%7
 SVG検索パス	%8
 ユーザデータベースパス	%9</translation>
-    </message>
-    <message>
-        <source>Application state:
-Prefix:		%1
-Plugin Path:		%2
-Package Data Path:	%3
-Active Theme Name:	%4
-Active Theme Path:	%5
-Default Theme Path:	%6
-SVG Search Paths:	%7
-User DB Path:	%8
-</source>
-        <translation type="obsolete">アプリケーションの状態:
-接頭辞:		%1
-プラグインパス:		%2
-パッケージデータパス:	%3
-アクティブテーマ名:	%4
-アクティブテーマパス:	%5
-デフォルトテーマパス:	%6
-SVG サーチパス:	%7
-ユーザDBパス:	%8</translation>
     </message>
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="622"/>
@@ -15971,26 +11262,14 @@ SVG サーチパス:	%7
         <translation>アクション</translation>
     </message>
     <message>
-        <source>Move up</source>
-        <translation type="obsolete">上に移動</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="47"/>
         <source>Move the selected action up</source>
         <translation>選択中のアクションを上に移動</translation>
     </message>
     <message>
-        <source>Move down</source>
-        <translation type="obsolete">下に移動</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="129"/>
         <source>Move the selected action down</source>
         <translation>選択中のアクションを下に移動</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="109"/>
@@ -16014,17 +11293,9 @@ SVG サーチパス:	%7
         <translation>アクションコマンドを入力</translation>
     </message>
     <message>
-        <source>Insert action</source>
-        <translation type="obsolete">アクション挿入</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="439"/>
         <source>Inserts the action into the list above</source>
         <translation>上の一覧にアクションを挿入</translation>
-    </message>
-    <message>
-        <source>Update action</source>
-        <translation type="obsolete">アクション更新</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="449"/>
@@ -16037,17 +11308,9 @@ SVG サーチパス:	%7
         <translation>フィールドを挿入</translation>
     </message>
     <message>
-        <source>Inserts the selected field into the action, prepended with a %</source>
-        <translation type="obsolete">選択中のフィールドをアクションに挿入、 % が頭に付く</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="396"/>
         <source>The valid attribute names for this layer</source>
         <translation>このレイヤに有効な属性名</translation>
-    </message>
-    <message>
-        <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
-        <translation type="obsolete">現在のレイヤに定義されたアクションの一覧。アクションを追加するには、下のコントロールで詳細を決定し、挿入ボタンを押します。アクションをダブルクリックすることで編集もできます。</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="95"/>
@@ -16089,10 +11352,6 @@ SVG サーチパス:	%7
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="469"/>
         <source>Type</source>
         <translation>タイプ</translation>
-    </message>
-    <message>
-        <source>Remove action</source>
-        <translation type="obsolete">アクションの削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="143"/>
@@ -16193,22 +11452,6 @@ SVG サーチパス:	%7
 <context>
     <name>QgsAttributeDialog</name>
     <message>
-        <source> (int)</source>
-        <translation type="obsolete">(int)</translation>
-    </message>
-    <message>
-        <source> (dbl)</source>
-        <translation type="obsolete">(dbl)</translation>
-    </message>
-    <message>
-        <source> (long)</source>
-        <translation type="obsolete">(long)</translation>
-    </message>
-    <message>
-        <source> (txt)</source>
-        <translation type="obsolete">(txt)</translation>
-    </message>
-    <message>
         <location filename="../src/gui/qgsattributedialog.cpp" line="294"/>
         <source>Error</source>
         <translation>エラー</translation>
@@ -16290,22 +11533,6 @@ SVG サーチパス:	%7
 <context>
     <name>QgsAttributeSelectionDialog</name>
     <message>
-        <source>Attribute</source>
-        <translation type="obsolete">属性</translation>
-    </message>
-    <message>
-        <source>Alias</source>
-        <translation type="obsolete">別名</translation>
-    </message>
-    <message>
-        <source>Select all</source>
-        <translation type="obsolete">全てを選択</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">クリア</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="71"/>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="76"/>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="149"/>
@@ -16363,13 +11590,6 @@ SVG サーチパス:	%7
     </message>
 </context>
 <context>
-    <name>QgsAttributeTableAction</name>
-    <message>
-        <source>Attributes changed</source>
-        <translation type="obsolete">属性が変更されました</translation>
-    </message>
-</context>
-<context>
     <name>QgsAttributeTableDelegate</name>
     <message>
         <location filename="../src/gui/attributetable/qgsattributetabledelegate.cpp" line="93"/>
@@ -16379,35 +11599,12 @@ SVG サーチパス:	%7
 </context>
 <context>
     <name>QgsAttributeTableDialog</name>
-    <message>
-        <source>Search string parsing error</source>
-        <translation type="obsolete">検索文字列解析エラー</translation>
-    </message>
-    <message>
-        <source>Search results</source>
-        <translation type="obsolete">検索結果</translation>
-    </message>
-    <message>
-        <source>You&apos;ve supplied an empty search string.</source>
-        <translation type="obsolete">内容の無い検索文字列が与えられました</translation>
-    </message>
-    <message>
-        <source>Error during search</source>
-        <translation type="obsolete">検索中にエラー発生</translation>
-    </message>
     <message numerus="yes">
         <location filename="../src/app/qgsattributetabledialog.cpp" line="125"/>
         <source>Attribute table - %1 (%n Feature(s))</source>
         <comment>feature count</comment>
         <translation>
             <numerusform>属性テーブル-%1(%n地物（群))</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <source>Attribute table - %1 :: %n / %2 feature(s) selected</source>
-        <comment>feature count</comment>
-        <translation type="obsolete">
-            <numerusform>属性テーブル - %1 :: %n / %2 地物が選択されています</numerusform>
         </translation>
     </message>
     <message>
@@ -16419,17 +11616,6 @@ SVG サーチパス:	%7
         <location filename="../src/app/qgsattributetabledialog.cpp" line="588"/>
         <source>Evaluation error</source>
         <translation>評価エラー</translation>
-    </message>
-    <message numerus="yes">
-        <source>Attribute table - %1 (%n matching features)</source>
-        <comment>matching features</comment>
-        <translation type="obsolete">
-            <numerusform>属性テーブル-%1(合致した地物 %n)</numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>Attribute table - %1 (No matching features)</source>
-        <translation type="obsolete">属性テーブル-%1(合致しない地物群)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="202"/>
@@ -16482,41 +11668,9 @@ SVG サーチパス:	%7
         <translation>ジオメトリが無い地物が追加されました</translation>
     </message>
     <message>
-        <source>Run action</source>
-        <translation type="obsolete">アクション実行</translation>
-    </message>
-    <message>
-        <source>Open form</source>
-        <translation type="obsolete">フォームのオープン</translation>
-    </message>
-    <message>
-        <source>Loading feature attributes...</source>
-        <translation type="obsolete">地物属性ロード注...</translation>
-    </message>
-    <message>
-        <source>Abort</source>
-        <translation type="obsolete">取り消し</translation>
-    </message>
-    <message>
-        <source>Attribute table</source>
-        <translation type="obsolete">属性テーブル</translation>
-    </message>
-    <message>
-        <source>%1 features loaded.</source>
-        <translation type="obsolete">%1地物ロード済.</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="14"/>
         <source>Attribute Table</source>
         <translation>属性テーブル</translation>
-    </message>
-    <message>
-        <source>Show selected only</source>
-        <translation type="obsolete">選択された部分のみ表示する</translation>
-    </message>
-    <message>
-        <source>Search selected only</source>
-        <translation type="obsolete">選択された部分のみ検索する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="485"/>
@@ -16527,10 +11681,6 @@ SVG サーチパス:	%7
         <location filename="../src/ui/qgsattributetabledialog.ui" line="416"/>
         <source>?</source>
         <translation>?</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">閉じる</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="165"/>
@@ -16546,10 +11696,6 @@ SVG サーチパス:	%7
         <location filename="../src/ui/qgsattributetabledialog.ui" line="188"/>
         <source>Move selection to top (Ctrl+T)</source>
         <translation>選択部分を先頭に移動する(Ctrl+T)</translation>
-    </message>
-    <message>
-        <source>Invert selection (Ctrl+S)</source>
-        <translation type="obsolete">セクションを反転する(Ctrl+S)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="214"/>
@@ -16719,21 +11865,9 @@ SVG サーチパス:	%7
         <translation>Ctrl+I</translation>
     </message>
     <message>
-        <source>Unselect all</source>
-        <translation type="obsolete">全選択解除</translation>
-    </message>
-    <message>
-        <source>Move selection to top</source>
-        <translation type="obsolete">選択をトップに移動</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="204"/>
         <source>Ctrl+T</source>
         <translation>Ctrl+T</translation>
-    </message>
-    <message>
-        <source>Invert selection</source>
-        <translation type="obsolete">選択範囲を反転</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="230"/>
@@ -16751,65 +11885,9 @@ SVG サーチパス:	%7
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="obsolete">選択している行のデータ領域に地図をズームする (Ctrl-J)</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="282"/>
         <source>Ctrl+J</source>
         <translation>Ctrl+J</translation>
-    </message>
-    <message>
-        <source>Toggle editing mode</source>
-        <translation type="obsolete">編集モード切替</translation>
-    </message>
-    <message>
-        <source>New column</source>
-        <translation type="obsolete">新規カラムを追加</translation>
-    </message>
-    <message>
-        <source>Delete column</source>
-        <translation type="obsolete">カラムを削除</translation>
-    </message>
-    <message>
-        <source>Open field calculator</source>
-        <translation type="obsolete">フィールド計算機を開く</translation>
-    </message>
-    <message>
-        <source>Look for</source>
-        <translation type="obsolete">ロックする</translation>
-    </message>
-    <message>
-        <source>in</source>
-        <translation type="obsolete">in</translation>
-    </message>
-    <message>
-        <source>Looks for the given value in the given attribute column</source>
-        <translation type="obsolete">指定属性カラム内の指定データを見る</translation>
-    </message>
-    <message>
-        <source>&amp;Search</source>
-        <translation type="obsolete">(&amp;S)検索</translation>
-    </message>
-    <message>
-        <source>Show selected records only</source>
-        <translation type="obsolete">選択されたレコード群のみを表示する</translation>
-    </message>
-    <message>
-        <source>Opens the search query builder</source>
-        <translation type="obsolete">検索クエリビルダを開く</translation>
-    </message>
-    <message>
-        <source>Advanced search</source>
-        <translation type="obsolete">アドバンストサーチ</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">ヘルプ</translation>
-    </message>
-    <message>
-        <source>Delete selected features</source>
-        <translation type="obsolete">選択された地物を削除する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="118"/>
@@ -16817,21 +11895,9 @@ SVG サーチパス:	%7
         <source>...</source>
         <translation>...</translation>
     </message>
-    <message>
-        <source>Search selected records only</source>
-        <translation type="obsolete">選択されたレコード群のみを検索する</translation>
-    </message>
 </context>
 <context>
     <name>QgsAttributeTableModel</name>
-    <message>
-        <source>Attribute changed</source>
-        <translation type="obsolete">属性が変更された</translation>
-    </message>
-    <message>
-        <source>Attributes changed</source>
-        <translation type="obsolete">属性が変更されました</translation>
-    </message>
     <message>
         <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="436"/>
         <source>feature id</source>
@@ -16840,14 +11906,6 @@ SVG サーチパス:	%7
 </context>
 <context>
     <name>QgsAttributeTableView</name>
-    <message>
-        <source>Run action</source>
-        <translation type="obsolete">アクション実行</translation>
-    </message>
-    <message>
-        <source>Open form</source>
-        <translation type="obsolete">フォームのオープン</translation>
-    </message>
     <message>
         <location filename="../src/gui/attributetable/qgsattributetableview.cpp" line="225"/>
         <source>Select All</source>
@@ -17196,13 +12254,6 @@ Error was:%2</source>
     </message>
 </context>
 <context>
-    <name>QgsAvoidIntersectionsDialogBase</name>
-    <message>
-        <source>Remove intersections of new polygons with layers</source>
-        <translation type="obsolete">新ポリゴンのレイヤと交差する部分を削除する</translation>
-    </message>
-</context>
-<context>
     <name>QgsBlendModeComboBox</name>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="43"/>
@@ -17367,10 +12418,6 @@ Database:%2</source>
         <translation>再投影された領域はありません.</translation>
     </message>
     <message>
-        <source>Error deleting bookmark</source>
-        <translation type="obsolete">ブックマーク削除エラー</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="47"/>
         <source>&amp;Delete</source>
         <translation>削除(&amp;D)</translation>
@@ -17380,16 +12427,6 @@ Database:%2</source>
         <source>&amp;Zoom to</source>
         <translation>ズーム(&amp;Z)</translation>
     </message>
-    <message>
-        <source>Are you sure you want to delete the %1 bookmark?</source>
-        <translation type="obsolete">本当に%1のブックマークを削除しますか?</translation>
-    </message>
-    <message>
-        <source>Failed to delete the %1 bookmark from the database. The database said:
-%2</source>
-        <translation type="obsolete">%1のブックマークをデータベースから削除するのに失敗しました。データベースのログは以下のとおりです
-%2</translation>
-    </message>
 </context>
 <context>
     <name>QgsBookmarksBase</name>
@@ -17397,22 +12434,6 @@ Database:%2</source>
         <location filename="../src/ui/qgsbookmarksbase.ui" line="14"/>
         <source>Geospatial Bookmarks</source>
         <translation>地理空間ブックマーク</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名称</translation>
-    </message>
-    <message>
-        <source>Project</source>
-        <translation type="obsolete">プロジェクト</translation>
-    </message>
-    <message>
-        <source>Extent</source>
-        <translation type="obsolete">範囲</translation>
-    </message>
-    <message>
-        <source>Id</source>
-        <translation type="obsolete">Id</translation>
     </message>
 </context>
 <context>
@@ -17533,25 +12554,9 @@ Database:%2</source>
 <context>
     <name>QgsBrowserDockWidget</name>
     <message>
-        <source>Browser</source>
-        <translation type="obsolete">ブラウザ</translation>
-    </message>
-    <message>
-        <source>Refresh</source>
-        <translation type="obsolete">再読み込み</translation>
-    </message>
-    <message>
-        <source>Add Selection</source>
-        <translation type="obsolete">選択の追加</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="330"/>
         <source>Add Selected Layers</source>
         <translation>選択されたレイヤの追加</translation>
-    </message>
-    <message>
-        <source>Collapse All</source>
-        <translation type="obsolete">全てを閉じる</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="314"/>
@@ -17823,14 +12828,6 @@ Database:%2</source>
 <context>
     <name>QgsCategorizedSymbolRendererV2Widget</name>
     <message>
-        <source>Value</source>
-        <translation type="obsolete">値</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">ラベル</translation>
-    </message>
-    <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="395"/>
         <source>Symbol levels...</source>
         <translation>シンボルレベル...</translation>
@@ -17872,10 +12869,6 @@ Database:%2</source>
 Should the existing classes be deleted before classification?</source>
         <translation>分類フィールドが&apos;%1&apos;から&apos;%2&apos;に変更されました。
 以前の分類は分類作業の前に削除しますか?</translation>
-    </message>
-    <message>
-        <source>change</source>
-        <translation type="obsolete">変更</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="22"/>
@@ -18025,18 +13018,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>巨大イメージ</translation>
     </message>
     <message>
-        <source>Map 1</source>
-        <translation type="obsolete">地図1</translation>
-    </message>
-    <message>
-        <source>Image too big</source>
-        <translation type="obsolete">イメージが大きすぎます</translation>
-    </message>
-    <message>
-        <source>Creation of image with %1x%2 pixels failed.  Export aborted.</source>
-        <translation type="obsolete">%1x%2ピクセルのイメージ作成に失敗しました  エクスポートが中断しました.</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1151"/>
         <source>SVG warning</source>
         <translation>SVG警告</translation>
@@ -18056,10 +13037,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposer.cpp" line="174"/>
         <source>QGIS</source>
         <translation>QGIS</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="obsolete">ファイル</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="206"/>
@@ -18115,14 +13092,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposer.cpp" line="669"/>
         <source>PDF Format</source>
         <translation>PDF形式</translation>
-    </message>
-    <message>
-        <source>Image too large</source>
-        <translation type="obsolete">イメージが大きすぎます</translation>
-    </message>
-    <message>
-        <source>Creation of image with %1x%2 pixels failed.  Retry without &apos;Print As Raster&apos;?</source>
-        <translation type="obsolete">%1x%2ピクセルの画像生成に失敗しました &apos; ラスタとしてプリントする？&apos;オプション無しで再実行しますか?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="951"/>
@@ -18265,14 +13234,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>ブレンドモードやベクタレイヤの透過性の先進的なコンポジションエフェクトがこのプロジェクトで使えるようになりました.それらはベクタでは印刷できません.ラスタで印刷することを推奨します.</translation>
     </message>
     <message>
-        <source>Project contains blend modes</source>
-        <translation type="obsolete">プロジェクトは混合モードを含んでいます</translation>
-    </message>
-    <message>
-        <source>Blend modes are enabled in this project, which cannot be printed as vectors. Printing as a raster is recommended.</source>
-        <translation type="obsolete">このプロジェクトでは混合モードが有効なためベクターとしての印刷ができません. ラスターとしての印刷が推奨されます.</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2129"/>
         <source>Print as raster</source>
         <translation>ラスタとして印刷する</translation>
@@ -18316,30 +13277,14 @@ Should the existing classes be deleted before classification?</source>
         <translation>いくつかのWMSサーバー(たとえばUMN mapserver)ではWIDTHとHEIGHTパラメータの制限があります。このようなサーバーのレイヤを印刷する場合この制限を超えることがあります。この場合、このWMSレイヤは印刷されません</translation>
     </message>
     <message>
-        <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
-        <translation type="obsolete">&lt;p&gt;QgisのSVG出力機能はQt4のSVGコードのバグや欠陥に起因する多くの問題があります。</translation>
-    </message>
-    <message>
-        <source>%1 format (*.%2 *.%3)</source>
-        <translation type="obsolete">%1形式 (*.%2 *.%3)</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1158"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
         <translation>.特に地図のバウンディングボックスでレイヤがクリップされない問題があります.&lt;/P&gt;</translation>
     </message>
     <message>
-        <source>To create image %1 x %2 requires circa %3 MB of memory</source>
-        <translation type="obsolete">%1 x %2のイメージを作成するためにはおよそ%3MBのメモリが必要です</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1161"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
         <translation>もしあなたがQgisでベクタ形式の出力ファイルが必要ならばPostScriptで出力することを推奨します。SVGで出力する場合は満足できるものができません&lt;/P&gt;</translation>
-    </message>
-    <message>
-        <source>save template</source>
-        <translation type="obsolete">テンプレートの保存</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1501"/>
@@ -18366,17 +13311,9 @@ Should the existing classes be deleted before classification?</source>
         <source>Error, could not read file</source>
         <translation>エラー,ファイルを読めませんでした</translation>
     </message>
-    <message>
-        <source>Content of template file is not valid</source>
-        <translation type="obsolete">テンプレートファイルの内容が不正です</translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
-    <message>
-        <source>General options</source>
-        <translation type="obsolete">一般情報オプション</translation>
-    </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="61"/>
         <source>Arrow outline width</source>
@@ -18386,10 +13323,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="74"/>
         <source>Arrowhead width</source>
         <translation>矢印ヘッドの太さ</translation>
-    </message>
-    <message>
-        <source>Arrow color</source>
-        <translation type="obsolete">矢印の色</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="87"/>
@@ -18444,33 +13377,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>矢印</translation>
     </message>
     <message>
-        <source>Arrow color...</source>
-        <translation type="obsolete">矢印の色...</translation>
-    </message>
-    <message>
-        <source>Line width </source>
-        <translation type="obsolete">線幅</translation>
-    </message>
-    <message>
-        <source>Arrow head width </source>
-        <translation type="obsolete">矢印ヘッドの幅</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="125"/>
         <source>Arrow markers</source>
         <translation>矢印マーカー</translation>
-    </message>
-    <message>
-        <source>Default marker</source>
-        <translation type="obsolete">デフォルトマーカー</translation>
-    </message>
-    <message>
-        <source>No marker</source>
-        <translation type="obsolete">マーカー無し</translation>
-    </message>
-    <message>
-        <source>SVG markers</source>
-        <translation type="obsolete">SVGマーカー</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="57"/>
@@ -18533,18 +13442,6 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsComposerBase</name>
     <message>
-        <source>General</source>
-        <translation type="obsolete">一般情報</translation>
-    </message>
-    <message>
-        <source>Composition</source>
-        <translation type="obsolete">コンポジション</translation>
-    </message>
-    <message>
-        <source>Item</source>
-        <translation type="obsolete">アイテム</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="132"/>
         <source>&amp;Print...</source>
         <translation>印刷 (&amp;P)...</translation>
@@ -18558,10 +13455,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgscomposerbase.ui" line="195"/>
         <source>Add new label</source>
         <translation>新規ラベルを追加</translation>
-    </message>
-    <message>
-        <source>Add new vect legend</source>
-        <translation type="obsolete">新規ベクター凡例を追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="219"/>
@@ -18582,10 +13475,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgscomposerbase.ui" line="17"/>
         <source>MainWindow</source>
         <translation>メインウインド</translation>
-    </message>
-    <message>
-        <source>Toolbar</source>
-        <translation type="obsolete">ツールバー</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="156"/>
@@ -18666,10 +13555,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgscomposerbase.ui" line="192"/>
         <source>Add Label</source>
         <translation>ラベルを追加</translation>
-    </message>
-    <message>
-        <source>Add Vector Legend</source>
-        <translation type="obsolete">凡例を追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="216"/>
@@ -18892,17 +13777,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>テンプレートを使った新規作成</translation>
     </message>
     <message>
-        <source>Load From template</source>
-        <translation type="obsolete">テンプレートからロードする</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="357"/>
         <source>Save as template</source>
         <translation>テンプレートとして保存する</translation>
-    </message>
-    <message>
-        <source>Align left</source>
-        <translation type="obsolete">左寄せ整列</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="365"/>
@@ -18910,26 +13787,14 @@ Should the existing classes be deleted before classification?</source>
         <translation>選択を左寄せ整列する</translation>
     </message>
     <message>
-        <source>Align center</source>
-        <translation type="obsolete">中央寄せ整列</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="373"/>
         <source>Align center horizontal</source>
         <translation>水平方向中央寄せ整列</translation>
     </message>
     <message>
-        <source>Align right</source>
-        <translation type="obsolete">右寄せ整列</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="381"/>
         <source>Align selected items right</source>
         <translation>選択を右寄せ整列する</translation>
-    </message>
-    <message>
-        <source>Align top</source>
-        <translation type="obsolete">上寄せ整列</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="389"/>
@@ -18945,10 +13810,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgscomposerbase.ui" line="397"/>
         <source>Align center vertical</source>
         <translation>垂直方向中央寄せ整列</translation>
-    </message>
-    <message>
-        <source>Align bottom</source>
-        <translation type="obsolete">下揃え整列</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="405"/>
@@ -19026,21 +13887,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>htmlフレームの追加</translation>
     </message>
     <message>
-        <source>Add Basic Shape</source>
-        <translation type="obsolete">基本図形の追加</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="427"/>
         <source>Add arrow</source>
         <translation>矢印追加</translation>
-    </message>
-    <message>
-        <source>Add table</source>
-        <translation type="obsolete">テーブルの追加</translation>
-    </message>
-    <message>
-        <source>Adds attribute table</source>
-        <translation type="obsolete">属性テーブルの追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="443"/>
@@ -19119,10 +13968,6 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsComposerHtmlWidgetBase</name>
     <message>
-        <source>Form</source>
-        <translation type="obsolete">フォーム</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="90"/>
         <source>...</source>
         <translation>...</translation>
@@ -19174,10 +14019,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>背景色が変更されました</translation>
     </message>
     <message>
-        <source>Item opacity changed</source>
-        <translation type="obsolete">アイテム透過度が変更されました</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="189"/>
         <source>Item outline width</source>
         <translation>アイテム外周線太さが変更されました</translation>
@@ -19215,34 +14056,6 @@ Should the existing classes be deleted before classification?</source>
 </context>
 <context>
     <name>QgsComposerItemWidgetBase</name>
-    <message>
-        <source>Form</source>
-        <translation type="obsolete">フォーム</translation>
-    </message>
-    <message>
-        <source>Frame color...</source>
-        <translation type="obsolete">フレームカラー...</translation>
-    </message>
-    <message>
-        <source>Background color...</source>
-        <translation type="obsolete">背景色...</translation>
-    </message>
-    <message>
-        <source>Opacity</source>
-        <translation type="obsolete">透過率</translation>
-    </message>
-    <message>
-        <source>Outline width</source>
-        <translation type="obsolete">アウトライン幅</translation>
-    </message>
-    <message>
-        <source>Position and size...</source>
-        <translation type="obsolete">位置とサイズ...</translation>
-    </message>
-    <message>
-        <source>Show frame</source>
-        <translation type="obsolete">フレーム表示</translation>
-    </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="14"/>
         <source>Global Options</source>
@@ -19329,17 +14142,9 @@ Should the existing classes be deleted before classification?</source>
         <source>Transparency</source>
         <translation>透過性</translation>
     </message>
-    <message>
-        <source>Position...</source>
-        <translation type="obsolete">位置...</translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerLabelWidget</name>
-    <message>
-        <source>General options</source>
-        <translation type="obsolete">一般情報オプション</translation>
-    </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="61"/>
         <source>Label text HTML state changed</source>
@@ -19376,10 +14181,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="224"/>
         <source>Label alignment changed</source>
         <translation>ラベルの整列が変更されました</translation>
-    </message>
-    <message>
-        <source>Label id changed</source>
-        <translation type="obsolete">ラベルidが変更されました</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="235"/>
@@ -19465,14 +14266,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>フォント色...</translation>
     </message>
     <message>
-        <source>Margin (mm)</source>
-        <translation type="obsolete">マージン(mm)</translation>
-    </message>
-    <message>
-        <source>Horizontal Alignment:</source>
-        <translation type="obsolete">水平方向配置:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="212"/>
         <source>Left</source>
         <translation>左</translation>
@@ -19488,10 +14281,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>右</translation>
     </message>
     <message>
-        <source>Vertical Alignment:</source>
-        <translation type="obsolete">垂直方向配置:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="165"/>
         <source>Top</source>
         <translation>上部</translation>
@@ -19505,18 +14294,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="185"/>
         <source>Bottom</source>
         <translation>底部</translation>
-    </message>
-    <message>
-        <source>Margin </source>
-        <translation type="obsolete">マージン</translation>
-    </message>
-    <message>
-        <source>mm</source>
-        <translation type="obsolete">mm</translation>
-    </message>
-    <message>
-        <source>Label id</source>
-        <translation type="obsolete">ラベルid</translation>
     </message>
 </context>
 <context>
@@ -19550,14 +14327,6 @@ Should the existing classes be deleted before classification?</source>
 </context>
 <context>
     <name>QgsComposerLegendWidget</name>
-    <message>
-        <source>Item Options</source>
-        <translation type="obsolete">アイテムオプション</translation>
-    </message>
-    <message>
-        <source>General Options</source>
-        <translation type="obsolete">一般オプション</translation>
-    </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="126"/>
         <source>Item</source>
@@ -19689,14 +14458,6 @@ Should the existing classes be deleted before classification?</source>
 </context>
 <context>
     <name>QgsComposerLegendWidgetBase</name>
-    <message>
-        <source>Barscale Options</source>
-        <translation type="obsolete">バー縮尺オプション</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">一般情報</translation>
-    </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="84"/>
         <source>&amp;Title</source>
@@ -19853,17 +14614,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>カラム間隔</translation>
     </message>
     <message>
-        <source>Layer Font...</source>
-        <translation type="obsolete">レイヤフォント...</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="410"/>
         <source>Item Font...</source>
         <translation>アイテムフォント...</translation>
-    </message>
-    <message>
-        <source>Symbol width </source>
-        <translation type="obsolete">シンボル幅</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="516"/>
@@ -19878,33 +14631,9 @@ Should the existing classes be deleted before classification?</source>
         <translation> mm</translation>
     </message>
     <message>
-        <source>Symbol height </source>
-        <translation type="obsolete">シンボル高さ</translation>
-    </message>
-    <message>
-        <source>Layer space </source>
-        <translation type="obsolete">レイヤ位置</translation>
-    </message>
-    <message>
-        <source>Symbol space </source>
-        <translation type="obsolete">シンボル位置</translation>
-    </message>
-    <message>
-        <source>Icon label space </source>
-        <translation type="obsolete">アイコンラベル位置</translation>
-    </message>
-    <message>
-        <source>Box space </source>
-        <translation type="obsolete">ボックス位置</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="100"/>
         <source>Map</source>
         <translation>地図</translation>
-    </message>
-    <message>
-        <source>Group Space </source>
-        <translation type="obsolete">グループスペース</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="113"/>
@@ -19915,26 +14644,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="358"/>
         <source>Auto Update</source>
         <translation>自動更新</translation>
-    </message>
-    <message>
-        <source>v</source>
-        <translation type="obsolete">v</translation>
-    </message>
-    <message>
-        <source>^</source>
-        <translation type="obsolete">^</translation>
-    </message>
-    <message>
-        <source>X</source>
-        <translation type="obsolete">X</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">編集</translation>
-    </message>
-    <message>
-        <source>All</source>
-        <translation type="obsolete">全ての</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="252"/>
@@ -19955,10 +14664,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="66"/>
         <source>Main properties</source>
         <translation>メインプロパティ</translation>
-    </message>
-    <message>
-        <source>Update</source>
-        <translation type="obsolete">更新</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="133"/>
@@ -20085,14 +14790,6 @@ Should the existing classes be deleted before classification?</source>
         <source>Composer duplication failed.</source>
         <translation>コンポーザ複製失敗.</translation>
     </message>
-    <message>
-        <source>Change title</source>
-        <translation type="obsolete">タイトル変更</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation type="obsolete">タイトル</translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerManagerBase</name>
@@ -20148,10 +14845,6 @@ Should the existing classes be deleted before classification?</source>
 </context>
 <context>
     <name>QgsComposerMapWidget</name>
-    <message>
-        <source>General options</source>
-        <translation type="obsolete">一般情報オプション</translation>
-    </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="53"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="111"/>
@@ -20245,22 +14938,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>縦</translation>
     </message>
     <message>
-        <source>Horizontal and Vertical</source>
-        <translation type="obsolete">横と縦</translation>
-    </message>
-    <message>
-        <source>Boundary direction</source>
-        <translation type="obsolete">境界線の方向</translation>
-    </message>
-    <message>
-        <source>Change item width</source>
-        <translation type="obsolete">アイテムの幅を変更する</translation>
-    </message>
-    <message>
-        <source>Change item height</source>
-        <translation type="obsolete">アイテムの高さを変更する</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="146"/>
         <source>Map scale changed</source>
         <translation>地図スケールが変更されました</translation>
@@ -20304,10 +14981,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="661"/>
         <source>Grid offset changed</source>
         <translation>グリッドオフセットが変更されました</translation>
-    </message>
-    <message>
-        <source>Grid pen changed</source>
-        <translation type="obsolete">グリッドペンが変更されました</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="699"/>
@@ -20387,21 +15060,9 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsComposerMapWidgetBase</name>
     <message>
-        <source>Map options</source>
-        <translation type="obsolete">地図オプション</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="41"/>
         <source>Map</source>
         <translation>地図</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">幅</translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="obsolete">高さ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="111"/>
@@ -20546,50 +15207,14 @@ Should the existing classes be deleted before classification?</source>
         <translation>Y最小値</translation>
     </message>
     <message>
-        <source>Grid</source>
-        <translation type="obsolete">グリッド</translation>
-    </message>
-    <message>
-        <source>Show grid?</source>
-        <translation type="obsolete">グリッドを表示しますか？</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="289"/>
         <source>Grid &amp;type</source>
         <translation>(&amp;t)グリッドタイプ</translation>
     </message>
     <message>
-        <source>Interval X</source>
-        <translation type="obsolete">X間隔</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="348"/>
         <source>Offset X</source>
         <translation>Xオフセット</translation>
-    </message>
-    <message>
-        <source>Line width</source>
-        <translation type="obsolete">線幅</translation>
-    </message>
-    <message>
-        <source>Annotation position</source>
-        <translation type="obsolete">注記位置</translation>
-    </message>
-    <message>
-        <source>Annotation direction</source>
-        <translation type="obsolete">注記方向</translation>
-    </message>
-    <message>
-        <source>Line color</source>
-        <translation type="obsolete">線色</translation>
-    </message>
-    <message>
-        <source>Interval Y</source>
-        <translation type="obsolete">Y間隔</translation>
-    </message>
-    <message>
-        <source>Offset Y</source>
-        <translation type="obsolete">Yオフセット</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="391"/>
@@ -20637,10 +15262,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>フレームの太さ</translation>
     </message>
     <message>
-        <source>Draw annotation</source>
-        <translation type="obsolete">注記を描画する</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="592"/>
         <source>Font...</source>
         <translation>フォント...</translation>
@@ -20656,14 +15277,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>座標精度</translation>
     </message>
     <message>
-        <source>Map extent</source>
-        <translation type="obsolete">地図領域</translation>
-    </message>
-    <message>
-        <source>Preview</source>
-        <translation type="obsolete">プレビュー</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="102"/>
         <source>Update preview</source>
         <translation>プレビュー更新</translation>
@@ -20671,10 +15284,6 @@ Should the existing classes be deleted before classification?</source>
 </context>
 <context>
     <name>QgsComposerPictureWidget</name>
-    <message>
-        <source>General options</source>
-        <translation type="obsolete">一般情報オプション</translation>
-    </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="68"/>
         <source>Select svg or image file</source>
@@ -20686,14 +15295,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="139"/>
         <source>Picture changed</source>
         <translation>画像が変更されました</translation>
-    </message>
-    <message>
-        <source>Picture width changed</source>
-        <translation type="obsolete">画像の幅が変更されました</translation>
-    </message>
-    <message>
-        <source>Picture height changed</source>
-        <translation type="obsolete">画像の高さが変更されました</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="123"/>
@@ -20733,18 +15334,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="20"/>
         <source>Picture Options</source>
         <translation>画像オプション</translation>
-    </message>
-    <message>
-        <source>Picture options</source>
-        <translation type="obsolete">ピクチャオプション</translation>
-    </message>
-    <message>
-        <source>Preloaded images</source>
-        <translation type="obsolete">プリロードされたイメージ</translation>
-    </message>
-    <message>
-        <source>Load another</source>
-        <translation type="obsolete">他のものをロードする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="41"/>
@@ -20787,29 +15376,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>削除</translation>
     </message>
     <message>
-        <source>Preview</source>
-        <translation type="obsolete">プレビュー</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">オプション</translation>
-    </message>
-    <message>
-        <source>Load</source>
-        <translation type="obsolete">読み込み</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="102"/>
         <source>...</source>
         <translation>...</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">幅</translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="obsolete">高さ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="212"/>
@@ -20820,10 +15389,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="230"/>
         <source>Sync with map</source>
         <translation>地図と同期する</translation>
-    </message>
-    <message>
-        <source>Sync from map</source>
-        <translation type="obsolete">地図から同期する</translation>
     </message>
 </context>
 <context>
@@ -20841,10 +15406,6 @@ Should the existing classes be deleted before classification?</source>
 </context>
 <context>
     <name>QgsComposerScaleBarWidget</name>
-    <message>
-        <source>General options</source>
-        <translation type="obsolete">一般情報オプション</translation>
-    </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="38"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="413"/>
@@ -21013,25 +15574,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>バー縮尺オプション</translation>
     </message>
     <message>
-        <source>Scale bar</source>
-        <translation type="obsolete">スケールバー</translation>
-    </message>
-    <message>
-        <source>Segment size (map units)</source>
-        <translation type="obsolete">セグメントサイズ(地図単位)</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="166"/>
         <source>Map units per bar unit</source>
         <translation>バー単位毎の地図単位</translation>
-    </message>
-    <message>
-        <source> Right segments</source>
-        <translation type="obsolete">右セグメント</translation>
-    </message>
-    <message>
-        <source> Left segments</source>
-        <translation type="obsolete">左セグメント</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="129"/>
@@ -21123,22 +15668,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>線の色...</translation>
     </message>
     <message>
-        <source>Height </source>
-        <translation type="obsolete">高さ</translation>
-    </message>
-    <message>
-        <source>Line width </source>
-        <translation type="obsolete">線幅</translation>
-    </message>
-    <message>
-        <source>Label space </source>
-        <translation type="obsolete">ラベル位置</translation>
-    </message>
-    <message>
-        <source>Box space </source>
-        <translation type="obsolete">ボックス位置</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="368"/>
         <source>Alignment</source>
         <translation>配置</translation>
@@ -21164,25 +15693,13 @@ Should the existing classes be deleted before classification?</source>
         <translation>地図</translation>
     </message>
     <message>
-        <source>Unit label</source>
-        <translation type="obsolete">単位ラベル</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="399"/>
         <source>Font...</source>
         <translation>フォント...</translation>
     </message>
-    <message>
-        <source>Color...</source>
-        <translation type="obsolete">色...</translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerShapeWidget</name>
-    <message>
-        <source>General options</source>
-        <translation type="obsolete">一般情報オプション</translation>
-    </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="34"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="71"/>
@@ -21214,30 +15731,6 @@ Should the existing classes be deleted before classification?</source>
         <source>Shape type changed</source>
         <translation>図形のタイプが変更されました</translation>
     </message>
-    <message>
-        <source>Select outline color</source>
-        <translation type="obsolete">アウトライン色を選択する</translation>
-    </message>
-    <message>
-        <source>Shape outline color</source>
-        <translation type="obsolete">図形の外周線の色</translation>
-    </message>
-    <message>
-        <source>Shape outline width</source>
-        <translation type="obsolete">図形の外周線の幅</translation>
-    </message>
-    <message>
-        <source>Shape transparency toggled</source>
-        <translation type="obsolete">図形の透過設定が切替られました</translation>
-    </message>
-    <message>
-        <source>Select fill color</source>
-        <translation type="obsolete">塗りつぶし色を選択する</translation>
-    </message>
-    <message>
-        <source>Shape fill color</source>
-        <translation type="obsolete">図形塗りつぶし色</translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerShapeWidgetBase</name>
@@ -21266,35 +15759,9 @@ Should the existing classes be deleted before classification?</source>
         <source> °</source>
         <translation> °</translation>
     </message>
-    <message>
-        <source>Shape outline color...</source>
-        <translation type="obsolete">図形アウトラインカラー</translation>
-    </message>
-    <message>
-        <source>Outline width </source>
-        <translation type="obsolete">アウトライン幅</translation>
-    </message>
-    <message>
-        <source>Transparent fill</source>
-        <translation type="obsolete">透過塗りつぶし</translation>
-    </message>
-    <message>
-        <source>Shape fill Color...</source>
-        <translation type="obsolete">図形塗りつぶし色</translation>
-    </message>
-    <message>
-        <source>Rotation </source>
-        <comment>Rotation</comment>
-        <extracomment>Rotation</extracomment>
-        <translation type="obsolete">回転</translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerTableWidget</name>
-    <message>
-        <source>General options</source>
-        <translation type="obsolete">一般オプション</translation>
-    </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="89"/>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="319"/>
@@ -21369,14 +15836,6 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsComposerTableWidgetBase</name>
     <message>
-        <source>Form</source>
-        <translation type="obsolete">フォーム</translation>
-    </message>
-    <message>
-        <source>Table</source>
-        <translation type="obsolete">テーブル</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="75"/>
         <source>Layer</source>
         <translation>レイヤ</translation>
@@ -21442,14 +15901,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>フォント</translation>
     </message>
     <message>
-        <source>Grid stroke width</source>
-        <translation type="obsolete">グリッド間隔幅</translation>
-    </message>
-    <message>
-        <source>Grid color</source>
-        <translation type="obsolete">グリッド色</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="220"/>
         <source>Header Font...</source>
         <translation>ヘッダフォント...</translation>
@@ -21511,21 +15962,9 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsComposerView</name>
     <message>
-        <source>Quantum GIS</source>
-        <translation type="obsolete">Quantum GIS</translation>
-    </message>
-    <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="289"/>
         <source>Move item content</source>
         <translation>アイテムの中のコンテンツを移動</translation>
-    </message>
-    <message>
-        <source>Remove item group</source>
-        <translation type="obsolete">アイテムグループを削除する</translation>
-    </message>
-    <message>
-        <source>Item deleted</source>
-        <translation type="obsolete">アイテムが削除されました</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="614"/>
@@ -21748,50 +16187,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>縦</translation>
     </message>
     <message>
-        <source>ANSI A (Letter; 8.5x11 inches)</source>
-        <translation type="obsolete">ANSI A (Letter; 8.5x11 インチ)</translation>
-    </message>
-    <message>
-        <source>ANSI B (Tabloid; 11x17 inches)</source>
-        <translation type="obsolete">ANSI B (タブロイド; 11x17 iインチ)</translation>
-    </message>
-    <message>
-        <source>ANSI C (17x22 inches)</source>
-        <translation type="obsolete">ANSI C (17x22 インチ)</translation>
-    </message>
-    <message>
-        <source>ANSI D (22x34 inches)</source>
-        <translation type="obsolete">ANSI D (22x34 インチ)</translation>
-    </message>
-    <message>
-        <source>ANSI E (34x44 inches)</source>
-        <translation type="obsolete">ANSI E (34x44 インチ)</translation>
-    </message>
-    <message>
-        <source>Arch A (9x12 inches)</source>
-        <translation type="obsolete">Arch A (9x12 インチ)</translation>
-    </message>
-    <message>
-        <source>Arch B (12x18 inches)</source>
-        <translation type="obsolete">Arch B (12x18 インチ)</translation>
-    </message>
-    <message>
-        <source>Arch C (18x24 inches)</source>
-        <translation type="obsolete">Arch C (18x24 インチ)</translation>
-    </message>
-    <message>
-        <source>Arch D (24x36 inches)</source>
-        <translation type="obsolete">Arch D (24x36 インチ)</translation>
-    </message>
-    <message>
-        <source>Arch E (36x48 inches)</source>
-        <translation type="obsolete">Arch E (36x48 インチ)</translation>
-    </message>
-    <message>
-        <source>Arch E1 (30x42 inches)</source>
-        <translation type="obsolete">Arch E1 (30x42 インチ)</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="135"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="149"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="168"/>
@@ -21935,10 +16330,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>Arch E1 (30x42 インチ)</translation>
     </message>
     <message>
-        <source>Legal (8.5x14 inches)</source>
-        <translation type="obsolete">Legal (8.5x14 inches)</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="70"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="463"/>
         <source>Solid</source>
@@ -22053,25 +16444,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>紙と品質</translation>
     </message>
     <message>
-        <source>Size</source>
-        <translation type="obsolete">大きさ</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="263"/>
         <source> dpi</source>
         <translation>dpi</translation>
-    </message>
-    <message>
-        <source>Quality </source>
-        <translation type="obsolete">品質</translation>
-    </message>
-    <message>
-        <source>Width </source>
-        <translation type="obsolete">幅</translation>
-    </message>
-    <message>
-        <source>Height </source>
-        <translation type="obsolete">高さ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="184"/>
@@ -22079,37 +16454,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>ページ番号</translation>
     </message>
     <message>
-        <source>Spacing </source>
-        <translation type="obsolete">間隔</translation>
-    </message>
-    <message>
-        <source>X offset </source>
-        <translation type="obsolete">Xオフセット</translation>
-    </message>
-    <message>
-        <source>Y offset </source>
-        <translation type="obsolete">Yオフセット</translation>
-    </message>
-    <message>
-        <source>Pen width </source>
-        <translation type="obsolete">ペン幅</translation>
-    </message>
-    <message>
-        <source>Grid color</source>
-        <translation type="obsolete">グリッド色</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="383"/>
         <source>Grid style</source>
         <translation>グリッドスタイル</translation>
-    </message>
-    <message>
-        <source>Selection tolerance (mm) </source>
-        <translation type="obsolete">選択許容値(mm)</translation>
-    </message>
-    <message>
-        <source>Snapping</source>
-        <translation type="obsolete">スナップ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="279"/>
@@ -22128,10 +16475,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="101"/>
         <source>Save shortcuts</source>
         <translation>ショートカットの保存</translation>
-    </message>
-    <message>
-        <source>XML file (*.xml);; All files (*)</source>
-        <translation type="obsolete">XML ファイル (*.xml);; 全ファイル (*)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="101"/>
@@ -22270,42 +16613,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
 </context>
 <context>
-    <name>QgsContinuousColorDialogBase</name>
-    <message>
-        <source>Continuous color</source>
-        <translation type="obsolete">連続する色</translation>
-    </message>
-    <message>
-        <source>Maximum value</source>
-        <translation type="obsolete">最大値</translation>
-    </message>
-    <message>
-        <source>Outline width</source>
-        <translation type="obsolete">アウトライン幅</translation>
-    </message>
-    <message>
-        <source>Minimum value</source>
-        <translation type="obsolete">最小値</translation>
-    </message>
-    <message>
-        <source>Classification field</source>
-        <translation type="obsolete">分類フィールド</translation>
-    </message>
-    <message>
-        <source>Draw polygon outline</source>
-        <translation type="obsolete">ポリゴン境界線を描画する</translation>
-    </message>
-</context>
-<context>
     <name>QgsCoordinateTransform</name>
-    <message>
-        <source>The source spatial reference system (CRS) is not valid. </source>
-        <translation type="obsolete">変換元の空間参照系（CRS)が不正です</translation>
-    </message>
-    <message>
-        <source>The destination spatial reference system (CRS) is not valid. </source>
-        <translation type="obsolete">変換先の空間参照系(CRS)が不正です</translation>
-    </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="557"/>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="563"/>
@@ -22340,101 +16648,6 @@ Error: %5</source>
         <translation>%1 
 %2PROJ.4: %3 +to %4
 エラー: %5</translation>
-    </message>
-    <message>
-        <source>%1 of
-%2
-failed with error: %3
-</source>
-        <translation type="obsolete">%1
-%2
-でエラー発生:%3</translation>
-    </message>
-    <message>
-        <source>The coordinates can not be reprojected. The CRS is: %1</source>
-        <translation type="obsolete">指定座標は再投影できません。CRSは%1です</translation>
-    </message>
-</context>
-<context>
-    <name>QgsCopyrightLabelPlugin</name>
-    <message>
-        <source>Bottom Left</source>
-        <translation type="obsolete">左下</translation>
-    </message>
-    <message>
-        <source>Top Left</source>
-        <translation type="obsolete">左上</translation>
-    </message>
-    <message>
-        <source>Top Right</source>
-        <translation type="obsolete">右上</translation>
-    </message>
-    <message>
-        <source>Bottom Right</source>
-        <translation type="obsolete">右下</translation>
-    </message>
-    <message>
-        <source>&amp;Copyright Label</source>
-        <translation type="obsolete">著作権ラベル(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Creates a copyright label that is displayed on the map canvas.</source>
-        <translation type="obsolete">地図キャンバス上に表示される著作権ラベルを作成。</translation>
-    </message>
-    <message>
-        <source>&amp;Decorations</source>
-        <translation type="obsolete">地図整飾(&amp;D)</translation>
-    </message>
-</context>
-<context>
-    <name>QgsCopyrightLabelPluginGuiBase</name>
-    <message>
-        <source>Copyright Label Plugin</source>
-        <translation type="obsolete">Copyright ラベルプラグイン</translation>
-    </message>
-    <message>
-        <source>&amp;Enter your copyright label here:</source>
-        <translation type="obsolete">(&amp;E)ここにあなたの著作権表示ラベルを入力してください</translation>
-    </message>
-    <message>
-        <source>&amp;Placement</source>
-        <translation type="obsolete">(&amp;P)配置</translation>
-    </message>
-    <message>
-        <source>Bottom Left</source>
-        <translation type="obsolete">左下</translation>
-    </message>
-    <message>
-        <source>Top Left</source>
-        <translation type="obsolete">左上</translation>
-    </message>
-    <message>
-        <source>Bottom Right</source>
-        <translation type="obsolete">右下</translation>
-    </message>
-    <message>
-        <source>Top Right</source>
-        <translation type="obsolete">右上</translation>
-    </message>
-    <message>
-        <source>&amp;Orientation</source>
-        <translation type="obsolete">(&amp;O)方向</translation>
-    </message>
-    <message>
-        <source>&amp;Color</source>
-        <translation type="obsolete">(&amp;C)色</translation>
-    </message>
-    <message>
-        <source>Horizontal</source>
-        <translation type="obsolete">横</translation>
-    </message>
-    <message>
-        <source>Vertical</source>
-        <translation type="obsolete">縦</translation>
-    </message>
-    <message>
-        <source>Enable copyright label</source>
-        <translation type="obsolete">著作権ラベルを有効にする</translation>
     </message>
 </context>
 <context>
@@ -22626,30 +16839,6 @@ and current file is [%3]</source>
 <context>
     <name>QgsCustomProjectionDialog</name>
     <message>
-        <source>Delete Projection Definition?</source>
-        <translation type="obsolete">投影法の定義を削除しますか?</translation>
-    </message>
-    <message>
-        <source>Deleting a projection definition is not reversable. Do you want to delete it?</source>
-        <translation type="obsolete">投影法定義の削除は取り消せません。削除しますか?</translation>
-    </message>
-    <message>
-        <source>%1 of %2</source>
-        <translation type="obsolete">%1 / %2</translation>
-    </message>
-    <message>
-        <source>Abort</source>
-        <translation type="obsolete">取り消し</translation>
-    </message>
-    <message>
-        <source>New</source>
-        <translation type="obsolete">新規</translation>
-    </message>
-    <message>
-        <source>* of %1</source>
-        <translation type="obsolete">* / %1</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="305"/>
         <source>new CRS</source>
         <translation>新規CRS</translation>
@@ -22688,50 +16877,9 @@ and current file is [%3]</source>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
-    <message>
-        <source> Please give the projection a name before pressing save.</source>
-        <translation type="obsolete">保存ボタンを押す前に投影法の名前を入力してください.</translation>
-    </message>
-    <message>
-        <source> Please add the parameters before pressing save.</source>
-        <translation type="obsolete">保存ボタンを押す前にパラメータを追加してください.</translation>
-    </message>
-    <message>
-        <source> Please add a proj= clause before pressing save.</source>
-        <translation type="obsolete">保存を押す前にproj=節を追加して下さい.</translation>
-    </message>
-    <message>
-        <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
-        <comment>COMMENTED OUT</comment>
-        <translation type="obsolete">proj4 投影法定義は不正です。保存する前にellips=句を追加してください。</translation>
-    </message>
-    <message>
-        <source> Please correct before pressing save.</source>
-        <translation type="obsolete">保存ボタンを押す前に修正してください.</translation>
-    </message>
 </context>
 <context>
     <name>QgsCustomProjectionDialogBase</name>
-    <message>
-        <source>|&lt;</source>
-        <translation type="obsolete">|&lt;</translation>
-    </message>
-    <message>
-        <source>&lt;</source>
-        <translation type="obsolete">&lt;</translation>
-    </message>
-    <message>
-        <source>1 of 1</source>
-        <translation type="obsolete">1 of 1</translation>
-    </message>
-    <message>
-        <source>&gt;</source>
-        <translation type="obsolete">&gt;</translation>
-    </message>
-    <message>
-        <source>&gt;|</source>
-        <translation type="obsolete">&gt;|</translation>
-    </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="25"/>
         <source>Define</source>
@@ -22761,18 +16909,6 @@ and current file is [%3]</source>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="57"/>
         <source>Parameters</source>
         <translation>パラメータ</translation>
-    </message>
-    <message>
-        <source>*</source>
-        <translation type="obsolete">*</translation>
-    </message>
-    <message>
-        <source>S</source>
-        <translation type="obsolete">S</translation>
-    </message>
-    <message>
-        <source>X</source>
-        <translation type="obsolete">X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="207"/>
@@ -23198,10 +17334,6 @@ and current file is [%3]</source>
 <context>
     <name>QgsDbSourceSelectBase</name>
     <message>
-        <source>Add PostGIS Table(s)</source>
-        <translation type="obsolete">PostGIS テーブルを追加</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="14"/>
         <source>Add PostGIS layers</source>
         <translation>PostGISレイヤの追加</translation>
@@ -23274,57 +17406,6 @@ and current file is [%3]</source>
     </message>
 </context>
 <context>
-    <name>QgsDbTableModel</name>
-    <message>
-        <source>Schema</source>
-        <translation type="obsolete">スキーマ</translation>
-    </message>
-    <message>
-        <source>Table</source>
-        <translation type="obsolete">テーブル</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">タイプ</translation>
-    </message>
-    <message>
-        <source>Geometry column</source>
-        <translation type="obsolete">ジオメトリカラム</translation>
-    </message>
-    <message>
-        <source>Primary key column</source>
-        <translation type="obsolete">プライマリキーカラム</translation>
-    </message>
-    <message>
-        <source>Sql</source>
-        <translation type="obsolete">Sql</translation>
-    </message>
-    <message>
-        <source>Point</source>
-        <translation type="obsolete">点</translation>
-    </message>
-    <message>
-        <source>Multipoint</source>
-        <translation type="obsolete">マルチポイント</translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="obsolete">ライン</translation>
-    </message>
-    <message>
-        <source>Multiline</source>
-        <translation type="obsolete">マルチライン</translation>
-    </message>
-    <message>
-        <source>Polygon</source>
-        <translation type="obsolete">ポリゴン</translation>
-    </message>
-    <message>
-        <source>Multipolygon</source>
-        <translation type="obsolete">マルチポリゴン</translation>
-    </message>
-</context>
-<context>
     <name>QgsDecorationCopyright</name>
     <message>
         <location filename="../src/app/qgsdecorationcopyright.cpp" line="47"/>
@@ -23363,18 +17444,6 @@ and current file is [%3]</source>
         <location filename="../src/ui/qgsdecorationcopyrightdialog.ui" line="35"/>
         <source>&amp;Enter your copyright label here:</source>
         <translation>(&amp;E)ここにあなたの著作権表示ラベルを入力してください:</translation>
-    </message>
-    <message utf8="true">
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;;&quot;&gt;© QGIS 2009&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;;&quot;&gt;© QGIS 2009&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message utf8="true">
         <location filename="../src/ui/qgsdecorationcopyrightdialog.ui" line="45"/>
@@ -23433,10 +17502,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdecorationcopyrightdialog.ui" line="114"/>
         <source>Color</source>
         <translation>色</translation>
-    </message>
-    <message>
-        <source>&amp;Color</source>
-        <translation type="obsolete">色(&amp;C)</translation>
     </message>
 </context>
 <context>
@@ -23859,10 +17924,6 @@ p, li { white-space: pre-wrap; }
         <translation>バーの色</translation>
     </message>
     <message>
-        <source>Click to select the color</source>
-        <translation type="obsolete">クリックして色を選択する</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsdecorationscalebardialog.ui" line="139"/>
         <source>Size of bar</source>
         <translation>バーのサイズ</translation>
@@ -23902,253 +17963,7 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsDelimitedTextPlugin</name>
-    <message>
-        <source>&amp;Add Delimited Text Layer</source>
-        <translation type="obsolete">デリミティッドテキストレイヤの追加(&amp;A)</translation>
-    </message>
-    <message>
-        <source>Add a delimited text file as a map layer. The file must have a header row containing the field names. The file must either contain X and Y fields with coordinates in decimal units or a WKT field.</source>
-        <translation type="obsolete">地図レイヤとしてデリミテッドテキストファイルを追加します.このファイルはヘッダ行にフィールド名が必要です.ファイルはXとY座標を10進数単位かWKTフィールドとして持たなければいけません.</translation>
-    </message>
-    <message>
-        <source>Delimited Text</source>
-        <translation type="obsolete">区切り文字</translation>
-    </message>
-    <message>
-        <source>Cannot get Delimited Text select dialog from provider.</source>
-        <translation type="obsolete">プロバイダから区切り文字選択ダイアログを取得できません.</translation>
-    </message>
-    <message>
-        <source>&amp;Delimited text</source>
-        <translation type="obsolete">デリミティッドテキスト(&amp;D)</translation>
-    </message>
-    <message>
-        <source>DelimitedTextLayer</source>
-        <translation type="obsolete">デリミティッドテキストレイヤ</translation>
-    </message>
-    <message>
-        <source>Add a delimited text file as a map layer. The file must have a header row containing the field names. X and Y fields are required and must contain coordinates in decimal units.</source>
-        <translation type="obsolete">区切り文字テキストファイルを地図レイヤとして追加します。このファイルはXとYというフィールド名が含まれるヘッダ行が必要です。また１０進数の単位の座標が必要です。</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDelimitedTextPluginGui</name>
-    <message>
-        <source>No layer name</source>
-        <translation type="obsolete">レイヤ名がありません</translation>
-    </message>
-    <message>
-        <source>Please enter a layer name before adding the layer to the map</source>
-        <translation type="obsolete">レイヤを地図に追加する前にレイヤ名を入力してください</translation>
-    </message>
-    <message>
-        <source>Text files</source>
-        <translation type="obsolete">テキストファイル</translation>
-    </message>
-    <message>
-        <source>Well Known Text files</source>
-        <translation type="obsolete">ウェルノウンテキストファイル</translation>
-    </message>
-    <message>
-        <source>All files</source>
-        <translation type="obsolete">全ファイル</translation>
-    </message>
-    <message>
-        <source>No delimiter</source>
-        <translation type="obsolete">デリミタがありません</translation>
-    </message>
-    <message>
-        <source>Please specify a delimiter prior to parsing the file</source>
-        <translation type="obsolete">ファイルをパースする前にデリミタを指定してください</translation>
-    </message>
-    <message>
-        <source>Choose a delimited text file to open</source>
-        <translation type="obsolete">デリミティッドテキストファイルを開く</translation>
-    </message>
-    <message>
-        <source>Parse</source>
-        <translation type="obsolete">パース</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDelimitedTextPluginGuiBase</name>
-    <message>
-        <source>Create a Layer from a Delimited Text File</source>
-        <translation type="obsolete">デリミティッドテキストファイルからレイヤを作成</translation>
-    </message>
-    <message>
-        <source>Geometry</source>
-        <translation type="obsolete">ジオメトリ</translation>
-    </message>
-    <message>
-        <source>&lt;p align=&quot;right&quot;&gt;X field&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p align=&quot;right&quot;&gt;X フィールド&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Name of the field containing x values</source>
-        <translation type="obsolete">x 値を含むフィールドの名前</translation>
-    </message>
-    <message>
-        <source>Name of the field containing x values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-        <translation type="obsolete">x 値を含むフィールドの名前。リストからフィールドを選択してください。リストはデリミティッドテキストファイルのヘッダ行をパースして作成されます。</translation>
-    </message>
-    <message>
-        <source>&lt;p align=&quot;right&quot;&gt;Y field&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p align=&quot;right&quot;&gt;Y フィールド&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Name of the field containing y values</source>
-        <translation type="obsolete">y 値を含むフィールドの名前</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">タイプ</translation>
-    </message>
-    <message>
-        <source>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-        <translation type="obsolete">y 値を含むフィールドの名前。リストからフィールドを選択してください。リストはデリミティッドテキストファイルのヘッダ行をパースして作成されます。</translation>
-    </message>
-    <message>
-        <source>Layer name</source>
-        <translation type="obsolete">レイヤ名</translation>
-    </message>
-    <message>
-        <source>File Name</source>
-        <translation type="obsolete">ファイル名</translation>
-    </message>
-    <message>
-        <source>Name to display in the map legend</source>
-        <translation type="obsolete">地図凡例中の名称</translation>
-    </message>
-    <message>
-        <source>Name displayed in the map legend</source>
-        <translation type="obsolete">地図凡例中の名称</translation>
-    </message>
-    <message>
-        <source>Delimiter</source>
-        <translation type="obsolete">デリミタ</translation>
-    </message>
-    <message>
-        <source>Delimiter string</source>
-        <translation type="obsolete">区切り文字</translation>
-    </message>
-    <message>
-        <source>Delimiter to use when splitting fields in the text file. The delimiter can be more than one character.</source>
-        <translation type="obsolete">テキストファイルのフィールドを区別するデリミタ。デリミタは複数キャラクタでも可。</translation>
-    </message>
-    <message>
-        <source>Delimiter to use when splitting fields in the delimited text file. The delimiter can be 1 or more characters in length.</source>
-        <translation type="obsolete">テキストファイルのフィールドを区別するデリミタ。デリミタは複数キャラクタでも可。</translation>
-    </message>
-    <message>
-        <source>Delimited text file</source>
-        <translation type="obsolete">デリミティッドテキストファイル</translation>
-    </message>
-    <message>
-        <source>Full path to the delimited text file</source>
-        <translation type="obsolete">デリミティッドテキストファイルへのフルパス</translation>
-    </message>
-    <message>
-        <source>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</source>
-        <translation type="obsolete">デリミティッドテキストファイルへのフルパス。ファイル中のフィールドを正しく処理するために、ファイル名を入力する前にデリミタを決定します。入力ファイルを選択するためにこのフィールドの右のブラウズボタンを使用してください。</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Browse to find the delimited text file to be processed</source>
-        <translation type="obsolete">処理するデリミティッドテキストファイルを探す</translation>
-    </message>
-    <message>
-        <source>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</source>
-        <translation type="obsolete">デリミティッドテキストファイルの場所を探すために使用します。このボタンは、&lt;i&gt;デリミタ&lt;/i&gt;ボックスに入力されるまで使用できません。ファイル選択後、デリミティッドテキストファイルからX と Y フィールドドロップダウンボックスに値が挿入されます。</translation>
-    </message>
-    <message>
-        <source>Browse...</source>
-        <translation type="obsolete">参照...</translation>
-    </message>
-    <message>
-        <source>Selected delimiters</source>
-        <translation type="obsolete">選択されたデリミタ</translation>
-    </message>
-    <message>
-        <source>Semicolon</source>
-        <translation type="obsolete">セミコロン</translation>
-    </message>
-    <message>
-        <source>Tab</source>
-        <translation type="obsolete">タブ</translation>
-    </message>
-    <message>
-        <source>Space</source>
-        <translation type="obsolete">空白</translation>
-    </message>
-    <message>
-        <source>Comma</source>
-        <translation type="obsolete">カンマ</translation>
-    </message>
-    <message>
-        <source>Colon</source>
-        <translation type="obsolete">コロン</translation>
-    </message>
-    <message>
-        <source>Start import at row</source>
-        <translation type="obsolete">インポートを開始する行</translation>
-    </message>
-    <message>
-        <source>The file contains X and Y coordinate columns</source>
-        <translation type="obsolete">ファイルはXとYの座標カラムを含みます</translation>
-    </message>
-    <message>
-        <source>X Y fields</source>
-        <translation type="obsolete">X Yフィールド</translation>
-    </message>
-    <message>
-        <source>The file contains a well known text geometry field</source>
-        <translation type="obsolete">ファイルはwell known textジオメトリフィールドフィールドを持ちます</translation>
-    </message>
-    <message>
-        <source>WKT field</source>
-        <translation type="obsolete">WKTフィールド</translation>
-    </message>
-    <message>
-        <source>Decimal point</source>
-        <translation type="obsolete">小数点</translation>
-    </message>
-    <message>
-        <source>Sample text</source>
-        <translation type="obsolete">サンプルテキスト</translation>
-    </message>
-    <message>
-        <source>The delimiter is taken as is</source>
-        <translation type="obsolete">デリミタは次のものとして使用されています</translation>
-    </message>
-    <message>
-        <source>Plain characters</source>
-        <translation type="obsolete">プレーンキャラクター</translation>
-    </message>
-    <message>
-        <source>The delimiter is a regular expression</source>
-        <translation type="obsolete">デリミタは正規表現です</translation>
-    </message>
-    <message>
-        <source>Regular expression</source>
-        <translation type="obsolete">正規表現</translation>
-    </message>
-</context>
-<context>
     <name>QgsDelimitedTextProvider</name>
-    <message>
-        <source>Note: the following lines were not loaded because Qgis was unable to determine values for the x and y coordinates:
-</source>
-        <translation type="obsolete">注：次の行はロードされません、なぜならばQGISはｘとｙの座標が分からないからです。</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">エラー</translation>
-    </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="213"/>
         <source>File type string in %1 is not correctly formatted</source>
@@ -24356,10 +18171,6 @@ p, li { white-space: pre-wrap; }
         <translation>フォーマットが正しくない %1 レコードサンプルデータから削除されました</translation>
     </message>
     <message>
-        <source>Well Known Text files</source>
-        <translation type="obsolete">ウェルノウンテキストファイル</translation>
-    </message>
-    <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="632"/>
         <source>All files</source>
         <translation>全ファイル</translation>
@@ -24392,10 +18203,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="521"/>
         <source>The file a comma separated value file, fields delimited by commas and quoted by &quot;</source>
         <translation>CSVファイル (コンマで区切られダブルクォートで囲まれる)</translation>
-    </message>
-    <message>
-        <source>CSV (comma separated values) format</source>
-        <translation type="obsolete">CSV (カンマで区切られた値) 形式</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="804"/>
@@ -24597,10 +18404,6 @@ p, li { white-space: pre-wrap; }
         <translation>空間インデックスを利用する</translation>
     </message>
     <message>
-        <source>Use an index to improve performance of subset queries (set in layer properties)</source>
-        <translation type="obsolete">サブセットクエリのパフォーマンスを改良するためにインデックスを利用する(レイヤプロパティで設定)</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="607"/>
         <source>Use subset index</source>
         <translation>サブセットインデックスを利用する</translation>
@@ -24774,26 +18577,6 @@ p, li { white-space: pre-wrap; }
         <translation>参照...</translation>
     </message>
     <message>
-        <source>Selected delimiters</source>
-        <translation type="obsolete">選択されたデリミタ</translation>
-    </message>
-    <message>
-        <source>The delimiter is a regular expression</source>
-        <translation type="obsolete">デリミタは正規表現です</translation>
-    </message>
-    <message>
-        <source>Regular expression</source>
-        <translation type="obsolete">正規表現</translation>
-    </message>
-    <message>
-        <source>The delimiter is taken as is</source>
-        <translation type="obsolete">デリミタは次のものとして使用されています</translation>
-    </message>
-    <message>
-        <source>Plain characters</source>
-        <translation type="obsolete">プレーンキャラクター</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="829"/>
         <source>Tab</source>
         <translation>タブ</translation>
@@ -24819,26 +18602,6 @@ p, li { white-space: pre-wrap; }
         <translation>コロン</translation>
     </message>
     <message>
-        <source>Delimiter to use when splitting fields in the text file. The delimiter can be more than one character.</source>
-        <translation type="obsolete">テキストファイルのフィールドを区別するデリミタ。デリミタは複数キャラクタでも可。</translation>
-    </message>
-    <message>
-        <source>Delimiter to use when splitting fields in the delimited text file. The delimiter can be 1 or more characters in length.</source>
-        <translation type="obsolete">テキストファイルのフィールドを区別するデリミタ。デリミタは複数キャラクタでも可。</translation>
-    </message>
-    <message>
-        <source>Start import at row</source>
-        <translation type="obsolete">インポートを開始する行</translation>
-    </message>
-    <message>
-        <source>The file contains X and Y coordinate columns</source>
-        <translation type="obsolete">ファイルはXとYの座標カラムを含みます</translation>
-    </message>
-    <message>
-        <source>X Y fields</source>
-        <translation type="obsolete">X Yフィールド</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="180"/>
         <source>&lt;p align=&quot;right&quot;&gt;X field&lt;/p&gt;</source>
         <translation>&lt;p align=&quot;right&quot;&gt;X フィールド&lt;/p&gt;</translation>
@@ -24851,10 +18614,6 @@ p, li { white-space: pre-wrap; }
         <translation>x 値を含むフィールドの名前</translation>
     </message>
     <message>
-        <source>Name of the field containing x values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-        <translation type="obsolete">x 値を含むフィールドの名前。リストからフィールドを選択してください。リストはデリミティッドテキストファイルのヘッダ行をパースして作成されます。</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="221"/>
         <source>&lt;p align=&quot;right&quot;&gt;Y field&lt;/p&gt;</source>
         <translation>&lt;p align=&quot;right&quot;&gt;Y フィールド&lt;/p&gt;</translation>
@@ -24865,26 +18624,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="249"/>
         <source>Name of the field containing y values</source>
         <translation>y 値を含むフィールドの名前</translation>
-    </message>
-    <message>
-        <source>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-        <translation type="obsolete">y 値を含むフィールドの名前。リストからフィールドを選択してください。リストはデリミティッドテキストファイルのヘッダ行をパースして作成されます。</translation>
-    </message>
-    <message>
-        <source>The file contains a well known text geometry field</source>
-        <translation type="obsolete">ファイルはwell known textジオメトリフィールドフィールドを持ちます</translation>
-    </message>
-    <message>
-        <source>WKT field</source>
-        <translation type="obsolete">WKTフィールド</translation>
-    </message>
-    <message>
-        <source>Decimal point</source>
-        <translation type="obsolete">小数点</translation>
-    </message>
-    <message>
-        <source>Sample text</source>
-        <translation type="obsolete">サンプルテキスト</translation>
     </message>
 </context>
 <context>
@@ -24908,48 +18647,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="128"/>
         <source>Category label</source>
         <translation>カテゴリラベル</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDiagramDialog</name>
-    <message>
-        <source>Pie chart</source>
-        <translation type="obsolete">パイチャート</translation>
-    </message>
-    <message>
-        <source>Bar chart</source>
-        <translation type="obsolete">バーチャート</translation>
-    </message>
-    <message>
-        <source>Proportional SVG symbols</source>
-        <translation type="obsolete">プロポーショナルSVGシンボル</translation>
-    </message>
-    <message>
-        <source>linearly scaling</source>
-        <translation type="obsolete">線形スケール</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDiagramDialogBase</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">ダイアログ</translation>
-    </message>
-    <message>
-        <source>Display diagrams</source>
-        <translation type="obsolete">図表の表示</translation>
-    </message>
-    <message>
-        <source>Diagram type</source>
-        <translation type="obsolete">図表タイプ</translation>
-    </message>
-    <message>
-        <source>Classification attribute</source>
-        <translation type="obsolete">分類属性</translation>
-    </message>
-    <message>
-        <source>Classification type</source>
-        <translation type="obsolete">分類タイプ</translation>
     </message>
 </context>
 <context>
@@ -25259,12 +18956,6 @@ Leave empty to automatically apply the maximum value.</source>
         <translation>ここで入力した属性値はフィールド &quot;サイズ&quot;の値と&quot;サイズの単位&quot;の選択に対応します.自動的に最大値を適用したい場合は空白のままにしてください.</translation>
     </message>
     <message>
-        <source>The attribute value you enter here will correspond to the size entered in the field &quot;Size&quot; and the choosen &quot;Size unit&quot;.
-Leave empty to automatically apply the maximum value.</source>
-        <translation type="obsolete">ここに入力した属性の値と&quot;大きさ&quot;および&quot;サイズの単位&quot;の値が対応します.
-最大値を自動設定する場合は空白のままにしてください.</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="459"/>
         <source>Scale</source>
         <translation>縮尺</translation>
@@ -25470,61 +19161,6 @@ Leave empty to automatically apply the maximum value.</source>
         <source>Angle</source>
         <translation>角度</translation>
     </message>
-    <message>
-        <source>Ellipsoidal</source>
-        <translation type="obsolete">回転楕円体</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDlgPgBufferBase</name>
-    <message>
-        <source>Buffer features</source>
-        <translation type="obsolete">地物をバッファ化</translation>
-    </message>
-    <message>
-        <source>Buffer distance in map units:</source>
-        <translation type="obsolete">地図の単位で距離をバッファ化:</translation>
-    </message>
-    <message>
-        <source>Table name for the buffered layer:</source>
-        <translation type="obsolete">バッファレイヤのテーブル名:</translation>
-    </message>
-    <message>
-        <source>Create unique object id</source>
-        <translation type="obsolete">固有のオブジェクトIDを作成</translation>
-    </message>
-    <message>
-        <source>public</source>
-        <translation type="obsolete">公共</translation>
-    </message>
-    <message>
-        <source>Geometry column:</source>
-        <translation type="obsolete">座標フィールド:</translation>
-    </message>
-    <message>
-        <source>Spatial reference ID:</source>
-        <translation type="obsolete">空間参照ID:</translation>
-    </message>
-    <message>
-        <source>Unique field to use as feature id:</source>
-        <translation type="obsolete">地物IDを使う固有フィールド:</translation>
-    </message>
-    <message>
-        <source>Schema:</source>
-        <translation type="obsolete">スキーマ:</translation>
-    </message>
-    <message>
-        <source>Add the buffered layer to the map?</source>
-        <translation type="obsolete">地図にバッファレイヤを追加しますか?</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Buffer the features in layer: &lt;/h2&gt;</source>
-        <translation type="obsolete">&lt;h2&gt;レイヤ中の地物をバッファ化: &lt;/h2&gt;</translation>
-    </message>
-    <message>
-        <source>Parameters</source>
-        <translation type="obsolete">パラメータ</translation>
-    </message>
 </context>
 <context>
     <name>QgsDualView</name>
@@ -25646,40 +19282,6 @@ Parser error:
     </message>
 </context>
 <context>
-    <name>QgsEmbedLayerDialog</name>
-    <message>
-        <source>Select project file</source>
-        <translation type="obsolete">プロジェクトファイルの選択</translation>
-    </message>
-    <message>
-        <source>QGis files</source>
-        <translation type="obsolete">QGisファイル</translation>
-    </message>
-    <message>
-        <source>Recursive embeding not possible</source>
-        <translation type="obsolete">再帰的な埋め込みはできません</translation>
-    </message>
-    <message>
-        <source>It is not possible to embed layers / groups from the current project</source>
-        <translation type="obsolete">現在のプロジェクトからレイヤ/グループを埋め込むことはできません</translation>
-    </message>
-</context>
-<context>
-    <name>QgsEmbedLayerDialogBase</name>
-    <message>
-        <source>Select layers and groups to embed</source>
-        <translation type="obsolete">埋め込みを行うレイヤやグループを選択する</translation>
-    </message>
-    <message>
-        <source>Project file</source>
-        <translation type="obsolete">プロジェクトファイル</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-</context>
-<context>
     <name>QgsEncodingFileDialog</name>
     <message>
         <location filename="../src/gui/qgsencodingfiledialog.cpp" line="36"/>
@@ -25774,14 +19376,6 @@ Parser error:
         <source>(i.e. including colliding objects)</source>
         <translation>（例えば衝突するオブジェクトを含む）</translation>
     </message>
-    <message>
-        <source>Show all labels (i.e. including colliding labels)</source>
-        <translation type="obsolete">全ラベル表示（例えば一致しないラベルも含む）</translation>
-    </message>
-    <message>
-        <source>Show label candidates (for debugging)</source>
-        <translation type="obsolete">候補ラベル表示（デバッグ用）</translation>
-    </message>
 </context>
 <context>
     <name>QgsErrorDialog</name>
@@ -25846,10 +19440,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsExpressionBuilderWidget</name>
     <message>
-        <source>Operators</source>
-        <translation type="obsolete">演算子</translation>
-    </message>
-    <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="71"/>
         <source>(String Concatenation)</source>
         <translation>(文字列連結)</translation>
@@ -25871,21 +19461,9 @@ p, li { white-space: pre-wrap; }
         <translation>&apos;Dia&apos; || &apos;meter&apos;</translation>
     </message>
     <message>
-        <source>Fields</source>
-        <translation type="obsolete">フィールド</translation>
-    </message>
-    <message>
-        <source>Conditionals</source>
-        <translation type="obsolete">条件</translation>
-    </message>
-    <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="108"/>
         <source>Search</source>
         <translation>検索</translation>
-    </message>
-    <message>
-        <source>Fields and Values</source>
-        <translation type="obsolete">フィールドと値</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="57"/>
@@ -25977,26 +19555,6 @@ p, li { white-space: pre-wrap; }
         <source>Load all unique values</source>
         <translation>全てのユニーク値をロードする</translation>
     </message>
-    <message>
-        <source>&lt;h3&gt;Oops! QGIS can&apos;t find help for this function.&lt;/h3&gt;The help file for %1 was not found.&lt;br&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;Oops! QGIS はこの機能のヘルプを見つけられません.&lt;/h3&gt; %1 用ヘルプファイルは見つかりませんでした.&lt;br&gt;</translation>
-    </message>
-    <message>
-        <source>(Showing English version as there was no help available in your language (%1). If you would like to create it, contact the QGIS translation team).&lt;br&gt;</source>
-        <translation type="obsolete">(英語版が表示されていて,あなたの言語(%1)のヘルプが無い場合,もしあなたがそれを作成したい場合はQGIS翻訳チームに連絡して下さい)&lt;br&gt;</translation>
-    </message>
-    <message>
-        <source>It was neither available in your language (%1) nor English.</source>
-        <translation type="obsolete">これはあなたの言語(%1)で有効でないだけではなく英語でも同様です.</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;If you would like to create it, contact the QGIS development team.</source>
-        <translation type="obsolete">&lt;br&gt;もしあなたがこれを作りたい場合はQGIS開発チームに連絡して下さい.</translation>
-    </message>
-    <message>
-        <source>This help file does not exist for your language:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;If you would like to create it, contact the QGIS development team</source>
-        <translation type="obsolete">このヘルプはあなたの言語&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/p&gt;ではサポートされていません。もしあなたが翻訳したいならQGIS開発チームに連絡をください。</translation>
-    </message>
 </context>
 <context>
     <name>QgsExpressionBuilderWidgetBase</name>
@@ -26009,10 +19567,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="40"/>
         <source>Function List</source>
         <translation>関数リスト</translation>
-    </message>
-    <message>
-        <source>Search</source>
-        <translation type="obsolete">検索</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="113"/>
@@ -26150,14 +19704,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsFieldCalculator</name>
     <message>
-        <source> (not supported by provider)</source>
-        <translation type="obsolete">(プロバイダーにサポートされていません)</translation>
-    </message>
-    <message>
-        <source>Syntax error</source>
-        <translation type="obsolete">文法エラー</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="61"/>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="72"/>
         <source>Not available for layer</source>
@@ -26202,10 +19748,6 @@ p, li { white-space: pre-wrap; }
         <translation>
 計算式が不正です.(さらなる情報）詳細を見て下さい</translation>
     </message>
-    <message>
-        <source>An error occured while evaluating the calculation string.</source>
-        <translation type="obsolete">計算文字列を評価している時にエラーが発生しました.</translation>
-    </message>
 </context>
 <context>
     <name>QgsFieldCalculatorBase</name>
@@ -26230,10 +19772,6 @@ p, li { white-space: pre-wrap; }
         <translation>選択されている地物のみ更新する</translation>
     </message>
     <message>
-        <source>New field</source>
-        <translation type="obsolete">新規フィールド</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="66"/>
         <source>Output field name</source>
         <translation>出力フィールド名</translation>
@@ -26249,30 +19787,6 @@ p, li { white-space: pre-wrap; }
         <translation>出力フィールド幅</translation>
     </message>
     <message>
-        <source>Output field precision</source>
-        <translation type="obsolete">出力フィールド精度</translation>
-    </message>
-    <message>
-        <source>Fields</source>
-        <translation type="obsolete">フィールド</translation>
-    </message>
-    <message>
-        <source>Values</source>
-        <translation type="obsolete">値</translation>
-    </message>
-    <message>
-        <source>Sample</source>
-        <translation type="obsolete">サンプル</translation>
-    </message>
-    <message>
-        <source>All</source>
-        <translation type="obsolete">全ての</translation>
-    </message>
-    <message>
-        <source>Operators</source>
-        <translation type="obsolete">演算子</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="102"/>
         <source>Width of complete output. For example 123,456 means 6 as field width.</source>
         <translation>完全な出力の幅　例 123.456 の場合 6がフィールドの幅になります.</translation>
@@ -26281,90 +19795,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="115"/>
         <source>Precision</source>
         <translation>精度</translation>
-    </message>
-    <message>
-        <source>+</source>
-        <translation type="obsolete">+</translation>
-    </message>
-    <message>
-        <source>*</source>
-        <translation type="obsolete">*</translation>
-    </message>
-    <message>
-        <source>sqrt</source>
-        <translation type="obsolete">平方根</translation>
-    </message>
-    <message>
-        <source>sin</source>
-        <translation type="obsolete">sin</translation>
-    </message>
-    <message>
-        <source>tan</source>
-        <translation type="obsolete">tan</translation>
-    </message>
-    <message>
-        <source>acos</source>
-        <translation type="obsolete">acos</translation>
-    </message>
-    <message>
-        <source>(</source>
-        <translation type="obsolete">(</translation>
-    </message>
-    <message>
-        <source>-</source>
-        <translation type="obsolete">-</translation>
-    </message>
-    <message>
-        <source>/</source>
-        <translation type="obsolete">/</translation>
-    </message>
-    <message>
-        <source>^</source>
-        <translation type="obsolete">^</translation>
-    </message>
-    <message>
-        <source>cos</source>
-        <translation type="obsolete">cos</translation>
-    </message>
-    <message>
-        <source>asin</source>
-        <translation type="obsolete">asin</translation>
-    </message>
-    <message>
-        <source>)</source>
-        <translation type="obsolete">)</translation>
-    </message>
-    <message>
-        <source>to real</source>
-        <translation type="obsolete">実数変換</translation>
-    </message>
-    <message>
-        <source>to int</source>
-        <translation type="obsolete">整数変換</translation>
-    </message>
-    <message>
-        <source>to string</source>
-        <translation type="obsolete">文字列変換</translation>
-    </message>
-    <message>
-        <source>length</source>
-        <translation type="obsolete">長さ</translation>
-    </message>
-    <message>
-        <source>area</source>
-        <translation type="obsolete">面積</translation>
-    </message>
-    <message>
-        <source>rownum</source>
-        <translation type="obsolete">行数</translation>
-    </message>
-    <message>
-        <source>||</source>
-        <translation type="obsolete">||</translation>
-    </message>
-    <message>
-        <source>Field calculator expression</source>
-        <translation type="obsolete">フィールド計算式</translation>
     </message>
 </context>
 <context>
@@ -26689,10 +20119,6 @@ MyForms.pyはPYTHONPATH環境変数, qgis/pythonディレクトリ, もしくは
 <context>
     <name>QgsFormAnnotationDialogBase</name>
     <message>
-        <source>Dialog</source>
-        <translation type="obsolete">ダイアログ</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsformannotationdialogbase.ui" line="14"/>
         <source>Form annotation</source>
         <translation>注記フォーム</translation>
@@ -26896,14 +20322,6 @@ p, li { white-space: pre-wrap; }
         <translation>接続成功!</translation>
     </message>
     <message>
-        <source>Disconnect</source>
-        <translation type="obsolete">切断</translation>
-    </message>
-    <message>
-        <source>Connect</source>
-        <translation type="obsolete">接続</translation>
-    </message>
-    <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="397"/>
         <source>/gps</source>
         <translation>/gps</translation>
@@ -27019,46 +20437,6 @@ p, li { white-space: pre-wrap; }
         <translation>NMEA ファイル</translation>
     </message>
     <message>
-        <source>Not a vector layer</source>
-        <translation type="obsolete">ベクタレイヤではない</translation>
-    </message>
-    <message>
-        <source>The current layer is not a vector layer</source>
-        <translation type="obsolete">カレントレイヤはベクタレイヤではない</translation>
-    </message>
-    <message>
-        <source>2.5D shape type not supported</source>
-        <translation type="obsolete">2.5次元shape形式はサポートしていません</translation>
-    </message>
-    <message>
-        <source>Adding features to 2.5D shapetypes is not supported yet. Please select a different editable, non 2.5D layer and try again.</source>
-        <translation type="obsolete">2.5D shapetypeの地物を追加することはまだサポートされていません.別の編集可能な2.5Dではないレイヤを選択して再度実行して下さい.</translation>
-    </message>
-    <message>
-        <source>Multipart shape type not supported</source>
-        <translation type="obsolete">マルチパートのshapeはサポートしていません</translation>
-    </message>
-    <message>
-        <source>Adding features to multipart shapetypes is not supported yet. Please select a different editable, non 2.5D layer and try again.</source>
-        <translation type="obsolete">マルチパートの地物を追加することはまだサポートされていません.別の編集可能な2.5Dではないレイヤを選択して再度実行して下さい.</translation>
-    </message>
-    <message>
-        <source>Layer cannot be added to</source>
-        <translation type="obsolete">レイヤを追加することはできない</translation>
-    </message>
-    <message>
-        <source>The data provider for this layer does not support the addition of features.</source>
-        <translation type="obsolete">このレイヤのデータプロバイダーでは地物を追加できません.</translation>
-    </message>
-    <message>
-        <source>Layer not editable</source>
-        <translation type="obsolete">レイヤは編集不可</translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="obsolete">そのベクタレイヤは編集できません.&apos;編集モード変更&apos;をクリックすると編集可能にできます.</translation>
-    </message>
-    <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="786"/>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="794"/>
         <source>Not enough vertices</source>
@@ -27144,10 +20522,6 @@ Errors: %2
 <context>
     <name>QgsGPSInformationWidgetBase</name>
     <message>
-        <source>Form</source>
-        <translation type="obsolete">フォーム</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="131"/>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="152"/>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="166"/>
@@ -27160,61 +20534,9 @@ Errors: %2
         <translation>...</translation>
     </message>
     <message>
-        <source>Connect</source>
-        <translation type="obsolete">接続</translation>
-    </message>
-    <message>
-        <source> Latitude</source>
-        <translation type="obsolete">緯度</translation>
-    </message>
-    <message>
-        <source> Longitude</source>
-        <translation type="obsolete">経度</translation>
-    </message>
-    <message>
-        <source> Elevation</source>
-        <translation type="obsolete">高さ</translation>
-    </message>
-    <message>
-        <source>Vertical Accuracy</source>
-        <translation type="obsolete">垂直精度</translation>
-    </message>
-    <message>
-        <source>Horizontal Accuracy</source>
-        <translation type="obsolete">水平精度</translation>
-    </message>
-    <message>
-        <source>Add vertex</source>
-        <translation type="obsolete">頂点を追加</translation>
-    </message>
-    <message>
-        <source>Add feature</source>
-        <translation type="obsolete">地物追加</translation>
-    </message>
-    <message>
-        <source>Reset current feature</source>
-        <translation type="obsolete">カレント地物をリセット</translation>
-    </message>
-    <message>
-        <source>GPS device port</source>
-        <translation type="obsolete">GPSデバイスポート</translation>
-    </message>
-    <message>
-        <source>GPS connection</source>
-        <translation type="obsolete">GPS接続</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="687"/>
         <source>Autodetect</source>
         <translation>自動検出</translation>
-    </message>
-    <message>
-        <source>Use path / port below</source>
-        <translation type="obsolete">以下のパス/ポートを利用する</translation>
-    </message>
-    <message>
-        <source>Path to serial device</source>
-        <translation type="obsolete">シリアルデバイスへのパス</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="746"/>
@@ -27232,18 +20554,6 @@ Errors: %2
         <translation>デバイス</translation>
     </message>
     <message>
-        <source>ddddd; </source>
-        <translation type="obsolete">ddddd; </translation>
-    </message>
-    <message>
-        <source>Connection to gpsd</source>
-        <translation type="obsolete">gpsdへの接続</translation>
-    </message>
-    <message>
-        <source>GPS cursor size</source>
-        <translation type="obsolete">GPSカーソルサイズ</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="1123"/>
         <source>Small</source>
         <translation>小</translation>
@@ -27252,22 +20562,6 @@ Errors: %2
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="1149"/>
         <source>Large</source>
         <translation>大</translation>
-    </message>
-    <message>
-        <source>GPS digitizing</source>
-        <translation type="obsolete">GPSデジタイジング</translation>
-    </message>
-    <message>
-        <source>Auto-add vertices</source>
-        <translation type="obsolete">頂点自動追加</translation>
-    </message>
-    <message>
-        <source>GPS map recenter</source>
-        <translation type="obsolete">GPS地図中心移動</translation>
-    </message>
-    <message>
-        <source>when leaving extents</source>
-        <translation type="obsolete">領域から移動する場合</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="1048"/>
@@ -27605,10 +20899,6 @@ gray = no data
 <context>
     <name>QgsGPSPlugin</name>
     <message>
-        <source>&amp;Gps Tools</source>
-        <translation type="obsolete">GPSツール(&amp;G)</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="90"/>
         <source>&amp;Create new GPX layer</source>
         <translation>新規GPXレイヤ作成(&amp;C)</translation>
@@ -27620,17 +20910,9 @@ gray = no data
         <translation>新規にGPXレイヤ作成してマップキャンバスに表示します</translation>
     </message>
     <message>
-        <source>&amp;Gps</source>
-        <translation type="obsolete">Gps(&amp;G)</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="165"/>
         <source>Save new GPX file as...</source>
         <translation>GPXファイル別名保存...</translation>
-    </message>
-    <message>
-        <source>GPS eXchange file (*.gpx)</source>
-        <translation type="obsolete">GPX eXchange ファイル (*.gpx)</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="178"/>
@@ -27766,10 +21048,6 @@ gray = no data
 Please reselect a valid file.</source>
         <translation>選択したファイルを読めません
 正しいファイルを再選択してください.</translation>
-    </message>
-    <message>
-        <source>Unable to create a GPX file with the given name. Try again with an other name or in an other directory.</source>
-        <translation type="obsolete">指定名称でGPXファイルを作成できません. 別の名前または別のディレクトリで再度試してください.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="419"/>
@@ -28036,21 +21314,9 @@ Please reselect a valid file.</source>
         <translation>バンド %1</translation>
     </message>
     <message>
-        <source>Dimensions:</source>
-        <translation type="obsolete">次元:</translation>
-    </message>
-    <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="295"/>
         <source>X: %1 Y: %2 Bands: %3</source>
         <translation>X: %1 Y: %2 バンド: %3</translation>
-    </message>
-    <message>
-        <source>Origin:</source>
-        <translation type="obsolete">原点:</translation>
-    </message>
-    <message>
-        <source>Pixel Size:</source>
-        <translation type="obsolete">ピクセルの大きさ:</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="292"/>
@@ -28081,34 +21347,6 @@ Please reselect a valid file.</source>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2333"/>
         <source>Cannot get GDAL raster band: %1</source>
         <translation>GDALラスタバンドを取得できません: %1</translation>
-    </message>
-    <message>
-        <source>Cubic</source>
-        <translation type="obsolete">キュービック</translation>
-    </message>
-    <message>
-        <source>Mode</source>
-        <translation type="obsolete">モード</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <translation type="obsolete">なし</translation>
-    </message>
-    <message>
-        <source>out of extent</source>
-        <translation type="obsolete">範囲外</translation>
-    </message>
-    <message>
-        <source>null (no data)</source>
-        <translation type="obsolete">null (no data)</translation>
-    </message>
-    <message>
-        <source>Average Magphase</source>
-        <translation type="obsolete">平均 Magphase</translation>
-    </message>
-    <message>
-        <source>Average</source>
-        <translation type="obsolete">平均</translation>
     </message>
 </context>
 <context>
@@ -28372,32 +21610,9 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
 </context>
 <context>
     <name>QgsGeorefPlugin</name>
-    <message>
-        <source>&amp;About</source>
-        <translation type="obsolete">ジオレファレンサーについて(&amp;A)</translation>
-    </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="98"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="109"/>
@@ -29039,10 +22254,6 @@ p, li { white-space: pre-wrap; }
         <translation>TMS</translation>
     </message>
     <message>
-        <source>Worldwind</source>
-        <translation type="obsolete">Worldwind</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="88"/>
         <source>URL/File</source>
         <translation>URL/File</translation>
@@ -29169,48 +22380,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsGraduatedSymbolDialog</name>
-    <message>
-        <source>Equal Interval</source>
-        <translation type="obsolete">等間隔</translation>
-    </message>
-    <message>
-        <source>Quantiles</source>
-        <translation type="obsolete">等量(四分位)</translation>
-    </message>
-    <message>
-        <source>Empty</source>
-        <translation type="obsolete">なし</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGraduatedSymbolDialogBase</name>
-    <message>
-        <source>graduated Symbol</source>
-        <translation type="obsolete">段階シンボル</translation>
-    </message>
-    <message>
-        <source>Delete class</source>
-        <translation type="obsolete">クラスを削除</translation>
-    </message>
-    <message>
-        <source>Classify</source>
-        <translation type="obsolete">分類</translation>
-    </message>
-    <message>
-        <source>Classification field</source>
-        <translation type="obsolete">分類フィールド</translation>
-    </message>
-    <message>
-        <source>Mode</source>
-        <translation type="obsolete">モード</translation>
-    </message>
-    <message>
-        <source>Number of classes</source>
-        <translation type="obsolete">クラスの数</translation>
-    </message>
-</context>
-<context>
     <name>QgsGraduatedSymbolRendererV2Model</name>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="149"/>
@@ -29230,14 +22399,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsGraduatedSymbolRendererV2Widget</name>
-    <message>
-        <source>Range</source>
-        <translation type="obsolete">範囲</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">ラベル</translation>
-    </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="384"/>
         <source>Symbol levels...</source>
@@ -29264,10 +22425,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="492"/>
         <source>Renderer creation has failed.</source>
         <translation>レンダラ作成に失敗しました.</translation>
-    </message>
-    <message>
-        <source>change</source>
-        <translation type="obsolete">変更</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="22"/>
@@ -29320,10 +22477,6 @@ p, li { white-space: pre-wrap; }
         <translation>全削除</translation>
     </message>
     <message>
-        <source>Quantile</source>
-        <translation type="obsolete">分位</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="127"/>
         <source>Natural Breaks (Jenks)</source>
         <translation>自然なブレーク(Jenks)</translation>
@@ -29347,10 +22500,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="194"/>
         <source>Add class</source>
         <translation>クラスを追加</translation>
-    </message>
-    <message>
-        <source>Delete class</source>
-        <translation type="obsolete">クラスを削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="228"/>
@@ -29774,18 +22923,6 @@ p, li { white-space: pre-wrap; }
         <source> -- Right: %1</source>
         <translation> -- 右: %1</translation>
     </message>
-    <message>
-        <source>Left: %1   </source>
-        <translation type="obsolete">左:%1   </translation>
-    </message>
-    <message>
-        <source>Middle: %1</source>
-        <translation type="obsolete">中央:%1</translation>
-    </message>
-    <message>
-        <source>Right: %1</source>
-        <translation type="obsolete">右:%1</translation>
-    </message>
 </context>
 <context>
     <name>QgsGrassEditAddVertex</name>
@@ -30005,14 +23142,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="239"/>
         <source>Undo last vertex</source>
         <translation>直前の頂点を取り消す</translation>
-    </message>
-    <message>
-        <source>New point</source>
-        <translation type="obsolete">新しい点</translation>
-    </message>
-    <message>
-        <source>Undo last point</source>
-        <translation type="obsolete">最後のポイントをアンドゥー</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="239"/>
@@ -31688,14 +24817,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsGrassRasterProvider</name>
     <message>
-        <source>Out of extent</source>
-        <translation type="obsolete">領域の外です</translation>
-    </message>
-    <message>
-        <source>null (no data)</source>
-        <translation type="obsolete">null (no data)</translation>
-    </message>
-    <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="59"/>
         <source>cellhd file %1 does not exist</source>
         <translation>cellhdファイル%1は存在しません</translation>
@@ -31749,37 +24870,9 @@ p, li { white-space: pre-wrap; }
         <translation>GRASS Region 設定</translation>
     </message>
     <message>
-        <source>N</source>
-        <translation type="obsolete">N</translation>
-    </message>
-    <message>
-        <source>W</source>
-        <translation type="obsolete">W</translation>
-    </message>
-    <message>
-        <source>E</source>
-        <translation type="obsolete">E</translation>
-    </message>
-    <message>
-        <source>S</source>
-        <translation type="obsolete">S</translation>
-    </message>
-    <message>
-        <source>N-S Res</source>
-        <translation type="obsolete">N-S Res</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="149"/>
         <source>Rows</source>
         <translation>行</translation>
-    </message>
-    <message>
-        <source>Cols</source>
-        <translation type="obsolete">列</translation>
-    </message>
-    <message>
-        <source>E-W Res</source>
-        <translation type="obsolete">E-W Res</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="20"/>
@@ -31848,14 +24941,6 @@ or change the following values</source>
         <source>Width</source>
         <translation>幅</translation>
     </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">了解</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
 </context>
 <context>
     <name>QgsGrassSelect</name>
@@ -31878,18 +24963,6 @@ or change the following values</source>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="88"/>
         <source>Select GRASS Mapset</source>
         <translation>GRASSマップセットを選択</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">警告</translation>
-    </message>
-    <message>
-        <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
-        <translation type="obsolete">レベル２のマップセット%2内のベクタ%1を開けません（トポロジは利用できません,トポロジを利用するためにはv.build.moduleを使って再ビルドを試みて下さい）.</translation>
-    </message>
-    <message>
-        <source>Cannot open vector %1 in mapset %2</source>
-        <translation type="obsolete">マップセット%2内のベクタ%1を開けません</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="389"/>
@@ -31940,10 +25013,6 @@ or change the following values</source>
         <translation>位置</translation>
     </message>
     <message>
-        <source>Browse</source>
-        <translation type="obsolete">ブラウズ</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="50"/>
         <source>Mapset</source>
         <translation>Mapset</translation>
@@ -31964,10 +25033,6 @@ or change the following values</source>
         <translation>参照...</translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation type="obsolete">了解</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="67"/>
         <source>Select or type map name (wildcards &apos;*&apos; and &apos;?&apos; accepted for rasters)</source>
         <translation>地図名を選択または入力 (ラスタの場合 &quot;*&quot; と &quot;?&quot; を用いたワイルドカードも可)</translation>
@@ -31976,10 +25041,6 @@ or change the following values</source>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="14"/>
         <source>Add GRASS Layer</source>
         <translation>GRASS レイヤを追加</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
     </message>
 </context>
 <context>
@@ -32265,40 +25326,6 @@ at line %2 column %3</source>
 <context>
     <name>QgsHelpViewer</name>
     <message>
-        <source>&lt;h3&gt;Oops! QGIS can&apos;t find help for this form.&lt;/h3&gt;The help file for %1 was not found for your language&lt;br&gt;If you would like to create it, contact the QGIS development team</source>
-        <translation type="obsolete">&lt;h3&gt;Oops! QGIS はこのフォームのヘルプを見つけられません.&lt;/h3&gt;あなたの言語ではヘルプファイル%1が見つかりません&lt;br&gt;もしあなたが作成したいならQGIS開発チームに連絡をください</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">エラー</translation>
-    </message>
-    <message>
-        <source>The QGIS help database is not installed</source>
-        <translation type="obsolete">QGIS ヘルプデータベースがインストールされていません</translation>
-    </message>
-    <message>
-        <source>Quantum GIS Help</source>
-        <translation type="obsolete">Quantum GIS ヘルプ</translation>
-    </message>
-    <message>
-        <source>This help file is not available in your language %1. If you would like to translate it, please contact the QGIS  development team.</source>
-        <translation type="obsolete">このヘルプはあなたの言語　%1ではサポートされていません。もしあなたが翻訳したいならQGIS開発チームに連絡をください。</translation>
-    </message>
-    <message>
-        <source>This help file does not exist for your language:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;If you would like to create it, contact the QGIS development team</source>
-        <translation type="obsolete">このヘルプはあなたの言語&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/p&gt;ではサポートされていません。もしあなたが翻訳したいならQGIS開発チームに連絡をください。</translation>
-    </message>
-    <message>
-        <source>Quantum GIS Help - %1</source>
-        <translation type="obsolete">Quantum GIS ヘルプ - %1</translation>
-    </message>
-    <message>
-        <source>Failed to get the help text from the database:
-  %1</source>
-        <translation type="obsolete">ヘルプ文書をデータベースから取得に失敗しました
- %1</translation>
-    </message>
-    <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="76"/>
         <source>QGIS Help</source>
         <translation>QGIS ヘルプ</translation>
@@ -32310,38 +25337,6 @@ at line %2 column %3</source>
         <location filename="../src/helpviewer/qgshelpviewerbase.ui" line="14"/>
         <source>QGIS Help</source>
         <translation>QGIS ヘルプ</translation>
-    </message>
-    <message>
-        <source>&amp;Home</source>
-        <translation type="obsolete">ホーム(&amp;H)</translation>
-    </message>
-    <message>
-        <source>Alt+H</source>
-        <translation type="obsolete">Alt+H</translation>
-    </message>
-    <message>
-        <source>&amp;Forward</source>
-        <translation type="obsolete">進む(&amp;F)</translation>
-    </message>
-    <message>
-        <source>Alt+F</source>
-        <translation type="obsolete">Alt+F</translation>
-    </message>
-    <message>
-        <source>&amp;Back</source>
-        <translation type="obsolete">戻る(&amp;B)</translation>
-    </message>
-    <message>
-        <source>Alt+B</source>
-        <translation type="obsolete">Alt+B</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">閉じる(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewerbase.ui" line="32"/>
@@ -32446,85 +25441,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/plugins/interpolation/qgsidwinterpolatordialogbase.ui" line="28"/>
         <source>Distance coefficient P</source>
         <translation>距離係数 P</translation>
-    </message>
-</context>
-<context>
-    <name>QgsIdentifyResults</name>
-    <message>
-        <source>Identify Results</source>
-        <translation type="obsolete">地物情報</translation>
-    </message>
-    <message>
-        <source>Feature</source>
-        <translation type="obsolete">地物</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">値</translation>
-    </message>
-    <message>
-        <source>(Actions)</source>
-        <translation type="obsolete">(アクション)</translation>
-    </message>
-    <message>
-        <source>Edit feature form</source>
-        <translation type="obsolete">地物編集フォーム</translation>
-    </message>
-    <message>
-        <source>View feature form</source>
-        <translation type="obsolete">地物フォームを見る</translation>
-    </message>
-    <message>
-        <source>Zoom to feature</source>
-        <translation type="obsolete">地物にズームする</translation>
-    </message>
-    <message>
-        <source>Copy attribute value</source>
-        <translation type="obsolete">属性値をコピーする</translation>
-    </message>
-    <message>
-        <source>Copy feature attributes</source>
-        <translation type="obsolete">地物の属性値をコピーする</translation>
-    </message>
-    <message>
-        <source>Expand all</source>
-        <translation type="obsolete">すべて展開する</translation>
-    </message>
-    <message>
-        <source>Collapse all</source>
-        <translation type="obsolete">すべて折りたたむ</translation>
-    </message>
-    <message>
-        <source>Attribute changes</source>
-        <translation type="obsolete">属性が変更された</translation>
-    </message>
-    <message>
-        <source>Attribute changed</source>
-        <translation type="obsolete">属性が変更された</translation>
-    </message>
-    <message>
-        <source>Run actions</source>
-        <translation type="obsolete">アクションを実行する</translation>
-    </message>
-    <message>
-        <source>(Derived)</source>
-        <translation type="obsolete">（継承している属性）</translation>
-    </message>
-    <message>
-        <source>Clear results</source>
-        <translation type="obsolete">結果をクリアする</translation>
-    </message>
-    <message>
-        <source>Clear highlights</source>
-        <translation type="obsolete">ハイライトをクリアする</translation>
-    </message>
-    <message>
-        <source>Highlight all</source>
-        <translation type="obsolete">すべてをハイライトする</translation>
-    </message>
-    <message>
-        <source>Highlight layer</source>
-        <translation type="obsolete">レイヤをハイライトする</translation>
     </message>
 </context>
 <context>
@@ -32905,45 +25821,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="54"/>
         <source>&amp;Interpolation</source>
         <translation>データ補間(&amp;I)</translation>
-    </message>
-</context>
-<context>
-    <name>QgsItemPositionDialogBase</name>
-    <message>
-        <source>Set item position</source>
-        <translation type="obsolete">アイテムの位置を設定する</translation>
-    </message>
-    <message>
-        <source>Item reference point</source>
-        <translation type="obsolete">アイテム参照点</translation>
-    </message>
-    <message>
-        <source>Coordinates</source>
-        <translation type="obsolete">座標</translation>
-    </message>
-    <message>
-        <source>x</source>
-        <translation type="obsolete">x</translation>
-    </message>
-    <message>
-        <source>y</source>
-        <translation type="obsolete">y</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">幅</translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="obsolete">高さ</translation>
-    </message>
-    <message>
-        <source>Set Position</source>
-        <translation type="obsolete">場所指定</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">閉じる</translation>
     </message>
 </context>
 <context>
@@ -33384,21 +26261,9 @@ This may be a problem in your network connection or at the WMS server.</source>
 <context>
     <name>QgsLabelingGui</name>
     <message>
-        <source>pt</source>
-        <translation type="obsolete">pt</translation>
-    </message>
-    <message>
-        <source>map units</source>
-        <translation type="obsolete">地図上の単位</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1081"/>
         <source> (not found!)</source>
         <translation> (見つかりません!)</translation>
-    </message>
-    <message>
-        <source>Sample</source>
-        <translation type="obsolete">サンプル</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="745"/>
@@ -33510,26 +26375,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>File not found</source>
         <translation>ファイルがみつかりません</translation>
     </message>
-    <message>
-        <source>Mixed Case</source>
-        <translation type="obsolete">大文字小文字両方</translation>
-    </message>
-    <message>
-        <source>All Uppercase</source>
-        <translation type="obsolete">全て大文字</translation>
-    </message>
-    <message>
-        <source>All Lowercase</source>
-        <translation type="obsolete">全て小文字</translation>
-    </message>
-    <message>
-        <source>Title Case</source>
-        <translation type="obsolete">タイトル文字</translation>
-    </message>
-    <message>
-        <source>Select SVG symbol</source>
-        <translation type="obsolete">SVGシンボルを選択</translation>
-    </message>
 </context>
 <context>
     <name>QgsLabelingGuiBase</name>
@@ -33537,18 +26382,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="14"/>
         <source>Layer labeling settings</source>
         <translation>レイヤラベリング設定</translation>
-    </message>
-    <message>
-        <source>Label settings</source>
-        <translation type="obsolete">ラベル設定</translation>
-    </message>
-    <message>
-        <source>Label this layer</source>
-        <translation type="obsolete">このレイヤのラベル表示</translation>
-    </message>
-    <message>
-        <source>Field with labels</source>
-        <translation type="obsolete">ラベルのフィールド</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5046"/>
@@ -33578,14 +26411,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>正の符号を表示する</translation>
     </message>
     <message>
-        <source>Advanced</source>
-        <translation type="obsolete">アドバンスト</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">オプション</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5441"/>
         <source>Label every part of multi-part features</source>
         <translation>マルチパート地物の各パートにラベルを出力する</translation>
@@ -33596,22 +26421,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>重複ラベルを除去するために接続するラインを結合する</translation>
     </message>
     <message>
-        <source>Multiline labels</source>
-        <translation type="obsolete">複数行のラベル</translation>
-    </message>
-    <message>
-        <source>Add direction symbol</source>
-        <translation type="obsolete">方位シンボルを追加する</translation>
-    </message>
-    <message>
-        <source>Features don&apos;t act as obstacles for labels</source>
-        <translation type="obsolete">地物をラベル表示の妨害とみなさない</translation>
-    </message>
-    <message>
-        <source>Wrap label on character</source>
-        <translation type="obsolete">文字ラベルを包む</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="550"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="553"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1728"/>
@@ -33620,49 +26429,9 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>配置</translation>
     </message>
     <message>
-        <source>around point</source>
-        <translation type="obsolete">点の周り</translation>
-    </message>
-    <message>
-        <source>over point</source>
-        <translation type="obsolete">点上</translation>
-    </message>
-    <message>
-        <source>parallel</source>
-        <translation type="obsolete">並行</translation>
-    </message>
-    <message>
-        <source>curved</source>
-        <translation type="obsolete">曲がって</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4791"/>
         <source>horizontal</source>
         <translation>水平に</translation>
-    </message>
-    <message>
-        <source>over centroid</source>
-        <translation type="obsolete">中心点上</translation>
-    </message>
-    <message>
-        <source>around centroid</source>
-        <translation type="obsolete">中心点の周り</translation>
-    </message>
-    <message>
-        <source>horizontal (slow)</source>
-        <translation type="obsolete">水平（ゆっくり）</translation>
-    </message>
-    <message>
-        <source>free (slow)</source>
-        <translation type="obsolete">フリー（ゆっくり）</translation>
-    </message>
-    <message>
-        <source>using perimeter</source>
-        <translation type="obsolete">周辺の利用</translation>
-    </message>
-    <message>
-        <source>Label distance</source>
-        <translation type="obsolete">ラベルの距離</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2273"/>
@@ -33683,38 +26452,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4731"/>
         <source>Rotation</source>
         <translation>回転</translation>
-    </message>
-    <message>
-        <source>degrees</source>
-        <translation type="obsolete">度</translation>
-    </message>
-    <message>
-        <source>In mm</source>
-        <translation type="obsolete">mm　で</translation>
-    </message>
-    <message>
-        <source>above line</source>
-        <translation type="obsolete">線の上部</translation>
-    </message>
-    <message>
-        <source>on line</source>
-        <translation type="obsolete">ライン上</translation>
-    </message>
-    <message>
-        <source>below line</source>
-        <translation type="obsolete">線の下部</translation>
-    </message>
-    <message>
-        <source>Orientation</source>
-        <translation type="obsolete">方向</translation>
-    </message>
-    <message>
-        <source>map</source>
-        <translation type="obsolete">地図</translation>
-    </message>
-    <message>
-        <source>line</source>
-        <translation type="obsolete">線</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="493"/>
@@ -33931,26 +26668,10 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation> mm</translation>
     </message>
     <message>
-        <source>Sample</source>
-        <translation type="obsolete">サンプル</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="249"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="292"/>
         <source>Lorem Ipsum</source>
         <translation>QGISの新しいラベル機能</translation>
-    </message>
-    <message>
-        <source>Font size</source>
-        <translation type="obsolete">フォントサイズ</translation>
-    </message>
-    <message>
-        <source>In points</source>
-        <translation type="obsolete">ポイント</translation>
-    </message>
-    <message>
-        <source>In map units</source>
-        <translation type="obsolete">地図上の単位</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4854"/>
@@ -33973,78 +26694,14 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>スケール依存可視設定</translation>
     </message>
     <message>
-        <source>Enabled</source>
-        <translation type="obsolete">利用可にする</translation>
-    </message>
-    <message>
-        <source>Minimum</source>
-        <translation type="obsolete">最小値</translation>
-    </message>
-    <message>
-        <source>Maximum</source>
-        <translation type="obsolete">最大値</translation>
-    </message>
-    <message>
-        <source>label every part of multi-part features</source>
-        <translation type="obsolete">マルチパート地物の各要素にラベルを表示する</translation>
-    </message>
-    <message>
-        <source>merge connected lines to avoid duplicate labels</source>
-        <translation type="obsolete">重複ラベルを除去するために接続されている線をマージする</translation>
-    </message>
-    <message>
-        <source>multiline labels</source>
-        <translation type="obsolete">複数行のラベル</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5541"/>
         <source>Suppress labeling of features smaller than</source>
         <translation>これより地物が小さい場合ラベリングを行わない</translation>
     </message>
     <message>
-        <source>features don&apos;t act as obstacles for labels</source>
-        <translation type="obsolete">地物はラベルの妨害にならないように動かない</translation>
-    </message>
-    <message>
-        <source>Engine settings</source>
-        <translation type="obsolete">エンジン設定</translation>
-    </message>
-    <message>
-        <source>add direction symbol</source>
-        <translation type="obsolete">方位シンボルを追加する</translation>
-    </message>
-    <message>
-        <source>Data defined settings</source>
-        <translation type="obsolete">データ定義設定</translation>
-    </message>
-    <message>
-        <source>Font properties</source>
-        <translation type="obsolete">フォントプロパティ</translation>
-    </message>
-    <message>
-        <source>Bold</source>
-        <translation type="obsolete">強調</translation>
-    </message>
-    <message>
-        <source>Italic</source>
-        <translation type="obsolete">イタリック</translation>
-    </message>
-    <message>
-        <source>Underline</source>
-        <translation type="obsolete">下線</translation>
-    </message>
-    <message>
-        <source>Font family</source>
-        <translation type="obsolete">フォントファミリー</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3887"/>
         <source>Position</source>
         <translation>位置</translation>
-    </message>
-    <message>
-        <source>Expression</source>
-        <translation type="obsolete">式</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="289"/>
@@ -34206,10 +26863,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>利用可能な書体スタイル</translation>
     </message>
     <message>
-        <source>Underlined Text</source>
-        <translation type="obsolete">下線テキスト</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1156"/>
         <source>U</source>
         <translation>下線</translation>
@@ -34266,14 +26919,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation> %</translation>
     </message>
     <message>
-        <source>Word spacing</source>
-        <translation type="obsolete">単語間隔</translation>
-    </message>
-    <message>
-        <source>Letter spacing</source>
-        <translation type="obsolete">文字間隔</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="694"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1105"/>
         <source>Space in pixels or map units, relative to size unit choice</source>
@@ -34288,14 +26933,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="792"/>
         <source>Capitalization style of text</source>
         <translation>テキストの単語の先頭を大文字にする</translation>
-    </message>
-    <message>
-        <source>Color area inside of pen stroke</source>
-        <translation type="obsolete">ペンストローク内の色</translation>
-    </message>
-    <message>
-        <source>Automated placement settings</source>
-        <translation type="obsolete">自動配置の設定</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3733"/>
@@ -34428,10 +27065,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>周辺部</translation>
     </message>
     <message>
-        <source>Centroid of</source>
-        <translation type="obsolete">配置の基準</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3978"/>
         <source>visible polygon</source>
         <translation>可視ポリゴン</translation>
@@ -34457,39 +27090,15 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>ラインの下</translation>
     </message>
     <message>
-        <source>X </source>
-        <translation type="obsolete">X </translation>
-    </message>
-    <message>
-        <source>Text/Buffer sample</source>
-        <translation type="obsolete">テキスト/バッファサンプル</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2080"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2703"/>
         <source>Pen join style</source>
         <translation>線スタイル</translation>
     </message>
     <message>
-        <source>Blending mode</source>
-        <translation type="obsolete">混合モード</translation>
-    </message>
-    <message>
-        <source>Line direction symbols</source>
-        <translation type="obsolete">線方向シンボル</translation>
-    </message>
-    <message>
-        <source>Symbol(s)</source>
-        <translation type="obsolete">シンボル</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1634"/>
         <source>&lt;</source>
         <translation>&lt;</translation>
-    </message>
-    <message>
-        <source> Label </source>
-        <translation type="obsolete"> ラベル </translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1689"/>
@@ -34517,10 +27126,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>逆方向</translation>
     </message>
     <message>
-        <source>Pixel size-based visibility</source>
-        <translation type="obsolete">ピクセルサイズ依存可視設定</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5200"/>
         <source>Labels will not show if larger than this on screen</source>
         <translation>ラベルがスクリーン上でこれより大きい場合表示されない</translation>
@@ -34537,10 +27142,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>ラベルがスクリーン上でこれより小さい場合表示されない</translation>
     </message>
     <message>
-        <source> Label in Map Units </source>
-        <translation type="obsolete"> ラベルを地図単位で</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3162"/>
         <source>Drop shadow</source>
         <translation>ドロップシャドウ</translation>
@@ -34549,14 +27150,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3479"/>
         <source>Offset</source>
         <translation>オフセット</translation>
-    </message>
-    <message>
-        <source>Y </source>
-        <translation type="obsolete">Y </translation>
-    </message>
-    <message>
-        <source>%</source>
-        <translation type="obsolete">%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3281"/>
@@ -34594,14 +27187,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>˚</translation>
     </message>
     <message>
-        <source>@</source>
-        <translation type="obsolete">@</translation>
-    </message>
-    <message>
-        <source>Global</source>
-        <translation type="obsolete">グローバル</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3288"/>
         <source>Blur radius</source>
         <translation>ぼかし半径</translation>
@@ -34610,18 +27195,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3301"/>
         <source>Blur only alpha pixels</source>
         <translation>アルファピクセルのみをぼかす</translation>
-    </message>
-    <message>
-        <source>Select SVG symbol</source>
-        <translation type="obsolete">SVGシンボルを選択</translation>
-    </message>
-    <message>
-        <source>Fill</source>
-        <translation type="obsolete">塗りつぶし</translation>
-    </message>
-    <message>
-        <source>Size X,Y</source>
-        <translation type="obsolete">サイズ (X,Y)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2793"/>
@@ -34701,10 +27274,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>シンボル単位</translation>
     </message>
     <message>
-        <source>Border</source>
-        <translation type="obsolete">境界線</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4607"/>
         <source>outside</source>
         <translation>外側</translation>
@@ -34718,34 +27287,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4633"/>
         <source>Maximum angle between curved characters</source>
         <translation>曲がった文字間の最大角度</translation>
-    </message>
-    <message>
-        <source>Above Right</source>
-        <translation type="obsolete">右上</translation>
-    </message>
-    <message>
-        <source>Above Left</source>
-        <translation type="obsolete">左上</translation>
-    </message>
-    <message>
-        <source>Over</source>
-        <translation type="obsolete">真上</translation>
-    </message>
-    <message>
-        <source>Above</source>
-        <translation type="obsolete">上</translation>
-    </message>
-    <message>
-        <source>Below Left</source>
-        <translation type="obsolete">左下</translation>
-    </message>
-    <message>
-        <source>Below</source>
-        <translation type="obsolete">下</translation>
-    </message>
-    <message>
-        <source>Below Right</source>
-        <translation type="obsolete">右下</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5241"/>
@@ -34783,41 +27324,9 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>ラベルエンジンに送られる地物の数だが全部が表示されるわけではない</translation>
     </message>
     <message>
-        <source>Use label background size in collision calculations</source>
-        <translation type="obsolete">バックグラウンドの衝突計算で利用するラベルサイズ</translation>
-    </message>
-    <message>
-        <source>Buffer transparency</source>
-        <translation type="obsolete">バッファ透過率</translation>
-    </message>
-    <message>
-        <source>X Coordinate</source>
-        <translation type="obsolete">X座標</translation>
-    </message>
-    <message>
-        <source>Y Coordinate</source>
-        <translation type="obsolete">Y座標</translation>
-    </message>
-    <message>
-        <source>Horizontal alignment</source>
-        <translation type="obsolete">水平方向配置</translation>
-    </message>
-    <message>
-        <source>Vertical alignment</source>
-        <translation type="obsolete">垂直方向配置</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4761"/>
         <source>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</source>
         <translation>ラベルエンジンから取得した角度で描画し、非表示の際には角度を保持したくない場合はチェックを外してください</translation>
-    </message>
-    <message>
-        <source>Preserve existing rotation values during label pin/unpin operations</source>
-        <translation type="obsolete">ラベルの設定操作の間、回転角を保持する</translation>
-    </message>
-    <message>
-        <source>Display properties</source>
-        <translation type="obsolete">表示プロパティ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5296"/>
@@ -34825,37 +27334,9 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>常に表示</translation>
     </message>
     <message>
-        <source>Minimum scale</source>
-        <translation type="obsolete">最小縮尺</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5312"/>
         <source>Show label</source>
         <translation>ラベル表示</translation>
-    </message>
-    <message>
-        <source>Maximum scale</source>
-        <translation type="obsolete">最大縮尺</translation>
-    </message>
-    <message>
-        <source>Strikeout</source>
-        <translation type="obsolete">取り消し線</translation>
-    </message>
-    <message>
-        <source>Capitalization</source>
-        <translation type="obsolete">先頭を大文字にする</translation>
-    </message>
-    <message>
-        <source>Multi-line align</source>
-        <translation type="obsolete">複数行の整列</translation>
-    </message>
-    <message>
-        <source>Add label columns to attribute table</source>
-        <translation type="obsolete">属性テーブルにラベル列を追加</translation>
-    </message>
-    <message>
-        <source>About data defined values</source>
-        <translation type="obsolete">値を指定したデータについて</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="36"/>
@@ -34866,18 +27347,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3934"/>
         <source>Line orientation dependent position</source>
         <translation>位置に依存したラインの方向</translation>
-    </message>
-    <message>
-        <source>Buffer properties</source>
-        <translation type="obsolete">縁取りのプロパティ</translation>
-    </message>
-    <message>
-        <source>Buffer size</source>
-        <translation type="obsolete">縁取りのサイズ</translation>
-    </message>
-    <message>
-        <source>Buffer color</source>
-        <translation type="obsolete">縁取り色</translation>
     </message>
 </context>
 <context>
@@ -34973,90 +27442,22 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>凡例</translation>
     </message>
     <message>
-        <source>&amp;Make to toplevel item</source>
-        <translation type="obsolete">アイテムをトップレベルに移動(&amp;M)</translation>
-    </message>
-    <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="759"/>
         <source>Legend context</source>
         <translation>凡例コンテキスト</translation>
-    </message>
-    <message>
-        <source>Zoom to group</source>
-        <translation type="obsolete">グループにズームする</translation>
-    </message>
-    <message>
-        <source>&amp;Set group CRS</source>
-        <translation type="obsolete">グループCRSを設定する(&amp;S)</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="853"/>
         <source>Re&amp;name</source>
         <translation>改名(&amp;n)</translation>
     </message>
-    <message>
-        <source>&amp;Add group</source>
-        <translation type="obsolete">グループ追加(&amp;A)</translation>
-    </message>
-    <message>
-        <source>&amp;Expand all</source>
-        <translation type="obsolete">すべてを展開する(&amp;E)</translation>
-    </message>
-    <message>
-        <source>&amp;Collapse all</source>
-        <translation type="obsolete">すべてを折りたたむ(&amp;C)</translation>
-    </message>
 </context>
 <context>
     <name>QgsLegendLayer</name>
     <message>
-        <source>&amp;Zoom to layer extent</source>
-        <translation type="obsolete">レイヤの領域にズーム(&amp;Z)</translation>
-    </message>
-    <message>
-        <source>&amp;Zoom to best scale (100%)</source>
-        <translation type="obsolete">最適スケール(100%)にズームする(&amp;Z)</translation>
-    </message>
-    <message>
-        <source>&amp;Stretch using current extent</source>
-        <translation type="obsolete">現在の領域を使って伸ばす(&amp;S)</translation>
-    </message>
-    <message>
-        <source>&amp;Show in overview</source>
-        <translation type="obsolete">全体図に表示(&amp;S)</translation>
-    </message>
-    <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="362"/>
         <source>&amp;Remove</source>
         <translation>削除(&amp;R)</translation>
-    </message>
-    <message>
-        <source>&amp;Set layer CRS</source>
-        <translation type="obsolete">レイヤCRSを設定する(&amp;S)</translation>
-    </message>
-    <message>
-        <source>Set &amp;project CRS from layer</source>
-        <translation type="obsolete">レイヤのCRSをプロジェクトに設定する(&amp;p)</translation>
-    </message>
-    <message>
-        <source>&amp;Open attribute table</source>
-        <translation type="obsolete">属性テーブルを開く</translation>
-    </message>
-    <message>
-        <source>Save as...</source>
-        <translation type="obsolete">名前をつけて保存...</translation>
-    </message>
-    <message>
-        <source>Save selection as...</source>
-        <translation type="obsolete">選択を名前をつけて保存...</translation>
-    </message>
-    <message>
-        <source>&amp;Query...</source>
-        <translation type="obsolete">検索(&amp;Q)...</translation>
-    </message>
-    <message>
-        <source>Show feature count</source>
-        <translation type="obsolete">地物数の表示</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="228"/>
@@ -35125,22 +27526,6 @@ not displayed</source>
         <source>Show Feature Count</source>
         <translation>地物数の表示</translation>
     </message>
-    <message>
-        <source>&amp;Properties</source>
-        <translation type="obsolete">プロパティ(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Updating feature count for layer %1</source>
-        <translation type="obsolete">レイヤの地物の数を更新中です %1</translation>
-    </message>
-    <message>
-        <source>Updating feature count for layer </source>
-        <translation type="obsolete">レイヤの地物の数を更新中です</translation>
-    </message>
-    <message>
-        <source>Abort</source>
-        <translation type="obsolete">取り消し</translation>
-    </message>
 </context>
 <context>
     <name>QgsLegendModel</name>
@@ -35174,40 +27559,6 @@ not displayed</source>
     </message>
 </context>
 <context>
-    <name>QgsLinearlyScalingDialog</name>
-    <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">マイルメーター</translation>
-    </message>
-    <message>
-        <source>Map units</source>
-        <translation type="obsolete">地図上の単位</translation>
-    </message>
-</context>
-<context>
-    <name>QgsLinearlyScalingDialogBase</name>
-    <message>
-        <source>Form</source>
-        <translation type="obsolete">フォーム</translation>
-    </message>
-    <message>
-        <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
-        <translation type="obsolete">スケールは0と以下の属性値/図表サイズの間の値をとります</translation>
-    </message>
-    <message>
-        <source>Find maximum value</source>
-        <translation type="obsolete">最大値を求める</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">大きさ</translation>
-    </message>
-    <message>
-        <source>Size unit</source>
-        <translation type="obsolete">サイズ単位</translation>
-    </message>
-</context>
-<context>
     <name>QgsLoadStyleFromDBDialogLayout</name>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="20"/>
@@ -35238,18 +27589,6 @@ not displayed</source>
 <context>
     <name>QgsManageConnectionsDialog</name>
     <message>
-        <source>Load from file</source>
-        <translation type="obsolete">ファイルからのロード</translation>
-    </message>
-    <message>
-        <source>Load</source>
-        <translation type="obsolete">読み込み</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">保存</translation>
-    </message>
-    <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="84"/>
         <source>Save connections</source>
         <translation>コネクションの保存</translation>
@@ -35258,14 +27597,6 @@ not displayed</source>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="85"/>
         <source>XML files (*.xml *.XML)</source>
         <translation>XMLファイル(*.xml *XML)</translation>
-    </message>
-    <message>
-        <source>Load connections</source>
-        <translation type="obsolete">コネクションのロード</translation>
-    </message>
-    <message>
-        <source>XML files (*.xml *XML)</source>
-        <translation type="obsolete">XMLファイル(*.xml *XML)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="37"/>
@@ -35415,14 +27746,6 @@ not displayed</source>
         <source>Select connections to export</source>
         <translation>エクスポートする接続を選択する</translation>
     </message>
-    <message>
-        <source>Save to file</source>
-        <translation type="obsolete">ファイルへ保存</translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="obsolete">ブラウズ</translation>
-    </message>
 </context>
 <context>
     <name>QgsMapCanvas</name>
@@ -35487,14 +27810,6 @@ not displayed</source>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialogbase.ui" line="49"/>
         <source>Y / North:</source>
         <translation>Y / 北方向:</translation>
-    </message>
-    <message>
-        <source>X:</source>
-        <translation type="obsolete">X: </translation>
-    </message>
-    <message>
-        <source>Y:</source>
-        <translation type="obsolete"> Y: </translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialogbase.ui" line="61"/>
@@ -35624,14 +27939,6 @@ not displayed</source>
         <translation>地物の追加</translation>
     </message>
     <message>
-        <source>Not a vector layer</source>
-        <translation type="obsolete">ベクタレイヤではない</translation>
-    </message>
-    <message>
-        <source>The current layer is not a vector layer</source>
-        <translation type="obsolete">カレントレイヤはベクタレイヤではない</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="67"/>
         <source>Layer cannot be added to</source>
         <translation>レイヤを追加することはできない</translation>
@@ -35640,14 +27947,6 @@ not displayed</source>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="68"/>
         <source>The data provider for this layer does not support the addition of features.</source>
         <translation>このレイヤのデータプロバイダーでは地物を追加できません.</translation>
-    </message>
-    <message>
-        <source>Layer not editable</source>
-        <translation type="obsolete">レイヤは編集不可</translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="obsolete">そのベクタレイヤは編集できません.&apos;編集モード変更&apos;をクリックすると編集可能にできます.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="84"/>
@@ -35726,82 +28025,7 @@ not displayed</source>
     </message>
 </context>
 <context>
-    <name>QgsMapToolAddIsland</name>
-    <message>
-        <source>Not a vector layer</source>
-        <translation type="obsolete">ベクタレイヤではない</translation>
-    </message>
-    <message>
-        <source>The current layer is not a vector layer</source>
-        <translation type="obsolete">カレントレイヤはベクタレイヤではない</translation>
-    </message>
-    <message>
-        <source>Layer not editable</source>
-        <translation type="obsolete">レイヤは編集不可</translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="obsolete">そのベクタレイヤは編集できません.&apos;編集モード変更&apos;をクリックすると編集可能にできます.</translation>
-    </message>
-    <message>
-        <source>No feature selected. Please select a feature with the selection tool or in the attribute table</source>
-        <translation type="obsolete">地物が選択されていません。選択ツールまたは属性テーブルで地物を選択してください。</translation>
-    </message>
-    <message>
-        <source>Several features are selected. Please select only one feature to which an island should be added.</source>
-        <translation type="obsolete">いくつかの地物がインストールされています。島を追加するために単一の地物のみを選択してください</translation>
-    </message>
-    <message>
-        <source>Error, could not add island</source>
-        <translation type="obsolete">エラー、島を追加できません</translation>
-    </message>
-    <message>
-        <source>Coordinate transform error</source>
-        <translation type="obsolete">座標変換エラー</translation>
-    </message>
-    <message>
-        <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="obsolete">指定点はこのレイヤの座標システムには変換できません</translation>
-    </message>
-    <message>
-        <source>Part added</source>
-        <translation type="obsolete">部分が追加されました</translation>
-    </message>
-    <message>
-        <source>Selected feature is not a multipolygon</source>
-        <translation type="obsolete">選択された地物がマルチポリゴンではありません</translation>
-    </message>
-    <message>
-        <source>New ring is not a valid geometry</source>
-        <translation type="obsolete">新しいリングは正しいジオメトリではありません</translation>
-    </message>
-    <message>
-        <source>New polygon ring not disjoint with existing polygons</source>
-        <translation type="obsolete">新しいポリゴンリングは既存ポリゴンを解体しません</translation>
-    </message>
-    <message>
-        <source>Selected geometry could not be found</source>
-        <translation type="obsolete">選択されたジオメトリは見つかりません</translation>
-    </message>
-</context>
-<context>
     <name>QgsMapToolAddPart</name>
-    <message>
-        <source>Not a vector layer</source>
-        <translation type="obsolete">ベクタレイヤではない</translation>
-    </message>
-    <message>
-        <source>The current layer is not a vector layer</source>
-        <translation type="obsolete">カレントレイヤはベクタレイヤではない</translation>
-    </message>
-    <message>
-        <source>Layer not editable</source>
-        <translation type="obsolete">レイヤは編集できません</translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="obsolete">そのベクタレイヤは編集できません.&apos;編集モード変更&apos;をクリックすると編集可能にできます.</translation>
-    </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="57"/>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="184"/>
@@ -35867,22 +28091,6 @@ not displayed</source>
 </context>
 <context>
     <name>QgsMapToolAddRing</name>
-    <message>
-        <source>Not a vector layer</source>
-        <translation type="obsolete">ベクタレイヤではない</translation>
-    </message>
-    <message>
-        <source>The current layer is not a vector layer</source>
-        <translation type="obsolete">カレントレイヤはベクタレイヤではない</translation>
-    </message>
-    <message>
-        <source>Layer not editable</source>
-        <translation type="obsolete">レイヤは編集不可</translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="obsolete">そのベクタレイヤは編集できません.&apos;編集モード変更&apos;をクリックすると編集可能にできます.</translation>
-    </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="62"/>
         <source>Coordinate transform error</source>
@@ -35957,10 +28165,6 @@ not displayed</source>
 </context>
 <context>
     <name>QgsMapToolChangeLabelProperties</name>
-    <message>
-        <source>Label properties changed</source>
-        <translation type="obsolete">ラベルプロパティが変更されました</translation>
-    </message>
     <message>
         <location filename="../src/app/qgsmaptoolchangelabelproperties.cpp" line="70"/>
         <source>Changed properties for label</source>
@@ -36067,14 +28271,6 @@ not displayed</source>
         <translation>(クリックされた座標)</translation>
     </message>
     <message>
-        <source>No active layer</source>
-        <translation type="obsolete">アクティブレイヤ無し</translation>
-    </message>
-    <message>
-        <source>To identify features, you must choose an active layer by clicking on its name in the legend</source>
-        <translation type="obsolete">クリックして地物情報を表示する場合凡例にあるレイヤの名前をクリックしてアクティブレイヤを選んでください</translation>
-    </message>
-    <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="138"/>
         <source>Identifying on %1...</source>
         <translation>%1の地物情報...</translation>
@@ -36083,10 +28279,6 @@ not displayed</source>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="151"/>
         <source>Identifying done.</source>
         <translation>地物検索終了.</translation>
-    </message>
-    <message>
-        <source>No features at this position found.</source>
-        <translation type="obsolete">この位置には地物は存在しません</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="307"/>
@@ -36150,18 +28342,6 @@ not displayed</source>
         <source>new feature</source>
         <translation>新規地物</translation>
     </message>
-    <message>
-        <source>WMS layer</source>
-        <translation type="obsolete">WMSレイヤ</translation>
-    </message>
-    <message>
-        <source>Feature info</source>
-        <translation type="obsolete">地物情報</translation>
-    </message>
-    <message>
-        <source>Raster</source>
-        <translation type="obsolete">ラスタ</translation>
-    </message>
 </context>
 <context>
     <name>QgsMapToolIdentifyAction</name>
@@ -36174,14 +28354,6 @@ not displayed</source>
 <context>
     <name>QgsMapToolMoveFeature</name>
     <message>
-        <source>Layer not editable</source>
-        <translation type="obsolete">レイヤは編集不可</translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="obsolete">そのベクタレイヤは編集できません.&apos;編集モード変更&apos;をクリックすると編集可能にできます.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="155"/>
         <source>Feature moved</source>
         <translation>移動した地物</translation>
@@ -36189,10 +28361,6 @@ not displayed</source>
 </context>
 <context>
     <name>QgsMapToolMoveLabel</name>
-    <message>
-        <source>Label moved</source>
-        <translation type="obsolete">ラベルが移動しました</translation>
-    </message>
     <message>
         <location filename="../src/app/qgsmaptoolmovelabel.cpp" line="152"/>
         <source>Moved label</source>
@@ -36209,15 +28377,6 @@ not displayed</source>
 </context>
 <context>
     <name>QgsMapToolNodeTool</name>
-    <message>
-        <source>Node tool</source>
-        <translation type="obsolete">ノードツール</translation>
-    </message>
-    <message>
-        <source>Feature was deleted on background.
-</source>
-        <translation type="obsolete">地物はバックグラウンドで削除された</translation>
-    </message>
     <message>
         <location filename="../src/app/nodetool/qgsmaptoolnodetool.cpp" line="655"/>
         <source>Inserted vertex</source>
@@ -36263,22 +28422,6 @@ not displayed</source>
 <context>
     <name>QgsMapToolReshape</name>
     <message>
-        <source>Not a vector layer</source>
-        <translation type="obsolete">ベクタレイヤではない</translation>
-    </message>
-    <message>
-        <source>The current layer is not a vector layer</source>
-        <translation type="obsolete">カレントレイヤはベクタレイヤではない</translation>
-    </message>
-    <message>
-        <source>Layer not editable</source>
-        <translation type="obsolete">レイヤは編集不可</translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="obsolete">そのベクタレイヤは編集できません.&apos;編集モード変更&apos;をクリックすると編集可能にできます.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="61"/>
         <source>Coordinate transform error</source>
         <translation>座標変換エラー</translation>
@@ -36304,10 +28447,6 @@ not displayed</source>
 </context>
 <context>
     <name>QgsMapToolRotateLabel</name>
-    <message>
-        <source>Label rotated</source>
-        <translation type="obsolete">ラベルが傾きました</translation>
-    </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatelabel.cpp" line="174"/>
         <source>Rotated label</source>
@@ -36340,25 +28479,6 @@ not displayed</source>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="193"/>
         <source>Rotate symbol</source>
         <translation>シンボルの回転</translation>
-    </message>
-</context>
-<context>
-    <name>QgsMapToolSelect</name>
-    <message>
-        <source>No active layer</source>
-        <translation type="obsolete">アクティブレイヤ無し</translation>
-    </message>
-    <message>
-        <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation type="obsolete">地物を選択するためには凡例のベクタレイヤ名をクリックして選択する必要があります</translation>
-    </message>
-    <message>
-        <source>CRS Exception</source>
-        <translation type="obsolete">CRSエラー</translation>
-    </message>
-    <message>
-        <source>Selection extends beyond layer&apos;s coordinate system.</source>
-        <translation type="obsolete">選択した領域がレイヤの座標系を越えている</translation>
     </message>
 </context>
 <context>
@@ -36418,10 +28538,6 @@ not displayed</source>
         <translation>分割した要素はありません</translation>
     </message>
     <message>
-        <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="obsolete">そのベクタレイヤは編集できません.&apos;編集モード変更&apos;をクリックすると編集可能にできます.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="74"/>
         <source>Features split</source>
         <translation>地物の分割</translation>
@@ -36430,18 +28546,6 @@ not displayed</source>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="79"/>
         <source>If there are selected features, the split tool only applies to the selected ones. If you like to split all features under the split line, clear the selection</source>
         <translation>選択されている要素がある場合、分割ツールはその選択された要素に対してのみ有効です。分割ラインと交差する全ての要素に対して分割を行いたい場合は、選択を解除してください</translation>
-    </message>
-    <message>
-        <source>Not a vector layer</source>
-        <translation type="obsolete">ベクタレイヤではない</translation>
-    </message>
-    <message>
-        <source>The current layer is not a vector layer</source>
-        <translation type="obsolete">カレントレイヤはベクタレイヤではない</translation>
-    </message>
-    <message>
-        <source>Layer not editable</source>
-        <translation type="obsolete">レイヤは編集不可</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="61"/>
@@ -36759,10 +28863,6 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <source>Segments</source>
         <translation>線分列</translation>
     </message>
-    <message>
-        <source>Ellipsoidal</source>
-        <translation type="obsolete">楕円体</translation>
-    </message>
 </context>
 <context>
     <name>QgsMeasureDialog</name>
@@ -36820,22 +28920,6 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="251"/>
         <source>Segments [%1]</source>
         <translation>セグメント [%1]</translation>
-    </message>
-    <message>
-        <source>Segments (in meters)</source>
-        <translation type="obsolete">線分列の長さ（m)</translation>
-    </message>
-    <message>
-        <source>Segments (in feet)</source>
-        <translation type="obsolete">線分列の長さ（フィート)</translation>
-    </message>
-    <message>
-        <source>Segments (in degrees)</source>
-        <translation type="obsolete">線分列の長さ（度)</translation>
-    </message>
-    <message>
-        <source>Segments</source>
-        <translation type="obsolete">線分列</translation>
     </message>
 </context>
 <context>
@@ -37324,14 +29408,6 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <translation>追加(&amp;A)</translation>
     </message>
     <message>
-        <source>&amp;Build query</source>
-        <translation type="obsolete">クエリ作成(&amp;B)</translation>
-    </message>
-    <message>
-        <source>Build query</source>
-        <translation type="obsolete">クエリ作成</translation>
-    </message>
-    <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="138"/>
         <source>&amp;Set Filter</source>
         <translation>フィルタの設定(&amp;S)</translation>
@@ -37645,18 +29721,6 @@ enhancement</source>
         <source>Blue band</source>
         <translation>Blueバンド</translation>
     </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">最小</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">最大</translation>
-    </message>
-    <message>
-        <source>Contrast enhancement</source>
-        <translation type="obsolete">コントラスト強調</translation>
-    </message>
 </context>
 <context>
     <name>QgsNetworkAccessManager</name>
@@ -37787,10 +29851,6 @@ Note: giving the password is optional. It will be requested interactivly, when n
         <translation>接続の詳細</translation>
     </message>
     <message>
-        <source>If the WMS requires basic authentication, enter a user name and optional password</source>
-        <translation type="obsolete">WMSでベーシック認証が必要な場合はユーザー名とパスワードを入力してください</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="81"/>
         <source>&amp;User name</source>
         <translation>(&amp;U)ユーザー名</translation>
@@ -37864,18 +29924,6 @@ Extended error information:
         <translation>テスト接続(&amp;T)</translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Type&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;型&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="57"/>
         <source>Name</source>
         <translation>名称</translation>
@@ -37934,36 +29982,12 @@ p, li { white-space: pre-wrap; }
         <translation>新しいSpatialiteデータベースファイル</translation>
     </message>
     <message>
-        <source>SpatiaLite (*.sqlite *.db )</source>
-        <translation type="obsolete">SpatiaLite (*.sqlite *.db)</translation>
-    </message>
-    <message>
-        <source>Unable to initialize SpatialMetadata:
-</source>
-        <translation type="obsolete">空間メタデータを初期化できませんでした:
-</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="205"/>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="303"/>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="323"/>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="389"/>
         <source>SpatiaLite Database</source>
         <translation>SpatiaLiteデータベース</translation>
-    </message>
-    <message>
-        <source>Could not copy the template database to new location</source>
-        <translation type="obsolete">新しい場所にテンプレートデータベースをコピーできません</translation>
-    </message>
-    <message>
-        <source>Could not create a new database
-</source>
-        <translation type="obsolete">新しいメタデータを作れませんでした
-</translation>
-    </message>
-    <message>
-        <source>Unable to activate FOREIGN_KEY constraints</source>
-        <translation type="obsolete">FOREIGN_KEY制約を有効にできません</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="115"/>
@@ -38138,10 +30162,6 @@ p, li { white-space: pre-wrap; }
         <translation>属性の削除</translation>
     </message>
     <message>
-        <source>EPSG SRID</source>
-        <translation type="obsolete">EPSG SRID</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="212"/>
         <source>Spatial Reference Id</source>
         <translation>空間参照Id</translation>
@@ -38151,10 +30171,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="231"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
         <translation>レイヤのジオメトリの座標参照システムを指定してください.</translation>
-    </message>
-    <message>
-        <source>Find SRID</source>
-        <translation type="obsolete">SRIDの検索</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="243"/>
@@ -38201,10 +30217,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="397"/>
         <source>Delete selected attribute</source>
         <translation>選択した属性を削除する</translation>
-    </message>
-    <message>
-        <source>Remove selected attribute</source>
-        <translation type="obsolete">選択属性を削除する</translation>
     </message>
 </context>
 <context>
@@ -38298,10 +30310,6 @@ p, li { white-space: pre-wrap; }
         <translation>属性の削除</translation>
     </message>
     <message>
-        <source>Remove selected attribute</source>
-        <translation type="obsolete">選択属性を削除する</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="137"/>
         <source>Add attribute to list</source>
         <translation>リストに属性を追加する</translation>
@@ -38310,10 +30318,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="143"/>
         <source>Add to attributes list</source>
         <translation>属性リストに追加する</translation>
-    </message>
-    <message>
-        <source>CRS ID</source>
-        <translation type="obsolete">CRS　ID</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="254"/>
@@ -38335,95 +30339,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="224"/>
         <source>Delete selected attribute</source>
         <translation>選択した属性を削除する</translation>
-    </message>
-</context>
-<context>
-    <name>QgsNorthArrowPlugin</name>
-    <message>
-        <source>Bottom Left</source>
-        <translation type="obsolete">左下</translation>
-    </message>
-    <message>
-        <source>Top Right</source>
-        <translation type="obsolete">右上</translation>
-    </message>
-    <message>
-        <source>Bottom Right</source>
-        <translation type="obsolete">右下</translation>
-    </message>
-    <message>
-        <source>Top Left</source>
-        <translation type="obsolete">左上</translation>
-    </message>
-    <message>
-        <source>&amp;North Arrow</source>
-        <translation type="obsolete">方位記号(&amp;N)</translation>
-    </message>
-    <message>
-        <source>Creates a north arrow that is displayed on the map canvas</source>
-        <translation type="obsolete">地図キャンバス上に表示する方位記号を作成</translation>
-    </message>
-    <message>
-        <source>&amp;Decorations</source>
-        <translation type="obsolete">地図整飾(&amp;D)</translation>
-    </message>
-    <message>
-        <source>North arrow pixmap not found</source>
-        <translation type="obsolete">方位記号画像が見つかりません</translation>
-    </message>
-</context>
-<context>
-    <name>QgsNorthArrowPluginGui</name>
-    <message>
-        <source>Pixmap not found</source>
-        <translation type="obsolete">画像が見つかりません</translation>
-    </message>
-</context>
-<context>
-    <name>QgsNorthArrowPluginGuiBase</name>
-    <message>
-        <source>North Arrow Plugin</source>
-        <translation type="obsolete">方位</translation>
-    </message>
-    <message>
-        <source>Angle</source>
-        <translation type="obsolete">角度</translation>
-    </message>
-    <message>
-        <source>Placement</source>
-        <translation type="obsolete">配置</translation>
-    </message>
-    <message>
-        <source>Set direction automatically</source>
-        <translation type="obsolete">自動的に方向を設定</translation>
-    </message>
-    <message>
-        <source>Enable North Arrow</source>
-        <translation type="obsolete">方位を使用</translation>
-    </message>
-    <message>
-        <source>Top Left</source>
-        <translation type="obsolete">左上</translation>
-    </message>
-    <message>
-        <source>Top Right</source>
-        <translation type="obsolete">右上</translation>
-    </message>
-    <message>
-        <source>Bottom Left</source>
-        <translation type="obsolete">左下</translation>
-    </message>
-    <message>
-        <source>Bottom Right</source>
-        <translation type="obsolete">右下</translation>
-    </message>
-    <message>
-        <source>Placement on screen</source>
-        <translation type="obsolete">スクリーン上の位置</translation>
-    </message>
-    <message>
-        <source>Preview of north arrow</source>
-        <translation type="obsolete">方位の位置</translation>
     </message>
 </context>
 <context>
@@ -38452,32 +30367,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOGRSublayersDialogBase</name>
     <message>
-        <source>Select OGR layers to load</source>
-        <translation type="obsolete">ロードするOGRレイヤを選択する</translation>
-    </message>
-    <message>
-        <source>Sub layers list</source>
-        <translation type="obsolete">サブレイヤリスト</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;This is the list of all layers available in the datasource of the active layer. You can select the layers to load. The layers will be loaded when you press &quot;OK&quot;.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;The layer name is format dependent. Consult the OGR documentation or the documentation of your data format to determine the nature of the included information.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Be advised: &lt;/span&gt;selecting an already opened layer will not generate an error message and the layer will end up loaded twice!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;これはアクティブレイヤのデータソースで利用可能なすべてのレイヤのリストです.ここからレイヤを選択してロードできます.&quot;OKをクリックした時にレイヤはロードされます.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;レイヤ名称はOGRの参考文書かあなたのデータ形式ドキュメントにしたがった形式になります.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;アドバイス: &lt;/span&gt;すでに開かれているレイヤを選択した場合はエラーを発生したりエラーメッセージを表示したりしません.そのレイヤは再度ロードされます!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsogrsublayersdialogbase.ui" line="14"/>
         <source>Select layers to load</source>
         <translation>ロードするレイヤを選択して下さい</translation>
@@ -38486,13 +30375,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsogrsublayersdialogbase.ui" line="43"/>
         <source>1</source>
         <translation>1</translation>
-    </message>
-</context>
-<context>
-    <name>QgsOSMDataProvider</name>
-    <message>
-        <source>Open Street Map format</source>
-        <translation type="obsolete">オープンストリートマップ形式</translation>
     </message>
 </context>
 <context>
@@ -38979,10 +30861,6 @@ p, li { white-space: pre-wrap; }
         <translation>時間</translation>
     </message>
     <message>
-        <source>Coordinate Reference System</source>
-        <translation type="obsolete">空間参照システム</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="227"/>
         <source>Coordinate Reference System:</source>
         <translation>空間参照システム:</translation>
@@ -39140,10 +31018,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation>spatialiteデータベースを開けませんでした</translation>
     </message>
     <message>
-        <source>Could not copy the template database to new location</source>
-        <translation type="obsolete">新しい場所にテンプレートデータベースをコピーできません</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsofflineediting.cpp" line="285"/>
         <source>Unable to initialize SpatialMetadata:
 </source>
@@ -39171,34 +31045,6 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/core/qgsofflineediting.cpp" line="451"/>
         <source>QGIS wkbType %1 not supported</source>
         <translation>QGISではwkbタイプ%1をサポートしていません</translation>
-    </message>
-    <message>
-        <source>%v / %m features copied</source>
-        <translation type="obsolete">%v　/ %mの地物をコピーしました</translation>
-    </message>
-    <message>
-        <source>%v / %m features processed</source>
-        <translation type="obsolete">%v　/ %mの地物を処理しました</translation>
-    </message>
-    <message>
-        <source>%v / %m fields added</source>
-        <translation type="obsolete">%v　/ %mのフィールドが追加されました</translation>
-    </message>
-    <message>
-        <source>%v / %m features added</source>
-        <translation type="obsolete">%v　/ %mの地物が追加されました</translation>
-    </message>
-    <message>
-        <source>%v / %m features removed</source>
-        <translation type="obsolete">%v　/ %mの地物が削除されました</translation>
-    </message>
-    <message>
-        <source>%v / %m feature updates</source>
-        <translation type="obsolete">%v　/ %mの地物が更新されます</translation>
-    </message>
-    <message>
-        <source>%v / %m feature geometry updates</source>
-        <translation type="obsolete">%v　/ %mの地物ジオメトリが更新されます</translation>
     </message>
     <message>
         <location filename="../src/core/qgsofflineediting.cpp" line="788"/>
@@ -39293,10 +31139,6 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="100"/>
         <source>Select target database for offline data</source>
         <translation>オフラインデータ用の対象データベースを選択して下さい</translation>
-    </message>
-    <message>
-        <source>SpatiaLite DB(*.sqlite);;All files(*.*)</source>
-        <translation type="obsolete">SQLite DB(*.sqlite *.db);;全ファイル (*)</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="102"/>
@@ -39446,10 +31288,6 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="496"/>
         <source>Unknown</source>
         <translation>不明</translation>
-    </message>
-    <message>
-        <source>Read attempt on an invalid OGR data source</source>
-        <translation type="obsolete">不正なOGRデータソースを読みました</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="773"/>
@@ -39815,10 +31653,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation>選択した地物を表示する</translation>
     </message>
     <message>
-        <source>Show features in current canvas</source>
-        <translation type="obsolete">カレントキャンバスの地物を表示する</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsoptions.cpp" line="322"/>
         <source>Always</source>
         <translation>常に</translation>
@@ -39852,10 +31686,6 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/app/qgsoptions.cpp" line="338"/>
         <source>No</source>
         <translation>いいえ</translation>
-    </message>
-    <message>
-        <source>Passthru</source>
-        <translation type="obsolete">パススルー</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="340"/>
@@ -40142,10 +31972,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation>...</translation>
     </message>
     <message>
-        <source>Select Global Default ...</source>
-        <translation type="obsolete">グローバルな既定値を選択...</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1667"/>
         <source>Make lines appear less jagged at the expense of some drawing performance</source>
         <translation>線のジャギーを目立たなくします(描画パフォーマンスが若干低下します)</translation>
@@ -40205,10 +32031,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation>一般情報</translation>
     </message>
     <message>
-        <source>When this option is enabled, any new project you create will have &apos;on the fly&apos; projection enabled by default and the CRS below will be used for the project.</source>
-        <translation type="obsolete">このオプションが有効な場合新規に作成する任意の新しいプロジェクトで&apos;オンザフライ&apos;投影がデフォルトになり、下記のCRSがプロジェクトのために利用されます.</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="193"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="196"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3642"/>
@@ -40266,10 +32088,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation>システムロケール:</translation>
     </message>
     <message>
-        <source>Selecting this will unselect the &apos;make lines less&apos; jagged toggle</source>
-        <translation type="obsolete">これを選択すると&apos;線のジャギーを目立たなくする&apos;を非選択にします</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2907"/>
         <source>Rubberband</source>
         <translation>ラバーバンド</translation>
@@ -40307,17 +32125,9 @@ Always network: always load from network and do not check if the cache has a val
         <translation>プロジェクトファイル</translation>
     </message>
     <message>
-        <source>Prompt to save project changes when required</source>
-        <translation type="obsolete">必要な時にプロジェクトの変更を保存するか確認します</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="807"/>
         <source>Warn when opening a project file saved with an older version of QGIS</source>
         <translation>古いバージョンの QGIS で保存されたプロジェクトファイルを開く時に警告します</translation>
-    </message>
-    <message>
-        <source>Default Map Appearance (overridden by project properties)</source>
-        <translation type="obsolete">デフォルトの地図外観を使用(プロジェクトのプロパティで上書き)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2166"/>
@@ -40328,10 +32138,6 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsoptionsbase.ui" line="2153"/>
         <source>Background color</source>
         <translation>背景色</translation>
-    </message>
-    <message>
-        <source>&amp;Application</source>
-        <translation type="obsolete">アプリケーション(&amp;A)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="321"/>
@@ -40359,18 +32165,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation>属性テーブルを開く</translation>
     </message>
     <message>
-        <source>Capitalise layer names in legend</source>
-        <translation type="obsolete">凡例中のレイヤ名称の先頭を大文字にする</translation>
-    </message>
-    <message>
-        <source>Display classification attribute names in legend</source>
-        <translation type="obsolete">凡例中に分類属性名称を表示します</translation>
-    </message>
-    <message>
-        <source>Create raster icons in legend</source>
-        <translation type="obsolete">凡例にのせるラスタアイコンを作ります</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="554"/>
         <source>Show tips at start up</source>
         <translation>起動時にチップスを表示する</translation>
@@ -40381,10 +32175,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation>地物検索結果を連結されたウィンドウに表示します（QGISの再起動が必要）</translation>
     </message>
     <message>
-        <source>Open snapping options  in a dock window (QGIS restart required)</source>
-        <translation type="obsolete">ドックウィンドウのスナッピングオプションを開く（QGISの再起動が必要）</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1271"/>
         <source>Open attribute table in a dock window (QGIS restart required)</source>
         <translation>ドックウィンドウで属性テーブルを開く(QGISの再起動が必要)</translation>
@@ -40393,10 +32183,6 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsoptionsbase.ui" line="1519"/>
         <source>Add PostGIS layers with double click and select in extended mode</source>
         <translation>ダブルクリックでPostGISレイヤを追加する.拡張選択モードを使用する</translation>
-    </message>
-    <message>
-        <source>Add new layers to selected group</source>
-        <translation type="obsolete">選択グループに新規レイヤを追加する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1293"/>
@@ -40461,10 +32247,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation>32</translation>
     </message>
     <message>
-        <source>Menu size</source>
-        <translation type="obsolete">メニューサイズ</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2344"/>
         <source>Add new layers to selected or current group</source>
         <translation>選択されているまたはカレントグループに新規レイヤを追加する</translation>
@@ -40478,10 +32260,6 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsoptionsbase.ui" line="1332"/>
         <source>Attribute table row cache</source>
         <translation>属性テーブル行キャッシュ</translation>
-    </message>
-    <message>
-        <source>Prompt for raster sublayers</source>
-        <translation type="obsolete">ラスタサブレイヤ用プロンプト</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1414"/>
@@ -40501,17 +32279,9 @@ Always network: always load from network and do not check if the cache has a val
         <translation>GDAL</translation>
     </message>
     <message>
-        <source>GDAL Drivers</source>
-        <translation type="obsolete">GDALドライバ</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3404"/>
         <source>In some cases more than one GDAL driver can be used to load the same raster format. Use the list below to specify which to use.</source>
         <translation>いくつかの場合１つ以上のGDALドライバが同一のラスタ形式をロードするのに利用可能です.以下に表示されるリストを使ってどれを使うか指定して下さい.</translation>
-    </message>
-    <message>
-        <source>Plugins</source>
-        <translation type="obsolete">プラグイン</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1611"/>
@@ -40559,10 +32329,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation>Blueバンド</translation>
     </message>
     <message>
-        <source>Use standard deviation</source>
-        <translation type="obsolete">標準偏差を使用</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1765"/>
         <source>Contrast enhancement</source>
         <translation>コントラスト強調</translation>
@@ -40608,17 +32374,9 @@ Always network: always load from network and do not check if the cache has a val
         <translation>マウスホイール動作</translation>
     </message>
     <message>
-        <source>Overlays</source>
-        <translation type="obsolete">オーバーレイ</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2360"/>
         <source>Placement algorithm</source>
         <translation>配置アルゴリズム</translation>
-    </message>
-    <message>
-        <source>Other settings</source>
-        <translation type="obsolete">その他の設定</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2894"/>
@@ -40629,22 +32387,6 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsoptionsbase.ui" line="2864"/>
         <source>Validate geometries</source>
         <translation>ジオメトリの検証</translation>
-    </message>
-    <message>
-        <source>Join style for curve offset</source>
-        <translation type="obsolete">カーブオフセットの結合スタイル</translation>
-    </message>
-    <message>
-        <source>Quadrantsegments for curve offset</source>
-        <translation type="obsolete">カーブオフセットの象限</translation>
-    </message>
-    <message>
-        <source>Miter limit for curve offset</source>
-        <translation type="obsolete">カーブオフセットの留め継ぎの限界</translation>
-    </message>
-    <message>
-        <source>Default Coordinate Reference System for new projects</source>
-        <translation type="obsolete">新プロジェクトのデフォルト座標参照システム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3591"/>
@@ -40666,22 +32408,6 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsoptionsbase.ui" line="3601"/>
         <source>Always start new projects with this CRS</source>
         <translation>新しいプロジェクトはいつもこのCRSで開始する</translation>
-    </message>
-    <message>
-        <source>Coordinate Reference System for new layers</source>
-        <translation type="obsolete">新レイヤのための座標参照システム</translation>
-    </message>
-    <message>
-        <source>When a new layer is created, or when a layer is loaded that has no Coordinate Reference System (CRS)</source>
-        <translation type="obsolete">新しいレイヤの作成時かレイヤがロードされた時に座標参照システム（CRS)が無い場合</translation>
-    </message>
-    <message>
-        <source>Select ...</source>
-        <translation type="obsolete">選択...</translation>
-    </message>
-    <message>
-        <source>Enable &apos;on the fly&apos; reprojection by defaul</source>
-        <translation type="obsolete">&apos;オンザフライ&apos;最投影をデフォルトにする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="205"/>
@@ -40730,10 +32456,6 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsoptionsbase.ui" line="2510"/>
         <source>Rubberband color</source>
         <translation>ラバーバンド色</translation>
-    </message>
-    <message>
-        <source>Ellipsoid for distance calculations</source>
-        <translation type="obsolete">距離計測に使用する楕円体</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2517"/>
@@ -41136,14 +32858,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation>作成オプションを編集</translation>
     </message>
     <message>
-        <source>Compatibility</source>
-        <translation type="obsolete">互換性</translation>
-    </message>
-    <message>
-        <source>Use new generation symbology for rendering</source>
-        <translation type="obsolete">レンダリングに新世代シンボロジーを利用します</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1777"/>
         <source>Single band gray</source>
         <translation>単バンドグレー</translation>
@@ -41239,14 +32953,6 @@ Always network: always load from network and do not check if the cache has a val
         <translation>WMS-C/WMTSタイルのデフォルト有効期間(時間)</translation>
     </message>
     <message>
-        <source>Default Coordinate Reference System</source>
-        <translation type="obsolete">既定の座標参照系</translation>
-    </message>
-    <message>
-        <source>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</source>
-        <translation type="obsolete">新規レイヤが作成された場合またはレイヤがロードされた時にそれらが座標参照系（CRS)を持っていない場合</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3667"/>
         <source>Override system locale</source>
         <translation>システムロケールを上書きします</translation>
@@ -41255,10 +32961,6 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsoptionsbase.ui" line="3686"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing overide on local requires an application restart</source>
         <translation>&lt;b&gt;注記:&lt;/b&gt; ロケールを有効化/変更するには、アプリケーションの再起動が必要です</translation>
-    </message>
-    <message>
-        <source>Network &amp; Proxy</source>
-        <translation type="obsolete">ネットワークとプロキシ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3869"/>
@@ -41292,30 +32994,10 @@ Always network: always load from network and do not check if the cache has a val
         <translation>パスワード</translation>
     </message>
     <message>
-        <source>Open attribute table in a dock window</source>
-        <translation type="obsolete">ドックウィンドウ内で属性テーブルを開きます</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="181"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="184"/>
         <source>CRS</source>
         <translation>CRS</translation>
-    </message>
-    <message>
-        <source>Prompt for CRS</source>
-        <translation type="obsolete">CRS を確認します</translation>
-    </message>
-    <message>
-        <source>Project wide default CRS will be used</source>
-        <translation type="obsolete">プロジェクトの既定の CRS を使用します</translation>
-    </message>
-    <message>
-        <source>Global default CRS displa&amp;yed below will be used</source>
-        <translation type="obsolete">下記のグローバルの既定の CRS を使用します(&amp;y)</translation>
-    </message>
-    <message>
-        <source>Enter attribute values</source>
-        <translation type="obsolete">属性値を入力します</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3013"/>
@@ -41369,22 +33051,10 @@ Always network: always load from network and do not check if the cache has a val
         <translation>削除</translation>
     </message>
     <message>
-        <source>Rendering &amp; SVG</source>
-        <translation type="obsolete">レンダリング &amp; SVG</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="148"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2413"/>
         <source>Map tools</source>
         <translation>マップツールズ</translation>
-    </message>
-    <message>
-        <source>Overlay</source>
-        <translation type="obsolete">オーバーレイ</translation>
-    </message>
-    <message>
-        <source>Position</source>
-        <translation type="obsolete">位置</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3054"/>
@@ -41726,10 +33396,6 @@ SQL:%1
         <translation>存在するジオメトリタイプのみ</translation>
     </message>
     <message>
-        <source>Restrict the displayed tables to those that are in the geometry_columns table</source>
-        <translation type="obsolete">geometry_columnsテーブルにあるテーブルのみ表示する</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="131"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Restricts the displayed tables to those that are in the all_sdo_geom_metadata view. This can speed up the initial display of spatial tables.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;all_sdo_geom_metadataビューにあるテーブルのみ表示します. これによって空間テーブルの初期表示を高速化できます.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
@@ -41738,14 +33404,6 @@ SQL:%1
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="134"/>
         <source>Only look in meta data table</source>
         <translation>メタデータテーブルのみ参照する</translation>
-    </message>
-    <message>
-        <source>Restrict the search to the public schema for spatial tables not in the geometry_columns table</source>
-        <translation type="obsolete">geometry_columnsテーブルが無い空間テーブルの公開スキーマ検索を制限します</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When searching for spatial tables restrict the search to tables that are owner by the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;空間テーブルの検索をユーザが所有するテーブルに制限します.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="147"/>
@@ -41814,18 +33472,6 @@ SQL:%1
 </context>
 <context>
     <name>QgsOraclePlugin</name>
-    <message>
-        <source>Select Oracle GeoRaster</source>
-        <translation type="obsolete">Oracle GeoRasterの選択</translation>
-    </message>
-    <message>
-        <source>Open a Oracle Spatial GeoRaster</source>
-        <translation type="obsolete">Oracle Spatial geoRasterを開く</translation>
-    </message>
-    <message>
-        <source>&amp;Oracle Spatial</source>
-        <translation type="obsolete">(&amp;O)racle Spatial</translation>
-    </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="56"/>
         <source>Add Oracle GeoRaster Layer...</source>
@@ -42411,14 +34057,6 @@ Error: %2</source>
         <translation>追加(&amp;A)</translation>
     </message>
     <message>
-        <source>&amp;Build query</source>
-        <translation type="obsolete">クエリ作成(&amp;B)</translation>
-    </message>
-    <message>
-        <source>Build query</source>
-        <translation type="obsolete">クエリ作成</translation>
-    </message>
-    <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="154"/>
         <source>&amp;Set Filter</source>
         <translation>フィルタの設定(&amp;S)</translation>
@@ -42598,14 +34236,6 @@ Error: %2</source>
 </context>
 <context>
     <name>QgsPGConnectionItem</name>
-    <message>
-        <source>Failed to retrieve layers</source>
-        <translation type="obsolete">レイヤの読み出しに失敗しました</translation>
-    </message>
-    <message>
-        <source>No layers found.</source>
-        <translation type="obsolete">レイヤが見つかりません.</translation>
-    </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="155"/>
         <source>Edit...</source>
@@ -42828,71 +34458,6 @@ Error: %2</source>
     </message>
 </context>
 <context>
-    <name>QgsPgGeoprocessing</name>
-    <message>
-        <source>Buffer features in layer %1</source>
-        <translation type="obsolete">レイヤ %1 の地物をバッファ化</translation>
-    </message>
-    <message>
-        <source>Error connecting to the database</source>
-        <translation type="obsolete">データベース接続のエラー</translation>
-    </message>
-    <message>
-        <source>&amp;Buffer features</source>
-        <translation type="obsolete">地物をバッファ化(&amp;B)</translation>
-    </message>
-    <message>
-        <source>&amp;Geoprocessing</source>
-        <translation type="obsolete">空間演算(&amp;G)</translation>
-    </message>
-    <message>
-        <source>Unable to add geometry column</source>
-        <translation type="obsolete">ジオメトリカラムを追加できません</translation>
-    </message>
-    <message>
-        <source>Unable to create table</source>
-        <translation type="obsolete">テーブルを作成できません</translation>
-    </message>
-    <message>
-        <source>No GEOS support</source>
-        <translation type="obsolete">GEOS サポートがありません</translation>
-    </message>
-    <message>
-        <source>Buffer function requires GEOS support in PostGIS</source>
-        <translation type="obsolete">バッファ機能は PostGIS に GEOS サポートが必要です</translation>
-    </message>
-    <message>
-        <source>No Active Layer</source>
-        <translation type="obsolete">アクティブレイヤがありません</translation>
-    </message>
-    <message>
-        <source>You must select a layer in the legend to buffer</source>
-        <translation type="obsolete">バッファ処理のため、凡例中のレイヤを選択してください</translation>
-    </message>
-    <message>
-        <source>Not a PostgreSQL/PostGIS Layer</source>
-        <translation type="obsolete">PostgreSQL/PostGIS レイヤでありません</translation>
-    </message>
-    <message>
-        <source>Create a buffer for a PostgreSQL layer. A new layer is created in the database with the buffered features.</source>
-        <translation type="obsolete">PostgreSQLレイヤのバッファレイヤを作成します。新しいレイヤはバッファで作成された地物を利用してデータベースに作られます</translation>
-    </message>
-    <message>
-        <source>Unable to add geometry column to the output table %1-%2</source>
-        <translation type="obsolete">出力テーブル%1にジオメトリカラムを追加できません. %2</translation>
-    </message>
-    <message>
-        <source>Failed to create the output table %1</source>
-        <translation type="obsolete">テーブル%1の作成に失敗しました</translation>
-    </message>
-    <message>
-        <source>%1 is not a PostgreSQL/PostGIS layer.
-Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source>
-        <translation type="obsolete">%1はPostgreSQL/PostGISレイヤではありません。
-ジオプロセッシング機能はPostgreSQL/PostGISレイヤでのみ利用できます</translation>
-    </message>
-</context>
-<context>
     <name>QgsPgNewConnection</name>
     <message>
         <location filename="../src/providers/postgres/qgspgnewconnection.cpp" line="32"/>
@@ -42956,16 +34521,6 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
         <translation>接続失敗 - 設定を確認して再度実行してください.
 
 </translation>
-    </message>
-    <message>
-        <source>Connection failed - Check settings and try again.
-
-Extended error information:
-%1</source>
-        <translation type="obsolete">接続失敗 設定をチェックして再トライ
-
-拡張エラー情報
-%1</translation>
     </message>
 </context>
 <context>
@@ -43064,10 +34619,6 @@ Extended error information:
         <translation>制限のないカラムのタイプ(GEOMETRY)を解決しない</translation>
     </message>
     <message>
-        <source>Allow geometryless tables</source>
-        <translation type="obsolete">ジオメトリが無いテーブルを許可する</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="116"/>
         <source>SSL mode</source>
         <translation>SSLモード</translation>
@@ -43103,18 +34654,6 @@ Extended error information:
         <translation>サービス</translation>
     </message>
     <message>
-        <source>Restrict the displayed tables to those that are in the geometry_columns table</source>
-        <translation type="obsolete">ジオメトリカラムが存在するテーブルの表示を制限します</translation>
-    </message>
-    <message>
-        <source>Restricts the displayed tables to those that are in the geometry_columns table. This can speed up the initial display of spatial tables.</source>
-        <translation type="obsolete">ジオメトリカラムがあるテーブルの表示を制限します。これによって空間テーブルの初期表示を高速化できます。</translation>
-    </message>
-    <message>
-        <source>Only look in the geometry_columns table</source>
-        <translation type="obsolete">ジオメトリカラムのみ参照する</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="209"/>
         <source>Restrict the search to the public schema for spatial tables not in the geometry_columns table</source>
         <translation>geometry_columnsテーブルに無い空間テーブルの公開スキーマ検索を制限します</translation>
@@ -43141,26 +34680,6 @@ Extended error information:
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="136"/>
         <source>&amp;Add</source>
         <translation>追加(&amp;A)</translation>
-    </message>
-    <message>
-        <source>&amp;Build query</source>
-        <translation type="obsolete">クエリ作成(&amp;B)</translation>
-    </message>
-    <message>
-        <source>Build query</source>
-        <translation type="obsolete">クエリ作成</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">保存(&amp;S)</translation>
-    </message>
-    <message>
-        <source>Save connections</source>
-        <translation type="obsolete">接続情報を保存する</translation>
-    </message>
-    <message>
-        <source>&amp;Load</source>
-        <translation type="obsolete">ロード(&amp;L)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="237"/>
@@ -43273,134 +34792,9 @@ Extended error information:
         <translation>停止</translation>
     </message>
     <message>
-        <source>Postgres/PostGIS Provider</source>
-        <translation type="obsolete">Postgres/PostGIS プロバイダ</translation>
-    </message>
-    <message>
-        <source>Could not open the Postgres/PostGIS Provider.
-Check message log for possible errors.</source>
-        <translation type="obsolete">Postgres/PostGISプロバイダを開けませんでした.
-メッセージログでエラーをチェックして下さい.</translation>
-    </message>
-    <message>
-        <source>No accessible tables or views found.
-Check the message log for possible errors.</source>
-        <translation type="obsolete">アクセスできるテーブルまたはビューがありません.
-メッセージログでエラーをチェックして下さい.</translation>
-    </message>
-    <message>
-        <source>Could not open the Postgres/PostGIS Provider</source>
-        <translation type="obsolete">Postgres/PostGIS プロバイダを開けません</translation>
-    </message>
-    <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="481"/>
         <source>Connect</source>
         <translation>接続</translation>
-    </message>
-    <message>
-        <source>Connection failed</source>
-        <translation type="obsolete">接続失敗</translation>
-    </message>
-    <message>
-        <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.
-
-Check your username and password and try again.
-
-The database said:
-%3</source>
-        <translation type="obsolete">%2 上の %1への接続は失敗しました。データベースがダウンしているか、設定が間違っています。 %3 ユーザー名とパスワードを確認してください。
-データベースのログ
-%3</translation>
-    </message>
-    <message>
-        <source>Accessible tables could not be determined</source>
-        <translation type="obsolete">アクセス可能なテーブルを決定できません</translation>
-    </message>
-    <message>
-        <source>Database connection was successful, but the accessible tables could not be determined.</source>
-        <translation type="obsolete">データベース接続は成功しました.しかしアクセス可能なテーブルを特定できません.</translation>
-    </message>
-    <message>
-        <source>Database connection was successful, but the accessible tables could not be determined.
-
-The error message from the database was:
-%1
-</source>
-        <translation type="obsolete">データベース接続は成功しましたがアクセスできるテーブルを決められません
-
-データベースからのエラーメッセージjは以下のとおりです
-%1
-</translation>
-    </message>
-    <message>
-        <source>Waiting</source>
-        <translation type="obsolete">待機中</translation>
-    </message>
-    <message>
-        <source>No geometry</source>
-        <translation type="obsolete">ジオメトリがありません</translation>
-    </message>
-    <message>
-        <source>No accessible tables found</source>
-        <translation type="obsolete">アクセス可能なテーブルが見つかりません</translation>
-    </message>
-    <message>
-        <source>Database connection was successful, but no accessible tables were found.
-
-Please verify that you have SELECT privilege on a table carrying PostGIS
-geometry.</source>
-        <translation type="obsolete">データベース接続は成功しましたがアクセスできるテーブルがみつかりません
-
-PostGISのジオメトリが存在するテーブルにあなたがSELECT権限がありか確認してください
-
-</translation>
-    </message>
-</context>
-<context>
-    <name>QgsPgSourceSelectBase</name>
-    <message>
-        <source>Add PostGIS Table(s)</source>
-        <translation type="obsolete">PostGIS テーブルを追加</translation>
-    </message>
-    <message>
-        <source>PostgreSQL Connections</source>
-        <translation type="obsolete">PostgreSQL 接続</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">削除</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">編集</translation>
-    </message>
-    <message>
-        <source>New</source>
-        <translation type="obsolete">新規</translation>
-    </message>
-    <message>
-        <source>Connect</source>
-        <translation type="obsolete">接続</translation>
-    </message>
-    <message>
-        <source>Search options</source>
-        <translation type="obsolete">検索オプション</translation>
-    </message>
-    <message>
-        <source>Search</source>
-        <translation type="obsolete">検索</translation>
-    </message>
-    <message>
-        <source>Search mode</source>
-        <translation type="obsolete">検索モード</translation>
-    </message>
-    <message>
-        <source>Search in columns</source>
-        <translation type="obsolete">カラム内検索</translation>
-    </message>
-    <message>
-        <source>Build query</source>
-        <translation type="obsolete">クエリ作成</translation>
     </message>
 </context>
 <context>
@@ -43424,21 +34818,9 @@ PostGISのジオメトリが存在するテーブルにあなたがSELECT権限�
         <translation>テーブル</translation>
     </message>
     <message>
-        <source>Type</source>
-        <translation type="obsolete">タイプ</translation>
-    </message>
-    <message>
-        <source>Geometry column</source>
-        <translation type="obsolete">ジオメトリカラム</translation>
-    </message>
-    <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="32"/>
         <source>SRID</source>
         <translation>SRID</translation>
-    </message>
-    <message>
-        <source>Primary key column</source>
-        <translation type="obsolete">プライマリキーカラム</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="34"/>
@@ -43449,10 +34831,6 @@ PostGISのジオメトリが存在するテーブルにあなたがSELECT権限�
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="35"/>
         <source>Sql</source>
         <translation>Sql</translation>
-    </message>
-    <message>
-        <source>Detecting...</source>
-        <translation type="obsolete">検出中...</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="62"/>
@@ -43492,10 +34870,6 @@ PostGISのジオメトリが存在するテーブルにあなたがSELECT権限�
 </context>
 <context>
     <name>QgsPluginInstaller</name>
-    <message>
-        <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="obsolete">リポジトリの出力を解釈できません</translation>
-    </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
         <translation>ローカルのプラグインディレクトリを開けません</translation>
@@ -43596,10 +34970,6 @@ PostGISのジオメトリが存在するテーブルにあなたがSELECT権限�
         <translation>このリポジトリは利用できません</translation>
     </message>
     <message>
-        <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="obsolete">このリポジトリはアナタのQuantum GISのバージョンと互換性がないのでブロックされました</translation>
-    </message>
-    <message>
         <source>orphans</source>
         <translation>オーファン</translation>
     </message>
@@ -43644,16 +35014,6 @@ PostGISのジオメトリが存在するテーブルにあなたがSELECT権限�
         <translation>プラグインはインストールされており，リポジトリで利用可能なものよりも新しいです</translation>
     </message>
     <message>
-        <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="obsolete">このプラグインはあなたのQuantum GISのバージョンに適合しません。多分これは動作しません。</translation>
-    </message>
-    <message>
-        <source>The required Python module is not installed.
-For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="obsolete">必要なPythonモジュールがインストールされていません。
-詳しい情報はプラグインのホームページかQuantum GIS wikiを参照してください。</translation>
-    </message>
-    <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
@@ -43696,10 +35056,6 @@ Here is the error message:</source>
     <message>
         <source>This plugin is broken</source>
         <translation>プラグインは壊れています</translation>
-    </message>
-    <message>
-        <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="obsolete">プラグインを使用するには新しいバージョンのQuantum GISが必要です</translation>
     </message>
     <message>
         <source>The plugins will be installed to %1</source>
@@ -43810,16 +35166,6 @@ You need to restart QGIS in order to reload it.</source>
         <translation>Pythonプラグインがアンインストールされました。完全に削除するためにはQGISを再起動する必要があります。</translation>
     </message>
     <message>
-        <source>Python plugin reinstalled.
-You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="obsolete">Pythonプラグインが再インストールされました。
-これをリロードするためにQuantum GISを再起動させる必要があります。</translation>
-    </message>
-    <message>
-        <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="obsolete">プラグインは新しいバージョンのQuantum GIS用に設計されました。最低必要なバージョンは:</translation>
-    </message>
-    <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
         <translation>プラグインはシステムにないコンポーネントに依存しています。利用するためには以下のPythonモジュールをインストールする必要があります:</translation>
     </message>
@@ -43850,14 +35196,6 @@ You need to restart Quantum GIS in order to reload it.</source>
     <message>
         <source>Plugin uninstalled successfully</source>
         <translation>プラグインは上手くアンインストールされました</translation>
-    </message>
-    <message>
-        <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="obsolete">Pythonプラグインがアンインストールされました。完全に削除するためにはQuantum GISを再起動する必要があります。</translation>
-    </message>
-    <message>
-        <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="obsolete">Quantum GISチームによりサポートやオーソライズされてないプラグインリポジトリが追加されました。プラグインの制作者はそれらが有用かつ安全に動作するための努力をしていますが，しかしながら，それらに対して責任を負わなくてもいいことを確認下さい。</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
@@ -44039,14 +35377,6 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;注:&lt;/span&gt; この機能が有効な場合, QGISは新しいプラグインやプラグインのアップデート情報をあなたに知らせます。またプラグインインストーラウィンドウを開く度にリポジトリから情報を取得します.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Add third party plugin repositories to the list</source>
-        <translation type="obsolete">サードパーティーのプラグインリポジトリを一覧に追加</translation>
-    </message>
-    <message>
-        <source>Add 3rd party repositories</source>
-        <translation type="obsolete">サードパーティーのリポジトリを追加</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="359"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="362"/>
         <source>Add a new plugin repository</source>
@@ -44078,10 +35408,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="391"/>
         <source>Delete</source>
         <translation>削除</translation>
-    </message>
-    <message>
-        <source>The plugins will be installed to ~/.qgis/python/plugins</source>
-        <translation type="obsolete">プラグインは ~/.qgis/python/plugins にインストールされます</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="82"/>
@@ -44133,18 +35459,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="511"/>
         <source>every month</source>
         <translation>毎月</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, Quantum GIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Installer window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;注:&lt;/span&gt; この機能が有効な場合, Quantum GISは新しいプラグインやプラグインのアップデート情報をあなたに知らせます。またプラグインインストーラウィンドウを開く度にリポジトリから情報を取得します.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="564"/>
@@ -44500,14 +35814,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="209"/>
         <source>Label Font</source>
         <translation>ラベルフォント</translation>
-    </message>
-    <message>
-        <source>Circle color</source>
-        <translation type="obsolete">円の色</translation>
-    </message>
-    <message>
-        <source>Label color</source>
-        <translation type="obsolete">ラベル色</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspointdisplacementrendererwidget.cpp" line="337"/>
@@ -44883,50 +36189,6 @@ SQL:%2
 <context>
     <name>QgsPostgresProvider</name>
     <message>
-        <source>Unable to access relation</source>
-        <translation type="obsolete">リレーションにアクセスできません</translation>
-    </message>
-    <message>
-        <source>No suitable key column in table</source>
-        <translation type="obsolete">テーブル中に適切なキーカラムがありません</translation>
-    </message>
-    <message>
-        <source>and </source>
-        <translation type="obsolete">かつ</translation>
-    </message>
-    <message>
-        <source>Unable to find a key column</source>
-        <translation type="obsolete">キーカラムをみつけられません</translation>
-    </message>
-    <message>
-        <source>and is suitable.</source>
-        <translation type="obsolete">かつ適切です</translation>
-    </message>
-    <message>
-        <source> and has a suitable constraint)</source>
-        <translation type="obsolete">かつ適切な制約をもっています）</translation>
-    </message>
-    <message>
-        <source> and does not have a suitable constraint)</source>
-        <translation type="obsolete">かつ適切な制約を持っていません）</translation>
-    </message>
-    <message>
-        <source>No suitable key column in view</source>
-        <translation type="obsolete">ビュー中に適切なキーカラムがありません</translation>
-    </message>
-    <message>
-        <source>Unknown geometry type</source>
-        <translation type="obsolete">不明なジオメトリタイプ</translation>
-    </message>
-    <message>
-        <source>Unable to get feature type and srid</source>
-        <translation type="obsolete">地物の型とsridを取得できません</translation>
-    </message>
-    <message>
-        <source>Error while adding features</source>
-        <translation type="obsolete">地物追加中にエラー発生</translation>
-    </message>
-    <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="837"/>
         <source>Unable to access the %1 relation.
 The error message from the database was:
@@ -45021,31 +36283,9 @@ SQL %3</translation>
         <translation>固定長テキスト(char)</translation>
     </message>
     <message>
-        <source>Couldn&apos;t get the feature geometry in binary form</source>
-        <translation type="obsolete">バイナリ形式で地物ジオメトリを取得できませんでした</translation>
-    </message>
-    <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="347"/>
         <source>Read attempt on an invalid postgresql data source</source>
         <translation>不正なpostgresqlデータソースを読もうとしています</translation>
-    </message>
-    <message>
-        <source>nextFeature() without select()</source>
-        <translation type="obsolete">select()していないnextFeature() </translation>
-    </message>
-    <message>
-        <source>Fetching from cursor %1 failed
-Database error: %2</source>
-        <translation type="obsolete">カーソル %1 からのフェッチに失敗しました
-データベースエラー: %2</translation>
-    </message>
-    <message>
-        <source>feature %1 not found</source>
-        <translation type="obsolete">地物 %1 は見つかりません</translation>
-    </message>
-    <message>
-        <source>found %1 features instead of just one.</source>
-        <translation type="obsolete">1個ではなく%1 の地物がみつかりました</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="569"/>
@@ -45069,17 +36309,9 @@ Database error: %2</source>
         <translation>カスタムクエリはselectクエリではありません.</translation>
     </message>
     <message>
-        <source>The table has no column suitable for use as a key. Quantum GIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
-        <translation type="obsolete">このテーブルはキーとして適切なカラムがありません.Quantum GISではPostgreSQLのoidやctidのようなプライマリキーが必要です.</translation>
-    </message>
-    <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1078"/>
         <source>Primary key field &apos;%1&apos; for view not unique.</source>
         <translation>ビューのプライマリキーフィールド &apos;%1&apos;はユニークではありません.</translation>
-    </message>
-    <message>
-        <source>Type &apos;%1&apos; of primary key field &apos;%2&apos; for view invalid.</source>
-        <translation type="obsolete">Viewのプライマリキーフィールド&apos;%2&apos;の型&apos;%1&apos;は不適格です.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="176"/>
@@ -45177,40 +36409,10 @@ Database error: %2</source>
         <translation>2D+layer (%1; %2)では編集と追加は禁止されています</translation>
     </message>
     <message>
-        <source>No PostGIS Support!</source>
-        <translation type="obsolete">PostGISのサポートがありません!</translation>
-    </message>
-    <message>
-        <source>Your database has no working PostGIS support.
-</source>
-        <translation type="obsolete">あなたのデータベースはPostGISのサポート無しで動いています.
-</translation>
-    </message>
-    <message>
-        <source>No GEOS Support!</source>
-        <translation type="obsolete">GEOS サポートがありません!</translation>
-    </message>
-    <message>
-        <source>Your PostGIS installation has no GEOS support.
-Feature selection and identification will not work properly.
-Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation type="obsolete">あなたの PostGIS  には GEOS サポートがありません。
-地物選択と情報表示は正しく機能しません。
-PostGIS を GEOS サポート付きでインストールしてください (http://geos.refractions.net)</translation>
-    </message>
-    <message>
-        <source>Ambiguous field!</source>
-        <translation type="obsolete">曖昧なフィールドです!</translation>
-    </message>
-    <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="812"/>
         <source>Duplicate field %1 found
 </source>
         <translation>重複フィールド%1がありました</translation>
-    </message>
-    <message>
-        <source>PostgreSQL in recovery</source>
-        <translation type="obsolete">PostgreSQLは復旧中です</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="851"/>
@@ -45222,10 +36424,6 @@ Write accesses will be denied.</source>
 書き込みアクセスは禁止されています.</translation>
     </message>
     <message>
-        <source>Unable execute the query</source>
-        <translation type="obsolete">検索を実行できません</translation>
-    </message>
-    <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="976"/>
         <source>Unable to execute the query.
 The error message from the database was:
@@ -45235,88 +36433,6 @@ SQL: %2</source>
 データベースのエラーメッセージは以下のとおりです
 %1.
 SQL %2</translation>
-    </message>
-    <message>
-        <source>The table has no column suitable for use as a key.
-
-Quantum GIS requires that the table either has a column of type
-int4 with a unique constraint on it (which includes the
-primary key), has a PostgreSQL oid column or has a ctid
-column with a 16bit block number.
-</source>
-        <translation type="obsolete">指定テーブルはキーとして適したカラムがありません.
-
-Quantum GISではint4型で
-ユニーク制約(プライマリキーを含む) 
-であるPostgreSQLのoidカラムか
-16ビットブロックナンバーのctidカラムが必要です.
-</translation>
-    </message>
-    <message>
-        <source>The unique index on column &apos;%1&apos; is unsuitable because Quantum GIS does not currently support non-int4 type columns as a key into the table.
-</source>
-        <translation type="obsolete">カラム&apos;%1&apos;のユニークインデックスは適切ではありません,なぜならばQuantumGISでは現在int4以外の型をテーブルのキーとしてサポートしていません.
-</translation>
-    </message>
-    <message>
-        <source>The unique index based on columns %1 is unsuitable because Quantum GIS does not currently support multiple columns as a key into the table.
-</source>
-        <translation type="obsolete">カラム&apos;%1&apos;のユニークインデックスは適切ではありません,なぜならばQuantumGISでは現在複数カラムによるテーブルのキーとしてサポートしていません.
-</translation>
-    </message>
-    <message>
-        <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
-Quantum GIS requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
-The view you selected has the following columns, none of which satisfy the above conditions:</source>
-        <translation type="obsolete">ビュー&apos;%1 %2&apos;はユニークキーとして使える適切なカラムがありません.
-Quantum GISでビューはユニークキーとして利用できるカラムが必要です.そのカラムはテーブルのカラムから派生してint4の型でユニーク制約を持ちプライマリキーになれるものかPostgreSQLのoidカラムとして使えるものです.パフォーマンスを向上させるためにはカラムはインデックスが作成されている必要があります.
-選択されたビューは以下のようなカラムを持ちますが,上記の条件を満たすものがありません:</translation>
-    </message>
-    <message>
-        <source>Error while deleting features</source>
-        <translation type="obsolete">地物削除中にエラー発生</translation>
-    </message>
-    <message>
-        <source>Error while adding attributes</source>
-        <translation type="obsolete">属性追加中にエラー発生</translation>
-    </message>
-    <message>
-        <source>Error while deleting attributes</source>
-        <translation type="obsolete">属性削除中にエラー発生</translation>
-    </message>
-    <message>
-        <source>Error while changing attributes</source>
-        <translation type="obsolete">属性変更中にエラー発生</translation>
-    </message>
-    <message>
-        <source>Error while changing geometry values</source>
-        <translation type="obsolete">ジオメトリ変更中にエラー発生</translation>
-    </message>
-    <message>
-        <source>Column %1 in %2 has a geometry type of %3, which Quantum GIS does not currently support.</source>
-        <translation type="obsolete">%2内のカラム%1は%3のタイプのジオメトリです。これは現在のQuantumGISではサポートしていません.</translation>
-    </message>
-    <message>
-        <source>Quantum GIS was unable to determine the type and srid of column %1 in %2. The database communication log was:
-%3</source>
-        <translation type="obsolete">Quantum GISは%2内のカラム%1の型とSRIDを判別できませんでした.このデータベースの通信ログは以下のとおりです.
-%3</translation>
-    </message>
-    <message>
-        <source>Query failed</source>
-        <translation type="obsolete">検索に失敗しました</translation>
-    </message>
-    <message>
-        <source>%1 cursor states lost.
-SQL: %2
-Result: %3 (%4)</source>
-        <translation type="obsolete">%1カーソルステートが消失しました.
-SQL:%2
-結果:%3 (%4)</translation>
-    </message>
-    <message>
-        <source>unexpected PostgreSQL error</source>
-        <translation type="obsolete">予期せぬPostgreSQLエラー</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="161"/>
@@ -45337,19 +36453,6 @@ SQL:%2
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="173"/>
         <source>Text, unlimited length (text)</source>
         <translation>上限無し可変長テキスト(text)</translation>
-    </message>
-    <message>
-        <source>&apos;%1&apos; derives from &apos;%2.%3.%4&apos; </source>
-        <translation type="obsolete"> &apos;%2.%3.%4&apos; の&apos;%1&apos; ドライバー </translation>
-    </message>
-    <message>
-        <source>and is not suitable (type is %1)</source>
-        <translation type="obsolete">and は利用できません(タイプは%1)</translation>
-    </message>
-    <message>
-        <source>Note: &apos;%1&apos; initially appeared suitable but does not contain unique data, so is not suitable.
-</source>
-        <translation type="obsolete">注:&apos;%1&apos;は最初は適切でしたが後からユニークでないデータを含んだので適切ではありません。</translation>
     </message>
 </context>
 <context>
@@ -45418,12 +36521,6 @@ SQL:%2
 Choose ignore to continue loading without the missing layers. Choose cancel to return to your pre-project load state. Choose OK to try to find the missing layers.</source>
         <translation>これ以上のプロジェクトレイヤを開くことができません.
 失われたレイヤ以外のローディングを継続する場合は無視を選択して下さい.キャンセルを選択するとプロジェクトをロードする前の状態に戻ります.OKを選択すると失われたレイヤを探します.</translation>
-    </message>
-    <message>
-        <source>Unable to open one or more project layers
-Try to find missing layers?</source>
-        <translation type="obsolete">これ以上プロジェクトのレイヤを開けません
-使用しないレイヤを探してみますか?</translation>
     </message>
 </context>
 <context>
@@ -45612,10 +36709,6 @@ Proceed?</source>
         <translation>CRS変換が有効なときは楕円体計算のみ利用できます</translation>
     </message>
     <message>
-        <source>Transparency %1%</source>
-        <translation type="obsolete">透過率 %1%</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1283"/>
         <source>Select a valid symbol</source>
         <translation>正しいシンボルを選択</translation>
@@ -45676,10 +36769,6 @@ Proceed?</source>
         <translation>一般設定</translation>
     </message>
     <message>
-        <source>Layer units (only used when CRS transformation is disabled)</source>
-        <translation type="obsolete">レイヤ単位（CRS変換が無効な場合のみ利用可能）</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="544"/>
         <source>Degrees, Minutes, Seconds</source>
         <translation>度 分 秒</translation>
@@ -45695,22 +36784,6 @@ Proceed?</source>
         <translation>手動</translation>
     </message>
     <message>
-        <source>WMS</source>
-        <translation type="obsolete">WMS</translation>
-    </message>
-    <message>
-        <source>WMS Server</source>
-        <translation type="obsolete">WMSサーバ</translation>
-    </message>
-    <message>
-        <source>OWS Server</source>
-        <translation type="obsolete">OWS Server</translation>
-    </message>
-    <message>
-        <source>Service Capabilitities</source>
-        <translation type="obsolete">サービス機能</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1344"/>
         <source>Title</source>
         <translation>タイトル</translation>
@@ -45719,10 +36792,6 @@ Proceed?</source>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1334"/>
         <source>Person</source>
         <translation>担当者</translation>
-    </message>
-    <message>
-        <source>Defaut styles</source>
-        <translation type="obsolete">既定スタイル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="935"/>
@@ -45770,14 +36839,6 @@ Proceed?</source>
         <translation>オンラインリソース</translation>
     </message>
     <message>
-        <source>WMS Capabilitities</source>
-        <translation type="obsolete">WMSケイパビリティ</translation>
-    </message>
-    <message>
-        <source>Advertised Extent</source>
-        <translation type="obsolete">公開領域</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1606"/>
         <source>Min. X</source>
         <translation>X最小値</translation>
@@ -45801,18 +36862,6 @@ Proceed?</source>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1674"/>
         <source>Use Current Canvas Extent</source>
         <translation>カレントキャンバス領域を利用する</translation>
-    </message>
-    <message>
-        <source>Coordinate Systems Restrictions</source>
-        <translation type="obsolete">座標システム制約</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="obsolete">追加</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1726"/>
@@ -45875,22 +36924,6 @@ Proceed?</source>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1221"/>
         <source>Assign random colors to symbols</source>
         <translation>ランダムな色をシンボルに設定する</translation>
-    </message>
-    <message>
-        <source>Opacity</source>
-        <translation type="obsolete">透過率</translation>
-    </message>
-    <message>
-        <source>Maximum width</source>
-        <translation type="obsolete">最大幅</translation>
-    </message>
-    <message>
-        <source>Maximum height</source>
-        <translation type="obsolete">最大高さ</translation>
-    </message>
-    <message>
-        <source>WFS Capabilitities</source>
-        <translation type="obsolete">WFSケイパビリティ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1833"/>
@@ -45998,10 +37031,6 @@ Proceed?</source>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1931"/>
         <source>Python macros</source>
         <translation>Pythonマクロ</translation>
-    </message>
-    <message>
-        <source>Avoid intersections of new polygons...</source>
-        <translation type="obsolete">新ポリゴンの交差を禁止する...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="112"/>
@@ -46144,21 +37173,9 @@ Proceed?</source>
         <translation>精度</translation>
     </message>
     <message>
-        <source>Digitizing</source>
-        <translation type="obsolete">デジタイズ</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="374"/>
         <source>Descriptive project name</source>
         <translation>プロジェクト名称を記述</translation>
-    </message>
-    <message>
-        <source>Enable topological editing</source>
-        <translation type="obsolete">トポロジ編集を有効にする</translation>
-    </message>
-    <message>
-        <source>Snapping options...</source>
-        <translation type="obsolete">スナップオプション...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="390"/>
@@ -46189,10 +37206,6 @@ Proceed?</source>
 <context>
     <name>QgsProjectionSelector</name>
     <message>
-        <source>All</source>
-        <translation type="obsolete">全ての</translation>
-    </message>
-    <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="490"/>
         <source>User Defined Coordinate Systems</source>
         <translation>ユーザ定義座標系</translation>
@@ -46206,14 +37219,6 @@ Proceed?</source>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="575"/>
         <source>Projected Coordinate Systems</source>
         <translation>投影座標系</translation>
-    </message>
-    <message>
-        <source>Find projection</source>
-        <translation type="obsolete">投影法検索</translation>
-    </message>
-    <message>
-        <source>No matching projection found.</source>
-        <translation type="obsolete">合致する投影法はありません.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="990"/>
@@ -46238,33 +37243,9 @@ Because of this the projection selector will not work...</source>
         <translation>ID</translation>
     </message>
     <message>
-        <source>Search</source>
-        <translation type="obsolete">Search</translation>
-    </message>
-    <message>
-        <source>Find</source>
-        <translation type="obsolete">Find</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="151"/>
         <source>Hide deprecated CRSs</source>
         <translation>一致しない空間参照システムを隠す</translation>
-    </message>
-    <message>
-        <source>Authority</source>
-        <translation type="obsolete">権限</translation>
-    </message>
-    <message>
-        <source>Search for</source>
-        <translation type="obsolete">検索</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名称</translation>
-    </message>
-    <message>
-        <source>Recently used coordinate references systems</source>
-        <translation type="obsolete">最近利用した座標参照系</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="20"/>
@@ -46317,22 +37298,6 @@ Because of this the projection selector will not work...</source>
         <translation>(&amp;C)クリア</translation>
     </message>
     <message>
-        <source>Invalid Query</source>
-        <translation type="obsolete">不正なクエリ</translation>
-    </message>
-    <message>
-        <source>Setting the query failed</source>
-        <translation type="obsolete">クエリの設定に失敗しました</translation>
-    </message>
-    <message>
-        <source>No Query</source>
-        <translation type="obsolete">クエリがありません</translation>
-    </message>
-    <message>
-        <source>You must create a query before you can test it</source>
-        <translation type="obsolete">テストの前にクエリの作成が必要です</translation>
-    </message>
-    <message>
         <location filename="../src/gui/qgsquerybuilder.cpp" line="191"/>
         <source>Query Result</source>
         <translation>クエリ結果</translation>
@@ -46368,10 +37333,6 @@ The data provider said:
         <translation>
 そのデータプロバイダは以下のメッセージを表示しました.
 %1</translation>
-    </message>
-    <message>
-        <source>An error occurred when executing the query</source>
-        <translation type="obsolete">クエリ実行中にエラーが発生しました</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsquerybuilder.cpp" line="225"/>
@@ -46544,70 +37505,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="260"/>
         <source>SQL where clause</source>
         <translation>SQL where 句</translation>
-    </message>
-    <message>
-        <source>Auto Sample</source>
-        <translation type="obsolete">自動サンプル</translation>
-    </message>
-    <message>
-        <source>Selected Layer</source>
-        <translation type="obsolete">選択されたレイヤ</translation>
-    </message>
-</context>
-<context>
-    <name>QgsQuickPrint</name>
-    <message>
-        <source> km</source>
-        <translation type="obsolete"> km</translation>
-    </message>
-    <message>
-        <source> mm</source>
-        <translation type="obsolete"> mm</translation>
-    </message>
-    <message>
-        <source> cm</source>
-        <translation type="obsolete"> cm</translation>
-    </message>
-    <message>
-        <source> m</source>
-        <translation type="obsolete"> m</translation>
-    </message>
-    <message>
-        <source> miles</source>
-        <translation type="obsolete">マイル</translation>
-    </message>
-    <message>
-        <source> mile</source>
-        <translation type="obsolete"> マイル</translation>
-    </message>
-    <message>
-        <source> inches</source>
-        <translation type="obsolete">インチ</translation>
-    </message>
-    <message>
-        <source> foot</source>
-        <translation type="obsolete">フィート</translation>
-    </message>
-    <message>
-        <source> feet</source>
-        <translation type="obsolete">フィート</translation>
-    </message>
-    <message>
-        <source> degree</source>
-        <translation type="obsolete">度</translation>
-    </message>
-    <message>
-        <source> degrees</source>
-        <translation type="obsolete">度</translation>
-    </message>
-    <message>
-        <source> unknown</source>
-        <translation type="obsolete">不明</translation>
-    </message>
-    <message>
-        <source>Please wait while your report is generated</source>
-        <comment>COMMENTED OUT</comment>
-        <translation type="obsolete">レポートができるまでお待ちください</translation>
     </message>
 </context>
 <context>
@@ -46819,45 +37716,9 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRasterDataProvider</name>
     <message>
-        <source>Identify</source>
-        <translation type="obsolete">地物情報表示</translation>
-    </message>
-    <message>
-        <source>Build Pyramids</source>
-        <translation type="obsolete">ピラミッドの作成</translation>
-    </message>
-    <message>
-        <source>Band</source>
-        <translation type="obsolete">バンド</translation>
-    </message>
-    <message>
         <location filename="../src/core/raster/qgsrasterdataprovider.cpp" line="282"/>
         <source>Format not supported</source>
         <translation>形式がサポートされていません</translation>
-    </message>
-    <message>
-        <source>Feature info</source>
-        <translation type="obsolete">地物情報</translation>
-    </message>
-    <message>
-        <source>Average</source>
-        <translation type="obsolete">平均</translation>
-    </message>
-    <message>
-        <source>Nearest Neighbour</source>
-        <translation type="obsolete">最近の近傍</translation>
-    </message>
-    <message>
-        <source>Cubic</source>
-        <translation type="obsolete">キュービック</translation>
-    </message>
-    <message>
-        <source>Mode</source>
-        <translation type="obsolete">モード</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <translation type="obsolete">なし</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterdataprovider.cpp" line="466"/>
@@ -47046,10 +37907,6 @@ Click on help button to get valid creation options for this format.</source>
         <translation>可視性</translation>
     </message>
     <message>
-        <source>Show min/max markers</source>
-        <translation type="obsolete">最小/最大マーカーを表示する</translation>
-    </message>
-    <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="108"/>
         <source>Min/Max options</source>
         <translation>最小/最大オプション</translation>
@@ -47151,10 +38008,6 @@ Click on help button to get valid creation options for this format.</source>
         <location filename="../src/ui/qgsrasterhistogramwidgetbase.ui" line="14"/>
         <source>Form</source>
         <translation>フォーム</translation>
-    </message>
-    <message>
-        <source>Band</source>
-        <translation type="obsolete">バンド</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterhistogramwidgetbase.ui" line="101"/>
@@ -47261,30 +38114,6 @@ Click on help button to get valid creation options for this format.</source>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="315"/>
         <source>Could not reproject layer extent: %1</source>
         <translation>レイヤの領域を再投影できません: %1</translation>
-    </message>
-    <message>
-        <source>Driver:</source>
-        <translation type="obsolete">ドライバ:</translation>
-    </message>
-    <message>
-        <source>Dimensions:</source>
-        <translation type="obsolete">次元:</translation>
-    </message>
-    <message>
-        <source>Origin:</source>
-        <translation type="obsolete">原点:</translation>
-    </message>
-    <message>
-        <source>Pixel Size:</source>
-        <translation type="obsolete">ピクセルの大きさ:</translation>
-    </message>
-    <message>
-        <source>Pyramid overviews:</source>
-        <translation type="obsolete">ピラミッドオーバービュー:</translation>
-    </message>
-    <message>
-        <source>Layer Extent (layer original source projection): </source>
-        <translation type="obsolete">レイヤ領域（レイヤのオリジナルプロジェクション):</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="488"/>
@@ -47442,122 +38271,14 @@ Click on help button to get valid creation options for this format.</source>
         <translation>プロバイダが不正です (プロバイダ: %1, URI: %2</translation>
     </message>
     <message>
-        <source>Failed to load provider %1 (Reason: %2)</source>
-        <translation type="obsolete">プロバイダ%1のロードに失敗しました（理由: %2)</translation>
-    </message>
-    <message>
-        <source>Cannot resolve the classFactory function</source>
-        <translation type="obsolete">クラスファクトリ関数を解決できません</translation>
-    </message>
-    <message>
-        <source>Cannot instantiate the data provider</source>
-        <translation type="obsolete">データプロバイダインスタンスを作成できません</translation>
-    </message>
-    <message>
-        <source>Data provider is invalid (layers: %1, styles: %2, formats: %3)</source>
-        <translation type="obsolete">データプロバイダが不正です（レイヤ %1 スタイル %2 フォーマット %3)</translation>
-    </message>
-    <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1599"/>
         <source>&lt;maplayer&gt; not found.</source>
         <translation>&lt;maplayer&gt; が見つかりません.</translation>
     </message>
     <message>
-        <source>GDAL data type %1 is not supported</source>
-        <translation type="obsolete">GDALデータタイプ %1はサポートされていません</translation>
-    </message>
-    <message>
-        <source>Data Type:</source>
-        <translation type="obsolete">データタイプ:</translation>
-    </message>
-    <message>
-        <source>[GDAL] All files (*)</source>
-        <translation type="obsolete">[GDAL]全ファイル(*)</translation>
-    </message>
-    <message>
-        <source>This raster file has no bands and is invalid as a raster layer.</source>
-        <translation type="obsolete">このラスタファイルはバンドを持ちません,よってラスタレイヤとしては不正です.</translation>
-    </message>
-    <message>
-        <source>GDT_Byte - Eight bit unsigned integer</source>
-        <translation type="obsolete">GDT_Byte - 8 bit unsigned integer</translation>
-    </message>
-    <message>
-        <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
-        <translation type="obsolete">GDT_UInt16 - 16 bit unsigned integer </translation>
-    </message>
-    <message>
-        <source>GDT_Int16 - Sixteen bit signed integer </source>
-        <translation type="obsolete">GDT_Int16 - 16 bit signed integer </translation>
-    </message>
-    <message>
-        <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
-        <translation type="obsolete">GDT_UInt32 - 32 bit unsigned integer </translation>
-    </message>
-    <message>
-        <source>GDT_Int32 - Thirty two bit signed integer </source>
-        <translation type="obsolete">GDT_Int32 - 32 bit signed integer </translation>
-    </message>
-    <message>
-        <source>GDT_Float32 - Thirty two bit floating point </source>
-        <translation type="obsolete">GDT_Float32 - 32 bit floating point </translation>
-    </message>
-    <message>
-        <source>GDT_Float64 - Sixty four bit floating point </source>
-        <translation type="obsolete">GDT_Float64 - 64 bit floating point </translation>
-    </message>
-    <message>
-        <source>GDT_CInt16 - Complex Int16 </source>
-        <translation type="obsolete">GDT_CInt16 - Complex Int16 </translation>
-    </message>
-    <message>
-        <source>GDT_CInt32 - Complex Int32 </source>
-        <translation type="obsolete">GDT_CInt32 - Complex Int32 </translation>
-    </message>
-    <message>
-        <source>GDT_CFloat32 - Complex Float32 </source>
-        <translation type="obsolete">GDT_CFloat32 - Complex Float32 </translation>
-    </message>
-    <message>
-        <source>GDT_CFloat64 - Complex Float64 </source>
-        <translation type="obsolete">GDT_CFloat64 - Complex Float64 </translation>
-    </message>
-    <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="554"/>
         <source>Could not determine raster data type.</source>
         <translation>ラスタデータのタイプが判定できません。</translation>
-    </message>
-    <message>
-        <source>Specify CRS for layer %1</source>
-        <translation type="obsolete">レイヤ%1のCRSを指定して下さい</translation>
-    </message>
-    <message>
-        <source>Average Magphase</source>
-        <translation type="obsolete">平均 Magphase</translation>
-    </message>
-    <message>
-        <source>Average</source>
-        <translation type="obsolete">平均</translation>
-    </message>
-    <message>
-        <source>Layer Spatial Reference System: </source>
-        <translation type="obsolete">レイヤ空間参照システム:</translation>
-    </message>
-    <message>
-        <source>Project Spatial Reference System: </source>
-        <translation type="obsolete">プロジェクト空間参照システム:</translation>
-    </message>
-    <message>
-        <source>out of extent</source>
-        <translation type="obsolete">範囲外</translation>
-    </message>
-    <message>
-        <source>null (no data)</source>
-        <translation type="obsolete">null (no data)</translation>
-    </message>
-    <message>
-        <source>Dataset Description</source>
-        <translation type="obsolete">データセットについての記述</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="498"/>
@@ -47570,41 +38291,13 @@ Click on help button to get valid creation options for this format.</source>
         <translation>データ無しとする値は設定されていません</translation>
     </message>
     <message>
-        <source>Band %1</source>
-        <translation type="obsolete">バンド %1</translation>
-    </message>
-    <message>
-        <source>X: %1 Y: %2 Bands: %3</source>
-        <translation type="obsolete">X: %1 Y: %2 バンド: %3</translation>
-    </message>
-    <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="151"/>
         <source>QgsRasterLayer created</source>
         <translation>QgsRasterLayerが作成されました</translation>
     </message>
-    <message>
-        <source>Retrieving stats for %1</source>
-        <translation type="obsolete">%1の回復状況</translation>
-    </message>
-    <message>
-        <source>Calculating stats for %1</source>
-        <translation type="obsolete">%1の計算状況</translation>
-    </message>
 </context>
 <context>
     <name>QgsRasterLayerProperties</name>
-    <message>
-        <source>Grayscale</source>
-        <translation type="obsolete">原色グレースケール</translation>
-    </message>
-    <message>
-        <source>Pseudocolor</source>
-        <translation type="obsolete">原色</translation>
-    </message>
-    <message>
-        <source>Freak Out</source>
-        <translation type="obsolete">フリークアウト</translation>
-    </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="72"/>
         <source>Not Set</source>
@@ -47677,34 +38370,6 @@ Click on help button to get valid creation options for this format.</source>
         <translation>このラスタ種別では、ピラミッドオーバービューはサポートされていません。</translation>
     </message>
     <message>
-        <source>No Stretch</source>
-        <translation type="obsolete">強調なし</translation>
-    </message>
-    <message>
-        <source>Stretch To MinMax</source>
-        <translation type="obsolete">最大値・最小値まで引き伸ばす</translation>
-    </message>
-    <message>
-        <source>Stretch And Clip To MinMax</source>
-        <translation type="obsolete">最大値・最小値まで引き伸ばしとクリップ</translation>
-    </message>
-    <message>
-        <source>Clip To MinMax</source>
-        <translation type="obsolete">最大値・最小値でクリップ</translation>
-    </message>
-    <message>
-        <source>Discrete</source>
-        <translation type="obsolete">離散的</translation>
-    </message>
-    <message>
-        <source>Equal interval</source>
-        <translation type="obsolete">等間隔</translation>
-    </message>
-    <message>
-        <source>Quantiles</source>
-        <translation type="obsolete">等量(四分位)</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="217"/>
         <source>Description</source>
         <translation>記述</translation>
@@ -47713,14 +38378,6 @@ Click on help button to get valid creation options for this format.</source>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1223"/>
         <source>Value</source>
         <translation>値</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="obsolete">色</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">ラベル</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="218"/>
@@ -47808,26 +38465,6 @@ Click on help button to get valid creation options for this format.</source>
         <translation>インデックス値</translation>
     </message>
     <message>
-        <source>Filter</source>
-        <translation type="obsolete">フィルター</translation>
-    </message>
-    <message>
-        <source>Time</source>
-        <translation type="obsolete">時間</translation>
-    </message>
-    <message>
-        <source>Note: Minimum Maximum values are estimates, user defined, or calculated from the current extent</source>
-        <translation type="obsolete">注:ユーザーが定義または現在の領域から計算して最小　最大値は見積もられます。</translation>
-    </message>
-    <message>
-        <source>User Defined</source>
-        <translation type="obsolete">ユーザ定義</translation>
-    </message>
-    <message>
-        <source>No-Data Value: Not Set</source>
-        <translation type="obsolete">データ無しとする値:未設定</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="969"/>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library.</source>
         <translation>JPEG圧縮ラスタレイヤとカレントlibtiffライブラリでは内部ピラミッドオーバービューの作成はサポートされていません。</translation>
@@ -47843,21 +38480,9 @@ Click on help button to get valid creation options for this format.</source>
         <translation>レイヤプロパティをスタイルファイルとして保存する</translation>
     </message>
     <message>
-        <source>Textfile (*.txt)</source>
-        <translation type="obsolete">テキストファイル(*.txt)</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1209"/>
         <source>QGIS Generated Transparent Pixel Value Export File</source>
         <translation>QGISはピクセル透過値のエクスポートファイルを作成しました</translation>
-    </message>
-    <message>
-        <source>Band %1</source>
-        <translation type="obsolete">バンド %1</translation>
-    </message>
-    <message>
-        <source>Choose a file name to save the map image as</source>
-        <translation type="obsolete">地図イメージとして保存するファイル名を選択してください</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1319"/>
@@ -47868,16 +38493,6 @@ Click on help button to get valid creation options for this format.</source>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1398"/>
         <source>Import Error</source>
         <translation>インポートエラー</translation>
-    </message>
-    <message>
-        <source>out of extent</source>
-        <translation type="obsolete">範囲外</translation>
-    </message>
-    <message>
-        <source>The following lines contained errors
-
-</source>
-        <translation type="obsolete">以下の行はエラーを含んでいます</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1403"/>
@@ -47893,34 +38508,10 @@ Click on help button to get valid creation options for this format.</source>
 </translation>
     </message>
     <message>
-        <source>Color Ramp</source>
-        <translation type="obsolete">色ランプ</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1585"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1602"/>
         <source>Default Style</source>
         <translation>既定スタイル</translation>
-    </message>
-    <message>
-        <source>QGIS Layer Style File (*.qml)</source>
-        <translation type="obsolete">QGISレイヤスタイルファイル(*.qml)</translation>
-    </message>
-    <message>
-        <source>QGIS</source>
-        <translation type="obsolete">QGIS</translation>
-    </message>
-    <message>
-        <source>Colormap</source>
-        <translation type="obsolete">カラーマップ</translation>
-    </message>
-    <message>
-        <source>Linear</source>
-        <translation type="obsolete">線形</translation>
-    </message>
-    <message>
-        <source>Exact</source>
-        <translation type="obsolete">厳密</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="221"/>
@@ -47938,18 +38529,6 @@ Click on help button to get valid creation options for this format.</source>
         <translation>ファイルは書き込みができません。いくつかのフォーマットではピラミッドオーバービューはサポートされません。疑わしい場合はGDALのドキュメントを参照してください。</translation>
     </message>
     <message>
-        <source>Custom color map entry</source>
-        <translation type="obsolete">カスタムカラーマップ入力</translation>
-    </message>
-    <message>
-        <source>QGIS Generated Color Map Export File</source>
-        <translation type="obsolete">QGISはカラーマップエクスポートファイルを作成しました</translation>
-    </message>
-    <message>
-        <source>Load Color Map</source>
-        <translation type="obsolete">カラーマップをロード</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1616"/>
         <source>Load layer properties from style file</source>
         <translation>レイヤプロパティをスタイルファイルから読み込む</translation>
@@ -47965,29 +38544,6 @@ Click on help button to get valid creation options for this format.</source>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1670"/>
         <source>Saved Style</source>
         <translation>スタイルを保存</translation>
-    </message>
-    <message>
-        <source>Note: Minimum Maximum values are actual values computed from the band(s)</source>
-        <translation type="obsolete">ノート:最大値・最小値は実際のバンドから得られた値です</translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Multiband Image Notes&lt;/h3&gt;&lt;p&gt;This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Visible Blue (0.45 to 0.52 microns) - not mapped&lt;/li&gt;&lt;li&gt;Visible Green (0.52 to 0.60 microns) - not mapped&lt;/li&gt;&lt;/li&gt;Visible Red (0.63 to 0.69 microns) - mapped to red in image&lt;/li&gt;&lt;li&gt;Near Infrared (0.76 to 0.90 microns) - mapped to green in image&lt;/li&gt;&lt;li&gt;Mid Infrared (1.55 to 1.75 microns) - not mapped&lt;/li&gt;&lt;li&gt;Thermal Infrared (10.4 to 12.5 microns) - not mapped&lt;/li&gt;&lt;li&gt;Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image&lt;/li&gt;&lt;/ul&gt;</source>
-        <comment>COMMENTED OUT</comment>
-        <translation type="obsolete">&lt;h3&gt;マルチバンド画像に関する注記&lt;/h3&gt;&lt;p&gt;これはマルチバンド画像です。グレイスケールでもカラー (RGB) でもレンダリングすることができます。カラー画像の場合、各色にバンドを割り当てることができます。例えば、７バンドのランドサット画像がある場合、次のようにレンダリングすることができます:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;可視の青 (0.45 to 0.52 microns) - not mapped&lt;/li&gt;&lt;li&gt;可視の緑 (0.52 to 0.60 microns) - マッピングしない&lt;/li&gt;&lt;/li&gt;可視の赤 (0.63 to 0.69 microns) - 画像中では赤にマッピング&lt;/li&gt;&lt;li&gt;近赤外線 (0.76 to 0.90 microns) - 画像中では緑にマッピング&lt;/li&gt;&lt;li&gt;中間赤外線 (1.55 to 1.75 microns) - マッピングしない&lt;/li&gt;&lt;li&gt;熱赤外線 (10.4 to 12.5 microns) - マッピングしない&lt;/li&gt;&lt;li&gt;中間赤外線 (2.08 to 2.35 microns) - 画像中では青にマッピング&lt;/li&gt;&lt;/ul&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Paletted Image Notes&lt;/h3&gt; &lt;p&gt;This image uses a fixed color palette. You can remap these colors in different combinations e.g.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Red - blue in image&lt;/li&gt;&lt;li&gt;Green - blue in image&lt;/li&gt;&lt;li&gt;Blue - green in image&lt;/li&gt;&lt;/ul&gt;</source>
-        <comment>COMMENTED OUT</comment>
-        <translation type="obsolete">&lt;h3&gt;パレット画像に関する注記&lt;/h3&gt; &lt;p&gt;この画像は固定カラーパレットをしています。色をリマップすることもできます。例えば、&lt;/p&gt;&lt;ul&gt;&lt;li&gt;赤 - 画像中の青&lt;/li&gt;&lt;li&gt;緑 - 画像中の青&lt;/li&gt;&lt;li&gt;青 - 画像中の緑&lt;/li&gt;&lt;/ul&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Grayscale Image Notes&lt;/h3&gt; &lt;p&gt;You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.&lt;/p&gt;</source>
-        <comment>COMMENTED OUT</comment>
-        <translation type="obsolete">&lt;h3&gt;グレースケール画像の注記&lt;/h3&gt; &lt;p&gt;グレースケールの色は、自動的に生成される色ランプを使って原色画像を再構成することが出来ます。&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Default R:%1 G:%2 B:%3</source>
-        <translation type="obsolete">デフォルト R%1 G%2 B%3</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="680"/>
@@ -48023,14 +38579,6 @@ Click on help button to get valid creation options for this format.</source>
         <translation>以下の行はエラーを含んでいます
 %1</translation>
     </message>
-    <message>
-        <source>The color map for band %1 failed to load</source>
-        <translation type="obsolete">バンド%1のカラーマップロードに失敗しました</translation>
-    </message>
-    <message>
-        <source>Unknown style format: %1</source>
-        <translation type="obsolete">%1は不明なスタイル形式です</translation>
-    </message>
 </context>
 <context>
     <name>QgsRasterLayerPropertiesBase</name>
@@ -48045,10 +38593,6 @@ Click on help button to get valid creation options for this format.</source>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="198"/>
         <source>General</source>
         <translation>一般情報</translation>
-    </message>
-    <message>
-        <source>Symbology</source>
-        <translation type="obsolete">シンボル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1291"/>
@@ -48073,10 +38617,6 @@ Click on help button to get valid creation options for this format.</source>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1601"/>
         <source>Pyramids</source>
         <translation>ピラミッド</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;border: none;&quot;&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;border: none;&quot;&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1703"/>
@@ -48139,33 +38679,9 @@ p, li { white-space: pre-wrap; }
         <translation>ヒストグラム</translation>
     </message>
     <message>
-        <source>Options</source>
-        <translation type="obsolete">オプション</translation>
-    </message>
-    <message>
-        <source>Chart Type</source>
-        <translation type="obsolete">チャート種別</translation>
-    </message>
-    <message>
-        <source>Refresh</source>
-        <translation type="obsolete">再読み込み</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">最大</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">最小</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1271"/>
         <source> 00%</source>
         <translation>00%</translation>
-    </message>
-    <message>
-        <source>Render as</source>
-        <translation type="obsolete">表示形式</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1465"/>
@@ -48178,135 +38694,11 @@ p, li { white-space: pre-wrap; }
         <translation>...</translation>
     </message>
     <message>
-        <source>Colormap</source>
-        <translation type="obsolete">カラーマップ</translation>
-    </message>
-    <message>
-        <source>Delete entry</source>
-        <translation type="obsolete">行を削除</translation>
-    </message>
-    <message>
-        <source>Classify</source>
-        <translation type="obsolete">分類</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation type="obsolete">1</translation>
-    </message>
-    <message>
-        <source>2</source>
-        <translation type="obsolete">2</translation>
-    </message>
-    <message>
-        <source>Single band gray</source>
-        <translation type="obsolete">単バンドグレー</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="97"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="100"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="669"/>
         <source>Style</source>
         <translation>スタイル</translation>
-    </message>
-    <message>
-        <source>Three band color</source>
-        <translation type="obsolete">３バンドカラー</translation>
-    </message>
-    <message>
-        <source>RGB mode band selection and scaling</source>
-        <translation type="obsolete">RGBモードでのバンド選択とスケーリング</translation>
-    </message>
-    <message>
-        <source>Red band</source>
-        <translation type="obsolete">Redバンド</translation>
-    </message>
-    <message>
-        <source>Green band</source>
-        <translation type="obsolete">Greenバンド</translation>
-    </message>
-    <message>
-        <source>Blue band</source>
-        <translation type="obsolete">Blueバンド</translation>
-    </message>
-    <message>
-        <source>Save current RGB composition as default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="obsolete">現在のRGB組み合わせを既定値とします.この設定はQGISのセッション中で有効です.</translation>
-    </message>
-    <message>
-        <source>Custom min / max values</source>
-        <translation type="obsolete">ユーザ定義最大値／最小値</translation>
-    </message>
-    <message>
-        <source>Red min</source>
-        <translation type="obsolete">Red最小値</translation>
-    </message>
-    <message>
-        <source>Red max</source>
-        <translation type="obsolete">Red最大値</translation>
-    </message>
-    <message>
-        <source>Green min</source>
-        <translation type="obsolete">Green最小値</translation>
-    </message>
-    <message>
-        <source>Green max</source>
-        <translation type="obsolete">Green最大値</translation>
-    </message>
-    <message>
-        <source>Blue min</source>
-        <translation type="obsolete">Blue最小値</translation>
-    </message>
-    <message>
-        <source>Blue max</source>
-        <translation type="obsolete">Blue最大値</translation>
-    </message>
-    <message>
-        <source>Save current standard deviation value as default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="obsolete">現在の標準偏差の値を既定値とします.この設定はQGISのセッション中で有効です.</translation>
-    </message>
-    <message>
-        <source>Single band properties</source>
-        <translation type="obsolete">シングルバンドのプロパティ</translation>
-    </message>
-    <message>
-        <source>Gray band</source>
-        <translation type="obsolete">グレーバンド</translation>
-    </message>
-    <message>
-        <source>Color map</source>
-        <translation type="obsolete">カラーマップ</translation>
-    </message>
-    <message>
-        <source>Invert color map</source>
-        <translation type="obsolete">カラーマップを反転</translation>
-    </message>
-    <message>
-        <source>Use standard deviation</source>
-        <translation type="obsolete">標準偏差を使用</translation>
-    </message>
-    <message>
-        <source>Load min / max values from band</source>
-        <translation type="obsolete">バンドデータから最小値／最大値を読み込み</translation>
-    </message>
-    <message>
-        <source>Estimate (faster)</source>
-        <translation type="obsolete">推定値（高速）</translation>
-    </message>
-    <message>
-        <source>Actual (slower)</source>
-        <translation type="obsolete">実際の値（低速）</translation>
-    </message>
-    <message>
-        <source>Current extent</source>
-        <translation type="obsolete">現在の領域</translation>
-    </message>
-    <message>
-        <source>Load</source>
-        <translation type="obsolete">読み込み</translation>
-    </message>
-    <message>
-        <source>Contrast enhancement</source>
-        <translation type="obsolete">コントラスト強調</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="414"/>
@@ -48315,69 +38707,11 @@ p, li { white-space: pre-wrap; }
         <translation>現在の設定</translation>
     </message>
     <message>
-        <source>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="obsolete">現在のコントラスト強調アルゴリズムを既定値とします。設定値はQGISのセッションを超えて有効となります。</translation>
-    </message>
-    <message>
-        <source>Saves current contrast enhancement algorithm as a default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="obsolete">現在のコントラスト強調アルゴリズムを既定値とします。設定値はQGISのセッションを超えて有効となります。</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="obsolete">既定</translation>
-    </message>
-    <message>
-        <source>TextLabel</source>
-        <translation type="obsolete">テキストラベル</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
-&lt;tr&gt;
-&lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
-&lt;tr&gt;
-&lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Save as image...</source>
-        <translation type="obsolete">イメージとして保存...</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="109"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="112"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1184"/>
         <source>Transparency</source>
         <translation>透過性</translation>
-    </message>
-    <message>
-        <source>Note</source>
-        <translation type="obsolete">注記</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1217"/>
@@ -48388,10 +38722,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1301"/>
         <source>No data value</source>
         <translation>データ無しとする値</translation>
-    </message>
-    <message>
-        <source>Reset no data value</source>
-        <translation type="obsolete">データ無しとする値をリセット</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1375"/>
@@ -48564,10 +38894,6 @@ p, li { white-space: pre-wrap; }
         <translation>オーバーサンプリング</translation>
     </message>
     <message>
-        <source>Add Values from display</source>
-        <translation type="obsolete">画面から値を追加</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1493"/>
         <source>Remove selected row</source>
         <translation>選択した行を削除</translation>
@@ -48588,47 +38914,14 @@ p, li { white-space: pre-wrap; }
         <translation>ファイルにエクスポート</translation>
     </message>
     <message>
-        <source>Reset to file defined null</source>
-        <translation type="obsolete">ファイルのnull定義をリセットする</translation>
-    </message>
-    <message>
-        <source>Number of entries</source>
-        <translation type="obsolete">エントリー数</translation>
-    </message>
-    <message>
-        <source>Color interpolation</source>
-        <translation type="obsolete">色の補間</translation>
-    </message>
-    <message>
-        <source>Classification mode</source>
-        <translation type="obsolete">分類モード</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="370"/>
         <source>Scale dependent visibility</source>
         <translation>縮尺に応じた表示設定</translation>
     </message>
     <message>
-        <source>Maximum</source>
-        <translation type="obsolete">最大値</translation>
-    </message>
-    <message>
-        <source>Minimum</source>
-        <translation type="obsolete">最小値</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="262"/>
         <source>Layer source</source>
         <translation>レイヤソース</translation>
-    </message>
-    <message>
-        <source>Display name</source>
-        <translation type="obsolete">表示名</translation>
-    </message>
-    <message>
-        <source>Style</source>
-        <comment>mRendererTab</comment>
-        <translation type="obsolete">スタイル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="744"/>
@@ -48683,50 +38976,6 @@ p, li { white-space: pre-wrap; }
         <translation>指定...</translation>
     </message>
     <message>
-        <source>Pyramid resolutions</source>
-        <translation type="obsolete">ピラミッド解像度</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
-&lt;tr&gt;
-&lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
-&lt;tr&gt;
-&lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1638"/>
         <source>Resampling method</source>
         <translation>リサンプリング方法</translation>
@@ -48735,26 +38984,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1695"/>
         <source>Build pyramids</source>
         <translation>ピラミッド作成</translation>
-    </message>
-    <message>
-        <source>Line graph</source>
-        <translation type="obsolete">折れ線グラフ</translation>
-    </message>
-    <message>
-        <source>Bar chart</source>
-        <translation type="obsolete">バーチャート</translation>
-    </message>
-    <message>
-        <source>Column count</source>
-        <translation type="obsolete">列数</translation>
-    </message>
-    <message>
-        <source>Out of range OK?</source>
-        <translation type="obsolete">範囲外を許可?</translation>
-    </message>
-    <message>
-        <source>Allow approximation</source>
-        <translation type="obsolete">近似値を使用</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1986"/>
@@ -48775,34 +39004,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1993"/>
         <source>Save Style ...</source>
         <translation>スタイルを保存...</translation>
-    </message>
-    <message>
-        <source>Default R:1 G:2 B:3</source>
-        <translation type="obsolete">デフォルト R:1 G:2 B:3</translation>
-    </message>
-    <message>
-        <source>Add entry</source>
-        <translation type="obsolete">エントリを追加</translation>
-    </message>
-    <message>
-        <source>Sort</source>
-        <translation type="obsolete">並べ替え</translation>
-    </message>
-    <message>
-        <source>Load color map from band</source>
-        <translation type="obsolete">バンドからカラーマップをロード</translation>
-    </message>
-    <message>
-        <source>Load color map from file</source>
-        <translation type="obsolete">ファイルからカラーマップをロード</translation>
-    </message>
-    <message>
-        <source>Export color map to file</source>
-        <translation type="obsolete">カラーマップをファイルへエクスポート</translation>
-    </message>
-    <message>
-        <source>Generate new color map</source>
-        <translation type="obsolete">新規カラーマップを作成</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="284"/>
@@ -48843,86 +39044,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1898"/>
         <source>Abstract</source>
         <translation>要約</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
-&lt;tr&gt;
-&lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
-&lt;tr&gt;
-&lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="obsolete">説明</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
-&lt;tr&gt;
-&lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;table style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
-&lt;tr&gt;
-&lt;td style=&quot;border: none;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Build pyramids internally if possible</source>
-        <translation type="obsolete">可能であればファイル内にピラミッド作成</translation>
     </message>
 </context>
 <context>
@@ -49410,22 +39531,6 @@ standard deviation ×</source>
 <context>
     <name>QgsRasterTerrainAnalysisDialog</name>
     <message>
-        <source>Slope</source>
-        <translation type="obsolete">傾斜</translation>
-    </message>
-    <message>
-        <source>Aspect</source>
-        <translation type="obsolete">傾斜方位</translation>
-    </message>
-    <message>
-        <source>Ruggedness index</source>
-        <translation type="obsolete">起伏指標</translation>
-    </message>
-    <message>
-        <source>Total curvature</source>
-        <translation type="obsolete">全曲率</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="215"/>
         <source>Export Frequency distribution as csv</source>
         <translation>度数分布をcsvでエクスポートする</translation>
@@ -49489,18 +39594,6 @@ standard deviation ×</source>
 </context>
 <context>
     <name>QgsRasterTerrainAnalysisDialogBase</name>
-    <message>
-        <source>Raster based terrain analysis</source>
-        <translation type="obsolete">ラスタベース地形解析</translation>
-    </message>
-    <message>
-        <source>Analysis</source>
-        <translation type="obsolete">解析手法</translation>
-    </message>
-    <message>
-        <source>Input layer</source>
-        <translation type="obsolete">入力レイヤ</translation>
-    </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="30"/>
         <source>Output layer</source>
@@ -49615,10 +39708,6 @@ standard deviation ×</source>
 <context>
     <name>QgsRasterTerrainAnalysisPlugin</name>
     <message>
-        <source>&amp;Raster based terrain analysis...</source>
-        <translation type="obsolete">ラスタベース地形解析(&amp;R)...</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="90"/>
         <source>Terrain analysis</source>
         <translation>地形解析</translation>
@@ -49691,18 +39780,6 @@ standard deviation ×</source>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="195"/>
         <source>Calculating ruggedness...</source>
         <translation>粗度の計算中...</translation>
-    </message>
-    <message>
-        <source>Total curvature</source>
-        <translation type="obsolete">全曲率</translation>
-    </message>
-    <message>
-        <source>Calculating </source>
-        <translation type="obsolete">計算中</translation>
-    </message>
-    <message>
-        <source>Abort...</source>
-        <translation type="obsolete">中断...</translation>
     </message>
 </context>
 <context>
@@ -49781,10 +39858,6 @@ standard deviation ×</source>
         <source>Evaluation error</source>
         <translation>評価エラー</translation>
     </message>
-    <message>
-        <source>Filter is empty</source>
-        <translation type="obsolete">フィルターは空です</translation>
-    </message>
     <message numerus="yes">
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="572"/>
         <source>Filter returned %n feature(s)</source>
@@ -49792,25 +39865,6 @@ standard deviation ×</source>
         <translation>
             <numerusform>フィルターは%n個の地物を返しました</numerusform>
         </translation>
-    </message>
-</context>
-<context>
-    <name>QgsRendererRulesTreeWidget</name>
-    <message>
-        <source>(no filter)</source>
-        <translation type="obsolete">(フィルター無し)</translation>
-    </message>
-    <message>
-        <source>, scale </source>
-        <translation type="obsolete">, スケール </translation>
-    </message>
-    <message>
-        <source>scale </source>
-        <translation type="obsolete">スケール</translation>
-    </message>
-    <message>
-        <source>any scale</source>
-        <translation type="obsolete">任意のスケール</translation>
     </message>
 </context>
 <context>
@@ -49846,17 +39900,6 @@ standard deviation ×</source>
     </message>
 </context>
 <context>
-    <name>QgsRendererV2PropertiesDialog</name>
-    <message>
-        <source>Symbology</source>
-        <translation type="obsolete">シンボロジ</translation>
-    </message>
-    <message>
-        <source>Do you wish to use the original symbology implementation for this layer?</source>
-        <translation type="obsolete">このレイヤに実装されたオリジナルシンボロジを利用しますか？</translation>
-    </message>
-</context>
-<context>
     <name>QgsRendererV2PropsDialogBase</name>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="14"/>
@@ -49882,22 +39925,6 @@ standard deviation ×</source>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="70"/>
         <source>Layer blending mode</source>
         <translation>レイヤ混合モード</translation>
-    </message>
-    <message>
-        <source>Blending mode</source>
-        <translation type="obsolete">混合モード</translation>
-    </message>
-    <message>
-        <source>Renderer</source>
-        <translation type="obsolete">レンダラ</translation>
-    </message>
-    <message>
-        <source>Symbol levels</source>
-        <translation type="obsolete">シンボルレベル</translation>
-    </message>
-    <message>
-        <source>Old symbology</source>
-        <translation type="obsolete">古いシンボロジ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="122"/>
@@ -50040,49 +40067,9 @@ standard deviation ×</source>
 <context>
     <name>QgsRuleBasedRendererV2Widget</name>
     <message>
-        <source>Form</source>
-        <translation type="obsolete">フォーム</translation>
-    </message>
-    <message>
-        <source>Rules</source>
-        <translation type="obsolete">ルール群</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">ラベル</translation>
-    </message>
-    <message>
-        <source>Rule</source>
-        <translation type="obsolete">ルール</translation>
-    </message>
-    <message>
-        <source>Min. scale</source>
-        <translation type="obsolete">最小スケール</translation>
-    </message>
-    <message>
-        <source>Max. scale</source>
-        <translation type="obsolete">最大スケール</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="obsolete">追加</translation>
-    </message>
-    <message>
-        <source>Refine</source>
-        <translation type="obsolete">調整</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="137"/>
         <source>Rendering order...</source>
         <translation>描画順序...</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">編集</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="53"/>
@@ -50105,41 +40092,9 @@ standard deviation ×</source>
         <translation>地物カウント</translation>
     </message>
     <message>
-        <source>Rule grouping</source>
-        <translation type="obsolete">ルールグルーピング</translation>
-    </message>
-    <message>
-        <source>No grouping</source>
-        <translation type="obsolete">グルーピング無し</translation>
-    </message>
-    <message>
-        <source>Group by filter</source>
-        <translation type="obsolete">フィルタによるグループ</translation>
-    </message>
-    <message>
-        <source>Group by scale</source>
-        <translation type="obsolete">スケールによるグループ</translation>
-    </message>
-    <message>
-        <source>Add scales</source>
-        <translation type="obsolete">スケール追加</translation>
-    </message>
-    <message>
-        <source>Add categories</source>
-        <translation type="obsolete">カテゴリ追加</translation>
-    </message>
-    <message>
-        <source>Add ranges</source>
-        <translation type="obsolete">範囲追加</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="67"/>
         <source>Edit rule</source>
         <translation>ルール編集</translation>
-    </message>
-    <message>
-        <source>Groups of rules cannot be edited.</source>
-        <translation type="obsolete">ルールのグループは編集できません.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="70"/>
@@ -50325,10 +40280,6 @@ standard deviation ×</source>
         <translation>新しいSpatialiteデータベースファイル</translation>
     </message>
     <message>
-        <source>SpatiaLite (*.sqlite *.db )</source>
-        <translation type="obsolete">SpatiaLite (*.sqlite *.db)</translation>
-    </message>
-    <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="273"/>
         <source>New Connection...</source>
         <translation>新しい接続...</translation>
@@ -50355,48 +40306,6 @@ standard deviation ×</source>
 </source>
         <translation>データベース作成に失敗しました:
 </translation>
-    </message>
-</context>
-<context>
-    <name>QgsSVGDiagramFactoryWidget</name>
-    <message>
-        <source>Select svg file</source>
-        <translation type="obsolete">svgファイルを選択する</translation>
-    </message>
-    <message>
-        <source>Select new preview directory</source>
-        <translation type="obsolete">新しいプレビューディレクトリを選択する</translation>
-    </message>
-    <message>
-        <source>Creating icon for file %1</source>
-        <translation type="obsolete">ファイル%1のアイコンを作っています</translation>
-    </message>
-</context>
-<context>
-    <name>QgsSVGDiagramFactoryWidgetBase</name>
-    <message>
-        <source>Form</source>
-        <translation type="obsolete">フォーム</translation>
-    </message>
-    <message>
-        <source>Search directories</source>
-        <translation type="obsolete">ディレクトリを探す</translation>
-    </message>
-    <message>
-        <source>Add...</source>
-        <translation type="obsolete">追加...</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">削除</translation>
-    </message>
-    <message>
-        <source>SVG Preview</source>
-        <translation type="obsolete">SVGプレビュー</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
     </message>
 </context>
 <context>
@@ -50506,184 +40415,6 @@ standard deviation ×</source>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="97"/>
         <source>Optionally pick an input form for attribute editing (QT Designer UI format), it will be stored in the database</source>
         <translation>オプションで属性編集フォームをピックすると(QT Designer UI形式)　それはデータベースに保存されます</translation>
-    </message>
-    <message>
-        <source>Optionally pick an input form for attribute editing (QT Creator UI format), it will be stored on the db</source>
-        <translation type="obsolete">オプションで属性編集フォームをピックすると(QT Creator UI形式)　それはdbに保存されます</translation>
-    </message>
-</context>
-<context>
-    <name>QgsScaleBarPlugin</name>
-    <message>
-        <source> metres/km</source>
-        <translation type="obsolete">メートル/km</translation>
-    </message>
-    <message>
-        <source> feet</source>
-        <translation type="obsolete">フィート</translation>
-    </message>
-    <message>
-        <source> degrees</source>
-        <translation type="obsolete">度</translation>
-    </message>
-    <message>
-        <source> km</source>
-        <translation type="obsolete"> km</translation>
-    </message>
-    <message>
-        <source> mm</source>
-        <translation type="obsolete"> mm</translation>
-    </message>
-    <message>
-        <source> cm</source>
-        <translation type="obsolete"> cm</translation>
-    </message>
-    <message>
-        <source> m</source>
-        <translation type="obsolete"> m</translation>
-    </message>
-    <message>
-        <source> foot</source>
-        <translation type="obsolete">フィート</translation>
-    </message>
-    <message>
-        <source> degree</source>
-        <translation type="obsolete">度</translation>
-    </message>
-    <message>
-        <source> unknown</source>
-        <translation type="obsolete">不明</translation>
-    </message>
-    <message>
-        <source>Top Left</source>
-        <translation type="obsolete">左上</translation>
-    </message>
-    <message>
-        <source>Bottom Left</source>
-        <translation type="obsolete">左下</translation>
-    </message>
-    <message>
-        <source>Top Right</source>
-        <translation type="obsolete">右上</translation>
-    </message>
-    <message>
-        <source>Bottom Right</source>
-        <translation type="obsolete">右下</translation>
-    </message>
-    <message>
-        <source>Tick Down</source>
-        <translation type="obsolete">ティックダウン</translation>
-    </message>
-    <message>
-        <source>Tick Up</source>
-        <translation type="obsolete">ティックアップ</translation>
-    </message>
-    <message>
-        <source>Bar</source>
-        <translation type="obsolete">バー</translation>
-    </message>
-    <message>
-        <source>Box</source>
-        <translation type="obsolete">ボックス</translation>
-    </message>
-    <message>
-        <source>&amp;Scale Bar</source>
-        <translation type="obsolete">スケールバー(&amp;S)</translation>
-    </message>
-    <message>
-        <source>Creates a scale bar that is displayed on the map canvas</source>
-        <translation type="obsolete">地図キャンバス上に表示されるスケールバーを作成します</translation>
-    </message>
-    <message>
-        <source>&amp;Decorations</source>
-        <translation type="obsolete">地図整飾(&amp;D)</translation>
-    </message>
-    <message>
-        <source> feet/miles</source>
-        <translation type="obsolete">フィート/マイル</translation>
-    </message>
-    <message>
-        <source> miles</source>
-        <translation type="obsolete">マイル</translation>
-    </message>
-    <message>
-        <source> mile</source>
-        <translation type="obsolete">マイル</translation>
-    </message>
-    <message>
-        <source> inches</source>
-        <translation type="obsolete">インチ</translation>
-    </message>
-</context>
-<context>
-    <name>QgsScaleBarPluginGuiBase</name>
-    <message>
-        <source>Scale Bar Plugin</source>
-        <translation type="obsolete">スケールバープラグイン</translation>
-    </message>
-    <message>
-        <source>Placement</source>
-        <translation type="obsolete">配置</translation>
-    </message>
-    <message>
-        <source>Top Left</source>
-        <translation type="obsolete">左上</translation>
-    </message>
-    <message>
-        <source>Top Right</source>
-        <translation type="obsolete">右上</translation>
-    </message>
-    <message>
-        <source>Bottom Left</source>
-        <translation type="obsolete">左下</translation>
-    </message>
-    <message>
-        <source>Bottom Right</source>
-        <translation type="obsolete">右下</translation>
-    </message>
-    <message>
-        <source>Scale bar style</source>
-        <translation type="obsolete">スケールバースタイル</translation>
-    </message>
-    <message>
-        <source>Color of bar</source>
-        <translation type="obsolete">バーの色</translation>
-    </message>
-    <message>
-        <source>Click to select the color</source>
-        <translation type="obsolete">クリックして色を選択する</translation>
-    </message>
-    <message>
-        <source>Size of bar</source>
-        <translation type="obsolete">バーのサイズ</translation>
-    </message>
-    <message>
-        <source>Tick Down</source>
-        <translation type="obsolete">ティックダウン</translation>
-    </message>
-    <message>
-        <source>Tick Up</source>
-        <translation type="obsolete">ティックアップ</translation>
-    </message>
-    <message>
-        <source>Box</source>
-        <translation type="obsolete">ボックス</translation>
-    </message>
-    <message>
-        <source>Bar</source>
-        <translation type="obsolete">バー</translation>
-    </message>
-    <message>
-        <source>Select the style of the scale bar</source>
-        <translation type="obsolete">縮尺バーのスタイルを選択</translation>
-    </message>
-    <message>
-        <source>Enable scale bar</source>
-        <translation type="obsolete">縮尺バーを使用</translation>
-    </message>
-    <message>
-        <source>Automatically snap to round number on resize</source>
-        <translation type="obsolete">リサイズ時に自動的に四捨五入</translation>
     </message>
 </context>
 <context>
@@ -50809,10 +40540,6 @@ standard deviation ×</source>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="423"/>
         <source>File is not a valid query document</source>
         <translation>ファイルは正しいクエリ文書ではありません</translation>
-    </message>
-    <message>
-        <source>Error creating search tree</source>
-        <translation type="obsolete">サーチツリー作成中にエラーが発生しました</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="461"/>
@@ -51044,10 +40771,6 @@ The error was:
         <translation>フォーム</translation>
     </message>
     <message>
-        <source>Contrast enhancement</source>
-        <translation type="obsolete">コントラスト強調</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgssinglebandgrayrendererwidgetbase.ui" line="22"/>
         <source>Contrast
 enhancement</source>
@@ -51122,10 +40845,6 @@ enhancement</source>
         <location filename="../src/gui/raster/qgssinglebandpseudocolorrendererwidget.cpp" line="384"/>
         <source>Load Color Map</source>
         <translation>カラーマップをロード</translation>
-    </message>
-    <message>
-        <source>The color map for band %1 failed to load</source>
-        <translation type="obsolete">バンド%1のカラーマップロードに失敗しました</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgssinglebandpseudocolorrendererwidget.cpp" line="384"/>
@@ -51208,18 +40927,6 @@ enhancement</source>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="37"/>
         <source>Color interpolation</source>
         <translation>色の補間</translation>
-    </message>
-    <message>
-        <source>Add entry</source>
-        <translation type="obsolete">エントリを追加</translation>
-    </message>
-    <message>
-        <source>Delete entry</source>
-        <translation type="obsolete">行を削除</translation>
-    </message>
-    <message>
-        <source>Sort</source>
-        <translation type="obsolete">並べ替え</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="90"/>
@@ -51328,101 +41035,7 @@ enhancement</source>
     </message>
 </context>
 <context>
-    <name>QgsSingleSymbolDialog</name>
-    <message>
-        <source>Refresh markers</source>
-        <translation type="obsolete">マーカーをリフレッシュする</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <translation type="obsolete">なし</translation>
-    </message>
-    <message>
-        <source>Texture</source>
-        <translation type="obsolete">テクスチャ</translation>
-    </message>
-    <message>
-        <source>Open File</source>
-        <translation type="obsolete">ファイルを開く</translation>
-    </message>
-    <message>
-        <source>Images</source>
-        <translation type="obsolete">イメージ</translation>
-    </message>
-    <message>
-        <source>Images (*.png *.xpm *.jpg)</source>
-        <translation type="obsolete">イメージ (*.png *.xpm *.jpg)</translation>
-    </message>
-</context>
-<context>
-    <name>QgsSingleSymbolDialogBase</name>
-    <message>
-        <source>Single Symbol</source>
-        <translation type="obsolete">共通シンボル</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">大きさ</translation>
-    </message>
-    <message>
-        <source>In map units</source>
-        <translation type="obsolete">地図上の単位</translation>
-    </message>
-    <message>
-        <source>Drawing by field</source>
-        <translation type="obsolete">フィールドによる描画</translation>
-    </message>
-    <message>
-        <source>Rotation</source>
-        <translation type="obsolete">角度</translation>
-    </message>
-    <message>
-        <source>Area scale</source>
-        <translation type="obsolete">領域の増減</translation>
-    </message>
-    <message>
-        <source>Symbol</source>
-        <translation type="obsolete">シンボル</translation>
-    </message>
-    <message>
-        <source>Fill options</source>
-        <translation type="obsolete">塗りつぶしオプション</translation>
-    </message>
-    <message>
-        <source>Outline options</source>
-        <translation type="obsolete">アウトラインオプション</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">幅</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Point Symbol</source>
-        <translation type="obsolete">点シンボル</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">ラベル</translation>
-    </message>
-</context>
-<context>
     <name>QgsSingleSymbolRendererV2Widget</name>
-    <message>
-        <source>Rotation field</source>
-        <translation type="obsolete">回転フィールド</translation>
-    </message>
-    <message>
-        <source>Size scale field</source>
-        <translation type="obsolete">サイズ縮尺フィールド</translation>
-    </message>
-    <message>
-        <source>- no field -</source>
-        <translation type="obsolete">- 無フィールド -</translation>
-    </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssinglesymbolrendererv2widget.cpp" line="67"/>
         <source>Symbol levels...</source>
@@ -51485,10 +41098,6 @@ enhancement</source>
 </context>
 <context>
     <name>QgsSnappingDialog</name>
-    <message>
-        <source>Snapping Options</source>
-        <translation type="obsolete">スナップオプション</translation>
-    </message>
     <message>
         <location filename="../src/app/qgssnappingdialog.cpp" line="60"/>
         <source>Snapping and Digitizing Options</source>
@@ -51741,10 +41350,6 @@ SQL: %1</translation>
         <translation>不明が発生</translation>
     </message>
     <message>
-        <source>SQLite error getting feature: %1</source>
-        <translation type="obsolete">SQLite エラー　地物取得: %1</translation>
-    </message>
-    <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4976"/>
         <source>FAILURE: Field %1 not found.</source>
         <translation>失敗: フィールド%1が見つかりません.</translation>
@@ -51771,10 +41376,6 @@ SQL: %1</translation>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="60"/>
         <source>&amp;Add</source>
         <translation>追加(&amp;A)</translation>
-    </message>
-    <message>
-        <source>&amp;Build Query</source>
-        <translation type="obsolete">クエリ作成(&amp;B)</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="64"/>
@@ -51900,14 +41501,6 @@ but implies better performance thereafter.</source>
 %2</translation>
     </message>
     <message>
-        <source>seems to be a valid SQLite DB, but not a SpatiaLite&apos;s one ...</source>
-        <translation type="obsolete">正しいSQLite DBのようですが正しいSpatiaLiteではありません...</translation>
-    </message>
-    <message>
-        <source>unknown error cause</source>
-        <translation type="obsolete">不明なエラーが発生しました</translation>
-    </message>
-    <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="239"/>
         <source>@</source>
         <translation>@</translation>
@@ -51950,45 +41543,6 @@ but implies better performance thereafter.</source>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="342"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation>%1の接続と全ての設定を削除してもいいですか？</translation>
-    </message>
-</context>
-<context>
-    <name>QgsSpatiaLiteSourceSelectBase</name>
-    <message>
-        <source>Add SpatiaLite Table(s)</source>
-        <translation type="obsolete">SpatiaLiteテーブルの追加</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">削除</translation>
-    </message>
-    <message>
-        <source>New</source>
-        <translation type="obsolete">新規</translation>
-    </message>
-    <message>
-        <source>Connect</source>
-        <translation type="obsolete">接続</translation>
-    </message>
-    <message>
-        <source>Search options...</source>
-        <translation type="obsolete">検索オプション...</translation>
-    </message>
-    <message>
-        <source>SpatiaLite Databases</source>
-        <translation type="obsolete">SpatiaLiteデータベース</translation>
-    </message>
-    <message>
-        <source>Search</source>
-        <translation type="obsolete">検索</translation>
-    </message>
-    <message>
-        <source>Search mode</source>
-        <translation type="obsolete">検索モード</translation>
-    </message>
-    <message>
-        <source>Search in columns</source>
-        <translation type="obsolete">カラム内検索</translation>
     </message>
 </context>
 <context>
@@ -52046,14 +41600,6 @@ but implies better performance thereafter.</source>
 </context>
 <context>
     <name>QgsSpatialQueryDialog</name>
-    <message>
-        <source>The spatial query requires at least two layers</source>
-        <translation type="obsolete">空間クエリは少なくとも2つのレイヤが必要です</translation>
-    </message>
-    <message>
-        <source>Insufficient number of layers</source>
-        <translation type="obsolete">レイヤの数が足りません</translation>
-    </message>
     <message numerus="yes">
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="167"/>
         <source>%n selected geometries</source>
@@ -52068,29 +41614,9 @@ but implies better performance thereafter.</source>
         <translation>選択されたジオメトリ</translation>
     </message>
     <message>
-        <source>Total: %1</source>
-        <translation type="obsolete">合計:%1</translation>
-    </message>
-    <message>
-        <source>&lt;&lt;-- Begin at [%L1] --</source>
-        <translation type="obsolete">&lt;&lt;-- 開始 [%L1]--</translation>
-    </message>
-    <message>
-        <source>Query:</source>
-        <translation type="obsolete">クエリ:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="211"/>
         <source>&lt; %1 &gt;</source>
         <translation>&lt; %1&gt;</translation>
-    </message>
-    <message>
-        <source>Result: %1 features</source>
-        <translation type="obsolete">結果 %1 地物</translation>
-    </message>
-    <message>
-        <source>-- Finish at [%L1] (processing time %L2 minutes) --&gt;&gt;</source>
-        <translation type="obsolete">-- 終了 [%L1] (プロセッシングタイム %L2 分) --&gt;&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="322"/>
@@ -52102,10 +41628,6 @@ but implies better performance thereafter.</source>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="323"/>
         <source>all = %1</source>
         <translation>全て = %1</translation>
-    </message>
-    <message>
-        <source>Total</source>
-        <translation type="obsolete">合計</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="89"/>
@@ -52290,10 +41812,6 @@ CRS of map is %1.
         <translation>トポロジカル操作を行うレイヤでは地物が選択されます</translation>
     </message>
     <message>
-        <source>Target layer</source>
-        <translation type="obsolete">対象レイヤ</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="48"/>
         <source>Select source features from</source>
         <translation>以下の場所からソース地物を選択する</translation>
@@ -52359,10 +41877,6 @@ p, li { white-space: pre-wrap; }
         <translation>選択しているもので新しいレイヤを作る</translation>
     </message>
     <message>
-        <source>FIDs identified</source>
-        <translation type="obsolete">指定されたFID</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="273"/>
         <source>Select one FID to identify geometry of feature</source>
         <translation>地物のジオメトリを特定するために１個のFIDを選択して下さい</translation>
@@ -52381,10 +41895,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="353"/>
         <source>Log messages</source>
         <translation>ログメッセージ</translation>
-    </message>
-    <message>
-        <source>Reference layer</source>
-        <translation type="obsolete">参照レイヤ</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="124"/>
@@ -52415,42 +41925,14 @@ p, li { white-space: pre-wrap; }
         <translation>クエリの実行またはウィンドウのクローズを行ってください</translation>
     </message>
     <message>
-        <source>Topological operations between layers of target and reference</source>
-        <translation type="obsolete">対象レイヤと参照レイヤの間で実行されるトポロジカル操作</translation>
-    </message>
-    <message>
-        <source>Topological operation</source>
-        <translation type="obsolete">トポロジカル操作</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="99"/>
         <source>Select the topological operation</source>
         <translation>トポロジカル操作を選択してください</translation>
     </message>
     <message>
-        <source>Results (click to highlight on map)</source>
-        <translation type="obsolete">結果(クリックすると地図上でハイライトします)</translation>
-    </message>
-    <message>
-        <source>Select item to identify geometry of feature</source>
-        <translation type="obsolete">地物のジオメトリ情報を表示するアイテムを選択してください</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="350"/>
         <source>Check to show log processing of query</source>
         <translation>クエリ実行中のログをチェックしてください</translation>
-    </message>
-    <message>
-        <source>Show log messages</source>
-        <translation type="obsolete">ログメッセージの表示</translation>
-    </message>
-    <message>
-        <source>Total of features from query</source>
-        <translation type="obsolete">クエリによる地物の合計</translation>
-    </message>
-    <message>
-        <source> Total</source>
-        <translation type="obsolete">合計</translation>
     </message>
 </context>
 <context>
@@ -52471,25 +41953,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="161"/>
         <source>DEBUG</source>
         <translation>デバッグ</translation>
-    </message>
-</context>
-<context>
-    <name>QgsSpatialiteSridsDialog</name>
-    <message>
-        <source>SpatiaLite Database</source>
-        <translation type="obsolete">SpatiaLiteデータベース</translation>
-    </message>
-    <message>
-        <source>Unable to open the database</source>
-        <translation type="obsolete">データベースを開けません</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">エラー</translation>
-    </message>
-    <message>
-        <source>Failed to load SRIDS: %1</source>
-        <translation type="obsolete">SRIDS：%1のロードに失敗しました</translation>
     </message>
 </context>
 <context>
@@ -52537,10 +42000,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/spit/qgsspit.cpp" line="139"/>
         <source>Confirm Delete</source>
         <translation>削除を確認</translation>
-    </message>
-    <message>
-        <source>Shapefiles (*.shp);;All files (*)</source>
-        <translation type="obsolete">シェープファイル (*.shp);; 全ファイル (*)</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="262"/>
@@ -53033,108 +42492,6 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;この素晴らしいソフトウェアを開発するために私たちは本当にハードに働いています. このソフトウェアのクールな機能を見て下さい このソフトウェアの心地よさを感じて下さい. QGISは決意を持った開発者チームの奉仕的活動で作られています. 私たちはこのソフトウェアをコピー&amp;amp;共有することでできるだけ多くの人に使ってもらいたいです.  QGISを使うことにによってあなたがお金を節約できたり、あなたが私達の仕事を気に入ってお金に余裕がある場合はQGIS開発のスポンサーになることを検討して下さい. 私たちはスポンサーによって支払われたお金を年に2回開催するハックフェストの旅費と関連費用やプロジェクトの目的一般に利用します. 是非&lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS スポンサーWebページ&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;を参照して詳しい情報を見て下さい. &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;スポンサーWebページ&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;で私達を財政的に支えてくれているすばらしい人達と企業のリストを見られます - 多大な謝意をささげます!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? Quantum GIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; for more details. In the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsors page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;この素晴らしいソフトウェアを開発するために私たちは本当にハードに働いています. このソフトウェアのクールな機能を見て下さい このソフトウェアの心地よさを感じて下さい. Quantum GISは決意を持った開発者チームの奉仕的活動で作られています. 私たちはこのソフトウェアをコピー&amp;amp;共有することでできるだけ多くの人に使ってもらいたいです.  QGISを使うことにによってあなたがお金を節約できたり、あなたが私達の仕事を気に入ってお金に余裕がある場合はQuantumGIS開発のスポンサーになることを検討して下さい. 私たちはスポンサーによって支払われたお金を年に2回開催するハックフェストの旅費と関連費用やプロジェクトの目的一般に利用されます. Please see the 是非&lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS スポンサーWebページ&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;を参照して詳しい情報を見て下さい. &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;スポンサーWebページ&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;で私達を財政的に支えてくれているすばらしい人達と企業のリストを見れます - 多大な謝意をささげます!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message utf8="true">
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? Quantum GIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt; for more details. In the list below you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;2011 Sponsors&lt;/span&gt;&lt;/p&gt;
-&lt;hr /&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; font-weight:600;&quot;&gt;SILVER SPONSORS&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.vorarlberg.at&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;State of Vorarlberg&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; color:#333333;&quot;&gt;, Austria (11.2011)&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.agi.so.ch&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Kanton Solothurn&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; color:#333333;&quot;&gt;, Switzerland (4.2011)&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;BRONZE SPONSORS&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; font-weight:600;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://gis.uster.ch/&quot;&gt;&lt;span style=&quot; font-family:&apos;Helvetica,Arial,sans-serif&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;City of Uster&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Helvetica,Arial,sans-serif&apos;; font-size:10pt; color:#0000ff;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Helvetica,Arial,sans-serif&apos;; font-size:10pt; color:#000000;&quot;&gt;, Switzerland&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Helvetica,Arial,sans-serif&apos;; color:#000000;&quot;&gt; (11.2011)&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.municipia.pt&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Municípia, SA&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;2010 Sponsors&lt;/span&gt;&lt;/p&gt;
-&lt;hr /&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;BRONZE SPONSORS&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; font-weight:600;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;この素晴らしいソフトウェアを開発するために私たちは本当にハードに働いています. このソフトウェアのクールな機能を見て下さい このソフトウェアの心地よさを感じて下さい. Quantum GISは決意を持った開発者チームの奉仕的活動で作られています. 私たちはこのソフトウェアをコピーと共有することによってできるだけ多くの人に使ってもらいたいです.  QGISを使うことにによってあなたがお金を節約できたり、あなたが私達の仕事を気に入ってお金に余裕がある場合はQuantumGIS開発のスポンサーになることを検討して下さい. 私たちはスポンサーによって支払われたお金を年に2回開催するハックフェストの旅費と関連費用やプロジェクトの目的一般に利用されます.是非 &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS スポンサーシップWebページ&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;を参照して詳しい情報を見て下さい.以下のリストは私達を財政的に支えてくれているすばらしい人達と企業です - 多大な謝意をささげます!&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;2011 Sponsors&lt;/span&gt;&lt;/p&gt;
-&lt;hr /&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; font-weight:600;&quot;&gt;SILVER SPONSORS&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.vorarlberg.at&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;State of Vorarlberg&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; color:#333333;&quot;&gt;, Austria (11.2011)&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.agi.so.ch&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Kanton Solothurn&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; color:#333333;&quot;&gt;, Switzerland (4.2011)&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;BRONZE SPONSORS&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; font-weight:600;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://gis.uster.ch/&quot;&gt;&lt;span style=&quot; font-family:&apos;Helvetica,Arial,sans-serif&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;City of Uster&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Helvetica,Arial,sans-serif&apos;; font-size:10pt; color:#0000ff;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Helvetica,Arial,sans-serif&apos;; font-size:10pt; color:#000000;&quot;&gt;, Switzerland&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Helvetica,Arial,sans-serif&apos;; color:#000000;&quot;&gt; (11.2011)&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.municipia.pt&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Municípia, SA&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;2010 Sponsors&lt;/span&gt;&lt;/p&gt;
-&lt;hr /&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;BRONZE SPONSORS&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; font-weight:600;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message utf8="true">
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? Quantum GIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt; for more details. In the list below you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;2011 Sponsors&lt;/span&gt;&lt;/p&gt;
-&lt;hr /&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-weight:600;&quot;&gt;BRONZE SPONSORS&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-weight:600;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.municipia.pt&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Municípia, SA&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;2010 Sponsors&lt;/span&gt;&lt;/p&gt;
-&lt;hr /&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-weight:600;&quot;&gt;BRONZE SPONSORS&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-weight:600;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;私たちはあなたのためにこの素晴らしいソフトウェアを作成するのに大変ハードに働いています.このソフトはなんてクールな機能を持っているでしょうか? このソフトウェアの心地よさを感じて下さい. Quantum GIS は決心した開発者チームの奉仕活動で作られています.私たちはこのソフトウェアをコピー,&amp;amp共有してできるだけ多くの人に利用してもらうことを望みます. もしQGISを使ってあなたが費用を節約できたり,我々の仕事を気にってくれてお金に余裕がある場合はどうかQuantum GISの開発のスポンサーになることを検討して下さい. 私たちはスポンサーからいただいたお金を年に2回のハックフェストに関係する旅費と費用やプロジェクトの目的のための諸費用に利用します. 是非 &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;の詳細情報を参照して下さい. 以下のリストは私たちを財政的に助けてくれている人々と会社です - とても大きな &apos;ありがとう&apos;をささげますl!&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;2011 Sponsors&lt;/span&gt;&lt;/p&gt;
-&lt;hr /&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-weight:600;&quot;&gt;BRONZE SPONSORS&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-weight:600;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.municipia.pt&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Municípia, SA&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;2010 Sponsors&lt;/span&gt;&lt;/p&gt;
-&lt;hr /&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-weight:600;&quot;&gt;BRONZE SPONSORS&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-weight:600;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
 </context>
 <context>
     <name>QgsSqlAnywhereProvider</name>
@@ -53159,13 +42516,6 @@ p, li { white-space: pre-wrap; }
         <translation>適切なキーカラムがありません</translation>
     </message>
     <message>
-        <source>The source relation %1 has no column suitable for use as a unique key.
-
-Quantum GIS requires that the relation has an integer column no larger than 32 bits containing unique values. </source>
-        <translation type="obsolete">%1のソースリレーションはユニークキーに適したカラムがありません
-Quantum GISでは32bit以下の整数をリレーションのユニーク値として持つ必要があります.</translation>
-    </message>
-    <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="221"/>
         <source>Error loading attributes</source>
         <translation>属性ロードエラー</translation>
@@ -53180,14 +42530,6 @@ Quantum GISでは32bit以下の整数をリレーションのユニーク値と�
         <source>Duplicate field %1 found
 </source>
         <translation>重複フィールド%1がありました</translation>
-    </message>
-    <message>
-        <source>Error describing bind parameters</source>
-        <translation type="obsolete">結合パラメータの記述エラー</translation>
-    </message>
-    <message>
-        <source>Error binding parameters</source>
-        <translation type="obsolete">結合パラメータエラー</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="136"/>
@@ -53274,17 +42616,9 @@ QGISでは32bit以下の整数をリレーションのユニーク値として�
         <translation>QGISは平面的データのみをサポートしていて互換性の無い平面投影が検出されました.SQL Anywhereデータプロバイダは平面データWGS 84(SRID=%1)への変換を試みます.</translation>
     </message>
     <message>
-        <source>Column %1 has a geometry type of %2, which Quantum GIS does not currently support.</source>
-        <translation type="obsolete">カラム%1のジオメトリタイプ%2は Quantum GISでは現在サポートされていません.</translation>
-    </message>
-    <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1528"/>
         <source>Mixed Spatial Reference Systems</source>
         <translation>空間参照システムが混在しています</translation>
-    </message>
-    <message>
-        <source>Column %1 is not restricted to a single SRID, which Quantum GIS requires.</source>
-        <translation type="obsolete">カラム%1は単一のSRIDに限定されていません,Quantum GISではSRIDは１つである必要があります.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1560"/>
@@ -53295,14 +42629,6 @@ QGISでは32bit以下の整数をリレーションのユニーク値として�
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1777"/>
         <source>Error loading SRS definition</source>
         <translation>SRS定義ロードエラー</translation>
-    </message>
-    <message>
-        <source>Because Quantum GIS supports only planar data, the SQL Anywhere data provider will transform the data to the compatible planar projection (SRID=%1).</source>
-        <translation type="obsolete">Quantum GISは平面的データのみをサポートしているのでSQL Anywhereデータプロバイダは平面投影互換データに変換を行います(SRID=%1).</translation>
-    </message>
-    <message>
-        <source>Because Quantum GIS supports only planar data and no compatible planar projection was found, the SQL Anywhere data provider will attempt to transform the data to planar WGS 84 (SRID=%1).</source>
-        <translation type="obsolete">Quantum GISは平面的データのみをサポートしていて互換性の無い平面投影が検出されました.SQL Anywhereデータプロバイダは平面データWGS 84(SRID=%1)への変換を試みます.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1847"/>
@@ -53527,14 +42853,6 @@ Overwrite?</source>
         <translation>カラー階調(%1)</translation>
     </message>
     <message>
-        <source>Symbol name</source>
-        <translation type="obsolete">シンボルの名前</translation>
-    </message>
-    <message>
-        <source>Please enter name for new symbol:</source>
-        <translation type="obsolete">新しいシンボルの名前を入力してください:</translation>
-    </message>
-    <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="335"/>
         <source>new symbol</source>
         <translation>新しいシンボル</translation>
@@ -53744,26 +43062,6 @@ There was a problem with your symbol database.</source>
         <source>There was some error while editing the smart group.</source>
         <translation>スマートグループ編集中にいくつかのエラーが発生しました.</translation>
     </message>
-    <message>
-        <source>Color ramp name</source>
-        <translation type="obsolete">カラー階調名</translation>
-    </message>
-    <message>
-        <source>Please enter name for new color ramp:</source>
-        <translation type="obsolete">新しいカラー階調の名前を入力して下さい:</translation>
-    </message>
-    <message>
-        <source>new color ramp</source>
-        <translation type="obsolete">新しいカラー階調</translation>
-    </message>
-    <message>
-        <source>Load styles</source>
-        <translation type="obsolete">スタイルを読み込む</translation>
-    </message>
-    <message>
-        <source>XML files (*.xml *XML)</source>
-        <translation type="obsolete">XMLファイル(*.xml *XML)</translation>
-    </message>
 </context>
 <context>
     <name>QgsStyleV2ManagerDialogBase</name>
@@ -53771,10 +43069,6 @@ There was a problem with your symbol database.</source>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="14"/>
         <source>Style Manager</source>
         <translation>スタイルマネージャ</translation>
-    </message>
-    <message>
-        <source>Style item type</source>
-        <translation type="obsolete">スタイルアイテムタイプ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="186"/>
@@ -53812,10 +43106,6 @@ There was a problem with your symbol database.</source>
         <translation>共有</translation>
     </message>
     <message>
-        <source>Add</source>
-        <translation type="obsolete">追加</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="341"/>
         <source>Edit item</source>
         <translation>アイテム編集</translation>
@@ -53829,18 +43119,6 @@ There was a problem with your symbol database.</source>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="354"/>
         <source>Remove item</source>
         <translation>アイテム削除</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">削除</translation>
-    </message>
-    <message>
-        <source>Export...</source>
-        <translation type="obsolete">エクスポート...</translation>
-    </message>
-    <message>
-        <source>Import...</source>
-        <translation type="obsolete">インポート...</translation>
     </message>
 </context>
 <context>
@@ -53968,22 +43246,6 @@ There was a problem with your symbol database.</source>
         <source>File not found</source>
         <translation>ファイルがみつかりません</translation>
     </message>
-    <message>
-        <source>Invalid file</source>
-        <translation type="obsolete">不正なファイル</translation>
-    </message>
-    <message>
-        <source>Error, file does not exist or is not readable</source>
-        <translation type="obsolete">エラー,ファイルが存在しないか読み込みできません</translation>
-    </message>
-    <message>
-        <source>Invalid file url</source>
-        <translation type="obsolete">不正なURL</translation>
-    </message>
-    <message>
-        <source>Error, file URL is invalid</source>
-        <translation type="obsolete">エラー,ファイルURLが不正です</translation>
-    </message>
 </context>
 <context>
     <name>QgsSymbolLevelsV2Dialog</name>
@@ -54012,42 +43274,7 @@ There was a problem with your symbol database.</source>
     </message>
 </context>
 <context>
-    <name>QgsSymbolV2PropertiesDialog</name>
-    <message>
-        <source>Outline: %1</source>
-        <translation type="obsolete">アウトライン:%1</translation>
-    </message>
-</context>
-<context>
     <name>QgsSymbolV2SelectorDialog</name>
-    <message>
-        <source>Symbol name</source>
-        <translation type="obsolete">シンボルの名前</translation>
-    </message>
-    <message>
-        <source>Please enter name for the symbol:</source>
-        <translation type="obsolete">シンボルの名前を入力して下さい:</translation>
-    </message>
-    <message>
-        <source>New symbol</source>
-        <translation type="obsolete">新規シンボル</translation>
-    </message>
-    <message>
-        <source>Save symbol</source>
-        <translation type="obsolete">シンボルを保存する</translation>
-    </message>
-    <message>
-        <source>Symbol with name &apos;%1&apos; already exists. Overwrite?</source>
-        <translation type="obsolete">%1という名前のシンボルはすでに存在します.上書きしますか?</translation>
-    </message>
-    <message>
-        <source>Transparency %1%</source>
-        <translation type="obsolete">透過率 %1%</translation>
-    </message>
-    <message>
-        <source>Transparency: %1%</source>
-        <translation type="obsolete">透過率 %1%</translation>
-    </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="404"/>
         <source>Invalid Selection!</source>
@@ -54095,82 +43322,6 @@ There was a problem with your symbol database.</source>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="136"/>
         <source>Move down</source>
         <translation>下に移動</translation>
-    </message>
-    <message>
-        <source>Change...</source>
-        <translation type="obsolete">変更...</translation>
-    </message>
-    <message>
-        <source>Unit</source>
-        <translation type="obsolete">単位</translation>
-    </message>
-    <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">マイルメーター</translation>
-    </message>
-    <message>
-        <source>Map unit</source>
-        <translation type="obsolete">地図上の単位</translation>
-    </message>
-    <message>
-        <source>Opacity</source>
-        <translation type="obsolete">透過率</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="obsolete">色</translation>
-    </message>
-    <message>
-        <source>Change</source>
-        <translation type="obsolete">変更</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">大きさ</translation>
-    </message>
-    <message>
-        <source>Rotation</source>
-        <translation type="obsolete">角度</translation>
-    </message>
-    <message utf8="true">
-        <source>°</source>
-        <translation type="obsolete">°</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">幅</translation>
-    </message>
-    <message>
-        <source>Save as style</source>
-        <translation type="obsolete">スタイルとして保存する</translation>
-    </message>
-    <message>
-        <source>Saved styles</source>
-        <translation type="obsolete">保存されているスタイル</translation>
-    </message>
-    <message>
-        <source>Symbol Name</source>
-        <translation type="obsolete">シンボル名</translation>
-    </message>
-    <message>
-        <source>Properties</source>
-        <translation type="obsolete">プロパティ</translation>
-    </message>
-    <message>
-        <source>Advanced</source>
-        <translation type="obsolete">拡張機能</translation>
-    </message>
-    <message>
-        <source>Add to style</source>
-        <translation type="obsolete">スタイルに追加</translation>
-    </message>
-    <message>
-        <source>Symbols from style</source>
-        <translation type="obsolete">スタイルからのシンボル</translation>
-    </message>
-    <message>
-        <source>Style manager...</source>
-        <translation type="obsolete">スタイルマネージャ...</translation>
     </message>
 </context>
 <context>
@@ -54265,10 +43416,6 @@ There was a problem with your symbol database.</source>
         <source>Select font color</source>
         <translation>フォント色の選択</translation>
     </message>
-    <message>
-        <source>Select background color</source>
-        <translation type="obsolete">背景色の選択</translation>
-    </message>
 </context>
 <context>
     <name>QgsTextAnnotationDialogBase</name>
@@ -54287,10 +43434,6 @@ There was a problem with your symbol database.</source>
         <source>I</source>
         <translation>I</translation>
     </message>
-    <message>
-        <source>Background color</source>
-        <translation type="obsolete">背景色</translation>
-    </message>
 </context>
 <context>
     <name>QgsTileScaleWidget</name>
@@ -54308,21 +43451,9 @@ There was a problem with your symbol database.</source>
 <context>
     <name>QgsTipFactory</name>
     <message>
-        <source>Quantum GIS is open source</source>
-        <translation type="obsolete">Quantum GIS はオープンソースです</translation>
-    </message>
-    <message>
-        <source>Quantum GIS is open source software. This means that the software source code can be freely viewed and modified. The GPL places a restriction that any modifications you make must be made available to the Quantum GIS project, and that you can not create a new version of Quantum GIS under a &apos;closed source&apos; license. Visit &lt;a href=&quot;http://qgis.org&quot;&gt; the QGIS home page (http://qgis.org)&lt;/a&gt; for more information.</source>
-        <translation type="obsolete">Quantum GISはオープンソースソフトウェアです.これはこのソフトウェアのソースコードを自由に見て改造できることを意味します.あなたが行う全ての改造にはQuantum GISプロジェクトに対してGPLの制約を守らなければいけません.またあなたは&apos;クローズドソース&apos;ライセンスでQuantum GISの新しいバージョンを作ってはいけません.&lt;a href=&quot;http://qgis.org&quot;&gt;QGISホームページ(http://qgis.org)&lt;/a&gt;を訪問してさらに詳しい情報を参照して下さい.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgstipfactory.cpp" line="40"/>
         <source>QGIS Publications</source>
         <translation>QGISパブリケーション</translation>
-    </message>
-    <message>
-        <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case studies section&lt;/a&gt; of the Quantum GIS home page (http://http://www.qgis.org/en/community/qgis-case-studies.html).</source>
-        <translation type="obsolete">もしあなたが科学論文を書いたり他の著作でQGISを参照するようなことがあった場合,私たちはあなたの著作をQuantum GIS (http://http://www.qgis.org/en/community/qgis-case-studies.html)の&lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;ケーススタディセクション&lt;/a&gt;に収録したいです。</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="47"/>
@@ -54340,14 +43471,6 @@ There was a problem with your symbol database.</source>
         <translation>QGISメーリングリスト</translation>
     </message>
     <message>
-        <source>If you need help using QGIS we have a &apos;users&apos;  mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating the the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;community section&lt;/a&gt; of the QGIS home page (http://www.qgis.org/en/community/mailing-lists.html).</source>
-        <translation type="obsolete">もしあなたがQGISの利用でヘルプが必要な場合&apos;users&apos;メーリングリストがユーザがこのソフトウェア利用についてお互いに助け合えるところなのでアクセスするといいでしょう.私たちは&apos;developers&apos;メーリングリストも持っています.そこではQGISのプログラムコードをベースにした論議が行われています.メーリングリストへの参加方法等の詳細はQGISホームページ (http://www.qgis.org/en/community/mailing-lists.html)の&lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;community section&lt;/a&gt;を参照して下さい.</translation>
-    </message>
-    <message>
-        <source>Quantum GIS is open source software. This means that the software source code can be freely viewed and modified. The GPL places a restriction that any modifications you make must be made available in source form to whoever you give modified versions to, and that you can not create a new version of Quantum GIS under a &apos;closed source&apos; license. Visit &lt;a href=&quot;http://qgis.org&quot;&gt; the QGIS home page (http://qgis.org)&lt;/a&gt; for more information.</source>
-        <translation type="obsolete">Quantum GISはオープンソースソフトウェアです.これはこのソフトウェアのソースコードを自由に見て改造できることを意味します.あなたが行う全ての改造にはQuantum GISプロジェクトに対してGPLの制約を守らなければいけません.またあなたは&apos;クローズドソース&apos;ライセンスでQuantum GISの新しいバージョンを作ってはいけません.&lt;a href=&quot;http://qgis.org&quot;&gt;QGISホームページ(http://qgis.org)&lt;/a&gt;を訪問してさらに詳しい情報を参照して下さい.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgstipfactory.cpp" line="57"/>
         <source>If you need help using QGIS we have a &apos;users&apos;  mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;community section&lt;/a&gt; of the QGIS home page (http://www.qgis.org/en/community/mailing-lists.html).</source>
         <translation>もしあなたがQGISの利用でヘルプが必要な場合&apos;users&apos;メーリングリストがユーザがこのソフトウェア利用についてお互いに助け合えるところなのでアクセスするといいでしょう.私たちは&apos;developers&apos;メーリングリストも持っています.そこではQGISのプログラムコードをベースにした論議が行われています.メーリングリストへの参加方法等の詳細はQGISホームページ (http://www.qgis.org/en/community/mailing-lists.html)の&lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;community section&lt;/a&gt;を参照して下さい.</translation>
@@ -54356,14 +43479,6 @@ There was a problem with your symbol database.</source>
         <location filename="../src/app/qgstipfactory.cpp" line="65"/>
         <source>Is it &apos;QGIS&apos; or &apos;Quantum GIS&apos;?</source>
         <translation>’QGIS’　それとも &apos;Quantum GIS&apos; ?</translation>
-    </message>
-    <message>
-        <source>Both are correct. For articles we suggest you write &apos;Quantum GIS (QGIS) is ....&apos; and then refer to it as QGIS thereafter.</source>
-        <translation type="obsolete">両方とも正しいです.論文や記事では最初に &apos;Quantum GIS (QGIS) &apos;と表記して、以後文章内ではQGISというように記述することをお勧めします.</translation>
-    </message>
-    <message>
-        <source>How do I refer to Quantum GIS?</source>
-        <translation type="obsolete">Quantum GISについてどのように紹介すればいいでしょうか?</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="29"/>
@@ -54504,18 +43619,6 @@ There was a problem with your symbol database.</source>
         <location filename="../src/app/qgstipfactory.cpp" line="188"/>
         <source>QGIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage Plugins menu. In addition there are over 150 Python plugins contributed by the user community that can be installed from the Plugins-&gt;Fetch Python Plugins menu. Don&apos;t miss out on all QGIS has to offer---check out the plugins and see what they can do for you.</source>
         <translation>QGISはプラグインによって機能を拡張できます.QGISはいくつかのコアプラグインを同梱して出荷されます,それらはメニュープラグイン-&gt;プラグインの管理で見ることができます.加えてコミュニティによって追加された150以上のPythonプラグインがあります.それらはメニュープラグイン-&gt;Pythonプラグインを呼び出すを使ってインストールできます.QGISが提供するすべてを見逃さないでください---プラグインをチェックしてどのように利用できるか見て下さい.</translation>
-    </message>
-    <message>
-        <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
-        <translation type="obsolete">もしQGISを使ってお金の節約ができたり、あなたが私たちの活動をきにいってくれてお金に余裕があるならば、是非QuantumGISの開発スポンサーになることを検討して下さい.私たちはスポンサーがはらっていただいたお金を年2回のハックフェストの旅費や関連費用やプロジェクトの目的のための様々な費用に使います.是非&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt;の詳細情報を参照して下さい.</translation>
-    </message>
-    <message>
-        <source>Quantum GIS has Plugins!</source>
-        <translation type="obsolete">Quantum GIS にはプラグインがあります!</translation>
-    </message>
-    <message>
-        <source>Quantum GIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage Plugins menu. In addition there are over 150 Python plugins contributed by the user community that can be installed from the Plugins-&gt;Fetch Python Plugins menu. Don&apos;t miss out on all QGIS has to offer---check out the plugins and see what they can do for you.</source>
-        <translation type="obsolete">QuantumGISはプラグインによって機能を拡張できます.QGISはいくつかのコアプラグインを同梱して出荷されます,それらはメニュープラグイン-&gt;プラグインの管理で見ることができます.加えてコミュニティによって追加された150以上のPythonプラグインがあります.それらはメニュープラグイン-&gt;Pythonプラグインを呼び出すを使ってインストールできます.QGISが提供するすべてを見逃さないでください---プラグインをチェックアウトしてどのように利用できるか見て下さい.</translation>
     </message>
 </context>
 <context>
@@ -54725,22 +43828,6 @@ p, li { white-space: pre-wrap; }
         <translation>圧縮方法:</translation>
     </message>
     <message>
-        <source>NONE</source>
-        <translation type="obsolete">無し</translation>
-    </message>
-    <message>
-        <source>LZW</source>
-        <translation type="obsolete">LZW</translation>
-    </message>
-    <message>
-        <source>PACKBITS</source>
-        <translation type="obsolete">PACKBITS</translation>
-    </message>
-    <message>
-        <source>DEFLATE</source>
-        <translation type="obsolete">DEFLATE</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="101"/>
         <source>Output raster:</source>
         <translation>出力ラスタ:</translation>
@@ -54797,57 +43884,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="260"/>
         <source>Load in QGIS when done</source>
         <translation>実行された時にQGISにロードします</translation>
-    </message>
-</context>
-<context>
-    <name>QgsUniqueValueDialog</name>
-    <message>
-        <source>default</source>
-        <translation type="obsolete">デフォルト</translation>
-    </message>
-    <message>
-        <source>Confirm Delete</source>
-        <translation type="obsolete">削除を確認</translation>
-    </message>
-    <message>
-        <source>The classification field was changed from &apos;%1&apos; to &apos;%2&apos;.
-Should the existing classes be deleted before classification?</source>
-        <translation type="obsolete">分類フィールドが&apos;%1&apos;から&apos;%2&apos;に変更されました。以前の分類は分類作業の前に削除しますか？</translation>
-    </message>
-</context>
-<context>
-    <name>QgsUniqueValueDialogBase</name>
-    <message>
-        <source>Form1</source>
-        <translation type="obsolete">フォーム1</translation>
-    </message>
-    <message>
-        <source>Classify</source>
-        <translation type="obsolete">分類</translation>
-    </message>
-    <message>
-        <source>Classification field</source>
-        <translation type="obsolete">分類フィールド</translation>
-    </message>
-    <message>
-        <source>Add class</source>
-        <translation type="obsolete">クラスを追加</translation>
-    </message>
-    <message>
-        <source>Delete classes</source>
-        <translation type="obsolete">クラスを削除</translation>
-    </message>
-    <message>
-        <source>Randomize Colors</source>
-        <translation type="obsolete">色をランダムに変更</translation>
-    </message>
-    <message>
-        <source>Reset Colors</source>
-        <translation type="obsolete">色をリセット</translation>
-    </message>
-    <message>
-        <source>Restrict changes to common properties</source>
-        <translation type="obsolete">変更は共通プロパティに限定する</translation>
     </message>
 </context>
 <context>
@@ -55007,10 +44043,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>グラデーションカラーランプ</translation>
     </message>
     <message>
-        <source>Change</source>
-        <translation type="obsolete">変更</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="22"/>
         <source>Color 1</source>
         <translation>カラー 1</translation>
@@ -55062,10 +44094,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>色</translation>
     </message>
     <message>
-        <source>Offset</source>
-        <translation type="obsolete">オフセット</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="152"/>
         <source>Preview</source>
         <translation>プレビュー</translation>
@@ -55082,127 +44110,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2571"/>
         <source>ERROR: layer not editable</source>
         <translation>エラー: レイヤは編集不可です</translation>
-    </message>
-    <message>
-        <source>SUCCESS: attribute %1 was added.</source>
-        <translation type="obsolete">成功: 属性 %1 を追加しれました。</translation>
-    </message>
-    <message>
-        <source>ERROR: attribute %1 not added</source>
-        <translation type="obsolete">エラー: 属性 %1 の追加に失敗しました</translation>
-    </message>
-    <message>
-        <source>No renderer object</source>
-        <translation type="obsolete">レンダラーオブジェクトがありません</translation>
-    </message>
-    <message>
-        <source>Classification field not found</source>
-        <translation type="obsolete">分類フィールドが見つかりません</translation>
-    </message>
-    <message>
-        <source>renderer failed to save</source>
-        <translation type="obsolete">レンダラは保存に失敗しました</translation>
-    </message>
-    <message>
-        <source>no renderer</source>
-        <translation type="obsolete">レンダラがありません</translation>
-    </message>
-    <message numerus="yes">
-        <source>SUCCESS: %n attribute(s) deleted.</source>
-        <comment>deleted attributes count</comment>
-        <translation type="obsolete">
-            <numerusform>成功: %n 属性を削除しました.</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <source>ERROR: %n attribute(s) not deleted.</source>
-        <comment>not deleted attributes count</comment>
-        <translation type="obsolete">
-            <numerusform>エラー: %n 属性は削除されませんでした</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <source>SUCCESS: %n attribute(s) added.</source>
-        <comment>added attributes count</comment>
-        <translation type="obsolete">
-            <numerusform>成功: %n 属性を追加しました.</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <source>ERROR: %n new attribute(s) not added</source>
-        <comment>not added attributes count</comment>
-        <translation type="obsolete">
-            <numerusform>エラー: %n 属性が追加されませんでした</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <source>SUCCESS: %n attribute value(s) changed.</source>
-        <comment>changed attribute values count</comment>
-        <translation type="obsolete">
-            <numerusform>成功: %n 属性の値を変更しました.</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <source>ERROR: %n attribute value change(s) not applied.</source>
-        <comment>not changed attribute values count</comment>
-        <translation type="obsolete">
-            <numerusform>エラー: %n 属性の値変更は反映されませんでした</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <source>SUCCESS: %n feature(s) added.</source>
-        <comment>added features count</comment>
-        <translation type="obsolete">
-            <numerusform>成功: %n 地物を追加しました.</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <source>ERROR: %n feature(s) not added.</source>
-        <comment>not added features count</comment>
-        <translation type="obsolete">
-            <numerusform>エラー: %n 地物が追加されませんでした</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <source>ERROR: %n feature(s) not added - provider doesn&apos;t support adding features.</source>
-        <comment>not added features count</comment>
-        <translation type="obsolete">
-            <numerusform>エラー: %n の地物が追加できませんでした - プロバイダが地物の追加をサポートしていません.</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <source>SUCCESS: %n geometries were changed.</source>
-        <comment>changed geometries count</comment>
-        <translation type="obsolete">
-            <numerusform>成功: %n ジオメトリを変更しました.</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <source>ERROR: %n geometries not changed.</source>
-        <comment>not changed geometries count</comment>
-        <translation type="obsolete">
-            <numerusform>エラー: %n ジオメトリは変更されませんでした</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <source>SUCCESS: %n feature(s) deleted.</source>
-        <comment>deleted features count</comment>
-        <translation type="obsolete">
-            <numerusform>成功: %n 地物が削除しました.</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <source>ERROR: %n feature(s) not deleted.</source>
-        <comment>not deleted features count</comment>
-        <translation type="obsolete">
-            <numerusform>エラー: %n 地物が削除されませんでした</numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>
-  Provider errors:</source>
-        <translation type="obsolete">
-  プロバイダエラー:</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="1063"/>
@@ -55222,42 +44129,6 @@ Should the existing classes be deleted before classification?</source>
   %1</translation>
     </message>
     <message>
-        <source>General:</source>
-        <translation type="obsolete">一般情報:</translation>
-    </message>
-    <message>
-        <source>Layer comment: %1</source>
-        <translation type="obsolete">レイヤコメント %1</translation>
-    </message>
-    <message>
-        <source>Storage type of this layer: %1</source>
-        <translation type="obsolete">このレイヤのストレージタイプ%1</translation>
-    </message>
-    <message>
-        <source>Source for this layer: %1</source>
-        <translation type="obsolete">このレイヤのソース%1</translation>
-    </message>
-    <message>
-        <source>Geometry type of the features in this layer: %1</source>
-        <translation type="obsolete">このレイヤの地物のジオメトリタイプ　%1</translation>
-    </message>
-    <message>
-        <source>The number of features in this layer: %1</source>
-        <translation type="obsolete">このレイヤの地物の数 %1</translation>
-    </message>
-    <message>
-        <source>Editing capabilities of this layer: %1</source>
-        <translation type="obsolete">このレイヤの編集能力 %1</translation>
-    </message>
-    <message>
-        <source>Extents:</source>
-        <translation type="obsolete">範囲:</translation>
-    </message>
-    <message>
-        <source>In layer spatial reference system units : </source>
-        <translation type="obsolete">レイヤの空間参照系の単位:</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3631"/>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3650"/>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
@@ -55269,25 +44140,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>領域が不明</translation>
     </message>
     <message>
-        <source>In project spatial reference system units : </source>
-        <translation type="obsolete">プロジェクトの空間参照系の単位:</translation>
-    </message>
-    <message>
-        <source>Layer Spatial Reference System:</source>
-        <translation type="obsolete">レイヤ空間参照系:</translation>
-    </message>
-    <message>
-        <source>Project (Output) Spatial Reference System:</source>
-        <translation type="obsolete">プロジェクト（出力）空間参照系:</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3685"/>
         <source>(Invalid transformation of layer extents)</source>
         <translation>(レイヤ領域の不正な座標変換)</translation>
-    </message>
-    <message>
-        <source>Attribute field info:</source>
-        <translation type="obsolete">属性フィールド情報:</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3508"/>
@@ -55389,14 +44244,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3936"/>
         <source>Error: qgis element could not be found</source>
         <translation>エラー: qgisエレメントが見つかりません</translation>
-    </message>
-    <message>
-        <source>Specify CRS for layer %1</source>
-        <translation type="obsolete">レイヤ%1のCRSを指定して下さい</translation>
-    </message>
-    <message>
-        <source>Unknown renderer</source>
-        <translation type="obsolete">不明なレンダラ</translation>
     </message>
 </context>
 <context>
@@ -55526,22 +44373,6 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsVectorLayerProperties</name>
     <message>
-        <source>Single Symbol</source>
-        <translation type="obsolete">共通シンボル</translation>
-    </message>
-    <message>
-        <source>Graduated Symbol</source>
-        <translation type="obsolete">目盛付きシンボル</translation>
-    </message>
-    <message>
-        <source>Continuous Color</source>
-        <translation type="obsolete">連続色</translation>
-    </message>
-    <message>
-        <source>Unique Value</source>
-        <translation type="obsolete">固有値</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="513"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="518"/>
         <source>Spatial Index</source>
@@ -55553,54 +44384,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>空間インデックスの作成に失敗しました</translation>
     </message>
     <message>
-        <source>General:</source>
-        <translation type="obsolete">一般情報:</translation>
-    </message>
-    <message>
-        <source>Extents:</source>
-        <translation type="obsolete">範囲:</translation>
-    </message>
-    <message>
-        <source>In layer spatial reference system units : </source>
-        <translation type="obsolete">レイヤの空間参照系の単位:</translation>
-    </message>
-    <message>
-        <source>In project spatial reference system units : </source>
-        <translation type="obsolete">プロジェクトの空間参照系の単位:</translation>
-    </message>
-    <message>
-        <source>Layer Spatial Reference System:</source>
-        <translation type="obsolete">レイヤ空間参照系:</translation>
-    </message>
-    <message>
-        <source>Project (Output) Spatial Reference System:</source>
-        <translation type="obsolete">プロジェクト（出力）空間参照系:</translation>
-    </message>
-    <message>
-        <source>Attribute field info:</source>
-        <translation type="obsolete">属性フィールド情報:</translation>
-    </message>
-    <message>
-        <source>Field</source>
-        <translation type="obsolete">フィールド</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">タイプ</translation>
-    </message>
-    <message>
-        <source>Length</source>
-        <translation type="obsolete">長さ</translation>
-    </message>
-    <message>
-        <source>Precision</source>
-        <translation type="obsolete">精度</translation>
-    </message>
-    <message>
-        <source>Comment</source>
-        <translation type="obsolete">コメント</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="577"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="581"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="607"/>
@@ -55609,67 +44392,15 @@ Should the existing classes be deleted before classification?</source>
         <translation>既定スタイル</translation>
     </message>
     <message>
-        <source>QGIS Layer Style File (*.qml)</source>
-        <translation type="obsolete">QGISレイヤスタイルファイル(*.qml)</translation>
-    </message>
-    <message>
-        <source>id</source>
-        <translation type="obsolete">id</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="233"/>
         <source>Layer Properties - %1</source>
         <translation>レイヤプロパティ - %1</translation>
-    </message>
-    <message>
-        <source>name</source>
-        <translation type="obsolete">名前</translation>
-    </message>
-    <message>
-        <source>type</source>
-        <translation type="obsolete">タイプ</translation>
-    </message>
-    <message>
-        <source>length</source>
-        <translation type="obsolete">長さ</translation>
-    </message>
-    <message>
-        <source>precision</source>
-        <translation type="obsolete">精度</translation>
-    </message>
-    <message>
-        <source>comment</source>
-        <translation type="obsolete">コメント</translation>
-    </message>
-    <message>
-        <source>edit widget</source>
-        <translation type="obsolete">入力フィールド</translation>
-    </message>
-    <message>
-        <source>alias</source>
-        <translation type="obsolete">別名</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="264"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="349"/>
         <source>Stop editing mode to enable this.</source>
         <translation>これを有効にするために編集モードを終了して下さい.</translation>
-    </message>
-    <message>
-        <source>Name conflict</source>
-        <translation type="obsolete">名前の衝突</translation>
-    </message>
-    <message>
-        <source>The attribute could not be inserted. The name already exists in the table.</source>
-        <translation type="obsolete">属性は追加されませんでした。指定された名前はテーブル内に既に存在しています。</translation>
-    </message>
-    <message>
-        <source>Added attribute</source>
-        <translation type="obsolete">追加された属性</translation>
-    </message>
-    <message>
-        <source>Deleted attribute</source>
-        <translation type="obsolete">削除された属性</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="297"/>
@@ -55687,81 +44418,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>クエリはここの表示されているレイヤ内の地物に対してのみ利用できます。クエリを変更するためにはクエリビルダボタンをクリックして下さい</translation>
     </message>
     <message>
-        <source>Line edit</source>
-        <translation type="obsolete">行編集</translation>
-    </message>
-    <message>
-        <source>Unique values</source>
-        <translation type="obsolete">ユニーク値</translation>
-    </message>
-    <message>
-        <source>Unique values editable</source>
-        <translation type="obsolete">ユニーク値編集可能</translation>
-    </message>
-    <message>
-        <source>Classification</source>
-        <translation type="obsolete">分類</translation>
-    </message>
-    <message>
-        <source>Value map</source>
-        <translation type="obsolete">バリューマップ</translation>
-    </message>
-    <message>
-        <source>Edit range</source>
-        <translation type="obsolete">編集レンジ</translation>
-    </message>
-    <message>
-        <source>Slider range</source>
-        <translation type="obsolete">スライダーレンジ</translation>
-    </message>
-    <message>
-        <source>Dial range</source>
-        <translation type="obsolete">ダイアル範囲</translation>
-    </message>
-    <message>
-        <source>File name</source>
-        <translation type="obsolete">ファイル名</translation>
-    </message>
-    <message>
-        <source>Hidden</source>
-        <translation type="obsolete">非表示</translation>
-    </message>
-    <message>
-        <source>Checkbox</source>
-        <translation type="obsolete">チェックボックス</translation>
-    </message>
-    <message>
-        <source>Text edit</source>
-        <translation type="obsolete">テキスト編集</translation>
-    </message>
-    <message>
-        <source>Calendar</source>
-        <translation type="obsolete">カレンダー</translation>
-    </message>
-    <message>
-        <source>Value relation</source>
-        <translation type="obsolete">値のリレーション</translation>
-    </message>
-    <message>
-        <source>UUID generator</source>
-        <translation type="obsolete">UUIDジェネレータ</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="980"/>
         <source>Save Style</source>
         <translation>スタイルを保存</translation>
-    </message>
-    <message>
-        <source>Text diagram</source>
-        <translation type="obsolete">テキストダイアグラム</translation>
-    </message>
-    <message>
-        <source>Pie chart</source>
-        <translation type="obsolete">パイチャート</translation>
-    </message>
-    <message>
-        <source>Map units</source>
-        <translation type="obsolete">地図上の単位</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="513"/>
@@ -55796,10 +44455,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="151"/>
         <source>Load from database</source>
         <translation>データベースからロードする</translation>
-    </message>
-    <message>
-        <source>Save on database (%1)</source>
-        <translation type="obsolete">データベース(%1)に保存する</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="159"/>
@@ -55873,165 +44528,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>取得されたスタイルは正しい名前のスタイルではありません.エラーメッセージ: %1</translation>
     </message>
     <message>
-        <source>The style retrieved is not a valid named style. Error message: %1</source>
-        <translation type="obsolete">取得されたスタイルの名前が不正です. エラーメッセージ: %1</translation>
-    </message>
-    <message>
-        <source>UI file</source>
-        <translation type="obsolete">UIファイル</translation>
-    </message>
-    <message>
-        <source>Empty</source>
-        <translation type="obsolete">なし</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="799"/>
         <source>Saved Style</source>
         <translation>スタイルを保存</translation>
-    </message>
-    <message>
-        <source>Select edit form</source>
-        <translation type="obsolete">編集フォームを選ぶ</translation>
-    </message>
-    <message>
-        <source>UI file (*.ui)</source>
-        <translation type="obsolete">UIファイル(*.ui)</translation>
-    </message>
-    <message>
-        <source>Symbology</source>
-        <translation type="obsolete">シンボル</translation>
-    </message>
-    <message>
-        <source>Background color</source>
-        <translation type="obsolete">背景色</translation>
-    </message>
-    <message>
-        <source>Pen color</source>
-        <translation type="obsolete">ペンの色</translation>
-    </message>
-    <message>
-        <source>MM</source>
-        <translation type="obsolete">MM</translation>
-    </message>
-    <message>
-        <source>AroundPoint</source>
-        <translation type="obsolete">点の周り</translation>
-    </message>
-    <message>
-        <source>mm</source>
-        <translation type="obsolete">mm</translation>
-    </message>
-    <message>
-        <source>OverPoint</source>
-        <translation type="obsolete">点の上</translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="obsolete">ライン</translation>
-    </message>
-    <message>
-        <source>Horizontal</source>
-        <translation type="obsolete">水平</translation>
-    </message>
-    <message>
-        <source>Free</source>
-        <translation type="obsolete">フリー</translation>
-    </message>
-    <message>
-        <source>On line</source>
-        <translation type="obsolete">線上</translation>
-    </message>
-    <message>
-        <source>Above line</source>
-        <translation type="obsolete">ラインの上</translation>
-    </message>
-    <message>
-        <source>Below Line</source>
-        <translation type="obsolete">ラインの下</translation>
-    </message>
-    <message>
-        <source>Map orientation</source>
-        <translation type="obsolete">地図の方向</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <translation type="obsolete">なし</translation>
-    </message>
-    <message>
-        <source>Transparency: %1%</source>
-        <translation type="obsolete">透過率 %1%</translation>
-    </message>
-    <message>
-        <source>Overlay</source>
-        <translation type="obsolete">オーバーレイ</translation>
-    </message>
-    <message>
-        <source>Id</source>
-        <translation type="obsolete">Id</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名称</translation>
-    </message>
-    <message>
-        <source>Edit widget</source>
-        <translation type="obsolete">ウィジェットの編集</translation>
-    </message>
-    <message>
-        <source>Alias</source>
-        <translation type="obsolete">別名</translation>
-    </message>
-    <message>
-        <source>Enumeration</source>
-        <translation type="obsolete">列挙</translation>
-    </message>
-    <message>
-        <source>Immutable</source>
-        <translation type="obsolete">不変の</translation>
-    </message>
-    <message>
-        <source>Layer comment: %1</source>
-        <translation type="obsolete">レイヤコメント %1</translation>
-    </message>
-    <message>
-        <source>Storage type of this layer: %1</source>
-        <translation type="obsolete">このレイヤのストレージタイプ%1</translation>
-    </message>
-    <message>
-        <source>Source for this layer: %1</source>
-        <translation type="obsolete">このレイヤのソース%1</translation>
-    </message>
-    <message>
-        <source>Geometry type of the features in this layer: %1</source>
-        <translation type="obsolete">このレイヤの地物のジオメトリタイプ　%1</translation>
-    </message>
-    <message>
-        <source>The number of features in this layer: %1</source>
-        <translation type="obsolete">このレイヤの地物の数 %1</translation>
-    </message>
-    <message>
-        <source>Editing capabilities of this layer: %1</source>
-        <translation type="obsolete">このレイヤの編集能力 %1</translation>
-    </message>
-    <message>
-        <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
-        <translation type="obsolete">xMin,yMin %1,%2 : xMax,yMax %3,%4</translation>
-    </message>
-    <message>
-        <source>(Invalid transformation of layer extents)</source>
-        <translation type="obsolete">(レイヤ領域の不正な座標変換)</translation>
-    </message>
-    <message>
-        <source>Load layer properties from style file (.qml)</source>
-        <translation type="obsolete">レイヤプロパティをスタイルファイルから読み込む(.qml)</translation>
-    </message>
-    <message>
-        <source>Save layer properties as style file (.qml)</source>
-        <translation type="obsolete">レイヤプロパティをスタイルファイルとして保存する(.qml)</translation>
-    </message>
-    <message>
-        <source>Do you wish to use the new symbology implementation for this layer?</source>
-        <translation type="obsolete">このレイヤの新しいシンボロジーインプリメンテーションを利用しますか？</translation>
     </message>
 </context>
 <context>
@@ -56042,31 +44541,11 @@ Should the existing classes be deleted before classification?</source>
         <translation>レイヤプロパティ</translation>
     </message>
     <message>
-        <source>Symbology</source>
-        <translation type="obsolete">シンボル</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="89"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="92"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="250"/>
         <source>General</source>
         <translation>一般情報</translation>
-    </message>
-    <message>
-        <source>Use scale dependent rendering</source>
-        <translation type="obsolete">縮尺依存レンダリングを使用</translation>
-    </message>
-    <message>
-        <source>Display name</source>
-        <translation type="obsolete">表示名</translation>
-    </message>
-    <message>
-        <source>Use this control to set which field is placed at the top level of the Identify Results dialog box.</source>
-        <translation type="obsolete">地物情報表示ダイアログの一番上にくるフィールドを設定するコントロールです。</translation>
-    </message>
-    <message>
-        <source>Display field for the Identify Results dialog box</source>
-        <translation type="obsolete">地物情報表示ダイアログボックスのフィールドを表示</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="101"/>
@@ -56081,34 +44560,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="857"/>
         <source>Fields</source>
         <translation>フィールド</translation>
-    </message>
-    <message>
-        <source>This sets the display field for the Identify Results dialog box</source>
-        <translation type="obsolete">地物情報表示ダイアログボックスの表示フィールドを設定</translation>
-    </message>
-    <message>
-        <source>Display field</source>
-        <translation type="obsolete">フィールドを表示</translation>
-    </message>
-    <message>
-        <source>Edit UI</source>
-        <translation type="obsolete">編集UI</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Init function</source>
-        <translation type="obsolete">初期化機能</translation>
-    </message>
-    <message>
-        <source>CRS</source>
-        <translation type="obsolete">CRS</translation>
-    </message>
-    <message>
-        <source>Subset</source>
-        <translation type="obsolete">サブセット</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="652"/>
@@ -56245,10 +44696,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>ターゲットフィールド</translation>
     </message>
     <message>
-        <source>Create Spatial Index</source>
-        <translation type="obsolete">空間インデックスの作成</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="197"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="200"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1302"/>
@@ -56311,30 +44758,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>このレイヤのジオメトリの空間参照システムを指定してください。</translation>
     </message>
     <message>
-        <source>Specify CRS</source>
-        <translation type="obsolete">CRSの指定</translation>
-    </message>
-    <message>
-        <source>Legend type</source>
-        <translation type="obsolete">凡例タイプ</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="obsolete">透過性</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">オプション</translation>
-    </message>
-    <message>
-        <source>Maximum</source>
-        <translation type="obsolete">最大値</translation>
-    </message>
-    <message>
-        <source>Minimum</source>
-        <translation type="obsolete">最小値</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="185"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="188"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1250"/>
@@ -56342,53 +44765,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>ダイアグラム</translation>
     </message>
     <message>
-        <source>Display diagrams</source>
-        <translation type="obsolete">図表の表示</translation>
-    </message>
-    <message>
-        <source>Diagram type</source>
-        <translation type="obsolete">図表タイプ</translation>
-    </message>
-    <message>
-        <source>Priority:</source>
-        <translation type="obsolete">優先度:</translation>
-    </message>
-    <message>
-        <source>Low</source>
-        <translation type="obsolete">低</translation>
-    </message>
-    <message>
-        <source>High</source>
-        <translation type="obsolete">高</translation>
-    </message>
-    <message>
-        <source>Appearance</source>
-        <translation type="obsolete">外見</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="456"/>
         <source>Scale dependent visibility</source>
         <translation>縮尺に応じた表示設定</translation>
-    </message>
-    <message>
-        <source>Background color</source>
-        <translation type="obsolete">背景色</translation>
-    </message>
-    <message>
-        <source>Pen color</source>
-        <translation type="obsolete">ペンの色</translation>
-    </message>
-    <message>
-        <source>Data defined position</source>
-        <translation type="obsolete">定義された位置のデータ</translation>
-    </message>
-    <message>
-        <source>Pen width</source>
-        <translation type="obsolete">ペンの太さ</translation>
-    </message>
-    <message>
-        <source>Update Extents</source>
-        <translation type="obsolete">領域のアップデート</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="477"/>
@@ -56407,14 +44786,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>現在の設定</translation>
     </message>
     <message>
-        <source>Provider-specific options</source>
-        <translation type="obsolete">プロバイダ-特有のオプション</translation>
-    </message>
-    <message>
-        <source>Encoding</source>
-        <translation type="obsolete">エンコーディング</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1358"/>
         <source>Title</source>
         <translation>タイトル</translation>
@@ -56425,115 +44796,15 @@ Should the existing classes be deleted before classification?</source>
         <translation>要約</translation>
     </message>
     <message>
-        <source>Font...</source>
-        <translation type="obsolete">フォント...</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">大きさ</translation>
-    </message>
-    <message>
-        <source>Fixed size</source>
-        <translation type="obsolete">固定サイズ</translation>
-    </message>
-    <message>
-        <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
-        <translation type="obsolete">スケールは0と以下の属性値/図表サイズの間の値をとります:</translation>
-    </message>
-    <message>
-        <source>Attribute</source>
-        <translation type="obsolete">属性</translation>
-    </message>
-    <message>
-        <source>Find maximum value</source>
-        <translation type="obsolete">最大値を求める</translation>
-    </message>
-    <message>
-        <source>Size units</source>
-        <translation type="obsolete">サイズの単位</translation>
-    </message>
-    <message>
-        <source>Position</source>
-        <translation type="obsolete">位置</translation>
-    </message>
-    <message>
-        <source>Placement</source>
-        <translation type="obsolete">配置</translation>
-    </message>
-    <message>
-        <source>Line Options</source>
-        <translation type="obsolete">ラインオプション</translation>
-    </message>
-    <message>
-        <source>Distance</source>
-        <translation type="obsolete">距離</translation>
-    </message>
-    <message>
-        <source>x</source>
-        <translation type="obsolete">x</translation>
-    </message>
-    <message>
-        <source>y</source>
-        <translation type="obsolete">y</translation>
-    </message>
-    <message>
-        <source>Attributes</source>
-        <translation type="obsolete">属性</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="obsolete">色</translation>
-    </message>
-    <message>
-        <source>New symbology</source>
-        <translation type="obsolete">新シンボロジー</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="125"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="128"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="783"/>
         <source>Labels (deprecated)</source>
         <translation>ラベル (廃止予定)</translation>
     </message>
-    <message>
-        <source>New column</source>
-        <translation type="obsolete">新規カラムを追加</translation>
-    </message>
-    <message>
-        <source>Ctrl+N</source>
-        <translation type="obsolete">Ctrl+N</translation>
-    </message>
-    <message>
-        <source>Delete column</source>
-        <translation type="obsolete">カラムを削除</translation>
-    </message>
-    <message>
-        <source>Ctrl+X</source>
-        <translation type="obsolete">Ctrl+X</translation>
-    </message>
-    <message>
-        <source>Toggle editing mode</source>
-        <translation type="obsolete">編集モード切替</translation>
-    </message>
-    <message>
-        <source>Click to toggle table editing</source>
-        <translation type="obsolete">クリックするとテーブル編集切り替え</translation>
-    </message>
-    <message>
-        <source>Field calculator</source>
-        <translation type="obsolete">フィールド計算機</translation>
-    </message>
 </context>
 <context>
     <name>QgsVectorLayerSaveAsDialog</name>
-    <message>
-        <source>SpatiaLite</source>
-        <translation type="obsolete">SpatiaLite</translation>
-    </message>
-    <message>
-        <source>Original CRS</source>
-        <translation type="obsolete">オリジナルCRS</translation>
-    </message>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="58"/>
         <source>Layer CRS</source>
@@ -56748,10 +45019,6 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsWFSConnectionItem</name>
     <message>
-        <source>Failed to retrieve layers</source>
-        <translation type="obsolete">レイヤ読み出し失敗</translation>
-    </message>
-    <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="103"/>
         <source>Edit...</source>
         <translation>編集...</translation>
@@ -56765,34 +45032,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="117"/>
         <source>Modify WFS connection</source>
         <translation>WFS接続を修正する</translation>
-    </message>
-</context>
-<context>
-    <name>QgsWFSData</name>
-    <message>
-        <source>Loading WFS data</source>
-        <translation type="obsolete">WFSデータのロード中です</translation>
-    </message>
-    <message>
-        <source>Abort</source>
-        <translation type="obsolete">取り消し</translation>
-    </message>
-    <message>
-        <source>Loading WFS data
-%1</source>
-        <translation type="obsolete">WFSデータロード中
-%1</translation>
-    </message>
-</context>
-<context>
-    <name>QgsWFSPlugin</name>
-    <message>
-        <source>&amp;Add WFS layer</source>
-        <translation type="obsolete">WFSレイヤの追加(&amp;A)</translation>
-    </message>
-    <message>
-        <source>Add W&amp;FS layer...</source>
-        <translation type="obsolete">WFSレイヤの追加(&amp;F)...</translation>
     </message>
 </context>
 <context>
@@ -56834,10 +45073,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <source>The capabilities document could not be retrieved from the server</source>
-        <translation type="obsolete">サーバーからcapabilities documentを取得できません</translation>
-    </message>
-    <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="266"/>
         <source>No Layers</source>
         <translation>レイヤがありません</translation>
@@ -56851,10 +45086,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="204"/>
         <source>Capabilities document is not valid</source>
         <translation>Capabilitiesドキュメントが正しくありません</translation>
-    </message>
-    <message>
-        <source>GetCapabilities Error</source>
-        <translation type="obsolete">GetCapabilitiesエラー</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="52"/>
@@ -56914,28 +45145,6 @@ Should the existing classes be deleted before classification?</source>
 </context>
 <context>
     <name>QgsWFSSourceSelectBase</name>
-    <message>
-        <source>Title</source>
-        <translation type="obsolete">タイトル</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名称</translation>
-    </message>
-    <message>
-        <source>Abstract</source>
-        <translation type="obsolete">要約</translation>
-    </message>
-    <message>
-        <source>Cache
-Features</source>
-        <translation type="obsolete">キャッシュ
-地物</translation>
-    </message>
-    <message>
-        <source>Filter</source>
-        <translation type="obsolete">フィルター</translation>
-    </message>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="68"/>
         <source>Change ...</source>
@@ -57008,36 +45217,9 @@ Features</source>
         <translation>タイトルをレイヤ名として使う</translation>
     </message>
     <message>
-        <source>Only request features overlapping the current view extent</source>
-        <translation type="obsolete">要求された地物が現在表示されているビューの領域にオーバーラップする場合のみ</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="14"/>
         <source>Add WFS Layer from a Server</source>
         <translation>サーバからWFSレイヤを追加</translation>
-    </message>
-</context>
-<context>
-    <name>QgsWKNDiagramFactoryWidgetBase</name>
-    <message>
-        <source>Form</source>
-        <translation type="obsolete">フォーム</translation>
-    </message>
-    <message>
-        <source>Attributes</source>
-        <translation type="obsolete">属性</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="obsolete">追加</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">削除</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation type="obsolete">1</translation>
     </message>
 </context>
 <context>
@@ -57050,10 +45232,6 @@ Features</source>
 </context>
 <context>
     <name>QgsWMSConnectionItem</name>
-    <message>
-        <source>Failed to retrieve layers</source>
-        <translation type="obsolete">レイヤの読み出しに失敗しました</translation>
-    </message>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="113"/>
         <source>Edit...</source>
@@ -57086,22 +45264,6 @@ Features</source>
         <translation>選択されたレイヤを地図に追加する</translation>
     </message>
     <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">保存(&amp;S)</translation>
-    </message>
-    <message>
-        <source>Save WMS server connections to file</source>
-        <translation type="obsolete">WMSサーバ接続情報をファイルに保存する</translation>
-    </message>
-    <message>
-        <source>&amp;Load</source>
-        <translation type="obsolete">ロード(&amp;L)</translation>
-    </message>
-    <message>
-        <source>Load WMS server connections from file</source>
-        <translation type="obsolete">WMSサーバ接続情報をファイルから読み込む</translation>
-    </message>
-    <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="211"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation>%1の接続と全ての設定を削除してもいいですか？</translation>
@@ -57117,14 +45279,6 @@ Features</source>
         <translation>エンコーディング %1 はサポートされていません.</translation>
     </message>
     <message>
-        <source>CRS %1 not supported.</source>
-        <translation type="obsolete">CRS %1 はサポートされていません.</translation>
-    </message>
-    <message>
-        <source>WMS Password for %1</source>
-        <translation type="obsolete">%1のWMSパスワード</translation>
-    </message>
-    <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="480"/>
         <source>WMS Provider</source>
         <translation>WMS プロバイダ</translation>
@@ -57138,46 +45292,6 @@ Features</source>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="232"/>
         <source>XML files (*.xml *XML)</source>
         <translation>XMLファイル(*.xml *XML)</translation>
-    </message>
-    <message>
-        <source>Advertised GetMap URL
-
-  %2
-
-is different from GetCapabilities URL
-
-  %1
-
-This might be an server configuration error. Should the URL be used?</source>
-        <translation type="obsolete">通知されたGetMap URL
-
-  %2
-
-これは GetCapabilities URLで通知されたものと異なります
-
-  %1
-
-多分サーバの設定エラーでしょう. このURLを利用すべきでしょうか?</translation>
-    </message>
-    <message>
-        <source>Advertised GetFeatureInfo URL
-
-  %2
-
-is different from GetCapabilities URL
-
-  %1
-
-This might be an server configuration error. Should the URL be used?</source>
-        <translation type="obsolete">通知されたGetFeatureInfo URL
-
-  %2
-
-これは GetCapabilities URLで通知されたものと異なります
-
-  %1
-
-多分サーバの設定エラーでしょう. このURLを利用すべきでしょうか?</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="481"/>
@@ -57242,13 +45356,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="944"/>
         <source>Tileset selected</source>
         <translation>タイルセットが選択されました</translation>
-    </message>
-    <message>
-        <source>Could not understand the response.  The %1 provider said:
-%2</source>
-        <comment>COMMENTED OUT</comment>
-        <translation type="obsolete">レスポンスが理解できません　%1プロバイダのメッセージ
-%2</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1038"/>
@@ -57353,18 +45460,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <translation>要約</translation>
     </message>
     <message>
-        <source>Use base url instead of advertised GetFeatureInfo URL</source>
-        <translation type="obsolete">通知されたGetFeatureInfo URLの代わりにベースURLを利用する</translation>
-    </message>
-    <message>
-        <source>Ignore GetMap URL</source>
-        <translation type="obsolete">GetMap URLを無視する</translation>
-    </message>
-    <message>
-        <source>Ignore GetFeatureInfo URL</source>
-        <translation type="obsolete">GetFeatureInfo URLを無視する</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="190"/>
         <source>Save</source>
         <translation>保存</translation>
@@ -57435,14 +45530,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="340"/>
         <source>Tilesets</source>
         <translation>タイルセット</translation>
-    </message>
-    <message>
-        <source>Styles</source>
-        <translation type="obsolete">スタイル</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">大きさ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="367"/>
@@ -57601,10 +45688,6 @@ Response was:
         <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="476"/>
         <source>WCS server version %1 is not supported by QGIS (supported versions: 1.0.0, 1.1.0, 1.1.2)</source>
         <translation>WCSサーババージョン%1はQGISではサポートされていません(サポートされるバージョンは1.0.0, 1.1.0, 1.1.2です)</translation>
-    </message>
-    <message>
-        <source>WCS server version %1 is not supported by Quantum GIS (supported versions: 1.0.0, 1.1.0, 1.1.2)</source>
-        <translation type="obsolete">WCSサーババージョン%1はQuantum GISではサポートされていません(サポートされるバージョンは1.0.0, 1.1.0, 1.1.2です)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcscapabilities.cpp" line="738"/>
@@ -58005,18 +46088,6 @@ Response was:
 <context>
     <name>QgsWmsProvider</name>
     <message>
-        <source>This is probably due to an incorrect WMS Server URL.</source>
-        <translation type="obsolete">おそらくWMSサーバのURLが間違っています。</translation>
-    </message>
-    <message>
-        <source>Could not get WMS Service Exception at %1: %2 at line %3 column %4</source>
-        <translation type="obsolete">%1 でWMSサービス例外を取得できません: %2 行 %3 列 %4</translation>
-    </message>
-    <message>
-        <source>Request contains a Format not offered by the server.</source>
-        <translation type="obsolete">リクエスト中にサーバで提供されていないフォーマットが含まれています。</translation>
-    </message>
-    <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3103"/>
         <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>リクエスト中の1つもしくは複数のレイヤに、サーバで提供されていない空間参照システムが含まれています。</translation>
@@ -58140,10 +46211,6 @@ Response was:
         <translation>タイトル</translation>
     </message>
     <message>
-        <source>number of layers and styles don&apos;t match</source>
-        <translation type="obsolete">レイヤとスタイルの数が一致しません</translation>
-    </message>
-    <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="374"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1015"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1023"/>
@@ -58185,22 +46252,6 @@ Response was:
         <source>Status: %1
 Reason phrase: %2</source>
         <translation>ステータス: %1 根拠フレーズ: %2</translation>
-    </message>
-    <message>
-        <source>response: %1</source>
-        <translation type="obsolete">レスポンス: %1</translation>
-    </message>
-    <message>
-        <source>Returned image is flawed [%1]</source>
-        <translation type="obsolete">返されたイメージは壊れていました[%1]</translation>
-    </message>
-    <message>
-        <source>Map request error</source>
-        <translation type="obsolete">マップリクエストエラー</translation>
-    </message>
-    <message>
-        <source>Response: %1</source>
-        <translation type="obsolete">レスポンス: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1381"/>
@@ -58250,18 +46301,6 @@ Response was:
         <translation>リクエストにはサーバーで提供されない形式が含まれています.</translation>
     </message>
     <message>
-        <source>composed error message &apos;%1&apos;.</source>
-        <translation type="obsolete">構成されたエラーメッセージ &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>mismatch layers=%1, styles=%2 and crs=%3.</source>
-        <translation type="obsolete">ミスマッチ　レイヤ=%1 スタイル=%2 crs=%3</translation>
-    </message>
-    <message>
-        <source>no extent for layer</source>
-        <translation type="obsolete">レイヤの領域がありません</translation>
-    </message>
-    <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3417"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3529"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3613"/>
@@ -58307,10 +46346,6 @@ Response was:
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3681"/>
         <source>Layer Count</source>
         <translation>レイヤ数</translation>
-    </message>
-    <message>
-        <source>Tileset Count</source>
-        <translation type="obsolete">タイルセットの数</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3700"/>
@@ -58389,30 +46424,14 @@ Response was:
         <translation>地図 getfeatureinfoエラー %1 %2</translation>
     </message>
     <message>
-        <source>ERROR: GetFeatureInfo failed</source>
-        <translation type="obsolete">エラー: GetFeatureInfoが失敗しました</translation>
-    </message>
-    <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4368"/>
         <source>Map getfeatureinfo error: %1 [%2]</source>
         <translation>地図 getfeatureinfoエラー %1 [%2]</translation>
     </message>
     <message>
-        <source>Selected Layers:</source>
-        <translation type="obsolete">選択されたレイヤ:</translation>
-    </message>
-    <message>
-        <source>Other layers:</source>
-        <translation type="obsolete">他のレイヤ:</translation>
-    </message>
-    <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3828"/>
         <source>Selected</source>
         <translation>選択済み</translation>
-    </message>
-    <message>
-        <source>Map request error %1: %2</source>
-        <translation type="obsolete">マップリクエストエラー %1 %2</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3428"/>
@@ -58604,10 +46623,6 @@ Response was:
         <translation>キャッシュの状態</translation>
     </message>
     <message>
-        <source>Styles</source>
-        <translation type="obsolete">スタイル</translation>
-    </message>
-    <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3850"/>
         <source>CRS</source>
         <translation>CRS</translation>
@@ -58616,10 +46631,6 @@ Response was:
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3857"/>
         <source>Bounding Box</source>
         <translation>境界線</translation>
-    </message>
-    <message>
-        <source>Available in Resolutions</source>
-        <translation type="obsolete">利用可能な解像度</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3896"/>
@@ -58637,14 +46648,6 @@ Response was:
         <translation>エラー</translation>
     </message>
     <message>
-        <source>Layer cannot be queried in plain text.</source>
-        <translation type="obsolete">レイヤはプレインテキストでは検索できません.</translation>
-    </message>
-    <message>
-        <source>Layer cannot be queried.</source>
-        <translation type="obsolete">レイヤの取得に失敗しました。</translation>
-    </message>
-    <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4325"/>
         <source>identify request redirected.</source>
         <translation>アイデンティファイリクエストがリダイレクトされました.</translation>
@@ -58660,10 +46663,6 @@ Response was:
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="681"/>
         <source>Getting map via WMS.</source>
         <translation>WMSを利用して地図を取得しています.</translation>
-    </message>
-    <message>
-        <source>Getting tiles via WMS.</source>
-        <translation type="obsolete">WMSを利用してタイルを取得しています.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="995"/>
@@ -58702,14 +46701,6 @@ Response was:
         </translation>
     </message>
     <message>
-        <source>tile request err %1: %2</source>
-        <translation type="obsolete">タイルリクエストエラー %1:%2</translation>
-    </message>
-    <message>
-        <source>map request error %1: %2</source>
-        <translation type="obsolete">マップリクエストエラー %1:%2</translation>
-    </message>
-    <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1406"/>
         <source>
 Tried URL: %1</source>
@@ -58739,16 +46730,6 @@ Tried URL: %1</source>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1538"/>
         <source>%1 of %2 bytes of map downloaded.</source>
         <translation>%2バイト中%1バイトの地図がダウンロードされました.</translation>
-    </message>
-    <message>
-        <source>Could not get WMS capabilities: %1 at line %2 column %3
-</source>
-        <translation type="obsolete">%1のWMS capabilities:を取得できません。行 %2 カラム %3</translation>
-    </message>
-    <message>
-        <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found
-</source>
-        <translation type="obsolete">拡張形式（DTD)のWMS capabilities:を取得できません。%1 または %2がみつかりません</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3151"/>
@@ -58860,79 +46841,6 @@ Tried URL: %1</source>
     </message>
 </context>
 <context>
-    <name>QuickPrintGui</name>
-    <message>
-        <source>Portable Document Format (*.pdf)</source>
-        <translation type="obsolete">Portable Document Format (*.pdf)</translation>
-    </message>
-    <message>
-        <source>quickprint</source>
-        <translation type="obsolete">クイックプリント</translation>
-    </message>
-    <message>
-        <source>Unknown format: %1</source>
-        <translation type="obsolete">不明な形式 %1</translation>
-    </message>
-</context>
-<context>
-    <name>QuickPrintGuiBase</name>
-    <message>
-        <source>QGIS Quick Print Plugin</source>
-        <translation type="obsolete">QGIS クイックプリントプラグイン</translation>
-    </message>
-    <message>
-        <source>Map title</source>
-        <translation type="obsolete">地図タイトル</translation>
-    </message>
-    <message>
-        <source>Map name</source>
-        <translation type="obsolete">地図名</translation>
-    </message>
-    <message>
-        <source>Copyright</source>
-        <translation type="obsolete">著作権</translation>
-    </message>
-    <message>
-        <source>Page size</source>
-        <translation type="obsolete">ページサイズ</translation>
-    </message>
-    <message>
-        <source>Output</source>
-        <translation type="obsolete">出力</translation>
-    </message>
-    <message>
-        <source>Use last filename but incremented.</source>
-        <translation type="obsolete">最後に使用したファイル名の次の連番のファイル名を使用する。</translation>
-    </message>
-    <message>
-        <source>last used filename but incremented will be shown here</source>
-        <translation type="obsolete">最後に使用したファイル名の次の連番のファイル名がここに表示されます</translation>
-    </message>
-    <message>
-        <source>Prompt for file name</source>
-        <translation type="obsolete">ファイル名を確認</translation>
-    </message>
-    <message>
-        <source>Note: If you want more control over the map layout please use the map composer function in QGIS.</source>
-        <translation type="obsolete">注記: 地図レイアウト上でより多くのコントロールを使用したい場合は、QGISのプリントコンポーザー機能を利用してください。</translation>
-    </message>
-</context>
-<context>
-    <name>QuickPrintPlugin</name>
-    <message>
-        <source>Quick Print</source>
-        <translation type="obsolete">クイックプリント</translation>
-    </message>
-    <message>
-        <source>&amp;Quick Print</source>
-        <translation type="obsolete">クイックプリント(&amp;Q)</translation>
-    </message>
-    <message>
-        <source>Provides a way to quickly produce a map with minimal user input.</source>
-        <translation type="obsolete">最小のユーザ入力ですばやく地図を生成する手段を提供します。</translation>
-    </message>
-</context>
-<context>
     <name>RgExportDlg</name>
     <message>
         <location filename="../src/plugins/roadgraph/exportdlg.cpp" line="34"/>
@@ -59026,10 +46934,6 @@ Tried URL: %1</source>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="117"/>
         <source>Speed</source>
         <translation>スピード</translation>
-    </message>
-    <message>
-        <source>Units</source>
-        <translation type="obsolete">単位</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="89"/>
@@ -59190,18 +47094,6 @@ Tried URL: %1</source>
 <context>
     <name>RoadGraphPlugin</name>
     <message>
-        <source>Road graph settings</source>
-        <translation type="obsolete">道路グラフ設定</translation>
-    </message>
-    <message>
-        <source>Show road&apos;s direction</source>
-        <translation type="obsolete">道路の方向を表示する</translation>
-    </message>
-    <message>
-        <source>About</source>
-        <translation type="obsolete">アバウト</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="105"/>
         <source>Settings</source>
         <translation>設定</translation>
@@ -59212,38 +47104,10 @@ Tried URL: %1</source>
         <translation>道路グラフプラグイン設定</translation>
     </message>
     <message>
-        <source>Roads direction viewer</source>
-        <translation type="obsolete">道路方向ビューアー</translation>
-    </message>
-    <message>
-        <source>About Road graph plugin</source>
-        <translation type="obsolete">道路グラフプラグインについて</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="115"/>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="130"/>
         <source>Road graph</source>
         <translation>道路グラフ</translation>
-    </message>
-    <message>
-        <source>About RoadGraph</source>
-        <translation type="obsolete">道路グラフについて</translation>
-    </message>
-    <message>
-        <source>Find shortest path on road&apos;s graph</source>
-        <translation type="obsolete">道路グラフで最短経路を見つける</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Developers:&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;開発者&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Homepage:&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;ホームページ&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">閉じる</translation>
     </message>
 </context>
 <context>
@@ -59504,69 +47368,11 @@ SQL Anywhere エラーコード%1
     </message>
 </context>
 <context>
-    <name>SaQueryBuilder</name>
-    <message>
-        <source>&amp;Test</source>
-        <translation type="obsolete">(&amp;T)テスト</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation type="obsolete">(&amp;C)クリア</translation>
-    </message>
-    <message>
-        <source>Invalid Query</source>
-        <translation type="obsolete">不正なクエリ</translation>
-    </message>
-    <message>
-        <source>Setting the query failed</source>
-        <translation type="obsolete">クエリの設定に失敗しました</translation>
-    </message>
-    <message>
-        <source>No Query</source>
-        <translation type="obsolete">クエリがありません</translation>
-    </message>
-    <message>
-        <source>You must create a query before you can test it</source>
-        <translation type="obsolete">テストの前にクエリの作成が必要です</translation>
-    </message>
-    <message>
-        <source>Query Result</source>
-        <translation type="obsolete">クエリ結果</translation>
-    </message>
-    <message numerus="yes">
-        <source>The where clause returned %n row(s).</source>
-        <comment>returned test rows</comment>
-        <translation type="obsolete">
-            <numerusform>where節は%n行を返しました.</numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>Query Failed</source>
-        <translation type="obsolete">クエリ失敗</translation>
-    </message>
-    <message>
-        <source>An error occurred when executing the query</source>
-        <translation type="obsolete">クエリ実行中にエラーが発生しました</translation>
-    </message>
-    <message>
-        <source>Error in Query</source>
-        <translation type="obsolete">クエリエラー</translation>
-    </message>
-    <message>
-        <source>The subset string could not be set</source>
-        <translation type="obsolete">サブセット文字列が設定できませんでした</translation>
-    </message>
-</context>
-<context>
     <name>SaSourceSelect</name>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="60"/>
         <source>&amp;Add</source>
         <translation>追加(&amp;A)</translation>
-    </message>
-    <message>
-        <source>&amp;Build Query</source>
-        <translation type="obsolete">クエリ作成(&amp;B)</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="65"/>
@@ -59728,10 +47534,6 @@ SQL Anywhereエラーコード %2
         <translation>接続</translation>
     </message>
     <message>
-        <source>Build query</source>
-        <translation type="obsolete">クエリ作成</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="83"/>
         <source>Search options</source>
         <translation>検索オプション</translation>
@@ -59819,43 +47621,6 @@ SQL Anywhereエラーコード %2
     </message>
 </context>
 <context>
-    <name>SelectionFeature</name>
-    <message>
-        <source>ring %1, vertex %2</source>
-        <translation type="obsolete">リング %1 頂点 %2</translation>
-    </message>
-    <message>
-        <source>polygon %1, ring %2, vertex %3</source>
-        <translation type="obsolete">ポリゴン %1 リング %2 頂点 %3</translation>
-    </message>
-    <message>
-        <source>polyline %1, vertex %2</source>
-        <translation type="obsolete">ポリライン %1 頂点 %2</translation>
-    </message>
-    <message>
-        <source>vertex %1</source>
-        <translation type="obsolete">頂点 %1</translation>
-    </message>
-    <message>
-        <source>point %1</source>
-        <translation type="obsolete">点 %1</translation>
-    </message>
-    <message>
-        <source>single point</source>
-        <translation type="obsolete">単一点</translation>
-    </message>
-    <message>
-        <source>Node tool</source>
-        <translation type="obsolete">ノードツール</translation>
-    </message>
-    <message>
-        <source>Result geometry is invalid. Reverting last changes.
-</source>
-        <translation type="obsolete">結果のジオメトリは不正です。最後の変更を元に戻しています
-</translation>
-    </message>
-</context>
-<context>
     <name>SettingsDialogPythonConsole</name>
     <message>
         <location filename="../python/console/console_settings.ui" line="233"/>
@@ -59879,14 +47644,6 @@ SQL Anywhereエラーコード %2
         <location filename="../python/console/console_settings.ui" line="302"/>
         <source>Autocompletion</source>
         <translation>自動入力補完</translation>
-    </message>
-    <message>
-        <source>Autocompletion enabled</source>
-        <translation type="obsolete">自動入力補完 ON</translation>
-    </message>
-    <message>
-        <source>Threshold</source>
-        <translation type="obsolete">補完開始文字数</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="175"/>
@@ -59952,19 +47709,10 @@ SQL Anywhereエラーコード %2
         <translation>パス</translation>
     </message>
     <message>
-        <source>from API files</source>
-        <translation type="obsolete">APIから</translation>
-    </message>
-    <message>
         <location filename="../python/console/console_settings.ui" line="198"/>
         <location filename="../python/console/console_settings.ui" line="339"/>
         <source>Get autocompletion from current document and installed APIs</source>
         <translation>自動入力補完を現在のドキュメント、インストールされたAPIから行う</translation>
-    </message>
-    <message>
-        <source>from Doc and API</source>
-        <translation type="obsolete">ドキュメントと
-APIから</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="69"/>
@@ -59975,18 +47723,6 @@ APIから</translation>
         <location filename="../python/console/console_settings.ui" line="75"/>
         <source>Auto-save script before running</source>
         <translation>実行前にスクリプトを自動保存する</translation>
-    </message>
-    <message>
-        <source>API</source>
-        <translation type="obsolete">API</translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="obsolete">ブラウズ</translation>
-    </message>
-    <message>
-        <source>Using preloaded API file</source>
-        <translation type="obsolete">プリロードされたAPIファイルを使用</translation>
     </message>
     <message>
         <source>Settings Python Console</source>
@@ -60029,10 +47765,6 @@ about SEXTANTE</source>
         <translation>出力のためのレンダリングスタイルを編集</translation>
     </message>
     <message>
-        <source>Warning</source>
-        <translation type="obsolete">警告</translation>
-    </message>
-    <message>
         <source>Recently used algorithms</source>
         <translation>最近使用したアルゴリズム</translation>
     </message>
@@ -60066,10 +47798,6 @@ about SEXTANTE</source>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="82"/>
         <source>Store vector layers within a SQL Anywhere database</source>
         <translation>ベクタレイヤをSQL Anywhereデータベースに格納する</translation>
-    </message>
-    <message>
-        <source>&amp;SQL Anywhere</source>
-        <translation type="obsolete">SQL Anywhere(&amp;S)</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="162"/>
@@ -60120,10 +47848,6 @@ about SEXTANTE</source>
         <translation>シンボル</translation>
     </message>
     <message>
-        <source>Change</source>
-        <translation type="obsolete">変更</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="124"/>
         <source>Size</source>
         <translation>大きさ</translation>
@@ -60152,10 +47876,6 @@ about SEXTANTE</source>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="292"/>
         <source>Symbol Name</source>
         <translation>シンボル名</translation>
-    </message>
-    <message>
-        <source>Style</source>
-        <translation type="obsolete">スタイル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="319"/>
@@ -60295,18 +48015,6 @@ Would you like to add the new layer to the TOC?</source>
         <translation>入力フィールドを指定してください</translation>
     </message>
     <message>
-        <source>Check geometry validity</source>
-        <translation type="obsolete">ジオメトリの整合性をチェック</translation>
-    </message>
-    <message>
-        <source>Geometry errors</source>
-        <translation type="obsolete">ジオメトリエラー</translation>
-    </message>
-    <message>
-        <source>Total encountered errors</source>
-        <translation type="obsolete">トータルで遭遇したエラー</translation>
-    </message>
-    <message>
         <source>List unique values</source>
         <translation>ユニーク値のリスト</translation>
     </message>
@@ -60338,14 +48046,6 @@ Would you like to add the new layer to the TOC?</source>
         <source>Form</source>
         <translation>フォーム</translation>
     </message>
-    <message>
-        <source>Marker</source>
-        <translation type="obsolete">マーカー</translation>
-    </message>
-    <message>
-        <source>Change</source>
-        <translation type="obsolete">変更</translation>
-    </message>
 </context>
 <context>
     <name>WidgetEllipseBase</name>
@@ -60353,22 +48053,6 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="14"/>
         <source>Form</source>
         <translation>フォーム</translation>
-    </message>
-    <message>
-        <source>Settings</source>
-        <translation type="obsolete">設定</translation>
-    </message>
-    <message>
-        <source>Border color</source>
-        <translation type="obsolete">ボーダーカラー</translation>
-    </message>
-    <message>
-        <source>Change</source>
-        <translation type="obsolete">変更</translation>
-    </message>
-    <message>
-        <source>Fill color</source>
-        <translation type="obsolete">塗りつぶしカラー</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="34"/>
@@ -60431,18 +48115,6 @@ Would you like to add the new layer to the TOC?</source>
         <source>Rotation</source>
         <translation>回転</translation>
     </message>
-    <message>
-        <source>Data defined settings</source>
-        <translation type="obsolete">データ定義設定</translation>
-    </message>
-    <message>
-        <source>Outline color</source>
-        <translation type="obsolete">アウトライン色</translation>
-    </message>
-    <message>
-        <source>Shape</source>
-        <translation type="obsolete">図形</translation>
-    </message>
 </context>
 <context>
     <name>WidgetFontMarker</name>
@@ -60460,10 +48132,6 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="53"/>
         <source>Color</source>
         <translation>色</translation>
-    </message>
-    <message>
-        <source>Change</source>
-        <translation type="obsolete">変更</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="79"/>
@@ -60521,10 +48189,6 @@ Would you like to add the new layer to the TOC?</source>
         <translation>地図上の単位</translation>
     </message>
     <message>
-        <source>Change</source>
-        <translation type="obsolete">変更</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="64"/>
         <source>Pen width</source>
         <translation>ペンの太さ</translation>
@@ -60577,14 +48241,6 @@ Would you like to add the new layer to the TOC?</source>
         <translation>データで定義されたプロパティ...</translation>
     </message>
     <message>
-        <source>Change</source>
-        <translation type="obsolete">変更</translation>
-    </message>
-    <message>
-        <source>Outline</source>
-        <translation type="obsolete">アウトライン</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="125"/>
         <source>Offset</source>
         <translation>オフセット</translation>
@@ -60598,21 +48254,9 @@ Would you like to add the new layer to the TOC?</source>
         <translation>フォーム</translation>
     </message>
     <message>
-        <source>Marker</source>
-        <translation type="obsolete">マーカー</translation>
-    </message>
-    <message>
-        <source>Marker interval</source>
-        <translation type="obsolete">マーカー　間隔</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="126"/>
         <source>Line offset</source>
         <translation>ラインオフセット</translation>
-    </message>
-    <message>
-        <source>Change</source>
-        <translation type="obsolete">変更</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="35"/>
@@ -60673,14 +48317,6 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="14"/>
         <source>Form</source>
         <translation>フォーム</translation>
-    </message>
-    <message>
-        <source>Marker</source>
-        <translation type="obsolete">マーカー</translation>
-    </message>
-    <message>
-        <source>Change</source>
-        <translation type="obsolete">変更</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="32"/>
@@ -60774,25 +48410,9 @@ Would you like to add the new layer to the TOC?</source>
         <translation>データで定義されたプロパティ...</translation>
     </message>
     <message>
-        <source>Color</source>
-        <translation type="obsolete">色</translation>
-    </message>
-    <message>
-        <source>Border color</source>
-        <translation type="obsolete">ボーダーカラー</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="241"/>
         <source>Border width</source>
         <translation>ボーダー太さ</translation>
-    </message>
-    <message>
-        <source>Outline</source>
-        <translation type="obsolete">アウトライン</translation>
-    </message>
-    <message>
-        <source>Change</source>
-        <translation type="obsolete">変更</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="25"/>
@@ -60818,17 +48438,9 @@ Would you like to add the new layer to the TOC?</source>
         <translation>フォーム</translation>
     </message>
     <message>
-        <source>Color</source>
-        <translation type="obsolete">色</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="39"/>
         <source>Fill style</source>
         <translation>塗りつぶしスタイル</translation>
-    </message>
-    <message>
-        <source>Border color</source>
-        <translation type="obsolete">ボーダーカラー</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="32"/>
@@ -60876,10 +48488,6 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="216"/>
         <source>Border</source>
         <translation>境界線</translation>
-    </message>
-    <message>
-        <source>Change</source>
-        <translation type="obsolete">変更</translation>
     </message>
 </context>
 <context>
@@ -60962,14 +48570,6 @@ Would you like to add the new layer to the TOC?</source>
         <translation>フォーム</translation>
     </message>
     <message>
-        <source>Border color</source>
-        <translation type="obsolete">ボーダーカラー</translation>
-    </message>
-    <message>
-        <source>Fill color</source>
-        <translation type="obsolete">塗りつぶしカラー</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="36"/>
         <source>Fill</source>
         <translation>塗りつぶし</translation>
@@ -61027,10 +48627,6 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="281"/>
         <source>Colors</source>
         <translation>色</translation>
-    </message>
-    <message>
-        <source>Change</source>
-        <translation type="obsolete">変更</translation>
     </message>
 </context>
 <context>
@@ -61090,21 +48686,9 @@ Would you like to add the new layer to the TOC?</source>
         <translation>データで定義されたプロパティ...</translation>
     </message>
     <message>
-        <source>Change</source>
-        <translation type="obsolete">変更</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="obsolete">色</translation>
-    </message>
-    <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="276"/>
         <source>Border width</source>
         <translation>ボーダー太さ</translation>
-    </message>
-    <message>
-        <source>Border color</source>
-        <translation type="obsolete">ボーダーカラー</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="93"/>
@@ -61242,14 +48826,6 @@ Would you like to add the new layer to the TOC?</source>
         <source>Clockwise from north</source>
         <translation>北から時計回り</translation>
     </message>
-    <message>
-        <source>LineStyle</source>
-        <translation type="obsolete">ラインスタイル</translation>
-    </message>
-    <message>
-        <source>change</source>
-        <translation type="obsolete">変更</translation>
-    </message>
 </context>
 <context>
     <name>[pluginname]GuiBase</name>
@@ -61280,10 +48856,6 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/plugins/topology/checkDock.ui" line="48"/>
         <source>Validate Extent</source>
         <translation>検証する領域</translation>
-    </message>
-    <message>
-        <source>Toggle Error Markers</source>
-        <translation type="obsolete">エラーマーカーの切り替え</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="72"/>
@@ -61548,328 +49120,6 @@ These values are written to the map file in the appropriate spots to set things 
   &lt;dt&gt;&lt;label&gt;Footer&lt;/label&gt;&lt;/dt&gt;
   &lt;dd&gt;mapファイルで利用するフッタファイルのフルパス..&lt;/dd&gt;
 </translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
-Loads and displays delimited text files
-&lt;p&gt;
-&lt;a href=&quot;#re&quot;&gt;Overview&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;br/&gt;
-&lt;/p&gt;
-
-&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overview&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;A &amp;quot;delimited text file&amp;quot; contains data in which each record starts on a new line, and 
-is split into fields by a delimiter such as a comma.  
-This type of file is commonly exported from spreadsheets (for example CSV files) or databases.  
-Typically the first line of a delimited text file contains the names of the fields.  
-&lt;/p&gt;
-&lt;p&gt;
-Delimited text files can be loaded into QGIS as a layer. 
-The records can be displayed spatially either as a point
-defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
-describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
-only table, which can then be joined to other tables in QGIS.
-&lt;/p&gt;
-&lt;p&gt;
-In addition to the geometry definition the file can contain text, integer, and real number fields.  QGIS
-will choose the type of field based on its contents. 
-&lt;/p&gt;
-&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
-be split into fields), and defining the geometry is represented.  
-This is managed with the delimited text dialog as detailed below.  
-The dialog box displays a sample from the beginning of the file which shows how the format
-options have been applied.
-&lt;/p&gt;
-&lt;h5&gt;Choosing the data file&lt;/h5&gt;
-&lt;p&gt;Use the &amp;quot;Browse...&amp;quot; button to select the data file.  Once the file is selected the
-layer name will automatically be populated based on the file name.  The layer name is used to represent
-the data in the QGIS legend.  
-&lt;/p&gt;
-&lt;p&gt;
-By default files are assumed to be encoded as UTF-8.  However other file
-encodings can be selected.  For example &amp;quot;System&amp;quot; uses the default encoding for the operating system.  
-It is safer to use an explicit coding if the QGIS project needs to be portable.
-&lt;/p&gt;
-&lt;h5&gt;Specifying the file format&lt;/h5&gt;
-&lt;p&gt;The file format can be one of
-&lt;ul&gt;
-    &lt;li&gt;CSV file format.  This is a format commonly used by spreadsheets, in which fields are delimited
-    by a comma character, and quoted using a &amp;quot;(quote) character.  Within quoted fields, a quote
-    mark is entered as &amp;quot;&amp;quot;.&lt;/li&gt;
-    &lt;li&gt;Selected delimiters.  Each record is split into fields using one or more  delimiter character.
-    Quote characters are used for fields which may contain delimiters.  Escape characters may be used 
-    to treat the following character as a normal character (ie to include delimiter, quote, and 
-    new line characters in text fields).  The use of delimiter, quote, and escape characters is detailed &lt;a href=&quot;#csv&quot;&gt;below&lt;/a&gt;.
-    &lt;li&gt;Regular expression.  Each line is split into fields using a &amp;quot;regular expression&amp;quot; delimiter.
-    The use of regular expressions is details &lt;a href=&quot;#regexp&quot;&gt;below&lt;/a&gt;.
-&lt;/ul&gt;
-&lt;h5&gt;Record and field options&lt;/h5&gt;
-&lt;p&gt;The following options affect the selection of records and fields from the data file&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Number of header lines to discard: used to ignore header lines at the beginning of the text file&lt;/li&gt;
-    &lt;li&gt;First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.&lt;/li&gt;
-    &lt;li&gt;Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). &lt;/li&gt;
-    &lt;li&gt;Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
-    affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
-    single delimiter.  Quoted fields are never discarded.&lt;/li&gt;
-    &lt;li&gt;Decimal point is comma: if selected then commas are used as the decimal point in real numbers.  For
-    example &lt;tt&gt;-51,354&lt;/tt&gt; is equivalent to -51.354.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5&gt;Geometry definition&lt;/h5&gt;
-&lt;p&gt;The geometry is can be define as one of&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Point coordinates: each feature is represented as a point defined by X and Y coordinates.&lt;/li&gt;
-    &lt;li&gt;Well known text (WKT) geometry: each feature is represented as a well known text string, for example
-    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  See details of the &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt; format.
-    &lt;li&gt;No geometry (attribute only table): records will not be displayed on the map, but can be viewed
-    in the attribute table and joined to other layers in QGIS&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For point coordinates the following options apply:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;X field: specifies the field containing the X coordinate&lt;/li&gt;
-    &lt;li&gt;Y field: specifies the field containing the Y coordinate&lt;/li&gt;
-    &lt;li&gt;DMS angles: if selected coordinates are represented as degrees/minutes/seconds
-    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
-    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
-    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
-    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Geometry field: the field containing the well known text definition.&lt;/li&gt;
-    &lt;li&gt;Geometry type: one of &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or &amp;quot;Polygon&amp;quot;.
-    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
-    which geometry type is displayed in text files containing multiple geometry types. Records containing
-   other geometry types are discarded.   
-    If &amp;quot;Detect&amp;quot; is selected then the type of the first geometry in the file will be used.
-    &amp;quot;Point&amp;quot; includes POINT and MULTIPOINT WKT types, &amp;quot;Line&amp;quot; includes LINESTRING and
-    MULTLINESTRING WKT types, and &amp;quot;Polygon&amp;quot; includes POLYGON and MULTIPOLYGON WKT types.
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Records are split into fields using three character sets: 
-delimiter characters, quote characters, and escape characters.  
-Other characters in the record are considered as data, split into
-fields by delimiter characters. 
-Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
-&lt;/p&gt;
-&lt;p&gt;
-Quote and escape characters cannot be the same as delimiter characters - they
-will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
-if they are.&lt;/p&gt;
-&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
-is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
-can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
-&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
-contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
-start and end with the same quote character.  Quote characters cannot occur within a field unless they
-are escaped.&lt;/p&gt;
-&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
-(that is, to stop it being treated as a new line, delimiter, or quote character).  
-&lt;/p&gt;
-&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
-&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
-&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
-of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
-&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
-If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
- then these are extracted as fields. 
- If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
-In this case the regular expression is matched against each line.  If the line does not match it is discarded
-as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
-is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
-unintuitive) means of loading data with fixed width fields.  For example the 
-expression
-&lt;pre&gt;
-^(.{5})(.{10})(.{20})(.{20}).*
-&lt;/pre&gt;
-&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
-Lines less than 45 characters long will be discarded.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;
-The delimited text layer recognizes the following 
-&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
-&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
-It will accept geometries with
-a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;
-It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
-system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
-preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
-In both cases the SRID is ignored.
-&lt;/p&gt;
-
-
-
-&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;/h4&gt; 
-&lt;p&gt;Each record in the delimited text file is split into fields representing
-attributes of the record.  Usually the attribute names are taken from the first
-data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
-Also if records have more fields than are defined in the header record then these
-will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
-QGIS may override 
-the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
-or are duplicated.
-&lt;/p&gt;
-&lt;p&gt;
-In addition to the attributes explicitly in the data file QGIS assigns a unique 
-feature id to each record which is the line number in the source file on which
-the record starts.  
-&lt;/p&gt;
-&lt;p&gt;
-Each attribute also has a data type, one of string (text), integer, or real number.
-The data type is inferred from the content of the fields - if every non blank value
-is a valid integer then the type is integer, otherwise if it is a valid real
-number then the type is real, otherwise the type is string.  Note that this is
-based on the content of the fields - quoting fields does not change the way they
-are interpreted.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;/h4&gt; 
-&lt;pre&gt;
-X;Y;ELEV&lt;br /&gt;
--300120;7689960;13&lt;br /&gt;
--654360;7562040;52&lt;br /&gt;
-1640;7512840;3&lt;br /&gt;
-&lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
-&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
-&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
-&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;/h4&gt;
-&lt;pre&gt;
-id|wkt&lt;br /&gt;
-1|POINT(172.0702250 -43.6031036)&lt;br /&gt;
-2|POINT(172.0702250 -43.6031036)&lt;br /&gt;
-3|POINT(172.1543206 -43.5731302)&lt;br /&gt;
-4|POINT(171.9282585 -43.5493308)&lt;br /&gt;
-5|POINT(171.8827359 -43.5875983)&lt;br /&gt;
-&lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Has two fields defined in the header row: id and wkt.
-  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
-  &lt;li&gt;Specifies each point using the WKT notation
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
-The pattern is:
-&lt;/p&gt;
-&lt;pre&gt;
-from PyQt4.QtCore import QUrl, QString&lt;br /&gt;
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry&lt;br /&gt;
-&lt;br /&gt;
-# Define the data source&lt;br /&gt;
-filename=&quot;test.csv&quot;&lt;br /&gt;
-uri=QUrl.fromLocalFile(filename)&lt;br /&gt;
-uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)&lt;br /&gt;
-uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)&lt;br /&gt;
-uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)&lt;br /&gt;
-# ... other delimited text parameters&lt;br /&gt;
-layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)&lt;br /&gt;
-# Add the layer to the map&lt;br /&gt;
-if layer.isValid():&lt;br /&gt;
-    QgsMapLayerRegistry.instance().addMapLayer( layer )&lt;br /&gt;
-&lt;/pre&gt;
-&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
-&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
-The following options can be added
-&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
-    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
-       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
-       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
-       no default for regexp files.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
-       Additional fields in each record will be discarded. The default is 0 - include all fields.
-       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
-       used.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
-       specified then a dialog box may request this information from the user
-       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.  This option is not available from the GUI.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;useWatcher=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.  This option is not available from the GUI&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
-&lt;/ul&gt;
-
-
-</source>
-        <translation type="obsolete">&lt;h3&gt;デリミテッドテキストレイヤプラグイン&lt;/h3&gt;
-x,y座標が含まれている値が区切り文字（空白やカンマ等）で区切られているテキストファイルをロードして表示します.
-&lt;p&gt;
-&lt;p&gt;
-&lt;a href=&quot;#re&quot;&gt;要件&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#example&quot;&gt;適切なテキストファイル例&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#notes&quot;&gt;注記&lt;/a&gt;&lt;br/&gt;
-
-&lt;a name=&quot;re&quot;&gt;
-&lt;h4&gt;要件&lt;/h4&gt;
-&lt;/a&gt;
-デリミテッドテキストをレイヤとして表示するためには以下の要件が必要です:
-&lt;ol&gt;
-&lt;li&gt;文字区切りのフィールド名ヘッダ行. この行はテキストファイルの先頭に必要です.&lt;/li&gt;
-&lt;li&gt;ヘッダ行にはXとYの値のフィールドが必要です. このフィールドは任意の名前をつけられます.&lt;/li&gt;
-&lt;li&gt;&lt;B&gt;x&lt;/B&gt;と&lt;B&gt;y&lt;/B&gt;座標が数値で記入されている必要があります. 座標系は重要ではありません.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;a name=&quot;example&quot;&gt;
-&lt;h4&gt;適切なテキストファイル例&lt;/h4&gt; 
-&lt;/a&gt;
-X;Y;ELEV&lt;br/&gt;
--300120;7689960;13&lt;br/&gt;
--654360;7562040;52&lt;br/&gt;
-1640;7512840;3&lt;br/&gt;
-[...]&lt;br/&gt;
-&lt;a name=&quot;notes&quot;&gt;
-&lt;h4&gt;注記&lt;/h4&gt;
-&lt;/a&gt;
-&lt;ol&gt;
-&lt;li&gt;上記例のテキストファイルでは &lt;b&gt;;&lt;/b&gt;を区切り文字として使っています. 任意の文字でフィールドを区切ることができます.&lt;/li&gt;
-&lt;li&gt;先頭の行はヘッダ行です. ここには X, Y と ELEVというフィールドがあります.&lt;/li&gt;
-&lt;li&gt;クォート (&quot;) はテキストフィールドに利用しないで下さい.&lt;/li&gt;
-&lt;li&gt;x座標はXフィールドに格納されています.&lt;/li&gt;
-&lt;li&gt;y座標はYフィールドに格納されています.&lt;/li&gt;
-&lt;/ol&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="554"/>
@@ -62834,588 +50084,6 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;li&gt;&amp;lt;U&amp;gt;&lt;u&gt; 下線付きテキスト &lt;/u&gt;&amp;lt;/U&amp;gt;
 &lt;/li&gt;
-&lt;/ul&gt;
-</translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
-Loads and displays delimited text files
-&lt;p&gt;
-&lt;a href=&quot;#re&quot;&gt;Overview&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;br/&gt;
-&lt;/p&gt;
-
-&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overview&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;A &amp;quot;delimited text file&amp;quot; contains data in which each record starts on a new line, and 
-is split into fields by a delimiter such as a comma.  
-This type of file is commonly exported from spreadsheets (for example CSV files) or databases.  
-Typically the first line of a delimited text file contains the names of the fields.  
-&lt;/p&gt;
-&lt;p&gt;
-Delimited text files can be loaded into QGIS as a layer. 
-The records can be displayed spatially either as a point
-defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
-describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
-only table, which can then be joined to other tables in QGIS.
-&lt;/p&gt;
-&lt;p&gt;
-In addition to the geometry definition the file can contain text, integer, and real number fields.  QGIS
-will choose the type of field based on its contents. 
-&lt;/p&gt;
-&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
-be split into fields), and defining the geometry is represented.  
-This is managed with the delimited text dialog as detailed below.  
-The dialog box displays a sample from the beginning of the file which shows how the format
-options have been applied.
-&lt;/p&gt;
-&lt;h5&gt;Choosing the data file&lt;/h5&gt;
-&lt;p&gt;Use the &amp;quot;Browse...&amp;quot; button to select the data file.  Once the file is selected the
-layer name will automatically be populated based on the file name.  The layer name is used to represent
-the data in the QGIS legend.  
-&lt;/p&gt;
-&lt;p&gt;
-By default files are assumed to be encoded as UTF-8.  However other file
-encodings can be selected.  For example &amp;quot;System&amp;quot; uses the default encoding for the operating system.  
-It is safer to use an explicit coding if the QGIS project needs to be portable.
-&lt;/p&gt;
-&lt;h5&gt;Specifying the file format&lt;/h5&gt;
-&lt;p&gt;The file format can be one of
-&lt;ul&gt;
-    &lt;li&gt;CSV file format.  This is a format commonly used by spreadsheets, in which fields are delimited
-    by a comma character, and quoted using a &amp;quot;(quote) character.  Within quoted fields, a quote
-    mark is entered as &amp;quot;&amp;quot;.&lt;/li&gt;
-    &lt;li&gt;Selected delimiters.  Each record is split into fields using one or more  delimiter character.
-    Quote characters are used for fields which may contain delimiters.  Escape characters may be used 
-    to treat the following character as a normal character (ie to include delimiter, quote, and 
-    new line characters in text fields).  The use of delimiter, quote, and escape characters is detailed &lt;a href=&quot;#csv&quot;&gt;below&lt;/a&gt;.
-    &lt;li&gt;Regular expression.  Each line is split into fields using a &amp;quot;regular expression&amp;quot; delimiter.
-    The use of regular expressions is details &lt;a href=&quot;#regexp&quot;&gt;below&lt;/a&gt;.
-&lt;/ul&gt;
-&lt;h5&gt;Record and field options&lt;/h5&gt;
-&lt;p&gt;The following options affect the selection of records and fields from the data file&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Number of header lines to discard: used to ignore header lines at the beginning of the text file&lt;/li&gt;
-    &lt;li&gt;First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.&lt;/li&gt;
-    &lt;li&gt;Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). &lt;/li&gt;
-    &lt;li&gt;Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
-    affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
-    single delimiter.  Quoted fields are never discarded.&lt;/li&gt;
-    &lt;li&gt;Decimal separator is comma: if selected then commas instead of points are used as the decimal separator in real numbers.  For
-    example &lt;tt&gt;-51,354&lt;/tt&gt; is equivalent to -51.354.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5&gt;Geometry definition&lt;/h5&gt;
-&lt;p&gt;The geometry is can be define as one of&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Point coordinates: each feature is represented as a point defined by X and Y coordinates.&lt;/li&gt;
-    &lt;li&gt;Well known text (WKT) geometry: each feature is represented as a well known text string, for example
-    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  See details of the &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt; format.
-    &lt;li&gt;No geometry (attribute only table): records will not be displayed on the map, but can be viewed
-    in the attribute table and joined to other layers in QGIS&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For point coordinates the following options apply:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;X field: specifies the field containing the X coordinate&lt;/li&gt;
-    &lt;li&gt;Y field: specifies the field containing the Y coordinate&lt;/li&gt;
-    &lt;li&gt;DMS angles: if selected coordinates are represented as degrees/minutes/seconds
-    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
-    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
-    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
-    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Geometry field: the field containing the well known text definition.&lt;/li&gt;
-    &lt;li&gt;Geometry type: one of &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or &amp;quot;Polygon&amp;quot;.
-    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
-    which geometry type is displayed in text files containing multiple geometry types. Records containing
-   other geometry types are discarded.   
-    If &amp;quot;Detect&amp;quot; is selected then the type of the first geometry in the file will be used.
-    &amp;quot;Point&amp;quot; includes POINT and MULTIPOINT WKT types, &amp;quot;Line&amp;quot; includes LINESTRING and
-    MULTLINESTRING WKT types, and &amp;quot;Polygon&amp;quot; includes POLYGON and MULTIPOLYGON WKT types.
-&lt;/ul&gt;
-&lt;h5&gt;Layer settings&lt;/h5&gt;
-&lt;p&gt;Layer settings control the way the layer is managed in QGIS.  The options available are:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
-This option may be useful for files larger than a few megabytes in size.&lt;/li&gt;
-&lt;li&gt;Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
-from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
-for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
-&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
-reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
-extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
-application will change the file. &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Records are split into fields using three character sets: 
-delimiter characters, quote characters, and escape characters.  
-Other characters in the record are considered as data, split into
-fields by delimiter characters. 
-Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
-&lt;/p&gt;
-&lt;p&gt;
-Quote and escape characters cannot be the same as delimiter characters - they
-will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
-if they are.&lt;/p&gt;
-&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
-is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
-can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
-&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
-contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
-start and end with the same quote character.  Quote characters cannot occur within a field unless they
-are escaped.&lt;/p&gt;
-&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
-(that is, to stop it being treated as a new line, delimiter, or quote character).  
-&lt;/p&gt;
-&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
-&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
-&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
-of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
-&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
-If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
- then these are extracted as fields. 
- If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
-In this case the regular expression is matched against each line.  If the line does not match it is discarded
-as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
-is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
-unintuitive) means of loading data with fixed width fields.  For example the 
-expression
-&lt;pre&gt;
-^(.{5})(.{10})(.{20})(.{20})
-&lt;/pre&gt;
-&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
-Lines less than 55 characters long will be discarded.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;
-The delimited text layer recognizes the following 
-&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
-&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
-It will accept geometries with
-a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;
-It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
-system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
-preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
-In both cases the SRID is ignored.
-&lt;/p&gt;
-
-
-
-&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;/h4&gt; 
-&lt;p&gt;Each record in the delimited text file is split into fields representing
-attributes of the record.  Usually the attribute names are taken from the first
-data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
-Also if records have more fields than are defined in the header record then these
-will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
-QGIS may override 
-the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
-or are duplicated.
-&lt;/p&gt;
-&lt;p&gt;
-In addition to the attributes explicitly in the data file QGIS assigns a unique 
-feature id to each record which is the line number in the source file on which
-the record starts.  
-&lt;/p&gt;
-&lt;p&gt;
-Each attribute also has a data type, one of string (text), integer, or real number.
-The data type is inferred from the content of the fields - if every non blank value
-is a valid integer then the type is integer, otherwise if it is a valid real
-number then the type is real, otherwise the type is string.  Note that this is
-based on the content of the fields - quoting fields does not change the way they
-are interpreted.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;/h4&gt; 
-&lt;pre&gt;
-X;Y;ELEV
--300120;7689960;13
--654360;7562040;52
-1640;7512840;3
-&lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
-&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
-&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
-&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;/h4&gt;
-&lt;pre&gt;
-id|wkt
-1|POINT(172.0702250 -43.6031036)
-2|POINT(172.0702250 -43.6031036)
-3|POINT(172.1543206 -43.5731302)
-4|POINT(171.9282585 -43.5493308)
-5|POINT(171.8827359 -43.5875983)
-&lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Has two fields defined in the header row: id and wkt.
-  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
-  &lt;li&gt;Specifies each point using the WKT notation
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
-The pattern is:
-&lt;/p&gt;
-&lt;pre&gt;
-from PyQt4.QtCore import QUrl, QString
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
-
-# Define the data source
-filename=&quot;test.csv&quot;
-uri=QUrl.fromLocalFile(filename)
-uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
-uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
-uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
-# ... other delimited text parameters
-layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
-# Add the layer to the map
-if layer.isValid():
-    QgsMapLayerRegistry.instance().addMapLayer( layer )
-&lt;/pre&gt;
-&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
-&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
-The following options can be added
-&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
-    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
-       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
-       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
-       no default for regexp files.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
-       Additional fields in each record will be discarded. The default is 0 - include all fields.
-       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
-       used.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
-       specified then a dialog box may request this information from the user
-       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
-&lt;/ul&gt;
-
-
-</source>
-        <translation type="obsolete">&lt;h3&gt;デリミティッドテキストレイヤ&lt;/h3&gt;
-デリミティッドテキストファイルを読み込んで表示します
-&lt;p&gt;
-&lt;a href=&quot;#re&quot;&gt;概要&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#creating&quot;&gt;デリミティッドテキストレイヤの作成&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#csv&quot;&gt;デリミタとクォート文字とエスケープ文字はどう機能するか&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#regexp&quot;&gt;正規表現デリミタはどう機能するか&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#wkt&quot;&gt;WKTテキストはどう解釈されるか&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#attributes&quot;&gt;デリミティッドテキストファイルの属性&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#example&quot;&gt;X, Yポイント座標を持つテキストファイルの例&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#wkt_example&quot;&gt;WKTジオメトリを持つテキストファイルの例&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#python&quot;&gt;Pythonでデリミティッドテキストレイヤを使うには&lt;/a&gt;&lt;br/&gt;
-&lt;/p&gt;
-
-&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;概要&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;&amp;quot;デリミティッドテキストファイル&amp;quot;とは各レコードが新しい行で始まりコンマ等の区切り文字(デリミタ)でフィールドに分けられたデータです.
-このファイルタイプは一般的に表計算ソフト(例えばCSVファイルとして)やデータベースからエクスポートされます.
-一般的には最初の行にはフィールドの名前を持ちます.
-&lt;/p&gt;
-&lt;p&gt;
-デリミティッドテキストファイルはQGISにレイヤとして読み込むことができます.
-レコードはX, Y座標で定義されたポイントとして空間的に表示することができます.
-またWell Known Text (WKT)という任意の複雑なポイントやライン，ポリゴンを表すジオメトリの定義を用いて空間的に表示することもできます.
-ファイルは属性のみのテーブルとして読み込むこともできます. それはQGISで他のテーブルに結合することができます.
-&lt;/p&gt;
-&lt;p&gt;
-ファイルにはジオメトリ定義に加えてテキストや整数、実数フィールドを含むことができます.
-QGISはフィールドの内容に基づいてそのタイプを選びます.
-&lt;/p&gt;
-&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;デリミティッドテキストレイヤの作成&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;デリミティッドテキストレイヤを作成するにはデータファイルを選び、形式(どのように各レコードがフィールドに分けられているか)を定義して、ジオメトリがどう表されているか定義します.
-下で詳述されるように、これはデリミティッドテキストダイアログで行うことができます.
-ダイアログボックスには形式オプションがどう適用されるかを示すファイルの先頭部分のサンプルが表示されます.
-&lt;/p&gt;
-&lt;h5&gt;データファイルの選択&lt;/h5&gt;
-&lt;p&gt;データファイルを選択するには&amp;quot;参照...&amp;quot;ボタンを使います.
-ファイルが選択されたらレイヤ名はファイル名に基づいて自動的に入力されます.
-レイヤ名はQGISの凡例でデータを表すのに使われます.
-&lt;/p&gt;
-&lt;p&gt;
-デフォルトではファイルのエンコーディングはUTF-8が選ばれていますが、他のエンコーディングを選ぶこともできます.
-例えば&amp;quot;System&amp;quot;を選べばオペレーションシステムのデフォルトエンコーディングを使用します.
-QGISプロジェクトを異機種間で移動して使う必要がある場合は、明示的なエンコーディングを使用する方が安全です.
-&lt;/p&gt;
-&lt;h5&gt;ファイル形式の指定&lt;/h5&gt;
-&lt;p&gt;ファイル形式には次の形式があります
-&lt;ul&gt;
-    &lt;li&gt;CSVファイル形式.  これは表計算ソフトで一般的に使われる形式です.フィールドはコンマ文字で境され、&amp;quot;文字(ダブルクォート)で囲まれます.
-    ダブルクォートで囲まれたフィールドではダブルクォートは&amp;quot;&amp;quot;として入力することができます.&lt;/li&gt;
-    &lt;li&gt;選択された区切り文字.  各レコードは1つかそれ以上のデリミタを用いてフィールドに分けられます.
-    クォート文字はデリミタを含むフィールドに使用されます.
-    エスケープ文字は次の文字を通常の文字として扱う(デリミタやクォート文字、改行文字をテキストフィールドに含める)ために使用できます.
-    デリミタやクォート文字、エスケープ文字の使い方は&lt;a href=&quot;#csv&quot;&gt;下&lt;/a&gt;に詳しく述べられています.
-    &lt;li&gt;正規表現. 各行は&amp;quot;正規表現&amp;quot; デリミタを用いてフィールドに分けられます.
-    正規表現の使い方は&lt;a href=&quot;#regexp&quot;&gt;下&lt;/a&gt;に詳しく述べられています.
-&lt;/ul&gt;
-
-&lt;h5&gt;レコードオプションとフィールドオプション&lt;/h5&gt;
-&lt;p&gt;次のオプションはデータファイルからのレコードとフィールドの選抜に影響します&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;無視するヘッダー行数: テキストファイルの先頭部分のヘッダ行を無視するために使われます&lt;/li&gt;
-    &lt;li&gt;最初のレコードはフィールド名を保持している: チェックされている場合、ファイルの(無視された行の後の)最初のレコードはデータレコードではなくフィールド名として解釈されます.&lt;/li&gt;
-    &lt;li&gt;前後の空白削除: チェックされている場合、各フィールドから先頭と末尾の空白が削除されます(クォート文字で囲まれたフィールドを除く).&lt;/li&gt;
-    &lt;li&gt;空フィールドを削除: チェックされている場合、(前後の空白削除の後に)空のフィールドは破棄されます.
-    これはフィールドへのデータ配置に影響を与え、連続したデリミタを単一のデリミタとして処理することに相当します.
-    クォート文字で囲まれたフィールドは決して破棄されません.&lt;/li&gt;
-    &lt;li&gt;コンマを小数点区切りに指定: チェックされている場合、ポイント(ピリオド)の代わりにコンマが実数の小数区切り文字に使われます.
-    例えば&lt;tt&gt;-51,354&lt;/tt&gt;は-51.354と等しくなります.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5&gt;ジオメトリ定義&lt;/h5&gt;
-&lt;p&gt;ジオメトリは次のいずれかとして定義できます.&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;ポイント座標: 各地物はX, Y座標で定義されるポイントとして表現されます.&lt;/li&gt;
-    &lt;li&gt;Well known text (WKT)ジオメトリ: 各地物はWell known textとして表現されます. 例えば
-    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  詳細は&lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt;形式を参照して下さい.
-    &lt;li&gt;ジオメトリなし (属性のみのテーブル): レコードは地図には表示されませんが属性テーブルで表示できます.
-    QGISの他のレイヤと結合することもできます.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;ポイント座標の場合は次のオプションが適用されます:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Xフィールド: X座標を含んでいるフィールドを指定します&lt;/li&gt;
-    &lt;li&gt;Yフィールド: Y座標を含んでいるフィールドを指定します&lt;/li&gt;
-    &lt;li&gt;度分秒を使用: チェックされている場合、座標は度/分/秒または度/分で表されています.
-    QGISは度/分/秒の解釈に非常に寛容です. 正しいDMS座標は3つの数値フィールドとオプションで半球の接頭辞か接尾辞を含みます (N, Eまたは+は正, S, Wまたは-は負).
-    その他の数字ではない文字は一般的に破棄されます. 例えば&lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt;は有効な座標です.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Well known textジオメトリの場合は次のオプションが適用されます:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;ジオメトリフィールド: Well known text定義を含んでいるフィールド.&lt;/li&gt;
-    &lt;li&gt;ジオメトリタイプ: &amp;quot;検出する&amp;quot;, &amp;quot;点&amp;quot;, &amp;quot;ライン&amp;quot;, &amp;quot;ポリゴン&amp;quot;から選択します.
-QGISレイヤは一つのジオメトリ地物タイプ(点, ラインまたはポリゴン)を表示することができます.
-このオプションはテキストファイルが複数のジオメトリタイプを含んでいる場合にどのジオメトリタイプを表示するか選択します.
-他のジオメトリタイプのレコードは破棄されます.
-&amp;quot;Detect&amp;quot;が選択された場合、ファイルの最初のジオメトリのタイプが使用されます.
-&amp;quot;Point&amp;quot;はPOINTとMULTIPOINTのWKTタイプを含みます.
-&amp;quot;Line&amp;quot;はLINESTRINGとMULTILINESTRINGのWKTタイプを含みます.
-&amp;quot;Polygon&amp;quot;はPOLYGONとMULTIPOLYGONのWKTタイプを含みます.
-&lt;/ul&gt;
-&lt;h5&gt;レイヤ設定&lt;/h5&gt;
-&lt;p&gt;レイヤ設定はQGISでレイヤが扱われる方法を管理します. 次のオプションが利用可能です:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;空間インデックスを利用する. 空間オブジェクトの表示と選択のパフォーマンスを良くするために空間インデックスを作成します.
-このオプションはサイズが数メガバイトより大きなファイルに役立つでしょう.&lt;/li&gt;
-&lt;li&gt;サブセットインデックスを利用する. レコードのサブセットが使われている場合インデックスを作成する
-(レイヤプロパティダイアログからサブセット文字列を明示的に設定する場合や、全てのジオメトリが有効ではないファイルの中でジオメトリが有効な地物の暗黙のサブセット).
-インデックスはサブセットが定義されている時のみ作成されます.&lt;/li&gt;
-&lt;li&gt;ファイル監視. このオプションがチェックされている場合、QGISは他のアプリケーションによるファイルの変更を監視し、変更された時にファイルを読み直します.
-地図はユーザによってリフレッシュされるまで更新されませんが、インデックスと領域はリロードされます.このオプションはインデックスが利用されていて他のアプリケーションがファイルを変更しそうであればチェックされるべきです.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;デリミタとクォート文字とエスケープ文字はどう機能するか&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;レコードは3つの文字のセットを用いてフィールドに分けられます:
-デリミタ, クォート文字, そしてエスケープ文字です. その他の文字はデータとみなされ区切り文字によってフィールドに分けられます.
-クォート文字はペアで用いてそのあいだのテキストをデータとして扱われるようにします. エスケープ文字はそれに続く文字をデータとして扱われるようにします.
-&lt;/p&gt;
-&lt;p&gt;
-クォート文字とエスケープ文字はデリミタと同じではいけません.
-もしそうであればそれらは無視されます.
-エスケープ文字はクォート文字と同じでもよいですが、異なるふるまいをします.&lt;/p&gt;
-&lt;p&gt;デリミタは各フィールドの終わりのマークとして使われます. もし1つより多くのデリミタが定義されている場合はどれか1つの文字がフィールドの終わりのしるしとなります.
-クォート文字とエスケープ文字は通常の文字として扱われるようにするためにデリミタを上書きすることができます.&lt;/p&gt;
-&lt;p&gt;クォート文字はクォート文字で囲まれたフィールドの最初と最後のマークに用いられます.
-クォート文字で囲まれたフィールドにはデリミタを含むことができ、テキストファイルの複数行にわたることができます.
-フィールドがクォート文字で囲まれている場合、同じクォート文字で始まり、終わらなければいけません.
-クォート文字はエスケープされなければフィールドの中には現れません.&lt;/p&gt;
-&lt;p&gt;クォート文字ではないエスケープ文字はそれに続く文字をデータとして扱われるようにします.
-(それは改行文字やデリミタ、クォート文字として扱われないようにするためです)
-&lt;/p&gt;
-&lt;p&gt;クォート文字でもあるエスケープ文字にはより限られた効果があります.
-それらはクォート文字の中にだけ適用され、それら自身のみエスケープします.
-例えば、もし&lt;tt&gt;&apos;&lt;/tt&gt;がクォート文字でありエスケープ文字でもあるときは、
-文字列&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt;はSmith&apos;s&amp;nbsp;Creekの値を表します.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;正規表現デリミタはどう機能するか&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;正規表現は文字パターンを表すために使用されるミニ言語です.
-正規表現の構文には多くのバリエーションがあります.
-QGISは&lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt;フレームワークの&lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt;クラスによって提供される構文を使用します.&lt;/p&gt;
-&lt;p&gt;正規表現デリミティッドファイルでは各行はレコードとして扱われます.
-行の中でそれぞれの正規表現のマッチはフィールドの終わりとして扱われます.
-もし正規表現がキャプチャグループ(例 &lt;tt&gt;(cat|dog)&lt;/tt&gt;)を含む場合はそれらはフィールドとして抜き出されます.
-これを望まない時はキャプチャしないグループ(例 &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;)を使います.
-&lt;/p&gt;
-&lt;p&gt;正規表現が行の始めにアンカーされている場合は異なる扱われ方がされます(パターンが&lt;tt&gt;^&lt;/tt&gt;で始まる場合です).
-この場合正規表現は各行に対してマッチします.
-行がマッチない時は不正なレコードとして破棄されます.
-正規表現のそれぞれのキャプチャグループはフィールドとして扱われます.
-キャプチャグループがない場合はその正規表現は有効ではありません.
-例としては(やや直感的でないが)固定幅のフィールドを持つデータを読み込むのに使うことができます.
-例えば正規表現
-&lt;pre&gt;
-^(.{5})(.{10})(.{20})(.{20})
-&lt;/pre&gt;
-&lt;p&gt;は各行から幅が文字数5, 10, 20, 20の4つのフィールドが抜き出されます.
-長さ55文字に満たない行は破棄されます.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;WKTテキストはどう解釈されるか&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;
-デリミティッドテキストレイヤは次の&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt;タイプを認識します.
-&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, それに&lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;です.
-Z座標を持つジオメトリ(例 &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;)や計測値を持つジオメトリ(&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;)，その両方を持つジオメトリ(&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;)を受け入れます.
-&lt;/p&gt;
-&lt;p&gt;
-ジオメトリが空間参照システムIDの後にあるPostGIS EWKT(例 &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;)や
-ジオメトリが整数の空間参照IDの後にあるInformixで使われるWKT(例 &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;)を扱うこともできます
-どちらの場合もSRIDは無視されます.
-&lt;/p&gt;
-
-
-
-&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;デリミティッドテキストファイルの属性&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;デリミティッドテキストファイルの各レコードはレコードの属性を表すフィールドに分けられます.
-通常属性名はファイルの最初のデータレコードから取得されます.
-しかし属性名が含まれていない場合は&lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;というように名付けられます.
-レコードがヘッダレコードで定義されたフィールドより多くのフィールドを有する場合には、それらは&lt;tt&gt;field_#&lt;/tt&gt;と名付けられます. ここで#はフィールド番号です
-(レコードの終わりの空のフィールドは無視されることに注意して下さい).
-テキストファイルのフィールド名が番号である場合や&lt;tt&gt;field_#&lt;/tt&gt;といった名前である場合、重複した名前である場合にはQGISは名前を上書きします.
-&lt;/p&gt;
-&lt;p&gt;
-データファイル内の明示的な属性に加えてQGISは各レコードにユニークな地物IDを割り当てます.
-それはソースファイルにおけるレコードが始まる行の行番号です.
-&lt;/p&gt;
-&lt;p&gt;
-各属性は文字列(テキスト), 整数または実数のうちの1つのデータ型を持ちます.
-データ型はフィールドの内容から推測されます.
-すべての空ではない値が有効な整数の場合は整数型となり、それが実数であれば実数型となります.
-そうでなければ文字列になります.
-これはフィールドの内容に基づくことに注意して下さい.フィールドをクォート文字で囲んだとしても解釈の方法は変更されません.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;X, Yポイント座標を持つテキストファイルの例&lt;/a&gt;&lt;/h4&gt; 
-&lt;pre&gt;
-X;Y;ELEV
--300120;7689960;13
--654360;7562040;52
-1640;7512840;3
-&lt;/pre&gt;
-&lt;p&gt;このファイルは:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt; &lt;b&gt;;&lt;/b&gt;をデリミタに用いています. どんな文字でもフィールドを区切るのに用いることができます.&lt;/li&gt;
-&lt;li&gt;最初の行はヘッダ行です. フィールド名としてX, Y, ELEVを含みます.&lt;/li&gt;
-&lt;li&gt;x座標はXフィールドに含まれます.&lt;/li&gt;
-&lt;li&gt;y座標はYフィールドに含まれます.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;WKTジオメトリを持つテキストファイルの例&lt;/a&gt;&lt;/h4&gt;
-&lt;pre&gt;
-id|wkt
-1|POINT(172.0702250 -43.6031036)
-2|POINT(172.0702250 -43.6031036)
-3|POINT(172.1543206 -43.5731302)
-4|POINT(171.9282585 -43.5493308)
-5|POINT(171.8827359 -43.5875983)
-&lt;/pre&gt;
-&lt;p&gt;このファイルは:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;ヘッダ行に定義された2つのフィールドid, wktを持ちます.
-  &lt;li&gt;&lt;b&gt;|&lt;/b&gt;をデリミタとして用いています.&lt;/li&gt;
-  &lt;li&gt;各ポイントをWKT表記を用いて指定しています.
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Pythonでデリミティッドテキストレイヤを使うには&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;他のベクタレイヤと同様の方法でデリミティッドテキストデータソースをPythonから作成することができます.
-サンプル:
-&lt;/p&gt;
-&lt;pre&gt;
-from PyQt4.QtCore import QUrl, QString
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
-
-# Define the data source
-filename=&quot;test.csv&quot;
-uri=QUrl.fromLocalFile(filename)
-uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
-uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
-uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
-# ... other delimited text parameters
-layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
-# Add the layer to the map
-if layer.isValid():
-    QgsMapLayerRegistry.instance().addMapLayer( layer )
-&lt;/pre&gt;
-&lt;p&gt;これは上の二番目のサンプルファイルをロードするのに使うことができます.&lt;/p&gt;
-&lt;p&gt;デリミティッドテキストレイヤの構成はクエリ要素をURIに追加することで定義できます.
-次のオプションを追加することができます
-&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; ファイルエンコーディングを定義します.  デフォルトは&amp;quot;UTF-8&amp;quot;&lt;/li&gt;
-    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; デリミタのタイプを定義します. 有効な値はcsv, regexp, whitespace (regexpの特別な場合).
-       デフォルトはcsv.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; csv形式ファイルやregexp(正規表現)形式ファイルで用いられるデリミタを定義します.
-       CSVファイルではデフォルトは,(コンマ). regexpファイルにはデフォルトはありません.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (csvファイル) フィールドを囲むクォート文字を定義します. デフォルトは&amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (csvファイル) これに続く文字を特殊な意味をエスケープするのに用いる文字を定義します. デフォルトは&amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; ファイルの先頭から破棄する行数を定義します. デフォルトは0.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; 最初のデータレコードがフィールド名を含んでいるかどうか定義します.デフォルトはyes.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; クォート文字で囲まれていないフィールドから先頭と末尾の空白を削除するかどうか定義します. デフォルトはno.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; ファイルから読み込まれるフィールドの最大数を定義します.
-       はみ出したフィールドは破棄されます. デフォルトは0で全てのフィールドが読み込まれます
-       (このオプションはデリミティッドテキストダイアログボックスにはありません).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; クォート文字で囲まれていない(trimFieldsが適用された後で)空のフィールドが破棄されるかどうか定義します. デフォルトはno.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; 数値フィールドで小数点として使われる代わりの文字を指定します. デフォルトはポイント(ピリオド)です.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; well known textジオメトリ定義を含むフィールドの名前かインデックス(1から始まる)を指定します.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; X座標を含むフィールドの名前かインデックス(1から始まる)を指定します(wktFieldが定義されていない場合にのみ適用されます).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; Y座標を含むフィールドの名前かインデックス(1から始まる)を指定します(wktFieldが定義されていない場合にのみ適用されます).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; wktフィールドのジオメトリのタイプを指定します. noneを指定すると属性のみのテーブルとして読み込まれます. デフォルトはauto.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; 使用されるレコードのサブセットを特定するのに用いる式を指定します.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; ベクタレイヤで使用する座標システムをQgsCoordinateReferenceSystem.createFromStringに受け入れられる形式(例えば &amp;quot;EPSG:4167&amp;quot;)で指定する.
-       これが指定されない場合はレイヤが読み込まれる時にユーザから情報の入力を求めるダイアログが開きます(QGISのCRS設定による).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; 初期ファイルスキャンの間にプロバイダがサブセットを定義するインデックスを構築するかどうか指定する.
-       インデックスは明示的に定義されたサブセットとジオメトリ定義が有効な地物の暗黙のサブセットの両方に適用されます.
-       デフォルトではサブセットインデックスが適用可能な場合にはそれが構築されます.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; 初期ファイルスキャンの間にプロバイダが空間インデックスを構築するかどうか指定する.
-       デフォルトでは空間インデックスは構築されません.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; 他のアプリケーションによるファイルの変更を監視するためにプロバイダがファイルシステムウォッチャーを使用するかどうか指定する.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; レイヤ読み込み中のエラーをダイアログボックスで表示するかどうか指定します(どちらにせよQGISログには書かれます). デフォルトはnoです.このオプションはGUIからは利用できません.&lt;/li&gt;
 &lt;/ul&gt;
 </translation>
     </message>
@@ -65305,43 +51973,6 @@ SQL Anywhere database.
 </translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Finding shortest path&lt;/h3&gt;
-&lt;p&gt;Road graph is a C++ plugin for Quantum GIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Plugins &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&quot;#howto&quot;&gt;How to&lt;/a&gt;&lt;br/&gt;
-&lt;/p&gt;
-
-&lt;a name=&quot;howto&quot;&gt;
-&lt;h4&gt;How to&lt;/h4&gt;
-&lt;/a&gt;
-&lt;p&gt;You can select start and end points with the select buttons next to the fields.
-Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest path calculation using the optimization criterion selected in the &lt;label&gt;Criterion&lt;/label&gt; combobox. The &lt;label&gt;Export&lt;/label&gt; button allow you to export a calculated path to a new vector layer, and the button &lt;label&gt;Clear&lt;/label&gt; will erase all fields and remove the points and calculated path from map canvas.&lt;/p&gt;
-
-&lt;h5&gt;Note&lt;/h5&gt;
-&lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
-</source>
-        <translation type="obsolete">&lt;h3&gt;最短経路探索&lt;/h3&gt;
-&lt;p&gt;道路グラフはQuantum GISのためのC++プラグインです. ラインレイヤ上の2つの点の間の最短経路を計算して道路ネットワークの上に最短経路を描画します.
-プラグインを利用する前にメニュー&lt;label&gt;ベクタ &amp;rarr; 道路グラフ &amp;rarr; 設定&lt;/label&gt;で設定を行なって下さい.&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&quot;#howto&quot;&gt;使用方法&lt;/a&gt;&lt;br/&gt;
-&lt;/p&gt;
-
-&lt;a name=&quot;howto&quot;&gt;
-&lt;h4&gt;使用方法&lt;/h4&gt;
-&lt;/a&gt;
-&lt;p&gt;開始点と終了点のフィールドの隣のボタンを使ってマップキャンバスから座標を取得することができます. 
-&lt;label&gt;計算&lt;/label&gt;ボタンを押すと&lt;label&gt;判定基準&lt;/label&gt;コンボボックスで選択された最適化基準を用いて最短経路計算が実行されます. 
-&lt;label&gt;エクスポート&lt;/label&gt;ボタンで計算されたパスを新しいベクタレイヤにエクスポートできます. 
-&lt;label&gt;クリア&lt;/label&gt;ボタンは全てのフィールドの内容を消し, マップキャンバスからポイントと計算されたパスを削除します.
-
-&lt;h5&gt;注意&lt;/h5&gt;
-&lt;p&gt;経路の開始点と終了点を道路ネットワークに結びつけるために道路グラフプラグインはグラフの最近傍点か弧を選択します. 
-実際にはそれは道路ネットワークのどんな部分にも結びつけることができます. 
-それでも、経路とその特性は開始点から道路ネットワークまでの距離と道路ネットワークから終了点までの距離を考慮しません.&lt;/p&gt;
-</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1407"/>
         <source>&lt;h3&gt;Create a New Oracle Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a Oracle database.
@@ -65459,10 +52090,6 @@ geometry types and don&apos;t offer to add others.
         <translation>入力と出力</translation>
     </message>
     <message>
-        <source>Input Dxf file</source>
-        <translation type="obsolete">Dxfファイルを入力する</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="31"/>
         <source>Input DXF file</source>
         <translation>入力DXFファイル</translation>
@@ -65549,17 +52176,9 @@ CNR, Milan Unit (Information Technology), Construction Technologies Institute.
         <translation>Shapefile</translation>
     </message>
     <message>
-        <source>DXF files (*.dxf)</source>
-        <translation type="obsolete">DXFファイル(*.dxf)</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="172"/>
         <source>Choose a file name to save to</source>
         <translation>保存するファイル名選択</translation>
-    </message>
-    <message>
-        <source>Shapefile (*.shp)</source>
-        <translation type="obsolete">Shapefile (*.shp)</translation>
     </message>
 </context>
 <context>
@@ -66296,23 +52915,10 @@ Base Path (i.e. keep only filename from attribute)</source>
 <context>
     <name>fTools</name>
     <message>
-        <source>Quantum GIS version detected: </source>
-        <translation type="obsolete">Quantum　GISのバージョンが検出されました: </translation>
-    </message>
-    <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
         <translation>このバージョンのfToolsはQGISバージョン1.0.0以上が必要です
 プラグインは有効になりません.</translation>
-    </message>
-    <message>
-        <source>&amp;Vector</source>
-        <translatorcomment>アクセラレータが不正ではないか？（＆V)はViewで利用している</translatorcomment>
-        <translation type="obsolete">ベクタ</translation>
-    </message>
-    <message>
-        <source>Vect&amp;or</source>
-        <translation type="obsolete">ベクタ(&amp;t)</translation>
     </message>
     <message>
         <source>QGIS version detected: </source>
@@ -66487,16 +53093,8 @@ Plugin will not be enabled.</source>
         <translation>空間インデックスを作成する</translation>
     </message>
     <message>
-        <source>Export to new projection</source>
-        <translation type="obsolete">新しい投影法へエクスポートする</translation>
-    </message>
-    <message>
         <source>Define current projection</source>
         <translation>現在の投影法を定義する</translation>
-    </message>
-    <message>
-        <source>Join attributes</source>
-        <translation type="obsolete">属性を結合する</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
@@ -66509,10 +53107,6 @@ Plugin will not be enabled.</source>
     <message>
         <source>Merge shapefiles to one</source>
         <translation>複数のシェープファイルを１つに結合する</translation>
-    </message>
-    <message>
-        <source>fTools Information</source>
-        <translation type="obsolete">fTools情報</translation>
     </message>
 </context>
 <context>
@@ -69953,14 +56547,6 @@ Convert a string into Qt data type.
         <source>Point y ordinate</source>
         <translation>ポイント ｙ座標</translation>
     </message>
-    <message>
-        <source>Point x coordinate</source>
-        <translation type="obsolete">ポイント x座標</translation>
-    </message>
-    <message>
-        <source>Point y coordinate</source>
-        <translation type="obsolete">ポイント ｙ座標</translation>
-    </message>
 </context>
 <context>
     <name>grasslabel</name>
@@ -70271,10 +56857,6 @@ Convert a string into Qt data type.
         <translation>同心円</translation>
     </message>
     <message>
-        <source>Config</source>
-        <translation type="obsolete">構成</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="68"/>
         <source>Connect nodes by shortest route (traveling salesman)</source>
         <translation>最短経路でノードを接続する（巡回セールスマン）</translation>
@@ -70305,17 +56887,9 @@ Convert a string into Qt data type.
         <translation>GRASSバイナリベクタをGRASS ASCIIベクタに変換する</translation>
     </message>
     <message>
-        <source>Convert a raster to vector</source>
-        <translation type="obsolete">ラスタをベクタに変換する</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="74"/>
         <source>Convert a raster to vector within GRASS</source>
         <translation>GRASSを利用してラスタをベクタに変換します</translation>
-    </message>
-    <message>
-        <source>Convert a vector to raster</source>
-        <translation type="obsolete">ベクタをラスタに変換する</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="75"/>
@@ -70658,10 +57232,6 @@ Convert a string into Qt data type.
         <translation>データベース管理</translation>
     </message>
     <message>
-        <source>Database parameters</source>
-        <translation type="obsolete">データベースパラメータ</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="143"/>
         <source>Delaunay triangulation (areas)</source>
         <translation>ドロネイ三角分割（領域）</translation>
@@ -70802,10 +57372,6 @@ Convert a string into Qt data type.
         <translation>任意のSQL文を実行する</translation>
     </message>
     <message>
-        <source>Export</source>
-        <translation type="obsolete">エクスポート</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="171"/>
         <source>Export 3 GRASS rasters (R,G,B) to PPM image at the resolution of the current region</source>
         <translation>3 GRASS ラスタ (R,G,B)を現在の領域の解像度でPPM画像にエクスポートします</translation>
@@ -70814,10 +57380,6 @@ Convert a string into Qt data type.
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="172"/>
         <source>Export from GRASS</source>
         <translation>GRASSからエクスポートします</translation>
-    </message>
-    <message>
-        <source>Export raster</source>
-        <translation type="obsolete">ラスタをエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="173"/>
@@ -70900,10 +57462,6 @@ Convert a string into Qt data type.
         <translation>ラスタを様々な形式（GDAL library)にエクスポートする</translation>
     </message>
     <message>
-        <source>Export vector</source>
-        <translation type="obsolete">ベクタをエクスポートする</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="207"/>
         <source>Feature type (for polygons, choose Boundary)</source>
         <translation>地物タイプ(ポリゴンのための境界線を選ぶ）</translation>
@@ -70959,10 +57517,6 @@ Convert a string into Qt data type.
         <translation>ディレクトリ内の全てのGDALでサポートされるラスタをGRASSラスタとしてリンクする</translation>
     </message>
     <message>
-        <source>Export vector table</source>
-        <translation type="obsolete">ベクタテーブルをエクスポートする</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="189"/>
         <source>Export vector from GRASS</source>
         <translation>GRASSからベクタをエクスポートする</translation>
@@ -70991,10 +57545,6 @@ Convert a string into Qt data type.
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="194"/>
         <source>Export vector to POV-Ray</source>
         <translation>ベクタをPOV-Ray形式でエクスポートする</translation>
-    </message>
-    <message>
-        <source>Export vector to PostGIS</source>
-        <translation type="obsolete">ベクタをPostGISにエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="195"/>
@@ -71057,10 +57607,6 @@ Convert a string into Qt data type.
         <translation>イメージ処理のためのファーストフーリエ変換</translation>
     </message>
     <message>
-        <source>File</source>
-        <translation type="obsolete">ファイル</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="208"/>
         <source>File management</source>
         <translation>ファイル管理</translation>
@@ -71101,10 +57647,6 @@ Convert a string into Qt data type.
         <translation>ベクタネットワークで最短経路を探索する</translation>
     </message>
     <message>
-        <source>GDAL raster layer</source>
-        <translation type="obsolete">GDALラスタレイヤ</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="216"/>
         <source>GRASS MODULES</source>
         <translation>GRASSモジュール</translation>
@@ -71123,10 +57665,6 @@ Convert a string into Qt data type.
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="219"/>
         <source>Generalization</source>
         <translation>一般化</translation>
-    </message>
-    <message>
-        <source>Generate raster of cumulative cost of moving between locations based on cost input raster</source>
-        <translation type="obsolete">入力ラスタのコストに基づく位置間移動の累積コストを利用したラスタを生成します</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="225"/>
@@ -71167,10 +57705,6 @@ Convert a string into Qt data type.
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="233"/>
         <source>Imagery</source>
         <translation>画像</translation>
-    </message>
-    <message>
-        <source>Import</source>
-        <translation type="obsolete">インポート</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="234"/>
@@ -71221,10 +57755,6 @@ Convert a string into Qt data type.
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="244"/>
         <source>Import OGR vectors in a given data source combining them in a GRASS vector</source>
         <translation>提供されたデータソースのOGRベクタをインポートしてGRASSベクタに混在させる</translation>
-    </message>
-    <message>
-        <source>Import OGR/PostGIS vector and create a fitted location</source>
-        <translation type="obsolete">OGR/PostGISベクタをインポートして適切なロケーションを作成します</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="245"/>
@@ -71297,17 +57827,9 @@ Convert a string into Qt data type.
         <translation>ロードされたベクタをインポートしてその領域のロケーションを作成する</translation>
     </message>
     <message>
-        <source>Import loaded vector selecting some features</source>
-        <translation type="obsolete">ロードされたベクタの選択された地物をインポートする</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="259"/>
         <source>Import only some layers of a DXF vector</source>
         <translation>DXFベクタのいくつかのレイヤのみインポートする</translation>
-    </message>
-    <message>
-        <source>Import raster</source>
-        <translation type="obsolete">ラスタをインポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="260"/>
@@ -71340,10 +57862,6 @@ Convert a string into Qt data type.
         <translation>テキストファイルのインポート</translation>
     </message>
     <message>
-        <source>Import vector</source>
-        <translation type="obsolete">ベクタのインポート</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="266"/>
         <source>Import vector from gps using gpsbabel</source>
         <translation>gpsbabelを利用してgpsからベクタをインポートする</translation>
@@ -71357,14 +57875,6 @@ Convert a string into Qt data type.
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="268"/>
         <source>Import vector into GRASS</source>
         <translation>GRASSにベクタをインポートします</translation>
-    </message>
-    <message>
-        <source>Import vector into GRASS from QGIS view</source>
-        <translation type="obsolete">QGISビューからGRASSにベクタをインポートします</translation>
-    </message>
-    <message>
-        <source>Import vector into GRASS from external data sources in GRASS</source>
-        <translation type="obsolete">GRASS外部データソースからGRASSにベクタをインポートします</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="269"/>
@@ -71415,18 +57925,6 @@ Convert a string into Qt data type.
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="278"/>
         <source>Line-of-sight raster analysis</source>
         <translation>視線ラスタ解析</translation>
-    </message>
-    <message>
-        <source>Link GDAL supported raster layer to a binary raster map layer</source>
-        <translation type="obsolete">GDALでサポートされるラスタレイヤをバイナリラスタマップレイヤにリンクする</translation>
-    </message>
-    <message>
-        <source>Link GDAL supported raster to binary raster</source>
-        <translation type="obsolete">GDALでサポートされるラスタをバイナリラスタにリンクする</translation>
-    </message>
-    <message>
-        <source>Link all GDAL supported rasters in a directory to binary rasters</source>
-        <translation type="obsolete">ディレクトリ内の全てのGDALでサポートされるラスタをバイナリラスタにリンクする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="283"/>
@@ -71524,10 +58022,6 @@ Convert a string into Qt data type.
         <translation>出力ラスタ地図の名前(オプショナル)</translation>
     </message>
     <message>
-        <source>Name of the table to create</source>
-        <translation type="obsolete">作成するテーブルの名前</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="302"/>
         <source>Neighborhood analysis</source>
         <translation>近隣解析</translation>
@@ -71546,14 +58040,6 @@ Convert a string into Qt data type.
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="305"/>
         <source>Number of rows to be skipped</source>
         <translation>スキップする行数</translation>
-    </message>
-    <message>
-        <source>OGR file</source>
-        <translation type="obsolete">OGRファイル</translation>
-    </message>
-    <message>
-        <source>OGR vector layer</source>
-        <translation type="obsolete">OGRベクタレイヤ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="306"/>
@@ -71756,10 +58242,6 @@ Convert a string into Qt data type.
         <translation>赤、緑、青（RGB)を色相　明度　彩度（HIS)ラスタカラーに変換する機能</translation>
     </message>
     <message>
-        <source>Region</source>
-        <translation type="obsolete">領域</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="346"/>
         <source>Region settings</source>
         <translation>領域設定</translation>
@@ -71833,10 +58315,6 @@ Convert a string into Qt data type.
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="360"/>
         <source>Rename column in attribute table</source>
         <translation>属性テーブルのカラム名を変える</translation>
-    </message>
-    <message>
-        <source>Report and statistics</source>
-        <translation type="obsolete">レポートと統計</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="282"/>
@@ -72530,22 +59008,6 @@ Convert a string into Qt data type.
     <message>
         <source>Z-Score:</source>
         <translation>Z値:</translation>
-    </message>
-    <message>
-        <source>Feature %1 contains an unnested hole</source>
-        <translation type="obsolete">地物 %1 はネストしていない穴を持っています</translation>
-    </message>
-    <message>
-        <source>Feature %1 is not closed</source>
-        <translation type="obsolete">地物%1は閉じていません</translation>
-    </message>
-    <message>
-        <source>Feature %1 is self intersecting</source>
-        <translation type="obsolete">地物%1は自分の線が交差しています</translation>
-    </message>
-    <message>
-        <source>Feature %1 has incorrect node ordering</source>
-        <translation type="obsolete">地物%1は不正な順番のノードを持ちます</translation>
     </message>
 </context>
 </TS>
