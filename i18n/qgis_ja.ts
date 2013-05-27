@@ -6791,7 +6791,7 @@ Shift+クリックで非表示
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1132"/>
         <source>New Shapefile Layer...</source>
-        <translation type="unfinished">新しいシェープファイルレイヤ...</translation>
+        <translation>新しいシェープファイルレイヤ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1135"/>
@@ -6801,7 +6801,7 @@ Shift+クリックで非表示
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1144"/>
         <source>New SpatiaLite Layer ...</source>
-        <translation type="unfinished">新しいSpatialiteレイヤ...</translation>
+        <translation>新しいSpatialiteレイヤ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1147"/>
@@ -24152,7 +24152,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="213"/>
         <source>File type string in %1 is not correctly formatted</source>
-        <translation type="unfinished"></translation>
+        <translation>%1内のファイルタイプ文字列は正しい形式ではありません</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="312"/>
@@ -34965,12 +34965,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="1994"/>
         <source>Not fully defined drawing order set to legend order.</source>
-        <translation type="unfinished"></translation>
+        <translation>凡例の順序に完全ではない定義の描画順序が指定されています.</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="1994"/>
         <source>Legend</source>
-        <translation type="unfinished">凡例</translation>
+        <translation>凡例</translation>
     </message>
     <message>
         <source>&amp;Make to toplevel item</source>
@@ -41718,7 +41718,7 @@ SQL:%1
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="211"/>
         <source>Only list the existing geometry types and don&apos;t offer to add others.</source>
-        <translation type="unfinished"></translation>
+        <translation>既存のジオメトリタイプのみリストして他の物を提供しません.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="217"/>
@@ -46274,7 +46274,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="39"/>
         <source>Selected CRS:</source>
-        <translation type="unfinished"></translation>
+        <translation>選択されたCRS:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="194"/>
