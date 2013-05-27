@@ -458,7 +458,6 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
     QgsDebugMsg( "Loading python plugins" );
 
     QStringList corePlugins = QStringList();
-    corePlugins << "plugin_installer";
     corePlugins << "fTools";
     corePlugins << "GdalTools";
     corePlugins << "db_manager";
