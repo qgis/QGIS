@@ -115,6 +115,7 @@ qgsexpressionhighlighter.cpp
 qgsquerybuilder.cpp
 qgscollapsiblegroupbox.cpp
 qgsfilterlineedit.cpp
+qgssublayersdialog.cpp
 )
 
 IF (WITH_TOUCH)
@@ -221,6 +222,7 @@ qgsexpressionselectiondialog.h
 qgsquerybuilder.h
 qgscollapsiblegroupbox.h
 qgsfilterlineedit.h
+qgssublayersdialog.h
 )
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
@@ -270,6 +272,7 @@ qgsexpressionselectiondialog.h
 qgsexpressionhighlighter.h
 qgscollapsiblegroupbox.h
 qgsfilterlineedit.h
+qgssublayersdialog.h
 
 attributetable/qgsattributetablemodel.h
 attributetable/qgsattributetableview.h
@@ -302,6 +305,7 @@ ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilder.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderdialogbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionselectiondialogbase.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
 )
 
 # ModelTest
