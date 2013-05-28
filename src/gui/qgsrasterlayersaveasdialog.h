@@ -71,6 +71,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     QStringList createOptions() const;
     QgsRectangle outputRectangle() const;
     QgsRasterRangeList noData() const;
+    bool addLayerToCanvas() const { return mAddLayerToCanvasCheckBox->isChecked(); }
 
     QList< int > pyramidsList() const;
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;
