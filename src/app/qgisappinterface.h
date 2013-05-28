@@ -279,7 +279,8 @@ class QgisAppInterface : public QgisInterface
      */
 
     //! Menus
-    virtual QMenu *fileMenu();
+    Q_DECL_DEPRECATED virtual QMenu *fileMenu();
+    virtual QMenu *projectMenu();
     virtual QMenu *editMenu();
     virtual QMenu *viewMenu();
     virtual QMenu *layerMenu();
@@ -309,7 +310,7 @@ class QgisAppInterface : public QgisInterface
     virtual QToolBar *databaseToolBar();
     virtual QToolBar *webToolBar();
 
-    //! File menu actions
+    //! Project menu actions
     virtual QAction *actionNewProject();
     virtual QAction *actionOpenProject();
     virtual QAction *actionSaveProject();

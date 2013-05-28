@@ -359,7 +359,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionShowPinnedLabels() { return mActionShowPinnedLabels; }
 
     //! Menus
-    QMenu *fileMenu() { return mFileMenu; }
+    Q_DECL_DEPRECATED QMenu *fileMenu() { return mProjectMenu; }
+    QMenu *projectMenu() { return mProjectMenu; }
     QMenu *editMenu() { return mEditMenu; }
     QMenu *viewMenu() { return mViewMenu; }
     QMenu *layerMenu() { return mLayerMenu; }
@@ -587,7 +588,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsMessageLogViewer *logViewer() { return mLogViewer; }
 
-    //! Update file menu with the project templates
+    //! Update project menu with the project templates
     void updateProjectFromTemplates();
 
   protected:
@@ -1166,7 +1167,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
      * instance simultaneously results in data loss.
      */
     void saveRecentProjectPath( QString projectPath, QSettings & settings );
-    //! Update file menu with the current list of recently accessed projects
+    //! Update project menu with the current list of recently accessed projects
     void updateRecentProjectPaths();
     //! Read Well Known Binary stream from PostGIS
     //void readWKB(const char *, QStringList tables);
