@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsdiagramrendererv2.h"
+#include "qgsvectorlayer.h"
 #include "diagram/qgstextdiagram.h"
 #include "diagram/qgspiediagram.h"
 #include "diagram/qgshistogramdiagram.h"
@@ -21,8 +22,10 @@
 #include <QPainter>
 
 
-void QgsDiagramLayerSettings::readXML( const QDomElement& elem )
+void QgsDiagramLayerSettings::readXML( const QDomElement& elem, const QgsVectorLayer* layer )
 {
+  Q_UNUSED( layer )
+
   placement = ( Placement )elem.attribute( "placement" ).toInt();
   placementFlags = ( LinePlacementFlags )elem.attribute( "linePlacementFlags" ).toInt();
   priority = elem.attribute( "priority" ).toInt();
@@ -32,8 +35,10 @@ void QgsDiagramLayerSettings::readXML( const QDomElement& elem )
   yPosColumn = elem.attribute( "yPosColumn" ).toInt();
 }
 
-void QgsDiagramLayerSettings::writeXML( QDomElement& layerElem, QDomDocument& doc ) const
+void QgsDiagramLayerSettings::writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
 {
+  Q_UNUSED( layer )
+
   QDomElement diagramLayerElem = doc.createElement( "DiagramLayerSettings" );
   diagramLayerElem.setAttribute( "placement", placement );
   diagramLayerElem.setAttribute( "linePlacementFlags", placementFlags );
@@ -45,7 +50,7 @@ void QgsDiagramLayerSettings::writeXML( QDomElement& layerElem, QDomDocument& do
   layerElem.appendChild( diagramLayerElem );
 }
 
-void QgsDiagramSettings::readXML( const QDomElement& elem )
+void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer* layer )
 {
   font.fromString( elem.attribute( "font" ) );
   backgroundColor.setNamedColor( elem.attribute( "backgroundColor" ) );
@@ -117,26 +122,44 @@ void QgsDiagramSettings::readXML( const QDomElement& elem )
 
   //colors
   categoryColors.clear();
-  QStringList colorList = elem.attribute( "colors" ).split( "/" );
-  QStringList::const_iterator colorIt = colorList.constBegin();
-  for ( ; colorIt != colorList.constEnd(); ++colorIt )
-  {
-    QColor newColor( *colorIt );
-    newColor.setAlpha( 255 - transparency );
-    categoryColors.append( QColor( newColor ) );
-  }
+  QDomNodeList attributes = elem.elementsByTagName( "attribute" );
 
-  //attribute indices
-  categoryIndices.clear();
-  QStringList catList = elem.attribute( "categories" ).split( "/" );
-  QStringList::const_iterator catIt = catList.constBegin();
-  for ( ; catIt != catList.constEnd(); ++catIt )
+  if ( attributes.length() > 0 )
   {
-    categoryIndices.append( catIt->toInt() );
+    for ( uint i = 0; i < attributes.length(); i++ )
+    {
+      QDomElement attrElem = attributes.at( i ).toElement();
+      QColor newColor( attrElem.attribute( "color" ) );
+      newColor.setAlpha( 255 - transparency );
+      categoryColors.append( newColor );
+      categoryIndices.append( layer->fieldNameIndex( attrElem.attribute( "field" ) ) );
+    }
+  }
+  else
+  {
+    // Restore old format attributes and colors
+
+    QStringList colorList = elem.attribute( "colors" ).split( "/" );
+    QStringList::const_iterator colorIt = colorList.constBegin();
+    for ( ; colorIt != colorList.constEnd(); ++colorIt )
+    {
+      QColor newColor( *colorIt );
+      newColor.setAlpha( 255 - transparency );
+      categoryColors.append( QColor( newColor ) );
+    }
+
+    //attribute indices
+    categoryIndices.clear();
+    QStringList catList = elem.attribute( "categories" ).split( "/" );
+    QStringList::const_iterator catIt = catList.constBegin();
+    for ( ; catIt != catList.constEnd(); ++catIt )
+    {
+      categoryIndices.append( catIt->toInt() );
+    }
   }
 }
 
-void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc ) const
+void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
 {
   QDomElement categoryElem = doc.createElement( "DiagramCategory" );
   categoryElem.setAttribute( "font", font.toString() );
@@ -209,26 +232,15 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc 
   categoryElem.setAttribute( "angleOffset", QString::number( angleOffset ) );
 
   QString colors;
-  for ( int i = 0; i < categoryColors.size(); ++i )
+  int nCats = qMin( categoryColors.size(), categoryIndices.size() );
+  for ( int i = 0; i < nCats; ++i )
   {
-    if ( i > 0 )
-    {
-      colors.append( "/" );
-    }
-    colors.append( categoryColors.at( i ).name() );
-  }
-  categoryElem.setAttribute( "colors", colors );
+    QDomElement attributeElem = doc.createElement( "attribute" );
 
-  QString categories;
-  for ( int i = 0; i < categoryIndices.size(); ++i )
-  {
-    if ( i > 0 )
-    {
-      categories.append( "/" );
-    }
-    categories.append( QString::number( categoryIndices.at( i ) ) );
+    attributeElem.setAttribute( "field", layer->pendingFields().at( categoryIndices.at( i ) ).name() );
+    attributeElem.setAttribute( "color", categoryColors.at( i ).name() );
+    categoryElem.appendChild( attributeElem );
   }
-  categoryElem.setAttribute( "categories", categories );
 
   rendererElem.appendChild( categoryElem );
 }
@@ -305,8 +317,10 @@ int QgsDiagramRendererV2::dpiPaintDevice( const QPainter* painter )
   return -1;
 }
 
-void QgsDiagramRendererV2::_readXML( const QDomElement& elem )
+void QgsDiagramRendererV2::_readXML( const QDomElement& elem, const QgsVectorLayer* layer )
 {
+  Q_UNUSED( layer )
+
   delete mDiagram;
   QString diagramType = elem.attribute( "diagramType" );
   if ( diagramType == "Pie" )
@@ -327,9 +341,11 @@ void QgsDiagramRendererV2::_readXML( const QDomElement& elem )
   }
 }
 
-void QgsDiagramRendererV2::_writeXML( QDomElement& rendererElem, QDomDocument& doc ) const
+void QgsDiagramRendererV2::_writeXML( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
 {
   Q_UNUSED( doc );
+  Q_UNUSED( layer )
+
   if ( mDiagram )
   {
     rendererElem.setAttribute( "diagramType", mDiagram->diagramName() );
@@ -363,7 +379,7 @@ QList<QgsDiagramSettings> QgsSingleCategoryDiagramRenderer::diagramSettings() co
   return settingsList;
 }
 
-void QgsSingleCategoryDiagramRenderer::readXML( const QDomElement& elem )
+void QgsSingleCategoryDiagramRenderer::readXML( const QDomElement& elem, const QgsVectorLayer* layer )
 {
   QDomElement categoryElem = elem.firstChildElement( "DiagramCategory" );
   if ( categoryElem.isNull() )
@@ -371,15 +387,15 @@ void QgsSingleCategoryDiagramRenderer::readXML( const QDomElement& elem )
     return;
   }
 
-  mSettings.readXML( categoryElem );
-  _readXML( elem );
+  mSettings.readXML( categoryElem, layer );
+  _readXML( elem, layer );
 }
 
-void QgsSingleCategoryDiagramRenderer::writeXML( QDomElement& layerElem, QDomDocument& doc ) const
+void QgsSingleCategoryDiagramRenderer::writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
 {
   QDomElement rendererElem = doc.createElement( "SingleCategoryDiagramRenderer" );
-  mSettings.writeXML( rendererElem, doc );
-  _writeXML( rendererElem, doc );
+  mSettings.writeXML( rendererElem, doc, layer );
+  _writeXML( rendererElem, doc , layer );
   layerElem.appendChild( rendererElem );
 }
 
@@ -421,7 +437,7 @@ QSizeF QgsLinearlyInterpolatedDiagramRenderer::diagramSize( const QgsAttributes&
   return mDiagram->diagramSize( attributes, c, mSettings, mInterpolationSettings );
 }
 
-void QgsLinearlyInterpolatedDiagramRenderer::readXML( const QDomElement& elem )
+void QgsLinearlyInterpolatedDiagramRenderer::readXML( const QDomElement& elem, const QgsVectorLayer* layer )
 {
   mInterpolationSettings.lowerValue = elem.attribute( "lowerValue" ).toDouble();
   mInterpolationSettings.upperValue = elem.attribute( "upperValue" ).toDouble();
@@ -433,12 +449,12 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXML( const QDomElement& elem )
   QDomElement settingsElem = elem.firstChildElement( "DiagramCategory" );
   if ( !settingsElem.isNull() )
   {
-    mSettings.readXML( settingsElem );
+    mSettings.readXML( settingsElem, layer );
   }
-  _readXML( elem );
+  _readXML( elem, layer );
 }
 
-void QgsLinearlyInterpolatedDiagramRenderer::writeXML( QDomElement& layerElem, QDomDocument& doc ) const
+void QgsLinearlyInterpolatedDiagramRenderer::writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
 {
   QDomElement rendererElem = doc.createElement( "LinearlyInterpolatedDiagramRenderer" );
   rendererElem.setAttribute( "lowerValue", QString::number( mInterpolationSettings.lowerValue ) );
@@ -448,7 +464,7 @@ void QgsLinearlyInterpolatedDiagramRenderer::writeXML( QDomElement& layerElem, Q
   rendererElem.setAttribute( "upperWidth", QString::number( mInterpolationSettings.upperSize.width() ) );
   rendererElem.setAttribute( "upperHeight", QString::number( mInterpolationSettings.upperSize.height() ) );
   rendererElem.setAttribute( "classificationAttribute", mInterpolationSettings.classificationAttribute );
-  mSettings.writeXML( rendererElem, doc );
-  _writeXML( rendererElem, doc );
+  mSettings.writeXML( rendererElem, doc, layer );
+  _writeXML( rendererElem, doc, layer );
   layerElem.appendChild( rendererElem );
 }
