@@ -57,6 +57,8 @@ QgsSelectedFeature::~QgsSelectedFeature()
     mValidator->deleteLater();
     mValidator = 0;
   }
+
+  delete mGeometry;
 }
 
 void QgsSelectedFeature::currentLayerChanged( QgsMapLayer *layer )
