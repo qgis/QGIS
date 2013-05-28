@@ -1291,8 +1291,8 @@ void QgisApp::createMenus()
 
   // keep plugins from hijacking About and Preferences application menus
   // these duplicate actions will be moved to application menus by Qt
-  mFileMenu->addAction( mActionAbout );
-  mFileMenu->addAction( mActionOptions );
+  mProjectMenu->addAction( mActionAbout );
+  mProjectMenu->addAction( mActionOptions );
 
   // Window Menu
 
