@@ -114,6 +114,16 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QString fullDescription() const { return mFullDescription; }
 
     /**
+     * The usage information about this data definition
+     */
+    QString usageInfo() const { return mUsageInfo; }
+
+    /**
+     * Set the usage information about this data definition
+     */
+    void setUsageInfo( const QString& info ) { mUsageInfo = info; updateGui(); }
+
+    /**
      * Register list of sibling widgets that get disabled/enabled when data definition or expression is set/unset
      */
     void registerEnabledWidgets( QList<QWidget*> wdgts );
@@ -247,13 +257,16 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QAction* mActionDescription;
     QAction* mActionExpDialog;
     QAction* mActionExpression;
+    QAction* mActionPasteExpr;
     QAction* mActionCopyExpr;
+    QAction* mActionClearExpr;
     QAction* mActionDataTypes;
 
     DataTypes mDataTypes;
     QString mDataTypesString;
     QString mInputDescription;
     QString mFullDescription;
+    QString mUsageInfo;
     QString mCurrentDefinition;
 
     static QIcon mIconDataDefine;

@@ -64,6 +64,7 @@
 %Include qgssearchquerybuilder.sip
 %Include qgstextannotationitem.sip
 %Include qgsvertexmarker.sip
+%Include qgssublayersdialog.sip
 
 %Include attributetable/qgsattributetableview.sip
 

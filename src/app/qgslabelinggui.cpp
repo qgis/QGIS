@@ -937,19 +937,27 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
                             QgsDataDefinedButton::AnyType, tr( "double coord [<b>in,out</b> as 20.0-60.0,20.0-95.0]" ) );
 
   // data defined-only
+  QString ddPlaceInfo = tr( "In edit mode, layer's relevant labeling map tool is:<br>"
+                            "&nbsp;&nbsp;Defined attribute field -&gt; <i>enabled</i><br>"
+                            "&nbsp;&nbsp;Defined expression -&gt; <i>disabled</i>" );
   mCoordXDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::PositionX ),
                       QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mCoordXDDBtn->setUsageInfo( ddPlaceInfo );
   mCoordYDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::PositionY ),
                       QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mCoordYDDBtn->setUsageInfo( ddPlaceInfo );
   mCoordAlignmentHDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::Hali ),
                                QgsDataDefinedButton::String,
                                trString + "[<b>Left</b>|<b>Center</b>|<b>Right</b>]" );
+  mCoordAlignmentHDDBtn->setUsageInfo( ddPlaceInfo );
   mCoordAlignmentVDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::Vali ),
                                QgsDataDefinedButton::String,
                                trString + QString( "[<b>Bottom</b>|<b>Base</b>|<br>"
                                                    "<b>Half</b>|<b>Cap</b>|<b>Top</b>]" ) );
+  mCoordAlignmentVDDBtn->setUsageInfo( ddPlaceInfo );
   mCoordRotationDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::Rotation ),
                              QgsDataDefinedButton::AnyType, QgsDataDefinedButton::double180RotDesc() );
+  mCoordRotationDDBtn->setUsageInfo( ddPlaceInfo );
 
   // rendering
   mScaleBasedVisibilityDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ScaleVisibility ),

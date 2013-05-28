@@ -1985,12 +1985,12 @@ bool QgsLegend::readXML( QDomNode& legendnode )
 
   mUpdateDrawingOrder = true;
 
-  if( !readXML( 0, legendnode ) )
+  if ( !readXML( 0, legendnode ) )
     return false;
 
-  if( legendnode.toElement().attribute( "updateDrawingOrder", "true" ) != "true" )
+  if ( legendnode.toElement().attribute( "updateDrawingOrder", "true" ) != "true" )
   {
-    if( !verifyDrawingOrder() )
+    if ( !verifyDrawingOrder() )
       QgsMessageLog::logMessage( tr( "Not fully defined drawing order set to legend order." ), tr( "Legend" ), QgsMessageLog::WARNING );
 
     mUpdateDrawingOrder = false;
@@ -2985,7 +2985,7 @@ bool QgsLegend::verifyDrawingOrder()
     hasUndefinedOrder |= ll && ll->drawingOrder() < 0;
   }
 
-  if( !hasUndefinedOrder )
+  if ( !hasUndefinedOrder )
     return true;
 
   int i = 0;

@@ -35,13 +35,13 @@ QgsSelectedFeature::QgsSelectedFeature( QgsFeatureId featureId,
     , mRubberBand( 0 )
     , mValidator( 0 )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugCall;
   setSelectedFeature( featureId, vlayer, canvas );
 }
 
 QgsSelectedFeature::~QgsSelectedFeature()
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugCall;
 
   deleteVertexMap();
 
@@ -57,18 +57,20 @@ QgsSelectedFeature::~QgsSelectedFeature()
     mValidator->deleteLater();
     mValidator = 0;
   }
+
+  delete mGeometry;
 }
 
 void QgsSelectedFeature::currentLayerChanged( QgsMapLayer *layer )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugCall;
   if ( layer == mVlayer )
     deleteLater();
 }
 
 void QgsSelectedFeature::updateGeometry( QgsGeometry *geom )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugCall;
 
   delete mGeometry;
 
@@ -149,7 +151,7 @@ void QgsSelectedFeature::featureDeleted( QgsFeatureId fid )
 
 void QgsSelectedFeature::geometryChanged( QgsFeatureId fid, QgsGeometry &geom )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugCall;
 
   if ( !mVlayer || fid != mFeatureId )
     return;
@@ -483,7 +485,7 @@ void QgsSelectedFeature::createVertexMapPoint()
 
 void QgsSelectedFeature::createVertexMap()
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugCall;
 
   if ( !mGeometry )
   {

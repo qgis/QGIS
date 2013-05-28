@@ -87,12 +87,6 @@ class SextanteLog():
         algorithms=[]
         warnings=[]
         info=[]
-        #lines = codecs.open(SextanteLog.logFilename(), encoding='utf-8')
-        #=======================================================================
-        # lines = open(SextanteLog.logFilename())
-        # line = lines.readline()
-        # while line != "":
-        #=======================================================================
         lines = tail(SextanteLog.logFilename())
         for line in lines:
             line = line.strip("\n").strip()
@@ -108,8 +102,7 @@ class SextanteLog():
                 warnings.append(LogEntry(tokens[1], text))
             elif line.startswith(SextanteLog.LOG_INFO):
                 info.append(LogEntry(tokens[1], text))
-            #line = lines.readline()
-        #lines.close()
+
         entries[SextanteLog.LOG_ERROR] = errors
         entries[SextanteLog.LOG_ALGORITHM] = algorithms
         entries[SextanteLog.LOG_INFO] = info
@@ -136,7 +129,6 @@ class LogEntry():
         self.text = text
 
 import re
-import time
 
 #===============================================================================
 

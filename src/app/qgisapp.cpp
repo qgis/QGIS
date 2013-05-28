@@ -193,7 +193,7 @@
 #include "qgsmessagelogviewer.h"
 #include "qgsdataitem.h"
 
-#include "ogr/qgsogrsublayersdialog.h"
+#include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
 
@@ -867,7 +867,7 @@ void QgisApp::readSettings()
   // 'gis' theme is new /themes/default directory (2013-04-15)
   setTheme( settings.value( "/Themes", "default" ).toString() );
 
-  // Add the recently accessed project file paths to the File menu
+  // Add the recently accessed project file paths to the Project menu
   mRecentProjectPaths = settings.value( "/UI/recentProjectsList" ).toStringList();
 
   // this is a new session! reset enable macros value to "ask"
@@ -888,7 +888,8 @@ void QgisApp::createActions()
   mActionPluginSeparator1 = NULL;  // plugin list separator will be created when the first plugin is loaded
   mActionPluginSeparator2 = NULL;  // python separator will be created only if python is found
   mActionRasterSeparator = NULL;   // raster plugins list separator will be created when the first plugin is loaded
-  // File Menu Items
+
+  // Project Menu Items
 
   connect( mActionNewProject, SIGNAL( triggered() ), this, SLOT( fileNew() ) );
   connect( mActionNewBlankProject, SIGNAL( triggered() ), this, SLOT( fileNewBlank() ) );
@@ -1226,8 +1227,8 @@ void QgisApp::createMenus()
    * for the following items.
    *
    * Project Properties:
-   * Gnome, Mac - File menu above print commands
-   * Kde, Win - Settings menu (Win doesn't specify)
+   * Gnome, Mac, Win - File/Project menu above print commands (Win doesn't specify)
+   * Kde - Settings menu
    *
    * Custom CRS, Options:
    * Gnome - bottom of Edit menu
@@ -1251,7 +1252,7 @@ void QgisApp::createMenus()
   QDialogButtonBox::ButtonLayout layout =
     QDialogButtonBox::ButtonLayout( style()->styleHint( QStyle::SH_DialogButtonLayout, 0, this ) );
 
-  // File Menu
+  // Project Menu
 
   // Connect once for the entire submenu.
   connect( mRecentProjectsMenu, SIGNAL( triggered( QAction * ) ),
@@ -1259,12 +1260,12 @@ void QgisApp::createMenus()
   connect( mProjectFromTemplateMenu, SIGNAL( triggered( QAction * ) ),
            this, SLOT( fileNewFromTemplateAction( QAction * ) ) );
 
-  if ( layout == QDialogButtonBox::GnomeLayout || layout == QDialogButtonBox::MacLayout )
+  if ( layout == QDialogButtonBox::GnomeLayout || layout == QDialogButtonBox::MacLayout || layout == QDialogButtonBox::WinLayout )
   {
     QAction* before = mActionNewPrintComposer;
     mSettingsMenu->removeAction( mActionProjectProperties );
-    mFileMenu->insertAction( before, mActionProjectProperties );
-    mFileMenu->insertSeparator( before );
+    mProjectMenu->insertAction( before, mActionProjectProperties );
+    mProjectMenu->insertSeparator( before );
   }
 
   // View Menu
@@ -1290,8 +1291,8 @@ void QgisApp::createMenus()
 
   // keep plugins from hijacking About and Preferences application menus
   // these duplicate actions will be moved to application menus by Qt
-  mFileMenu->addAction( mActionAbout );
-  mFileMenu->addAction( mActionOptions );
+  mProjectMenu->addAction( mActionAbout );
+  mProjectMenu->addAction( mActionOptions );
 
   // Window Menu
 
@@ -2238,7 +2239,7 @@ void QgisApp::projectReadDecorationItems()
   }
 }
 
-// Update file menu with the current list of recently accessed projects
+// Update project menu with the current list of recently accessed projects
 void QgisApp::updateRecentProjectPaths()
 {
   // Remove existing paths from the recent projects menu
@@ -2293,7 +2294,7 @@ void QgisApp::saveRecentProjectPath( QString projectPath, QSettings & settings )
 
 } // QgisApp::saveRecentProjectPath
 
-// Update file menu with the project templates
+// Update project menu with the project templates
 void QgisApp::updateProjectFromTemplates()
 {
   // get list of project files in template dir
@@ -2520,6 +2521,7 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
       layer->setProviderEncoding( enc );
 
       QStringList sublayers = layer->dataProvider()->subLayers();
+      QgsDebugMsg( QString( "got valid layer with %1 sublayers" ).arg( sublayers.count() ) );
 
       // If the newly created layer has more than 1 layer of data available, we show the
       // sublayers selection dialog so the user can select the sublayers to actually load.
@@ -2628,22 +2630,21 @@ bool QgisApp::askUserForZipItemLayers( QString path )
   else
   {
     // We initialize a selection dialog and display it.
-    QgsOGRSublayersDialog chooseSublayersDialog( this );
-    chooseSublayersDialog.setWindowTitle( tr( "Select zip layers to add..." ) );
+    QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Vsifile, "vsi", this );
 
     QStringList layers;
     for ( int i = 0; i < zipItem->children().size(); i++ )
     {
       QgsDataItem *item = zipItem->children()[i];
       QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
-      QgsDebugMsgLevel( QString( "item path=%1 provider=" ).arg( item->path() ).arg( layerItem->providerKey() ), 2 );
+      QgsDebugMsgLevel( QString( "item path=%1 provider=%2" ).arg( item->path() ).arg( layerItem->providerKey() ), 2 );
       if ( layerItem && layerItem->providerKey() == "gdal" )
       {
-        layers << QString( "%1|%2| |%3" ).arg( i ).arg( item->name() ).arg( "Raster" );
+        layers << QString( "%1|%2|%3" ).arg( i ).arg( item->name() ).arg( "Raster" );
       }
       else if ( layerItem && layerItem->providerKey() == "ogr" )
       {
-        layers << QString( "%1|%2| |%3" ).arg( i ).arg( item->name() ).arg( tr( "Vector" ) );
+        layers << QString( "%1|%2|%3" ).arg( i ).arg( item->name() ).arg( tr( "Vector" ) );
       }
     }
 
@@ -2651,7 +2652,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
 
     if ( chooseSublayersDialog.exec() )
     {
-      foreach ( int i, chooseSublayersDialog.getSelectionIndexes() )
+      foreach ( int i, chooseSublayersDialog.selectionIndexes() )
       {
         childItems << zipItem->children()[i];
       }
@@ -2668,7 +2669,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
   foreach ( QgsDataItem* item, childItems )
   {
     QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
-    QgsDebugMsg( QString( "item path=%1 provider=" ).arg( item->path() ).arg( layerItem->providerKey() ) );
+    QgsDebugMsg( QString( "item path=%1 provider=%2" ).arg( item->path() ).arg( layerItem->providerKey() ) );
     if ( layerItem && layerItem->providerKey() == "gdal" )
     {
       if ( addRasterLayer( item->path(), QFileInfo( item->name() ).completeBaseName() ) )
@@ -2706,8 +2707,7 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
   }
 
   // We initialize a selection dialog and display it.
-  QgsOGRSublayersDialog chooseSublayersDialog( this );
-  chooseSublayersDialog.setWindowTitle( tr( "Select raster layers to add..." ) );
+  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Gdal, "gdal", this );
 
   QStringList layers;
   QStringList names;
@@ -2735,14 +2735,14 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
     if ( name.endsWith( "\"" ) ) name.chop( 1 );
 
     names << name;
-    layers << QString( "%1|%2|1|%3" ).arg( i ).arg( name ).arg( tr( "Raster" ) );
+    layers << QString( "%1|%2" ).arg( i ).arg( name );
   }
 
   chooseSublayersDialog.populateLayerTable( layers, "|" );
 
   if ( chooseSublayersDialog.exec() )
   {
-    foreach ( int i, chooseSublayersDialog.getSelectionIndexes() )
+    foreach ( int i, chooseSublayersDialog.selectionIndexes() )
     {
       QgsRasterLayer *rlayer = new QgsRasterLayer( sublayers[i], names[i] );
       if ( rlayer && rlayer->isValid() )
@@ -2811,8 +2811,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   QString layertype = layer->dataProvider()->storageType();
 
   // We initialize a selection dialog and display it.
-  QgsOGRSublayersDialog chooseSublayersDialog( this );
-  chooseSublayersDialog.setWindowTitle( tr( "Select vector layers to add..." ) );
+  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Ogr, "ogr", this );
   chooseSublayersDialog.populateLayerTable( sublayers );
 
   if ( chooseSublayersDialog.exec() )
@@ -2830,7 +2829,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     }
     QgsDebugMsg( "Layer type " + layertype );
     // the user has done his choice
-    loadOGRSublayers( layertype , uri, chooseSublayersDialog.getSelection() );
+    loadOGRSublayers( layertype , uri, chooseSublayersDialog.selectionNames() );
   }
 }
 
@@ -2844,6 +2843,7 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
   // The uri must contain the actual uri of the vectorLayer from which we are
   // going to load the sublayers.
   QString fileName = QFileInfo( uri ).baseName();
+  QList<QgsMapLayer *> myList;
   for ( int i = 0; i < list.size(); i++ )
   {
     QString composedURI;
@@ -2855,7 +2855,28 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
     {
       composedURI = uri + "|layerindex=" + list.at( i );
     }
-    addVectorLayer( composedURI,  list.at( i ), "ogr" );
+
+    // addVectorLayer( composedURI,  list.at( i ), "ogr" );
+
+    QgsDebugMsg( "Creating new vector layer using " + composedURI );
+    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, list.at( i ), "ogr" );
+    if ( layer && layer->isValid() )
+    {
+      myList << layer;
+    }
+    else
+    {
+      QString msg = tr( "%1 is not a valid or recognized data source" ).arg( composedURI );
+      messageBar()->pushMessage( tr( "Invalid Data Source" ), msg, QgsMessageBar::CRITICAL, messageTimeout() );
+      if ( layer )
+        delete layer;
+    }
+  }
+
+  if ( ! myList.isEmpty() )
+  {
+    // Register layer(s) with the layers registry
+    QgsMapLayerRegistry::instance()->addMapLayers( myList );
   }
 }
 
@@ -5281,7 +5302,7 @@ void QgisApp::deselectAll()
 void QgisApp::selectByExpression()
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
-  if( !vlayer )
+  if ( !vlayer )
   {
     messageBar()->pushMessage(
       tr( "No active vector layer" ),
@@ -6724,12 +6745,28 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
 
   if ( layer && layer->isValid() )
   {
-    // Register this layer with the layers registry
-    QList<QgsMapLayer *> myList;
-    myList << layer;
-    QgsMapLayerRegistry::instance()->addMapLayers( myList );
-    statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
+    QStringList sublayers = layer->dataProvider()->subLayers();
+    QgsDebugMsg( QString( "got valid layer with %1 sublayers" ).arg( sublayers.count() ) );
 
+    // If the newly created layer has more than 1 layer of data available, we show the
+    // sublayers selection dialog so the user can select the sublayers to actually load.
+    if ( sublayers.count() > 1 )
+    {
+      askUserForOGRSublayers( layer );
+
+      // The first layer loaded is not useful in that case. The user can select it in
+      // the list if he wants to load it.
+      delete layer;
+
+    }
+    else
+    {
+      // Register this layer with the layers registry
+      QList<QgsMapLayer *> myList;
+      myList << layer;
+      QgsMapLayerRegistry::instance()->addMapLayers( myList );
+      statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
+    }
   }
   else
   {
@@ -8251,24 +8288,39 @@ bool QgisApp::addRasterLayer( QgsRasterLayer *theRasterLayer )
 }
 
 
-//create a raster layer object and delegate to addRasterLayer(QgsRasterLayer *)
-
-QgsRasterLayer* QgisApp::addRasterLayer( QString const & rasterFile, QString const & baseName, bool guiWarning )
+// Open a raster layer - this is the generic function which takes all parameters
+// this method is a blend of addRasterLayer() functions (with and without provider)
+// and addRasterLayers()
+QgsRasterLayer* QgisApp::addRasterLayerPrivate(
+  const QString & uri, const QString & baseName, const QString & providerKey,
+  bool guiWarning, bool guiUpdate )
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return NULL;
   }
 
-  // let the user know we're going to possibly be taking a while
-  QApplication::setOverrideCursor( Qt::WaitCursor );
+  if ( guiUpdate )
+  {
+    // let the user know we're going to possibly be taking a while
+    // QApplication::setOverrideCursor( Qt::WaitCursor );
+    mMapCanvas->freeze( true );
+  }
 
-  mMapCanvas->freeze( true );
+  QgsDebugMsg( "Creating new raster layer using " + uri
+               + " with baseName of " + baseName );
 
+  QgsRasterLayer *layer = 0;
   // XXX ya know QgsRasterLayer can snip out the basename on its own;
   // XXX why do we have to pass it in for it?
-  QgsRasterLayer *layer =
-    new QgsRasterLayer( rasterFile, baseName ); // fi.completeBaseName());
+  // ET : we may not be getting "normal" files here, so we still need the baseName argument
+  if ( providerKey.isEmpty() )
+    layer = new QgsRasterLayer( uri, baseName ); // fi.completeBaseName());
+  else
+    layer = new QgsRasterLayer( uri, baseName, providerKey );
+
+  QgsDebugMsg( "Constructed new layer" );
+
   QgsError error;
   QString title;
   bool ok = false;
@@ -8286,7 +8338,7 @@ QgsRasterLayer* QgisApp::addRasterLayer( QString const & rasterFile, QString con
       // The first layer loaded is not useful in that case. The user can select it in
       // the list if he wants to load it.
       delete layer;
-      layer = 0;
+      layer = NULL;
     }
   }
   else
@@ -8302,11 +8354,8 @@ QgsRasterLayer* QgisApp::addRasterLayer( QString const & rasterFile, QString con
 
   if ( !ok )
   {
-    mMapCanvas->freeze( false );
-    QApplication::restoreOverrideCursor();
-
-// Let render() do its own cursor management
-//    QApplication::restoreOverrideCursor();
+    if ( guiUpdate )
+      mMapCanvas->freeze( false );
 
     // don't show the gui warning if we are loading from command line
     if ( guiWarning )
@@ -8315,26 +8364,36 @@ QgsRasterLayer* QgisApp::addRasterLayer( QString const & rasterFile, QString con
     }
 
     if ( layer )
+    {
       delete layer;
-
-    return NULL;
+      layer = NULL;
+    }
   }
-  else
+
+  if ( guiUpdate )
   {
-    statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
+    // update UI
+    qApp->processEvents();
+    // draw the map
     mMapCanvas->freeze( false );
-    QApplication::restoreOverrideCursor();
-
-// Let render() do its own cursor management
-//    QApplication::restoreOverrideCursor();
-
     mMapCanvas->refresh();
-
-    return layer;
+    //update status
+    statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
+    // Let render() do its own cursor management
+    //    QApplication::restoreOverrideCursor();
   }
+
+  return layer;
 
 } // QgisApp::addRasterLayer
 
+
+//create a raster layer object and delegate to addRasterLayer(QgsRasterLayer *)
+QgsRasterLayer* QgisApp::addRasterLayer(
+  QString const & rasterFile, QString const & baseName, bool guiWarning )
+{
+  return addRasterLayerPrivate( rasterFile, baseName, QString(), guiWarning, true );
+}
 
 
 /** Add a raster layer directly without prompting user for location
@@ -8347,47 +8406,10 @@ QgsRasterLayer* QgisApp::addRasterLayer( QString const & rasterFile, QString con
   \note   Copied from the equivalent addVectorLayer function in this file
   */
 QgsRasterLayer* QgisApp::addRasterLayer(
-  QString const &uri,
-  QString const &baseName,
-  QString const &providerKey )
+  QString const &uri, QString const &baseName, QString const &providerKey )
 {
-  QgsDebugMsg( "about to get library for " + providerKey );
-
-  if ( mMapCanvas && mMapCanvas->isDrawing() )
-  {
-    return 0;
-  }
-
-  mMapCanvas->freeze();
-
-  // create the layer
-  QgsRasterLayer *layer;
-  QgsDebugMsg( "Creating new raster layer using " + uri
-               + " with baseName of " + baseName );
-
-  layer = new QgsRasterLayer( uri, baseName, providerKey );
-
-  QgsDebugMsg( "Constructed new layer." );
-
-  if ( layer->isValid() )
-  {
-    addRasterLayer( layer );
-
-    statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
-  }
-  else
-  {
-    QgsErrorDialog::show( layer->error(), tr( "Invalid Layer" ) );
-  }
-
-  // update UI
-  qApp->processEvents();
-  // draw the map
-  mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
-
-  return layer;
-} // QgisApp::addRasterLayer
+  return addRasterLayerPrivate( uri, baseName, providerKey, true, true );
+}
 
 
 //create a raster layer object and delegate to addRasterLayer(QgsRasterLayer *)
@@ -8409,9 +8431,6 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
 
   mMapCanvas->freeze( true );
 
-// Let render() do its own cursor management
-//  QApplication::setOverrideCursor(Qt::WaitCursor);
-
   // this is messy since some files in the list may be rasters and others may
   // be ogr layers. We'll set returnValue to false if one or more layers fail
   // to load.
@@ -8421,8 +8440,6 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
         ++myIterator )
   {
     QString errMsg;
-    QgsError error;
-    QString title;
     bool ok = false;
 
     // if needed prompt for zipitem layers
@@ -8445,35 +8462,11 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
       //time to prevent the user selecting all adfs in 1 dir which
       //actually represent 1 coverage,
 
-      // create the layer
-      QgsRasterLayer *layer = new QgsRasterLayer( *myIterator, myBaseNameQString );
-
-      if ( !layer->isValid() )
+      // try to create the layer
+      QgsRasterLayer *layer = addRasterLayerPrivate( *myIterator, myBaseNameQString,
+                              QString(), guiWarning, true );
+      if ( layer && layer->isValid() )
       {
-        error = layer->error();
-        title = tr( "Invalid Layer" );
-
-        if ( shouldAskUserForGDALSublayers( layer ) )
-        {
-          askUserForGDALSublayers( layer );
-          ok = true;
-
-          // The first layer loaded is not useful in that case. The user can select it in
-          // the list if he wants to load it.
-          delete layer;
-          layer = 0;
-        }
-      } // invalid layer
-      else
-      {
-        ok = addRasterLayer( layer );
-        if ( !ok )
-        {
-          error.append( QGS_ERROR_MESSAGE( tr( "Error adding valid layer to map canvas" ),
-                                           tr( "Raster layer" ) ) );
-          title = tr( "Error" );
-        }
-
         //only allow one copy of a ai grid file to be loaded at a
         //time to prevent the user selecting all adfs in 1 dir which
         //actually represent 1 coverate,
@@ -8483,30 +8476,32 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
           break;
         }
       }
+      // if layer is invalid addRasterLayerPrivate() will show the error
+
     } // valid raster filename
     else
     {
-      QString msg = tr( "%1 is not a supported raster data source" ).arg( *myIterator );
-      if ( errMsg.size() > 0 )
-        msg += "\n" + errMsg;
-
-      error.append( QGS_ERROR_MESSAGE( msg, tr( "Raster layer" ) ) );
-      title = tr( "Unsupported Data Source" );
       ok = false;
-    }
-
-    if ( ! ok )
-    {
-      returnValue = false;
 
       // Issue message box warning unless we are loading from cmd line since
       // non-rasters are passed to this function first and then successfully
       // loaded afterwards (see main.cpp)
       if ( guiWarning )
       {
-        QgsErrorDialog::show( error, title );
-      }
+        QgsError error;
+        QString msg;
 
+        msg = tr( "%1 is not a supported raster data source" ).arg( *myIterator );
+        if ( errMsg.size() > 0 )
+          msg += "\n" + errMsg;
+        error.append( QGS_ERROR_MESSAGE( msg, tr( "Raster layer" ) ) );
+
+        QgsErrorDialog::show( error, tr( "Unsupported Data Source" ) );
+      }
+    }
+    if ( ! ok )
+    {
+      returnValue = false;
     }
   }
 

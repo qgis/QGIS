@@ -96,14 +96,14 @@ class TestQgsBlendModes(TestCase):
 
         #Add vector layers to map
         myLayers = QStringList()
-        myLayers.append(self.mPointLayer.id())
+        myLayers.append(self.mLineLayer.id())
         myLayers.append(self.mPolygonLayer.id())
         self.mMapRenderer.setLayerSet(myLayers)
         self.mMapRenderer.setExtent(self.mPointLayer.extent())
 
         #Set blending modes for both layers
-        self.mPointLayer.setBlendMode(QPainter.CompositionMode_Overlay)
-        self.mPolygonLayer.setBlendMode(QPainter.CompositionMode_Multiply)
+        self.mLineLayer.setBlendMode(QPainter.CompositionMode_Difference)
+        self.mPolygonLayer.setBlendMode(QPainter.CompositionMode_Difference)
 
         checker = QgsRenderChecker()
         checker.setControlName("expected_vector_blendmodes")
@@ -112,6 +112,10 @@ class TestQgsBlendModes(TestCase):
         myResult = checker.runTest("vector_blendmodes");
         myMessage = ('vector blending failed')
         assert myResult, myMessage
+
+        #Reset layers
+        self.mLineLayer.setBlendMode(QPainter.CompositionMode_SourceOver)
+        self.mPolygonLayer.setBlendMode(QPainter.CompositionMode_SourceOver)
 
     def testVectorFeatureBlending(self):
         """Test that feature blend modes work for vector layers."""
@@ -122,7 +126,6 @@ class TestQgsBlendModes(TestCase):
         myLayers.append(self.mPolygonLayer.id())
         self.mMapRenderer.setLayerSet(myLayers)
         self.mMapRenderer.setExtent(self.mPointLayer.extent())
-        self.mPolygonLayer.setBlendMode(QPainter.CompositionMode_Multiply)
 
         #Set feature blending for line layer
         self.mLineLayer.setFeatureBlendMode(QPainter.CompositionMode_Plus)
@@ -135,6 +138,9 @@ class TestQgsBlendModes(TestCase):
         myMessage = ('vector feature blending failed')
         assert myResult, myMessage
 
+        #Reset layers
+        self.mLineLayer.setFeatureBlendMode(QPainter.CompositionMode_SourceOver)
+
     def testVectorLayerTransparency(self):
         """Test that layer transparency works for vector layers."""
 
@@ -144,7 +150,6 @@ class TestQgsBlendModes(TestCase):
         myLayers.append(self.mPolygonLayer.id())
         self.mMapRenderer.setLayerSet(myLayers)
         self.mMapRenderer.setExtent(self.mPointLayer.extent())
-        self.mPolygonLayer.setBlendMode(QPainter.CompositionMode_Multiply)
 
         #Set feature blending for line layer
         self.mLineLayer.setLayerTransparency( 50 )

@@ -19,6 +19,8 @@
 #include "qgsdataitem.h"
 #include "qgslogger.h"
 
+#include <climits>
+
 QgsPgTableModel::QgsPgTableModel()
     : QStandardItemModel()
     , mTableCount( 0 )

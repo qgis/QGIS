@@ -426,7 +426,8 @@ bool QgisAppInterface::unregisterMainWindowAction( QAction* action )
 }
 
 //! Menus
-QMenu *QgisAppInterface::fileMenu() { return qgis->fileMenu(); }
+Q_DECL_DEPRECATED QMenu *QgisAppInterface::fileMenu() { return qgis->projectMenu(); }
+QMenu *QgisAppInterface::projectMenu() { return qgis->projectMenu(); }
 QMenu *QgisAppInterface::editMenu() { return qgis->editMenu(); }
 QMenu *QgisAppInterface::viewMenu() { return qgis->viewMenu(); }
 QMenu *QgisAppInterface::layerMenu() { return qgis->layerMenu(); }
@@ -455,7 +456,7 @@ QToolBar *QgisAppInterface::vectorToolBar() { return qgis->vectorToolBar(); }
 QToolBar *QgisAppInterface::databaseToolBar() { return qgis->databaseToolBar(); }
 QToolBar *QgisAppInterface::webToolBar() { return qgis->webToolBar(); }
 
-//! File menu actions
+//! Project menu actions
 QAction *QgisAppInterface::actionNewProject() { return qgis->actionNewProject(); }
 QAction *QgisAppInterface::actionOpenProject() { return qgis->actionOpenProject(); }
 QAction *QgisAppInterface::actionSaveProject() { return qgis->actionSaveProject(); }

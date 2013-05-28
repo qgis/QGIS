@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>21</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -49,7 +49,7 @@
     <addaction name="mActionNodeTool"/>
     <addaction name="mActionRotatePointSymbols"/>
    </widget>
-   <widget class="QMenu" name="mFileMenu">
+   <widget class="QMenu" name="mProjectMenu">
     <property name="title">
      <string>P&amp;roject</string>
     </property>
@@ -241,7 +241,7 @@
     </widget>
     <addaction name="menuOpenStreetMap"/>
    </widget>
-   <addaction name="mFileMenu"/>
+   <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
    <addaction name="mViewMenu"/>
    <addaction name="mLayerMenu"/>

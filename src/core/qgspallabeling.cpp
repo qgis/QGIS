@@ -1406,7 +1406,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 
   if ( wrapchr.isEmpty() )
   {
-    wrapchr = QString( "\n" ); // default to new line delimeter
+    wrapchr = QString( "\n" ); // default to new line delimiter
   }
 
   //consider the space needed for the direction symbol
