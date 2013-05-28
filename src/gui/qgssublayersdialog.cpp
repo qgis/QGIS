@@ -24,14 +24,14 @@
 
 QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, QString name,
                                         QWidget* parent, Qt::WFlags fl )
-  : QDialog( parent, fl ), mName( name )
+    : QDialog( parent, fl ), mName( name )
 {
   setupUi( this );
 
   if ( providerType == QgsSublayersDialog::Ogr )
   {
     setWindowTitle( tr( "Select vector layers to add..." ) );
-    layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" ) 
+    layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                   << tr( "Nb of features" ) << tr( "Geometry type" ) );
   }
   else if ( providerType == QgsSublayersDialog::Gdal )
@@ -42,7 +42,7 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, QString name,
   else
   {
     setWindowTitle( tr( "Select layers to add..." ) );
-    layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" ) 
+    layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                   << tr( "Type" ) );
   }
 
@@ -137,7 +137,7 @@ int QgsSublayersDialog::exec()
   // if we got here, disable override cursor, open dialog and return result
   // TODO add override cursor where it is missing (e.g. when opening via "Add Raster")
   QCursor cursor;
-  bool override = ( QApplication::overrideCursor() != 0 ); 
+  bool override = ( QApplication::overrideCursor() != 0 );
   if ( override )
   {
     cursor = QCursor( * QApplication::overrideCursor() );

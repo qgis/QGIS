@@ -21,7 +21,7 @@
 #include "qgscontexthelp.h"
 
 
-class QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDialogBase
+class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDialogBase
 {
     Q_OBJECT
   public:
