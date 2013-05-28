@@ -370,7 +370,11 @@ class GUI_EXPORT QgisInterface : public QObject
      */
 
     //! Menus
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QMenu *fileMenu() = 0;
+    virtual QMenu *projectMenu() = 0;
     virtual QMenu *editMenu() = 0;
     virtual QMenu *viewMenu() = 0;
     virtual QMenu *layerMenu() = 0;
@@ -415,7 +419,7 @@ class GUI_EXPORT QgisInterface : public QObject
     */
     virtual QToolBar *webToolBar() = 0;
 
-    //! File menu actions
+    //! Project menu actions
     virtual QAction *actionNewProject() = 0;
     virtual QAction *actionOpenProject() = 0;
     virtual QAction *actionSaveProject() = 0;

@@ -182,7 +182,7 @@ bool QgsSpatialQuery::hasValidGeometry( QgsFeature &feature )
     return false;
   }
 
-  if ( geom->isGeosEmpty() || !geom->isGeosValid() )
+  if ( geom->isGeosEmpty() )
   {
     return false;
   }

@@ -73,7 +73,8 @@ QList<QgsMapLayer *> QgsMapLayerRegistry::mapLayersByName( QString layerName )
 //introduced in 1.8
 QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
   QList<QgsMapLayer *> theMapLayers,
-  bool addToLegend )
+  bool addToLegend,
+  bool takeOwnership )
 {
   QList<QgsMapLayer *> myResultList;
   for ( int i = 0; i < theMapLayers.size(); ++i )
@@ -85,14 +86,12 @@ QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
       continue;
     }
     //check the layer is not already registered!
-    QMap<QString, QgsMapLayer*>::iterator myIterator =
-      mMapLayers.find( myLayer->id() );
-    //if myIterator returns mMapLayers.end() then it
-    //does not exist in registry and its safe to add it
-    if ( myIterator == mMapLayers.end() )
+    if ( !mMapLayers.contains( myLayer->id() ) )
     {
       mMapLayers[myLayer->id()] = myLayer;
       myResultList << mMapLayers[myLayer->id()];
+      if ( takeOwnership )
+        mOwnedLayers << myLayer;
       emit layerWasAdded( myLayer );
     }
   }
@@ -109,10 +108,11 @@ QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
 //this is just a thin wrapper for addMapLayers
 QgsMapLayer *
 QgsMapLayerRegistry::addMapLayer( QgsMapLayer* theMapLayer,
-                                  bool addToLegend )
+                                  bool addToLegend,
+                                  bool takeOwnership )
 {
   QList<QgsMapLayer *> addedLayers;
-  addedLayers = addMapLayers( QList<QgsMapLayer*>() << theMapLayer, addToLegend );
+  addedLayers = addMapLayers( QList<QgsMapLayer*>() << theMapLayer, addToLegend, takeOwnership );
   return addedLayers.isEmpty() ? 0 : addedLayers[0];
 }
 
@@ -124,16 +124,16 @@ void QgsMapLayerRegistry::removeMapLayers( QStringList theLayerIds )
 
   foreach ( const QString &myId, theLayerIds )
   {
+    QgsMapLayer* lyr = mMapLayers[myId];
     emit layerWillBeRemoved( myId );
-    delete mMapLayers[myId];
+    if ( mOwnedLayers.contains( lyr ) )
+    {
+      delete lyr;
+      mOwnedLayers.remove( lyr );
+    }
     mMapLayers.remove( myId );
   }
 }
-
-void QgsMapLayerRegistry::clearMapLayers()
-{
-  mMapLayers.clear();
-} // QgsMapLayerRegistry::clearMapLayers()
 
 void QgsMapLayerRegistry::removeMapLayer( const QString& theLayerId )
 {

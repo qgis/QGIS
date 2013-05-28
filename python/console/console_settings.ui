@@ -58,8 +58,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>543</width>
-        <height>674</height>
+        <width>554</width>
+        <height>642</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
@@ -137,59 +137,37 @@
             <property name="title">
              <string>Autocompletion</string>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
             <property name="collapsed" stdset="0">
              <bool>true</bool>
             </property>
-            <layout class="QGridLayout" name="gridLayout_7">
+            <property name="saveCheckedState" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="saveCollapsedState" stdset="0">
+             <bool>true</bool>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_4">
              <item row="0" column="0">
-              <layout class="QHBoxLayout" name="horizontalLayout_2">
-               <item>
-                <widget class="QCheckBox" name="autoCompleteEnabledEditor">
-                 <property name="text">
-                  <string>Autocompletion enabled</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <layout class="QGridLayout" name="gridLayout_4">
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_2">
-                   <property name="text">
-                    <string>Threshold</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QSpinBox" name="autoCompThresholdEditor">
-                   <property name="maximum">
-                    <number>10</number>
-                   </property>
-                   <property name="value">
-                    <number>2</number>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Autocompletion threshold</string>
+               </property>
+              </widget>
              </item>
-             <item row="1" column="0">
+             <item row="0" column="1">
+              <widget class="QSpinBox" name="autoCompThresholdEditor">
+               <property name="maximum">
+                <number>10</number>
+               </property>
+               <property name="value">
+                <number>2</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
               <layout class="QGridLayout" name="layoutRadioButtonEditor">
                <item row="0" column="0">
                 <widget class="QRadioButton" name="autoCompFromDocEditor">
@@ -255,103 +233,6 @@
           <string>Console</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_9">
-          <item row="3" column="0">
-           <widget class="QgsCollapsibleGroupBox" name="groupBoxAutoCompletion">
-            <property name="title">
-             <string>Autocompletion</string>
-            </property>
-            <property name="collapsed" stdset="0">
-             <bool>false</bool>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_8">
-             <item row="0" column="0">
-              <layout class="QHBoxLayout" name="horizontalLayout_4">
-               <item>
-                <widget class="QCheckBox" name="autoCompleteEnabled">
-                 <property name="text">
-                  <string>Autocompletion enabled</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_2">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <layout class="QGridLayout" name="gridLayout_5">
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_6">
-                   <property name="text">
-                    <string>Threshold</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QSpinBox" name="autoCompThreshold">
-                   <property name="maximum">
-                    <number>10</number>
-                   </property>
-                   <property name="value">
-                    <number>2</number>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </item>
-             <item row="1" column="0">
-              <layout class="QGridLayout" name="layoutRadioButton">
-               <item row="0" column="0">
-                <widget class="QRadioButton" name="autoCompFromDoc">
-                 <property name="toolTip">
-                  <string>Get autocompletion from current document</string>
-                 </property>
-                 <property name="text">
-                  <string>from Document</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QRadioButton" name="autoCompFromAPI">
-                 <property name="toolTip">
-                  <string>Get autocompletion from installed APIs</string>
-                 </property>
-                 <property name="text">
-                  <string>from APIs files</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="2">
-                <widget class="QRadioButton" name="autoCompFromDocAPI">
-                 <property name="toolTip">
-                  <string>Get autocompletion from current document and installed APIs</string>
-                 </property>
-                 <property name="text">
-                  <string>from Doc and APIs</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-          </item>
           <item row="1" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
@@ -408,11 +289,86 @@
             </item>
            </layout>
           </item>
-          <item row="4" column="0">
+          <item row="6" column="0">
            <widget class="QCheckBox" name="autoCloseBracket">
             <property name="text">
              <string>Automatic parentheses insertion</string>
             </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QgsCollapsibleGroupBox" name="groupBoxAutoCompletion">
+            <property name="title">
+             <string>Autocompletion</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="collapsed" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="saveCheckedState" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="saveCollapsedState" stdset="0">
+             <bool>true</bool>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_5">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_6">
+               <property name="text">
+                <string>Autocompletion threshold</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QSpinBox" name="autoCompThreshold">
+               <property name="maximum">
+                <number>10</number>
+               </property>
+               <property name="value">
+                <number>2</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <layout class="QGridLayout" name="layoutRadioButton">
+               <item row="0" column="2">
+                <widget class="QRadioButton" name="autoCompFromDocAPI">
+                 <property name="toolTip">
+                  <string>Get autocompletion from current document and installed APIs</string>
+                 </property>
+                 <property name="text">
+                  <string>from Doc and APIs</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QRadioButton" name="autoCompFromAPI">
+                 <property name="toolTip">
+                  <string>Get autocompletion from installed APIs</string>
+                 </property>
+                 <property name="text">
+                  <string>from APIs files</string>
+                 </property>
+                 <property name="checked">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QRadioButton" name="autoCompFromDoc">
+                 <property name="toolTip">
+                  <string>Get autocompletion from current document</string>
+                 </property>
+                 <property name="text">
+                  <string>from Document</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>

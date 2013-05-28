@@ -81,8 +81,6 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
   def showEvent(self, event):
     QDialog.showEvent(self, event)
     self.updatePresetsCombobox()
-    
-
 
   def updatePresetsCombobox(self):
     entries = QgsProject.instance().subkeyList('DBManager','savedQueries')
@@ -108,7 +106,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
       self.presetCombo.setCurrentIndex(self.presetCombo.count()-1)
     else:
       self.presetCombo.setCurrentIndex(index)
-      
+
   def deletePreset(self):
     name = self.presetCombo.currentText()
     QgsProject.instance().removeEntry('DBManager','savedQueries/q'+str(name.__hash__()) )

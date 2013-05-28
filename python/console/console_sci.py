@@ -118,7 +118,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.setAutoCompletionThreshold(threshold)
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI').toString()
         autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True).toBool()
-        self.setAutoCompletionThreshold(threshold)
         if autoCompEnabled:
             if radioButtonSource == 'fromDoc':
                 self.setAutoCompletionSource(self.AcsDocument)
@@ -272,7 +271,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                 self.history.append(command)
         self.historyIndex = len(self.history)
 
-    def writeHistoryFile(self):
+    def writeHistoryFile(self, fromCloseConsole=False):
         ok = False
         try:
             wH = open(_historyFile, 'w')
@@ -282,7 +281,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         except:
             raise
         wH.close()
-        if ok:
+        if ok and not fromCloseConsole:
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'History saved successfully.')
             self.parent.callWidgetMessageBar(msgText)

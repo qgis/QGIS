@@ -577,7 +577,7 @@ class QgsLegend : public QTreeWidget
 
     } mPixmaps;
 
-    //! Widget that holds the indicator line //
+    //! Widget that holds the indicator line
     QWidget *mInsertionLine;
 
     QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > > mLegendLayerActionMap;
@@ -587,6 +587,8 @@ class QgsLegend : public QTreeWidget
 #endif
 
     void updateGroupCheckStates( QTreeWidgetItem *item );
+
+    bool verifyDrawingOrder();
 
   signals:
     void itemAdded( QModelIndex index );

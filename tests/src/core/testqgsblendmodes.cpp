@@ -121,15 +121,19 @@ void TestQgsBlendModes::vectorBlending()
 {
   //Add two vector layers
   QStringList myLayers;
-  myLayers << mpPointsLayer->id();
+  myLayers << mpLinesLayer->id();
   myLayers << mpPolysLayer->id();
   mpMapRenderer->setLayerSet( myLayers );
 
   //Set blending modes for both layers
-  mpPointsLayer->setBlendMode( QPainter::CompositionMode_Overlay );
-  mpPolysLayer->setBlendMode( QPainter::CompositionMode_Multiply );
+  mpLinesLayer->setBlendMode( QPainter::CompositionMode_Difference );
+  mpPolysLayer->setBlendMode( QPainter::CompositionMode_Difference );
   mpMapRenderer->setExtent( mpPointsLayer->extent() );
   QVERIFY( imageCheck( "vector_blendmodes" ) );
+
+  //Reset layers
+  mpLinesLayer->setBlendMode( QPainter::CompositionMode_SourceOver );
+  mpPolysLayer->setBlendMode( QPainter::CompositionMode_SourceOver );
 }
 
 void TestQgsBlendModes::featureBlending()
@@ -144,6 +148,9 @@ void TestQgsBlendModes::featureBlending()
   mpLinesLayer->setFeatureBlendMode( QPainter::CompositionMode_Plus );
   mpMapRenderer->setExtent( mpPointsLayer->extent() );
   QVERIFY( imageCheck( "vector_featureblendmodes" ) );
+
+  //Reset layers
+  mpLinesLayer->setFeatureBlendMode( QPainter::CompositionMode_SourceOver );
 }
 
 void TestQgsBlendModes::vectorLayerTransparency()
@@ -153,12 +160,14 @@ void TestQgsBlendModes::vectorLayerTransparency()
   myLayers << mpLinesLayer->id();
   myLayers << mpPolysLayer->id();
   mpMapRenderer->setLayerSet( myLayers );
-  mpLinesLayer->setFeatureBlendMode( QPainter::CompositionMode_SourceOver );
 
   //Set feature blending modes for point layer
   mpLinesLayer->setLayerTransparency( 50 );
   mpMapRenderer->setExtent( mpPointsLayer->extent() );
   QVERIFY( imageCheck( "vector_layertransparency" ) );
+
+  //Reset layers
+  mpLinesLayer->setLayerTransparency( 0 );
 }
 
 void TestQgsBlendModes::rasterBlending()

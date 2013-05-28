@@ -814,19 +814,19 @@ void QgsVectorLayer::invertSelection()
 
 void QgsVectorLayer::selectAll()
 {
-    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                          .setFlags( QgsFeatureRequest::NoGeometry )
-                                          .setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                        .setFlags( QgsFeatureRequest::NoGeometry )
+                                        .setSubsetOfAttributes( QgsAttributeList() ) );
 
-    QgsFeatureIds ids;
+  QgsFeatureIds ids;
 
-    QgsFeature fet;
-    while ( fit.nextFeature( fet ) )
-    {
-      ids << fet.id();
-    }
+  QgsFeature fet;
+  while ( fit.nextFeature( fet ) )
+  {
+    ids << fet.id();
+  }
 
-    setSelectedFeatures( ids );
+  setSelectedFeatures( ids );
 }
 
 void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle & rect )
@@ -1830,13 +1830,13 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     if ( !singleCatDiagramElem.isNull() )
     {
       mDiagramRenderer = new QgsSingleCategoryDiagramRenderer();
-      mDiagramRenderer->readXML( singleCatDiagramElem );
+      mDiagramRenderer->readXML( singleCatDiagramElem, this );
     }
     QDomElement linearDiagramElem = node.firstChildElement( "LinearlyInterpolatedDiagramRenderer" );
     if ( !linearDiagramElem.isNull() )
     {
       mDiagramRenderer = new QgsLinearlyInterpolatedDiagramRenderer();
-      mDiagramRenderer->readXML( linearDiagramElem );
+      mDiagramRenderer->readXML( linearDiagramElem, this );
     }
 
     if ( mDiagramRenderer )
@@ -1845,7 +1845,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       if ( !diagramSettingsElem.isNull() )
       {
         mDiagramLayerSettings = new QgsDiagramLayerSettings();
-        mDiagramLayerSettings->readXML( diagramSettingsElem );
+        mDiagramLayerSettings->readXML( diagramSettingsElem, this );
       }
     }
   }
@@ -2168,9 +2168,9 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
     if ( mDiagramRenderer )
     {
-      mDiagramRenderer->writeXML( mapLayerNode, doc );
+      mDiagramRenderer->writeXML( mapLayerNode, doc, this );
       if ( mDiagramLayerSettings )
-        mDiagramLayerSettings->writeXML( mapLayerNode, doc );
+        mDiagramLayerSettings->writeXML( mapLayerNode, doc, this );
     }
   }
 

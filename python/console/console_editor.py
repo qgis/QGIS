@@ -186,7 +186,6 @@ class Editor(QsciScintilla):
         threshold = self.settings.value("pythonConsole/autoCompThresholdEditor", 2).toInt()[0]
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI').toString()
         autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor", True).toBool()
-
         self.setAutoCompletionThreshold(threshold)
         if autoCompEnabled:
             if radioButtonSource == 'fromDoc':
@@ -272,6 +271,9 @@ class Editor(QsciScintilla):
         iconFind = QgsApplication.getThemeIcon("console/iconSearchEditorConsole.png")
         iconSyntaxCk = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
         iconObjInsp = QgsApplication.getThemeIcon("console/iconClassBrowserConsole.png")
+        iconCut = QgsApplication.getThemeIcon("console/iconCutEditorConsole.png")
+        iconCopy = QgsApplication.getThemeIcon("console/iconCopyEditorConsole.png")
+        iconPaste = QgsApplication.getThemeIcon("console/iconPasteEditorConsole.png")
         hideEditorAction = menu.addAction(QCoreApplication.translate("PythonConsole", "Hide Editor"),
                                           self.hideEditor)
         menu.addSeparator()
@@ -301,15 +303,18 @@ class Editor(QsciScintilla):
                                                                "Find Text"),
                                     self.showFindWidget)
         menu.addSeparator()
-        cutAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+        cutAction = menu.addAction(iconCut,
+                                   QCoreApplication.translate("PythonConsole",
                                                               "Cut"),
                                     self.cut,
                                     QKeySequence.Cut)
-        copyAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+        copyAction = menu.addAction(iconCopy,
+                                    QCoreApplication.translate("PythonConsole",
                                                                "Copy"),
                                     self.copy,
                                     QKeySequence.Copy)
-        pasteAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+        pasteAction = menu.addAction(iconPaste,
+                                     QCoreApplication.translate("PythonConsole",
                                                                 "Paste"),
                                      self.paste, QKeySequence.Paste)
         menu.addSeparator()
@@ -958,11 +963,11 @@ class EditorTabWidget(QTabWidget):
             self._removeTab(i)
         self.newTabEditor(tabName='Untitled-0')
         self._removeTab(0)
-        
+
     def saveAs(self):
         idx = self.idx
         self.parent.saveAsScriptFile(idx)
-    
+
     def enableSaveIfModified(self, tab):
         tabWidget = self.widget(tab)
         if tabWidget:

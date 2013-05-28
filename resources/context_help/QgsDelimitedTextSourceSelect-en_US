@@ -26,9 +26,25 @@ describe points, lines, and polygons of arbitrary complexity.  The file can also
 only table, which can then be joined to other tables in QGIS.
 </p>
 <p>
-In addition to the geometry definition the file can contain text, integer, and real number fields.  QGIS
-will choose the type of field based on its contents. 
+In addition to the geometry definition the file can contain text, integer, and real number fields.  By default 
+QGIS will choose the type of field based on its the non blank values of the field.  If all can be interpreted
+as integer then the type will be integer, if all can be interpreted as real numbers then the type will
+be double, otherwise the type will be text.
 </p>
+<p>
+QGIS can also read the types from an OGR CSV driver compatible &quot;csvt&quot; file.  
+This is a file alongside the data file, but with a &quot;t&quot; appended to the file name. 
+The file should just contain one linewhich lists the type of each field. 
+Valid types are &quot;integer&quot;, &quot;real&quot;, &quot;string&quot;, &quot;date&quot;, &quot;time&quot;, and &quot;datetime&quot;. The date, time, and datetime types are treated as strings in QGIS.
+Each type may be followed by a width and precision, for example &quot;real(10.4)&quot;.
+The list of types are separated by commas, regardless of the delimiter used in the data file.  An
+example of a valid format file would be:
+</p>
+
+<pre>
+&quot;integer&quot;,&quot;string&quot;,&quot;string(20)&quot;,&quot;real(20.4)&quot;
+</pre>
+
 <h4><a name="creating">Creating a delimited text layer</a></h4>
 <p>Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
 be split into fields), and defining the geometry is represented.  

@@ -867,7 +867,7 @@ void QgisApp::readSettings()
   // 'gis' theme is new /themes/default directory (2013-04-15)
   setTheme( settings.value( "/Themes", "default" ).toString() );
 
-  // Add the recently accessed project file paths to the File menu
+  // Add the recently accessed project file paths to the Project menu
   mRecentProjectPaths = settings.value( "/UI/recentProjectsList" ).toStringList();
 
   // this is a new session! reset enable macros value to "ask"
@@ -888,7 +888,8 @@ void QgisApp::createActions()
   mActionPluginSeparator1 = NULL;  // plugin list separator will be created when the first plugin is loaded
   mActionPluginSeparator2 = NULL;  // python separator will be created only if python is found
   mActionRasterSeparator = NULL;   // raster plugins list separator will be created when the first plugin is loaded
-  // File Menu Items
+
+  // Project Menu Items
 
   connect( mActionNewProject, SIGNAL( triggered() ), this, SLOT( fileNew() ) );
   connect( mActionNewBlankProject, SIGNAL( triggered() ), this, SLOT( fileNewBlank() ) );
@@ -1226,8 +1227,8 @@ void QgisApp::createMenus()
    * for the following items.
    *
    * Project Properties:
-   * Gnome, Mac - File menu above print commands
-   * Kde, Win - Settings menu (Win doesn't specify)
+   * Gnome, Mac, Win - File/Project menu above print commands (Win doesn't specify)
+   * Kde - Settings menu
    *
    * Custom CRS, Options:
    * Gnome - bottom of Edit menu
@@ -1251,7 +1252,7 @@ void QgisApp::createMenus()
   QDialogButtonBox::ButtonLayout layout =
     QDialogButtonBox::ButtonLayout( style()->styleHint( QStyle::SH_DialogButtonLayout, 0, this ) );
 
-  // File Menu
+  // Project Menu
 
   // Connect once for the entire submenu.
   connect( mRecentProjectsMenu, SIGNAL( triggered( QAction * ) ),
@@ -1259,12 +1260,12 @@ void QgisApp::createMenus()
   connect( mProjectFromTemplateMenu, SIGNAL( triggered( QAction * ) ),
            this, SLOT( fileNewFromTemplateAction( QAction * ) ) );
 
-  if ( layout == QDialogButtonBox::GnomeLayout || layout == QDialogButtonBox::MacLayout )
+  if ( layout == QDialogButtonBox::GnomeLayout || layout == QDialogButtonBox::MacLayout || layout == QDialogButtonBox::WinLayout )
   {
     QAction* before = mActionNewPrintComposer;
     mSettingsMenu->removeAction( mActionProjectProperties );
-    mFileMenu->insertAction( before, mActionProjectProperties );
-    mFileMenu->insertSeparator( before );
+    mProjectMenu->insertAction( before, mActionProjectProperties );
+    mProjectMenu->insertSeparator( before );
   }
 
   // View Menu
@@ -2238,7 +2239,7 @@ void QgisApp::projectReadDecorationItems()
   }
 }
 
-// Update file menu with the current list of recently accessed projects
+// Update project menu with the current list of recently accessed projects
 void QgisApp::updateRecentProjectPaths()
 {
   // Remove existing paths from the recent projects menu
@@ -2293,7 +2294,7 @@ void QgisApp::saveRecentProjectPath( QString projectPath, QSettings & settings )
 
 } // QgisApp::saveRecentProjectPath
 
-// Update file menu with the project templates
+// Update project menu with the project templates
 void QgisApp::updateProjectFromTemplates()
 {
   // get list of project files in template dir
@@ -5281,7 +5282,7 @@ void QgisApp::deselectAll()
 void QgisApp::selectByExpression()
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
-  if( !vlayer )
+  if ( !vlayer )
   {
     messageBar()->pushMessage(
       tr( "No active vector layer" ),

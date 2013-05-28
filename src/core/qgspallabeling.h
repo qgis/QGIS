@@ -307,7 +307,6 @@ class CORE_EXPORT QgsPalLayerSettings
     //-- text buffer
 
     bool bufferDraw;
-    bool bufferDrawOld; // on when old style buffer triggered by just size is found
     double bufferSize; // buffer size
     bool bufferSizeInMapUnits; //true if buffer is in map units (otherwise in mm)
     QColor bufferColor;

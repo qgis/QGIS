@@ -12,7 +12,6 @@
         <file>flags/en_US.png</file>
         <file>flags/es.png</file>
         <file>flags/et_EE.png</file>
-        <file>flags/eu_ES.png</file>
         <file>flags/fa.png</file>
         <file>flags/fi.png</file>
         <file>flags/fr.png</file>
@@ -64,13 +63,11 @@
         <file>themes/default/cap_round.png</file>
         <file>themes/default/cap_square.png</file>
         <file>themes/default/clearInput.png</file>
-        <file>themes/default/console/iconAboutConsole.png</file>
         <file>themes/default/console/iconClassConsole.png</file>
         <file>themes/default/console/iconClearConsole.png</file>
         <file>themes/default/console/iconCodepadConsole.png</file>
         <file>themes/default/console/iconHelpConsole.png</file>
         <file>themes/default/console/iconHideToolConsole.png</file>
-        <file>themes/default/console/iconIfaceConsole.png</file>
         <file>themes/default/console/iconOpenConsole.png</file>
         <file>themes/default/console/iconQtCoreConsole.png</file>
         <file>themes/default/console/iconQtGuiConsole.png</file>
@@ -84,7 +81,6 @@
         <file>themes/default/console/imgHelpMenu.png</file>
         <file>themes/default/console/iconTabEditorConsole.png</file>
         <file>themes/default/console/iconNewTabEditorConsole.png</file>
-        <file>themes/default/console/iconCloseTabEditorConsole.png</file>
         <file>themes/default/console/iconRestoreTabsConsole.png</file>
         <file>themes/default/console/iconFileTabsMenuConsole.png</file>
         <file>themes/default/console/iconShowEditorConsole.png</file>
@@ -434,6 +430,8 @@
         <file>themes/default/unlocked.png</file>
         <file>themes/default/user.png</file>
         <file>flags/bs_BA.png</file>
+        <file>flags/eu.png</file>
+        <file>flags/bn.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

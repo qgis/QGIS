@@ -29,16 +29,21 @@ from .html_elems import HtmlParagraph, HtmlTable
 class BaseError(Exception):
 	"""Base class for exceptions in the plugin."""
 	def __init__(self, e):
-		msg = e if isinstance(e, (str,unicode,QString)) else e.message
+		if isinstance(e, Exception):
+			msg = e.args[0] if len(e.args) > 0 else ''
+		else:
+			msg = e
 
 		try:
 			msg = unicode( msg )
 		except UnicodeDecodeError:
 			msg = unicode( msg, 'utf-8' )
+
+		self.msg = msg
 		Exception.__init__(self, msg)
 
 	def __unicode__(self):
-		return self.message
+		return self.msg
 
 	def __str__(self):
 		return unicode(self).encode('utf-8')
@@ -55,7 +60,7 @@ class DbError(BaseError):
 		self.query = unicode( query ) if query != None else None
 
 	def __unicode__(self):
-		if self.query == None:
+		if self.query is None:
 			return BaseError.__unicode__(self)
 
 		msg = u"Error:\n%s" % BaseError.__unicode__(self)
@@ -976,8 +981,8 @@ class TableField(TableSubItemObject):
 class TableConstraint(TableSubItemObject):
 	""" class that represents a constraint of a table (relation) """
 
-	TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique = range(4)
-	types = { "c" : TypeCheck, "f" : TypeForeignKey, "p" : TypePrimaryKey, "u" : TypeUnique }
+	TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique, TypeExclusion, TypeUnknown = range(6)
+	types = { "c" : TypeCheck, "f" : TypeForeignKey, "p" : TypePrimaryKey, "u" : TypeUnique, "x" : TypeExclusion }
 
 	onAction = { "a" : "NO ACTION", "r" : "RESTRICT", "c" : "CASCADE", "n" : "SET NULL", "d" : "SET DEFAULT" }
 	matchTypes = { "u" : "UNSPECIFIED", "f" : "FULL", "p" : "PARTIAL" }
@@ -991,6 +996,7 @@ class TableConstraint(TableSubItemObject):
 		if self.type == TableConstraint.TypePrimaryKey: return "Primary key"
 		if self.type == TableConstraint.TypeForeignKey: return "Foreign key"
 		if self.type == TableConstraint.TypeUnique: return "Unique"
+		if self.type == TableConstraint.TypeExclusion: return "Exclusion"
 		return 'Unknown'
 
 	def fields(self):

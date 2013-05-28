@@ -574,6 +574,30 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
   mNumberFeatures = 0;
   // get features to calculate the statistics
   QString statement;
+
+  QSqlQuery query = QSqlQuery( mDatabase );
+  query.setForwardOnly( true );
+
+  // Get the extents from the geometry_columns table to speed up load times.
+  statement = QString("SELECT min_x, min_y, max_x, max_y from geometry_columns where f_table_schema = '%1' and f_table_name = '%2'").arg( mSchemaName ).arg( mTableName );
+
+  if ( query.exec( statement ) )
+  {
+      if ( query.next() )
+      {
+          if (!query.value( 0 ).isNull() || !query.value( 1 ).isNull() ||
+              !query.value( 2 ).isNull() || !query.value( 3 ).isNull())
+          {
+              mExtent.setXMinimum( query.value( 0 ).toDouble() );
+              mExtent.setYMinimum( query.value( 1 ).toDouble() );
+              mExtent.setXMaximum( query.value( 2 ).toDouble() );
+              mExtent.setYMaximum( query.value( 3 ).toDouble() );
+              return;
+          }
+      }
+  }
+
+  // If we can't find the extents in the geometry_columns table just do what we normally do.
   bool readAll = false;
   if ( estimate )
   {
@@ -602,9 +626,6 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
   {
     statement += " where (" + mSqlWhereClause + ")";
   }
-
-  QSqlQuery query = QSqlQuery( mDatabase );
-  query.setForwardOnly( true );
 
   if ( !query.exec( statement ) )
   {
