@@ -684,11 +684,13 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
     return;
   }
 
-  QModelIndexList selection = selectionModel->selectedIndexes();
-  for ( int i = selection.size() - 1; i >= 0; --i )
+  QList<QPersistentModelIndex> indexes;
+  foreach(const QModelIndex &index, selectionModel->selectedIndexes())
+      indexes << index;
+
+  foreach(const QPersistentModelIndex index, indexes)
   {
-    QModelIndex parentIndex = selection.at( i ).parent();
-    itemModel->removeRow( selection.at( i ).row(), parentIndex );
+      itemModel->removeRow( index.row(), index.parent() );
   }
 
   mLegend->adjustBoxSize();
