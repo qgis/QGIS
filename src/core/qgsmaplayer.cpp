@@ -359,6 +359,35 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
     mAbstract = abstractElem.text();
   }
 
+  //keywordList
+  QDomElement keywordListElem = layerElement.firstChildElement( "keywordList" );
+  if ( !keywordListElem.isNull() )
+  {
+    QStringList kwdList;
+    for(QDomNode n = keywordListElem.firstChild(); !n.isNull(); n = n.nextSibling())
+    {
+      kwdList << n.toElement().text();
+    }
+    mKeywordList = kwdList.join( ", " );
+  }
+
+  //attribution
+  QDomElement attribElem = layerElement.firstChildElement( "attribution" );
+  if ( !attribElem.isNull() )
+  {
+    mAttribution = attribElem.text();
+    mAttributionUrl = attribElem.attribute( "href", "" );
+  }
+
+  //metadataUrl
+  QDomElement metaUrlElem = layerElement.firstChildElement( "metadataUrl" );
+  if ( !metaUrlElem.isNull() )
+  {
+    mMetadataUrl = metaUrlElem.text();
+    mMetadataUrlType = metaUrlElem.attribute( "type", "" );
+    mMetadataUrlFormat = metaUrlElem.attribute( "format", "" );
+  }
+
 #if 0
   //read transparency level
   QDomNode transparencyNode = layer_node.namedItem( "transparencyLevelInt" );
@@ -457,6 +486,44 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   layerElement.appendChild( layerName );
   layerElement.appendChild( layerTitle );
   layerElement.appendChild( layerAbstract );
+  
+  // layer keyword list
+  QStringList keywordStringList = keywordList().split( "," );
+  if ( keywordStringList.size() > 0 )
+  {
+    QDomElement layerKeywordList = document.createElement( "keywordList" );
+    for (int i = 0; i < keywordStringList.size(); ++i)
+    {
+      QDomElement layerKeywordValue = document.createElement( "value" );
+      QDomText layerKeywordText = document.createTextNode( keywordStringList.at( i ).trimmed() );
+      layerKeywordValue.appendChild( layerKeywordText );
+      layerKeywordList.appendChild( layerKeywordValue );
+    }
+    layerElement.appendChild( layerKeywordList );
+  }
+
+  // layer attribution
+  QString aAttribution = attribution();
+  if ( !aAttribution.isEmpty() )
+  {
+    QDomElement layerAttribution = document.createElement( "attribution" ) ;
+    QDomText layerAttributionText = document.createTextNode( aAttribution );
+    layerAttribution.appendChild( layerAttributionText );
+    layerAttribution.setAttribute( "href", attributionUrl() );
+    layerElement.appendChild( layerAttribution );
+  }
+
+  // layer metadataUrl
+  QString aMetadataUrl = metadataUrl();
+  if ( !aMetadataUrl.isEmpty() )
+  {
+    QDomElement layerMetadataUrl = document.createElement( "metadataUrl" ) ;
+    QDomText layerMetadataUrlText = document.createTextNode( aMetadataUrl );
+    layerMetadataUrl.appendChild( layerMetadataUrlText );
+    layerMetadataUrl.setAttribute( "type", metadataUrlType() );
+    layerMetadataUrl.setAttribute( "format", metadataUrlFormat() );
+    layerElement.appendChild( layerMetadataUrl );
+  }
 
   // timestamp if supported
   if ( timestamp() > QDateTime() )

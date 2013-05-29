@@ -1333,6 +1333,23 @@
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_5">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="mLayerTitleLabel">
+                    <property name="text">
+                     <string>Title</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLineEdit" name="mLayerTitleLineEdit"/>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="mLayerAbstractLabel">
+                    <property name="text">
+                     <string>Abstract</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="3" column="1">
                    <widget class="QTextEdit" name="mLayerAbstractTextEdit">
                     <property name="sizePolicy">
@@ -1349,21 +1366,120 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="1">
-                   <widget class="QLineEdit" name="mLayerTitleLineEdit"/>
+                  <item row="5" column="0">
+                   <widget class="QLabel" name="mLayerKeywordListLabel">
+                    <property name="text">
+                     <string>Keyword list</string>
+                    </property>
+                   </widget>
                   </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="mLayerTitleLabel">
+                  <item row="5" column="1">
+                   <widget class="QLineEdit" name="mLayerKeywordListLineEdit"/>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="mMetaAttributionGrpBx">
+                 <property name="title">
+                  <string>Attribution</string>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">vectormeta</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_7">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="mLayerAttributionLabel">
                     <property name="text">
                      <string>Title</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="mLayerAbstractLabel">
+                  <item row="0" column="1">
+                   <widget class="QLineEdit" name="mLayerAttributionLineEdit"/>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="mLayerAttributionUrlLabel">
                     <property name="text">
-                     <string>Abstract</string>
+                     <string>Url</string>
                     </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QLineEdit" name="mLayerAttributionUrlLineEdit"/>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="mMetaMetaUrlGrpBx">
+                 <property name="title">
+                  <string>MetadataUrl</string>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">vectormeta</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_9">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="mLayerMetadataUrlLabel">
+                    <property name="text">
+                     <string>Url</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1" colspan="4">
+                   <widget class="QLineEdit" name="mLayerMetadataUrlLineEdit"/>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLabel" name="mLayerMetadataUrlTypeLabel">
+                    <property name="text">
+                     <string>Type</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QComboBox" name="mLayerMetadataUrlTypeComboBox">
+                    <item>
+                     <property name="text">
+                      <string notr="true"></string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string notr="true" extracomment="FGDC-STD-001-1988">FGDC</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string notr="true" extracomment="ISO 19115">TC211</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item row="1" column="3">
+                   <widget class="QLabel" name="mLayerMetadataUrlFormatLabel">
+                    <property name="text">
+                     <string>Format</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="4">
+                   <widget class="QComboBox" name="mLayerMetadataUrlFormatComboBox">
+                    <item>
+                     <property name="text">
+                      <string notr="true"></string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                       <string notr="true">text/plain</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                       <string notr="true">text/xml</string>
+                     </property>
+                    </item>
                    </widget>
                   </item>
                  </layout>

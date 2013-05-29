@@ -551,6 +551,72 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
         layerElem.appendChild( abstractElem );
       }
 
+      //keyword list
+      QStringList keywordStringList = currentLayer->keywordList().split( "," );
+      if ( keywordStringList.size() > 0 )
+      {
+        bool siaFormat = featureInfoFormatSIA2045();
+
+        QDomElement keywordListElem = doc.createElement( "KeywordList" );
+        for ( int i = 0; i < keywordStringList.size(); ++i )
+        {
+          QDomElement keywordElem = doc.createElement( "Keyword" );
+          QDomText keywordText = doc.createTextNode( keywordStringList.at( i ).trimmed() );
+          keywordElem.appendChild( keywordText );
+          if ( siaFormat )
+          {
+            keywordElem.setAttribute( "vocabulary", "SIA_Geo405" );
+          }
+          keywordListElem.appendChild( keywordElem );
+        }
+        layerElem.appendChild( keywordListElem );
+      }
+
+      QString attribution = currentLayer->attribution();
+      if ( !attribution.isEmpty() )
+      {
+        QDomElement attribElem = doc.createElement( "Attribution" );
+        QDomElement attribTitleElem = doc.createElement( "Title" );
+        QDomText attribText = doc.createTextNode( attribution );
+        attribTitleElem.appendChild( attribText );
+        attribElem.appendChild( attribTitleElem );
+        QString attributionUrl = currentLayer->attributionUrl();
+        if ( !attributionUrl.isEmpty() )
+        {
+          QDomElement attribORElem = doc.createElement( "OnlineResource" );
+          attribORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+          attribORElem.setAttribute( "xlink:type", "simple" );
+          attribORElem.setAttribute( "xlink:href", attributionUrl );
+          attribElem.appendChild( attribORElem );
+        }
+        layerElem.appendChild( attribElem );
+      }
+
+      QString metadataUrl = currentLayer->metadataUrl();
+      if ( !metadataUrl.isEmpty() )
+      {
+        QDomElement metaUrlElem = doc.createElement( "MetadataUrl" );
+        QString metadataUrlType = currentLayer->metadataUrlType();
+        if ( !metadataUrlType.isEmpty() )
+        {
+          metaUrlElem.setAttribute( "type", metadataUrlType );
+        }
+        QString metadataUrlFormat = currentLayer->metadataUrlFormat();
+        if ( !metadataUrlFormat.isEmpty() )
+        {
+          QDomElement metaUrlFormatElem = doc.createElement( "Format" );
+          QDomText metaUrlFormatText = doc.createTextNode( metadataUrlFormat );
+          metaUrlFormatElem.appendChild( metaUrlFormatText );
+          metaUrlElem.appendChild( metaUrlFormatElem );
+        }
+        QDomElement metaUrlORElem = doc.createElement( "OnlineResource" );
+        metaUrlORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+        metaUrlORElem.setAttribute( "xlink:type", "simple" );
+        metaUrlORElem.setAttribute( "xlink:href", metadataUrl );
+        metaUrlElem.appendChild( metaUrlORElem );
+        layerElem.appendChild( metaUrlElem );
+      }
+
       //CRS
       QStringList crsList = createCRSListForLayer( currentLayer );
       appendCRSElementsToLayer( layerElem, doc, crsList );

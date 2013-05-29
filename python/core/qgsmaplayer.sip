@@ -84,6 +84,23 @@ class QgsMapLayer : QObject
     void setAbstract( const QString& abstract );
     const QString& abstract() const;
 
+    void setKeywordList( const QString& kwdList );
+    const QString& keywordList() const;
+    
+    /* Layer attribution information */
+    void setAttribution( const QString& attrib );
+    const QString& attribution() const;
+    void setAttributionUrl( const QString& attribUrl );
+    const QString& attributionUrl() const;
+    
+    /* Layer metadataUrl information */
+    void setMetadataUrl( const QString& metaUrl );
+    const QString& metadataUrl() const;
+    void setMetadataUrlType( const QString& metaUrlType );
+    const QString& metadataUrlType() const;
+    void setMetadataUrlFormat( const QString& metaUrlFormat );
+    const QString& metadataUrlFormat() const;
+
     /**Synchronises with changes in the datasource
         @note added in version 1.6*/
     virtual void reload();

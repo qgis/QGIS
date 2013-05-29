@@ -228,6 +228,21 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   {
     mLayerTitleLineEdit->setText( layer->title() );
     mLayerAbstractTextEdit->setPlainText( layer->abstract() );
+    mLayerKeywordListLineEdit->setText( layer->keywordList() );
+    //layer attribution and metadataUrl
+    mLayerAttributionLineEdit->setText( layer->attribution() );
+    mLayerAttributionUrlLineEdit->setText( layer->attributionUrl() );
+    mLayerMetadataUrlLineEdit->setText( layer->metadataUrl() );
+    mLayerMetadataUrlTypeComboBox->setCurrentIndex( 
+        mLayerMetadataUrlTypeComboBox->findText(
+          layer->metadataUrlType()
+        )
+    );
+    mLayerMetadataUrlFormatComboBox->setCurrentIndex( 
+        mLayerMetadataUrlFormatComboBox->findText(
+          layer->metadataUrlFormat()
+        )
+    );
   }
 
   setWindowTitle( tr( "Layer Properties - %1" ).arg( layer->name() ) );
@@ -465,6 +480,13 @@ void QgsVectorLayerProperties::apply()
   //layer title and abstract
   layer->setTitle( mLayerTitleLineEdit->text() );
   layer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
+  layer->setKeywordList( mLayerKeywordListLineEdit->text() );
+  //layer attribution and metadataUrl
+  layer->setAttribution( mLayerAttributionLineEdit->text() );
+  layer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
+  layer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
+  layer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
+  layer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
 
   // update symbology
   emit refreshLegend( layer->id(), QgsLegendItem::DontChange );
