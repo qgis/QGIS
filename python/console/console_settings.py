@@ -149,7 +149,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.fontComboBoxEditor.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytextEditor",
                                                                     "Monospace")))
         self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True, type=bool))
-        itemTable = settings.value("pythonConsole/userAPI")
+        itemTable = settings.value("pythonConsole/userAPI", [])
         for i in range(len(itemTable)):
             self.tableWidget.insertRow(i)
             self.tableWidget.setColumnCount(2)

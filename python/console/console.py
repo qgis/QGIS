@@ -636,7 +636,7 @@ class PythonConsoleWidget(QWidget):
         except (IOError, OSError), error:
             errTr = QCoreApplication.translate("PythonConsole", "Save Error")
             msgText = QCoreApplication.translate('PythonConsole',
-                                                 'The file <b>{}</b> could not be saved. Error: {}'.format(unicode(tabWidget.path), 
+                                                 'The file <b>{}</b> could not be saved. Error: {}'.format(unicode(tabWidget.path),
                                                                                                            error.strerror))
             self.callWidgetMessageBarEditor(msgText, 2, False)
 
@@ -663,7 +663,7 @@ class PythonConsoleWidget(QWidget):
             except (IOError, OSError), error:
                 errTr = QCoreApplication.translate("PythonConsole", "Save Error")
                 msgText = QCoreApplication.translate('PythonConsole',
-                                                     'The file <b>{}</b> could not be saved. Error: {}'.format(unicode(tabWidget.path), 
+                                                     'The file <b>{}</b> could not be saved. Error: {}'.format(unicode(tabWidget.path),
                                                                                                             error.strerror))
                 self.callWidgetMessageBarEditor(msgText, 2, False)
                 if fileNone:
@@ -713,7 +713,7 @@ class PythonConsoleWidget(QWidget):
     def restoreSettingsConsole(self):
         storedTabScripts = self.settings.value("pythonConsole/tabScripts")
         self.tabListScript = storedTabScripts
-        self.splitter.restoreState(self.settings.value("pythonConsole/splitterConsole"))
+        self.splitter.restoreState(self.settings.value("pythonConsole/splitterConsole", QByteArray()))
         self.splitterEditor.restoreState(self.settings.value("pythonConsole/splitterEditor"))
         self.splitterObj.restoreState(self.settings.value("pythonConsole/splitterObj"))
 
