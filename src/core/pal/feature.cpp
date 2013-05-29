@@ -1103,7 +1103,10 @@ namespace pal
         j++;
       }
 
-      dx = dy = min( yrm, xrm ) / 2;
+      //dx = dy = min( yrm, xrm ) / 2;
+      dx = xrm / 2.0;
+      dy = yrm / 2.0;
+
 
       int num_try = 0;
       int max_try = 10;
