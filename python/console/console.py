@@ -243,7 +243,7 @@ class PythonConsoleWidget(QWidget):
         self.objectListButton = QAction(self)
         self.objectListButton.setCheckable(True)
         self.objectListButton.setEnabled(self.settings.value("pythonConsole/enableObjectInsp",
-                                                             False).toBool())
+                                                             False, type=bool))
         self.objectListButton.setIcon(QgsApplication.getThemeIcon("console/iconClassBrowserConsole.png"))
         self.objectListButton.setMenuRole(QAction.PreferencesRole)
         self.objectListButton.setIconVisibleInMenu(True)
@@ -548,7 +548,7 @@ class PythonConsoleWidget(QWidget):
         self.tabEditorWidget.currentWidget().newEditor.findText(False)
 
     def _textFindChanged(self):
-        if not self.lineEditFind.text().isEmpty():
+        if not self.lineEditFind.text():
             self.findNextButton.setEnabled(True)
             self.findPrevButton.setEnabled(True)
         else:
@@ -610,11 +610,11 @@ class PythonConsoleWidget(QWidget):
         self.tabEditorWidget.currentWidget().newEditor.commentEditorCode(False)
 
     def openScriptFile(self):
-        lastDirPath = self.settings.value("pythonConsole/lastDirPath").toString()
+        lastDirPath = self.settings.value("pythonConsole/lastDirPath")
         openFileTr = QCoreApplication.translate("PythonConsole", "Open File")
         fileList = QFileDialog.getOpenFileNames(
                         self, openFileTr, lastDirPath, "Script file (*.py)")
-        if not fileList.isEmpty():
+        if not fileList:
             for pyFile in fileList:
                 for i in range(self.tabEditorWidget.count()):
                     tabWidget = self.tabEditorWidget.widget(i)
@@ -636,8 +636,8 @@ class PythonConsoleWidget(QWidget):
         except (IOError, OSError), error:
             errTr = QCoreApplication.translate("PythonConsole", "Save Error")
             msgText = QCoreApplication.translate('PythonConsole',
-                                                 'The file <b>%1</b> could not be saved. Error: %2') \
-                                                 .arg(unicode(tabWidget.path)).arg(error.strerror)
+                                                 'The file <b>{}</b> could not be saved. Error: {}'.format(unicode(tabWidget.path), 
+                                                                                                           error.strerror))
             self.callWidgetMessageBarEditor(msgText, 2, False)
 
     def saveAsScriptFile(self, index=None):
@@ -657,14 +657,14 @@ class PythonConsoleWidget(QWidget):
         filename = QFileDialog.getSaveFileName(self,
                         saveAsFileTr,
                         pathFileName, "Script file (*.py)")
-        if not filename.isEmpty():
+        if not filename:
             try:
                 tabWidget.save(filename)
             except (IOError, OSError), error:
                 errTr = QCoreApplication.translate("PythonConsole", "Save Error")
                 msgText = QCoreApplication.translate('PythonConsole',
-                                                     'The file <b>%1</b> could not be saved. Error: %2') \
-                                                     .arg(unicode(tabWidget.path)).arg(error.strerror)
+                                                     'The file <b>{}</b> could not be saved. Error: {}'.format(unicode(tabWidget.path), 
+                                                                                                            error.strerror))
                 self.callWidgetMessageBarEditor(msgText, 2, False)
                 if fileNone:
                     tabWidget.path = None
@@ -712,10 +712,10 @@ class PythonConsoleWidget(QWidget):
 
     def restoreSettingsConsole(self):
         storedTabScripts = self.settings.value("pythonConsole/tabScripts")
-        self.tabListScript = storedTabScripts.toList()
-        self.splitter.restoreState(self.settings.value("pythonConsole/splitterConsole").toByteArray())
-        self.splitterEditor.restoreState(self.settings.value("pythonConsole/splitterEditor").toByteArray())
-        self.splitterObj.restoreState(self.settings.value("pythonConsole/splitterObj").toByteArray())
+        self.tabListScript = storedTabScripts
+        self.splitter.restoreState(self.settings.value("pythonConsole/splitterConsole"))
+        self.splitterEditor.restoreState(self.settings.value("pythonConsole/splitterEditor"))
+        self.splitterObj.restoreState(self.settings.value("pythonConsole/splitterObj"))
 
 if __name__ == '__main__':
     a = QApplication(sys.argv)

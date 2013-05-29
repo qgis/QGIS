@@ -61,7 +61,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
     def loadAPIFile(self):
         settings = QSettings()
-        lastDirPath = settings.value("pythonConsole/lastDirAPIPath").toString()
+        lastDirPath = settings.value("pythonConsole/lastDirAPIPath")
         fileAPI = QFileDialog.getOpenFileName(
                         self, "Open API File", lastDirPath, "API file (*.api)")
         if fileAPI:
@@ -142,14 +142,14 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
     def restoreSettings(self):
         settings = QSettings()
-        self.spinBox.setValue(settings.value("pythonConsole/fontsize", 10).toInt()[0])
-        self.spinBoxEditor.setValue(settings.value("pythonConsole/fontsizeEditor", 10).toInt()[0])
+        self.spinBox.setValue(settings.value("pythonConsole/fontsize", 10))
+        self.spinBoxEditor.setValue(settings.value("pythonConsole/fontsizeEditor", 10))
         self.fontComboBox.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytext",
-                                                              "Monospace").toString()))
+                                                              "Monospace")))
         self.fontComboBoxEditor.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytextEditor",
-                                                                    "Monospace").toString()))
-        self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True).toBool())
-        itemTable = settings.value("pythonConsole/userAPI").toStringList()
+                                                                    "Monospace")))
+        self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True, type=bool))
+        itemTable = settings.value("pythonConsole/userAPI")
         for i in range(len(itemTable)):
             self.tableWidget.insertRow(i)
             self.tableWidget.setColumnCount(2)
@@ -157,14 +157,14 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             apiName = pathSplit[-1][0:-4]
             self.tableWidget.setItem(i, 0, QTableWidgetItem(apiName))
             self.tableWidget.setItem(i, 1, QTableWidgetItem(itemTable[i]))
-        self.autoSaveScript.setChecked(settings.value("pythonConsole/autoSaveScript", False).toBool())
+        self.autoSaveScript.setChecked(settings.value("pythonConsole/autoSaveScript", False, type=bool))
 
-        self.autoCompThreshold.setValue(settings.value("pythonConsole/autoCompThreshold", 2).toInt()[0])
-        self.autoCompThresholdEditor.setValue(settings.value("pythonConsole/autoCompThresholdEditor", 2).toInt()[0])
+        self.autoCompThreshold.setValue(settings.value("pythonConsole/autoCompThreshold", 2))
+        self.autoCompThresholdEditor.setValue(settings.value("pythonConsole/autoCompThresholdEditor", 2))
 
-        self.enableObjectInspector.setChecked(settings.value("pythonConsole/enableObjectInsp", False).toBool())
-        self.autoCloseBracketEditor.setChecked(settings.value("pythonConsole/autoCloseBracketEditor", True).toBool())
-        self.autoCloseBracket.setChecked(settings.value("pythonConsole/autoCloseBracket", True).toBool())
+        self.enableObjectInspector.setChecked(settings.value("pythonConsole/enableObjectInsp", False, type=bool))
+        self.autoCloseBracketEditor.setChecked(settings.value("pythonConsole/autoCloseBracketEditor", True, type=bool))
+        self.autoCloseBracket.setChecked(settings.value("pythonConsole/autoCloseBracket", True, type=bool))
 
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
             self.autoCompFromDoc.setChecked(True)
