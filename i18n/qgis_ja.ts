@@ -17199,37 +17199,37 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="113"/>
         <source>Edit...</source>
-        <translation type="unfinished">編集...</translation>
+        <translation>編集...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="114"/>
         <source>Paste</source>
-        <translation type="unfinished">貼り付け</translation>
+        <translation>貼り付け</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="115"/>
         <source>Copy</source>
-        <translation type="unfinished">コピー</translation>
+        <translation>コピー</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="116"/>
         <source>Clear</source>
-        <translation type="unfinished">クリア</translation>
+        <translation>クリア</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="129"/>
         <source>int</source>
-        <translation type="unfinished"></translation>
+        <translation>int</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="139"/>
         <source>Field type: </source>
-        <translation type="unfinished"></translation>
+        <translation>フィールドタイプ:</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="213"/>
         <source>Data defined override</source>
-        <translation type="unfinished"></translation>
+        <translation>定義された上書きデータ</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="236"/>
@@ -17240,37 +17240,37 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="251"/>
         <source>Attribute field</source>
-        <translation type="unfinished">属性フィールド</translation>
+        <translation>属性フィールド</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="276"/>
         <source>No matching field types found</source>
-        <translation type="unfinished"></translation>
+        <translation>フィールドタイプがマッチしません</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="283"/>
         <source>Expression</source>
-        <translation type="unfinished">式</translation>
+        <translation>式</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="296"/>
         <source>Current: </source>
-        <translation type="unfinished"></translation>
+        <translation>カレント:</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="438"/>
         <source>Parse error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>構文解析エラー:%1</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="466"/>
         <source>&lt;b&gt;&lt;u&gt;Data defined override&lt;/u&gt;&lt;/b&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;&lt;u&gt;定義された上書きデータ&lt;/u&gt;&lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="472"/>
         <source>&lt;b&gt;Usage:&lt;/b&gt;&lt;br&gt;%1&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;用法:&lt;/b&gt;&lt;br&gt;%1&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="498"/>
@@ -26368,7 +26368,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="940"/>
         <source>In edit mode, layer&apos;s relevant labeling map tool is:&lt;br&gt;&amp;nbsp;&amp;nbsp;Defined attribute field -&amp;gt; &lt;i&gt;enabled&lt;/i&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;Defined expression -&amp;gt; &lt;i&gt;disabled&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>編集モードではレイヤに関連したラべリングマップツールの状態は:&lt;br&gt;&amp;nbsp;&amp;nbsp;属性フィールドで定義 -&amp;gt; &lt;i&gt;有効&lt;/i&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;式による定義 -&amp;gt; &lt;i&gt;無効&lt;/i&gt;です</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="975"/>
@@ -43184,51 +43184,51 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="33"/>
         <source>Select vector layers to add...</source>
-        <translation type="unfinished">追加するベクタレイヤの選択...</translation>
+        <translation>追加するベクタレイヤの選択...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="34"/>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="40"/>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="45"/>
         <source>Layer ID</source>
-        <translation type="unfinished">レイヤID</translation>
+        <translation>レイヤID</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="34"/>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="40"/>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="45"/>
         <source>Layer name</source>
-        <translation type="unfinished">レイヤ名</translation>
+        <translation>レイヤ名</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="35"/>
         <source>Nb of features</source>
-        <translation type="unfinished">地物の数</translation>
+        <translation>地物の数</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="35"/>
         <source>Geometry type</source>
-        <translation type="unfinished">ジオメトリタイプ</translation>
+        <translation>ジオメトリタイプ</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="39"/>
         <source>Select raster layers to add...</source>
-        <translation type="unfinished">追加するラスタレイヤの選択...</translation>
+        <translation>追加するラスタレイヤの選択...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="44"/>
         <source>Select layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation>追加するレイヤの選択...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="46"/>
         <source>Type</source>
-        <translation type="unfinished">タイプ</translation>
+        <translation>タイプ</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="50"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>全てを選択</translation>
     </message>
 </context>
 <context>
@@ -43236,12 +43236,12 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgssublayersdialogbase.ui" line="14"/>
         <source>Select layers to load</source>
-        <translation type="unfinished">ロードするレイヤを選択して下さい</translation>
+        <translation>ロードするレイヤを選択して下さい</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssublayersdialogbase.ui" line="33"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
 </context>
 <context>
