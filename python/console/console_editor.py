@@ -385,7 +385,7 @@ class Editor(QsciScintilla):
         cs = self.parent.pc.caseSensitive.isChecked()
         wo = self.parent.pc.wholeWord.isChecked()
         notFound = False
-        if not text:
+        if text:
             if not forward:
                 line = lineFrom
                 index = indexFrom
@@ -462,7 +462,7 @@ class Editor(QsciScintilla):
                 if commentCheck:
                     self.insertAt('#', line, 0)
                 else:
-                    if not self.text(line).trimmed().startsWith('#'):
+                    if not self.text(line).strip().startswith('#'):
                         continue
                     self.setSelection(line, self.indentation(line),
                                       line, self.indentation(line) + 1)
@@ -472,7 +472,7 @@ class Editor(QsciScintilla):
             if commentCheck:
                 self.insertAt('#', line, 0)
             else:
-                if not self.text(line).trimmed().startsWith('#'):
+                if not self.text(line).strip().startswith('#'):
                     return
                 self.setSelection(line, self.indentation(line),
                                   line, self.indentation(line) + 1)
@@ -908,7 +908,7 @@ class EditorTabWidget(QTabWidget):
 
     def _currentWidgetChanged(self, tab):
         if self.settings.value("pythonConsole/enableObjectInsp",
-                               False):
+                               False, type=bool):
             self.listObject(tab)
         self.changeLastDirPath(tab)
         self.enableSaveIfModified(tab)
@@ -1091,11 +1091,11 @@ class EditorTabWidget(QTabWidget):
         self.fileTabMenu.clear()
         for index in range(self.count()):
             action = self.fileTabMenu.addAction(self.tabIcon(index), self.tabText(index))
-            action.setData(QVariant(index))
+            action.setData(index)
 
     def showFileTabMenuTriggered(self, action):
-        index, ok = action.data().toInt()
-        if ok:
+        index = action.data()
+        if index is not None:
             self.setCurrentIndex(index)
 
     def listObject(self, tab):
@@ -1186,7 +1186,7 @@ class EditorTabWidget(QTabWidget):
             self.widget(i).newEditor.settingsEditor()
 
         objInspectorEnabled = self.settings.value("pythonConsole/enableObjectInsp",
-                                                  False)
+                                                  False, type=bool)
         listObj = self.parent.objectListButton
         if self.parent.listClassMethod.isVisible():
             listObj.setChecked(objInspectorEnabled)

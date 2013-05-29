@@ -98,13 +98,13 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
     def saveSettings(self):
         settings = QSettings()
-        settings.setValue("pythonConsole/preloadAPI", QVariant(self.preloadAPI.isChecked()))
-        settings.setValue("pythonConsole/autoSaveScript", QVariant(self.autoSaveScript.isChecked()))
+        settings.setValue("pythonConsole/preloadAPI", self.preloadAPI.isChecked())
+        settings.setValue("pythonConsole/autoSaveScript", self.autoSaveScript.isChecked())
 
         fontFamilyText = self.fontComboBox.currentText()
-        settings.setValue("pythonConsole/fontfamilytext", QVariant(fontFamilyText))
+        settings.setValue("pythonConsole/fontfamilytext", fontFamilyText)
         fontFamilyTextEditor = self.fontComboBoxEditor.currentText()
-        settings.setValue("pythonConsole/fontfamilytextEditor", QVariant(fontFamilyTextEditor))
+        settings.setValue("pythonConsole/fontfamilytextEditor", fontFamilyTextEditor)
 
         fontSize = self.spinBox.value()
         fontSizeEditor = self.spinBoxEditor.value()
@@ -112,33 +112,33 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         for i in range(0, self.tableWidget.rowCount()):
             text = self.tableWidget.item(i, 1).text()
             self.listPath.append(text)
-        settings.setValue("pythonConsole/fontsize", QVariant(fontSize))
-        settings.setValue("pythonConsole/fontsizeEditor", QVariant(fontSizeEditor))
-        settings.setValue("pythonConsole/userAPI", QVariant(self.listPath))
+        settings.setValue("pythonConsole/fontsize", fontSize)
+        settings.setValue("pythonConsole/fontsizeEditor", fontSizeEditor)
+        settings.setValue("pythonConsole/userAPI", self.listPath)
 
-        settings.setValue("pythonConsole/autoCompThreshold", QVariant(self.autoCompThreshold.value()))
-        settings.setValue("pythonConsole/autoCompThresholdEditor", QVariant(self.autoCompThresholdEditor.value()))
+        settings.setValue("pythonConsole/autoCompThreshold", self.autoCompThreshold.value())
+        settings.setValue("pythonConsole/autoCompThresholdEditor", self.autoCompThresholdEditor.value())
 
-        settings.setValue("pythonConsole/autoCompleteEnabledEditor", QVariant(self.groupBoxAutoCompletionEditor.isChecked()))
-        settings.setValue("pythonConsole/autoCompleteEnabled", QVariant(self.groupBoxAutoCompletion.isChecked()))
+        settings.setValue("pythonConsole/autoCompleteEnabledEditor", self.groupBoxAutoCompletionEditor.isChecked())
+        settings.setValue("pythonConsole/autoCompleteEnabled", self.groupBoxAutoCompletion.isChecked())
 
         if self.autoCompFromAPIEditor.isChecked():
-            settings.setValue("pythonConsole/autoCompleteSourceEditor", QVariant('fromAPI'))
+            settings.setValue("pythonConsole/autoCompleteSourceEditor", 'fromAPI')
         elif self.autoCompFromDocEditor.isChecked():
-            settings.setValue("pythonConsole/autoCompleteSourceEditor", QVariant('fromDoc'))
+            settings.setValue("pythonConsole/autoCompleteSourceEditor", 'fromDoc')
         elif self.autoCompFromDocAPIEditor.isChecked():
-            settings.setValue("pythonConsole/autoCompleteSourceEditor", QVariant('fromDocAPI'))
+            settings.setValue("pythonConsole/autoCompleteSourceEditor", 'fromDocAPI')
 
         if self.autoCompFromAPI.isChecked():
-            settings.setValue("pythonConsole/autoCompleteSource", QVariant('fromAPI'))
+            settings.setValue("pythonConsole/autoCompleteSource", 'fromAPI')
         elif self.autoCompFromDoc.isChecked():
-            settings.setValue("pythonConsole/autoCompleteSource", QVariant('fromDoc'))
+            settings.setValue("pythonConsole/autoCompleteSource", 'fromDoc')
         elif self.autoCompFromDocAPI.isChecked():
-            settings.setValue("pythonConsole/autoCompleteSource", QVariant('fromDocAPI'))
+            settings.setValue("pythonConsole/autoCompleteSource", 'fromDocAPI')
 
-        settings.setValue("pythonConsole/enableObjectInsp", QVariant(self.enableObjectInspector.isChecked()))
-        settings.setValue("pythonConsole/autoCloseBracket", QVariant(self.autoCloseBracket.isChecked()))
-        settings.setValue("pythonConsole/autoCloseBracketEditor", QVariant(self.autoCloseBracketEditor.isChecked()))
+        settings.setValue("pythonConsole/enableObjectInsp", self.enableObjectInspector.isChecked())
+        settings.setValue("pythonConsole/autoCloseBracket", self.autoCloseBracket.isChecked())
+        settings.setValue("pythonConsole/autoCloseBracketEditor", self.autoCloseBracketEditor.isChecked())
 
     def restoreSettings(self):
         settings = QSettings()
