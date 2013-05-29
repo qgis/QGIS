@@ -216,111 +216,22 @@ namespace pal
 
   PolygonCostCalculator::PolygonCostCalculator( LabelPosition *lp ) : lp( lp )
   {
-    int i;
-    double hyp = max( lp->feature->xmax - lp->feature->xmin, lp->feature->ymax - lp->feature->ymin );
-    hyp *= 10;
-
     px = ( lp->x[0] + lp->x[2] ) / 2.0;
     py = ( lp->y[0] + lp->y[2] ) / 2.0;
 
-    /*
-               3  2  1
-                \ | /
-              4 --x -- 0
-                / | \
-               5  6  7
-    */
-
-    double alpha = lp->getAlpha();
-    for ( i = 0; i < 8; i++, alpha += M_PI_4 )
-    {
-      dist[i] = DBL_MAX;
-      ok[i] = false;
-      rpx[i] = px + cos( alpha ) * hyp;
-      rpy[i] = py + sin( alpha ) * hyp;
-    }
+    dist = DBL_MAX;
+    ok = false;
   }
 
   void PolygonCostCalculator::update( PointSet *pset )
   {
-    if ( pset->type == GEOS_POINT )
+    double rx, ry;
+    pset->getDist( px, py, &rx, &ry );
+    double d = dist_euc2d_sq( px, py, rx, ry );
+    if ( d < dist )
     {
-      updatePoint( pset );
+      dist = d;
     }
-    else
-    {
-      double rx, ry;
-      if ( pset->getDist( px, py, &rx, &ry ) < updateLinePoly( pset ) )
-      {
-        PointSet *point = new PointSet( ry, ry );
-        update( point );
-        delete point;
-      }
-    }
-  }
-
-  void PolygonCostCalculator::updatePoint( PointSet *pset )
-  {
-    double beta = atan2( pset->y[0] - py, pset->x[0] - px ) - lp->getAlpha();
-
-    while ( beta < 0.0 )
-    {
-      beta += 2 * M_PI;
-    }
-
-    int i = ( int ) floor( beta / M_PI_4 ) % 8;
-
-    for ( int j = 0; j < 2; j++, i = ( i + 1 ) % 8 )
-    {
-      double rx, ry;
-      rx = px - rpy[i] + py;
-      ry = py + rpx[i] - px;
-      double ix, iy; // the point that we look for
-      if ( computeLineIntersection( px, py, rpx[i], rpy[i], pset->x[0], pset->y[0], rx, ry, &ix, &iy ) )
-      {
-        double d = dist_euc2d_sq( px, py, ix, iy );
-        if ( d < dist[i] )
-        {
-          dist[i] = d;
-          ok[i] = true;
-        }
-      }
-      else
-      {
-        std::cout << "this shouldn't occur!!!" << std::endl;
-      }
-    }
-  }
-
-  double PolygonCostCalculator::updateLinePoly( PointSet *pset )
-  {
-    int i, j, k;
-    int nbP = ( pset->type == GEOS_POLYGON ? pset->nbPoints : pset->nbPoints - 1 );
-    double min_dist = DBL_MAX;
-
-    for ( i = 0; i < nbP; i++ )
-    {
-      j = ( i + 1 ) % pset->nbPoints;
-
-      for ( k = 0; k < 8; k++ )
-      {
-        double ix, iy;
-        if ( computeSegIntersection( px, py, rpx[k], rpy[k], pset->x[i], pset->y[i], pset->x[j], pset->y[j], &ix, &iy ) )
-        {
-          double d = dist_euc2d_sq( px, py, ix, iy );
-          if ( d < dist[k] )
-          {
-            dist[k] = d;
-            ok[k] = true;
-          }
-          if ( d < min_dist )
-          {
-            min_dist = d;
-          }
-        }
-      }
-    }
-    return min_dist;
   }
 
   LabelPosition* PolygonCostCalculator::getLabel()
@@ -330,37 +241,6 @@ namespace pal
 
   double PolygonCostCalculator::getCost()
   {
-    int i;
-
-    for ( i = 0; i < 8; i++ )
-    {
-#if 0
-      if ( i == 0 || i == 4 ) // horizontal directions
-        dist[i] -= lp->w / 2;
-      else if ( i == 2 || i == 6 ) // vertical directions
-        dist[i] -= lp->h / 2;
-      else // other directions
-        dist[i] -= ( lp->w / 2 ) / cos( M_PI_4 );
-#endif
-
-      if ( !ok[i] || dist[i] < EPSILON )
-      {
-        dist[i] = EPSILON;
-      }
-    }
-
-    double a, b, c, d;
-
-    a = min( dist[0], dist[4] );
-    b = min( dist[1], dist[5] );
-    c = min( dist[2], dist[6] );
-    d = min( dist[3], dist[7] );
-
-#if 0
-    if ( a != EPSILON || b != EPSILON || c != EPSILON || d != EPSILON )
-      std::cout << "res " << ( a*b*c*d ) << "       " << a << " " << b << " " << c << " " << d << std::endl;
-#endif
-    return ( a*b*c*d );
+    return ( 4 * dist );
   }
-
 }

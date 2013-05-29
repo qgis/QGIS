@@ -47,13 +47,9 @@ namespace pal
   {
       LabelPosition *lp;
       double px, py;
-      double dist[8];
-      double rpx[8];
-      double rpy[8];
-      bool ok[8];
+      double dist;
+      bool ok;
 
-      void updatePoint( PointSet *pset );
-      double updateLinePoly( PointSet *pset );
     public:
       PolygonCostCalculator( LabelPosition *lp );
 
