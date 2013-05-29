@@ -1137,9 +1137,9 @@ void QgisApp::showPythonDialog()
   if ( !mPythonUtils || !mPythonUtils->isEnabled() )
     return;
 
-  bool res = mPythonUtils->runStringUnsafe(
+  bool res = mPythonUtils->runString(
                "import console\n"
-               "console.show_console()\n", false );
+               "console.show_console()\n", tr( "Failed to open Python console:" ), false );
 
   if ( !res )
   {
