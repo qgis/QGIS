@@ -114,7 +114,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def settingsShell(self):
         # Set Python lexer
         self.setLexers()
-        threshold = self.settings.value("pythonConsole/autoCompThreshold", 2)
+        threshold = self.settings.value("pythonConsole/autoCompThreshold", 2, type=int)
         self.setAutoCompletionThreshold(threshold)
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')
         autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True)
@@ -169,7 +169,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.lexer = QsciLexerPython()
 
         loadFont = self.settings.value("pythonConsole/fontfamilytext", "Monospace")
-        fontSize = self.settings.value("pythonConsole/fontsize", 10)
+        fontSize = self.settings.value("pythonConsole/fontsize", 10, type=int)
 
         font = QFont(loadFont)
         font.setFixedPitch(True)
@@ -299,7 +299,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
     def clearHistory(self, clearSession=False):
         if clearSession:
-            self.history = QStringList()
+            self.history = []
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'Session and file history cleared successfully.')
             self.parent.callWidgetMessageBar(msgText)
@@ -320,7 +320,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.clearHistory(True)
 
     def showPrevious(self):
-        if self.historyIndex < len(self.history) and not self.history:
+        if self.historyIndex < len(self.history) and self.history:
             line, pos = self.getCursorPosition()
             selCmdLenght = len(self.text(line))
             self.setSelection(line, 4, line, selCmdLenght)
@@ -335,7 +335,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             #self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def showNext(self):
-        if  self.historyIndex > 0 and not self.history:
+        if self.historyIndex > 0 and self.history:
             line, pos = self.getCursorPosition()
             selCmdLenght = len(self.text(line))
             self.setSelection(line, 4, line, selCmdLenght)

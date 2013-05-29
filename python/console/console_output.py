@@ -144,7 +144,7 @@ class ShellOutputScintilla(QsciScintilla):
         self.lexer = QsciLexerPython()
 
         loadFont = self.settings.value("pythonConsole/fontfamilytext", "Monospace")
-        fontSize = self.settings.value("pythonConsole/fontsize", 10)
+        fontSize = self.settings.value("pythonConsole/fontsize", 10, type=int)
         font = QFont(loadFont)
         font.setFixedPitch(True)
         font.setPointSize(fontSize)
