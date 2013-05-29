@@ -8758,7 +8758,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     QgsVectorLayerProperties *vlp = NULL; // See note above about reusing this
     if ( vlp )
     {
-      vlp->reset();
+      vlp->syncToLayer();
     }
     else
     {

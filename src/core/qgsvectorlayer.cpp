@@ -3914,16 +3914,13 @@ QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFla
         if ( !qml.isEmpty() )
         {
           theResultFlag = this->applyNamedStyle( qml, errorMsg );
+          return QObject::tr( "Loaded from Provider" );
         }
       }
     }
+  }
 
-  }
-  if ( !theResultFlag )
-  {
-    return QgsMapLayer::loadNamedStyle( theURI, theResultFlag );
-  }
-  return QObject::tr( "Loaded from Provider" );
+  return QgsMapLayer::loadNamedStyle( theURI, theResultFlag );
 }
 
 bool QgsVectorLayer::applyNamedStyle( QString namedStyle, QString errorMsg )

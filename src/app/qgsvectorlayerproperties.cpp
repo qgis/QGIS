@@ -171,7 +171,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( mFieldsPropertiesDialog, SIGNAL( toggleEditing() ), this, SLOT( toggleEditing() ) );
   connect( this, SIGNAL( toggleEditing( QgsMapLayer* ) ), QgisApp::instance(), SLOT( toggleEditing( QgsMapLayer* ) ) );
 
-  reset();
+  syncToLayer();
 
   if ( layer->dataProvider() )//enable spatial index button group if supported by provider
   {
@@ -337,7 +337,7 @@ void QgsVectorLayerProperties::setDisplayField( QString name )
 }
 
 //! @note in raster props, this method is called sync()
-void QgsVectorLayerProperties::reset( void )
+void QgsVectorLayerProperties::syncToLayer( void )
 {
   // populate the general information
   mLayerOrigNameLineEdit->setText( layer->originalName() );
@@ -393,6 +393,7 @@ void QgsVectorLayerProperties::reset( void )
   layer->label()->setFields( layer->pendingFields() );
 
   actionDialog->init();
+  labelingDialog->init();
 
   if ( layer->hasGeometryType() )
   {
@@ -605,7 +606,7 @@ void QgsVectorLayerProperties::on_pbnLoadDefaultStyle_clicked()
         }
         else
         {
-          reset();
+          syncToLayer();
         }
 
         return;
@@ -621,7 +622,7 @@ void QgsVectorLayerProperties::on_pbnLoadDefaultStyle_clicked()
   if ( defaultLoadedFlag )
   {
     // all worked ok so no need to inform user
-    reset();
+    syncToLayer();
   }
   else
   {
@@ -696,7 +697,7 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
   //reset if the default style was loaded ok only
   if ( defaultLoadedFlag )
   {
-    reset();
+    syncToLayer();
   }
   else
   {
@@ -813,7 +814,7 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
     //reset if the default style was loaded ok only
     if ( defaultLoadedFlag )
     {
-      reset();
+      syncToLayer();
     }
     else
     {
@@ -875,7 +876,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
     }
     if ( layer->applyNamedStyle( qmlStyle, errorMsg ) )
     {
-      reset();
+      syncToLayer();
     }
     else
     {

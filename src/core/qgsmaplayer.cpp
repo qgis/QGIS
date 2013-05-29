@@ -942,7 +942,7 @@ QString QgsMapLayer::saveDefaultStyle( bool & theResultFlag )
   return saveNamedStyle( styleURI(), theResultFlag );
 }
 
-QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag )
+QString QgsMapLayer:: saveNamedStyle( const QString theURI, bool & theResultFlag )
 {
   QString myErrorMessage;
   QDomDocument myDocument;

@@ -40,6 +40,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void writeSettingsToLayer();
 
   public slots:
+    void init();
     void collapseSample( bool collapse );
     void apply();
     void changeTextColor( const QColor &color );
