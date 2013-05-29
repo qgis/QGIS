@@ -714,8 +714,8 @@ class PythonConsoleWidget(QWidget):
         storedTabScripts = self.settings.value("pythonConsole/tabScripts")
         self.tabListScript = storedTabScripts
         self.splitter.restoreState(self.settings.value("pythonConsole/splitterConsole", QByteArray()))
-        self.splitterEditor.restoreState(self.settings.value("pythonConsole/splitterEditor"))
-        self.splitterObj.restoreState(self.settings.value("pythonConsole/splitterObj"))
+        self.splitterEditor.restoreState(self.settings.value("pythonConsole/splitterEditor", QByteArray()))
+        self.splitterObj.restoreState(self.settings.value("pythonConsole/splitterObj", QByteArray()))
 
 if __name__ == '__main__':
     a = QApplication(sys.argv)
