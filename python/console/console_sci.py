@@ -194,7 +194,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         else:
             apiPath = self.settings.value("pythonConsole/userAPI")
             for i in range(0, len(apiPath)):
-                self.api.load(QString(unicode(apiPath[i])))
+                self.api.load(unicode(apiPath[i]))
             self.api.prepare()
             self.lexer.setAPIs(self.api)
 
