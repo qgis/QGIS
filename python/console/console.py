@@ -548,7 +548,7 @@ class PythonConsoleWidget(QWidget):
         self.tabEditorWidget.currentWidget().newEditor.findText(False)
 
     def _textFindChanged(self):
-        if not self.lineEditFind.text():
+        if self.lineEditFind.text():
             self.findNextButton.setEnabled(True)
             self.findPrevButton.setEnabled(True)
         else:
@@ -614,7 +614,7 @@ class PythonConsoleWidget(QWidget):
         openFileTr = QCoreApplication.translate("PythonConsole", "Open File")
         fileList = QFileDialog.getOpenFileNames(
                         self, openFileTr, lastDirPath, "Script file (*.py)")
-        if not fileList:
+        if fileList:
             for pyFile in fileList:
                 for i in range(self.tabEditorWidget.count()):
                     tabWidget = self.tabEditorWidget.widget(i)
@@ -626,7 +626,7 @@ class PythonConsoleWidget(QWidget):
                     self.tabEditorWidget.newTabEditor(tabName, pyFile)
 
                     lastDirPath = QFileInfo(pyFile).path()
-                    self.settings.setValue("pythonConsole/lastDirPath", QVariant(pyFile))
+                    self.settings.setValue("pythonConsole/lastDirPath", pyFile)
                     self.updateTabListScript(pyFile, action='append')
 
     def saveScriptFile(self):
@@ -657,7 +657,7 @@ class PythonConsoleWidget(QWidget):
         filename = QFileDialog.getSaveFileName(self,
                         saveAsFileTr,
                         pathFileName, "Script file (*.py)")
-        if not filename:
+        if filename:
             try:
                 tabWidget.save(filename)
             except (IOError, OSError), error:
@@ -701,7 +701,7 @@ class PythonConsoleWidget(QWidget):
         else:
             self.tabListScript = []
         self.settings.setValue("pythonConsole/tabScripts",
-                               QVariant(self.tabListScript))
+                               self.tabListScript)
 
     def saveSettingsConsole(self):
         self.settings.setValue("pythonConsole/splitterConsole", self.splitter.saveState())

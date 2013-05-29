@@ -183,7 +183,7 @@ class Editor(QsciScintilla):
     def settingsEditor(self):
         # Set Python lexer
         self.setLexers()
-        threshold = self.settings.value("pythonConsole/autoCompThresholdEditor", 2)
+        threshold = self.settings.value("pythonConsole/autoCompThresholdEditor", 2, type=int)
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI')
         autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor", True)
         self.setAutoCompletionThreshold(threshold)
@@ -217,7 +217,7 @@ class Editor(QsciScintilla):
         self.lexer.setFoldQuotes(True)
 
         loadFont = self.settings.value("pythonConsole/fontfamilytextEditor", "Monospace")
-        fontSize = self.settings.value("pythonConsole/fontsizeEditor", 10)
+        fontSize = self.settings.value("pythonConsole/fontsizeEditor", 10, type=int)
 
         font = QFont(loadFont)
         font.setFixedPitch(True)
@@ -1201,7 +1201,7 @@ class EditorTabWidget(QTabWidget):
     def changeLastDirPath(self, tab):
         tabWidget = self.widget(tab)
         if tabWidget:
-            self.settings.setValue("pythonConsole/lastDirPath", QVariant(tabWidget.path))
+            self.settings.setValue("pythonConsole/lastDirPath", tabWidget.path)
 
     def widgetMessageBar(self, iface, text, level, timed=True):
         messageLevel = [QgsMessageBar.INFO, QgsMessageBar.WARNING, QgsMessageBar.CRITICAL]

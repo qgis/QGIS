@@ -142,8 +142,8 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
     def restoreSettings(self):
         settings = QSettings()
-        self.spinBox.setValue(settings.value("pythonConsole/fontsize", 10))
-        self.spinBoxEditor.setValue(settings.value("pythonConsole/fontsizeEditor", 10))
+        self.spinBox.setValue(settings.value("pythonConsole/fontsize", 10, type=int))
+        self.spinBoxEditor.setValue(settings.value("pythonConsole/fontsizeEditor", 10, type=int))
         self.fontComboBox.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytext",
                                                               "Monospace")))
         self.fontComboBoxEditor.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytextEditor",
@@ -159,8 +159,8 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             self.tableWidget.setItem(i, 1, QTableWidgetItem(itemTable[i]))
         self.autoSaveScript.setChecked(settings.value("pythonConsole/autoSaveScript", False, type=bool))
 
-        self.autoCompThreshold.setValue(settings.value("pythonConsole/autoCompThreshold", 2))
-        self.autoCompThresholdEditor.setValue(settings.value("pythonConsole/autoCompThresholdEditor", 2))
+        self.autoCompThreshold.setValue(settings.value("pythonConsole/autoCompThreshold", 2, type=int))
+        self.autoCompThresholdEditor.setValue(settings.value("pythonConsole/autoCompThresholdEditor", 2, type=int))
 
         self.enableObjectInspector.setChecked(settings.value("pythonConsole/enableObjectInsp", False, type=bool))
         self.autoCloseBracketEditor.setChecked(settings.value("pythonConsole/autoCloseBracketEditor", True, type=bool))
