@@ -2609,6 +2609,8 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
     return false;
   }
 
+  emit beforeRollBack();
+
   mEditBuffer->rollBack();
 
   if ( isModified() )

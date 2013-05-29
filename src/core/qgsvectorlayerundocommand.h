@@ -24,6 +24,7 @@
 
 #include "qgsfield.h"
 #include "qgsfeature.h"
+#include "qgslogger.h"
 
 class QgsGeometry;
 class QgsGeometryCache;
@@ -35,9 +36,15 @@ class QgsGeometryCache;
 class QgsVectorLayerUndoCommand : public QUndoCommand
 {
   public:
-    QgsVectorLayerUndoCommand( QgsVectorLayerEditBuffer* buffer ) : mBuffer( buffer ) {}
-    inline QgsVectorLayer* layer() { return mBuffer->L; }
-    inline QgsGeometryCache* cache() { return mBuffer->L->cache(); }
+    QgsVectorLayerUndoCommand( QgsVectorLayerEditBuffer *buffer )
+        : QUndoCommand()
+        , mBuffer( buffer )
+    {}
+    inline QgsVectorLayer *layer() { return mBuffer->L; }
+    inline QgsGeometryCache *cache() { return mBuffer->L->cache(); }
+
+    virtual int id() const { return -1; }
+    virtual bool mergeWith( QUndoCommand * ) { return -1; }
 
   protected:
     QgsVectorLayerEditBuffer* mBuffer;
@@ -79,11 +86,13 @@ class QgsVectorLayerUndoCommandChangeGeometry : public QgsVectorLayerUndoCommand
 
     virtual void undo();
     virtual void redo();
+    virtual int id() const;
+    virtual bool mergeWith( const QUndoCommand * );
 
   private:
     QgsFeatureId mFid;
     QgsGeometry* mOldGeom;
-    QgsGeometry* mNewGeom;
+    mutable QgsGeometry* mNewGeom;
 };
 
 
