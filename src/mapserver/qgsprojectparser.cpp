@@ -572,51 +572,6 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
         layerElem.appendChild( keywordListElem );
       }
 
-      QString attribution = currentLayer->attribution();
-      if ( !attribution.isEmpty() )
-      {
-        QDomElement attribElem = doc.createElement( "Attribution" );
-        QDomElement attribTitleElem = doc.createElement( "Title" );
-        QDomText attribText = doc.createTextNode( attribution );
-        attribTitleElem.appendChild( attribText );
-        attribElem.appendChild( attribTitleElem );
-        QString attributionUrl = currentLayer->attributionUrl();
-        if ( !attributionUrl.isEmpty() )
-        {
-          QDomElement attribORElem = doc.createElement( "OnlineResource" );
-          attribORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
-          attribORElem.setAttribute( "xlink:type", "simple" );
-          attribORElem.setAttribute( "xlink:href", attributionUrl );
-          attribElem.appendChild( attribORElem );
-        }
-        layerElem.appendChild( attribElem );
-      }
-
-      QString metadataUrl = currentLayer->metadataUrl();
-      if ( !metadataUrl.isEmpty() )
-      {
-        QDomElement metaUrlElem = doc.createElement( "MetadataUrl" );
-        QString metadataUrlType = currentLayer->metadataUrlType();
-        if ( !metadataUrlType.isEmpty() )
-        {
-          metaUrlElem.setAttribute( "type", metadataUrlType );
-        }
-        QString metadataUrlFormat = currentLayer->metadataUrlFormat();
-        if ( !metadataUrlFormat.isEmpty() )
-        {
-          QDomElement metaUrlFormatElem = doc.createElement( "Format" );
-          QDomText metaUrlFormatText = doc.createTextNode( metadataUrlFormat );
-          metaUrlFormatElem.appendChild( metaUrlFormatText );
-          metaUrlElem.appendChild( metaUrlFormatElem );
-        }
-        QDomElement metaUrlORElem = doc.createElement( "OnlineResource" );
-        metaUrlORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
-        metaUrlORElem.setAttribute( "xlink:type", "simple" );
-        metaUrlORElem.setAttribute( "xlink:href", metadataUrl );
-        metaUrlElem.appendChild( metaUrlORElem );
-        layerElem.appendChild( metaUrlElem );
-      }
-
       //CRS
       QStringList crsList = createCRSListForLayer( currentLayer );
       appendCRSElementsToLayer( layerElem, doc, crsList );
@@ -660,6 +615,86 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
           maxScaleElem.appendChild( maxScaleText );
           layerElem.appendChild( maxScaleElem );
         }
+      }
+
+      // layer attribution
+      QString attribution = currentLayer->attribution();
+      if ( !attribution.isEmpty() )
+      {
+        QDomElement attribElem = doc.createElement( "Attribution" );
+        QDomElement attribTitleElem = doc.createElement( "Title" );
+        QDomText attribText = doc.createTextNode( attribution );
+        attribTitleElem.appendChild( attribText );
+        attribElem.appendChild( attribTitleElem );
+        QString attributionUrl = currentLayer->attributionUrl();
+        if ( !attributionUrl.isEmpty() )
+        {
+          QDomElement attribORElem = doc.createElement( "OnlineResource" );
+          attribORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+          attribORElem.setAttribute( "xlink:type", "simple" );
+          attribORElem.setAttribute( "xlink:href", attributionUrl );
+          attribElem.appendChild( attribORElem );
+        }
+        layerElem.appendChild( attribElem );
+      }
+
+      // layer metadata URL
+      QString metadataUrl = currentLayer->metadataUrl();
+      if ( !metadataUrl.isEmpty() )
+      {
+        QDomElement metaUrlElem = doc.createElement( "MetadataUrl" );
+        QString metadataUrlType = currentLayer->metadataUrlType();
+        if ( !metadataUrlType.isEmpty() )
+        {
+          metaUrlElem.setAttribute( "type", metadataUrlType );
+        }
+        QString metadataUrlFormat = currentLayer->metadataUrlFormat();
+        if ( !metadataUrlFormat.isEmpty() )
+        {
+          QDomElement metaUrlFormatElem = doc.createElement( "Format" );
+          QDomText metaUrlFormatText = doc.createTextNode( metadataUrlFormat );
+          metaUrlFormatElem.appendChild( metaUrlFormatText );
+          metaUrlElem.appendChild( metaUrlFormatElem );
+        }
+        QDomElement metaUrlORElem = doc.createElement( "OnlineResource" );
+        metaUrlORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+        metaUrlORElem.setAttribute( "xlink:type", "simple" );
+        metaUrlORElem.setAttribute( "xlink:href", metadataUrl );
+        metaUrlElem.appendChild( metaUrlORElem );
+        layerElem.appendChild( metaUrlElem );
+      }
+
+      // if the layer is published in WFS
+      // add a FeatureListURL element
+      // with an URL to the GML
+      QStringList wfsLayersId = wfsLayers();
+      if ( wfsLayersId.contains( currentLayer->id() ) )
+      {
+        QDomElement featListUrlElem = doc.createElement( "FeatureListURL" );
+
+        QDomElement featListUrlFormatElem = doc.createElement( "Format" );
+        QDomText featListUrlFormatText = doc.createTextNode( "text/xml" );
+        featListUrlFormatElem.appendChild( featListUrlFormatText );
+        featListUrlElem.appendChild( featListUrlFormatElem );
+
+        QDomNodeList getCapNodeList = doc.elementsByTagName( "GetCapabilities" );
+        if ( getCapNodeList.count() > 0 )
+        {
+          QDomElement getCapElem = getCapNodeList.at( 0 ).toElement();
+          QDomNodeList getCapORNodeList = getCapElem.elementsByTagName( "OnlineResource" );
+          if ( getCapORNodeList.count() > 0 )
+          {
+            QString getCapUrl = getCapORNodeList.at( 0 ).toElement().attribute( "xlink:href", "" );
+            QString featListUrl = getCapUrl + "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + currentLayer->name() + "&OUPUTFORMAT=GML2";
+            QDomElement featListUrlORElem = doc.createElement( "OnlineResource" );
+            featListUrlORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+            featListUrlORElem.setAttribute( "xlink:type", "simple" );
+            featListUrlORElem.setAttribute( "xlink:href", featListUrl );
+            featListUrlElem.appendChild( featListUrlORElem );
+          }
+        }
+
+        layerElem.appendChild( featListUrlElem );
       }
 
       if ( fullProjectSettings )
