@@ -50,14 +50,14 @@ class Dialog(QDialog, Ui_Dialog):
         self.setWindowTitle(self.tr("Define current projection"))
         self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
         QObject.connect(self.btnProjection, SIGNAL("clicked()"), self.outProjFile)
-        QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.updateProj1)
-        QObject.connect(self.cmbLayer, SIGNAL("currentIndexChanged(QString)"), self.updateProj2)
+        #QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.updateProj1)
+        #QObject.connect(self.cmbLayer, SIGNAL("currentIndexChanged(QString)"), self.updateProj2)
         # populate layer list
         self.progressBar.setValue(0)
         mapCanvas = self.iface.mapCanvas()
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
-        self.inShape.addItems(layers)
-        self.cmbLayer.addItems(layers)
+        #self.inShape.addItems(layers)
+        #self.cmbLayer.addItems(layers)
 
         self.crs = None
 
@@ -147,8 +147,8 @@ class Dialog(QDialog, Ui_Dialog):
         self.buttonOk.setEnabled( True )
 
     def outProjFile(self):
-        format = QString( "<h2>%1</h2>%2 <br/> %3" )
-        header = QString( "Define layer CRS:" )
+        format = "<h2>%1</h2>%2 <br/> %3"
+        header = "Define layer CRS:"
         sentence1 = self.tr( "Please select the projection system that defines the current layer." )
         sentence2 = self.tr( "Layer CRS information will be updated to the selected CRS." )
         projSelector = QgsGenericProjectionSelector(self)
