@@ -3401,9 +3401,11 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
         QgsDataSourceURI dsUri( provider->dataSourceUri() );
         uri = "PG:" + dsUri.connectionInfo();
 
-        if ( dsUri.schema() != "" )
+        // Starting with GDAL 1.7.0, it is possible to restrict the schemas
+        // layer names are then listed without schema if only one schema is specified
+        if ( !dsUri.schema().isEmpty() )
         {
-          ogrLayer = dsUri.schema() + ".";
+          uri += " schemas=" + dsUri.schema();
         }
 
         ogrLayer += dsUri.table();
