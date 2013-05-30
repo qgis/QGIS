@@ -82,6 +82,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void on_mDirectSymbRightToolBtn_clicked();
 
   protected:
+    void blockInitSignals( bool block );
     void blockFontChangeSignals( bool blk );
     void setPreviewBackground( QColor color );
     void updateFontViaStyle( const QString & fontstyle );
@@ -106,6 +107,10 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     QButtonGroup* mDirectSymbBtnGrp;
     QButtonGroup* mUpsidedownBtnGrp;
 
+    QButtonGroup* mPlacePointBtnGrp;
+    QButtonGroup* mPlaceLineBtnGrp;
+    QButtonGroup* mPlacePolygonBtnGrp;
+
     // background reference font
     QFont mRefFont;
     int mPreviewSize;
@@ -114,8 +119,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
 
     bool mLoadSvgParams;
 
-    void disableDataDefinedAlignment();
-    void enableDataDefinedAlignment();
+    void enableDataDefinedAlignment( bool enable );
 
   private slots:
     void optionsStackedWidget_CurrentChanged( int indx );

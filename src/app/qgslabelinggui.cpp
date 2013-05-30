@@ -142,7 +142,6 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnBelow, ( int )QgsPalLayerSettings::SymbolBelow );
   mDirectSymbBtnGrp->setExclusive( true );
 
-
   // upside-down labels button group
   mUpsidedownBtnGrp = new QButtonGroup( this );
   mUpsidedownBtnGrp->addButton( mUpsidedownRadioOff, ( int )QgsPalLayerSettings::Upright );
@@ -152,34 +151,40 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
 
   //mShapeCollisionsChkBx->setVisible( false ); // until implemented
 
-  updatePlacementWidgets();
-
   // post updatePlacementWidgets() connections
   connect( chkLineAbove, SIGNAL( toggled( bool ) ), this, SLOT( updatePlacementWidgets() ) );
   connect( chkLineBelow, SIGNAL( toggled( bool ) ), this, SLOT( updatePlacementWidgets() ) );
 
-  // setup connection to changes in the placement
-  QRadioButton* placementRadios[] =
-  {
-    radAroundPoint, radOverPoint, // point
-    radLineParallel, radLineCurved, radLineHorizontal, // line
-    radAroundCentroid, radPolygonHorizontal, radPolygonFree, radPolygonPerimeter // polygon
-  };
-  for ( unsigned int i = 0; i < sizeof( placementRadios ) / sizeof( QRadioButton* ); i++ )
-  {
-    connect( placementRadios[i], SIGNAL( toggled( bool ) ), this, SLOT( updatePlacementWidgets() ) );
-  }
+  // setup point placement button group (assigned enum id currently unused)
+  mPlacePointBtnGrp = new QButtonGroup( this );
+  mPlacePointBtnGrp->addButton( radAroundPoint, ( int )QgsPalLayerSettings::AroundPoint );
+  mPlacePointBtnGrp->addButton( radOverPoint, ( int )QgsPalLayerSettings::OverPoint );
+  mPlacePointBtnGrp->setExclusive( true );
+  connect( mPlacePointBtnGrp, SIGNAL( buttonClicked( int ) ), this, SLOT( updatePlacementWidgets() ) );
+
+  // setup line placement button group (assigned enum id currently unused)
+  mPlaceLineBtnGrp = new QButtonGroup( this );
+  mPlaceLineBtnGrp->addButton( radLineParallel, ( int )QgsPalLayerSettings::Line );
+  mPlaceLineBtnGrp->addButton( radLineCurved, ( int )QgsPalLayerSettings::Curved );
+  mPlaceLineBtnGrp->addButton( radLineHorizontal, ( int )QgsPalLayerSettings::Horizontal );
+  mPlaceLineBtnGrp->setExclusive( true );
+  connect( mPlaceLineBtnGrp, SIGNAL( buttonClicked( int ) ), this, SLOT( updatePlacementWidgets() ) );
+
+  // setup polygon placement button group (assigned enum id currently unused)
+  mPlacePolygonBtnGrp = new QButtonGroup( this );
+  mPlacePolygonBtnGrp->addButton( radOverCentroid, ( int )QgsPalLayerSettings::OverPoint );
+  mPlacePolygonBtnGrp->addButton( radAroundCentroid, ( int )QgsPalLayerSettings::AroundPoint );
+  mPlacePolygonBtnGrp->addButton( radPolygonHorizontal, ( int )QgsPalLayerSettings::Horizontal );
+  mPlacePolygonBtnGrp->addButton( radPolygonFree, ( int )QgsPalLayerSettings::Free );
+  mPlacePolygonBtnGrp->addButton( radPolygonPerimeter, ( int )QgsPalLayerSettings::Line );
+  mPlacePolygonBtnGrp->setExclusive( true );
+  connect( mPlacePolygonBtnGrp, SIGNAL( buttonClicked( int ) ), this, SLOT( updatePlacementWidgets() ) );
 
   // TODO: is this necessary? maybe just use the data defined-only rotation?
   mPointAngleDDBtn->setVisible( false );
 
-  // set up data defined toolbuttons
-  // disable H,V data defined alignment until X,Y are active
-  disableDataDefinedAlignment();
-
+  // load layer's current QgsPalLayerSettings
   init();
-
-  updateUi(); // should come after data defined button setup
 
   // Global settings group for groupboxes' saved/retored collapsed state
   // maintains state across different dialogs
@@ -222,202 +227,209 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
 
 void QgsLabelingGui::init()
 {
-    // load labeling settings from layer
-    QgsPalLayerSettings lyr;
-    lyr.readFromLayer( mLayer );
+  // load labeling settings from layer
+  QgsPalLayerSettings lyr;
+  lyr.readFromLayer( mLayer );
 
-    // enable/disable main options based upon whether layer is being labeled
-    chkEnableLabeling->setChecked( lyr.enabled );
-    cboFieldName->setEnabled( chkEnableLabeling->isChecked() );
-    btnExpression->setEnabled( chkEnableLabeling->isChecked() );
-    mLabelingFrame->setEnabled( chkEnableLabeling->isChecked() );
+  blockInitSignals( true );
 
-    // add the current expression to the bottom of the list
-    if ( lyr.isExpression && !lyr.fieldName.isEmpty() )
-      cboFieldName->addItem( lyr.fieldName );
+  // enable/disable main options based upon whether layer is being labeled
+  chkEnableLabeling->setChecked( lyr.enabled );
+  cboFieldName->setEnabled( chkEnableLabeling->isChecked() );
+  btnExpression->setEnabled( chkEnableLabeling->isChecked() );
+  mLabelingFrame->setEnabled( chkEnableLabeling->isChecked() );
 
-    cboFieldName->setCurrentIndex( cboFieldName->findText( lyr.fieldName ) );
+  // add the current expression to the bottom of the list
+  if ( lyr.isExpression && !lyr.fieldName.isEmpty() )
+    cboFieldName->addItem( lyr.fieldName );
 
-    // populate placement options
-    int distUnitIndex = lyr.distInMapUnits ? 1 : 0;
+  cboFieldName->setCurrentIndex( cboFieldName->findText( lyr.fieldName ) );
 
-    mCentroidRadioWhole->setChecked( lyr.centroidWhole );
-    switch ( lyr.placement )
-    {
-      case QgsPalLayerSettings::AroundPoint:
-        radAroundPoint->setChecked( true );
-        radAroundCentroid->setChecked( true );
+  // populate placement options
+  int distUnitIndex = lyr.distInMapUnits ? 1 : 0;
 
-        mLineDistanceSpnBx->setValue( lyr.dist );
-        mLineDistanceUnitComboBox->setCurrentIndex( distUnitIndex );
-        //spinAngle->setValue( lyr.angle ); // TODO: uncomment when supported
-        break;
-      case QgsPalLayerSettings::OverPoint:
-        radOverPoint->setChecked( true );
-        radOverCentroid->setChecked( true );
+  mCentroidRadioWhole->setChecked( lyr.centroidWhole );
+  switch ( lyr.placement )
+  {
+    case QgsPalLayerSettings::AroundPoint:
+      radAroundPoint->setChecked( true );
+      radAroundCentroid->setChecked( true );
 
-        mQuadrantBtnGrp->button(( int )lyr.quadOffset )->setChecked( true );
-        mPointOffsetXSpinBox->setValue( lyr.xOffset );
-        mPointOffsetYSpinBox->setValue( lyr.yOffset );
-        mPointOffsetUnitsComboBox->setCurrentIndex( lyr.labelOffsetInMapUnits ? 1 : 0 );
-        mPointAngleSpinBox->setValue( lyr.angleOffset );
-        break;
-      case QgsPalLayerSettings::Line:
-        radLineParallel->setChecked( true );
-        radPolygonPerimeter->setChecked( true );
-        break;
-      case QgsPalLayerSettings::Curved:
-        radLineCurved->setChecked( true );
-        break;
-      case QgsPalLayerSettings::Horizontal:
-        radPolygonHorizontal->setChecked( true );
-        radLineHorizontal->setChecked( true );
-        break;
-      case QgsPalLayerSettings::Free:
-        radPolygonFree->setChecked( true );
-        break;
-      default:
-        Q_ASSERT( 0 && "NOOO!" );
-    }
-
-    if ( lyr.placement == QgsPalLayerSettings::Line || lyr.placement == QgsPalLayerSettings::Curved )
-    {
       mLineDistanceSpnBx->setValue( lyr.dist );
       mLineDistanceUnitComboBox->setCurrentIndex( distUnitIndex );
-      chkLineAbove->setChecked( lyr.placementFlags & QgsPalLayerSettings::AboveLine );
-      chkLineBelow->setChecked( lyr.placementFlags & QgsPalLayerSettings::BelowLine );
-      chkLineOn->setChecked( lyr.placementFlags & QgsPalLayerSettings::OnLine );
-      if ( !( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) )
-        chkLineOrientationDependent->setChecked( true );
-    }
+      //spinAngle->setValue( lyr.angle ); // TODO: uncomment when supported
+      break;
+    case QgsPalLayerSettings::OverPoint:
+      radOverPoint->setChecked( true );
+      radOverCentroid->setChecked( true );
 
-    mPrioritySlider->setValue( lyr.priority );
-    chkNoObstacle->setChecked( lyr.obstacle );
-    chkLabelPerFeaturePart->setChecked( lyr.labelPerPart );
-    mPalShowAllLabelsForLayerChkBx->setChecked( lyr.displayAll );
-    chkMergeLines->setChecked( lyr.mergeLines );
-    mMinSizeSpinBox->setValue( lyr.minFeatureSize );
-    mLimitLabelChkBox->setChecked( lyr.limitNumLabels );
-    mLimitLabelSpinBox->setValue( lyr.maxNumLabels );
+      mQuadrantBtnGrp->button(( int )lyr.quadOffset )->setChecked( true );
+      mPointOffsetXSpinBox->setValue( lyr.xOffset );
+      mPointOffsetYSpinBox->setValue( lyr.yOffset );
+      mPointOffsetUnitsComboBox->setCurrentIndex( lyr.labelOffsetInMapUnits ? 1 : 0 );
+      mPointAngleSpinBox->setValue( lyr.angleOffset );
+      break;
+    case QgsPalLayerSettings::Line:
+      radLineParallel->setChecked( true );
+      radPolygonPerimeter->setChecked( true );
+      break;
+    case QgsPalLayerSettings::Curved:
+      radLineCurved->setChecked( true );
+      break;
+    case QgsPalLayerSettings::Horizontal:
+      radPolygonHorizontal->setChecked( true );
+      radLineHorizontal->setChecked( true );
+      break;
+    case QgsPalLayerSettings::Free:
+      radPolygonFree->setChecked( true );
+      break;
+    default:
+      Q_ASSERT( 0 && "NOOO!" );
+  }
 
-    // direction symbol(s)
-    mDirectSymbChkBx->setChecked( lyr.addDirectionSymbol );
-    mDirectSymbLeftLineEdit->setText( lyr.leftDirectionSymbol );
-    mDirectSymbRightLineEdit->setText( lyr.rightDirectionSymbol );
-    mDirectSymbRevChkBx->setChecked( lyr.reverseDirectionSymbol );
+  if ( lyr.placement == QgsPalLayerSettings::Line || lyr.placement == QgsPalLayerSettings::Curved )
+  {
+    mLineDistanceSpnBx->setValue( lyr.dist );
+    mLineDistanceUnitComboBox->setCurrentIndex( distUnitIndex );
+    chkLineAbove->setChecked( lyr.placementFlags & QgsPalLayerSettings::AboveLine );
+    chkLineBelow->setChecked( lyr.placementFlags & QgsPalLayerSettings::BelowLine );
+    chkLineOn->setChecked( lyr.placementFlags & QgsPalLayerSettings::OnLine );
+    if ( !( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) )
+      chkLineOrientationDependent->setChecked( true );
+  }
 
-    mDirectSymbBtnGrp->button(( int )lyr.placeDirectionSymbol )->setChecked( true );
-    mUpsidedownBtnGrp->button(( int )lyr.upsidedownLabels )->setChecked( true );
+  mPrioritySlider->setValue( lyr.priority );
+  chkNoObstacle->setChecked( lyr.obstacle );
+  chkLabelPerFeaturePart->setChecked( lyr.labelPerPart );
+  mPalShowAllLabelsForLayerChkBx->setChecked( lyr.displayAll );
+  chkMergeLines->setChecked( lyr.mergeLines );
+  mMinSizeSpinBox->setValue( lyr.minFeatureSize );
+  mLimitLabelChkBox->setChecked( lyr.limitNumLabels );
+  mLimitLabelSpinBox->setValue( lyr.maxNumLabels );
 
-    // curved label max character angles
-    mMaxCharAngleInDSpinBox->setValue( lyr.maxCurvedCharAngleIn );
-    // lyr.maxCurvedCharAngleOut must be negative, but it is shown as positive spinbox in GUI
-    mMaxCharAngleOutDSpinBox->setValue( qAbs( lyr.maxCurvedCharAngleOut ) );
+  // direction symbol(s)
+  mDirectSymbChkBx->setChecked( lyr.addDirectionSymbol );
+  mDirectSymbLeftLineEdit->setText( lyr.leftDirectionSymbol );
+  mDirectSymbRightLineEdit->setText( lyr.rightDirectionSymbol );
+  mDirectSymbRevChkBx->setChecked( lyr.reverseDirectionSymbol );
 
-    wrapCharacterEdit->setText( lyr.wrapChar );
-    mFontLineHeightSpinBox->setValue( lyr.multilineHeight );
-    mFontMultiLineAlignComboBox->setCurrentIndex(( unsigned int ) lyr.multilineAlign );
-    chkPreserveRotation->setChecked( lyr.preserveRotation );
+  mDirectSymbBtnGrp->button(( int )lyr.placeDirectionSymbol )->setChecked( true );
+  mUpsidedownBtnGrp->button(( int )lyr.upsidedownLabels )->setChecked( true );
 
-    mPreviewBackgroundBtn->setColor( lyr.previewBkgrdColor );
-    setPreviewBackground( lyr.previewBkgrdColor );
+  // curved label max character angles
+  mMaxCharAngleInDSpinBox->setValue( lyr.maxCurvedCharAngleIn );
+  // lyr.maxCurvedCharAngleOut must be negative, but it is shown as positive spinbox in GUI
+  mMaxCharAngleOutDSpinBox->setValue( qAbs( lyr.maxCurvedCharAngleOut ) );
 
-    mScaleBasedVisibilityChkBx->setChecked( lyr.scaleVisibility );
-    mScaleBasedVisibilityMinSpnBx->setValue( lyr.scaleMin );
-    mScaleBasedVisibilityMaxSpnBx->setValue( lyr.scaleMax );
+  wrapCharacterEdit->setText( lyr.wrapChar );
+  mFontLineHeightSpinBox->setValue( lyr.multilineHeight );
+  mFontMultiLineAlignComboBox->setCurrentIndex(( unsigned int ) lyr.multilineAlign );
+  chkPreserveRotation->setChecked( lyr.preserveRotation );
 
-    // buffer
-    mBufferDrawChkBx->setChecked( lyr.bufferDraw );
-    spinBufferSize->setValue( lyr.bufferSize );
-    mBufferUnitComboBox->setCurrentIndex( lyr.bufferSizeInMapUnits ? 1 : 0 );
-    btnBufferColor->setColor( lyr.bufferColor );
-    mBufferTranspSpinBox->setValue( lyr.bufferTransp );
-    mBufferJoinStyleComboBox->setPenJoinStyle( lyr.bufferJoinStyle );
-    mBufferTranspFillChbx->setChecked( !lyr.bufferNoFill );
-    comboBufferBlendMode->setBlendMode( lyr.bufferBlendMode );
+  mPreviewBackgroundBtn->setColor( lyr.previewBkgrdColor );
+  setPreviewBackground( lyr.previewBkgrdColor );
 
-    mFormatNumChkBx->setChecked( lyr.formatNumbers );
-    mFormatNumDecimalsSpnBx->setValue( lyr.decimals );
-    mFormatNumPlusSignChkBx->setChecked( lyr.plusSign );
+  mScaleBasedVisibilityChkBx->setChecked( lyr.scaleVisibility );
+  mScaleBasedVisibilityMinSpnBx->setValue( lyr.scaleMin );
+  mScaleBasedVisibilityMaxSpnBx->setValue( lyr.scaleMax );
 
-    // set pixel size limiting checked state before unit choice so limiting can be
-    // turned on as a default for map units, if minimum trigger value of 0 is used
-    mFontLimitPixelChkBox->setChecked( lyr.fontLimitPixelSize );
-    mMinPixelLimit = lyr.fontMinPixelSize; // ignored after first settings save
-    mFontMinPixelSpinBox->setValue( lyr.fontMinPixelSize == 0 ? 3 : lyr.fontMinPixelSize );
-    mFontMaxPixelSpinBox->setValue( lyr.fontMaxPixelSize );
-    mFontSizeUnitComboBox->setCurrentIndex( lyr.fontSizeInMapUnits ? 1 : 0 );
+  // buffer
+  mBufferDrawChkBx->setChecked( lyr.bufferDraw );
+  spinBufferSize->setValue( lyr.bufferSize );
+  mBufferUnitComboBox->setCurrentIndex( lyr.bufferSizeInMapUnits ? 1 : 0 );
+  btnBufferColor->setColor( lyr.bufferColor );
+  mBufferTranspSpinBox->setValue( lyr.bufferTransp );
+  mBufferJoinStyleComboBox->setPenJoinStyle( lyr.bufferJoinStyle );
+  mBufferTranspFillChbx->setChecked( !lyr.bufferNoFill );
+  comboBufferBlendMode->setBlendMode( lyr.bufferBlendMode );
 
-    mRefFont = lyr.textFont;
-    mFontSizeSpinBox->setValue( lyr.textFont.pointSizeF() );
-    btnTextColor->setColor( lyr.textColor );
-    mFontTranspSpinBox->setValue( lyr.textTransp );
-    comboBlendMode->setBlendMode( lyr.blendMode );
+  mFormatNumChkBx->setChecked( lyr.formatNumbers );
+  mFormatNumDecimalsSpnBx->setValue( lyr.decimals );
+  mFormatNumPlusSignChkBx->setChecked( lyr.plusSign );
 
-    mFontWordSpacingSpinBox->setValue( lyr.textFont.wordSpacing() );
-    mFontLetterSpacingSpinBox->setValue( lyr.textFont.letterSpacing() );
+  // set pixel size limiting checked state before unit choice so limiting can be
+  // turned on as a default for map units, if minimum trigger value of 0 is used
+  mFontLimitPixelChkBox->setChecked( lyr.fontLimitPixelSize );
+  mMinPixelLimit = lyr.fontMinPixelSize; // ignored after first settings save
+  mFontMinPixelSpinBox->setValue( lyr.fontMinPixelSize == 0 ? 3 : lyr.fontMinPixelSize );
+  mFontMaxPixelSpinBox->setValue( lyr.fontMaxPixelSize );
+  mFontSizeUnitComboBox->setCurrentIndex( lyr.fontSizeInMapUnits ? 1 : 0 );
 
-    updateFontViaStyle( lyr.textNamedStyle );
-    updateFont( mRefFont );
+  mRefFont = lyr.textFont;
+  mFontSizeSpinBox->setValue( lyr.textFont.pointSizeF() );
+  btnTextColor->setColor( lyr.textColor );
+  mFontTranspSpinBox->setValue( lyr.textTransp );
+  comboBlendMode->setBlendMode( lyr.blendMode );
 
-    // shape background
-    mShapeDrawChkBx->setChecked( lyr.shapeDraw );
-    mShapeTypeCmbBx->blockSignals( true );
-    mShapeTypeCmbBx->setCurrentIndex( lyr.shapeType );
-    mShapeTypeCmbBx->blockSignals( false );
-    mShapeSVGPathLineEdit->setText( lyr.shapeSVGFile );
+  mFontWordSpacingSpinBox->setValue( lyr.textFont.wordSpacing() );
+  mFontLetterSpacingSpinBox->setValue( lyr.textFont.letterSpacing() );
 
-    mShapeSizeCmbBx->setCurrentIndex( lyr.shapeSizeType );
-    mShapeSizeXSpnBx->setValue( lyr.shapeSize.x() );
-    mShapeSizeYSpnBx->setValue( lyr.shapeSize.y() );
-    mShapeSizeUnitsCmbBx->setCurrentIndex( lyr.shapeSizeUnits - 1 );
-    mShapeRotationCmbBx->setCurrentIndex( lyr.shapeRotationType );
-    mShapeRotationDblSpnBx->setEnabled( lyr.shapeRotationType != QgsPalLayerSettings::RotationSync );
-    mShapeRotationDDBtn->setEnabled( lyr.shapeRotationType != QgsPalLayerSettings::RotationSync );
-    mShapeRotationDblSpnBx->setValue( lyr.shapeRotation );
-    mShapeOffsetXSpnBx->setValue( lyr.shapeOffset.x() );
-    mShapeOffsetYSpnBx->setValue( lyr.shapeOffset.y() );
-    mShapeOffsetUnitsCmbBx->setCurrentIndex( lyr.shapeOffsetUnits - 1 );
-    mShapeRadiusXDbSpnBx->setValue( lyr.shapeRadii.x() );
-    mShapeRadiusYDbSpnBx->setValue( lyr.shapeRadii.y() );
-    mShapeRadiusUnitsCmbBx->setCurrentIndex( lyr.shapeRadiiUnits - 1 );
+  updateFontViaStyle( lyr.textNamedStyle );
+  updateFont( mRefFont );
 
-    mShapeFillColorBtn->setColor( lyr.shapeFillColor );
-    mShapeBorderColorBtn->setColor( lyr.shapeBorderColor );
-    mShapeBorderWidthSpnBx->setValue( lyr.shapeBorderWidth );
-    mShapeBorderWidthUnitsCmbBx->setCurrentIndex( lyr.shapeBorderWidthUnits - 1 );
-    mShapePenStyleCmbBx->setPenJoinStyle( lyr.shapeJoinStyle );
+  // shape background
+  mShapeDrawChkBx->setChecked( lyr.shapeDraw );
+  mShapeTypeCmbBx->blockSignals( true );
+  mShapeTypeCmbBx->setCurrentIndex( lyr.shapeType );
+  mShapeTypeCmbBx->blockSignals( false );
+  mShapeSVGPathLineEdit->setText( lyr.shapeSVGFile );
 
-    mShapeTranspSpinBox->setValue( lyr.shapeTransparency );
-    mShapeBlendCmbBx->setBlendMode( lyr.shapeBlendMode );
+  mShapeSizeCmbBx->setCurrentIndex( lyr.shapeSizeType );
+  mShapeSizeXSpnBx->setValue( lyr.shapeSize.x() );
+  mShapeSizeYSpnBx->setValue( lyr.shapeSize.y() );
+  mShapeSizeUnitsCmbBx->setCurrentIndex( lyr.shapeSizeUnits - 1 );
+  mShapeRotationCmbBx->setCurrentIndex( lyr.shapeRotationType );
+  mShapeRotationDblSpnBx->setEnabled( lyr.shapeRotationType != QgsPalLayerSettings::RotationSync );
+  mShapeRotationDDBtn->setEnabled( lyr.shapeRotationType != QgsPalLayerSettings::RotationSync );
+  mShapeRotationDblSpnBx->setValue( lyr.shapeRotation );
+  mShapeOffsetXSpnBx->setValue( lyr.shapeOffset.x() );
+  mShapeOffsetYSpnBx->setValue( lyr.shapeOffset.y() );
+  mShapeOffsetUnitsCmbBx->setCurrentIndex( lyr.shapeOffsetUnits - 1 );
+  mShapeRadiusXDbSpnBx->setValue( lyr.shapeRadii.x() );
+  mShapeRadiusYDbSpnBx->setValue( lyr.shapeRadii.y() );
+  mShapeRadiusUnitsCmbBx->setCurrentIndex( lyr.shapeRadiiUnits - 1 );
 
-    mLoadSvgParams = false;
-    on_mShapeTypeCmbBx_currentIndexChanged( lyr.shapeType ); // force update of shape background gui
+  mShapeFillColorBtn->setColor( lyr.shapeFillColor );
+  mShapeBorderColorBtn->setColor( lyr.shapeBorderColor );
+  mShapeBorderWidthSpnBx->setValue( lyr.shapeBorderWidth );
+  mShapeBorderWidthUnitsCmbBx->setCurrentIndex( lyr.shapeBorderWidthUnits - 1 );
+  mShapePenStyleCmbBx->setPenJoinStyle( lyr.shapeJoinStyle );
 
-    // drop shadow
-    mShadowDrawChkBx->setChecked( lyr.shadowDraw );
-    mShadowUnderCmbBx->setCurrentIndex( lyr.shadowUnder );
-    mShadowOffsetAngleSpnBx->setValue( lyr.shadowOffsetAngle );
-    mShadowOffsetSpnBx->setValue( lyr.shadowOffsetDist );
-    mShadowOffsetUnitsCmbBx->setCurrentIndex( lyr.shadowOffsetUnits - 1 );
-    mShadowOffsetGlobalChkBx->setChecked( lyr.shadowOffsetGlobal );
+  mShapeTranspSpinBox->setValue( lyr.shapeTransparency );
+  mShapeBlendCmbBx->setBlendMode( lyr.shapeBlendMode );
 
-    mShadowRadiusDblSpnBx->setValue( lyr.shadowRadius );
-    mShadowRadiusUnitsCmbBx->setCurrentIndex( lyr.shadowRadiusUnits - 1 );
-    mShadowRadiusAlphaChkBx->setChecked( lyr.shadowRadiusAlphaOnly );
-    mShadowTranspSpnBx->setValue( lyr.shadowTransparency );
-    mShadowScaleSpnBx->setValue( lyr.shadowScale );
+  mLoadSvgParams = false;
+  on_mShapeTypeCmbBx_currentIndexChanged( lyr.shapeType ); // force update of shape background gui
 
-    mShadowColorBtn->setColor( lyr.shadowColor );
-    mShadowBlendCmbBx->setBlendMode( lyr.shadowBlendMode );
+  // drop shadow
+  mShadowDrawChkBx->setChecked( lyr.shadowDraw );
+  mShadowUnderCmbBx->setCurrentIndex( lyr.shadowUnder );
+  mShadowOffsetAngleSpnBx->setValue( lyr.shadowOffsetAngle );
+  mShadowOffsetSpnBx->setValue( lyr.shadowOffsetDist );
+  mShadowOffsetUnitsCmbBx->setCurrentIndex( lyr.shadowOffsetUnits - 1 );
+  mShadowOffsetGlobalChkBx->setChecked( lyr.shadowOffsetGlobal );
 
-    // do this after other widgets are configured, so they can be enabled/disabled
-    populateDataDefinedButtons( lyr );
+  mShadowRadiusDblSpnBx->setValue( lyr.shadowRadius );
+  mShadowRadiusUnitsCmbBx->setCurrentIndex( lyr.shadowRadiusUnits - 1 );
+  mShadowRadiusAlphaChkBx->setChecked( lyr.shadowRadiusAlphaOnly );
+  mShadowTranspSpnBx->setValue( lyr.shadowTransparency );
+  mShadowScaleSpnBx->setValue( lyr.shadowScale );
 
-    if ( mCoordXDDBtn->isActive() && mCoordYDDBtn->isActive() )
-    {
-      enableDataDefinedAlignment();
-    }
+  mShadowColorBtn->setColor( lyr.shadowColor );
+  mShadowBlendCmbBx->setBlendMode( lyr.shadowBlendMode );
+
+  updatePlacementWidgets();
+
+  // needs to come before data defined setup, so connections work
+  blockInitSignals( false );
+
+  // set up data defined toolbuttons
+  // do this after other widgets are configured, so they can be enabled/disabled
+  populateDataDefinedButtons( lyr );
+
+  enableDataDefinedAlignment( mCoordXDDBtn->isActive() && mCoordYDDBtn->isActive() );
+
+  updateUi(); // should come after data defined button setup
 }
 
 
@@ -429,13 +441,21 @@ QgsLabelingGui::~QgsLabelingGui()
   settings.setValue( QString( "/Windows/Labeling/Tab" ), mLabelingOptionsListWidget->currentRow() );
 }
 
+void QgsLabelingGui::blockInitSignals( bool block )
+{
+  chkLineAbove->blockSignals( block );
+  chkLineBelow->blockSignals( block );
+  mPlacePointBtnGrp->blockSignals( block );
+  mPlaceLineBtnGrp->blockSignals( block );
+  mPlacePolygonBtnGrp->blockSignals( block );
+}
+
 void QgsLabelingGui::optionsStackedWidget_CurrentChanged( int indx )
 {
   mLabelingOptionsListWidget->blockSignals( true );
   mLabelingOptionsListWidget->setCurrentRow( indx );
   mLabelingOptionsListWidget->blockSignals( false );
 }
-
 
 void QgsLabelingGui::collapseSample( bool collapse )
 {
@@ -1452,11 +1472,11 @@ void QgsLabelingGui::on_mCoordXDDBtn_dataDefinedActivated( bool active )
 {
   if ( !active ) //no data defined alignment without data defined position
   {
-    disableDataDefinedAlignment();
+    enableDataDefinedAlignment( false );
   }
   else if ( mCoordYDDBtn->isActive() )
   {
-    enableDataDefinedAlignment();
+    enableDataDefinedAlignment( true );
   }
 }
 
@@ -1464,11 +1484,11 @@ void QgsLabelingGui::on_mCoordYDDBtn_dataDefinedActivated( bool active )
 {
   if ( !active ) //no data defined alignment without data defined position
   {
-    disableDataDefinedAlignment();
+    enableDataDefinedAlignment( false );
   }
   else if ( mCoordXDDBtn->isActive() )
   {
-    enableDataDefinedAlignment();
+    enableDataDefinedAlignment( true );
   }
 }
 
@@ -1669,12 +1689,7 @@ void QgsLabelingGui::showBackgroundPenStyle( bool show )
   mShapePenStyleDDBtn->setVisible( show );
 }
 
-void QgsLabelingGui::disableDataDefinedAlignment()
+void QgsLabelingGui::enableDataDefinedAlignment( bool enable )
 {
-  mCoordAlignmentFrame->setEnabled( false );
-}
-
-void QgsLabelingGui::enableDataDefinedAlignment()
-{
-  mCoordAlignmentFrame->setEnabled( true );
+  mCoordAlignmentFrame->setEnabled( enable );
 }

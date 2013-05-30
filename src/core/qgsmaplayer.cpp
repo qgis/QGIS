@@ -364,7 +364,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   if ( !keywordListElem.isNull() )
   {
     QStringList kwdList;
-    for(QDomNode n = keywordListElem.firstChild(); !n.isNull(); n = n.nextSibling())
+    for ( QDomNode n = keywordListElem.firstChild(); !n.isNull(); n = n.nextSibling() )
     {
       kwdList << n.toElement().text();
     }
@@ -486,13 +486,13 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   layerElement.appendChild( layerName );
   layerElement.appendChild( layerTitle );
   layerElement.appendChild( layerAbstract );
-  
+
   // layer keyword list
   QStringList keywordStringList = keywordList().split( "," );
   if ( keywordStringList.size() > 0 )
   {
     QDomElement layerKeywordList = document.createElement( "keywordList" );
-    for (int i = 0; i < keywordStringList.size(); ++i)
+    for ( int i = 0; i < keywordStringList.size(); ++i )
     {
       QDomElement layerKeywordValue = document.createElement( "value" );
       QDomText layerKeywordText = document.createTextNode( keywordStringList.at( i ).trimmed() );
@@ -942,7 +942,7 @@ QString QgsMapLayer::saveDefaultStyle( bool & theResultFlag )
   return saveNamedStyle( styleURI(), theResultFlag );
 }
 
-QString QgsMapLayer:: saveNamedStyle( const QString theURI, bool & theResultFlag )
+QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag )
 {
   QString myErrorMessage;
   QDomDocument myDocument;
