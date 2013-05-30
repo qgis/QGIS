@@ -677,21 +677,38 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
         featListUrlFormatElem.appendChild( featListUrlFormatText );
         featListUrlElem.appendChild( featListUrlFormatElem );
 
-        QDomNodeList getCapNodeList = doc.elementsByTagName( "GetCapabilities" );
-        if ( getCapNodeList.count() > 0 )
+        QString hrefString = wfsServiceUrl();
+        if ( hrefString.isEmpty() )
         {
-          QDomElement getCapElem = getCapNodeList.at( 0 ).toElement();
-          QDomNodeList getCapORNodeList = getCapElem.elementsByTagName( "OnlineResource" );
-          if ( getCapORNodeList.count() > 0 )
+          hrefString = serviceUrl();
+        }
+        if ( hrefString.isEmpty() )
+        {
+          QDomNodeList getCapNodeList = doc.elementsByTagName( "GetCapabilities" );
+          if ( getCapNodeList.count() > 0 )
           {
-            QString getCapUrl = getCapORNodeList.at( 0 ).toElement().attribute( "xlink:href", "" );
-            QString featListUrl = getCapUrl + "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + currentLayer->name() + "&OUPUTFORMAT=GML2";
-            QDomElement featListUrlORElem = doc.createElement( "OnlineResource" );
-            featListUrlORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
-            featListUrlORElem.setAttribute( "xlink:type", "simple" );
-            featListUrlORElem.setAttribute( "xlink:href", featListUrl );
-            featListUrlElem.appendChild( featListUrlORElem );
+            QDomElement getCapElem = getCapNodeList.at( 0 ).toElement();
+            QDomNodeList getCapORNodeList = getCapElem.elementsByTagName( "OnlineResource" );
+            if ( getCapORNodeList.count() > 0 )
+            {
+              hrefString = getCapORNodeList.at( 0 ).toElement().attribute( "xlink:href", "" );
+            }
           }
+        }
+        if ( !hrefString.isEmpty() )
+        {
+          QUrl mapUrl( hrefString );
+          mapUrl.addQueryItem( "SERVICE", "WFS" );
+          mapUrl.addQueryItem( "VERSION", "1.0.0" );
+          mapUrl.addQueryItem( "REQUEST", "GetFeature" );
+          mapUrl.addQueryItem( "TYPENAME", currentLayer->name() );
+          mapUrl.addQueryItem( "OUTPUTFORMAT", "GML2" );
+          hrefString = mapUrl.toString();
+          QDomElement featListUrlORElem = doc.createElement( "OnlineResource" );
+          featListUrlORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+          featListUrlORElem.setAttribute( "xlink:type", "simple" );
+          featListUrlORElem.setAttribute( "xlink:href", hrefString );
+          featListUrlElem.appendChild( featListUrlORElem );
         }
 
         layerElem.appendChild( featListUrlElem );
@@ -2195,6 +2212,27 @@ QString QgsProjectParser::serviceUrl() const
     if ( !wmsUrlElem.isNull() )
     {
       url = wmsUrlElem.text();
+    }
+  }
+  return url;
+}
+
+QString QgsProjectParser::wfsServiceUrl() const
+{
+  QString url;
+
+  if ( !mXMLDoc )
+  {
+    return url;
+  }
+
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement wfsUrlElem = propertiesElem.firstChildElement( "WFSUrl" );
+    if ( !wfsUrlElem.isNull() )
+    {
+      url = wfsUrlElem.text();
     }
   }
   return url;

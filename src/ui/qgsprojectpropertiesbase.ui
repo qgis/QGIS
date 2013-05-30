@@ -1864,6 +1864,20 @@
                     </property>
                    </widget>
                   </item>
+                  <item row="3" column="0" colspan="2">
+                   <layout class="QHBoxLayout" name="horizontalLayout_3">
+                    <item>
+                     <widget class="QLabel" name="mWFSUrlLabel">
+                      <property name="text">
+                       <string>Advertised URL</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="mWFSUrlLineEdit"/>
+                    </item>
+                   </layout>
+                  </item>
                  </layout>
                 </widget>
                </item>

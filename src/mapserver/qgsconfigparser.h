@@ -125,6 +125,7 @@ class QgsConfigParser
 
     /**Returns service address (or empty string if not defined in the configuration*/
     virtual QString serviceUrl() const { return QString(); }
+    virtual QString wfsServiceUrl() const { return QString(); }
 
     QColor selectionColor() const { return mSelectionColor; }
     void setSelectionColor( const QColor& c ) { mSelectionColor = c; }

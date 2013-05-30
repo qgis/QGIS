@@ -117,65 +117,21 @@ QDomDocument QgsWFSServer::getCapabilities()
   getCapabilitiesElement.appendChild( dcpTypeElement );
   QDomElement httpElement = doc.createElement( "HTTP"/*wfs:HTTP*/ );
   dcpTypeElement.appendChild( httpElement );
-
+  
   //Prepare url
-  //Some client requests already have http://<SERVER_NAME> in the REQUEST_URI variable
-  QString hrefString;
-  QString requestUrl = getenv( "REQUEST_URI" );
-  QUrl mapUrl( requestUrl );
-  mapUrl.setHost( QString( getenv( "SERVER_NAME" ) ) );
-
-  //Add non-default ports to url
-  QString portString = getenv( "SERVER_PORT" );
-  if ( !portString.isEmpty() )
+  QString hrefString = mConfigParser->wfsServiceUrl();
+  if ( hrefString.isEmpty() )
   {
-    bool portOk;
-    int portNumber = portString.toInt( &portOk );
-    if ( portOk )
-    {
-      if ( portNumber != 80 )
-      {
-        mapUrl.setPort( portNumber );
-      }
-    }
+    hrefString = mConfigParser->serviceUrl();
   }
-
-  if ( QString( getenv( "HTTPS" ) ).compare( "on", Qt::CaseInsensitive ) == 0 )
+  if ( hrefString.isEmpty() )
   {
-    mapUrl.setScheme( "https" );
+    hrefString = serviceUrl();
   }
-  else
-  {
-    mapUrl.setScheme( "http" );
-  }
-
-  QList<QPair<QString, QString> > queryItems = mapUrl.queryItems();
-  QList<QPair<QString, QString> >::const_iterator queryIt = queryItems.constBegin();
-  for ( ; queryIt != queryItems.constEnd(); ++queryIt )
-  {
-    if ( queryIt->first.compare( "REQUEST", Qt::CaseInsensitive ) == 0 )
-    {
-      mapUrl.removeQueryItem( queryIt->first );
-    }
-    else if ( queryIt->first.compare( "VERSION", Qt::CaseInsensitive ) == 0 )
-    {
-      mapUrl.removeQueryItem( queryIt->first );
-    }
-    else if ( queryIt->first.compare( "SERVICE", Qt::CaseInsensitive ) == 0 )
-    {
-      mapUrl.removeQueryItem( queryIt->first );
-    }
-    else if ( queryIt->first.compare( "_DC", Qt::CaseInsensitive ) == 0 )
-    {
-      mapUrl.removeQueryItem( queryIt->first );
-    }
-  }
-  hrefString = mapUrl.toString();
 
   //only Get supported for the moment
   QDomElement getElement = doc.createElement( "Get"/*wfs:Get*/ );
   httpElement.appendChild( getElement );
-  requestUrl.truncate( requestUrl.indexOf( "?" ) + 1 );
   getElement.setAttribute( "onlineResource", hrefString );
   QDomElement getCapabilitiesDhcTypePostElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
   getCapabilitiesDhcTypePostElement.firstChild().firstChild().toElement().setTagName( "Post" );
@@ -1025,35 +981,18 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
   else
   {
     //Prepare url
-    //Some client requests already have http://<SERVER_NAME> in the REQUEST_URI variable
-    QString hrefString;
-    QString requestUrl = getenv( "REQUEST_URI" );
-    QUrl mapUrl( requestUrl );
-    mapUrl.setHost( QString( getenv( "SERVER_NAME" ) ) );
-
-    //Add non-default ports to url
-    QString portString = getenv( "SERVER_PORT" );
-    if ( !portString.isEmpty() )
+    QString hrefString = mConfigParser->wfsServiceUrl();
+    if ( hrefString.isEmpty() )
     {
-      bool portOk;
-      int portNumber = portString.toInt( &portOk );
-      if ( portOk )
-      {
-        if ( portNumber != 80 )
-        {
-          mapUrl.setPort( portNumber );
-        }
-      }
+      hrefString = mConfigParser->serviceUrl();
     }
-
-    if ( QString( getenv( "HTTPS" ) ).compare( "on", Qt::CaseInsensitive ) == 0 )
+    if ( hrefString.isEmpty() )
     {
-      mapUrl.setScheme( "https" );
+      hrefString = serviceUrl();
     }
-    else
-    {
-      mapUrl.setScheme( "http" );
-    }
+    QUrl mapUrl( hrefString );
+    mapUrl.addQueryItem( "SERVICE", "WFS" );
+    mapUrl.addQueryItem( "VERSION", "1.0.0" );
 
     QList<QPair<QString, QString> > queryItems = mapUrl.queryItems();
     QList<QPair<QString, QString> >::const_iterator queryIt = queryItems.constBegin();
@@ -1062,7 +1001,6 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
       if ( queryIt->first.compare( "REQUEST", Qt::CaseInsensitive ) == 0 )
       {
         mapUrl.removeQueryItem( queryIt->first );
-        mapUrl.addQueryItem( queryIt->first, "DescribeFeatureType" );
       }
       else if ( queryIt->first.compare( "FORMAT", Qt::CaseInsensitive ) == 0 )
       {
@@ -1088,6 +1026,10 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
       {
         mapUrl.removeQueryItem( queryIt->first );
       }
+      else if ( queryIt->first.compare( "EXP_FILTER", Qt::CaseInsensitive ) == 0 )
+      {
+        mapUrl.removeQueryItem( queryIt->first );
+      }
       else if ( queryIt->first.compare( "MAXFEATURES", Qt::CaseInsensitive ) == 0 )
       {
         mapUrl.removeQueryItem( queryIt->first );
@@ -1101,6 +1043,7 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
         mapUrl.removeQueryItem( queryIt->first );
       }
     }
+    mapUrl.addQueryItem( "REQUEST", "DescribeFeatureType" );
     mapUrl.addQueryItem( "TYPENAME", mTypeNames.join( "," ) );
     mapUrl.addQueryItem( "OUTPUTFORMAT", "XMLSCHEMA" );
     hrefString = mapUrl.toString();
@@ -1804,3 +1747,55 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
   return featureElement;
 }
 
+QString QgsWFSServer::serviceUrl() const
+{
+  QUrl mapUrl( getenv( "REQUEST_URI" ) );
+  mapUrl.setHost( getenv( "SERVER_NAME" ) );
+
+  //Add non-default ports to url
+  QString portString = getenv( "SERVER_PORT" );
+  if ( !portString.isEmpty() )
+  {
+    bool portOk;
+    int portNumber = portString.toInt( &portOk );
+    if ( portOk )
+    {
+      if ( portNumber != 80 )
+      {
+        mapUrl.setPort( portNumber );
+      }
+    }
+  }
+
+  if ( QString( getenv( "HTTPS" ) ).compare( "on", Qt::CaseInsensitive ) == 0 )
+  {
+    mapUrl.setScheme( "https" );
+  }
+  else
+  {
+    mapUrl.setScheme( "http" );
+  }
+
+  QList<QPair<QString, QString> > queryItems = mapUrl.queryItems();
+  QList<QPair<QString, QString> >::const_iterator queryIt = queryItems.constBegin();
+  for ( ; queryIt != queryItems.constEnd(); ++queryIt )
+  {
+    if ( queryIt->first.compare( "REQUEST", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if ( queryIt->first.compare( "VERSION", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if ( queryIt->first.compare( "SERVICE", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if ( queryIt->first.compare( "_DC", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+  }
+  return mapUrl.toString();
+}
