@@ -40,13 +40,13 @@ Build-Depends:
  oracle-instantclient11.2-devel
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.9.3
-X-Python-Version: current
+XS-Python-Version: current
 Homepage: http://qgis.org/
 
 Package: qgis
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, qgis-providers (= ${binary:Version}), qgis-common (= ${source:Version})
-Recommends: qgis-plugin-globe, qgis-plugin-grass, python-qgis
+Recommends: qgis-plugin-grass, python-qgis, qgis-plugin-globe
 Suggests: gpsbabel
 Conflicts: uim-qt3
 Description: Geographic Information System (GIS)
@@ -117,7 +117,7 @@ Description: GRASS plugin for QGIS
 
 Package: qgis-plugin-grass-common
 Architecture: all
-Depends: python, ${misc:Depends}
+Depends: python, ${python:Depends}, ${misc:Depends}
 Replaces: qgis-common (<< 1.5)
 Breaks: qgis-common (<< 1.5)
 Description: GRASS plugin for QGIS - architecture-independent data
@@ -130,7 +130,12 @@ Description: GRASS plugin for QGIS - architecture-independent data
 Package: python-qgis
 Section: python
 Architecture: any
-Depends: python-qt4 (>=4.1.0), python-sip (>= 4.5.0), python-qgis-common (= ${source:Version}), python-pyspatialite, python-psycopg2, python-qscintilla2, ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Depends: python-qt4 (>=4.1.0), python-sip (>= 4.5.0), python-qgis-common (= ${source:Version}),
+	python-psycopg2, python-qscintilla2,
+	python-pyspatialite,
+	${shlibs:Depends}, ${python:Depends}, ${misc:Depends}, ${sip:Depends}
+Provides: ${python:Provides}
+XB-Python-Version: ${python:Versions}
 Description: Python bindings to QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -141,7 +146,8 @@ Package: python-qgis-common
 Section: python
 Architecture: all
 Provides: ${python:Provides}
-Depends: gdal-bin, python-gdal, python-matplotlib, libjs-jquery, libjs-underscore, ${misc:Depends}
+Depends: gdal-bin, python-gdal, python-matplotlib, ${python:Depends}, ${misc:Depends}, ${sip:Depends}
+XB-Python-Version: ${python:Versions}
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.

@@ -19,8 +19,8 @@ Build-Depends:
  libqtwebkit-dev,
  libqwt5-qt4-dev,
  libspatialite-dev,
- libspatialindex-dev,
  libsqlite3-dev,
+ libspatialindex-dev,
  pkg-config,
  pyqt4-dev-tools,
  python,
@@ -58,6 +58,7 @@ Description: Geographic Information System (GIS)
 
 Package: qgis-common
 Architecture: all
+Depends: ${misc:Depends}
 Description: QGIS - architecture-independent data
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -92,7 +93,8 @@ Depends:
  libsqlite3-dev,
  python-qt4 (>=4.1.0),
  python-qt4-dev (>=4.1.0),
- qt4-designer (>=4.4.0)
+ qt4-designer (>=4.4.0),
+ ${misc:Depends}
 Provides: qgis-dev
 Replaces: qgis-dev, libqgis1-dev, libqgis1.4.0-dev
 Description: QGIS - development files
@@ -113,7 +115,7 @@ Description: GRASS plugin for QGIS
 
 Package: qgis-plugin-grass-common
 Architecture: all
-Depends: ${python:Depends}
+Depends: python, ${python:Depends}, ${misc:Depends}
 Replaces: qgis-common (<< 1.5)
 Breaks: qgis-common (<< 1.5)
 Description: GRASS plugin for QGIS - architecture-independent data
@@ -126,7 +128,9 @@ Description: GRASS plugin for QGIS - architecture-independent data
 Package: python-qgis
 Section: python
 Architecture: any
-Depends: python-qt4 (>=4.1.0), python-sip (>= 4.5.0), python-qgis-common (= ${source:Version}), python-psycopg2, python-qscintilla2, ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Depends: python-qt4 (>=4.1.0), python-sip (>= 4.5.0), python-qgis-common (= ${source:Version}),
+	python-psycopg2, python-qscintilla2,
+	${shlibs:Depends}, ${python:Depends}, ${misc:Depends}, ${sip:Depends}
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to QGIS
@@ -139,7 +143,7 @@ Package: python-qgis-common
 Section: python
 Architecture: all
 Provides: ${python:Provides}
-Depends: gdal-bin, python-gdal, python-matplotlib, ${python:Depends}
+Depends: gdal-bin, python-gdal, python-matplotlib, ${python:Depends}, ${misc:Depends}, ${sip:Depends}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
@@ -163,6 +167,7 @@ Package: qgis-providers-common
 Architecture: all
 Replaces: qgis-common (<= 1.6)
 Breaks: qgis-common (<= 1.6)
+Depends: ${misc:Depends}
 Description: collection of data providers to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -191,8 +196,10 @@ Description: QGIS sql anywhere plugin and provider
 Package: qgis-api-doc
 Architecture: all
 Section: doc
+Depends: libjs-jquery
 Description: QGIS API documentation
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
  This package contains the QGIS API documentation.
+
