@@ -50683,7 +50683,7 @@ If the installation is successful, a confirmation message will appear. The plugi
 If the installation fails, the reason for the failure will be displayed in a warning dialog. Most often, errors are the result of connection problems and/or missing Python modules. In the former case you will likely need to wait before trying the install again, in the latter case, you should install the missing modules relevant to your operating system prior to using the plugin. For Linux, most required modules should be available via a package manager. For install instructions in Windows visit the module home page. If you are using a proxy, you may need to configure it under &lt;label&gt;Edit&lt;/label&gt; &gt; &lt;label&gt;Options&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; &gt; &lt;label&gt;Options&lt;/label&gt; (KDE, Windows) on the &lt;label&gt;Proxy&lt;/label&gt; tab.&lt;/p&gt;
 
 &lt;p align=&apos;justify&apos;&gt;
-The &lt;label&gt;Uninstall plugin&lt;/label&gt; button is enabled only if the selected plugin is installed and is not a core plugin. Note that if you have installed an update to a core plugin, you can uninstall this update with the &lt;label&gt;Uninstall plugin&lt;/label&gt; and revert to the version shipped with Quantum GIS. This default version however, cannot be uninstalled.&lt;/p&gt;
+The &lt;label&gt;Uninstall plugin&lt;/label&gt; button is enabled only if the selected plugin is installed and is not a core plugin. Note that if you have installed an update to a core plugin, you can uninstall this update with the &lt;label&gt;Uninstall plugin&lt;/label&gt; and revert to the version shipped with QGIS. This default version however, cannot be uninstalled.&lt;/p&gt;
 
 &lt;a name=&quot;retab&quot;&gt;
 &lt;h4&gt;Repositories tab&lt;/h4&gt;
@@ -51972,7 +51972,7 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Den kürzesten Weg finden&lt;/h3&gt;
-&lt;p&gt;Straßengraph ist eine C++-Erweiterung für Quantum GIS, die den kürzesten Weg zwischen zwei Punkten auf jedem Linienlayer bestimmt und über dem Straßennetz anzeigt. Bevor die Erweiterung genutzt werden kann, muß sie konfiguriert werden. Dies erfolgt unter &lt;label&gt;Erweiterungen &amp;rarr; Straßengraph &amp;rarr; Einstellungen&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;Straßengraph ist eine C++-Erweiterung für QGIS, die den kürzesten Weg zwischen zwei Punkten auf jedem Linienlayer bestimmt und über dem Straßennetz anzeigt. Bevor die Erweiterung genutzt werden kann, muß sie konfiguriert werden. Dies erfolgt unter &lt;label&gt;Erweiterungen &amp;rarr; Straßengraph &amp;rarr; Einstellungen&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#howto&quot;&gt;Wie&apos;s geht&lt;/a&gt;&lt;br/&gt;
 &lt;/p&gt;

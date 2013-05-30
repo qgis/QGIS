@@ -65,9 +65,9 @@ typedef SInt32 SRefCon;
  */
 void usage( std::string const & appName )
 {
-  std::cerr << "Quantum GIS Benchmark - " << VERSION << " '" << RELEASE_NAME << "' ("
+  std::cerr << "QGIS Benchmark - " << VERSION << " '" << RELEASE_NAME << "' ("
             << QGSVERSION << ")\n"
-            << "Quantum GIS (QGIS) Benchmark is console application for QGIS benchmarking\n"
+            << "QGIS (QGIS) Benchmark is console application for QGIS benchmarking\n"
             << "Usage: " << appName <<  " [options] [FILES]\n"
             << "  options:\n"
             << "\t[--iterations iterations]\tnumber of rendering cycles, default 1\n"

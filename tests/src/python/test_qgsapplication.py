@@ -7,7 +7,7 @@ the Free Software Foundation; either version 2 of the License, or
 """
 __author__ = 'Tim Sutton (tim@linfiniti.com)'
 __date__ = '20/01/2011'
-__copyright__ = 'Copyright 2012, The Quantum GIS Project'
+__copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 

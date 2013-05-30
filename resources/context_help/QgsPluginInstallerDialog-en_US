@@ -38,7 +38,7 @@ If the installation is successful, a confirmation message will appear. The plugi
 If the installation fails, the reason for the failure will be displayed in a warning dialog. Most often, errors are the result of connection problems and/or missing Python modules. In the former case you will likely need to wait before trying the install again, in the latter case, you should install the missing modules relevant to your operating system prior to using the plugin. For Linux, most required modules should be available via a package manager. For install instructions in Windows visit the module home page. If you are using a proxy, you may need to configure it under <label>Edit</label> > <label>Options</label> (Gnome, OSX) or <label>Settings</label> > <label>Options</label> (KDE, Windows) on the <label>Proxy</label> tab.</p>
 
 <p align='justify'>
-The <label>Uninstall plugin</label> button is enabled only if the selected plugin is installed and is not a core plugin. Note that if you have installed an update to a core plugin, you can uninstall this update with the <label>Uninstall plugin</label> and revert to the version shipped with Quantum GIS. This default version however, cannot be uninstalled.</p>
+The <label>Uninstall plugin</label> button is enabled only if the selected plugin is installed and is not a core plugin. Note that if you have installed an update to a core plugin, you can uninstall this update with the <label>Uninstall plugin</label> and revert to the version shipped with QGIS. This default version however, cannot be uninstalled.</p>
 
 <a name="retab">
 <h4>Repositories tab</h4>

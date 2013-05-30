@@ -19,7 +19,7 @@ echo "A script to generate a source video progression"
 echo "see http://woostuff.wordpress.com/2011/01/03/generating-a-gource-source-commit-history-visualization-for-qgis-quantum-gis/"
 echo "Run it from the root directory e.g. scripts/$0"
 
-gource --title "Quantum GIS" --logo images/icons/qgis-icon.png \
+gource --title "QGIS" --logo images/icons/qgis-icon.png \
     --hide filenames \
     --date-format "%d, %B %Y" \
     --seconds-per-day 0.05 \
