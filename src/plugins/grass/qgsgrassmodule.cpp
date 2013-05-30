@@ -2710,8 +2710,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
 
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ),
            this, SLOT( updateQgisLayers() ) );
-  // layersWillBeRemoved is emitted AFTER the layer was removed from registry
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ),
            this, SLOT( updateQgisLayers() ) );
 
   connect( mLayerComboBox, SIGNAL( activated( int ) ), this, SLOT( changed( int ) ) );
@@ -3348,8 +3347,7 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
 
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ),
            this, SLOT( updateQgisLayers() ) );
-  // layersWillBeRemoved is emitted after the layer was removed from registry
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ),
            this, SLOT( updateQgisLayers() ) );
 
   // Fill in QGIS layers
@@ -3375,12 +3373,9 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
     mLayerComboBox->addItem( tr( "Select a layer" ), QVariant() );
   }
 
-  QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
-
-  int nlayers = canvas->layerCount();
-  for ( int i = 0; i < nlayers; i++ )
+  foreach ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
   {
-    QgsMapLayer *layer = canvas->layer( i );
+    if ( !layer ) continue;
 
     if ( mType == Ogr && layer->type() == QgsMapLayer::VectorLayer )
     {
