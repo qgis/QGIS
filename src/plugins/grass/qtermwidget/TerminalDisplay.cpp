@@ -211,10 +211,12 @@ void TerminalDisplay::setVTFont( const QFont& f )
     // mono-spaced font, in which case kerning information should have an effect.
     // Disabling kerning saves some computation when rendering text.
     font.setKerning( false );
-
-    QWidget::setFont( font );
-    fontChange( font );
   }
+
+  // This was in the block above so that font was not properly set if called
+  // before the widget was rendered and got its size and it was causing #7340 (cursor shift)
+  QWidget::setFont( font );
+  fontChange( font );
 }
 
 void TerminalDisplay::setFont( const QFont & )
@@ -803,7 +805,7 @@ void TerminalDisplay::scrollImage( int lines , const QRect& screenWindowRegion )
 QRegion TerminalDisplay::hotSpotRegion() const
 {
   QRegion region;
-  foreach( Filter::HotSpot* hotSpot , _filterChain->hotSpots() )
+  foreach ( Filter::HotSpot* hotSpot , _filterChain->hotSpots() )
   {
     QRect rect;
     rect.setLeft( hotSpot->startColumn() );
@@ -1080,7 +1082,7 @@ void TerminalDisplay::paintEvent( QPaintEvent* pe )
   QPainter paint( this );
 //qDebug("%s %d paintEvent %d %d", __FILE__, __LINE__, paint.window().top(), paint.window().right());
 
-  foreach( QRect rect, ( pe->region() & contentsRect() ).rects() )
+  foreach ( QRect rect, ( pe->region() & contentsRect() ).rects() )
   {
     drawBackground( paint, rect, palette().background().color(), true /* use opacity setting */ );
     drawContents( paint, rect );
