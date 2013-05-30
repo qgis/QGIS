@@ -24,7 +24,6 @@
 
 #include "qgsfield.h"
 #include "qgsfeature.h"
-#include "qgslogger.h"
 
 class QgsGeometry;
 class QgsGeometryCache;

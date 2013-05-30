@@ -150,7 +150,6 @@ bool QgsVectorLayerUndoCommandChangeGeometry::mergeWith( const QUndoCommand *oth
   mNewGeom = merge->mNewGeom;
   merge->mNewGeom = 0;
 
-  QgsDebugMsg( "geometry changes merged" );
   return true;
 }
 
