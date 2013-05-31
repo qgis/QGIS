@@ -2847,19 +2847,29 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
   for ( int i = 0; i < list.size(); i++ )
   {
     QString composedURI;
+    QString layerName = list.at( i ).split( ':' ).value( 0 );
+    QString layerType = list.at( i ).split( ':' ).value( 1 );
+
     if ( layertype != "GRASS" )
     {
-      composedURI = uri + "|layername=" + list.at( i );
+      composedURI = uri + "|layername=" + layerName;
     }
     else
     {
-      composedURI = uri + "|layerindex=" + list.at( i );
+      composedURI = uri + "|layerindex=" + layerName;
+    }
+
+    if ( !layerType.isEmpty() )
+    {
+      composedURI += "|geometrytype=" + layerType;
     }
 
     // addVectorLayer( composedURI,  list.at( i ), "ogr" );
 
     QgsDebugMsg( "Creating new vector layer using " + composedURI );
-    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, list.at( i ), "ogr" );
+    QString name = list.at( i );
+    name.replace( ":", " " );
+    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, "ogr" );
     if ( layer && layer->isValid() )
     {
       myList << layer;

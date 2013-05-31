@@ -37,6 +37,8 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     ~QgsSublayersDialog();
 
     void populateLayerTable( QStringList theList, QString delim = ":" );
+    // Returns list of selected layers, if there are more layers with the same name,
+    // geometry type is appended separated by semicolon, example: <layer>:<geometryType>
     QStringList selectionNames();
     QList<int> selectionIndexes();
 

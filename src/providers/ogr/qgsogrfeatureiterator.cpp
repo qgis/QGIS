@@ -204,7 +204,8 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 
   bool fetchGeom    = !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   bool useIntersect = mRequest.flags() & QgsFeatureRequest::ExactIntersect;
-  if ( fetchGeom || useIntersect )
+  bool geometryTypeFilter = P->mOgrGeometryTypeFilter != wkbUnknown;
+  if ( fetchGeom || useIntersect || geometryTypeFilter )
   {
     OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
 
@@ -217,7 +218,8 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
       feature.setGeometryAndOwnership( wkb, OGR_G_WkbSize( geom ) );
     }
 
-    if ( useIntersect && ( !feature.geometry() || !feature.geometry()->intersects( mRequest.filterRect() ) ) )
+    if (( useIntersect && ( !feature.geometry() || !feature.geometry()->intersects( mRequest.filterRect() ) ) )
+        || ( geometryTypeFilter && ( !feature.geometry() || feature.geometry()->wkbType() != ( QGis::WkbType )P->mOgrGeometryTypeFilter ) ) )
     {
       OGR_F_Destroy( fet );
       return false;
