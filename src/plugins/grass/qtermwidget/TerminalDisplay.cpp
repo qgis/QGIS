@@ -200,23 +200,23 @@ void TerminalDisplay::setVTFont( const QFont& f )
 
   QFontMetrics metrics( font );
 
-  if ( metrics.height() < height() && metrics.maxWidth() < width() )
-  {
-    // hint that text should be drawn without anti-aliasing.
-    // depending on the user's font configuration, this may not be respected
-    if ( !_antialiasText )
-      font.setStyleStrategy( QFont::NoAntialias );
+  // The condition checking if font is smaller than widget was causing #7340 (cursor shift)
+  // probably because this was called before the widget was rendered and got its size
+  //if ( metrics.height() < height() && metrics.maxWidth() < width() )
+  //{
+  // hint that text should be drawn without anti-aliasing.
+  // depending on the user's font configuration, this may not be respected
+  if ( !_antialiasText )
+    font.setStyleStrategy( QFont::NoAntialias );
 
-    // experimental optimization.  Konsole assumes that the terminal is using a
-    // mono-spaced font, in which case kerning information should have an effect.
-    // Disabling kerning saves some computation when rendering text.
-    font.setKerning( false );
-  }
+  // experimental optimization.  Konsole assumes that the terminal is using a
+  // mono-spaced font, in which case kerning information should have an effect.
+  // Disabling kerning saves some computation when rendering text.
+  font.setKerning( false );
 
-  // This was in the block above so that font was not properly set if called
-  // before the widget was rendered and got its size and it was causing #7340 (cursor shift)
   QWidget::setFont( font );
   fontChange( font );
+  //}
 }
 
 void TerminalDisplay::setFont( const QFont & )
