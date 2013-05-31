@@ -65,12 +65,15 @@ void QgsGeomColumnTypeThread::run()
     return;
   }
 
-  int i = 0;
-  foreach ( QgsPostgresLayerProperty layerProperty, layerProperties )
+  int i = 0, n = layerProperties.size();
+  for ( QVector<QgsPostgresLayerProperty>::iterator it=layerProperties.begin(),
+                                                    end=layerProperties.end();
+        it != end; ++it)
   {
+    QgsPostgresLayerProperty& layerProperty = *it;
     if ( !mStopped )
     {
-      emit progress( i++, layerProperties.size() );
+      emit progress( i++, n );
       emit progressMessage( tr( "Scanning column %1.%2.%3..." )
                             .arg( layerProperty.schemaName )
                             .arg( layerProperty.tableName )

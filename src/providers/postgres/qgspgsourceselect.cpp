@@ -353,7 +353,7 @@ void QgsPgSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QStrin
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
-void QgsPgSourceSelect::setLayerType( QgsPostgresLayerProperty layerProperty )
+void QgsPgSourceSelect::setLayerType( const QgsPostgresLayerProperty& layerProperty )
 {
   QgsDebugMsg( "entering." );
   mTableModel.addTableEntry( layerProperty );
@@ -445,14 +445,14 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
   mColumnTypeThread = new QgsGeomColumnTypeThread( cmbConnections->currentText(), mUseEstimatedMetadata, cbxAllowGeometrylessTables->isChecked() );
 
-  connect( mColumnTypeThread, SIGNAL( setLayerType( QgsPostgresLayerProperty ) ),
-           this, SLOT( setLayerType( QgsPostgresLayerProperty ) ) );
+  connect( mColumnTypeThread, SIGNAL( setLayerType( const QgsPostgresLayerProperty& ) ),
+           this, SLOT( setLayerType( const QgsPostgresLayerProperty& ) ) );
   connect( mColumnTypeThread, SIGNAL( finished() ),
            this, SLOT( columnThreadFinished() ) );
   connect( mColumnTypeThread, SIGNAL( progress( int, int ) ),
            this, SIGNAL( progress( int, int ) ) );
-  connect( mColumnTypeThread, SIGNAL( progressMessage( QString ) ),
-           this, SIGNAL( progressMessage( QString ) ) );
+  connect( mColumnTypeThread, SIGNAL( progressMessage( const QString& ) ),
+           this, SIGNAL( progressMessage( const QString& ) ) );
 
   btnConnect->setText( tr( "Stop" ) );
   mColumnTypeThread->start();
@@ -529,7 +529,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
   delete vlayer;
 }
 
-QString QgsPgSourceSelect::fullDescription( QString schema, QString table, QString column, QString type )
+QString QgsPgSourceSelect::fullDescription( const QString& schema, const QString& table, const QString& column, const QString& type )
 {
   QString full_desc = "";
   if ( !schema.isEmpty() )
