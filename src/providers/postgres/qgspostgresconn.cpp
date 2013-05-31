@@ -270,22 +270,32 @@ void QgsPostgresConn::disconnect()
   deleteLater();
 }
 
-QStringList QgsPostgresConn::pkCandidates( QString schemaName, QString viewName )
+/* private */
+void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty& layerProperty, const QString& schemaName, const QString& viewName, bool fetchPkCandidates )
 {
-  QStringList cols;
-
-  QString sql = QString( "SELECT attname FROM pg_attribute JOIN pg_type ON atttypid=pg_type.oid WHERE attrelid=regclass('%1.%2')" )
-                .arg( quotedIdentifier( schemaName ) )
-                .arg( quotedIdentifier( viewName ) );
+  // TODO: optimize this query when pk candidates aren't needed
+  //       could use array_agg() and count()
+  //       array output would look like this: "{One,tWo}"
+  QString sql = QString( "SELECT attname, CASE WHEN typname = ANY(ARRAY['geometry','geography','topogeometry']) THEN 1 ELSE null END AS isSpatial FROM pg_attribute JOIN pg_type ON atttypid=pg_type.oid WHERE attrelid=regclass('%1.%2')" )
+              .arg( quotedIdentifier( schemaName ) )
+              .arg( quotedIdentifier( viewName ) );
   QgsDebugMsg( sql );
   QgsPostgresResult colRes = PQexec( sql );
+
+  layerProperty.nSpCols = 0;
 
   if ( colRes.PQresultStatus() == PGRES_TUPLES_OK )
   {
     for ( int i = 0; i < colRes.PQntuples(); i++ )
     {
-      QgsDebugMsg( colRes.PQgetvalue( i, 0 ) );
-      cols << colRes.PQgetvalue( i, 0 );
+      if ( fetchPkCandidates ) {
+        QgsDebugMsg( colRes.PQgetvalue( i, 0 ) );
+        layerProperty.pkCols << colRes.PQgetvalue( i, 0 );
+      }
+
+      if ( colRes.PQgetisnull( i, 1 ) == 0 ) {
+        ++layerProperty.nSpCols;
+      }
     }
   }
   else
@@ -293,7 +303,6 @@ QStringList QgsPostgresConn::pkCandidates( QString schemaName, QString viewName 
     QgsMessageLog::logMessage( tr( "SQL:%1\nresult:%2\nerror:%3\n" ).arg( sql ).arg( colRes.PQresultStatus() ).arg( colRes.PQresultErrorMessage() ), tr( "PostGIS" ) );
   }
 
-  return cols;
 }
 
 bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables )
@@ -404,15 +413,12 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.types = QList<QGis::WkbType>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
       layerProperty.srids = QList<int>() << srid;
       layerProperty.sql = "";
+      addColumnInfo( layerProperty, schemaName, tableName, relkind == "v" );
 
-      if ( relkind == "v" )
+      if ( relkind == "v" && layerProperty.pkCols.empty() )
       {
-        layerProperty.pkCols = pkCandidates( schemaName, tableName );
-        if ( layerProperty.pkCols.isEmpty() )
-        {
-          QgsDebugMsg( "no key columns found." );
-          continue;
-        }
+        QgsDebugMsg( "no key columns found." );
+        continue;
       }
 
       mLayersSupported << layerProperty;
@@ -522,14 +528,11 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         Q_ASSERT( !"Unknown geometry type" );
       }
 
-      if ( relkind == "v" )
+      addColumnInfo( layerProperty, schemaName, tableName, relkind == "v" );
+      if ( relkind == "v" && layerProperty.pkCols.empty() )
       {
-        layerProperty.pkCols = pkCandidates( schemaName, tableName );
-        if ( layerProperty.pkCols.isEmpty() )
-        {
-          QgsDebugMsg( "no key columns found." );
-          continue;
-        }
+        QgsDebugMsg( "no key columns found." );
+        continue;
       }
 
       layerProperty.sql = "";
@@ -583,7 +586,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.tableName = table;
       layerProperty.geometryColName = QString::null;
       layerProperty.geometryColType = sctNone;
-      layerProperty.pkCols = relkind == "v" ? pkCandidates( schema, table ) : QStringList();
+      addColumnInfo( layerProperty, schema, table, relkind == "v" );
       layerProperty.sql = "";
 
       mLayersSupported << layerProperty;

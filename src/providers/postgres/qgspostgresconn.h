@@ -53,9 +53,18 @@ struct QgsPostgresLayerProperty
   QgsPostgresGeometryColumnType geometryColType;
   QStringList                   pkCols;
   QList<int>                    srids;
+  unsigned int                  nSpCols;
   QString                       sql;
 
+
+  // TODO: rename this !
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
+
+  QString   defaultName() const {
+    QString n = tableName;
+    if ( nSpCols > 1 ) n += "." + geometryColName;
+    return n;
+  }
 
   QgsPostgresLayerProperty at( int i ) const
   {
@@ -70,6 +79,7 @@ struct QgsPostgresLayerProperty
     property.geometryColName = geometryColName;
     property.geometryColType = geometryColType;
     property.pkCols          = pkCols;
+    property.nSpCols         = nSpCols;
     property.sql             = sql;
 
     return property;
@@ -93,14 +103,15 @@ struct QgsPostgresLayerProperty
       sridString += QString::number( srid );
     }
 
-    return QString( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7" )
+    return QString( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8" )
            .arg( schemaName )
            .arg( tableName )
            .arg( geometryColName )
            .arg( typeString )
            .arg( sridString )
            .arg( pkCols.join( "|" ) )
-           .arg( sql );
+           .arg( sql )
+           .arg( nSpCols );
   }
 #endif
 };
@@ -215,9 +226,6 @@ class QgsPostgresConn : public QObject
     /** Gets information about the spatial tables */
     bool getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables );
 
-    /** get primary key candidates (all int4 columns) */
-    QStringList pkCandidates( QString schemaName, QString viewName );
-
     qint64 getBinaryInt( QgsPostgresResult &queryResult, int row, int col );
 
     QString fieldExpression( const QgsField &fld );
@@ -291,6 +299,9 @@ class QgsPostgresConn : public QObject
 
     static QMap<QString, QgsPostgresConn *> sConnectionsRW;
     static QMap<QString, QgsPostgresConn *> sConnectionsRO;
+
+    /** count number of spatial columns in a given relation */
+    void addColumnInfo( QgsPostgresLayerProperty& layerProperty, const QString& schemaName, const QString& viewName, bool fetchPkCandidates );
 
     //! List of the supported layers
     QVector<QgsPostgresLayerProperty> mLayersSupported;
