@@ -146,7 +146,7 @@ class Dialog(QDialog, Ui_Dialog):
             QApplication.setOverrideCursor(Qt.WaitCursor)
             self.compute( boundBox, xSpace, ySpace, polygon )
             QApplication.restoreOverrideCursor()
-            addToTOC = QMessageBox.question(self, self.tr("Generate Vector Grid"), self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(unicode(self.shapefileName)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+            addToTOC = QMessageBox.question(self, self.tr("Generate Vector Grid"), self.tr("Created output shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % (unicode(self.shapefileName)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
                 ftools_utils.addShapeToCanvas( self.shapefileName )
                 self.populateLayers()

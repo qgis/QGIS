@@ -95,7 +95,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
     self.marker = MarkerErrorGeometry(self.iface.mapCanvas())
 
     settings = QSettings()
-    self.restoreGeometry( settings.value("/fTools/ValidateDialog/geometry").toByteArray() )
+    self.restoreGeometry( settings.value("/fTools/ValidateDialog/geometry") )
 
     QObject.connect( self.browseShpError, SIGNAL( "clicked()" ), self.outFile )
     QObject.connect( self.ckBoxShpError, SIGNAL( "stateChanged( int )" ), self.updateGui )
@@ -181,8 +181,8 @@ class ValidateDialog( QDialog, Ui_Dialog ):
         self.marker.reset()
 
         ft = QgsFeature()
-        (fid,ok) = self.tblUnique.item(row, 0).text().toInt()
-        if not ok or not self.vlayer.getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( ft ):
+        fid = int(self.tblUnique.item(row, 0).text())
+        if not self.vlayer.getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( ft ):
           return
 
         rect = mc.mapRenderer().layerExtentToOutputExtent( self.vlayer, ft.geometry().boundingBox() )
@@ -230,12 +230,12 @@ class ValidateDialog( QDialog, Ui_Dialog ):
     if success == "writeShape":
       extra = ""
       addToTOC = QMessageBox.question( self, self.tr("Geometry"),
-                 self.tr( "Created output shapefile:\n%1\n%2\n\nWould you like to add the new layer to the TOC?" ).arg( unicode( self.shapefileName ) ).arg( extra ),
+                 self.tr( "Created output shapefile:\n%s\n%s\n\nWould you like to add the new layer to the TOC?" ) % ( unicode( self.shapefileName ), extra ),
                  QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
       if addToTOC == QMessageBox.Yes:
         if not ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) ):
           QMessageBox.warning( self, self.tr( "Geometry"),
-                               self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( self.shapefileName ) ) )
+                               self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( self.shapefileName ) ) )
     else:
       self.tblUnique.setColumnCount( 2 )
       count = 0

@@ -216,8 +216,6 @@ class visualThread( QThread ):
     self.vlayer = vlayer
     self.myField = myField
     self.mySelection = mySelection
-#        self.total = 0
-#        self.currentCount = 0
 
   def run( self ):
     self.running = True
@@ -274,7 +272,7 @@ class visualThread( QThread ):
           self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         for f in selection:
           atMap = f.attributes()
-          lenVal = float( len( atMap[ index ].toString() ) )
+          lenVal = float( len( atMap[ index ] ) )
           if first:
             minVal = lenVal
             maxVal = lenVal
@@ -298,7 +296,7 @@ class visualThread( QThread ):
         fit = vprovider.getFeatures()
         while fit.nextFeature( feat ):
           atMap = feat.attributes()
-          lenVal = float( len( atMap[ index ].toString() ) )
+          lenVal = float( len( atMap[ index ] ) )
           if first:
             minVal = lenVal
             maxVal = lenVal
@@ -343,7 +341,7 @@ class visualThread( QThread ):
           self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         for f in selection:
           atMap = f.attributes()
-          value = float( atMap[ index ].toDouble()[ 0 ] )
+          value = float( atMap[ index ] )
           if first:
             minVal = value
             maxVal = value
@@ -364,7 +362,7 @@ class visualThread( QThread ):
         fit = vprovider.getFeatures()
         while fit.nextFeature( feat ):
           atMap = feat.attributes()
-          value = float( atMap[ index ].toDouble()[ 0 ] )
+          value = float( atMap[ index ] )
           if first:
             minVal = value
             maxVal = value

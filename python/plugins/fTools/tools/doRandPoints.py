@@ -125,7 +125,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.progressBar.setValue(100)
             self.outShape.clear()
             addToTOC = QMessageBox.question(self, self.tr("Random Points"),
-            self.tr("Created output point shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(outPath), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+            self.tr("Created output point shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % (outPath), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
@@ -255,7 +255,7 @@ class Dialog(QDialog, Ui_Dialog):
                 value = int(round(numRand * sDistArea.measure(sGeom)))
             elif design == self.tr("field"):
                 sAtMap = sFeat.attributes()
-                value = sAtMap[index].toInt()[0]
+                value = sAtMap[index]
             else:
                 value = numRand
             sExt = sGeom.boundingBox()

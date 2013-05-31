@@ -95,7 +95,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.compute(inName, outPath, self.weightField.currentText(), self.sizeValue.value(), self.uniqueField.currentText())
             self.progressBar.setValue(100)
             self.outShape.clear()
-            addToTOC = QMessageBox.question(self, self.tr("Coordinate statistics"), self.tr("Created output point shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+            addToTOC = QMessageBox.question(self, self.tr("Coordinate statistics"), self.tr("Created output point shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % ( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
                 vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayers([vlayer])
@@ -150,12 +150,12 @@ class Dialog(QDialog, Ui_Dialog):
             cy = 0.00
             points = []
             weights = []
-	    fit = provider.getFeatures()
+            fit = provider.getFeatures()
             while fit.nextFeature(feat):
                 nElement += 1
                 self.progressBar.setValue(nElement)
                 if single:
-                    check = j.toString().trimmed()
+                    check = j.strip()
                 else:
                     check = feat.attributes()[uniqueIndex].toString().trimmed()
                 if check == j.toString().trimmed():
@@ -164,7 +164,7 @@ class Dialog(QDialog, Ui_Dialog):
                     if weightIndex == -1:
                         weight = 1.00
                     else:
-                        weight = float(feat.attributes()[weightIndex].toDouble()[0])
+                        weight = float(feat.attributes()[weightIndex]
                     geom = QgsGeometry(feat.geometry())
                     geom = ftools_utils.extractPoints(geom)
                     for i in geom:

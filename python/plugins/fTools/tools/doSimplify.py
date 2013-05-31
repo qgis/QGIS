@@ -98,7 +98,7 @@ class Dialog( QDialog, Ui_Dialog ):
       if outFile.exists():
         if not QgsVectorFileWriter.deleteShapeFile( outFileName ):
           QMessageBox.warning( self, self.tr( "Delete error" ),
-                               self.tr( "Can't delete file %1" ).arg( outFileName ) )
+                               self.tr( "Can't delete file %s" ) % ( outFileName ) )
           return
 
       self.workThread = GeomThread( self.myFunction, vLayer, self.chkUseSelection.isChecked(),
@@ -137,17 +137,14 @@ class Dialog( QDialog, Ui_Dialog ):
 
     if self.myFunction == 1:
       QMessageBox.information( self, self.tr( "Simplify results" ),
-                               self.tr( "There were %1 vertices in original dataset which\nwere reduced to %2 vertices after simplification" )
-                               .arg( pointsCount[ 0 ] )
-                               .arg( pointsCount[ 1 ] ) )
+                               self.tr( "There were %d vertices in original dataset which\nwere reduced to %d vertices after simplification" ) % ( pointsCount[ 0 ], pointsCount[ 1 ] ) )
 
     self.restoreGui()
 
     if self.chkAddToCanvas.isEnabled() and self.chkAddToCanvas.isChecked():
       if not ftools_utils.addShapeToCanvas( unicode( self.shapeFileName ) ):
         QMessageBox.warning( self, self.tr( "Error" ),
-                             self.tr( "Error loading output shapefile:\n%1" )
-                             .arg( unicode( self.shapeFileName ) ) )
+                             self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( self.shapeFileName ) ) )
       self.populateLayers()
 
     QMessageBox.information( self, self.tr( "Finished" ), self.tr( "Processing completed." ) )
@@ -304,7 +301,7 @@ class GeomThread( QThread ):
       else:
         self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), vProvider.featureCount() )
         f = QgsFeature()
-	fit = vProvider.getFeatures()
+  fit = vProvider.getFeatures()
         while fit.nextFeature( f ):
           featGeometry = QgsGeometry( f.geometry() )
           attrMap = f.attributes()
@@ -354,7 +351,7 @@ class GeomThread( QThread ):
         vProvider = self.inputLayer.dataProvider()
         self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), vProvider.featureCount() )
         f = QgsFeature()
-	fit = vProvider.getFeatures()
+  fit = vProvider.getFeatures()
         while fit.nextFeature( f ):
           featureId = f.id()
           featGeometry = QgsGeometry( f.geometry() )
@@ -431,7 +428,7 @@ class GeomThread( QThread ):
       else:
         self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), vProvider.featureCount() )
         f = QgsFeature()
-	fit = vProvider.getFeatures()
+  fit = vProvider.getFeatures()
         while fit.nextFeature( f ):
           featGeometry = QgsGeometry( f.geometry() )
           attrMap = f.attributes()
@@ -477,7 +474,7 @@ class GeomThread( QThread ):
         vProvider = self.inputLayer.dataProvider()
         self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), vProvider.featureCount() )
         f = QgsFeature()
-	fit = vProvider.getFeatures()
+  fit = vProvider.getFeatures()
         while fit.nextFeature( f ):
           featureId = f.id()
           featGeometry = QgsGeometry( f.geometry() )

@@ -28,6 +28,8 @@
 #
 #---------------------------------------------------------------------
 
+import re
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -50,14 +52,14 @@ class Dialog(QDialog, Ui_Dialog):
         self.setWindowTitle(self.tr("Define current projection"))
         self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
         QObject.connect(self.btnProjection, SIGNAL("clicked()"), self.outProjFile)
-        #QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.updateProj1)
-        #QObject.connect(self.cmbLayer, SIGNAL("currentIndexChanged(QString)"), self.updateProj2)
+        QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.updateProj1)
+        QObject.connect(self.cmbLayer, SIGNAL("currentIndexChanged(QString)"), self.updateProj2)
         # populate layer list
         self.progressBar.setValue(0)
         mapCanvas = self.iface.mapCanvas()
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
-        #self.inShape.addItems(layers)
-        #self.cmbLayer.addItems(layers)
+        self.inShape.addItems(layers)
+        self.cmbLayer.addItems(layers)
 
         self.crs = None
 
@@ -105,8 +107,8 @@ class Dialog(QDialog, Ui_Dialog):
                     srsDefine = destLayer.crs()
                 if srsDefine == vLayer.crs():
                     responce = QMessageBox.question(self, self.tr("Define current projection"),
-                    self.tr("Identical output spatial reference system chosen\n\nAre you sure you want to proceed?"),
-                    QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+                                                    self.tr("Identical output spatial reference system chosen\n\nAre you sure you want to proceed?"),
+                                                    QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
                     if responce == QMessageBox.No:
                         self.progressBar.setValue(0)
                         self.buttonOk.setEnabled( True )
@@ -114,11 +116,14 @@ class Dialog(QDialog, Ui_Dialog):
                 provider = vLayer.dataProvider()
                 self.progressBar.setValue(35)
                 inPath = provider.dataSourceUri()
-                inPath = inPath.remove( QRegExp( "\|.*" ) )
+                p = re.compile("\|.*")
+                inPath = p.sub("", inPath)
+                print "PATH", inPath
                 self.progressBar.setValue(40)
-                if inPath.endsWith(".shp"):
-                    inPath = inPath.left(inPath.length() - 4)
+                if inPath.endswith(".shp"):
+                    inPath = inPath[:-4]
                 self.progressBar.setValue(55)
+                print "PATH2", inPath
                 if not srsDefine.isValid():
                     QMessageBox.information(self, self.tr("Define current projection"), self.tr("Output spatial reference system is not valid"))
                 else:
@@ -142,20 +147,22 @@ class Dialog(QDialog, Ui_Dialog):
                     self.progressBar.setValue(95)
                     vLayer.setCrs(srsDefine)
                     self.progressBar.setValue(100)
-                    QMessageBox.information(self, self.tr("Define current projection"), self.tr("Defined Projection For:\n%1.shp").arg( inPath ) )
+                    print "PATH3", inPath
+                    QMessageBox.information(self, self.tr("Define current projection"),
+                                            self.tr("Defined Projection For:\n%s.shp") % (inPath) )
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 
     def outProjFile(self):
-        format = "<h2>%1</h2>%2 <br/> %3"
         header = "Define layer CRS:"
         sentence1 = self.tr( "Please select the projection system that defines the current layer." )
         sentence2 = self.tr( "Layer CRS information will be updated to the selected CRS." )
         projSelector = QgsGenericProjectionSelector(self)
-        projSelector.setMessage( format.arg( header ).arg( sentence1 ).arg( sentence2 ))
+        projSelector.setMessage( "<h2>%s</h2>%s <br/> %s" % (header, sentence1, sentence2) )
         if projSelector.exec_():
             self.crs = QgsCoordinateReferenceSystem( projSelector.selectedCrsId(), QgsCoordinateReferenceSystem.InternalCrsId )
-            if projSelector.selectedAuthId().isEmpty():
+            print "AUTHID", projSelector.selectedAuthId()
+            if len(projSelector.selectedAuthId()) == 0:
                 QMessageBox.information(self, self.tr("Export to new projection"), self.tr("No Valid CRS selected"))
                 return
             else:

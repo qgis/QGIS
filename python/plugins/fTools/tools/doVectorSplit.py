@@ -128,7 +128,7 @@ class Dialog(QDialog, Ui_Dialog):
             QErrorMessage( self ).showMessage( msg )
 
         QMessageBox.information(self, self.tr("Vector Split"),
-                                self.tr("Created output shapefiles in folder:\n%1").arg(outPath))
+                                self.tr("Created output shapefiles in folder:\n%s") % (outPath))
 
 class SplitThread(QThread):
     def __init__(self, layer, splitField, encoding, outDir):

@@ -48,7 +48,7 @@ class Dialog( QDialog, Ui_Dialog ):
 
   def inputDir( self ):
     settings = QSettings()
-    lastDir = settings.value( "/fTools/lastShapeDir", "." ).toString()
+    lastDir = settings.value( "/fTools/lastShapeDir", "." )
     inDir = QFileDialog.getExistingDirectory( self,
               self.tr( "Select directory with shapefiles to merge" ),
               lastDir )
@@ -109,7 +109,7 @@ class Dialog( QDialog, Ui_Dialog ):
   def updateOutFile( self ):
     self.outFileName = self.leOutShape.text()
     settings = QSettings()
-    self.outEncoding = settings.value( "/UI/encoding" ).toString()
+    self.outEncoding = settings.value( "/UI/encoding" )
 
   def reject( self ):
     QDialog.reject( self )
@@ -148,7 +148,7 @@ class Dialog( QDialog, Ui_Dialog ):
     outFile = QFile( self.outFileName )
     if outFile.exists():
       if not QgsVectorFileWriter.deleteShapeFile( self.outFileName ):
-        QMessageBox.warning( self, self.tr( "Delete error" ), self.tr( "Can't delete file %1" ).arg( self.outFileName ) )
+        QMessageBox.warning( self, self.tr( "Delete error" ), self.tr( "Can't delete file %s" ) % ( self.outFileName ) )
         return
 
     if self.inEncoding == None:
@@ -197,8 +197,7 @@ class Dialog( QDialog, Ui_Dialog ):
     if self.chkAddToCanvas.isChecked():
       if not ftools_utils.addShapeToCanvas( unicode( self.outFileName ) ):
         QMessageBox.warning( self, self.tr( "Merging" ),
-                             self.tr( "Error loading output shapefile:\n%1" )
-                             .arg( unicode( self.outFileName ) ) )
+                             self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( self.outFileName ) ) )
 
     self.restoreGui()
 
