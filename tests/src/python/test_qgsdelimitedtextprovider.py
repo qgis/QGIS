@@ -176,7 +176,10 @@ def delimitedTextData( testname, filename, requests, verbose, **params ):
                 if not rdata:
                     log.append("Request "+str(nr)+" did not return any data")
         for msg in logger.messages():
-            log.append(msg.replace(filepath,'file'))
+            filelogname = 'temp_file' if 'tmp' in filename.lower() else filename
+            msg = re.sub(r'file\s+.*'+re.escape(filename),'file '+filelogname,msg)
+            msg = msg.replace(filepath,filelogname)
+            log.append(msg);
         return dict( fields=fields, fieldTypes=fieldTypes, data=data, log=log, uri=uri)
 
 def printWanted( testname, result ):
