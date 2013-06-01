@@ -112,8 +112,8 @@ class Dialog(QDialog, Ui_Dialog):
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
         distArea = QgsDistanceArea()
-        start = 15.00
-        add = 85.00 / polyProvider.featureCount()
+        start = 0.00
+        add = 100.00 / polyProvider.featureCount()
         check = QFile(self.shapefileName)
         if check.exists():
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
@@ -141,5 +141,5 @@ class Dialog(QDialog, Ui_Dialog):
             outFeat.setAttributes(atMap)
             writer.addFeature(outFeat)
             start = start + 1
-            progressBar.setValue(start)
+            progressBar.setValue( start * (add))
         del writer
