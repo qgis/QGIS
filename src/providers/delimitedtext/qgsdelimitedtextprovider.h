@@ -239,8 +239,11 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     bool pointFromXY( QString &sX, QString &sY, QgsPoint &point );
     double dmsStringToDouble( const QString &sX, bool *xOk );
 
-
-    QString mUri;
+    // mLayerValid defines whether the layer has been loaded as a valid layer
+    bool mLayerValid;
+    // mValid defines whether the layer is currently valid (may differ from
+    // mLayerValid if the file has been rewritten)
+    bool mValid;
 
     //! Text file
     QgsDelimitedTextFile *mFile;
@@ -270,8 +273,6 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     //! Layer extent
     QgsRectangle mExtent;
-
-    bool mValid;
 
     int mGeomType;
 

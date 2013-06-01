@@ -82,6 +82,11 @@ void QgsDelimitedTextFile::close()
     delete mWatcher;
     mWatcher = 0;
   }
+  mLineNumber = -1;
+  mRecordLineNumber = -1;
+  mRecordNumber = -1;
+  mMaxRecordNumber = -1;
+  mHoldCurrentRecord = false;
 }
 
 bool QgsDelimitedTextFile::open()
@@ -95,25 +100,24 @@ bool QgsDelimitedTextFile::open()
       QgsDebugMsg( "Data file " + mFileName + " could not be opened" );
       delete mFile;
       mFile = 0;
-      return false;
     }
-    mStream = new QTextStream( mFile );
-    if ( ! mEncoding.isEmpty() )
+    if( mFile )
     {
-      QTextCodec *codec =  QTextCodec::codecForName( mEncoding.toAscii() );
-      mStream->setCodec( codec );
-    }
-    mMaxRecordNumber = -1;
-    mHoldCurrentRecord = false;
-    if ( mWatcher ) delete mWatcher;
-    if ( mUseWatcher )
-    {
-      mWatcher = new QFileSystemWatcher( this );
-      mWatcher->addPath( mFileName );
-      connect( mWatcher, SIGNAL( fileChanged( QString ) ), this, SLOT( updateFile() ) );
+      mStream = new QTextStream( mFile );
+      if ( ! mEncoding.isEmpty() )
+      {
+        QTextCodec *codec =  QTextCodec::codecForName( mEncoding.toAscii() );
+        mStream->setCodec( codec );
+      }
+      if ( mUseWatcher )
+      {
+        mWatcher = new QFileSystemWatcher( this );
+        mWatcher->addPath( mFileName );
+        connect( mWatcher, SIGNAL( fileChanged( QString ) ), this, SLOT( updateFile() ) );
+      }
     }
   }
-  return true;
+  return mFile != 0;
 }
 
 void QgsDelimitedTextFile::updateFile()
@@ -501,6 +505,7 @@ int QgsDelimitedTextFile::fieldIndex( QString name )
 
 bool QgsDelimitedTextFile::setNextRecordId( long nextRecordId )
 {
+  if( ! mFile ) return false;
   mHoldCurrentRecord = nextRecordId == mRecordLineNumber;
   if ( mHoldCurrentRecord ) return true;
   return setNextLineNumber( nextRecordId );
@@ -524,7 +529,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextRecord( QStringList &reco
     // Find the first non-blank line to read
     QString buffer;
     status = nextLine( buffer, true );
-    if ( status != RecordOk ) return status;
+    if ( status != RecordOk ) return RecordEOF;
 
     mCurrentRecord.clear();
     mRecordLineNumber = mLineNumber;

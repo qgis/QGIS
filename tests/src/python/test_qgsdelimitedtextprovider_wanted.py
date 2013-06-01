@@ -1346,25 +1346,11 @@ def test_029_file_watcher():
             '#fid': 4L,
             '#geometry': 'None',
             },
-        13002L: {
+        16002L: {
             'id': u'5',
             'description': u'toad',
             'name': u'toad',
             '#fid': 2L,
-            '#geometry': 'None',
-            },
-        14003L: {
-            'id': u'6',
-            'description': u'mole',
-            'name': u'mole',
-            '#fid': 3L,
-            '#geometry': 'None',
-            },
-        14004L: {
-            'id': u'7',
-            'description': u'badger',
-            'name': u'badger',
-            '#fid': 4L,
             '#geometry': 'None',
             },
         }
@@ -1372,6 +1358,10 @@ def test_029_file_watcher():
         'Request 2 did not return any data',
         'Request 7 did not return any data',
         'Request 11 did not return any data',
+        'Request 13 did not return any data',
+        'Request 14 did not return any data',
+        u'Errors in file temp_file',
+        u'The file has been updated by another application - reloading',
         u'Errors in file temp_file',
         u'The file has been updated by another application - reloading',
         u'Errors in file temp_file',
