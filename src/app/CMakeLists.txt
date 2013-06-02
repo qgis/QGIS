@@ -46,7 +46,6 @@ SET(QGIS_APP_SRCS
   qgssavestyletodbdialog.cpp
 
   qgsmaptooladdfeature.cpp
-  qgsmaptooladdvertex.cpp
   qgsmaptooladdpart.cpp
   qgsmaptooladdring.cpp
   qgsmaptoolannotation.cpp
@@ -54,7 +53,6 @@ SET(QGIS_APP_SRCS
   qgsmaptoolchangelabelproperties.cpp
   qgsmaptooldeletering.cpp
   qgsmaptooldeletepart.cpp
-  qgsmaptooldeletevertex.cpp
   qgsmaptooledit.cpp
   qgsmaptoolfeatureaction.cpp
   qgsmaptoolformannotation.cpp
@@ -66,7 +64,6 @@ SET(QGIS_APP_SRCS
   qgsmaptoolmeasureangle.cpp
   qgsmaptoolmovefeature.cpp
   qgsmaptoolmovelabel.cpp
-  qgsmaptoolmovevertex.cpp
   qgsmaptooloffsetcurve.cpp
   qgsmaptoolreshape.cpp
   qgsmaptoolrotatefeature.cpp
@@ -204,11 +201,9 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolcapture.h
   qgsmaptooladdpart.h
   qgsmaptooladdring.h
-  qgsmaptooladdvertex.h
   qgsmaptoolchangelabelproperties.h
   qgsmaptooldeletepart.h
   qgsmaptooldeletering.h
-  qgsmaptooldeletevertex.h
   qgsmaptoolfeatureaction.h
   qgsmaptoolpinlabels.h
   qgsmaptoolshowhidelabels.h
@@ -216,7 +211,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolmeasureangle.h
   qgsmaptoolmovefeature.h
   qgsmaptoolmovelabel.h
-  qgsmaptoolmovevertex.h
   qgsmaptooloffsetcurve.h
   qgsmaptoolreshape.h
   qgsmaptoolrotatefeature.h

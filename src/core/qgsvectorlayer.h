@@ -1101,6 +1101,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** return string representing 'true' for a checkbox (added in 1.4)
      * @note not available in python bindings
+     * FIXME: need SIP binding for QPair<QString, QString>
      */
     QPair<QString, QString> checkedState( int idx );
 
@@ -1304,6 +1305,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     QString metadata();
 
+    /** @note not available in python bindings */
     inline QgsGeometryCache* cache() { return mCache; }
 
     /**
@@ -1337,6 +1339,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Is emitted, before changes are commited to the data provider */
     void beforeCommitChanges();
+
+    /** Is emitted, before changes are rolled back*/
+    void beforeRollBack();
 
     /**
      * Will be emitted, when a new attribute has been added to this vector layer.

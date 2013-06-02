@@ -81,6 +81,9 @@ class QgsWFSServer
     /**Don't use the default constructor*/
     QgsWFSServer();
 
+    /**Get service address from REQUEST_URI if not specified in the configuration*/
+    QString serviceUrl() const;
+
     /**Map containing the WMS parameters*/
     QMap<QString, QString> mParameterMap;
     QgsConfigParser* mConfigParser;

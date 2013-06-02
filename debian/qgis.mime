@@ -6,4 +6,4 @@ application/x-raster-ecw; qgis '%s'; description="ECW raster data"; test=test -n
 application/x-raster-mrsid; qgis '%s'; description="MrSID raster data"; test=test -n "$DISPLAY"; nametemplate=%s.sid; priority=2
 application/x-raster-mif; qgis '%s'; description="MapInfo file"; test=test -n "$DISPLAY"; nametemplate=%s.mif; priority=2
 application/x-esri-shape; qgis '%s'; description="ESRI shape file"; test=test -n "$DISPLAY"; nametemplate=%s.shp; priority=2
-application/x-qgis-project; qgis '%s'; description="Quantum GIS Project"; test=test -n "$DISPLAY"; nametemplate=%s.qgs
+application/x-qgis-project; qgis '%s'; description="QGIS Project"; test=test -n "$DISPLAY"; nametemplate=%s.qgs

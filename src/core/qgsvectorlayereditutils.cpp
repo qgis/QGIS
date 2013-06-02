@@ -224,6 +224,10 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
   QgsFeatureList::iterator select_it = featureList.begin();
   for ( ; select_it != featureList.end(); ++select_it )
   {
+    if ( !select_it->geometry() )
+    {
+      continue;
+    }
     QList<QgsGeometry*> newGeometries;
     QList<QgsPoint> topologyTestPoints;
     QgsGeometry* newGeometry = 0;

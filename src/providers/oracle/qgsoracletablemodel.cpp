@@ -39,7 +39,7 @@ QgsOracleTableModel::~QgsOracleTableModel()
 {
 }
 
-void QgsOracleTableModel::addTableEntry( QgsOracleLayerProperty layerProperty )
+void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProperty )
 {
   QgsDebugMsg( layerProperty.toString() );
 
@@ -261,7 +261,7 @@ bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value
   return true;
 }
 
-QString QgsOracleTableModel::layerURI( const QModelIndex &index, QString connInfo, bool useEstimatedMetadata )
+QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata )
 {
   if ( !index.isValid() )
   {

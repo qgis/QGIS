@@ -216,7 +216,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
 
     /**
      * Emitted when active state changed
-     * @param set Whether the definition is set
+     * @param active Whether the definition is active
      */
     void dataDefinedActivated( bool active );
 

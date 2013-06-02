@@ -45,6 +45,8 @@ class QgsProjectParser: public QgsConfigParser
 
     virtual void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const;
 
+    virtual void owsGeneralAndResourceList( QDomElement& parentElement, QDomDocument& doc, const QString& strHref ) const;
+
     virtual void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const;
     /**Returns one or possibly several maplayers for a given type name. If no layers/style are found, an empty list is returned*/
     virtual QList<QgsMapLayer*> mapLayerFromTypeName( const QString& tName, bool useCache = true ) const;
@@ -112,6 +114,8 @@ class QgsProjectParser: public QgsConfigParser
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
     QString serviceUrl() const;
+
+    QString wfsServiceUrl() const;
 
     /**Returns the names of the published wfs layers (not the ids as in wfsLayers() )*/
     QStringList wfsLayerNames() const;
@@ -183,6 +187,15 @@ class QgsProjectParser: public QgsConfigParser
                     const QStringList &nonIdentifiableLayers,
                     QString version, //1.1.1 or 1.3.0
                     bool fullProjectSettings = false ) const;
+
+    void addOWSLayers( QDomDocument &doc,
+                       QDomElement &parentElem,
+                       const QDomElement &legendElem,
+                       const QMap<QString, QgsMapLayer *> &layerMap,
+                       const QStringList &nonIdentifiableLayers,
+                       const QString& strHref,
+                       QgsRectangle& combinedBBox,
+                       QString strGroup ) const;
 
     static void addLayerProjectSettings( QDomElement& layerElem, QDomDocument& doc, QgsMapLayer* currentLayer );
 

@@ -550,6 +550,22 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
+    else if ( request.compare( "GetContext", Qt::CaseInsensitive ) == 0 )
+    {
+      try
+      {
+        QDomDocument doc = theServer->getContext();
+        theRequestHandler->sendGetStyleResponse( doc );
+      }
+      catch ( QgsMapServiceException& ex )
+      {
+        theRequestHandler->sendServiceException( ex );
+      }
+
+      delete theRequestHandler;
+      delete theServer;
+      continue;
+    }
     else if ( request.compare( "GetStyles", Qt::CaseInsensitive ) == 0 || request.compare( "GetStyle", Qt::CaseInsensitive ) == 0 ) // GetStyle for compatibility with earlier QGIS versions
     {
       try

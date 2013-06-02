@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta http-equiv="Content-Language" content="en" />
 <meta name="Author" content="Marco Pasetti" />
-<meta name="Description" content="How to prepare a MS-Windows Quantum GIS Release" />
+<meta name="Description" content="How to prepare a MS-Windows QGIS Release" />
 
 <title>WinQGIS Release How-To</title>
 
@@ -136,7 +136,7 @@ a:visited:hover	{
 
 <body>
 
-<h1>How to prepare a MS-Windows Quantum GIS Release</h1>
+<h1>How to prepare a MS-Windows QGIS Release</h1>
 
 <div class="table-of-contents">
 
@@ -147,16 +147,16 @@ a:visited:hover	{
 <p><ol>
 <li><a href="#MSYS">MSYS</a></li>
 <li><a href="#MinGW">MinGW</a></li>
-<li><a href="#Quantum GIS MSYS Environment">Quantum GIS MSYS Environment</a></li>
+<li><a href="#QGIS MSYS Environment">QGIS MSYS Environment</a></li>
 <li><a href="#Qt OpenSource">Qt OpenSource</a></li>
 <li><a href="#Python">Python</a></li>
 <li><a href="#SIP">SIP</a></li>
 <li><a href="#PyQt">PyQt</a></li>
 <li><a href="#CMake">CMake</a></li>
-<li><a href="#Quantum GIS">Quantum GIS Build</a></li>
-<li><a href="#Quantum GIS Package">Quantum GIS self-contained Package</a></li>
+<li><a href="#QGIS">QGIS Build</a></li>
+<li><a href="#QGIS Package">QGIS self-contained Package</a></li>
 <li><a href="#NSIS">NSIS</a></li>
-<li><a href="#Quantum GIS Installer">Quantum GIS Installer</a></li>
+<li><a href="#QGIS Installer">QGIS Installer</a></li>
 </ol></p>
 
 <p><a href="#Credits and Contacts">Credits and Contacts</a></p>
@@ -172,7 +172,7 @@ a:visited:hover	{
 <p><h3>Introduction</h3></p>
 
 
-<p>This document explains how to prepare a MS-Windows Quantum GIS release (as a self-contained package installer)
+<p>This document explains how to prepare a MS-Windows QGIS release (as a self-contained package installer)
 using the scripts contained in the ms-windows folder. In order to avoid mistakes or misunderstandings,
 I highly recommend to follow each step and command exactly as they are written in this document.</p>
 
@@ -219,12 +219,12 @@ MSYS coreutils package</a></p>
 
 
 
-<div id="Quantum GIS MSYS Environment">
+<div id="QGIS MSYS Environment">
 
-<p><h3>3. Quantum GIS MSYS Environment</h3></p>
+<p><h3>3. QGIS MSYS Environment</h3></p>
 
 <p>Download the <a target="_blank" href="http://download.osgeo.org/qgis/win32/msys.zip">
-Quantum GIS MSYS Environment</a></p>
+QGIS MSYS Environment</a></p>
 
 <p>Extract the whole package to <code>c:\msys\local</code></p>
 
@@ -348,12 +348,12 @@ Download the <a target="_blank" href="http://www.cmake.org/files/v2.6/cmake-2.6.
 
 
 
-<div id="Quantum GIS">
+<div id="QGIS">
 
-<p><h3>9. Quantum GIS Build (0.11.0)</h3></p>
+<p><h3>9. QGIS Build (0.11.0)</h3></p>
 
 <p>
-Download the <a target="_blank" href="http://download.osgeo.org/qgis/src/qgis_0.11.0.tar.gz">Quantum GIS source code</a>
+Download the <a target="_blank" href="http://download.osgeo.org/qgis/src/qgis_0.11.0.tar.gz">QGIS source code</a>
 </td>
 </tr></table>
 
@@ -394,15 +394,15 @@ make install</code></pre>
 
 
 
-<div id="Quantum GIS Package">
+<div id="QGIS Package">
 
-<p><h3>10. Quantum GIS self-contained Package</h3></p>
+<p><h3>10. QGIS self-contained Package</h3></p>
 
 <p>Copy all the content of the ms-windows folder to a temporary directory, for example <code>c:\temp</code>.</p>
 
 <p>Launch the file <code>c:\temp\QGIS-Packager.bat</code> and select the option number 2.</p>
 
-<p>When finished, you should have a Quantum GIS self-contained release package in <code>c:\temp\QGIS-Release-Package</code>.</p>
+<p>When finished, you should have a QGIS self-contained release package in <code>c:\temp\QGIS-Release-Package</code>.</p>
 
 </div>
 
@@ -422,9 +422,9 @@ make install</code></pre>
 
 
 
-<div id="Quantum GIS Installer">
+<div id="QGIS Installer">
 
-<p><h3>12. Quantum GIS Installer</h3></p>
+<p><h3>12. QGIS Installer</h3></p>
 
 <p>Open the the file <code>c:\temp\QGIS-Installer.nsi</code>.</p>
 
@@ -434,7 +434,7 @@ the <code>RELEASE_BINARY_REVISION</code> variables.</p>
 
 <p>Finally, right click on the file <code>c:\temp\QGIS-Installer.nsi</code> and select <code>Compile NSIS Script</code>.</p>
 
-<p>When finished, you should have the Quantum GIS release installer in <code>c:\temp</code>.</p>
+<p>When finished, you should have the QGIS release installer in <code>c:\temp</code>.</p>
 
 </div>
 
@@ -445,10 +445,10 @@ the <code>RELEASE_BINARY_REVISION</code> variables.</p>
 
 <p><h3>Credits and Contacts</h3></p>
 
-<p>The Quantum GIS MSYS Environment and the Quantum GIS Packager and Installer scripts are provided by Marco Pasetti.</p>
+<p>The QGIS MSYS Environment and the QGIS Packager and Installer scripts are provided by Marco Pasetti.</p>
 
 <p>
-To contact him, e-mail to: Quantum GIS Development Mailing List
+To contact him, e-mail to: QGIS Development Mailing List
 (<a target="_blank" href="http://lists.osgeo.org/mailman/listinfo/qgis-developer">http://lists.osgeo.org/mailman/listinfo/qgis-developer</a>).
 </p>
 

@@ -64,7 +64,7 @@ void QgsCredentialDialog::requestCredentials( QString realm, QString *username, 
 
   QgsDebugMsg( "exec()" );
   *ok = exec() == QDialog::Accepted;
-  QgsDebugMsg( QString( "exec(): %1" ).arg( ok ? "true" : "false" ) );
+  QgsDebugMsg( QString( "exec(): %1" ).arg( *ok ? "true" : "false" ) );
 
   QApplication::restoreOverrideCursor();
 

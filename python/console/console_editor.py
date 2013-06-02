@@ -558,24 +558,19 @@ class Editor(QsciScintilla):
                                                     'Hey, type something to run!')
         msgEditorUnsaved = QCoreApplication.translate('PythonConsole',
                                                       'You have to save the file before running it.')
-        if not autoSave:
-            if filename is None:
-                if not self.isModified():
-                    self.parent.pc.callWidgetMessageBarEditor(msgEditorBlank, 0, True)
-                    return
-                else:
-                    self.parent.pc.callWidgetMessageBarEditor(msgEditorUnsaved, 0, True)
-                    return
-            if self.isModified():
-                self.parent.pc.callWidgetMessageBarEditor(msgEditorUnsaved, 0, True)
+        if filename is None:
+            if not self.isModified():
+                self.parent.pc.callWidgetMessageBarEditor(msgEditorBlank, 0, True)
                 return
-            else:
-                if self.syntaxCheck(fromContextMenu=False):
-                    self._runSubProcess(filename)
-        else:
-            if self.syntaxCheck(fromContextMenu=False):
+        if self.isModified() and not autoSave:
+            self.parent.pc.callWidgetMessageBarEditor(msgEditorUnsaved, 0, True)
+            return
+        if self.syntaxCheck(fromContextMenu=False):
+            if autoSave:
                 tmpFile = self.createTempFile()
                 self._runSubProcess(tmpFile, True)
+            else:
+                self._runSubProcess(filename)
 
     def runSelectedCode(self):
         cmd = self.selectedText()

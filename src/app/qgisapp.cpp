@@ -225,11 +225,9 @@
 #include "qgsmaptooladdfeature.h"
 #include "qgsmaptooladdpart.h"
 #include "qgsmaptooladdring.h"
-#include "qgsmaptooladdvertex.h"
 #include "qgsmaptoolannotation.h"
 #include "qgsmaptooldeletering.h"
 #include "qgsmaptooldeletepart.h"
-#include "qgsmaptooldeletevertex.h"
 #include "qgsmaptoolfeatureaction.h"
 #include "qgsmaptoolformannotation.h"
 #include "qgsmaptoolhtmlannotation.h"
@@ -237,7 +235,6 @@
 #include "qgsmaptoolmeasureangle.h"
 #include "qgsmaptoolmovefeature.h"
 #include "qgsmaptoolrotatefeature.h"
-#include "qgsmaptoolmovevertex.h"
 #include "qgsmaptooloffsetcurve.h"
 #include "qgsmaptoolpan.h"
 #include "qgsmaptoolselect.h"
@@ -2847,19 +2844,29 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
   for ( int i = 0; i < list.size(); i++ )
   {
     QString composedURI;
+    QString layerName = list.at( i ).split( ':' ).value( 0 );
+    QString layerType = list.at( i ).split( ':' ).value( 1 );
+
     if ( layertype != "GRASS" )
     {
-      composedURI = uri + "|layername=" + list.at( i );
+      composedURI = uri + "|layername=" + layerName;
     }
     else
     {
-      composedURI = uri + "|layerindex=" + list.at( i );
+      composedURI = uri + "|layerindex=" + layerName;
+    }
+
+    if ( !layerType.isEmpty() )
+    {
+      composedURI += "|geometrytype=" + layerType;
     }
 
     // addVectorLayer( composedURI,  list.at( i ), "ogr" );
 
     QgsDebugMsg( "Creating new vector layer using " + composedURI );
-    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, list.at( i ), "ogr" );
+    QString name = list.at( i );
+    name.replace( ":", " " );
+    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, "ogr" );
     if ( layer && layer->isValid() )
     {
       myList << layer;
@@ -8758,7 +8765,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     QgsVectorLayerProperties *vlp = NULL; // See note above about reusing this
     if ( vlp )
     {
-      vlp->reset();
+      vlp->syncToLayer();
     }
     else
     {

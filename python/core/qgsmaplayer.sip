@@ -84,6 +84,23 @@ class QgsMapLayer : QObject
     void setAbstract( const QString& abstract );
     const QString& abstract() const;
 
+    void setKeywordList( const QString& kwdList );
+    const QString& keywordList() const;
+
+    /* Layer attribution information */
+    void setAttribution( const QString& attrib );
+    const QString& attribution() const;
+    void setAttributionUrl( const QString& attribUrl );
+    const QString& attributionUrl() const;
+
+    /* Layer metadataUrl information */
+    void setMetadataUrl( const QString& metaUrl );
+    const QString& metadataUrl() const;
+    void setMetadataUrlType( const QString& metaUrlType );
+    const QString& metadataUrlType() const;
+    void setMetadataUrlFormat( const QString& metaUrlFormat );
+    const QString& metadataUrlFormat() const;
+
     /**Synchronises with changes in the datasource
         @note added in version 1.6*/
     virtual void reload();
@@ -306,11 +323,11 @@ class QgsMapLayer : QObject
      * @note This method was added in QGIS 1.4 **/
     void setCacheImage( QImage * thepImage /Transfer/ );
 
-    /* Returns the current blending mode for a layer 
+    /* Returns the current blending mode for a layer
         @note added in version 1.9*/
     const QPainter::CompositionMode blendMode() const;
-    /* Sets the blending mode for a layer 
-        @note added in version 1.9*/    
+    /* Sets the blending mode for a layer
+        @note added in version 1.9*/
     void setBlendMode( const QPainter::CompositionMode blendMode );
 
   public slots:

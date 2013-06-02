@@ -386,6 +386,12 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
           {
             if ( featuresToAdd[i].id() != ids[i] )
             {
+              //update selection
+              if ( L->mSelectedFeatureIds.contains( ids[i] ) )
+              {
+                L->mSelectedFeatureIds.remove( ids[i] );
+                L->mSelectedFeatureIds.insert( featuresToAdd[i].id() );
+              }
               emit featureDeleted( ids[i] );
               emit featureAdded( featuresToAdd[i].id() );
             }

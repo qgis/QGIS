@@ -1,14 +1,13 @@
-README for QGIS 
+README for QGIS
 ----------------------------------------
-Quantum GIS (QGIS) is an Open Source Geographic Information System. The
-project was born in May of 2002 and was established as a project on
-SourceForge in June of the same year. We've worked hard to make GIS
-software (which is traditionally expensive commercial software) a viable
-prospect for anyone with basic access to a Personal Computer.  QGIS
-currently runs on most Unix platforms, Windows, and OS X. QGIS is
-developed using the Qt toolkit (http://qt.digia.com) and C++.  This
-means that QGIS feels snappy to use and has a pleasing, easy to use
-graphical user interface. 
+QGIS is an Open Source Geographic Information System. The project was born in
+May of 2002 and was established as a project on SourceForge in June of the same
+year. We've worked hard to make GIS software (which is traditionally expensive
+commercial software) a viable prospect for anyone with basic access to a
+Personal Computer.  QGIS currently runs on most Unix platforms, Windows, and OS
+X. QGIS is developed using the Qt toolkit (http://qt.digia.com) and C++.  This
+means that QGIS feels snappy to use and has a pleasing, easy to use graphical
+user interface.
 
 QGIS aims to be an easy to use GIS, providing common functions and
 features. The initial goal was to provide a GIS data viewer. QGIS has
@@ -40,24 +39,24 @@ Supported vector formats include:
   Spatialite
   Other OGR supported formats
 
-NOTE -- Please follow the installation instructions carefully. 
-After extracting the distribution, you can find the HTML version of the 
-installation document in qgis/doc/index.html. The installation document is 
+NOTE -- Please follow the installation instructions carefully.
+After extracting the distribution, you can find the HTML version of the
+installation document in qgis/doc/index.html. The installation document is
 also available as PDF in the same directory.
 
 HELP US --  Please submit bug reports using the QGIS bug tracker at:
             http://hub.qgis.org/
             When reporting a bug, either login or, if you don't
-            have a qgis trac, provide an email address where we can 
+            have a qgis trac, provide an email address where we can
             request additional information.
-  
+ 
 SUPPORT -   You can get support in the following ways:
             1.  Using the QGIS community site at http://qgis.org
             2.  Joining the qgis-users mailing list at:
                 http://lists.osgeo.org/mailman/listinfo/qgis-user
-            3.  Using IRC by joining the #qgis channel on irc.freenode.net. 
-                Please wait around for a response to your question as many 
-                folks on the channel are doing other things and it may take a 
+            3.  Using IRC by joining the #qgis channel on irc.freenode.net.
+                Please wait around for a response to your question as many
+                folks on the channel are doing other things and it may take a
                 while for them to notice your question.
 
 QGIS is on GitHub at http://github.com/qgis/Quantum-GIS. If you wish to contribute

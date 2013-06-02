@@ -205,6 +205,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     , extent_( 0 )
     , ogrLayer( 0 )
     , ogrOrigLayer( 0 )
+    , mOgrGeometryTypeFilter( wkbUnknown )
     , ogrDriver( 0 )
     , valid( false )
     , featuresCounted( -1 )
@@ -266,6 +267,11 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
       if ( field == "subset" )
       {
         mSubsetString = value;
+      }
+
+      if ( field == "geometrytype" )
+      {
+        mOgrGeometryTypeFilter = ogrWkbGeometryTypeFromName( value );
       }
     }
   }
@@ -424,6 +430,11 @@ bool QgsOgrProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
     uri += QString( "|subset=%1" ).arg( mSubsetString );
   }
 
+  if ( mOgrGeometryTypeFilter != wkbUnknown )
+  {
+    uri += QString( "|geometrytype=%1" ).arg( ogrWkbGeometryTypeName( mOgrGeometryTypeFilter ) );
+  }
+
   setDataSourceUri( uri );
 
   OGR_L_ResetReading( ogrLayer );
@@ -454,8 +465,54 @@ QString QgsOgrProvider::subsetString()
   return mSubsetString;
 }
 
+QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
+{
+  QString geom;
+  switch ( type )
+  {
+    case wkbUnknown:            geom = "Unknown"; break;
+    case wkbPoint:              geom = "Point"; break;
+    case wkbLineString:         geom = "LineString"; break;
+    case wkbPolygon:            geom = "Polygon"; break;
+    case wkbMultiPoint:         geom = "MultiPoint"; break;
+    case wkbMultiLineString:    geom = "MultiLineString"; break;
+    case wkbMultiPolygon:       geom = "MultiPolygon"; break;
+    case wkbGeometryCollection: geom = "GeometryCollection"; break;
+    case wkbNone:               geom = "None"; break;
+    case wkbPoint25D:           geom = "Point25D"; break;
+    case wkbLineString25D:      geom = "LineString25D"; break;
+    case wkbPolygon25D:         geom = "Polygon25D"; break;
+    case wkbMultiPoint25D:      geom = "MultiPoint25D"; break;
+    case wkbMultiLineString25D: geom = "MultiLineString25D"; break;
+    case wkbMultiPolygon25D:    geom = "MultiPolygon25D"; break;
+    default:                    geom = QString( "Unknown WKB: %1" ).arg( type );
+  }
+  return geom;
+}
+
+OGRwkbGeometryType QgsOgrProvider::ogrWkbGeometryTypeFromName( QString typeName ) const
+{
+  if ( typeName == "Point" ) return wkbPoint;
+  else if ( typeName == "LineString" ) return wkbLineString;
+  else if ( typeName == "Polygon" ) return wkbPolygon;
+  else if ( typeName == "MultiPoint" ) return wkbMultiPoint;
+  else if ( typeName == "MultiLineString" ) return wkbMultiLineString;
+  else if ( typeName == "MultiPolygon" ) return wkbMultiPolygon;
+  else if ( typeName == "GeometryCollection" ) return wkbGeometryCollection;
+  else if ( typeName == "None" ) return wkbNone;
+  else if ( typeName == "Point25D" ) return wkbPoint25D;
+  else if ( typeName == "LineString25D" ) return wkbLineString25D;
+  else if ( typeName == "Polygon25D" ) return wkbPolygon25D;
+  else if ( typeName == "MultiPoint25D" ) return wkbMultiPoint25D;
+  else if ( typeName == "MultiLineString25D" ) return wkbMultiLineString25D;
+  else if ( typeName == "MultiPolygon25D" ) return wkbMultiPolygon25D;
+  else if ( typeName == "GeometryCollection25D" ) return wkbGeometryCollection25D;
+  return wkbUnknown;
+}
+
 QStringList QgsOgrProvider::subLayers() const
 {
+  QgsDebugMsg( "Entered." );
   if ( !valid )
   {
     return QStringList();
@@ -471,29 +528,47 @@ QStringList QgsOgrProvider::subLayers() const
     QString theLayerName = FROM8( OGR_FD_GetName( fdef ) );
     OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( fdef );
 
-    int theLayerFeatureCount = OGR_L_GetFeatureCount( layer, 0 );
-
-    QString geom;
-    switch ( layerGeomType )
+    if ( layerGeomType != wkbUnknown )
     {
-      case wkbUnknown:            geom = "Unknown"; break;
-      case wkbPoint:              geom = "Point"; break;
-      case wkbLineString:         geom = "LineString"; break;
-      case wkbPolygon:            geom = "Polygon"; break;
-      case wkbMultiPoint:         geom = "MultiPoint"; break;
-      case wkbMultiLineString:    geom = "MultiLineString"; break;
-      case wkbGeometryCollection: geom = "GeometryCollection"; break;
-      case wkbNone:               geom = "None"; break;
-      case wkbPoint25D:           geom = "Point25D"; break;
-      case wkbLineString25D:      geom = "LineString25D"; break;
-      case wkbPolygon25D:         geom = "Polygon25D"; break;
-      case wkbMultiPoint25D:      geom = "MultiPoint25D"; break;
-      case wkbMultiLineString25D: geom = "MultiLineString25D"; break;
-      case wkbMultiPolygon25D:    geom = "MultiPolygon25D"; break;
-      default:                    geom = QString( "Unknown WKB: %1" ).arg( layerGeomType );
-    }
+      int theLayerFeatureCount = OGR_L_GetFeatureCount( layer, 0 );
 
-    mSubLayerList << QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( theLayerFeatureCount == -1 ? tr( "Unknown" ) : QString::number( theLayerFeatureCount ) ).arg( geom );
+      QString geom = ogrWkbGeometryTypeName( layerGeomType );
+
+      mSubLayerList << QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( theLayerFeatureCount == -1 ? tr( "Unknown" ) : QString::number( theLayerFeatureCount ) ).arg( geom );
+      QgsDebugMsg( "Unknown geometry type, count features for each geometry type" );
+    }
+    else
+    {
+      // Add virtual sublayers for supported geometry types if layer type is unknown
+      // Count features for geometry types
+      QMap<OGRwkbGeometryType, int> fCount;
+      // TODO: avoid reading attributes, setRelevantFields cannot be called here because it is not constant
+      //setRelevantFields( true, QgsAttributeList() );
+      OGR_L_ResetReading( ogrLayer );
+      OGRFeatureH fet;
+      while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
+      {
+        if ( !fet ) continue;
+        OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
+        if ( geom )
+        {
+          OGRwkbGeometryType gType = OGR_G_GetGeometryType( geom );
+          fCount[gType] = fCount.value( gType ) + 1;
+        }
+        OGR_F_Destroy( fet );
+      }
+      OGR_L_ResetReading( ogrLayer );
+      int i = 0;
+      foreach ( OGRwkbGeometryType gType, fCount.keys() )
+      {
+        QString geom = ogrWkbGeometryTypeName( gType );
+
+        QString sl = QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( fCount.value( gType ) ).arg( geom );
+        QgsDebugMsg( "sub layer: " + sl );
+        mSubLayerList << sl;
+        i++;
+      }
+    }
   }
 
   return mSubLayerList;
@@ -528,7 +603,9 @@ int QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
     geomType = OGR_FD_GetGeomType( fdef );
 
     //Some ogr drivers (e.g. GML) are not able to determine the geometry type of a layer like this.
-    //In such cases, we examine the first feature
+    //In such cases, we use virtual sublayers for each geometry (originally the type was
+    // guessed from the first feature which resulted in loss of other formats)
+    /*
     if ( geomType == wkbUnknown )
     {
       OGR_L_ResetReading( ogrLayer );
@@ -544,6 +621,7 @@ int QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
       }
       OGR_L_ResetReading( ogrLayer );
     }
+    */
   }
   return geomType;
 }
@@ -553,7 +631,14 @@ void QgsOgrProvider::loadFields()
   //the attribute fields need to be read again when the encoding changes
   mAttributeFields.clear();
 
-  geomType = getOgrGeomType( ogrLayer );
+  if ( mOgrGeometryTypeFilter != wkbUnknown )
+  {
+    geomType = mOgrGeometryTypeFilter;
+  }
+  else
+  {
+    geomType = getOgrGeomType( ogrLayer );
+  }
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
   if ( fdef )
   {
@@ -733,7 +818,7 @@ QGis::WkbType QgsOgrProvider::geometryType() const
 }
 
 /**
- * Return the feature type
+ * Return the feature count
  */
 long QgsOgrProvider::featureCount() const
 {
@@ -2190,7 +2275,31 @@ void QgsOgrProvider::recalculateFeatureCount()
 
   // feature count returns number of features within current spatial filter
   // so we remove it if there's any and then put it back
-  featuresCounted = OGR_L_GetFeatureCount( ogrLayer, true );
+  if ( mOgrGeometryTypeFilter == wkbUnknown )
+  {
+    featuresCounted = OGR_L_GetFeatureCount( ogrLayer, true );
+  }
+  else
+  {
+    featuresCounted = 0;
+    OGR_L_ResetReading( ogrLayer );
+    setRelevantFields( true, QgsAttributeList() );
+    OGR_L_ResetReading( ogrLayer );
+    OGRFeatureH fet;
+    while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
+    {
+      if ( !fet ) continue;
+      OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
+      if ( geom )
+      {
+        OGRwkbGeometryType gType = OGR_G_GetGeometryType( geom );
+        if ( gType == mOgrGeometryTypeFilter ) featuresCounted++;
+      }
+      OGR_F_Destroy( fet );
+    }
+    OGR_L_ResetReading( ogrLayer );
+
+  }
 
   if ( filter )
   {

@@ -2,8 +2,8 @@
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
 
   <mime-type type="application/x-qgis-project">
-    <comment>Quantum GIS Project</comment>
-    <comment xml:lang="de">Quantum GIS-Projekt</comment>
+    <comment>QGIS Project</comment>
+    <comment xml:lang="de">QGIS-Projekt</comment>
     <sub-class-of type="application/xml"/>
     <alias type="application/x-qgis"/>
     <icon name="qgis-mime-icon.png"/>
@@ -16,8 +16,8 @@
   </mime-type>
 
   <mime-type type="application/x-qgis-layer-settings">
-    <comment>Quantum GIS layer settings</comment>
-    <comment xml:lang="de">Quantum GIS Layer Einstellungen</comment>
+    <comment>QGIS layer settings</comment>
+    <comment xml:lang="de">QGIS Layer Einstellungen</comment>
     <sub-class-of type="application/xml"/>
     <icon name="qgis-mime-icon.png"/>
     <magic priority="50">
