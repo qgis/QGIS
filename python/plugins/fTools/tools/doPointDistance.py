@@ -153,7 +153,13 @@ class Dialog(QDialog, Ui_Dialog):
 
     def compute(self, line1, line2, field1, field2, outPath, matType, nearest, progressBar):
         layer1 = ftools_utils.getVectorLayerByName(line1)
-        layer2 = ftools_utils.getVectorLayerByName(line2)
+        layer2 = ftools_utils.getVectorLayerByName(line2)        
+        # if finding nearest n geometries from same layer,
+        # increment by 1 to compensate for self check that results in 0 distance
+        if layer1.id() == layer2.id():
+            if nearest > 0:
+                nearest = nearest + 1		
+
         provider1 = layer1.dataProvider()
         provider2 = layer2.dataProvider()
         sindex = QgsSpatialIndex()
@@ -190,10 +196,16 @@ class Dialog(QDialog, Ui_Dialog):
         first = True
         start = 15.00
         add = 85.00 / provider1.featureCount()
-	fit1 = provider1.getFeatures()
+        fit1 = provider1.getFeatures()
+        # store features in lists to prevent ogriterator closing
+        featList = []
         while fit1.nextFeature(inFeat):
-            inGeom = inFeat.geometry()
-            inID = inFeat.attributes()[index1].toString()
+            featList.append(inFeat)
+            inFeat = QgsFeature()
+        for feat in featList:		
+            inID = feat.attributes()[index1].toString()
+            inGeom = feat.geometry()
+            
             if first:
                 featList = sindex.nearestNeighbor(inGeom.asPoint(), nearest)
                 first = False
@@ -207,7 +219,7 @@ class Dialog(QDialog, Ui_Dialog):
                 provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(j) ) ).nextFeature( outFeat )
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
-                data.append(str(float(dist)))
+                data.append(unicode(float(dist)))
             writer.writerow(data)
             start = start + add
             progressBar.setValue(start)
@@ -221,9 +233,14 @@ class Dialog(QDialog, Ui_Dialog):
         start = 15.00
         add = 85.00 / provider1.featureCount()
         fit1 = provider1.getFeatures()
+        # store features in lists to prevent ogriterator closing
+        featList = []
         while fit1.nextFeature(inFeat):
-            inGeom = inFeat.geometry()
-            inID = inFeat.attributes()[index1].toString()
+            featList.append(inFeat)
+            inFeat = QgsFeature()
+        for feat in featList:
+            inID = feat.attributes()[index1].toString()
+            inGeom = feat.geometry()            
             featList = sindex.nearestNeighbor(inGeom.asPoint(), nearest)
             distList = []
             vari = 0.00
