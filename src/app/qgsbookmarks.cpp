@@ -89,6 +89,9 @@ QgsBookmarks::QgsBookmarks( QWidget *parent, Qt::WFlags fl )
 
   lstBookmarks->setModel( model );
 
+  QSettings settings;
+  lstBookmarks->header()->restoreState( settings.value( "/Windows/Bookmarks/headerstate" ).toByteArray() );
+
 #ifndef QGISDEBUG
   lstBookmarks->setColumnHidden( 0, true );
 #endif
@@ -110,6 +113,7 @@ void QgsBookmarks::saveWindowLocation()
 {
   QSettings settings;
   settings.setValue( "/Windows/Bookmarks/geometry", saveGeometry() );
+  settings.setValue( "/Windows/Bookmarks/headerstate", lstBookmarks->header()->saveState() );
 }
 
 void QgsBookmarks::newBookmark()
