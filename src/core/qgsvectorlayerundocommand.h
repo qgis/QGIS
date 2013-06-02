@@ -43,7 +43,7 @@ class QgsVectorLayerUndoCommand : public QUndoCommand
     inline QgsGeometryCache *cache() { return mBuffer->L->cache(); }
 
     virtual int id() const { return -1; }
-    virtual bool mergeWith( QUndoCommand * ) { return -1; }
+    virtual bool mergeWith( QUndoCommand * ) { return false; }
 
   protected:
     QgsVectorLayerEditBuffer* mBuffer;

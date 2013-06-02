@@ -45,9 +45,9 @@ struct QgsOracleLayerProperty
   QStringList          pkCols;
   QString              sql;
 
-  int size() { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
+  int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
-  QgsOracleLayerProperty at( int i )
+  QgsOracleLayerProperty at( int i ) const
   {
     QgsOracleLayerProperty property;
 
@@ -66,7 +66,7 @@ struct QgsOracleLayerProperty
   }
 
 #if QGISDEBUG
-  QString toString()
+  QString toString() const
   {
     QString typeString;
     foreach ( QGis::WkbType type, types )
