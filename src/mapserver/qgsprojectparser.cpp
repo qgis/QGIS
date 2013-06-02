@@ -629,6 +629,17 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       {
         continue;
       }
+      //vector layer without geometry
+      if ( currentLayer->type() == QgsMapLayer::VectorLayer )
+      {
+        QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+        QGis::WkbType wkbType = vectorLayer->wkbType();
+        if ( wkbType == QGis::WKBNoGeometry )
+        {
+          continue;
+        }
+      }
+      // queryable layer
       if ( nonIdentifiableLayers.contains( currentLayer->id() ) )
       {
         layerElem.setAttribute( "queryable", "0" );
