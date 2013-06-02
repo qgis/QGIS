@@ -245,7 +245,7 @@ void QgsProjectParser::owsGeneralAndResourceList( QDomElement& parentElement, QD
 {
   // set parentElement id
   QFileInfo projectFileInfo( mProjectPath );
-  parentElement.setAttribute( "id", "ows-context-"+projectFileInfo.baseName() );
+  parentElement.setAttribute( "id", "ows-context-" + projectFileInfo.baseName() );
   // OWSContext General element
   QDomElement serviceElem = doc.createElement( "Service" );
 
@@ -343,11 +343,11 @@ void QgsProjectParser::owsGeneralAndResourceList( QDomElement& parentElement, QD
     combinedBBox.invert();
   }
   QDomElement lowerCornerElem = doc.createElement( "ows:LowerCorner" );
-  QDomText lowerCornerText = doc.createTextNode( QString::number( combinedBBox.xMinimum() ) +" "+  QString::number( combinedBBox.yMinimum() ));
+  QDomText lowerCornerText = doc.createTextNode( QString::number( combinedBBox.xMinimum() ) + " " +  QString::number( combinedBBox.yMinimum() ) );
   lowerCornerElem.appendChild( lowerCornerText );
   bboxElem.appendChild( lowerCornerElem );
   QDomElement upperCornerElem = doc.createElement( "ows:upperCorner" );
-  QDomText upperCornerText = doc.createTextNode( QString::number( combinedBBox.xMaximum() ) +" "+  QString::number( combinedBBox.yMaximum() ));
+  QDomText upperCornerText = doc.createTextNode( QString::number( combinedBBox.xMaximum() ) + " " +  QString::number( combinedBBox.yMaximum() ) );
   upperCornerElem.appendChild( upperCornerText );
   bboxElem.appendChild( upperCornerElem );
   generalElem.appendChild( bboxElem );
@@ -854,13 +854,13 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
 }
 
 void QgsProjectParser::addOWSLayers( QDomDocument &doc,
-                                  QDomElement &parentElem,
-                                  const QDomElement &legendElem,
-                                  const QMap<QString, QgsMapLayer *> &layerMap,
-                                  const QStringList &nonIdentifiableLayers,
-                                  const QString& strHref,
-                                  QgsRectangle& combinedBBox,
-                                  QString strGroup) const
+                                     QDomElement &parentElem,
+                                     const QDomElement &legendElem,
+                                     const QMap<QString, QgsMapLayer *> &layerMap,
+                                     const QStringList &nonIdentifiableLayers,
+                                     const QString& strHref,
+                                     QgsRectangle& combinedBBox,
+                                     QString strGroup ) const
 {
   const QgsCoordinateReferenceSystem& projectCrs = projectCRS();
   QDomNodeList legendChildren = legendElem.childNodes();
@@ -882,7 +882,7 @@ void QgsProjectParser::addOWSLayers( QDomDocument &doc,
       }
       else
       {
-        group = strGroup +"/"+ name;
+        group = strGroup + "/" + name;
       }
 
       if ( currentChildElem.attribute( "embedded" ) == "1" )
@@ -955,7 +955,7 @@ void QgsProjectParser::addOWSLayers( QDomDocument &doc,
       {
         layerElem.setAttribute( "queryable", "true" );
       }
-      
+
       // is the layer visible ?
       if ( currentChildElem.firstChildElement().firstChildElement().attribute( "visible" ) == "1" )
       {
@@ -966,7 +966,7 @@ void QgsProjectParser::addOWSLayers( QDomDocument &doc,
         layerElem.setAttribute( "hidden", "true" );
       }
 
-      if (!strGroup.isEmpty() )
+      if ( !strGroup.isEmpty() )
       {
         layerElem.setAttribute( "group", strGroup );
       }

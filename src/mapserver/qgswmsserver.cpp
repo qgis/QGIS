@@ -264,7 +264,7 @@ QDomDocument QgsWMSServer::getContext()
   owsContextElem.setAttribute( "xmlns:kml", "http://www.opengis.net/kml/2.2" );
   owsContextElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
   owsContextElem.setAttribute( "xmlns:ns9", "http://www.w3.org/2005/Atom" );
-  owsContextElem.setAttribute( "xmlns:xal", "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0");
+  owsContextElem.setAttribute( "xmlns:xal", "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0" );
   owsContextElem.setAttribute( "xmlns:ins", "http://www.inspire.org" );
   owsContextElem.setAttribute( "version", "0.3.1" );
   doc.appendChild( owsContextElem );

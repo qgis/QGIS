@@ -66,9 +66,9 @@ void QgsGeomColumnTypeThread::run()
   }
 
   int i = 0, n = layerProperties.size();
-  for ( QVector<QgsPostgresLayerProperty>::iterator it=layerProperties.begin(),
-                                                    end=layerProperties.end();
-        it != end; ++it)
+  for ( QVector<QgsPostgresLayerProperty>::iterator it = layerProperties.begin(),
+        end = layerProperties.end();
+        it != end; ++it )
   {
     QgsPostgresLayerProperty& layerProperty = *it;
     if ( !mStopped )

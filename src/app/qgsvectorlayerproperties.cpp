@@ -233,15 +233,15 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mLayerAttributionLineEdit->setText( layer->attribution() );
     mLayerAttributionUrlLineEdit->setText( layer->attributionUrl() );
     mLayerMetadataUrlLineEdit->setText( layer->metadataUrl() );
-    mLayerMetadataUrlTypeComboBox->setCurrentIndex( 
-        mLayerMetadataUrlTypeComboBox->findText(
-          layer->metadataUrlType()
-        )
+    mLayerMetadataUrlTypeComboBox->setCurrentIndex(
+      mLayerMetadataUrlTypeComboBox->findText(
+        layer->metadataUrlType()
+      )
     );
-    mLayerMetadataUrlFormatComboBox->setCurrentIndex( 
-        mLayerMetadataUrlFormatComboBox->findText(
-          layer->metadataUrlFormat()
-        )
+    mLayerMetadataUrlFormatComboBox->setCurrentIndex(
+      mLayerMetadataUrlFormatComboBox->findText(
+        layer->metadataUrlFormat()
+      )
     );
   }
 

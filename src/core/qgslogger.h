@@ -32,7 +32,7 @@ class QFile;
   }
 #define QgsDebugCall QgsScopeLogger _qgsScopeLogger(__FILE__, __FUNCTION__, __LINE__)
 #else
-#define QgsDebugCall 
+#define QgsDebugCall
 #define QgsDebugMsg(str)
 #define QgsDebugMsgLevel(str, level)
 #endif
@@ -132,20 +132,22 @@ class CORE_EXPORT QgsLogger
     static int sPrefixLength;
 };
 
-class QgsScopeLogger {
-public:
-  QgsScopeLogger(const char* file, const char* func, int line)
-    : _file(file), _func(func), _line(line)
-  {
-    QgsLogger::debug("Entering.", 1, _file, _func, _line);
-  }
-  ~QgsScopeLogger() {
-    QgsLogger::debug("Leaving.", 1, _file, _func, _line);
-  }
-private:
-  const char *_file;
-  const char *_func;
-  int _line;
+class QgsScopeLogger
+{
+  public:
+    QgsScopeLogger( const char* file, const char* func, int line )
+        : _file( file ), _func( func ), _line( line )
+    {
+      QgsLogger::debug( "Entering.", 1, _file, _func, _line );
+    }
+    ~QgsScopeLogger()
+    {
+      QgsLogger::debug( "Leaving.", 1, _file, _func, _line );
+    }
+  private:
+    const char *_file;
+    const char *_func;
+    int _line;
 };
 
 #endif

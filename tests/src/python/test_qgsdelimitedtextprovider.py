@@ -177,7 +177,7 @@ def delimitedTextData( testname, filename, requests, verbose, **params ):
                 data.update(rdata)
                 if not rdata:
                     log.append("Request "+str(nr)+" did not return any data")
-                if verbose: 
+                if verbose:
                     print "Request returned",len(rdata.keys()),"features"
         for msg in logger.messages():
             filelogname = 'temp_file' if 'tmp' in filename.lower() else filename

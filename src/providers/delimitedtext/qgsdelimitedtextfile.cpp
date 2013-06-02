@@ -101,7 +101,7 @@ bool QgsDelimitedTextFile::open()
       delete mFile;
       mFile = 0;
     }
-    if( mFile )
+    if ( mFile )
     {
       mStream = new QTextStream( mFile );
       if ( ! mEncoding.isEmpty() )
@@ -505,7 +505,7 @@ int QgsDelimitedTextFile::fieldIndex( QString name )
 
 bool QgsDelimitedTextFile::setNextRecordId( long nextRecordId )
 {
-  if( ! mFile ) return false;
+  if ( ! mFile ) return false;
   mHoldCurrentRecord = nextRecordId == mRecordLineNumber;
   if ( mHoldCurrentRecord ) return true;
   return setNextLineNumber( nextRecordId );

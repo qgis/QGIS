@@ -736,12 +736,12 @@ void QgsRasterLayerProperties::sync()
   mLayerAttributionLineEdit->setText( mRasterLayer->attribution() );
   mLayerAttributionUrlLineEdit->setText( mRasterLayer->attributionUrl() );
   mLayerMetadataUrlLineEdit->setText( mRasterLayer->metadataUrl() );
-  mLayerMetadataUrlTypeComboBox->setCurrentIndex( 
+  mLayerMetadataUrlTypeComboBox->setCurrentIndex(
     mLayerMetadataUrlTypeComboBox->findText(
       mRasterLayer->metadataUrlType()
     )
   );
-  mLayerMetadataUrlFormatComboBox->setCurrentIndex( 
+  mLayerMetadataUrlFormatComboBox->setCurrentIndex(
     mLayerMetadataUrlFormatComboBox->findText(
       mRasterLayer->metadataUrlFormat()
     )

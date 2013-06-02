@@ -117,7 +117,7 @@ QDomDocument QgsWFSServer::getCapabilities()
   getCapabilitiesElement.appendChild( dcpTypeElement );
   QDomElement httpElement = doc.createElement( "HTTP"/*wfs:HTTP*/ );
   dcpTypeElement.appendChild( httpElement );
-  
+
   //Prepare url
   QString hrefString = mConfigParser->wfsServiceUrl();
   if ( hrefString.isEmpty() )

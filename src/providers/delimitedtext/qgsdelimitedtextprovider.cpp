@@ -863,7 +863,7 @@ void QgsDelimitedTextProvider::resetStream()
 QgsFeatureIterator QgsDelimitedTextProvider::getFeatures( const QgsFeatureRequest& request )
 {
   // If the file has become invalid, check that it is still invalid.
-  if( mLayerValid && ! mValid ) rescanFile();
+  if ( mLayerValid && ! mValid ) rescanFile();
 
   return QgsFeatureIterator( new QgsDelimitedTextFeatureIterator( this, request ) );
 }
