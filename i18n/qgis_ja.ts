@@ -12341,7 +12341,7 @@ Database: %3</source>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="81"/>
         <source>ID</source>
-        <translation type="unfinished">ID</translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="82"/>
@@ -15380,7 +15380,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="137"/>
         <source>Loading previews...</source>
-        <translation type="unfinished"></translation>
+        <translation>プレビューのロード中...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="209"/>
@@ -28648,7 +28648,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolvertexedit.cpp" line="47"/>
         <source>Could not snap segment. Have you set the tolerance in Settings &gt; Snapping Options?</source>
-        <translation type="unfinished"></translation>
+        <translation>セグメントをスナップできませんでした.設定&gt;スナッピングオプションの許容値の設定をしましたか?</translation>
     </message>
     <message>
         <source>Don&apos;t show this message again</source>
@@ -38859,33 +38859,33 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1905"/>
         <source>Keyword list</source>
-        <translation type="unfinished">キーワードリスト</translation>
+        <translation>キーワードリスト</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1918"/>
         <source>Attribution</source>
-        <translation type="unfinished"></translation>
+        <translation>帰属</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1937"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1959"/>
         <source>Url</source>
-        <translation type="unfinished"></translation>
+        <translation>Url</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1950"/>
         <source>MetadataUrl</source>
-        <translation type="unfinished"></translation>
+        <translation>メタデータUrl</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1969"/>
         <source>Type</source>
-        <translation type="unfinished">タイプ</translation>
+        <translation>タイプ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1995"/>
         <source>Format</source>
-        <translation type="unfinished">形式</translation>
+        <translation>形式</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2030"/>
@@ -43254,7 +43254,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="35"/>
         <source>Number of features</source>
-        <translation type="unfinished"></translation>
+        <translation>地物の数</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="39"/>
@@ -44908,33 +44908,33 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1372"/>
         <source>Keyword list</source>
-        <translation type="unfinished">キーワードリスト</translation>
+        <translation>キーワードリスト</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1385"/>
         <source>Attribution</source>
-        <translation type="unfinished"></translation>
+        <translation>帰属</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1404"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1426"/>
         <source>Url</source>
-        <translation type="unfinished"></translation>
+        <translation>Url</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1417"/>
         <source>MetadataUrl</source>
-        <translation type="unfinished"></translation>
+        <translation>メタデータUrl</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1436"/>
         <source>Type</source>
-        <translation type="unfinished">タイプ</translation>
+        <translation>タイプ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1462"/>
         <source>Format</source>
-        <translation type="unfinished">形式</translation>
+        <translation>形式</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1497"/>
