@@ -217,9 +217,8 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 
       feature.setGeometryAndOwnership( wkb, OGR_G_WkbSize( geom ) );
     }
-
     if (( useIntersect && ( !feature.geometry() || !feature.geometry()->intersects( mRequest.filterRect() ) ) )
-        || ( geometryTypeFilter && ( !feature.geometry() || feature.geometry()->wkbType() != ( QGis::WkbType )P->mOgrGeometryTypeFilter ) ) )
+        || ( geometryTypeFilter && ( !feature.geometry() || wkbFlatten(( OGRwkbGeometryType )feature.geometry()->wkbType() ) != wkbFlatten( P->mOgrGeometryTypeFilter ) ) ) )
     {
       OGR_F_Destroy( fet );
       return false;

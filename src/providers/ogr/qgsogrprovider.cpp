@@ -552,7 +552,7 @@ QStringList QgsOgrProvider::subLayers() const
         OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
         if ( geom )
         {
-          OGRwkbGeometryType gType = OGR_G_GetGeometryType( geom );
+          OGRwkbGeometryType gType = wkbFlatten( OGR_G_GetGeometryType( geom ) );
           fCount[gType] = fCount.value( gType ) + 1;
         }
         OGR_F_Destroy( fet );
