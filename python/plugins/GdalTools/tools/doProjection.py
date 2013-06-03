@@ -122,7 +122,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
       inputFn = self.getInputFileName()
       arguments << inputFn
-      self.tempFile = QString( inputFn )
+      self.tempFile = inputFn
       self.needOverwrite = False
       if not self.tempFile.isEmpty():
         if self.tempFile.toLower().contains( QRegExp( "\.tif{1,2}" ) ):
@@ -157,7 +157,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
   def getBatchOutputFileName(self, fn):
       # get GeoTiff
-      fn = QString( fn ).replace( QRegExp( "\.[a-zA-Z]{2,4}$" ), ".tif" )
+      fn = re.sub( r'\.[a-zA-Z]{2,4}$', r'.tif', fn )
       return BaseBatchWidget.getBatchOutputFileName( self, fn )
 
   def addLayerIntoCanvas(self, fileInfo):

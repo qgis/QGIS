@@ -198,7 +198,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments.append("nodata=" + str(self.datametricsNoDataSpin.value()))
       return arguments.join(":")
 
-  def loadFields(self, vectorFile = QString()):
+  def loadFields(self, vectorFile = ''):
       self.zfieldCombo.clear()
 
       if vectorFile.isEmpty():

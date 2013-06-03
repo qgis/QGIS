@@ -66,7 +66,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
 
 
   def doCopyLine( self ):
-      output = QString()
+      output = ''
       items = self.rasterInfoList.selectedItems()
       for r in items:
         output.append( r.text() + "\n" )
@@ -75,7 +75,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
         clipboard.setText( output )
 
   def doCopyAll( self ):
-      output = QString()
+      output = ''
       for r in range( self.rasterInfoList.count() ):
         output.append( self.rasterInfoList.item( r ).text() + "\n" )
       if not output.isEmpty():
@@ -84,7 +84,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
 
   def keyPressEvent( self, e ):
       if ( e.modifiers() == Qt.ControlModifier or e.modifiers() == Qt.MetaModifier ) and e.key() == Qt.Key_C:
-        items = QString()
+        items = ''
         for r in range( self.rasterInfoList.count() ):
           items.append( self.rasterInfoList.item( r ).text() + "\n" )
         if not items.isEmpty():

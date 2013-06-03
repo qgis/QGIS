@@ -98,7 +98,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments << self.attributeEdit.text()
       if True: # XXX in this moment the -i argument is not optional
         arguments << "-i"
-        arguments << QString(str(self.intervalDSpinBox.value()))
+        arguments << unicode(self.intervalDSpinBox.value())
       arguments << self.getInputFileName()
       arguments << self.outSelector.filename()
       return arguments

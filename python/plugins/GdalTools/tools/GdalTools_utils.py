@@ -45,20 +45,20 @@ import sys
 
 # Escapes arguments and return them joined in a string
 def escapeAndJoin(strList):
-    joined = QString()
+    joined = ''
     for s in strList:
-      if s.contains(" "):
+      if s.find(" ") is not -1:
         escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') + '"'
       else:
         escaped = s
       joined += escaped + " "
-    return joined.trimmed()
+    return joined.strip()
 
 # Retrieves last used dir from persistent settings
 def getLastUsedDir():
     settings = QSettings()
-    lastProjectDir = settings.value( "/UI/lastProjectDir", QVariant(".") ).toString()
-    return settings.value( "/GdalTools/lastUsedDir", QVariant(lastProjectDir) ).toString()
+    lastProjectDir = settings.value( "/UI/lastProjectDir", u"." )
+    return settings.value( "/GdalTools/lastUsedDir", QVariant(lastProjectDir) )
 
 # Stores last used dir in persistent settings
 def setLastUsedDir(filePath):
@@ -73,7 +73,7 @@ def setLastUsedDir(filePath):
 # Retrieves GDAL binaries location
 def getGdalBinPath():
   settings = QSettings()
-  return settings.value( "/GdalTools/gdalPath", QVariant( "" ) ).toString()
+  return settings.value( "/GdalTools/gdalPath", u"" )
 
 # Stores GDAL binaries location
 def setGdalBinPath( path ):
@@ -83,7 +83,7 @@ def setGdalBinPath( path ):
 # Retrieves GDAL python modules location
 def getGdalPymodPath():
   settings = QSettings()
-  return settings.value( "/GdalTools/gdalPymodPath", QVariant( "" ) ).toString()
+  return settings.value( "/GdalTools/gdalPymodPath", u"" )
 
 # Stores GDAL python modules location
 def setGdalPymodPath( path ):
@@ -93,7 +93,7 @@ def setGdalPymodPath( path ):
 # Retrieves GDAL help files location
 def getHelpPath():
   settings = QSettings()
-  return settings.value( "/GdalTools/helpPath", QVariant( "" ) ).toString()
+  return settings.value( "/GdalTools/helpPath", u"" )
 
 # Stores GDAL help files location
 def setHelpPath( path ):
@@ -103,7 +103,7 @@ def setHelpPath( path ):
 # Retrieves last used encoding from persistent settings
 def getLastUsedEncoding():
     settings = QSettings()
-    return settings.value( "/UI/encoding", QVariant("System") ).toString()
+    return settings.value( "/UI/encoding", u"System" )
 
 # Stores last used encoding in persistent settings
 def setLastUsedEncoding(encoding):
@@ -220,7 +220,7 @@ def getRasterFiles(path, recursive=False):
   return rasters
 
 def fillRasterOutputFormat(aFilter = None, filename = None):
-  shortName = QString()
+  shortName = ''
 
   if aFilter != None:
     supportedRasters = GdalConfig.getSupportedRasters()
@@ -239,7 +239,7 @@ def fillRasterOutputFormat(aFilter = None, filename = None):
   return shortName
 
 def fillVectorOutputFormat(aFilter = None, filename = None):
-  shortName = QString()
+  shortName = ''
 
   if aFilter != None:
     supportedVectors = GdalConfig.getSupportedVectors()
@@ -292,11 +292,11 @@ def getRasterSRS( parent, fileName ):
       processSRS.close()
 
     if arr.isEmpty():
-      return QString()
+      return ''
 
     info = QString( arr ).split( "\n" ).filter( "AUTHORITY" )
     if info.count() == 0:
-      return QString()
+      return ''
 
     srs = info[ info.count() - 1 ]
     srs = srs.simplified().remove( "AUTHORITY[" )
@@ -338,7 +338,7 @@ def getRasterExtent(parent, fileName):
 # so sometimes the dialog excedes the screen width
 class FileDialog:
   @classmethod
-  def getDialog(self, parent = None, caption = QString(), acceptMode = QFileDialog.AcceptOpen, fileMode = QFileDialog.ExistingFile, filter = QString(), selectedFilter = None, useEncoding = False):
+  def getDialog(self, parent = None, caption = '', acceptMode = QFileDialog.AcceptOpen, fileMode = QFileDialog.ExistingFile, filter = '', selectedFilter = None, useEncoding = False):
     if useEncoding:
       dialog = QgsEncodingFileDialog(parent, caption, getLastUsedDir(), filter, getLastUsedEncoding())
     else:
@@ -351,8 +351,8 @@ class FileDialog:
 
     if not dialog.exec_():
       if useEncoding:
-        return (QString(), None)
-      return QString()
+        return ('', None)
+      return ''
 
     # change the selected filter value
     if selectedFilter != None:
@@ -390,26 +390,26 @@ class FileDialog:
     return files
 
   @classmethod
-  def getOpenFileNames(self, parent = None, caption = QString(), filter = QString(), selectedFilter = None, useEncoding = False):
+  def getOpenFileNames(self, parent = None, caption = '', filter = '', selectedFilter = None, useEncoding = False):
     return self.getDialog(parent, caption, QFileDialog.AcceptOpen, QFileDialog.ExistingFiles, filter, selectedFilter, useEncoding)
 
   @classmethod
-  def getOpenFileName(self, parent = None, caption = QString(), filter = QString(), selectedFilter = None, useEncoding = False):
+  def getOpenFileName(self, parent = None, caption = '', filter = '', selectedFilter = None, useEncoding = False):
     return self.getDialog(parent, caption, QFileDialog.AcceptOpen, QFileDialog.ExistingFile, filter, selectedFilter, useEncoding)
 
   @classmethod
-  def getSaveFileName(self, parent = None, caption = QString(), filter = QString(), selectedFilter = None, useEncoding = False):
+  def getSaveFileName(self, parent = None, caption = '', filter = '', selectedFilter = None, useEncoding = False):
     return self.getDialog(parent, caption, QFileDialog.AcceptSave, QFileDialog.AnyFile, filter, selectedFilter, useEncoding)
 
   @classmethod
-  def getExistingDirectory(self, parent = None, caption = QString(), useEncoding = False):
-    return self.getDialog(parent, caption, QFileDialog.AcceptOpen, QFileDialog.DirectoryOnly, QString(), None, useEncoding)
+  def getExistingDirectory(self, parent = None, caption = '', useEncoding = False):
+    return self.getDialog(parent, caption, QFileDialog.AcceptOpen, QFileDialog.DirectoryOnly, '', None, useEncoding)
 
 class FileFilter:
   @classmethod
   def getFilter(self, typeName):
       settings = QSettings()
-      return settings.value( "/GdalTools/" + typeName + "FileFilter", QVariant( "" ) ).toString()
+      return settings.value( "/GdalTools/" + typeName + "FileFilter", u"" )
 
   @classmethod
   def setFilter(self, typeName, aFilter):
@@ -417,7 +417,7 @@ class FileFilter:
       settings.setValue( "/GdalTools/" + typeName + "FileFilter", QVariant( aFilter ) )
 
   # stores the supported raster file filter
-  rastersFilter = QString()
+  rastersFilter = ''
 
   # Retrieves the filter for supported raster files
   @classmethod
@@ -429,7 +429,7 @@ class FileFilter:
       # separates multiple extensions that joined by a slash
       if QGis.QGIS_VERSION[0:3] < "1.5":
           formats = self.rastersFilter.split( ";;" )
-          self.rastersFilter = QString()
+          self.rastersFilter = ''
           for f in formats:
             oldExts = QString(f).remove( QRegExp('^.*\(') ).remove( QRegExp('\).*$') )
             newExts = QString(oldExts).replace( '/', ' *.' )
@@ -448,7 +448,7 @@ class FileFilter:
      self.setFilter("lastRaster", aFilter)
 
   # stores the supported vectors file filter
-  vectorsFilter = QString()
+  vectorsFilter = ''
 
   # Retrieves the filter for supported vector files
   @classmethod
@@ -533,7 +533,7 @@ class GdalConfig:
 
       longName = QString(driver.LongName).remove( QRegExp( '\(.*$' ) ).trimmed()
       shortName = QString(driver.ShortName).remove( QRegExp( '\(.*$' ) ).trimmed()
-      extensions = QString()
+      extensions = ''
 
       description = QString(driver.GetDescription())
       glob = QStringList()
@@ -597,7 +597,7 @@ class GdalConfig:
         continue
 
       driverName = QString(driver.GetName())
-      longName = QString()
+      longName = ''
       glob = QStringList()
 
       if driverName.startsWith( "AVCBin" ):
@@ -711,7 +711,7 @@ class GdalConfig:
     @classmethod
     def long2ShortName(self, longName):
       if longName.isEmpty():
-        return QString()
+        return ''
 
       if self.dict_long2shortName.has_key(longName):
         return self.dict_long2shortName[longName]
@@ -720,7 +720,7 @@ class GdalConfig:
       if gdal.GetDriverCount() == 0:
         gdal.AllRegister()
 
-      shortName = QString()
+      shortName = ''
 
       # for each loaded GDAL driver
       for i in range(gdal.GetDriverCount()):
@@ -740,9 +740,9 @@ class GdalConfig:
     @classmethod
     def filename2ShortName(self, fileName):
       if fileName.isEmpty():
-        return QString()
+        return ''
 
-      shortName = QString()
+      shortName = ''
 
       # for each raster format search for the file extension
       formats = FileFilter.allRastersFilter().split( ";;" )

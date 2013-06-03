@@ -106,8 +106,7 @@ class GdalToolsBasePluginWidget:
       if outFn == None:
         return
 
-      outFn = QString(outFn)
-      if outFn.isEmpty():
+      if outFn == '':
         QMessageBox.warning(self, self.tr( "Warning" ), self.tr( "No output file created." ) )
         return
 
