@@ -674,7 +674,7 @@ columns</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="28"/>
         <source>Input line or polygon vector layer</source>
-        <translation>ラインまたはポリゴンのベクタレイヤへの入力</translation>
+        <translation>ラインまたはポリゴンの入力ベクタレイヤ</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="68"/>
@@ -721,7 +721,7 @@ columns</source>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="25"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="64"/>
         <source>Input vector layer</source>
-        <translation>ベクタレイヤの入力</translation>
+        <translation>入力ベクタレイヤ</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="60"/>
@@ -851,7 +851,7 @@ columns</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="27"/>
         <source>Input point layer</source>
-        <translation>ポイントレイヤを入力する</translation>
+        <translation>入力ポイントレイヤ</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="55"/>
@@ -923,12 +923,12 @@ columns</source>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="22"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="90"/>
         <source>Input polygon vector layer</source>
-        <translation>ポリゴンベクタレイヤを入力</translation>
+        <translation>入力ポリゴンベクタレイヤ</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="36"/>
         <source>Input point vector layer</source>
-        <translation>ポイントベクタレイヤの入力</translation>
+        <translation>入力ポイントベクタレイヤ</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="50"/>
@@ -993,7 +993,7 @@ columns</source>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="25"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="28"/>
         <source>Input Vector Layer</source>
-        <translation>ベクタレイヤの入力</translation>
+        <translation>入力ベクタレイヤ</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="33"/>
@@ -1222,7 +1222,7 @@ columns</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="127"/>
         <source>Input line vector layer</source>
-        <translation>ラインベクタレイヤの入力</translation>
+        <translation>入力ラインベクタレイヤ</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="26"/>
@@ -1781,12 +1781,12 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="20"/>
         <source>Select by layers in the folder</source>
-        <translation>フォルダ内でレイヤで選択されている</translation>
+        <translation>フォルダのレイヤによって選択する</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="29"/>
         <source>Shapefile type</source>
-        <translation>Shapefileタイプ</translation>
+        <translation>シェープファイルタイプ</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="37"/>
@@ -3935,7 +3935,7 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation>ポリゴンベクタレイヤを入力</translation>
+        <translation>入力ポリゴンベクタレイヤ</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
@@ -3943,7 +3943,7 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation>ベクタレイヤの入力</translation>
+        <translation>入力ベクタレイヤ</translation>
     </message>
     <message>
         <source>Layer CRS</source>
@@ -3979,7 +3979,7 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation>ポイントベクタレイヤの入力</translation>
+        <translation>入力ポイントベクタレイヤ</translation>
     </message>
     <message>
         <source>Voronoi polygon</source>
@@ -3995,7 +3995,7 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
     </message>
     <message>
         <source>Input line vector layer</source>
-        <translation>ラインベクタレイヤの入力</translation>
+        <translation>入力ラインベクタレイヤ</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
@@ -4003,7 +4003,7 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
     </message>
     <message>
         <source>Input layer</source>
-        <translation>レイヤの入力</translation>
+        <translation>入力レイヤ</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
