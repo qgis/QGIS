@@ -137,9 +137,6 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
   {
     mDataTypesString = ts.join( ", " );
     mActionDataTypes = new QAction( tr( "Field type: " ) + mDataTypesString, this );
-
-    // list fields and types in submenu, since there may be many
-    mActionDataTypes->setMenu( mFieldsMenu );
   }
 
   if ( mVectorLayer )
@@ -276,6 +273,9 @@ void QgsDataDefinedButton::aboutToShowMenu()
       QAction* act = mFieldsMenu->addAction( tr( "No matching field types found" ) );
       act->setEnabled( false );
     }
+
+    // list fields and types in submenu, since there may be many
+    mActionDataTypes->setMenu( mFieldsMenu );
 
     mDefineMenu->addSeparator();
   }
