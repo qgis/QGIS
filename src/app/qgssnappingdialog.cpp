@@ -297,10 +297,11 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
       {
         connect( cbxAvoidIntersection, SIGNAL( stateChanged( int ) ), this, SLOT( apply() ) );
       }
-      cbxEnable->setChecked( defaultSnappingString != "off" );
       setTopologicalEditingState();
       setIntersectionSnappingState();
     }
+
+    cbxEnable->setChecked( defaultSnappingString != "off" );
 
     // no settings for this layer yet
     return;
