@@ -9781,7 +9781,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2385"/>
         <source>QGIS code revision</source>
-        <translation>QGISコードレビジョン</translation>
+        <translation>QGISコードリビジョン</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2389"/>
@@ -35152,7 +35152,7 @@ For more information, please visit its homepage and QGIS wiki.</source>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation>プラグインは無いモジュールが必要です</translation>
+        <translation>このプラグインに必要なモジュールが足りません</translation>
     </message>
     <message>
         <source>only locally available</source>
@@ -54404,7 +54404,7 @@ This function can take any number of arguments.
         <translation>&lt;h3&gt;coalesce() 関数&lt;/h3&gt;
 引数リストの中ではじめに現れたNULLではない値を返します.
 &lt;br&gt;
-This function can take any number of arguments.
+この関数は任意の数の引数をとります.
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;coalesce(expression1, expression2 ...)&lt;/code&gt;&lt;br&gt;
 
@@ -56668,7 +56668,7 @@ This function takes two arguments.
         <translation>&lt;h3&gt;randf() 関数&lt;/h3&gt;
 最小値と最大値の引数で指定された範囲内(境界値を含む)でランダムな浮動小数点数を返します.
 &lt;br&gt;
-This function takes two arguments.
+この関数は2つの引数をとります.
 &lt;h4&gt;構文&lt;/h4&gt;
 &lt;code&gt;randf(min, max)&lt;/code&gt;&lt;br&gt;
 
