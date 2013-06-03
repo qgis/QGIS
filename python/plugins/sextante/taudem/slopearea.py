@@ -93,5 +93,5 @@ class SlopeArea(GeoAlgorithm):
 
         TauDEMUtils.executeTauDEM(commands, progress)
 
-    def helpFile(self):
-        return os.path.join(os.path.dirname(__file__), "help", self.cmdName + ".html")
+    #def helpFile(self):
+    #    return os.path.join(os.path.dirname(__file__), "help", self.cmdName + ".html")

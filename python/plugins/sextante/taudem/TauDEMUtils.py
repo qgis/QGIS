@@ -45,7 +45,7 @@ class TauDEMUtils:
             folder = ""
 
         if SextanteUtils.isMac():
-            testfolder = os.path.join(str(QgsApplication.prefixPath()), "bin")
+            testfolder = os.path.join(QgsApplication.prefixPath(), "bin")
             if os.path.exists(os.path.join(testfolder, "slopearea")):
                 folder = testfolder
             else:
@@ -61,7 +61,7 @@ class TauDEMUtils:
             folder = ""
 
         if SextanteUtils.isMac():
-            testfolder = os.path.join(str(QgsApplication.prefixPath()), "bin")
+            testfolder = os.path.join(QgsApplication.prefixPath(), "bin")
             if os.path.exists(os.path.join(testfolder, "mpiexec")):
                 folder = testfolder
             else:
