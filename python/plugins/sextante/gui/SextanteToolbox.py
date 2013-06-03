@@ -61,7 +61,7 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
         settings = QSettings()
         if not settings.contains(self.USE_CATEGORIES):
             settings.setValue(self.USE_CATEGORIES, True)
-        useCategories = settings.value(self.USE_CATEGORIES).toBool()
+        useCategories = settings.value(self.USE_CATEGORIES, type = bool)
         if useCategories:
             self.modeComboBox.setCurrentIndex(0)
         else:
@@ -174,7 +174,7 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
 
     def fillTree(self):
         settings = QSettings()
-        useCategories = settings.value(self.USE_CATEGORIES).toBool()
+        useCategories = settings.value(self.USE_CATEGORIES, type = bool)
         if useCategories:
             self.fillTreeUsingCategories()
         else:
@@ -192,7 +192,6 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                     recentItem = self.algorithmTree.topLevelItem(0)
                     treeWidget = recentItem.treeWidget()
                     treeWidget.takeTopLevelItem(treeWidget.indexOfTopLevelItem(recentItem))
-                    #self.algorithmTree.removeItemWidget(first, 0)
 
                 recentItem = QTreeWidgetItem()
                 recentItem.setText(0, self.tr("Recently used algorithms"))
@@ -362,7 +361,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
 
     def __init__(self, alg):
         settings = QSettings()
-        useCategories = settings.value(SextanteToolbox.USE_CATEGORIES)
+        useCategories = settings.value(SextanteToolbox.USE_CATEGORIES, type = bool)
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         icon = alg.getIcon()

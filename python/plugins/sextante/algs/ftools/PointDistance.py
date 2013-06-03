@@ -124,14 +124,14 @@ class PointDistance(GeoAlgorithm):
         total = 100.0 / float(len(features))
         for inFeat in features:
             inGeom = inFeat.geometry()
-            inID = inFeat.attributes()[inIdx].toString()
+            inID = inFeat.attributes()[inIdx]
             featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
             distList = []
             vari = 0.0
             for i in featList:
                 request = QgsFeatureRequest().setFilterFid(i)
                 outFeat = targetLayer.getFeatures(request).next()
-                outID = outFeat.attributes()[outIdx].toString()
+                outID = outFeat.attributes()[outIdx]
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
                 if matType == 0:
@@ -167,7 +167,7 @@ class PointDistance(GeoAlgorithm):
 
         for inFeat in features:
             inGeom = inFeat.geometry()
-            inID = inFeat.attributes()[inIdx].toString()
+            inID = inFeat.attributes()[inIdx]
             if first:
                 featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
                 first = False
@@ -175,7 +175,7 @@ class PointDistance(GeoAlgorithm):
                 for i in featList:
                     request = QgsFeatureRequest().setFilterFid(i)
                     outFeat = targetLayer.getFeatures(request).next()
-                    data.append(unicode(outFeat.attributes[outIdx].toString()))
+                    data.append(unicode(outFeat.attributes[outIdx]))
                 self.writer.writerow(data)
 
             data = [unicode(inID)]

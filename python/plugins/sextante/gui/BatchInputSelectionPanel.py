@@ -52,13 +52,13 @@ class BatchInputSelectionPanel(QtGui.QWidget):
 
     def showSelectionDialog(self):
         settings = QtCore.QSettings()
-        text = str(self.text.text())
+        text = unicode(self.text.text())
         if os.path.isdir(text):
             path = text
         elif os.path.isdir(os.path.dirname(text)):
             path = os.path.dirname(text)
         elif settings.contains("/SextanteQGIS/LastInputPath"):
-            path = str(settings.value( "/SextanteQGIS/LastInputPath",QtCore.QVariant("")).toString())
+            path = settings.value( "/SextanteQGIS/LastInputPath")
         else:
             path = ""
 

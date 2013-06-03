@@ -104,17 +104,7 @@ class ExtentFromLayer(GeoAlgorithm):
         geometry = QgsGeometry().fromPolygon([rect])
         feat = QgsFeature()
         feat.setGeometry(geometry)
-        attrs = [QVariant(minx),
-                 QVariant(miny),
-                 QVariant(maxx),
-                 QVariant(maxy),
-                 QVariant(cntx),
-                 QVariant(cnty),
-                 QVariant(area),
-                 QVariant(perim),
-                 QVariant(height),
-                 QVariant(width)
-                ]
+        attrs = [minx,miny,maxx,maxy,cntx,cnty,area,perim,height,width]
         feat.setAttributes(attrs)
         writer.addFeature(feat)
 
@@ -144,17 +134,7 @@ class ExtentFromLayer(GeoAlgorithm):
 
             geometry = QgsGeometry().fromPolygon([rect])
             feat.setGeometry(geometry)
-            attrs = [QVariant(minx),
-                     QVariant(miny),
-                     QVariant(maxx),
-                     QVariant(maxy),
-                     QVariant(cntx),
-                     QVariant(cnty),
-                     QVariant(area),
-                     QVariant(perim),
-                     QVariant(height),
-                     QVariant(width)
-                    ]
+            attrs = [minx,miny,maxx,maxy,cntx,cnty,area,perim,height,width]
             feat.setAttributes(attrs)
 
             writer.addFeature(feat)

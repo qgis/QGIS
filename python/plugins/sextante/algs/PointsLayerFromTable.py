@@ -58,8 +58,8 @@ class PointsLayerFromTable(GeoAlgorithm):
             progress.setPercentage((nElement*100)/nFeat)
             attrs = feature.attributes()
             try:
-                x =  float(attrs[xfieldindex].toString())
-                y =  float(attrs[yfieldindex].toString())
+                x =  float(attrs[xfieldindex])
+                y =  float(attrs[yfieldindex])
             except:
                 continue
             pt = QgsPoint(x, y)

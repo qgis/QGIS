@@ -56,7 +56,7 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
     def fillTree(self):
         self.items = {}
         self.tree.clear()
-        text = str(self.searchBox.text())
+        text = unicode(self.searchBox.text())
         settings = SextanteConfig.getSettings()
         priorityKeys = ['General', "Models", "Scripts"]
         for group in priorityKeys:
