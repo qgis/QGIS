@@ -1,0 +1,13 @@
+<h3>tostring 関数</h3>
+Converts a number to string.
+
+<p><h4>構文</h4>
+     tostring(<i>number</i>)</p>
+
+<p><h4>引数</h4>
+<!-- List args for functions here-->
+<i>number</i> &rarr; is integer or real.  The number to convert to string.</p>
+
+<p><h4>サンプル</h4>
+<!-- Show example of function.-->
+     tostring(123) &rarr; '123'</p>

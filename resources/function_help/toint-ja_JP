@@ -1,0 +1,13 @@
+<h3>toint 関数</h3>
+Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g '123asd' is invalid).
+
+<p><h4>構文</h4>
+     toint(<i>string</i>)</p>
+
+<p><h4>引数</h4>
+<!-- List args for functions here-->
+<i>  string</i> &rarr; is string.  The String to convert to integer number.</p>
+
+<p><h4>サンプル</h4>
+<!-- Show example of function.-->
+     toint('123') &rarr; 123</p>

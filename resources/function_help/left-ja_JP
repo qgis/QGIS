@@ -1,0 +1,15 @@
+<h3>left() 関数</h3>
+Returns a substring that contains the <i>n</i> leftmost characters of the string.
+
+<h4>構文</h4>
+<code>left(string, length)</code><br>
+
+<h4>引数</h4>
+<code>string</code> - is string. The string.
+<br>
+<code>length</code> - is int. The number of characters from the left to return.
+
+<h4>サンプル</h4>
+<!-- Show example of function.-->
+<code>left('Hello World',5) &rarr; 'Hello'</code><br>
+

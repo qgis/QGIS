@@ -1,0 +1,12 @@
+<h3>abs() 関数</h3>
+Returns the absolute value of a number.<br>
+
+
+<h4>構文</h4>
+abs(<i>value</i>)<br>
+
+<h4>引数</h4>
+<code>value</code> - a number.<br>
+
+<h4>サンプル</h4>
+<code>abs(-2) &rarr; 2</code><br>

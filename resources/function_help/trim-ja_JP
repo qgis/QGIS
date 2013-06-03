@@ -1,0 +1,13 @@
+<h3>trim() 関数</h3>
+Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
+
+<p><h4>構文</h4>
+     trim(<i>string</i>)</p>
+
+<p><h4>引数</h4>
+<!-- List args for functions here-->
+<i>  string</i> &rarr; is string. The string to trim.</p>
+
+<p><h4>サンプル</h4>
+<!-- Show example of function.-->
+     trim('   hello world    ') &rarr; 'hello world'</p>

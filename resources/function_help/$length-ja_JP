@@ -1,0 +1,11 @@
+<h3>$length 関数</h3>
+Returns the length of the current feature.
+
+<h4>構文</h4>
+<pre>$length</pre>
+
+<h4>引数</h4>
+なし
+
+<h4>サンプル</h4>
+<pre>$length &rarr; 42.4711</pre>

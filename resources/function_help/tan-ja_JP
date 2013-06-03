@@ -1,0 +1,12 @@
+<h3>tan() 関数</h3>
+Returns tangent of an angle.
+
+
+<p><h4>構文</h4>
+     tan(<i>real</i>)</p>
+
+<p><h4>引数</h4>
+<i>real</i> &rarr; angle in radians.</p>
+
+<p><h4>サンプル</h4>
+     tan(1.0) &rarr; 1.5574077246549</p>

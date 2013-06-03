@@ -1,0 +1,12 @@
+<h3>cos() 関数</h3>
+Returns cosinus of an angle.
+
+
+<p><h4>構文</h4>
+     cos(<i>real</i>)</p>
+
+<p><h4>引数</h4>
+<i>real</i> &rarr; angle in radians.</p>
+
+<p><h4>サンプル</h4>
+     cos(1.571) &rarr; 0.000796326710733263</p>

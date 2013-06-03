@@ -1,0 +1,16 @@
+<h3>log() 関数</h3>
+Returns the value of the logarithm of the passed value and base.
+<br>
+This function takes two arguments.
+<h4>構文</h4>
+<code>log(base, value)</code><br>
+
+<h4>引数</h4>
+<code>base</code> - any positive number.<br>
+<code>value</code> - any positive number.
+<br>
+
+<h4>サンプル</h4>
+<!-- Show example of function.-->
+<code>log(2, 32) &rarr; 5</code><br>
+<code>log(0.5, 32) &rarr; -5</code><br>

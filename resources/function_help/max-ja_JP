@@ -1,0 +1,13 @@
+<h3>max() 関数</h3>
+Returns the largest value in a set of values.
+
+<h4>構文</h4>
+     max(<i>value<i>[,<i>value</i>...])
+
+<h4>引数</h4>
+<!-- List args for functions here-->
+<i>  value</i> &rarr; a number.<br>
+
+<h4>サンプル</h4>
+<!-- Show example of function.-->
+     max(2,10.2,5.5) &rarr; 10.2

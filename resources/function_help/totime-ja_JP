@@ -1,0 +1,13 @@
+<h3>totime() 関数</h3>
+Convert a string into Qt time type.
+
+<h4>構文</h4>
+<code>totime('string')</code><br>
+
+<h4>引数</h4>
+<code>string</code> - is string in Qt time format.
+<br>
+
+<h4>サンプル</h4>
+<!-- Show example of function.-->
+<code>totime('12:30:01') &rarr; 12:30:01</code><br>

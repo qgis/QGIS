@@ -1,0 +1,12 @@
+<h3>$numpages 関数</h3>
+Returns the total number of pages in the composition.
+
+<h4>構文</h4>
+<pre>$numpages</pre>
+
+<h4>引数</h4>
+なし
+
+<h4>サンプル</h4>
+<pre>$numpages &rarr; 42</pre>
+

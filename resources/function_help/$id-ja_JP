@@ -1,0 +1,12 @@
+<h3>$id 関数</h3>
+Returns the feature id of the current row.
+
+<h4>構文</h4>
+<pre>$id</pre>
+
+<h4>引数</h4>
+なし
+
+<h4>サンプル</h4>
+<pre>$id &rarr; 42</pre>
+

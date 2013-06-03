@@ -1,0 +1,12 @@
+<h3>$feature 関数</h3>
+In atlas generation, returns the current feature number that is iterated over on the coverage layer.
+
+<h4>構文</h4>
+<pre>$feature</pre>
+
+<h4>引数</h4>
+なし
+
+<h4>サンプル</h4>
+<pre>$feature &rarr; 2</pre>
+

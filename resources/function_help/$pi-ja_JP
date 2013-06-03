@@ -1,0 +1,11 @@
+<h3>$pi constant</h3>
+Returns pi as value for calculations
+
+<h4>構文</h4>
+<pre>$pi</pre>
+
+<h4>引数</h4>
+なし
+
+<h4>サンプル</h4>
+<pre>$pi &rarr; 3.14159265358979</pre>

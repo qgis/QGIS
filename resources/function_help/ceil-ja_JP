@@ -1,0 +1,14 @@
+<h3>Function ceil()</h3>
+Rounds a number upwards.
+
+<h4>構文</h4>
+<code>ceil(value)</code><br>
+
+<h4>引数</h4>
+<code>value</code> - a number.
+<br>
+
+<h4>サンプル</h4>
+<!-- Show example of function.-->
+<code>ceil(4.9) &rarr; 5</code><br>
+<code>ceil(-4.9) &rarr; -4</code><br>

@@ -1,0 +1,13 @@
+<h3>length() 関数</h3>
+Returns the length of a string.
+
+<p><h4>構文</h4>
+     length(<i>string</i>)</p>
+
+<p><h4>引数</h4>
+<!-- List args for functions here-->
+<i>  string</i> &rarr; is string.  The String to count the length of.</p>
+
+<p><h4>サンプル</h4>
+<!-- Show example of function.-->
+     length('HELLO') &rarr; 5</p>

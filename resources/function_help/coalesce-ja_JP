@@ -1,0 +1,19 @@
+<h3>coalesce() 関数</h3>
+Returns the first non-NULL value from the expression list.
+<br>
+This function can take any number of arguments.
+<h4>構文</h4>
+<code>coalesce(expression1, expression2 ...)</code><br>
+
+<h4>引数</h4>
+<code>expression</code> - any valid expression or value, irregardless of type.
+<br>
+
+<h4>サンプル</h4>
+<!-- Show example of function.-->
+<code>coalesce(NULL, 2) &rarr; 2</code><br>
+<code>coalesce(NULL, 2, 3) &rarr; 2</code><br>
+<code>coalesce(7, NULL, 3*2) &rarr; 7</code><br><br>
+<code>coalesce("fieldA", "fallbackField", 'ERROR') &rarr; value of fieldA if it is non-NULL
+ else the value of "fallbackField" or the string 'ERROR' if both are NULL</code><br>
+
