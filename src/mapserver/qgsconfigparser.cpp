@@ -534,8 +534,9 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
 
     if ( title.isEmpty() )
     {
-      //remove exported labels not referenced in the request
-      if ( !currentLabel->id().isEmpty() )
+      //remove exported labels referenced in the request
+      //but with empty string
+      if ( parameterMap.contains( currentLabel->id().toUpper() ) )
       {
         c->removeItem( currentLabel );
         delete currentLabel;
@@ -544,7 +545,13 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
     }
 
     currentLabel->setText( title );
-    currentLabel->adjustSizeToText();
+    /* the method adjustSizeToText has some rendering issue
+     * for HTML or Simple String
+    if ( !currentLabel->htmlState() )
+    {
+      currentLabel->adjustSizeToText();
+    }
+    */
   }
 
   return c;
