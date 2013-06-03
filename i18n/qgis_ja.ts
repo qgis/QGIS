@@ -51205,7 +51205,85 @@ In addition, you may specify the type of plugins that are displayed by the Plugi
 Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Python プラグインインストーラ&lt;/h3&gt;
+リモートリポジトリからプラグインをダウンロードしてインストールします.
+&lt;br/&gt;&lt;br/&gt;
+&lt;a href=&quot;#pltab&quot;&gt;プラグインタブ&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#retab&quot;&gt;リポジトリタブ&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#optab&quot;&gt;オプションタブ&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;pltab&quot;&gt;
+&lt;h4&gt;プラグインタブ&lt;/h4&gt;
+&lt;/a&gt;
+
+&lt;p align=&apos;justify&apos;&gt;
+&lt;label&gt;プラグイン&lt;/label&gt;タブにはローカルにインストールされているすべてのPythonプラグインとリモートリポジトリにあるプラグインのリストがあります.それぞれのプラグインは次のような状態を持ちます:
+&lt;dl&gt;
+&lt;dt&gt;未インストール&lt;/dt&gt;&lt;dd&gt;これはプラグインがリポジトリに存在するがインストールされていないことを示します. これをインストールするためにはリストでプラグインをクリックして選択した後に&lt;label&gt;プラグインをインストール&lt;/label&gt; ボタンをクリックしてください.&lt;/dd&gt;
+&lt;dt&gt;最新&lt;/dt&gt;&lt;dd&gt;これはリポジトリ内のプラグインが新しく利用可能になったことを示します.&lt;/dd&gt;
+&lt;dt&gt;インストール済み&lt;/dt&gt;&lt;dd&gt;この表示はプラグインがすでにインストールされていることを示します. もしリポジトリからインストール可能な場合は&lt;label&gt;プラグインを再インストール&lt;/label&gt;ボタンが有効になります. もしインストール可能なバージョンがインストールされているバージョンより古い場合は &lt;label&gt;プラグインをダウングレード&lt;/label&gt;ボタンが代わりに表示されます.&lt;/dd&gt;
+&lt;dt&gt;更新可能&lt;/dt&gt;&lt;dd&gt;この表示は該当プラグインがインストールされているがリポジトリには更新されたバージョンがあることを示しています. この場合 &lt;label&gt;プラグインをアップグレード&lt;/label&gt; ボタンが有効になります.&lt;/dd&gt;
+&lt;dt&gt;無効&lt;/dt&gt;&lt;dd&gt;この表示はプラグインがインストールされているが無効か壊れていることを示します.その理由はプラグインの記述欄に説明されています.&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;/p&gt;
+
+プラグインをインストールするためにはリストで選択した後に&lt;label&gt;プラグインをインストール&lt;/label&gt;ボタンをクリックして下さい. 指定されたプラグインは独自のディレクトリにインストールされます:
+&lt;table border=1&gt;
+&lt;tr&gt;&lt;th&gt;OS&lt;/th&gt;&lt;th&gt;システムプラグイン&lt;/th&gt;&lt;th&gt;ユーザーによってインストールされたプラグイン&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Linux またはその他UNIX&lt;/td&gt;&lt;td&gt;./share/qgis/python/plugins&lt;/td&gt;&lt;td rowspan=2&gt;$HOME/.qgis2/python/plugins&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Mac OS X&lt;/td&gt;&lt;td&gt;./Contents/MacOS/share/qgis/python/plugins&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Windows&lt;/td&gt;&lt;td&gt;(QGISがインストールされているディレクトリ)\python\plugins&lt;/td&gt;&lt;td&gt;%USERPROFILE%\.qgis2\python\plugins&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;br/&gt;
+
+&lt;p align=&apos;justify&apos;&gt;
+インストールが成功するとプラグインはインストールされましたというメッセージが表示されます. 
+&lt;/p&gt;
+
+&lt;p align=&apos;justify&apos;&gt;
+インストールが失敗した場合失敗した理由が警告ダイアログに表示されます. 多くの場合はネットワーク接続のエラーの問題かpythonモジュールの不足がエラーの原因です. 前者の場合はしばらく待って再度トライして下さい,後者の場合はそのプラグインを利用するために不足しているモジュールをあなたのオペレーティングシステムに事前にインストールする必要があります.Linuxの場合ほとんどの必要なモジュールはパッケージマネージャを使って利用できます.Windowsでのインストール方法はモジュールのホームページを参照して下さい.インターネットアクセスにproxyを利用している場合&lt;label&gt;編集&lt;/label&gt;&lt;label&gt;オプション&lt;/label&gt; (Gnome, OSXの場合) または &lt;label&gt;設定&lt;/label&gt; &lt;label&gt;オプション&lt;/label&gt; (KDE, Windowsの場合) にある &lt;label&gt;ネットワーク&lt;/label&gt;タブで設定を行わなければなりません.
+&lt;/p&gt;
+
+&lt;p align=&apos;justify&apos;&gt;
+&lt;label&gt;プラグインのアンインストール&lt;/label&gt;ボタンは選択されたプラグインがインストールされていてかつコアプラグインでない場合のみ利用可能です. ただしコアプラグインのアップデートをインストールしてある場合、このアップデートを&lt;label&gt;プラグインのアンインストール&lt;/label&gt;ボタンでアンインストールしてQGISの出荷時のバージョンに戻すことができます. デフォルトバージョンはアンインストールできません.
+&lt;/p&gt;
+
+
+
+&lt;a name=&quot;retab&quot;&gt;
+&lt;h4&gt;リポジトリタブ&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p align=&apos;justify&apos;&gt;
+2番目のタブ&lt;label&gt;リポジトリ&lt;/label&gt;にはプラグインインストーラで利用可能なリポジトリのリストが表示されます . デフォルトではQGISの公式リポジトリのみが有効です.ここでは様々なユーザー提供のリポジトリを追加できます. QGIS Contributed リポジトリや外部のリポジトリを含みます.&lt;label&gt;サードパーティーのリポジトリを追加&lt;/label&gt;ボタンをクリックするとリポジトリの追加を行えます. 追加されたリポジトリにはたくさんに有用なプラグインがあります.それらのプラグインはQGIS開発チームによってメンテナンスされているものではありません.それらはについてはQGIS開発チームからの助言は得られません. またリポジトリのリストを手作業で管理することができます.追加,削除、編集を各エントリに対して行うことができます. &lt;label&gt;編集...&lt;/label&gt;ボタンをクリックして一時的に個々のリポジトリの利用を停止することができます.
+&lt;/p&gt;
+
+
+&lt;a name=&quot;optab&quot;&gt;
+&lt;h4&gt;オプションタブ&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p align=&apos;justify&apos;&gt;
+&lt;label&gt;オプション&lt;/label&gt; タブを利用するとプラグインインストーラの設定を行うことができます. 
+&lt;label&gt;起動時に更新を確認&lt;/label&gt; チェックボックスをチェックするとQGISは自動的にプラグインの更新を確認します. この機能が有効な場合デフォルトで&lt;label&gt;リポジトリ&lt;/label&gt; タブにあるすべてのリポジトリがプログラム起動時にチェックされます. 更新チェックの頻度はドロップダウンメニューで調整できます.たとえば毎日から毎月に調整できます.新規プラグインまたは更新がインストールされているプラグインに対して可能な場合はステータスバーに通知が表示されます.　チェックボックスがチェックされていない場合は更新や新規の知らせはプラグインインストーラをメニューから手動で起動した時のみにチェックされます.
+&lt;/p&gt;
+
+&lt;p align=&apos;justify&apos;&gt;
+更新の自動チェックを行う場合インターネット接続で問題を引き起こすことがあります. 
+&lt;i&gt;新しいプラグインを探しています...&lt;/i&gt; というメッセージがQGIS起動中にステータスバーに表示され続けている場合は終了時にプログラムがクラッシュします.この場合チェックボックスを無効にして下さい.
+&lt;/p&gt;
+
+さらにプラグインインストーラで表示するプラグインのタイプを指定することができます. 
+&lt;i&gt;許可されたプラグイン&lt;/i&gt;, で指定することができます:
+&lt;ul&gt;
+&lt;li&gt; 公式リポジトリのプラグインのみ表示する&lt;/li&gt;
+&lt;li&gt; 実験的とマークされていない全てのプラグインを表示する&lt;/li&gt;
+&lt;li&gt; 実験的とマークされているプラグインも含めて全てのプラグインを表示する&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;br/&gt;
+&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
+注: 実験的なプラグインは通常非安定版です. これらのプラグインは開発の初期段階にあって&apos;不完全&apos;または&apos;構想の検証中&apos;のツールです.QGIS開発チームではこれらのツールをテストの目的以外でインストールすることを推奨しません.
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="778"/>
