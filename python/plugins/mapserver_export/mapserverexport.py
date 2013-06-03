@@ -92,21 +92,21 @@ class MapServerExport:
     # defaults are defined in ms_export.py and set in mapserverexportdialog.py
     settings = QSettings()
     # map-file name and force mapfileChanged to enable/disable ok button
-    self.dlg.ui.txtMapFilePath.setText(settings.value("/MapserverExport/mapfileName", QVariant("")).toString ())
+    self.dlg.ui.txtMapFilePath.setText(settings.value("/MapserverExport/mapfileName", ""))
     self.mapfileChanged(self.dlg.ui.txtMapFilePath.text())
     # map width and height
     if settings.contains("/MapserverExport/mapWidth"):
-      self.dlg.ui.txtMapWidth.setText(settings.value("/MapserverExport/mapWidth").toString ())
+      self.dlg.ui.txtMapWidth.setText(settings.value("/MapserverExport/mapWidth"))
     if settings.contains("/MapserverExport/mapHeight"):
-      self.dlg.ui.txtMapHeight.setText(settings.value("/MapserverExport/mapHeight").toString ())
+      self.dlg.ui.txtMapHeight.setText(settings.value("/MapserverExport/mapHeight"))
     # MapServer IMAGETYPE's [gif|png|jpeg|wbmp|gtiff|swf|userdefined]
     self.dlg.ui.cmbMapImageType.addItems(QStringList(["agg","png","gif","jpeg","wbmp","gtiff","swf","userdefined"]))
     if settings.contains("/MapserverExport/imageType"):
-      idx = self.dlg.ui.cmbMapImageType.findText(settings.value("/MapserverExport/imageType").toString ())
+      idx = self.dlg.ui.cmbMapImageType.findText(settings.value("/MapserverExport/imageType"))
       self.dlg.ui.cmbMapImageType.setCurrentIndex(idx)
     # MapServer URL (default value already set by dialog defaults)
     if settings.contains("/MapserverExport/mapserverUrl"):
-      self.dlg.ui.txtMapServerUrl.setText(settings.value("/MapserverExport/mapserverUrl").toString())
+      self.dlg.ui.txtMapServerUrl.setText(settings.value("/MapserverExport/mapserverUrl"))
     # set title or default to one if none available
     title = project.title()
     if title == "":
@@ -184,14 +184,14 @@ class MapServerExport:
     # ok succesfull: write some setting for a next session
     settings = QSettings()
     # mapfile name
-    settings.setValue("/MapserverExport/mapfileName", QVariant(self.dlg.ui.txtMapFilePath.text()))
+    settings.setValue("/MapserverExport/mapfileName", self.dlg.ui.txtMapFilePath.text())
     # map width and height
-    settings.setValue("/MapserverExport/mapWidth", QVariant(self.dlg.ui.txtMapWidth.text()))
-    settings.setValue("/MapserverExport/mapHeight", QVariant(self.dlg.ui.txtMapHeight.text()))
+    settings.setValue("/MapserverExport/mapWidth", self.dlg.ui.txtMapWidth.text())
+    settings.setValue("/MapserverExport/mapHeight", self.dlg.ui.txtMapHeight.text())
     # mapserver url
-    settings.setValue("/MapserverExport/mapserverUrl", QVariant(self.dlg.ui.txtMapServerUrl.text()))
+    settings.setValue("/MapserverExport/mapserverUrl", self.dlg.ui.txtMapServerUrl.text())
     # map ImageType
-    settings.setValue("/MapserverExport/imageType", QVariant(self.dlg.ui.cmbMapImageType.currentText()))
+    settings.setValue("/MapserverExport/imageType", self.dlg.ui.cmbMapImageType.currentText())
     # show results
     QMessageBox.information(self.dlg, "MapServer Export Results", result)
 
@@ -241,12 +241,12 @@ class MapServerExport:
                       "Save QGIS Project file as...", ".",
                       "QGIS Project Files (*.qgs)", "Filter list for selecting files from a dialog box")
           # Check that a file was selected
-          if saveAsFileName.size() == 0:
+          if len(saveAsFileName) == 0:
             QMessageBox.warning(self.dlg, "Not saved!", "QGis project file not saved because no file name was given.")
             # fall back to using current project if available
             self.dlg.ui.txtQgisFilePath.setText(project.fileName())
           else:
-            if not saveAsFileName.trimmed().endsWith('.qgs'):
+            if not saveAsFileName.strip().endswith('.qgs'):
               saveAsFileName += '.qgs'
             self.dlg.ui.txtQgisFilePath.setText(saveAsFileName)
             project.setFileName(saveAsFileName)
