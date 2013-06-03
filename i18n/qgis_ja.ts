@@ -4411,7 +4411,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="94"/>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="204"/>
         <source>meters</source>
-        <translation>メーター</translation>
+        <translation>メートル</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="99"/>
@@ -6300,7 +6300,7 @@ Wrong line: %1</source>
     <message>
         <location filename="../src/core/qgis.cpp" line="80"/>
         <source>meters</source>
-        <translation>メーター</translation>
+        <translation>メートル</translation>
     </message>
     <message>
         <location filename="../src/core/qgis.cpp" line="81"/>
@@ -17147,12 +17147,12 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="238"/>
         <source>Deactivate</source>
-        <translation>非活性化</translation>
+        <translation>非アクティブ化</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="238"/>
         <source>Activate</source>
-        <translation>活性化</translation>
+        <translation>アクティブ化</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="388"/>
@@ -28872,7 +28872,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>meters</source>
-        <translation>メーター</translation>
+        <translation>メートル</translation>
     </message>
     <message>
         <source>dd</source>
@@ -28892,7 +28892,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>kilometers</source>
-        <translation>キロメーター</translation>
+        <translation>キロメートル</translation>
     </message>
 </context>
 <context>
@@ -36796,7 +36796,7 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="511"/>
         <source>Meters</source>
-        <translation>メーター</translation>
+        <translation>メートル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="498"/>
@@ -39737,7 +39737,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="83"/>
         <source>Azimuth (horizontal angle)</source>
-        <translation>方位核(水平　角度)</translation>
+        <translation>方位角 (水平角度)</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="100"/>
@@ -40083,7 +40083,7 @@ standard deviation ×</source>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="101"/>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="104"/>
         <source>Millimeter</source>
-        <translation>マイルメーター</translation>
+        <translation>ミリメートル</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="101"/>
@@ -47188,12 +47188,12 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/roadgraph/settingsdlg.cpp" line="71"/>
         <source>meter</source>
-        <translation>メーター</translation>
+        <translation>メートル</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/settingsdlg.cpp" line="72"/>
         <source>kilometer</source>
-        <translation>キロメーター</translation>
+        <translation>キロメートル</translation>
     </message>
 </context>
 <context>
@@ -48026,7 +48026,7 @@ about SEXTANTE</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="41"/>
         <source>Millimeter</source>
-        <translation>ミリメーター</translation>
+        <translation>ミリメートル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="46"/>
@@ -48281,7 +48281,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="246"/>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="309"/>
         <source>Millimeter</source>
-        <translation>マイルメーター</translation>
+        <translation>ミリメートル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="153"/>
@@ -48343,7 +48343,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="108"/>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="191"/>
         <source>Millimeter</source>
-        <translation>ミリメーター</translation>
+        <translation>ミリメートル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="113"/>
@@ -48382,7 +48382,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="96"/>
         <source>Millimeter</source>
-        <translation>ミリメーター</translation>
+        <translation>ミリメートル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="101"/>
@@ -48417,7 +48417,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="110"/>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="154"/>
         <source>Millimeter</source>
-        <translation>ミリメーター</translation>
+        <translation>ミリメートル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="74"/>
@@ -48473,7 +48473,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="73"/>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="172"/>
         <source>Millimeter</source>
-        <translation>ミリメーター</translation>
+        <translation>ミリメートル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="78"/>
@@ -48530,7 +48530,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="140"/>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="181"/>
         <source>Millimeter</source>
-        <translation>ミリメーター</translation>
+        <translation>ミリメートル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="63"/>
@@ -48577,7 +48577,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="124"/>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="264"/>
         <source>Millimeter</source>
-        <translation>ミリメーター</translation>
+        <translation>ミリメートル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="129"/>
@@ -48662,7 +48662,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="85"/>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="148"/>
         <source>Millimeter</source>
-        <translation>ミリメーター</translation>
+        <translation>ミリメートル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="90"/>
@@ -48713,7 +48713,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="155"/>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="229"/>
         <source>Millimeter</source>
-        <translation>ミリメーター</translation>
+        <translation>ミリメートル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="107"/>
@@ -48790,7 +48790,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="173"/>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="253"/>
         <source>Millimeter</source>
-        <translation>ミリメーター</translation>
+        <translation>ミリメートル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="143"/>
@@ -48847,7 +48847,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="299"/>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="362"/>
         <source>Millimeter</source>
-        <translation>ミリメーター</translation>
+        <translation>ミリメートル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="158"/>
@@ -48985,7 +48985,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="100"/>
         <source>Millimeter</source>
-        <translation>ミリメーター</translation>
+        <translation>ミリメートル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="105"/>
@@ -51683,7 +51683,7 @@ To measure areas, select the tool and click to create the area. The total area i
 &lt;p&gt;If the attribute table of your linear layer does not contain the required fields or fields contain unexpected values, the plugin will use default values. You can set them in the default tab &lt;label&gt;Default settings&lt;/label&gt;.&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;道路グラフプラグイン設定&lt;/h3&gt;
-&lt;p&gt;道路グラフはQuantum GISのためのC++プラグインです. ラインレイヤ上の2つの点の間の最短経路を計算して道路ネットワークの上に最短経路を描画します.&lt;/p&gt;
+&lt;p&gt;道路グラフはQGISのためのC++プラグインです. ラインレイヤ上の2つの点の間の最短経路を計算して道路ネットワークの上に最短経路を描画します.&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#creating&quot;&gt;プラグインの単位&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#topologyTolerance&quot;&gt;トポロジ許容値&lt;/a&gt;&lt;br/&gt;
@@ -51813,7 +51813,7 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 良いでしょう。&lt;/p&gt;
 
 &lt;h3&gt;半径 (バンド幅)&lt;/h3&gt;
-&lt;p&gt;ヒートマップを作成するための検索半径（カーネルバンド幅）をメーターもしくは地図上の単位で指定します。
+&lt;p&gt;ヒートマップを作成するための検索半径（カーネルバンド幅）をメートルもしくは地図上の単位で指定します。
 半径は、影響を考慮するポイントまでの距離を指定します。
 大きな値はスムーズな結果を、小さな値は密度の変化を詳細に示すことができるかもしれません。
 &lt;/p&gt;
