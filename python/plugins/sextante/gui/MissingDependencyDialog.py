@@ -51,7 +51,7 @@ class MissingDependencyDialog(QtGui.QDialog):
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def linkClicked(self, url):
-        webbrowser.open(str(url.toString()))
+        webbrowser.open(str(url))
 
     def closeButtonPressed(self):
         self.close()

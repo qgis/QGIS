@@ -48,7 +48,7 @@ class LayerExporter():
         will get exported.
         It also export to a new file if the original one contains non-ascii characters'''
         settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
+        systemEncoding = settings.value( "/UI/encoding", "System" )
 
         filename = os.path.basename(unicode(layer.source()))
         idx = filename.rfind(".")
@@ -110,7 +110,7 @@ class LayerExporter():
         Currently, the output is restricted to dbf.
         It also export to a new file if the original one contains non-ascii characters'''
         settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
+        systemEncoding = settings.value( "/UI/encoding", "System" )
         output = SextanteUtils.getTempFilename("dbf")
         provider = table.dataProvider()
         isASCII=True

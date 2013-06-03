@@ -142,7 +142,7 @@ class FieldsPyculator(GeoAlgorithm):
                 new_ns['__geom'] = geom
 
             if need_attrs:
-                pyattrs = [self.Qvar2py(a) for a in attrs]
+                pyattrs = [a for a in attrs]
                 new_ns['__attr'] = pyattrs
 
             #clear old result
@@ -161,20 +161,12 @@ class FieldsPyculator(GeoAlgorithm):
             #write feature
             nElement += 1
             outFeat.setGeometry( feat.geometry() )
-            attrs.append(QVariant(new_ns[self.RESULT_VAR_NAME]))
+            attrs.append(new_ns[self.RESULT_VAR_NAME])
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
         del writer
 
-    def Qvar2py(self,qv):
-        if qv.type() == 2:
-            return qv.toInt()[0]
-        if qv.type() == 10:
-            return unicode(qv.toString())
-        if qv.type() == 6:
-            return qv.toDouble()[0]
-        return None
 
     def checkParameterValuesBeforeExecuting(self):
         ##TODO check that formula is correct and fields exist

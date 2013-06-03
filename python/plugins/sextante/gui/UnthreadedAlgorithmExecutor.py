@@ -54,7 +54,7 @@ class UnthreadedAlgorithmExecutor:
     def runalgIterating(alg,paramToIter,progress):
         #generate all single-feature layers
         settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
+        systemEncoding = settings.value( "/UI/encoding", "System" )
         layerfile = alg.getParameterValue(paramToIter)
         layer = QGisLayers.getObjectFromUri(layerfile, False)
         feat = QgsFeature()

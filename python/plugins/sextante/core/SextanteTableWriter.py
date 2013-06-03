@@ -35,7 +35,7 @@ class SextanteTableWriter:
 
         if encoding is None:
             settings = QSettings()
-            encoding = settings.value("/SextanteQGIS/encoding", "System").toString()
+            encoding = settings.value("/SextanteQGIS/encoding", "System")
 
         if not fileName.endswith("csv"):
             fileName += ".csv"
@@ -44,11 +44,7 @@ class SextanteTableWriter:
         file.write("\n")
         file.close()
 
-    def addRecord(self, values):
-        for i in range(len(values)):
-            if isinstance(values[i], QVariant):
-                values[i] = values[i].toString()
-
+    def addRecord(self, values):        
         file = open(self.fileName, "a")
         file.write(";".join([unicode(value) for value in values]))
         file.write("\n")

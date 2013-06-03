@@ -77,10 +77,10 @@ class OutputSelectionPanel(QWidget):
         filefilter = self.output.getFileFilter(self.alg)
         settings = QSettings()
         if settings.contains("/SextanteQGIS/LastOutputPath"):
-            path = str(settings.value( "/SextanteQGIS/LastOutputPath", QVariant( "" ) ).toString())
+            path = settings.value( "/SextanteQGIS/LastOutputPath")
         else:
             path = SextanteConfig.getSetting(SextanteConfig.OUTPUT_FOLDER)
-        lastEncoding = settings.value("/SextanteQGIS/encoding", "System").toString()
+        lastEncoding = settings.value("/SextanteQGIS/encoding", "System")
         fileDialog = QgsEncodingFileDialog(self, "Save file", QString(path), filefilter, lastEncoding)
         fileDialog.setFileMode(QFileDialog.AnyFile)
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
@@ -91,11 +91,11 @@ class OutputSelectionPanel(QWidget):
             self.output.encoding = encoding
             filename= unicode(files.first())
             self.text.setText(filename)
-            settings.setValue("/SextanteQGIS/LastOutputPath", os.path.dirname(str(filename)))
+            settings.setValue("/SextanteQGIS/LastOutputPath", os.path.dirname(filename))
             settings.setValue("/SextanteQGIS/encoding", encoding)
 
     def getValue(self):
-        filename = str(self.text.text())
+        filename = unicode(self.text.text())
         if filename.strip() == "" or filename == OutputSelectionPanel.SAVE_TO_TEMP_FILE:
             return None
         if filename.startswith("memory:"):

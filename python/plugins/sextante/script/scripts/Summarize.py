@@ -22,7 +22,7 @@ for ft in features:
     attrs = ft.attributes()
     for f in range(len(fields)):
         try:
-            mean[f] += float(attrs[f].toDouble()[0])
+            mean[f] += float(attrs[f])
         except:
             pass
     count += 1
@@ -33,5 +33,5 @@ if count != 0:
 outFeat = QgsFeature()
 meanPoint = QgsPoint(x, y)
 outFeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
-outFeat.setAttributes([QVariant(v) for v in mean])
+outFeat.setAttributes([v for v in mean])
 outputLayer.addFeature(outFeat)

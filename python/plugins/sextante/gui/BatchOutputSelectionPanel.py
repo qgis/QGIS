@@ -87,11 +87,11 @@ class BatchOutputSelectionPanel(QtGui.QWidget):
                             elif isinstance(param, ParameterBoolean):
                                 s = str(widget.currentIndex() == 0)
                             elif isinstance(param, ParameterSelection):
-                                s = str(widget.currentText())
+                                s = unicode(widget.currentText())
                             elif isinstance(param, ParameterFixedTable):
-                                s = str(widget.table)
+                                s = unicode(widget.table)
                             else:
-                                s = str(widget.text())
+                                s = unicode(widget.text())
                             name = filename[:filename.rfind(".")] + s + filename[filename.rfind("."):]
                             self.table.cellWidget(i + self.row, self.col).setValue(name)
                 except:
@@ -100,5 +100,5 @@ class BatchOutputSelectionPanel(QtGui.QWidget):
         return self.text.setText(text)
 
     def getValue(self):
-        return str(self.text.text())
+        return unicode(self.text.text())
 

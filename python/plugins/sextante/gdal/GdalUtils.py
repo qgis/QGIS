@@ -43,10 +43,10 @@ class GdalUtils:
     @staticmethod
     def runGdal(commands, progress):
         settings = QSettings()
-        path = str(settings.value( "/GdalTools/gdalPath", QVariant( "" ) ).toString())
-        envval = str(os.getenv("PATH"))
+        path = unicode(settings.value( "/GdalTools/gdalPath", ""))
+        envval = unicode(os.getenv("PATH"))
         if not path.lower() in envval.lower().split(os.pathsep):
-            envval += "%s%s" % (os.pathsep, str(path))
+            envval += "%s%s" % (os.pathsep, path)
             os.putenv( "PATH", envval )
         loglines = []
         loglines.append("GDAL execution console output")

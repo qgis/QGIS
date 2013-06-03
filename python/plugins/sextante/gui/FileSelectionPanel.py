@@ -47,13 +47,13 @@ class FileSelectionPanel(QtGui.QWidget):
     def showSelectionDialog(self):
         # find the file dialog's working directory
         settings = QtCore.QSettings()
-        text = str(self.text.text())
+        text = unicode(self.text.text())
         if os.path.isdir(text):
             path = text
         elif os.path.isdir( os.path.dirname(text) ):
             path = os.path.dirname(text)
         elif settings.contains("/SextanteQGIS/LastInputPath"):
-            path = str(settings.value( "/SextanteQGIS/LastInputPath",QtCore.QVariant( "" ) ).toString())
+            path = settings.value( "/SextanteQGIS/LastInputPath")
         else:
             path = ""
 
@@ -61,15 +61,15 @@ class FileSelectionPanel(QtGui.QWidget):
             folder = QtGui.QFileDialog.getExistingDirectory (self, "Select folder", path)
             if folder:
                 self.text.setText(str(folder))
-                settings.setValue("/SextanteQGIS/LastInputPath", os.path.dirname(str(folder)))
+                settings.setValue("/SextanteQGIS/LastInputPath", os.path.dirname(unicode(folder)))
         else:
             filenames = QtGui.QFileDialog.getOpenFileNames(self, "Open file", path, "*.*")
             if filenames:
                 self.text.setText(str(filenames.join(";")))
-                settings.setValue("/SextanteQGIS/LastInputPath", os.path.dirname(str(filenames[0])))
+                settings.setValue("/SextanteQGIS/LastInputPath", os.path.dirname(unicode(filenames[0])))
 
     def getValue(self):
-        s = str(self.text.text())
+        s = unicode(self.text.text())
         if SextanteUtils.isWindows():
             s = s.replace("\\", "/")
         return s

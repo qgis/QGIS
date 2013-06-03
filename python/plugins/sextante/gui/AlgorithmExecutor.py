@@ -31,7 +31,6 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.tools.vector import getfeatures
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
-import sextante
 import sys
 
 class AlgorithmExecutor(QThread):
@@ -73,7 +72,7 @@ class AlgorithmExecutor(QThread):
 
             #generate all single-feature layers
             settings = QSettings()
-            systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
+            systemEncoding = settings.value( "/UI/encoding", "System" )
             layerfile = alg.getParameterValue(self.parameterToIterate)
             layer = QGisLayers.getObjectFromUri(layerfile, False)
             provider = layer.dataProvider()

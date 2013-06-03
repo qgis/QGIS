@@ -104,15 +104,17 @@ class PointsInPolygonWeighted(GeoAlgorithm):
                     ftPoint = pointLayer.getFeatures(request).next()
                     tmpGeom = QgsGeometry(ftPoint.geometry())
                     if geom.contains(tmpGeom):
-                        weight, ok = ftPoint.attributes()[fieldIdx].toDouble()
-                        if ok:
-                            count += weight
+                        weight = str(ftPoint.attributes()[fieldIdx])
+                        try:                                                    
+                            count += float(weight)
+                        except:
+                            pass #ignore fields with non-numeric values
 
             outFeat.setGeometry(geom)
             if idxCount == len(attrs):
-                attrs.append(QVariant(count))
+                attrs.append(count)
             else:
-                attrs[idxCount] =  QVariant(count)
+                attrs[idxCount] =  count
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 

@@ -115,7 +115,7 @@ class ConvexHull(GeoAlgorithm):
                 features = QGisLayers.features(layer)
                 for f in features:
                     idVar = f[fieldName]
-                    if idVar.toString().trimmed() == i.toString().trimmed():
+                    if unicode(idVar).strip() == unicode(i).strip:
                         if first:
                             val = idVar
                             first = False
@@ -131,11 +131,7 @@ class ConvexHull(GeoAlgorithm):
                         outGeom = tmpGeom.convexHull()
                         (area, perim) = utils.simpleMeasure(outGeom)
                         outFeat.setGeometry(outGeom)
-                        outFeat.setAttributes([QVariant(fid),
-                                               QVariant(val),
-                                               QVariant(area),
-                                               QVariant(perim)
-                                             ])
+                        outFeat.setAttributes([fid,val,area,perim])
                         writer.addFeature(outFeat)
                     except:
                         GEOS_EXCEPT = False
@@ -157,11 +153,7 @@ class ConvexHull(GeoAlgorithm):
               outGeom = tmpGeom.convexHull()
               (area, perim) = utils.simpleMeasure(outGeom)
               outFeat.setGeometry(outGeom)
-              outFeat.setAttributes([QVariant(0),
-                                     QVariant("all"),
-                                     QVariant(area),
-                                     QVariant(perim)
-                                   ])
+              outFeat.setAttributes([0, "all", area, perim])
               writer.addFeature(outFeat)
           except:
               GEOS_EXCEPT = False

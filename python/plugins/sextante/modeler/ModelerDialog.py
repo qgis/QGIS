@@ -272,7 +272,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
 
     def fillAlgorithmTree(self):
         settings = QSettings()
-        useCategories = settings.value(self.USE_CATEGORIES).toBool()
+        useCategories = settings.value(self.USE_CATEGORIES, type = bool)
         if useCategories:
             self.fillAlgorithmTreeUsingCategories()
         else:
