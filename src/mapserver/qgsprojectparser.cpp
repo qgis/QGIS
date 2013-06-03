@@ -32,6 +32,7 @@
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
 #include "qgscomposermap.h"
+#include "qgscomposerhtml.h"
 #include "qgscomposerpicture.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
@@ -2187,7 +2188,7 @@ QString QgsProjectParser::layerIdFromLegendLayer( const QDomElement& legendLayer
   return legendLayerFileList.at( 0 ).toElement().attribute( "layerid" );
 }
 
-QgsComposition* QgsProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList ) const
+QgsComposition* QgsProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlList ) const
 {
   //Create composition from xml
   QDomElement composerElem = composerByName( composerTemplate );
@@ -2210,15 +2211,40 @@ QgsComposition* QgsProjectParser::initComposition( const QString& composerTempla
   }
 
   composition->addItemsFromXML( compositionElem, *mXMLDoc );
-  composition->composerItems( mapList );
-  composition->composerItems( labelList );
 
-  QList< QgsComposerPicture* > pictureList;
-  composition->composerItems( pictureList );
-  QList< QgsComposerPicture* >::iterator picIt = pictureList.begin();
-  for ( ; picIt != pictureList.end(); ++picIt )
+  labelList.clear();
+  mapList.clear();
+  htmlList.clear();
+
+  QList<QgsComposerItem* > itemList;
+  composition->composerItems( itemList );
+  QList<QgsComposerItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
   {
-    ( *picIt )->setPictureFile( convertToAbsolutePath(( *picIt )->pictureFile() ) );
+    QgsComposerLabel* label = dynamic_cast< QgsComposerLabel *>( *itemIt );
+    if ( label )
+    {
+      labelList.push_back( label );
+      continue;
+    }
+    QgsComposerMap* map = dynamic_cast< QgsComposerMap *>( *itemIt );
+    if ( map )
+    {
+      mapList.push_back( map );
+      continue;
+    }
+    QgsComposerPicture* pic = dynamic_cast< QgsComposerPicture *>( *itemIt );
+    if ( pic )
+    {
+      pic->setPictureFile( convertToAbsolutePath(( pic )->pictureFile() ) );
+      continue;
+    }
+    const QgsComposerHtml* html = composition->getComposerHtmlByItem( *itemIt );
+    if ( html )
+    {
+      htmlList.push_back( html );
+      continue;
+    }
   }
 
   return composition;
@@ -2292,6 +2318,21 @@ void QgsProjectParser::printCapabilities( QDomElement& parentElement, QDomDocume
       QDomElement composerLabelElem = doc.createElement( "ComposerLabel" );
       composerLabelElem.setAttribute( "name", id );
       composerTemplateElem.appendChild( composerLabelElem );
+    }
+
+    //add available composer HTML
+    QDomNodeList composerHtmlList = currentComposerElem.elementsByTagName( "ComposerHtml" );
+    for ( int j = 0; j < composerHtmlList.size(); ++j )
+    {
+      QDomElement citem = composerHtmlList.at( j ).firstChildElement( "ComposerFrame" ).firstChildElement( "ComposerItem" );
+      QString id = citem.attribute( "id" );
+      if ( id.isEmpty() ) //only export labels with ids for text replacement
+      {
+        continue;
+      }
+      QDomElement composerHtmlElem = doc.createElement( "ComposerHtml" );
+      composerHtmlElem.setAttribute( "name", id );
+      composerTemplateElem.appendChild( composerHtmlElem );
     }
 
     composerTemplatesElem.appendChild( composerTemplateElem );
