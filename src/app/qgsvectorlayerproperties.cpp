@@ -393,12 +393,13 @@ void QgsVectorLayerProperties::syncToLayer( void )
   layer->label()->setFields( layer->pendingFields() );
 
   actionDialog->init();
-  labelingDialog->init();
 
   if ( layer->hasGeometryType() )
   {
+    labelingDialog->init();
     labelDialog->init();
   }
+
   labelCheckBox->setChecked( layer->hasLabelsEnabled() );
   labelOptionsFrame->setEnabled( layer->hasLabelsEnabled() );
 
