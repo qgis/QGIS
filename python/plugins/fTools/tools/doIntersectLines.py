@@ -108,7 +108,7 @@ class Dialog(QDialog, Ui_Dialog):
         ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( QString( self.shapefileName ) )
+        self.outShape.setText( self.shapefileName )
 
     def compute(self, line1, line2, field1, field2, outPath, progressBar):
 
@@ -144,7 +144,7 @@ class Dialog(QDialog, Ui_Dialog):
 
         index = ftools_utils.createIndex( provider2 )
 
-  fit1 = vprovider.getFeatures( QgsFeatureRequest().setSubsetOfAttributes([index1]) )
+        fit1 = vprovider.getFeatures( QgsFeatureRequest().setSubsetOfAttributes([index1]) )
         while fit1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
             v1 = inFeat.attributes()[index1]

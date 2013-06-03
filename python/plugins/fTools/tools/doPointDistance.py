@@ -158,7 +158,7 @@ class Dialog(QDialog, Ui_Dialog):
         provider2 = layer2.dataProvider()
         sindex = QgsSpatialIndex()
         inFeat = QgsFeature()
-  fit2 = provider2.getFeatures()
+        fit2 = provider2.getFeatures()
         while fit2.nextFeature(inFeat):
             sindex.insertFeature(inFeat)
         if nearest < 1: nearest = layer2.featureCount()
@@ -190,7 +190,7 @@ class Dialog(QDialog, Ui_Dialog):
         first = True
         start = 15.00
         add = 85.00 / provider1.featureCount()
-  fit1 = provider1.getFeatures()
+        fit1 = provider1.getFeatures()
         while fit1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
             inID = inFeat.attributes()[index1]

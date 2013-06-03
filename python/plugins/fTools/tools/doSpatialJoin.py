@@ -117,7 +117,7 @@ class Dialog(QDialog, Ui_Dialog):
         ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( QString( self.shapefileName ) )
+        self.outShape.setText( self.shapefileName )
 
     def compute(self, inName, joinName, outName, summary, sumList, keep, progressBar):
         layer1 = ftools_utils.getVectorLayerByName(inName)
@@ -225,13 +225,13 @@ class Dialog(QDialog, Ui_Dialog):
                     atMap = atMap1
                     for j in numFields.keys():
                         for k in sumList:
-                            if k == "SUM": atMap.append(QVariant(sum(numFields[j])))
-                            elif k == "MEAN": atMap.append(QVariant(sum(numFields[j]) / count))
-                            elif k == "MIN": atMap.append(QVariant(min(numFields[j])))
-                            elif k == "MED": atMap.append(QVariant(myself(numFields[j])))
-                            else: atMap.append(QVariant(max(numFields[j])))
+                            if k == "SUM": atMap.append(sum(numFields[j]))
+                            elif k == "MEAN": atMap.append(sum(numFields[j]) / count)
+                            elif k == "MIN": atMap.append(min(numFields[j]))
+                            elif k == "MED": atMap.append(myself(numFields[j]))
+                            else: atMap.append(max(numFields[j]))
                         numFields[j] = []
-                    atMap.append(QVariant(count))
+                    atMap.append(count)
                     atMap = dict(zip(seq, atMap))
             if none:
                 outFeat.setAttributes(atMap1)

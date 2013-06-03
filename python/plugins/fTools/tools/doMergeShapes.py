@@ -58,7 +58,7 @@ class Dialog( QDialog, Ui_Dialog ):
 
     workDir = QDir( inDir )
     workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-    nameFilter = QStringList() << "*.shp" << "*.SHP"
+    nameFilter = [ "*.shp", "*.SHP" ]
     workDir.setNameFilters( nameFilter )
     self.inputFiles = workDir.entryList()
     if self.inputFiles.count() == 0:
@@ -84,7 +84,7 @@ class Dialog( QDialog, Ui_Dialog ):
       self.inputFiles = None
       return
 
-    self.inputFiles = QStringList()
+    self.inputFiles = []
     for f in files:
       fileName = QFileInfo( f ).fileName()
       self.inputFiles.append( fileName )
@@ -118,7 +118,7 @@ class Dialog( QDialog, Ui_Dialog ):
     if self.inputFiles is None:
       workDir = QDir( self.leInputDir.text() )
       workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-      nameFilter = QStringList() << "*.shp" << "*.SHP"
+      nameFilter = [ "*.shp" << "*.SHP" ]
       workDir.setNameFilters( nameFilter )
       self.inputFiles = workDir.entryList()
       if self.inputFiles.count() == 0:
@@ -306,7 +306,7 @@ class ShapeMergeThread( QThread ):
       inGeom = QgsGeometry()
       fit = vprovider.getFeatures()
       while fit.nextFeature( inFeat ):
-        mergedAttrs = [QVariant()] * len(mergedFields)
+        mergedAttrs = [""] * len(mergedFields)
 
         # fill available attributes with values
         fieldIndex = 0

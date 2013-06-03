@@ -103,7 +103,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
 
   def closeEvent(self, e):
     settings = QSettings()
-    settings.setValue( "/fTools/ValidateDialog/geometry", QVariant(self.saveGeometry()) )
+    settings.setValue( "/fTools/ValidateDialog/geometry", self.saveGeometry())
     QDialog.closeEvent(self, e)
     del self.marker
 
@@ -111,8 +111,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
     if ( e.modifiers() == Qt.ControlModifier or \
          e.modifiers() == Qt.MetaModifier ) and \
          e.key() == Qt.Key_C:
-      #selection = self.tblUnique.selectedItems()
-      items = QString()
+      items = ""
       for row in range( self.tblUnique.rowCount() ):
         items.append( self.tblUnique.item( row, 0 ).text()
         + "," + self.tblUnique.item( row, 1 ).text() + "\n" )
@@ -156,7 +155,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
     (self.shapefileName, self.encoding) = ftools_utils.saveDialog( self )
     if self.shapefileName is None or self.encoding is None:
       return
-    self.lineEditShpError.setText( QString( self.shapefileName ) )
+    self.lineEditShpError.setText( self.shapefileName )
 
   def zoomToError(self, curr, prev):
       if curr is None:
@@ -250,7 +249,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
           message = err.what()
           errItem = QTableWidgetItem( message )
           if err.hasWhere(): # if there is a location associated with the error
-            errItem.setData(Qt.UserRole, QVariant(err.where()))
+            errItem.setData(Qt.UserRole, err.where())
           self.tblUnique.setItem( count, 1, errItem )
           count += 1
       self.tblUnique.setHorizontalHeaderLabels( [ self.tr("Feature"), self.tr("Error(s)") ] )
@@ -336,7 +335,7 @@ class validateThread( QThread ):
             geometry = QgsGeometry().fromPoint( myPoint )
             ft = QgsFeature()
             ft.setGeometry( geometry )
-            ft.setAttributes( [ QVariant( fidItem ), QVariant( message ) ] )
+            ft.setAttributes( [ fidItem, message ] )
             writer.addFeature( ft )
       del writer
       return "writeShape"

@@ -108,7 +108,7 @@ class Dialog(QDialog, Ui_Dialog):
         ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( QString( self.shapefileName ) )
+        self.outShape.setText( self.shapefileName )
 
     def compute(self, inName, outName, weightField="", times=1, uniqueField=""):
         vlayer = ftools_utils.getVectorLayerByName(inName)
@@ -125,7 +125,7 @@ class Dialog(QDialog, Ui_Dialog):
             uniqueValues = ftools_utils.getUniqueValues(provider, int( uniqueIndex ) )
             single = False
         else:
-            uniqueValues = [QVariant(1)]
+            uniqueValues = [1]
             single = True
         if self.function == 2:
             fieldList = QgsFields()
@@ -157,14 +157,14 @@ class Dialog(QDialog, Ui_Dialog):
                 if single:
                     check = j.strip()
                 else:
-                    check = feat.attributes()[uniqueIndex].toString().trimmed()
-                if check == j.toString().trimmed():
+                    check = feat.attributes()[uniqueIndex].strip()
+                if check == j.strip():
                     cx = 0.00
                     cy = 0.00
                     if weightIndex == -1:
                         weight = 1.00
                     else:
-                        weight = float(feat.attributes()[weightIndex]
+                        weight = float(feat.attributes()[weightIndex])
                     geom = QgsGeometry(feat.geometry())
                     geom = ftools_utils.extractPoints(geom)
                     for i in geom:
@@ -198,13 +198,13 @@ class Dialog(QDialog, Ui_Dialog):
                     sd += (i-md)*(i-md)
                 sd = sqrt(sd/item)
                 outfeat.setGeometry(QgsGeometry.fromPoint(meanPoint).buffer(sd * times, 10))
-                outfeat.setAttribute(0, QVariant(sd))
-                outfeat.setAttribute(1, QVariant(j))
+                outfeat.setAttribute(0, sd)
+                outfeat.setAttribute(1, j)
             else:
                 outfeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
-                outfeat.setAttribute(0, QVariant(cx))
-                outfeat.setAttribute(1, QVariant(cy))
-                outfeat.setAttribute(2, QVariant(j))
+                outfeat.setAttribute(0, cx)
+                outfeat.setAttribute(1, cy)
+                outfeat.setAttribute(2, j)
             writer.addFeature(outfeat)
             if single:
                 break

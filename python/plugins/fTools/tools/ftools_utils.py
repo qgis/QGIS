@@ -89,7 +89,7 @@ def checkCRSCompatibility( crsA, crsB ):
 
 # Convenience function to write vector layer to shapefile
 def writeVectorLayerToShape( vlayer, outputPath, encoding ):
-    mCodec = QTextCodec.codecForName( QString(encoding).toLocal8Bit().data() )
+    mCodec = QTextCodec.codecForName( encoding )
     if not mCodec:
         return False
     #Here we should check that the output path is valid
@@ -289,8 +289,8 @@ def saveDialog( parent, filtering="Shapefiles (*.shp *.SHP)"):
     if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
     files = fileDialog.selectedFiles()
-    settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( files.first() ) ).absolutePath() ) )
-    return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
+    settings.setValue("/UI/lastShapefileDir", QFileInfo( unicode( files[0] ) ).absolutePath() )
+    return ( unicode( files[0] ), unicode( fileDialog.encoding() ) )
 
 # Generate a save file dialog with a dropdown box for choosing encoding style
 # with mode="SingleFile" will allow to select only one file, in other cases - several files
@@ -304,9 +304,9 @@ def openDialog( parent, filtering="Shapefiles (*.shp *.SHP)", dialogMode="Single
     if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
     files = fileDialog.selectedFiles()
-    settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( files.first() ) ).absolutePath() ) )
+    settings.setValue("/UI/lastShapefileDir", QFileInfo( unicode( files[0] ) ).absolutePath() )
     if dialogMode == "SingleFile":
-      return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
+      return ( unicode( files[0] ), unicode( fileDialog.encoding() ) )
     else:
       return ( files, unicode( fileDialog.encoding() ) )
 
@@ -322,8 +322,8 @@ def dirDialog( parent ):
     if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
     folders = fileDialog.selectedFiles()
-    settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( folders.first() ) ).absolutePath() ) )
-    return ( unicode( folders.first() ), unicode( fileDialog.encoding() ) )
+    settings.setValue("/UI/lastShapefileDir", QFileInfo( unicode( folders[0] ) ).absolutePath() )
+    return ( unicode( folders[0] ), unicode( fileDialog.encoding() ) )
 
 # Return field type from it's name
 def getFieldType(vlayer, fieldName):

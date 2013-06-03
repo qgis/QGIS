@@ -102,7 +102,7 @@ class Dialog(QDialog, Ui_Dialog):
         ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( QString( self.shapefileName ) )
+        self.outShape.setText( self.shapefileName )
 
 # Generate list of random points
     def simpleRandom(self, n, bound, xmin, xmax, ymin, ymax):
@@ -149,7 +149,7 @@ class Dialog(QDialog, Ui_Dialog):
                     pGeom = QgsGeometry().fromPoint(QgsPoint(x, y))
                 if pGeom.intersects(bound):
                     outFeat.setGeometry(pGeom)
-                    outFeat.setAttribute(0, QVariant(idVar))
+                    outFeat.setAttribute(0, idVar)
                     writer.addFeature(outFeat)
                     idVar = idVar + 1
                     x = x + pointSpacing

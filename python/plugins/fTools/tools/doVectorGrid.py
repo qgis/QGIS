@@ -203,8 +203,8 @@ class Dialog(QDialog, Ui_Dialog):
                 pt2 = QgsPoint(bound.xMaximum(), y)
                 line = [pt1, pt2]
                 outFeat.setGeometry(outGeom.fromPolyline(line))
-                outFeat.setAttribute(0, QVariant(idVar))
-                outFeat.setAttribute(1, QVariant(y))
+                outFeat.setAttribute(0, idVar)
+                outFeat.setAttribute(1, y)
                 writer.addFeature(outFeat)
                 y = y - yOffset
                 idVar = idVar + 1
@@ -223,8 +223,8 @@ class Dialog(QDialog, Ui_Dialog):
                 pt2 = QgsPoint(x, bound.yMinimum())
                 line = [pt1, pt2]
                 outFeat.setGeometry(outGeom.fromPolyline(line))
-                outFeat.setAttribute(0, QVariant(idVar))
-                outFeat.setAttribute(1, QVariant(x))
+                outFeat.setAttribute(0, idVar)
+                outFeat.setAttribute(1, x)
                 writer.addFeature(outFeat)
                 x = x + xOffset
                 idVar = idVar + 1
@@ -248,11 +248,11 @@ class Dialog(QDialog, Ui_Dialog):
                     pt5 = QgsPoint(x, y)
                     polygon = [[pt1, pt2, pt3, pt4, pt5]]
                     outFeat.setGeometry(outGeom.fromPolygon(polygon))
-                    outFeat.setAttribute(0, QVariant(idVar))
-                    outFeat.setAttribute(1, QVariant(x))
-                    outFeat.setAttribute(2, QVariant(x + xOffset))
-                    outFeat.setAttribute(3, QVariant(y - yOffset))
-                    outFeat.setAttribute(4, QVariant(y))
+                    outFeat.setAttribute(0, idVar)
+                    outFeat.setAttribute(1, x)
+                    outFeat.setAttribute(2, x + xOffset)
+                    outFeat.setAttribute(3, y - yOffset)
+                    outFeat.setAttribute(4, y)
                     writer.addFeature(outFeat)
                     idVar = idVar + 1
                     x = x + xOffset
@@ -269,7 +269,7 @@ class Dialog(QDialog, Ui_Dialog):
         ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( QString( self.shapefileName ) )
+        self.outShape.setText( self.shapefileName )
 
     def chkAlignToggled(self):
         if self.chkAlign.isChecked():

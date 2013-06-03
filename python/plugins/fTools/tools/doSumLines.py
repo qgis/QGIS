@@ -91,7 +91,7 @@ class Dialog(QDialog, Ui_Dialog):
         ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( QString( self.shapefileName ) )
+        self.outShape.setText( self.shapefileName )
 
     def compute(self, inPoly, inLns, inField, outPath, progressBar):
         polyLayer = ftools_utils.getVectorLayerByName(inPoly)
@@ -137,9 +137,8 @@ class Dialog(QDialog, Ui_Dialog):
                         outGeom = inGeom.intersection(tmpGeom)
                         length = length + distArea.measure(outGeom)
             outFeat.setGeometry(inGeom)
-            atMap.append(QVariant(length))
+            atMap.append(length)
             outFeat.setAttributes(atMap)
-            #outFeat.setAttribute(index, QVariant(length))
             writer.addFeature(outFeat)
             start = start + 1
             progressBar.setValue(start)

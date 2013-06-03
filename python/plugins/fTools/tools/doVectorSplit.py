@@ -67,7 +67,7 @@ class Dialog(QDialog, Ui_Dialog):
         ( self.folderName, self.encoding ) = ftools_utils.dirDialog( self )
         if self.folderName is None or self.encoding is None:
             return
-        self.outShape.setText( QString( self.folderName ) )
+        self.outShape.setText( self.folderName )
 
     def accept(self):
         inShape = self.inShape.currentText()
@@ -124,7 +124,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.restoreGui()
 
         if not errors.isEmpty():
-            msg = QString( "Processing of the following layers/files ended with error:<br><br>" ).append( errors.join( "<br>" ) )
+            msg = self.tr( "Processing of the following layers/files ended with error:<br><br>" ) + "<br>".join(errors)
             QErrorMessage( self ).showMessage( msg )
 
         QMessageBox.information(self, self.tr("Vector Split"),
@@ -141,7 +141,7 @@ class SplitThread(QThread):
         self.mutex = QMutex()
         self.stopMe = 0
 
-        self.errors = QStringList()
+        self.errors = []
 
     def run(self):
         self.mutex.lock()
@@ -150,12 +150,12 @@ class SplitThread(QThread):
 
         interrupted = False
 
-        outPath = QString(self.outDir)
+        outPath = self.outDir
 
-        if outPath.contains("\\"):
+        if outPath.find("\\") != -1:
             outPath.replace("\\", "/")
 
-        if not outPath.endsWith("/"):
+        if not outPath.endswith("/"):
             outPath = outPath + "/"
 
         provider = self.layer.dataProvider()
@@ -172,7 +172,7 @@ class SplitThread(QThread):
 
 
         for i in unique:
-            check = QFile(baseName + "_" + unicode(i.toString().trimmed()) + ".shp")
+            check = QFile(baseName + "_" + unicode(i.strip()) + ".shp")
             fName = check.fileName()
             if check.exists():
                 if not QgsVectorFileWriter.deleteShapeFile(fName):

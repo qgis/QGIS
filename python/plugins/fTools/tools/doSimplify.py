@@ -85,7 +85,7 @@ class Dialog( QDialog, Ui_Dialog ):
     ( self.shapeFileName, self.encoding ) = ftools_utils.saveDialog( self )
     if self.shapeFileName is None or self.encoding is None:
       return
-    self.edOutputFile.setText( QString( self.shapeFileName ) )
+    self.edOutputFile.setText( self.shapeFileName )
 
   def accept( self ):
     vLayer = ftools_utils.getVectorLayerByName( self.cmbInputLayer.currentText() )
@@ -301,7 +301,7 @@ class GeomThread( QThread ):
       else:
         self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), vProvider.featureCount() )
         f = QgsFeature()
-  fit = vProvider.getFeatures()
+        fit = vProvider.getFeatures()
         while fit.nextFeature( f ):
           featGeometry = QgsGeometry( f.geometry() )
           attrMap = f.attributes()
@@ -326,7 +326,7 @@ class GeomThread( QThread ):
     else: # modify existing shapefile
       if not self.inputLayer.isEditable():
         self.inputLayer.startEditing()
-      self.inputLayer.beginEditCommand( QString( "Simplify line(s)" ) )
+      self.inputLayer.beginEditCommand( "Simplify line(s)" )
       if self.useSelection:
         selection = self.inputLayer.selectedFeatures()
         self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), len( selection ) )
@@ -351,7 +351,7 @@ class GeomThread( QThread ):
         vProvider = self.inputLayer.dataProvider()
         self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), vProvider.featureCount() )
         f = QgsFeature()
-  fit = vProvider.getFeatures()
+        fit = vProvider.getFeatures()
         while fit.nextFeature( f ):
           featureId = f.id()
           featGeometry = QgsGeometry( f.geometry() )
@@ -428,7 +428,7 @@ class GeomThread( QThread ):
       else:
         self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), vProvider.featureCount() )
         f = QgsFeature()
-  fit = vProvider.getFeatures()
+        fit = vProvider.getFeatures()
         while fit.nextFeature( f ):
           featGeometry = QgsGeometry( f.geometry() )
           attrMap = f.attributes()
@@ -451,7 +451,7 @@ class GeomThread( QThread ):
       if not self.inputLayer.isEditable():
         self.inputLayer.startEditing()
 
-      self.inputLayer.beginEditCommand( QString( "Densify line(s)" ) )
+      self.inputLayer.beginEditCommand( "Densify line(s)" )
 
       if self.useSelection:
         selection = self.inputLayer.selectedFeatures()
@@ -474,7 +474,7 @@ class GeomThread( QThread ):
         vProvider = self.inputLayer.dataProvider()
         self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), vProvider.featureCount() )
         f = QgsFeature()
-  fit = vProvider.getFeatures()
+        fit = vProvider.getFeatures()
         while fit.nextFeature( f ):
           featureId = f.id()
           featGeometry = QgsGeometry( f.geometry() )

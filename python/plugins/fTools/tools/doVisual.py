@@ -65,7 +65,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
     '''
     if ( e.modifiers() == Qt.ControlModifier or e.modifiers() == Qt.MetaModifier ) and e.key() == Qt.Key_C:
       #selection = self.tblUnique.selectedItems()
-      items = QString()
+      items = ""
       if self.myFunction in ( 1, 2 ):
         for rec in range( self.tblUnique.rowCount() ):
           items.append( self.tblUnique.item( rec, 0 ).text() + "\n" )
@@ -245,7 +245,7 @@ class visualThread( QThread ):
     for item in unique:
       nElement += 1
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
-      lstUnique.append(item.toString().trimmed())
+      lstUnique.append(item.strip())
     lstCount = len( unique )
     return ( lstUnique, lstCount )
 

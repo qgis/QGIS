@@ -63,7 +63,7 @@ class Dialog(QDialog, Ui_Dialog):
         (self.shapefileName, self.encoding) = ftools_utils.saveDialog(self)
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText(QString(self.shapefileName))
+        self.outShape.setText(self.shapefileName)
 
     def accept(self):
         if self.inPolygon.currentText() == "":
@@ -188,7 +188,7 @@ class PointsInPolygonThread(QThread):
         pntFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
-  polyFit = polyProvider.getFeatures()
+        polyFit = polyProvider.getFeatures()
         while polyFit.nextFeature(polyFeat):
             inGeom = polyFeat.geometry()
             atMap = polyFeat.attributes()
@@ -218,7 +218,7 @@ class PointsInPolygonThread(QThread):
                         interrupted = True
                         break
 
-            atMap.append(QVariant(count))
+            atMap.append(count)
             outFeat.setAttributes(atMap)
             writer.addFeature(outFeat)
 
