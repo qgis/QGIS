@@ -2251,11 +2251,11 @@ Install it and try again.</source>
     </message>
     <message>
         <source>Extract projection</source>
-        <translation>投影法を推測する</translation>
+        <translation>投影法を抽出する</translation>
     </message>
     <message>
         <source>Extract projection information from raster(s)</source>
-        <translation>ラスタの情報から推測された投影法</translation>
+        <translation>ラスタから投影法の情報を抽出する</translation>
     </message>
     <message>
         <source>Conversion</source>
@@ -2263,7 +2263,7 @@ Install it and try again.</source>
     </message>
     <message>
         <source>Extraction</source>
-        <translation>推測</translation>
+        <translation>抽出</translation>
     </message>
     <message>
         <source>Analysis</source>
@@ -2859,13 +2859,13 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="31"/>
         <source>Use visible raster layers for input</source>
-        <translation>入力のために可視のラスタレイヤを使う</translation>
+        <translation>入力に可視のラスタレイヤを使う</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="38"/>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="71"/>
         <source>Choose input directory instead of files</source>
-        <translation>ファイルの代わりに入力ディレクトリを選択して下さい</translation>
+        <translation>ファイルの代わりに入力ディレクトリを選択する</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="45"/>
@@ -3144,7 +3144,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="680"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="141"/>
         <source>No data</source>
-        <translation>データ無</translation>
+        <translation>データ無し</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="573"/>
@@ -3592,7 +3592,7 @@ Imagine,ArcGIS,GDALの直接利用に適しています.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="58"/>
         <source>&amp;Output file for rasterized vectors (raster)</source>
-        <translation>ラスタ化されたベクタ出力ファイル（ラスタ）(&amp;O)</translation>
+        <translation>出力ファイル（ラスタ）(&amp;O)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="76"/>
