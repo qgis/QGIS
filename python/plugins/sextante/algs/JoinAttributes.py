@@ -83,12 +83,12 @@ class JoinAttributes(GeoAlgorithm):
         for inFeat in features:
             inGeom = inFeat.geometry()
             attrs = inFeat.attributes()
-            joinValue1 = attrs[joinField1Index].toString()
+            joinValue1 = attrs[joinField1Index]
             features2 = QGisLayers.features(layer2);
             for inFeat2 in features2:
                 ## Maybe it should cache this entries...
                 attrs2 = inFeat2.attributes()
-                joinValue2 = attrs2[joinField2Index].toString()
+                joinValue2 = attrs2[joinField2Index]
                 if joinValue1 == joinValue2:
                     # create the new feature
                     outFeat.setGeometry(inGeom)

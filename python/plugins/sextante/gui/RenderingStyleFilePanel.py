@@ -47,11 +47,11 @@ class RenderingStyleFilePanel(QtGui.QWidget):
     def showSelectionDialog(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, "Select style file", "", "*.qml")
         if filename:
-            self.text.setText(str(filename))
+            self.text.setText(unicode(filename))
 
     def setText(self, text):
-            self.text.setText(str(text))
+            self.text.setText(unicode(text))
 
     def getValue(self):
-        filename = str(self.text.text())
+        filename = unicode(self.text.text())
         return filename

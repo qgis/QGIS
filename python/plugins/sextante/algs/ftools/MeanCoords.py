@@ -79,12 +79,12 @@ class MeanCoords(GeoAlgorithm):
         for feat in features:
             current += 1
             progress.setPercentage(current * total)
-            clazz = feat.attributes()[uniqueIndex].toString().trimmed()
+            clazz = feat.attributes()[uniqueIndex].strip()
             if weightIndex == -1:
                 weight = 1.00
             else:
                 try:
-                    weight = float(feat.attributes()[weightIndex].toDouble()[0])
+                    weight = float(feat.attributes()[weightIndex])
                 except:
                     weight = 1.00
             if clazz not in means:
@@ -106,7 +106,7 @@ class MeanCoords(GeoAlgorithm):
             meanPoint = QgsPoint(cx, cy)
 
             outFeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
-            outFeat.setAttributes([QVariant(cx), QVariant(cy), clazz])
+            outFeat.setAttributes([cx, cy, clazz])
             writer.addFeature(outFeat)
 
 

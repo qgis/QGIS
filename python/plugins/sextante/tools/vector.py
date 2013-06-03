@@ -58,7 +58,8 @@ def values(layer, *attributes):
     '''Returns the values in the attributes table of a vector layer, for the passed fields.
     Field can be passed as field names or as zero-based field indices.
     Returns a dict of lists, with the passed field identifiers as keys.
-    It considers the existing selection'''
+    It considers the existing selection.
+    It assummes fields are numeric or contain values that can be parsed to a number'''
     ret = {}
     for attr in attributes:
         index = resolveFieldIndex(layer, attr)
@@ -66,7 +67,7 @@ def values(layer, *attributes):
         features = QGisLayers.features(layer)
         for feature in features:
             try:
-                v = float(feature.attributes()[index].toString())
+                v = float(feature.attributes()[index])
                 values.append(v)
             except:
                 values.append(None)

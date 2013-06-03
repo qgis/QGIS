@@ -53,7 +53,7 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
         for inFeat in features:
             attrs = inFeat.attributes()
             if useField:
-                value = attrs[field].toDouble()[0]
+                value = attrs[field]
             else:
                 value = distance
 
@@ -86,7 +86,7 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
         for inFeat in features:
             attrs = inFeat.attributes()
             if useField:
-                value = attrs[field].toDouble()[0]
+                value = attrs[field]
             else:
                 value = distance
 

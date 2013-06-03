@@ -54,11 +54,11 @@ class ImportIntoPostGIS(GeoAlgorithm):
         settings = QSettings()
         mySettings = "/PostgreSQL/connections/"+ connection
         try:
-            database = settings.value(mySettings+"/database").toString()
-            username = settings.value(mySettings+"/username").toString()
-            host = settings.value(mySettings+"/host").toString()
-            port = int(settings.value(mySettings+"/port").toString())
-            password = settings.value(mySettings+"/password").toString()
+            database = settings.value(mySettings+"/database")
+            username = settings.value(mySettings+"/username")
+            host = settings.value(mySettings+"/host")
+            port = settings.value(mySettings+"/port", type = int)
+            password = settings.value(mySettings+"/password")
         except Exception, e:
             raise GeoAlgorithmExecutionException("Wrong database connection name: " + connection)
 

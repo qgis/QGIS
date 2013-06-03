@@ -445,7 +445,7 @@ class mmqgisx_grid_algorithm(GeoAlgorithm):
 					y = y + vspacing;
 
 				feature.setGeometry(geometry.fromPolyline(polyline))
-				feature.setAttributes([QVariant(x), QVariant(0)])
+				feature.setAttributes([x, 0])
 				out.addFeature(feature)
 				linecount = linecount + 1
 				#self.iface.mainWindow().statusBar().showMessage("Line " + str(linecount) + " " + str(x))
@@ -463,7 +463,7 @@ class mmqgisx_grid_algorithm(GeoAlgorithm):
 					x = x + hspacing;
 
 				feature.setGeometry(geometry.fromPolyline(polyline))
-				feature.setAttributes([QVariant(0), QVariant(y)])
+				feature.setAttributes([0, y])
 				out.addFeature(feature)
 				linecount = linecount + 1
 				#self.iface.mainWindow().statusBar().showMessage("Line " + str(linecount) + " " + str(y))
@@ -483,7 +483,7 @@ class mmqgisx_grid_algorithm(GeoAlgorithm):
 					geometry = QgsGeometry()
 					feature = QgsFeature()
 					feature.setGeometry(geometry.fromPolygon([polyline]))
-					feature.setAttributes([QVariant(x + (hspacing / 2.0)), QVariant(y + (vspacing / 2.0))])
+					feature.setAttributes([x + (hspacing / 2.0), y + (vspacing / 2.0)])
 					out.addFeature(feature)
 					linecount = linecount + 1
 					y = y + vspacing;
@@ -509,7 +509,7 @@ class mmqgisx_grid_algorithm(GeoAlgorithm):
 					geometry = QgsGeometry()
 					feature = QgsFeature()
 					feature.setGeometry(geometry.fromPolygon([polyline]))
-					feature.setAttributes([QVariant(x + (hspacing / 2.0)), QVariant(y + (vspacing / 2.0))])
+					feature.setAttributes([x + (hspacing / 2.0), y + (vspacing / 2.0)])
 					out.addFeature(feature)
 					linecount = linecount + 1
 					y = y + vspacing;
@@ -547,7 +547,7 @@ class mmqgisx_grid_algorithm(GeoAlgorithm):
 					geometry = QgsGeometry()
 					feature = QgsFeature()
 					feature.setGeometry(geometry.fromPolygon([polyline]))
-					feature.setAttributes([QVariant(x), QVariant(y)])
+					feature.setAttributes([x, y])
 					out.addFeature(feature)
 					linecount = linecount + 1
 					y = y + vspacing;
@@ -800,7 +800,7 @@ class mmqgisx_hub_distance_algorithm(GeoAlgorithm):
 		features = QGisLayers.features(layerdest)
 		for feature in features:
 			hubs.append(mmqgisx_hub(feature.geometry().boundingBox().center(), \
-					feature.attributes()[nameindex].toString()))
+					unicode(feature.attributes()[nameindex])))
 
 		# Scan source points, find nearest hub, and write to output file
 		writecount = 0
@@ -823,7 +823,7 @@ class mmqgisx_hub_distance_algorithm(GeoAlgorithm):
 					hubdist = thisdist
 
 			attributes = feature.attributes()
-			attributes.append(QVariant(closest.name))
+			attributes.append(closest.name)
 			if units == "Feet":
 				hubdist = hubdist * 3.2808399
 			elif units == "Miles":
@@ -832,7 +832,7 @@ class mmqgisx_hub_distance_algorithm(GeoAlgorithm):
 				hubdist = hubdist / 1000
 			elif units != "Meters":
 	                	hubdist = sqrt(pow(source.x() - closest.point.x(), 2.0) + pow(source.y() - closest.point.y(), 2.0))
-			attributes.append(QVariant(hubdist))
+			attributes.append(hubdist)
 
 			outfeature = QgsFeature()
 			outfeature.setAttributes(attributes)
@@ -906,12 +906,12 @@ class mmqgisx_hub_lines_algorithm(GeoAlgorithm):
 			i += 1
 			spokex = spokepoint.geometry().boundingBox().center().x()
 			spokey = spokepoint.geometry().boundingBox().center().y()
-			spokeid = unicode(spokepoint.attributes()[spokeindex].toString())
+			spokeid = unicode(spokepoint.attributes()[spokeindex])
 			progress.setPercentage(float(i) / len(spokepoints) * 100)
 			# Scan hub points to find first matching hub
 			hubpoints = QGisLayers.features(hublayer)
 			for hubpoint in hubpoints:
-				hubid = unicode(hubpoint.attributes()[hubindex].toString())
+				hubid = unicode(hubpoint.attributes()[hubindex])
 				if hubid == spokeid:
 					hubx = hubpoint.geometry().boundingBox().center().x()
 					huby = hubpoint.geometry().boundingBox().center().y()
@@ -1005,7 +1005,7 @@ class mmqgisx_merge_algorithm(GeoAlgorithm):
 					if (dfield in idx):
 						dattributes.append(sattributes[idx[dfield]])
 					else:
-						dattributes.append(QVariant(dfield.type()))
+						dattributes.append(dfield.type())
 				feature.setAttributes(dattributes)
 				out.addFeature(feature)
 				featurecount += 1
@@ -1056,12 +1056,12 @@ class mmqgisx_select_algorithm(GeoAlgorithm):
 		totalcount = layer.featureCount()
 		for feature in layer.getFeatures():
 			if (comparison == 'begins with') or (comparison == 'contains') or \
-			   		(feature.attributes()[selectindex].type() == QVariant.String) or \
+			   		isinstance(feature.attributes()[selectindex], basestring) or \
 			   		isinstance(comparisonvalue, basestring):
-				x = unicode(feature.attributes()[selectindex].toString())
+				x = unicode(feature.attributes()[selectindex])
 				y = unicode(comparisonvalue)
 			else:
-				x = float(feature.attributes()[selectindex].toString())
+				x = float(feature.attributes()[selectindex])
 				y = float(comparisonvalue)
 
 			match = False
@@ -1128,14 +1128,14 @@ class mmqgisx_text_to_float_algorithm(GeoAlgorithm):
 			progress.setPercentage(float(i) / featurecount * 100)
 			attributes = feature.attributes()
 			try:
-				v = unicode(attributes[idx].toString())
+				v = unicode(attributes[idx])
 				if '%' in v:
 					v = v.replace('%', "")
 					attributes[idx] = float(attributes[idx]) / float(100)
 				else:
 					attributes[idx] = float(attributes[idx])
 			except:
-				attributes[idx] = QVariant()
+				attributes[idx] = None
 
 			feature.setAttributes(attributes)
 			out.addFeature(feature)
