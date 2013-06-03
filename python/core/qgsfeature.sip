@@ -30,6 +30,60 @@ class QgsFeature
 
   public:
 
+    SIP_PYOBJECT __getattr__(const QString& name);
+%MethodCode
+  int fieldIdx = sipCpp->fieldNameIndex(*a0);
+  QString altname = QString(*a0).replace("_"," ");
+  int altfieldIdx = sipCpp->fieldNameIndex(altname);
+
+  if (fieldIdx >= 0)
+  {
+      QVariant* v = new QVariant( sipCpp->attribute(fieldIdx) );
+      sipRes = sipConvertFromInstance(v, sipClass_QVariant, Py_None);
+  }
+  else if( altfieldIdx >= 0 )
+  {
+      QVariant* v = new QVariant( sipCpp->attribute(altfieldIdx) );
+      sipRes = sipConvertFromInstance(v, sipClass_QVariant, Py_None);
+  }
+  else
+  {
+    PyObject* key = PyString_FromString(a0->toStdString().c_str());
+    sipRes = PyObject_GenericGetAttr(sipSelf, key );
+  }
+%End
+
+    void __setattr__(const QString& key, QVariant value);
+%MethodCode
+    int fieldIdx = sipCpp->fieldNameIndex(*a0);
+    QString altname = QString(*a0).replace("_"," ");
+    int altfieldIdx = sipCpp->fieldNameIndex(altname);
+
+    if (fieldIdx >= 0)
+    {
+        sipCpp->setAttribute(fieldIdx, *a1);
+    }
+    else if( altfieldIdx >= 0 )
+    {
+        sipCpp->setAttribute(altfieldIdx, *a1);
+    }
+    else
+    {
+        PyObject* key = PyString_FromString(a0->toStdString().c_str());
+        PyObject* value = sipConvertFromType( a1, sipType_QVariant, sipSelf);
+        PyObject_GenericSetAttr(sipSelf, key, value);
+    }
+%End
+
+    void __delattr__(const QString& key);
+%MethodCode
+  int fieldIdx = sipCpp->fieldNameIndex(*a0);
+  if (fieldIdx == -1)
+    PyErr_SetString(PyExc_KeyError, a0->toAscii());
+  else
+    sipCpp->deleteAttribute(fieldIdx);
+%End
+
     SIP_PYOBJECT __getitem__(int key);
 %MethodCode
   const QgsAttributes& attrs = sipCpp->attributes();
