@@ -262,6 +262,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
+    QString ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const;
+    OGRwkbGeometryType ogrWkbGeometryTypeFromName( QString typeName ) const;
     QgsFields mAttributeFields;
     OGRDataSourceH ogrDataSource;
     void *extent_;
@@ -280,6 +282,10 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     //! layer index
     int mLayerIndex;
+
+    /** Optional geometry type for layers with multiple geometries,
+     *  otherwise wkbUnknown */
+    OGRwkbGeometryType mOgrGeometryTypeFilter;
 
     //! current spatial filter
     QgsRectangle mFetchRect;

@@ -40,7 +40,7 @@ QgsMssqlTableModel::~QgsMssqlTableModel()
 {
 }
 
-void QgsMssqlTableModel::addTableEntry( QgsMssqlLayerProperty layerProperty )
+void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProperty )
 {
   QgsDebugMsg( QString( "%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7" )
                .arg( layerProperty.schemaName )
@@ -346,7 +346,7 @@ bool QgsMssqlTableModel::setData( const QModelIndex &idx, const QVariant &value,
   return true;
 }
 
-QString QgsMssqlTableModel::layerURI( const QModelIndex &index, QString connInfo, bool useEstimatedMetadata )
+QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata )
 {
   if ( !index.isValid() )
     return QString::null;

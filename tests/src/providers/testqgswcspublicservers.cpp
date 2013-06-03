@@ -858,7 +858,7 @@ QString TestQgsWcsPublicServers::row( QStringList theValues, QString theClass )
 /* print usage text */
 void usage( std::string const & appName )
 {
-  std::cerr << "Quantum GIS public WCS servers test - " << VERSION << " '" << RELEASE_NAME << "'\n"
+  std::cerr << "QGIS public WCS servers test - " << VERSION << " '" << RELEASE_NAME << "'\n"
             << "Console application for QGIS WCS provider (WCS client) testing.\n"
             << "Usage: " << appName <<  " [options] CACHE_DIR\n"
             << "  options: \n"

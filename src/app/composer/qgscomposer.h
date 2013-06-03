@@ -331,10 +331,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Initially after reading from xml, states are set to rectangle to achieve faster project loading.
     void restoreComposerMapStates();
 
-    //! Fills icons into composer picture widgets
-    //! To make loading from project faster, the previews are generated when the composer becomes visible.
-    void initialiseComposerPicturePreviews();
-
     //! Create composer view and rulers
     void createComposerView();
 
@@ -375,7 +371,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! We load composer map content from project xml only on demand. Therefore we need to store the real preview mode type
     QMap< QgsComposerMap*, int > mMapsToRestore;
-    QList< QgsComposerPictureWidget* > mPicturePreviews;
 
     QDockWidget* mItemDock;
     QDockWidget* mUndoDock;

@@ -241,6 +241,119 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
   return;
 }
 
+void QgsProjectParser::owsGeneralAndResourceList( QDomElement& parentElement, QDomDocument& doc, const QString& strHref ) const
+{
+  // set parentElement id
+  QFileInfo projectFileInfo( mProjectPath );
+  parentElement.setAttribute( "id", "ows-context-" + projectFileInfo.baseName() );
+  // OWSContext General element
+  QDomElement serviceElem = doc.createElement( "Service" );
+
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    QgsConfigParser::serviceCapabilities( parentElement, doc );
+    return;
+  }
+
+  QDomElement generalElem = doc.createElement( "General" );
+
+  QDomElement windowElem = doc.createElement( "Window" );
+  windowElem.setAttribute( "height", "600" );
+  windowElem.setAttribute( "width", "800" );
+  generalElem.appendChild( windowElem );
+
+  //WMS title
+  QDomElement titleElem = propertiesElem.firstChildElement( "WMSServiceTitle" );
+  if ( !titleElem.isNull() )
+  {
+    QDomElement wmsTitleElem = doc.createElement( "ows:Title" );
+    QDomText wmsTitleText = doc.createTextNode( titleElem.text() );
+    wmsTitleElem.appendChild( wmsTitleText );
+    generalElem.appendChild( wmsTitleElem );
+  }
+
+  //WMS abstract
+  QDomElement abstractElem = propertiesElem.firstChildElement( "WMSServiceAbstract" );
+  if ( !abstractElem.isNull() )
+  {
+    QDomElement wmsAbstractElem = doc.createElement( "ows:Abstract" );
+    QDomText wmsAbstractText = doc.createTextNode( abstractElem.text() );
+    wmsAbstractElem.appendChild( wmsAbstractText );
+    generalElem.appendChild( wmsAbstractElem );
+  }
+
+  //keyword list
+  QDomElement keywordListElem = propertiesElem.firstChildElement( "WMSKeywordList" );
+  if ( !keywordListElem.isNull() )
+  {
+    bool siaFormat = featureInfoFormatSIA2045();
+
+    QDomElement keywordsElem = doc.createElement( "ows:Keywords" );
+    QDomNodeList keywordList = keywordListElem.elementsByTagName( "value" );
+    for ( int i = 0; i < keywordList.size(); ++i )
+    {
+      QDomElement keywordElem = doc.createElement( "ows:Keyword" );
+      QDomText keywordText = doc.createTextNode( keywordList.at( i ).toElement().text() );
+      keywordElem.appendChild( keywordText );
+      if ( siaFormat )
+      {
+        keywordElem.setAttribute( "vocabulary", "SIA_Geo405" );
+      }
+      keywordsElem.appendChild( keywordElem );
+    }
+
+    if ( keywordList.size() > 0 )
+    {
+      serviceElem.appendChild( keywordsElem );
+    }
+  }
+
+  parentElement.appendChild( generalElem );
+
+  // OWSContext ResourceList element
+  QStringList nonIdentifiableLayers = identifyDisabledLayers();
+  if ( mProjectLayerElements.size() < 1 )
+  {
+    return;
+  }
+
+  QgsRectangle combinedBBox;
+  QMap<QString, QgsMapLayer *> layerMap;
+  projectLayerMap( layerMap );
+
+  QDomElement legendElem = mXMLDoc->documentElement().firstChildElement( "legend" );
+
+  QDomElement resourceListElem = doc.createElement( "ResourceList" );
+
+  addOWSLayers( doc, resourceListElem, legendElem, layerMap, nonIdentifiableLayers, strHref, combinedBBox, "" );
+
+  parentElement.appendChild( resourceListElem );
+
+  QgsRectangle mapRect = mapRectangle();
+  if ( !mapRect.isEmpty() )
+  {
+    combinedBBox = mapRect;
+  }
+  const QgsCoordinateReferenceSystem& projectCrs = projectCRS();
+  QDomElement bboxElem = doc.createElement( "ows:BoundingBox" );
+  bboxElem.setAttribute( "crs", projectCrs.authid() );
+  if ( projectCrs.axisInverted() )
+  {
+    combinedBBox.invert();
+  }
+  QDomElement lowerCornerElem = doc.createElement( "ows:LowerCorner" );
+  QDomText lowerCornerText = doc.createTextNode( QString::number( combinedBBox.xMinimum() ) + " " +  QString::number( combinedBBox.yMinimum() ) );
+  lowerCornerElem.appendChild( lowerCornerText );
+  bboxElem.appendChild( lowerCornerElem );
+  QDomElement upperCornerElem = doc.createElement( "ows:upperCorner" );
+  QDomText upperCornerText = doc.createTextNode( QString::number( combinedBBox.xMaximum() ) + " " +  QString::number( combinedBBox.yMaximum() ) );
+  upperCornerElem.appendChild( upperCornerText );
+  bboxElem.appendChild( upperCornerElem );
+  generalElem.appendChild( bboxElem );
+
+}
+
 void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const
 {
   if ( mProjectLayerElements.size() < 1 )
@@ -516,6 +629,17 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       {
         continue;
       }
+      //vector layer without geometry
+      if ( currentLayer->type() == QgsMapLayer::VectorLayer )
+      {
+        QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+        QGis::WkbType wkbType = vectorLayer->wkbType();
+        if ( wkbType == QGis::WKBNoGeometry )
+        {
+          continue;
+        }
+      }
+      // queryable layer
       if ( nonIdentifiableLayers.contains( currentLayer->id() ) )
       {
         layerElem.setAttribute( "queryable", "0" );
@@ -549,6 +673,27 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
         QDomText abstractText = doc.createTextNode( abstract );
         abstractElem.appendChild( abstractText );
         layerElem.appendChild( abstractElem );
+      }
+
+      //keyword list
+      QStringList keywordStringList = currentLayer->keywordList().split( "," );
+      if ( keywordStringList.size() > 0 )
+      {
+        bool siaFormat = featureInfoFormatSIA2045();
+
+        QDomElement keywordListElem = doc.createElement( "KeywordList" );
+        for ( int i = 0; i < keywordStringList.size(); ++i )
+        {
+          QDomElement keywordElem = doc.createElement( "Keyword" );
+          QDomText keywordText = doc.createTextNode( keywordStringList.at( i ).trimmed() );
+          keywordElem.appendChild( keywordText );
+          if ( siaFormat )
+          {
+            keywordElem.setAttribute( "vocabulary", "SIA_Geo405" );
+          }
+          keywordListElem.appendChild( keywordElem );
+        }
+        layerElem.appendChild( keywordListElem );
       }
 
       //CRS
@@ -596,6 +741,103 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
         }
       }
 
+      // layer attribution
+      QString attribution = currentLayer->attribution();
+      if ( !attribution.isEmpty() )
+      {
+        QDomElement attribElem = doc.createElement( "Attribution" );
+        QDomElement attribTitleElem = doc.createElement( "Title" );
+        QDomText attribText = doc.createTextNode( attribution );
+        attribTitleElem.appendChild( attribText );
+        attribElem.appendChild( attribTitleElem );
+        QString attributionUrl = currentLayer->attributionUrl();
+        if ( !attributionUrl.isEmpty() )
+        {
+          QDomElement attribORElem = doc.createElement( "OnlineResource" );
+          attribORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+          attribORElem.setAttribute( "xlink:type", "simple" );
+          attribORElem.setAttribute( "xlink:href", attributionUrl );
+          attribElem.appendChild( attribORElem );
+        }
+        layerElem.appendChild( attribElem );
+      }
+
+      // layer metadata URL
+      QString metadataUrl = currentLayer->metadataUrl();
+      if ( !metadataUrl.isEmpty() )
+      {
+        QDomElement metaUrlElem = doc.createElement( "MetadataURL" );
+        QString metadataUrlType = currentLayer->metadataUrlType();
+        if ( !metadataUrlType.isEmpty() )
+        {
+          metaUrlElem.setAttribute( "type", metadataUrlType );
+        }
+        QString metadataUrlFormat = currentLayer->metadataUrlFormat();
+        if ( !metadataUrlFormat.isEmpty() )
+        {
+          QDomElement metaUrlFormatElem = doc.createElement( "Format" );
+          QDomText metaUrlFormatText = doc.createTextNode( metadataUrlFormat );
+          metaUrlFormatElem.appendChild( metaUrlFormatText );
+          metaUrlElem.appendChild( metaUrlFormatElem );
+        }
+        QDomElement metaUrlORElem = doc.createElement( "OnlineResource" );
+        metaUrlORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+        metaUrlORElem.setAttribute( "xlink:type", "simple" );
+        metaUrlORElem.setAttribute( "xlink:href", metadataUrl );
+        metaUrlElem.appendChild( metaUrlORElem );
+        layerElem.appendChild( metaUrlElem );
+      }
+
+      // if the layer is published in WFS
+      // add a FeatureListURL element
+      // with an URL to the GML
+      QStringList wfsLayersId = wfsLayers();
+      if ( wfsLayersId.contains( currentLayer->id() ) )
+      {
+        QDomElement featListUrlElem = doc.createElement( "FeatureListURL" );
+
+        QDomElement featListUrlFormatElem = doc.createElement( "Format" );
+        QDomText featListUrlFormatText = doc.createTextNode( "text/xml" );
+        featListUrlFormatElem.appendChild( featListUrlFormatText );
+        featListUrlElem.appendChild( featListUrlFormatElem );
+
+        QString hrefString = wfsServiceUrl();
+        if ( hrefString.isEmpty() )
+        {
+          hrefString = serviceUrl();
+        }
+        if ( hrefString.isEmpty() )
+        {
+          QDomNodeList getCapNodeList = doc.elementsByTagName( "GetCapabilities" );
+          if ( getCapNodeList.count() > 0 )
+          {
+            QDomElement getCapElem = getCapNodeList.at( 0 ).toElement();
+            QDomNodeList getCapORNodeList = getCapElem.elementsByTagName( "OnlineResource" );
+            if ( getCapORNodeList.count() > 0 )
+            {
+              hrefString = getCapORNodeList.at( 0 ).toElement().attribute( "xlink:href", "" );
+            }
+          }
+        }
+        if ( !hrefString.isEmpty() )
+        {
+          QUrl mapUrl( hrefString );
+          mapUrl.addQueryItem( "SERVICE", "WFS" );
+          mapUrl.addQueryItem( "VERSION", "1.0.0" );
+          mapUrl.addQueryItem( "REQUEST", "GetFeature" );
+          mapUrl.addQueryItem( "TYPENAME", currentLayer->name() );
+          mapUrl.addQueryItem( "OUTPUTFORMAT", "GML2" );
+          hrefString = mapUrl.toString();
+          QDomElement featListUrlORElem = doc.createElement( "OnlineResource" );
+          featListUrlORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+          featListUrlORElem.setAttribute( "xlink:type", "simple" );
+          featListUrlORElem.setAttribute( "xlink:href", hrefString );
+          featListUrlElem.appendChild( featListUrlORElem );
+        }
+
+        layerElem.appendChild( featListUrlElem );
+      }
+
       if ( fullProjectSettings )
       {
         addLayerProjectSettings( layerElem, doc, currentLayer );
@@ -608,6 +850,277 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
     }
 
     parentElem.appendChild( layerElem );
+  }
+}
+
+void QgsProjectParser::addOWSLayers( QDomDocument &doc,
+                                     QDomElement &parentElem,
+                                     const QDomElement &legendElem,
+                                     const QMap<QString, QgsMapLayer *> &layerMap,
+                                     const QStringList &nonIdentifiableLayers,
+                                     const QString& strHref,
+                                     QgsRectangle& combinedBBox,
+                                     QString strGroup ) const
+{
+  const QgsCoordinateReferenceSystem& projectCrs = projectCRS();
+  QDomNodeList legendChildren = legendElem.childNodes();
+  for ( int i = 0; i < legendChildren.size(); ++i )
+  {
+    QDomElement currentChildElem = legendChildren.at( i ).toElement();
+
+    if ( currentChildElem.tagName() == "legendgroup" )
+    {
+      QString name = currentChildElem.attribute( "name" );
+      if ( mRestrictedLayers.contains( name ) ) //unpublished group
+      {
+        continue;
+      }
+      QString group;
+      if ( strGroup.isEmpty() )
+      {
+        group = name;
+      }
+      else
+      {
+        group = strGroup + "/" + name;
+      }
+
+      if ( currentChildElem.attribute( "embedded" ) == "1" )
+      {
+        //add layers from other project files and embed into this group
+        QString project = convertToAbsolutePath( currentChildElem.attribute( "project" ) );
+        QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
+        QString embeddedGroupName = currentChildElem.attribute( "name" );
+        QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
+        QList<QDomElement> embeddedGroupElements = p->mLegendGroupElements;
+        if ( p )
+        {
+          QStringList pIdDisabled = p->identifyDisabledLayers();
+
+          QDomElement embeddedGroupElem;
+          foreach ( const QDomElement &elem, embeddedGroupElements )
+          {
+            if ( elem.attribute( "name" ) == embeddedGroupName )
+            {
+              embeddedGroupElem = elem;
+              break;
+            }
+          }
+
+          QMap<QString, QgsMapLayer *> pLayerMap;
+          QList<QDomElement> embeddedProjectLayerElements = p->mProjectLayerElements;
+          foreach ( const QDomElement &elem, embeddedProjectLayerElements )
+          {
+            pLayerMap.insert( layerId( elem ), p->createLayerFromElement( elem ) );
+          }
+
+          p->addOWSLayers( doc, parentElem, embeddedGroupElem, pLayerMap, pIdDisabled, strHref, combinedBBox, group );
+        }
+      }
+      else //normal (not embedded) legend group
+      {
+        addOWSLayers( doc, parentElem, currentChildElem, layerMap, nonIdentifiableLayers, strHref, combinedBBox, group );
+      }
+
+      // combine bounding boxes of children (groups/layers)
+      // combineExtentAndCrsOfGroupChildren( layerElem, doc );
+    }
+    else if ( currentChildElem.tagName() == "legendlayer" )
+    {
+      QDomElement layerElem = doc.createElement( "Layer" );
+      QString id = layerIdFromLegendLayer( currentChildElem );
+
+      if ( !layerMap.contains( id ) )
+      {
+        QgsDebugMsg( QString( "layer %1 not found in map - layer cache to small?" ).arg( id ) );
+        continue;
+      }
+
+      QgsMapLayer *currentLayer = layerMap[ id ];
+      if ( !currentLayer )
+      {
+        QgsDebugMsg( QString( "layer %1 not found" ).arg( id ) );
+        continue;
+      }
+
+      if ( mRestrictedLayers.contains( currentLayer->name() ) ) //unpublished layer
+      {
+        continue;
+      }
+      if ( nonIdentifiableLayers.contains( currentLayer->id() ) )
+      {
+        layerElem.setAttribute( "queryable", "false" );
+      }
+      else
+      {
+        layerElem.setAttribute( "queryable", "true" );
+      }
+
+      // is the layer visible ?
+      if ( currentChildElem.firstChildElement().firstChildElement().attribute( "visible" ) == "1" )
+      {
+        layerElem.setAttribute( "hidden", "false" );
+      }
+      else
+      {
+        layerElem.setAttribute( "hidden", "true" );
+      }
+
+      if ( !strGroup.isEmpty() )
+      {
+        layerElem.setAttribute( "group", strGroup );
+      }
+      // Because Layer transparency is used for the rendering
+      // OWSContext Layer opacity is set to 1
+      layerElem.setAttribute( "opacity", 1 );
+
+      QString lyrname = currentLayer->name();
+      layerElem.setAttribute( "name", lyrname );
+
+      // define an id based on layer name
+      layerElem.setAttribute( "id", lyrname.replace( QRegExp( "[\\W]" ), "_" ) );
+
+      QDomElement titleElem = doc.createElement( "ows:Title" );
+      QString titleName = currentLayer->title();
+      if ( titleName.isEmpty() )
+      {
+        titleName = currentLayer->name();
+      }
+      QDomText titleText = doc.createTextNode( titleName );
+      titleElem.appendChild( titleText );
+      layerElem.appendChild( titleElem );
+
+      QDomElement formatElem = doc.createElement( "ows:OutputFormat" );
+      QDomText formatText = doc.createTextNode( "image/png" );
+      formatElem.appendChild( formatText );
+      layerElem.appendChild( formatElem );
+
+      QDomElement serverElem = doc.createElement( "Server" );
+      serverElem.setAttribute( "service", "urn:ogc:serviceType:WMS" );
+      serverElem.setAttribute( "version", "1.3.0" );
+      serverElem.setAttribute( "default", "true" );
+      QDomElement orServerElem = doc.createElement( "OnlineResource" );
+      orServerElem.setAttribute( "xlink:href", strHref );
+      serverElem.appendChild( orServerElem );
+      layerElem.appendChild( serverElem );
+
+      QString abstract = currentLayer->abstract();
+      if ( !abstract.isEmpty() )
+      {
+        QDomElement abstractElem = doc.createElement( "ows:Abstract" );
+        QDomText abstractText = doc.createTextNode( abstract );
+        abstractElem.appendChild( abstractText );
+        layerElem.appendChild( abstractElem );
+      }
+
+      //min/max scale denominatormScaleBasedVisibility
+      if ( currentLayer->hasScaleBasedVisibility() )
+      {
+        QString minScaleString = QString::number( currentLayer->minimumScale() );
+        QString maxScaleString = QString::number( currentLayer->maximumScale() );
+        QDomElement minScaleElem = doc.createElement( "sld:MinScaleDenominator" );
+        QDomText minScaleText = doc.createTextNode( minScaleString );
+        minScaleElem.appendChild( minScaleText );
+        layerElem.appendChild( minScaleElem );
+        QDomElement maxScaleElem = doc.createElement( "sld:MaxScaleDenominator" );
+        QDomText maxScaleText = doc.createTextNode( maxScaleString );
+        maxScaleElem.appendChild( maxScaleText );
+        layerElem.appendChild( maxScaleElem );
+      }
+
+      /*
+      //CRS
+      QStringList crsList = createCRSListForLayer( currentLayer );
+      appendCRSElementsToLayer( layerElem, doc, crsList );
+
+      //Ex_GeographicBoundingBox
+      appendLayerBoundingBoxes( layerElem, doc, currentLayer->extent(), currentLayer->crs() );
+      */
+      //get project crs
+      const QgsCoordinateReferenceSystem& layerCrs = currentLayer->crs();
+      QgsCoordinateTransform t( layerCrs, projectCrs );
+
+      //transform
+      QgsRectangle BBox = t.transformBoundingBox( currentLayer->extent() );
+      if ( combinedBBox.isEmpty() )
+      {
+        combinedBBox = BBox;
+      }
+      else
+      {
+        combinedBBox.combineExtentWith( &BBox );
+      }
+
+      QDomElement styleListElem = doc.createElement( "StyleList" );
+      //only one default style in project file mode
+      QDomElement styleElem = doc.createElement( "Style" );
+      styleElem.setAttribute( "current", "true" );
+      QDomElement styleNameElem = doc.createElement( "Name" );
+      QDomText styleNameText = doc.createTextNode( "default" );
+      styleNameElem.appendChild( styleNameText );
+      QDomElement styleTitleElem = doc.createElement( "Title" );
+      QDomText styleTitleText = doc.createTextNode( "default" );
+      styleTitleElem.appendChild( styleTitleText );
+      styleElem.appendChild( styleNameElem );
+      styleElem.appendChild( styleTitleElem );
+      styleListElem.appendChild( styleElem );
+      layerElem.appendChild( styleListElem );
+
+      //keyword list
+      QStringList keywordStringList = currentLayer->keywordList().split( "," );
+      if ( keywordStringList.size() > 0 )
+      {
+        bool siaFormat = featureInfoFormatSIA2045();
+
+        QDomElement keywordsElem = doc.createElement( "ows:Keywords" );
+        for ( int i = 0; i < keywordStringList.size(); ++i )
+        {
+          QDomElement keywordElem = doc.createElement( "ows:Keyword" );
+          QDomText keywordText = doc.createTextNode( keywordStringList.at( i ).trimmed() );
+          keywordElem.appendChild( keywordText );
+          if ( siaFormat )
+          {
+            keywordElem.setAttribute( "vocabulary", "SIA_Geo405" );
+          }
+          keywordsElem.appendChild( keywordElem );
+        }
+        layerElem.appendChild( keywordsElem );
+      }
+
+      // layer metadata URL
+      QString metadataUrl = currentLayer->metadataUrl();
+      if ( !metadataUrl.isEmpty() )
+      {
+        QDomElement metaUrlElem = doc.createElement( "MetadataURL" );
+        QString metadataUrlType = currentLayer->metadataUrlType();
+        if ( !metadataUrlType.isEmpty() )
+        {
+          metaUrlElem.setAttribute( "type", metadataUrlType );
+        }
+        QString metadataUrlFormat = currentLayer->metadataUrlFormat();
+        if ( !metadataUrlFormat.isEmpty() )
+        {
+          QDomElement metaUrlFormatElem = doc.createElement( "Format" );
+          QDomText metaUrlFormatText = doc.createTextNode( metadataUrlFormat );
+          metaUrlFormatElem.appendChild( metaUrlFormatText );
+          metaUrlElem.appendChild( metaUrlFormatElem );
+        }
+        QDomElement metaUrlORElem = doc.createElement( "OnlineResource" );
+        metaUrlORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+        metaUrlORElem.setAttribute( "xlink:type", "simple" );
+        metaUrlORElem.setAttribute( "xlink:href", metadataUrl );
+        metaUrlElem.appendChild( metaUrlORElem );
+        layerElem.appendChild( metaUrlElem );
+      }
+
+      parentElem.appendChild( layerElem );
+    }
+    else
+    {
+      QgsDebugMsg( "unexpected child element" );
+      continue;
+    }
+
   }
 }
 
@@ -1791,7 +2304,8 @@ QList<QDomElement> QgsProjectParser::publishedComposerElements() const
 
 void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
-  if ( doc.documentElement().tagName() == "WFS_Capabilities" )
+  QString docElementTagName = doc.documentElement().tagName();
+  if ( docElementTagName == "WFS_Capabilities" )
   {
     serviceWFSCapabilities( parentElement, doc );
     return;
@@ -2094,6 +2608,27 @@ QString QgsProjectParser::serviceUrl() const
     if ( !wmsUrlElem.isNull() )
     {
       url = wmsUrlElem.text();
+    }
+  }
+  return url;
+}
+
+QString QgsProjectParser::wfsServiceUrl() const
+{
+  QString url;
+
+  if ( !mXMLDoc )
+  {
+    return url;
+  }
+
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement wfsUrlElem = propertiesElem.firstChildElement( "WFSUrl" );
+    if ( !wfsUrlElem.isNull() )
+    {
+      url = wfsUrlElem.text();
     }
   }
   return url;

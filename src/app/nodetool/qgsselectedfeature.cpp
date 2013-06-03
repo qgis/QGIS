@@ -57,6 +57,8 @@ QgsSelectedFeature::~QgsSelectedFeature()
     mValidator->deleteLater();
     mValidator = 0;
   }
+
+  delete mGeometry;
 }
 
 void QgsSelectedFeature::currentLayerChanged( QgsMapLayer *layer )
@@ -110,6 +112,9 @@ void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLa
   // feature was deleted
   connect( mVlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
 
+  // rolling back
+  connect( mVlayer, SIGNAL( beforeRollBack() ), this, SLOT( beforeRollBack() ) );
+
   // projection or extents changed
   connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( updateVertexMarkersPosition() ) );
   connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( updateVertexMarkersPosition() ) );
@@ -118,6 +123,13 @@ void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLa
   connect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry & ) ) );
 
   replaceVertexMap();
+}
+
+void QgsSelectedFeature::beforeRollBack()
+{
+  QgsDebugCall;
+  disconnect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry & ) ) );
+  deleteVertexMap();
 }
 
 void QgsSelectedFeature::beginGeometryChange()
@@ -161,6 +173,7 @@ void QgsSelectedFeature::geometryChanged( QgsFeatureId fid, QgsGeometry &geom )
 
 void QgsSelectedFeature::validateGeometry( QgsGeometry *g )
 {
+  QgsDebugCall;
   QSettings settings;
   if ( settings.value( "/qgis/digitizing/validate_geometries", 1 ).toInt() == 0 )
     return;
@@ -291,6 +304,9 @@ void QgsSelectedFeature::deleteSelectedVertexes()
     }
   }
 
+  if ( nSelected > 0 )
+    endGeometryChange();
+
   if ( count > 0 )
   {
     mVlayer->endEditCommand();
@@ -353,6 +369,9 @@ void QgsSelectedFeature::moveSelectedVertexes( const QgsVector &v )
       }
     }
   }
+
+  if ( nUpdates > 0 )
+    endGeometryChange();
 
   mVlayer->endEditCommand();
 }

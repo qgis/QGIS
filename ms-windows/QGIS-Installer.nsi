@@ -1,5 +1,5 @@
 ;--------------------------------------------------------------------------
-;    QGIS-Installer.nsi - Quantum GIS Installer for Windows
+;    QGIS-Installer.nsi - QGIS Installer for Windows
 ;    ---------------------
 ;    Date                 : September 2008
 ;    Copyright            : (C) 2008 by Marco Pasetti
@@ -136,13 +136,13 @@ Function .onInit
 	StrCpy $MESSAGE_1_ "$MESSAGE_0_$\r$\n"
 	StrCpy $MESSAGE_1_ "$MESSAGE_1_You are going to install a newer release of ${QGIS_BASE}$\r$\n"
 	StrCpy $MESSAGE_1_ "$MESSAGE_1_$\r$\n"
-	StrCpy $MESSAGE_1_ "$MESSAGE_1_Press OK to uninstall Quantum GIS $DISPLAYED_INSTALLED_VERSION"
+	StrCpy $MESSAGE_1_ "$MESSAGE_1_Press OK to uninstall QGIS $DISPLAYED_INSTALLED_VERSION"
 	StrCpy $MESSAGE_1_ "$MESSAGE_1_ and install ${DISPLAYED_NAME} or Cancel to quit."
 	
 	StrCpy $MESSAGE_2_ "$MESSAGE_0_$\r$\n"
 	StrCpy $MESSAGE_2_ "$MESSAGE_2_You are going to install an older release of ${QGIS_BASE}$\r$\n"
 	StrCpy $MESSAGE_2_ "$MESSAGE_2_$\r$\n"
-	StrCpy $MESSAGE_2_ "$MESSAGE_2_Press OK to uninstall Quantum GIS $DISPLAYED_INSTALLED_VERSION"
+	StrCpy $MESSAGE_2_ "$MESSAGE_2_Press OK to uninstall QGIS $DISPLAYED_INSTALLED_VERSION"
 	StrCpy $MESSAGE_2_ "$MESSAGE_2_ and install ${DISPLAYED_NAME} or Cancel to quit."
 	
 	StrCpy $MESSAGE_3_ "$MESSAGE_0_$\r$\n"
@@ -266,7 +266,7 @@ Var /GLOBAL ARCHIVE_SIZE_KB
 Var /GLOBAL ARCHIVE_SIZE_MB
 Var /GLOBAL DOWNLOAD_MESSAGE_
 
-Section "Quantum GIS" SecQGIS
+Section "QGIS" SecQGIS
 
 	SectionIn RO
 
@@ -305,7 +305,7 @@ Section "Quantum GIS" SecQGIS
 	File .\Installer-Files\postinstall.bat
 	File .\Installer-Files\preremove.bat
 	
-	;add Quantum GIS files
+	;add QGIS files
 	SetOutPath "$INSTALL_DIR"
 	File /r ${PACKAGE_FOLDER}\*.*
 	
@@ -357,23 +357,23 @@ RebootNecessary:
 	SetRebootFlag true
 
 NoRebootNecessary:
-        Delete "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk"
-        Delete "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS (${VERSION_NUMBER}).lnk"
+        Delete "$DESKTOP\QGIS (${VERSION_NUMBER}).lnk"
+        Delete "$SMPROGRAMS\${QGIS_BASE}\QGIS (${VERSION_NUMBER}).lnk"
 
-        Delete "$DESKTOP\Quantum GIS Desktop (${VERSION_NUMBER}).lnk"
-        CreateShortCut "$DESKTOP\Quantum GIS Desktop (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}.bat"' \
+        Delete "$DESKTOP\QGIS Desktop (${VERSION_NUMBER}).lnk"
+        CreateShortCut "$DESKTOP\QGIS Desktop (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}.bat"' \
         "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 
-        Delete "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Desktop (${VERSION_NUMBER}).lnk"
-        CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Desktop (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}.bat"' \
+        Delete "$SMPROGRAMS\${QGIS_BASE}\QGIS Desktop (${VERSION_NUMBER}).lnk"
+        CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\QGIS Desktop (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}.bat"' \
         "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 
-        Delete "$DESKTOP\Quantum GIS Browser (${VERSION_NUMBER}).lnk"
-        CreateShortCut "$DESKTOP\Quantum GIS Browser (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}-browser.bat"' \
+        Delete "$DESKTOP\QGIS Browser (${VERSION_NUMBER}).lnk"
+        CreateShortCut "$DESKTOP\QGIS Browser (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}-browser.bat"' \
         "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 
-        Delete "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Browser (${VERSION_NUMBER}).lnk"
-        CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Browser (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}-browser.bat"' \
+        Delete "$SMPROGRAMS\${QGIS_BASE}\QGIS Browser (${VERSION_NUMBER}).lnk"
+        CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\QGIS Browser (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}-browser.bat"' \
         "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 
 SectionEnd
@@ -519,8 +519,8 @@ Section "Uninstall"
 	
 	;remove the Desktop ShortCut
 	SetShellVarContext all
-	Delete "$DESKTOP\Quantum GIS Desktop (${VERSION_NUMBER}).lnk"
-	Delete "$DESKTOP\Quantum GIS Browser (${VERSION_NUMBER}).lnk"
+	Delete "$DESKTOP\QGIS Desktop (${VERSION_NUMBER}).lnk"
+	Delete "$DESKTOP\QGIS Browser (${VERSION_NUMBER}).lnk"
 	Delete "$DESKTOP\OSGeo4W.lnk"
 	
 	;remove the Programs Start ShortCut

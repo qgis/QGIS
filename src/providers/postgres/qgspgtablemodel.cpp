@@ -42,7 +42,7 @@ QgsPgTableModel::~QgsPgTableModel()
 {
 }
 
-void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
+void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProperty )
 {
   QgsDebugMsg( layerProperty.toString() );
 
@@ -272,7 +272,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
   return true;
 }
 
-QString QgsPgTableModel::layerURI( const QModelIndex &index, QString connInfo, bool useEstimatedMetadata )
+QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString& connInfo, bool useEstimatedMetadata )
 {
   if ( !index.isValid() )
   {

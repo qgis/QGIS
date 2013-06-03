@@ -330,7 +330,7 @@ def test_007_multiple_quote():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file test.quote',
         u'3 records discarded due to invalid format',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid record format at line 7',
@@ -355,7 +355,7 @@ def test_008_badly_formed_quotes():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file test.badquote',
         u'2 records discarded due to invalid format',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid record format at line 2',
@@ -415,7 +415,7 @@ def test_010_read_coordinates():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file testpt.csv',
         u'1 records discarded due to invalid geometry definitions',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid X or Y fields at line 4',
@@ -460,7 +460,7 @@ def test_011_read_wkt():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
         u'7 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
@@ -506,7 +506,7 @@ def test_012_read_wkt_point():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
         u'7 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
@@ -552,7 +552,7 @@ def test_013_read_wkt_line():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
         u'7 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
@@ -580,7 +580,7 @@ def test_014_read_wkt_polygon():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
         u'10 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
@@ -748,7 +748,7 @@ def test_015_read_dms_xy():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file testdms.csv',
         u'5 records discarded due to invalid geometry definitions',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid X or Y fields at line 27',
@@ -878,7 +878,7 @@ def test_019_regular_expression_3():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file testre2.txt',
         u'1 records discarded due to invalid format',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid record format at line 3',
@@ -1346,25 +1346,11 @@ def test_029_file_watcher():
             '#fid': 4L,
             '#geometry': 'None',
             },
-        13002L: {
+        16002L: {
             'id': u'5',
             'description': u'toad',
             'name': u'toad',
             '#fid': 2L,
-            '#geometry': 'None',
-            },
-        14003L: {
-            'id': u'6',
-            'description': u'mole',
-            'name': u'mole',
-            '#fid': 3L,
-            '#geometry': 'None',
-            },
-        14004L: {
-            'id': u'7',
-            'description': u'badger',
-            'name': u'badger',
-            '#fid': 4L,
             '#geometry': 'None',
             },
         }
@@ -1372,9 +1358,13 @@ def test_029_file_watcher():
         'Request 2 did not return any data',
         'Request 7 did not return any data',
         'Request 11 did not return any data',
-        u'Errors in file file',
+        'Request 13 did not return any data',
+        'Request 14 did not return any data',
+        u'Errors in file temp_file',
         u'The file has been updated by another application - reloading',
-        u'Errors in file file',
+        u'Errors in file temp_file',
+        u'The file has been updated by another application - reloading',
+        u'Errors in file temp_file',
         u'The file has been updated by another application - reloading',
         ]
     return wanted
@@ -2157,7 +2147,7 @@ def test_036_csvt_file_invalid_types():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file testcsvt3.csv',
         u'File type string in testcsvt3.csvt is not correctly formatted',
         ]
     return wanted

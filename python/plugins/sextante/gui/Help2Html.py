@@ -26,6 +26,7 @@ __revision__ = '$Format:%H$'
 import pickle
 from sextante.core.SextanteUtils import SextanteUtils
 import os
+
 class Help2Html():
 
     ALG_DESC = "ALG_DESC"

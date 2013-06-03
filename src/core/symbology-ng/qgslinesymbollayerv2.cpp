@@ -1092,7 +1092,7 @@ void QgsLineDecorationSymbolLayerV2::startRender( QgsSymbolV2RenderContext& cont
   QColor selColor = context.renderContext().selectionColor();
   if ( ! selectionIsOpaque )
     selColor.setAlphaF( context.alpha() );
-  mSelPen.setWidth( context.outputLineWidth( width ) );
+  mSelPen.setWidth( width ); //context.outputLineWidth( width ) );
   mSelPen.setColor( selColor );
 }
 

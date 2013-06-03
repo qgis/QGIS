@@ -99,6 +99,12 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
   {
     // Read smaller extent or lower resolution
 
+    if ( !extent().contains( theExtent ) )
+    {
+      QRect subRect = QgsRasterBlock::subRect( theExtent, theWidth, theHeight, extent() );
+      block->setIsNoDataExcept( subRect );
+    }
+
     // Calculate row/col limits (before tmpExtent is aligned)
     int fromRow = qRound(( theExtent.yMaximum() - tmpExtent.yMaximum() ) / yRes );
     int toRow = qRound(( theExtent.yMaximum() - tmpExtent.yMinimum() ) / yRes ) - 1;
@@ -138,8 +144,6 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
 
     QgsDebugMsg( QString( "Reading smaller block tmpWidth = %1 theHeight = %2" ).arg( tmpWidth ).arg( tmpHeight ) );
     QgsDebugMsg( QString( "tmpExtent = %1" ).arg( tmpExtent.toString() ) );
-
-    block->setIsNoData();
 
     QgsRasterBlock *tmpBlock;
     if ( srcHasNoDataValue( theBandNo ) && useSrcNoDataValue( theBandNo ) )

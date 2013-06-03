@@ -1,5 +1,5 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Quantum GIS
+Upstream-Name: QGIS
 Upstream-Contact: qgis-developer@lists.osgeo.org
 Source: git://github.com/qgis/Quantum-GIS.git
 

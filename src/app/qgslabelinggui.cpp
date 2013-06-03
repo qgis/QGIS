@@ -92,6 +92,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   connect( mShadowOffsetAngleSpnBx, SIGNAL( valueChanged( int ) ), mShadowOffsetAngleDial, SLOT( setValue( int ) ) );
   connect( mShadowTranspSlider, SIGNAL( valueChanged( int ) ), mShadowTranspSpnBx, SLOT( setValue( int ) ) );
   connect( mShadowTranspSpnBx, SIGNAL( valueChanged( int ) ), mShadowTranspSlider, SLOT( setValue( int ) ) );
+  connect( mLimitLabelChkBox, SIGNAL( toggled( bool ) ), mLimitLabelSpinBox, SLOT( setEnabled( bool ) ) );
 
   connect( btnEngineSettings, SIGNAL( clicked() ), this, SLOT( showEngineConfigDialog() ) );
   connect( btnExpression, SIGNAL( clicked() ), this, SLOT( showExpressionDialog() ) );
@@ -119,27 +120,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   mDirectSymbolsFrame->setVisible( layer->geometryType() == QGis::Line );
   mMinSizeFrame->setVisible( layer->geometryType() != QGis::Point );
 
-  // load labeling settings from layer
-  QgsPalLayerSettings lyr;
-  lyr.readFromLayer( layer );
-
-  // enable/disable main options based upon whether layer is being labeled
-  chkEnableLabeling->setChecked( lyr.enabled );
-  cboFieldName->setEnabled( chkEnableLabeling->isChecked() );
-  btnExpression->setEnabled( chkEnableLabeling->isChecked() );
-  mLabelingFrame->setEnabled( chkEnableLabeling->isChecked() );
-
   populateFieldNames(); // this is just for label text combo box
-  // add the current expression to the bottom of the list
-  if ( lyr.isExpression && !lyr.fieldName.isEmpty() )
-    cboFieldName->addItem( lyr.fieldName );
-
-  cboFieldName->setCurrentIndex( cboFieldName->findText( lyr.fieldName ) );
-
   populateFontCapitalsComboBox();
-
-  // populate placement options
-  int distUnitIndex = lyr.distInMapUnits ? 1 : 0;
 
   // set up quadrant offset button group
   mQuadrantBtnGrp = new QButtonGroup( this );
@@ -153,6 +135,119 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   mQuadrantBtnGrp->addButton( mPointOffsetBelow, ( int )QgsPalLayerSettings::QuadrantBelow );
   mQuadrantBtnGrp->addButton( mPointOffsetBelowRight, ( int )QgsPalLayerSettings::QuadrantBelowRight );
   mQuadrantBtnGrp->setExclusive( true );
+
+  // setup direction symbol(s) button group
+  mDirectSymbBtnGrp = new QButtonGroup( this );
+  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnLR, ( int )QgsPalLayerSettings::SymbolLeftRight );
+  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnAbove, ( int )QgsPalLayerSettings::SymbolAbove );
+  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnBelow, ( int )QgsPalLayerSettings::SymbolBelow );
+  mDirectSymbBtnGrp->setExclusive( true );
+
+  // upside-down labels button group
+  mUpsidedownBtnGrp = new QButtonGroup( this );
+  mUpsidedownBtnGrp->addButton( mUpsidedownRadioOff, ( int )QgsPalLayerSettings::Upright );
+  mUpsidedownBtnGrp->addButton( mUpsidedownRadioDefined, ( int )QgsPalLayerSettings::ShowDefined );
+  mUpsidedownBtnGrp->addButton( mUpsidedownRadioAll, ( int )QgsPalLayerSettings::ShowAll );
+  mUpsidedownBtnGrp->setExclusive( true );
+
+  //mShapeCollisionsChkBx->setVisible( false ); // until implemented
+
+  // post updatePlacementWidgets() connections
+  connect( chkLineAbove, SIGNAL( toggled( bool ) ), this, SLOT( updatePlacementWidgets() ) );
+  connect( chkLineBelow, SIGNAL( toggled( bool ) ), this, SLOT( updatePlacementWidgets() ) );
+
+  // setup point placement button group (assigned enum id currently unused)
+  mPlacePointBtnGrp = new QButtonGroup( this );
+  mPlacePointBtnGrp->addButton( radAroundPoint, ( int )QgsPalLayerSettings::AroundPoint );
+  mPlacePointBtnGrp->addButton( radOverPoint, ( int )QgsPalLayerSettings::OverPoint );
+  mPlacePointBtnGrp->setExclusive( true );
+  connect( mPlacePointBtnGrp, SIGNAL( buttonClicked( int ) ), this, SLOT( updatePlacementWidgets() ) );
+
+  // setup line placement button group (assigned enum id currently unused)
+  mPlaceLineBtnGrp = new QButtonGroup( this );
+  mPlaceLineBtnGrp->addButton( radLineParallel, ( int )QgsPalLayerSettings::Line );
+  mPlaceLineBtnGrp->addButton( radLineCurved, ( int )QgsPalLayerSettings::Curved );
+  mPlaceLineBtnGrp->addButton( radLineHorizontal, ( int )QgsPalLayerSettings::Horizontal );
+  mPlaceLineBtnGrp->setExclusive( true );
+  connect( mPlaceLineBtnGrp, SIGNAL( buttonClicked( int ) ), this, SLOT( updatePlacementWidgets() ) );
+
+  // setup polygon placement button group (assigned enum id currently unused)
+  mPlacePolygonBtnGrp = new QButtonGroup( this );
+  mPlacePolygonBtnGrp->addButton( radOverCentroid, ( int )QgsPalLayerSettings::OverPoint );
+  mPlacePolygonBtnGrp->addButton( radAroundCentroid, ( int )QgsPalLayerSettings::AroundPoint );
+  mPlacePolygonBtnGrp->addButton( radPolygonHorizontal, ( int )QgsPalLayerSettings::Horizontal );
+  mPlacePolygonBtnGrp->addButton( radPolygonFree, ( int )QgsPalLayerSettings::Free );
+  mPlacePolygonBtnGrp->addButton( radPolygonPerimeter, ( int )QgsPalLayerSettings::Line );
+  mPlacePolygonBtnGrp->setExclusive( true );
+  connect( mPlacePolygonBtnGrp, SIGNAL( buttonClicked( int ) ), this, SLOT( updatePlacementWidgets() ) );
+
+  // TODO: is this necessary? maybe just use the data defined-only rotation?
+  mPointAngleDDBtn->setVisible( false );
+
+  // load layer's current QgsPalLayerSettings
+  init();
+
+  // Global settings group for groupboxes' saved/retored collapsed state
+  // maintains state across different dialogs
+  foreach ( QgsCollapsibleGroupBox *grpbox, findChildren<QgsCollapsibleGroupBox*>() )
+  {
+    grpbox->setSettingGroup( QString( "mAdvLabelingDlg" ) );
+  }
+
+  connect( groupBox_mPreview,
+           SIGNAL( collapsedStateChanged( bool ) ),
+           this,
+           SLOT( collapseSample( bool ) ) );
+
+  // get rid of annoying outer focus rect on Mac
+  mLabelingOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
+
+  QSettings settings;
+
+  // reset horiz strech of left side of options splitter (set to 1 for previewing in Qt Designer)
+  QSizePolicy policy( mLabelingOptionsListFrame->sizePolicy() );
+  policy.setHorizontalStretch( 0 );
+  mLabelingOptionsListFrame->setSizePolicy( policy );
+  if ( !settings.contains( QString( "/Windows/Labeling/OptionsSplitState" ) ) )
+  {
+    // set left list widget width on intial showing
+    QList<int> splitsizes;
+    splitsizes << 115;
+    mLabelingOptionsSplitter->setSizes( splitsizes );
+  }
+
+  // set up reverse connection from stack to list
+  connect( mLabelStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( optionsStackedWidget_CurrentChanged( int ) ) );
+
+  // restore dialog, splitters and current tab
+  mFontPreviewSplitter->restoreState( settings.value( QString( "/Windows/Labeling/FontPreviewSplitState" ) ).toByteArray() );
+  mLabelingOptionsSplitter->restoreState( settings.value( QString( "/Windows/Labeling/OptionsSplitState" ) ).toByteArray() );
+
+  mLabelingOptionsListWidget->setCurrentRow( settings.value( QString( "/Windows/Labeling/Tab" ), 0 ).toInt() );
+}
+
+void QgsLabelingGui::init()
+{
+  // load labeling settings from layer
+  QgsPalLayerSettings lyr;
+  lyr.readFromLayer( mLayer );
+
+  blockInitSignals( true );
+
+  // enable/disable main options based upon whether layer is being labeled
+  chkEnableLabeling->setChecked( lyr.enabled );
+  cboFieldName->setEnabled( chkEnableLabeling->isChecked() );
+  btnExpression->setEnabled( chkEnableLabeling->isChecked() );
+  mLabelingFrame->setEnabled( chkEnableLabeling->isChecked() );
+
+  // add the current expression to the bottom of the list
+  if ( lyr.isExpression && !lyr.fieldName.isEmpty() )
+    cboFieldName->addItem( lyr.fieldName );
+
+  cboFieldName->setCurrentIndex( cboFieldName->findText( lyr.fieldName ) );
+
+  // populate placement options
+  int distUnitIndex = lyr.distInMapUnits ? 1 : 0;
 
   mCentroidRadioWhole->setChecked( lyr.centroidWhole );
   switch ( lyr.placement )
@@ -218,20 +313,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   mDirectSymbLeftLineEdit->setText( lyr.leftDirectionSymbol );
   mDirectSymbRightLineEdit->setText( lyr.rightDirectionSymbol );
   mDirectSymbRevChkBx->setChecked( lyr.reverseDirectionSymbol );
-  // setup direction symbol(s) button group
-  mDirectSymbBtnGrp = new QButtonGroup( this );
-  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnLR, ( int )QgsPalLayerSettings::SymbolLeftRight );
-  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnAbove, ( int )QgsPalLayerSettings::SymbolAbove );
-  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnBelow, ( int )QgsPalLayerSettings::SymbolBelow );
-  mDirectSymbBtnGrp->setExclusive( true );
-  mDirectSymbBtnGrp->button(( int )lyr.placeDirectionSymbol )->setChecked( true );
 
-  // upside-down labels button group
-  mUpsidedownBtnGrp = new QButtonGroup( this );
-  mUpsidedownBtnGrp->addButton( mUpsidedownRadioOff, ( int )QgsPalLayerSettings::Upright );
-  mUpsidedownBtnGrp->addButton( mUpsidedownRadioDefined, ( int )QgsPalLayerSettings::ShowDefined );
-  mUpsidedownBtnGrp->addButton( mUpsidedownRadioAll, ( int )QgsPalLayerSettings::ShowAll );
-  mUpsidedownBtnGrp->setExclusive( true );
+  mDirectSymbBtnGrp->button(( int )lyr.placeDirectionSymbol )->setChecked( true );
   mUpsidedownBtnGrp->button(( int )lyr.upsidedownLabels )->setChecked( true );
 
   // curved label max character angles
@@ -319,8 +402,6 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   mLoadSvgParams = false;
   on_mShapeTypeCmbBx_currentIndexChanged( lyr.shapeType ); // force update of shape background gui
 
-  //mShapeCollisionsChkBx->setVisible( false ); // until implemented
-
   // drop shadow
   mShadowDrawChkBx->setChecked( lyr.shadowDraw );
   mShadowUnderCmbBx->setCurrentIndex( lyr.shadowUnder );
@@ -340,76 +421,18 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
 
   updatePlacementWidgets();
 
-  // post updatePlacementWidgets() connections
-  connect( chkLineAbove, SIGNAL( toggled( bool ) ), this, SLOT( updatePlacementWidgets() ) );
-  connect( chkLineBelow, SIGNAL( toggled( bool ) ), this, SLOT( updatePlacementWidgets() ) );
-
-  // setup connection to changes in the placement
-  QRadioButton* placementRadios[] =
-  {
-    radAroundPoint, radOverPoint, // point
-    radLineParallel, radLineCurved, radLineHorizontal, // line
-    radAroundCentroid, radPolygonHorizontal, radPolygonFree, radPolygonPerimeter // polygon
-  };
-  for ( unsigned int i = 0; i < sizeof( placementRadios ) / sizeof( QRadioButton* ); i++ )
-  {
-    connect( placementRadios[i], SIGNAL( toggled( bool ) ), this, SLOT( updatePlacementWidgets() ) );
-  }
-
-  // TODO: is this necessary? maybe just use the data defined-only rotation?
-  mPointAngleDDBtn->setVisible( false );
+  // needs to come before data defined setup, so connections work
+  blockInitSignals( false );
 
   // set up data defined toolbuttons
-  // disable H,V data defined alignment until X,Y are active
-  disableDataDefinedAlignment();
   // do this after other widgets are configured, so they can be enabled/disabled
   populateDataDefinedButtons( lyr );
 
-  if ( mCoordXDDBtn->isActive() && mCoordYDDBtn->isActive() )
-  {
-    enableDataDefinedAlignment();
-  }
+  enableDataDefinedAlignment( mCoordXDDBtn->isActive() && mCoordYDDBtn->isActive() );
 
   updateUi(); // should come after data defined button setup
-
-  // Global settings group for groupboxes' saved/retored collapsed state
-  // maintains state across different dialogs
-  foreach ( QgsCollapsibleGroupBox *grpbox, findChildren<QgsCollapsibleGroupBox*>() )
-  {
-    grpbox->setSettingGroup( QString( "mAdvLabelingDlg" ) );
-  }
-
-  connect( groupBox_mPreview,
-           SIGNAL( collapsedStateChanged( bool ) ),
-           this,
-           SLOT( collapseSample( bool ) ) );
-
-  // get rid of annoying outer focus rect on Mac
-  mLabelingOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
-
-  QSettings settings;
-
-  // reset horiz strech of left side of options splitter (set to 1 for previewing in Qt Designer)
-  QSizePolicy policy( mLabelingOptionsListFrame->sizePolicy() );
-  policy.setHorizontalStretch( 0 );
-  mLabelingOptionsListFrame->setSizePolicy( policy );
-  if ( !settings.contains( QString( "/Windows/Labeling/OptionsSplitState" ) ) )
-  {
-    // set left list widget width on intial showing
-    QList<int> splitsizes;
-    splitsizes << 115;
-    mLabelingOptionsSplitter->setSizes( splitsizes );
-  }
-
-  // set up reverse connection from stack to list
-  connect( mLabelStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( optionsStackedWidget_CurrentChanged( int ) ) );
-
-  // restore dialog, splitters and current tab
-  mFontPreviewSplitter->restoreState( settings.value( QString( "/Windows/Labeling/FontPreviewSplitState" ) ).toByteArray() );
-  mLabelingOptionsSplitter->restoreState( settings.value( QString( "/Windows/Labeling/OptionsSplitState" ) ).toByteArray() );
-
-  mLabelingOptionsListWidget->setCurrentRow( settings.value( QString( "/Windows/Labeling/Tab" ), 0 ).toInt() );
 }
+
 
 QgsLabelingGui::~QgsLabelingGui()
 {
@@ -417,6 +440,15 @@ QgsLabelingGui::~QgsLabelingGui()
   settings.setValue( QString( "/Windows/Labeling/FontPreviewSplitState" ), mFontPreviewSplitter->saveState() );
   settings.setValue( QString( "/Windows/Labeling/OptionsSplitState" ), mLabelingOptionsSplitter->saveState() );
   settings.setValue( QString( "/Windows/Labeling/Tab" ), mLabelingOptionsListWidget->currentRow() );
+}
+
+void QgsLabelingGui::blockInitSignals( bool block )
+{
+  chkLineAbove->blockSignals( block );
+  chkLineBelow->blockSignals( block );
+  mPlacePointBtnGrp->blockSignals( block );
+  mPlaceLineBtnGrp->blockSignals( block );
+  mPlacePolygonBtnGrp->blockSignals( block );
 }
 
 void QgsLabelingGui::optionsStackedWidget_CurrentChanged( int indx )
@@ -937,19 +969,27 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
                             QgsDataDefinedButton::AnyType, tr( "double coord [<b>in,out</b> as 20.0-60.0,20.0-95.0]" ) );
 
   // data defined-only
+  QString ddPlaceInfo = tr( "In edit mode, layer's relevant labeling map tool is:<br>"
+                            "&nbsp;&nbsp;Defined attribute field -&gt; <i>enabled</i><br>"
+                            "&nbsp;&nbsp;Defined expression -&gt; <i>disabled</i>" );
   mCoordXDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::PositionX ),
                       QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mCoordXDDBtn->setUsageInfo( ddPlaceInfo );
   mCoordYDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::PositionY ),
                       QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mCoordYDDBtn->setUsageInfo( ddPlaceInfo );
   mCoordAlignmentHDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::Hali ),
                                QgsDataDefinedButton::String,
                                trString + "[<b>Left</b>|<b>Center</b>|<b>Right</b>]" );
+  mCoordAlignmentHDDBtn->setUsageInfo( ddPlaceInfo );
   mCoordAlignmentVDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::Vali ),
                                QgsDataDefinedButton::String,
                                trString + QString( "[<b>Bottom</b>|<b>Base</b>|<br>"
                                                    "<b>Half</b>|<b>Cap</b>|<b>Top</b>]" ) );
+  mCoordAlignmentVDDBtn->setUsageInfo( ddPlaceInfo );
   mCoordRotationDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::Rotation ),
                              QgsDataDefinedButton::AnyType, QgsDataDefinedButton::double180RotDesc() );
+  mCoordRotationDDBtn->setUsageInfo( ddPlaceInfo );
 
   // rendering
   mScaleBasedVisibilityDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ScaleVisibility ),
@@ -1433,11 +1473,11 @@ void QgsLabelingGui::on_mCoordXDDBtn_dataDefinedActivated( bool active )
 {
   if ( !active ) //no data defined alignment without data defined position
   {
-    disableDataDefinedAlignment();
+    enableDataDefinedAlignment( false );
   }
   else if ( mCoordYDDBtn->isActive() )
   {
-    enableDataDefinedAlignment();
+    enableDataDefinedAlignment( true );
   }
 }
 
@@ -1445,11 +1485,11 @@ void QgsLabelingGui::on_mCoordYDDBtn_dataDefinedActivated( bool active )
 {
   if ( !active ) //no data defined alignment without data defined position
   {
-    disableDataDefinedAlignment();
+    enableDataDefinedAlignment( false );
   }
   else if ( mCoordXDDBtn->isActive() )
   {
-    enableDataDefinedAlignment();
+    enableDataDefinedAlignment( true );
   }
 }
 
@@ -1650,12 +1690,7 @@ void QgsLabelingGui::showBackgroundPenStyle( bool show )
   mShapePenStyleDDBtn->setVisible( show );
 }
 
-void QgsLabelingGui::disableDataDefinedAlignment()
+void QgsLabelingGui::enableDataDefinedAlignment( bool enable )
 {
-  mCoordAlignmentFrame->setEnabled( false );
-}
-
-void QgsLabelingGui::enableDataDefinedAlignment()
-{
-  mCoordAlignmentFrame->setEnabled( true );
+  mCoordAlignmentFrame->setEnabled( enable );
 }

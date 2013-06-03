@@ -55,6 +55,7 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type ): QDialog( parent ), 
         QDir home = QDir::home();
         lastGisdbase = QString( home.path() );
       }
+      lastMapset = settings.value( "/GRASS/lastMapset" ).toString();
     }
     first = false;
   }
@@ -415,6 +416,8 @@ void QgsGrassSelect::accept()
 
   mapset = emapset->currentText();
   lastMapset = mapset;
+
+  settings.setValue( "/GRASS/lastMapset", lastMapset );
 
   map = emap->currentText().trimmed();
 

@@ -475,14 +475,11 @@ void QgsPluginManager::unload()
 
       if ( pRegistry->isPythonPlugin( baseName ) )
       {
-        if ( mPythonUtils && mPythonUtils->isEnabled() )
+        if ( mPythonUtils && mPythonUtils->isEnabled() && mPythonUtils->canUninstallPlugin( baseName ) )
         {
-          if ( mPythonUtils->canUninstallPlugin( baseName ) )
-          {
-            mPythonUtils->unloadPlugin( baseName );
-            //disable it to the qsettings file
-            settings.setValue( "/PythonPlugins/" + baseName, false );
-          }
+          mPythonUtils->unloadPlugin( baseName );
+          //disable it to the qsettings file
+          settings.setValue( "/PythonPlugins/" + baseName, false );
         }
       }
       else // C++ plugin
@@ -537,8 +534,8 @@ std::vector < QgsPluginItem > QgsPluginManager::getSelectedPlugins()
       //              bool python=false);
       pis.push_back( QgsPluginItem( pluginName, library, 0, pythonic ) );
     }
-
   }
+
   return pis;
 }
 
