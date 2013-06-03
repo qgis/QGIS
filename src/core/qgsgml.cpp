@@ -17,6 +17,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include <QBuffer>
 #include <QList>
@@ -104,7 +105,15 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
     QByteArray readData = reply->readAll();
     if ( readData.size() > 0 )
     {
-      XML_Parse( p, readData.constData(), readData.size(), atEnd );
+      if ( XML_Parse( p, readData.constData(), readData.size(), atEnd ) == 0 )
+      {
+        XML_Error errorCode = XML_GetErrorCode( p );
+        QString errorString = tr( "Error: %1 on line %2, column %3" )
+                              .arg( XML_ErrorString( errorCode ) )
+                              .arg( XML_GetCurrentLineNumber( p ) )
+                              .arg( XML_GetCurrentColumnNumber( p ) );
+        QgsMessageLog::instance()->logMessage( errorString, tr( "WFS" ) );
+      }
     }
     QCoreApplication::processEvents();
   }
