@@ -675,7 +675,7 @@ class Editor(QsciScintilla):
             for line in reversed(fileLines):
                 self.insert(line)
             QApplication.restoreOverrideCursor()
-            self.setModified(True)
+            self.setModified(False)
             self.endUndoAction()
 
             self.parent.tw.listObject(self.parent.tw.currentWidget())

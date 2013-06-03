@@ -50,6 +50,11 @@ def show_console():
     # set focus to the console so the user can start typing
     if _console.isVisible():
       _console.activate()
+  ## Shows help on first launch of the console
+  settings = QSettings()
+  if settings.value('pythonConsole/contextHelpOnFirstLaunch', True).toBool():
+      QgsContextHelp.run( "PythonConsole" )
+      settings.setValue('pythonConsole/contextHelpOnFirstLaunch', QVariant(False))
 
 _old_stdout = sys.stdout
 _console_output = None

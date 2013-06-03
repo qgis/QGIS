@@ -76,9 +76,9 @@
         <file>themes/default/console/iconScriptConsole.png</file>
         <file>themes/default/console/iconSettingsConsole.png</file>
         <file>themes/default/console/iconSextanteConsole.png</file>
-        <file>themes/default/console/imgHelpConsole.png</file>
-        <file>themes/default/console/imgHelpDialog.png</file>
-        <file>themes/default/console/imgHelpMenu.png</file>
+        <file>themes/default/console/consoleHelp.png</file>
+        <file>themes/default/console/editorHelp.png</file>
+        <file>themes/default/console/classBrowserHelp.png</file>
         <file>themes/default/console/iconTabEditorConsole.png</file>
         <file>themes/default/console/iconNewTabEditorConsole.png</file>
         <file>themes/default/console/iconRestoreTabsConsole.png</file>

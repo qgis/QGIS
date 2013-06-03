@@ -1,158 +1,94 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<title>Help Python Console</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	
-	<style>
-		body{
-    		font-family: 'Trebuchet MS', sans-serif;
-    		font-size : 12px;
-		}
-		#header{
-    		background: #f6f6f6;
-    		border-bottom: 3px solid #000;
-    		width: 100%;
-		}
-		#headerTool td{
-    		background: #f6f6f6;
-    		/*width: 100%;*/
-		}
-		._titleP {
-			padding: 5px;
-			font-size: 15px;
-			font-weight: bold;
-			color: #000;
-		}
-		._title {
-			font-size: 20px;
-			font-weight: bold;
-			color: #000;
-		}
-	</style>
-</head>
-<body>
-	<table id="header">
-		<tr>
+<style>
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+</style>
+<h3>Python Console for QGIS</h3>
+<a href="#console">Console</a><br>
+<a href="#editor">Editor</a><br>
+<a href="#settings">Settings</a><br><br>
+<table>
+	<tr>
 		<td>
-			<img src="qrc:/images/themes/default/console/imgHelpDialog.png" />
+			<p align='justify'>
+				The QGIS Python Console is an interactive shell for the python command executions. 
+				It also has a python file editor that allows you to edit and save your python scripts. 
+				Both console and editor are based on PyQScintilla2 package.<br>
+				The console is split in two main panes, top and bottom one 
+				resizable by using the horizontal splitter. Output area pane is a widget read-only which 
+				shows the commands output. You can drag and drop or copy and paste text into input area and 
+				execute code snippets from the output pane by selecting some text and clicking on the 
+				<label>Enter selected</label> command from the context menu. 
+				No matter if selected text contains the interpreter prompt (>>>, ...). Input area pane is the interactive 
+				python shell for input commands.<br>To access to the python file editor use the 
+				<label>Show editor</label> button 
+				from the toolbar. The editor allows to edit and save python file and it offers basic functionality 
+				for managing your code (comment and 
+				uncomment code, check syntax, share the code via codepad.org and much more).
+			</p>
 		</td>
+	</tr>
+</table>
+<a name="console">
+<h4>Console</h4>
+</a>
+<b><i>Main features:</i></b>
+<table>
+	<tr>
 		<td>
-			<span class="_title">Python Console for QGIS</span>
-		</td>
-		</tr>
-		</table>
-		<table>
-		<tr>
-			<td>
-				<p align="justify">
-					Python Console based on PyQScintilla2.
-					<br><br>
-					To access the QGIS environment from this console 
-						  use qgis.utils.iface object (instance of QgisInterface class). 
-						  To import the class QgisInterface can also use the dedicated 
-						  button on the toolbar on the left.
-				</p>
-			</td>
-		</tr>
-		<tr>
-			<td><img src="qrc:/images/themes/default/console/imgHelpConsole.png" /></td>
-		</tr>
-		<tr>
-			<td>
-				<p align="justify">
-					The console is split in two main panes, output and input areas. 
-					       Both are resizable by using the horizontal splitter. 
-					       Output area pane is a widget read-only which shows the commands output. 
-					       You can drag and drop or copy text into input area 
-					       (no matter if selected text contains >>> or ...). 
-					       Use 'Share on codepad' from contextual menu for sharing snippets code. 
-					       The context menu looks like the image below.
-					<img src="qrc:/images/themes/default/console/imgHelpMenu.png"><br>
-					Input area pane is the interactive python shell for input commands.
-				</p>
-			</td>
-		</tr>
-	</table>
-	<table id="header">
-		<tr>
-		<td>
-			<span class="_titleP">Features</span>
-		</td>
-		</tr>
-	</table>
-	<p align="justify">
-		<ul>
-		<li>Auto-completion and highlighting syntax for the following APIs:
-			<ol>
+			<ul>
+			<li>Code completion, highlighting syntax and calltips for the following APIs:
+				<ol>
 				<li>Python</li>
-				<li>PyQGIS-master</li>
+				<li>PyQGIS</li>
 				<li>PyQt4</li>
 				<li>QScintilla2</li>
 				<li>osgeo-gdal-ogr</li>
-			</ol>
-		</li>
-		<br>
-		<li>CTRL+SPACE to view the auto-completion list.</li>
-		<br>
-		<li>CTRL+ALT+SPACE to view the command history list.</li>
-		<br>
-		<li>Open QGIS API documentation by typing '_api'.</li>
-		<br>
-		<li>Open PyQGIS Cookbook by typing '_pyqgis'.</li>
-		<br>
-		<li>Saves the command history by typing '_save' or closing the widget. 
-						  This command saves the history command in the file ~/.qgis2/console_history.txt</li>
-		<br>
-		<li>Clears the command history by typing <b>_clear</b>. 
-						  This command clears the command history from file ~/.qgis2/console_history.txt</li>
-		<br>
-		<li>Clears completely command history by typing '_clearAll'. 
-						  This command clears completely the command history. It has an irreversible effect.</li>
-		</ul>
-	</p>
-	<table id="header">
-		<tr>
-		<td>
-			<span class="_titleP">Toolbar</span>
+				</ol>
+			</li>
+			<br>
+			<li><label>Ctrl+Alt+Space</label> to view the auto-completion list.</li>
+			<br>
+			<li><label>Ctrl+Shift+Space</label> to view the command history list.</li>
+			<br>
+                        <li>Execute code snippets with the <label>Enter selected</label> command from output pane.</li>
+			<br>
+			<li>Open QGIS API documentation by typing <label>_api</label>.</li>
+			<br>
+			<li>Open PyQGIS Cookbook by typing <label>_pyqgis</label>.</li>
+			<br>
+			<li>Save and clear the command history accessing from context menu of input pane. 
+			The history will be saved into the file ~/.qgis2/console_history.txt</li>
+			<br>
+			</ul>
 		</td>
-		</tr>
-	</table>
-	<p>The following is a description of the tools in the toolbar:</p>
-	<table width="100%" border="0" id="headerTool">
+		<td><img src="qrc:/images/themes/default/console/consoleHelp.png" /></td>
+	</tr>
+</table>
+<b><i>Toolbar:</i></b>
+	<table width="100%" id='toolbarConsole'>
 		<tr>
 			<td><img src="qrc:/images/themes/default/console/iconClearConsole.png" /></td>
-			<td colspan="2">Tool to clear python console</td>
+			<td colspan="2">Clear python console</td>
 		</tr>
 		<tr>
 			<td><img src="qrc:/images/themes/default/console/iconClassConsole.png" /></td>
-			<td><img src="qrc:/images/themes/default/console/iconIfaceConsole.png" /></td>
-			<td>Tool to import iface class</td>
-		</tr>
-		<tr>
-			<td></td>
 			<td><img src="qrc:/images/themes/default/console/iconSextanteConsole.png" /></td>
-			<td>Tool to import Sextante class</td>
+			<td>Import Sextante class</td>
 		</tr>
 		<tr>
 			<td></td>
 			<td><img src="qrc:/images/themes/default/console/iconQtCoreConsole.png" /></td>
-			<td>Tool to import PyQt4.QtCore class</td>
+			<td>Import PyQt4.QtCore class</td>
 		</tr>
 		<tr>
 			<td></td>
 			<td><img src="qrc:/images/themes/default/console/iconQtGuiConsole.png" /></td>
 			<td>Tool to import PyQt4.QtGui class</td>
 		</tr>
-		<tr>
-			<td><img src="qrc:/images/themes/default/console/iconScriptConsole.png" /></td>
-			<td><img src="qrc:/images/themes/default/console/iconOpenConsole.png" /></td>
-			<td>Tool to open a python script and load in console</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td><img src="qrc:/images/themes/default/console/iconSaveConsole.png" /></td>
-			<td>Tool to save a python script</td>
+                <tr>
+			<td><img src="qrc:/images/themes/default/console/iconRunConsole.png" /></td>
+			<td colspan="2">Run command (like Enter key pressed)</td>
 		</tr>
 		<tr>
 			<td><img src="qrc:/images/themes/default/console/iconSettingsConsole.png" /></td>
@@ -162,10 +98,68 @@
 			<td><img src="qrc:/images/themes/default/console/iconHelpConsole.png" /></td>
 			<td colspan="2">Help</td>
 		</tr>
-		<tr>
-			<td><img src="qrc:/images/themes/default/console/iconRunConsole.png" /></td>
-			<td colspan="2">Run command (like Enter key pressed)</td>
-		</tr>
-	</table>
-</body>
-</html>
+</table>
+<a name="editor">
+<h4>Editor</h4>
+</a>
+<b><i>Main features:</i></b>
+<table>
+	<tr>
+		<td>
+			<img src="qrc:/images/themes/default/console/editorHelp.png" />
+			<img src="qrc:/images/themes/default/console/classBrowserHelp.png" />
+		</td>
+		<td>
+			<ul>
+			<li>Code completion, highlighting syntax and calltips for the following APIs:
+				<ol>
+				<li>Python</li>
+				<li>PyQGIS</li>
+				<li>PyQt4</li>
+				<li>QScintilla2</li>
+				<li>osgeo-gdal-ogr</li>
+				</ol>
+			</li>
+			<br>
+			<li><label>Ctrl+Space</label> to view the auto-completion list.</li>
+			<br>
+			<li>Sharing code snippets via codepad.org.</li>
+			<br>
+			<li><label>Ctrl+4</label> Syntax check.</li> 
+			<br>
+			<li>Object inspector: a class and function browser.</li>
+			<br>
+			<li>Go to an object definition with a mouse click. (from Object inspector)</li>
+			<br>
+			<li>Execute code snippets with the <label>Enter selected</label> command.</li>
+			<br>
+			<li>Execute the whole script with the <label>Run script</label> command 
+			(this creates a byte-compiled file with the extension .pyc)</li>
+			<br>
+			</ul>
+		</td>
+	</tr>
+</table>
+<a name="settings">
+<h4>Settings</h4>
+</a>
+<b><i>Further settings for python console:</i></b>
+<ul>
+<li><label>Autocompletion:</label> If checked the code completion is enabled. You can get autocompletion
+from current document, from installed APIs and both from APIs and current document</li>
+<br>
+<li><label>Autocompletion threshold:</label> Sets the threshold to display the autocompletion list (in chars typed)</li>
+<br>
+<li><label>Automatic parentheses insertion:</label> If checked enables the autoclosing for bracket</li>
+<br>
+<li><label>Auto-save script before running:</label> Allows you to save automatically the
+script to be executed in order to avoid to save it after any modification.
+This action will store a temporary file into the temporary system directory 
+that will be automatically deleted after running.</li>
+<br>
+<li><label>Using preloaded APIs file:</label> You can choose whether use the preload APIs file or load some APIs files saved on your system.</li>
+</ul>
+<p style='border: 1px solid; background:#f6f6f6;' align='justify'>
+	<b>Note:</b> To save the state of console's widgets you have to close the Python Console 
+	from the close button. This allows you to save the geometry to be restored to the next start.
+</p>
