@@ -148,17 +148,22 @@ void QgsWFSCapabilities::requestCapabilities()
 
 void QgsWFSCapabilities::capabilitiesReplyFinished()
 {
+  QNetworkReply* reply = mCapabilitiesReply;
+
+  reply->deleteLater();
+  mCapabilitiesReply = 0;
+
   // handle network errors
-  if ( mCapabilitiesReply->error() != QNetworkReply::NoError )
+  if ( reply->error() != QNetworkReply::NoError )
   {
     mErrorCode = QgsWFSCapabilities::NetworkError;
-    mErrorMessage = mCapabilitiesReply->errorString();
+    mErrorMessage = reply->errorString();
     emit gotCapabilities();
     return;
   }
 
   // handle HTTP redirects
-  QVariant redirect = mCapabilitiesReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+  QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
   if ( !redirect.isNull() )
   {
     QgsDebugMsg( "redirecting to " + redirect.toUrl().toString() );
@@ -166,14 +171,13 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
     request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
-    mCapabilitiesReply->deleteLater();
     mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
 
     connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
     return;
   }
 
-  QByteArray buffer = mCapabilitiesReply->readAll();
+  QByteArray buffer = reply->readAll();
 
   QgsDebugMsg( "parsing capabilities: " + buffer );
 
@@ -264,8 +268,6 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
     mCaps.featureTypes.append( featureType );
   }
 
-  mCapabilitiesReply->deleteLater();
-  mCapabilitiesReply = 0;
   emit gotCapabilities();
 }
 
