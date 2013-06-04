@@ -64,14 +64,14 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
       self.connect(self.combo, SIGNAL("currentIndexChanged(int)"), self.indexChanged)
 
   def clear(self):
-      self.filenames = QStringList()
+      self.filenames = []
       self.fileEdit.clear()
       self.clearComboState()
       self.combo.clear()
 
   def textChanged(self):
       if self.getType() & self.MULTIFILE:
-        self.filenames = QStringList() << self.fileEdit.text().split(",")
+        self.filenames = self.fileEdit.text().split(",")
       if self.getType() & self.LAYER:
         index = self.combo.currentIndex()
         if index >= 0:
@@ -135,14 +135,15 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
       elif isinstance(fn, str) or isinstance(fn, unicode):
         fn = unicode( fn )
 
-      elif hasattr(fn, '__iter__') or isinstance(fn, QStringList):
-        if len( fn ) > 0:
-          fn = QStringList() << fn
-          if self.getType() & self.MULTIFILE:
-            self.filenames = fn
-          fn = fn.join( "," )
-        else:
-          fn = ''
+      #TODO fix and test 
+      #elif hasattr(fn, '__iter__') or isinstance(fn, QStringList):
+      #  if len( fn ) > 0:
+      #    fn = QStringList() << fn
+      #    if self.getType() & self.MULTIFILE:
+      #      self.filenames = fn
+      #    fn = fn.join( "," )
+      #  else:
+      #    fn = ''
 
       else:
         fn = ''
@@ -224,7 +225,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
       index, text, layerID = self.prevState
 
       if index < 0:
-        if text.isEmpty() and self.combo.count() > 0:
+        if text == '' and self.combo.count() > 0:
           index = 0
 
       elif self.combo.findData( layerID ) < 0:

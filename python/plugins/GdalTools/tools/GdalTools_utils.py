@@ -42,6 +42,8 @@ import os
 # to know the os
 import platform
 import sys
+import string
+import re
 
 # Escapes arguments and return them joined in a string
 def escapeAndJoin(strList):
@@ -57,8 +59,8 @@ def escapeAndJoin(strList):
 # Retrieves last used dir from persistent settings
 def getLastUsedDir():
     settings = QSettings()
-    lastProjectDir = settings.value( "/UI/lastProjectDir", u"." )
-    return settings.value( "/GdalTools/lastUsedDir", QVariant(lastProjectDir) )
+    lastProjectDir = settings.value( "/UI/lastProjectDir", ".", type=str )
+    return settings.value( "/GdalTools/lastUsedDir", lastProjectDir, type=str )
 
 # Stores last used dir in persistent settings
 def setLastUsedDir(filePath):
@@ -68,7 +70,7 @@ def setLastUsedDir(filePath):
       dirPath = fileInfo.filePath()
     else:
       dirPath = fileInfo.path()
-    settings.setValue( "/GdalTools/lastUsedDir", QVariant(dirPath) )
+    settings.setValue( "/GdalTools/lastUsedDir", dirPath )
 
 # Retrieves GDAL binaries location
 def getGdalBinPath():
@@ -78,7 +80,7 @@ def getGdalBinPath():
 # Stores GDAL binaries location
 def setGdalBinPath( path ):
   settings = QSettings()
-  settings.setValue( "/GdalTools/gdalPath", QVariant( path ) )
+  settings.setValue( "/GdalTools/gdalPath", path )
 
 # Retrieves GDAL python modules location
 def getGdalPymodPath():
@@ -88,7 +90,7 @@ def getGdalPymodPath():
 # Stores GDAL python modules location
 def setGdalPymodPath( path ):
   settings = QSettings()
-  settings.setValue( "/GdalTools/gdalPymodPath", QVariant( path ) )
+  settings.setValue( "/GdalTools/gdalPymodPath", path )
 
 # Retrieves GDAL help files location
 def getHelpPath():
@@ -98,7 +100,7 @@ def getHelpPath():
 # Stores GDAL help files location
 def setHelpPath( path ):
   settings = QSettings()
-  settings.setValue( "/GdalTools/helpPath", QVariant( path ) )
+  settings.setValue( "/GdalTools/helpPath", path )
 
 # Retrieves last used encoding from persistent settings
 def getLastUsedEncoding():
@@ -108,11 +110,11 @@ def getLastUsedEncoding():
 # Stores last used encoding in persistent settings
 def setLastUsedEncoding(encoding):
     settings = QSettings()
-    settings.setValue( "/UI/encoding", QVariant(encoding) )
+    settings.setValue( "/UI/encoding", encoding)
 
 def getRasterExtensions():
   formats = FileFilter.allRastersFilter().split( ";;" )
-  extensions = QStringList()
+  extensions = []
   for f in formats:
     if f.contains( "*.bt" ) or f.contains( "*.mpr" ):   # Binary Terrain or ILWIS
       continue
@@ -121,9 +123,9 @@ def getRasterExtensions():
 
 def getVectorExtensions():
   formats = FileFilter.allVectorsFilter().split( ";;" )
-  extensions = QStringList()
+  extensions = []
   for f in formats:
-    extensions << FileFilter.getFilterExtensions( f )
+    extensions.append(FileFilter.getFilterExtensions( f ))
   return extensions
 
 class LayerRegistry(QObject):
@@ -195,7 +197,7 @@ class LayerRegistry(QObject):
       return filter( self.isVector, LayerRegistry.layers )
 
 def getRasterFiles(path, recursive=False):
-  rasters = QStringList()
+  rasters = []
   if not QFileInfo(path).exists():
     return rasters
 
@@ -224,16 +226,16 @@ def fillRasterOutputFormat(aFilter = None, filename = None):
 
   if aFilter != None:
     supportedRasters = GdalConfig.getSupportedRasters()
-    filterName = FileFilter.getFilterName( aFilter ).remove( QRegExp('^.*\] ') )
+    filterName = re.sub('^.*\] ', '', FileFilter.getFilterName( aFilter ))
     if supportedRasters.has_key( filterName ):
       return supportedRasters[ filterName ][ "SHORTNAME" ]
 
     shortName = GdalConfig.SupportedRasters.long2ShortName(filterName)
 
-  if shortName.isEmpty() and filename != None:
+  if shortName == '' and filename != None:
     shortName = GdalConfig.SupportedRasters.filename2ShortName(filename)
 
-  if shortName.isEmpty():
+  if shortName == '':
     shortName = "GTiff"
 
   return shortName
@@ -243,16 +245,16 @@ def fillVectorOutputFormat(aFilter = None, filename = None):
 
   if aFilter != None:
     supportedVectors = GdalConfig.getSupportedVectors()
-    filterName = FileFilter.getFilterName( aFilter ).remove( QRegExp('^.*\] ') )
+    filterName = re.sub('^.*\] ', '', FileFilter.getFilterName( aFilter ))
     if supportedVectors.has_key( filterName ):
       return supportedVectors[ filterName ][ "SHORTNAME" ]
 
     pass #shortName = GdalConfig.SupportedVectors.long2ShortName(filterName)
 
-  if shortName.isEmpty() and filename != None:
+  if shortName == '' and filename != None:
     pass #shortName = GdalConfig.SupportedVectors.filename2ShortName(filename)
 
-  if shortName.isEmpty():
+  if shortName == '':
     shortName = "ESRI Shapefile"
 
   return shortName
@@ -285,38 +287,41 @@ def getVectorFields(vectorFile):
 # get raster SRS if possible
 def getRasterSRS( parent, fileName ):
     processSRS = QProcess( parent )
-    processSRS.start( "gdalinfo", QStringList() << fileName, QIODevice.ReadOnly )
+    processSRS.start( "gdalinfo", [fileName], QIODevice.ReadOnly )
     arr = QByteArray()
     if processSRS.waitForFinished():
       arr = processSRS.readAllStandardOutput()
       processSRS.close()
-
-    if arr.isEmpty():
+      
+    arr = str(arr)
+    if arr == '':
       return ''
 
-    info = QString( arr ).split( "\n" ).filter( "AUTHORITY" )
+    info = string.split( arr, sep="\n" )
+    # TODO .filter( "AUTHORITY" )
     if info.count() == 0:
       return ''
 
     srs = info[ info.count() - 1 ]
     srs = srs.simplified().remove( "AUTHORITY[" )
-    srs = srs.remove( QRegExp( "\]{2,4},?" ) ).remove( "\"" )
+    srs = re.sub("\"", '', re.sub("\]{2,4},?", '', srs) )
     info = srs.split( "," )
     srs = info[ 0 ] + ":" + info[ 1 ]
     return srs
 
 def getRasterExtent(parent, fileName):
     processSRS = QProcess( parent )
-    processSRS.start( "gdalinfo", QStringList() << fileName, QIODevice.ReadOnly )
+    processSRS.start( "gdalinfo", [fileName], QIODevice.ReadOnly )
     arr = QByteArray()
     if processSRS.waitForFinished():
       arr = processSRS.readAllStandardOutput()
       processSRS.close()
+    arr = str(arr)
 
-    if arr.isEmpty():
+    if arr == '':
       return
 
-    info = QString( arr ).split( "\n" )
+    info = string.split( arr, sep="\n" )
     ulCoord = info[ info.indexOf( QRegExp( "^Upper\sLeft.*" ) ) ].simplified()
     lrCoord = info[ info.indexOf( QRegExp( "^Lower\sRight.*" ) ) ].simplified()
     ulCoord = ulCoord[ulCoord.indexOf( "(" ) + 1 : ulCoord.indexOf( ")" ) - 1].split( "," )
@@ -356,12 +361,11 @@ class FileDialog:
 
     # change the selected filter value
     if selectedFilter != None:
-      selectedFilter.clear()
-      selectedFilter += dialog.selectedNameFilter()
+      selectedFilter = dialog.selectedNameFilter()
 
     # save the last used dir and return the selected files
     files = dialog.selectedFiles()
-    if not files.isEmpty():
+    if files != '':
       setLastUsedDir(files[0])
 
       if fileMode != QFileDialog.ExistingFiles:
@@ -399,6 +403,8 @@ class FileDialog:
 
   @classmethod
   def getSaveFileName(self, parent = None, caption = '', filter = '', selectedFilter = None, useEncoding = False):
+    print("filter:")
+    print(str(filter))
     return self.getDialog(parent, caption, QFileDialog.AcceptSave, QFileDialog.AnyFile, filter, selectedFilter, useEncoding)
 
   @classmethod
@@ -414,7 +420,7 @@ class FileFilter:
   @classmethod
   def setFilter(self, typeName, aFilter):
       settings = QSettings()
-      settings.setValue( "/GdalTools/" + typeName + "FileFilter", QVariant( aFilter ) )
+      settings.setValue( "/GdalTools/" + typeName + "FileFilter", aFilter )
 
   # stores the supported raster file filter
   rastersFilter = ''
@@ -422,20 +428,12 @@ class FileFilter:
   # Retrieves the filter for supported raster files
   @classmethod
   def allRastersFilter(self):
-    if self.rastersFilter.isEmpty():
+    if self.rastersFilter == '':
+      # TODO fix this, does not work
       QgsRasterLayer.buildSupportedRasterFileFilter(self.rastersFilter)
 
       # workaround for QGis < 1.5 (see #2376)
-      # separates multiple extensions that joined by a slash
-      if QGis.QGIS_VERSION[0:3] < "1.5":
-          formats = self.rastersFilter.split( ";;" )
-          self.rastersFilter = ''
-          for f in formats:
-            oldExts = QString(f).remove( QRegExp('^.*\(') ).remove( QRegExp('\).*$') )
-            newExts = QString(oldExts).replace( '/', ' *.' )
-            if not self.rastersFilter.isEmpty():
-              self.rastersFilter += ';;'
-            self.rastersFilter += f.replace( oldExts, newExts )
+      # removed as this is a core plugin QGis >= 1.9
 
     return self.rastersFilter
 
@@ -453,7 +451,7 @@ class FileFilter:
   # Retrieves the filter for supported vector files
   @classmethod
   def allVectorsFilter(self):
-    if self.vectorsFilter.isEmpty():
+    if self.vectorsFilter == '':
       self.vectorsFilter = QgsProviderRegistry.instance().fileVectorFilters()
     return self.vectorsFilter
 
@@ -468,20 +466,20 @@ class FileFilter:
   # Retrieves the extensions list from a filter string
   @classmethod
   def getFilterExtensions(self, aFilter):
-    extList = QStringList()
+    extList = []
     # foreach format in filter string
     for f in aFilter.split( ";;" ):
       # gets the list of extensions from the filter
-      exts = f.remove( QRegExp('^.*\(') ).remove( QRegExp('\).*$') )
+      exts = re.sub('\).*$', '', re.sub('^.*\(', '', f))
       # if there is no extensions or the filter matches all, then return an empty list
       # otherwise return the list of estensions
-      if not exts.isEmpty() and exts != "*" and exts != "*.*":
-        extList << exts.split(" ")
+      if exts != '' and exts != "*" and exts != "*.*":
+        extList.append(exts.split(" "))
     return extList
 
   @classmethod
   def getFilterName(self, aFilter):
-    return QString(aFilter).remove( QRegExp('\ \(.*$') ).trimmed()
+    return string.strip(re.sub('\ \(.*$', '', aFilter))
 
   @classmethod
   def filenameMatchesFilterExt(self, fileName, ext):
@@ -525,48 +523,51 @@ class GdalConfig:
       driver = gdal.GetDriver(i)
 
       if driver == None:
-        QgsLogger.warning("unable to get driver " + QString.number(i))
+        QgsLogger.warning("unable to get driver " + str(i))
         continue
 
       # now we need to see if the driver is for something currently
       # supported; if not, we give it a miss for the next driver
 
-      longName = QString(driver.LongName).remove( QRegExp( '\(.*$' ) ).trimmed()
-      shortName = QString(driver.ShortName).remove( QRegExp( '\(.*$' ) ).trimmed()
+      longName = string.strip(re.sub('\(.*$', '', driver.LongName))
+      shortName = string.strip(re.sub('\(.*$', '', driver.ShortName))
       extensions = ''
 
-      description = QString(driver.GetDescription())
-      glob = QStringList()
+      description = driver.GetDescription()
+      glob = []
 
       metadata = driver.GetMetadata()
       if metadata.has_key(gdal.DMD_EXTENSION):
-        extensions = QString(metadata[gdal.DMD_EXTENSION])
+        extensions = str(metadata[gdal.DMD_EXTENSION])
 
-      if not longName.isEmpty():
-        if not extensions.isEmpty():
+      if longName != '':
+        if extensions != '':
           # XXX add check for SDTS; in that case we want (*CATD.DDF)
-          glob << QString("*." + extensions.replace("/", " *.")).split(" ")
+
+          #TODO fix and test
+          #glob << QString("*." + extensions.replace("/", " *.")).split(" ")
+          glob.append(string.split("*." + string.replace(extensions,"/", " *."), sep=(" ")))
 
           # Add only the first JP2 driver found to the filter list (it's the one GDAL uses)
-          if description == "JPEG2000" or description.startsWith("JP2"): # JP2ECW, JP2KAK, JP2MrSID
+          if description == "JPEG2000" or description.startswith("JP2"): # JP2ECW, JP2KAK, JP2MrSID
             if jp2Driver != None:
               continue               # skip if already found a JP2 driver
             jp2Driver = driver   # first JP2 driver found
-            glob << "*.j2k"           # add alternate extension
+            glob.append("*.j2k")           # add alternate extension
           elif description == "GTiff":
-            glob << "*.tiff"
+            glob.append("*.tiff")
           elif description == "JPEG":
-            glob << "*.jpeg"
+            glob.append("*.jpeg")
         else:
           # USGS DEMs use "*.dem"
-          if description.startsWith( "USGSDEM" ):
-            glob << "*.dem"
-          elif description.startsWith( "DTED" ):
+          if description.startswith( "USGSDEM" ):
+            glob.append("*.dem")
+          elif description.startswith( "DTED" ):
             # DTED use "*.dt0"
-            glob << "*.dt0"
-          elif description.startsWith( "MrSID" ):
+            glob.append("*.dt0")
+          elif description.startswith( "MrSID" ):
             # MrSID use "*.sid"
-            glob << "*.sid"
+            glob.append("*.sid")
           else:
             continue
 
@@ -593,111 +594,119 @@ class GdalConfig:
       driver = ogr.GetDriver(i)
 
       if driver == None:
-        QgsLogger.warning("unable to get driver " + QString.number(i))
+        QgsLogger.warning("unable to get driver " + str(i))
         continue
 
-      driverName = QString(driver.GetName())
+      driverName = driver.GetName()
       longName = ''
-      glob = QStringList()
+      glob = []
 
-      if driverName.startsWith( "AVCBin" ):
+      if driverName.startswith( "AVCBin" ):
         pass #myDirectoryDrivers += "Arc/Info Binary Coverage,AVCBin"
-      elif driverName.startsWith( "AVCE00" ):
+      elif driverName.startswith( "AVCE00" ):
         longName = "Arc/Info ASCII Coverage"
-        glob << "*.e00"
-      elif driverName.startsWith( "BNA" ):
+        glob.append("*.e00")
+      elif driverName.startswith( "BNA" ):
         longName = "Atlas BNA"
-        glob << "*.bna"
-      elif driverName.startsWith( "CSV" ):
+        glob.append("*.bna")
+      elif driverName.startswith( "CSV" ):
         longName = "Comma Separated Value"
-        glob << "*.csv"
-      elif driverName.startsWith( "DODS" ):
+        glob.append("*.csv")
+      elif driverName.startswith( "DODS" ):
         pass #myProtocolDrivers += "DODS/OPeNDAP,DODS"
-      elif driverName.startsWith( "PGeo" ):
+      elif driverName.startswith( "PGeo" ):
         pass #myDatabaseDrivers += "ESRI Personal GeoDatabase,PGeo"
 
         # on Windows add a pair to the dict for this driver
         if platform.system() == "Windows":
           longName = "ESRI Personal GeoDatabase"
-          glob << "*.mdb"
-      elif driverName.startsWith( "SDE" ):
+          glob.append("*.mdb")
+      elif driverName.startswith( "SDE" ):
         pass #myDatabaseDrivers += "ESRI ArcSDE,SDE"
-      elif driverName.startsWith( "ESRI" ):
+      elif driverName.startswith( "ESRI" ):
         longName = "ESRI Shapefiles"
-        glob << "*.shp"
-      elif driverName.startsWith( "FMEObjects Gateway" ):
+        glob.append("*.shp")
+      elif driverName.startswith( "FMEObjects Gateway" ):
         longName = "FMEObjects Gateway"
-        glob << "*.fdd"
-      elif driverName.startsWith( "GeoJSON" ):
+        glob.append("*.fdd")
+      elif driverName.startswith( "GeoJSON" ):
         pass #myProtocolDrivers += "GeoJSON,GeoJSON"
         longName = "GeoJSON"
-        glob << "*.geojson"
-      elif driverName.startsWith( "GeoRSS" ):
+        glob.append("*.geojson")
+      elif driverName.startswith( "GeoRSS" ):
         longName = "GeoRSS"
-        glob << "*.xml"
-      elif driverName.startsWith( "GML" ):
+        glob.append("*.xml")
+      elif driverName.startswith( "GML" ):
         longName = "Geography Markup Language"
-        glob << "*.gml"
-      elif driverName.startsWith( "GMT" ):
+        glob.append("*.gml")
+      elif driverName.startswith( "GMT" ):
         longName = "GMT"
-        glob << "*.gmt"
-      elif driverName.startsWith( "GPX" ):
+        glob.append("*.gmt")
+      elif driverName.startswith( "GPX" ):
         longName = "GPX"
-        glob << "*.gpx"
-      elif driverName.startsWith( "GRASS" ):
+        glob.append("*.gpx")
+      elif driverName.startswith( "GRASS" ):
         pass #myDirectoryDrivers += "Grass Vector,GRASS"
-      elif driverName.startsWith( "IDB" ):
+      elif driverName.startswith( "IDB" ):
         pass #myDatabaseDrivers += "Informix DataBlade,IDB"
-      elif driverName.startsWith( "Interlis 1" ):
+      elif driverName.startswith( "Interlis 1" ):
         longName = "INTERLIS 1"
-        glob << "*.itf" << "*.xml" << "*.ili"
-      elif driverName.startsWith( "Interlis 2" ):
+        glob.append("*.itf")
+        glob.append("*.xml")
+        glob.append("*.ili")
+      elif driverName.startswith( "Interlis 2" ):
         longName = "INTERLIS 2"
-        glob << "*.itf" << "*.xml" << "*.ili"
-      elif driverName.startsWith( "INGRES" ):
+        glob.append("*.itf")
+        glob.append("*.xml")
+        glob.append("*.ili")
+      elif driverName.startswith( "INGRES" ):
         pass #myDatabaseDrivers += "INGRES,INGRES"
-      elif driverName.startsWith( "KML" ):
+      elif driverName.startswith( "KML" ):
         longName = "KML"
-        glob << "*.kml"
-      elif driverName.startsWith( "MapInfo File" ):
+        glob.append("*.kml")
+      elif driverName.startswith( "MapInfo File" ):
         longName = "Mapinfo File"
-        glob << "*.mif" << "*.tab"
-      elif driverName.startsWith( "DGN" ):
+        glob.append("*.mif")
+        glob.append("*.tab")
+      elif driverName.startswith( "DGN" ):
         longName = "Microstation DGN"
-        glob << "*.dgn"
-      elif driverName.startsWith( "MySQL" ):
+        glob.append("*.dgn")
+      elif driverName.startswith( "MySQL" ):
         pass #myDatabaseDrivers += "MySQL,MySQL"
-      elif driverName.startsWith( "OCI" ):
+      elif driverName.startswith( "OCI" ):
         pass #myDatabaseDrivers += "Oracle Spatial,OCI"
-      elif driverName.startsWith( "ODBC" ):
+      elif driverName.startswith( "ODBC" ):
         pass #myDatabaseDrivers += "ODBC,ODBC"
-      elif driverName.startsWith( "OGDI" ):
+      elif driverName.startswith( "OGDI" ):
         pass #myDatabaseDrivers += "OGDI Vectors,OGDI"
-      elif driverName.startsWith( "PostgreSQL" ):
+      elif driverName.startswith( "PostgreSQL" ):
         pass #myDatabaseDrivers += "PostgreSQL,PostgreSQL"
-      elif driverName.startsWith( "S57" ):
+      elif driverName.startswith( "S57" ):
         longName = "S-57 Base file"
-        glob << "*.000"
-      elif driverName.startsWith( "SDTS" ):
+        glob.append("*.000")
+      elif driverName.startswith( "SDTS" ):
         longName = "Spatial Data Transfer Standard"
-        glob << "*catd.ddf"
-      elif driverName.startsWith( "SQLite" ):
+        glob.append("*catd.ddf")
+      elif driverName.startswith( "SQLite" ):
         longName = "SQLite"
-        glob << "*.sqlite"
-      elif driverName.startsWith( "UK .NTF" ):
+        glob.append("*.sqlite")
+      elif driverName.startswith( "UK .NTF" ):
         pass #myDirectoryDrivers += "UK. NTF,UK. NTF"
-      elif driverName.startsWith( "TIGER" ):
+      elif driverName.startswith( "TIGER" ):
         pass #myDirectoryDrivers += "U.S. Census TIGER/Line,TIGER"
-      elif driverName.startsWith( "VRT" ):
+      elif driverName.startswith( "VRT" ):
         longName = "VRT - Virtual Datasource "
-        glob << "*.vrt"
-      elif driverName.startsWith( "XPlane" ):
+        glob.append("*.vrt")
+      elif driverName.startswith( "XPlane" ):
         longName = "X-Plane/Flighgear"
-        glob << "apt.dat" << "nav.dat" << "fix.dat" << "awy.dat"
+        glob.append("apt.dat")
+        glob.append("nav.dat")
+        glob.append("fix.dat")
+        glob.append("awy.dat")
 
-      longName = QString(longName).trimmed()
+      longName = string.strip(longName)
 
-      if longName.isEmpty():
+      if longName =='':
         continue
 
       self.supportedVectors[longName] = {'EXTENSIONS': glob, 'LONGNAME': longName, 'SHORTNAME': driverName}
@@ -710,7 +719,7 @@ class GdalConfig:
     # retrieve the raster format short name by long format name
     @classmethod
     def long2ShortName(self, longName):
-      if longName.isEmpty():
+      if longName == '':
         return ''
 
       if self.dict_long2shortName.has_key(longName):
@@ -739,7 +748,7 @@ class GdalConfig:
     # retrieve the raster format short name by using the file name extension
     @classmethod
     def filename2ShortName(self, fileName):
-      if fileName.isEmpty():
+      if fileName == '':
         return ''
 
       shortName = ''
@@ -753,7 +762,7 @@ class GdalConfig:
             shortName = self.long2ShortName(longName)
             break
 
-        if not shortName.isEmpty():
+        if not shortName == '':
           break
 
       return shortName
@@ -767,7 +776,7 @@ class Version:
         self.vers = ver.vers
       elif isinstance(ver, tuple) or isinstance(ver, list):
         self.vers = map(str, ver)
-      elif isinstance(ver, str) or isinstance(ver, QString):
+      elif isinstance(ver, str):
         self.vers = self.string2vers(ver)
 
   @staticmethod
@@ -855,22 +864,22 @@ def setMacOSXDefaultEnvironment():
 
   if os.path.exists( qgis_standalone_gdal_path ):  # qgis standalone
     # GDAL executables are in the QGis bin folder
-    if getGdalBinPath().isEmpty():
+    if getGdalBinPath() == '':
       setGdalBinPath( qgis_bin )
     # GDAL pymods are in the QGis python folder
-    if getGdalPymodPath().isEmpty():
+    if getGdalPymodPath() == '':
       setGdalPymodPath( qgis_python )
     # GDAL help is in the framework folder
-    if getHelpPath().isEmpty():
+    if getHelpPath() == '':
       setHelpPath( u"%s/Resources/doc" % qgis_standalone_gdal_path )
 
   elif os.path.exists( gdal_base_path ):
     # all GDAL parts are in the GDAL framework folder
-    if getGdalBinPath().isEmpty():
+    if getGdalBinPath() == '':
       setGdalBinPath( u"%s/Programs" % gdal_base_path )
-    if getGdalPymodPath().isEmpty():
+    if getGdalPymodPath() == '':
       setGdalPymodPath( u"%s/Python/%s.%s/site-packages" % (gdal_base_path, sys.version_info[0], sys.version_info[1]) )
-    if getHelpPath().isEmpty():
+    if getHelpPath() == '':
       setHelpPath( u"%s/Resources/doc" % gdal_base_path )
 
 

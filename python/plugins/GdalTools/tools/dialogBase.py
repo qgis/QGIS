@@ -36,7 +36,7 @@ from ui_dialogBase import Ui_GdalToolsDialog as Ui_Dialog
 import GdalTools_utils as Utils
 from .. import resources_rc
 
-import os, platform
+import os, platform, string
 
 class GdalToolsBaseDialog(QDialog, Ui_Dialog):
 
@@ -51,7 +51,7 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
       self.connect(self.process, SIGNAL("finished(int, QProcess::ExitStatus)"), self.processFinished)
 
       self.setupUi(self)
-      self.arguments = QStringList()
+      self.arguments = []
 
       self.editCmdBtn.setIcon( QIcon(":/icons/edit.png") )
       self.connect(self.editCmdBtn, SIGNAL("toggled(bool)"), self.editCommand)
@@ -138,7 +138,7 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
   # show the online tool documentation in the default browser
   def onHelp(self):
       helpPath = Utils.getHelpPath()
-      if helpPath.isEmpty():
+      if helpPath == '':
         url = QUrl("http://www.gdal.org/" + self.helpFileName)
       else:
         url = QUrl.fromLocalFile(helpPath + '/' + self.helpFileName)
@@ -204,23 +204,24 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
         return
 
       # show the error message if there's one, otherwise show the process output message
-      msg = QString.fromLocal8Bit(self.process.readAllStandardError())
-      if msg.isEmpty():
-        outMessages = QString.fromLocal8Bit(self.process.readAllStandardOutput()).split( "\n" )
+      msg = str(self.process.readAllStandardError())
+      if msg == '':
+        outMessages = string.split( str(self.process.readAllStandardOutput()), sep="\n" )
 
         # make sure to not show the help
         for m in outMessages:
-          m = m.trimmed()
-          if m.isEmpty():
+          m = string.strip(m)
+          if m == '':
             continue
-          if m.contains( QRegExp( "^(?:[Uu]sage:\\s)?" + QRegExp.escape(self.command) + "\\s" ) ):
-            if msg.isEmpty():
-              msg = self.tr ( "Invalid parameters." )
-            break
-          if m.contains( QRegExp( "0(?:\\.+[1-9]0{1,2})+" ) ):
-            continue
+          # TODO fix this
+          #if m.contains( QRegExp( "^(?:[Uu]sage:\\s)?" + QRegExp.escape(self.command) + "\\s" ) ):
+          #  if msg.isEmpty():
+          #    msg = self.tr ( "Invalid parameters." )
+          #  break
+          #if m.contains( QRegExp( "0(?:\\.+[1-9]0{1,2})+" ) ):
+          #  continue
 
-          if not msg.isEmpty():
+          if not msg == '':
             msg += "\n"
           msg += m
 
