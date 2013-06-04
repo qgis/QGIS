@@ -180,25 +180,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       if ( !myWidget )
         continue;
 
-      QLabel *mypLabel = new QLabel( mypInnerFrame );
-      mypInnerLayout->addWidget( mypLabel, index, 0 );
-      if ( myFieldType == QVariant::Int )
-      {
-        mypLabel->setText( myFieldName );
-      }
-      else if ( myFieldType == QVariant::Double )
-      {
-        mypLabel->setText( myFieldName );
-      }
-      else if ( myFieldType == QVariant::LongLong )
-      {
-        mypLabel->setText( myFieldName );
-      }
-      else //string
-      {
-        //any special behaviour for string goes here
-        mypLabel->setText( myFieldName );
-      }
+      QLabel *mypLabel = new QLabel( myFieldName, mypInnerFrame );
 
       if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable )
       {
@@ -231,8 +213,17 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
         }
       }
 
-      mypInnerLayout->addWidget( myWidget, index, 1 );
-      ++index;
+      if ( vl->labelOnTop( fldIdx ) )
+      {
+        mypInnerLayout->addWidget( mypLabel, index++, 0, 1, 2 );
+        mypInnerLayout->addWidget( myWidget, index++, 0, 1, 2 );
+      }
+      else
+      {
+        mypInnerLayout->addWidget( mypLabel, index, 0 );
+        mypInnerLayout->addWidget( myWidget, index, 1 );
+        ++index;
+      }
     }
 
     // Set focus to first widget in list, to help entering data without moving the mouse.

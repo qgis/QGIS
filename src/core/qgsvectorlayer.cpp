@@ -1874,6 +1874,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       int editable = editTypeElement.attribute( "editable" , "1" ).toInt();
       mFieldEditables.insert( name, editable == 1 );
 
+      int labelOnTop = editTypeElement.attribute( "labelontop" , "0" ).toInt();
+      mLabelOnTop.insert( name, labelOnTop == 1 );
+
       switch ( editType )
       {
         case ValueMap:
@@ -2185,6 +2188,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
       editTypeElement.setAttribute( "name", it.key() );
       editTypeElement.setAttribute( "type", it.value() );
       editTypeElement.setAttribute( "editable", mFieldEditables[ it.key()] ? 1 : 0 );
+      editTypeElement.setAttribute( "labelontop", mLabelOnTop[ it.key()] ? 1 : 0 );
 
       switch (( EditType ) it.value() )
       {
@@ -3053,11 +3057,27 @@ bool QgsVectorLayer::fieldEditable( int idx )
     return true;
 }
 
+bool QgsVectorLayer::labelOnTop( int idx )
+{
+  const QgsFields &fields = pendingFields();
+  if ( idx >= 0 && idx < fields.count() )
+    return mLabelOnTop.value( fields[idx].name(), false );
+  else
+    return false;
+}
+
 void QgsVectorLayer::setFieldEditable( int idx, bool editable )
 {
   const QgsFields &fields = pendingFields();
   if ( idx >= 0 && idx < fields.count() )
     mFieldEditables[ fields[idx].name()] = editable;
+}
+
+void QgsVectorLayer::setLabelOnTop( int idx, bool onTop )
+{
+  const QgsFields &fields = pendingFields();
+  if ( idx >= 0 && idx < fields.count() )
+    mLabelOnTop[ fields[idx].name()] = onTop;
 }
 
 void QgsVectorLayer::addOverlay( QgsVectorOverlay* overlay )

@@ -1364,7 +1364,7 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
 
       int index = 0;
 
-      QList<QgsAttributeEditorElement*>children = container->children();
+      QList<QgsAttributeEditorElement*> children = container->children();
 
       for ( QList<QgsAttributeEditorElement*>::const_iterator it = children.begin(); it != children.end(); ++it )
       {
@@ -1381,12 +1381,18 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
 
           //show attribute alias if available
           QString myFieldName = vl->attributeDisplayName( fieldDef->idx() );
-          QLabel * mypLabel = new QLabel( myContainer );
-          gbLayout->addWidget( mypLabel, index, 0 );
-          mypLabel->setText( myFieldName );
+          QLabel *mypLabel = new QLabel( myFieldName, myContainer );
 
-          // add editor widget
-          gbLayout->addWidget( editor, index, 1 );
+          if ( vl->labelOnTop( fieldDef->idx() ) )
+          {
+            gbLayout->addWidget( mypLabel, index++, 0, 1, 2 );
+            gbLayout->addWidget( editor, index, 0, 1 , 2 );
+          }
+          else
+          {
+            gbLayout->addWidget( mypLabel, index, 0 );
+            gbLayout->addWidget( editor, index, 1 );
+          }
         }
 
         ++index;

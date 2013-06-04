@@ -99,9 +99,19 @@ bool QgsAttributeTypeDialog::fieldEditable()
   return isFieldEditableCheckBox->isChecked();
 }
 
+bool QgsAttributeTypeDialog::labelOnTop()
+{
+  return labelOnTopCheckBox->isChecked();
+}
+
 void QgsAttributeTypeDialog::setFieldEditable( bool editable )
 {
   isFieldEditableCheckBox->setChecked( editable );
+}
+
+void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )
+{
+  labelOnTopCheckBox->setChecked( onTop );
 }
 
 QPair<QString, QString> QgsAttributeTypeDialog::checkedState()
