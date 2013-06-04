@@ -57,10 +57,10 @@ class TableFieldsDelegate(QItemDelegate):
 		""" load data from model to editor """
 		m = index.model()
 		if index.column() == 1:
-			txt = m.data(index, Qt.DisplayRole).toString()
+			txt = m.data(index, Qt.DisplayRole)
 			editor.setEditText(txt)
 		elif index.column() == 2:
-			checked = m.data(index, Qt.DisplayRole).toBool()
+			checked = m.data(index, Qt.DisplayRole) == "true"
 			editor.setChecked( checked )
 		else:
 			# use default
@@ -69,9 +69,9 @@ class TableFieldsDelegate(QItemDelegate):
 	def setModelData(self, editor, model, index):
 		""" save data from editor back to model """
 		if index.column() == 1:
-			model.setData(index, QVariant(editor.currentText()))
+			model.setData(index, editor.currentText())
 		elif index.column() == 1:
-			model.setData(index, QVariant(editor.isChecked()))
+			model.setData(index, editor.isChecked())
 		else:
 			# use default
 			QItemDelegate.setModelData(self, editor, model, index)
@@ -169,7 +169,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 
 		m = self.fields.model()
 		for row in xrange(m.rowCount()):
-			name = m.data(m.index(row,0)).toString()
+			name = m.data(m.index(row,0))
 			self.cboPrimaryKey.addItem(name)
 
 		self.cboPrimaryKey.setCurrentIndex(selRow)
@@ -184,14 +184,14 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 		indexType = m.index(newRow,1,QModelIndex())
 		indexNull = m.index(newRow,2,QModelIndex())
 
-		m.setData(indexName, QVariant("new_field"))
+		m.setData(indexName, "new_field")
 		colType = self.fieldTypes[0]
 		if newRow == 0:
 			# adding the first row, use auto-incrementing column type if any
 			if "serial" in self.fieldTypes:	# PostgreSQL
 				colType = "serial"
-		m.setData(indexType, QVariant(colType))
-		m.setData(indexNull, QVariant(False))
+		m.setData(indexType, colType)
+		m.setData(indexNull, False)
 
 		# selects the new row
 		sel = self.fields.selectionModel()

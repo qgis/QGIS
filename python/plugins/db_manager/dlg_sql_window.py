@@ -46,7 +46,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     self.defaultLayerName = 'QueryLayer'
 
     settings = QSettings()
-    self.restoreGeometry(settings.value("/DB_Manager/sqlWindow/geometry").toByteArray())
+    self.restoreGeometry(settings.value("/DB_Manager/sqlWindow/geometry"))
 
     self.editSql.setAcceptRichText(False)
     SqlCompleter(self.editSql, self.db)
@@ -120,7 +120,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
   def closeEvent(self, e):
     """ save window state """
     settings = QSettings()
-    settings.setValue("/DB_Manager/sqlWindow/geometry", QVariant(self.saveGeometry()))
+    settings.setValue("/DB_Manager/sqlWindow/geometry", self.saveGeometry())
 
     QDialog.closeEvent(self, e)
 
@@ -134,7 +134,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     # character instead of a newline \n character
     # (see https://qt-project.org/doc/qt-4.8/qtextcursor.html#selectedText)
     sql = self.editSql.textCursor().selectedText().replace(unichr(0x2029), "\n")
-    if sql.isEmpty():
+    if sql == "":
       sql = self.editSql.toPlainText()
     # try to sanitize query
     sql = sql.replace( QRegExp( ";\\s*$" ), "" )
@@ -145,7 +145,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
 
   def executeSql(self):
     sql = self.getSql()
-    if sql.isEmpty(): return
+    if sql == "": return
 
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
@@ -180,12 +180,12 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     uniqueFieldName = self.uniqueCombo.currentText()
     geomFieldName = self.geomCombo.currentText()
 
-    if geomFieldName.isEmpty() or uniqueFieldName.isEmpty():
+    if geomFieldName == "" or uniqueFieldName == "":
       QMessageBox.warning(self, self.tr( "Sorry" ), self.tr( "You must fill the required fields: \ngeometry column - column with unique integer values" ) )
       return
 
     query = self.getSql()
-    if query.isEmpty():
+    if query == "":
       return
 
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -199,7 +199,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
       names.append( layer.name() )
 
     layerName = self.layerNameEdit.text()
-    if layerName.isEmpty():
+    if layerName == "":
       layerName = self.defaultLayerName
     newLayerName = layerName
     index = 1
@@ -216,7 +216,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
 
   def fillColumnCombos(self):
     query = self.getSql()
-    if query.isEmpty(): return
+    if query == "": return
 
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
     self.uniqueCombo.clear()

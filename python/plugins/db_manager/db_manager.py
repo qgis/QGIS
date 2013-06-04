@@ -45,8 +45,8 @@ class DBManager(QMainWindow):
 
 		# restore the window state
 		settings = QSettings()
-		self.restoreGeometry( settings.value("/DB_Manager/mainWindow/geometry").toByteArray() )
-		self.restoreState( settings.value("/DB_Manager/mainWindow/windowState").toByteArray() )
+		self.restoreGeometry( settings.value("/DB_Manager/mainWindow/geometry") )
+		self.restoreState( settings.value("/DB_Manager/mainWindow/windowState") )
 
 		self.connect(self.tabs, SIGNAL("currentChanged(int)"), self.tabChanged)
 		self.connect(self.tree, SIGNAL("selectedItemChanged"), self.itemChanged)
@@ -58,8 +58,8 @@ class DBManager(QMainWindow):
 
 		# save the window state
 		settings = QSettings()
-		settings.setValue( "/DB_Manager/mainWindow/windowState", QVariant(self.saveState()) )
-		settings.setValue( "/DB_Manager/mainWindow/geometry", QVariant(self.saveGeometry()) )
+		settings.setValue( "/DB_Manager/mainWindow/windowState", self.saveState() )
+		settings.setValue( "/DB_Manager/mainWindow/geometry", self.saveGeometry() )
 
 		QMainWindow.closeEvent(self, e)
 
@@ -236,7 +236,7 @@ class DBManager(QMainWindow):
 		# get the placeholder's position to insert before it
 		pos = 0
 		for pos in range(len(menuActions)):
-			if menuActions[pos].isSeparator() and menuActions[pos].objectName().endsWith("_placeholder"):
+			if menuActions[pos].isSeparator() and menuActions[pos].objectName().endswith("_placeholder"):
 				menuActions[pos].setVisible(True)
 				break
 
@@ -314,7 +314,7 @@ class DBManager(QMainWindow):
 				# hide the placeholder if there're no other registered actions
 				if len(self._registeredDbActions[menuName]) <= 0:
 					for i in range(len(menuActions)):
-						if menuActions[i].isSeparator() and menuActions[i].objectName().endsWith("_placeholder"):
+						if menuActions[i].isSeparator() and menuActions[i].objectName().endswith("_placeholder"):
 							menuActions[i].setVisible(False)
 							break
 

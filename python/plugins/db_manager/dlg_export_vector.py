@@ -64,7 +64,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
 	def chooseOutputFile(self):
 		# get last used dir and format
 		settings = QSettings()
-                lastDir = settings.value("/db_manager/lastUsedDir", "").toString()
+                lastDir = settings.value("/db_manager/lastUsedDir", "")
 		# ask for a filename
 		filename = QFileDialog.getSaveFileName(self, "Choose where to save the file", lastDir, "Shapefiles (*.shp)")
 		if filename == "":
@@ -96,14 +96,16 @@ class DlgExportVector(QDialog, Ui_Dialog):
 			return
 
 		if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
-			sourceSrid, ok = self.editSourceSrid.text().toInt()
-			if not ok:
+			try:
+				sourceSrid = int(self.editSourceSrid.text())
+			except ValueError:
 				QMessageBox.information(self, "Export to file", "Invalid source srid: must be an integer")
 				return
 
 		if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
-			targetSrid, ok = self.editTargetSrid.text().toInt()
-			if not ok:
+			try:
+				targetSrid = int(self.editTargetSrid.text())
+			except ValueError:
 				QMessageBox.information(self, "Export to file", "Invalid target srid: must be an integer")
 				return
 
@@ -132,12 +134,12 @@ class DlgExportVector(QDialog, Ui_Dialog):
 
 			outCrs = None
 			if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
-				targetSrid = self.editTargetSrid.text().toInt()[0]
+				targetSrid = int(self.editTargetSrid.text())
 				outCrs = qgis.core.QgsCoordinateReferenceSystem(targetSrid)
 
 			# update input layer crs
 			if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
-				sourceSrid = self.editSourceSrid.text().toInt()[0]
+				sourceSrid = int(self.editSourceSrid.text())
 				inCrs = qgis.core.QgsCoordinateReferenceSystem(sourceSrid)
 				self.inLayer.setCrs( inCrs )
 

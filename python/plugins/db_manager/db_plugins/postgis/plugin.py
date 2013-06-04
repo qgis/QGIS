@@ -75,28 +75,28 @@ class PostGisDBPlugin(DBPlugin):
 		uri = QgsDataSourceURI()
 
 		settingsList = ["service", "host", "port", "database", "username", "password"]
-		service, host, port, database, username, password = map(lambda x: settings.value(x).toString(), settingsList)
+		service, host, port, database, username, password = map(lambda x: settings.value(x), settingsList)
 
 		# qgis1.5 use 'savePassword' instead of 'save' setting
-		savedPassword = settings.value("save", False).toBool() or settings.value("savePassword", False).toBool()
+		savedPassword = settings.value("save", False, type=bool) or settings.value("savePassword", False, type=bool)
 
-		useEstimatedMetadata = settings.value("estimatedMetadata", False).toBool()
-		sslmode = settings.value("sslmode", QgsDataSourceURI.SSLprefer).toInt()[0]
+		useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
+		sslmode = settings.value("sslmode", QgsDataSourceURI.SSLprefer, type=int)
 
 		settings.endGroup()
 
-		if not service.isEmpty():
+		if service != "":
 			uri.setConnection(service, database, username, password, sslmode)
 		else:
 			uri.setConnection(host, port, database, username, password, sslmode)
 
 		uri.setUseEstimatedMetadata(useEstimatedMetadata)
 
-		err = QString()
+		err = u""
 		try:
 			return self.connectToUri(uri)
 		except ConnectionError, e:
-			err = QString( str(e) )
+			err = str(e)
 
 		hasCredentialDlg = True
 		try:
@@ -115,7 +115,7 @@ class PostGisDBPlugin(DBPlugin):
 			if not ok:
 				return False
 
-			if not service.isEmpty():
+			if service != "":
 				uri.setConnection(service, database, username, password, sslmode)
 			else:
 				uri.setConnection(host, port, database, username, password, sslmode)
@@ -125,7 +125,7 @@ class PostGisDBPlugin(DBPlugin):
 			except ConnectionError, e:
 				if i == max_attempts-1:	# failed the last attempt
 					raise e
-				err = QString( str(e) )
+				err = str(e)
 				continue
 
 			if hasCredentialDlg:
@@ -283,11 +283,11 @@ class PGRasterTable(PGTable, RasterTable):
 		uri = self.database().uri()
 		schema = ( u'schema=%s' % self.schemaName() ) if self.schemaName() else ''
 		gdalUri = u'PG: dbname=%s host=%s user=%s password=%s port=%s mode=2 %s table=%s' % (uri.database(), uri.host(), uri.username(), uri.password(), uri.port(), schema, self.name)
-		return QString( gdalUri )
+		return gdalUri
 
 	def mimeUri(self):
 		uri = u"raster:gdal:%s:%s" % (self.name, self.gdalUri())
-		return QString( uri )
+		return uri
 
 	def toMapLayer(self):
 		from qgis.core import QgsRasterLayer
@@ -303,11 +303,11 @@ class PGTableField(TableField):
 		self.primaryKey = False
 
 		# get modifier (e.g. "precision,scale") from formatted type string
-		trimmedTypeStr = QString(typeStr).trimmed()
+		trimmedTypeStr = typeStr.strip()
 		regex = QRegExp( "\((.+)\)$" )
 		startpos = regex.indexIn( trimmedTypeStr )
 		if startpos >= 0:
-			self.modifier = regex.cap(1).trimmed()
+			self.modifier = regex.cap(1).strip()
 		else:
 			self.modifier = None
 
