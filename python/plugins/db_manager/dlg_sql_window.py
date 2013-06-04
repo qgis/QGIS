@@ -62,11 +62,11 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     self.connect(self.btnClear, SIGNAL("clicked()"), self.clearSql)
     self.connect(self.buttonBox.button(QDialogButtonBox.Close), SIGNAL("clicked()"), self.close)
 
-
     self.connect(self.presetStore, SIGNAL("clicked()"), self.storePreset)
     self.connect(self.presetDelete, SIGNAL("clicked()"), self.deletePreset)
     self.connect(self.presetCombo, SIGNAL("activated(QString)"), self.loadPreset)
     self.connect(self.presetCombo, SIGNAL("activated(QString)"), self.presetName.setText)
+    self.updatePresetsCombobox()
 
     # hide the load query as layer if feature is not supported
     self._loadAsLayerAvailable = self.db.connector.hasCustomQuerySupport()
@@ -78,22 +78,18 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
       self.connect(self.loadAsLayerGroup, SIGNAL("toggled(bool)"), self.loadAsLayerToggled)
       self.loadAsLayerToggled(False)
 
-  def showEvent(self, event):
-    QDialog.showEvent(self, event)
-    self.updatePresetsCombobox()
-
   def updatePresetsCombobox(self):
-    entries = QgsProject.instance().subkeyList('DBManager','savedQueries')
     self.presetCombo.clear()
+
     names = []
+    entries = QgsProject.instance().subkeyList('DBManager','savedQueries')
     for entry in entries:
       name = QgsProject.instance().readEntry('DBManager','savedQueries/'+entry+'/name' )[0]
       names.append( name )
 
-    names.sort()
-
-    for name in names:
+    for name in sorted(names):
       self.presetCombo.addItem(name)
+    self.presetCombo.setCurrentIndex(-1)
 
   def storePreset(self):
     query = self.editSql.toPlainText()
@@ -112,6 +108,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     QgsProject.instance().removeEntry('DBManager','savedQueries/q'+str(name.__hash__()) )
     self.presetCombo.removeItem( self.presetCombo.findText(name) )
     self.presetCombo.setCurrentIndex(-1)
+
   def loadPreset(self, name):
     query = QgsProject.instance().readEntry('DBManager','savedQueries/q'+str(name.__hash__())+'/query' )[0]
     name = QgsProject.instance().readEntry('DBManager','savedQueries/q'+str(name.__hash__())+'/name' )[0]
