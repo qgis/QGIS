@@ -49,6 +49,7 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QWebView>
+#include <QDesktopServices>
 
 void QgsAttributeEditor::selectFileName()
 {
@@ -185,6 +186,23 @@ void QgsAttributeEditor::updateUrl()
   le->blockSignals( true );
   le->setText( ww->url().toString() );
   le->blockSignals( false );
+}
+
+void QgsAttributeEditor::openUrl()
+{
+  QPushButton *pb = qobject_cast<QPushButton *>( sender() );
+  if ( !pb )
+    return;
+
+  QWidget *hbox = qobject_cast<QWidget *>( pb->parent() );
+  if ( !hbox )
+    return;
+
+  QWebView *ww = hbox->findChild<QWebView *>();
+  if ( !ww )
+    return;
+
+  QDesktopServices::openUrl( ww->url().toString() );
 }
 
 void QgsAttributeEditor::updateColor()
@@ -706,8 +724,9 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       if ( ww )
       {
         ww->page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
-        ww->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+        // ww->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
         ww->settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
+        ww->settings()->setAttribute( QWebSettings::JavascriptCanOpenWindows, true );
 #ifdef QGISDEBUG
         ww->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
 #endif
@@ -729,7 +748,8 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         break;
       }
 
-      QPushButton *pb = 0;
+      QPushButton *pb0 = 0;
+      QPushButton *pb1 = 0;
       QLineEdit *le = qobject_cast<QLineEdit *>( editor );
       if ( le )
       {
@@ -738,7 +758,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 
         if ( editor->parent() )
         {
-          pb = editor->parent()->findChild<QPushButton *>();
+          pb0 = editor->parent()->findChild<QPushButton *>();
         }
       }
       else
@@ -753,15 +773,18 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           case QgsVectorLayer::FileName:
           case QgsVectorLayer::Photo:
           case QgsVectorLayer::Calendar:
-            pb = new QPushButton( tr( "..." ), myWidget );
+            pb0 = new QPushButton( tr( "..." ), myWidget );
             break;
 
           case QgsVectorLayer::WebView:
-            pb = new QPushButton( tr( "<" ), myWidget );
+            pb0 = new QPushButton( tr( "<" ), myWidget );
+            pb0->setObjectName( "saveUrl" );
+            pb1 = new QPushButton( tr( "..." ), myWidget );
+            pb1->setObjectName( "openUrl" );
             break;
 
           case QgsVectorLayer::Color:
-            pb = new QgsColorButton( myWidget );
+            pb0 = new QgsColorButton( myWidget );
             break;
 
           default:
@@ -780,9 +803,11 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         else if ( editType == QgsVectorLayer::WebView )
         {
           ww = new QWebView( myWidget );
+          ww->setObjectName( "webview" );
           ww->page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
-          ww->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+          // ww->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
           ww->settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
+          ww->settings()->setAttribute( QWebSettings::JavascriptCanOpenWindows, true );
 #ifdef QGISDEBUG
           ww->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
 #endif
@@ -791,7 +816,9 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         }
 
         layout->addWidget( le, row, 0 );
-        layout->addWidget( pb, row, 1 );
+        layout->addWidget( pb0, row, 1 );
+        if ( pb1 )
+          layout->addWidget( pb1, row, 2 );
 
         myWidget->setLayout( layout );
       }
@@ -808,16 +835,37 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           connect( le, SIGNAL( textChanged( const QString & ) ), new QgsAttributeEditor( le ), SLOT( updateColor() ) );
       }
 
-      if ( pb )
+      if ( pb0 )
       {
         if ( editType == QgsVectorLayer::FileName || editType == QgsVectorLayer::Photo )
-          connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( selectFileName() ) );
+        {
+          connect( pb0, SIGNAL( clicked() ), new QgsAttributeEditor( pb0 ), SLOT( selectFileName() ) );
+          pb0->setToolTip( tr( "Select filename..." ) );
+        }
         if ( editType == QgsVectorLayer::WebView )
-          connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( updateUrl() ) );
+        {
+          connect( pb0, SIGNAL( clicked() ), new QgsAttributeEditor( pb0 ), SLOT( updateUrl() ) );
+          pb0->setToolTip( tr( "Save current page url in attribute" ) );
+        }
         if ( editType == QgsVectorLayer::Calendar )
-          connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( selectDate() ) );
+        {
+          connect( pb0, SIGNAL( clicked() ), new QgsAttributeEditor( pb0 ), SLOT( selectDate() ) );
+          pb0->setToolTip( tr( "Select date in calendar" ) );
+        }
         if ( editType == QgsVectorLayer::Color )
-          connect( pb, SIGNAL( colorChanged( const QColor & ) ), new QgsAttributeEditor( pb ), SLOT( updateColor() ) );
+        {
+          connect( pb0, SIGNAL( colorChanged( const QColor & ) ), new QgsAttributeEditor( pb0 ), SLOT( updateColor() ) );
+          pb0->setToolTip( tr( "Select color in browser" ) );
+        }
+      }
+
+      if ( pb1 )
+      {
+        if ( editType == QgsVectorLayer::WebView )
+        {
+          connect( pb1, SIGNAL( clicked() ), new QgsAttributeEditor( pb1 ), SLOT( openUrl() ) );
+          pb1->setToolTip( tr( "Open current page in default browser" ) );
+        }
       }
     }
     break;

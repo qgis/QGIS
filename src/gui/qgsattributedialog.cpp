@@ -40,6 +40,7 @@
 #include <QVBoxLayout>
 #include <QLineEdit>
 #include <QWebView>
+#include <QPushButton>
 
 int QgsAttributeDialog::smFormCounter = 0;
 
@@ -216,7 +217,12 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
         {
           foreach ( QWidget *w, myWidget->findChildren<QWidget *>() )
           {
-            w->setEnabled( qobject_cast<QWebView *>( w ) ? true : false );
+            if ( qobject_cast<QWebView *>( w ) )
+              w->setEnabled( true );
+            else if ( qobject_cast<QPushButton *>( w ) && w->objectName() == "openUrl" )
+              w->setEnabled( true );
+            else
+              w->setEnabled( false );
           }
         }
         else
