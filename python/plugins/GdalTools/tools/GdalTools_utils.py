@@ -429,8 +429,7 @@ class FileFilter:
   @classmethod
   def allRastersFilter(self):
     if self.rastersFilter == '':
-      # TODO fix this, does not work
-      QgsRasterLayer.buildSupportedRasterFileFilter(self.rastersFilter)
+      self.rastersFilter = QgsRasterLayer.buildSupportedRasterFileFilter2()
 
       # workaround for QGis < 1.5 (see #2376)
       # removed as this is a core plugin QGis >= 1.9
