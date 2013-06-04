@@ -116,16 +116,16 @@ def getRasterExtensions():
   formats = FileFilter.allRastersFilter().split( ";;" )
   extensions = []
   for f in formats:
-    if f.contains( "*.bt" ) or f.contains( "*.mpr" ):   # Binary Terrain or ILWIS
+    if string.find(f, "*.bt" ) is not -1 or string.find(f, "*.mpr" ) is not -1:   # Binary Terrain or ILWIS
       continue
-    extensions << FileFilter.getFilterExtensions( f )
+    extensions.extend( FileFilter.getFilterExtensions( f ) )
   return extensions
 
 def getVectorExtensions():
   formats = FileFilter.allVectorsFilter().split( ";;" )
   extensions = []
   for f in formats:
-    extensions.append(FileFilter.getFilterExtensions( f ))
+    extensions.extend( FileFilter.getFilterExtensions( f ) )
   return extensions
 
 class LayerRegistry(QObject):
@@ -201,23 +201,24 @@ def getRasterFiles(path, recursive=False):
   if not QFileInfo(path).exists():
     return rasters
 
-  filter = getRasterExtensions()
+  # TODO remove *.aux.xml
+  _filter = getRasterExtensions()
   workDir = QDir( path )
   workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-  workDir.setNameFilters( filter )
+  workDir.setNameFilters( _filter )
   files = workDir.entryList()
   for f in files:
-    rasters << path + "/" + f
+    rasters.append( path + "/" + f )
 
   if recursive:
     for myRoot, myDirs, myFiles in os.walk( unicode(path) ):
       for dir in myDirs:
         workDir = QDir( myRoot + "/" + dir )
         workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-        workDir.setNameFilters( filter )
+        workDir.setNameFilters( _filter )
         workFiles = workDir.entryList()
         for f in workFiles:
-          rasters << myRoot + "/" + dir + "/" + f
+          rasters.append( myRoot + "/" + dir + "/" + f )
 
   return rasters
 
@@ -382,8 +383,8 @@ class FileDialog:
               firstExt = ext
 
           if firstExt != None:
-            if firstExt.startsWith('*'):
-              files.append( firstExt[1:] )
+            if firstExt.startswith('*'):
+              files += firstExt[1:]
 
     if useEncoding:
       encoding = dialog.encoding()
@@ -403,8 +404,6 @@ class FileDialog:
 
   @classmethod
   def getSaveFileName(self, parent = None, caption = '', filter = '', selectedFilter = None, useEncoding = False):
-    print("filter:")
-    print(str(filter))
     return self.getDialog(parent, caption, QFileDialog.AcceptSave, QFileDialog.AnyFile, filter, selectedFilter, useEncoding)
 
   @classmethod
@@ -473,7 +472,7 @@ class FileFilter:
       # if there is no extensions or the filter matches all, then return an empty list
       # otherwise return the list of estensions
       if exts != '' and exts != "*" and exts != "*.*":
-        extList.append(exts.split(" "))
+        extList.extend(exts.split(" "))
     return extList
 
   @classmethod
@@ -482,13 +481,7 @@ class FileFilter:
 
   @classmethod
   def filenameMatchesFilterExt(self, fileName, ext):
-    regex = QRegExp(ext)
-    # use the wildcard matching
-    regex.setPatternSyntax(QRegExp.Wildcard)
-
-    if regex.exactMatch(fileName):
-      return True
-    return False
+    return re.match( '.'+str(ext), fileName ) is not None
 
 # Retrieves gdal information
 class GdalConfig:

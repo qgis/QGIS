@@ -66,7 +66,7 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
       self.buttonBox.button(QDialogButtonBox.Ok).setDefault(True)
 
       self.plugin = pluginBase
-      self.connect(self.plugin, SIGNAL("valuesChanged(const QStringList &)"), self.refreshArgs)
+      self.connect(self.plugin, SIGNAL("valuesChanged(PyQt_PyObject)"), self.refreshArgs)
 
       self.pluginLayout.addWidget(self.plugin)
       self.plugin.setFocus()

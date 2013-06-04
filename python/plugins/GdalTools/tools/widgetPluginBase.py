@@ -49,7 +49,8 @@ class GdalToolsBasePluginWidget:
       self.connect(self.base, SIGNAL("refreshArgs()"), self.someValueChanged)
 
   def someValueChanged(self):
-      self.emit(SIGNAL("valuesChanged(const QStringList &)"), self.getArguments())
+      if self.initialized:
+        self.emit(SIGNAL("valuesChanged(PyQt_PyObject)"), self.getArguments())
 
   def onLayersChanged(self):
       pass
@@ -79,6 +80,7 @@ class GdalToolsBasePluginWidget:
   def onClosing(self):
       self.disconnect(Utils.LayerRegistry.instance(), SIGNAL("layersChanged"), self.onLayersChanged)
       self.base.onClosing()
+      self.initialized = False
 
   def onHelp(self):
       self.base.onHelp()
@@ -116,7 +118,8 @@ class GdalToolsBasePluginWidget:
           self.addLayerIntoCanvas(fileInfo)
         QMessageBox.information(self, self.tr( "Finished" ), self.tr( "Processing completed." ) )
       else:
-        QMessageBox.warning(self, self.tr( "Warning" ), self.tr( "%1 not created." ).arg( outFn ) )
+        #QMessageBox.warning(self, self.tr( "Warning" ), self.tr( "%1 not created." ).arg( outFn ) )
+        QMessageBox.warning(self, self.tr( "Warning" ), self.tr( "%s not created." ) % outFn )
 
   # This method is useful to set up options for the command. It sets for each passed widget:
   # 1. its passed signals to connect to the BasePluginWidget.someValueChanged() slot,
