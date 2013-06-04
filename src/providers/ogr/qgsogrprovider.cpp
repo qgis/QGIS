@@ -559,14 +559,17 @@ QStringList QgsOgrProvider::subLayers() const
       }
       OGR_L_ResetReading( ogrLayer );
       int i = 0;
-      foreach ( OGRwkbGeometryType gType, fCount.keys() )
+      if ( fCount.size() > 1 )
       {
-        QString geom = ogrWkbGeometryTypeName( gType );
+        foreach ( OGRwkbGeometryType gType, fCount.keys() )
+        {
+          QString geom = ogrWkbGeometryTypeName( gType );
 
-        QString sl = QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( fCount.value( gType ) ).arg( geom );
-        QgsDebugMsg( "sub layer: " + sl );
-        mSubLayerList << sl;
-        i++;
+          QString sl = QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( fCount.value( gType ) ).arg( geom );
+          QgsDebugMsg( "sub layer: " + sl );
+          mSubLayerList << sl;
+          i++;
+        }
       }
     }
   }
@@ -602,10 +605,9 @@ int QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
   {
     geomType = OGR_FD_GetGeomType( fdef );
 
-    //Some ogr drivers (e.g. GML) are not able to determine the geometry type of a layer like this.
-    //In such cases, we use virtual sublayers for each geometry (originally the type was
-    // guessed from the first feature which resulted in loss of other formats)
-    /*
+    // Some ogr drivers (e.g. GML) are not able to determine the geometry type of a layer like this.
+    // In such cases, we use virtual sublayers for each geometry if the layer contains
+    // multiple geometries (see subLayers) otherwise we guess geometry type from first feature
     if ( geomType == wkbUnknown )
     {
       OGR_L_ResetReading( ogrLayer );
@@ -621,7 +623,6 @@ int QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
       }
       OGR_L_ResetReading( ogrLayer );
     }
-    */
   }
   return geomType;
 }
