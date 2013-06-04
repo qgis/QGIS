@@ -132,11 +132,12 @@ void QgsAtlasCompositionWidget::onLayerAdded( QgsMapLayer* map )
   if ( vectorLayer )
   {
     mAtlasCoverageLayerComboBox->addItem( map->name(), qVariantFromValue(( void* )map ) );
-  }
-  if ( mAtlasCoverageLayerComboBox->count() == 1 )
-  {
-    atlasMap->setCoverageLayer( vectorLayer );
-    checkLayerType( vectorLayer );
+
+    if ( mAtlasCoverageLayerComboBox->count() == 1 )
+    {
+      atlasMap->setCoverageLayer( vectorLayer );
+      checkLayerType( vectorLayer );
+    }
   }
 }
 
@@ -186,8 +187,11 @@ void QgsAtlasCompositionWidget::on_mAtlasCoverageLayerComboBox_currentIndexChang
   {
     QgsVectorLayer* layer = reinterpret_cast<QgsVectorLayer*>( mAtlasCoverageLayerComboBox->itemData( index ).value<void*>() );
 
-    checkLayerType( layer );
-    atlasMap->setCoverageLayer( layer );
+    if ( layer )
+    {
+      checkLayerType( layer );
+      atlasMap->setCoverageLayer( layer );
+    }
 
     // update sorting columns
     fillSortColumns();
@@ -197,6 +201,7 @@ void QgsAtlasCompositionWidget::on_mAtlasCoverageLayerComboBox_currentIndexChang
 void QgsAtlasCompositionWidget::checkLayerType( QgsVectorLayer *layer )
 {
   // enable or disable fixed scale control based on layer type
+  if ( !layer ) return;
   switch ( layer->wkbType() )
   {
     case QGis::WKBPoint:
