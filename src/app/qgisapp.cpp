@@ -2156,8 +2156,12 @@ bool QgisApp::createDB()
       }
     }
 
+    if ( sqlite3_exec( db, "DROP VIEW vw_srs", 0, 0, &errmsg ) != SQLITE_OK )
+    {
+      QgsDebugMsg( QString( "vw_srs didn't exists in private qgis.db: %1" ).arg( errmsg ) );
+    }
+
     if ( sqlite3_exec( db,
-                       "DROP VIEW vw_srs;"
                        "CREATE VIEW vw_srs AS"
                        " SELECT"
                        " a.description AS description"
