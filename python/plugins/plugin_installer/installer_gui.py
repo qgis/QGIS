@@ -156,27 +156,20 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     self.connect(self.buttonBox, SIGNAL("clicked(QAbstractButton*)"), self.abort)
 
     url = QUrl(plugin["url"])
-    #path = QString(url.toPercentEncoding(url.path(), "!$&'()*+,;=:/@"))
     fileName = plugin["filename"]
     tmpDir = QDir.tempPath()
     tmpPath = QDir.cleanPath(tmpDir+"/"+fileName)
     self.file = QFile(tmpPath)
-    #port = url.port()
-    #if port < 0:
-      #port = 80
+
       
     self.nam = QPNetworkAccessManager(url.host(), )      
-    #self.http = QPHttp(url.host(), port)
+
     self.request = QNetworkRequest(url)
     self.reply = self.nam.get( self.request )
 
     self.reply.downloadProgress.connect( self.readProgress )
     self.nam.finished.connect(self.requestFinished)
     
-    #self.connect(self.http, SIGNAL("stateChanged ( int )"), self.stateChanged)
-    #self.connect(self.http, SIGNAL("dataReadProgress ( int , int )"), self.readProgress)
-    #self.connect(self.http, SIGNAL("requestFinished (int, bool)"), self.requestFinished)
-    #self.httpGetId = self.http.get(path, self.file)
 
 
   # ----------------------------------------- #
