@@ -38,10 +38,10 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
 
   def getBatchArguments(self, inFile, outFile = None):
       arguments = []
-      arguments.append( self.getArguments() )
+      arguments.extend( self.getArguments() )
       arguments.append( inFile )
       if outFile != None:
-        arguments << outFile
+        arguments.append(outFile)
       return arguments
 
   def isBatchEnabled(self):
@@ -113,7 +113,7 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
         return
 
       msg = bytes.decode( bytes( self.base.process.readAllStandardError() ) )
-      if not msg.isEmpty():
+      if msg != '':
         self.errors.append( ">> " + self.inFiles[self.batchIndex] + "<br>" + msg.replace( "\n", "<br>" ) )
 
       self.base.process.close()
@@ -133,7 +133,7 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
   def batchFinished( self ):
       self.base.stop()
 
-      if not self.errors.isEmpty():
+      if len(self.errors) > 0:
         msg = u"Processing of the following files ended with error: <br><br>" + "<br><br>".join( self.errors )
         QErrorMessage( self ).showMessage( msg )
 

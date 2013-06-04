@@ -162,6 +162,7 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
       self.enableRun(False)
       self.setCursor(Qt.WaitCursor)
       if not self.commandIsEditable():
+        #print(self.command+' '+str(self.arguments))
         self.process.start(self.command, self.arguments, QIODevice.ReadOnly)
       else:
         self.process.start(self.textEditCommand.toPlainText(), QIODevice.ReadOnly)
