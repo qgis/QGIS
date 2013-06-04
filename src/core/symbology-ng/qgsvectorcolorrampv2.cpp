@@ -288,9 +288,17 @@ void QgsVectorRandomColorRampV2::updateColors()
   int h, s, v;
 
   mColors.clear();
+  //start hue at random angle
+  double currentHueAngle = 360.0 * ( double )rand() / RAND_MAX;
+
   for ( int i = 0; i < mCount; i++ )
   {
-    h = ( rand() % ( mHueMax - mHueMin + 1 ) ) + mHueMin;
+    //increment hue by golden ratio (approx 137.507 degrees)
+    //as this minimises hue nearness as count increases
+    //see http://basecase.org/env/on-rainbows for more details
+    currentHueAngle += 137.50776;
+    //scale hue to between mHueMax and mHueMin
+    h = ( fmod( currentHueAngle, 360.0 ) / 360.0 ) * ( mHueMax - mHueMin ) + mHueMin;
     s = ( rand() % ( mSatMax - mSatMin + 1 ) ) + mSatMin;
     v = ( rand() % ( mValMax - mValMin + 1 ) ) + mValMin;
     mColors.append( QColor::fromHsv( h, s, v ) );
