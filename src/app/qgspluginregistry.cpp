@@ -461,6 +461,7 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
     corePlugins << "fTools";
     corePlugins << "GdalTools";
     corePlugins << "db_manager";
+    corePlugins << "sextante";
 
     // make the required core plugins enabled by default:
     for ( int i = 0; i < corePlugins.size(); i++ )
