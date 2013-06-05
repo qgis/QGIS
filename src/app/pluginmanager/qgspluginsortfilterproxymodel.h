@@ -36,7 +36,7 @@ const int PLUGIN_REPOSITORY_ROLE = Qt::UserRole + 9;   // for sorting
 */
 class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
 {
-     Q_OBJECT
+    Q_OBJECT
 
   public:
     QgsPluginSortFilterProxyModel( QObject *parent = 0 );
@@ -45,7 +45,7 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     void setAcceptedStatuses( QStringList statuses );
 
     //! Return number of item with status filter matching (no other filters are considered)
-    int countWithCurrentStatus(  );
+    int countWithCurrentStatus( );
 
   public slots:
     void sortPluginsByName( );
@@ -55,14 +55,14 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     void sortPluginsByRepository( );
 
   protected:
-     //! Filter by status: this method is used in both filterAcceptsRow and countWithCurrentStatus.
-     bool filterByStatus( QModelIndex &index ) const;
+    //! Filter by status: this method is used in both filterAcceptsRow and countWithCurrentStatus.
+    bool filterByStatus( QModelIndex &index ) const;
 
-     //! The main filter method
-     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+    //! The main filter method
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 
   private:
-     QStringList mAcceptedStatuses;
+    QStringList mAcceptedStatuses;
 };
 
 #endif

@@ -406,7 +406,7 @@ void QgsPluginRegistry::unloadCppPlugin( QString theFullPathName )
     settings.setValue( "/Plugins/" + baseName, false );
     // remove the plugin from the registry
     removePlugin( baseName );
-    QgsDebugMsg( "Cpp plugin successfully unloaded: " + baseName);
+    QgsDebugMsg( "Cpp plugin successfully unloaded: " + baseName );
   }
 }
 

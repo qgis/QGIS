@@ -23,9 +23,9 @@ QgsPluginSortFilterProxyModel::QgsPluginSortFilterProxyModel( QObject *parent ) 
 
 
 
-bool QgsPluginSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+bool QgsPluginSortFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
-  QModelIndex inx = sourceModel()->index(sourceRow, 0, sourceParent);
+  QModelIndex inx = sourceModel()->index( sourceRow, 0, sourceParent );
 
   return ( filterByStatus( inx ) && sourceModel()->data( inx, filterRole() ).toString().contains( filterRegExp() ) );
 }
@@ -43,15 +43,15 @@ void QgsPluginSortFilterProxyModel::setAcceptedStatuses( QStringList statuses )
 bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
 {
   if ( mAcceptedStatuses.contains( "invalid" )
-    && sourceModel()->data( index, PLUGIN_ERROR_ROLE ).toString().isEmpty() )
+       && sourceModel()->data( index, PLUGIN_ERROR_ROLE ).toString().isEmpty() )
   {
     // Don't accept if the "invalid" filter is set and the plugin is ok
     return false;
   }
 
   if ( ! mAcceptedStatuses.isEmpty()
-    && ! mAcceptedStatuses.contains( "invalid" )
-    && ! mAcceptedStatuses.contains( sourceModel()->data(index, PLUGIN_STATUS_ROLE).toString() ) )
+       && ! mAcceptedStatuses.contains( "invalid" )
+       && ! mAcceptedStatuses.contains( sourceModel()->data( index, PLUGIN_STATUS_ROLE ).toString() ) )
   {
     // Don't accept if the status doesn't match
     return false;
@@ -66,7 +66,7 @@ bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
 int QgsPluginSortFilterProxyModel::countWithCurrentStatus( )
 {
   int result = 0;
-  for ( int i=0; i < sourceModel()->rowCount(); ++i )
+  for ( int i = 0; i < sourceModel()->rowCount(); ++i )
   {
     QModelIndex idx = sourceModel()->index( i, 0 );
     if ( filterByStatus( idx ) )

@@ -86,8 +86,8 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, Qt::WFlags fl )
   actionSortByVote->setCheckable( true );
   actionSortByStatus->setCheckable( true );
   actionSortByRepository->setCheckable( true );
-  QActionGroup * group = new QActionGroup ( vwPlugins );
-  actionSortByName->setActionGroup( group);
+  QActionGroup * group = new QActionGroup( vwPlugins );
+  actionSortByName->setActionGroup( group );
   actionSortByDownloads->setActionGroup( group );
   actionSortByVote->setActionGroup( group );
   actionSortByStatus->setActionGroup( group );
@@ -406,9 +406,9 @@ void QgsPluginManager::reloadModelData()
       mypDetailItem->setData( description, PLUGIN_DESCRIPTION_ROLE );
       mypDetailItem->setData( author, PLUGIN_AUTHOR_ROLE );
       mypDetailItem->setData( it->value( "tags" ), PLUGIN_TAGS_ROLE );
-      mypDetailItem->setData( it->value( "downloads" ).rightJustified( 10, '0' ), PLUGIN_DOWNLOADS_ROLE);
-      mypDetailItem->setData( it->value( "zip_repository" ), PLUGIN_REPOSITORY_ROLE);
-      mypDetailItem->setData( it->value( "average_vote" ), PLUGIN_VOTE_ROLE);
+      mypDetailItem->setData( it->value( "downloads" ).rightJustified( 10, '0' ), PLUGIN_DOWNLOADS_ROLE );
+      mypDetailItem->setData( it->value( "zip_repository" ), PLUGIN_REPOSITORY_ROLE );
+      mypDetailItem->setData( it->value( "average_vote" ), PLUGIN_VOTE_ROLE );
 
       if ( QFileInfo( iconPath ).isFile() )
       {
@@ -422,15 +422,17 @@ void QgsPluginManager::reloadModelData()
       mypDetailItem->setEditable( false );
 
       // set item display style
-      if ( ! it->value( "error" ).isEmpty() ) {
-          QBrush brush = mypDetailItem->foreground();
-          brush.setColor( Qt::red );
-          mypDetailItem->setForeground( brush );
+      if ( ! it->value( "error" ).isEmpty() )
+      {
+        QBrush brush = mypDetailItem->foreground();
+        brush.setColor( Qt::red );
+        mypDetailItem->setForeground( brush );
       }
-      if ( ! it->value( "error" ).isEmpty() || it->value( "status" ) == "upgradeable" || it->value( "status" ) == "new" ) {
-          QFont font = mypDetailItem->font();
-          font.setBold( true );
-          mypDetailItem->setFont( font );
+      if ( ! it->value( "error" ).isEmpty() || it->value( "status" ) == "upgradeable" || it->value( "status" ) == "new" )
+      {
+        QFont font = mypDetailItem->font();
+        font.setBold( true );
+        mypDetailItem->setFont( font );
       }
 
       // set checkable if the plugin is loadable.
@@ -446,7 +448,7 @@ void QgsPluginManager::reloadModelData()
 
       if ( isPluginLoaded( it->value( "id" ) ) )
       {
-          mypDetailItem->setCheckState( Qt::Checked );
+        mypDetailItem->setCheckState( Qt::Checked );
       }
 
       // Add items to model
@@ -531,34 +533,34 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
       errorMsg = QString( "<b>%1</b><br/>%2" ).arg( tr( "This plugin is broken" ) ).arg( metadata->value( "error_details" ) );
     }
     html += QString( "<table bgcolor=\"#EEEE00\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
-            "  <tr><td width=\"100%\" style=\"color:#CC0000\">%1</td></tr>"
-            "</table>" ).arg( errorMsg );
+                     "  <tr><td width=\"100%\" style=\"color:#CC0000\">%1</td></tr>"
+                     "</table>" ).arg( errorMsg );
   }
   if ( metadata->value( "status" ) == "upgradeable" )
   {
     html += QString( "<table bgcolor=\"#FFFFAA\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
-            "  <tr><td width=\"100%\" style=\"color:#880000\"><b>%1</b></td></tr>"
-            "</table>" ).arg( tr( "There is a new version available" ) );
+                     "  <tr><td width=\"100%\" style=\"color:#880000\"><b>%1</b></td></tr>"
+                     "</table>" ).arg( tr( "There is a new version available" ) );
   };
   if ( metadata->value( "status" ) == "new" )
   {
     html += QString( "<table bgcolor=\"#CCFFCC\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
-            "  <tr><td width=\"100%\" style=\"color:#008800\"><b>%1</b></td></tr>"
-            "</table>" ).arg( tr( "This is a new plugin" ) );
+                     "  <tr><td width=\"100%\" style=\"color:#008800\"><b>%1</b></td></tr>"
+                     "</table>" ).arg( tr( "This is a new plugin" ) );
   };
   if ( metadata->value( "status" ) == "newer" )
   {
     html += QString( "<table bgcolor=\"#FFFFCC\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
-            "  <tr><td width=\"100%\" style=\"color:#550000\"><b>%1</b></td></tr>"
-            "</table>" ).arg( tr( "Installed version of this plugin is higher than any version found in repository" ) );
+                     "  <tr><td width=\"100%\" style=\"color:#550000\"><b>%1</b></td></tr>"
+                     "</table>" ).arg( tr( "Installed version of this plugin is higher than any version found in repository" ) );
   };
   if ( metadata->value( "experimental" ) == "true" )
   {
     html += QString( "<table bgcolor=\"#EEEEBB\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
-            "  <tr><td width=\"100%\" style=\"color:#660000\">"
-            "    <img src=\":/images/themes/default/pluginExperimental.png\" width=\"32\"><b>%1</b>"
-            "  </td></tr>"
-            "</table>" ).arg( tr( "This plugin is experimental" ) );
+                     "  <tr><td width=\"100%\" style=\"color:#660000\">"
+                     "    <img src=\":/images/themes/default/pluginExperimental.png\" width=\"32\"><b>%1</b>"
+                     "  </td></tr>"
+                     "</table>" ).arg( tr( "This plugin is experimental" ) );
   };
   // if ( metadata->value( "status" ) == t.b.d. )
   // {
@@ -576,7 +578,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
     html += QString( "<img src=\"%1\" style=\"float:right;\">" ).arg( metadata->value( "icon" ) );
   }
 
-  html += QString( "<h3>%2</h3>" ).arg(metadata->value( "description" ) );
+  html += QString( "<h3>%2</h3>" ).arg( metadata->value( "description" ) );
 
   if ( ! metadata->value( "category" ).isEmpty() )
   {
@@ -599,15 +601,15 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
     html += QString( "%1: " ).arg( tr( "More info" ) );
     if ( ! metadata->value( "homepage" ).isEmpty() )
     {
-        html += QString( "<a href='%1'>%2</a> &nbsp; " ).arg( metadata->value( "homepage" ) ).arg( tr( "homepage" ) );
+      html += QString( "<a href='%1'>%2</a> &nbsp; " ).arg( metadata->value( "homepage" ) ).arg( tr( "homepage" ) );
     }
     if ( ! metadata->value( "tracker" ).isEmpty() )
     {
-        html += QString( "<a href='%1'>%2</a> &nbsp; " ).arg( metadata->value( "tracker" ) ).arg( tr( "tracker" ) );
+      html += QString( "<a href='%1'>%2</a> &nbsp; " ).arg( metadata->value( "tracker" ) ).arg( tr( "tracker" ) );
     }
     if ( ! metadata->value( "code_repository" ).isEmpty() )
     {
-        html += QString( "<a href='%1'>%2</a>" ).arg( metadata->value( "code_repository" ) ).arg( tr( "code_ repository" ) );
+      html += QString( "<a href='%1'>%2</a>" ).arg( metadata->value( "code_repository" ) ).arg( tr( "code_ repository" ) );
     }
     html += "<br/>";
   }
@@ -781,7 +783,7 @@ void QgsPluginManager::addToRepositoryList( QMap<QString, QString> repository )
   treeRepositories->resizeColumnToContents( 0 );
   treeRepositories->resizeColumnToContents( 1 );
   treeRepositories->resizeColumnToContents( 2 );
-  treeRepositories->sortItems ( 1, Qt::AscendingOrder );
+  treeRepositories->sortItems( 1, Qt::AscendingOrder );
   buttonRefreshRepos->setEnabled( true );
 }
 
@@ -818,26 +820,26 @@ void QgsPluginManager::setCurrentTab( int idx )
     QStringList acceptedStatuses;
     switch ( idx )
     {
-    case 0:
-      // installed
-      acceptedStatuses << "installed" << "orphan" << "newer" << "upgradeable" << "";
-      break;
-    case 1:
-      // not installed (get more)
-      acceptedStatuses << "not installed" << "new" ;
-      break;
-    case 2:
-      // upgradeable
-      acceptedStatuses << "upgradeable" ;
-      break;
-    case 3:
-      // new
-      acceptedStatuses << "new" ;
-      break;
-    case 4:
-      // invalid
-      acceptedStatuses << "invalid" ;
-      break;
+      case 0:
+        // installed
+        acceptedStatuses << "installed" << "orphan" << "newer" << "upgradeable" << "";
+        break;
+      case 1:
+        // not installed (get more)
+        acceptedStatuses << "not installed" << "new" ;
+        break;
+      case 2:
+        // upgradeable
+        acceptedStatuses << "upgradeable" ;
+        break;
+      case 3:
+        // new
+        acceptedStatuses << "new" ;
+        break;
+      case 4:
+        // invalid
+        acceptedStatuses << "invalid" ;
+        break;
     }
     mModelProxy->setAcceptedStatuses( acceptedStatuses );
 
@@ -869,10 +871,11 @@ void QgsPluginManager::on_vwPlugins_clicked( const QModelIndex &theIndex )
     // so we need to jump through this little hoop to get the correct item
     QModelIndex realIndex = mModelProxy->mapToSource( theIndex );
     QStandardItem* mypItem = mModelPlugins->itemFromIndex( realIndex );
-    if ( !mypItem->isEnabled() ) {
-        //The item is inactive (uncompatible or broken plugin), so it can't be selected. Display it's data anyway.
-        vwPlugins->clearSelection();
-        showPluginDetails( mypItem );
+    if ( !mypItem->isEnabled() )
+    {
+      //The item is inactive (uncompatible or broken plugin), so it can't be selected. Display it's data anyway.
+      vwPlugins->clearSelection();
+      showPluginDetails( mypItem );
     }
   }
 }
@@ -889,9 +892,12 @@ void QgsPluginManager::on_vwPlugins_doubleClicked( const QModelIndex & theIndex 
     QStandardItem* mypItem = mModelPlugins->itemFromIndex( realIndex );
     if ( mypItem->isCheckable() )
     {
-      if ( mypItem->checkState() == Qt::Checked ) {
+      if ( mypItem->checkState() == Qt::Checked )
+      {
         mypItem->setCheckState( Qt::Unchecked );
-      } else {
+      }
+      else
+      {
         mypItem->setCheckState( Qt::Checked );
       }
     }
@@ -913,8 +919,9 @@ void QgsPluginManager::on_leFilter_textChanged( QString theText )
 
 void QgsPluginManager::on_rbFilterNames_toggled( bool checked )
 {
-  if ( checked ) {
-    mModelProxy->setFilterRole(  Qt::DisplayRole );
+  if ( checked )
+  {
+    mModelProxy->setFilterRole( Qt::DisplayRole );
   }
 }
 
@@ -922,7 +929,8 @@ void QgsPluginManager::on_rbFilterNames_toggled( bool checked )
 
 void QgsPluginManager::on_rbFilterDescriptions_toggled( bool checked )
 {
-  if ( checked ) {
+  if ( checked )
+  {
     mModelProxy->setFilterRole( PLUGIN_DESCRIPTION_ROLE );
   }
 }
@@ -931,7 +939,8 @@ void QgsPluginManager::on_rbFilterDescriptions_toggled( bool checked )
 
 void QgsPluginManager::on_rbFilterTags_toggled( bool checked )
 {
-  if ( checked ) {
+  if ( checked )
+  {
     mModelProxy->setFilterRole( PLUGIN_TAGS_ROLE );
   }
 }
@@ -940,7 +949,8 @@ void QgsPluginManager::on_rbFilterTags_toggled( bool checked )
 
 void QgsPluginManager::on_rbFilterAuthors_toggled( bool checked )
 {
-  if ( checked ) {
+  if ( checked )
+  {
     mModelProxy->setFilterRole( PLUGIN_AUTHOR_ROLE );
   }
 }
@@ -1030,7 +1040,7 @@ void QgsPluginManager::on_buttonDeleteRep_clicked( )
 void QgsPluginManager::on_ckbExperimental_toggled( bool state )
 {
   QSettings settings;
-  settings.setValue( settingsGroup+"/allowExperimental", QVariant( state ) );
+  settings.setValue( settingsGroup + "/allowExperimental", QVariant( state ) );
   QgsPythonRunner::run( "pyplugin_installer.installer_data.plugins.rebuild()" );
   QgsPythonRunner::run( "pyplugin_installer.instance().exportPluginsToManager()" );
 }
@@ -1124,8 +1134,8 @@ bool QgsPluginManager::hasInvalidPlugins( )
 
 void QgsPluginManager::updateTabTitle()
 {
-  lbStatusFilter->setText ( QString( " %1 > %2 (%3)" ).arg( tr( "Plugins" ) )
-                                                      .arg( mOptionsListWidget->currentItem()->text() )
-                                                      .arg( mModelProxy->countWithCurrentStatus() ) );
+  lbStatusFilter->setText( QString( " %1 > %2 (%3)" ).arg( tr( "Plugins" ) )
+                           .arg( mOptionsListWidget->currentItem()->text() )
+                           .arg( mModelProxy->countWithCurrentStatus() ) );
 }
 

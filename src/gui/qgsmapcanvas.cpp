@@ -133,8 +133,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
 #ifdef Q_OS_WIN
   // Enable touch event on Windows.
   // Qt on Windows needs to be told it can take touch events or else it ignores them.
-  grabGesture(Qt::PinchGesture);
-  viewport()->setAttribute(Qt::WA_AcceptTouchEvents);
+  grabGesture( Qt::PinchGesture );
+  viewport()->setAttribute( Qt::WA_AcceptTouchEvents );
 #endif
 } // QgsMapCanvas ctor
 

@@ -6300,7 +6300,7 @@ void QgisApp::showPluginManager()
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     // Call pluginManagerInterface()->showPluginManager() as soon as the plugin installer says the remote data is fetched.
-    QgsPythonRunner::run( "pyplugin_installer.instance().showPluginManagerWhenReady()");
+    QgsPythonRunner::run( "pyplugin_installer.instance().showPluginManagerWhenReady()" );
   }
   else
   {
