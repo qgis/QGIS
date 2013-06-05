@@ -2592,6 +2592,11 @@ bool QgsVectorLayer::commitChanges()
     QgsMessageLog::logMessage( tr( "Commit errors:\n  %1" ).arg( mCommitErrors.join( "\n  " ) ) );
   }
 
+  if ( mCache )
+  {
+    mCache->deleteCachedGeometries();
+  }
+
   updateFields();
   mDataProvider->updateExtents();
 
@@ -2633,6 +2638,11 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
     undoStack()->clear();
   }
   emit editingStopped();
+
+  if ( mCache )
+  {
+    mCache->deleteCachedGeometries();
+  }
 
   // invalidate the cache so the layer updates properly to show its original
   // after the rollback
