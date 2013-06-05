@@ -13,9 +13,6 @@
   <property name="windowTitle" >
    <string>Fetching repositories</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="resources.qrc" >:/plugins/installer/qgis-icon.png</iconset>
-  </property>
   <layout class="QGridLayout" >
    <item row="1" column="0" >
     <spacer>
@@ -176,9 +173,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="resources.qrc" />
- </resources>
  <connections>
   <connection>
    <sender>buttonSkip</sender>

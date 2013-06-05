@@ -13,9 +13,6 @@
   <property name="windowTitle" >
    <string>QGIS Python Plugin Installer</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="resources.qrc" >:/plugins/installer/qgis-icon.png</iconset>
-  </property>
   <layout class="QGridLayout" >
    <item row="0" column="0" >
     <spacer>
@@ -117,8 +114,5 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="resources.qrc" />
- </resources>
  <connections/>
 </ui>

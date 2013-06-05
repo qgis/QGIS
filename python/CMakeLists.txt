@@ -3,6 +3,7 @@ SET (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
 ADD_SUBDIRECTORY(plugins)
 ADD_SUBDIRECTORY(qsci_apis)
 ADD_SUBDIRECTORY(console)
+ADD_SUBDIRECTORY(pyplugin_installer)
 
 IF (WITH_PYSPATIALITE)
   ADD_SUBDIRECTORY(pyspatialite)
@@ -130,7 +131,7 @@ IF(WITH_QSCIAPI)
   FILE(WRITE "${QGIS_PYTHON_API_FILE}" "")
 
   # run update/concatenate command after last python module is built (currently python_module_qgis_gui)
-  ADD_CUSTOM_COMMAND(TARGET python_module_qgis_gui
+  ADD_CUSTOM_COMMAND(TARGET python-module-qgis-gui
     POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_SOURCE_DIR}/cmake/QsciAPI.cmake"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
@@ -160,8 +161,10 @@ ENDFOREACH(pyfile)
 
 # Byte-compile staged PyQGIS utilities
 IF(WITH_PY_COMPILE)
-  ADD_CUSTOM_TARGET(pycompile_pyutils ALL
+  ADD_CUSTOM_TARGET(pycompile-pyutils ALL
     COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}/qgis"
+    COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}/console"
+    COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}/pyplugin_installer"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     COMMENT "Byte-compiling staged PyQGIS utility modules..."
     DEPENDS pyutils

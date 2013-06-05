@@ -153,11 +153,9 @@
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsoptions.h"
 // #include "qgspastetransformations.h"
-#include "qgspluginitem.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgspluginmanager.h"
-#include "qgspluginmetadata.h"
 #include "qgspluginregistry.h"
 #include "qgspoint.h"
 #include "qgshandlebadlayers.h"
@@ -529,6 +527,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mSaveRollbackInProgress = false;
   activateDeactivateLayerRelatedActions( NULL );
 
+  // initialize the plugin manager
+  mPluginManager = new QgsPluginManager( this );
+
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
   mUndoWidget->hide();
 
@@ -624,6 +625,15 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
       QStringList myPathList = myPaths.split( "|" );
       QgsPluginRegistry::instance()->restoreSessionPlugins( myPathList );
     }
+  }
+
+  if ( mPythonUtils && mPythonUtils->isEnabled() )
+  {
+    // pass the python utils to the plugin manager
+    mPluginManager -> setPythonUtils( mPythonUtils );
+    // initialize the plugin installer to start fetching repositories in background
+    QgsPythonRunner::run( "import pyplugin_installer" );
+    QgsPythonRunner::run( "pyplugin_installer.initPluginInstaller()" );
   }
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
@@ -2029,6 +2039,12 @@ QgsLegend *QgisApp::legend()
   return mMapLegend;
 }
 
+QgsPluginManager *QgisApp::pluginManager()
+{
+  Q_ASSERT( mPluginManager );
+  return mPluginManager;
+}
+
 QgsMapCanvas *QgisApp::mapCanvas()
 {
   Q_ASSERT( mMapCanvas );
@@ -2156,8 +2172,12 @@ bool QgisApp::createDB()
       }
     }
 
+    if ( sqlite3_exec( db, "DROP VIEW vw_srs", 0, 0, &errmsg ) != SQLITE_OK )
+    {
+      QgsDebugMsg( QString( "vw_srs didn't exists in private qgis.db: %1" ).arg( errmsg ) );
+    }
+
     if ( sqlite3_exec( db,
-                       "DROP VIEW vw_srs;"
                        "CREATE VIEW vw_srs AS"
                        " SELECT"
                        " a.description AS description"
@@ -6276,27 +6296,16 @@ void QgisApp::zoomToLayerExtent()
 
 void QgisApp::showPluginManager()
 {
-  QgsPluginManager *pm = new QgsPluginManager( mPythonUtils, this );
-  pm->resizeColumnsToContents();
-  if ( pm->exec() )
+
+  if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    QgsPluginRegistry* pRegistry = QgsPluginRegistry::instance();
-    // load selected plugins
-    std::vector < QgsPluginItem > pi = pm->getSelectedPlugins();
-    std::vector < QgsPluginItem >::iterator it = pi.begin();
-    while ( it != pi.end() )
-    {
-      QgsPluginItem plugin = *it;
-      if ( plugin.isPython() )
-      {
-        pRegistry->loadPythonPlugin( plugin.fullPath() );
-      }
-      else
-      {
-        pRegistry->loadCppPlugin( plugin.fullPath() );
-      }
-      it++;
-    }
+    // Call pluginManagerInterface()->showPluginManager() as soon as the plugin installer says the remote data is fetched.
+    QgsPythonRunner::run( "pyplugin_installer.instance().showPluginManagerWhenReady()" );
+  }
+  else
+  {
+    // Call the pluginManagerInterface directly
+    mQgisInterface->pluginManagerInterface()->showPluginManager();
   }
 }
 

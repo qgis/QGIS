@@ -2218,7 +2218,7 @@ void QgsComposerMap::createDefaultOverviewFrameSymbol()
 {
   delete mOverviewFrameMapSymbol;
   QgsStringMap properties;
-  properties.insert( "color", "255,0,0,125" );
+  properties.insert( "color", "255,0,0,255" );
   properties.insert( "style", "solid" );
   properties.insert( "style_border", "no" );
   mOverviewFrameMapSymbol = QgsFillSymbolV2::createSimple( properties );

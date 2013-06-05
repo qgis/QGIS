@@ -55,6 +55,7 @@ qgsattributeeditor.cpp
 qgsattributedialog.cpp
 qgsbusyindicatordialog.cpp
 qgslegendinterface.cpp
+qgspluginmanagerinterface.cpp
 qgsblendmodecombobox.cpp
 qgscharacterselectdialog.cpp
 qgscolorbutton.cpp
@@ -187,6 +188,7 @@ qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
 qgsdialog.h
 qgslegendinterface.h
+qgspluginmanagerinterface.h
 qgisinterface.h
 qgsencodingfiledialog.h
 qgserrordialog.h

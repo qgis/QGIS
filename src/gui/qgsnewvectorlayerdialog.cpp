@@ -166,7 +166,7 @@ void QgsNewVectorLayerDialog::on_pbnChangeSpatialRefSys_clicked()
 {
   QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
   mySelector->setMessage();
-  mySelector->setSelectedCrsId( pbnChangeSpatialRefSys->text().toInt() );
+  mySelector->setSelectedCrsId( mCrsId );
   if ( mySelector->exec() )
   {
     QgsCoordinateReferenceSystem srs;

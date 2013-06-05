@@ -19,9 +19,6 @@
   <property name="windowTitle" >
    <string>Error loading plugin</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="resources.qrc" >:/plugins/installer/qgis-icon.png</iconset>
-  </property>
   <layout class="QGridLayout" >
    <item row="1" column="0" >
     <widget class="QLabel" name="label" >
@@ -115,9 +112,6 @@
  <tabstops>
   <tabstop>textBrowser</tabstop>
  </tabstops>
- <resources>
-  <include location="resources.qrc" />
- </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

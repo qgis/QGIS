@@ -1,7 +1,10 @@
-# -*- coding: utf-8 -*-
-"""
-Copyright (C) 2007-2008 Matthew Perry
-Copyright (C) 2008-2010 Borys Jurgiel
+/***************************************************************************
+    qgspluginmanagerinterface.cpp
+     --------------------------------------
+    Date                 : 15-May-2013
+    Copyright            : (C) 2013 by Borys Jurgiel
+    Email                : info at borysjurgiel dot pl
+****************************************************************************/
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -10,8 +13,14 @@ Copyright (C) 2008-2010 Borys Jurgiel
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-"""
 
-def classFactory(iface):
-  from installer_plugin import InstallerPlugin
-  return InstallerPlugin(iface)
+#include "qgspluginmanagerinterface.h"
+
+QgsPluginManagerInterface::QgsPluginManagerInterface()
+{
+}
+
+QgsPluginManagerInterface::~QgsPluginManagerInterface()
+{
+}
+

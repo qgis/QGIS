@@ -19,9 +19,6 @@
   <property name="windowTitle" >
    <string>Repository details</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="resources.qrc" >:/plugins/installer/qgis-icon.png</iconset>
-  </property>
   <property name="statusTip" >
    <string/>
   </property>
@@ -203,9 +200,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="resources.qrc" />
- </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

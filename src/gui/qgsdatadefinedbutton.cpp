@@ -42,6 +42,51 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
     QString description )
     : QToolButton( parent )
 {
+  // set up static icons
+  if ( mIconDataDefine.isNull() )
+  {
+    mIconDataDefine = QgsApplication::getThemeIcon( "/mIconDataDefine.svg" );
+    mIconDataDefineOn = QgsApplication::getThemeIcon( "/mIconDataDefineOn.svg" );
+    mIconDataDefineError = QgsApplication::getThemeIcon( "/mIconDataDefineError.svg" );
+    mIconDataDefineExpression = QgsApplication::getThemeIcon( "/mIconDataDefineExpression.svg" );
+    mIconDataDefineExpressionOn = QgsApplication::getThemeIcon( "/mIconDataDefineExpressionOn.svg" );
+    mIconDataDefineExpressionError = QgsApplication::getThemeIcon( "/mIconDataDefineExpressionError.svg" );
+  }
+
+  // set default tool button icon properties
+  setFixedSize( 28, 24 );
+  setStyleSheet( QString( "QToolButton{ background: none; border: none;}" ) );
+  setIconSize( QSize( 24, 24 ) );
+  setPopupMode( QToolButton::InstantPopup );
+
+  mDefineMenu = new QMenu( this );
+  connect( mDefineMenu, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowMenu() ) );
+  connect( mDefineMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( menuActionTriggered( QAction* ) ) );
+  setMenu( mDefineMenu );
+
+  mFieldsMenu = new QMenu( this );
+
+  mActionDataTypes = new QAction( this );
+  // list fields and types in submenu, since there may be many
+  mActionDataTypes->setMenu( mFieldsMenu );
+
+  mActionActive = new QAction( this );
+  QFont f = mActionActive->font();
+  f.setBold( true );
+  mActionActive->setFont( f );
+
+  mActionDescription = new QAction( tr( "Description..." ), this );
+
+  mActionExpDialog = new QAction( tr( "Edit..." ), this );
+  mActionExpression = 0;
+  mActionPasteExpr = new QAction( tr( "Paste" ), this );
+  mActionCopyExpr = new QAction( tr( "Copy" ), this );
+  mActionClearExpr = new QAction( tr( "Clear" ), this );
+
+  // set up sibling widget connections
+  connect( this, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( disableEnabledWidgets( bool ) ) );
+  connect( this, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( checkCheckedWidgets( bool ) ) );
+
   init( vl, datadefined, datatypes, description );
 }
 
@@ -74,49 +119,15 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
   }
 
   mDataTypes = datatypes;
+  mFieldNameList.clear();
+  mFieldTypeList.clear();
+
   mInputDescription = description;
   mFullDescription = QString( "" );
   mUsageInfo = QString( "" );
   mCurrentDefinition = QString( "" );
 
-  mActionExpression = 0;
-
-  if ( mIconDataDefine.isNull() )
-  {
-    mIconDataDefine = QgsApplication::getThemeIcon( "/mIconDataDefine.svg" );
-    mIconDataDefineOn = QgsApplication::getThemeIcon( "/mIconDataDefineOn.svg" );
-    mIconDataDefineError = QgsApplication::getThemeIcon( "/mIconDataDefineError.svg" );
-    mIconDataDefineExpression = QgsApplication::getThemeIcon( "/mIconDataDefineExpression.svg" );
-    mIconDataDefineExpressionOn = QgsApplication::getThemeIcon( "/mIconDataDefineExpressionOn.svg" );
-    mIconDataDefineExpressionError = QgsApplication::getThemeIcon( "/mIconDataDefineExpressionError.svg" );
-  }
-
-  // set default icon properties
-  setFixedSize( 28, 24 );
-  setStyleSheet( QString( "QToolButton{ background: none; border: none;}" ) );
-  setIconSize( QSize( 24, 24 ) );
-  setPopupMode( QToolButton::InstantPopup );
-
-  mDefineMenu = new QMenu( this );
-  connect( mDefineMenu, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowMenu() ) );
-  connect( mDefineMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( menuActionTriggered( QAction* ) ) );
-
-  mFieldsMenu = new QMenu( this );
-
-  mActionActive = new QAction( this );
-  QFont f = mActionActive->font();
-  f.setBold( true );
-  mActionActive->setFont( f );
-
-  mActionDescription = new QAction( tr( "Description..." ), this );
-
-  mActionExpDialog = new QAction( tr( "Edit..." ), this );
-  mActionPasteExpr = new QAction( tr( "Paste" ), this );
-  mActionCopyExpr = new QAction( tr( "Copy" ), this );
-  mActionClearExpr = new QAction( tr( "Clear" ), this );
-
   // set up data types string
-  mActionDataTypes = 0;
   mDataTypesString = QString( "" );
 
   QStringList ts;
@@ -136,10 +147,7 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
   if ( !ts.isEmpty() )
   {
     mDataTypesString = ts.join( ", " );
-    mActionDataTypes = new QAction( tr( "Field type: " ) + mDataTypesString, this );
-
-    // list fields and types in submenu, since there may be many
-    mActionDataTypes->setMenu( mFieldsMenu );
+    mActionDataTypes->setText( tr( "Field type: " ) + mDataTypesString );
   }
 
   if ( mVectorLayer )
@@ -178,12 +186,6 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
       }
     }
   }
-
-  setMenu( mDefineMenu );
-
-  // set up sibling widget connections
-  connect( this, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( disableEnabledWidgets( bool ) ) );
-  connect( this, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( checkCheckedWidgets( bool ) ) );
 
   updateGui();
 }
@@ -246,7 +248,7 @@ void QgsDataDefinedButton::aboutToShowMenu()
 
   mDefineMenu->addSeparator();
 
-  if ( mActionDataTypes )
+  if ( !mDataTypesString.isEmpty() )
   {
     QAction* fieldTitleAct = mDefineMenu->addAction( tr( "Attribute field" ) );
     fieldTitleAct->setFont( titlefont );

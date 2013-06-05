@@ -34,7 +34,7 @@ class QString;
 *
 * plugin key is:
 * - C++ plugins: base name of plugin library, e.g. libgrassplugin
-* - Python plugins: module name (directory) of plugin, e.g. plugin_installer
+* - Python plugins: module name (directory) of plugin, e.g. db_manager
 */
 class QgsPluginRegistry
 {
@@ -76,6 +76,11 @@ class QgsPluginRegistry
     void loadCppPlugin( QString mFullPath );
     //! Python plugin loader
     void loadPythonPlugin( QString packageName );
+
+    //! C++ plugin unloader
+    void unloadCppPlugin( QString theFullPathName );
+    //! Python plugin unloader
+    void unloadPythonPlugin( QString packageName );
 
     //! Overloaded version of the next method that will load from multiple directories not just one
     void restoreSessionPlugins( QStringList thePluginDirList );

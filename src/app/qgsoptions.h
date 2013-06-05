@@ -18,6 +18,7 @@
 #ifndef QGSOPTIONS_H
 #define QGSOPTIONS_H
 
+#include "qgsoptionsdialogbase.h"
 #include "ui_qgsoptionsbase.h"
 #include "qgisgui.h"
 #include "qgisapp.h"
@@ -32,7 +33,7 @@
  * \class QgsOptions
  * \brief Set user options and preferences
  */
-class QgsOptions : public QDialog, private Ui::QgsOptionsBase
+class QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOptionsBase
 {
     Q_OBJECT
   public:
@@ -216,11 +217,6 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      */
     void on_mOptionsStackedWidget_currentChanged( int theIndx );
 
-    /** Slot to update widget of vertical tabs
-     * @note added in QGIS 1.9
-     */
-    void updateVerticalTabs();
-
     /* Load the list of drivers available in GDAL
      * @note added in 2.0
      */
@@ -245,9 +241,6 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     void addCustomEnvVarRow( QString varName, QString varVal, QString varApply = QString() );
 
   protected:
-    void showEvent( QShowEvent * e );
-    void paintEvent( QPaintEvent * e );
-
     QgisAppStyleSheet* mStyleSheetBuilder;
     QMap<QString, QVariant> mStyleSheetNewOpts;
     QMap<QString, QVariant> mStyleSheetOldOpts;

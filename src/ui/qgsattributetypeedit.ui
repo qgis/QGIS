@@ -7,24 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>751</width>
-    <height>451</height>
+    <height>481</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Attribute Edit Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
-   <item row="3" column="1">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" rowspan="4">
+   <item row="0" column="0" rowspan="5">
     <widget class="QListWidget" name="selectionListWidget">
      <item>
       <property name="text">
@@ -113,6 +103,16 @@
      </item>
     </widget>
    </item>
+   <item row="4" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="1">
     <widget class="QCheckBox" name="isFieldEditableCheckBox">
      <property name="text">
@@ -123,7 +123,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="2" column="1">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -892,6 +892,16 @@
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QCheckBox" name="labelOnTopCheckBox">
+     <property name="text">
+      <string>Label on top</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
     </widget>
    </item>
   </layout>

@@ -71,6 +71,7 @@ static const QString sDescription = QObject::tr( "Overlay data on a 3D globe" );
 static const QString sCategory = QObject::tr( "Plugins" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
+static const QString sExperimental = QString( "true" );
 
 
 //constructor
@@ -1196,6 +1197,12 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return sPluginVersion;
+}
+
+// Return the experimental status for the plugin
+QGISEXTERN QString experimental()
+{
+  return sExperimental;
 }
 
 // Delete ourself

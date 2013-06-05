@@ -69,20 +69,25 @@
  * Constructor
  */
 QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
-    QDialog( parent, fl )
+    QgsOptionsDialogBase( "Options", parent, fl )
 {
   setupUi( this );
+
+  // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
+  // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
+  // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
+  initOptionsBase( false );
 
   // stylesheet setup
   mStyleSheetBuilder = QgisApp::instance()->styleSheetBuilder();
   mStyleSheetNewOpts = mStyleSheetBuilder->defaultOptions();
   mStyleSheetOldOpts = QMap<QString, QVariant>( mStyleSheetNewOpts );
 
-  connect( mOptionsSplitter, SIGNAL( splitterMoved( int, int ) ), this, SLOT( updateVerticalTabs() ) );
-
   connect( cmbTheme, SIGNAL( activated( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
   connect( cmbTheme, SIGNAL( highlighted( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
   connect( cmbTheme, SIGNAL( textChanged( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
+
+  connect( mFontFamilyRadioCustom, SIGNAL( toggled( bool ) ), mFontFamilyComboBox, SLOT( setEnabled( bool ) ) );
 
   connect( cmbIconSize, SIGNAL( activated( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
   connect( cmbIconSize, SIGNAL( highlighted( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
@@ -107,10 +112,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // read the current browser and set it
   QSettings settings;
-  // mOptionsListWidget width is fixed to takes up less space in QtDesigner
-  // revert it now unless the splitter's state hasn't been saved yet
-  mOptionsListWidget->setMaximumWidth(
-    settings.value( "/Windows/Options/splitState" ).isNull() ? 150 : 16777215 );
 
   int identifyMode = settings.value( "/Map/identifyMode", 0 ).toInt();
   cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
@@ -740,69 +741,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     mOverlayAlgorithmComboBox->setCurrentIndex( 0 );
   } //default is central point
 
-  // restore window and widget geometry/state
-  restoreGeometry( settings.value( "/Windows/Options/geometry" ).toByteArray() );
-  mOptionsSplitter->restoreState( settings.value( "/Windows/Options/splitState" ).toByteArray() );
-
-  int currentIndx = settings.value( "/Windows/Options/row" ).toInt();
-  mOptionsListWidget->setCurrentRow( currentIndx );
-  mOptionsStackedWidget->setCurrentIndex( currentIndx );
-
   // load gdal driver list only when gdal tab is first opened
   mLoadedGdalDriverList = false;
+
+  // restore window and widget geometry/state
+  restoreOptionsBaseUi();
 }
 
 //! Destructor
 QgsOptions::~QgsOptions()
 {
-  QSettings settings;
-  settings.setValue( "/Windows/Options/geometry", saveGeometry() );
-  settings.setValue( "/Windows/Options/splitState", mOptionsSplitter->saveState() );
-  settings.setValue( "/Windows/Options/row",  mOptionsListWidget->currentRow() );
-}
-
-void QgsOptions::showEvent( QShowEvent * e )
-{
-  Q_UNUSED( e );
-  on_mOptionsStackedWidget_currentChanged( -1 );
-  updateVerticalTabs();
-}
-
-void QgsOptions::paintEvent( QPaintEvent * e )
-{
-  Q_UNUSED( e );
-  QTimer::singleShot( 0, this, SLOT( updateVerticalTabs() ) );
-}
-
-void QgsOptions::updateVerticalTabs()
-{
-  if ( mOptionsListWidget->maximumWidth() != 16777215 )
-    mOptionsListWidget->setMaximumWidth( 16777215 );
-  // auto-resize splitter for vert scrollbar without covering icons in icon-only mode
-  // TODO: mOptionsListWidget has fixed 32px wide icons for now, allow user-defined
-  // Note: called on splitter resize and dialog paint event, so only update when necessary
-  int iconWidth = mOptionsListWidget->iconSize().width();
-  int snapToIconWidth = iconWidth + 32;
-
-  QList<int> splitSizes = mOptionsSplitter->sizes();
-  bool iconOnly = splitSizes.at( 0 ) <= snapToIconWidth;
-
-  int newWidth = mOptionsListWidget->verticalScrollBar()->isVisible() ? iconWidth + 26 : iconWidth + 12;
-  bool diffWidth = mOptionsListWidget->minimumWidth() != newWidth;
-
-  if ( diffWidth )
-    mOptionsListWidget->setMinimumWidth( newWidth );
-
-  if ( iconOnly && ( diffWidth || mOptionsListWidget->width() != newWidth ) )
-  {
-    splitSizes[1] = splitSizes.at( 1 ) - ( splitSizes.at( 0 ) - newWidth );
-    splitSizes[0] = newWidth;
-    mOptionsSplitter->setSizes( splitSizes );
-  }
-  if ( mOptionsListWidget->wordWrap() && iconOnly )
-    mOptionsListWidget->setWordWrap( false );
-  if ( !mOptionsListWidget->wordWrap() && !iconOnly )
-    mOptionsListWidget->setWordWrap( true );
 }
 
 void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )

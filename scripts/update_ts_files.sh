@@ -92,7 +92,7 @@ done
 
 if [ -n "$exclude" -o -n "$add" ]; then
   echo Saving excluded translations
-  tar --remove-files -cf i18n/qgis_ts.tar i18n/qgis_*.ts$exclude
+  tar -cf i18n/qgis_ts.tar i18n/qgis_*.ts$exclude
 fi
 echo Updating python translations
 cd python
@@ -127,10 +127,10 @@ fi
 echo Updating translations
 $LUPDATE$opts -verbose qgis_ts.pro
 
-cleanup
-
 echo Updating TRANSLATORS File
 ./scripts/tsstat.pl > doc/TRANSLATORS
+
+cleanup
 
 if [ -n "$add" ]; then
 	for i in $add; do

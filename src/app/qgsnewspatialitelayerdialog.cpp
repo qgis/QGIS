@@ -244,6 +244,7 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
   QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
   mySelector->setMessage();
   mySelector->setOgcWmsCrsFilter( myCRSs );
+  mySelector->setSelectedCrsId( mCrsId );
 
   if ( mySelector->exec() )
   {

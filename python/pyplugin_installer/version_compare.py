@@ -1,5 +1,23 @@
 """
-This is a Python module to compare version numbers. It's case insensitive
+/***************************************************************************
+                        Plugin Installer module
+                        Plugin version comparision functions
+                             -------------------
+    Date                 : 2008-11-24
+    Copyright            : (C) 2008 by Borys Jurgiel
+    Email                : info at borysjurgiel dot pl
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+Here is Python function for comparing version numbers. It's case insensitive
 and recognizes all major notations, prefixes (ver. and version), delimiters
 (. - and _) and suffixes (alpha, beta, rc, preview and trunk).
 
@@ -12,7 +30,7 @@ and returns integer value:
 2 - version 2 is higher
 
 -----------------------------------------------------------------------------
-HOW IT WORKS...
+HOW DOES IT WORK...
 First, both arguments are converted to uppercase unicode and stripped of
 'VERSION' or 'VER.' prefix. Then they are chopped into a list of particular
 numeric and alphabetic elements. The dots, dashes and underlines are recognized
@@ -26,19 +44,6 @@ The comparing stops when one of elements is greater. If comparing achieves
 the end of the shorter list and the matter is still unresolved, the longer
 list is usually recognized as higher, except following suffixes:
 ALPHA, BETA, RC, PREVIEW and TRUNK which make the version number lower.
-
-/***************************************************************************
- *                                                                         *
- *   Copyright (C) 2008-11-24 Borys Jurgiel                                *
- *                                                                         *
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 """
 
 # ------------------------------------------------------------------------ #

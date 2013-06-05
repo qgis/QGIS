@@ -43,9 +43,11 @@
 #include "qgsattributeaction.h"
 #include "qgsattributetabledialog.h"
 
+
 QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
     : qgis( _qgis ),
-    legendIface( _qgis->legend() )
+    legendIface( _qgis->legend() ),
+    pluginManagerIface( _qgis->pluginManager() )
 {
   // connect signals
   connect( qgis->legend(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
@@ -71,6 +73,11 @@ QgisAppInterface::~QgisAppInterface()
 QgsLegendInterface* QgisAppInterface::legendInterface()
 {
   return &legendIface;
+}
+
+QgsPluginManagerInterface* QgisAppInterface::pluginManagerInterface()
+{
+  return &pluginManagerIface;
 }
 
 void QgisAppInterface::zoomFull()
