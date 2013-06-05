@@ -615,7 +615,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
   if ( ! metadata->value( "average_vote" ).isEmpty() )
   {
     // draw stars
-    int stars = round( metadata->value( "average_vote" ).toFloat() );
+    int stars = qRound( metadata->value( "average_vote" ).toFloat() );
     for ( int i = 0; i < stars; i++ )
     {
       html += "<img src=\":/images/themes/default/mIconNew.png\">";
