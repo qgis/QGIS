@@ -2675,6 +2675,15 @@ void QgsLegend::legendLayerZoom()
     QgsMapLayer* theLayer = currentLayer->layer();
     extent = theLayer->extent();
 
+    QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( theLayer );
+
+    if ( extent.isEmpty() && vLayer )
+    {
+      vLayer->updateExtents();
+      extent = vLayer->extent();
+    }
+
+
     //transform extent if otf-projection is on
     if ( mMapCanvas->hasCrsTransformEnabled() )
     {
@@ -2696,6 +2705,14 @@ void QgsLegend::legendLayerZoom()
     {
       QgsMapLayer* theLayer = layers.at( i )->layer();
       layerExtent = theLayer->extent();
+
+      QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( theLayer );
+
+      if ( extent.isEmpty() && vLayer )
+      {
+        vLayer->updateExtents();
+        layerExtent = vLayer->extent();
+      }
 
       //transform extent if otf-projection is on
       if ( mMapCanvas->hasCrsTransformEnabled() )
