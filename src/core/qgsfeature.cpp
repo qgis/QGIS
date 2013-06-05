@@ -159,6 +159,15 @@ void QgsFeature::setGeometryAndOwnership( unsigned char *geom, size_t length )
   setGeometry( g );
 }
 
+void QgsFeature::setFields( const QgsFields* fields, bool initAttributes )
+{
+  mFields = fields;
+  if ( initAttributes )
+  {
+    this->initAttributes( fields->count() );
+  }
+}
+
 
 bool QgsFeature::isValid() const
 {

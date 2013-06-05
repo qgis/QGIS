@@ -189,9 +189,18 @@ class CORE_EXPORT QgsFeature
     void setGeometryAndOwnership( unsigned char * geom, size_t length );
 
     /** Assign a field map with the feature to allow attribute access by attribute name
+     *
+     *  @param fields         The attribute fields which this feature holds. When used from python, make sure
+     *                        a copy of the fields is held by python, as ownership stays there.
+     *                        I.e. Do not call feature.setFields( myDataProvider.fields() ) but instead call
+     *                        myFields = myDataProvider.fields()
+     *                        feature.setFields( myFields )
+     *  @param initAttributes If true, attributes are initialized. Clears any data previously assigned.
+     *                        C++: Defaults to false
+     *                        Python: Defaults to true
      *  @note added in 2.0
      */
-    void setFields( const QgsFields* fields ) { mFields = fields; }
+    void setFields( const QgsFields* fields, bool initAttributes = false );
 
     /** Get associated field map. may be NULL
      *  @note added in 2.0

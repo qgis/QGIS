@@ -158,10 +158,17 @@ class QgsFeature
      */
     void setGeometryAndOwnership( unsigned char * geom /Transfer/, size_t length );
 
-    /** Assign a field map with the feature to allow attribute access by attribute name
+    /** Assign a field map with the feature to allow attribute access by
+     * attribute name
+     *
+     *  @param fields         The attribute fields which this feature holds
+     *  @param initAttributes If true, attributes are initialized. Clears any
+     *  data previously assigned.
+     *                        C++: Defaults to false
+     *                        Python: Defaults to true
      *  @note added in 2.0
      */
-    void setFields( const QgsFields* fields );
+    void setFields( const QgsFields* fields, bool initAttributes = true );
 
     /** Get associated field map. may be NULL
      *  @note added in 2.0
