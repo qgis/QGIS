@@ -201,5 +201,7 @@ typedef QString version_t();
 //! Typedef for getting the plugin icon file name without instantiating the plugin
 typedef QString icon_t();
 
+//! Typedef for getting the experimental status without instantiating the plugin
+typedef QString experimental_t();
 
 #endif //qgisplugin_h

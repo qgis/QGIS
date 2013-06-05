@@ -310,6 +310,7 @@ void QgsPluginManager::getCppPluginDescriptions()
       category_t *pCat = ( category_t * ) cast_to_fptr( myLib->resolve( "category" ) );
       version_t *pVersion = ( version_t * ) cast_to_fptr( myLib->resolve( "version" ) );
       icon_t* pIcon = ( icon_t * ) cast_to_fptr( myLib->resolve( "icon" ) );
+      experimental_t *pExperimental = ( experimental_t * ) cast_to_fptr( myLib->resolve( "experimental" ) );
 
       // show the values (or lack of) for each function
       if ( pName )
@@ -370,6 +371,7 @@ void QgsPluginManager::getCppPluginDescriptions()
       metadata["pythonic"] = "false";
       metadata["installed"] = "true";
       metadata["readonly"] = "true";
+      metadata["experimental"] = ( pExperimental ? pExperimental() : QString() );
       mPlugins.insert( baseName, metadata );
 
       delete myLib;
