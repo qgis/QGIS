@@ -31,7 +31,6 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.tools.vector import getfeatures
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
-import sextante
 import sys
 
 class AlgorithmExecutor(QThread):
