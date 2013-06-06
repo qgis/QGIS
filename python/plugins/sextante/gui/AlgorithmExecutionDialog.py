@@ -327,8 +327,8 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     def resetGUI(self):
         QApplication.restoreOverrideCursor()
         self.progressLabel.setText("")
-        self.progress.setValue(0)
-        self.progress.setMaximum(100)
+        self.progress.setValue(100)
+        #self.progress.setMaximum(100)        
         self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
