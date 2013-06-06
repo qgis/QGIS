@@ -544,32 +544,33 @@ QStringList QgsOgrProvider::subLayers() const
       QMap<OGRwkbGeometryType, int> fCount;
       // TODO: avoid reading attributes, setRelevantFields cannot be called here because it is not constant
       //setRelevantFields( true, QgsAttributeList() );
-      OGR_L_ResetReading( ogrLayer );
+      OGR_L_ResetReading( layer );
       OGRFeatureH fet;
-      while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
+      while (( fet = OGR_L_GetNextFeature( layer ) ) )
       {
         if ( !fet ) continue;
         OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
         if ( geom )
         {
-          OGRwkbGeometryType gType = wkbFlatten( OGR_G_GetGeometryType( geom ) );
+          OGRwkbGeometryType gType = ogrWkbSingleFlatten( OGR_G_GetGeometryType( geom ) );
           fCount[gType] = fCount.value( gType ) + 1;
         }
         OGR_F_Destroy( fet );
       }
-      OGR_L_ResetReading( ogrLayer );
-      int i = 0;
-      if ( fCount.size() > 1 )
+      OGR_L_ResetReading( layer );
+      // it may happen that there are no features in the layer, in that case add unknown type
+      // to show to user that the layer exists but it is empty
+      if ( fCount.size() == 0 )
       {
-        foreach ( OGRwkbGeometryType gType, fCount.keys() )
-        {
-          QString geom = ogrWkbGeometryTypeName( gType );
+        fCount[wkbUnknown] = 0;
+      }
+      foreach ( OGRwkbGeometryType gType, fCount.keys() )
+      {
+        QString geom = ogrWkbGeometryTypeName( gType );
 
-          QString sl = QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( fCount.value( gType ) ).arg( geom );
-          QgsDebugMsg( "sub layer: " + sl );
-          mSubLayerList << sl;
-          i++;
-        }
+        QString sl = QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( fCount.value( gType ) ).arg( geom );
+        QgsDebugMsg( "sub layer: " + sl );
+        mSubLayerList << sl;
       }
     }
   }
@@ -2308,6 +2309,18 @@ void QgsOgrProvider::recalculateFeatureCount()
   }
 }
 
+OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type )
+{
+  type = wkbFlatten( type );
+  switch ( type )
+  {
+    case wkbMultiPoint: return wkbPoint;
+    case wkbMultiLineString: return wkbLineString;
+    case wkbMultiPolygon: return wkbPolygon;
+    default: return type;
+  }
+}
+
 // ---------------------------------------------------------------------------
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
@@ -2325,3 +2338,4 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
            oldToNewAttrIdxMap, errorMessage, options
          );
 }
+
