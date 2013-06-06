@@ -195,9 +195,9 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     return false;
   }
 
-  QMap< QString, QString > derivedAttributes;
+  QMap< QString, QString > commonDerivedAttributes;
 
-  derivedAttributes.insert( tr( "(clicked coordinate)" ), point.toString() );
+  commonDerivedAttributes.insert( tr( "(clicked coordinate)" ), point.toString() );
 
   // load identify radius from settings
   QSettings settings;
@@ -252,6 +252,8 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
   for ( ; f_it != featureList.end(); ++f_it )
   {
+    QMap< QString, QString > derivedAttributes = commonDerivedAttributes;
+
     QgsFeatureId fid = f_it->id();
 
     if ( filter && !renderer->willRenderFeature( *f_it ) )
