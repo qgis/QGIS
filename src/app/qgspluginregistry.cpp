@@ -383,11 +383,12 @@ void QgsPluginRegistry::unloadPythonPlugin( QString packageName )
   if ( isLoaded( packageName ) )
   {
     mPythonUtils->unloadPlugin( packageName );
-    // add to settings
-    QSettings settings;
-    settings.setValue( "/PythonPlugins/" + packageName, false );
     QgsDebugMsg( "Python plugin successfully unloaded: " + packageName );
   }
+
+  // disable the plugin no matter if successfully loaded or not
+  QSettings settings;
+  settings.setValue( "/PythonPlugins/" + packageName, false );
 }
 
 

@@ -484,8 +484,9 @@ void QgsPluginManager::pluginItemChanged( QStandardItem * item )
     QgsDebugMsg( " Loading plugin: " + id );
     loadPlugin( id );
   }
-  else if ( ! item->checkState() && isPluginLoaded( id ) )
+  else if ( ! item->checkState() )
   {
+    // don't test if isPluginLoaded, to allow disable also plugins taht weren't successfully loaded
     QgsDebugMsg( " Unloading plugin: " + id );
     unloadPlugin( id );
   }
