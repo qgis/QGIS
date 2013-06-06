@@ -105,7 +105,7 @@ class mmqgisx_delete_duplicate_geometries_algorithm(GeoAlgorithm):
 		i = 0
 		cleaned = {}
 		for feature in features:
-			cleaned[feature.geometry()] = feature
+			cleaned[feature.geometry().exportToWkt()] = feature
 			progress.setPercentage(float(i) /featurecount * 50)
 			i += 1
 		i = 0
