@@ -72,7 +72,7 @@ class CORE_EXPORT QgsSnapper
 
     enum SnappingMode
     {
-      /**Only one snapping result is retured*/
+      /**Only one snapping result is returned*/
       SnapWithOneResult,
       /**Several snapping results which have the same position are returned.
          This is useful for topological editing*/
