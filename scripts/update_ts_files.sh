@@ -96,7 +96,7 @@ if [ -n "$exclude" -o -n "$add" ]; then
 fi
 echo Updating python translations
 cd python
-pylupdate4 console/*.py console/*.ui utils.py -ts python-i18n.ts
+pylupdate4 utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
 perl ../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
 rm python-i18n.ts
 cd ..

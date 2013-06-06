@@ -430,7 +430,7 @@ class QgsPluginInstaller(QObject):
       dlg.labelInfo.setText("")
     else:
       dlg.checkBoxEnabled.setEnabled(False)
-      dlg.labelInfo.setText(self.tr("This repository is blocked due to incompatibility with your Quantum GIS version"))
+      dlg.labelInfo.setText(self.tr("This repository is blocked due to incompatibility with your QGIS version"))
       dlg.labelInfo.setFrameShape(QFrame.Box)
     if not dlg.exec_():
       return # nothing to do if cancelled
