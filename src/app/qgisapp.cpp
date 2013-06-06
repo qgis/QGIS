@@ -804,6 +804,7 @@ void QgisApp::dragEnterEvent( QDragEnterEvent *event )
 
 void QgisApp::dropEvent( QDropEvent *event )
 {
+  mMapCanvas->freeze();
   // get the file list
   QList<QUrl>::iterator i;
   QList<QUrl>urls = event->mimeData()->urls();
@@ -817,6 +818,7 @@ void QgisApp::dropEvent( QDropEvent *event )
       openFile( fileName );
     }
   }
+
   if ( QgsMimeDataUtils::isUriList( event->mimeData() ) )
   {
     QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
@@ -832,7 +834,8 @@ void QgisApp::dropEvent( QDropEvent *event )
       }
     }
   }
-
+  mMapCanvas->freeze(false);
+  mMapCanvas->refresh();
   event->acceptProposedAction();
 }
 
@@ -2486,6 +2489,7 @@ void QgisApp::addVectorLayer()
 
 bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QString& enc, const QString dataSourceType )
 {
+  bool wasfrozen = mMapCanvas->isFrozen();
   QList<QgsMapLayer *> myList;
   foreach ( QString src, theLayerQStringList )
   {
@@ -2590,10 +2594,13 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
   // update UI
   qApp->processEvents();
 
-  // draw the map
-  mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
-
+  // Only update the map if we frozen in this method
+  // Let the caller do it otherwise
+  if ( !wasfrozen )
+  {
+    mMapCanvas->freeze( false );
+    mMapCanvas->refresh();
+  }
 // Let render() do its own cursor management
 //  QApplication::restoreOverrideCursor();
 
@@ -6743,6 +6750,8 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
     return NULL;
   }
 
+  bool wasfrozen = mMapCanvas->isFrozen();
+
   mMapCanvas->freeze();
 
 // Let render() do its own cursor management
@@ -6797,9 +6806,13 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
   // update UI
   qApp->processEvents();
 
-  // draw the map
-  mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
+  // Only update the map if we frozen in this method
+  // Let the caller do it otherwise
+  if ( !wasfrozen )
+  {
+      mMapCanvas->freeze( false );
+      mMapCanvas->refresh();
+  }
 
 // Let render() do its own cursor management
 //  QApplication::restoreOverrideCursor();
