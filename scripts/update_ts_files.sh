@@ -70,6 +70,7 @@ fi
 
 exclude=
 opts=
+fast=
 while (( $# > 0 )); do
   arg=$1
   shift
@@ -83,6 +84,8 @@ while (( $# > 0 )); do
     else
       add="$add $arg"
     fi
+  elif [ "$arg" = "-f" ]; then
+    fast=--remove-files
   elif [ -f "i18n/qgis_$arg.ts" ]; then
     exclude="$exclude --exclude i18n/qgis_$arg.ts"
   else
@@ -92,7 +95,7 @@ done
 
 if [ -n "$exclude" -o -n "$add" ]; then
   echo Saving excluded translations
-  tar -cf i18n/qgis_ts.tar i18n/qgis_*.ts$exclude
+  tar $fast -cf i18n/qgis_ts.tar i18n/qgis_*.ts$exclude
 fi
 echo Updating python translations
 cd python
@@ -127,8 +130,10 @@ fi
 echo Updating translations
 $LUPDATE$opts -verbose qgis_ts.pro
 
-echo Updating TRANSLATORS File
-./scripts/tsstat.pl > doc/TRANSLATORS
+if [ -z "$fast" ]; then
+	echo Updating TRANSLATORS File
+	./scripts/tsstat.pl >doc/TRANSLATORS
+fi
 
 cleanup
 
