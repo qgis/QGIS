@@ -188,6 +188,15 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
         abstractElem.appendChild( abstractText );
         layerElem.appendChild( abstractElem );
 
+        //keyword list
+        if ( !layer->keywordList().isEmpty() )
+        {
+          QDomElement keywordsElem = doc.createElement( "Keywords" );
+          QDomText keywordsText = doc.createTextNode( layer->keywordList() );
+          keywordsElem.appendChild( keywordsText );
+          layerElem.appendChild( keywordsElem );
+        }
+
         //appendExGeographicBoundingBox( layerElem, doc, layer->extent(), layer->crs() );
 
         QDomElement srsElem = doc.createElement( "SRS" );
@@ -234,6 +243,27 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
         bBoxElement.setAttribute( "maxy", QString::number( layerExtent.yMaximum() ) );
         layerElem.appendChild( bBoxElement );
 
+        // layer metadata URL
+        QString metadataUrl = layer->metadataUrl();
+        if ( !metadataUrl.isEmpty() )
+        {
+          QDomElement metaUrlElem = doc.createElement( "MetadataURL" );
+          QString metadataUrlType = layer->metadataUrlType();
+          metaUrlElem.setAttribute( "type", metadataUrlType );
+          QString metadataUrlFormat = layer->metadataUrlFormat();
+          if ( metadataUrlFormat == "text/xml" )
+          {
+            metaUrlElem.setAttribute( "format", "XML" );
+          }
+          else
+          {
+            metaUrlElem.setAttribute( "format", "TXT" );
+          }
+          QDomText metaUrlText = doc.createTextNode( metadataUrl );
+          metaUrlElem.appendChild( metaUrlText );
+          layerElem.appendChild( metaUrlElem );
+        }
+
         parentElement.appendChild( layerElem );
       }
     }
@@ -246,8 +276,6 @@ void QgsProjectParser::owsGeneralAndResourceList( QDomElement& parentElement, QD
   // set parentElement id
   QFileInfo projectFileInfo( mProjectPath );
   parentElement.setAttribute( "id", "ows-context-" + projectFileInfo.baseName() );
-  // OWSContext General element
-  QDomElement serviceElem = doc.createElement( "Service" );
 
   QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
   if ( propertiesElem.isNull() )
@@ -256,6 +284,7 @@ void QgsProjectParser::owsGeneralAndResourceList( QDomElement& parentElement, QD
     return;
   }
 
+  // OWSContext General element
   QDomElement generalElem = doc.createElement( "General" );
 
   QDomElement windowElem = doc.createElement( "Window" );
@@ -285,7 +314,7 @@ void QgsProjectParser::owsGeneralAndResourceList( QDomElement& parentElement, QD
 
   //keyword list
   QDomElement keywordListElem = propertiesElem.firstChildElement( "WMSKeywordList" );
-  if ( !keywordListElem.isNull() )
+  if ( !keywordListElem.isNull() && !keywordListElem.text().isEmpty() )
   {
     bool siaFormat = featureInfoFormatSIA2045();
 
@@ -305,7 +334,7 @@ void QgsProjectParser::owsGeneralAndResourceList( QDomElement& parentElement, QD
 
     if ( keywordList.size() > 0 )
     {
-      serviceElem.appendChild( keywordsElem );
+      generalElem.appendChild( keywordsElem );
     }
   }
 
@@ -346,7 +375,7 @@ void QgsProjectParser::owsGeneralAndResourceList( QDomElement& parentElement, QD
   QDomText lowerCornerText = doc.createTextNode( QString::number( combinedBBox.xMinimum() ) + " " +  QString::number( combinedBBox.yMinimum() ) );
   lowerCornerElem.appendChild( lowerCornerText );
   bboxElem.appendChild( lowerCornerElem );
-  QDomElement upperCornerElem = doc.createElement( "ows:upperCorner" );
+  QDomElement upperCornerElem = doc.createElement( "ows:UpperCorner" );
   QDomText upperCornerText = doc.createTextNode( QString::number( combinedBBox.xMaximum() ) + " " +  QString::number( combinedBBox.yMaximum() ) );
   upperCornerElem.appendChild( upperCornerText );
   bboxElem.appendChild( upperCornerElem );
@@ -676,9 +705,9 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       }
 
       //keyword list
-      QStringList keywordStringList = currentLayer->keywordList().split( "," );
-      if ( keywordStringList.size() > 0 )
+      if ( !currentLayer->keywordList().isEmpty() )
       {
+        QStringList keywordStringList = currentLayer->keywordList().split( "," );
         bool siaFormat = featureInfoFormatSIA2045();
 
         QDomElement keywordListElem = doc.createElement( "KeywordList" );
@@ -768,9 +797,17 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       {
         QDomElement metaUrlElem = doc.createElement( "MetadataURL" );
         QString metadataUrlType = currentLayer->metadataUrlType();
-        if ( !metadataUrlType.isEmpty() )
+        if ( version == "1.1.1" )
         {
           metaUrlElem.setAttribute( "type", metadataUrlType );
+        }
+        else if ( metadataUrlType == "FGDC" )
+        {
+          metaUrlElem.setAttribute( "type", "FGDC:1998" );
+        }
+        else if ( metadataUrlType == "TC211" )
+        {
+          metaUrlElem.setAttribute( "type", "ISO19115:2003" );
         }
         QString metadataUrlFormat = currentLayer->metadataUrlFormat();
         if ( !metadataUrlFormat.isEmpty() )
@@ -1067,9 +1104,9 @@ void QgsProjectParser::addOWSLayers( QDomDocument &doc,
       layerElem.appendChild( styleListElem );
 
       //keyword list
-      QStringList keywordStringList = currentLayer->keywordList().split( "," );
-      if ( keywordStringList.size() > 0 )
+      if ( !currentLayer->keywordList().isEmpty() )
       {
+        QStringList keywordStringList = currentLayer->keywordList().split( "," );
         bool siaFormat = featureInfoFormatSIA2045();
 
         QDomElement keywordsElem = doc.createElement( "ows:Keywords" );
@@ -1092,19 +1129,8 @@ void QgsProjectParser::addOWSLayers( QDomDocument &doc,
       if ( !metadataUrl.isEmpty() )
       {
         QDomElement metaUrlElem = doc.createElement( "MetadataURL" );
-        QString metadataUrlType = currentLayer->metadataUrlType();
-        if ( !metadataUrlType.isEmpty() )
-        {
-          metaUrlElem.setAttribute( "type", metadataUrlType );
-        }
         QString metadataUrlFormat = currentLayer->metadataUrlFormat();
-        if ( !metadataUrlFormat.isEmpty() )
-        {
-          QDomElement metaUrlFormatElem = doc.createElement( "Format" );
-          QDomText metaUrlFormatText = doc.createTextNode( metadataUrlFormat );
-          metaUrlFormatElem.appendChild( metaUrlFormatText );
-          metaUrlElem.appendChild( metaUrlFormatElem );
-        }
+        metaUrlElem.setAttribute( "format", metadataUrlFormat );
         QDomElement metaUrlORElem = doc.createElement( "OnlineResource" );
         metaUrlORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
         metaUrlORElem.setAttribute( "xlink:type", "simple" );
@@ -2355,7 +2381,7 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
 
   //keyword list
   QDomElement keywordListElem = propertiesElem.firstChildElement( "WMSKeywordList" );
-  if ( !keywordListElem.isNull() )
+  if ( !keywordListElem.isNull() && !keywordListElem.text().isEmpty() )
   {
     bool siaFormat = featureInfoFormatSIA2045();
 
@@ -2534,7 +2560,7 @@ void QgsProjectParser::serviceWFSCapabilities( QDomElement& parentElement, QDomD
 
   //keyword list
   QDomElement keywordListElem = propertiesElem.firstChildElement( "WMSKeywordList" );
-  if ( !keywordListElem.isNull() )
+  if ( !keywordListElem.isNull() && !keywordListElem.text().isEmpty() )
   {
     bool siaFormat = featureInfoFormatSIA2045();
 
