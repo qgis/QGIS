@@ -528,6 +528,8 @@ QStringList QgsOgrProvider::subLayers() const
     QString theLayerName = FROM8( OGR_FD_GetName( fdef ) );
     OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( fdef );
 
+    QgsDebugMsg( QString("layerGeomType = %1").arg( layerGeomType ) );
+
     if ( layerGeomType != wkbUnknown )
     {
       int theLayerFeatureCount = OGR_L_GetFeatureCount( layer, 0 );
@@ -535,10 +537,10 @@ QStringList QgsOgrProvider::subLayers() const
       QString geom = ogrWkbGeometryTypeName( layerGeomType );
 
       mSubLayerList << QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( theLayerFeatureCount == -1 ? tr( "Unknown" ) : QString::number( theLayerFeatureCount ) ).arg( geom );
-      QgsDebugMsg( "Unknown geometry type, count features for each geometry type" );
     }
     else
     {
+      QgsDebugMsg( "Unknown geometry type, count features for each geometry type" );
       // Add virtual sublayers for supported geometry types if layer type is unknown
       // Count features for geometry types
       QMap<OGRwkbGeometryType, int> fCount;
