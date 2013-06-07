@@ -431,9 +431,6 @@
                          <string>The attribute value you enter here will correspond to the size entered in the field &quot;Size&quot; and the chosen &quot;Size unit&quot;.
 Leave empty to automatically apply the maximum value.</string>
                         </property>
-                        <property name="placeholderText">
-                         <string>Empty: Use maximum value</string>
-                        </property>
                        </widget>
                       </item>
                      </layout>
