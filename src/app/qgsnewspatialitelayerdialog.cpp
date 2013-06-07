@@ -251,8 +251,12 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
     QgsCoordinateReferenceSystem srs;
     srs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
     bool ok;
-    mCrsId = srs.authid().split( ':' ).at( 1 ).toInt( &ok );
-    leSRID->setText( srs.authid() + " - " + srs.description() );
+    int crsId = srs.authid().split( ':' ).value( 1, QString::number( mCrsId ) ).toInt( &ok );
+    if ( crsId != mCrsId )
+    {
+      mCrsId = crsId;
+      leSRID->setText( srs.authid() + " - " + srs.description() );
+    }
   }
   delete mySelector;
 }
