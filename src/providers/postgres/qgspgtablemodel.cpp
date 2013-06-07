@@ -53,12 +53,21 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
   {
     QGis::WkbType wkbType = layerProperty.types[ i ];
     int srid = layerProperty.srids[ i ];
+
     if ( wkbType == QGis::WKBUnknown && layerProperty.geometryColName.isEmpty() )
     {
       wkbType = QGis::WKBNoGeometry;
     }
 
-    bool selectable = wkbType == QGis::WKBNoGeometry || ( wkbType != QGis::WKBUnknown && srid != INT_MIN );
+    QString tip;
+    if ( wkbType == QGis::WKBUnknown )
+    {
+      tip = tr( "Specify a geometry type" );
+    }
+    else if ( wkbType != QGis::WKBNoGeometry && srid == INT_MIN )
+    {
+      tip = tr( "Enter a SRID" );
+    }
 
     QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
     QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QGis::WKBUnknown ? tr( "Select..." ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
@@ -115,13 +124,20 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
 
     foreach ( QStandardItem *item, childItemList )
     {
-      if ( selectable )
+      if ( tip.isEmpty() )
       {
-        item->setFlags( item->flags() | Qt::ItemIsSelectable );
+        item->setFlags( item->flags() | Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+        item->setToolTip( "" );
       }
       else
       {
         item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
+
+        if ( item == schemaNameItem || item == tableItem || item == geomItem )
+        {
+          item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
+          item->setToolTip( tip );
+        }
       }
     }
 
@@ -245,27 +261,46 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
 
   if ( idx.column() == dbtmType || idx.column() == dbtmSrid || idx.column() == dbtmPkCol )
   {
-    QGis::WkbType geomType = ( QGis::WkbType ) idx.sibling( idx.row(), dbtmType ).data( Qt::UserRole + 2 ).toInt();
+    QGis::WkbType wkbType = ( QGis::WkbType ) idx.sibling( idx.row(), dbtmType ).data( Qt::UserRole + 2 ).toInt();
 
-    bool ok = geomType != QGis::WKBUnknown;
-
-    if ( ok && geomType != QGis::WKBNoGeometry )
+    QString tip;
+    if ( wkbType == QGis::WKBUnknown )
     {
+      tip = tr( "Specify a geometry type" );
+    }
+    else if ( wkbType != QGis::WKBNoGeometry )
+    {
+      bool ok;
       int srid = idx.sibling( idx.row(), dbtmSrid ).data().toInt( &ok );
-      ok &= srid != INT_MIN;
+
+      if ( !ok || srid == INT_MIN )
+        tip = tr( "Enter a SRID" );
     }
 
     QStringList pkCols = idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();
-    if ( ok && pkCols.size() > 0 )
-      ok = pkCols.contains( idx.sibling( idx.row(), dbtmPkCol ).data().toString() );
+    if ( tip.isEmpty() && pkCols.size() > 0 )
+    {
+      if ( !pkCols.contains( idx.sibling( idx.row(), dbtmPkCol ).data().toString() ) )
+        tip = tr( "Select a primary key" );
+    }
 
     for ( int i = 0; i < dbtmColumns; i++ )
     {
       QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), i ) );
-      if ( ok )
-        item->setFlags( item->flags() | Qt::ItemIsSelectable );
+      if ( tip.isEmpty() )
+      {
+        item->setFlags( item->flags() | Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+        item->setToolTip( "" );
+      }
       else
+      {
         item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
+        if ( i == dbtmSchema || i == dbtmTable || i == dbtmGeomCol )
+        {
+          item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
+          item->setToolTip( tip );
+        }
+      }
     }
   }
 

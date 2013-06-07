@@ -41,11 +41,14 @@ email                : sherman at mrcc.com
 QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
+
+  QString tableName = index.sibling( index.row(), QgsPgTableModel::dbtmTable ).data( Qt::DisplayRole ).toString();
+  if ( tableName.isEmpty() )
+    return 0;
+
   if ( index.column() == QgsPgTableModel::dbtmSql )
   {
-    QLineEdit *le = new QLineEdit( parent );
-    le->setText( index.data( Qt::DisplayRole ).toString() );
-    return le;
+    return new QLineEdit( parent );
   }
 
   if ( index.column() == QgsPgTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
@@ -63,7 +66,6 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
     {
       cb->addItem( QgsPgTableModel::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
     }
-    cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
     return cb;
   }
 
@@ -75,7 +77,6 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
     {
       QComboBox *cb = new QComboBox( parent );
       cb->addItems( values );
-      cb->setCurrentIndex( cb->findText( index.data( Qt::DisplayRole ).toString() ) );
       return cb;
     }
   }
@@ -84,11 +85,36 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
   {
     QLineEdit *le = new QLineEdit( parent );
     le->setValidator( new QIntValidator( -1, 999999, parent ) );
-    le->insert( index.data( Qt::DisplayRole ).toString() );
     return le;
   }
 
   return 0;
+}
+
+void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+{
+  QString value( index.data( Qt::DisplayRole ).toString() );
+
+  QComboBox *cb = qobject_cast<QComboBox* >( editor );
+  if ( cb )
+  {
+    if ( index.column() == QgsPgTableModel::dbtmType )
+      cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
+
+    if ( index.column() == QgsPgTableModel::dbtmPkCol && !index.data( Qt::UserRole + 2 ).toString().isEmpty() )
+      cb->setCurrentIndex( cb->findText( index.data( Qt::UserRole + 2 ).toString() ) );
+  }
+
+  QLineEdit *le = qobject_cast<QLineEdit*>( editor );
+  if ( le )
+  {
+    bool ok;
+    value.toInt( &ok );
+    if ( index.column() == QgsPgTableModel::dbtmSrid && !ok )
+      value = "";
+
+    le->setText( value );
+  }
 }
 
 void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
@@ -106,14 +132,24 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
     }
     else if ( index.column() == QgsPgTableModel::dbtmPkCol )
     {
-      model->setData( index, cb->currentText() );
-      model->setData( index, cb->currentText(), Qt::UserRole + 2 );
+      QString value( cb->currentText() );
+      model->setData( index, value.isEmpty() ? tr( "Select..." ) : value );
+      model->setData( index, value, Qt::UserRole + 2 );
     }
   }
 
   QLineEdit *le = qobject_cast<QLineEdit *>( editor );
   if ( le )
-    model->setData( index, le->text() );
+  {
+    QString value( le->text() );
+
+    if ( index.column() == QgsPgTableModel::dbtmSrid && value.isEmpty() )
+    {
+      value = tr( "Enter..." );
+    }
+
+    model->setData( index, value );
+  }
 }
 
 QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl, bool managerMode, bool embeddedMode )
