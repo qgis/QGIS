@@ -1082,9 +1082,13 @@ void TerminalDisplay::paintEvent( QPaintEvent* pe )
   QPainter paint( this );
 //qDebug("%s %d paintEvent %d %d", __FILE__, __LINE__, paint.window().top(), paint.window().right());
 
+  const QColor background = _colorTable[DEFAULT_BACK_COLOR].color;
   foreach ( QRect rect, ( pe->region() & contentsRect() ).rects() )
   {
-    drawBackground( paint, rect, palette().background().color(), true /* use opacity setting */ );
+    // setStyleSheet() changes background color -> use default
+    //drawBackground( paint, rect, palette().background().color(), true /* use opacity setting */ );
+    drawBackground( paint, rect, background, true );
+
     drawContents( paint, rect );
   }
 //    drawBackground(paint,contentsRect(),palette().background().color(), true /* use opacity setting */);
