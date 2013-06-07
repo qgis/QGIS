@@ -44,7 +44,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Destructor
     ~QgsPluginManager();
 
-    //! Save pointer to python utils
+    //! Save pointer to python utils and enable Python support
     void setPythonUtils( QgsPythonUtils* pythonUtils );
 
     //! Load selected plugin
@@ -54,7 +54,10 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void unloadPlugin( QString id );
 
     //! Get metadata of C++ plugins
-    void getCppPluginDescriptions();
+    void getCppPluginsMetadata();
+
+    //! Create new spacer item for sorting by status in the plugin list view
+    QStandardItem * createSpacerItem( QString text, QString value );
 
     //! Repopulate the plugin list model
     void reloadModelData();
@@ -153,17 +156,26 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Reimplement QgsOptionsDialogBase method to prevent modifying the tab list by signals from the stacked widget
     void optionsStackedWidget_CurrentChanged( int indx ) { Q_UNUSED( indx ) }
 
+    //! Enable selected repository only
+    void enableSelectedRepositoryOnly( bool checked );
+
   private:
     //! Return true if given plugin is currently present in QgsPluginRegistry
     bool isPluginLoaded( QString key );
 
-    //! Return true if there are upgradeable plugins in the registry
+    //! Return true if there are plugins available for download in the metadata registry
+    bool hasAvailablePlugins( );
+
+    //! Return true if there are upgradeable plugins in metadata the registry
     bool hasUpgradeablePlugins( );
 
-    //! Return true if there are new plugins in the registry
+    //! Return true if there are new plugins in the metadata registry
     bool hasNewPlugins( );
 
-    //! Return true if there are invalid plugins in the registry
+    //! Return true if there are plugins in the metadata registry that are newer installed than available
+    bool hasNewerPlugins( );
+
+    //! Return true if there are invalid plugins in the metadata registry
     bool hasInvalidPlugins( );
 
     QStandardItemModel *mModelPlugins;
@@ -176,7 +188,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
     QString mCurrentlyDisplayedPlugin;
 
-    QList<int> checkingOnStartIntervals;
+    QList<int> mCheckingOnStartIntervals;
 };
 
 #endif

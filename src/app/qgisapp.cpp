@@ -629,11 +629,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    // pass the python utils to the plugin manager
-    mPluginManager -> setPythonUtils( mPythonUtils );
     // initialize the plugin installer to start fetching repositories in background
     QgsPythonRunner::run( "import pyplugin_installer" );
     QgsPythonRunner::run( "pyplugin_installer.initPluginInstaller()" );
+    // enable Python in the Plugin Manager and pass the PythonUtils to it
+    mPluginManager -> setPythonUtils( mPythonUtils );
   }
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );

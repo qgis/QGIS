@@ -470,19 +470,6 @@ padding: 0px</string>
                   </spacer>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="buttonInstall">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="toolTip">
-                    <string>Install, reinstall or upgrade the selected plugin</string>
-                   </property>
-                   <property name="text">
-                    <string>Install/upgrade plugin</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
                   <widget class="QPushButton" name="buttonUninstall">
                    <property name="enabled">
                     <bool>false</bool>
@@ -492,6 +479,25 @@ padding: 0px</string>
                    </property>
                    <property name="text">
                     <string>Uninstall plugin</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="buttonInstall">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>180</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Install, reinstall or upgrade the selected plugin</string>
+                   </property>
+                   <property name="text">
+                    <string>Reinstall plugin</string>
                    </property>
                   </widget>
                  </item>
@@ -897,8 +903,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>vwPlugins</tabstop>
   <tabstop>tbDetails</tabstop>
   <tabstop>buttonUpgradeAll</tabstop>
-  <tabstop>buttonInstall</tabstop>
   <tabstop>buttonUninstall</tabstop>
+  <tabstop>buttonInstall</tabstop>
   <tabstop>ckbCheckUpdates</tabstop>
   <tabstop>comboInterval</tabstop>
   <tabstop>ckbExperimental</tabstop>
