@@ -65,7 +65,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         for line in _init_commands:
             self.runsource(line)
 
-        self.history = QStringList()
+        self.history = []
         self.historyIndex = 0
         # Read history command file
         self.readHistoryFile()
@@ -114,10 +114,10 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def settingsShell(self):
         # Set Python lexer
         self.setLexers()
-        threshold = self.settings.value("pythonConsole/autoCompThreshold", 2).toInt()[0]
+        threshold = self.settings.value("pythonConsole/autoCompThreshold", 2, type=int)
         self.setAutoCompletionThreshold(threshold)
-        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI').toString()
-        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True).toBool()
+        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')
+        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True)
         if autoCompEnabled:
             if radioButtonSource == 'fromDoc':
                 self.setAutoCompletionSource(self.AcsDocument)
@@ -135,8 +135,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.historyDlg.activateWindow()
 
     def autoCompleteKeyBinding(self):
-        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource").toString()
-        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled").toBool()
+        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource")
+        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled")
         if autoCompEnabled:
             if radioButtonSource == 'fromDoc':
                 self.autoCompleteFromDocument()
@@ -149,7 +149,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         if not self.is_cursor_on_last_line():
             self.move_cursor_to_end()
         line, pos = self.getCursorPosition()
-        selCmdLenght = self.text(line).length()
+        selCmdLenght = len(self.text(line))
         self.setSelection(line, 4, line, selCmdLenght)
         self.removeSelectedText()
         if command == "sextante":
@@ -168,8 +168,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def setLexers(self):
         self.lexer = QsciLexerPython()
 
-        loadFont = self.settings.value("pythonConsole/fontfamilytext", "Monospace").toString()
-        fontSize = self.settings.value("pythonConsole/fontsize", 10).toInt()[0]
+        loadFont = self.settings.value("pythonConsole/fontfamilytext", "Monospace")
+        fontSize = self.settings.value("pythonConsole/fontsize", 10, type=int)
 
         font = QFont(loadFont)
         font.setFixedPitch(True)
@@ -188,13 +188,13 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.lexer.setFont(font, 4)
 
         self.api = QsciAPIs(self.lexer)
-        chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True).toBool()
+        chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True)
         if chekBoxAPI:
             self.api.loadPrepared( QgsApplication.pkgDataPath() + "/python/qsci_apis/pyqgis_master.pap" )
         else:
-            apiPath = self.settings.value("pythonConsole/userAPI").toStringList()
+            apiPath = self.settings.value("pythonConsole/userAPI")
             for i in range(0, len(apiPath)):
-                self.api.load(QString(unicode(apiPath[i])))
+                self.api.load(unicode(apiPath[i]))
             self.api.prepare()
             self.lexer.setAPIs(self.api)
 
@@ -223,7 +223,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def get_end_pos(self):
         """Return (line, index) position of the last character"""
         line = self.lines() - 1
-        return (line, self.text(line).length())
+        return (line, len(self.text(line)))
 
     def is_cursor_at_end(self):
         """Return True if cursor is at the end of text"""
@@ -262,7 +262,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.move_cursor_to_end()
 
     def updateHistory(self, command):
-        if isinstance(command, QStringList):
+        if isinstance(command, list):
             for line in command:
                 self.history.append(line)
         elif not command == "":
@@ -299,7 +299,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
     def clearHistory(self, clearSession=False):
         if clearSession:
-            self.history = QStringList()
+            self.history = []
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'Session and file history cleared successfully.')
             self.parent.callWidgetMessageBar(msgText)
@@ -320,9 +320,9 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.clearHistory(True)
 
     def showPrevious(self):
-        if self.historyIndex < len(self.history) and not self.history.isEmpty():
+        if self.historyIndex < len(self.history) and self.history:
             line, pos = self.getCursorPosition()
-            selCmdLenght = self.text(line).length()
+            selCmdLenght = len(self.text(line))
             self.setSelection(line, 4, line, selCmdLenght)
             self.removeSelectedText()
             self.historyIndex += 1
@@ -335,9 +335,9 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             #self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def showNext(self):
-        if  self.historyIndex > 0 and not self.history.isEmpty():
+        if self.historyIndex > 0 and self.history:
             line, pos = self.getCursorPosition()
-            selCmdLenght = self.text(line).length()
+            selCmdLenght = len(self.text(line))
             self.setSelection(line, 4, line, selCmdLenght)
             self.removeSelectedText()
             self.historyIndex -= 1
@@ -406,7 +406,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.showNext()
         ## TODO: press event for auto-completion file directory
         else:
-            if self.settings.value("pythonConsole/autoCloseBracket", True).toBool():
+            if self.settings.value("pythonConsole/autoCloseBracket", True):
                 t = unicode(e.text())
                 ## Close bracket automatically
                 if t in self.opening:
@@ -521,9 +521,9 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
     def currentCommand(self):
         linenr, index = self.getCursorPosition()
-        txtLength = self.text(linenr).length()
+        txtLength = len(self.text(linenr))
         string = self.text()
-        cmdLine = string.right(txtLength - 4)
+        cmdLine = string[4:]
         cmd = unicode(cmdLine)
         return cmd
 
@@ -578,7 +578,7 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
         self.reloadHistory.clicked.connect(self._reloadHistory)
 
     def _runHistory(self, item):
-        cmd = item.data(Qt.DisplayRole).toString()
+        cmd = item.data(Qt.DisplayRole)
         self.parent.runCommand(unicode(cmd))
 
     def _reloadHistory(self):

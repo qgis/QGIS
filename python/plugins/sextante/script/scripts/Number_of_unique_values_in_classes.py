@@ -38,8 +38,8 @@ for inFeat in feats:
     progress.setPercentage(int((100 * nElement)/nFeat))
     nElement += 1
     attrs = inFeat.attributes()
-    clazz = attrs[class_field_index].toString()
-    value = attrs[value_field_index].toString()
+    clazz = attrs[class_field_index]
+    value = attrs[value_field_index]
     if clazz not in classes:
         classes[clazz] = []
     if value not in classes[clazz]:
@@ -54,8 +54,8 @@ for inFeat in feats:
     inGeom = inFeat.geometry()
     outFeat.setGeometry(inGeom)
     attrs = inFeat.attributes()
-    clazz = attrs[class_field_index].toString()
-    attrs.append(QVariant(len(classes[clazz])))
+    clazz = attrs[class_field_index]
+    attrs.append(len(classes[clazz]))
     outFeat.setAttributes(attrs)
     writer.addFeature(outFeat)
 

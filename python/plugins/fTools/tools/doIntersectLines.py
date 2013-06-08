@@ -95,10 +95,10 @@ class Dialog(QDialog, Ui_Dialog):
             self.outShape.clear()
             self.compute(line1, line2, field1, field2, outPath, self.progressBar)
             self.progressBar.setValue(100)
-            addToTOC = QMessageBox.question(self, self.tr("Generate Centroids"), self.tr("Created output point shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+            addToTOC = QMessageBox.question(self, self.tr("Generate Centroids"), self.tr("Created output point shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % ( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
                 if not ftools_utils.addShapeToCanvas( unicode( outPath ) ):
-                    QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( outPath ) ))
+                    QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( outPath ) ))
                 self.populateLayers()
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
@@ -108,7 +108,7 @@ class Dialog(QDialog, Ui_Dialog):
         ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( QString( self.shapefileName ) )
+        self.outShape.setText( self.shapefileName )
 
     def compute(self, line1, line2, field1, field2, outPath, progressBar):
 
@@ -144,7 +144,7 @@ class Dialog(QDialog, Ui_Dialog):
 
         index = ftools_utils.createIndex( provider2 )
 
-	fit1 = vprovider.getFeatures( QgsFeatureRequest().setSubsetOfAttributes([index1]) )
+        fit1 = vprovider.getFeatures( QgsFeatureRequest().setSubsetOfAttributes([index1]) )
         while fit1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
             v1 = inFeat.attributes()[index1]

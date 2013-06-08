@@ -134,7 +134,7 @@ class Dialog( QDialog, Ui_Dialog ):
     self.restoreGui()
 
     if not errors.isEmpty():
-      msg = QString( "Processing of the following layers/files ended with error:<br><br>" ).append( errors.join( "<br>" ) )
+      msg = self.tr( "Processing of the following layers/files ended with error:<br><br>" ) + "<br>".join(errors)
       QErrorMessage( self ).showMessage( msg )
 
     QMessageBox.information( self, self.tr( "Finished" ), self.tr( "Processing completed." ) )
@@ -162,7 +162,7 @@ class SpatialIdxThread( QThread ):
     self.mutex = QMutex()
     self.stopMe = 0
 
-    self.errors = QStringList()
+    self.errors = []
 
   def run( self ):
     self.mutex.lock()

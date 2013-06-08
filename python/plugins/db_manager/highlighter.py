@@ -75,7 +75,7 @@ class SqlHighlighter(QSyntaxHighlighter):
 		rule_sel = None
 		rule_index = -1
 
-		while index < text.length():
+		while index < len(text):
 			# search for the rule that matches starting from the less index
 			rule_sel = None
 			rule_index = -1
@@ -87,7 +87,7 @@ class SqlHighlighter(QSyntaxHighlighter):
 					if rule_sel == None or rule_index > pos:
 						rule_sel = rule
 						rule_index = pos
-						rule_length = regex.cap(0).length()
+						rule_length = len(regex.cap(0))
 
 			if rule_sel == None:	# no rule matches
 				break
@@ -112,9 +112,9 @@ class SqlHighlighter(QSyntaxHighlighter):
 			comment_length = 0
 			if pos < 0:
 				self.setCurrentBlockState(1)
-				comment_length = text.length() - index;
+				comment_length = len(text) - index;
 			else:
-				comment_length = pos - index + self.multiLineCommentEnd.cap(0).length()
+				comment_length = pos - index + len(self.multiLineCommentEnd.cap(0))
 			self.setFormat(index, comment_length, self.styles['comment'])
 			index = self.multiLineCommentStart.indexIn(text, index + comment_length)
 

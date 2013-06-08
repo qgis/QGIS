@@ -204,7 +204,7 @@ class Database(DbItemObject):
 	def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False):
 		from qgis.core import QgsMapLayer, QgsVectorLayer, QgsRasterLayer
 		uri = self.uri()
-		uri.setDataSource("", u"(%s\n)" % sql, geomCol, QString(), uniqueCol)
+		uri.setDataSource("", u"(%s\n)" % sql, geomCol, "", uniqueCol)
 		if avoidSelectById:
 			uri.disableSelectAtId( True )
 		provider = self.dbplugin().providerName()
@@ -552,9 +552,9 @@ class Table(DbItemObject):
 	def uri(self):
 		uri = self.database().uri()
 		schema = self.schemaName() if self.schemaName() else ''
-		geomCol = self.geomColumn if self.type in [Table.VectorType, Table.RasterType] else QString()
+		geomCol = self.geomColumn if self.type in [Table.VectorType, Table.RasterType] else ""
 		uniqueCol = self.getValidQGisUniqueFields(True) if self.isView else None
-		uri.setDataSource(schema, self.name, geomCol if geomCol else QString(), QString(), uniqueCol.name if uniqueCol else QString() )
+		uri.setDataSource(schema, self.name, geomCol if geomCol else "", "", uniqueCol.name if uniqueCol else "" )
 		return uri
 
 	def mimeUri(self):

@@ -78,7 +78,7 @@ class Dialog(QDialog, Ui_Dialog):
                 outName = outName.left(outName.length() - 4)
             self.compute(inPoly, inLns, inField, outPath, self.progressBar)
             self.outShape.clear()
-            addToTOC = QMessageBox.question(self, self.tr("Sum line lengths"), self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+            addToTOC = QMessageBox.question(self, self.tr("Sum line lengths"), self.tr("Created output shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % (unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
@@ -91,7 +91,7 @@ class Dialog(QDialog, Ui_Dialog):
         ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( QString( self.shapefileName ) )
+        self.outShape.setText( self.shapefileName )
 
     def compute(self, inPoly, inLns, inField, outPath, progressBar):
         polyLayer = ftools_utils.getVectorLayerByName(inPoly)
@@ -137,9 +137,8 @@ class Dialog(QDialog, Ui_Dialog):
                         outGeom = inGeom.intersection(tmpGeom)
                         length = length + distArea.measure(outGeom)
             outFeat.setGeometry(inGeom)
-            atMap.append(QVariant(length))
+            atMap.append(length)
             outFeat.setAttributes(atMap)
-            #outFeat.setAttribute(index, QVariant(length))
             writer.addFeature(outFeat)
             start = start + 1
             progressBar.setValue(start)

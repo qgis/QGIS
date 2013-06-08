@@ -103,9 +103,9 @@ class PointsInPolygon(GeoAlgorithm):
 
             outFeat.setGeometry(geom)
             if idxCount == len(attrs):
-                attrs.append(QVariant(count))
+                attrs.append(count)
             else:
-                attrs[idxCount] = QVariant(count)
+                attrs[idxCount] = count
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 

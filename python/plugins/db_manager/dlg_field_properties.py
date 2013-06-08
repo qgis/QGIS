@@ -63,7 +63,12 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
 		fld.notNull = not self.chkNull.isChecked()
 		fld.default = self.editDefault.text()
 		fld.hasDefault = fld.default != ""
-		modifier, ok = self.editLength.text().toInt()
+		try:
+			modifier = int(self.editLength.text())
+		except ValueError:
+			ok = False
+		else:
+			ok = True
 		fld.modifier = modifier if ok else None
 		return fld
 

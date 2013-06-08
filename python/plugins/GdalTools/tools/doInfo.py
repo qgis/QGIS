@@ -33,6 +33,7 @@ from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
 import GdalTools_utils as Utils
 
 import platform
+import string
 
 class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
 
@@ -66,7 +67,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
 
 
   def doCopyLine( self ):
-      output = QString()
+      output = ''
       items = self.rasterInfoList.selectedItems()
       for r in items:
         output.append( r.text() + "\n" )
@@ -75,7 +76,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
         clipboard.setText( output )
 
   def doCopyAll( self ):
-      output = QString()
+      output = ''
       for r in range( self.rasterInfoList.count() ):
         output.append( self.rasterInfoList.item( r ).text() + "\n" )
       if not output.isEmpty():
@@ -84,7 +85,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
 
   def keyPressEvent( self, e ):
       if ( e.modifiers() == Qt.ControlModifier or e.modifiers() == Qt.MetaModifier ) and e.key() == Qt.Key_C:
-        items = QString()
+        items = ''
         for r in range( self.rasterInfoList.count() ):
           items.append( self.rasterInfoList.item( r ).text() + "\n" )
         if not items.isEmpty():
@@ -98,12 +99,13 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
 
   def finished( self ):
       self.rasterInfoList.clear()
-      arr = QByteArray()
-      arr = self.base.process.readAllStandardOutput()
+      arr = str(self.base.process.readAllStandardOutput()).strip()
       if platform.system() == "Windows":
-        info = QString.fromLocal8Bit( arr ).trimmed().split( "\r\n" )
+        #info = QString.fromLocal8Bit( arr ).trimmed().split( "\r\n" )
+        # TODO test
+        info = string.split(arr, sep="\r\n" )
       else:
-        info = QString( arr ).trimmed().split( "\n" )
+        info = string.split(arr, sep="\n" )
       self.rasterInfoList.addItems( info )
 
   def fillInputFileEdit( self ):
@@ -116,12 +118,12 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
       self.inSelector.setFilename( inputFile )
 
   def getArguments( self ):
-      arguments = QStringList()
+      arguments = []
       if self.suppressGCPCheck.isChecked():
-        arguments << "-nogcp"
+        arguments.append("-nogcp")
       if self.suppressMDCheck.isChecked():
-        arguments << "-nomd"
-      arguments << self.getInputFileName()
+        arguments.append("-nomd")
+      arguments.append(self.getInputFileName())
       return arguments
 
 #  def getOutputFileName( self ):

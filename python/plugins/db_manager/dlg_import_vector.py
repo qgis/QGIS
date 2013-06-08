@@ -124,8 +124,8 @@ class DlgImportVector(QDialog, Ui_Dialog):
 		vectorFormats = qgis.core.QgsProviderRegistry.instance().fileVectorFilters()
 		# get last used dir and format
 		settings = QSettings()
-		lastDir = settings.value("/db_manager/lastUsedDir", "").toString()
-		lastVectorFormat = settings.value("/UI/lastVectorFileFilter", "").toString()
+		lastDir = settings.value("/db_manager/lastUsedDir", "")
+		lastVectorFormat = settings.value("/UI/lastVectorFileFilter", "")
 		# ask for a filename
 		filename = QFileDialog.getOpenFileName(self, "Choose the file to import", lastDir, vectorFormats, lastVectorFormat)
 		if filename == "":
@@ -167,7 +167,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 			self.inLayerMustBeDestroyed = True
 
 		else:
-			legendIndex = self.cboInputLayer.itemData( index ).toInt()[0]
+			legendIndex = self.cboInputLayer.itemData( index )
 			self.inLayer = iface.legendInterface().layers()[ legendIndex ]
 			self.inLayerMustBeDestroyed = False
 
@@ -244,14 +244,16 @@ class DlgImportVector(QDialog, Ui_Dialog):
 			return
 
 		if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
-			sourceSrid, ok = self.editSourceSrid.text().toInt()
-			if not ok:
+			try:
+				sourceSrid = self.editSourceSrid.text()
+			except ValueError:
 				QMessageBox.information(self, "Import to database", "Invalid source srid: must be an integer")
 				return
 
 		if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
-			targetSrid, ok = self.editTargetSrid.text().toInt()
-			if not ok:
+			try:
+				targetSrid = self.editTargetSrid.text()
+			except ValueError:
 				QMessageBox.information(self, "Import to database", "Invalid target srid: must be an integer")
 				return
 
@@ -291,12 +293,12 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
 			outCrs = None
 			if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
-				targetSrid = self.editTargetSrid.text().toInt()[0]
+				targetSrid = int(self.editTargetSrid.text())
 				outCrs = qgis.core.QgsCoordinateReferenceSystem(targetSrid)
 
 			# update input layer crs and encoding
 			if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
-				sourceSrid = self.editSourceSrid.text().toInt()[0]
+				sourceSrid = int(self.editSourceSrid.text())
 				inCrs = qgis.core.QgsCoordinateReferenceSystem(sourceSrid)
 				self.inLayer.setCrs( inCrs )
 

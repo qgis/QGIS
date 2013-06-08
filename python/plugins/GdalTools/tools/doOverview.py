@@ -46,7 +46,6 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
       # set the default QSpinBoxes and QProgressBar value
       self.progressBar.setValue(0)
-      self.jpegQualitySpin.setValue(80)
 
       self.progressBar.hide()
       # we don't need load to canvas functionality
@@ -55,13 +54,6 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
       self.setParamsStatus(
         [
           ( self.inSelector, SIGNAL("filenameChanged()")),
-          ( self.algorithmCombo, SIGNAL( "currentIndexChanged( int )" ), self.algorithmCheck ),
-          ( self.levelsEdit, SIGNAL( "textChanged( const QString & )" ) ),
-          ( self.roModeCheck, SIGNAL( "stateChanged( int )" ), None, 1600 ),
-          ( self.rrdCheck, SIGNAL( "stateChanged(int)" ) ),
-          ( self.jpegQualitySpin, SIGNAL( "valueChanged (int)" ) ),
-          ( self.jpegQualityContainer, None, self.tiffjpegCheck),
-          ( self.jpegQualityContainer, None, None, 1700),
           ( self.cleanCheck, SIGNAL( "stateChanged(int)" ), None, 1700 ),
           ( self.mPyramidOptionsWidget, SIGNAL( "overviewListChanged()" )),
           ( self.mPyramidOptionsWidget, SIGNAL( "someValueChanged()" ))
@@ -72,6 +64,11 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
       self.connect( self.batchCheck, SIGNAL( "stateChanged( int )" ), self.switchToolMode )
 
       self.init = False #workaround bug that pyramid options widgets are not initialized at first
+
+  # make sure we get a command line when dialog appears
+  def show_(self):
+      BaseBatchWidget.show_(self)
+      self.someValueChanged()
 
   # switch to batch or normal mode
   def switchToolMode( self ):
@@ -98,7 +95,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
   def fillInputFile( self ):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       inputFile = Utils.FileDialog.getOpenFileName( self, self.tr( "Select the input file" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if inputFile.isEmpty():
+      if inputFile == '':
         return
       Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
 
@@ -108,39 +105,45 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
   def fillInputDir( self ):
       inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files" ))
-      if inputDir.isEmpty():
+      if inputDir == '':
         return
 
       self.inSelector.setFilename( inputDir )
 
   def getArguments( self ):
-      arguments = QStringList()
+      arguments = []
 
-      arguments << "-r"
-      arguments << self.mPyramidOptionsWidget.resamplingMethod();
+      arguments.append("-r")
+      arguments.append(self.mPyramidOptionsWidget.resamplingMethod())
 
       format = self.mPyramidOptionsWidget.pyramidsFormat()
-      if format == QgsRasterDataProvider.PyramidsGTiff:
-        arguments << "-ro"
-      elif format == QgsRasterDataProvider.PyramidsErdas:
-        arguments << "--config" << "USE_RRD" << "YES"
+      if format == QgsRaster.PyramidsGTiff:
+        arguments.append("-ro")
+      elif format == QgsRaster.PyramidsErdas:
+        arguments.append("--config")
+        arguments.append("USE_RRD")
+        arguments.append("YES")
 
       for option in self.mPyramidOptionsWidget.configOptions():
         (k,v) = option.split("=")
-        arguments << "--config" << str(k) << str(v)
+        arguments.append("--config")
+        arguments.append(str(k))
+        arguments.append(str(v))
 
       if self.cleanCheck.isChecked():
-          arguments << "-clean"
+          arguments.append("-clean")
 
+      # TODO fix batch enabled, argument order is wrong, levels not at end
       if self.isBatchEnabled():
         return arguments
-
-      arguments << self.getInputFileName()
+          
+      arguments.append(self.getInputFileName())
 
       if len(self.mPyramidOptionsWidget.overviewList()) == 0:
-        arguments << "[levels]"
-      for level in self.mPyramidOptionsWidget.overviewList():
-        arguments << str(level)
+        arguments.append(self.tr("[select levels]"))
+      else:
+        for level in self.mPyramidOptionsWidget.overviewList():
+          arguments.append(str(level))
 
       # set creation options filename/layer for validation
       if self.init:
@@ -166,11 +169,12 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
   def getBatchArguments(self, inFile, outFile = None):
       arguments = self.getArguments()
-      arguments << inFile
-      if not self.levelsEdit.text().isEmpty():
-        arguments << self.levelsEdit.text().split( " " )
+      arguments.append(inFile)
+      if len(self.mPyramidOptionsWidget.overviewList()) == 0:
+        arguments.extend(["2", "4", "8", "16", "32"])
       else:
-        arguments << "2" << "4" << "8" << "16" << "32"
+        for level in self.mPyramidOptionsWidget.overviewList():
+          arguments.append(str(level))
       return arguments
 
   def isBatchEnabled(self):
@@ -182,8 +186,8 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
         BasePluginWidget.onFinished(self, exitCode, status)
         return
 
-      msg = QString.fromLocal8Bit( self.base.process.readAllStandardError() )
-      if not msg.isEmpty():
+      msg = str( self.base.process.readAllStandardError() )
+      if msg != '':
         self.errors.append( ">> " + self.inFiles[self.batchIndex] + "<br>" + msg.replace( "\n", "<br>" ) )
 
       self.base.process.close()

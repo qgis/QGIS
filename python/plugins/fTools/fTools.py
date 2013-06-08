@@ -55,9 +55,9 @@ class fToolsPlugin:
 
   def getThemeIcon(self, icon):
     settings = QSettings()
-    pluginPath = QString(os.path.dirname(__file__))
-    themePath = QString("icons") + QDir.separator() + QString(settings.value("/Themes").toString()) + QDir.separator() + QString(icon)
-    defaultPath = QString("icons") + QDir.separator() + QString("default") + QDir.separator() + QString(icon)
+    pluginPath = os.path.dirname(__file__)
+    themePath = "icons" + QDir.separator() + settings.value("/Themes") + QDir.separator() + icon
+    defaultPath = "icons" + QDir.separator() + "default" + QDir.separator() + icon
     if QFile.exists(pluginPath + QDir.separator() + themePath):
       return QIcon(":" + themePath)
     elif QFile.exists(pluginPath + QDir.separator() + defaultPath):

@@ -92,9 +92,11 @@ class TreeItem(QObject):
 		return None
 
 	def path(self):
-		pathList = QStringList()
-		if self.parent(): pathList << self.parent().path()
-		return pathList << self.data(0)
+		pathList = []
+		if self.parent():
+			pathList.append( self.parent().path() )
+		pathList.append( self.data(0) )
+		return pathList
 
 
 class PluginItem(TreeItem):
@@ -122,7 +124,7 @@ class PluginItem(TreeItem):
 		return self.getItemData().icon()
 
 	def path(self):
-		return QStringList() << self.getItemData().typeName()
+		return [ self.getItemData().typeName() ]
 
 class ConnectionItem(TreeItem):
 	def __init__(self, connection, parent=None):
@@ -249,13 +251,14 @@ class TableItem(TreeItem):
 		return self.tableIcon
 
 	def path(self):
-		pathList = QStringList()
-		if self.parent(): pathList << self.parent().path()
+		pathList = []
+		if self.parent():
+			pathList.append( self.parent().path() )
 
 		if self.getItemData().type == Table.VectorType:
-			pathList << "%s::%s" % ( self.data(0), self.getItemData().geomColumn )
+			pathList.append( "%s::%s" % ( self.data(0), self.getItemData().geomColumn ) )
 		else:
-			pathList << self.data(0)
+			pathList.append( self.data(0) )
 
 		return pathList
 
@@ -330,17 +333,17 @@ class DBModel(QAbstractItemModel):
 
 	def data(self, index, role):
 		if not index.isValid():
-			return QVariant()
+			return None
 
 		if role == Qt.DecorationRole and index.column() == 0:
 			icon = index.internalPointer().icon()
-			if icon: return QVariant(icon)
+			if icon: return icon
 
 		if role != Qt.DisplayRole and role != Qt.EditRole:
-			return QVariant()
+			return None
 
 		retval = index.internalPointer().data(index.column())
-		return QVariant(retval) if retval else QVariant()
+		return retval
 
 	def flags(self, index):
 		if not index.isValid():
@@ -367,8 +370,8 @@ class DBModel(QAbstractItemModel):
 
 	def headerData(self, section, orientation, role):
 		if orientation == Qt.Horizontal and role == Qt.DisplayRole and section < len(self.header):
-			return QVariant(self.header[section])
-		return QVariant()
+			return self.header[section]
+		return None
 
 	def index(self, row, column, parent):
 		if not self.hasIndex(row, column, parent):
@@ -409,7 +412,7 @@ class DBModel(QAbstractItemModel):
 			return False
 
 		item = index.internalPointer()
-		new_value = unicode(value.toString())
+		new_value = unicode(value)
 
 		if isinstance(item, SchemaItem) or isinstance(item, TableItem):
 			obj = item.getItemData()
@@ -470,7 +473,7 @@ class DBModel(QAbstractItemModel):
 	QGIS_URI_MIME = "application/x-vnd.qgis.qgis.uri"
 
 	def mimeTypes(self):
-		return QStringList() << "text/uri-list" << self.QGIS_URI_MIME
+		return ["text/uri-list", self.QGIS_URI_MIME]
 
 	def mimeData(self, indexes):
 		mimeData = QMimeData()
@@ -502,7 +505,7 @@ class DBModel(QAbstractItemModel):
 		if data.hasUrls():
 			for u in data.urls():
 				filename = u.toLocalFile()
-				if filename.isEmpty():
+				if filename == "":
 					continue
 
 				if qgis.core.QgsRasterLayer.isValidRasterFileName( filename ):
@@ -524,7 +527,7 @@ class DBModel(QAbstractItemModel):
 			while not stream.atEnd():
 				mimeUri = stream.readQString()
 
-				parts = QStringList() << unicode(mimeUri).split(":", 3)
+				parts = mimeUri.split(":", 3)
 				if len(parts) != 4:
 					# invalid qgis mime uri
 					QMessageBox.warning(None, "Invalid MIME uri", "The dropped object is not a valid QGis layer")
@@ -570,8 +573,8 @@ class DBModel(QAbstractItemModel):
 
 		if inLayer.type() == inLayer.VectorLayer:
 			# create the output uri
-			schema = outSchema.name if outDb.schemas() != None and outSchema != None else QString()
-			pkCol = geomCol = QString()
+			schema = outSchema.name if outDb.schemas() != None and outSchema != None else ""
+			pkCol = geomCol = ""
 
 			# default pk and geom field name value
 			if providerKey in ['postgres', 'spatialite']:
@@ -580,7 +583,7 @@ class DBModel(QAbstractItemModel):
 				geomCol = inUri.geometryColumn()
 
 			outUri = outDb.uri()
-			outUri.setDataSource( schema, layerName, geomCol, QString(), pkCol )
+			outUri.setDataSource( schema, layerName, geomCol, "", pkCol )
 
 			self.emit( SIGNAL("importVector"), inLayer, outDb, outUri, toIndex )
 			return True

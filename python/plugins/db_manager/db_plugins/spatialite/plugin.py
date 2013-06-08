@@ -71,7 +71,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
 		if not settings.contains( "sqlitepath" ): # non-existent entry?
 			raise InvalidDataException( u'there is no defined database connection "%s".' % conn_name )
 
-		database = unicode(settings.value("sqlitepath").toString())
+		database = settings.value("sqlitepath")
 
 		import qgis.core
 		uri = qgis.core.QgsDataSourceURI()
@@ -217,11 +217,11 @@ class SLRasterTable(SLTable, RasterTable):
 	def gdalUri(self):
 		uri = self.database().uri()
 		gdalUri = u'RASTERLITE:%s,table=%s' % (uri.database(), self.prefixName)
-		return QString( gdalUri )
+		return gdalUri
 
 	def mimeUri(self):
 		uri = u"raster:gdal:%s:%s" % (self.name, self.gdalUri())
-		return QString( uri )
+		return uri
 
 	def toMapLayer(self):
 		from qgis.core import QgsRasterLayer

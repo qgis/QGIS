@@ -87,9 +87,9 @@ class BatchOutputSelectionPanel(QtGui.QWidget):
                             elif isinstance(param, ParameterBoolean):
                                 s = str(widget.currentIndex() == 0)
                             elif isinstance(param, ParameterSelection):
-                                s = str(widget.currentText())
+                                s = unicode(widget.currentText())
                             elif isinstance(param, ParameterFixedTable):
-                                s = str(widget.table)
+                                s = unicode(widget.table)
                             else:
                                 s = unicode(widget.text())
                             name = filename[:filename.rfind(".")] + s + filename[filename.rfind("."):]

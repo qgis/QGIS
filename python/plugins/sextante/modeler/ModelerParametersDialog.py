@@ -822,7 +822,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             name =  self.getSafeNameForHarcodedParameter(param)
             value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
             self.params[param.name] = value
-            self.values[name] = str(widget.text())
+            self.values[name] = unicode(widget.text())
             return True
 
     def getSafeNameForHarcodedParameter(self, param):

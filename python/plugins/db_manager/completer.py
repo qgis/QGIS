@@ -37,10 +37,10 @@ class SqlCompleter(QCompleter):
 			from .sql_dictionary import getSqlDictionary
 			dictionary = getSqlDictionary()
 
-		wordlist = QStringList()
+		wordlist = []
 		for name, value in dictionary.iteritems():
-			wordlist << value
-		wordlist = QStringList() << list(set( wordlist ))	# remove duplicates
+			wordlist += value	# concat lists
+		wordlist = list( set(wordlist) )	# remove duplicates
 
 		# setup the completer
 		QCompleter.__init__(self, sorted(wordlist), editor)
@@ -70,10 +70,10 @@ class CompletionTextEdit(QTextEdit):
 
 	def insertCompletion(self, completion):
 		tc = self.textCursor()
-		extra = completion.length() - self.completer.completionPrefix().length()
+		extra = len(completion) - len(self.completer.completionPrefix())
 		tc.movePosition(QTextCursor.Left)
 		tc.movePosition(QTextCursor.EndOfWord)
-		tc.insertText(completion.right(extra))
+		tc.insertText(completion[-extra:])
 		self.setTextCursor(tc)
 
 	def textUnderCursor(self):
@@ -99,18 +99,18 @@ class CompletionTextEdit(QTextEdit):
 
 		# ctrl or shift key on it's own??
 		ctrlOrShift = event.modifiers() in (Qt.ControlModifier, Qt.ShiftModifier)
-		if ctrlOrShift and event.text().isEmpty():
+		if ctrlOrShift and event.text() == "":
 			# ctrl or shift key on it's own
 			return
 
-		eow = QString("~!@#$%^&*()+{}|:\"<>?,./;'[]\\-=") # end of word
+		eow = "~!@#$%^&*()+{}|:\"<>?,./;'[]\\-=" # end of word
 
 		hasModifier = event.modifiers() != Qt.NoModifier and not ctrlOrShift
 
 		completionPrefix = self.textUnderCursor()
 
-		if not isShortcut and (hasModifier or event.text().isEmpty() or
-				completionPrefix.length() < 3 or eow.contains(event.text().right(1))):
+		if not isShortcut and (hasModifier or event.text() == "" or
+				len(completionPrefix) < 3 or event.text()[-1] in eow):
 			self.completer.popup().hide()
 			return
 

@@ -93,7 +93,7 @@ class DBConnector:
 	def _get_cursor(self, name=None):
 		try:
 			if name != None:
-				name = QString( unicode(name).encode('ascii', 'replace') ).replace( QRegExp("\W"), "_" ).toAscii()
+				name = unicode(name).encode('ascii', 'replace').replace( '?', "_" )
 				self._last_cursor_named_id = 0 if not hasattr(self, '_last_cursor_named_id') else self._last_cursor_named_id + 1
 				return self.connection.cursor( "%s_%d" % (name, self._last_cursor_named_id) )
 

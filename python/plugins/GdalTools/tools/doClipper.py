@@ -88,7 +88,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       if self.extentModeRadio.isChecked():
         enabler = self.extentSelector.isCoordsValid()
       else:
-        enabler = not self.maskSelector.filename().isEmpty()
+        enabler = not self.maskSelector.filename() == ''
       self.base.enableRun( enabler )
 
   def extentChanged(self):
@@ -104,7 +104,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillInputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       inputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Polygonize" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if inputFile.isEmpty():
+      if inputFile == '':
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -113,7 +113,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
-      if outputFile.isEmpty():
+      if outputFile == '':
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -123,7 +123,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillMaskFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
       maskFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the mask file" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter )
-      if maskFile.isEmpty():
+      if maskFile == '':
         return
       Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
 
@@ -137,48 +137,48 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
   def getArgsModeExtent(self):
       self.base.setPluginCommand( "gdal_translate" )
-      arguments = QStringList()
+      arguments = []
       if self.noDataCheck.isChecked():
-        arguments << "-a_nodata"
+        arguments.append("-a_nodata")
         arguments << str(self.noDataSpin.value())
       if self.extentModeRadio.isChecked() and self.extentSelector.isCoordsValid():
         rect = self.extentSelector.getExtent()
         if rect != None:
-          arguments << "-projwin"
-          arguments << str(rect.xMinimum())
-          arguments << str(rect.yMaximum())
-          arguments << str(rect.xMaximum())
-          arguments << str(rect.yMinimum())
-      if not self.getOutputFileName().isEmpty():
-        arguments << "-of"
-        arguments << self.outputFormat
-      arguments << self.getInputFileName()
-      arguments << self.getOutputFileName()
+          arguments.append("-projwin")
+          arguments.append(str(rect.xMinimum()))
+          arguments.append(str(rect.yMaximum()))
+          arguments.append(str(rect.xMaximum()))
+          arguments.append(str(rect.yMinimum()))
+      if not self.getOutputFileName() == '':
+        arguments.append("-of")
+        arguments.append(self.outputFormat)
+      arguments.append(self.getInputFileName())
+      arguments.append(self.getOutputFileName())
       return arguments
 
   def getArgsModeMask(self):
       self.base.setPluginCommand( "gdalwarp" )
-      arguments = QStringList()
+      arguments = []
       if self.noDataCheck.isChecked():
-        arguments << "-dstnodata"
-        arguments << str(self.noDataSpin.value())
+        arguments.append("-dstnodata")
+        arguments.append(str(self.noDataSpin.value()))
       if self.maskModeRadio.isChecked():
         mask = self.maskSelector.filename()
-        if not mask.isEmpty():
-          arguments << "-q"
-          arguments << "-cutline"
-          arguments << mask
+        if not mask == '':
+          arguments.append("-q")
+          arguments.append("-cutline")
+          arguments.append(mask)
           if Utils.GdalConfig.version() >= "1.8.0":
-            arguments << "-crop_to_cutline"
+            arguments.append("-crop_to_cutline")
           if self.alphaBandCheck.isChecked():
-            arguments << "-dstalpha"
+            arguments.append("-dstalpha")
 
       outputFn = self.getOutputFileName()
-      if not outputFn.isEmpty():
-        arguments << "-of"
-        arguments << self.outputFormat
-      arguments << self.getInputFileName()
-      arguments << outputFn
+      if not outputFn == '':
+        arguments.append("-of")
+        arguments.append(self.outputFormat)
+      arguments.append(self.getInputFileName())
+      arguments.append(outputFn)
       return arguments
 
   def getOutputFileName(self):

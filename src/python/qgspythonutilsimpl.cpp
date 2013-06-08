@@ -88,11 +88,24 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   runString( "sys.path = [" + newpaths.join( "," ) + "] + sys.path" );
 
   // import SIP
-  if ( !runString( "from sip import wrapinstance, unwrapinstance",
+  if ( !runString( "import sip",
                    QObject::tr( "Couldn't load SIP module." ) + "\n" + QObject::tr( "Python support will be disabled." ) ) )
   {
     exitPython();
     return;
+  }
+
+  // set PyQt4 api versions
+  QStringList apiV2classes;
+  apiV2classes << "QDate" << "QDateTime" << "QString" << "QTextStream" << "QTime" << "QUrl" << "QVariant";
+  foreach ( const QString& clsName, apiV2classes )
+  {
+    if ( !runString( QString( "sip.setapi('%1', 2)" ).arg( clsName ),
+                     QObject::tr( "Couldn't set SIP API versions.") + "\n" + QObject::tr( "Python support will be disabled." ) ) )
+    {
+      exitPython();
+      return;
+    }
   }
 
   // import Qt bindings

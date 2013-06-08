@@ -32,11 +32,11 @@ class BaseTableModel(QAbstractTableModel):
 		self.resdata = data if data else []
 
 	def headerToString(self, sep=u"\t"):
-		header = QStringList() << self._header
-		return header.join( sep )
+		header = self._header
+		return sep.join(header)
 
 	def rowToString(self, row, sep=u"\t"):
-		text = QString()
+		text = u""
 		for col in range(self.columnCount()):
 			text += u"%s" % self.getData(row, col) + sep
 		return text[:-1]
@@ -55,37 +55,37 @@ class BaseTableModel(QAbstractTableModel):
 
 	def data(self, index, role):
 		if role != Qt.DisplayRole and role != Qt.FontRole:
-			return QVariant()
+			return None
 
 		val = self.getData(index.row(), index.column())
 
 		if role == Qt.FontRole:	# draw NULL in italic
 			if val != None:
-				return QVariant()
+				return None
 			f = QFont()
 			f.setItalic(True)
-			return QVariant(f)
+			return f
 
 		if val == None:
-			return QVariant("NULL")
+			return "NULL"
 		elif isinstance(val, buffer):
 			# hide binary data
-			return QVariant()
-		elif isinstance(val, (str, unicode, QString)) and len(val) > 300:
+			return None
+		elif isinstance(val, (str, unicode)) and len(val) > 300:
 			# too much data to display, elide the string
-			return QVariant( u"%s..." % val[:300] )
-		return QVariant( unicode(val) )	# convert to string
+			return u"%s..." % val[:300]
+		return unicode(val)	# convert to string
 
 	def headerData(self, section, orientation, role):
 		if role != Qt.DisplayRole:
-			return QVariant()
+			return None
 
 		if orientation == Qt.Vertical:
 			# header for a row
-			return QVariant(section+1)
+			return section+1
 		else:
 			# header for a column
-			return QVariant(self._header[section])
+			return self._header[section]
 
 
 class TableDataModel(BaseTableModel):
@@ -180,8 +180,8 @@ class SimpleTableModel(QStandardItemModel):
 
 	def headerData(self, section, orientation, role):
 		if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-			return QVariant(self.header[section])
-		return QVariant()
+			return self.header[section]
+		return None
 
 	def _getNewObject(self):
 		pass
@@ -201,15 +201,15 @@ class TableFieldsModel(SimpleTableModel):
 
 	def headerData(self, section, orientation, role):
 		if orientation == Qt.Vertical and role == Qt.DisplayRole:
-			return QVariant(section+1)
+			return section+1
 		return SimpleTableModel.headerData(self, section, orientation, role)
 
 	def append(self, fld):
 		data = [fld.name, fld.type2String(), not fld.notNull, fld.default2String()]
 		self.appendRow( self.rowFromData(data) )
 		row = self.rowCount()-1
-		self.setData(self.index(row, 0), QVariant(fld), Qt.UserRole)
-		self.setData(self.index(row, 1), QVariant(fld.primaryKey), Qt.UserRole)
+		self.setData(self.index(row, 0), fld, Qt.UserRole)
+		self.setData(self.index(row, 1), fld.primaryKey, Qt.UserRole)
 
 	def _getNewObject(self):
 		from .plugin import TableField
@@ -217,21 +217,21 @@ class TableFieldsModel(SimpleTableModel):
 
 	def getObject(self, row):
 		val = self.data(self.index(row, 0), Qt.UserRole)
-		fld = val.toPyObject() if val.isValid() else self._getNewObject()
-		fld.name = self.data(self.index(row, 0)).toString()
+		fld = val if val != None else self._getNewObject()
+		fld.name = self.data(self.index(row, 0)) or ""
 
-		typestr = self.data(self.index(row, 1)).toString()
+		typestr = self.data(self.index(row, 1)) or ""
 		regex = QRegExp( "([^\(]+)\(([^\)]+)\)" )
-		startpos = regex.indexIn( QString(typestr) )
+		startpos = regex.indexIn( typestr )
 		if startpos >= 0:
-			fld.dataType = regex.cap(1).trimmed()
-			fld.modifier = regex.cap(2).trimmed()
+			fld.dataType = regex.cap(1).strip()
+			fld.modifier = regex.cap(2).strip()
 		else:
 			fld.modifier = None
 			fld.dataType = typestr
 
-		fld.notNull = not self.data(self.index(row, 2)).toBool()
-		fld.primaryKey = self.data(self.index(row, 1), Qt.UserRole).toBool()
+		fld.notNull = self.data(self.index(row, 2)) != "true"
+		fld.primaryKey = self.data(self.index(row, 1), Qt.UserRole)
 		return fld
 
 	def getFields(self):
@@ -250,9 +250,9 @@ class TableConstraintsModel(SimpleTableModel):
 		data = [constr.name, constr.type2String(), u", ".join(field_names)]
 		self.appendRow( self.rowFromData(data) )
 		row = self.rowCount()-1
-		self.setData(self.index(row, 0), QVariant(constr), Qt.UserRole)
-		self.setData(self.index(row, 1), QVariant(constr.type), Qt.UserRole)
-		self.setData(self.index(row, 2), QVariant(constr.columns), Qt.UserRole)
+		self.setData(self.index(row, 0), constr, Qt.UserRole)
+		self.setData(self.index(row, 1), constr.type, Qt.UserRole)
+		self.setData(self.index(row, 2), constr.columns, Qt.UserRole)
 
 	def _getNewObject(self):
 		from .plugin import TableConstraint
@@ -261,9 +261,9 @@ class TableConstraintsModel(SimpleTableModel):
 	def getObject(self, row):
 		val = self.data(self.index(row, 0), Qt.UserRole)
 		constr = val.toPyObject() if val.isValid() else self._getNewObject()
-		constr.name = self.data(self.index(row, 0)).toString()
-		constr.type = self.data(self.index(row, 1), Qt.UserRole).toInt()[0]
-		constr.columns = self.data(self.index(row, 2), Qt.UserRole).toList()
+		constr.name = self.data(self.index(row, 0)) or ""
+		constr.type = self.data(self.index(row, 1), Qt.UserRole)
+		constr.columns = self.data(self.index(row, 2), Qt.UserRole)
 		return constr
 
 	def getConstraints(self):
@@ -282,8 +282,8 @@ class TableIndexesModel(SimpleTableModel):
 		data = [idx.name, u", ".join(field_names)]
 		self.appendRow( self.rowFromData(data) )
 		row = self.rowCount()-1
-		self.setData(self.index(row, 0), QVariant(idx), Qt.UserRole)
-		self.setData(self.index(row, 1), QVariant(idx.columns), Qt.UserRole)
+		self.setData(self.index(row, 0), idx, Qt.UserRole)
+		self.setData(self.index(row, 1), idx.columns, Qt.UserRole)
 
 	def _getNewObject(self):
 		from .plugin import TableIndex

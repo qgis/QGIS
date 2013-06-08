@@ -176,11 +176,18 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
   buildsupportedrasterfilefilter_t *pBuild = ( buildsupportedrasterfilefilter_t * ) cast_to_fptr( QgsProviderRegistry::instance()->function( "gdal", "buildSupportedRasterFileFilter" ) );
   if ( ! pBuild )
   {
-    QgsDebugMsg( "Could get buildSupportedRasterFileFilter in gdal provider library" );
+    QgsDebugMsg( "Could not get buildSupportedRasterFileFilter in gdal provider library" );
     return;
   }
 
   pBuild( theFileFiltersString );
+}
+
+QString QgsRasterLayer::buildSupportedRasterFileFilter2( )
+{
+  QString theFileFiltersString;
+  buildSupportedRasterFileFilter( theFileFiltersString );
+  return theFileFiltersString;
 }
 
 /**

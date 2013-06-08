@@ -145,7 +145,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       workDir.setNameFilters( filter )
 
       # search for a valid SRS, then use it as default target SRS
-      srs = QString()
+      srs = ''
       for fname in workDir.entryList():
         fl = inputDir + "/" + fname
         srs = Utils.getRasterSRS( self, fl )
