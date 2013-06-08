@@ -326,7 +326,7 @@ class Repositories(QObject):
     if self.checkingOnStartInterval() == 0:
       return True
     settings = QSettings()
-    interval = settings.value(settingsGroup+"/checkOnStartLastDate").toDate().daysTo(QDate.currentDate())
+    interval = settings.value(settingsGroup+"/checkOnStartLastDate",type=QDate).daysTo(QDate.currentDate())
     if interval >= self.checkingOnStartInterval():
       return True
     else:
