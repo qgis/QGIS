@@ -188,7 +188,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.lexer.setFont(font, 4)
 
         self.api = QsciAPIs(self.lexer)
-        chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True)
+        chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
         if chekBoxAPI:
             self.api.loadPrepared( QgsApplication.pkgDataPath() + "/python/qsci_apis/pyqgis_master.pap" )
         else:

@@ -236,13 +236,13 @@ class Editor(QsciScintilla):
         self.lexer.setFont(font, 4)
 
         self.api = QsciAPIs(self.lexer)
-        chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True)
+        chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
         if chekBoxAPI:
             self.api.loadPrepared( QgsApplication.pkgDataPath() + "/python/qsci_apis/pyqgis_master.pap" )
         else:
             apiPath = self.settings.value("pythonConsole/userAPI")
             for i in range(0, len(apiPath)):
-                self.api.load(QString(unicode(apiPath[i])))
+                self.api.load(unicode(apiPath[i]))
             self.api.prepare()
             self.lexer.setAPIs(self.api)
 
@@ -547,12 +547,9 @@ class Editor(QsciScintilla):
             sys.stderr.write(s)
 
     def runScriptCode(self):
-        autoSave = self.settings.value("pythonConsole/autoSaveScript")
-
+        autoSave = self.settings.value("pythonConsole/autoSaveScript", False, type=bool)
         tabWidget = self.parent.tw.currentWidget()
-
         filename = tabWidget.path
-
         msgEditorBlank = QCoreApplication.translate('PythonConsole',
                                                     'Hey, type something to run!')
         msgEditorUnsaved = QCoreApplication.translate('PythonConsole',
@@ -958,6 +955,7 @@ class EditorTabWidget(QTabWidget):
     def saveAs(self):
         idx = self.idx
         self.parent.saveAsScriptFile(idx)
+        self.setCurrentWidget(self.widget(idx))
 
     def enableSaveIfModified(self, tab):
         tabWidget = self.widget(tab)

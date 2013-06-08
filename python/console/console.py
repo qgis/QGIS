@@ -52,9 +52,9 @@ def show_console():
       _console.activate()
   ## Shows help on first launch of the console
   settings = QSettings()
-  if settings.value('pythonConsole/contextHelpOnFirstLaunch', True).toBool():
+  if settings.value('pythonConsole/contextHelpOnFirstLaunch', True, type=bool):
       QgsContextHelp.run( "PythonConsole" )
-      settings.setValue('pythonConsole/contextHelpOnFirstLaunch', QVariant(False))
+      settings.setValue('pythonConsole/contextHelpOnFirstLaunch', False)
 
 _old_stdout = sys.stdout
 _console_output = None
@@ -615,7 +615,7 @@ class PythonConsoleWidget(QWidget):
         self.tabEditorWidget.currentWidget().newEditor.commentEditorCode(False)
 
     def openScriptFile(self):
-        lastDirPath = self.settings.value("pythonConsole/lastDirPath")
+        lastDirPath = self.settings.value("pythonConsole/lastDirPath", "")
         openFileTr = QCoreApplication.translate("PythonConsole", "Open File")
         fileList = QFileDialog.getOpenFileNames(
                         self, openFileTr, lastDirPath, "Script file (*.py)")
@@ -645,9 +645,9 @@ class PythonConsoleWidget(QWidget):
                                                                                                            error.strerror))
             self.callWidgetMessageBarEditor(msgText, 2, False)
 
-    def saveAsScriptFile(self, index=None):
+    def saveAsScriptFile(self, index=-1):
         tabWidget = self.tabEditorWidget.currentWidget()
-        if index:
+        if index != -1:
             tabWidget = self.tabEditorWidget.widget(index)
         index = self.tabEditorWidget.currentIndex()
         if tabWidget is None:
@@ -701,6 +701,8 @@ class PythonConsoleWidget(QWidget):
         if action == 'remove':
             self.tabListScript.remove(script)
         elif action == 'append':
+            if not self.tabListScript:
+                self.tabListScript = []
             if script not in self.tabListScript:
                 self.tabListScript.append(script)
         else:
@@ -716,7 +718,7 @@ class PythonConsoleWidget(QWidget):
         self.shell.writeHistoryFile(True)
 
     def restoreSettingsConsole(self):
-        storedTabScripts = self.settings.value("pythonConsole/tabScripts")
+        storedTabScripts = self.settings.value("pythonConsole/tabScripts", [])
         self.tabListScript = storedTabScripts
         self.splitter.restoreState(self.settings.value("pythonConsole/splitterConsole", QByteArray()))
         self.splitterEditor.restoreState(self.settings.value("pythonConsole/splitterEditor", QByteArray()))

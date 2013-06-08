@@ -61,14 +61,14 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
     def loadAPIFile(self):
         settings = QSettings()
-        lastDirPath = settings.value("pythonConsole/lastDirAPIPath")
+        lastDirPath = settings.value("pythonConsole/lastDirAPIPath", "", type=str)
         fileAPI = QFileDialog.getOpenFileName(
                         self, "Open API File", lastDirPath, "API file (*.api)")
         if fileAPI:
             self.addAPI(fileAPI)
 
             lastDirPath = QFileInfo(fileAPI).path()
-            settings.setValue("pythonConsole/lastDirAPIPath", QVariant(fileAPI))
+            settings.setValue("pythonConsole/lastDirAPIPath", fileAPI)
 
     def accept(self):
         if not self.preloadAPI.isChecked():
@@ -150,13 +150,14 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
                                                                     "Monospace")))
         self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True, type=bool))
         itemTable = settings.value("pythonConsole/userAPI", [])
-        for i in range(len(itemTable)):
-            self.tableWidget.insertRow(i)
-            self.tableWidget.setColumnCount(2)
-            pathSplit = itemTable[i].split("/")
-            apiName = pathSplit[-1][0:-4]
-            self.tableWidget.setItem(i, 0, QTableWidgetItem(apiName))
-            self.tableWidget.setItem(i, 1, QTableWidgetItem(itemTable[i]))
+        if itemTable:
+            for i in range(len(itemTable)):
+                self.tableWidget.insertRow(i)
+                self.tableWidget.setColumnCount(2)
+                pathSplit = itemTable[i].split("/")
+                apiName = pathSplit[-1][0:-4]
+                self.tableWidget.setItem(i, 0, QTableWidgetItem(apiName))
+                self.tableWidget.setItem(i, 1, QTableWidgetItem(itemTable[i]))
         self.autoSaveScript.setChecked(settings.value("pythonConsole/autoSaveScript", False, type=bool))
 
         self.autoCompThreshold.setValue(settings.value("pythonConsole/autoCompThreshold", 2, type=int))
