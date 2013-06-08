@@ -26,12 +26,12 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-from qgis.utils import iface
-from installer_gui import QgsPluginInstallerInstallingDialog, QgsPluginInstallerPluginErrorDialog
-from installer_gui import QgsPluginInstallerFetchingDialog, QgsPluginInstallerRepositoryDialog
-from installer_gui import removeDir
+from qgis.utils import iface, startPlugin, unloadPlugin, loadPlugin, reloadPlugin, updateAvailablePlugins
 from installer_data import *
-from qgis.utils import startPlugin, unloadPlugin, loadPlugin, reloadPlugin, updateAvailablePlugins
+from qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
+from qgsplugininstallerpluginerrordialog import QgsPluginInstallerPluginErrorDialog
+from qgsplugininstallerfetchingdialog import QgsPluginInstallerFetchingDialog
+from qgsplugininstallerrepositorydialog import QgsPluginInstallerRepositoryDialog
 
 
 # public instances:

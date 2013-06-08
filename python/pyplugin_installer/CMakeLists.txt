@@ -5,7 +5,10 @@ SET(PY_PLUGININSTALLER_FILES
     __init__.py
     installer.py
     installer_data.py
-    installer_gui.py
+    qgsplugininstallerinstallingdialog.py
+    qgsplugininstallerpluginerrordialog.py
+    qgsplugininstallerfetchingdialog.py
+    qgsplugininstallerrepositorydialog.py
     unzip.py
     version_compare.py
 )
