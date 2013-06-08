@@ -21,7 +21,6 @@ PYQT4_WRAP_UI(PYUI_FILES
     qgsplugininstallerinstallingbase.ui
     qgsplugininstallerpluginerrorbase.ui
     qgsplugininstallerrepositorybase.ui
-    qgsplugininstalleroldreposbase.ui
 )
 
 ADD_CUSTOM_TARGET(pyplugin-installer ALL DEPENDS ${PYUI_FILES})
