@@ -732,6 +732,12 @@ void QgsRasterLayerProperties::sync()
   mLayerTitleLineEdit->setText( mRasterLayer->title() );
   mLayerAbstractTextEdit->setPlainText( mRasterLayer->abstract() );
   mLayerKeywordListLineEdit->setText( mRasterLayer->keywordList() );
+  mLayerDataUrlLineEdit->setText( mRasterLayer->dataUrl() );
+  mLayerDataUrlFormatComboBox->setCurrentIndex(
+    mLayerDataUrlFormatComboBox->findText(
+      mRasterLayer->dataUrlFormat()
+    )
+  );
   //layer attribution and metadataUrl
   mLayerAttributionLineEdit->setText( mRasterLayer->attribution() );
   mLayerAttributionUrlLineEdit->setText( mRasterLayer->attributionUrl() );
@@ -912,6 +918,8 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->setTitle( mLayerTitleLineEdit->text() );
   mRasterLayer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
   mRasterLayer->setKeywordList( mLayerKeywordListLineEdit->text() );
+  mRasterLayer->setDataUrl( mLayerDataUrlLineEdit->text() );
+  mRasterLayer->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
   //layer attribution and metadataUrl
   mRasterLayer->setAttribution( mLayerAttributionLineEdit->text() );
   mRasterLayer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );

@@ -229,6 +229,12 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mLayerTitleLineEdit->setText( layer->title() );
     mLayerAbstractTextEdit->setPlainText( layer->abstract() );
     mLayerKeywordListLineEdit->setText( layer->keywordList() );
+    mLayerDataUrlLineEdit->setText( layer->dataUrl() );
+    mLayerDataUrlFormatComboBox->setCurrentIndex(
+      mLayerDataUrlFormatComboBox->findText(
+        layer->dataUrlFormat()
+      )
+    );
     //layer attribution and metadataUrl
     mLayerAttributionLineEdit->setText( layer->attribution() );
     mLayerAttributionUrlLineEdit->setText( layer->attributionUrl() );
@@ -484,6 +490,8 @@ void QgsVectorLayerProperties::apply()
   layer->setTitle( mLayerTitleLineEdit->text() );
   layer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
   layer->setKeywordList( mLayerKeywordListLineEdit->text() );
+  layer->setDataUrl( mLayerDataUrlLineEdit->text() );
+  layer->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
   //layer attribution and metadataUrl
   layer->setAttribution( mLayerAttributionLineEdit->text() );
   layer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );

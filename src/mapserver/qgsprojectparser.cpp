@@ -771,6 +771,24 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       }
 
       // layer attribution
+      QString dataUrl = currentLayer->dataUrl();
+      if ( !dataUrl.isEmpty() )
+      {
+        QDomElement dataUrlElem = doc.createElement( "DataURL" );
+        QDomElement dataUrlFormatElem = doc.createElement( "Format" );
+        QString dataUrlFormat = currentLayer->dataUrlFormat();
+        QDomText dataUrlFormatText = doc.createTextNode( dataUrlFormat );
+        dataUrlFormatElem.appendChild( dataUrlFormatText );
+        dataUrlElem.appendChild( dataUrlFormatElem );
+        QDomElement dataORElem = doc.createElement( "OnlineResource" );
+        dataORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+        dataORElem.setAttribute( "xlink:type", "simple" );
+        dataORElem.setAttribute( "xlink:href", dataUrl );
+        dataUrlElem.appendChild( dataORElem );
+        layerElem.appendChild( dataUrlElem );
+      }
+
+      // layer attribution
       QString attribution = currentLayer->attribution();
       if ( !attribution.isEmpty() )
       {
@@ -808,6 +826,10 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
         else if ( metadataUrlType == "TC211" )
         {
           metaUrlElem.setAttribute( "type", "ISO19115:2003" );
+        } 
+        else
+        {
+          metaUrlElem.setAttribute( "type", metadataUrlType );
         }
         QString metadataUrlFormat = currentLayer->metadataUrlFormat();
         if ( !metadataUrlFormat.isEmpty() )
@@ -1122,6 +1144,21 @@ void QgsProjectParser::addOWSLayers( QDomDocument &doc,
           keywordsElem.appendChild( keywordElem );
         }
         layerElem.appendChild( keywordsElem );
+      }
+
+      // layer data URL
+      QString dataUrl = currentLayer->dataUrl();
+      if ( !dataUrl.isEmpty() )
+      {
+        QDomElement dataUrlElem = doc.createElement( "DataURL" );
+        QString dataUrlFormat = currentLayer->dataUrlFormat();
+        dataUrlElem.setAttribute( "format", dataUrlFormat );
+        QDomElement dataORElem = doc.createElement( "OnlineResource" );
+        dataORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+        dataORElem.setAttribute( "xlink:type", "simple" );
+        dataORElem.setAttribute( "xlink:href", dataUrl );
+        dataUrlElem.appendChild( dataORElem );
+        layerElem.appendChild( dataUrlElem );
       }
 
       // layer metadata URL
