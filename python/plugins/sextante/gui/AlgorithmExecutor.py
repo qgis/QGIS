@@ -35,7 +35,7 @@ import sys
 
 class AlgorithmExecutor(QThread):
     percentageChanged = pyqtSignal(int)
-    textChanged = pyqtSignal(QString)
+    textChanged = pyqtSignal(str)
     error = pyqtSignal(str)
     internalError = pyqtSignal(BaseException)
     iterated = pyqtSignal(int)
