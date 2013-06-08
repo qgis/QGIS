@@ -71,15 +71,23 @@ class QgsPluginInstaller(QObject):
         repositories.setRepositoryData(key, "state", 3)
 
     # look for obsolete plugins (the user-installed one is newer than core one)
-    for i in plugins.obsoletePlugins:
-      if i == "plugin_installer":
-        # uninstall the installer itself
-        QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Plugin Installer update"), self.tr("The Plugin Installer has been updated. Please restart QGIS prior to using it"))
-        removeDir( QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/" + plugins.localCache[i]["id"] )
-        return
-      else:
-        # don't remove brutally other plugins, just inform
-        QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Plugin Conflict:")+" "+plugins.localCache[i]["name"], "<b>"+ plugins.localCache[i]["name"] + "</b><br/><br/>" + self.tr("The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS."))
+    for key in plugins.obsoletePlugins:
+      plugin = plugins.localCache[key]
+      msg = QMessageBox()
+      msg.setIcon( QMessageBox.Warning )
+      msg.setWindowTitle( self.tr("QGIS Python Plugin Installer") )
+      msg.addButton( self.tr("Uninstall (recommended)"), QMessageBox.AcceptRole )
+      msg.addButton( self.tr("I will uninstall it later"), QMessageBox.RejectRole )
+      msg.setText( "%s <b>%s</b><br/><br/>%s" % ( self.tr("Obsolete plugin:"), plugin["name"] , self.tr("QGIS has detected an obsolete plugin that masks its more recent version shipped with this copy of QGIS. This is likely due to files associated with a previous installation of QGIS. Do you want to remove the old plugin right now and unmask the more recent version?") ) )
+      msg.exec_()
+      if not msg.result():
+        # uninstall, update utils and reload if enabled
+        self.uninstallPlugin(key, quiet = True)
+        updateAvailablePlugins()
+        settings = QSettings()
+        if settings.value("/PythonPlugins/"+key, False, type=bool):
+          loadPlugin(key)
+          startPlugin(key)
 
 
   # ----------------------------------------- #
@@ -346,35 +354,30 @@ class QgsPluginInstaller(QObject):
 
 
   # ----------------------------------------- #
-  def uninstallPlugin(self,key):
+  def uninstallPlugin(self, key, quiet=False):
     """ Uninstall given plugin """
-    plugin = plugins.all()[key]
+    if plugins.all().has_key(key):
+      plugin = plugins.all()[key]
+    else:
+      plugin = plugins.localCache[key]
     if not plugin:
       return
-    warning = self.tr("Are you sure you want to uninstall the following plugin?") + "\n(" + plugin["name"] + ")"
-    if plugin["status"] == "orphan" and not plugin["error"]:
-      warning += "\n\n"+self.tr("Warning: this plugin isn't available in any accessible repository!")
-    if QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), warning , QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
-      return
-    # unload the plugin if it's not plugin_installer itself (otherwise, do it after removing its directory):
-    if key != "plugin_installer":
-      try:
-        unloadPlugin(key)
-      except:
-        pass
+    if not quiet:
+      warning = self.tr("Are you sure you want to uninstall the following plugin?") + "\n(" + plugin["name"] + ")"
+      if plugin["status"] == "orphan" and not plugin["error"]:
+        warning += "\n\n"+self.tr("Warning: this plugin isn't available in any accessible repository!")
+      if QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), warning , QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
+        return
+    # unload the plugin
+    try:
+      unloadPlugin(key)
+    except:
+      pass
     pluginDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/" + plugin["id"]
     result = removeDir(pluginDir)
     if result:
       QMessageBox.warning(iface.mainWindow(), self.tr("Plugin uninstall failed"), result)
     else:
-      # if the uninstalled plugin is the installer itself, reload it and quit
-      if key == "plugin_installer":
-        try:
-          QMessageBox.information(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), self.tr("Plugin Installer update uninstalled. Plugin Installer will now close and revert to its primary version. You can find it in the Plugins menu and continue operation."))
-          reloadPlugin(key)
-          return
-        except:
-          pass
       # safe remove
       try:
         unloadPlugin(plugin["id"])
