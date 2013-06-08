@@ -1376,6 +1376,46 @@
                   <item row="5" column="1">
                    <widget class="QLineEdit" name="mLayerKeywordListLineEdit"/>
                   </item>
+                  <item row="6" column="0">
+                   <widget class="QLabel" name="mLayerDataUrlLabel">
+                    <property name="text">
+                     <string>DataUrl</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="1">
+                   <layout class="QHBoxLayout" name="horizontalLayout_7">
+                    <item>
+                     <widget class="QLineEdit" name="mLayerDataUrlLineEdit"/>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="mLayerDataUrlFormatLabel">
+                      <property name="text">
+                       <string>Format</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="mLayerDataUrlFormatComboBox">
+                      <item>
+                       <property name="text">
+                        <string notr="true">text/html</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string notr="true">text/plain</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string notr="true">application/pdf</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
                  </layout>
                 </widget>
                </item>
@@ -1427,60 +1467,77 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="1" colspan="4">
+                  <item row="0" column="1">
                    <widget class="QLineEdit" name="mLayerMetadataUrlLineEdit"/>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QLabel" name="mLayerMetadataUrlTypeLabel">
-                    <property name="text">
-                     <string>Type</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="2">
-                   <widget class="QComboBox" name="mLayerMetadataUrlTypeComboBox">
+                   <layout class="QHBoxLayout" name="horizontalLayout_8">
                     <item>
-                     <property name="text">
-                      <string notr="true"></string>
-                     </property>
+                     <widget class="QLabel" name="mLayerMetadataUrlTypeLabel">
+                      <property name="text">
+                       <string>Type</string>
+                      </property>
+                     </widget>
                     </item>
                     <item>
-                     <property name="text">
-                      <string notr="true" extracomment="FGDC-STD-001-1988">FGDC</string>
-                     </property>
+                     <widget class="QComboBox" name="mLayerMetadataUrlTypeComboBox">
+                      <item>
+                       <property name="text">
+                        <string notr="true"></string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string notr="true" extracomment="FGDC-STD-001-1988">FGDC</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string notr="true" extracomment="ISO 19115">TC211</string>
+                       </property>
+                      </item>
+                     </widget>
                     </item>
                     <item>
-                     <property name="text">
-                      <string notr="true" extracomment="ISO 19115">TC211</string>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item row="1" column="3">
-                   <widget class="QLabel" name="mLayerMetadataUrlFormatLabel">
-                    <property name="text">
-                     <string>Format</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="4">
-                   <widget class="QComboBox" name="mLayerMetadataUrlFormatComboBox">
-                    <item>
-                     <property name="text">
-                      <string notr="true"></string>
-                     </property>
+                     <widget class="QLabel" name="mLayerMetadataUrlFormatLabel">
+                      <property name="text">
+                       <string>Format</string>
+                      </property>
+                     </widget>
                     </item>
                     <item>
-                     <property name="text">
-                       <string notr="true">text/plain</string>
-                     </property>
+                     <widget class="QComboBox" name="mLayerMetadataUrlFormatComboBox">
+                      <item>
+                       <property name="text">
+                        <string notr="true"></string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string notr="true">text/plain</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string notr="true">text/xml</string>
+                       </property>
+                      </item>
+                     </widget>
                     </item>
                     <item>
-                     <property name="text">
-                       <string notr="true">text/xml</string>
-                     </property>
+                     <spacer name="horizontalSpacer_4">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
                     </item>
-                   </widget>
+                   </layout>
                   </item>
                  </layout>
                 </widget>

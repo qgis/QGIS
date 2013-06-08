@@ -371,6 +371,14 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
     mKeywordList = kwdList.join( ", " );
   }
 
+  //metadataUrl
+  QDomElement dataUrlElem = layerElement.firstChildElement( "dataUrl" );
+  if ( !dataUrlElem.isNull() )
+  {
+    mDataUrl = dataUrlElem.text();
+    mDataUrlFormat = dataUrlElem.attribute( "format", "" );
+  }
+
   //attribution
   QDomElement attribElem = layerElement.firstChildElement( "attribution" );
   if ( !attribElem.isNull() )
@@ -500,6 +508,17 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
       layerKeywordList.appendChild( layerKeywordValue );
     }
     layerElement.appendChild( layerKeywordList );
+  }
+
+  // layer metadataUrl
+  QString aDataUrl = dataUrl();
+  if ( !aDataUrl.isEmpty() )
+  {
+    QDomElement layerDataUrl = document.createElement( "dataUrl" ) ;
+    QDomText layerDataUrlText = document.createTextNode( aDataUrl );
+    layerDataUrl.appendChild( layerDataUrlText );
+    layerDataUrl.setAttribute( "format", dataUrlFormat() );
+    layerElement.appendChild( layerDataUrl );
   }
 
   // layer attribution

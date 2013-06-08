@@ -99,6 +99,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setKeywordList( const QString& keywords ) { mKeywordList = keywords; }
     const QString& keywordList() const { return mKeywordList; }
 
+    /* Layer dataUrl information */
+    void setDataUrl( const QString& dataUrl ) { mDataUrl = dataUrl; }
+    const QString& dataUrl() const { return mDataUrl; }
+    void setDataUrlFormat( const QString& dataUrlFormat ) { mDataUrlFormat = dataUrlFormat; }
+    const QString& dataUrlFormat() const { return mDataUrlFormat; }
+
     /* Layer attribution information */
     void setAttribution( const QString& attrib ) { mAttribution = attrib; }
     const QString& attribution() const { return mAttribution; }
@@ -493,6 +499,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**Description of the layer*/
     QString mAbstract;
     QString mKeywordList;
+
+    /**DataUrl of the layer*/
+    QString mDataUrl;
+    QString mDataUrlFormat;
 
     /**Attribution of the layer*/
     QString mAttribution;
