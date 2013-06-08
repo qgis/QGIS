@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Generator: Adobe Illustrator 9.0, SVG Export Plug-In  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20000303 Stylable//EN"   "http://www.w3.org/TR/2000/03/WD-SVG-20000303/DTD/svg-20000303-stylable.dtd" [
+	<!ENTITY st0 "fill:#007F0A;stroke:#007A0A;">
+	<!ENTITY st1 "fill-rule:nonzero;clip-rule:nonzero;fill:#000400;stroke:#000000;stroke-miterlimit:4;">
+]>
+<svg  width="109.5pt" height="109.5pt" viewBox="0 0 109.5 109.5" xml:space="preserve">
+	<g id="Layer_x0020_1" style="&st1;">
+		<path style="&st0;" d="M74.063,54.75c0-10.873-8.814-19.688-19.688-19.688S34.688,43.877,34.688,54.75s8.814,19.688,19.688,19.688s19.688-8.814,19.688-19.688z"/>
+		<path d="M109,59.5H0.5v-9H109v9z"/>
+		<path d="M59,109h-9.25V0.5H59V109z"/>
+	</g>
+</svg>

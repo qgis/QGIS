@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   x="0"
+   y="0"
+   width="109.13385"
+   height="109.13385"
+   id="svg644"
+   xml:space="preserve"
+   sodipodi:version="0.32"
+   inkscape:version="0.43"
+   sodipodi:docname="swimming_area.svg"
+   sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols"><metadata
+     id="metadata9"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+     id="defs7" /><sodipodi:namedview
+     inkscape:window-height="683"
+     inkscape:window-width="1024"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="3.6927131"
+     inkscape:cx="54.566925"
+     inkscape:cy="54.566925"
+     inkscape:window-x="0"
+     inkscape:window-y="36"
+     inkscape:current-layer="svg644" /><path
+     id="path766"
+     style="font-size:12px;fill-rule:evenodd;stroke:#000000;stroke-width:1.01396894"
+     d="M 29.345216,70.064537 C 49.778637,55.246167 52.147727,50.736237 52.147727,50.736237 C 52.147727,50.736237 49.482497,49.125537 46.225007,48.481267 C 42.967497,49.447677 40.302267,51.058377 32.898856,53.313337 C 29.641356,55.568307 25.791586,56.534727 25.791586,56.534727 L 22.534076,53.957607 C 22.534076,53.957607 24.310886,49.769807 32.602716,46.870557 C 40.894537,43.971327 42.967497,41.716357 48.297947,41.716357 C 53.628407,41.716357 54.516807,43.649187 56.885917,44.615607 C 59.254997,45.582017 60.439546,45.582017 60.439546,45.582017 C 61.031836,41.716357 58.958877,41.394197 63.697056,35.273557 C 70.014626,32.803847 71.594016,32.589087 75.542516,35.595707 C 79.293576,39.890897 80.083266,41.931097 77.615456,48.159117 C 74.654086,52.454307 71.396596,51.273137 68.139086,52.024797 C 71.692736,54.924027 69.915916,54.601897 73.173416,58.789687 C 76.727066,65.232467 78.207746,70.064537 77.615456,70.064537 C 77.023196,70.064537 71.988866,69.742397 71.988866,69.742397 C 71.100456,66.735757 71.100456,68.883367 70.212046,65.876747 C 68.928796,65.125097 69.126216,63.729147 67.842956,62.977507 C 64.091906,66.843147 65.079016,66.198877 61.327956,70.064537 L 29.345216,70.064537 z " /><path
+     id="path726"
+     style="font-size:12px;fill:#a9a9a9;fill-rule:evenodd;stroke:#000000;stroke-width:1.32372403"
+     d="M 2.713025,74.650678 L 106.42083,74.650678 C 106.42083,74.650678 102.11585,60.653284 96.892479,60.924088 C 91.399014,61.208895 90.909895,69.525748 86.673424,69.525748 C 82.158022,69.525748 81.404467,60.924088 75.925957,60.924088 C 70.447447,60.924088 70.692665,69.589639 66.030594,69.525748 C 61.380102,69.462016 59.741552,60.667752 54.959435,60.924088 C 49.907312,61.194897 49.783065,69.589495 45.387764,69.525748 C 40.980213,69.461823 38.762402,60.938451 33.992916,60.924088 C 29.230309,60.909746 29.490453,69.796552 24.744936,69.525748 C 19.989802,69.254396 18.408532,60.924088 13.026396,60.924088 C 7.373456,60.924088 2.713025,75.606468 2.713025,74.650678 z "
+     sodipodi:nodetypes="cczzzzzzzzzc" /></svg>

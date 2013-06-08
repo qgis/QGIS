@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   width="580"
+   height="580"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="taxi_rank.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs22">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 290 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="580 : 290 : 1"
+       inkscape:persp3d-origin="290 : 193.33333 : 1"
+       id="perspective24" />
+    <marker
+       viewBox="0 0 10 10"
+       refY="5"
+       refX="10"
+       orient="auto"
+       markerWidth="4"
+       markerUnits="strokeWidth"
+       markerHeight="3"
+       id="ArrowStart">
+      <path
+         id="path3568"
+         d="M 10 0 L 0 5 L 10 10 z" />
+    </marker>
+    <marker
+       viewBox="0 0 10 10"
+       refY="5"
+       refX="0"
+       orient="auto"
+       markerWidth="4"
+       markerUnits="strokeWidth"
+       markerHeight="3"
+       id="ArrowEnd">
+      <path
+         id="path3565"
+         d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <inkscape:perspective
+       id="perspective2683"
+       inkscape:persp3d-origin="306.082 : 204.39034 : 1"
+       inkscape:vp_z="612.164 : 306.58551 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 306.58551 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <marker
+       viewBox="0 0 10 10"
+       refY="5"
+       refX="10"
+       orient="auto"
+       markerWidth="4"
+       markerUnits="strokeWidth"
+       markerHeight="3"
+       id="marker2959">
+      <path
+         id="path2626"
+         d="M 10 0 L 0 5 L 10 10 z" />
+    </marker>
+    <marker
+       viewBox="0 0 10 10"
+       refY="5"
+       refX="0"
+       orient="auto"
+       markerWidth="4"
+       markerUnits="strokeWidth"
+       markerHeight="3"
+       id="marker2956">
+      <path
+         id="path2623"
+         d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <inkscape:perspective
+       id="perspective2953"
+       inkscape:persp3d-origin="306.082 : 204.39034 : 1"
+       inkscape:vp_z="612.164 : 306.58551 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 306.58551 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <marker
+       viewBox="0 0 10 10"
+       refY="5"
+       refX="10"
+       orient="auto"
+       markerWidth="4"
+       markerUnits="strokeWidth"
+       markerHeight="3"
+       id="marker3077">
+      <path
+         id="path3298"
+         d="M 10 0 L 0 5 L 10 10 z" />
+    </marker>
+    <marker
+       viewBox="0 0 10 10"
+       refY="5"
+       refX="0"
+       orient="auto"
+       markerWidth="4"
+       markerUnits="strokeWidth"
+       markerHeight="3"
+       id="marker3074">
+      <path
+         id="path3295"
+         d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <inkscape:perspective
+       id="perspective3071"
+       inkscape:persp3d-origin="180.936 : 163.92867 : 1"
+       inkscape:vp_z="361.87201 : 245.89301 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 245.89301 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <marker
+       viewBox="0 0 10 10"
+       refY="5"
+       refX="10"
+       orient="auto"
+       markerWidth="4"
+       markerUnits="strokeWidth"
+       markerHeight="3"
+       id="marker3188">
+      <path
+         id="path3318"
+         d="M 10 0 L 0 5 L 10 10 z" />
+    </marker>
+    <marker
+       viewBox="0 0 10 10"
+       refY="5"
+       refX="0"
+       orient="auto"
+       markerWidth="4"
+       markerUnits="strokeWidth"
+       markerHeight="3"
+       id="marker3185">
+      <path
+         id="path3315"
+         d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+    <inkscape:perspective
+       id="perspective3182"
+       inkscape:persp3d-origin="306.082 : 204.39034 : 1"
+       inkscape:vp_z="612.164 : 306.58551 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 306.58551 : 1"
+       sodipodi:type="inkscape:persp3d" />
+  </defs>
+  <metadata
+     id="metadata10">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+			  <cc:license
+           rdf:resource="http://web.resource.org/cc/PublicDomain" />
+        <dc:language>en</dc:language>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     inkscape:window-height="1005"
+     inkscape:window-width="1280"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     showgrid="false"
+     inkscape:zoom="0.70710678"
+     inkscape:cx="615.26172"
+     inkscape:cy="415.25176"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:current-layer="svg2" />
+  <g
+     id="g1327">
+    <path
+       d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.598,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.84 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.627,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z"
+       style="fill:#111111;stroke:#eeeeee;stroke-width:3.40799999"
+       id="path1329" />
+  </g>
+  <g
+     id="g2319"
+     transform="translate(879.29125,36.805119)">
+    <path
+       id="path2323"
+       style="fill:#ffffff;stroke:none"
+       d="" />
+  </g>
+  <g
+     id="g2325"
+     transform="translate(879.29125,36.805119)">
+    <path
+       id="path2329"
+       style="fill:#ffffff;stroke:none"
+       d="" />
+  </g>
+  <g
+     id="g3324"
+     transform="translate(-12.51126,-134.23929)">
+    <path
+       style="fill:#ffffff;stroke:none"
+       d="M 269.59375,90.625 C 262.09375,90.625 257.46876,94.937502 257.46875,103.4375 L 257.46875,124.6875 L 211.9375,124.6875 C 187.4375,124.6875 174.43751,137.9375 168.4375,153.4375 L 136.5625,234.84375 C 123.9365,236.44675 101.59375,251.11024 101.59375,278.90625 L 101.59375,382.46875 L 132.59375,382.46875 L 132.59375,415.5625 C 132.59375,456.2985 190.81249,455.81949 190.8125,415.5625 L 190.8125,382.46875 L 295.5625,382.46875 L 295.625,382.46875 L 400.34375,382.46875 L 400.34375,415.5625 C 400.34375,455.8195 458.59374,456.29849 458.59375,415.5625 L 458.59375,382.46875 L 489.5625,382.46875 L 489.5625,278.90625 C 489.5625,251.11025 467.1885,236.44675 454.5625,234.84375 L 422.6875,153.4375 C 416.6875,137.9375 403.68749,124.6875 379.1875,124.6875 L 334.1875,124.6875 L 334.1875,103.4375 C 334.1875,94.9375 329.5625,90.624997 322.0625,90.625 L 295.625,90.625 L 295.5625,90.625 L 269.59375,90.625 z M 211.5625,154.34375 L 295.5,154.34375 L 295.5625,154.34375 L 295.625,154.34375 L 379.5625,154.34375 C 390.06249,154.44075 394.5625,160.9375 397.5625,169.9375 L 421.5625,232.90625 L 295.625,232.90625 L 295.5625,232.90625 L 295.5,232.90625 L 169.5625,232.90625 L 193.5625,169.9375 C 196.5625,160.9375 201.0625,154.44075 211.5625,154.34375 z M 162.625,264.28125 C 177.47999,264.28125 189.53125,276.55975 189.53125,291.71875 C 189.53125,306.87774 177.48,319.1875 162.625,319.1875 C 147.76799,319.18751 135.71875,306.87775 135.71875,291.71875 C 135.71875,276.55974 147.768,264.28125 162.625,264.28125 z M 428.5,264.28125 C 443.355,264.28125 455.40624,276.55974 455.40625,291.71875 C 455.40625,306.87775 443.35501,319.18751 428.5,319.1875 C 413.644,319.1875 401.62502,306.87774 401.625,291.71875 C 401.625,276.55975 413.64401,264.28125 428.5,264.28125 z"
+       transform="translate(10.51126,70.239291)"
+       id="path3326" />
+    <g
+       id="g3328">
+      <g
+         id="g3332">
+        <g
+           id="g3334">
+          <path
+             id="path3338"
+             style="fill:#000000;stroke:none"
+             d="" />
+        </g>
+        <g
+           id="g3340">
+          <path
+             id="path3344"
+             style="fill:#000000;stroke:none"
+             d="" />
+        </g>
+      </g>
+    </g>
+  </g>
+  <path
+     style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Arial Black;-inkscape-font-specification:Arial Black"
+     d="M 104.96867,426.89746 L 201.78899,426.89746 L 201.78899,452.35059 L 169.30461,452.35059 L 169.30461,529.97559 L 137.45305,529.97559 L 137.45305,452.35059 L 104.96867,452.35059 L 104.96867,426.89746 z M 279.69524,512.95996 L 243.41399,512.95996 L 238.4218,529.97559 L 205.86711,529.97559 L 244.6093,426.89746 L 279.34367,426.89746 L 318.08586,529.97559 L 284.75774,529.97559 L 279.69524,512.95996 z M 273.01555,490.6709 L 261.62492,453.61621 L 250.30461,490.6709 L 273.01555,490.6709 z M 321.1093,426.89746 L 356.19524,426.89746 L 374.47649,458.6084 L 392.19524,426.89746 L 426.92961,426.89746 L 394.86711,476.81934 L 429.95305,529.97559 L 394.16399,529.97559 L 373.84367,496.8584 L 353.45305,529.97559 L 317.87492,529.97559 L 353.45305,476.25684 L 321.1093,426.89746 z M 441.41399,426.89746 L 473.33586,426.89746 L 473.33586,529.97559 L 441.41399,529.97559 L 441.41399,426.89746 z"
+     id="text3390" />
+</svg>

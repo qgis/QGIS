@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16px"
+   height="16px"
+   id="svg3427"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="amenity=school.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/religion=buddhist.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs3429">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 8 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="16 : 8 : 1"
+       inkscape:persp3d-origin="8 : 5.3333333 : 1"
+       id="perspective3435" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="31.875"
+     inkscape:cx="7.6319819"
+     inkscape:cy="7.8434149"
+     inkscape:current-layer="layer2"
+     showgrid="true"
+     inkscape:grid-bbox="true"
+     inkscape:document-units="px"
+     inkscape:window-width="1280"
+     inkscape:window-height="723"
+     inkscape:window-x="0"
+     inkscape:window-y="0" />
+  <metadata
+     id="metadata3432">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:title>amenity=school</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Matt Amos</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Matt Amos asserts the moral right to be identified as the author of this work.</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:description>Note: the font is &quot;Balcony Angels&quot;.</dc:description>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     sodipodi:insensitive="true">
+    <rect
+       style="fill:#535353;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3946"
+       width="16"
+       height="16"
+       x="0"
+       y="0"
+       rx="4" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="import"
+     style="display:inline">
+    <path
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Balcony Angels;-inkscape-font-specification:Balcony Angels"
+       d="M 4.0215687,5.3805887 L 4.0315687,5.6105887 C 4.0382337,5.7639247 4.041567,5.9072579 4.0415687,6.0405887 C 4.041567,7.4872563 3.8415672,8.2105889 3.4415687,8.2105887 C 3.2749011,8.2105889 3.1315679,8.1005891 3.0115687,7.8805887 C 2.9115681,7.7005895 2.8615682,7.5605896 2.8615687,7.4605887 L 2.8615687,3.3805887 C 2.8615682,3.2872605 2.8215682,3.130594 2.7415687,2.9105887 C 2.668235,2.6839278 2.6315684,2.5272613 2.6315687,2.4405887 C 2.6315684,2.1539283 2.748235,2.0105951 2.9815687,2.0105887 C 3.4949009,2.0105951 3.8215672,2.5305946 3.9615687,3.5705887 C 3.9682337,3.8772599 3.9882337,4.4805927 4.0215687,5.3805887 M 13.791256,3.3205887 C 13.791253,3.9472599 13.59792,4.4205927 13.211256,4.7405887 L 12.131256,5.3405887 C 11.744588,5.5605916 11.551255,5.8705913 11.551256,6.2705887 C 11.551255,6.6239239 11.674588,6.8872569 11.921256,7.0605887 C 12.054588,7.1539233 12.257921,7.2905899 12.531256,7.4705887 C 12.784587,7.6439228 12.911254,7.7905894 12.911256,7.9105887 C 12.911254,8.1039224 12.494587,8.200589 11.661256,8.2005887 C 11.114589,8.200589 10.754589,8.0772557 10.581256,7.8305887 C 10.447923,7.6372562 10.381256,7.2572566 10.381256,6.6905887 C 10.381256,5.8639246 10.577923,5.2872585 10.971256,4.9605887 C 11.211255,4.847259 11.571255,4.6739258 12.051256,4.4405887 C 12.437921,4.2472596 12.631254,3.8872599 12.631256,3.3605887 C 12.631254,3.0205941 12.584587,2.787261 12.491256,2.6605887 C 12.437921,2.5805946 12.291254,2.4772613 12.051256,2.3505887 C 11.791255,2.2039283 11.621255,2.0905951 11.541256,2.0105887 C 11.434588,1.9039286 11.381255,1.8139287 11.381256,1.7405887 C 11.381255,1.5539289 11.631255,1.4605957 12.131256,1.4605887 C 12.631254,1.4605957 13.03792,1.6505955 13.351256,2.0305887 C 13.644586,2.3839281 13.791253,2.8139277 13.791256,3.3205887"
+       id="text4112" />
+    <path
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Balcony Angels;-inkscape-font-specification:Balcony Angels"
+       d="M 10.718235,9.2805873 C 10.738233,9.3872595 10.748233,9.523926 10.748235,9.6905873 C 10.748233,9.8705923 10.674899,10.280592 10.528235,10.920587 C 10.461566,11.220591 10.461566,11.447257 10.528235,11.600587 C 10.694899,11.98059 10.778233,12.37059 10.778235,12.770587 C 10.778233,12.963923 10.758233,13.123922 10.718235,13.250587 C 10.618233,13.577255 10.3949,13.890588 10.048235,14.190587 C 9.6882338,14.510588 9.3449008,14.670588 9.0182353,14.670587 C 8.6315682,14.670588 8.438235,14.523921 8.4382353,14.230587 C 8.438235,14.150588 8.4615683,14.087255 8.5082353,14.040587 C 8.5882349,13.953922 8.7415681,13.837255 8.9682353,13.690587 C 9.1949009,13.537255 9.3449008,13.413922 9.4182353,13.320587 C 9.5249006,13.187256 9.5782339,13.007256 9.5782353,12.780587 C 9.5782339,12.553923 9.4615673,12.273923 9.2282353,11.940587 C 9.0015678,11.607257 8.8882346,11.407257 8.8882353,11.340587 C 8.8882346,11.193924 8.9482345,11.053924 9.0682353,10.920587 C 9.2615675,10.700592 9.3715674,10.570592 9.3982353,10.530587 C 9.518234,10.337259 9.5782339,10.090592 9.5782353,9.7905873 C 9.5782339,9.3772595 9.4749007,9.1105931 9.2682353,8.9905873 C 9.114901,8.9105933 8.8882346,8.7905934 8.5882353,8.6305873 C 8.488235,8.5572603 8.438235,8.4672604 8.4382353,8.3605873 C 8.438235,8.2272607 8.508235,8.1172608 8.6482353,8.0305873 C 8.761568,7.9639276 8.8915679,7.9305943 9.0382353,7.9305873 C 9.3915674,7.9305943 9.7449004,8.0705941 10.098235,8.3505873 C 10.451566,8.6239269 10.658233,8.9339266 10.718235,9.2805873"
+       id="text4118" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 7.2470587,2.7607843 C 7.426581,3.8736251 7.382494,5.0907606 7.6549019,6.1803921 C 7.6763328,6.2661159 7.6701543,6.3821447 7.6862744,6.4627451"
+       id="path4122" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 6.4313726,4.8313726 C 6.4361111,4.8503265 6.9117491,4.7372549 7.1215687,4.7372549 C 7.4432608,4.7372549 7.8717377,4.6505207 8.1254903,4.5490196 C 8.3215531,4.4705945 8.5502631,4.3993783 8.7529412,4.2980392 C 8.796561,4.2762294 8.9208696,4.2980392 8.9725491,4.2980392"
+       id="path4124" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 4.6431373,10.478433 C 4.6849674,10.478433 5.8645265,10.541178 6.1803922,10.541178 C 6.2768058,10.541178 6.3686275,10.499348 6.4627452,10.478433 C 6.6070737,10.44636 6.7479721,10.44706 6.9019609,10.44706"
+       id="path4126"
+       sodipodi:nodetypes="cssc" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 5.082353,12.894118 C 5.3862261,12.82659 6.0309488,12.719714 6.4627451,12.611765 C 6.6117193,12.574521 6.7236269,12.547039 6.8705883,12.517647"
+       id="path4128" />
+  </g>
+</svg>

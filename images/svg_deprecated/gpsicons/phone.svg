@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   version="1.0"
+   x="0"
+   y="0"
+   width="109.13385"
+   height="109.13385"
+   id="svg644"
+   xml:space="preserve"><g
+   transform="matrix(0.157219,0,0,0.186964,-3.925964,-43.80999)"
+   style="font-size:12;"
+   id="g691"><g
+   transform="translate(-7.75246,-49.56801)"
+   id="g916"><rect
+   width="40"
+   height="110"
+   x="456.250214"
+   y="336.111786"
+   transform="translate(0,135.0693)"
+   style="fill-rule:evenodd;"
+   id="rect913" /><rect
+   width="40"
+   height="110"
+   x="268.750122"
+   y="329.861816"
+   transform="translate(0,141.3192)"
+   style="fill-rule:evenodd;"
+   id="rect915" /></g><path
+   d="M 121.2501 627.362 C 652.5003 627.362 653.7503 629.862 653.7503 629.862 C 653.7503 629.862 678.7503 514.862 633.7503 463.6119 C 588.7503 412.3619 445.0002 384.8619 385.0002 384.8619 C 325.0002 384.8619 216.2501 408.6119 161.2501 457.3619 C 100.0001 512.3619 123.7501 627.362 121.2501 627.362 z "
+   transform="translate(-17.46536,91.68207)"
+   style="fill-rule:evenodd;stroke:#000000;"
+   id="path912" /><path
+   d="M 206.2501 397.3619 C 206.2501 397.3619 180.0001 344.862 196.2501 329.8619 C 212.5001 314.8618 370.0002 307.3618 370.0002 307.3618 C 370.0002 307.3618 527.5003 308.6119 540.0003 326.1119 C 552.5003 343.6119 531.2503 398.6119 531.2503 398.6119 L 665.0003 429.8619 C 686.2503 379.8619 682.5003 318.6118 658.7503 287.3618 C 638.7503 262.7785 548.7502 241.9452 380.0002 239.8618 C 249.5835 234.4452 116.6667 260.2785 95.00005 286.1118 C 70.41669 311.1118 60.83337 382.3619 87.50004 426.1119 L 206.2501 397.3619 z "
+   transform="translate(-3.186226,91.68207)"
+   style="fill-rule:evenodd;stroke:#000000;"
+   id="path919" /><ellipse
+   cx="378.750183"
+   cy="512.361938"
+   rx="145.000061"
+   ry="72.5000305"
+   transform="translate(-6.502457,95.43207)"
+   style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;"
+   id="path920" /><ellipse
+   cx="410.000214"
+   cy="553.611938"
+   rx="117.500092"
+   ry="58.7500458"
+   transform="matrix(0.661492,0,0,0.669014,100.8354,235.1342)"
+   style="fill-rule:evenodd;stroke:#000000;"
+   id="path921" /></g></svg>

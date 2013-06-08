@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   x="0"
+   y="0"
+   width="109.13385"
+   height="109.13385"
+   id="svg602"
+   xml:space="preserve"
+   sodipodi:version="0.32"
+   inkscape:version="0.43"
+   sodipodi:docname="h.svg"
+   sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols"><metadata
+     id="metadata8"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+     id="defs6" /><sodipodi:namedview
+     inkscape:window-height="683"
+     inkscape:window-width="1024"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="3.6927131"
+     inkscape:cx="54.566925"
+     inkscape:cy="54.566925"
+     inkscape:window-x="0"
+     inkscape:window-y="36"
+     inkscape:current-layer="svg602" /><path
+     d="M 7.3285004,95.773945 L 101.02532,95.773945 L 101.53455,49.019805 L 54.176917,13.359882 L 7.328488,49.019805 L 7.3285004,95.773945 z "
+     style="font-size:12px;fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:6.45565176"
+     id="path774" /><path
+     d="M 26.675732,71.056868 L 25.574532,65.536305 L 18.920913,65.003316 L 18.830304,58.657443 L 14.002571,58.657443 L 14.002571,90.289337 L 19.373042,90.289337 L 19.373042,76.526838 L 84.434549,76.526838 L 84.615461,90.333027 L 89.986014,90.333027 L 89.986014,64.701133 L 85.158199,64.701133 L 84.977286,71.371361 L 26.675732,71.056868 z "
+     style="font-size:20px;font-weight:normal;stroke:#000000;font-family:Binary"
+     id="path780"
+     sodipodi:nodetypes="ccccccccccccccc" /></svg>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16px"
+   height="16px"
+   id="svg3427"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="religion=pastafarian.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/religion=buddhist.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs3429">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 8 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="16 : 8 : 1"
+       inkscape:persp3d-origin="8 : 5.3333333 : 1"
+       id="perspective3435" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="31.875"
+     inkscape:cx="8"
+     inkscape:cy="8"
+     inkscape:current-layer="layer4"
+     showgrid="true"
+     inkscape:grid-bbox="true"
+     inkscape:document-units="px"
+     inkscape:window-width="1280"
+     inkscape:window-height="723"
+     inkscape:window-x="0"
+     inkscape:window-y="0" />
+  <metadata
+     id="metadata3432">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:title>religion=pastafarian</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Matt Amos</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Matt Amos asserts the moral right to be identified as the author of this work.</dc:title>
+          </cc:Agent>
+        </dc:rights>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     sodipodi:insensitive="true">
+    <rect
+       style="fill:#535353;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3946"
+       width="16"
+       height="16"
+       x="0"
+       y="0"
+       rx="4" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="top">
+    <path
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 8.0000001,5.6406251 C 6.1491765,5.6406251 4.5268898,6.5885295 3.5625001,8.0156251 C 4.5268898,9.4427211 6.1491765,10.359375 8.0000001,10.359375 C 9.8508237,10.359375 11.47311,9.4427211 12.4375,8.0156251 C 11.47311,6.5885295 9.8508237,5.6406251 8.0000001,5.6406251 z"
+       id="path3863" />
+    <g
+       id="g3872">
+      <path
+         d="M 5.992157,4.0156865 A 0.87843138,0.87843138 0 1 1 4.2352943,4.0156865 A 0.87843138,0.87843138 0 1 1 5.992157,4.0156865 z"
+         sodipodi:ry="0.87843138"
+         sodipodi:rx="0.87843138"
+         sodipodi:cy="4.0156865"
+         sodipodi:cx="5.1137257"
+         id="path3868"
+         style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         sodipodi:type="arc" />
+      <path
+         id="path3870"
+         d="M 5.3960784,4.8313725 L 5.8980392,6.0235294"
+         style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    </g>
+    <g
+       id="g3876"
+       transform="matrix(-1,0,0,1,15.827474,0)">
+      <path
+         sodipodi:type="arc"
+         style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path3878"
+         sodipodi:cx="5.1137257"
+         sodipodi:cy="4.0156865"
+         sodipodi:rx="0.87843138"
+         sodipodi:ry="0.87843138"
+         d="M 5.992157,4.0156865 A 0.87843138,0.87843138 0 1 1 4.2352943,4.0156865 A 0.87843138,0.87843138 0 1 1 5.992157,4.0156865 z" />
+      <path
+         style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 5.3960784,4.8313725 L 5.8980392,6.0235294"
+         id="path3880" />
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 3.3568628,7.7176471 C 3.3568628,7.7176471 3.2575746,6.6611396 2.227451,6.6509803 C 1.228697,6.6411304 1.0352941,7.9686274 1.0352941,7.9686274"
+       id="path3882"
+       sodipodi:nodetypes="czc" />
+    <path
+       sodipodi:nodetypes="czc"
+       id="path3884"
+       d="M 12.643137,7.7490196 C 12.643137,7.7490196 12.742425,6.6925121 13.772549,6.6823528 C 14.771303,6.6725029 14.964706,7.9999999 14.964706,7.9999999"
+       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       d="M 4.3921569,9.0039216 C 4.3921569,9.0039216 2.799867,9.2084291 2.5411765,9.7882353 C 2.282486,10.368042 3.5361158,11.344699 3.2627451,11.890196 C 2.9893744,12.435693 1.5058824,12.454902 1.5058824,12.454902"
+       id="path3886"
+       sodipodi:nodetypes="czzc" />
+    <path
+       sodipodi:nodetypes="czzc"
+       id="path3888"
+       d="M 11.631372,9.0039216 C 11.631372,9.0039216 13.223662,9.2084291 13.482353,9.7882353 C 13.741043,10.368042 12.487413,11.344699 12.760784,11.890196 C 13.034155,12.435693 14.517647,12.454902 14.517647,12.454902"
+       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 5.772549,9.9137255 C 5.772549,9.9137255 6.5575563,11.009128 6.2431372,11.921569 C 5.9383991,12.805916 4.7487046,12.565965 4.4862745,13.615686"
+       id="path3890"
+       sodipodi:nodetypes="czc" />
+    <path
+       sodipodi:nodetypes="czc"
+       id="path3892"
+       d="M 10.278226,9.9137255 C 10.278226,9.9137255 9.4932265,11.009128 9.8076415,11.921569 C 10.112376,12.805916 11.30207,12.565965 11.5645,13.615686"
+       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" />
+  </g>
+</svg>
