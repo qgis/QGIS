@@ -61,8 +61,8 @@ class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDia
         self.itemProgress[key] = 0
         self.displayState(key,2)
     self.treeWidget.resizeColumnToContents(0)
-    QObject.connect(repositories, SIGNAL("repositoryFetched(QString)"), self.repositoryFetched)
-    QObject.connect(repositories, SIGNAL("anythingChanged(QString, int, int)"), self.displayState)
+    repositories.repositoryFetched.connect(self.repositoryFetched)
+    repositories.anythingChanged.connect(self.displayState)
 
 
   # ----------------------------------------- #
@@ -101,13 +101,13 @@ class QgsPluginInstallerRepositoryDialog(QDialog, Ui_QgsPluginInstallerRepositor
     QDialog.__init__(self, parent)
     self.setupUi(self)
     self.editURL.setText("http://")
-    self.connect(self.editName, SIGNAL("textChanged(const QString &)"), self.textChanged)
-    self.connect(self.editURL,  SIGNAL("textChanged(const QString &)"), self.textChanged)
+    self.editName.textChanged.connect(self.textChanged)
+    self.editURL.textChanged.connect(self.textChanged)
     self.textChanged(None)
 
   # ----------------------------------------- #
   def textChanged(self, string):
-    enable = (self.editName.text().count() > 0 and self.editURL.text().count() > 0)
+    enable = (len(self.editName.text()) > 0 and len(self.editURL.text()) > 0)
     self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable)
 # --- /class QgsPluginInstallerRepositoryDialog ------------------------------------------------------------ #
 
@@ -122,14 +122,14 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     QDialog.__init__(self, parent)
     self.setupUi(self)
     self.plugin = plugin
-    self.mResult = QString()
+    self.mResult = ""
     self.progressBar.setRange(0,0)
-    self.progressBar.setFormat(QString("%p%"))
-    self.labelName.setText(QString(plugin["name"]))
-    self.connect(self.buttonBox, SIGNAL("clicked(QAbstractButton*)"), self.abort)
+    self.progressBar.setFormat("%p%")
+    self.labelName.setText(plugin["name"])
+    self.buttonBox.clicked.connect(self.abort)
 
     url = QUrl(plugin["download_url"])
-    path = QString(url.toPercentEncoding(url.path(), "!$&'()*+,;=:/@"))
+    path = unicode(url.toPercentEncoding(url.path(), "!$&'()*+,;=:/@"))
     fileName = plugin["filename"]
     tmpDir = QDir.tempPath()
     tmpPath = QDir.cleanPath(tmpDir+"/"+fileName)
@@ -138,9 +138,9 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     if port < 0:
       port = 80
     self.http = QPHttp(url.host(), port)
-    self.connect(self.http, SIGNAL("stateChanged ( int )"), self.stateChanged)
-    self.connect(self.http, SIGNAL("dataReadProgress ( int , int )"), self.readProgress)
-    self.connect(self.http, SIGNAL("requestFinished (int, bool)"), self.requestFinished)
+    self.http.stateChanged.connect(self.stateChanged)
+    self.http.dataReadProgress.connect(self.readProgress)
+    self.http.requestFinished.connect(self.requestFinished)
     self.httpGetId = self.http.get(path, self.file)
 
 
@@ -177,7 +177,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     if not QDir(pluginDir).exists():
       QDir().mkpath(pluginDir)
     # if the target directory already exists as a link, remove the link without resolving:
-    QFile(pluginDir+QString(QDir.separator())+self.plugin["id"]).remove()
+    QFile(pluginDir+unicode(QDir.separator())+self.plugin["id"]).remove()
     try:
       unzip(unicode(tmpPath), unicode(pluginDir)) # test extract. If fails, then exception will be raised and no removing occurs
       # removing old plugin files if exist
