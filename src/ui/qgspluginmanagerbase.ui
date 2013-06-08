@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>780</width>
-    <height>519</height>
+    <width>857</width>
+    <height>507</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>780</width>
+    <width>790</width>
     <height>0</height>
    </size>
   </property>
@@ -73,7 +73,7 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>52</width>
+           <width>140</width>
            <height>0</height>
           </size>
          </property>
@@ -387,11 +387,17 @@
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>250</width>
+                   <width>200</width>
                    <height>0</height>
                   </size>
                  </property>
+                 <property name="horizontalScrollBarPolicy">
+                  <enum>Qt::ScrollBarAlwaysOff</enum>
+                 </property>
                  <property name="showDropIndicator" stdset="0">
+                  <bool>false</bool>
+                 </property>
+                 <property name="alternatingRowColors">
                   <bool>false</bool>
                  </property>
                  <property name="selectionMode">
@@ -399,6 +405,9 @@
                  </property>
                  <property name="selectionBehavior">
                   <enum>QAbstractItemView::SelectItems</enum>
+                 </property>
+                 <property name="resizeMode">
+                  <enum>QListView::Adjust</enum>
                  </property>
                  <property name="wordWrap">
                   <bool>false</bool>
@@ -422,6 +431,12 @@
                    <horstretch>2</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
                  </property>
                  <property name="acceptDrops">
                   <bool>false</bool>
@@ -489,7 +504,7 @@ padding: 0px</string>
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>180</width>
+                     <width>160</width>
                      <height>0</height>
                     </size>
                    </property>

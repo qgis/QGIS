@@ -160,7 +160,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void enableSelectedRepositoryOnly( bool checked );
 
   private:
-    //! Return true if given plugin is currently present in QgsPluginRegistry
+    //! Return true if given plugin is present in QgsPluginRegistry (c++ plugins) or is enabled in QSettings (Python plugins)
     bool isPluginLoaded( QString key );
 
     //! Return true if there are plugins available for download in the metadata registry

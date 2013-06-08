@@ -51,12 +51,6 @@
 #endif
 
 
-// QSettings group constans
-const QString reposGroup = "/Qgis/plugin-repos";
-const QString settingsGroup = "/Qgis/plugin-installer";
-const QString seenPluginGroup = "/Qgis/plugin-seen";
-
-
 QgsPluginManager::QgsPluginManager( QWidget * parent, Qt::WFlags fl )
     : QgsOptionsDialogBase( "PluginManager", parent, fl )
 {
@@ -70,7 +64,14 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, Qt::WFlags fl )
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( true );
 
-  // init models
+  // Don't let QgsOptionsDialogBase to narrow the vertical tab list widget
+  mOptListWidget->setMaximumWidth( 16777215 );
+
+  // Restiore UI state for widgets not handled by QgsOptionsDialogBase
+  QSettings settings;
+  mPluginsDetailsSplitter->restoreState( settings.value( QString( "/Windows/PluginManager/secondSplitterState" ) ).toByteArray() );
+
+  // Init models
   mModelPlugins = new QStandardItemModel( 0, 1 );
   mModelProxy = new QgsPluginSortFilterProxyModel( this );
   mModelProxy->setSourceModel( mModelPlugins );
@@ -112,6 +113,9 @@ QgsPluginManager::~QgsPluginManager()
 {
   delete mModelProxy;
   delete mModelPlugins;
+
+  QSettings settings;
+  settings.setValue( QString( "/Windows/PluginManager/secondSplitterState" ), mPluginsDetailsSplitter->saveState() );
 }
 
 
@@ -156,6 +160,10 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils* pythonUtils )
   connect( actionSortByDownloads, SIGNAL( triggered( ) ), mModelProxy, SLOT( sortPluginsByDownloads( ) ) );
   connect( actionSortByVote, SIGNAL( triggered( ) ), mModelProxy, SLOT( sortPluginsByVote( ) ) );
   connect( actionSortByStatus, SIGNAL( triggered( ) ), mModelProxy, SLOT( sortPluginsByStatus( ) ) );
+
+  // get the QSettings group from the installer
+  QString settingsGroup;
+  QgsPythonRunner::eval( "pyplugin_installer.instance().exportSettingsGroup()", settingsGroup );
 
   // Initialize list of allowed checking intervals
   mCheckingOnStartIntervals << 0 << 1 << 3 << 7 << 14 << 30 ;
@@ -470,8 +478,9 @@ void QgsPluginManager::reloadModelData()
         mypDetailItem->setFont( font );
       }
 
-      // set checkable if the plugin is loadable.
-      mypDetailItem->setCheckable( it->value( "installed" ) == "true" && it->value( "error" ).isEmpty() );
+      // Set checkable if the plugin is installed and not disabled due to incompatibility.
+      // Broken plugins are checkable to to allow disabling them
+      mypDetailItem->setCheckable( it->value( "installed" ) == "true" && it->value( "error" ) != "incompatible" );
 
       // Set ckeckState depending on the plugin is loaded or not.
       // Initially mark all unchecked, then overwrite state of loaded ones with checked.
@@ -501,10 +510,10 @@ void QgsPluginManager::reloadModelData()
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     // TODO: implement better sort method instead of these dummy -Z statuses
-    mModelPlugins->appendRow( createSpacerItem( tr( "Reinstallable plugins", "category: plugins that are installed and available" )  , "installedZ" ) );
-    if ( hasUpgradeablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Upgradeable plugins", "category: plugins that are installed and there is newer version available" ), "upgradeableZ") );
+    mModelPlugins->appendRow( createSpacerItem( tr( "Reinstallable", "category: plugins that are installed and available" )  , "installedZ" ) );
+    if ( hasUpgradeablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Upgradeable", "category: plugins that are installed and there is a newer version available" ), "upgradeableZ") );
     mModelPlugins->appendRow( createSpacerItem( tr( "Only locally available", "category: plugins that are only locally available" ), "orphanZ" ) );
-    if ( hasNewerPlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Newer locally", "category: plugins installed and availabie; installed version is newer" ), "newerZ" ) );
+    if ( hasNewerPlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Downgradeable", "category: plugins that are installed and there is an OLDER version available" ), "newerZ" ) );
   }
 
   updateTabTitle();
@@ -530,7 +539,6 @@ void QgsPluginManager::pluginItemChanged( QStandardItem * item )
   }
   else if ( ! item->checkState() )
   {
-    // don't test if isPluginLoaded, to allow disable also plugins taht weren't successfully loaded
     QgsDebugMsg( " Unloading plugin: " + id );
     unloadPlugin( id );
   }
@@ -579,7 +587,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
     {
       errorMsg = QString( "<b>%1</b><br/>%2" ).arg( tr( "This plugin is broken" ) ).arg( metadata->value( "error_details" ) );
     }
-    html += QString( "<table bgcolor=\"#EEEE00\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
+    html += QString( "<table bgcolor=\"#FFFF88\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#CC0000\">%1</td></tr>"
                      "</table>" ).arg( errorMsg );
   }
@@ -625,7 +633,23 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
     html += QString( "<img src=\"%1\" style=\"float:right;\">" ).arg( metadata->value( "icon" ) );
   }
 
-  html += QString( "<h3>%2</h3>" ).arg( metadata->value( "description" ) );
+  html += QString( "<h3>%2</h3><br/>" ).arg( metadata->value( "description" ) );
+
+  if ( ! metadata->value( "average_vote" ).isEmpty() )
+  {
+    // draw stars
+    int stars = qRound( metadata->value( "average_vote" ).toFloat() );
+    for ( int i = 0; i < stars; i++ )
+    {
+      html += "<img src=\":/images/themes/default/mIconNew.png\">";
+    }
+    html += tr( "<br/>%1 rating vote(s)<br/>" ).arg( metadata->value( "rating_votes" ) );
+  }
+  if ( ! metadata->value( "downloads" ).isEmpty() )
+  {
+    html += tr( "%1 downloads<br/>" ).arg( metadata->value( "downloads" ) );
+    html += "<br/>";
+  }
 
   if ( ! metadata->value( "category" ).isEmpty() )
   {
@@ -659,21 +683,6 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
       html += QString( "<a href='%1'>%2</a>" ).arg( metadata->value( "code_repository" ) ).arg( tr( "code_ repository" ) );
     }
     html += "<br/>";
-  }
-
-  if ( ! metadata->value( "average_vote" ).isEmpty() )
-  {
-    // draw stars
-    int stars = qRound( metadata->value( "average_vote" ).toFloat() );
-    for ( int i = 0; i < stars; i++ )
-    {
-      html += "<img src=\":/images/themes/default/mIconNew.png\">";
-    }
-    html += tr( "<br/>%1 rating vote(s)<br/>" ).arg( metadata->value( "rating_votes" ) );
-  }
-  if ( ! metadata->value( "downloads" ).isEmpty() )
-  {
-    html += tr( "%1 downloads<br/>" ).arg( metadata->value( "downloads" ) );
   }
 
   html += "<br/>" ;
@@ -721,7 +730,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
 
   // Enable/disable buttons
   buttonInstall->setEnabled( metadata->value( "pythonic" ).toUpper() == "TRUE" && metadata->value( "status" ) != "orphan" );
-  buttonUninstall->setEnabled( metadata->value( "pythonic" ).toUpper() == "TRUE" && metadata->value( "status" ) != "readonly" && metadata->value( "status" ) != "not installed" && metadata->value( "status" ) != "new" );
+  buttonUninstall->setEnabled( metadata->value( "pythonic" ).toUpper() == "TRUE" && metadata->value( "readonly" ) != "true" && metadata->value( "status" ) != "not installed" && metadata->value( "status" ) != "new" );
   buttonUninstall->setHidden( metadata->value( "status" ) == "not installed" || metadata->value( "status" ) == "new" );
 
   // Store the id of the currently displayed plugin
@@ -852,6 +861,9 @@ void QgsPluginManager::reject()
 {
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
+    // get the QSettings group from the installer
+    QString settingsGroup;
+    QgsPythonRunner::eval( "pyplugin_installer.instance().exportSettingsGroup()", settingsGroup );
     QSettings settings;
     settings.setValue( settingsGroup + "/checkOnStart", QVariant( ckbCheckUpdates->isChecked() ) );
     settings.setValue( settingsGroup + "/checkOnStartInterval", QVariant( mCheckingOnStartIntervals.value( comboInterval->currentIndex() ) ) );
@@ -1116,6 +1128,8 @@ void QgsPluginManager::on_buttonDeleteRep_clicked( )
 
 void QgsPluginManager::on_ckbExperimental_toggled( bool state )
 {
+  QString settingsGroup;
+  QgsPythonRunner::eval( "pyplugin_installer.instance().exportSettingsGroup()", settingsGroup );
   QSettings settings;
   settings.setValue( settingsGroup + "/allowExperimental", QVariant( state ) );
   QgsPythonRunner::run( "pyplugin_installer.installer_data.plugins.rebuild()" );
@@ -1132,27 +1146,25 @@ bool QgsPluginManager::isPluginLoaded( QString key )
   QMap<QString, QString>* plugin = pluginMetadata( key );
   if ( plugin->isEmpty() )
   {
+    // No such plugin in the metadata registry
     return false;
   }
 
-  QString library = key;
   if ( plugin->value( "pythonic" ) != "true" )
   {
-    // trim "cpp:" prefix from cpp plugin id
+    // For C++ plugins, just check in the QgsPluginRegistry. If the plugin is broken, it was disabled quietly.
+    // Trim "cpp:" prefix from cpp plugin id
     key = key.mid( 4 );
-    library = plugin->value( "library" );
+    QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
+    return pRegistry->isLoaded( key );
   }
-
-  QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
-  if ( pRegistry->isLoaded( key ) )
+  else
   {
-    // TODO: this check shouldn't be necessary, plugin base names must be unique
-    if ( pRegistry->library( key ) == library )
-    {
-      return true;
-    }
+    // For Python plugins, check in QSettings if enabled rather than checking in QgsPluginRegistry if loaded.
+    // This will allow to turn off the plugin if broken.
+    QSettings mySettings;
+    return ( plugin->value( "installed" ) == "true" && mySettings.value( "/PythonPlugins/" + key, QVariant( false ) ).toBool() );
   }
-  return false;
 }
 
 

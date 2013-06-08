@@ -26,11 +26,13 @@
 from PyQt4.QtCore import *
 from PyQt4.QtXml import QDomDocument
 from PyQt4.QtNetwork import *
+import sys
+import os
+import ConfigParser
+import qgis.utils
 from qgis.core import *
 from qgis.utils import iface
 from version_compare import compareVersions, normalizeVersion
-import sys
-import qgis.utils
 
 """
 Data structure:
@@ -544,17 +546,29 @@ class Plugins(QObject):
 
 
   # ----------------------------------------- #
-  def getInstalledPlugin(self, key, readOnly, testLoad=False):
+  def getInstalledPlugin(self, key, readOnly, testLoad=True):
     """ get the metadata of an installed plugin """
     def pluginMetadata(fct):
-        result = qgis.utils.pluginMetadata(key, fct)
-        if result == "__error__":
-            result = ""
-        return result
+        """ plugin metadata parser reimplemented from qgis.utils
+            for better control on wchich module is examined
+            in case there is an installed plugin masking a core one """
+        metadataFile = os.path.join(path, 'metadata.txt')
+        if not os.path.exists(metadataFile):
+          return "" # plugin has no metadata.txt file
+        cp = ConfigParser.ConfigParser()
+        res = cp.read(metadataFile)
+        if not len(res):
+          return "" # failed reading metadata.txt file
+        try:
+          return cp.get('general', fct)
+        except Exception:
+          return ""
 
-    path = QDir.cleanPath( QgsApplication.qgisSettingsDirPath() ) + "/python/plugins/" + key
-    if not QDir(path).exists():
+    if readOnly:
       path = QDir.cleanPath( QgsApplication.pkgDataPath() ) + "/python/plugins/" + key
+    else:
+      path = QDir.cleanPath( QgsApplication.qgisSettingsDirPath() ) + "/python/plugins/" + key
+
     if not QDir(path).exists():
       return
 
@@ -633,7 +647,7 @@ class Plugins(QObject):
 
 
   # ----------------------------------------- #
-  def getAllInstalled(self, testLoad=False):
+  def getAllInstalled(self, testLoad=True):
     """ Build the localCache """
     self.localCache = {}
     # first, try to add the readonly plugins...
@@ -646,7 +660,7 @@ class Plugins(QObject):
       for key in pluginDir.entryList():
         key = unicode(key)
         if not key in [".",".."]:
-          self.localCache[key] = self.getInstalledPlugin(key, True)
+          self.localCache[key] = self.getInstalledPlugin(key, readOnly=True, testLoad=False)
     except:
       # return QCoreApplication.translate("QgsPluginInstaller","Couldn't open the system plugin directory")
       pass # it's not necessary to stop due to this error
@@ -662,7 +676,7 @@ class Plugins(QObject):
     for key in pluginDir.entryList():
       key = unicode(key)
       if not key in [".",".."]:
-        plugin = self.getInstalledPlugin(key, False, testLoad)
+        plugin = self.getInstalledPlugin(key, readOnly=False, testLoad=testLoad)
         if key in self.localCache.keys() and compareVersions(self.localCache[key]["version_installed"],plugin["version_installed"]) == 1:
           # An obsolete plugin in the "user" location is masking a newer one in the "system" location!
           self.obsoletePlugins += [key]
@@ -711,7 +725,7 @@ class Plugins(QObject):
             self.mPlugins[key]["status"] = "orphan"
           elif not self.mPlugins[key]["version_installed"]:
             self.mPlugins[key]["status"] = "not installed"
-          elif self.mPlugins[key]["error"] in ["broken"] or self.mPlugins[key]["version_installed"] == "-1":
+          elif self.mPlugins[key]["version_installed"] in ["?", "-1"]:
             self.mPlugins[key]["status"] = "installed"
           elif compareVersions(self.mPlugins[key]["version_available"],self.mPlugins[key]["version_installed"]) == 0:
             self.mPlugins[key]["status"] = "installed"

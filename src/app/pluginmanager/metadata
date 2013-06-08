@@ -18,7 +18,7 @@ pythonic            true | false (is plugin pythonic or cpp?)
 readonly            true | false (is core plugin?)
 installed           true | false
 available           true | false
-status              not installed | new    |   upgradeable | orphan | newer *
+status              not installed | new    |   upgradeable | orphan | downgradeable *
 error               NULL | broken | incompatible | dependent
 error_details
 experimental        choosen version status
@@ -34,4 +34,4 @@ rating_votes        number of votes
 available, installed. version_available, version_installed.
 orphan = installed and not available to download;
 new = not installed and seen for the first time;
-newer = the installer version is newer than available one.
+downgradeable = the available version is lower than installed one.

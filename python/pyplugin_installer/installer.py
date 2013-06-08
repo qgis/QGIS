@@ -243,6 +243,12 @@ class QgsPluginInstaller(QObject):
 
 
   # ----------------------------------------- #
+  def exportSettingsGroup(self):
+    """ Return QSettings settingsGroup value """
+    return settingsGroup
+
+
+  # ----------------------------------------- #
   def upgradeAllUpgradeable(self):
     """ Reinstall all upgradeable plugins """
     for key in plugins.allUpgradeable():
