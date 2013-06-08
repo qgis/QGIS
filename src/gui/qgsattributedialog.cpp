@@ -40,6 +40,7 @@
 #include <QVBoxLayout>
 #include <QLineEdit>
 #include <QWebView>
+#include <QPushButton>
 
 int QgsAttributeDialog::smFormCounter = 0;
 
@@ -173,31 +174,12 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     {
       //show attribute alias if available
       QString myFieldName = vl->attributeDisplayName( fldIdx );
-      int myFieldType = theFields[fldIdx].type();
 
       QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, 0, vl, fldIdx, myAttributes[fldIdx], mProxyWidgets );
       if ( !myWidget )
         continue;
 
-      QLabel *mypLabel = new QLabel( mypInnerFrame );
-      mypInnerLayout->addWidget( mypLabel, index, 0 );
-      if ( myFieldType == QVariant::Int )
-      {
-        mypLabel->setText( myFieldName );
-      }
-      else if ( myFieldType == QVariant::Double )
-      {
-        mypLabel->setText( myFieldName );
-      }
-      else if ( myFieldType == QVariant::LongLong )
-      {
-        mypLabel->setText( myFieldName );
-      }
-      else //string
-      {
-        //any special behaviour for string goes here
-        mypLabel->setText( myFieldName );
-      }
+      QLabel *mypLabel = new QLabel( myFieldName, mypInnerFrame );
 
       if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable )
       {
@@ -216,7 +198,12 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
         {
           foreach ( QWidget *w, myWidget->findChildren<QWidget *>() )
           {
-            w->setEnabled( qobject_cast<QWebView *>( w ) ? true : false );
+            if ( qobject_cast<QWebView *>( w ) )
+              w->setEnabled( true );
+            else if ( qobject_cast<QPushButton *>( w ) && w->objectName() == "openUrl" )
+              w->setEnabled( true );
+            else
+              w->setEnabled( false );
           }
         }
         else
@@ -225,8 +212,17 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
         }
       }
 
-      mypInnerLayout->addWidget( myWidget, index, 1 );
-      ++index;
+      if ( vl->labelOnTop( fldIdx ) )
+      {
+        mypInnerLayout->addWidget( mypLabel, index++, 0, 1, 2 );
+        mypInnerLayout->addWidget( myWidget, index++, 0, 1, 2 );
+      }
+      else
+      {
+        mypInnerLayout->addWidget( mypLabel, index, 0 );
+        mypInnerLayout->addWidget( myWidget, index, 1 );
+        ++index;
+      }
     }
 
     // Set focus to first widget in list, to help entering data without moving the mouse.

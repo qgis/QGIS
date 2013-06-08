@@ -57,12 +57,15 @@ void QgsOracleColumnTypeThread::run()
     return;
   }
 
-  int i = 0;
-  foreach ( QgsOracleLayerProperty layerProperty, layerProperties )
+  int i = 0, n = layerProperties.size();
+  for ( QVector<QgsOracleLayerProperty>::iterator it = layerProperties.begin(),
+        end = layerProperties.end();
+        it != end; ++it )
   {
+    QgsOracleLayerProperty &layerProperty = *it;
     if ( !mStopped )
     {
-      emit progress( i++, layerProperties.size() );
+      emit progress( i++, n );
       emit progressMessage( tr( "Scanning column %1.%2.%3..." )
                             .arg( layerProperty.ownerName )
                             .arg( layerProperty.tableName )

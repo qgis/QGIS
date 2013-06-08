@@ -83,6 +83,12 @@ void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const
   QPoint tlPoint = QPoint( viewPort->mTopLeftPoint.x() + topLeftCol, viewPort->mTopLeftPoint.y() + topLeftRow );
   p->save();
   p->setRenderHint( QPainter::Antialiasing, false );
+
+  // Blending problem was reported with PDF output if backgroud color has alpha < 255
+  // in #7766, it seems to be a bug in Qt, setting a brush with alpha 255 is a workaround
+  // which should not harm anything
+  p->setBrush( QBrush( QColor( Qt::white ), Qt::NoBrush ) );
+
   p->drawImage( tlPoint, img );
   p->restore();
 }

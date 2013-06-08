@@ -47,7 +47,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     mResolutionSpinBox->setValue( mComposition->printResolution() );
 
     //print as raster
-    mPrintAsRasterGroupCheckBox->setChecked( mComposition->printAsRaster() );
+    mPrintAsRasterCheckBox->setChecked( mComposition->printAsRaster() );
 
     mAlignmentSnapGroupCheckBox->setChecked( mComposition->alignmentSnap() );
     mAlignmentToleranceSpinBox->setValue( mComposition->alignmentSnapTolerance() );
@@ -379,9 +379,9 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
 
 void QgsCompositionWidget::setPrintAsRasterCheckBox( bool state )
 {
-  mPrintAsRasterGroupCheckBox->blockSignals( true );
-  mPrintAsRasterGroupCheckBox->setChecked( state );
-  mPrintAsRasterGroupCheckBox->blockSignals( false );
+  mPrintAsRasterCheckBox->blockSignals( true );
+  mPrintAsRasterCheckBox->setChecked( state );
+  mPrintAsRasterCheckBox->blockSignals( false );
 }
 
 void QgsCompositionWidget::displaySnapingSettings()
@@ -402,7 +402,7 @@ void QgsCompositionWidget::on_mResolutionSpinBox_valueChanged( const int value )
   mComposition->setPrintResolution( value );
 }
 
-void QgsCompositionWidget::on_mPrintAsRasterGroupCheckBox_toggled( bool state )
+void QgsCompositionWidget::on_mPrintAsRasterCheckBox_toggled( bool state )
 {
   if ( !mComposition )
   {
@@ -518,7 +518,7 @@ void QgsCompositionWidget::blockSignals( bool block )
   mNumPagesSpinBox->blockSignals( block );
   mPaperOrientationComboBox->blockSignals( block );
   mResolutionSpinBox->blockSignals( block );
-  mPrintAsRasterGroupCheckBox->blockSignals( block );
+  mPrintAsRasterCheckBox->blockSignals( block );
   mSnapToGridGroupCheckBox->blockSignals( block );
   mGridResolutionSpinBox->blockSignals( block );
   mOffsetXSpinBox->blockSignals( block );

@@ -96,6 +96,23 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setAbstract( const QString& abstract ) { mAbstract = abstract; }
     const QString& abstract() const { return mAbstract; }
 
+    void setKeywordList( const QString& keywords ) { mKeywordList = keywords; }
+    const QString& keywordList() const { return mKeywordList; }
+
+    /* Layer attribution information */
+    void setAttribution( const QString& attrib ) { mAttribution = attrib; }
+    const QString& attribution() const { return mAttribution; }
+    void setAttributionUrl( const QString& attribUrl ) { mAttributionUrl = attribUrl; }
+    const QString& attributionUrl() const { return mAttributionUrl; }
+
+    /* Layer metadataUrl information */
+    void setMetadataUrl( const QString& metaUrl ) { mMetadataUrl = metaUrl; }
+    const QString& metadataUrl() const { return mMetadataUrl; }
+    void setMetadataUrlType( const QString& metaUrlType ) { mMetadataUrlType = metaUrlType; }
+    const QString& metadataUrlType() const { return mMetadataUrlType; }
+    void setMetadataUrlFormat( const QString& metaUrlFormat ) { mMetadataUrlFormat = metaUrlFormat; }
+    const QString& metadataUrlFormat() const { return mMetadataUrlFormat; }
+
     /* Set the blending mode used for rendering a layer */
     void setBlendMode( const QPainter::CompositionMode blendMode );
     /* Returns the current blending mode for a layer */
@@ -475,6 +492,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**Description of the layer*/
     QString mAbstract;
+    QString mKeywordList;
+
+    /**Attribution of the layer*/
+    QString mAttribution;
+    QString mAttributionUrl;
+
+    /**MetadataUrl of the layer*/
+    QString mMetadataUrl;
+    QString mMetadataUrlType;
+    QString mMetadataUrlFormat;
 
     /** \brief Error */
     QgsError mError;

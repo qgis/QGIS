@@ -62,7 +62,7 @@ class BatchOutputSelectionPanel(QtGui.QWidget):
         filefilter = self.output.getFileFilter(self.alg)
         filename = QtGui.QFileDialog.getSaveFileName(self, "Save file", QtCore.QString(), filefilter)
         if filename:
-            filename = str(filename)
+            filename = unicode(filename)
             dlg = AutofillDialog(self.alg)
             dlg.exec_()
             if dlg.mode != None:
@@ -81,7 +81,7 @@ class BatchOutputSelectionPanel(QtGui.QWidget):
                             widget = self.table.cellWidget(i+self.row, dlg.param)
                             param = self.alg.parameters[dlg.param]
                             if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable, ParameterMultipleInput)):
-                                s = str(widget.getText())
+                                s = unicode(widget.getText())
                                 s = os.path.basename(s)
                                 s= s[:s.rfind(".")]
                             elif isinstance(param, ParameterBoolean):

@@ -487,7 +487,7 @@ development versions.
 
 == QGIS documentation sources ==
 
-If you're interested in checking out Quantum GIS documentation sources:
+If you're interested in checking out QGIS documentation sources:
 ```
   svn co https://svn.osgeo.org/qgis/docs/trunk qgis_docs
 ```

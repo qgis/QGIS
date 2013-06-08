@@ -112,11 +112,11 @@ class GdalUtils:
 
     @staticmethod
     def escapeAndJoin(strList):
-        joined = QString()
+        joined = ""
         for s in strList:
-          if " " in s:
-            escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') + '"'
-          else:
-            escaped = s
-          joined += escaped + " "
-        return joined.trimmed()
+            if " " in s:
+                escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') + '"'
+            else:
+                escaped = s
+            joined += escaped + " "
+        return joined.strip()

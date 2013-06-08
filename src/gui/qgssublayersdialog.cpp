@@ -32,7 +32,7 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, QString name,
   {
     setWindowTitle( tr( "Select vector layers to add..." ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
-                                  << tr( "Nb of features" ) << tr( "Geometry type" ) );
+                                  << tr( "Number of features" ) << tr( "Geometry type" ) );
   }
   else if ( providerType == QgsSublayersDialog::Gdal )
   {
@@ -69,7 +69,23 @@ QStringList QgsSublayersDialog::selectionNames()
   QStringList list;
   for ( int i = 0; i < layersTable->selectedItems().size(); i++ )
   {
-    list << layersTable->selectedItems().at( i )->text( 1 );
+    // If there are more sub layers of the same name (virtual for geometry types),
+    // add geometry type
+
+    QString name = layersTable->selectedItems().at( i )->text( 1 );
+    int count = 0;
+    for ( int j = 0; j < layersTable->topLevelItemCount(); j++ )
+    {
+      if ( layersTable->topLevelItem( j )->text( 1 ) == name )
+      {
+        count++;
+      }
+    }
+    if ( count > 1 )
+    {
+      name += ":" + layersTable->selectedItems().at( i )->text( 3 );
+    }
+    list << name;
   }
   return list;
 }

@@ -249,6 +249,40 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   return doc;
 }
 
+QDomDocument QgsWMSServer::getContext()
+{
+  QDomDocument doc;
+  addXMLDeclaration( doc );
+  QDomElement owsContextElem = doc.createElement( "OWSContext" );
+  owsContextElem.setAttribute( "xmlns", "http://www.opengis.net/ows-context" );
+  owsContextElem.setAttribute( "xmlns:ows-context", "http://www.opengis.net/ows-context" );
+  owsContextElem.setAttribute( "xmlns:context", "http://www.opengis.net/context" );
+  owsContextElem.setAttribute( "xmlns:ows", "http://www.opengis.net/ows" );
+  owsContextElem.setAttribute( "xmlns:sld", "http://www.opengis.net/sld" );
+  owsContextElem.setAttribute( "xmlns:ogc", "http://www.opengis.net/ogc" );
+  owsContextElem.setAttribute( "xmlns:gml", "http://www.opengis.net/gml" );
+  owsContextElem.setAttribute( "xmlns:kml", "http://www.opengis.net/kml/2.2" );
+  owsContextElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+  owsContextElem.setAttribute( "xmlns:ns9", "http://www.w3.org/2005/Atom" );
+  owsContextElem.setAttribute( "xmlns:xal", "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0" );
+  owsContextElem.setAttribute( "xmlns:ins", "http://www.inspire.org" );
+  owsContextElem.setAttribute( "version", "0.3.1" );
+  doc.appendChild( owsContextElem );
+
+  if ( mConfigParser )
+  {
+    //Prepare url
+    QString hrefString = mConfigParser->serviceUrl();
+    if ( hrefString.isEmpty() )
+    {
+      hrefString = serviceUrl();
+    }
+    mConfigParser->owsGeneralAndResourceList( owsContextElem, doc, hrefString );
+  }
+
+  return doc;
+}
+
 QImage* QgsWMSServer::getLegendGraphics()
 {
   if ( !mConfigParser || !mMapRenderer )

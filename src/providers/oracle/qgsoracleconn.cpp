@@ -156,7 +156,7 @@ QStringList QgsOracleConn::pkCandidates( QString ownerName, QString viewName )
   QStringList cols;
 
   QSqlQuery qry( mDatabase );
-  if ( !exec( qry, QString( "SELECT column_name FROM all_tab_columns WHERE owner=%1 AND table_name=%2" )
+  if ( !exec( qry, QString( "SELECT column_name FROM all_tab_columns WHERE owner=%1 AND table_name=%2 ORDER BY column_id" )
               .arg( quotedValue( ownerName ) ).arg( quotedValue( viewName ) ) ) )
   {
     QgsMessageLog::logMessage( tr( "SQL:%1\nerror:%2\n" ).arg( qry.lastQuery() ).arg( qry.lastError().text() ), tr( "Oracle" ) );

@@ -2380,5 +2380,8 @@ QString QgsExpression::group( QString name )
     gGroups.insert( "Record", QObject::tr( "Record" ) );
   }
 
-  return gGroups.value( name, QObject::tr( "Missing group %1" ).arg( name ) );
+  //return the translated name for this group. If group does not
+  //have a translated name in the gGroups hash, return the name
+  //unchanged
+  return gGroups.value( name, name );
 }

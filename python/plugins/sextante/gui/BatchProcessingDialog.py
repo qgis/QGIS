@@ -154,8 +154,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     continue
                 widget = self.table.cellWidget(row, col)
                 if not self.setParameterValueFromWidget(param, widget, alg):
-                    self.progressLabel.setText("<b>Missing parameter value: " + param.description + " (row " + str(row + 1) + ")</b>")
-                    #QMessageBox.critical(self, "Unable to execute batch process", "Wrong or missing parameter values")
+                    self.progressLabel.setText("<b>Missing parameter value: " + param.description + " (row " + str(row + 1) + ")</b>")                    
                     self.algs = None
                     return
                 col+=1
@@ -168,8 +167,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     out.value = text
                     col+=1
                 else:
-                    self.progressLabel.setText("<b>Wrong or missing parameter value: " + out.description + " (row " + str(row + 1) + ")</b>")
-                    #QMessageBox.critical(self, "Unable to execute batch process", "Wrong or missing parameter values")
+                    self.progressLabel.setText("<b>Wrong or missing parameter value: " + out.description + " (row " + str(row + 1) + ")</b>")                    
                     self.algs = None
                     return
             self.algs.append(alg)
@@ -179,6 +177,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.table.setEnabled(False)
         if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
+            self.tabWidget.setCurrentIndex(1)
             self.nextAlg(0)
         else:
             i=0
@@ -186,8 +185,6 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             for alg in self.algs:
                 self.setBaseText("Processing algorithm " + str(i+1) + "/" + str(len(self.algs)) + "...")
                 if UnthreadedAlgorithmExecutor.runalg(alg, self):
-                    #self.progress.setValue(i)
-                    #self.loadHTMLResults(alg, i)
                     if self.load[i]:
                         SextantePostprocessing.handleAlgorithmResults(alg, self, False)
                     i+=1
@@ -209,7 +206,6 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         if self.algEx:
             self.algEx.terminate()
         self.table.setEnabled(True)
-        #self.close()
 
     @pyqtSlot()
     def finish(self, i):
@@ -217,7 +213,6 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             if self.load[i]:
                 SextantePostprocessing.handleAlgorithmResults(self.algs[i], self, False)
             i += 1
-            #self.progress.setValue(i)
             if len(self.algs) == i:
                 self.finishAll()
                 self.algEx = None
@@ -232,17 +227,21 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         if self.algEx:
             self.algEx.terminate()
         self.table.setEnabled(True)
-        #self.close()
 
 
     def nextAlg(self, i):
         self.stop = False
-        self.setBaseText("Processing algorithm " + str(i) + "/" + str(len(self.algs)) + "...")
+        self.setBaseText("Processing algorithm " + str(i + 1) + "/" + str(len(self.algs)) + "...")
         self.algEx = AlgorithmExecutor(self.algs[i]);
         self.algEx.percentageChanged.connect(self.setPercentage)
         self.algEx.textChanged.connect(self.setText)
         self.algEx.error.connect(self.error)
         self.algEx.finished.connect(lambda: self.finish(i))
+        self.algEx.infoSet.connect(self.setInfo)
+        if SextanteConfig.getSetting(SextanteConfig.SHOW_DEBUG_IN_DIALOG):
+            self.algEx.commandSet.connect(self.setCommand)
+            self.algEx.debugInfoSet.connect(self.setDebugInfo)
+            self.algEx.consoleInfoSet.connect(self.setConsoleInfo)
         self.algEx.start()
 
     def createSummaryTable(self):
@@ -273,7 +272,6 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         QApplication.restoreOverrideCursor()
         self.table.setEnabled(True)
         QMessageBox.information(self, "Batch processing", "Batch processing successfully completed!")
-        #self.close()
 
     def setParameterValueFromWidget(self, param, widget, alg = None):
         if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable, ParameterMultipleInput)):

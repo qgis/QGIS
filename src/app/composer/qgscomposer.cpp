@@ -1725,7 +1725,6 @@ void QgsComposer::showEvent( QShowEvent* event )
   if ( event->spontaneous() ) //event from the window system
   {
     restoreComposerMapStates();
-    initialiseComposerPicturePreviews();
   }
 
 #ifdef Q_WS_MAC
@@ -1967,14 +1966,6 @@ void QgsComposer::addComposerPicture( QgsComposerPicture* picture )
   }
 
   QgsComposerPictureWidget* pWidget = new QgsComposerPictureWidget( picture );
-  if ( isVisible() )
-  {
-    pWidget->addStandardDirectoriesToPreview();
-  }
-  else
-  {
-    mPicturePreviews.append( pWidget );
-  }
   mItemWidgetMap.insert( picture, pWidget );
 }
 
@@ -2198,7 +2189,6 @@ void QgsComposer::cleanupAfterTemplateRead()
   }
 
   restoreComposerMapStates();
-  initialiseComposerPicturePreviews();
 }
 
 void QgsComposer::on_mActionPageSetup_triggered()
@@ -2223,17 +2213,6 @@ void QgsComposer::restoreComposerMapStates()
     mapIt.key()->update();
   }
   mMapsToRestore.clear();
-}
-
-void QgsComposer::initialiseComposerPicturePreviews()
-{
-  //create composer picture widget previews
-  QList< QgsComposerPictureWidget* >::iterator picIt = mPicturePreviews.begin();
-  for ( ; picIt != mPicturePreviews.end(); ++picIt )
-  {
-    ( *picIt )->addStandardDirectoriesToPreview();
-  }
-  mPicturePreviews.clear();
 }
 
 void QgsComposer::populatePrintComposersMenu()

@@ -216,7 +216,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
 
     /**
      * Emitted when active state changed
-     * @param set Whether the definition is set
+     * @param active Whether the definition is active
      */
     void dataDefinedActivated( bool active );
 
@@ -250,7 +250,9 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QMap< QString, QString > mProperty;
     QList< QPointer<QWidget> > mEnabledWidgets;
     QList< QPointer<QWidget> > mCheckedWidgets;
+
     QMenu* mDefineMenu;
+    QAction* mActionDataTypes;
     QMenu* mFieldsMenu;
 
     QAction* mActionActive;
@@ -260,7 +262,6 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QAction* mActionPasteExpr;
     QAction* mActionCopyExpr;
     QAction* mActionClearExpr;
-    QAction* mActionDataTypes;
 
     DataTypes mDataTypes;
     QString mDataTypesString;

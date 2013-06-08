@@ -47,7 +47,7 @@ class QgsMssqlTableModel : public QStandardItemModel
     ~QgsMssqlTableModel();
 
     /**Adds entry for one database table to the model*/
-    void addTableEntry( QgsMssqlLayerProperty property );
+    void addTableEntry( const QgsMssqlLayerProperty &property );
 
     /**Sets an sql statement that belongs to a cell specified by a model index*/
     void setSql( const QModelIndex& index, const QString& sql );
@@ -74,7 +74,7 @@ class QgsMssqlTableModel : public QStandardItemModel
 
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
-    QString layerURI( const QModelIndex &index, QString connInfo, bool useEstimatedMetadata );
+    QString layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata );
 
     static QIcon iconForWkbType( QGis::WkbType type );
 

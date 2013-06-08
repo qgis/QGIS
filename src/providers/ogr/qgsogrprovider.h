@@ -247,6 +247,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** return OGR geometry type */
     static int getOgrGeomType( OGRLayerH ogrLayer );
 
+    /** Get single flatten geometry type */
+    static OGRwkbGeometryType ogrWkbSingleFlatten( OGRwkbGeometryType type );
+
   protected:
     /** loads fields from input file to member attributeFields */
     void loadFields();
@@ -262,6 +265,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
+    QString ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const;
+    OGRwkbGeometryType ogrWkbGeometryTypeFromName( QString typeName ) const;
     QgsFields mAttributeFields;
     OGRDataSourceH ogrDataSource;
     void *extent_;
@@ -280,6 +285,11 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     //! layer index
     int mLayerIndex;
+
+    /** Optional geometry type for layers with multiple geometries,
+     *  otherwise wkbUnknown. This type is always flatten (2D) and single, it means
+     *  that 2D, 25D, single and multi types are mixed in one sublayer */
+    OGRwkbGeometryType mOgrGeometryTypeFilter;
 
     //! current spatial filter
     QgsRectangle mFetchRect;

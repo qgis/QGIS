@@ -32,17 +32,17 @@ QgsHistogramDiagram::~QgsHistogramDiagram()
 QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
   Q_UNUSED( c );
-  QSize size;
+  QSizeF size;
   if ( attributes.count() == 0 )
   {
-    return QSizeF(); //zero size if no attributes
+    return size; //zero size if no attributes
   }
 
-  double maxValue = attributes[0].toDouble();
+  double maxValue = 0;
 
-  for ( int i = 1; i < attributes.count(); ++i )
+  foreach ( int cat, s.categoryIndices )
   {
-    maxValue = qMax( attributes[i].toDouble(), maxValue );
+    maxValue = qMax( attributes[cat].toDouble(), maxValue );
   }
 
   // Scale, if extension is smaller than the specified minimum
@@ -56,13 +56,13 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes& attributes, const 
     case QgsDiagramSettings::Up:
     case QgsDiagramSettings::Down:
       mScaleFactor = (( is.upperSize.width() - is.lowerSize.height() ) / ( is.upperValue - is.lowerValue ) );
-      size.scale( s.barWidth * attributes.size(), maxValue * mScaleFactor, Qt::IgnoreAspectRatio );
+      size.scale( s.barWidth * s.categoryIndices.size(), maxValue * mScaleFactor, Qt::IgnoreAspectRatio );
       break;
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
       mScaleFactor = (( is.upperSize.width() - is.lowerSize.width() ) / ( is.upperValue - is.lowerValue ) );
-      size.scale( maxValue * mScaleFactor, s.barWidth * attributes.size(), Qt::IgnoreAspectRatio );
+      size.scale( maxValue * mScaleFactor, s.barWidth * s.categoryIndices.size(), Qt::IgnoreAspectRatio );
       break;
   }
 
@@ -114,13 +114,16 @@ void QgsHistogramDiagram::renderDiagram( const QgsAttributes& att, QgsRenderCont
   }
 
   QList<double> values;
+  double maxValue = 0;
 
-  QList<int>::const_iterator catIt = s.categoryIndices.constBegin();
-  for ( ; catIt != s.categoryIndices.constEnd(); ++catIt )
+  foreach ( int cat, s.categoryIndices )
   {
-    double currentVal = att[*catIt].toDouble();
+    double currentVal = att[cat].toDouble();
     values.push_back( currentVal );
+    maxValue = qMax( currentVal, maxValue );
   }
+
+  double scaledMaxVal = sizePainterUnits( maxValue * mScaleFactor, s, c );
 
   double currentOffset = 0;
   double scaledWidth = sizePainterUnits( s.barWidth, s, c );
@@ -144,19 +147,19 @@ void QgsHistogramDiagram::renderDiagram( const QgsAttributes& att, QgsRenderCont
     switch ( s.diagramOrientation )
     {
       case QgsDiagramSettings::Up:
-        p->drawRect( baseX + currentOffset, baseY, scaledWidth, 0 - length );
+        p->drawRect( baseX + currentOffset, baseY, scaledWidth, length * -1 );
         break;
 
       case QgsDiagramSettings::Down:
-        p->drawRect( baseX + currentOffset, baseY, scaledWidth, length );
+        p->drawRect( baseX + currentOffset, baseY - scaledMaxVal, scaledWidth, length );
         break;
 
       case QgsDiagramSettings::Right:
-        p->drawRect( baseX, baseY + currentOffset, length, scaledWidth );
+        p->drawRect( baseX, baseY - currentOffset, length, scaledWidth * -1 );
         break;
 
       case QgsDiagramSettings::Left:
-        p->drawRect( baseX, baseY + currentOffset, 0 - length, scaledWidth );
+        p->drawRect( baseX + scaledMaxVal, baseY - currentOffset, 0 - length, scaledWidth * -1 );
         break;
     }
 

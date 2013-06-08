@@ -47,7 +47,7 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mPaperHeightDoubleSpinBox_editingFinished();
     void on_mNumPagesSpinBox_valueChanged( int value );
     void on_mResolutionSpinBox_valueChanged( const int value );
-    void on_mPrintAsRasterGroupCheckBox_toggled( bool state );
+    void on_mPrintAsRasterCheckBox_toggled( bool state );
 
     void on_mSnapToGridGroupCheckBox_toggled( bool state );
     void on_mGridResolutionSpinBox_valueChanged( double d );

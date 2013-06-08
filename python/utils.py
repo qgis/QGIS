@@ -193,6 +193,7 @@ def startPlugin(packageName):
   global plugins, active_plugins, iface
 
   if packageName in active_plugins: return False
+  if packageName not in sys.modules: return False
 
   package = sys.modules[packageName]
 

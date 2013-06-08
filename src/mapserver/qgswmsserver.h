@@ -60,6 +60,8 @@ class QgsWMSServer
         @param version WMS version (1.1.1 or 1.3.0)
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
     QDomDocument getCapabilities( QString version = "1.3.0", bool fullProjectInformation = false );
+
+    QDomDocument getContext();
     /**Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership
     of the image object*/
     QImage* getLegendGraphics();

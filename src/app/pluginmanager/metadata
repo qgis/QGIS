@@ -1,0 +1,37 @@
+PLUGIN METADATA TAGS
+=======================================================
+id                  the key,library base name
+name                human readable plugin name
+description
+icon                path to installed or available icon
+category            isn't it depreciated?
+tags                comma separated, spaces allowed
+changelog           may be multiline
+author_name
+author_email
+homepage            url
+tracker             url
+code_repository     url
+version_installed
+library             absolute path to the installed library / module
+pythonic            true | false (is plugin pythonic or cpp?)
+readonly            true | false (is core plugin?)
+installed           true | false
+available           true | false
+status              not installed | new    |   upgradeable | orphan | newer *
+error               NULL | broken | incompatible | dependent
+error_details
+experimental        choosen version status
+version_available
+zip_repository      the remote repository id
+download_url
+filename            the zip file name to be unpacked
+downloads           number of dowloads
+average_vote
+rating_votes        number of votes
+
+* status is only obligatory for Pythin plugins and it must match all the tags:
+available, installed. version_available, version_installed.
+orphan = installed and not available to download;
+new = not installed and seen for the first time;
+newer = the installer version is newer than available one.

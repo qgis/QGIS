@@ -60,7 +60,7 @@ void QgsComposerLabelWidget::on_mHtmlCheckBox_stateChanged( int state )
 
     mComposerLabel->beginCommand( tr( "Label text HTML state changed" ), QgsComposerMergeCommand::ComposerLabelSetText );
     mComposerLabel->blockSignals( true );
-    mComposerLabel->setHtmlSate( state );
+    mComposerLabel->setHtmlState( state );
     mComposerLabel->setText( mTextEdit->toPlainText() );
     mComposerLabel->update();
     mComposerLabel->blockSignals( false );
@@ -245,7 +245,7 @@ void QgsComposerLabelWidget::setGuiElementValues()
   mTextEdit->setPlainText( mComposerLabel->text() );
   mTextEdit->moveCursor( QTextCursor::End, QTextCursor::MoveAnchor );
   mMarginDoubleSpinBox->setValue( mComposerLabel->margin() );
-  mHtmlCheckBox->setChecked( mComposerLabel->htmlSate() );
+  mHtmlCheckBox->setChecked( mComposerLabel->htmlState() );
   mTopRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignTop );
   mMiddleRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignVCenter );
   mBottomRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignBottom );

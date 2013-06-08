@@ -101,7 +101,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
             html += "SAGA seems to be correctly installed and configured</li></ul>"
         else:
             html += msg + "</i></li></ul>"
-            html += '<p><a href= "http://docs.qgis.org/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure SAGA to be used with SEXTANTE</p>'
+            html += '<p><a href= "http://docs.qgis.org/2.0/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure SAGA to be used with SEXTANTE</p>'
 
         return html
 

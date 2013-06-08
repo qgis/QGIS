@@ -4092,54 +4092,6 @@
  </resources>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>QgsOptionsBase</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>702</x>
-     <y>680</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>735</x>
-     <y>708</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>QgsOptionsBase</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>670</x>
-     <y>685</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>684</x>
-     <y>707</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mFontFamilyRadioCustom</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mFontFamilyComboBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>548</x>
-     <y>503</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>572</x>
-     <y>509</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>mOptionsListWidget</sender>
    <signal>currentRowChanged(int)</signal>
    <receiver>mOptionsStackedWidget</receiver>

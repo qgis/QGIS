@@ -15,6 +15,7 @@
 ###########################################################################
 
 use strict;
+use warnings;
 use Locale::Language;
 use Locale::Country;
 
@@ -46,7 +47,7 @@ my $translators= {
 	el_GR => 'Evripidis Argyropoulos, Mike Pegnigiannis, Nikos Ves',
 	et_EE => 'Veiko Viil',
 	eu => 'Asier Sarasua Garmendia, Irantzu Alvarez',
-	fa => 'Mola Pahnadayan',
+	fa => 'Mola Pahnadayan, Masoud Pashotan , Masoud Erfanyan',
 	fi => 'Marko Järvenpää',
 	fr => 'Eve Rousseau, Marc Monnerat, Lionel Roubeyrie, Jean Roc Morreale, Benjamin Bohard, Jeremy Garniaux, Yves Jacolin, Benjamin Lerre, Stéphane Morel, Marie Silvestre, Tahir Tamba, Xavier M, Mayeul Kauffmann, Mehdi Semchaoui, Robin Cura, Etienne Tourigny, Mathieu Bossaert',
 	gl_ES => 'Xan Vieiro',
@@ -70,11 +71,11 @@ my $translators= {
 	pt_PT => 'Giovanni Manghi, Joana Simoes, Duarte Carreira, Alexandre Neto, Pedro Pereira, Pedro Palheiro, Nelson Silva',
 	ro => 'Lonut Losifescu-Enescu, Bogdan Pacurar',
 	ru => 'Artem Popov',
-	sk => 'Lubos Balazovic',
+	sk => 'Lubos Balazovic, Jana Kormanikova, Ivan Mincik',
 	sl_SI => 'Jože Detečnik, Dejan Gregor',
 	sq_AL => '',
-	sr_Cyrl => 'Goran Ivanković',
 	sr_Latn => 'Goran Ivanković',
+	sr_Cyrl => 'Goran Ivanković',
 	sv => 'Lars Luthman, Magnus Homann, Victor Axbom',
 	sw => 'Yohana Mapala',
 	th => 'Man Chao',
@@ -91,6 +92,18 @@ for my $i (<i18n/qgis_*.ts>) {
 	my ($langcode) = $i =~ /i18n\/qgis_(.*).ts/;
 	next if $langcode eq "en";
 
+	my $translator = $translators->{$langcode} || "(orphaned)";
+
+	my $charset = "";
+	my $lc = $langcode;
+	if( $langcode =~ /(.*)_Latn/ ) {
+		$charset = " (latin)";
+		$langcode = $1;
+	} elsif( $langcode =~ /(.*)_Cyrl/ ) {
+		$charset = " (cyrillic)";
+		$langcode = $1;
+	}
+
 	my $name;
 	if($langcode =~ /(.*)_(.*)/) {
 		my $lang = code2language(lc $1);
@@ -100,10 +113,12 @@ for my $i (<i18n/qgis_*.ts>) {
 		$name = code2language(lc $langcode);
 	}
 
+	$name .= $charset;
 
 	open F, "lrelease $i|";
 
-	my($translations,$finished,$unfinished,$untranslated);
+	my($translations,$finished,$unfinished);
+	my $untranslated=0;
 
 	while(<F>) {
 		if(/Generated (\d+) translation\(s\) \((\d+) finished and (\d+) unfinished\)/) {
@@ -125,7 +140,15 @@ for my $i (<i18n/qgis_*.ts>) {
 		$maxn = $n;
 	}
 
-	push @lang, { code=>$langcode, name=>$name, n=>$n, translations=>$translations, finished=>$finished, unfinished=>$unfinished, untranslated=>$untranslated, };
+	push @lang, {
+		code=>$langcode,
+		name=>$name, n=>$n,
+		translations=>$translations,
+		finished=>$finished,
+		unfinished=>$unfinished,
+		untranslated=>$untranslated,
+		translator=>$translator
+	};
 }
 
 foreach my $l (@lang) {
@@ -133,7 +156,8 @@ foreach my $l (@lang) {
 	$l->{percentage} = ($l->{finished}+$l->{unfinished}/2)/$maxn*100;
 }
 
-if ($ARGV[0] eq "site") {
+
+if ( @ARGV && $ARGV[0] eq "site") {
 	print "<html><body>";
 	print "<head>";
 	print "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>";
@@ -157,7 +181,7 @@ if ($ARGV[0] eq "site") {
 			$l->{diff}==0 ? $l->{n} : "$l->{n} ($l->{diff})",
 			$l->{finished}, $l->{unfinished}, $l->{untranslated},
 			$l->{percentage}, $l->{percentage},
-			$translators->{$l->{code}};
+			$l->{translator};
 	}
 	print "</table></body></html>\n";
 } else {
@@ -178,7 +202,7 @@ if ($ARGV[0] eq "site") {
 			$l->{code}, $l->{name},
 			$l->{finished}, $l->{unfinished}, $l->{untranslated},
 			$l->{percentage}, $l->{percentage},
-			$translators->{$l->{code}};
+			$l->{translator};
 	}
 	print "</table>\n";
 }

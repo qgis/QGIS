@@ -170,6 +170,11 @@ class QgsSelectedFeature: public QObject
      */
     void canvasLayersChanged();
 
+    /*
+     * the changes are rolling back - stop monitoring the geometry
+     */
+    void beforeRollBack();
+
   private:
     /**
      * Deletes whole vertex map.

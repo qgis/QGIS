@@ -24,6 +24,7 @@
 
 #include "qgslogger.h"
 
+#include <QFileInfo>
 #include <QMessageBox>
 #include <QSettings>
 #include <QPushButton>
@@ -73,9 +74,11 @@ QgsBookmarks::QgsBookmarks( QWidget *parent, Qt::WFlags fl )
   QSqlTableModel *model = new QSqlTableModel( this, db );
   model->setTable( "tbl_bookmarks" );
   model->setSort( 0, Qt::AscendingOrder );
+  model->setEditStrategy( QSqlTableModel::OnFieldChange );
   model->select();
 
   // set better headers then column names from table
+  model->setHeaderData( 0, Qt::Horizontal, tr( "ID" ) );
   model->setHeaderData( 1, Qt::Horizontal, tr( "Name" ) );
   model->setHeaderData( 2, Qt::Horizontal, tr( "Project" ) );
   model->setHeaderData( 3, Qt::Horizontal, tr( "xMin" ) );
@@ -85,6 +88,9 @@ QgsBookmarks::QgsBookmarks( QWidget *parent, Qt::WFlags fl )
   model->setHeaderData( 7, Qt::Horizontal, tr( "SRID" ) );
 
   lstBookmarks->setModel( model );
+
+  QSettings settings;
+  lstBookmarks->header()->restoreState( settings.value( "/Windows/Bookmarks/headerstate" ).toByteArray() );
 
 #ifndef QGISDEBUG
   lstBookmarks->setColumnHidden( 0, true );
@@ -107,6 +113,7 @@ void QgsBookmarks::saveWindowLocation()
 {
   QSettings settings;
   settings.setValue( "/Windows/Bookmarks/geometry", saveGeometry() );
+  settings.setValue( "/Windows/Bookmarks/headerstate", lstBookmarks->header()->saveState() );
 }
 
 void QgsBookmarks::newBookmark()
@@ -141,8 +148,22 @@ void QgsBookmarks::addClicked()
                    "  VALUES (NULL,:name,:project_name,:xmin,:xmax,:ymin,:ymax,:projection_srid)",
                    model->database() );
 
+  QString projStr( "" );
+  if ( QgsProject::instance() )
+  {
+    if ( !QgsProject::instance()->title().isEmpty() )
+    {
+      projStr = QgsProject::instance()->title();
+    }
+    else if ( !QgsProject::instance()->fileName().isEmpty() )
+    {
+      QFileInfo fi( QgsProject::instance()->fileName() );
+      projStr = fi.exists() ? fi.fileName() : "";
+    }
+  }
+
   query.bindValue( ":name", tr( "New bookmark" ) );
-  query.bindValue( ":project_name", QgsProject::instance()->title() );
+  query.bindValue( ":project_name", projStr );
   query.bindValue( ":xmin", canvas->extent().xMinimum() );
   query.bindValue( ":ymin", canvas->extent().yMinimum() );
   query.bindValue( ":xmax", canvas->extent().xMaximum() );

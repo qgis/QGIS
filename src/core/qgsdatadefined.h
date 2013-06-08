@@ -35,7 +35,6 @@ class CORE_EXPORT QgsDataDefined
     /**
      * Construct a new data defined object
      *
-     * @param parent The parent QWidget
      * @param active Whether the current data defined is active
      * @param useexpr Whether to use expression instead of field
      * @param expr Expression string

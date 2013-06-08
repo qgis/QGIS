@@ -91,6 +91,7 @@ class QgsTileScaleWidget;
 #include "qgspoint.h"
 #include "qgsrasterlayer.h"
 #include "qgssnappingdialog.h"
+#include "qgspluginmanager.h"
 
 #include "ui_qgisapp.h"
 
@@ -406,6 +407,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! returns pointer to map legend
     QgsLegend *legend();
+
+    //! returns pointer to plugin manager
+    QgsPluginManager *pluginManager();
 
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified
@@ -1431,6 +1435,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QgsBrowserDockWidget* mBrowserWidget2;
 
     QgsSnappingDialog* mSnappingDialog;
+
+    QgsPluginManager* mPluginManager;
 
     //! Persistent tile scale slider
     QgsTileScaleWidget * mpTileScaleWidget;
