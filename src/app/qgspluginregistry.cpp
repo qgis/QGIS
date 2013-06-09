@@ -184,10 +184,10 @@ void QgsPluginRegistry::unloadAll()
 }
 
 
-bool QgsPluginRegistry::checkQgisVersion( QString minVersion )
+bool QgsPluginRegistry::checkQgisVersion( QString minVersion, QString maxVersion )
 {
+  // Parse qgisMinVersion. Must be in form x.y.z or just x.y
   QStringList minVersionParts = minVersion.split( '.' );
-  // qgis version must be in form x.y.z or just x.y
   if ( minVersionParts.count() != 2 && minVersionParts.count() != 3 )
     return false;
 
@@ -206,6 +206,35 @@ bool QgsPluginRegistry::checkQgisVersion( QString minVersion )
       return false;
   }
 
+  // Parse qgisMaxVersion. Must be in form x.y.z or just x.y
+  int maxVerMajor, maxVerMinor, maxVerBugfix = 0;
+  if ( maxVersion.isEmpty() || maxVersion == "__error__" )
+  {
+    maxVerMajor = minVerMajor;
+    maxVerMinor = 999;
+    maxVerBugfix = 999;
+  }
+  else
+  {
+    QStringList maxVersionParts = maxVersion.split( '.' );
+    if ( maxVersionParts.count() != 2 && maxVersionParts.count() != 3 )
+      return false;
+
+    bool ok;
+    maxVerMajor = maxVersionParts.at( 0 ).toInt( &ok );
+    if ( !ok )
+      return false;
+    maxVerMinor = maxVersionParts.at( 1 ).toInt( &ok );
+    if ( !ok )
+      return false;
+    if ( maxVersionParts.count() == 3 )
+    {
+      maxVerBugfix = maxVersionParts.at( 2 ).toInt( &ok );
+      if ( !ok )
+        return false;
+    }
+  }
+
   // our qgis version - cut release name after version number
   QString qgisVersion = QString( QGis::QGIS_VERSION ).section( '-', 0, 0 );
   QStringList qgisVersionParts = qgisVersion.split( "." );
@@ -215,21 +244,21 @@ bool QgsPluginRegistry::checkQgisVersion( QString minVersion )
   int qgisBugfix = qgisVersionParts.at( 2 ).toInt();
 
   // first check major version
-  if ( minVerMajor > qgisMajor )
+  if ( minVerMajor > qgisMajor || maxVerMajor < qgisMajor )
     return false;
-  if ( minVerMajor < qgisMajor )
+  if ( minVerMajor < qgisMajor || maxVerMajor > qgisMajor )
     return true;
   // if same, check minor version
-  if ( minVerMinor > qgisMinor )
+  if ( minVerMinor > qgisMinor || maxVerMinor < qgisMinor )
     return false;
-  if ( minVerMinor < qgisMinor )
+  if ( minVerMinor < qgisMinor || maxVerMinor > qgisMinor )
     return true;
 
-  // if still same, check bugfix version
+  // if still same, check bugfix version (lower range only)
   if ( minVerBugfix > qgisBugfix )
     return false;
 
-  // looks like min version is the same as our version - that's fine
+  // looks like min or max version is the same as our version - that's fine
   return true;
 }
 
@@ -562,7 +591,9 @@ bool QgsPluginRegistry::checkPythonPlugin( QString packageName )
 bool QgsPluginRegistry::isPythonPluginCompatible( QString packageName )
 {
   QString minVersion = mPythonUtils->getPluginMetadata( packageName, "qgisMinimumVersion" );
-  return minVersion != "__error__" && checkQgisVersion( minVersion );
+  // try to read qgisMaximumVersion. Note checkQgisVersion can cope with "__error__" value.
+  QString maxVersion = mPythonUtils->getPluginMetadata( packageName, "qgisMaximumVersion" );
+  return minVersion != "__error__" && checkQgisVersion( minVersion, maxVersion );
 }
 
 QList<QgsPluginMetadata*> QgsPluginRegistry::pluginData()

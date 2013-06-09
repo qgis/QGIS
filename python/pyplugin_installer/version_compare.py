@@ -124,6 +124,18 @@ def compareVersions(a,b):
   # convert the strings to the lists
   v1 = chopString(a)
   v2 = chopString(b)
+
+  # !! ensure the version contains at least 3 segments. Fill to "x.y.z with "999" segments if needed.
+  # 999 must me unicode because of isnumeric method used.
+  if len(v1) == 2:
+    v1 += [u"999"]
+  elif len(v1) == 1:
+    v1 += [u"999",u"999"]
+  if len(v2) == 2:
+    v2 += [u"999"]
+  elif len(v2) == 1:
+    v2 += [u"999",u"999"]
+
   # set the shorter string as a base
   l = len(v1)
   if l > len(v2):

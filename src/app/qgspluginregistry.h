@@ -102,8 +102,9 @@ class QgsPluginRegistry
     //! Try to load and get metadata from Python plugin, return true on success
     bool checkPythonPlugin( QString packageName );
 
-    //! Check current QGIS version against plugin's minimal requested QGIS version
-    bool checkQgisVersion( QString minVersion );
+    //! Check current QGIS version against requested minimal and optionally maximal QGIS version
+    //! if maxVersion not specified, the default value is assumed: floor(minVersion) + 0.999.999
+    bool checkQgisVersion( QString minVersion, QString maxVersion = "" );
 
   private:
     static QgsPluginRegistry* _instance;
