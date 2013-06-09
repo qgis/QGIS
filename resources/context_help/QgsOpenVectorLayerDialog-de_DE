@@ -1,6 +1,0 @@
-<h3>Vektorlayer hinzufügen</h3>
-
-Der Dialog "Vektorlayer hinzufügen" wird zum Hinzufügen von Vektordaten zur QGIS-Karte benutzt. Vektordaten sind räumliche Daten, die durch Punkte, Linien oder Polygone (umschlossene Flächen) beschrieben werden.</p>
-QGIS unterstützt eine Reihen von Formaten, einschließlich deren der OGR-Datenlieferanten-Erweiterung.  Dies sind z.B. ESRI Shapedateien, MapInfo MIF- (Austauschformat) und MapInfo TAB-Dateien (natives Format).</p>
-QGIS unterstützt PostGIS-Layer in einer PostgreSQL-Datenbank und SpatiaLite-Layer.  Unterstützung für zusätzliche Datentypen (z.B. getrennter Text) wird durch weitere Datenlieferanten-Erweiterungen gestellt.  Eine Liste der durch OGR unterstützten Formate ist im Anhang A.1 des Benutzerhandbuchs zu finden.</p>
-Eine genaue Beschreibung wie mit Vektordaten umzugehen ist, steht im Kapitel 5 'Arbeiten mit Vektordaten'.
