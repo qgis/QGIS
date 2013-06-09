@@ -40,6 +40,7 @@
 
 #include "diagram/qgsdiagram.h"
 #include "qgsdiagramrendererv2.h"
+#include "qgsfontutils.h"
 #include "qgslabelsearchtree.h"
 #include "qgsexpression.h"
 #include "qgsdatadefined.h"
@@ -783,27 +784,6 @@ void QgsPalLayerSettings::readDataDefinedProperty( QgsVectorLayer* layer,
   }
 }
 
-void QgsPalLayerSettings::updateFontViaStyle( QFont& font, const QString & fontstyle )
-{
-  if ( !fontstyle.isEmpty() )
-  {
-    QFont styledfont = mFontDB.font( font.family(), fontstyle, 12 );
-    if ( QApplication::font().toString() != styledfont.toString() )
-    {
-      if ( font.pointSizeF() != -1 )
-      {
-        styledfont.setPointSizeF( font.pointSizeF() );
-      }
-      else if ( font.pixelSize() != -1 )
-      {
-        styledfont.setPixelSize( font.pixelSize() );
-      }
-
-      font = styledfont;
-    }
-  }
-}
-
 void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
 {
   if ( layer->customProperty( "labeling" ).toString() != QString( "pal" ) )
@@ -824,7 +804,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   textFont = QFont( fontFamily, fontSize, fontWeight, fontItalic );
   textFont.setPointSizeF( fontSize ); //double precision needed because of map units
   textNamedStyle = layer->customProperty( "labeling/namedStyle", QVariant( "" ) ).toString();
-  updateFontViaStyle( textFont, textNamedStyle ); // must come after textFont.setPointSizeF()
+  QgsFontUtils::updateFontViaStyle( textFont, textNamedStyle ); // must come after textFont.setPointSizeF()
   textFont.setCapitalization(( QFont::Capitalization )layer->customProperty( "labeling/fontCapitals", QVariant( 0 ) ).toUInt() );
   textFont.setUnderline( layer->customProperty( "labeling/fontUnderline" ).toBool() );
   textFont.setStrikeOut( layer->customProperty( "labeling/fontStrikeout" ).toBool() );
@@ -2319,12 +2299,14 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
     QString family = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal Font family:%1" ).arg( family ), 4 );
 
-    // testing for mFontDB.families().contains( ddFontFamily ) doesn't always work,
-    // because the families list needs looped to test for 'family [foundry]'
-    // which could bring unnecessary overhead, so fall back to default font instead
     if ( labelFont.family() != family )
     {
-      ddFontFamily = family;
+      // testing for ddFontFamily in QFontDatabase.families() may be slow to do for every feature
+      // (i.e. don't use QgsFontUtils::fontFamilyMatchOnSystem( family ) here)
+      if ( QgsFontUtils::fontFamilyOnSystem( family ) )
+      {
+        ddFontFamily = family;
+      }
     }
   }
 
@@ -2355,7 +2337,10 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
     ddItalic = italic;
   }
 
+  // TODO: update when pref for how to resolve missing family (use matching algorithm or just default font) is implemented
+  //       (currently defaults to what has been read in from layer settings)
   QFont newFont;
+  QFont appFont = QApplication::font();
   bool newFontBuilt = false;
   if ( ddBold || ddItalic )
   {
@@ -2371,8 +2356,8 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
     if ( !ddFontFamily.isEmpty() )
     {
       // both family and style are different, build font from database
-      QFont styledfont = mFontDB.font( ddFontFamily, ddFontStyle, 12 );
-      if ( QApplication::font().toString() != styledfont.toString() )
+      QFont styledfont = mFontDB.font( ddFontFamily, ddFontStyle, appFont.pointSize() );
+      if ( appFont != styledfont )
       {
         newFont = styledfont;
         newFontBuilt = true;
@@ -2380,15 +2365,15 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
     }
 
     // update the font face style
-    updateFontViaStyle( newFontBuilt ? newFont : labelFont, ddFontStyle );
+    QgsFontUtils::updateFontViaStyle( newFontBuilt ? newFont : labelFont, ddFontStyle );
   }
   else if ( !ddFontFamily.isEmpty() )
   {
     if ( ddFontStyle.compare( "Ignore", Qt::CaseInsensitive ) != 0 )
     {
       // just family is different, build font from database
-      QFont styledfont = mFontDB.font( ddFontFamily, textNamedStyle, 12 );
-      if ( QApplication::font().toString() != styledfont.toString() )
+      QFont styledfont = mFontDB.font( ddFontFamily, textNamedStyle, appFont.pointSize() );
+      if ( appFont != styledfont )
       {
         newFont = styledfont;
         newFontBuilt = true;

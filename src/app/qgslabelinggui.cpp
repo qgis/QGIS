@@ -26,6 +26,7 @@
 #include "qgslabelengineconfigdialog.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpression.h"
+#include "qgsfontutils.h"
 #include "qgisapp.h"
 #include "qgsmaprenderer.h"
 #include "qgsproject.h"
@@ -362,7 +363,7 @@ void QgsLabelingGui::init()
   mFontWordSpacingSpinBox->setValue( lyr.textFont.wordSpacing() );
   mFontLetterSpacingSpinBox->setValue( lyr.textFont.letterSpacing() );
 
-  updateFontViaStyle( lyr.textNamedStyle );
+  QgsFontUtils::updateFontViaStyle( mRefFont, lyr.textNamedStyle );
   updateFont( mRefFont );
 
   // shape background
@@ -1053,47 +1054,6 @@ void QgsLabelingGui::changeTextFont()
   }
 }
 
-void QgsLabelingGui::updateFontViaStyle( const QString & fontstyle )
-{
-  QFont styledfont;
-  bool foundmatch = false;
-  int fontSize = 12; // QFontDatabase::font() needs an integer for size
-  if ( !fontstyle.isEmpty() )
-  {
-    styledfont = mFontDB.font( mRefFont.family(), fontstyle, fontSize );
-    styledfont.setPointSizeF( mRefFont.pointSizeF() );
-    if ( QApplication::font().toString() != styledfont.toString() )
-    {
-      foundmatch = true;
-    }
-  }
-  if ( !foundmatch )
-  {
-    foreach ( const QString &style, mFontDB.styles( mRefFont.family() ) )
-    {
-      styledfont = mFontDB.font( mRefFont.family(), style, fontSize );
-      styledfont.setPointSizeF( mRefFont.pointSizeF() );
-      styledfont = styledfont.resolve( mRefFont );
-      if ( mRefFont.toString() == styledfont.toString() )
-      {
-        foundmatch = true;
-        break;
-      }
-    }
-  }
-  if ( foundmatch )
-  {
-//    styledfont.setPointSizeF( mRefFont.pointSizeF() );
-    styledfont.setCapitalization( mRefFont.capitalization() );
-    styledfont.setUnderline( mRefFont.underline() );
-    styledfont.setStrikeOut( mRefFont.strikeOut() );
-    styledfont.setWordSpacing( mRefFont.wordSpacing() );
-    styledfont.setLetterSpacing( QFont::AbsoluteSpacing, mRefFont.letterSpacing() );
-    mRefFont = styledfont;
-  }
-  // if no match, style combobox will be left blank, which should not affect engine labeling
-}
-
 void QgsLabelingGui::updateFont( QFont font )
 {
   // update background reference font
@@ -1397,7 +1357,7 @@ void QgsLabelingGui::on_mFontCapitalsComboBox_currentIndexChanged( int index )
 
 void QgsLabelingGui::on_mFontStyleComboBox_currentIndexChanged( const QString & text )
 {
-  updateFontViaStyle( text );
+  QgsFontUtils::updateFontViaStyle( mRefFont, text );
   updateFont( mRefFont );
 }
 

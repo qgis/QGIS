@@ -85,7 +85,6 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void blockInitSignals( bool block );
     void blockFontChangeSignals( bool blk );
     void setPreviewBackground( QColor color );
-    void updateFontViaStyle( const QString & fontstyle );
     void syncDefinedCheckboxFrame( QgsDataDefinedButton* ddBtn, QCheckBox* chkBx, QFrame* f );
     void populateFontCapitalsComboBox();
     void populateFontStyleComboBox();
