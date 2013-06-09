@@ -242,7 +242,7 @@ class MapServerExport:
                       "QGIS Project Files (*.qgs)", "Filter list for selecting files from a dialog box")
           # Check that a file was selected
           if len(saveAsFileName) == 0:
-            QMessageBox.warning(self.dlg, "Not saved!", "QGis project file not saved because no file name was given.")
+            QMessageBox.warning(self.dlg, "Not saved!", "QGIS project file not saved because no file name was given.")
             # fall back to using current project if available
             self.dlg.ui.txtQgisFilePath.setText(project.fileName())
           else:

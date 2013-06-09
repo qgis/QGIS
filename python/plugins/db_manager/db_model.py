@@ -530,7 +530,7 @@ class DBModel(QAbstractItemModel):
 				parts = mimeUri.split(":", 3)
 				if len(parts) != 4:
 					# invalid qgis mime uri
-					QMessageBox.warning(None, self.tr("Invalid MIME uri"), self.tr("The dropped object is not a valid QGis layer"))
+					QMessageBox.warning(None, self.tr("Invalid MIME uri"), self.tr("The dropped object is not a valid layer"))
 					continue
 
 				layerType, providerKey, layerName, uriString = parts
@@ -553,7 +553,7 @@ class DBModel(QAbstractItemModel):
 
 		if not inLayer.isValid():
 			# invalid layer
-			QMessageBox.warning(None, self.tr("Invalid layer"), self.tr("QGis was unable to load the layer %s") % inLayer.name)
+			QMessageBox.warning(None, self.tr("Invalid layer"), self.tr("Unable to load the layer %s") % inLayer.name)
 			return False
 
 		# retrieve information about the new table's db and schema

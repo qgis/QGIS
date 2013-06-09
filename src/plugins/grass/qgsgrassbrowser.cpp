@@ -390,7 +390,7 @@ void QgsGrassBrowser::deleteMap()
     QString mapset = mModel->itemMapset( index );
     QString map = mModel->itemMap( index );
 
-    // check whether the layer is loaded in QGis canvas
+    // check whether the layer is loaded in canvas
     if ( type == QgsGrassModel::Vector )
     {
       QStringList layers = QgsGrass::vectorLayers( gisbase, location, mapset, map );
@@ -419,7 +419,7 @@ void QgsGrassBrowser::deleteMap()
               grassProvider->freeze();
 #else
             QMessageBox::information( this, tr( "Information" ),
-                                      tr( "Remove the selected layer(s) from QGis canvas before continue." ) );
+                                      tr( "Remove the selected layer(s) from canvas before continue." ) );
             return;
 #endif
           }

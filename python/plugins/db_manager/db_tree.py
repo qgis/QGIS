@@ -116,7 +116,7 @@ class DBTree(QTreeView):
 
       if isinstance(item, Table):
         menu.addSeparator()
-        menu.addAction(self.tr("Add to QGis canvas"), self.addLayer)
+        menu.addAction(self.tr("Add to canvas"), self.addLayer)
 
     elif isinstance(item, DBPlugin) and item.database() is not None:
       menu.addAction(self.tr("Re-connect"), self.reconnect)

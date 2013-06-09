@@ -109,7 +109,7 @@ void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
   QString projectFile = QFileDialog::getOpenFileName( this,
                         tr( "Select project file" ),
                         s.value( "/qgis/last_embedded_project_path" ).toString() ,
-                        tr( "QGis files" ) + " (*.qgs *.QGS)" );
+                        tr( "QGIS files" ) + " (*.qgs *.QGS)" );
   if ( !projectFile.isEmpty() )
   {
     mProjectFileLineEdit->setText( projectFile );

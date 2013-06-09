@@ -614,16 +614,16 @@ Diese Tabelle ist für viele GIS-Applikationen für die Bestimmung der Tabelle u
         <translation>Ungültige MIMI-URI</translation>
     </message>
     <message>
-        <source>The dropped object is not a valid QGis layer</source>
-        <translation>Das gelöschte Objekt ist kein gültiger QGis-Layer</translation>
+        <source>The dropped object is not a valid layer</source>
+        <translation>Das gelöschte Objekt ist kein gültiger Layer</translation>
+    </message>
+    <message>
+        <source>Unable to load the layer %s</source>
+        <translation>Konnte den Layer %s nicht laden</translation>
     </message>
     <message>
         <source>Invalid layer</source>
         <translation>Ungültiger Layer</translation>
-    </message>
-    <message>
-        <source>QGis was unable to load the layer %s</source>
-        <translation>QGis konnte den Layer %s nicht laden</translation>
     </message>
 </context>
 <context>
@@ -637,199 +637,12 @@ Diese Tabelle ist für viele GIS-Applikationen für die Bestimmung der Tabelle u
         <translation>Löschen</translation>
     </message>
     <message>
-        <source>Add to QGis canvas</source>
-        <translation>Zur QGis-Karte hinzufügen</translation>
+        <source>Add to canvas</source>
+        <translation>Zur Karte hinzufügen</translation>
     </message>
     <message>
         <source>Re-connect</source>
         <translation>Neu verbinden</translation>
-    </message>
-</context>
-<context>
-    <name>Database</name>
-    <message>
-        <source>&amp;Re-connect</source>
-        <translation type="obsolete">&amp;Neu verbinden</translation>
-    </message>
-    <message>
-        <source>&amp;Database</source>
-        <translation type="obsolete">&amp;Datenbank</translation>
-    </message>
-    <message>
-        <source>&amp;Create schema</source>
-        <translation type="obsolete">&amp;Schema anlegen</translation>
-    </message>
-    <message>
-        <source>&amp;Schema</source>
-        <translation type="obsolete">&amp;Schema</translation>
-    </message>
-    <message>
-        <source>&amp;Delete (empty) schema</source>
-        <translation type="obsolete">(&amp;Leeres) Schema löschen</translation>
-    </message>
-    <message>
-        <source>Delete selected item</source>
-        <translation type="obsolete">Lösche gewähltes Objekt</translation>
-    </message>
-    <message>
-        <source>&amp;Create table</source>
-        <translation type="obsolete">Tabelle &amp;anlegen</translation>
-    </message>
-    <message>
-        <source>&amp;Table</source>
-        <translation type="obsolete">&amp;Tabelle</translation>
-    </message>
-    <message>
-        <source>&amp;Edit table</source>
-        <translation type="obsolete">Tabelle &amp;bearbeiten</translation>
-    </message>
-    <message>
-        <source>&amp;Delete table/view</source>
-        <translation type="obsolete">Tabelle/Sicht l&amp;öschen</translation>
-    </message>
-    <message>
-        <source>&amp;Empty table</source>
-        <translation type="obsolete">Tabelle &amp;leeren</translation>
-    </message>
-    <message>
-        <source>&amp;Move to schema</source>
-        <translation type="obsolete">In Schema &amp;verschieben</translation>
-    </message>
-    <message>
-        <source>Sorry</source>
-        <translation type="obsolete">Schade</translation>
-    </message>
-    <message>
-        <source>Cannot delete the selected item.</source>
-        <translation type="obsolete">Konnte gewähltes Objekt nicht löschen.</translation>
-    </message>
-    <message>
-        <source>No database selected or you are not connected to it.</source>
-        <translation type="obsolete">Keine Datenbank gewählt oder keine Verbindung möglich.</translation>
-    </message>
-    <message>
-        <source>New schema</source>
-        <translation type="obsolete">Neues Schema</translation>
-    </message>
-    <message>
-        <source>Enter new schema name</source>
-        <translation type="obsolete">Neuen Schemanamen eingeben</translation>
-    </message>
-    <message>
-        <source>Select an empty SCHEMA for deletion.</source>
-        <translation type="obsolete">Leeres Schema zum Löschen wählen.</translation>
-    </message>
-    <message>
-        <source>hey!</source>
-        <translation type="obsolete">Hey!</translation>
-    </message>
-    <message>
-        <source>Really delete schema %s?</source>
-        <translation type="obsolete">Das Schema %s wirklich löschen?</translation>
-    </message>
-    <message>
-        <source>Select a TABLE for editation.</source>
-        <translation type="obsolete">Tabelle zur Bearbeitung wählen.</translation>
-    </message>
-    <message>
-        <source>Select a TABLE/VIEW for deletion.</source>
-        <translation type="obsolete">Tabelle/Sicht zum Löschen wählen.</translation>
-    </message>
-    <message>
-        <source>Really delete table/view %s?</source>
-        <translation type="obsolete">Tabelle/Sicht %s wirklich löschen?</translation>
-    </message>
-    <message>
-        <source>Select a TABLE to empty it.</source>
-        <translation type="obsolete">Tabelle zum Leeren wählen.</translation>
-    </message>
-    <message>
-        <source>Really delete all items from table %s?</source>
-        <translation type="obsolete">Wirklich alle Elemente der Tabelle %s löschen?</translation>
-    </message>
-    <message>
-        <source>Select a TABLE/VIEW.</source>
-        <translation type="obsolete">Tabelle/Sicht wählen.</translation>
-    </message>
-</context>
-<context>
-    <name>DatabaseInfo</name>
-    <message>
-        <source>Server version: </source>
-        <translation type="obsolete">Server-Version: </translation>
-    </message>
-    <message>
-        <source>Host:</source>
-        <translation type="obsolete">Server:</translation>
-    </message>
-    <message>
-        <source>User:</source>
-        <translation type="obsolete">Benutzer:</translation>
-    </message>
-    <message>
-        <source>Library:</source>
-        <translation type="obsolete">Bibiliothek:</translation>
-    </message>
-    <message>
-        <source>&lt;warning&gt; geometry_columns table doesn&apos;t exist!
-This table is essential for many GIS applications for enumeration of tables.</source>
-        <translation type="obsolete">&lt;warning&gt; Tabelle geometry_columns existiert nicht!
-Diese Tabelle ist für viele GIS-Applikationen für die Bestimmung der Tabelle unverzichtbar.</translation>
-    </message>
-    <message>
-        <source>create new schemas</source>
-        <translation type="obsolete">Neue Schemata erzeugen</translation>
-    </message>
-    <message>
-        <source>create temporary tables</source>
-        <translation type="obsolete">Temporärtabellen erzeugen</translation>
-    </message>
-    <message>
-        <source>Not connected</source>
-        <translation type="obsolete">Nicht verbunden</translation>
-    </message>
-    <message>
-        <source>Connection details</source>
-        <translation type="obsolete">Verbindungsdetails</translation>
-    </message>
-    <message>
-        <source>General info</source>
-        <translation type="obsolete">Allgemeine Informationen</translation>
-    </message>
-    <message>
-        <source>&lt;warning&gt; %s support not enabled!</source>
-        <translation type="obsolete">&lt;warnung&gt; Unterstützung für %s nicht aktiv!</translation>
-    </message>
-    <message>
-        <source>&lt;warning&gt; This user has no privileges!</source>
-        <translation type="obsolete">&lt;warning&gt; Dieser Benutzer hat keine Rechte!</translation>
-    </message>
-    <message>
-        <source>User has privileges:</source>
-        <translation type="obsolete">Benutzerrechte:</translation>
-    </message>
-    <message>
-        <source>Privileges</source>
-        <translation type="obsolete">Rechte</translation>
-    </message>
-</context>
-<context>
-    <name>DbError</name>
-    <message>
-        <source>Error:
-%s</source>
-        <translation type="obsolete">Fehler:
-%s</translation>
-    </message>
-    <message>
-        <source>
-
-Query:
-%s</source>
-        <translation type="obsolete">
-
-Abfrage:
-%s</translation>
     </message>
 </context>
 <context>
@@ -5400,17 +5213,6 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     </message>
 </context>
 <context>
-    <name>LayerPreview</name>
-    <message>
-        <source>Sorry</source>
-        <translation type="obsolete">Schade</translation>
-    </message>
-    <message>
-        <source>Unable to find a valid unique field</source>
-        <translation type="obsolete">Konnte kein gültiges eindeutiges Feld finden</translation>
-    </message>
-</context>
-<context>
     <name>LayerPropertiesWidget</name>
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui" line="14"/>
@@ -6815,148 +6617,8 @@ Falsche Zeile: %1</translation>
 <context>
     <name>PGTable</name>
     <message>
-        <source>Do you want to %s rule %s?</source>
-        <translation type="obsolete">Aktion %1 auf Regel %2 anwenden?</translation>
-    </message>
-    <message>
         <source>Table rule</source>
         <translation>Tabellenregel</translation>
-    </message>
-</context>
-<context>
-    <name>PGTableInfo</name>
-    <message>
-        <source>Relation type:</source>
-        <translation type="obsolete">Relationsart:</translation>
-    </message>
-    <message>
-        <source>View</source>
-        <translation type="obsolete">Ansicht</translation>
-    </message>
-    <message>
-        <source>Table</source>
-        <translation type="obsolete">Tabelle</translation>
-    </message>
-    <message>
-        <source>Owner:</source>
-        <translation type="obsolete">Besitzer:</translation>
-    </message>
-    <message>
-        <source>Comment:</source>
-        <translation type="obsolete">Kommentar:</translation>
-    </message>
-    <message>
-        <source>Pages:</source>
-        <translation type="obsolete">Seiten:</translation>
-    </message>
-    <message>
-        <source>Rows (estimation):</source>
-        <translation type="obsolete">Zeilen (geschätzt):</translation>
-    </message>
-    <message>
-        <source>Privileges:</source>
-        <translation type="obsolete">Rechte:</translation>
-    </message>
-    <message>
-        <source>&lt;warning&gt; This user doesn&apos;t have usage privileges for this schema!</source>
-        <translation type="obsolete">&lt;warning&gt; Dieser Benutzer hat keine Nutzungsrechte für dieses Schema!</translation>
-    </message>
-    <message>
-        <source>Rows (counted):</source>
-        <translation type="obsolete">Zeilen (gezählt):</translation>
-    </message>
-    <message>
-        <source>Unknown (&lt;a href=&quot;action:rows/count&quot;&gt;find out&lt;/a&gt;)</source>
-        <translation type="obsolete">Unbekannt (&lt;a href=&quot;action:rows/count&quot;&gt;Feststellen&lt;/a&gt;)</translation>
-    </message>
-    <message>
-        <source>&lt;warning&gt; This user has no privileges!</source>
-        <translation type="obsolete">&lt;warning&gt; Dieser Benutzer hat keine Rechte!</translation>
-    </message>
-    <message>
-        <source>&lt;warning&gt; This user has read-only privileges.</source>
-        <translation type="obsolete">&lt;warning&gt; Dieser Benutzer hat nur Leserechte.</translation>
-    </message>
-    <message>
-        <source>&lt;warning&gt; There&apos;s a significant difference between estimated and real row count. Consider running &lt;a href=&quot;action:vacuumanalyze/run&quot;&gt;VACUUM ANALYZE&lt;/a&gt;.</source>
-        <translation type="obsolete">&lt;warning&gt; Es gibt einen signifikanten Unterschied zwischen der geschätzen und der wirklichen Zeilenanzahl. Erwägen Sie &lt;a href=&quot;action:vacuumanalyze/run&quot;&gt;VACUUM ANALYZE&lt;/a&gt; auszuführen.</translation>
-    </message>
-    <message>
-        <source>&lt;warning&gt; No primary key defined for this table!</source>
-        <translation type="obsolete">&lt;warning&gt; Kein Primärschlüssel für diese Tabelle definiert!</translation>
-    </message>
-    <message>
-        <source>Library:</source>
-        <translation type="obsolete">Bibliothek:</translation>
-    </message>
-    <message>
-        <source>Scripts:</source>
-        <translation type="obsolete">Skripte:</translation>
-    </message>
-    <message>
-        <source>&lt;warning&gt; Version of installed scripts doesn&apos;t match version of released scripts!
-This is probably a result of incorrect PostGIS upgrade.</source>
-        <translation type="obsolete">&lt;warning&gt; Version der installierten Skripte entspricht nicht der der aktuellen Skripte!  Die ist wahrscheinlich Folge einer falschen PostGIS-Aktualisierung.</translation>
-    </message>
-    <message>
-        <source>&lt;warning&gt; geometry_columns table doesn&apos;t exist!
-This table is essential for many GIS applications for enumeration of tables.</source>
-        <translation type="obsolete">&lt;warning&gt; Tabelle geometry_columns existiert nicht!
-Diese Tabelle ist für viele GIS-Applikationen für die Bestimmung der Tabelle unverzichtbar.</translation>
-    </message>
-    <message>
-        <source>&lt;warning&gt; This user doesn&apos;t have privileges to read contents of geometry_columns table!
-This table is essential for many GIS applications for enumeration of tables.</source>
-        <translation type="obsolete">&lt;warning&gt; Der Benutzer hat keine Rechte die Tabelle geometry_columns zu lesen!
-Diese Tabelle ist für viele GIS-Applikationen für die Bestimmung der Tabelle unverzichtbar.</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Name</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Typ</translation>
-    </message>
-    <message>
-        <source>Length</source>
-        <translation type="obsolete">Länge</translation>
-    </message>
-    <message>
-        <source>Null</source>
-        <translation type="obsolete">Null</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="obsolete">Voreinstellung</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Funktion</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="obsolete">Eingeschaltet</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">Ja</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Nein</translation>
-    </message>
-    <message>
-        <source>&lt;a href=&quot;action:triggers/enable&quot;&gt;Enable all triggers&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Disable all triggers&lt;/a&gt;</source>
-        <translation type="obsolete">&lt;a href=&quot;action:triggers/enable&quot;&gt;Alle Trigger aktivieren&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Alle Trigger deaktivieren&lt;/a&gt;</translation>
-    </message>
-    <message>
-        <source>Definition</source>
-        <translation type="obsolete">Definition</translation>
-    </message>
-    <message>
-        <source>Rules</source>
-        <translation type="obsolete">Regeln</translation>
     </message>
 </context>
 <context>
@@ -10194,10 +9856,6 @@ SQL: %1</translation>
         <translation>Konnte Darstellung nicht speichern, weil:
 %1</translation>
     </message>
-    <message>
-        <source>DB Manager</source>
-        <translation type="obsolete">DB-Manager</translation>
-    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -10938,13 +10596,6 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
         <translation>Konnte den MSSQL-Auswahldialog nicht vom Datenlieferanten holen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3569"/>
-        <location filename="../src/app/qgisapp.cpp" line="3732"/>
-        <location filename="../src/app/qgisapp.cpp" line="3791"/>
-        <source>QGis files</source>
-        <translation>QGis-Dateien</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="5495"/>
         <source>Cannot copy style: %1</source>
         <translation>Kann Stil nicht kopieren: %1</translation>
@@ -11316,6 +10967,13 @@ Diese Fehler immer ignorieren?</translation>
         <location filename="../src/app/qgisapp.cpp" line="4395"/>
         <source>Abort...</source>
         <translation>Abbrechen...</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="3569"/>
+        <location filename="../src/app/qgisapp.cpp" line="3732"/>
+        <location filename="../src/app/qgisapp.cpp" line="3791"/>
+        <source>QGIS files</source>
+        <translation>QGIS-Dateien</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3604"/>
@@ -23169,13 +22827,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="297"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="300"/>
-        <source>Link Georeferencer to QGis</source>
+        <source>Link Georeferencer to QGIS</source>
         <translation>Georeferenzierung mit QGIS verbinden</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="308"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="311"/>
-        <source>Link QGis to Georeferencer</source>
+        <source>Link QGIS to Georeferencer</source>
         <translation>QGIS mit Georeferenzierung verbinden</translation>
     </message>
     <message>
@@ -23727,11 +23385,6 @@ p, li { white-space: pre-wrap; }
         <translation>Information</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="422"/>
-        <source>Remove the selected layer(s) from QGis canvas before continue.</source>
-        <translation>Vor dem Fortfahren die gewählten Layer aus der Karte entfernen.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="436"/>
         <source>Question</source>
         <translation>Frage</translation>
@@ -23772,6 +23425,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="366"/>
         <source>Cannot rename map %1</source>
         <translation>Konnte Karte %1 nicht umbenennen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="422"/>
+        <source>Remove the selected layer(s) from canvas before continue.</source>
+        <translation>Vor dem Fortfahren die gewählten Layer aus der Karte entfernen.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="475"/>
@@ -32715,6 +32373,11 @@ Immer Netzwerk: immer aus dem Netzwerk laden und nicht prüfen, ob im Cache ein 
         <translation>Vollsuche</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsoptions.cpp" line="833"/>
+        <source>QGIS files</source>
+        <translation>QGIS-Dateien</translation>
+    </message>
+    <message>
         <location filename="../src/app/qgsoptions.cpp" line="1847"/>
         <source>No Stretch</source>
         <translation>Kein Strecken</translation>
@@ -32849,11 +32512,6 @@ Immer Netzwerk: immer aus dem Netzwerk laden und nicht prüfen, ob im Cache ein 
         <location filename="../src/app/qgsoptions.cpp" line="831"/>
         <source>Choose project file to open at launch</source>
         <translation>Beim Start zu öffnende Projektdatei wählen</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgsoptions.cpp" line="833"/>
-        <source>QGis files</source>
-        <translation>QGis-Dateien</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1342"/>
@@ -36246,238 +35904,229 @@ QGIS muß neugestartet werden, um sie erneut zu laden.</translation>
 <context>
     <name>QgsPluginManager</name>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="140"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="139"/>
         <source>sort by name</source>
         <translation>sortieren nach Namen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="141"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="140"/>
         <source>sort by downloads</source>
         <translation>Sortieren nach Downloads</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="142"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="141"/>
         <source>sort by vote</source>
         <translation>Sortieren nach Stimmen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="143"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="142"/>
         <source>sort by status</source>
         <translation>Sortieren nach Status</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="85"/>
-        <source>To enable or disable plugin, click its checkbox or doubleclick its name...</source>
-        <translation>Kontrollkästchen an- oder Beschriftung doppelklicken, um eine Erweiterungen zu (de-)aktivieren...</translation>
-    </message>
-    <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="276"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="275"/>
         <source>No Plugins</source>
         <translation>Keine Erweiterungen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="515"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="514"/>
         <source>Only locally available</source>
         <comment>category: plugins that are only locally available</comment>
         <translation>Nur lokal verfügbare Erweiterungen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="580"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="579"/>
         <source>This plugin is incompatible with this version of QGIS</source>
         <translation>Diese Erweiterung läuft mit der dieser QGIS-Version nicht</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="580"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="579"/>
         <source>Plugin designed for QGIS %1</source>
         <comment>compatible QGIS version(s)</comment>
         <translation>Erweiterung für QGIS %1</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="584"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="583"/>
         <source>This plugin requires a missing module</source>
         <translation>Diese Erweiterung benötigt ein fehlendes Modul</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="588"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="587"/>
         <source>This plugin is broken</source>
         <translation>Diese Erweiterung ist defekt</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="598"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="597"/>
         <source>There is a new version available</source>
         <translation>Es gibt eine neue Version</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="604"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="603"/>
         <source>This is a new plugin</source>
         <translation>Dies ist eine neue Erweiterung</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="610"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="609"/>
         <source>Installed version of this plugin is higher than any version found in repository</source>
         <translation>Installierte Erweiterungsversion ist neuer als alle im Repositorium verfügbarenen Versionen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="618"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="617"/>
         <source>This plugin is experimental</source>
         <translation>Diese Erweiterung ist experimentel</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="656"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="655"/>
         <source>Category</source>
         <translation>Kategorie</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="660"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="659"/>
         <source>Tags</source>
         <translation>Elemente</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="664"/>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="668"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="663"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="667"/>
         <source>Author</source>
         <translation>Autor</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="672"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="671"/>
         <source>More info</source>
         <translation>Weitere Informationen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="675"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="674"/>
         <source>homepage</source>
         <translation>Homepage</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="679"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="678"/>
         <source>tracker</source>
         <translation>Fehlerverfolgung</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="683"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="682"/>
         <source>code_ repository</source>
         <translation>Coderepositorium</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="646"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="645"/>
         <source>&lt;br/&gt;%1 rating vote(s)&lt;br/&gt;</source>
         <translation>&lt;br/&gt;%1 Bewertungsstimme(n)&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="513"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="512"/>
         <source>Reinstallable</source>
         <comment>category: plugins that are installed and available</comment>
         <translation>Wiederinstallierbar</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="514"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="513"/>
         <source>Upgradeable</source>
         <comment>category: plugins that are installed and there is a newer version available</comment>
         <translation>Aktualisierbar</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="516"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="515"/>
         <source>Downgradeable</source>
         <comment>category: plugins that are installed and there is an OLDER version available</comment>
         <translation>Frühere Version verfügbar</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="650"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="649"/>
         <source>%1 downloads&lt;br/&gt;</source>
         <translation>%1 Downloads&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="694"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="693"/>
         <source>Installed version: %1 (in %2)&lt;br/&gt;</source>
         <translation>Installierte Version %1 (in %2)&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="698"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="697"/>
         <source>Available version: %1 (in %2)&lt;br/&gt;</source>
         <translation>Verfügbare Version %1 (in %2)&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="704"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="703"/>
         <source>changelog:&lt;br/&gt;%1 &lt;br/&gt;</source>
         <translation>Anderungsliste:&lt;br/&gt;%1&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="715"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="714"/>
         <source>Upgrade plugin</source>
         <translation>Erweiterung aktualisieren</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="719"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="718"/>
         <source>Downgrade plugin</source>
         <translation>Frühere Version der Erweiterung installieren</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="728"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="727"/>
         <source>Reinstall plugin</source>
         <translation>Erweiterung erneut installieren</translation>
     </message>
     <message>
-        <source>Enable selected repository only</source>
-        <translation type="obsolete">Nur gewähltes Repositorium aktivieren</translation>
-    </message>
-    <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="723"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="722"/>
         <source>Install plugin</source>
         <translation>Erweiterung installieren</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="804"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="803"/>
         <source>Only show plugins from selected repository</source>
         <translation>Nur Erweiterungen des gewählten Repositoriums anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="808"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="807"/>
         <source>Clear filter</source>
         <translation>Filter löschen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="824"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="823"/>
         <source>connected</source>
         <translation>verbunden</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="826"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="825"/>
         <source>The repository is connected</source>
         <translation>Repositorium ist verbunden</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="830"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="829"/>
         <source>unavailable</source>
         <translation>nicht verfügbar</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="832"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="831"/>
         <source>The repository is enabled, but unavailable</source>
         <translation>Dieses Repositorium ist aktiv, aber nicht verfügbar</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="837"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="836"/>
         <source>disabled</source>
         <translation>deaktiviert</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="841"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="840"/>
         <source>The repository is disabled</source>
         <translation>Dieses Repositorium ist deaktiviert</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="845"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="844"/>
         <source>The repository is blocked due to incompatibility with your QGIS version</source>
         <translation>Diese Repositorium wurde wegen Inkompatibilität zu Ihrer QGIS-Version blockiert</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="392"/>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1266"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="391"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1288"/>
         <source>Plugins</source>
         <translation>Erweiterungen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="276"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="275"/>
         <source>No QGIS plugins found in %1</source>
         <translation>Keine QGIS-Erweiterung in %1 gefunden</translation>
     </message>
@@ -37469,8 +37118,8 @@ Choose ignore to continue loading without the missing layers. Choose cancel to r
     </message>
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="112"/>
-        <source>QGis files</source>
-        <translation>QGis-Dateien</translation>
+        <source>QGIS files</source>
+        <translation>QGIS-Dateien</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="143"/>
@@ -47950,33 +47599,6 @@ Antwort war:
     </message>
 </context>
 <context>
-    <name>RasterTableInfo</name>
-    <message>
-        <source>Column:</source>
-        <translation type="obsolete">Spalte:</translation>
-    </message>
-    <message>
-        <source>Geometry:</source>
-        <translation type="obsolete">Geometrie:</translation>
-    </message>
-    <message>
-        <source>Undefined</source>
-        <translation type="obsolete">Undefiniert</translation>
-    </message>
-    <message>
-        <source>Spatial ref:</source>
-        <translation type="obsolete">Räuml. Bez.:</translation>
-    </message>
-    <message>
-        <source>(unknown) (&lt;a href=&quot;action:extent/get&quot;&gt;find out&lt;/a&gt;)</source>
-        <translation type="obsolete">Unbekannt (&lt;a href=&quot;action:extent/get&quot;&gt;Feststellen&lt;/a&gt;)</translation>
-    </message>
-    <message>
-        <source>Extent:</source>
-        <translation type="obsolete">Grenzen:</translation>
-    </message>
-</context>
-<context>
     <name>RgExportDlg</name>
     <message>
         <location filename="../src/plugins/roadgraph/exportdlg.cpp" line="34"/>
@@ -48734,41 +48356,6 @@ Beschreibung: %3</translation>
     </message>
 </context>
 <context>
-    <name>SchemaInfo</name>
-    <message>
-        <source>Owner:</source>
-        <translation type="obsolete">Besitzer:</translation>
-    </message>
-    <message>
-        <source>Comment:</source>
-        <translation type="obsolete">Kommentar:</translation>
-    </message>
-    <message>
-        <source>create new objects</source>
-        <translation type="obsolete">Neue Objekte erzeugen</translation>
-    </message>
-    <message>
-        <source>access objects</source>
-        <translation type="obsolete">Zugriffsobjekte</translation>
-    </message>
-    <message>
-        <source>Schema details</source>
-        <translation type="obsolete">Schemadetails</translation>
-    </message>
-    <message>
-        <source>&lt;warning&gt; This user has no privileges to access this schema!</source>
-        <translation type="obsolete">&lt;warning&gt; Dieser Benutzer hat keine Zugriffsrechte für dieses Schema!</translation>
-    </message>
-    <message>
-        <source>User has privileges:</source>
-        <translation type="obsolete">Benutzerrechte:</translation>
-    </message>
-    <message>
-        <source>Privileges</source>
-        <translation type="obsolete">Rechte</translation>
-    </message>
-</context>
-<context>
     <name>SelectGeoRasterBase</name>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="14"/>
@@ -49092,164 +48679,6 @@ SEXTANTE zu erfahren</translation>
     </message>
 </context>
 <context>
-    <name>Table</name>
-    <message>
-        <source>Do you want to %s all triggers?</source>
-        <translation type="obsolete">Aktion %s auf alle Trigger ausführen?</translation>
-    </message>
-    <message>
-        <source>Table triggers</source>
-        <translation type="obsolete">Tabellentrigger</translation>
-    </message>
-    <message>
-        <source>Do you want to %s trigger %s?</source>
-        <translation type="obsolete">Aktion %s auf Trigger %s anwenden?</translation>
-    </message>
-    <message>
-        <source>Table trigger</source>
-        <translation type="obsolete">Tabellentrigger</translation>
-    </message>
-</context>
-<context>
-    <name>TableConstraint</name>
-    <message>
-        <source>Check</source>
-        <translation type="obsolete">Prüfen</translation>
-    </message>
-    <message>
-        <source>Primary key</source>
-        <translation type="obsolete">Primärschlüssel</translation>
-    </message>
-    <message>
-        <source>Foreign key</source>
-        <translation type="obsolete">Fremdschlüssel</translation>
-    </message>
-    <message>
-        <source>Unique</source>
-        <translation type="obsolete">Eindeutig</translation>
-    </message>
-    <message>
-        <source>Exclusion</source>
-        <translation type="obsolete">Ausschluß</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Unbekannt</translation>
-    </message>
-</context>
-<context>
-    <name>TableConstraintsModel</name>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Name</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Typ</translation>
-    </message>
-    <message>
-        <source>Column(s)</source>
-        <translation type="obsolete">Spalte(n)</translation>
-    </message>
-</context>
-<context>
-    <name>TableIndexesModel</name>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Name</translation>
-    </message>
-    <message>
-        <source>Column(s)</source>
-        <translation type="obsolete">Spalte(n)</translation>
-    </message>
-</context>
-<context>
-    <name>TableInfo</name>
-    <message>
-        <source>Relation type:</source>
-        <translation type="obsolete">Relationsart:</translation>
-    </message>
-    <message>
-        <source>View</source>
-        <translation type="obsolete">Ansicht</translation>
-    </message>
-    <message>
-        <source>Table</source>
-        <translation type="obsolete">Tabelle</translation>
-    </message>
-    <message>
-        <source>Rows:</source>
-        <translation type="obsolete">Zeilen:</translation>
-    </message>
-    <message>
-        <source>Unknown (&lt;a href=&quot;action:rows/count&quot;&gt;find out&lt;/a&gt;)</source>
-        <translation type="obsolete">Unbekannt (&lt;a href=&quot;action:rows/count&quot;&gt;Feststellen&lt;/a&gt;)</translation>
-    </message>
-    <message>
-        <source>Comment:</source>
-        <translation type="obsolete">Kommentar:</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Name</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Typ</translation>
-    </message>
-    <message>
-        <source>Null</source>
-        <translation type="obsolete">Null</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="obsolete">Voreinstellung</translation>
-    </message>
-    <message>
-        <source>Column(s)</source>
-        <translation type="obsolete">Spalte(n)</translation>
-    </message>
-    <message>
-        <source>Function</source>
-        <translation type="obsolete">Funktion</translation>
-    </message>
-    <message>
-        <source>General info</source>
-        <translation type="obsolete">Allgemeine Informationen</translation>
-    </message>
-    <message>
-        <source>&lt;warning&gt; This is not a spatial table.</source>
-        <translation type="obsolete">&lt;warning&gt; Keine räumliche Tabelle.</translation>
-    </message>
-    <message>
-        <source>Fields</source>
-        <translation type="obsolete">Felder</translation>
-    </message>
-    <message>
-        <source>Constraints</source>
-        <translation type="obsolete">Restriktionen</translation>
-    </message>
-    <message>
-        <source>Indexes</source>
-        <translation type="obsolete">Indizes</translation>
-    </message>
-    <message>
-        <source>Triggers</source>
-        <translation type="obsolete">Trigger</translation>
-    </message>
-    <message>
-        <source>View definition</source>
-        <translation type="obsolete">Definition anzeigen</translation>
-    </message>
-</context>
-<context>
-    <name>TableViewer</name>
-    <message>
-        <source>Copy</source>
-        <translation type="obsolete">Kopieren</translation>
-    </message>
-</context>
-<context>
     <name>Topol</name>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="69"/>
@@ -49348,60 +48777,6 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
     <message>
         <source>Error(s)</source>
         <translation>Fehler</translation>
-    </message>
-</context>
-<context>
-    <name>VectorTable</name>
-    <message>
-        <source>Do you want to %s spatial index for field %s?</source>
-        <translation type="obsolete">Aktion %s auf räumlichen Index für Feld %s ausführen?</translation>
-    </message>
-    <message>
-        <source>Spatial Index</source>
-        <translation type="obsolete">Räumlicher Index</translation>
-    </message>
-</context>
-<context>
-    <name>VectorTableInfo</name>
-    <message>
-        <source>Column:</source>
-        <translation type="obsolete">Spalte:</translation>
-    </message>
-    <message>
-        <source>Geometry:</source>
-        <translation type="obsolete">Geometrie:</translation>
-    </message>
-    <message>
-        <source>Dimension:</source>
-        <translation type="obsolete">Dimension:</translation>
-    </message>
-    <message>
-        <source>Undefined</source>
-        <translation type="obsolete">Undefiniert</translation>
-    </message>
-    <message>
-        <source>Spatial ref:</source>
-        <translation type="obsolete">Räuml. Bez.:</translation>
-    </message>
-    <message>
-        <source>Estimated extent:</source>
-        <translation type="obsolete">Geschätzte Ausmaße:</translation>
-    </message>
-    <message>
-        <source>(unknown) (&lt;a href=&quot;action:extent/get&quot;&gt;find out&lt;/a&gt;)</source>
-        <translation type="obsolete">Unbekannt (&lt;a href=&quot;action:extent/get&quot;&gt;Feststellen&lt;/a&gt;)</translation>
-    </message>
-    <message>
-        <source>Extent:</source>
-        <translation type="obsolete">Grenzen:</translation>
-    </message>
-    <message>
-        <source>&lt;warning&gt; There isn&apos;t entry in geometry_columns!</source>
-        <translation type="obsolete">&lt;warning&gt; Kein Eintrag in geometry_columns!</translation>
-    </message>
-    <message>
-        <source>&lt;warning&gt; No spatial index defined (&lt;a href=&quot;action:spatialindex/create&quot;&gt;create it&lt;/a&gt;)</source>
-        <translation type="obsolete">&lt;warning&gt; Kein räumlicher Index definiert(&lt;a href=&quot;action:spatialindex/create&quot;&gt;Erzeugen&lt;/a&gt;)</translation>
     </message>
 </context>
 <context>
