@@ -3000,9 +3000,12 @@ QgsPalLabeling::~QgsPalLabeling()
 
 bool QgsPalLabeling::willUseLayer( QgsVectorLayer* layer )
 {
-  QgsPalLayerSettings lyrTmp;
-  lyrTmp.readFromLayer( layer );
-  return lyrTmp.enabled;
+  // don't do QgsPalLayerSettings::readFromLayer( layer ) if not needed
+  bool enabled = false;
+  if ( layer->customProperty( "labeling" ).toString() == QString( "pal" ) )
+    enabled = layer->customProperty( "labeling/enabled", QVariant( false ) ).toBool();
+
+  return enabled;
 }
 
 void QgsPalLabeling::clearActiveLayers()
@@ -3031,14 +3034,20 @@ void QgsPalLabeling::clearActiveLayer( QgsVectorLayer* layer )
 
 int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx )
 {
-  QgsDebugMsgLevel( "PREPARE LAYER " + layer->id(), 4 );
   Q_ASSERT( mMapRenderer != NULL );
+
+  if ( !willUseLayer( layer ) )
+  {
+    return 0;
+  }
+
+  QgsDebugMsgLevel( "PREPARE LAYER " + layer->id(), 4 );
 
   // start with a temporary settings class, find out labeling info
   QgsPalLayerSettings lyrTmp;
   lyrTmp.readFromLayer( layer );
 
-  if ( !lyrTmp.enabled || lyrTmp.fieldName.isEmpty() )
+  if ( lyrTmp.fieldName.isEmpty() )
   {
     return 0;
   }
