@@ -28,6 +28,7 @@
 #include <QRegExp>
 #include <QSortFilterProxyModel>
 #include <QActionGroup>
+#include <QTextStream>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -82,8 +83,6 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, Qt::WFlags fl )
   vwPlugins->setFocus();
 
   // Preset widgets
-  QString wellcomeMsg = tr( "To enable or disable plugin, click its checkbox or doubleclick its name..." );
-  tbDetails->setHtml( wellcomeMsg );
   leFilter->setFocus( Qt::MouseFocusReason );
   rbFilterNames->setChecked( true );
 
@@ -894,32 +893,55 @@ void QgsPluginManager::setCurrentTab( int idx )
     mOptionsStackedWidget->setCurrentIndex( 0 );
 
     QStringList acceptedStatuses;
+    QString welcomePage;
     switch ( idx )
     {
       case 0:
         // installed (statuses ends with Z are for spacers to always sort properly)
         acceptedStatuses << "installed" << "orphan" << "newer" << "upgradeable" << "installedZ" << "upgradeableZ" << "orphanZ" << "newerZZ" << "" ;
+        welcomePage = "installed_plugins";
         break;
       case 1:
         // not installed (get more)
         acceptedStatuses << "not installed" << "new" ;
+        welcomePage = "get_more_plugins";
         break;
       case 2:
         // upgradeable
         acceptedStatuses << "upgradeable" ;
+        welcomePage = "upgradeable_plugins";
         break;
       case 3:
         // new
         acceptedStatuses << "new" ;
+        welcomePage = "new_plugins";
         break;
       case 4:
         // invalid
         acceptedStatuses << "invalid" ;
+        welcomePage = "invalid_plugins";
         break;
     }
     mModelProxy->setAcceptedStatuses( acceptedStatuses );
 
     updateTabTitle();
+
+    // load welcome HTML to the detail browser
+    // // // // // // // TODO: after texts are done, read from translations instead.
+    QString welcomeHTML = "";
+    QFile welcomeFile( QgsApplication::pkgDataPath() +  "/resources/plugin_manager/" + welcomePage );
+    if ( welcomeFile.open( QIODevice::ReadOnly ) )
+    {
+      QTextStream welcomeStream( &welcomeFile );  // Remove from includes too.
+      welcomeStream.setCodec( "UTF-8" );
+      QString myStyle = QgsApplication::reportStyleSheet();
+      welcomeHTML += "<style>" + myStyle + "</style>";
+      while ( !welcomeStream.atEnd() )
+      {
+        welcomeHTML += welcomeStream.readLine();
+      }
+    }
+    tbDetails->setHtml( welcomeHTML );
   }
 }
 
