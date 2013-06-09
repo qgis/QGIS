@@ -1,1 +1,18 @@
-Here are <b>installed plugins</b>. To <i>enable</i> or <i>disable</i> plugin, click its checkbox or doubleclick its name...
+<h3>Installed Plugins</h3>
+
+<p>
+On the left you see the list of <b>installed plugins</b> on your system. Both python and cpp 
+plugins are listed. Some plugins come with your QGIS installation while most of
+ them are made available via the plugin repositories.
+</p>
+
+<p>
+You can temporarily enable or disable a plugin.
+To <i>enable</i> or <i>disable</i> a plugin,
+ click its checkbox or doubleclick its name...
+</p>
+
+<p>
+Plugins showing in <span style="color:red;">red</span> are not loaded because there is a problem. Consult the 
+'Invalid' tab to see more details, or to reinstall or uninstall this plugin.
+</p>
