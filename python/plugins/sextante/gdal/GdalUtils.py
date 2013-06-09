@@ -79,13 +79,6 @@ class GdalUtils:
             driver = gdal.GetDriver(i)
             if driver == None:
                 continue
-            from threading import settrace
-            
-            import sys
-            sys.path.append("D:\eclipse_old\plugins\org.python.pydev_2.6.0.2012062818\pysrc")
-            from pydevd import *
-            settrace()
-
             shortName = driver.ShortName#.remove( QRegExp( '\(.*$' ) ).trimmed())
             metadata = driver.GetMetadata()
             if not metadata.has_key(gdal.DCAP_CREATE) or metadata[gdal.DCAP_CREATE] != 'YES':

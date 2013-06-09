@@ -73,12 +73,6 @@ class ConvexHull(GeoAlgorithm):
         f.setType(QVariant.String)
         f.setLength(255)
         if useField:
-            from threading import settrace
-            
-            import sys
-            sys.path.append("D:\eclipse_old\plugins\org.python.pydev_2.6.0.2012062818\pysrc")
-            from pydevd import *
-            settrace()
             index = layer.fieldNameIndex(fieldName)
             fType = layer.pendingFields()[index].type()
             if fType == QVariant.Int:
