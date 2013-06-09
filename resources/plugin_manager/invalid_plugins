@@ -1,3 +1,20 @@
-Plugins here are <b>broken, incompatible or disappointed</b>.<br/><br/>
+<h3>Invalid plugins</h3>
 
-<font size="2">How a plugin can be disappointed? Ha ha! We promised them plenty Python modules they need to run, but we sold them and now you probably need to install them manually.</font>
+<p>
+Plugins in this list here are <b>broken or incompatible</b> with your version of QGIS.
+</p>
+
+<p>
+Click on an individual plugin; if possible QGIS shows you more information.
+</p>
+
+<p>
+The main reasons to have invalid plugins is either that this plugin is not build 
+for this version of QGIS. Maybe you can download an other version from <a href="http://plugins.qgis.org">plugins.qgis.org</a>.
+</p>
+
+<p>
+Another common reason is that a python plugin needs some external python libraries (dependencies).
+You can install them yourself, depending on your operating system. After a correct 
+install the plugin should work.
+</p>
