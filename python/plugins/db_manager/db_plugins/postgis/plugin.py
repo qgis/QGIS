@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -69,7 +69,7 @@ class PostGisDBPlugin(DBPlugin):
 		settings.beginGroup( u"/%s/%s" % (self.connectionSettingsKey(), conn_name) )
 
 		if not settings.contains( "database" ): # non-existent entry?
-			raise InvalidDataException( u'there is no defined database connection "%s".' % conn_name )
+			raise InvalidDataException( self.tr('There is no defined database connection "%s".') % conn_name )
 
 		from qgis.core import QgsDataSourceURI
 		uri = QgsDataSourceURI()
@@ -110,7 +110,7 @@ class PostGisDBPlugin(DBPlugin):
 			if hasCredentialDlg:
 				(ok, username, password) = QgsCredentials.instance().get(uri.connectionInfo(), username, password, err)
 			else:
-				(password, ok) = QInputDialog.getText(parent, u"Enter password", u'Enter password for connection "%s":' % conn_name, QLineEdit.Password)
+				(password, ok) = QInputDialog.getText(parent, self.tr("Enter password"), self.tr('Enter password for connection "%s":') % conn_name, QLineEdit.Password)
 
 			if not ok:
 				return False
@@ -165,16 +165,16 @@ class PGDatabase(Database):
 		# add a separator
 		separator = QAction(self);
 		separator.setSeparator(True)
-		mainWindow.registerAction( separator, "&Table" )
+		mainWindow.registerAction( separator, self.tr("&Table") )
 
-		action = QAction("Run &Vacuum Analyze", self)
-		mainWindow.registerAction( action, "&Table", self.runVacuumAnalyzeActionSlot )
+		action = QAction(self.tr("Run &Vacuum Analyze"), self)
+		mainWindow.registerAction( action, self.tr("&Table"), self.runVacuumAnalyzeActionSlot )
 
 	def runVacuumAnalyzeActionSlot(self, item, action, parent):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, Table) or item.isView:
-				QMessageBox.information(parent, "Sorry", "Select a TABLE for vacuum analyze.")
+				QMessageBox.information(parent, self.tr("Sorry"), self.tr("Select a TABLE for vacuum analyze."))
 				return
 		finally:
 			QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -214,9 +214,11 @@ class PGTable(Table):
 			rule_action = parts[2]
 
 			msg = u"Do you want to %s rule %s?" % (rule_action, rule_name)
+
 			QApplication.restoreOverrideCursor()
+
 			try:
-				if QMessageBox.question(None, "Table rule", msg, QMessageBox.Yes|QMessageBox.No) == QMessageBox.No:
+				if QMessageBox.question(None, self.tr("Table rule"), msg, QMessageBox.Yes|QMessageBox.No) == QMessageBox.No:
 					return False
 			finally:
 				QApplication.setOverrideCursor(Qt.WaitCursor)

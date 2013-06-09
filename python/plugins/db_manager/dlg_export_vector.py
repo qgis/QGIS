@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : Oct 13, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -66,7 +66,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
 		settings = QSettings()
                 lastDir = settings.value("/db_manager/lastUsedDir", "")
 		# ask for a filename
-		filename = QFileDialog.getSaveFileName(self, "Choose where to save the file", lastDir, "Shapefiles (*.shp)")
+		filename = QFileDialog.getSaveFileName(self, self.tr("Choose where to save the file"), lastDir, self.tr("Shapefiles") + " (*.shp)")
 		if filename == "":
 			return
 		if filename[:-4] != ".shp":
@@ -92,21 +92,21 @@ class DlgExportVector(QDialog, Ui_Dialog):
 	def accept(self):
 		# sanity checks
 		if self.editOutputFile.text() == "":
-			QMessageBox.information(self, "Export to file", "Output table name is required")
+			QMessageBox.information(self, self.tr("Export to file"), self.tr("Output table name is required"))
 			return
 
 		if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
 			try:
 				sourceSrid = int(self.editSourceSrid.text())
 			except ValueError:
-				QMessageBox.information(self, "Export to file", "Invalid source srid: must be an integer")
+				QMessageBox.information(self, self.tr("Export to file"), self.tr("Invalid source srid: must be an integer"))
 				return
 
 		if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
 			try:
 				targetSrid = int(self.editTargetSrid.text())
 			except ValueError:
-				QMessageBox.information(self, "Export to file", "Invalid target srid: must be an integer")
+				QMessageBox.information(self, self.tr("Export to file"), self.tr("Invalid target srid: must be an integer"))
 				return
 
 		# override cursor
@@ -156,14 +156,14 @@ class DlgExportVector(QDialog, Ui_Dialog):
 			QApplication.restoreOverrideCursor()
 
 		if ret != 0:
-			QMessageBox.warning(self, "Export to file", u"Error %d\n%s" % (ret, errMsg) )
+			QMessageBox.warning(self, self.tr("Export to file"), self.tr("Error %d\n%s") % (ret, errMsg) )
 			return
 
 		# create spatial index
 		#if self.chkSpatialIndex.isEnabled() and self.chkSpatialIndex.isChecked():
 		#	self.db.connector.createSpatialIndex( (schema, table), geom )
 
-		QMessageBox.information(self, "Export to file", "Export finished.")
+		QMessageBox.information(self, self.tr("Export to file"), self.tr("Export finished."))
 		return QDialog.accept(self)
 
 

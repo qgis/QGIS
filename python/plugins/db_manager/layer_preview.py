@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -92,7 +92,7 @@ class LayerPreview(QgsMapCanvas):
       if limit and table.rowCount > 1000:
         uniqueField = table.getValidQGisUniqueFields(True)
         if uniqueField == None:
-          QMessageBox.warning(self, "Sorry", "Unable to find a valid unique field")
+          QMessageBox.warning(self, QApplication.translate("DBManagerPlugin", "Sorry"), QApplication.translate("DBManagerPlugin", "Unable to find a valid unique field"))
           return
 
         uri = table.database().uri()

@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -46,7 +46,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     self.defaultLayerName = 'QueryLayer'
 
     settings = QSettings()
-    self.restoreGeometry(settings.value("/DB_Manager/sqlWindow/geometry"))
+    self.restoreGeometry(settings.value("/DB_Manager/sqlWindow/geometry", QByteArray(), type=QByteArray))
 
     self.editSql.setAcceptRichText(False)
     SqlCompleter(self.editSql, self.db)
@@ -158,7 +158,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
       # set the new model
       model = self.db.sqlResultModel( sql, self )
       self.viewResult.setModel( model )
-      self.lblResult.setText("%d rows, %.1f seconds" % (model.affectedRows(), model.secs()))
+      self.lblResult.setText(self.tr("%d rows, %.1f seconds") % (model.affectedRows(), model.secs()))
 
     except BaseError, e:
       QApplication.restoreOverrideCursor()

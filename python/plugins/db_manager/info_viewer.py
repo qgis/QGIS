@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -94,7 +94,7 @@ class InfoViewer(QTextBrowser):
 
 	def _showPluginInfo(self):
 		from .db_plugins import getDbPluginErrors
-		html  = u'<div style="background-color:#ffffcc;"><h1>&nbsp;DB Manager</h1></div>'
+		html  = u'<div style="background-color:#ffffcc;"><h1>&nbsp;' + self.tr("DB Manager") + '</h1></div>'
 		html += '<div style="margin-left:8px;">'
 		for msg in getDbPluginErrors():
 			html += u"<p>%s" % msg
@@ -163,4 +163,3 @@ class InfoViewer(QTextBrowser):
 
 		#print ">>>>>\n", html, "\n<<<<<<"
 		return QTextBrowser.setHtml(self, html)
-

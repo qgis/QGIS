@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -111,15 +111,15 @@ class DBTree(QTreeView):
     menu = QMenu(self)
 
     if isinstance(item, (Table, Schema)):
-      menu.addAction("Rename", self.rename)
-      menu.addAction("Delete", self.delete)
+      menu.addAction(self.tr("Rename"), self.rename)
+      menu.addAction(self.tr("Delete"), self.delete)
 
       if isinstance(item, Table):
         menu.addSeparator()
-        menu.addAction("Add to QGis canvas", self.addLayer)
+        menu.addAction(self.tr("Add to QGis canvas"), self.addLayer)
 
     elif isinstance(item, DBPlugin) and item.database() is not None:
-      menu.addAction("Re-connect", self.reconnect)
+      menu.addAction(self.tr("Re-connect"), self.reconnect)
 
     if not menu.isEmpty():
       menu.exec_(ev.globalPos())

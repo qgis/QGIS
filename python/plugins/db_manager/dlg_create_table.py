@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : Oct 13, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -103,7 +103,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 		self.fields.setColumnWidth(1,140)
 		self.fields.setColumnWidth(2,50)
 
-		b = QPushButton("&Create")
+		b = QPushButton(self.tr("&Create"))
 		self.buttonBox.addButton(b, QDialogButtonBox.ActionRole)
 
 		self.connect(self.btnAddField, SIGNAL("clicked()"), self.addField)
@@ -212,7 +212,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 		""" delete selected field """
 		row = self.selectedField()
 		if row is None:
-			QMessageBox.information(self, "sorry", "no field selected")
+			QMessageBox.information(self, self.tr("Sorry"), self.tr("no field selected"))
 		else:
 			self.fields.model().removeRows(row,1)
 
@@ -222,10 +222,10 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 		""" move selected field up """
 		row = self.selectedField()
 		if row is None:
-			QMessageBox.information(self, "sorry", "no field selected")
+			QMessageBox.information(self, self.tr("Sorry"), self.tr("no field selected"))
 			return
 		if row == 0:
-			QMessageBox.information(self, "sorry", "field is at top already")
+			QMessageBox.information(self, self.tr("Sorry"), self.tr("field is at top already"))
 			return
 
 		# take row and reinsert it
@@ -242,10 +242,10 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 		""" move selected field down """
 		row = self.selectedField()
 		if row is None:
-			QMessageBox.information(self, "sorry", "no field selected")
+			QMessageBox.information(self, self.tr("Sorry"), self.tr("No field selected"))
 			return
 		if row == self.fields.model().rowCount()-1:
-			QMessageBox.information(self, "sorry", "field is at bottom already")
+			QMessageBox.information(self, self.tr("Sorry"), self.tr("field is at bottom already"))
 			return
 
 		# take row and reinsert it
@@ -265,24 +265,24 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 		else:
 			schema = unicode(self.cboSchema.currentText())
 			if len(schema) == 0:
-				QMessageBox.information(self, "sorry", "select schema!")
+				QMessageBox.information(self, self.tr("Sorry"), self.tr("select schema!"))
 				return
 
 		table = unicode(self.editName.text())
 		if len(table) == 0:
-			QMessageBox.information(self, "sorry", "enter table name!")
+			QMessageBox.information(self, self.tr("Sorry"), self.tr("enter table name!"))
 			return
 
 		m = self.fields.model()
 		if m.rowCount() == 0:
-			QMessageBox.information(self, "sorry", "add some fields!")
+			QMessageBox.information(self, self.tr("Sorry"), self.tr("add some fields!"))
 			return
 
 		useGeomColumn = self.chkGeomColumn.isChecked()
 		if useGeomColumn:
 			geomColumn = unicode(self.editGeomColumn.text())
 			if len(geomColumn) == 0:
-				QMessageBox.information(self, "sorry", "set geometry column name")
+				QMessageBox.information(self, self.tr("Sorry"), self.tr("set geometry column name"))
 				return
 
 			geomType = self.GEOM_TYPES[ self.cboGeomType.currentIndex() ]
@@ -314,5 +314,5 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 		finally:
 			QApplication.restoreOverrideCursor()
 
-		QMessageBox.information(self, "Good", "everything went fine")
+		QMessageBox.information(self, self.tr("Good"), self.tr("everything went fine"))
 

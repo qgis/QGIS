@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -243,7 +243,7 @@ class TableFieldsModel(SimpleTableModel):
 
 class TableConstraintsModel(SimpleTableModel):
 	def __init__(self, parent, editable=False):
-		SimpleTableModel.__init__(self, ['Name', 'Type', 'Column(s)'], editable, parent)
+		SimpleTableModel.__init__(self, [QApplication.translate("DBManagerPlugin", 'Name'), QApplication.translate("DBManagerPlugin", 'Type'), QApplication.translate("DBManagerPlugin", 'Column(s)')], editable, parent)
 
 	def append(self, constr):
 		field_names = map( lambda (k,v): unicode(v.name), constr.fields().iteritems() )
@@ -275,7 +275,7 @@ class TableConstraintsModel(SimpleTableModel):
 
 class TableIndexesModel(SimpleTableModel):
 	def __init__(self, parent, editable=False):
-		SimpleTableModel.__init__(self, ['Name', 'Column(s)'], editable, parent)
+		SimpleTableModel.__init__(self, [QApplication.translate("DBManagerPlugin", 'Name'), QApplication.translate("DBManagerPlugin", 'Column(s)')], editable, parent)
 
 	def append(self, idx):
 		field_names = map( lambda (k,v): unicode(v.name), idx.fields().iteritems() )

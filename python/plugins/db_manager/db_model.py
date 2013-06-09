@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -152,7 +152,7 @@ class ConnectionItem(TreeItem):
 					return False
 
 			except BaseError, e:
-				QMessageBox.warning( None, u"Unable to connect", unicode(e) )
+				QMessageBox.warning( None, self.tr("Unable to connect"), unicode(e) )
 				return False
 
 		database = connection.database()
@@ -267,7 +267,7 @@ class DBModel(QAbstractItemModel):
 	def __init__(self, parent=None):
 		QAbstractItemModel.__init__(self, parent)
 		self.treeView = parent
-		self.header = ['Databases']
+		self.header = [self.tr('Databases')]
 
 		self.isImportVectorAvail = hasattr(qgis.core, 'QgsVectorLayerImport')
 		if self.isImportVectorAvail:
@@ -530,7 +530,7 @@ class DBModel(QAbstractItemModel):
 				parts = mimeUri.split(":", 3)
 				if len(parts) != 4:
 					# invalid qgis mime uri
-					QMessageBox.warning(None, "Invalid MIME uri", "The dropped object is not a valid QGis layer")
+					QMessageBox.warning(None, self.tr("Invalid MIME uri"), self.tr("The dropped object is not a valid QGis layer"))
 					continue
 
 				layerType, providerKey, layerName, uriString = parts
@@ -553,7 +553,7 @@ class DBModel(QAbstractItemModel):
 
 		if not inLayer.isValid():
 			# invalid layer
-			QMessageBox.warning(None, "Invalid layer", u"QGis was unable to load the layer %s" % inLayer.name())
+			QMessageBox.warning(None, self.tr("Invalid layer"), self.tr("QGis was unable to load the layer %s") % inLayer.name)
 			return False
 
 		# retrieve information about the new table's db and schema

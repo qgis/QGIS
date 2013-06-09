@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -45,8 +45,8 @@ class DBManager(QMainWindow):
 
 		# restore the window state
 		settings = QSettings()
-		self.restoreGeometry( settings.value("/DB_Manager/mainWindow/geometry") )
-		self.restoreState( settings.value("/DB_Manager/mainWindow/windowState") )
+		self.restoreGeometry( settings.value("/DB_Manager/mainWindow/geometry", QByteArray(), type=QByteArray ) )
+		self.restoreState( settings.value("/DB_Manager/mainWindow/windowState", QByteArray(), type=QByteArray ) )
 
 		self.connect(self.tabs, SIGNAL("currentChanged(int)"), self.tabChanged)
 		self.connect(self.tree, SIGNAL("selectedItemChanged"), self.itemChanged)
@@ -147,7 +147,7 @@ class DBManager(QMainWindow):
 	def importActionSlot(self):
 		db = self.tree.currentDatabase()
 		if db is None:
-			QMessageBox.information(self, "Sorry", "No database selected or you are not connected to it.")
+			QMessageBox.information(self, self.tr("Sorry"), self.tr("No database selected or you are not connected to it."))
 			return
 
 		outUri = db.uri()
@@ -162,7 +162,7 @@ class DBManager(QMainWindow):
 	def exportActionSlot(self):
 		table = self.tree.currentTable()
 		if table is None:
-			QMessageBox.information(self, "Sorry", "Select the table you want export to file.")
+			QMessageBox.information(self, self.tr("Sorry"), self.tr("Select the table you want export to file."))
 			return
 
 		inLayer = table.toMapLayer()
@@ -176,7 +176,7 @@ class DBManager(QMainWindow):
 	def runSqlWindow(self):
 		db = self.tree.currentDatabase()
 		if db == None:
-			QMessageBox.information(self, "Sorry", "No database selected or you are not connected to it.")
+			QMessageBox.information(self, self.tr("Sorry"), self.tr("No database selected or you are not connected to it."))
 			return
 
 		from dlg_sql_window import DlgSqlWindow
@@ -333,18 +333,18 @@ class DBManager(QMainWindow):
 		del self._registeredDbActions
 
 	def setupUi(self):
-		self.setWindowTitle("DB Manager")
+		self.setWindowTitle(self.tr("DB Manager"))
 		self.setWindowIcon(QIcon(":/db_manager/icon"))
 		self.resize(QSize(700,500).expandedTo(self.minimumSizeHint()))
 
 		# create central tab widget
 		self.tabs = QTabWidget()
 		self.info = InfoViewer(self)
-		self.tabs.addTab(self.info, "Info")
+		self.tabs.addTab(self.info, self.tr("Info"))
 		self.table = TableViewer(self)
-		self.tabs.addTab(self.table, "Table")
+		self.tabs.addTab(self.table, self.tr("Table"))
 		self.preview = LayerPreview(self)
-		self.tabs.addTab(self.preview, "Preview")
+		self.tabs.addTab(self.preview, self.tr("Preview"))
 		self.setCentralWidget(self.tabs)
 
 		# create database tree
@@ -361,13 +361,13 @@ class DBManager(QMainWindow):
 
 		# create menus
 		self.menuBar = QMenuBar(self)
-		self.menuDb = QMenu("&Database", self)
+		self.menuDb = QMenu(self.tr("&Database"), self)
 		actionMenuDb = self.menuBar.addMenu(self.menuDb)
-		self.menuSchema = QMenu("&Schema", self)
+		self.menuSchema = QMenu(self.tr("&Schema"), self)
 		actionMenuSchema = self.menuBar.addMenu(self.menuSchema)
-		self.menuTable = QMenu("&Table", self)
+		self.menuTable = QMenu(self.tr("&Table"), self)
 		actionMenuTable = self.menuBar.addMenu(self.menuTable)
-		self.menuHelp = None#QMenu("&Help", self)
+		self.menuHelp = None # QMenu(self.tr("&Help"), self)
 		#actionMenuHelp = self.menuBar.addMenu(self.menuHelp)
 
 		self.setMenuBar(self.menuBar)
@@ -382,10 +382,10 @@ class DBManager(QMainWindow):
 
 		# menu DATABASE
 		sep = self.menuDb.addSeparator(); sep.setObjectName("DB_Manager_DbMenu_placeholder"); sep.setVisible(False)
-		self.actionRefresh = self.menuDb.addAction( QIcon(":/db_manager/actions/refresh"), "&Refresh", self.refreshActionSlot, QKeySequence("F5") )
-		self.actionSqlWindow = self.menuDb.addAction( QIcon(":/db_manager/actions/sql_window"), "&SQL window", self.runSqlWindow, QKeySequence("F2") )
+		self.actionRefresh = self.menuDb.addAction( QIcon(":/db_manager/actions/refresh"), self.tr("&Refresh"), self.refreshActionSlot, QKeySequence("F5") )
+		self.actionSqlWindow = self.menuDb.addAction( QIcon(":/db_manager/actions/sql_window"), self.tr("&SQL window"), self.runSqlWindow, QKeySequence("F2") )
 		self.menuDb.addSeparator()
-		self.actionClose = self.menuDb.addAction( QIcon(), "&Exit", self.close, QKeySequence("CTRL+Q") )
+		self.actionClose = self.menuDb.addAction( QIcon(), self.tr("&Exit"), self.close, QKeySequence("CTRL+Q") )
 
 		# menu SCHEMA
 		sep = self.menuSchema.addSeparator(); sep.setObjectName("DB_Manager_SchemaMenu_placeholder"); sep.setVisible(False)
@@ -393,10 +393,10 @@ class DBManager(QMainWindow):
 
 		# menu TABLE
 		sep = self.menuTable.addSeparator(); sep.setObjectName("DB_Manager_TableMenu_placeholder"); sep.setVisible(False)
-		self.actionImport = self.menuTable.addAction( QIcon(":/db_manager/actions/import"), "&Import layer/file", self.importActionSlot )
-		self.actionExport = self.menuTable.addAction( QIcon(":/db_manager/actions/export"), "&Export to file", self.exportActionSlot )
+		self.actionImport = self.menuTable.addAction( QIcon(":/db_manager/actions/import"), self.tr("&Import layer/file"), self.importActionSlot )
+		self.actionExport = self.menuTable.addAction( QIcon(":/db_manager/actions/export"), self.tr("&Export to file"), self.exportActionSlot )
 		self.menuTable.addSeparator()
-		#self.actionShowSystemTables = self.menuTable.addAction("Show system tables/views", self.showSystemTables)
+		#self.actionShowSystemTables = self.menuTable.addAction(self.tr("Show system tables/views"), self.showSystemTables)
 		#self.actionShowSystemTables.setCheckable(True)
 		#self.actionShowSystemTables.setChecked(True)
 		actionMenuTable.setVisible(False)
@@ -406,4 +406,3 @@ class DBManager(QMainWindow):
 		self.toolBar.addAction( self.actionSqlWindow )
 		self.toolBar.addAction( self.actionImport )
 		self.toolBar.addAction( self.actionExport )
-
