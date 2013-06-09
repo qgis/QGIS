@@ -28,6 +28,7 @@ from PyQt4.QtXml import QDomDocument
 from PyQt4.QtNetwork import *
 import sys
 import os
+import codecs
 import ConfigParser
 import qgis.utils
 from qgis.core import *
@@ -556,12 +557,10 @@ class Plugins(QObject):
         if not os.path.exists(metadataFile):
           return "" # plugin has no metadata.txt file
         cp = ConfigParser.ConfigParser()
-        res = cp.read(metadataFile)
-        if not len(res):
-          return "" # failed reading metadata.txt file
         try:
+          cp.readfp(codecs.open(metadataFile, "r", "utf8"))
           return cp.get('general', fct)
-        except Exception:
+        except:
           return ""
 
     if readOnly:

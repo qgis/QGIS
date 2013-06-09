@@ -38,6 +38,7 @@ import os.path
 import re
 import ConfigParser
 import warnings
+import codecs
 
 #######################
 # ERROR HANDLING
@@ -129,8 +130,10 @@ def findPlugins(path):
       continue
 
     cp = ConfigParser.ConfigParser()
-    res = cp.read(metadataFile)
-    if len(res) == 0:
+
+    try:
+      cp.readfp(codecs.open(metadataFile, "r", "utf8"))
+    except:
       return None # reading of metadata file failed
 
     pluginName = os.path.basename(plugin)
