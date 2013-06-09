@@ -81,7 +81,7 @@ class OutputSelectionPanel(QWidget):
         else:
             path = SextanteConfig.getSetting(SextanteConfig.OUTPUT_FOLDER)
         lastEncoding = settings.value("/SextanteQGIS/encoding", "System")
-        fileDialog = QgsEncodingFileDialog(self, "Save file", QString(path), filefilter, lastEncoding)
+        fileDialog = QgsEncodingFileDialog(self, "Save file", path, filefilter, lastEncoding)
         fileDialog.setFileMode(QFileDialog.AnyFile)
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
         fileDialog.setConfirmOverwrite(True)

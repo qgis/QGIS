@@ -512,7 +512,7 @@ class ModelerParametersDialog(QtGui.QDialog):
 
 
     def setComboBoxValue(self, combo, value, param):
-        items = [combo.itemData(i).toPyObject() for i in range(combo.count())]
+        items = [combo.itemData(i) for i in range(combo.count())]
         idx = 0
         for item in items:
             if item and value:
@@ -632,7 +632,7 @@ class ModelerParametersDialog(QtGui.QDialog):
         if idx < 0:
             return False
         else:
-            value = widget.itemData(widget.currentIndex()).toPyObject()
+            value = widget.itemData(widget.currentIndex())
             self.params[param.name] = value
             return True
 
@@ -643,7 +643,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             self.params[param.name] = value
             self.values[name] = str(widget.currentIndex() == 0)
         else:
-            value = widget.itemData(widget.currentIndex()).toPyObject()
+            value = widget.itemData(widget.currentIndex())
             self.params[param.name] = value
         return True
 
@@ -664,7 +664,7 @@ class ModelerParametersDialog(QtGui.QDialog):
                 self.values[name] = str(widget.currentText())
                 return True
         else:
-            value = widget.itemData(widget.currentIndex()).toPyObject()
+            value = widget.itemData(widget.currentIndex())
             self.params[param.name] = value
         return True
 
@@ -705,7 +705,7 @@ class ModelerParametersDialog(QtGui.QDialog):
                 else:
                     self.values[name] = str(widget.currentText())
             else:
-                value = widget.itemData(widget.currentIndex()).toPyObject()
+                value = widget.itemData(widget.currentIndex())
                 self.params[param.name] = value
         return True
 
@@ -718,7 +718,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             s = str(widget.currentText())
             self.values[name] = s
         else:
-            value = widget.itemData(widget.currentIndex()).toPyObject()
+            value = widget.itemData(widget.currentIndex())
             self.params[param.name] = value
         return True
 

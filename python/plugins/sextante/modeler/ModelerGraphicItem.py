@@ -262,7 +262,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
             text = self.getAdjustedText(self.element.outputs[outputIndex].description)
             font = QtGui.QFont("Verdana", 8)
             fm = QtGui.QFontMetricsF(font)
-            w = fm.width(QtCore.QString(text))
+            w = fm.width(text)
             h = (fm.height() * 1.2) * (outputIndex + 3 + numParams) - fm.height() / 2.0
             y = h + ModelerGraphicItem.BOX_HEIGHT / 2.0  + 2
             x = -(ModelerGraphicItem.BOX_WIDTH)/2 + 33 + w + 5 if not self.outputFolded else 10

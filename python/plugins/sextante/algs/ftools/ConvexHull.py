@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -68,14 +69,16 @@ class ConvexHull(GeoAlgorithm):
         fieldName = self.getParameterValue(ConvexHull.FIELD)
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(ConvexHull.INPUT))
 
-        GEOS_EXCEPT = True
-        FEATURE_EXCEPT = True
-
-
         f = QgsField("value")
         f.setType(QVariant.String)
         f.setLength(255)
         if useField:
+            from threading import settrace
+            
+            import sys
+            sys.path.append("D:\eclipse_old\plugins\org.python.pydev_2.6.0.2012062818\pysrc")
+            from pydevd import *
+            settrace()
             index = layer.fieldNameIndex(fieldName)
             fType = layer.pendingFields()[index].type()
             if fType == QVariant.Int:
@@ -134,8 +137,7 @@ class ConvexHull(GeoAlgorithm):
                         outFeat.setAttributes([fid,val,area,perim])
                         writer.addFeature(outFeat)
                     except:
-                        GEOS_EXCEPT = False
-                        continue
+                        raise GeoAlgorithmExecutionException("Exception while computing convex hull")                        
                 fid += 1
         else:
           hull = []
@@ -156,11 +158,7 @@ class ConvexHull(GeoAlgorithm):
               outFeat.setAttributes([0, "all", area, perim])
               writer.addFeature(outFeat)
           except:
-              GEOS_EXCEPT = False
+              raise GeoAlgorithmExecutionException("Exception while computing convex hull")
 
         del writer
-
-        if not GEOS_EXCEPT:
-            SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Geometry exception while computing convex hull")
-        if not FEATURE_EXCEPT:
-            SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Feature exception while computing convex hull")
+        

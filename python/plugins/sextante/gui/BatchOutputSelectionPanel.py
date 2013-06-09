@@ -60,7 +60,7 @@ class BatchOutputSelectionPanel(QtGui.QWidget):
 
     def showSelectionDialog(self):
         filefilter = self.output.getFileFilter(self.alg)
-        filename = QtGui.QFileDialog.getSaveFileName(self, "Save file", QtCore.QString(), filefilter)
+        filename = QtGui.QFileDialog.getSaveFileName(self, "Save file", "", filefilter)
         if filename:
             filename = unicode(filename)
             dlg = AutofillDialog(self.alg)

@@ -72,7 +72,7 @@ class RunAlgTest(ParametrizedTestCase):
         feature=features.next()
         attrs=feature.attributes()
         expectedvalues=["1","1.1","string a","6"]
-        values=[str(attr.toString()) for attr in attrs]
+        values=[str(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
 
 def suite():

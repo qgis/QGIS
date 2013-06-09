@@ -789,8 +789,8 @@ class mmqgisx_hub_distance_algorithm(GeoAlgorithm):
 			outputtype = QGis.WKBLineString
 
 		outfields = layersource.pendingFields()
-		outfields.append(QgsField(QString("HubName"), QVariant.String))
-		outfields.append(QgsField(QString("HubDist"), QVariant.Double))
+		outfields.append(QgsField("HubName", QVariant.String))
+		outfields.append(QgsField("HubDist", QVariant.Double))
 
 		output = self.getOutputFromName(self.SAVENAME)
 		out = output.getVectorWriter(outfields, outputtype, layersource.crs())

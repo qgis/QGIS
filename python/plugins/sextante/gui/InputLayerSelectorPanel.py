@@ -64,4 +64,4 @@ class InputLayerSelectorPanel(QtGui.QWidget):
             settings.setValue("/SextanteQGIS/LastInputPath", os.path.dirname(unicode(filename)))
 
     def getValue(self):
-        return self.text.itemData(self.text.currentIndex()).toPyObject()
+        return self.text.itemData(self.text.currentIndex())

@@ -40,10 +40,6 @@ from sextante.gui.BatchProcessingDialog import BatchProcessingDialog
 from sextante.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 from sextante.ui.ui_SextanteToolbox import Ui_SextanteToolbox
 
-try:
-    _fromUtf8 = QString.fromUtf8
-except AttributeError:
-    _fromUtf8 = lambda s: s
 
 class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
 

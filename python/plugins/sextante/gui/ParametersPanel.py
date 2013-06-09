@@ -310,7 +310,7 @@ class ParametersPanel(QtGui.QWidget):
             return
         if not sender.name in self.dependentItems:
             return
-        layer = sender.itemData(sender.currentIndex()).toPyObject()
+        layer = sender.itemData(sender.currentIndex())
         children = self.dependentItems[sender.name]
         for child in children:
             widget = self.valueItems[child]

@@ -79,7 +79,7 @@ class MeanCoords(GeoAlgorithm):
         for feat in features:
             current += 1
             progress.setPercentage(current * total)
-            clazz = feat.attributes()[uniqueIndex].strip()
+            clazz = str(feat.attributes()[uniqueIndex]).strip()
             if weightIndex == -1:
                 weight = 1.00
             else:
