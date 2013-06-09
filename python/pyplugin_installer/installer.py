@@ -99,6 +99,7 @@ class QgsPluginInstaller(QObject):
 
     if reloadMode:
       repositories.load()
+      plugins.clearRepoCache()
       plugins.getAllInstalled()
 
     for key in repositories.allEnabled():
@@ -164,13 +165,18 @@ class QgsPluginInstaller(QObject):
         v=str(QGis.QGIS_VERSION_INT)
         url += "?qgis=%d.%d" % ( int(v[0]), int(v[1:3]) )
         repository = repositories.all()[key]
+        if repositories.inspectionFilter():
+          enabled = ( key == repositories.inspectionFilter() )
+        else:
+          enabled = repositories.all()[key]["enabled"]
         iface.pluginManagerInterface().addToRepositoryList({
           "name" : key,
           "url"  : url,
-          "enabled" : repositories.all()[key]["enabled"] and "true" or "false",
+          "enabled" : enabled and "true" or "false",
           "valid" : repositories.all()[key]["valid"] and "true" or "false",
           "state" : str(repositories.all()[key]["state"]),
-          "error" : repositories.all()[key]["error"]
+          "error" : repositories.all()[key]["error"],
+          "inspection_filter" : repositories.inspectionFilter() and "true" or "false"
         })
 
 
@@ -477,4 +483,11 @@ class QgsPluginInstaller(QObject):
     settings.remove(reposName)
     repositories.remove(reposName)
     plugins.removeRepository(reposName)
+    self.reloadAndExportData()
+
+
+  # ----------------------------------------- #
+  def setRepositoryInspectionFilter(self, reposName = None):
+    """ temporarily block another repositories to fetch only one for inspection """
+    repositories.setInspectionFilter(reposName)
     self.reloadAndExportData()

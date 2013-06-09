@@ -232,6 +232,7 @@ class Repositories(QObject):
     QObject.__init__(self)
     self.mRepositories = {}
     self.httpId = {}   # {httpId : repoName}
+    self.mInspectionFilter = None
 
 
   # ----------------------------------------- #
@@ -243,6 +244,9 @@ class Repositories(QObject):
   # ----------------------------------------- #
   def allEnabled(self):
     """ return dict of all enabled and valid repositories """
+    if self.mInspectionFilter:
+      return { self.mInspectionFilter: self.mRepositories[self.mInspectionFilter] }
+
     repos = {}
     for i in self.mRepositories:
       if self.mRepositories[i]["enabled"] and self.mRepositories[i]["valid"]:
@@ -254,6 +258,13 @@ class Repositories(QObject):
   def allUnavailable(self):
     """ return dict of all unavailable repositories """
     repos = {}
+
+    if self.mInspectionFilter:
+      # return the inspected repo if unavailable, otherwise empty dict
+      if self.mRepositories[self.mInspectionFilter]["state"] == 3:
+        repos [self.mInspectionFilter] = self.mRepositories[self.mInspectionFilter]
+      return repos
+
     for i in self.mRepositories:
       if self.mRepositories[i]["enabled"] and self.mRepositories[i]["valid"] and self.mRepositories[i]["state"] == 3:
         repos[i] = self.mRepositories[i]
@@ -479,6 +490,18 @@ class Repositories(QObject):
     if not self.fetchingInProgress():
       self.checkingDone.emit()
 
+
+  # ----------------------------------------- #
+  def inspectionFilter(self):
+    """ return inspection filter (only one repository to be fetched) """
+    return self.mInspectionFilter
+
+
+  # ----------------------------------------- #
+  def setInspectionFilter(self, key = None):
+    """ temporarily disable all repositories but this for inspection """
+    self.mInspectionFilter = key
+
 # --- /class Repositories ---------------------------------------------------------------- #
 
 
@@ -520,6 +543,12 @@ class Plugins(QObject):
     if plugins:
       return plugins[0]
     return None
+
+
+  # ----------------------------------------- #
+  def clearRepoCache(self):
+    """ clears the repo cache before re-fetching repositories """
+    self.repoCache = {}
 
 
   # ----------------------------------------- #

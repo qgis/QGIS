@@ -787,6 +787,10 @@ void QgsPluginManager::clearRepositoryList()
   buttonRefreshRepos->setEnabled( false );
   buttonEditRep->setEnabled( false );
   buttonDeleteRep->setEnabled( false );
+  foreach ( QAction * action, treeRepositories->actions() )
+  {
+    treeRepositories->removeAction( action );
+  }
 }
 
 
@@ -797,11 +801,14 @@ void QgsPluginManager::addToRepositoryList( QMap<QString, QString> repository )
   // If the item is second on the tree, add a context menu
   if ( buttonRefreshRepos->isEnabled() && treeRepositories->actions().count() < 1 )
   {
-    QAction* actionEnableThisRepositoryOnly = new QAction( tr( "Enable selected repository only" ), treeRepositories );
-    actionEnableThisRepositoryOnly->setCheckable( true );
+    QAction* actionEnableThisRepositoryOnly = new QAction( tr( "Only show plugins from selected repository" ), treeRepositories );
     treeRepositories->addAction( actionEnableThisRepositoryOnly );
+    connect( actionEnableThisRepositoryOnly, SIGNAL( triggered() ), this, SLOT( setRepositoryFilter() ) );
     treeRepositories->setContextMenuPolicy( Qt::ActionsContextMenu );
-    connect( actionEnableThisRepositoryOnly, SIGNAL( toggled( bool ) ), this, SLOT( enableSelectedRepositoryOnly( bool ) ) );
+    QAction* actionClearFilter = new QAction( tr( "Clear filter" ), treeRepositories );
+    actionClearFilter->setEnabled( repository.value( "inspection_filter" ) == "true" );
+    treeRepositories->addAction( actionClearFilter );
+    connect( actionClearFilter, SIGNAL( triggered( ) ), this, SLOT( clearRepositoryFilter() ) );
   }
 
   QString key = repository.value( "name" );
@@ -1062,22 +1069,24 @@ void QgsPluginManager::on_treeRepositories_doubleClicked( QModelIndex )
 
 
 
-void QgsPluginManager::enableSelectedRepositoryOnly( bool checked )
+void QgsPluginManager::setRepositoryFilter( )
 {
-  if ( ! checked ) {
-    QgsDebugMsg( "Enabling all repositories back");
-    QgsPythonRunner::run( QString( "pyplugin_installer.instance().enableThisRepositoryOnly()" ) );
-    return;
-  }
-
   QTreeWidgetItem * current = treeRepositories->currentItem();
   if ( current )
   {
     QString key = current->text( 1 );
     key = key.replace( "\'", "\\\'" ).replace( "\"", "\\\"" );
     QgsDebugMsg( "Disabling all repositories but selected: " + key );
-    QgsPythonRunner::run( QString( "pyplugin_installer.instance().enableThisRepositoryOnly('%1')" ).arg( key ) );
+    QgsPythonRunner::run( QString( "pyplugin_installer.instance().setRepositoryInspectionFilter('%1')" ).arg( key ) );
   }
+}
+
+
+
+void QgsPluginManager::clearRepositoryFilter( )
+{
+  QgsDebugMsg( "Enabling all repositories back");
+  QgsPythonRunner::run( QString( "pyplugin_installer.instance().setRepositoryInspectionFilter()" ) );
 }
 
 

@@ -156,8 +156,11 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Reimplement QgsOptionsDialogBase method to prevent modifying the tab list by signals from the stacked widget
     void optionsStackedWidget_CurrentChanged( int indx ) { Q_UNUSED( indx ) }
 
-    //! Enable selected repository only
-    void enableSelectedRepositoryOnly( bool checked );
+    //! Only show plugins from selected repository (e.g. for inspection)
+    void setRepositoryFilter( );
+
+    //! Enable all repositories disabled by "Enable selected repository only"
+    void clearRepositoryFilter( );
 
   private:
     //! Return true if given plugin is present in QgsPluginRegistry (c++ plugins) or is enabled in QSettings (Python plugins)
