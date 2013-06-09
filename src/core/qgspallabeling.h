@@ -546,8 +546,6 @@ class CORE_EXPORT QgsPalLayerSettings
     QMap<QgsPalLayerSettings::DataDefinedProperties, QPair<QString, int> > mDataDefinedNames;
 
     QFontDatabase mFontDB;
-    /**Updates font with named style */
-    void updateFontViaStyle( QFont& font, const QString & fontstyle );
 };
 
 class CORE_EXPORT QgsLabelCandidate
