@@ -95,7 +95,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
     self.marker = MarkerErrorGeometry(self.iface.mapCanvas())
 
     settings = QSettings()
-    self.restoreGeometry( settings.value("/fTools/ValidateDialog/geometry") )
+    self.restoreGeometry( settings.value("/fTools/ValidateDialog/geometry", QByteArray(), type=QByteArray) )
 
     QObject.connect( self.browseShpError, SIGNAL( "clicked()" ), self.outFile )
     QObject.connect( self.ckBoxShpError, SIGNAL( "stateChanged( int )" ), self.updateGui )

@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>QGIS Plugin Manager</string>
+   <string>Plugin Manager</string>
   </property>
   <property name="modal">
    <bool>true</bool>

@@ -57,7 +57,7 @@ void TestQgsDataItem::initTestCase()
   QgsApplication::showSettings();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( "QuantumGIS" );
+  QCoreApplication::setOrganizationName( "QGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );
   QCoreApplication::setApplicationName( "QGIS-TEST" );
   // save current scanItemsSetting value

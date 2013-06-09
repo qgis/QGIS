@@ -598,7 +598,7 @@ int main( int argc, char *argv[] )
 
   //
   // Set up the QSettings environment must be done after qapp is created
-  QCoreApplication::setOrganizationName( "QuantumGIS" );
+  QCoreApplication::setOrganizationName( "QGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );
   QCoreApplication::setApplicationName( "QGIS2" );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
@@ -610,11 +610,11 @@ int main( int argc, char *argv[] )
     QSettings::setDefaultFormat( QSettings::IniFormat );
     QString path = optionpath.isEmpty() ? configpath : optionpath;
     QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, path );
-    customizationsettings = new QSettings( QSettings::IniFormat, QSettings::UserScope, "QuantumGIS", "QGISCUSTOMIZATION2" );
+    customizationsettings = new QSettings( QSettings::IniFormat, QSettings::UserScope, "QGIS", "QGISCUSTOMIZATION2" );
   }
   else
   {
-    customizationsettings = new QSettings( "QuantumGIS", "QGISCUSTOMIZATION2" );
+    customizationsettings = new QSettings( "QGIS", "QGISCUSTOMIZATION2" );
   }
 
   // Using the customizationfile option always overrides the option and config path options.

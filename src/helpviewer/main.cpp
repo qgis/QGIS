@@ -31,7 +31,7 @@ int main( int argc, char ** argv )
   QgsApplication a( argc, argv, true );
 
   // Set up the QSettings environment must be done after qapp is created
-  QCoreApplication::setOrganizationName( "QuantumGIS" );
+  QCoreApplication::setOrganizationName( "QGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );
   QCoreApplication::setApplicationName( "QGIS2" );
 
