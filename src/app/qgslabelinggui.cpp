@@ -184,9 +184,6 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   // TODO: is this necessary? maybe just use the data defined-only rotation?
   mPointAngleDDBtn->setVisible( false );
 
-  // load layer's current QgsPalLayerSettings
-  init();
-
   // Global settings group for groupboxes' saved/retored collapsed state
   // maintains state across different dialogs
   foreach ( QgsCollapsibleGroupBox *grpbox, findChildren<QgsCollapsibleGroupBox*>() )
