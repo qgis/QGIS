@@ -34,6 +34,17 @@ from qgsplugininstallerfetchingdialog import QgsPluginInstallerFetchingDialog
 from qgsplugininstallerrepositorydialog import QgsPluginInstallerRepositoryDialog
 
 
+################################################################################
+################################################################################
+### TEMPORARY WORKAROUND UNTIL VERSION NUMBER IS GLOBALY SWITCHED TO 2.0 #######
+################################################################################
+class QGis:                                   ##################################
+    QGIS_VERSION_INT = 20000                  ##################################
+    QGIS_VERSION = '2.0.0-Master'             ##################################
+################################################################################
+################################################################################
+
+
 # public instances:
 pluginInstaller = None
 
