@@ -161,7 +161,7 @@ class QgsPluginInstaller(QObject):
         tabIndex = 2 # tab 2 contains upgradeable plugins
     # finally set the notify label
     if status:
-      self.statusLabel.setText(u' <a href="#%d">%s</a>  ' % (tabIndex,status) )
+      self.statusLabel.setText(u' <a href="%d">%s</a>  ' % (tabIndex,status) )
     else:
       iface.mainWindow().statusBar().removeWidget(self.statusLabel)
       self.statusLabel = None
@@ -256,7 +256,7 @@ class QgsPluginInstaller(QObject):
     if len( params ) == 1:
       indx = unicode(params[0])
       if indx.isdigit() and int(indx) > -1 and int(indx) < 7:
-        tabIndex = indx
+        tabIndex = int(indx)
     iface.pluginManagerInterface().showPluginManager( tabIndex )
 
 

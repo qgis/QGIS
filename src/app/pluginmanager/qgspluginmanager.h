@@ -169,6 +169,9 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Return true if there are plugins available for download in the metadata registry
     bool hasAvailablePlugins( );
 
+    //! Return true if there are installed plugins also available for download in the metadata registry
+    bool hasReinstallablePlugins( );
+
     //! Return true if there are upgradeable plugins in metadata the registry
     bool hasUpgradeablePlugins( );
 

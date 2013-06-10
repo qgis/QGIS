@@ -729,7 +729,8 @@ class Plugins(QObject):
     settings = QSettings()
     allowExperimental = settings.value(settingsGroup+"/allowExperimental", False, type=bool)
     for i in self.repoCache.values():
-      for plugin in i:
+      for j in i:
+        plugin=j.copy() # do not update repoCache elements!
         key = plugin["id"]
         # check if the plugin is allowed and if there isn't any better one added already.
         if (allowExperimental or not plugin["experimental"]) \
