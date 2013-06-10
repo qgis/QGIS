@@ -311,7 +311,7 @@ void QgsMapToolNodeTool::canvasMoveEvent( QMouseEvent * e )
       offset = posMapCoord - mPosMapCoordBackup;
       for ( int i = 0; i < mTopologyRubberBand.size(); i++ )
       {
-        for ( int pointIndex = 0; pointIndex < mTopologyRubberBand[i]->numberOfVertices() - 1; pointIndex++ )
+        for ( int pointIndex = 0; pointIndex < mTopologyRubberBand[i]->numberOfVertices() ; pointIndex++ )
         {
           if ( mTopologyRubberBandVertexes[i]->contains( pointIndex ) )
           {
@@ -321,10 +321,6 @@ void QgsMapToolNodeTool::canvasMoveEvent( QMouseEvent * e )
               break;
             }
             mTopologyRubberBand[i]->movePoint( pointIndex, *point + offset );
-            if ( pointIndex == 0 )
-            {
-              mTopologyRubberBand[i]->movePoint( pointIndex, *point + offset );
-            }
           }
         }
       }
