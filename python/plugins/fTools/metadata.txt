@@ -3,7 +3,7 @@ name=fTools
 description=Tools for vector data analysis and management
 category=Vector
 version=0.6.2
-qgisMinimumVersion=1.4.0
+qgisMinimumVersion=2.0.0
 
 author=Carson Farmer
 email=carson.farmer@gmail.com
