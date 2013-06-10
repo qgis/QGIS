@@ -63,7 +63,12 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
 		fld.notNull = not self.chkNull.isChecked()
 		fld.default = self.editDefault.text()
 		fld.hasDefault = fld.default != ""
-		modifier, ok = self.editLength.text().toInt()
+		try:
+			modifier = int(self.editLength.text())
+		except ValueError:
+			ok = False
+		else:
+			ok = True
 		fld.modifier = modifier if ok else None
 		return fld
 
@@ -72,10 +77,10 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
 		""" first check whether everything's fine """
 		fld = self.getField(True)	# don't change the original copy
 		if fld.name == "":
-			QMessageBox.critical(self, "sorry", "field name must not be empty")
+			QMessageBox.critical(self, self.tr("Sorry"), self.tr("field name must not be empty"))
 			return
 		if fld.dataType == "":
-			QMessageBox.critical(self, "sorry", "field type must not be empty")
+			QMessageBox.critical(self, self.tr("Sorry"), self.tr("field type must not be empty"))
 			return
 
 		self.accept()

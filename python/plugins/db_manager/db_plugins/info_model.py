@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -36,14 +36,14 @@ class DatabaseInfo:
 	def generalInfo(self):
 		info = self.db.connector.getInfo()
 		tbl = [
-			("Server version: ", info[0])
+			(QApplication.translate("DBManagerPlugin", "Server version: "), info[0])
 		]
 		return HtmlTable( tbl )
 
 	def connectionDetails(self):
 		tbl = [
-			("Host:", self.db.connector.host),
-			("User:", self.db.connector.user)
+			(QApplication.translate("DBManagerPlugin", "Host:"), self.db.connector.host),
+			(QApplication.translate("DBManagerPlugin", "User:"), self.db.connector.user)
 		]
 		return HtmlTable( tbl )
 
@@ -55,28 +55,28 @@ class DatabaseInfo:
 			return
 
 		tbl = [
-			("Library:", info[0]),
+			(QApplication.translate("DBManagerPlugin", "Library:"), info[0]),
 			("GEOS:", info[1]),
 			("Proj:", info[2])
 		]
 		ret.append( HtmlTable( tbl ) )
 
 		if not self.db.connector.has_geometry_columns:
-			ret.append( HtmlParagraph( u"<warning> geometry_columns table doesn't exist!\n" \
-				"This table is essential for many GIS applications for enumeration of tables." ) )
+			ret.append( HtmlParagraph( QApplication.translate("DBManagerPlugin", "<warning> geometry_columns table doesn't exist!\n"
+				"This table is essential for many GIS applications for enumeration of tables." ) ) )
 
 		return ret
 
 	def privilegesDetails(self):
 		details = self.db.connector.getDatabasePrivileges()
 		lst = []
-		if details[0]: lst.append("create new schemas")
-		if details[1]: lst.append("create temporary tables")
+		if details[0]: lst.append(QApplication.translate("DBManagerPlugin", "create new schemas"))
+		if details[1]: lst.append(QApplication.translate("DBManagerPlugin", "create temporary tables"))
 		return HtmlList( lst )
 
 	def toHtml(self):
 		if self.db == None:
-			return HtmlSection( 'Not connected' ).toHtml()
+			return HtmlSection( QApplication.translate("DBManagerPlugin", 'Not connected') ).toHtml()
 
 		ret = []
 
@@ -85,14 +85,14 @@ class DatabaseInfo:
 		if conn_details == None:
 			pass
 		else:
-			ret.append( HtmlSection( 'Connection details', conn_details ) )
+			ret.append( HtmlSection( QApplication.translate("DBManagerPlugin", 'Connection details'), conn_details ) )
 
 		# database information
 		general_info = self.generalInfo()
 		if general_info == None:
 			pass
 		else:
-			ret.append( HtmlSection( 'General info', general_info ) )
+			ret.append( HtmlSection( QApplication.translate("DBManagerPlugin", 'General info'), general_info ) )
 
 		# has spatial enabled?
 		spatial_info = self.spatialInfo()
@@ -102,7 +102,7 @@ class DatabaseInfo:
 			typename = self.db.connection().typeNameString()
 			spatial_info = HtmlContent( spatial_info )
 			if not spatial_info.hasContents():
-				spatial_info = '<warning> %s support not enabled!' % typename
+				spatial_info = QApplication.translate("DBManagerPlugin", '<warning> %s support not enabled!') % typename
 			ret.append( HtmlSection( typename, spatial_info ) )
 
 		# privileges
@@ -112,10 +112,10 @@ class DatabaseInfo:
 		else:
 			priv_details = HtmlContent( priv_details )
 			if not priv_details.hasContents():
-				priv_details = u'<warning> This user has no privileges!'
+				priv_details = QApplication.translate("DBManagerPlugin", '<warning> This user has no privileges!')
 			else:
-				priv_details = [ "User has privileges:", priv_details ]
-			ret.append( HtmlSection( 'Privileges', priv_details ) )
+				priv_details = [ QApplication.translate("DBManagerPlugin", "User has privileges:"), priv_details ]
+			ret.append( HtmlSection( QApplication.translate("DBManagerPlugin", 'Privileges'), priv_details ) )
 
 		return HtmlContent( ret ).toHtml()
 
@@ -132,16 +132,16 @@ class SchemaInfo:
 			#("Tables:", self.schema.tableCount)
 		]
 		if self.schema.owner:
-			tbl.append( ("Owner:", self.schema.owner) )
+			tbl.append( (QApplication.translate("DBManagerPlugin", "Owner:"), self.schema.owner) )
 		if self.schema.comment:
-			tbl.append( ("Comment:", self.schema.comment) )
+			tbl.append( (QApplication.translate("DBManagerPlugin", "Comment:"), self.schema.comment) )
 		return HtmlTable( tbl )
 
 	def privilegesDetails(self):
 		details = self.schema.database().connector.getSchemaPrivileges(self.schema.name)
 		lst = []
-		if details[0]: lst.append("create new objects")
-		if details[1]: lst.append("access objects")
+		if details[0]: lst.append(QApplication.translate("DBManagerPlugin", "create new objects"))
+		if details[1]: lst.append(QApplication.translate("DBManagerPlugin", "access objects"))
 		return HtmlList( lst )
 
 	def toHtml(self):
@@ -151,7 +151,7 @@ class SchemaInfo:
 		if general_info == None:
 			pass
 		else:
-			ret.append( HtmlSection( 'Schema details', general_info ) )
+			ret.append( HtmlSection( QApplication.translate("DBManagerPlugin", 'Schema details'), general_info ) )
 
 		priv_details = self.privilegesDetails()
 		if priv_details == None:
@@ -159,10 +159,10 @@ class SchemaInfo:
 		else:
 			priv_details = HtmlContent( priv_details )
 			if not priv_details.hasContents():
-				priv_details = u'<warning> This user has no privileges to access this schema!'
+				priv_details = QApplication.translate("DBManagerPlugin", '<warning> This user has no privileges to access this schema!')
 			else:
-				priv_details = [ "User has privileges:", priv_details ]
-			ret.append( HtmlSection( 'Privileges', priv_details ) )
+				priv_details = [ QApplication.translate("DBManagerPlugin", "User has privileges:"), priv_details ]
+			ret.append( HtmlSection( QApplication.translate("DBManagerPlugin", 'Privileges'), priv_details ) )
 
 		return HtmlContent( ret ).toHtml()
 
@@ -183,11 +183,11 @@ class TableInfo:
 			self.table.blockSignals(False)
 
 		tbl = [
-			("Relation type:", "View" if self.table.isView else "Table"),
-			("Rows:", self.table.rowCount if self.table.rowCount != None else 'Unknown (<a href="action:rows/count">find out</a>)')
+			(QApplication.translate("DBManagerPlugin", "Relation type:"), QApplication.translate("DBManagerPlugin", "View") if self.table.isView else QApplication.translate("DBManagerPlugin", "Table")),
+			(QApplication.translate("DBManagerPlugin", "Rows:"), self.table.rowCount if self.table.rowCount != None else QApplication.translate("DBManagerPlugin", 'Unknown (<a href="action:rows/count">find out</a>)'))
 		]
 		if self.table.comment:
-			tbl.append( ("Comment:", self.table.comment) )
+			tbl.append( (QApplication.translate("DBManagerPlugin", "Comment:"), self.table.comment) )
 
 		return HtmlTable( tbl )
 
@@ -200,7 +200,7 @@ class TableInfo:
 		tbl = []
 
 		# define the table header
-		header = ( "#", "Name", "Type", "Null", "Default" )
+		header = ( "#", QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Type"), QApplication.translate("DBManagerPlugin", "Null"), QApplication.translate("DBManagerPlugin", "Default") )
 		tbl.append( HtmlTableHeader( header ) )
 
 		# add table contents
@@ -223,7 +223,7 @@ class TableInfo:
 		tbl = []
 
 		# define the table header
-		header = ( "Name", "Type", "Column(s)" )
+		header = ( QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Type"), QApplication.translate("DBManagerPlugin", "Column(s)") )
 		tbl.append( HtmlTableHeader( header ) )
 
 		# add table contents
@@ -242,7 +242,7 @@ class TableInfo:
 		tbl = []
 
 		# define the table header
-		header = ( "Name", "Column(s)" )
+		header = ( QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Column(s)") )
 		tbl.append( HtmlTableHeader( header ) )
 
 		# add table contents
@@ -261,7 +261,7 @@ class TableInfo:
 		tbl = []
 
 		# define the table header
-		header = ( "Name", "Function" )
+		header = ( QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Function") )
 		tbl.append( HtmlTableHeader( header ) )
 
 		# add table contents
@@ -286,7 +286,7 @@ class TableInfo:
 		if general_info == None:
 			pass
 		else:
-			ret.append( HtmlSection( 'General info', general_info ) )
+			ret.append( HtmlSection( QApplication.translate("DBManagerPlugin", 'General info'), general_info ) )
 
 		# spatial info
 		spatial_info = self.spatialInfo()
@@ -295,7 +295,7 @@ class TableInfo:
 		else:
 			spatial_info = HtmlContent( spatial_info )
 			if not spatial_info.hasContents():
-				spatial_info = u'<warning> This is not a spatial table.'
+				spatial_info = QApplication.translate("DBManagerPlugin", '<warning> This is not a spatial table.')
 			ret.append( HtmlSection( self.table.database().connection().typeNameString(), spatial_info ) )
 
 		# fields
@@ -303,28 +303,28 @@ class TableInfo:
 		if fields_details == None:
 			pass
 		else:
-			ret.append( HtmlSection( 'Fields', fields_details ) )
+			ret.append( HtmlSection( QApplication.translate("DBManagerPlugin", 'Fields'), fields_details ) )
 
 		# constraints
 		constraints_details = self.constraintsDetails()
 		if constraints_details == None:
 			pass
 		else:
-			ret.append( HtmlSection( 'Constraints', constraints_details ) )
+			ret.append( HtmlSection( QApplication.translate("DBManagerPlugin", 'Constraints'), constraints_details ) )
 
 		# indexes
 		indexes_details = self.indexesDetails()
 		if indexes_details == None:
 			pass
 		else:
-			ret.append( HtmlSection( 'Indexes', indexes_details ) )
+			ret.append( HtmlSection( QApplication.translate("DBManagerPlugin", 'Indexes'), indexes_details ) )
 
 		# triggers
 		triggers_details = self.triggersDetails()
 		if triggers_details == None:
 			pass
 		else:
-			ret.append( HtmlSection( 'Triggers', triggers_details ) )
+			ret.append( HtmlSection( QApplication.translate("DBManagerPlugin", 'Triggers'), triggers_details ) )
 
 		return ret
 
@@ -340,7 +340,7 @@ class TableInfo:
 		if view_def == None:
 			pass
 		else:
-			ret.append( HtmlSection( 'View definition', view_def ) )
+			ret.append( HtmlSection( QApplication.translate("DBManagerPlugin", 'View definition'), view_def ) )
 
 		return ret
 
@@ -363,18 +363,18 @@ class VectorTableInfo(TableInfo):
 			return ret
 
 		tbl = [
-			("Column:", self.table.geomColumn),
-			("Geometry:", self.table.geomType)
+			(QApplication.translate("DBManagerPlugin", "Column:"), self.table.geomColumn),
+			(QApplication.translate("DBManagerPlugin", "Geometry:"), self.table.geomType)
 		]
 
 		# only if we have info from geometry_columns
 		if self.table.geomDim:
-			tbl.append( ("Dimension:", self.table.geomDim) )
+			tbl.append( (QApplication.translate("DBManagerPlugin", "Dimension:"), self.table.geomDim) )
 
 		srid = self.table.srid if self.table.srid != None else -1
-		sr_info = self.table.database().connector.getSpatialRefInfo(srid) if srid != -1 else "Undefined"
+		sr_info = self.table.database().connector.getSpatialRefInfo(srid) if srid != -1 else QApplication.translate("DBManagerPlugin", "Undefined")
 		if sr_info:
-			tbl.append( ("Spatial ref:", u"%s (%d)" % (sr_info, srid)) )
+			tbl.append( (QApplication.translate("DBManagerPlugin", "Spatial ref:"), u"%s (%d)" % (sr_info, srid)) )
 
 		# estimated extent
 		if not self.table.isView:
@@ -387,25 +387,25 @@ class VectorTableInfo(TableInfo):
 
 			if self.table.estimatedExtent != None and self.table.estimatedExtent[0] != None:
 				estimated_extent_str = '%.5f, %.5f - %.5f, %.5f' % self.table.estimatedExtent
-				tbl.append( ("Estimated extent:", estimated_extent_str) )
+				tbl.append( (QApplication.translate("DBManagerPlugin", "Estimated extent:"), estimated_extent_str) )
 
 		# extent
 		if self.table.extent != None and self.table.extent[0] != None:
 			extent_str = '%.5f, %.5f - %.5f, %.5f' % self.table.extent
 		else:
-			extent_str = '(unknown) (<a href="action:extent/get">find out</a>)'
-		tbl.append( ("Extent:", extent_str) )
+			extent_str = QApplication.translate("DBManagerPlugin", '(unknown) (<a href="action:extent/get">find out</a>)')
+		tbl.append( (QApplication.translate("DBManagerPlugin", "Extent:"), extent_str) )
 
 		ret.append( HtmlTable( tbl ) )
 
 		# is there an entry in geometry_columns?
 		if self.table.geomType.lower() == 'geometry':
-			ret.append( HtmlParagraph( u"<warning> There isn't entry in geometry_columns!" ) )
+			ret.append( HtmlParagraph( QApplication.translate("DBManagerPlugin", "<warning> There isn't entry in geometry_columns!") ) )
 
 		# find out whether the geometry column has spatial index on it
 		if not self.table.isView:
 			if not self.table.hasSpatialIndex():
-				ret.append( HtmlParagraph( u'<warning> No spatial index defined (<a href="action:spatialindex/create">create it</a>)' ) )
+				ret.append( HtmlParagraph( QApplication.translate("DBManagerPlugin", '<warning> No spatial index defined (<a href="action:spatialindex/create">create it</a>)') ) )
 
 		return ret
 
@@ -419,22 +419,22 @@ class RasterTableInfo(TableInfo):
 			return ret
 
 		tbl = [
-			("Column:", self.table.geomColumn),
-			("Geometry:", self.table.geomType)
+			(QApplication.translate("DBManagerPlugin", "Column:"), self.table.geomColumn),
+			(QApplication.translate("DBManagerPlugin", "Geometry:"), self.table.geomType)
 		]
 
 		# only if we have info from geometry_columns
 		srid = self.table.srid if self.table.srid != None else -1
-		sr_info = self.table.database().connector.getSpatialRefInfo(srid) if srid != -1 else "Undefined"
+		sr_info = self.table.database().connector.getSpatialRefInfo(srid) if srid != -1 else QApplication.translate("DBManagerPlugin", "Undefined")
 		if sr_info:
-			tbl.append( ("Spatial ref:", u"%s (%d)" % (sr_info, srid)) )
+			tbl.append( (QApplication.translate("DBManagerPlugin", "Spatial ref:"), u"%s (%d)" % (sr_info, srid)) )
 
 		# extent
 		if self.table.extent != None and self.table.extent[0] != None:
 			extent_str = '%.5f, %.5f - %.5f, %.5f' % self.table.extent
 		else:
-			extent_str = '(unknown) (<a href="action:extent/get">find out</a>)'
-		tbl.append( ("Extent:", extent_str) )
+			extent_str = QApplication.translate("DBManagerPlugin", '(unknown) (<a href="action:extent/get">find out</a>)')
+		tbl.append( (QApplication.translate("DBManagerPlugin", "Extent:"), extent_str) )
 
 		ret.append( HtmlTable( tbl ) )
 		return ret

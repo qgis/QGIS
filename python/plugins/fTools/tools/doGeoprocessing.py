@@ -124,7 +124,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
     ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
     if self.shapefileName is None or self.encoding is None:
       return
-    self.outShape.setText( QString( self.shapefileName ) )
+    self.outShape.setText( self.shapefileName )
 
   def manageGui( self ):
     if self.myFunction == 1:  # Buffer
@@ -241,8 +241,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
     out_text = ""
     if results[3] is not None:
       QMessageBox.warning( self, self.tr( "Geoprocessing" ),
-                  self.tr( "No output created. File creation error:\n%1" )
-                  .arg( results[3] ) )
+                  self.tr( "No output created. File creation error:\n%s" ) % ( results[3] ) )
       return
     if (not results[2] is None and not results[2]) or not results[1] or not results [0]:
       out_text = self.tr( "\nWarnings:" )
@@ -259,10 +258,10 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
       out_text = out_text + self.tr( "\nFeature geometry error: One or more output features ignored due to invalid geometry.")
     if not results[0]:
       out_text = out_text + self.tr( "\nGEOS geoprocessing error: One or more input features have invalid geometry.")
-    addToTOC = QMessageBox.question( self, self.tr("Geoprocessing"), self.tr( "Created output shapefile:\n%1\n%2%3" ).arg( unicode( self.shapefileName ) ).arg( out_text ).arg( end_text ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
+    addToTOC = QMessageBox.question( self, self.tr("Geoprocessing"), self.tr( "Created output shapefile:\n%s\n%s%s" ) % ( unicode( self.shapefileName ), out_text, end_text ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
     if addToTOC == QMessageBox.Yes:
       if not ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) ):
-          QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( self.shapefileName ) ))
+          QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( self.shapefileName ) ))
       self.populateLayers()
 
   def runStatusFromThread( self, status ):
@@ -378,7 +377,7 @@ class geoprocessingThread( QThread ):
         for inFeat in selectionA:
           atMap = inFeat.attributes()
           if useField:
-            value = atMap[ self.myParam ].toDouble()[ 0 ]
+            value = atMap[ self.myParam ]
           else:
             value = self.myParam
           inGeom = QgsGeometry( inFeat.geometry() )
@@ -404,11 +403,11 @@ class geoprocessingThread( QThread ):
       # with dissolve
       if self.myMerge:
         first = True
-	fit = vproviderA.getFeatures()
+        fit = vproviderA.getFeatures()
         while fit.nextFeature( inFeat ):
           atMap = inFeat.attributes()
           if useField:
-            value = atMap[ self.myParam ].toDouble()[ 0 ]
+            value = atMap[ self.myParam ]
           else:
             value = self.myParam
           inGeom = QgsGeometry( inFeat.geometry() )
@@ -435,11 +434,11 @@ class geoprocessingThread( QThread ):
           FEATURE_EXCEPT = False
       # without dissolve
       else:
-	fit = vproviderA.getFeatures()
+        fit = vproviderA.getFeatures()
         while fit.nextFeature( inFeat ):
           atMap = inFeat.attributes()
           if useField:
-            value = atMap[ self.myParam ].toDouble()[ 0 ]
+            value = atMap[ self.myParam ]
           else:
             value = self.myParam
           inGeom = QgsGeometry( inFeat.geometry() )
@@ -492,7 +491,7 @@ class geoprocessingThread( QThread ):
           for inFeat in selectionA:
             atMap = inFeat.attributes()
             idVar = atMap[ self.myParam ]
-            if idVar.toString().trimmed() == i.toString().trimmed():
+            if idVar.strip() == i.strip():
               if first:
                 outID = idVar
                 first = False
@@ -507,9 +506,9 @@ class geoprocessingThread( QThread ):
               outGeom = tmpGeom.convexHull()
               outFeat.setGeometry( outGeom )
               (area, perim) = self.simpleMeasure( outGeom )
-              outFeat.setAttribute( 0, QVariant( outID ) )
-              outFeat.setAttribute( 1, QVariant( area ) )
-              outFeat.setAttribute( 2, QVariant( perim ) )
+              outFeat.setAttribute( 0, outID )
+              outFeat.setAttribute( 1, area )
+              outFeat.setAttribute( 2, perim )
               writer.addFeature( outFeat )
             except:
               GEOS_EXCEPT = False
@@ -548,7 +547,7 @@ class geoprocessingThread( QThread ):
           while fitA.nextFeature( inFeat ):
             atMap = inFeat.attributes()
             idVar = atMap[ self.myParam ]
-            if idVar.toString().trimmed() == i.toString().trimmed():
+            if idVar.strip() == i.strip():
               if first:
                 outID = idVar
                 first = False
@@ -563,9 +562,9 @@ class geoprocessingThread( QThread ):
               outGeom = tmpGeom.convexHull()
               outFeat.setGeometry( outGeom )
               (area, perim) = self.simpleMeasure( outGeom )
-              outFeat.setAttribute( 0, QVariant( outID ) )
-              outFeat.setAttribute( 1, QVariant( area ) )
-              outFeat.setAttribute( 2, QVariant( perim ) )
+              outFeat.setAttribute( 0, outID )
+              outFeat.setAttribute( 1, area )
+              outFeat.setAttribute( 2, perim )
               writer.addFeature( outFeat )
             except:
               GEOS_EXCEPT = False
@@ -574,7 +573,7 @@ class geoprocessingThread( QThread ):
         self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
         self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         hull = []
-	fitA = vproviderA.getFeatures()
+        fitA = vproviderA.getFeatures()
         while fitA.nextFeature( inFeat ):
           inGeom = QgsGeometry( inFeat.geometry() )
           points = ftools_utils.extractPoints( inGeom )
@@ -644,7 +643,7 @@ class geoprocessingThread( QThread ):
           nElement += 1
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
           atMap = inFeat.attributes()
-          tempItem = unicode(atMap[self.myParam].toString().trimmed())
+          tempItem = unicode(atMap[self.myParam]).strip()
 
           if not (tempItem in outFeats):
             outFeats[tempItem] = QgsGeometry(inFeat.geometry())
@@ -699,7 +698,7 @@ class geoprocessingThread( QThread ):
           nElement += 1
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
           atMap = inFeat.attributes()
-          tempItem = unicode(atMap[self.myParam].toString().trimmed())
+          tempItem = unicode(atMap[self.myParam]).strip()
 
           if not (tempItem in outFeats):
             outFeats[tempItem] = QgsGeometry(inFeat.geometry())
@@ -817,7 +816,7 @@ class geoprocessingThread( QThread ):
       # we have selection in overlay layer
       if self.mySelectionB:
         selectionB = self.vlayerB.selectedFeaturesIds()
-	fitA = vproviderA.getFeatures()
+        fitA = vproviderA.getFeatures()
         while fitA.nextFeature( inFeatA ):
           nElement += 1
           add = True
@@ -894,7 +893,7 @@ class geoprocessingThread( QThread ):
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
     longNames = ftools_utils.checkFieldNameLength( fields )
     if not longNames.isEmpty():
-      message = QString( 'Following field names are longer than 10 characters:\n%1' ).arg( longNames.join( '\n' ) )
+      message = self.tr('Following field names are longer than 10 characters:\n%s') % ( '\n'.join(longNames) )
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, message
 
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
@@ -993,7 +992,7 @@ class geoprocessingThread( QThread ):
       # we have selection in overlay layer
       if self.mySelectionB:
         selectionB = self.vlayerB.selectedFeaturesIds()
-	fitA = vproviderA.getFeatures()
+        fitA = vproviderA.getFeatures()
         while fitA.nextFeature( inFeatA ):
           nElement += 1
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
@@ -1079,7 +1078,7 @@ class geoprocessingThread( QThread ):
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
     longNames = ftools_utils.checkFieldNameLength( fields )
     if not longNames.isEmpty():
-      message = QString( 'Following field names are longer than 10 characters:\n%1' ).arg( longNames.join( '\n' ) )
+      message = self.tr( 'Following field names are longer than 10 characters:\n%s' ) % ( "\n".join(longNames) )
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, message
 
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
@@ -1265,7 +1264,7 @@ class geoprocessingThread( QThread ):
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
     longNames = ftools_utils.checkFieldNameLength( fields )
     if not longNames.isEmpty():
-      message = QString( 'Following field names are longer than 10 characters:\n%1' ).arg( longNames.join( '\n' ) )
+      message = self.tr( 'Following field names are longer than 10 characters:\n%s' ) % ( "\n".join(longNames) )
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, message
 
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,

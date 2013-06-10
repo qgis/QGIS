@@ -114,6 +114,14 @@ void QTermWidget::init()
 {
   m_impl->m_terminalDisplay->setSize( 80, 40 );
 
+  // QWidget::setFont() does not guarantee to really change the font (see doc)
+  // setStyleSheet() however should force the font change, it has however some
+  // some side efects like changing background color
+  if ( m_impl->m_terminalDisplay )
+  {
+    m_impl->m_terminalDisplay->setStyleSheet( "font-size: 10pt; font-family: Monospace;" );
+  }
+
   QFont font = QApplication::font();
   font.setFamily( "Monospace" );
   font.setPointSize( 10 );
@@ -180,6 +188,9 @@ void QTermWidget::setColorScheme( int scheme )
       break;
     case COLOR_SCHEME_BLACK_ON_LIGHT_YELLOW:
       m_impl->m_terminalDisplay->setColorTable( blackonlightyellow_color_table );
+      break;
+    case COLOR_SCHEME_BLACK_ON_WHITE:
+      m_impl->m_terminalDisplay->setColorTable( blackonwhite_color_table );
       break;
     default: //do nothing
       break;

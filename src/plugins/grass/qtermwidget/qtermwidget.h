@@ -27,7 +27,8 @@ struct TermWidgetImpl;
 
 enum COLOR_SCHEME {     COLOR_SCHEME_WHITE_ON_BLACK = 1,
                         COLOR_SCHEME_GREEN_ON_BLACK,
-                        COLOR_SCHEME_BLACK_ON_LIGHT_YELLOW
+                        COLOR_SCHEME_BLACK_ON_LIGHT_YELLOW,
+                        COLOR_SCHEME_BLACK_ON_WHITE
                   };
 
 class QTermWidget : public QWidget
@@ -138,7 +139,7 @@ class QTermWidget : public QWidget
 #ifdef __cplusplus
 extern "C"
 #endif
-void *createTermWidget( int startnow, void *parent );
+  void *createTermWidget( int startnow, void *parent );
 
 #endif
 

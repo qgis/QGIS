@@ -28,8 +28,8 @@ from PyQt4.QtGui import *
 # @param mainwindow is the DBManager mainwindow
 def load(db, mainwindow):
 	# add the action to the DBManager menu
-	action = QAction( QIcon(), "&Versioning", db )
-	mainwindow.registerAction( action, "&Table", run )
+	action = QAction( QIcon(), QApplication.translate("DBManagerPlugin", "&Versioning"), db )
+	mainwindow.registerAction( action, QApplication.translate("DBManagerPlugin", "&Table"), run )
 
 
 # The run function is called once the user clicks on the action TopoViewer

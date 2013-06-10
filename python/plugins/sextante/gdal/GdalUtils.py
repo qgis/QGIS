@@ -43,10 +43,10 @@ class GdalUtils:
     @staticmethod
     def runGdal(commands, progress):
         settings = QSettings()
-        path = str(settings.value( "/GdalTools/gdalPath", QVariant( "" ) ).toString())
-        envval = str(os.getenv("PATH"))
+        path = unicode(settings.value( "/GdalTools/gdalPath", ""))
+        envval = unicode(os.getenv("PATH"))
         if not path.lower() in envval.lower().split(os.pathsep):
-            envval += "%s%s" % (os.pathsep, str(path))
+            envval += "%s%s" % (os.pathsep, path)
             os.putenv( "PATH", envval )
         loglines = []
         loglines.append("GDAL execution console output")
@@ -79,8 +79,7 @@ class GdalUtils:
             driver = gdal.GetDriver(i)
             if driver == None:
                 continue
-
-            shortName = str(QString(driver.ShortName).remove( QRegExp( '\(.*$' ) ).trimmed())
+            shortName = driver.ShortName#.remove( QRegExp( '\(.*$' ) ).trimmed())
             metadata = driver.GetMetadata()
             if not metadata.has_key(gdal.DCAP_CREATE) or metadata[gdal.DCAP_CREATE] != 'YES':
                 continue
@@ -112,11 +111,11 @@ class GdalUtils:
 
     @staticmethod
     def escapeAndJoin(strList):
-        joined = QString()
+        joined = ""
         for s in strList:
-          if " " in s:
-            escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') + '"'
-          else:
-            escaped = s
-          joined += escaped + " "
-        return joined.trimmed()
+            if " " in s:
+                escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') + '"'
+            else:
+                escaped = s
+            joined += escaped + " "
+        return joined.strip()

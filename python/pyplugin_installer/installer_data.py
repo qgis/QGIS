@@ -26,15 +26,18 @@
 from PyQt4.QtCore import *
 from PyQt4.QtXml import QDomDocument
 from PyQt4.QtNetwork import *
+import sys
+import os
+import codecs
+import ConfigParser
+import qgis.utils
 from qgis.core import *
 from qgis.utils import iface
-from version_compare import compareVersions, normalizeVersion
-import sys
-import qgis.utils
+from version_compare import compareVersions, normalizeVersion, isCompatible
 
 """
 Data structure:
-mRepositories = dict of dicts: {repoName : {"url" QString,
+mRepositories = dict of dicts: {repoName : {"url" unicode,
                                             "enabled" bool,
                                             "valid" bool,
                                             "QPNAME" QPNetworkAccessManager,
@@ -42,53 +45,53 @@ mRepositories = dict of dicts: {repoName : {"url" QString,
                                             "Request" QNetworkRequest,
                                             "xmlData" QNetworkReply,
                                             "state" int,   (0 - disabled, 1-loading, 2-loaded ok, 3-error (to be retried), 4-rejected)
-                                            "error" QString}}
+                                            "error" unicode}}
 
 
 mPlugins = dict of dicts {id : {
-    "id" QString                                # module name
-    "name" QString,                             #
-    "description" QString,                      #
-    "category" QString,                         # will be removed?
-    "tags" QString,                             # comma separated, spaces allowed
-    "changelog" QString,                        # may be multiline
-    "author_name" QString,                      #
-    "author_email" QString,                     #
-    "homepage" QString,                         # url to a tracker site
-    "tracker" QString,                          # url to a tracker site
-    "code_repository" QString,                  # url to a repository with code
-    "version_installed" QString,                #
-    "library" QString,                          # full path to the installed library/Python module
-    "icon" QString,                             # path to the first:(INSTALLED | AVAILABLE) icon
+    "id" unicode                                # module name
+    "name" unicode,                             #
+    "description" unicode,                      #
+    "category" unicode,                         # will be removed?
+    "tags" unicode,                             # comma separated, spaces allowed
+    "changelog" unicode,                        # may be multiline
+    "author_name" unicode,                      #
+    "author_email" unicode,                     #
+    "homepage" unicode,                         # url to a tracker site
+    "tracker" unicode,                          # url to a tracker site
+    "code_repository" unicode,                  # url to a repository with code
+    "version_installed" unicode,                #
+    "library" unicode,                          # full path to the installed library/Python module
+    "icon" unicode,                             # path to the first:(INSTALLED | AVAILABLE) icon
     "pythonic" const bool=True
     "readonly" boolean,                         # True if core plugin
     "installed" boolean,                        # True if installed
     "available" boolean,                        # True if available in repositories
-    "status" QString,                           # ( not installed | new ) | ( installed | upgradeable | orphan | newer )
-    "error" QString,                            # NULL | broken | incompatible | dependent
-    "error_details" QString,                    # more details
+    "status" unicode,                           # ( not installed | new ) | ( installed | upgradeable | orphan | newer )
+    "error" unicode,                            # NULL | broken | incompatible | dependent
+    "error_details" unicode,                    # more details
     "experimental" boolean,                     # choosen version: experimental or stable?
-    "version_available" QString,                # choosen version: version
-    "zip_repository" QString,                   # choosen version: the remote repository id
-    "download_url" QString,                     # choosen version: url for downloading
-    "filename" QString,                         # choosen version: the zip file to be downloaded
-    "downloads" QString,                        # choosen version: number of dowloads
-    "average_vote" QString,                     # choosen version: average vote
-    "rating_votes" QString,                     # choosen version: number of votes
-    "stable:version_available" QString,         # stable version found in repositories
-    "stable:download_source" QString,
-    "stable:download_url" QString,
-    "stable:filename" QString,
-    "stable:downloads" QString,
-    "stable:average_vote" QString,
-    "stable:rating_votes" QString,
-    "experimental:version_available" QString,   # experimental version found in repositories
-    "experimental:download_source" QString,
-    "experimental:download_url" QString,
-    "experimental:filename" QString,
-    "experimental:downloads" QString,
-    "experimental:average_vote" QString,
-    "experimental:rating_votes" QString
+    "version_available" unicode,                # choosen version: version
+    "zip_repository" unicode,                   # choosen version: the remote repository id
+    "download_url" unicode,                     # choosen version: url for downloading
+    "filename" unicode,                         # choosen version: the zip file to be downloaded
+    "downloads" unicode,                        # choosen version: number of dowloads
+    "average_vote" unicode,                     # choosen version: average vote
+    "rating_votes" unicode,                     # choosen version: number of votes
+    "stable:version_available" unicode,         # stable version found in repositories
+    "stable:download_source" unicode,
+    "stable:download_url" unicode,
+    "stable:filename" unicode,
+    "stable:downloads" unicode,
+    "stable:average_vote" unicode,
+    "stable:rating_votes" unicode,
+    "experimental:version_available" unicode,   # experimental version found in repositories
+    "experimental:download_source" unicode,
+    "experimental:download_url" unicode,
+    "experimental:filename" unicode,
+    "experimental:downloads" unicode,
+    "experimental:average_vote" unicode,
+    "experimental:rating_votes" unicode
 }}
 """
 
@@ -123,11 +126,20 @@ depreciatedRepos = [
 
 
 
+################################################################################
+################################################################################
+### TEMPORARY WORKAROUND UNTIL VERSION NUMBER IS GLOBALY SWITCHED TO 2.0 #######
+################################################################################
+class QGis:                                   ##################################
+    QGIS_VERSION_INT = 20000                  ##################################
+    QGIS_VERSION = '2.0.0-Master'             ##################################
+################################################################################
+################################################################################
 
 
 # --- common functions ------------------------------------------------------------------- #
 def removeDir(path):
-    result = QString()
+    result = ""
     if not QFile(path).exists():
       result = QCoreApplication.translate("QgsPluginInstaller","Nothing to remove! Plugin directory doesn't exist:")+"\n"+path
     elif QFile(path).remove(): # if it is only link, just remove it without resolving.
@@ -165,10 +177,10 @@ class QPNetworkAccessManager(QNetworkAccessManager):
     QNetworkAccessManager.__init__(self,)
     settings = QSettings()
     settings.beginGroup("proxy")
-    if settings.value("/proxyEnabled").toBool():
+    if settings.value("/proxyEnabled", False, type=bool):
       self.proxy=QNetworkProxy()
-      proxyType = settings.value( "/proxyType", QVariant(0)).toString()
-      if len(args)>0 and settings.value("/proxyExcludedUrls").toString().contains(args[0]):
+      proxyType = settings.value( "/proxyType", "0", type=unicode)
+      if len(args)>0 and settings.value("/proxyExcludedUrls","", type=unicode).contains(args[0]):
         proxyType = "NoProxy"
       if proxyType in ["1","Socks5Proxy"]: self.proxy.setType(QNetworkProxy.Socks5Proxy)
       elif proxyType in ["2","NoProxy"]: self.proxy.setType(QNetworkProxy.NoProxy)
@@ -176,10 +188,10 @@ class QPNetworkAccessManager(QNetworkAccessManager):
       elif proxyType in ["4","HttpCachingProxy"] and QT_VERSION >= 0X040400: self.proxy.setType(QNetworkProxy.HttpCachingProxy)
       elif proxyType in ["5","FtpCachingProxy"] and QT_VERSION >= 0X040400: self.proxy.setType(QNetworkProxy.FtpCachingProxy)
       else: self.proxy.setType(QNetworkProxy.DefaultProxy)
-      self.proxy.setHostName(settings.value("/proxyHost").toString())
-      self.proxy.setPort(settings.value("/proxyPort").toUInt()[0])
-      self.proxy.setUser(settings.value("/proxyUser").toString())
-      self.proxy.setPassword(settings.value("/proxyPassword").toString())
+      self.proxy.setHostName(settings.value("/proxyHost","", type=unicode))
+      self.proxy.setPort(settings.value("/proxyPort", 0, type=int))
+      self.proxy.setUser(settings.value("/proxyUser", "", type=unicode))
+      self.proxy.setPassword(settings.value("/proxyPassword", "", type=unicode))
       self.setProxy(self.proxy)
     settings.endGroup()
     return None
@@ -193,12 +205,14 @@ class QPNetworkAccessManager(QNetworkAccessManager):
 class Relay(QObject):
   """ Relay object for transmitting signals from QPHttp with adding the repoName information """
   # ----------------------------------------- #
+  anythingChanged = pyqtSignal( unicode, int, int )
+
   def __init__(self, key):
     QObject.__init__(self)
     self.key = key
 
   def stateChanged(self, state):
-    self.emit(SIGNAL("anythingChanged(QString, int, int)"), self.key, state, 0)
+    self.anythingChanged.emit( self.key, state, 0 )
 
   # ----------------------------------------- #
   def dataReadProgress(self, done, total):
@@ -207,7 +221,8 @@ class Relay(QObject):
       progress = int(float(done)/float(total)*100)
     else:
       progress = 0
-    self.emit(SIGNAL("anythingChanged(QString, int, int)"), self.key, state, progress)
+    self.anythingChanged.emit( self.key, state, progress )
+
 # --- /class Relay  ---------------------------------------------------------------------- #
 
 
@@ -218,10 +233,16 @@ class Relay(QObject):
 class Repositories(QObject):
   """ A dict-like class for handling repositories data """
   # ----------------------------------------- #
+
+  anythingChanged = pyqtSignal( unicode, int, int )
+  repositoryFetched = pyqtSignal( unicode )
+  checkingDone = pyqtSignal()
+
   def __init__(self):
     QObject.__init__(self)
     self.mRepositories = {}
     self.httpId = {}   # {httpId : repoName}
+    self.mInspectionFilter = None
 
 
   # ----------------------------------------- #
@@ -233,6 +254,9 @@ class Repositories(QObject):
   # ----------------------------------------- #
   def allEnabled(self):
     """ return dict of all enabled and valid repositories """
+    if self.mInspectionFilter:
+      return { self.mInspectionFilter: self.mRepositories[self.mInspectionFilter] }
+
     repos = {}
     for i in self.mRepositories:
       if self.mRepositories[i]["enabled"] and self.mRepositories[i]["valid"]:
@@ -244,6 +268,13 @@ class Repositories(QObject):
   def allUnavailable(self):
     """ return dict of all unavailable repositories """
     repos = {}
+
+    if self.mInspectionFilter:
+      # return the inspected repo if unavailable, otherwise empty dict
+      if self.mRepositories[self.mInspectionFilter]["state"] == 3:
+        repos [self.mInspectionFilter] = self.mRepositories[self.mInspectionFilter]
+      return repos
+
     for i in self.mRepositories:
       if self.mRepositories[i]["enabled"] and self.mRepositories[i]["valid"] and self.mRepositories[i]["state"] == 3:
         repos[i] = self.mRepositories[i]
@@ -275,23 +306,22 @@ class Repositories(QObject):
   def checkingOnStart(self):
     """ return true if checking for news and updates is enabled """
     settings = QSettings()
-    return settings.value(settingsGroup+"/checkOnStart", QVariant(False)).toBool()
+    return settings.value(settingsGroup+"/checkOnStart", False, type=bool)
 
 
   # ----------------------------------------- #
   def setCheckingOnStart(self, state):
     """ set state of checking for news and updates """
     settings = QSettings()
-    settings.setValue(settingsGroup+"/checkOnStart", QVariant(state))
+    settings.setValue(settingsGroup+"/checkOnStart", state)
 
 
   # ----------------------------------------- #
   def checkingOnStartInterval(self):
     """ return checking for news and updates interval """
     settings = QSettings()
-    (i, ok) = settings.value(settingsGroup+"/checkOnStartInterval").toInt()
-    if i < 0 or not ok:
-      i = 1
+    i = settings.value(settingsGroup+"/checkOnStartInterval", 1, type=int)
+    if i < 0: i = 1
     # allowed values: 0,1,3,7,14,30 days
     interval = 0
     for j in [1,3,7,14,30]:
@@ -304,14 +334,14 @@ class Repositories(QObject):
   def setCheckingOnStartInterval(self, interval):
     """ set checking for news and updates interval """
     settings = QSettings()
-    settings.setValue(settingsGroup+"/checkOnStartInterval", QVariant(interval))
+    settings.setValue(settingsGroup+"/checkOnStartInterval", interval)
 
 
   # ----------------------------------------- #
   def saveCheckingOnStartLastDate(self):
     """ set today's date as the day of last checking  """
     settings = QSettings()
-    settings.setValue(settingsGroup+"/checkOnStartLastDate", QVariant(QDate.currentDate()))
+    settings.setValue(settingsGroup+"/checkOnStartLastDate", QDate.currentDate())
 
 
   # ----------------------------------------- #
@@ -320,7 +350,7 @@ class Repositories(QObject):
     if self.checkingOnStartInterval() == 0:
       return True
     settings = QSettings()
-    interval = settings.value(settingsGroup+"/checkOnStartLastDate").toDate().daysTo(QDate.currentDate())
+    interval = settings.value(settingsGroup+"/checkOnStartLastDate",type=QDate).daysTo(QDate.currentDate())
     if interval >= self.checkingOnStartInterval():
       return True
     else:
@@ -336,25 +366,26 @@ class Repositories(QObject):
     # first, update repositories in QSettings if needed
     officialRepoPresent = False
     for key in settings.childGroups():
-      url = settings.value(key+"/url", QVariant()).toString()
+      url = settings.value(key+"/url", "", type=unicode)
       if url == officialRepo[1]:
         officialRepoPresent = True
       if url == officialRepo[2]:
-        settings.setValue(key+"/url", QVariant(officialRepo[1])) # correct a depreciated url
+        settings.setValue(key+"/url", officialRepo[1]) # correct a depreciated url
         officialRepoPresent = True
     if not officialRepoPresent:
-      settings.setValue(officialRepo[0]+"/url", QVariant(officialRepo[1]))
+      settings.setValue(officialRepo[0]+"/url", officialRepo[1])
 
     for key in settings.childGroups():
       self.mRepositories[key] = {}
-      self.mRepositories[key]["url"] = settings.value(key+"/url", QVariant()).toString()
-      self.mRepositories[key]["enabled"] = settings.value(key+"/enabled", QVariant(True)).toBool()
-      self.mRepositories[key]["valid"] = settings.value(key+"/valid", QVariant(True)).toBool()
+      self.mRepositories[key]["url"] = settings.value(key+"/url", "", type=unicode)
+      self.mRepositories[key]["enabled"] = settings.value(key+"/enabled", True, type=bool)
+      self.mRepositories[key]["valid"] = settings.value(key+"/valid", True, type=bool)
       self.mRepositories[key]["QPNAM"] = QPNetworkAccessManager()
+
       self.mRepositories[key]["Relay"] = Relay(key)
       self.mRepositories[key]["xmlData"] = QBuffer()
       self.mRepositories[key]["state"] = 0
-      self.mRepositories[key]["error"] = QString()
+      self.mRepositories[key]["error"] = ""
     settings.endGroup()
 
 
@@ -364,6 +395,7 @@ class Repositories(QObject):
     self.mRepositories[key]["state"] = 1
     url = QUrl(self.mRepositories[key]["url"])
     v=str(QGis.QGIS_VERSION_INT)
+
 
     url.addQueryItem(QString('qgis'), QString('.'.join([str(int(s)) for s in [v[0], v[1:3], v[3:5]]])) )
     
@@ -408,35 +440,34 @@ class Repositories(QObject):
       pluginNodes = reposXML.elementsByTagName("pyqgis_plugin")
       if pluginNodes.size():
         for i in range(pluginNodes.size()):
-          fileName = pluginNodes.item(i).firstChildElement("file_name").text().simplified()
+          fileName = pluginNodes.item(i).firstChildElement("file_name").text().strip()
           if not fileName:
-              fileName = QFileInfo(pluginNodes.item(i).firstChildElement("download_url").text().trimmed().split("?")[0]).fileName()
-          name = fileName.section(".", 0, 0)
-          name = unicode(name)
+              fileName = QFileInfo(pluginNodes.item(i).firstChildElement("download_url").text().strip().split("?")[0]).fileName()
+          name = fileName.partition(".")[0]
           experimental = False
-          if pluginNodes.item(i).firstChildElement("experimental").text().simplified().toUpper() in ["TRUE","YES"]:
+          if pluginNodes.item(i).firstChildElement("experimental").text().strip().upper() in ["TRUE","YES"]:
             experimental = True
-          icon = pluginNodes.item(i).firstChildElement("icon").text().simplified()
-          if icon and not icon.startsWith("http"):
+          icon = pluginNodes.item(i).firstChildElement("icon").text().strip()
+          if icon and not icon.startswith("http"):
             icon = "http://%s/%s" % ( QUrl(self.mRepositories[reposName]["url"]).host() , icon )
 
           plugin = {
             "id"            : name,
             "name"          : pluginNodes.item(i).toElement().attribute("name"),
             "version_available" : pluginNodes.item(i).toElement().attribute("version"),
-            "description"   : pluginNodes.item(i).firstChildElement("description").text().simplified(),
-            "author_name"   : pluginNodes.item(i).firstChildElement("author_name").text().simplified(),
-            "homepage"      : pluginNodes.item(i).firstChildElement("homepage").text().simplified(),
-            "download_url"  : pluginNodes.item(i).firstChildElement("download_url").text().simplified(),
-            "category"      : pluginNodes.item(i).firstChildElement("category").text().simplified(),
-            "tags"          : pluginNodes.item(i).firstChildElement("tags").text().simplified(),
-            "changelog"     : pluginNodes.item(i).firstChildElement("changelog").text().simplified(),
-            "author_email"  : pluginNodes.item(i).firstChildElement("author_email").text().simplified(),
-            "tracker"       : pluginNodes.item(i).firstChildElement("tracker").text().simplified(),
-            "code_repository"  : pluginNodes.item(i).firstChildElement("repository").text().simplified(),
-            "downloads"     : pluginNodes.item(i).firstChildElement("downloads").text().simplified(),
-            "average_vote"  : pluginNodes.item(i).firstChildElement("average_vote").text().simplified(),
-            "rating_votes"  : pluginNodes.item(i).firstChildElement("rating_votes").text().simplified(),
+            "description"   : pluginNodes.item(i).firstChildElement("description").text().strip(),
+            "author_name"   : pluginNodes.item(i).firstChildElement("author_name").text().strip(),
+            "homepage"      : pluginNodes.item(i).firstChildElement("homepage").text().strip(),
+            "download_url"  : pluginNodes.item(i).firstChildElement("download_url").text().strip(),
+            "category"      : pluginNodes.item(i).firstChildElement("category").text().strip(),
+            "tags"          : pluginNodes.item(i).firstChildElement("tags").text().strip(),
+            "changelog"     : pluginNodes.item(i).firstChildElement("changelog").text().strip(),
+            "author_email"  : pluginNodes.item(i).firstChildElement("author_email").text().strip(),
+            "tracker"       : pluginNodes.item(i).firstChildElement("tracker").text().strip(),
+            "code_repository"  : pluginNodes.item(i).firstChildElement("repository").text().strip(),
+            "downloads"     : pluginNodes.item(i).firstChildElement("downloads").text().strip(),
+            "average_vote"  : pluginNodes.item(i).firstChildElement("average_vote").text().strip(),
+            "rating_votes"  : pluginNodes.item(i).firstChildElement("rating_votes").text().strip(),
             "icon"          : icon,
             "experimental"  : experimental,
             "filename"      : fileName,
@@ -450,23 +481,35 @@ class Repositories(QObject):
             "library"      : "",
             "readonly"     : False
           }
-          qgisMinimumVersion = pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().simplified()
+          qgisMinimumVersion = pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().strip()
           if not qgisMinimumVersion: qgisMinimumVersion = "2"
-          qgisMaximumVersion = pluginNodes.item(i).firstChildElement("qgis_maximum_version").text().simplified()
+          qgisMaximumVersion = pluginNodes.item(i).firstChildElement("qgis_maximum_version").text().strip()
           if not qgisMaximumVersion: qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
           #if compatible, add the plugin to the list
-          if not pluginNodes.item(i).firstChildElement("disabled").text().simplified().toUpper() in ["TRUE","YES"]:
-           if compareVersions(QGis.QGIS_VERSION, qgisMinimumVersion) < 2 and compareVersions(qgisMaximumVersion, QGis.QGIS_VERSION) < 2:
+          if not pluginNodes.item(i).firstChildElement("disabled").text().strip().upper() in ["TRUE","YES"]:
+            if isCompatible(QGis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
               #add the plugin to the cache
               plugins.addFromRepository(plugin)
       # set state=2, even if the repo is empty
       self.mRepositories[reposName]["state"] = 2
 
-    self.emit(SIGNAL("repositoryFetched(QString)"), reposName )
+    self.repositoryFetched.emit( reposName )
 
     # is the checking done?
     if not self.fetchingInProgress():
-      self.emit(SIGNAL("checkingDone()"))
+      self.checkingDone.emit()
+
+
+  # ----------------------------------------- #
+  def inspectionFilter(self):
+    """ return inspection filter (only one repository to be fetched) """
+    return self.mInspectionFilter
+
+
+  # ----------------------------------------- #
+  def setInspectionFilter(self, key = None):
+    """ temporarily disable all repositories but this for inspection """
+    self.mInspectionFilter = key
 
 # --- /class Repositories ---------------------------------------------------------------- #
 
@@ -512,6 +555,12 @@ class Plugins(QObject):
 
 
   # ----------------------------------------- #
+  def clearRepoCache(self):
+    """ clears the repo cache before re-fetching repositories """
+    self.repoCache = {}
+
+
+  # ----------------------------------------- #
   def addFromRepository(self, plugin):
     """ add given plugin to the repoCache """
     repo = plugin["zip_repository"]
@@ -536,17 +585,27 @@ class Plugins(QObject):
 
 
   # ----------------------------------------- #
-  def getInstalledPlugin(self, key, readOnly, testLoad=False):
+  def getInstalledPlugin(self, key, readOnly, testLoad=True):
     """ get the metadata of an installed plugin """
     def pluginMetadata(fct):
-        result = qgis.utils.pluginMetadata(key, fct)
-        if result == "__error__":
-            result = ""
-        return QString(result)
+        """ plugin metadata parser reimplemented from qgis.utils
+            for better control on wchich module is examined
+            in case there is an installed plugin masking a core one """
+        metadataFile = os.path.join(path, 'metadata.txt')
+        if not os.path.exists(metadataFile):
+          return "" # plugin has no metadata.txt file
+        cp = ConfigParser.ConfigParser()
+        try:
+          cp.readfp(codecs.open(metadataFile, "r", "utf8"))
+          return cp.get('general', fct)
+        except:
+          return ""
 
-    path = QDir.cleanPath( QgsApplication.qgisSettingsDirPath() ) + "/python/plugins/" + key
-    if not QDir(path).exists():
+    if readOnly:
       path = QDir.cleanPath( QgsApplication.pkgDataPath() ) + "/python/plugins/" + key
+    else:
+      path = QDir.cleanPath( QgsApplication.qgisSettingsDirPath() ) + "/python/plugins/" + key
+
     if not QDir(path).exists():
       return
 
@@ -556,12 +615,12 @@ class Plugins(QObject):
 
     version = normalizeVersion( pluginMetadata("version") )
     if version:
-      qgisMinimumVersion = pluginMetadata("qgisMinimumVersion").simplified()
+      qgisMinimumVersion = pluginMetadata("qgisMinimumVersion").strip()
       if not qgisMinimumVersion: qgisMinimumVersion = "0"
-      qgisMaximumVersion = pluginMetadata("qgisMaximumVersion").simplified()
-      if not qgisMaximumVersion: qgisMaximumVersion = qgisMinimumVersion[0] + ".999"
+      qgisMaximumVersion = pluginMetadata("qgisMaximumVersion").strip()
+      if not qgisMaximumVersion: qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
       #if compatible, add the plugin to the list
-      if compareVersions(QGis.QGIS_VERSION, qgisMinimumVersion) == 2 or compareVersions(qgisMaximumVersion, QGis.QGIS_VERSION) == 2:
+      if not isCompatible(QGis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
         error = "incompatible"
         errorDetails = "%s - %s" % (qgisMinimumVersion, qgisMaximumVersion)
 
@@ -607,7 +666,7 @@ class Plugins(QObject):
         "version_installed" : version,
         "library"           : path,
         "pythonic"          : True,
-        "experimental"      : pluginMetadata("experimental").simplified().toUpper() in ["TRUE","YES"],
+        "experimental"      : pluginMetadata("experimental").strip().upper() in ["TRUE","YES"],
         "version_available" : "",
         "zip_repository"    : "",
         "download_url"      : path,      # warning: local path as url!
@@ -625,7 +684,7 @@ class Plugins(QObject):
 
 
   # ----------------------------------------- #
-  def getAllInstalled(self, testLoad=False):
+  def getAllInstalled(self, testLoad=True):
     """ Build the localCache """
     self.localCache = {}
     # first, try to add the readonly plugins...
@@ -638,7 +697,7 @@ class Plugins(QObject):
       for key in pluginDir.entryList():
         key = unicode(key)
         if not key in [".",".."]:
-          self.localCache[key] = self.getInstalledPlugin(key, True)
+          self.localCache[key] = self.getInstalledPlugin(key, readOnly=True, testLoad=False)
     except:
       # return QCoreApplication.translate("QgsPluginInstaller","Couldn't open the system plugin directory")
       pass # it's not necessary to stop due to this error
@@ -654,7 +713,7 @@ class Plugins(QObject):
     for key in pluginDir.entryList():
       key = unicode(key)
       if not key in [".",".."]:
-        plugin = self.getInstalledPlugin(key, False, testLoad)
+        plugin = self.getInstalledPlugin(key, readOnly=False, testLoad=testLoad)
         if key in self.localCache.keys() and compareVersions(self.localCache[key]["version_installed"],plugin["version_installed"]) == 1:
           # An obsolete plugin in the "user" location is masking a newer one in the "system" location!
           self.obsoletePlugins += [key]
@@ -668,9 +727,10 @@ class Plugins(QObject):
     for i in self.localCache.keys():
       self.mPlugins[i] = self.localCache[i].copy()
     settings = QSettings()
-    allowExperimental = settings.value(settingsGroup+"/allowExperimental", QVariant(False)).toBool()
+    allowExperimental = settings.value(settingsGroup+"/allowExperimental", False, type=bool)
     for i in self.repoCache.values():
-      for plugin in i:
+      for j in i:
+        plugin=j.copy() # do not update repoCache elements!
         key = plugin["id"]
         # check if the plugin is allowed and if there isn't any better one added already.
         if (allowExperimental or not plugin["experimental"]) \
@@ -703,7 +763,7 @@ class Plugins(QObject):
             self.mPlugins[key]["status"] = "orphan"
           elif not self.mPlugins[key]["version_installed"]:
             self.mPlugins[key]["status"] = "not installed"
-          elif self.mPlugins[key]["error"] in ["broken"] or self.mPlugins[key]["version_installed"] == "-1":
+          elif self.mPlugins[key]["version_installed"] in ["?", "-1"]:
             self.mPlugins[key]["status"] = "installed"
           elif compareVersions(self.mPlugins[key]["version_available"],self.mPlugins[key]["version_installed"]) == 0:
             self.mPlugins[key]["status"] = "installed"
@@ -723,10 +783,10 @@ class Plugins(QObject):
   def markNews(self):
     """ mark all new plugins as new """
     settings = QSettings()
-    seenPlugins = settings.value(seenPluginGroup, QVariant(QStringList(self.mPlugins.keys()))).toStringList()
+    seenPlugins = settings.value(seenPluginGroup, self.mPlugins.keys(), type=unicode)
     if len(seenPlugins) > 0:
       for i in self.mPlugins.keys():
-        if seenPlugins.count(QString(i)) == 0 and self.mPlugins[i]["status"] == "not installed":
+        if seenPlugins.count(i) == 0 and self.mPlugins[i]["status"] == "not installed":
           self.mPlugins[i]["status"] = "new"
 
 
@@ -734,11 +794,11 @@ class Plugins(QObject):
   def updateSeenPluginsList(self):
     """ update the list of all seen plugins """
     settings = QSettings()
-    seenPlugins = settings.value(seenPluginGroup, QVariant(QStringList(self.mPlugins.keys()))).toStringList()
+    seenPlugins = settings.value(seenPluginGroup, self.mPlugins.keys(), type=unicode)
     for i in self.mPlugins.keys():
-      if seenPlugins.count(QString(i)) == 0:
+      if seenPlugins.count(i) == 0:
         seenPlugins += [i]
-    settings.setValue(seenPluginGroup, QVariant(QStringList(seenPlugins)))
+    settings.setValue(seenPluginGroup, seenPlugins)
 
 
   # ----------------------------------------- #

@@ -746,7 +746,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
     // zoom in
     QgsPoint c = rect.center();
     rect = extent();
-    rect.scale( 0.5, &c );
+    rect.scale( 1.0, &c );
   }
   //zoom to an area
   else

@@ -69,8 +69,8 @@ class StatisticsByCategories(GeoAlgorithm):
             progress.setPercentage(int((100 * nFeats) / nFeat))
             attrs = feat.attributes()
             try:
-                value = float(attrs[valuesField].toDouble()[0])
-                cat = unicode(attrs[categoriesField].toString())
+                value = float(attrs[valuesField])
+                cat = unicode(attrs[categoriesField])
                 if cat not in values:
                     values[cat] = []
                 values[cat].append(value)
@@ -108,7 +108,7 @@ def calculateStats(values):
             maxvalue = max(v, maxvalue)
 
     if n > 1:
-         variance = M2/(n - 1)
+        variance = M2/(n - 1)
     else:
         variance = 0;
     stddev = math.sqrt(variance)

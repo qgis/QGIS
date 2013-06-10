@@ -28,7 +28,7 @@ QGIS utilities module
 
 """
 
-from PyQt4.QtCore import QCoreApplication, QLocale, QString
+from PyQt4.QtCore import QCoreApplication, QLocale
 from qgis.core import QGis, QgsExpression, QgsMessageLog
 from string import Template
 import sys
@@ -38,6 +38,7 @@ import os.path
 import re
 import ConfigParser
 import warnings
+import codecs
 
 #######################
 # ERROR HANDLING
@@ -129,8 +130,10 @@ def findPlugins(path):
       continue
 
     cp = ConfigParser.ConfigParser()
-    res = cp.read(metadataFile)
-    if len(res) == 0:
+
+    try:
+      cp.readfp(codecs.open(metadataFile, "r", "utf8"))
+    except:
       return None # reading of metadata file failed
 
     pluginName = os.path.basename(plugin)
@@ -182,8 +185,8 @@ def loadPlugin(packageName):
     __import__(packageName)
     return True
   except:
-    msgTemplate = QCoreApplication.translate("Python", "Couldn't load plugin '%1' from ['%2']")
-    msg = msgTemplate.arg(packageName).arg("', '".join(sys.path))
+    msgTemplate = QCoreApplication.translate("Python", "Couldn't load plugin '%s' from ['%s']")
+    msg = msgTemplate % (packageName, "', '".join(sys.path))
     showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
     return False
 
@@ -193,17 +196,18 @@ def startPlugin(packageName):
   global plugins, active_plugins, iface
 
   if packageName in active_plugins: return False
+  if packageName not in sys.modules: return False
 
   package = sys.modules[packageName]
 
-  errMsg = QCoreApplication.translate("Python", "Couldn't load plugin %1" ).arg(packageName)
+  errMsg = QCoreApplication.translate("Python", "Couldn't load plugin %s" ) % packageName
 
   # create an instance of the plugin
   try:
     plugins[packageName] = package.classFactory(iface)
   except:
     _unloadPluginModules(packageName)
-    msg = QCoreApplication.translate("Python", "%1 due an error when calling its classFactory() method").arg(errMsg)
+    msg = QCoreApplication.translate("Python", "%s due an error when calling its classFactory() method") % errMsg
     showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
     return False
 
@@ -213,7 +217,7 @@ def startPlugin(packageName):
   except:
     del plugins[packageName]
     _unloadPluginModules(packageName)
-    msg = QCoreApplication.translate("Python", "%1 due an error when calling its initGui() method" ).arg( errMsg )
+    msg = QCoreApplication.translate("Python", "%s due an error when calling its initGui() method" ) % errMsg
     showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
     return False
 
@@ -255,7 +259,7 @@ def unloadPlugin(packageName):
     _unloadPluginModules(packageName)
     return True
   except Exception, e:
-    msg = QCoreApplication.translate("Python", "Error while unloading plugin %1").arg(packageName)
+    msg = QCoreApplication.translate("Python", "Error while unloading plugin %s") % packageName
     showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
     return False
 
@@ -418,7 +422,7 @@ def qgsfunction(args, group, **kwargs):
   helptemplate = Template("""<h3>$name function</h3><br>$doc""")
   class QgsExpressionFunction(QgsExpression.Function):
     def __init__(self, name, args, group, helptext=''):
-      QgsExpression.Function.__init__(self, name, args, group, QString(helptext))
+      QgsExpression.Function.__init__(self, name, args, group, helptext)
 
     def func(self, values, feature, parent):
       pass

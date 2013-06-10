@@ -57,10 +57,23 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     QGis::WkbType wkbType = layerProperty.types[ i ];
     int srid = layerProperty.srids[ i ];
 
+
+    QString tip;
+    if ( wkbType == QGis::WKBUnknown )
+    {
+      tip = tr( "Specify a geometry type" );
+    }
+    else if ( wkbType != QGis::WKBNoGeometry && srid == 0 )
+    {
+      tip = tr( "Enter a SRID" );
+    }
+
+    if ( tip.isEmpty() && layerProperty.isView )
+    {
+      tip = tr( "Select a primary key" );
+    }
+
     QStandardItem *ownerNameItem = new QStandardItem( layerProperty.ownerName );
-
-    bool selectable = wkbType == QGis::WKBNoGeometry || ( wkbType != QGis::WKBUnknown && srid != 0 );
-
     QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QGis::WKBUnknown ? tr( "Select..." ) : QgsOracleConn::displayStringForWkbType( wkbType ) );
     typeItem->setData( wkbType == QGis::WKBUnknown, Qt::UserRole + 1 );
     typeItem->setData( wkbType, Qt::UserRole + 2 );
@@ -77,9 +90,12 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
       sridItem->setFlags( sridItem->flags() | Qt::ItemIsEditable );
     }
 
-    QStandardItem *pkItem = new QStandardItem( layerProperty.isView ? tr( "Select..." ) : "" );
+    QStandardItem *pkItem = new QStandardItem( "" );
     if ( layerProperty.isView )
+    {
+      pkItem->setText( tr( "Select..." ) );
       pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
+    }
     else
       pkItem->setFlags( pkItem->flags() & ~Qt::ItemIsEditable );
 
@@ -105,13 +121,20 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
 
     foreach ( QStandardItem *item, childItemList )
     {
-      if ( selectable )
+      if ( tip.isEmpty() )
       {
-        item->setFlags( item->flags() | Qt::ItemIsSelectable );
+        item->setFlags( item->flags() | Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+        item->setToolTip( "" );
       }
       else
       {
         item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
+
+        if ( item == ownerNameItem || item == tableItem || item == geomItem )
+        {
+          item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
+          item->setToolTip( tip );
+        }
       }
     }
 
@@ -235,26 +258,45 @@ bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value
 
   if ( idx.column() == dbtmType || idx.column() == dbtmSrid || idx.column() == dbtmPkCol )
   {
-    QGis::WkbType geomType = ( QGis::WkbType ) idx.sibling( idx.row(), dbtmType ).data( Qt::UserRole + 2 ).toInt();
+    QGis::WkbType wkbType = ( QGis::WkbType ) idx.sibling( idx.row(), dbtmType ).data( Qt::UserRole + 2 ).toInt();
 
-    bool ok = geomType != QGis::WKBUnknown;
-
-    if ( ok && geomType != QGis::WKBNoGeometry )
+    QString tip;
+    if ( wkbType == QGis::WKBUnknown )
     {
+      tip = tr( "Specify a geometry type" );
+    }
+    else if ( wkbType != QGis::WKBNoGeometry )
+    {
+      bool ok;
       int srid = idx.sibling( idx.row(), dbtmSrid ).data().toInt( &ok );
-      ok &= srid != 0;
+
+      if ( !ok || srid == 0 )
+        tip = tr( "Enter a SRID" );
     }
 
-    ok &= !idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 1 ).toBool() ||
-          idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 2 ).toBool();
+    if ( tip.isEmpty() && idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 1 ).toBool() )
+    {
+      if ( !idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 2 ).toBool() )
+        tip = tr( "Select a primary key" );
+    }
 
     for ( int i = 0; i < dbtmColumns; i++ )
     {
       QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), i ) );
-      if ( ok )
-        item->setFlags( item->flags() | Qt::ItemIsSelectable );
+      if ( tip.isEmpty() )
+      {
+        item->setFlags( item->flags() | Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+        item->setToolTip( "" );
+      }
       else
+      {
         item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
+        if ( i == dbtmOwner || i == dbtmTable || i == dbtmGeomCol )
+        {
+          item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
+          item->setToolTip( tip );
+        }
+      }
     }
   }
 

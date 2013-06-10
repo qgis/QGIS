@@ -132,7 +132,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>16</number>
+      <number>14</number>
      </property>
      <widget class="QWidget" name="lineEditPage">
       <layout class="QVBoxLayout" name="verticalLayout_1">
@@ -786,7 +786,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page">
+     <widget class="QWidget" name="pictureOrUrlPage">
       <layout class="QGridLayout" name="gridLayout_6">
        <item row="2" column="0">
         <widget class="QLabel" name="label_13">
@@ -836,39 +836,15 @@
         </widget>
        </item>
        <item row="0" column="0" colspan="2">
-        <widget class="QLabel" name="label_11">
+        <widget class="QLabel" name="pictureOrUrlLabel">
          <property name="text">
-          <string>Field contains a filename for a picture</string>
+          <string notr="true">Field contains a filename for a picture</string>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_2">
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QLabel" name="label_14">
-         <property name="text">
-          <string>Fields contains an URL</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_13">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="page_3">
+     <widget class="QWidget" name="colorPage">
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
         <widget class="QLabel" name="label_15">

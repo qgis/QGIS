@@ -122,6 +122,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mRendererV2( NULL )
     , mLabel( 0 )
     , mLabelOn( false )
+    , mLabelFontNotFoundNotified( false )
     , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
     , mLayerTransparency( 0 )
     , mVertexMarkerOnlyForSelection( false )
@@ -1940,6 +1941,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
           break;
 
         case Photo:
+        case WebView:
           mWidgetSize[ name ] = QSize( editTypeElement.attribute( "widgetWidth" ).toInt(), editTypeElement.attribute( "widgetHeight" ).toInt() );
           break;
 
@@ -1953,7 +1955,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
         case UniqueValues:
         case UniqueValuesEditable:
         case UuidGenerator:
-        case WebView:
         case Color:
           break;
       }
@@ -2246,6 +2247,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
           break;
 
         case Photo:
+        case WebView:
           editTypeElement.setAttribute( "widgetWidth", mWidgetSize[ it.key()].width() );
           editTypeElement.setAttribute( "widgetHeight", mWidgetSize[ it.key()].height() );
           break;
@@ -2260,7 +2262,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
         case Enumeration:
         case Immutable:
         case UuidGenerator:
-        case WebView:
         case Color:
           break;
       }
@@ -3477,8 +3478,9 @@ void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererConte
 
   if ( labeling )
   {
-    // see if feature count limit is set for labeling
     QgsPalLayerSettings& palyr = rendererContext.labelingEngine()->layer( this->id() );
+
+    // see if feature count limit is set for labeling
     if ( palyr.limitNumLabels && palyr.maxNumLabels > 0 )
     {
       QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
@@ -3493,6 +3495,13 @@ void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererConte
         nFeatsToLabel++;
       }
       palyr.mFeaturesToLabel = nFeatsToLabel;
+    }
+
+    // notify user about any font substitution
+    if ( !palyr.mTextFontFound && !mLabelFontNotFoundNotified )
+    {
+      emit labelingFontNotFound( this, palyr.mTextFontFamily );
+      mLabelFontNotFoundNotified = true;
     }
   }
 

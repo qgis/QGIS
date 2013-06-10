@@ -128,7 +128,7 @@ class OTBAlgorithm(GeoAlgorithm):
                     commands.append(roiFile)
                     self.roiVectors[param.value] = roiFile
                 else:
-                    commands.append(param.value)
+                    commands.append("\"" + param.value+ "\"")
             elif isinstance(param, ParameterRaster):
                 commands.append(param.name)
                 if self.hasROI:
@@ -136,10 +136,12 @@ class OTBAlgorithm(GeoAlgorithm):
                     commands.append(roiFile)
                     self.roiRasters[param.value] = roiFile
                 else:
-                    commands.append(param.value)
+                    commands.append("\"" + param.value+ "\"")
             elif isinstance(param, ParameterMultipleInput):
                 commands.append(param.name)
-                commands.append(str(param.value.replace(";"," ")))
+                files = str(param.value).split(";")
+                paramvalue = " ".join(["\"" + f + "\"" for f in files])                
+                commands.append(paramvalue)
             elif isinstance(param, ParameterSelection):
                 commands.append(param.name)
                 idx = int(param.value)

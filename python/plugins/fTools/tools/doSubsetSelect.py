@@ -85,8 +85,6 @@ class Dialog(QDialog, Ui_Dialog):
         vlayer = ftools_utils.getVectorLayerByName(inVect)
         vprovider = vlayer.dataProvider()
         index = vprovider.fieldNameIndex(inField)
-        #unique = []
-        #vprovider.uniqueValues(index, unique)
         unique = ftools_utils.getUniqueValues(vprovider, int(index))
         inFeat = QgsFeature()
         selran = []
@@ -101,7 +99,7 @@ class Dialog(QDialog, Ui_Dialog):
                 FIDs= []
                 while fit.nextFeature(inFeat):
                     atMap = inFeat.attributes()
-                    if atMap[index] == QVariant(i):
+                    if atMap[index] == i:
                         FID = inFeat.id()
                         FIDs.append(FID)
                     nElement += 1

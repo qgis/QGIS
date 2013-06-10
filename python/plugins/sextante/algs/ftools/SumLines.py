@@ -113,13 +113,13 @@ class SumLines(GeoAlgorithm):
 
             outFeat.setGeometry(inGeom)
             if idxLength == len(attrs):
-                attrs.append(QVariant(length))
+                attrs.append(length)
             else:
-                attrs[idxLength] = QVariant(length)
+                attrs[idxLength] = length
             if idxCount == len(attrs):
-                attrs.append(QVariant(count))
+                attrs.append(count)
             else:
-                attrs[idxCount] = QVariant(count)
+                attrs[idxCount] = count
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 

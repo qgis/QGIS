@@ -5,7 +5,10 @@ SET(PY_PLUGININSTALLER_FILES
     __init__.py
     installer.py
     installer_data.py
-    installer_gui.py
+    qgsplugininstallerinstallingdialog.py
+    qgsplugininstallerpluginerrordialog.py
+    qgsplugininstallerfetchingdialog.py
+    qgsplugininstallerrepositorydialog.py
     unzip.py
     version_compare.py
 )
@@ -18,7 +21,6 @@ PYQT4_WRAP_UI(PYUI_FILES
     qgsplugininstallerinstallingbase.ui
     qgsplugininstallerpluginerrorbase.ui
     qgsplugininstallerrepositorybase.ui
-    qgsplugininstalleroldreposbase.ui
 )
 
 ADD_CUSTOM_TARGET(pyplugin-installer ALL DEPENDS ${PYUI_FILES})

@@ -114,14 +114,14 @@ def compareElements(s1,s2):
 
 # ------------------------------------------------------------------------ #
 def compareVersions(a,b):
-  """ Compare two version numbers. Return 0 if a==b or error, 1 if a<b and 2 if b>a """
+  """ Compare two version numbers. Return 0 if a==b or error, 1 if a>b and 2 if b>a """
   if not a or not b:
     return 0
   a = normalizeVersion(a)
   b = normalizeVersion(b)
   if a == b:
     return 0
-  # convert the strings to the lists
+  # convert the strings to lists
   v1 = chopString(a)
   v2 = chopString(b)
   # set the shorter string as a base
@@ -143,3 +143,53 @@ def compareVersions(a,b):
     return 1
   else:
     return 2
+
+
+
+
+"""
+COMPARE CURRENT QGIS VERSION WITH qgisMinimumVersion AND qgisMaximumVersion
+ALLOWED FORMATS ARE: major.minor OR major.minor.bugfix, where each segment must be 0..99
+"""
+
+def splitVersion(s):
+  """ split string into 2 or 3 numerical segments """
+  if not s or type(s) not in [str, unicode]:
+    return None
+  l = unicode(s).split('.')
+  for c in l:
+    if not c.isnumeric():
+      return None
+    if int(c)>99:
+      return None
+  if len(l) not in [2,3]:
+    return None
+  return l
+
+
+def isCompatible(curVer, minVer, maxVer=None):
+  """ Compare current QGIS version with qgisMinVersion and qgisMaxVersion """
+  minVer = splitVersion(minVer)
+  maxVer = splitVersion(maxVer)
+  curVer = splitVersion( curVer.split("-")[0] )
+
+  if not minVer or not curVer:
+    return False
+
+  if not maxVer:
+    maxVer = [minVer[0], "99", "99"]
+
+  if len(minVer)<3:
+    minVer += ["0"]
+
+  if len(curVer)<3:
+    curVer += ["0"]
+
+  if len(maxVer)<3:
+    maxVer += ["99"]
+
+  minVer = "%02d%02d%02d" % ( int(minVer[0]), int(minVer[1]), int(minVer[2]) )
+  maxVer = "%02d%02d%02d" % ( int(maxVer[0]), int(maxVer[1]), int(maxVer[2]) )
+  curVer = "%02d%02d%02d" % ( int(curVer[0]), int(curVer[1]), int(curVer[2]) )
+
+  return ( minVer <= curVer and maxVer >= curVer)

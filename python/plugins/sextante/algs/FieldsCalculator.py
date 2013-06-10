@@ -91,7 +91,7 @@ class FieldsCalculator(GeoAlgorithm):
             expression = formula
             k = 0
             for attr in attrs:
-                expression = expression.replace(unicode(fields[k].name()), unicode(attr.toString()))
+                expression = expression.replace(unicode(fields[k].name()), unicode(attr))
                 k += 1
             try:
                 result = eval(expression)
@@ -102,7 +102,7 @@ class FieldsCalculator(GeoAlgorithm):
             inGeom = inFeat.geometry()
             outFeat.setGeometry(inGeom)
             attrs = inFeat.attributes()
-            attrs.append(QVariant(result))
+            attrs.append(result)
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
         del writer

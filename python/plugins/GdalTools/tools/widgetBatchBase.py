@@ -37,11 +37,11 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
       BasePluginWidget.__init__(self, iface, commandName)
 
   def getBatchArguments(self, inFile, outFile = None):
-      arguments = QStringList()
-      arguments << self.getArguments()
-      arguments << inFile
+      arguments = []
+      arguments.extend( self.getArguments() )
+      arguments.append( inFile )
       if outFile != None:
-        arguments << outFile
+        arguments.append(outFile)
       return arguments
 
   def isBatchEnabled(self):
@@ -62,9 +62,9 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
 
       # if overwrites existent files
       if outDir == None or outDir == inDir:
-        return QString( fn ).append( ".tmp" )
+        return fn + ".tmp"
 
-      return QString( fn ).mid( len(inDir) ).prepend( outDir )
+      return outDir + fn[len(inDir):]
 
   def onRun( self ):
       if not self.isBatchEnabled():
@@ -85,7 +85,7 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
       for f in self.inFiles:
         self.outFiles.append( self.getBatchOutputFileName( f ) )
 
-      self.errors = QStringList()
+      self.errors = []
       self.batchIndex = 0
       self.batchTotal = len( self.inFiles )
       self.setProgressRange( self.batchTotal )
@@ -112,8 +112,8 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
         BasePluginWidget.onFinished(self, exitCode, status)
         return
 
-      msg = QString.fromLocal8Bit( self.base.process.readAllStandardError() )
-      if not msg.isEmpty():
+      msg = bytes.decode( bytes( self.base.process.readAllStandardError() ) )
+      if msg != '':
         self.errors.append( ">> " + self.inFiles[self.batchIndex] + "<br>" + msg.replace( "\n", "<br>" ) )
 
       self.base.process.close()
@@ -133,8 +133,8 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
   def batchFinished( self ):
       self.base.stop()
 
-      if not self.errors.isEmpty():
-        msg = QString( "Processing of the following files ended with error: <br><br>" ).append( self.errors.join( "<br><br>" ) )
+      if len(self.errors) > 0:
+        msg = u"Processing of the following files ended with error: <br><br>" + "<br><br>".join( self.errors )
         QErrorMessage( self ).showMessage( msg )
 
       inDir = self.getInputFileName()
@@ -146,17 +146,17 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
       canvas = self.iface.mapCanvas()
       previousRenderFlag = canvas.renderFlag()
       canvas.setRenderFlag( False )
-      notCreatedList = QStringList()
+      notCreatedList = []
       for item in self.outFiles:
         fileInfo = QFileInfo( item )
         if fileInfo.exists():
           if self.base.loadCheckBox.isChecked():
             self.addLayerIntoCanvas( fileInfo )
         else:
-          notCreatedList << item
+          notCreatedList.append( item )
       canvas.setRenderFlag( previousRenderFlag )
 
-      if notCreatedList.isEmpty():
+      if len( notCreatedList ) == 0:
         QMessageBox.information( self, self.tr( "Finished" ), self.tr( "Operation completed." ) )
       else:
         QMessageBox.warning( self, self.tr( "Warning" ), self.tr( "The following files were not created: \n%1" ).arg( notCreatedList.join( ", " ) ) )

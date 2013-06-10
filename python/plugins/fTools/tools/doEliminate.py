@@ -55,7 +55,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
     def update(self, inputLayer):
         changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
         selFeatures = changedLayer.selectedFeatureCount()
-        self.selected.setText( self.tr("Selected features: %1").arg(selFeatures))
+        self.selected.setText( self.tr("Selected features: %s") % (selFeatures))
 
     def accept(self):
         self.buttonOk.setEnabled(False)
@@ -75,7 +75,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
                 if outFile.exists():
                     if not QgsVectorFileWriter.deleteShapeFile(outFileName):
                         QtGui.QMessageBox.warning(self, self.tr("Delete error"),
-                            self.tr("Can't delete file %1").arg(outFileName))
+                            self.tr("Can't delete file %s") % (outFileName))
                         self.buttonOk.setEnabled(True)
                         return None
 
@@ -109,7 +109,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
             msg = ""
             for aStrm in outLayer.commitErrors():
                 msg = msg + "\n" + aStrm
-            QtGui.QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Commit error:\n %1").arg(msg))
+            QtGui.QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Commit error:\n%s") % (msg))
             outLayer.rollBack()
             return False
 
@@ -203,7 +203,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
                             fidsToDeselect.append(fid2Eliminate)
                         else:
                             QtGui.QMessageBox.warning(self, self.tr("Eliminate"),
-                                self.tr("Could not replace geometry of feature with id %1").arg( mergeWithFid ))
+                                self.tr("Could not replace geometry of feature with id %s") % (mergeWithFid))
                             return None
 
                         start = start + add
@@ -219,16 +219,16 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
             # copy all features that could not be eliminated to outLayer
             if outLayer.addFeatures(inLayer.selectedFeatures()):
                 # inform user
-                fidList = QtCore.QString()
+                fidList = ""
 
                 for fid in inLayer.selectedFeaturesIds():
-                    if not fidList.isEmpty():
-                        fidList.append(", ")
+                    if not fidList == "":
+                        fidList += ", "
 
-                    fidList.append(str(fid))
+                    fidList += str(fid)
 
                 QtGui.QMessageBox.information(self, self.tr("Eliminate"),
-                        self.tr("Could not eliminate features with these ids:\n%1").arg(fidList))
+                        self.tr("Could not eliminate features with these ids:\n%s") %s (fidList))
             else:
                 QtGui.QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Could not add features"))
 
@@ -241,6 +241,6 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
                 ftools_utils.addShapeToCanvas(outFileName)
             else:
                 QtGui.QMessageBox.information(self, self.tr("Eliminate"),
-                    self.tr("Created output shapefile:\n%1").arg(outFileName))
+                    self.tr("Created output shapefile:\n%s") %s (outFileName))
 
         self.iface.mapCanvas().refresh()

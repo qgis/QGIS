@@ -57,4 +57,4 @@ class GdalToolsSRSDialog(QDialog):
       if not self.selector.selectedProj4String().isEmpty():
         return self.proj4string()
 
-      return QString()
+      return ''

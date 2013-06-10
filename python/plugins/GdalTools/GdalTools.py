@@ -71,11 +71,11 @@ class GdalTools:
       userPluginPath = QFileInfo( QgsApplication.qgisUserDbFilePath() ).path() + "/python/plugins/GdalTools"
       systemPluginPath = QgsApplication.prefixPath() + "/python/plugins/GdalTools"
 
-      overrideLocale = QSettings().value( "locale/overrideFlag", QVariant( False ) ).toBool()
+      overrideLocale = QSettings().value( "locale/overrideFlag", False, type=bool )
       if not overrideLocale:
         localeFullName = QLocale.system().name()
       else:
-        localeFullName = QSettings().value( "locale/userLocale", QVariant( "" ) ).toString()
+        localeFullName = QSettings().value( "locale/userLocale", "" )
 
       if QFileInfo( userPluginPath ).exists():
         translationPath = userPluginPath + "/i18n/GdalTools_" + localeFullName + ".qm"

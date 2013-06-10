@@ -730,6 +730,17 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 #ifdef QGISDEBUG
         ww->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
 #endif
+
+        QSize size( vl->widgetSize( idx ) );
+        if ( size.width() > 0 || size.height() > 0 )
+        {
+          if ( size.width() == 0 )
+            size.setWidth( 1 );
+          if ( size.height() == 0 )
+            size.setHeight( 1 );
+          ww->setMinimumSize( size );
+        }
+
         myWidget = ww;
         break;
       }
@@ -811,6 +822,17 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 #ifdef QGISDEBUG
           ww->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
 #endif
+
+          QSize size( vl->widgetSize( idx ) );
+          if ( size.width() > 0 || size.height() > 0 )
+          {
+            if ( size.width() == 0 )
+              size.setWidth( 1 );
+            if ( size.height() == 0 )
+              size.setHeight( 1 );
+            ww->setMinimumSize( size );
+          }
+
           layout->addWidget( ww, 0, 0, 1, 2 );
           row++;
         }
@@ -1324,11 +1346,38 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
     case QgsAttributeEditorElement::AeTypeField:
     {
       const QgsAttributeEditorField* fieldDef = dynamic_cast<const QgsAttributeEditorField*>( widgetDef );
-      newWidget = createAttributeEditor( parent, 0, vl, fieldDef->idx(), attrs.value( fieldDef->idx(), QVariant() ), proxyWidgets );
+      int fldIdx = fieldDef->idx();
+      newWidget = createAttributeEditor( parent, 0, vl, fldIdx, attrs.value( fldIdx, QVariant() ), proxyWidgets );
 
-      if ( vl->editType( fieldDef->idx() ) != QgsVectorLayer::Immutable )
+      if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable )
       {
-        newWidget->setEnabled( newWidget->isEnabled() && vl->isEditable() );
+        if ( newWidget->isEnabled() && vl->isEditable() && vl->fieldEditable( fldIdx ) )
+        {
+          newWidget->setEnabled( true );
+        }
+        else if ( vl->editType( fldIdx ) == QgsVectorLayer::Photo )
+        {
+          foreach ( QWidget *w, newWidget->findChildren<QWidget *>() )
+          {
+            w->setEnabled( qobject_cast<QLabel *>( w ) ? true : false );
+          }
+        }
+        else if ( vl->editType( fldIdx ) == QgsVectorLayer::WebView )
+        {
+          foreach ( QWidget *w, newWidget->findChildren<QWidget *>() )
+          {
+            if ( qobject_cast<QWebView *>( w ) )
+              w->setEnabled( true );
+            else if ( qobject_cast<QPushButton *>( w ) && w->objectName() == "openUrl" )
+              w->setEnabled( true );
+            else
+              w->setEnabled( false );
+          }
+        }
+        else
+        {
+          newWidget->setEnabled( false );
+        }
       }
 
       break;

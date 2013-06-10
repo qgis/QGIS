@@ -294,10 +294,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Link Georeferencer to QGis</string>
+    <string>Link Georeferencer to QGIS</string>
    </property>
    <property name="statusTip">
-    <string>Link Georeferencer to QGis</string>
+    <string>Link Georeferencer to QGIS</string>
    </property>
   </action>
   <action name="mActionLinkQGisToGeoref">
@@ -305,10 +305,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Link QGis to Georeferencer</string>
+    <string>Link QGIS to Georeferencer</string>
    </property>
    <property name="statusTip">
-    <string>Link QGis to Georeferencer</string>
+    <string>Link QGIS to Georeferencer</string>
    </property>
   </action>
   <action name="mActionSaveGCPpoints">

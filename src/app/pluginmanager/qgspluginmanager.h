@@ -44,7 +44,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Destructor
     ~QgsPluginManager();
 
-    //! Save pointer to python utils
+    //! Save pointer to python utils and enable Python support
     void setPythonUtils( QgsPythonUtils* pythonUtils );
 
     //! Load selected plugin
@@ -54,7 +54,10 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void unloadPlugin( QString id );
 
     //! Get metadata of C++ plugins
-    void getCppPluginDescriptions();
+    void getCppPluginsMetadata();
+
+    //! Create new spacer item for sorting by status in the plugin list view
+    QStandardItem * createSpacerItem( QString text, QString value );
 
     //! Repopulate the plugin list model
     void reloadModelData();
@@ -69,7 +72,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void addPluginMetadata( QString key, QMap<QString, QString> metadata );
 
     //! Return metadata of given plugin
-    QMap<QString, QString> * pluginMetadata( QString key );
+    const QMap<QString, QString> * pluginMetadata( QString key ) const;
 
     //! Select one of the vertical tabs programatically
     void selectTabItem( int idx );
@@ -153,17 +156,32 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Reimplement QgsOptionsDialogBase method to prevent modifying the tab list by signals from the stacked widget
     void optionsStackedWidget_CurrentChanged( int indx ) { Q_UNUSED( indx ) }
 
+    //! Only show plugins from selected repository (e.g. for inspection)
+    void setRepositoryFilter( );
+
+    //! Enable all repositories disabled by "Enable selected repository only"
+    void clearRepositoryFilter( );
+
   private:
-    //! Return true if given plugin is currently present in QgsPluginRegistry
+    //! Return true if given plugin is present in QgsPluginRegistry (c++ plugins) or is enabled in QSettings (Python plugins)
     bool isPluginLoaded( QString key );
 
-    //! Return true if there are upgradeable plugins in the registry
+    //! Return true if there are plugins available for download in the metadata registry
+    bool hasAvailablePlugins( );
+
+    //! Return true if there are installed plugins also available for download in the metadata registry
+    bool hasReinstallablePlugins( );
+
+    //! Return true if there are upgradeable plugins in metadata the registry
     bool hasUpgradeablePlugins( );
 
-    //! Return true if there are new plugins in the registry
+    //! Return true if there are new plugins in the metadata registry
     bool hasNewPlugins( );
 
-    //! Return true if there are invalid plugins in the registry
+    //! Return true if there are plugins in the metadata registry that are newer installed than available
+    bool hasNewerPlugins( );
+
+    //! Return true if there are invalid plugins in the metadata registry
     bool hasInvalidPlugins( );
 
     QStandardItemModel *mModelPlugins;
@@ -176,7 +194,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
     QString mCurrentlyDisplayedPlugin;
 
-    QList<int> checkingOnStartIntervals;
+    QList<int> mCheckingOnStartIntervals;
 };
 
 #endif

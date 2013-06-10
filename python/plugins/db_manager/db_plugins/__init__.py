@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -25,7 +25,7 @@ from PyQt4.QtGui import *
 
 class NotSupportedDbType(Exception):
 	def __init__(self, dbtype):
-		self.msg = u"%s is not supported yet" % dbtype
+		self.msg = self.tr("%s is not supported yet") % dbtype
 		Exception(self, self.msg)
 
 	def __str__(self):

@@ -67,6 +67,6 @@ class OutputTable(Output):
 
         if self.encoding is None:
             settings = QSettings()
-            self.encoding = settings.value("/SextanteQGIS/encoding", "System").toString()
+            self.encoding = settings.value("/SextanteQGIS/encoding", "System")
 
         return SextanteTableWriter(self.value, self.encoding, fields)

@@ -85,6 +85,7 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       LegendEqualColumnWidth,
       LegendSymbolWidth,
       LegendSymbolHeight,
+      LegendTitleSpaceBottom,
       LegendGroupSpace,
       LegendLayerSpace,
       LegendSymbolSpace,

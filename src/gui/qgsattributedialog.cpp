@@ -174,7 +174,6 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     {
       //show attribute alias if available
       QString myFieldName = vl->attributeDisplayName( fldIdx );
-      int myFieldType = theFields[fldIdx].type();
 
       QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, 0, vl, fldIdx, myAttributes[fldIdx], mProxyWidgets );
       if ( !myWidget )

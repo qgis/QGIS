@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : Oct 13, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -102,7 +102,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 		sel = self.viewFields.selectionModel()
 		indexes = sel.selectedRows()
 		if len(indexes) == 0:
-			QMessageBox.information(self, "sorry", "nothing selected")
+			QMessageBox.information(self, self.tr("Sorry"), self.tr("nothing selected"))
 			return -1
 		return indexes[0].row()
 
@@ -168,7 +168,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 		m = self.viewFields.model()
 		fld = m.getObject(index)
 
-		res = QMessageBox.question(self, "are you sure", u"really delete column '%s' ?" % fld.name, QMessageBox.Yes | QMessageBox.No)
+		res = QMessageBox.question(self, self.tr("Are you sure"), self.tr("really delete column '%s'?") % fld.name, QMessageBox.Yes | QMessageBox.No)
 		if res != QMessageBox.Yes:
 			return
 
@@ -222,7 +222,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 		m = self.viewConstraints.model()
 		constr = m.getObject(index)
 
-		res = QMessageBox.question(self, "are you sure", u"really delete constraint '%s' ?" % constr.name, QMessageBox.Yes | QMessageBox.No)
+		res = QMessageBox.question(self, self.tr("Are you sure"), self.tr("really delete constraint '%s'?") % constr.name, QMessageBox.Yes | QMessageBox.No)
 		if res != QMessageBox.Yes:
 			return
 
@@ -242,7 +242,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 		sel = self.viewConstraints.selectionModel()
 		indexes = sel.selectedRows()
 		if len(indexes) == 0:
-			QMessageBox.information(self, "sorry", "nothing selected")
+			QMessageBox.information(self, self.tr("Sorry"), self.tr("nothing selected"))
 			return -1
 		return indexes[0].row()
 
@@ -277,10 +277,10 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 	def createSpatialIndex(self):
 		""" create spatial index for the geometry column """
 		if self.table.type != self.table.VectorType:
-			QMessageBox.information(self, "sorry", u"the selected table has no geometry")
+			QMessageBox.information(self, self.tr("Sorry"), self.tr("The selected table has no geometry"))
 			return
 
-		res = QMessageBox.question(self, "create?", u"create spatial index for field %s?" % self.table.geomColumn, QMessageBox.Yes | QMessageBox.No)
+		res = QMessageBox.question(self, self.tr("Create?"), self.tr("Create spatial index for field %s?") % self.table.geomColumn, QMessageBox.Yes | QMessageBox.No)
 		if res != QMessageBox.Yes:
 			return
 
@@ -302,7 +302,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 		sel = self.viewIndexes.selectionModel()
 		indexes = sel.selectedRows()
 		if len(indexes) == 0:
-			QMessageBox.information(self, "sorry", "nothing selected")
+			QMessageBox.information(self, self.tr("Sorry"), self.tr("Nothing selected"))
 			return -1
 		return indexes[0].row()
 
@@ -315,7 +315,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 		m = self.viewIndexes.model()
 		idx = m.getObject(index)
 
-		res = QMessageBox.question(self, "are you sure", u"really delete index '%s' ?" % idx.name, QMessageBox.Yes | QMessageBox.No)
+		res = QMessageBox.question(self, self.tr("Are you sure"), self.tr("really delete index '%s'?") % idx.name, QMessageBox.Yes | QMessageBox.No)
 		if res != QMessageBox.Yes:
 			return
 

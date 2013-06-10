@@ -77,7 +77,7 @@ class SagaTest(unittest.TestCase):
         feature=features.next()
         attrs=feature.attributes()
         expectedvalues=["2","1","string a"]
-        values=[str(attr.toString()) for attr in attrs]
+        values=[str(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt='POINT(270806.69221918 4458924.97720492)'
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
@@ -104,7 +104,7 @@ class SagaTest(unittest.TestCase):
         feature=features.next()
         attrs=feature.attributes()
         expectedvalues=["0","1.1","string a"]
-        values=[str(attr.toString()) for attr in attrs]
+        values=[str(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt='POINT(270787.49991451 4458955.46775295)'
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))

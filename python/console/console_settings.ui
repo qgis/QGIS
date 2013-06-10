@@ -58,8 +58,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>554</width>
-        <height>642</height>
+        <width>546</width>
+        <height>687</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
@@ -352,7 +352,7 @@
                   <string>from APIs files</string>
                  </property>
                  <property name="checked">
-                  <bool>false</bool>
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>

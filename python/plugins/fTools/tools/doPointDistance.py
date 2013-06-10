@@ -158,7 +158,7 @@ class Dialog(QDialog, Ui_Dialog):
         provider2 = layer2.dataProvider()
         sindex = QgsSpatialIndex()
         inFeat = QgsFeature()
-	fit2 = provider2.getFeatures()
+        fit2 = provider2.getFeatures()
         while fit2.nextFeature(inFeat):
             sindex.insertFeature(inFeat)
         if nearest < 1: nearest = layer2.featureCount()
@@ -190,17 +190,17 @@ class Dialog(QDialog, Ui_Dialog):
         first = True
         start = 15.00
         add = 85.00 / provider1.featureCount()
-	fit1 = provider1.getFeatures()
+        fit1 = provider1.getFeatures()
         while fit1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
-            inID = inFeat.attributes()[index1].toString()
+            inID = inFeat.attributes()[index1]
             if first:
                 featList = sindex.nearestNeighbor(inGeom.asPoint(), nearest)
                 first = False
                 data = ["ID"]
                 for i in featList:
                     provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(i) ).setSubsetOfAttributes([index2]) ).nextFeature( outFeat )
-                    data.append(unicode(outFeat.attributes()[index2].toString()))
+                    data.append(unicode(outFeat.attributes()[index2]))
                 writer.writerow(data)
             data = [unicode(inID)]
             for j in featList:
@@ -223,13 +223,13 @@ class Dialog(QDialog, Ui_Dialog):
         fit1 = provider1.getFeatures()
         while fit1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
-            inID = inFeat.attributes()[index1].toString()
+            inID = inFeat.attributes()[index1]
             featList = sindex.nearestNeighbor(inGeom.asPoint(), nearest)
             distList = []
             vari = 0.00
             for i in featList:
                 provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(i) ).setSubsetOfAttributes([index2]) ).nextFeature( outFeat )
-                outID = outFeat.attributes()[index2].toString()
+                outID = outFeat.attributes()[index2]
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
                 if dist > 0:

@@ -19,6 +19,7 @@
 
 #include <QSortFilterProxyModel>
 #include <QStringList>
+#include <QString>
 
 const int PLUGIN_BASE_NAME_ROLE = Qt::UserRole + 1;
 const int PLUGIN_DESCRIPTION_ROLE = Qt::UserRole + 2;  // for filtering
@@ -29,6 +30,8 @@ const int PLUGIN_STATUS_ROLE = Qt::UserRole + 6;       // for filtering and sort
 const int PLUGIN_DOWNLOADS_ROLE = Qt::UserRole + 7;    // for sorting
 const int PLUGIN_VOTE_ROLE = Qt::UserRole + 8;         // for sorting
 const int PLUGIN_REPOSITORY_ROLE = Qt::UserRole + 9;   // for sorting
+const int SPACER_ROLE = Qt::UserRole + 20;  // for sorting
+
 
 
 /*!
@@ -44,6 +47,9 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     //! (Re)configire the status filter
     void setAcceptedStatuses( QStringList statuses );
 
+    //! (Re)configire the spacer filter
+    void setAcceptedSpacers( QString spacers = "" );
+
     //! Return number of item with status filter matching (no other filters are considered)
     int countWithCurrentStatus( );
 
@@ -52,7 +58,6 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     void sortPluginsByDownloads( );
     void sortPluginsByVote( );
     void sortPluginsByStatus( );
-    void sortPluginsByRepository( );
 
   protected:
     //! Filter by status: this method is used in both filterAcceptsRow and countWithCurrentStatus.
@@ -63,6 +68,7 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
 
   private:
     QStringList mAcceptedStatuses;
+    QString mAcceptedSpacers;
 };
 
 #endif

@@ -32,7 +32,7 @@ QgsAppPluginManagerInterface::~QgsAppPluginManagerInterface()
 //! show the Plugin Manager window and optionally open tab tabIndex
 void QgsAppPluginManagerInterface::showPluginManager( int tabIndex )
 {
-  mPluginManager->getCppPluginDescriptions();
+  mPluginManager->getCppPluginsMetadata();
   mPluginManager->reloadModelData();
 
   //! switch to tab, if specified ( -1 means not specified )
@@ -72,7 +72,7 @@ void QgsAppPluginManagerInterface::reloadModel()
 
 
 //! return given plugin metadata
-QMap<QString, QString> * QgsAppPluginManagerInterface::pluginMetadata( QString key )
+const QMap<QString, QString> * QgsAppPluginManagerInterface::pluginMetadata( QString key ) const
 {
   return mPluginManager->pluginMetadata( key );
 }

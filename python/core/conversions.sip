@@ -1014,7 +1014,7 @@ template<TYPE1, TYPE2>
         TYPE1 *t1 = new TYPE1(i.key());
         TYPE2 *t2 = i.value();
 
-        PyObject *t1obj = sipConvertFromNewInstance(t1, sipClass_TYPE1, sipTransferObj);
+        PyObject *t1obj = sipConvertFromNewType(t1, sipType_TYPE1, sipTransferObj);
         PyObject *t2obj = sipConvertFromInstance(t2, sipClass_TYPE2, sipTransferObj);
 
         if (t1obj == NULL || t2obj == NULL || PyDict_SetItem(d, t1obj, t2obj) < 0)
@@ -1059,7 +1059,7 @@ template<TYPE1, TYPE2>
 
         while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
         {
-            if (!sipCanConvertToInstance(t1obj, sipClass_TYPE1, SIP_NOT_NONE))
+            if (!sipCanConvertToType(t1obj, sipType_TYPE1, SIP_NOT_NONE))
                 return 0;
 
             if (!sipCanConvertToInstance(t2obj, sipClass_TYPE2, SIP_NOT_NONE))
@@ -1075,12 +1075,12 @@ template<TYPE1, TYPE2>
     {
         int state1, state2;
 
-        TYPE1 *t1 = reinterpret_cast<TYPE1 *>(sipConvertToInstance(t1obj, sipClass_TYPE1, sipTransferObj, SIP_NOT_NONE, &state1, sipIsErr));
+        TYPE1 *t1 = reinterpret_cast<TYPE1 *>(sipConvertToType(t1obj, sipType_TYPE1, sipTransferObj, SIP_NOT_NONE, &state1, sipIsErr));
         TYPE2 *t2 = reinterpret_cast<TYPE2 *>(sipConvertToInstance(t2obj, sipClass_TYPE2, sipTransferObj, SIP_NOT_NONE, &state2, sipIsErr));
 
         if (*sipIsErr)
         {
-            sipReleaseInstance(t1, sipClass_TYPE1, state1);
+            sipReleaseType(t1, sipType_TYPE1, state1);
             sipReleaseInstance(t2, sipClass_TYPE2, state2);
 
             delete qm;
@@ -1089,7 +1089,7 @@ template<TYPE1, TYPE2>
 
         qm->insert(*t1, t2);
 
-        sipReleaseInstance(t1, sipClass_TYPE1, state1);
+        sipReleaseType(t1, sipType_TYPE1, state1);
         sipReleaseInstance(t2, sipClass_TYPE2, state2);
     }
 

@@ -41,6 +41,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mSplitLayer( false )
     , mEqualColumnWidth( false )
 {
+  setStyleMargin( QgsComposerLegendStyle::Title, QgsComposerLegendStyle::Bottom, 2 );
   setStyleMargin( QgsComposerLegendStyle::Group, QgsComposerLegendStyle::Top, 2 );
   setStyleMargin( QgsComposerLegendStyle::Subgroup, QgsComposerLegendStyle::Top, 2 );
   setStyleMargin( QgsComposerLegendStyle::Symbol, QgsComposerLegendStyle::Top, 2 );
@@ -104,13 +105,10 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
   }
 
   QSizeF titleSize = drawTitle();
-  // Using mGroupSpace as space between legend title and first atom in column
-  //double columnTop = mBoxSpace + titleSize.height() + mGroupSpace;
-  // TODO: use margin of first used style
-  double columnTop = mBoxSpace + titleSize.height() + style( QgsComposerLegendStyle::Group ).margin( QgsComposerLegendStyle::Top );
+  double columnTop = mBoxSpace + titleSize.height() + style( QgsComposerLegendStyle::Title ).margin( QgsComposerLegendStyle::Bottom );
 
   QPointF point( mBoxSpace, columnTop );
-  // bool firstInColumn = true;
+  bool firstInColumn = true;
   double columnMaxHeight = 0;
   qreal columnWidth = 0;
   int column = 0;
@@ -130,13 +128,12 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
       point.ry() = columnTop;
       columnWidth = 0;
       column++;
-      // firstInColumn = true;
+      firstInColumn = true;
     }
-    // Add space if necessary, unfortunately it depends on first nucleon
-    //if ( !firstInColumn )
-    //{
-    point.ry() += spaceAboveAtom( atom );
-    //}
+    if ( !firstInColumn )
+    {
+      point.ry() += spaceAboveAtom( atom );
+    }
 
     QSizeF atomSize = drawAtom( atom, painter, point );
     columnWidth = qMax( atomSize.width(), columnWidth );
@@ -144,7 +141,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
     point.ry() += atom.size.height();
     columnMaxHeight = qMax( point.y() - columnTop, columnMaxHeight );
 
-    // firstInColumn = false;
+    firstInColumn = false;
   }
   point.rx() += columnWidth + mBoxSpace;
 
@@ -833,7 +830,7 @@ QList<QgsComposerLegend::Atom> QgsComposerLegend::createAtomList( QStandardItem*
 // Draw atom and expand its size (using actual nucleons labelXOffset)
 QSizeF QgsComposerLegend::drawAtom( Atom atom, QPainter* painter, QPointF point )
 {
-  // bool first = true;
+  bool first = true;
   QSizeF size = QSizeF( atom.size );
   foreach ( Nucleon nucleon, atom.nucleons )
   {
@@ -845,11 +842,12 @@ QSizeF QgsComposerLegend::drawAtom( Atom atom, QPainter* painter, QPointF point 
     {
       QgsComposerGroupItem* groupItem = dynamic_cast<QgsComposerGroupItem*>( item );
       if ( !groupItem ) continue;
-      // TODO: is it better to avoid marginand align all types of items to the same top like it was before?
-      //if ( !first ) point.ry() += style(groupItem->style()).margin(QgsComposerLegendStyle::Top);
       if ( groupItem->style() != QgsComposerLegendStyle::Hidden )
       {
-        point.ry() += style( groupItem->style() ).margin( QgsComposerLegendStyle::Top );
+        if ( !first )
+        {
+          point.ry() += style( groupItem->style() ).margin( QgsComposerLegendStyle::Top );
+        }
         drawGroupItemTitle( groupItem, painter, point );
       }
     }
@@ -857,26 +855,29 @@ QSizeF QgsComposerLegend::drawAtom( Atom atom, QPainter* painter, QPointF point 
     {
       QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( item );
       if ( !layerItem ) continue;
-      //if ( !first ) point.ry() += style(layerItem->style()).margin(QgsComposerLegendStyle::Top);
       if ( layerItem->style() != QgsComposerLegendStyle::Hidden )
       {
-        point.ry() += style( layerItem->style() ).margin( QgsComposerLegendStyle::Top );
+        if ( !first )
+        {
+          point.ry() += style( layerItem->style() ).margin( QgsComposerLegendStyle::Top );
+        }
         drawLayerItemTitle( layerItem, painter, point );
       }
     }
     else if ( type == QgsComposerLegendItem::SymbologyV2Item ||
               type == QgsComposerLegendItem::RasterSymbolItem )
     {
-      //if ( !first )
-      point.ry() += style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Top );
-      //}
+      if ( !first )
+      {
+        point.ry() += style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Top );
+      }
       double labelXOffset = nucleon.labelXOffset;
       Nucleon symbolNucleon = drawSymbolItem( item, painter, point, labelXOffset );
       // expand width, it may be wider because of labelXOffset
       size.rwidth() = qMax( symbolNucleon.size.width(), size.width() );
     }
     point.ry() += nucleon.size.height();
-    // first = false;
+    first = false;
   }
   return size;
 }

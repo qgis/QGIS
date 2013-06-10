@@ -219,7 +219,9 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      it is possible that it differs from mSymbolHeight*/
     void drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const;
 
-    /** Draw atom and return its actual size */
+    /** Draw atom and return its actual size, the atom is drawn with the space above it
+     *  so that first atoms in column are all aligned to the same line regardles their
+     * style top space */
     QSizeF drawAtom( Atom atom, QPainter* painter = 0, QPointF point = QPointF() );
 
     double spaceAboveAtom( Atom atom );

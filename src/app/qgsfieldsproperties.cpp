@@ -522,6 +522,7 @@ void QgsFieldsProperties::attributeTypeDialog()
       cfg.mDateFormat = attributeTypeDialog.dateFormat();
       break;
     case QgsVectorLayer::Photo:
+    case QgsVectorLayer::WebView:
       cfg.mWidgetSize = attributeTypeDialog.widgetSize();
       break;
     case QgsVectorLayer::LineEdit:
@@ -534,7 +535,6 @@ void QgsFieldsProperties::attributeTypeDialog()
     case QgsVectorLayer::Immutable:
     case QgsVectorLayer::Hidden:
     case QgsVectorLayer::UuidGenerator:
-    case QgsVectorLayer::WebView:
     case QgsVectorLayer::Color:
       break;
   }
@@ -875,6 +875,7 @@ void QgsFieldsProperties::apply()
         break;
 
       case QgsVectorLayer::Photo:
+      case QgsVectorLayer::WebView:
         mLayer->widgetSize( idx ) = cfg.mWidgetSize;
         break;
 
@@ -888,7 +889,6 @@ void QgsFieldsProperties::apply()
       case QgsVectorLayer::Hidden:
       case QgsVectorLayer::TextEdit:
       case QgsVectorLayer::UuidGenerator:
-      case QgsVectorLayer::WebView:
       case QgsVectorLayer::Color:
         break;
     }

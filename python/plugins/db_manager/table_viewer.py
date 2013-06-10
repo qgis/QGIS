@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -36,7 +36,7 @@ class TableViewer(QTableView):
 		self.dirty = False
 
 		# allow to copy results
-		copyAction = QAction("copy", self)
+		copyAction = QAction(QApplication.translate("DBManagerPlugin", "Copy"), self)
 		self.addAction( copyAction )
 		copyAction.setShortcuts(QKeySequence.Copy)
 		QObject.connect(copyAction, SIGNAL("triggered()"), self.copySelectedResults)

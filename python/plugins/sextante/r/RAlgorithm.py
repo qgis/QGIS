@@ -27,6 +27,7 @@ import os
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtGui, QtCore
+from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterTable import ParameterTable
@@ -389,16 +390,24 @@ class RAlgorithm(GeoAlgorithm):
             path = RUtils.RFolder()
             if path == "":
                 return "R folder is not configured.\nPlease configure it before running R scripts."
+    
+        R_INSTALLED = "R_INSTALLED"
+        settings = QSettings()
+        if settings.contains(R_INSTALLED):
+            return
+        if SextanteUtils.isWindows(): 
+            if SextanteConfig.getSetting(RUtils.R_USE64):
+                execDir = "x64"
+            else:
+                execDir = "i386"
+            command = [RUtils.RFolder() + os.sep + "bin" + os.sep + execDir + os.sep + "R.exe --version"]
         else:
-            R_INSTALLED = "R_INSTALLED"
-            settings = QSettings()
-            if settings.contains(R_INSTALLED):
-                return
             command = ["R --version"]
-            proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
-            for line in iter(proc.readline, ""):
-                if "R version" in line:
-                    settings.setValue(R_INSTALLED, True)
-                    return
-            return "It seems that R is not correctly installed in your system.\nPlease install it before running R Scripts."
+        proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
+
+        for line in iter(proc.readline, ""):
+            if "R version" in line:
+                settings.setValue(R_INSTALLED, True)
+                return
+        return "It seems that R is not correctly installed in your system.\nPlease install it before running R Scripts."
 

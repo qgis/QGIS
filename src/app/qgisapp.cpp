@@ -629,11 +629,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    // pass the python utils to the plugin manager
-    mPluginManager -> setPythonUtils( mPythonUtils );
     // initialize the plugin installer to start fetching repositories in background
     QgsPythonRunner::run( "import pyplugin_installer" );
     QgsPythonRunner::run( "pyplugin_installer.initPluginInstaller()" );
+    // enable Python in the Plugin Manager and pass the PythonUtils to it
+    mPluginManager -> setPythonUtils( mPythonUtils );
   }
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
@@ -804,6 +804,7 @@ void QgisApp::dragEnterEvent( QDragEnterEvent *event )
 
 void QgisApp::dropEvent( QDropEvent *event )
 {
+  mMapCanvas->freeze();
   // get the file list
   QList<QUrl>::iterator i;
   QList<QUrl>urls = event->mimeData()->urls();
@@ -817,6 +818,7 @@ void QgisApp::dropEvent( QDropEvent *event )
       openFile( fileName );
     }
   }
+
   if ( QgsMimeDataUtils::isUriList( event->mimeData() ) )
   {
     QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
@@ -832,7 +834,8 @@ void QgisApp::dropEvent( QDropEvent *event )
       }
     }
   }
-
+  mMapCanvas->freeze( false );
+  mMapCanvas->refresh();
   event->acceptProposedAction();
 }
 
@@ -1144,9 +1147,9 @@ void QgisApp::showPythonDialog()
   if ( !mPythonUtils || !mPythonUtils->isEnabled() )
     return;
 
-  bool res = mPythonUtils->runStringUnsafe(
+  bool res = mPythonUtils->runString(
                "import console\n"
-               "console.show_console()\n", false );
+               "console.show_console()\n", tr( "Failed to open Python console:" ), false );
 
   if ( !res )
   {
@@ -2477,6 +2480,7 @@ void QgisApp::addVectorLayer()
   }
 
   mMapCanvas->freeze( false );
+  mMapCanvas->refresh();
 
   delete ovl;
   // update UI
@@ -2486,6 +2490,7 @@ void QgisApp::addVectorLayer()
 
 bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QString& enc, const QString dataSourceType )
 {
+  bool wasfrozen = mMapCanvas->isFrozen();
   QList<QgsMapLayer *> myList;
   foreach ( QString src, theLayerQStringList )
   {
@@ -2590,10 +2595,13 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
   // update UI
   qApp->processEvents();
 
-  // draw the map
-  mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
-
+  // Only update the map if we frozen in this method
+  // Let the caller do it otherwise
+  if ( !wasfrozen )
+  {
+    mMapCanvas->freeze( false );
+    mMapCanvas->refresh();
+  }
 // Let render() do its own cursor management
 //  QApplication::restoreOverrideCursor();
 
@@ -3558,7 +3566,7 @@ void QgisApp::fileOpen()
     QString fullPath = QFileDialog::getOpenFileName( this,
                        tr( "Choose a QGIS project file to open" ),
                        lastUsedDir,
-                       tr( "QGis files" ) + " (*.qgs *.QGS)" );
+                       tr( "QGIS files" ) + " (*.qgs *.QGS)" );
     if ( fullPath.isNull() )
     {
       return;
@@ -3721,7 +3729,7 @@ bool QgisApp::fileSave()
                      this,
                      tr( "Choose a QGIS project file" ),
                      lastUsedDir + "/" + QgsProject::instance()->title(),
-                     tr( "QGis files" ) + " (*.qgs *.QGS)" );
+                     tr( "QGIS files" ) + " (*.qgs *.QGS)" );
     if ( path.isEmpty() )
       return false;
 
@@ -3780,7 +3788,7 @@ void QgisApp::fileSaveAs()
   QString path = QFileDialog::getSaveFileName( this,
                  tr( "Choose a file name to save the QGIS project file as" ),
                  lastUsedDir + "/" + QgsProject::instance()->title(),
-                 tr( "QGis files" ) + " (*.qgs *.QGS)" );
+                 tr( "QGIS files" ) + " (*.qgs *.QGS)" );
   if ( path.isEmpty() )
     return;
 
@@ -4271,6 +4279,63 @@ void QgisApp::modifyAnnotation()
   mMapCanvas->setMapTool( mMapTools.mAnnotation );
 }
 
+void QgisApp::labelingFontNotFound( QgsVectorLayer* vlayer, const QString& fontfamily )
+{
+  // TODO: update when pref for how to resolve missing family (use matching algorithm or just default font) is implemented
+  QString substitute = tr( "Default system font substituted." );
+
+  QWidget* fontMsg = QgsMessageBar::createMessage(
+                       tr( "Labeling" ),
+                       tr( "Font for layer <b><u>%1</u></b> was not found (<i>%2</i>). %3" ).arg( vlayer->name() ).arg( fontfamily ).arg( substitute ),
+                       QgsApplication::getThemeIcon( "/mIconWarn.png" ),
+                       messageBar() );
+
+  QToolButton* btnOpenPrefs = new QToolButton( fontMsg );
+  btnOpenPrefs->setStyleSheet( "QToolButton{ background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline; }" );
+  btnOpenPrefs->setCursor( Qt::PointingHandCursor );
+  btnOpenPrefs->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+  btnOpenPrefs->setToolButtonStyle( Qt::ToolButtonTextOnly );
+
+  // store pointer to vlayer in data of QAction
+  QAction* act = new QAction( fontMsg );
+  act->setData( QVariant( QMetaType::QObjectStar, &vlayer ) );
+  act->setText( tr( "Open labeling dialog" ) );
+  btnOpenPrefs->addAction( act );
+  btnOpenPrefs->setDefaultAction( act );
+  btnOpenPrefs->setToolTip( "" );
+
+  connect( btnOpenPrefs, SIGNAL( triggered( QAction* ) ), this, SLOT( labelingDialogFontNotFound( QAction* ) ) );
+  fontMsg->layout()->addWidget( btnOpenPrefs );
+
+  // no timeout set, since notice needs attention and is only shown first time layer is labeled
+  messageBar()->pushWidget( fontMsg, QgsMessageBar::WARNING );
+}
+
+void QgisApp::labelingDialogFontNotFound( QAction* act )
+{
+  if ( !act )
+  {
+    return;
+  }
+
+  // get base pointer to layer
+  QObject* obj = qvariant_cast<QObject*>( act->data() );
+
+  // remove calling messagebar widget
+  messageBar()->popWidget();
+
+  if ( !obj )
+  {
+    return;
+  }
+
+  QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( obj );
+  if ( layer && setActiveLayer( layer ) )
+  {
+    labeling();
+  }
+}
+
 void QgisApp::labeling()
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( activeLayer() );
@@ -4287,6 +4352,7 @@ void QgisApp::labeling()
   QDialog *dlg = new QDialog( this );
   dlg->setWindowTitle( tr( "Layer labeling settings" ) );
   QgsLabelingGui *labelingGui = new QgsLabelingGui( mLBL, vlayer, mMapCanvas, dlg );
+  labelingGui->init(); // load QgsPalLayerSettings for layer
   labelingGui->layout()->setContentsMargins( 0, 0, 0, 0 );
   QVBoxLayout *layout = new QVBoxLayout( dlg );
   layout->addWidget( labelingGui );
@@ -6743,6 +6809,8 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
     return NULL;
   }
 
+  bool wasfrozen = mMapCanvas->isFrozen();
+
   mMapCanvas->freeze();
 
 // Let render() do its own cursor management
@@ -6797,9 +6865,13 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
   // update UI
   qApp->processEvents();
 
-  // draw the map
-  mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
+  // Only update the map if we frozen in this method
+  // Let the caller do it otherwise
+  if ( !wasfrozen )
+  {
+    mMapCanvas->freeze( false );
+    mMapCanvas->refresh();
+  }
 
 // Let render() do its own cursor management
 //  QApplication::restoreOverrideCursor();
@@ -7643,6 +7715,9 @@ void QgisApp::layersWereAdded( QList<QgsMapLayer *> theLayers )
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vlayer )
     {
+      // notify user about any font family substitution, but only when rendering labels (i.e. not when opening settings dialog)
+      connect( vlayer, SIGNAL( labelingFontNotFound( QgsVectorLayer*, QString ) ), this, SLOT( labelingFontNotFound( QgsVectorLayer*, QString ) ) );
+
       QgsVectorDataProvider* vProvider = vlayer->dataProvider();
       if ( vProvider && vProvider->capabilities() & QgsVectorDataProvider::EditingCapabilities )
       {
@@ -7995,8 +8070,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   {
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
     QgsVectorDataProvider* dprovider = vlayer->dataProvider();
+
     bool isEditable = vlayer->isEditable();
-    bool layerHasSelection = vlayer->selectedFeatureCount() != 0;
+    bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
     bool layerHasActions = vlayer->actions()->size() > 0;
 
     bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
@@ -8032,7 +8108,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     if ( dprovider )
     {
-      mActionLayerSubsetString->setEnabled( dprovider->supportsSubsetString() && !isEditable );
+      mActionLayerSubsetString->setEnabled( !isEditable && dprovider->supportsSubsetString() );
 
       mActionToggleEditing->setEnabled( canSupportEditing && !vlayer->isReadOnly() );
       mActionToggleEditing->setChecked( canSupportEditing && isEditable );
@@ -8047,8 +8123,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         updateUndoActions();
       }
 
-      mActionPasteFeatures->setEnabled( canAddAttributes && isEditable && !clipboard()->empty() );
-      mActionAddFeature->setEnabled( canAddAttributes && isEditable );
+      mActionPasteFeatures->setEnabled( isEditable && canAddFeatures && !clipboard()->empty() );
+      mActionAddFeature->setEnabled( isEditable && canAddFeatures );
 
       //does provider allow deleting of features?
       mActionDeleteSelected->setEnabled( isEditable && canDeleteFeatures && layerHasSelection );
@@ -8057,10 +8133,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       //merge tool needs editable layer and provider with the capability of adding and deleting features
       if ( isEditable && canChangeAttributes )
       {
-        mActionMergeFeatures->setEnabled( layerHasSelection &&
-                                          canDeleteFeatures &&
-                                          canAddAttributes );
-
+        mActionMergeFeatures->setEnabled( layerHasSelection && canDeleteFeatures && canAddFeatures );
         mActionMergeFeatureAttributes->setEnabled( layerHasSelection );
       }
       else
@@ -8076,8 +8149,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionRotateFeature->setEnabled( isEditable && canChangeGeometry );
       mActionNodeTool->setEnabled( isEditable && canChangeGeometry );
 
-      mActionOffsetCurve->setEnabled( false );
-
       if ( vlayer->geometryType() == QGis::Point )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCapturePoint.png" ) );
@@ -8088,6 +8159,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionSimplifyFeature->setEnabled( false );
         mActionDeleteRing->setEnabled( false );
         mActionRotatePointSymbols->setEnabled( false );
+        mActionOffsetCurve->setEnabled( false );
 
         if ( isEditable && canChangeAttributes )
         {
@@ -8096,6 +8168,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
             mActionRotatePointSymbols->setEnabled( true );
           }
         }
+
         return;
       }
       else if ( vlayer->geometryType() == QGis::Line )
@@ -8119,9 +8192,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionSplitFeatures->setEnabled( isEditable && canAddFeatures );
         mActionSimplifyFeature->setEnabled( isEditable && canAddFeatures );
         mActionDeleteRing->setEnabled( isEditable && canAddFeatures );
+        mActionOffsetCurve->setEnabled( false );
       }
 
-      mActionOpenFieldCalc->setEnabled(( canChangeAttributes || canAddAttributes ) && isEditable );
+      mActionOpenFieldCalc->setEnabled( isEditable && ( canChangeAttributes || canAddAttributes ) );
 
       return;
     }
@@ -8132,10 +8206,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionRedo->setEnabled( false );
     }
 
-
-
     mActionLayerSubsetString->setEnabled( false );
-  }//end vector layer block
+  } //end vector layer block
   /*************Raster layers*************/
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {

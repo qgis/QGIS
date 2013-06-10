@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -43,15 +43,15 @@ class PGTableInfo(TableInfo):
 			self.table.blockSignals(False)
 
 		tbl = [
-			("Relation type:", "View" if self.table.isView else "Table"),
-			("Owner:", self.table.owner)
+			(QApplication.translate("DBManagerPlugin", "Relation type:"), QApplication.translate("DBManagerPlugin", "View") if self.table.isView else QApplication.translate("DBManagerPlugin", "Table")),
+			(QApplication.translate("DBManagerPlugin", "Owner:"), self.table.owner)
 		]
 		if self.table.comment:
-			tbl.append( ("Comment:", self.table.comment) )
+			tbl.append( (QApplication.translate("DBManagerPlugin", "Comment:"), self.table.comment) )
 
 		tbl.extend([
-			("Pages:", self.table.pages),
-			("Rows (estimation):", self.table.estimatedRowCount )
+			(QApplication.translate("DBManagerPlugin", "Pages:"), self.table.pages),
+			(QApplication.translate("DBManagerPlugin", "Rows (estimation):"), self.table.estimatedRowCount )
 		])
 
 		# privileges
@@ -60,7 +60,7 @@ class PGTableInfo(TableInfo):
 		if schema_priv == None:
 			pass
 		elif schema_priv[1] == False:	# no usage privileges on the schema
-			tbl.append( ("Privileges:", u"<warning> This user doesn't have usage privileges for this schema!" ) )
+			tbl.append( (QApplication.translate("DBManagerPlugin", "Privileges:"), QApplication.translate("DBManagerPlugin", "<warning> This user doesn't have usage privileges for this schema!") ) )
 		else:
 			table_priv = self.table.database().connector.getTablePrivileges( (self.table.schemaName(), self.table.name) )
 			privileges = []
@@ -68,32 +68,32 @@ class PGTableInfo(TableInfo):
 				privileges.append("select")
 
 				if self.table.rowCount == None or self.table.rowCount >= 0:
-					tbl.append( ("Rows (counted):", self.table.rowCount if self.table.rowCount != None else 'Unknown (<a href="action:rows/count">find out</a>)') )
+					tbl.append( (QApplication.translate("DBManagerPlugin", "Rows (counted):"), self.table.rowCount if self.table.rowCount != None else QApplication.translate("DBManagerPlugin", 'Unknown (<a href="action:rows/count">find out</a>)')) )
 
 			if table_priv[1]: privileges.append("insert")
 			if table_priv[2]: privileges.append("update")
 			if table_priv[3]: privileges.append("delete")
-			priv_string = u", ".join(privileges) if len(privileges) > 0 else u'<warning> This user has no privileges!'
-			tbl.append( ("Privileges:", priv_string ) )
+			priv_string = u", ".join(privileges) if len(privileges) > 0 else QApplication.translate("DBManagerPlugin", '<warning> This user has no privileges!')
+			tbl.append( (QApplication.translate("DBManagerPlugin", "Privileges:"), priv_string ) )
 
 		ret.append( HtmlTable( tbl ) )
 
 		if schema_priv != None and schema_priv[1]:
 			if table_priv[0] and not table_priv[1] and not table_priv[2] and not table_priv[3]:
-				ret.append( HtmlParagraph( u"<warning> This user has read-only privileges." ) )
+				ret.append( HtmlParagraph( QApplication.translate("DBManagerPlugin", "<warning> This user has read-only privileges.") ) )
 
 		if not self.table.isView:
 			if self.table.rowCount != None:
 				if abs(self.table.estimatedRowCount - self.table.rowCount) > 1 and \
 						(self.table.estimatedRowCount > 2 * self.table.rowCount or \
 						self.table.rowCount > 2 * self.table.estimatedRowCount):
-					ret.append( HtmlParagraph( u"<warning> There's a significant difference between estimated and real row count. " \
-						'Consider running <a href="action:vacuumanalyze/run">VACUUM ANALYZE</a>.' ) )
+					ret.append( HtmlParagraph( QApplication.translate("DBManagerPlugin", "<warning> There's a significant difference between estimated and real row count. "
+						'Consider running <a href="action:vacuumanalyze/run">VACUUM ANALYZE</a>.') ) )
 
 		# primary key defined?
 		if not self.table.isView:
 			if len( filter(lambda fld: fld.primaryKey, self.table.fields()) ) <= 0:
-				ret.append( HtmlParagraph( u"<warning> No primary key defined for this table!" ) )
+				ret.append( HtmlParagraph( QApplication.translate("DBManagerPlugin", "<warning> No primary key defined for this table!") ) )
 
 		return ret
 
@@ -105,23 +105,23 @@ class PGTableInfo(TableInfo):
 			return
 
 		tbl = [
-			("Library:", info[0]),
-			("Scripts:", info[3]),
+			(QApplication.translate("DBManagerPlugin", "Library:"), info[0]),
+			(QApplication.translate("DBManagerPlugin", "Scripts:"), info[3]),
 			("GEOS:", info[1]),
 			("Proj:", info[2])
 		]
 		ret.append( HtmlTable( tbl ) )
 
 		if info[1] != None and info[1] != info[2]:
-			ret.append( HtmlParagraph( u"<warning> Version of installed scripts doesn't match version of released scripts!\n" \
-				"This is probably a result of incorrect PostGIS upgrade." ) )
+			ret.append( HtmlParagraph( QApplication.translate("DBManagerPlugin", "<warning> Version of installed scripts doesn't match version of released scripts!\n"
+				"This is probably a result of incorrect PostGIS upgrade.") ) )
 
 		if not self.db.connector.has_geometry_columns:
-			ret.append( HtmlParagraph( u"<warning> geometry_columns table doesn't exist!\n" \
-				"This table is essential for many GIS applications for enumeration of tables." ) )
+			ret.append( HtmlParagraph( QApplication.translate("DBManagerPlugin", "<warning> geometry_columns table doesn't exist!\n"
+				"This table is essential for many GIS applications for enumeration of tables.") ) )
 		elif not self.db.connector.has_geometry_columns_access:
-			ret.append( HtmlParagraph( u"<warning> This user doesn't have privileges to read contents of geometry_columns table!\n" \
-				"This table is essential for many GIS applications for enumeration of tables." ) )
+			ret.append( HtmlParagraph( QApplication.translate("DBManagerPlugin", "<warning> This user doesn't have privileges to read contents of geometry_columns table!\n"
+				"This table is essential for many GIS applications for enumeration of tables.") ) )
 
 		return ret
 
@@ -130,7 +130,7 @@ class PGTableInfo(TableInfo):
 		tbl = []
 
 		# define the table header
-		header = ( "#", "Name", "Type", "Length", "Null", "Default" )
+		header = ( "#", QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Type"), QApplication.translate("DBManagerPlugin", "Length"), QApplication.translate("DBManagerPlugin", "Null"), QApplication.translate("DBManagerPlugin", "Default") )
 		tbl.append( HtmlTableHeader( header ) )
 
 		# add table contents
@@ -155,21 +155,21 @@ class PGTableInfo(TableInfo):
 
 		tbl = []
 		# define the table header
-		header = ( "Name", "Function", "Type", "Enabled" )
+		header = ( QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Function"), QApplication.translate("DBManagerPlugin", "Type"), QApplication.translate("DBManagerPlugin", "Enabled") )
 		tbl.append( HtmlTableHeader( header ) )
 
 		# add table contents
 		for trig in self.table.triggers():
 			name = u'%(name)s (<a href="action:trigger/%(name)s/%(action)s">%(action)s</a>)' % { "name":trig.name, "action":"delete" }
 
-			(enabled, action) = ("Yes", "disable") if trig.enabled else ("No", "enable")
+			(enabled, action) = (QApplication.translate("DBManagerPlugin", "Yes"), "disable") if trig.enabled else (QApplication.translate("DBManagerPlugin", "No"), "enable")
 			txt_enabled = u'%(enabled)s (<a href="action:trigger/%(name)s/%(action)s">%(action)s</a>)' % { "name":trig.name, "action":action, "enabled":enabled }
 
 			tbl.append( (name, trig.function, trig.type2String(), txt_enabled) )
 
 		ret.append( HtmlTable( tbl, {"class":"header"} ) )
 
-		ret.append( HtmlParagraph( '<a href="action:triggers/enable">Enable all triggers</a> / <a href="action:triggers/disable">Disable all triggers</a>' ) )
+		ret.append( HtmlParagraph( QApplication.translate("DBManagerPlugin", '<a href="action:triggers/enable">Enable all triggers</a> / <a href="action:triggers/disable">Disable all triggers</a>') ) )
 		return ret
 
 
@@ -179,7 +179,7 @@ class PGTableInfo(TableInfo):
 
 		tbl = []
 		# define the table header
-		header = ( "Name", "Definition" )
+		header = ( QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Definition") )
 		tbl.append( HtmlTableHeader( header ) )
 
 		# add table contents
@@ -198,7 +198,7 @@ class PGTableInfo(TableInfo):
 		if rules_details == None:
 			pass
 		else:
-			ret.append( HtmlSection( 'Rules', rules_details ) )
+			ret.append( HtmlSection( QApplication.translate("DBManagerPlugin", 'Rules'), rules_details ) )
 
 		return ret
 

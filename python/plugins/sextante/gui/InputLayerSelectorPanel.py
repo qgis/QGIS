@@ -53,7 +53,7 @@ class InputLayerSelectorPanel(QtGui.QWidget):
         elif os.path.isdir( os.path.dirname(text) ):
             path = os.path.dirname(text)
         elif settings.contains("/SextanteQGIS/LastInputPath"):
-            path = unicode(settings.value( "/SextanteQGIS/LastInputPath",QtCore.QVariant( "" ) ).toString())
+            path = unicode(settings.value( "/SextanteQGIS/LastInputPath"))
         else:
             path = ""
 
@@ -64,4 +64,4 @@ class InputLayerSelectorPanel(QtGui.QWidget):
             settings.setValue("/SextanteQGIS/LastInputPath", os.path.dirname(unicode(filename)))
 
     def getValue(self):
-        return self.text.itemData(self.text.currentIndex()).toPyObject()
+        return self.text.itemData(self.text.currentIndex())

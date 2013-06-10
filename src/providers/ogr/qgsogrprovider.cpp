@@ -528,6 +528,8 @@ QStringList QgsOgrProvider::subLayers() const
     QString theLayerName = FROM8( OGR_FD_GetName( fdef ) );
     OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( fdef );
 
+    QgsDebugMsg( QString("layerGeomType = %1").arg( layerGeomType ) );
+
     if ( layerGeomType != wkbUnknown )
     {
       int theLayerFeatureCount = OGR_L_GetFeatureCount( layer, 0 );
@@ -535,41 +537,42 @@ QStringList QgsOgrProvider::subLayers() const
       QString geom = ogrWkbGeometryTypeName( layerGeomType );
 
       mSubLayerList << QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( theLayerFeatureCount == -1 ? tr( "Unknown" ) : QString::number( theLayerFeatureCount ) ).arg( geom );
-      QgsDebugMsg( "Unknown geometry type, count features for each geometry type" );
     }
     else
     {
+      QgsDebugMsg( "Unknown geometry type, count features for each geometry type" );
       // Add virtual sublayers for supported geometry types if layer type is unknown
       // Count features for geometry types
       QMap<OGRwkbGeometryType, int> fCount;
       // TODO: avoid reading attributes, setRelevantFields cannot be called here because it is not constant
       //setRelevantFields( true, QgsAttributeList() );
-      OGR_L_ResetReading( ogrLayer );
+      OGR_L_ResetReading( layer );
       OGRFeatureH fet;
-      while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
+      while (( fet = OGR_L_GetNextFeature( layer ) ) )
       {
         if ( !fet ) continue;
         OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
         if ( geom )
         {
-          OGRwkbGeometryType gType = wkbFlatten( OGR_G_GetGeometryType( geom ) );
+          OGRwkbGeometryType gType = ogrWkbSingleFlatten( OGR_G_GetGeometryType( geom ) );
           fCount[gType] = fCount.value( gType ) + 1;
         }
         OGR_F_Destroy( fet );
       }
-      OGR_L_ResetReading( ogrLayer );
-      int i = 0;
-      if ( fCount.size() > 1 )
+      OGR_L_ResetReading( layer );
+      // it may happen that there are no features in the layer, in that case add unknown type
+      // to show to user that the layer exists but it is empty
+      if ( fCount.size() == 0 )
       {
-        foreach ( OGRwkbGeometryType gType, fCount.keys() )
-        {
-          QString geom = ogrWkbGeometryTypeName( gType );
+        fCount[wkbUnknown] = 0;
+      }
+      foreach ( OGRwkbGeometryType gType, fCount.keys() )
+      {
+        QString geom = ogrWkbGeometryTypeName( gType );
 
-          QString sl = QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( fCount.value( gType ) ).arg( geom );
-          QgsDebugMsg( "sub layer: " + sl );
-          mSubLayerList << sl;
-          i++;
-        }
+        QString sl = QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( fCount.value( gType ) ).arg( geom );
+        QgsDebugMsg( "sub layer: " + sl );
+        mSubLayerList << sl;
       }
     }
   }
@@ -2308,6 +2311,18 @@ void QgsOgrProvider::recalculateFeatureCount()
   }
 }
 
+OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type )
+{
+  type = wkbFlatten( type );
+  switch ( type )
+  {
+    case wkbMultiPoint: return wkbPoint;
+    case wkbMultiLineString: return wkbLineString;
+    case wkbMultiPolygon: return wkbPolygon;
+    default: return type;
+  }
+}
+
 // ---------------------------------------------------------------------------
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
@@ -2325,3 +2340,4 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
            oldToNewAttrIdxMap, errorMessage, options
          );
 }
+

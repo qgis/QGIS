@@ -25,10 +25,6 @@ __revision__ = '$Format:%H$'
 
 from PyQt4 import QtCore, QtGui
 
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    _fromUtf8 = lambda s: s
 
 class MultilineTextPanel(QtGui.QWidget):
 
@@ -61,10 +57,10 @@ class MultilineTextPanel(QtGui.QWidget):
         if self.combo.currentIndex() == 0:
             return unicode(self.textBox.toPlainText())
         else:
-            return self.combo.itemData(self.combo.currentIndex()).toPyObject()
+            return self.combo.itemData(self.combo.currentIndex())
 
     def setValue(self, value):
-        items = [self.combo.itemData(i).toPyObject() for i in range(1,self.combo.count())]
+        items = [self.combo.itemData(i) for i in range(1,self.combo.count())]
         idx = 0
         for item in items:
             idx += 1
