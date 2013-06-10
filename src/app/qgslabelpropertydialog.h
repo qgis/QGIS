@@ -30,7 +30,7 @@ class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialog
 {
     Q_OBJECT
   public:
-    QgsLabelPropertyDialog( const QString& layerId, int featureId, const QString& labelText, QgsMapRenderer* renderer, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsLabelPropertyDialog( const QString& layerId, int featureId, const QFont& labelFont, const QString& labelText, QgsMapRenderer* renderer, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsLabelPropertyDialog();
 
     /**Returns properties changed by the user*/
@@ -44,10 +44,21 @@ class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialog
     void on_mLabelDistanceSpinBox_valueChanged( double d );
     void on_mXCoordSpinBox_valueChanged( double d );
     void on_mYCoordSpinBox_valueChanged( double d );
+    /** @note added in 1.9 */
+    void on_mFontFamilyCmbBx_currentFontChanged( const QFont& f );
+    /** @note added in 1.9 */
+    void on_mFontStyleCmbBx_currentIndexChanged( const QString & text );
+    /** @note added in 1.9 */
+    void on_mFontUnderlineBtn_toggled( bool ckd );
+    /** @note added in 1.9 */
+    void on_mFontStrikethroughBtn_toggled( bool ckd );
+    /** @note added in 1.9 */
+    void on_mFontBoldBtn_toggled( bool ckd );
+    /** @note added in 1.9 */
+    void on_mFontItalicBtn_toggled( bool ckd );
     void on_mFontSizeSpinBox_valueChanged( double d );
     void on_mBufferSizeSpinBox_valueChanged( double d );
     void on_mRotationSpinBox_valueChanged( double d );
-    void on_mFontPushButton_clicked();
     void on_mFontColorButton_colorChanged( const QColor &color );
     void on_mBufferColorButton_colorChanged( const QColor &color );
     void on_mHaliComboBox_currentIndexChanged( const QString& text );
@@ -61,6 +72,14 @@ class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialog
     /**Block / unblock all input element signals*/
     void blockElementSignals( bool block );
 
+    /** Updates font when family or style is updated
+     * @note added in 1.9 */
+    void updateFont( const QFont& font, bool block = true );
+
+    /** Updates combobox with named styles of font
+     * @note added in 1.9 */
+    void populateFontStyleComboBox();
+
     void fillHaliComboBox();
     void fillValiComboBox();
 
@@ -72,6 +91,9 @@ class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialog
     QgsAttributeMap mChangedProperties;
     QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* > mDataDefinedProperties;
     QFont mLabelFont;
+
+    /** @note added in 1.9 */
+    QFontDatabase mFontDB;
 
     /**Label field for the current layer (or -1 if none)*/
     int mCurLabelField;
