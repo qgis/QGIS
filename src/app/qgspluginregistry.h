@@ -103,7 +103,7 @@ class QgsPluginRegistry
     bool checkPythonPlugin( QString packageName );
 
     //! Check current QGIS version against requested minimal and optionally maximal QGIS version
-    //! if maxVersion not specified, the default value is assumed: floor(minVersion) + 0.999.999
+    //! if maxVersion not specified, the default value is assumed: floor(minVersion) + 0.99.99
     bool checkQgisVersion( QString minVersion, QString maxVersion = "" );
 
   private:
