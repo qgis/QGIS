@@ -46,7 +46,7 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
     void reloadModel();
 
     //! return given plugin metadata
-    QMap<QString, QString> * pluginMetadata( QString key );
+    const QMap<QString, QString> * pluginMetadata( QString key ) const;
 
     //! clear the repository listWidget
     void clearRepositoryList();

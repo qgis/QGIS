@@ -72,7 +72,7 @@ void QgsAppPluginManagerInterface::reloadModel()
 
 
 //! return given plugin metadata
-QMap<QString, QString> * QgsAppPluginManagerInterface::pluginMetadata( QString key )
+const QMap<QString, QString> * QgsAppPluginManagerInterface::pluginMetadata( QString key ) const
 {
   return mPluginManager->pluginMetadata( key );
 }

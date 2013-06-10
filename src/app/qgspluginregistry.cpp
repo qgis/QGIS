@@ -67,9 +67,9 @@ void QgsPluginRegistry::setPythonUtils( QgsPythonUtils* pythonUtils )
   mPythonUtils = pythonUtils;
 }
 
-bool QgsPluginRegistry::isLoaded( QString key )
+bool QgsPluginRegistry::isLoaded( QString key ) const
 {
-  QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.find( key );
+  QMap<QString, QgsPluginMetadata>::const_iterator it = mPlugins.find( key );
   if ( it != mPlugins.end() ) // found a c++ plugin?
     return true;
 
@@ -107,7 +107,7 @@ QgisPlugin *QgsPluginRegistry::plugin( QString key )
   return it->plugin();
 }
 
-bool QgsPluginRegistry::isPythonPlugin( QString key )
+bool QgsPluginRegistry::isPythonPlugin( QString key ) const
 {
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
@@ -184,7 +184,7 @@ void QgsPluginRegistry::unloadAll()
 }
 
 
-bool QgsPluginRegistry::checkQgisVersion( QString minVersion, QString maxVersion )
+bool QgsPluginRegistry::checkQgisVersion( QString minVersion, QString maxVersion ) const
 {
   // Parse qgisMinVersion. Must be in form x.y.z or just x.y
   QStringList minVersionParts = minVersion.split( '.' );
@@ -593,7 +593,7 @@ bool QgsPluginRegistry::checkPythonPlugin( QString packageName )
   return true;
 }
 
-bool QgsPluginRegistry::isPythonPluginCompatible( QString packageName )
+bool QgsPluginRegistry::isPythonPluginCompatible( QString packageName ) const
 {
   QString minVersion = mPythonUtils->getPluginMetadata( packageName, "qgisMinimumVersion" );
   // try to read qgisMaximumVersion. Note checkQgisVersion can cope with "__error__" value.

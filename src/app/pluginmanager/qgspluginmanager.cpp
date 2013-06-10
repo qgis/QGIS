@@ -188,7 +188,7 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils* pythonUtils )
 
 void QgsPluginManager::loadPlugin( QString id )
 {
-  QMap<QString, QString>* plugin = pluginMetadata( id );
+  const QMap<QString, QString>* plugin = pluginMetadata( id );
 
   if ( ! plugin )
   {
@@ -219,7 +219,7 @@ void QgsPluginManager::loadPlugin( QString id )
 
 void QgsPluginManager::unloadPlugin( QString id )
 {
-  QMap<QString, QString>* plugin = pluginMetadata( id );
+  const QMap<QString, QString>* plugin = pluginMetadata( id );
 
   if ( ! plugin )
   {
@@ -547,7 +547,7 @@ void QgsPluginManager::pluginItemChanged( QStandardItem * item )
 
 void QgsPluginManager::showPluginDetails( QStandardItem * item )
 {
-  QMap<QString, QString> * metadata = pluginMetadata( item->data( PLUGIN_BASE_NAME_ROLE ).toString() );
+  const QMap<QString, QString> * metadata = pluginMetadata( item->data( PLUGIN_BASE_NAME_ROLE ).toString() );
 
   if ( ! metadata ) return;
 
@@ -767,9 +767,9 @@ void QgsPluginManager::addPluginMetadata( QString key,  QMap<QString, QString> m
 
 
 
-QMap<QString, QString>* QgsPluginManager::pluginMetadata( QString key )
+const QMap<QString, QString> * QgsPluginManager::pluginMetadata( QString key ) const
 {
-  QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.find( key );
+  QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.find( key );
   if ( it != mPlugins.end() )
   {
     return &it.value();
@@ -1174,7 +1174,7 @@ void QgsPluginManager::on_ckbExperimental_toggled( bool state )
 
 bool QgsPluginManager::isPluginLoaded( QString key )
 {
-  QMap<QString, QString>* plugin = pluginMetadata( key );
+  const QMap<QString, QString>* plugin = pluginMetadata( key );
   if ( plugin->isEmpty() )
   {
     // No such plugin in the metadata registry
