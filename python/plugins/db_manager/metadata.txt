@@ -3,7 +3,7 @@ name=DB Manager
 description=Manage your databases within QGis
 category=Database
 version=0.1.20
-qgisMinimumVersion=1.5.0
+qgisMinimumVersion=2.0
 
 author=Giuseppe Sucameli
 email=brush.tyler@gmail.com

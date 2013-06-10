@@ -3,7 +3,7 @@ name=GdalTools
 description=Integrate GDAL tools into QGIS
 category=Raster
 version=1.2.29
-qgisMinimumVersion=1.0
+qgisMinimumVersion=2.0
 
 author=Giuseppe Sucameli (Faunalia)
 email=brush.tyler@gmail.com
