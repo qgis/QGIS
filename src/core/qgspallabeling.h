@@ -492,6 +492,7 @@ class CORE_EXPORT QgsPalLayerSettings
     QMap<QgsPalLayerSettings::DataDefinedProperties, QPair<QString, int> > dataDefinedNames() const { return mDataDefinedNames; }
 
     // temporary stuff: set when layer gets prepared or labeled
+    // NOTE: not in Python binding
     pal::Layer* palLayer;
     QgsFeature* mCurFeat;
     const QgsFields* mCurFields;
@@ -504,6 +505,9 @@ class CORE_EXPORT QgsPalLayerSettings
     int mFeaturesToLabel; // total features that will probably be labeled, may be less (figured before PAL)
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
+
+    QString mTextFontFamily;
+    bool mTextFontFound;
 
     bool showingShadowRects; // whether to show debug rectangles for drop shadows
 
