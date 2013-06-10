@@ -618,7 +618,7 @@ class Plugins(QObject):
       qgisMinimumVersion = pluginMetadata("qgisMinimumVersion").strip()
       if not qgisMinimumVersion: qgisMinimumVersion = "0"
       qgisMaximumVersion = pluginMetadata("qgisMaximumVersion").strip()
-      if not qgisMaximumVersion: qgisMaximumVersion = qgisMinimumVersion[0] + ".999"
+      if not qgisMaximumVersion: qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
       #if compatible, add the plugin to the list
       if not isCompatible(QGis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
         error = "incompatible"
