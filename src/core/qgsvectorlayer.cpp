@@ -122,6 +122,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mRendererV2( NULL )
     , mLabel( 0 )
     , mLabelOn( false )
+    , mLabelFontNotFoundNotified( false )
     , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
     , mLayerTransparency( 0 )
     , mVertexMarkerOnlyForSelection( false )
@@ -3477,8 +3478,9 @@ void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererConte
 
   if ( labeling )
   {
-    // see if feature count limit is set for labeling
     QgsPalLayerSettings& palyr = rendererContext.labelingEngine()->layer( this->id() );
+
+    // see if feature count limit is set for labeling
     if ( palyr.limitNumLabels && palyr.maxNumLabels > 0 )
     {
       QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
@@ -3493,6 +3495,13 @@ void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererConte
         nFeatsToLabel++;
       }
       palyr.mFeaturesToLabel = nFeatsToLabel;
+    }
+
+    // notify user about any font substitution
+    if ( !palyr.mTextFontFound && !mLabelFontNotFoundNotified )
+    {
+      emit labelingFontNotFound( this, palyr.mTextFontFamily );
+      mLabelFontNotFoundNotified = true;
     }
   }
 

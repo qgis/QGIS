@@ -1394,6 +1394,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void committedAttributeValuesChanges( const QString& layerId, const QgsChangedAttributesMap& changedAttributesValues );
     void committedGeometriesChanges( const QString& layerId, const QgsGeometryMap& changedGeometries );
 
+    /** Emitted when the font family defined for labeling layer is not found on system
+     * @note added in 1.9
+     */
+    void labelingFontNotFound( QgsVectorLayer* layer, const QString& fontfamily );
+
   protected:
     /** Set the extent */
     void setExtent( const QgsRectangle &rect );
@@ -1515,6 +1520,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Display labels */
     bool mLabelOn;
+
+    /** Whether 'labeling font not found' has be shown for this layer (only show once in QgsMessageBar, on first rendering) */
+    bool mLabelFontNotFoundNotified;
 
     /** Blend mode for features */
     QPainter::CompositionMode mFeatureBlendMode;

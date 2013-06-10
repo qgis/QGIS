@@ -4279,6 +4279,63 @@ void QgisApp::modifyAnnotation()
   mMapCanvas->setMapTool( mMapTools.mAnnotation );
 }
 
+void QgisApp::labelingFontNotFound( QgsVectorLayer* vlayer, const QString& fontfamily )
+{
+  // TODO: update when pref for how to resolve missing family (use matching algorithm or just default font) is implemented
+  QString substitute = tr( "Default system font substituted." );
+
+  QWidget* fontMsg = QgsMessageBar::createMessage(
+                       tr( "Labeling" ),
+                       tr( "Font for layer <b><u>%1</u></b> was not found (<i>%2</i>). %3" ).arg( vlayer->name() ).arg( fontfamily ).arg( substitute ),
+                       QgsApplication::getThemeIcon( "/mIconWarn.png" ),
+                       messageBar() );
+
+  QToolButton* btnOpenPrefs = new QToolButton( fontMsg );
+  btnOpenPrefs->setStyleSheet( "QToolButton{ background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline; }" );
+  btnOpenPrefs->setCursor( Qt::PointingHandCursor );
+  btnOpenPrefs->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+  btnOpenPrefs->setToolButtonStyle( Qt::ToolButtonTextOnly );
+
+  // store pointer to vlayer in data of QAction
+  QAction* act = new QAction( fontMsg );
+  act->setData( QVariant( QMetaType::QObjectStar, &vlayer ) );
+  act->setText( tr( "Open labeling dialog" ) );
+  btnOpenPrefs->addAction( act );
+  btnOpenPrefs->setDefaultAction( act );
+  btnOpenPrefs->setToolTip( "" );
+
+  connect( btnOpenPrefs, SIGNAL( triggered( QAction* ) ), this, SLOT( labelingDialogFontNotFound( QAction* ) ) );
+  fontMsg->layout()->addWidget( btnOpenPrefs );
+
+  // no timeout set, since notice needs attention and is only shown first time layer is labeled
+  messageBar()->pushWidget( fontMsg, QgsMessageBar::WARNING );
+}
+
+void QgisApp::labelingDialogFontNotFound( QAction* act )
+{
+  if ( !act )
+  {
+    return;
+  }
+
+  // get base pointer to layer
+  QObject* obj = qvariant_cast<QObject*>( act->data() );
+
+  // remove calling messagebar widget
+  messageBar()->popWidget();
+
+  if ( !obj )
+  {
+    return;
+  }
+
+  QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( obj );
+  if ( layer && setActiveLayer( layer ) )
+  {
+    labeling();
+  }
+}
+
 void QgisApp::labeling()
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( activeLayer() );
@@ -7658,6 +7715,9 @@ void QgisApp::layersWereAdded( QList<QgsMapLayer *> theLayers )
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vlayer )
     {
+      // notify user about any font family substitution, but only when rendering labels (i.e. not when opening settings dialog)
+      connect( vlayer, SIGNAL( labelingFontNotFound( QgsVectorLayer*, QString ) ), this, SLOT( labelingFontNotFound( QgsVectorLayer*, QString ) ) );
+
       QgsVectorDataProvider* vProvider = vlayer->dataProvider();
       if ( vProvider && vProvider->capabilities() & QgsVectorDataProvider::EditingCapabilities )
       {

@@ -73,7 +73,6 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
 
   // preview and basic option connections
   connect( btnTextColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( changeTextColor( const QColor& ) ) );
-  connect( btnChangeFont, SIGNAL( clicked() ), this, SLOT( changeTextFont() ) );
   connect( mFontTranspSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
   connect( mBufferDrawChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
   connect( btnBufferColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( changeBufferColor( const QColor& ) ) );
@@ -366,6 +365,22 @@ void QgsLabelingGui::init()
   QgsFontUtils::updateFontViaStyle( mRefFont, lyr.textNamedStyle );
   updateFont( mRefFont );
 
+  // show 'font not found' if substitution has occurred (should come after updateFont())
+  if ( !lyr.mTextFontFound )
+  {
+    mFontMissingLabel->setVisible( true );
+    QString missingTxt = tr( "%1 not found. Default substituted." );
+    QString txtPrepend = tr( "Chosen font" );
+    if ( !lyr.mTextFontFamily.isEmpty() )
+    {
+      txtPrepend = QString( "'%1'" ).arg( lyr.mTextFontFamily );
+    }
+    mFontMissingLabel->setText( missingTxt.arg( txtPrepend ) );
+
+    // ensure user is sent to 'Text style' section to see notice
+    mLabelingOptionsListWidget->setCurrentRow( 0 );
+  }
+
   // shape background
   mShapeDrawChkBx->setChecked( lyr.shapeDraw );
   mShapeTypeCmbBx->blockSignals( true );
@@ -474,6 +489,7 @@ void QgsLabelingGui::collapseSample( bool collapse )
 void QgsLabelingGui::apply()
 {
   writeSettingsToLayer();
+  mFontMissingLabel->setVisible( false );
   QgisApp::instance()->markDirty();
   // trigger refresh
   if ( mMapCanvas )
@@ -1019,41 +1035,6 @@ void QgsLabelingGui::changeTextColor( const QColor &color )
   updatePreview();
 }
 
-void QgsLabelingGui::changeTextFont()
-{
-  // store properties of QFont that might be stripped by font dialog
-  QFont::Capitalization captials = mRefFont.capitalization();
-  double wordspacing = mRefFont.wordSpacing();
-  double letterspacing = mRefFont.letterSpacing();
-
-  bool ok;
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QFont font = QFontDialog::getFont( &ok, mRefFont, 0, QString(), QFontDialog::DontUseNativeDialog );
-#else
-  QFont font = QFontDialog::getFont( &ok, mRefFont );
-#endif
-  if ( ok )
-  {
-    if ( mFontSizeUnitComboBox->currentIndex() == 1 )
-    {
-      // don't override map units size with selected size from font dialog
-      font.setPointSizeF( mFontSizeSpinBox->value() );
-    }
-    else
-    {
-      mFontSizeSpinBox->setValue( font.pointSizeF() );
-    }
-
-    // reassign possibly stripped QFont properties
-    font.setCapitalization( captials );
-    font.setWordSpacing( wordspacing );
-    font.setLetterSpacing( QFont::AbsoluteSpacing, letterspacing );
-
-    updateFont( font );
-  }
-}
-
 void QgsLabelingGui::updateFont( QFont font )
 {
   // update background reference font
@@ -1063,31 +1044,13 @@ void QgsLabelingGui::updateFont( QFont font )
   }
 
   // test if font is actually available
-  QString missingtxt = QString( "" );
-  bool missing = false;
-  if ( QApplication::font().toString() != mRefFont.toString() )
-  {
-    QFont testfont = mFontDB.font( mRefFont.family(), mFontDB.styleString( mRefFont ), 12 );
-    if ( QApplication::font().toString() == testfont.toString() )
-    {
-      missing = true;
-    }
-  }
-  if ( missing )
-  {
-    missingtxt = tr( " (not found!)" );
-    lblFontName->setStyleSheet( "color: #990000;" );
-  }
-  else
-  {
-    lblFontName->setStyleSheet( "color: #000000;" );
-  }
+  mFontMissingLabel->setVisible( QgsFontUtils::fontMatchOnSystem( mRefFont ) );
 
-  lblFontName->setText( QString( "%1%2" ).arg( mRefFont.family() ).arg( missingtxt ) );
   mDirectSymbLeftLineEdit->setFont( mRefFont );
   mDirectSymbRightLineEdit->setFont( mRefFont );
 
   blockFontChangeSignals( true );
+  mFontFamilyCmbBx->setCurrentFont( mRefFont );
   populateFontStyleComboBox();
   int idx = mFontCapitalsComboBox->findData( QVariant(( unsigned int ) mRefFont.capitalization() ) );
   mFontCapitalsComboBox->setCurrentIndex( idx == -1 ? 0 : idx );
@@ -1097,13 +1060,13 @@ void QgsLabelingGui::updateFont( QFont font )
 
   // update font name with font face
 //  font.setPixelSize( 24 );
-//  lblFontName->setFont( QFont( font ) );
 
   updatePreview();
 }
 
 void QgsLabelingGui::blockFontChangeSignals( bool blk )
 {
+  mFontFamilyCmbBx->blockSignals( blk );
   mFontStyleComboBox->blockSignals( blk );
   mFontCapitalsComboBox->blockSignals( blk );
   mFontUnderlineBtn->blockSignals( blk );
@@ -1333,7 +1296,15 @@ void QgsLabelingGui::populateFontStyleComboBox()
   {
     mFontStyleComboBox->addItem( style );
   }
-  mFontStyleComboBox->setCurrentIndex( mFontStyleComboBox->findText( mFontDB.styleString( mRefFont ) ) );
+
+  int curIndx = 0;
+  int stylIndx = mFontStyleComboBox->findText( mFontDB.styleString( mRefFont ) );
+  if ( stylIndx > -1 )
+  {
+    curIndx = stylIndx;
+  }
+
+  mFontStyleComboBox->setCurrentIndex( curIndx );
 }
 
 void QgsLabelingGui::on_mPreviewSizeSlider_valueChanged( int i )
@@ -1352,6 +1323,12 @@ void QgsLabelingGui::on_mFontCapitalsComboBox_currentIndexChanged( int index )
 {
   int capitalsindex = mFontCapitalsComboBox->itemData( index ).toUInt();
   mRefFont.setCapitalization(( QFont::Capitalization ) capitalsindex );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mFontFamilyCmbBx_currentFontChanged( const QFont& f )
+{
+  mRefFont.setFamily( f.family() );
   updateFont( mRefFont );
 }
 

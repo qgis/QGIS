@@ -667,7 +667,7 @@
                          <property name="margin">
                           <number>0</number>
                          </property>
-                         <item row="8" column="1" colspan="2">
+                         <item row="9" column="1" colspan="2">
                           <layout class="QHBoxLayout" name="horizontalLayout_14">
                            <item>
                             <widget class="QLabel" name="mFontLetterSpacingLabel">
@@ -713,30 +713,7 @@
                            </item>
                           </layout>
                          </item>
-                         <item row="10" column="1">
-                          <widget class="QgsBlendModeComboBox" name="comboBlendMode"/>
-                         </item>
-                         <item row="1" column="2">
-                          <widget class="QgsDataDefinedButton" name="mFontStyleDDBtn">
-                           <property name="text">
-                            <string>...</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="3" column="0">
-                          <widget class="QLabel" name="mFontSizeLabel">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Size</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="3" column="1">
+                         <item row="4" column="1">
                           <widget class="QDoubleSpinBox" name="mFontSizeSpinBox">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -758,7 +735,7 @@
                            </property>
                           </widget>
                          </item>
-                         <item row="1" column="0">
+                         <item row="2" column="0">
                           <widget class="QLabel" name="mFontStyleLabel">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -771,7 +748,7 @@
                            </property>
                           </widget>
                          </item>
-                         <item row="7" column="1">
+                         <item row="8" column="1">
                           <widget class="QComboBox" name="mFontCapitalsComboBox">
                            <property name="enabled">
                             <bool>true</bool>
@@ -793,7 +770,7 @@
                            </property>
                           </widget>
                          </item>
-                         <item row="6" column="0">
+                         <item row="7" column="0">
                           <widget class="QLabel" name="mFontTranspLabel">
                            <property name="enabled">
                             <bool>true</bool>
@@ -819,7 +796,7 @@
                            </property>
                           </widget>
                          </item>
-                         <item row="1" column="1">
+                         <item row="2" column="1">
                           <widget class="QComboBox" name="mFontStyleComboBox">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -847,29 +824,22 @@
                            </property>
                           </widget>
                          </item>
-                         <item row="7" column="2">
+                         <item row="8" column="2">
                           <widget class="QgsDataDefinedButton" name="mFontCaseDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="4" column="2">
+                         <item row="5" column="2">
                           <widget class="QgsDataDefinedButton" name="mFontUnitsDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="5" column="2">
-                          <widget class="QgsDataDefinedButton" name="mFontColorDDBtn">
-                           <property name="text">
-                            <string>...</string>
-                           </property>
-                          </widget>
-                         </item>
                          <item row="6" column="2">
-                          <widget class="QgsDataDefinedButton" name="mFontTranspDDBtn">
+                          <widget class="QgsDataDefinedButton" name="mFontColorDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -882,45 +852,14 @@
                            </property>
                           </widget>
                          </item>
-                         <item row="0" column="1">
-                          <widget class="QFrame" name="mFontFamilyFrame">
-                           <layout class="QHBoxLayout" name="horizontalLayout_5">
-                            <property name="margin">
-                             <number>0</number>
-                            </property>
-                            <item>
-                             <widget class="QToolButton" name="btnChangeFont">
-                              <property name="minimumSize">
-                               <size>
-                                <width>32</width>
-                                <height>0</height>
-                               </size>
-                              </property>
-                              <property name="text">
-                               <string>...</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item>
-                             <widget class="QLabel" name="lblFontName">
-                              <property name="sizePolicy">
-                               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                               </sizepolicy>
-                              </property>
-                              <property name="text">
-                               <string>TextLabel</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                           </layout>
+                         <item row="7" column="2">
+                          <widget class="QgsDataDefinedButton" name="mFontTranspDDBtn">
+                           <property name="text">
+                            <string>...</string>
+                           </property>
                           </widget>
                          </item>
-                         <item row="6" column="1">
+                         <item row="7" column="1">
                           <widget class="QFrame" name="frame">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -979,7 +918,7 @@
                            </layout>
                           </widget>
                          </item>
-                         <item row="7" column="0">
+                         <item row="8" column="0">
                           <widget class="QLabel" name="mFontCapitalsLabel">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -992,7 +931,14 @@
                            </property>
                           </widget>
                          </item>
-                         <item row="5" column="0">
+                         <item row="11" column="2">
+                          <widget class="QgsDataDefinedButton" name="mFontBlendModeDDBtn">
+                           <property name="text">
+                            <string>...</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="6" column="0">
                           <widget class="QLabel" name="mFontColorLabel">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -1008,7 +954,7 @@
                            </property>
                           </widget>
                          </item>
-                         <item row="4" column="1">
+                         <item row="5" column="1">
                           <widget class="QComboBox" name="mFontSizeUnitComboBox">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1028,21 +974,21 @@
                            </item>
                           </widget>
                          </item>
-                         <item row="10" column="2">
-                          <widget class="QgsDataDefinedButton" name="mFontBlendModeDDBtn">
+                         <item row="4" column="2">
+                          <widget class="QgsDataDefinedButton" name="mFontSizeDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="8" column="0">
+                         <item row="9" column="0">
                           <widget class="QLabel" name="label_10">
                            <property name="text">
                             <string>Spacing</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="5" column="1">
+                         <item row="6" column="1">
                           <widget class="QgsColorButton" name="btnTextColor">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1064,21 +1010,14 @@
                            </property>
                           </widget>
                          </item>
-                         <item row="3" column="2">
-                          <widget class="QgsDataDefinedButton" name="mFontSizeDDBtn">
-                           <property name="text">
-                            <string>...</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="10" column="0">
+                         <item row="11" column="0">
                           <widget class="QLabel" name="labelBlendMode">
                            <property name="text">
                             <string>Blend mode</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="9" column="1" colspan="2">
+                         <item row="10" column="1" colspan="2">
                           <layout class="QHBoxLayout" name="horizontalLayout_15">
                            <item>
                             <widget class="QLabel" name="mFontWordSpacingLabel">
@@ -1124,7 +1063,7 @@
                            </item>
                           </layout>
                          </item>
-                         <item row="2" column="1" colspan="2">
+                         <item row="3" column="1" colspan="2">
                           <layout class="QHBoxLayout" name="horizontalLayout_13">
                            <item>
                             <widget class="QToolButton" name="mFontUnderlineBtn">
@@ -1305,6 +1244,65 @@
                             </widget>
                            </item>
                           </layout>
+                         </item>
+                         <item row="11" column="1">
+                          <widget class="QgsBlendModeComboBox" name="comboBlendMode"/>
+                         </item>
+                         <item row="2" column="2">
+                          <widget class="QgsDataDefinedButton" name="mFontStyleDDBtn">
+                           <property name="text">
+                            <string>...</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="4" column="0">
+                          <widget class="QLabel" name="mFontSizeLabel">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Size</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="1">
+                          <widget class="QFrame" name="mFontFamilyFrame">
+                           <layout class="QHBoxLayout" name="horizontalLayout_5">
+                            <property name="margin">
+                             <number>0</number>
+                            </property>
+                            <item>
+                             <widget class="QLabel" name="mFontMissingLabel">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">color: #990000;
+font-style: italic;</string>
+                              </property>
+                              <property name="text">
+                               <string notr="true">missing font text</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item row="0" column="1">
+                          <widget class="QFontComboBox" name="mFontFamilyCmbBx">
+                           <property name="editable">
+                            <bool>false</bool>
+                           </property>
+                          </widget>
                          </item>
                         </layout>
                        </widget>
@@ -3670,8 +3668,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>501</width>
-                       <height>890</height>
+                       <width>360</width>
+                       <height>818</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -4936,8 +4934,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>501</width>
-                       <height>890</height>
+                       <width>390</width>
+                       <height>645</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">

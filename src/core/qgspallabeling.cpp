@@ -212,12 +212,15 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 
   // text style
   textFont = QApplication::font();
-  fontSizeInMapUnits = false;
   textNamedStyle = QString( "" );
+  fontSizeInMapUnits = false;
   textColor = Qt::black;
   textTransp = 0;
   blendMode = QPainter::CompositionMode_SourceOver;
   previewBkgrdColor = Qt::white;
+  // font processing info
+  mTextFontFound = true;
+  mTextFontFamily = QApplication::font().family();
 
   // text formatting
   wrapChar = "";
@@ -432,12 +435,15 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   fieldName = s.fieldName;
   isExpression = s.isExpression;
   textFont = s.textFont;
-  fontSizeInMapUnits = s.fontSizeInMapUnits;
   textNamedStyle = s.textNamedStyle;
+  fontSizeInMapUnits = s.fontSizeInMapUnits;
   textColor = s.textColor;
   textTransp = s.textTransp;
   blendMode = s.blendMode;
   previewBkgrdColor = s.previewBkgrdColor;
+  // font processing info
+  mTextFontFound = s.mTextFontFound;
+  mTextFontFamily = s.mTextFontFamily;
 
   // text formatting
   wrapChar = s.wrapChar;
@@ -796,7 +802,21 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   // text style
   fieldName = layer->customProperty( "labeling/fieldName" ).toString();
   isExpression = layer->customProperty( "labeling/isExpression" ).toBool();
-  QString fontFamily = layer->customProperty( "labeling/fontFamily", QVariant( QApplication::font().family() ) ).toString();
+  QFont appFont = QApplication::font();
+  mTextFontFamily = layer->customProperty( "labeling/fontFamily", QVariant( appFont.family() ) ).toString();
+  QString fontFamily = mTextFontFamily;
+  if ( mTextFontFamily != appFont.family() && !QgsFontUtils::fontFamilyMatchOnSystem( mTextFontFamily ) )
+  {
+    // trigger to notify user about font family substitution (signal emitted in QgsVectorLayer::prepareLabelingAndDiagrams)
+    mTextFontFound = false;
+
+    // TODO: update when pref for how to resolve missing family (use matching algorithm or just default font) is implemented
+    // currently only defaults to matching algorithm for resolving [foundry], if a font of similar family is found (default for QFont)
+
+    // for now, do not use matching algorithm for substitution if family not found, substitute default instead
+    fontFamily = appFont.family();
+  }
+
   double fontSize = layer->customProperty( "labeling/fontSize" ).toDouble();
   fontSizeInMapUnits = layer->customProperty( "labeling/fontSizeInMapUnits" ).toBool();
   int fontWeight = layer->customProperty( "labeling/fontWeight" ).toInt();

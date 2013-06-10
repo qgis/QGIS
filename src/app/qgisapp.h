@@ -1020,6 +1020,16 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void addSvgAnnotation();
     void modifyAnnotation();
 
+    /** Alerts user when labeling font for layer has not been found on system
+     * @note added in 1.9
+     */
+    void labelingFontNotFound( QgsVectorLayer* vlayer, const QString& fontfamily );
+
+    /** Opens the labeling dialog for a layer when called from labelingFontNotFound alert
+     * @note added in 1.9
+     */
+    void labelingDialogFontNotFound( QAction* act );
+
     //! shows label settings dialog (for labeling-ng)
     void labeling();
 
