@@ -49,19 +49,20 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     self.buttonBox.clicked.connect(self.abort)
 
     url = QUrl(plugin["download_url"])
-    path = unicode(url.toPercentEncoding(url.path(), "!$&'()*+,;=:/@"))
+    
     fileName = plugin["filename"]
     tmpDir = QDir.tempPath()
     tmpPath = QDir.cleanPath(tmpDir+"/"+fileName)
     self.file = QFile(tmpPath)
-    port = url.port()
-    if port < 0:
-      port = 80
-    self.http = QPHttp(url.host(), port)
-    self.http.stateChanged.connect(self.stateChanged)
-    self.http.dataReadProgress.connect(self.readProgress)
-    self.http.requestFinished.connect(self.requestFinished)
-    self.httpGetId = self.http.get(path, self.file)
+      
+    self.nam = QPNetworkAccessManager(url.host(), )      
+    #self.http = QPHttp(url.host(), port)
+    self.request = QNetworkRequest(url)
+    self.reply = self.nam.get( self.request )
+
+    self.reply.downloadProgress.connect( self.readProgress )
+    self.nam.finished.connect(self.requestFinished)
+
 
 
   # ----------------------------------------- #
@@ -82,14 +83,14 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
 
 
   # ----------------------------------------- #
-  def requestFinished(self, requestId, state):
-    if requestId != self.httpGetId:
-      return
+  def requestFinished(self, reply):
     self.buttonBox.setEnabled(False)
-    if state:
+    if reply.error() != QNetworkReply.NoError: 
       self.mResult = self.http.errorString()
       self.reject()
       return
+    self.file.open(QFile.WriteOnly)
+    self.file.write( reply.readAll() )
     self.file.close()
     pluginDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins"
     tmpPath = self.file.fileName()

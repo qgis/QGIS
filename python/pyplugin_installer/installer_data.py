@@ -396,15 +396,14 @@ class Repositories(QObject):
     url = QUrl(self.mRepositories[key]["url"])
     v=str(QGis.QGIS_VERSION_INT)
 
-
-    url.addQueryItem(QString('qgis'), QString('.'.join([str(int(s)) for s in [v[0], v[1:3], v[3:5]]])) )
+    
+    url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3], v[3:5]]]) )
     
     self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
     self.mRepositories[key]["QRequest"].setAttribute( QNetworkRequest.User, key)
     self.mRepositories[key]["xmlData"] = self.mRepositories[key]["QPNAM"].get( self.mRepositories[key]["QRequest"] )
-    self.mRepositories[key]["xmlData"].setAttribute( QNetworkRequest.User, key)
+    self.mRepositories[key]["xmlData"].setProperty( 'reposName', key)
     self.mRepositories[key]["xmlData"].downloadProgress.connect( self.mRepositories[key]["Relay"].dataReadProgress )
-    
     self.mRepositories[key]["QPNAM"].finished.connect( self.xmlDownloaded )      
     
 
@@ -428,8 +427,9 @@ class Repositories(QObject):
   # ----------------------------------------- #
   def xmlDownloaded(self, reply):
     """ populate the plugins object with the fetched data """
-    reposName = reply.attribute( QNetworkRequest.User ).toPyObject()
-    
+    print reply
+    reposName = reply.property( 'reposName' )
+    print reposName
     if reply.error() != QNetworkReply.NoError:                             # fetching failed
       self.mRepositories[reposName]["state"] =  3
       self.mRepositories[reposName]["error"] = str(reply.error())
