@@ -63,7 +63,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     self.reply.downloadProgress.connect( self.readProgress )
     self.nam.finished.connect(self.requestFinished)
 
-
+    self.stateChanged(4)
 
   # ----------------------------------------- #
   def result(self):
@@ -78,9 +78,9 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
 
   # ----------------------------------------- #
   def readProgress(self, done, total):
-    self.progressBar.setMaximum(total)
-    self.progressBar.setValue(done)
-
+    if total > 0:
+        self.progressBar.setMaximum(total)
+        self.progressBar.setValue(done)
 
   # ----------------------------------------- #
   def requestFinished(self, reply):
@@ -92,6 +92,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     self.file.open(QFile.WriteOnly)
     self.file.write( reply.readAll() )
     self.file.close()
+    self.stateChanged(0)
     pluginDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins"
     tmpPath = self.file.fileName()
     # make sure that the parent directory exists
@@ -118,6 +119,8 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
 
   # ----------------------------------------- #
   def abort(self):
-    self.http.abort()
+    if self.reply.isRunning():
+      self.nam.finished.disconnect()
+      self.reply.abort()      
     self.mResult = self.tr("Aborted by user")
     self.reject()

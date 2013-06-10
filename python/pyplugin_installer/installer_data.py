@@ -217,7 +217,7 @@ class Relay(QObject):
   # ----------------------------------------- #
   def dataReadProgress(self, done, total):
     state = 4
-    if total:
+    if total > 0:
       progress = int(float(done)/float(total)*100)
     else:
       progress = 0
