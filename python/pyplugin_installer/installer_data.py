@@ -33,7 +33,7 @@ import ConfigParser
 import qgis.utils
 from qgis.core import *
 from qgis.utils import iface
-from version_compare import compareVersions, normalizeVersion
+from version_compare import compareVersions, normalizeVersion, isCompatible
 
 """
 Data structure:
@@ -487,7 +487,7 @@ class Repositories(QObject):
           if not qgisMaximumVersion: qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
           #if compatible, add the plugin to the list
           if not pluginNodes.item(i).firstChildElement("disabled").text().strip().upper() in ["TRUE","YES"]:
-           if compareVersions(QGis.QGIS_VERSION, qgisMinimumVersion) < 2 and compareVersions(qgisMaximumVersion, QGis.QGIS_VERSION) < 2:
+            if isCompatible(QGis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
               #add the plugin to the cache
               plugins.addFromRepository(plugin)
       # set state=2, even if the repo is empty
@@ -620,7 +620,7 @@ class Plugins(QObject):
       qgisMaximumVersion = pluginMetadata("qgisMaximumVersion").strip()
       if not qgisMaximumVersion: qgisMaximumVersion = qgisMinimumVersion[0] + ".999"
       #if compatible, add the plugin to the list
-      if compareVersions(QGis.QGIS_VERSION, qgisMinimumVersion) == 2 or compareVersions(qgisMaximumVersion, QGis.QGIS_VERSION) == 2:
+      if not isCompatible(QGis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
         error = "incompatible"
         errorDetails = "%s - %s" % (qgisMinimumVersion, qgisMaximumVersion)
 

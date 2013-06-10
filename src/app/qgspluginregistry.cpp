@@ -207,12 +207,11 @@ bool QgsPluginRegistry::checkQgisVersion( QString minVersion, QString maxVersion
   }
 
   // Parse qgisMaxVersion. Must be in form x.y.z or just x.y
-  int maxVerMajor, maxVerMinor, maxVerBugfix = 0;
+  int maxVerMajor, maxVerMinor, maxVerBugfix = 999;
   if ( maxVersion.isEmpty() || maxVersion == "__error__" )
   {
     maxVerMajor = minVerMajor;
     maxVerMinor = 999;
-    maxVerBugfix = 999;
   }
   else
   {
@@ -253,23 +252,19 @@ bool QgsPluginRegistry::checkQgisVersion( QString minVersion, QString maxVersion
   int qgisMinor = qgisVersionParts.at( 1 ).toInt();
   int qgisBugfix = qgisVersionParts.at( 2 ).toInt();
 
-  // first check major version
-  if ( minVerMajor > qgisMajor || maxVerMajor < qgisMajor )
-    return false;
-  if ( minVerMajor < qgisMajor || maxVerMajor > qgisMajor )
-    return true;
-  // if same, check minor version
-  if ( minVerMinor > qgisMinor || maxVerMinor < qgisMinor )
-    return false;
-  if ( minVerMinor < qgisMinor || maxVerMinor > qgisMinor )
-    return true;
+  // build strings with trailing zeroes
+  QString minVer = QString( "%1%2%3" ).arg( minVerMajor, 3, 10, QChar( '0' ) )
+                                      .arg( minVerMinor, 3, 10, QChar( '0' ) )
+                                      .arg( minVerBugfix, 3, 10, QChar( '0' ) );
+  QString maxVer = QString( "%1%2%3" ).arg( maxVerMajor, 3, 10, QChar( '0' ) )
+                                      .arg( maxVerMinor, 3, 10, QChar( '0' ) )
+                                      .arg( maxVerBugfix, 3, 10, QChar( '0' ) );
+  QString curVer = QString( "%1%2%3" ).arg( qgisMajor, 3, 10, QChar( '0' ) )
+                                      .arg( qgisMinor, 3, 10, QChar( '0' ) )
+                                      .arg( qgisBugfix, 3, 10, QChar( '0' ) );
 
-  // if still same, check bugfix version (lower range only)
-  if ( minVerBugfix > qgisBugfix )
-    return false;
-
-  // looks like min or max version is the same as our version - that's fine
-  return true;
+  // compare
+  return ( minVer <= curVer && maxVer >= curVer);
 }
 
 
