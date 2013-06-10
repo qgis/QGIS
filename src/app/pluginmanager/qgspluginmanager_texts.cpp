@@ -1,0 +1,97 @@
+#include <QCoreApplication>
+#include "qgspluginmanager.h"
+
+// QMap<QString, QString> QgsPluginManager::mTabDescriptions;
+
+void QgsPluginManager::initTabDescriptions()
+{
+  if( !mTabDescriptions.isEmpty() )
+    return;
+
+  mTabDescriptions.insert( "installed_plugins", tr( "<h3>Installed Plugins</h3>\
+<p>\
+On the left you see the list of <b>installed plugins</b> on your system. Both python and cpp \
+plugins are listed. Some plugins come with your QGIS installation while most of\
+ them are made available via the plugin repositories.\
+</p>\
+\
+<p>\
+You can temporarily enable or disable a plugin.\
+To <i>enable</i> or <i>disable</i> a plugin,\
+ click its checkbox or doubleclick its name...\
+</p>\
+\
+<p>\
+Plugins showing in <span style='color:red'>red</span> are not loaded because there is a problem. Consult the \
+'Invalid' tab to see more details, or to reinstall or uninstall this plugin.\
+</p>\
+") );
+
+
+
+  mTabDescriptions.insert( "upgradeable_plugins", tr( "<h3>Upgradable plugins</h3>\
+\
+<p>\
+Here are <b>upgradeable plugins</b>. It means more recent versions of installed \
+plugins are available in the repositories.\
+</p>\
+\
+") );
+
+
+
+    mTabDescriptions.insert( "get_more_plugins", tr( "<h3>Get more plugins</h3>\
+\
+<p>\
+Here you see the list of all plugins available in the repositories, but which are <b>not yet installed</b>.\
+</p>\
+<p>\
+Click on the name to see details.\
+</p>\
+<p>\
+You can change the sorting via the context menu (right click).\
+</p>\
+<p>\
+A plugin can be downloaded and installed by clicking on it's name, and \
+then click the 'Install plugin' button.\
+</p>\
+\
+\
+") );
+
+
+
+  mTabDescriptions.insert( "new_plugins", tr( "<h3>New plugins</h3>\
+\
+<p>\
+Here you see hot <b>new</b> plugins which can be installed.\
+</p>\
+\
+\
+") );
+
+
+
+  mTabDescriptions.insert( "invalid_plugins", tr( "<h3>Invalid plugins</h3>\
+\
+<p>\
+Plugins in this list here are <b>broken or incompatible</b> with your version of QGIS.\
+</p>\
+\
+<p>\
+Click on an individual plugin; if possible QGIS shows you more information.\
+</p>\
+\
+<p>\
+The main reasons to have invalid plugins is either that this plugin is not build \
+for this version of QGIS. Maybe you can download an other version from <a href=\"http://plugins.qgis.org\">plugins.qgis.org</a>.\
+</p>\
+\
+<p>\
+Another common reason is that a python plugin needs some external python libraries (dependencies). \
+You can install them yourself, depending on your operating system. After a correct \
+install the plugin should work.\
+</p>\
+") );
+
+}

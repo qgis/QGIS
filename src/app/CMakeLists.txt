@@ -149,6 +149,7 @@ SET(QGIS_APP_SRCS
   openstreetmap/qgsosmexportdialog.cpp
 
   pluginmanager/qgspluginmanager.cpp
+  pluginmanager/qgspluginmanager_texts.cpp
   pluginmanager/qgsapppluginmanagerinterface.cpp
   pluginmanager/qgspluginsortfilterproxymodel.cpp
 

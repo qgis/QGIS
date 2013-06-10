@@ -72,6 +72,9 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, Qt::WFlags fl )
   QSettings settings;
   mPluginsDetailsSplitter->restoreState( settings.value( QString( "/Windows/PluginManager/secondSplitterState" ) ).toByteArray() );
 
+  // load translated description strings from qgspluginmanager_texts
+  initTabDescriptions();
+
   // Init models
   mModelPlugins = new QStandardItemModel( 0, 1 );
   mModelProxy = new QgsPluginSortFilterProxyModel( this );
@@ -896,60 +899,54 @@ void QgsPluginManager::setCurrentTab( int idx )
     mOptionsStackedWidget->setCurrentIndex( 0 );
 
     QStringList acceptedStatuses;
-    QString welcomePage;
+    QString tabTitle;
     switch ( idx )
     {
       case 0:
         // installed (statuses ends with Z are for spacers to always sort properly)
         acceptedStatuses << "installed" << "orphan" << "newer" << "upgradeable" << "installedZ" << "upgradeableZ" << "orphanZ" << "newerZZ" << "" ;
-        welcomePage = "installed_plugins";
+        tabTitle = "installed_plugins";
         break;
       case 1:
         // not installed (get more)
         acceptedStatuses << "not installed" << "new" ;
-        welcomePage = "get_more_plugins";
+        tabTitle = "get_more_plugins";
         break;
       case 2:
         // upgradeable
         acceptedStatuses << "upgradeable" ;
-        welcomePage = "upgradeable_plugins";
+        tabTitle = "upgradeable_plugins";
         break;
       case 3:
         // new
         acceptedStatuses << "new" ;
-        welcomePage = "new_plugins";
+        tabTitle = "new_plugins";
         break;
       case 4:
         // invalid
         acceptedStatuses << "invalid" ;
-        welcomePage = "invalid_plugins";
+        tabTitle = "invalid_plugins";
         break;
     }
     mModelProxy->setAcceptedStatuses( acceptedStatuses );
 
     updateTabTitle();
 
-    // load welcome HTML to the detail browser
-    // // // // // // // TODO: after texts are done, read from translations instead.
-    QString welcomeHTML = "";
-    QFile welcomeFile( QgsApplication::pkgDataPath() +  "/resources/plugin_manager/" + welcomePage );
-    if ( welcomeFile.open( QIODevice::ReadOnly ) )
+    // load tab description HTML to the detail browser
+    QString tabInfoHTML = "";
+    QMap<QString, QString>::iterator it = mTabDescriptions.find( tabTitle );
+    if ( it != mTabDescriptions.end() )
     {
-      QTextStream welcomeStream( &welcomeFile );  // Remove from includes too.
-      welcomeStream.setCodec( "UTF-8" );
       QString myStyle = QgsApplication::reportStyleSheet();
-      welcomeHTML += "<style>" + myStyle + "</style>";
-      while ( !welcomeStream.atEnd() )
-      {
-        welcomeHTML += welcomeStream.readLine();
-      }
+      tabInfoHTML += "<style>" + myStyle + "</style>";
+      tabInfoHTML = it.value();
     }
-    tbDetails->setHtml( welcomeHTML );
-  }
+    tbDetails->setHtml( tabInfoHTML );
 
-  // disable buttons
-  buttonInstall->setEnabled( false );
-  buttonUninstall->setEnabled( false );
+    // disable buttons
+    buttonInstall->setEnabled( false );
+    buttonUninstall->setEnabled( false );
+  }
 }
 
 
