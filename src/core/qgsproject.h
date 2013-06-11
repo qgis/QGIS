@@ -295,12 +295,12 @@ class CORE_EXPORT QgsProject : public QObject
     /**Convenience function to set snap settings per layer
       @note added in version 1.9*/
     void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance,
-                                  bool avoidIntersection );
+                                  bool avoidIntersection, QString topologyGroup );
 
     /**Convenience function to query snap settings of a layer
       @note added in version 1.9*/
-    bool snapSettingsForLayer( const QString& layerId, bool& enabled, QgsSnapper::SnappingType& type, QgsTolerance::UnitType& units, double& tolerance,
-                               bool& avoidIntersection ) const;
+    bool snapSettingsForLayer(const QString& layerId, bool& enabled, QgsSnapper::SnappingType& type, QgsTolerance::UnitType& units, double& tolerance,
+                               bool& avoidIntersection, QString &topologyGroup) const;
 
     /**Convenience function to set topological editing
         @note added in version 1.9*/
@@ -396,7 +396,7 @@ class CORE_EXPORT QgsProject : public QObject
     QHash< QString, QPair< QString, bool> > mEmbeddedLayers;
 
     void snapSettings( QStringList& layerIdList, QStringList& enabledList, QStringList& snapTypeList, QStringList& snapUnitList, QStringList& toleranceUnitList,
-                       QStringList& avoidIntersectionList ) const;
+                       QStringList& avoidIntersectionList, QStringList& topologyGroupList) const;
 
 }; // QgsProject
 

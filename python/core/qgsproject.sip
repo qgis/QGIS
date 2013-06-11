@@ -259,12 +259,12 @@ class QgsProject : QObject
     /**Convenience function to set snap settings per layer
       @note added in version 1.9*/
     void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance,
-                                  bool avoidIntersection );
+                                  bool avoidIntersection, QString topologicalGroup );
 
     /**Convenience function to query snap settings of a layer
       @note added in version 1.9*/
     bool snapSettingsForLayer( const QString& layerId, bool& enabled /Out/, QgsSnapper::SnappingType& type /Out/, QgsTolerance::UnitType& units /Out/, double& tolerance /Out/,
-                               bool& avoidIntersection /Out/ ) const;
+                               bool& avoidIntersection /Out/, QString& topologicalGroup /Out/ ) const;
 
     /**Convenience function to set topological editing
         @note added in version 1.9*/
