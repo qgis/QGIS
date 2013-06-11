@@ -97,7 +97,7 @@ mPlugins = dict of dicts {id : {
 
 
 
-
+translatableAttributes = ["name", "description", "tags"]
 
 reposGroup = "/Qgis/plugin-repos"
 settingsGroup = "/Qgis/plugin-installer"
@@ -105,7 +105,7 @@ seenPluginGroup = "/Qgis/plugin-seen"
 
 
 # Repositories: (name, url, possible depreciated url)
-officialRepo = ("QGIS Official Repository", "http://plugins.qgis.org/plugins/plugins.xml","http://plugins.qgis.org/plugins")
+officialRepo = ( QCoreApplication.translate("QgsPluginInstaller", "QGIS Official Plugin Repository"), "http://plugins.qgis.org/plugins/plugins.xml","http://plugins.qgis.org/plugins")
 depreciatedRepos = [
     ("Old QGIS Official Repository",   "http://pyqgis.org/repo/official"),
     ("Old QGIS Contributed Repository","http://pyqgis.org/repo/contributed"),
@@ -585,7 +585,7 @@ class Plugins(QObject):
   # ----------------------------------------- #
   def getInstalledPlugin(self, key, readOnly, testLoad=True):
     """ get the metadata of an installed plugin """
-    def pluginMetadata(fct):
+    def metadataParser(fct):
         """ plugin metadata parser reimplemented from qgis.utils
             for better control on wchich module is examined
             in case there is an installed plugin masking a core one """
@@ -598,6 +598,17 @@ class Plugins(QObject):
           return cp.get('general', fct)
         except:
           return ""
+
+    def pluginMetadata(fct):
+        """ calls metadataParser for current l10n.
+            If failed, fallbacks to the standard metadata """
+        locale = QLocale.system().name()
+        if locale and fct in translatableAttributes:
+          value = metadataParser( "%s[%s]" % (fct, locale ) )
+          if value: return value
+          value = metadataParser( "%s[%s]" % (fct, locale.split("_")[0] ) )
+          if value: return value
+        return metadataParser( fct )
 
     if readOnly:
       path = QDir.cleanPath( QgsApplication.pkgDataPath() ) + "/python/plugins/" + key
@@ -739,13 +750,15 @@ class Plugins(QObject):
             self.mPlugins[key] = plugin   # just add a new plugin
           else:
             # update local plugin with remote metadata
-            # only use remote icon if local one is not available
-            if self.mPlugins[key]["icon"] == key and plugin["icon"]:
-                self.mPlugins[key]["icon"] = plugin["icon"]
+            # name, description, icon: only use remote data if local one is not available (because of i18n and to not download the icon)
+            for attrib in translatableAttributes + ["icon"]:
+                if not self.mPlugins[key][attrib] and plugin[attrib]:
+                    self.mPlugins[key][attrib] = plugin[attrib]
             # other remote metadata is preffered:
             for attrib in ["name", "description", "category", "tags", "changelog", "author_name", "author_email", "homepage",
                            "tracker", "code_repository", "experimental", "version_available", "zip_repository",
-                           "download_url", "filename", "downloads", "average_vote", "rating_votes"]:
+                           "download_url", "filename", "downloads", "average_vote", "rating_votes"]
+                           and not attrib in translatableAttributes:
                 if plugin[attrib]:
                     self.mPlugins[key][attrib] = plugin[attrib]
           # set status
