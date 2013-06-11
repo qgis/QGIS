@@ -383,7 +383,7 @@ class Repositories(QObject):
       self.mRepositories[key]["QPNAM"] = QPNetworkAccessManager()
 
       self.mRepositories[key]["Relay"] = Relay(key)
-      self.mRepositories[key]["xmlData"] = QBuffer()
+      self.mRepositories[key]["xmlData"] = None
       self.mRepositories[key]["state"] = 0
       self.mRepositories[key]["error"] = ""
     settings.endGroup()
@@ -417,7 +417,7 @@ class Repositories(QObject):
   # ----------------------------------------- #
   def killConnection(self, key):
     """ kill the fetching on demand """
-    if self.mRepositories[key]["xmlData"].isRunning():
+    if self.mRepositories[key]["xmlData"] and self.mRepositories[key]["xmlData"].isRunning():
       self.mRepositories[key]["QPNAM"].finished.disconnect()
       self.mRepositories[key]["xmlData"].abort()
 
