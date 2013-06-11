@@ -172,7 +172,7 @@ def removeDir(path):
 
 # --- class QPNetworkAccessManager  ----------------------------------------------------------------------- #
 # --- It's a temporary workaround for broken proxy handling in Qt ------------------------- #
-class QPNetworkAccessManager(QNetworkAccessManager):    
+class QPNetworkAccessManager(QNetworkAccessManager):
   def __init__(self,*args):
     QNetworkAccessManager.__init__(self,)
     settings = QSettings()
@@ -395,17 +395,15 @@ class Repositories(QObject):
     self.mRepositories[key]["state"] = 1
     url = QUrl(self.mRepositories[key]["url"])
     v=str(QGis.QGIS_VERSION_INT)
+    url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
 
-    
-    url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3], v[3:5]]]) )
-    
     self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
     self.mRepositories[key]["QRequest"].setAttribute( QNetworkRequest.User, key)
     self.mRepositories[key]["xmlData"] = self.mRepositories[key]["QPNAM"].get( self.mRepositories[key]["QRequest"] )
     self.mRepositories[key]["xmlData"].setProperty( 'reposName', key)
     self.mRepositories[key]["xmlData"].downloadProgress.connect( self.mRepositories[key]["Relay"].dataReadProgress )
-    self.mRepositories[key]["QPNAM"].finished.connect( self.xmlDownloaded )      
-    
+    self.mRepositories[key]["QPNAM"].finished.connect( self.xmlDownloaded )
+
 
   # ----------------------------------------- #
   def fetchingInProgress(self):
@@ -757,8 +755,8 @@ class Plugins(QObject):
             # other remote metadata is preffered:
             for attrib in ["name", "description", "category", "tags", "changelog", "author_name", "author_email", "homepage",
                            "tracker", "code_repository", "experimental", "version_available", "zip_repository",
-                           "download_url", "filename", "downloads", "average_vote", "rating_votes"]
-                           and not attrib in translatableAttributes:
+                           "download_url", "filename", "downloads", "average_vote", "rating_votes"]:
+              if not attrib in translatableAttributes:
                 if plugin[attrib]:
                     self.mPlugins[key][attrib] = plugin[attrib]
           # set status
