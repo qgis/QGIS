@@ -121,7 +121,7 @@ class QgsFeature
 
   if (fieldIdx >= 0)
   {
-      QVariant& v = sipCpp->attribute(fieldIdx);
+      QVariant v = sipCpp->attribute(fieldIdx);
       if ( v.isNull() )
         sipRes = Py_None;
       else
@@ -129,7 +129,7 @@ class QgsFeature
   }
   else if( altfieldIdx >= 0 )
   {
-      QVariant& v = sipCpp->attribute(altfieldIdx);
+      QVariant v = sipCpp->attribute(altfieldIdx);
       if ( v.isNull() )
         sipRes = Py_None;
       else
@@ -218,7 +218,7 @@ class QgsFeature
   }
   else
   {
-    QVariant& v = sipCpp->attribute(fieldIdx);
+    QVariant v = sipCpp->attribute(fieldIdx);
     if ( v.isNull() )
       sipRes = Py_None;
     else
@@ -463,7 +463,7 @@ class QgsFeature
   }
   else
   {
-    QVariant& v = sipCpp->attribute(fieldIdx);
+    QVariant v = sipCpp->attribute(fieldIdx);
     if ( v.isNull() )
       sipRes = Py_None;
     else
