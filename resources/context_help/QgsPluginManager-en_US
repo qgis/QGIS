@@ -17,7 +17,7 @@ Manage and install plugins.
 </a>
 <p>
 This tab shows you the list of currently installed plugins on your system. Both
-python and cpp plugins are listed. 
+python and C++ plugins are listed. 
 </p>
 <p>
 You can enable or disable them by clicking the checkbox in front of the name.<br/>

@@ -1007,7 +1007,7 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
 
   // rendering
   QString ddScaleVisInfo = tr( "Value &lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1<br>"
-                               "Value of 0 toggles off specific limit" );
+                               "Value of 0 disables the specific limit." );
   mScaleBasedVisibilityDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ScaleVisibility ),
                                     QgsDataDefinedButton::AnyType, QgsDataDefinedButton::boolDesc() );
   mScaleBasedVisibilityDDBtn->registerCheckedWidget( mScaleBasedVisibilityChkBx );

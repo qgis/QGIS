@@ -64,7 +64,7 @@ then click the 'Install plugin' button.\
   mTabDescriptions.insert( "new_plugins", tr( "<h3>New plugins</h3>\
 \
 <p>\
-Here you see hot <b>new</b> plugins which can be installed.\
+Here you see brand <b>new</b> plugins which can be installed.\
 </p>\
 \
 \
@@ -83,7 +83,7 @@ Click on an individual plugin; if possible QGIS shows you more information.\
 </p>\
 \
 <p>\
-The main reasons to have invalid plugins is either that this plugin is not build \
+The main reasons to have invalid plugins is that this plugin is not build \
 for this version of QGIS. Maybe you can download an other version from <a href=\"http://plugins.qgis.org\">plugins.qgis.org</a>.\
 </p>\
 \

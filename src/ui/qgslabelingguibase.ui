@@ -5031,7 +5031,7 @@ font-style: italic;</string>
                                  </sizepolicy>
                                 </property>
                                 <property name="toolTip">
-                                 <string>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1.&lt;br&gt;Value of 0 toggles off specific limit.</string>
+                                 <string>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1.&lt;br&gt;Value of 0 disables the specific limit.</string>
                                 </property>
                                 <property name="prefix">
                                  <string>Minimum </string>
@@ -5060,7 +5060,7 @@ font-style: italic;</string>
                                  </sizepolicy>
                                 </property>
                                 <property name="toolTip">
-                                 <string>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1.&lt;br&gt;Value of 0 toggles off specific limit.</string>
+                                 <string>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1.&lt;br&gt;Value of 0 disables the specific limit.</string>
                                 </property>
                                 <property name="prefix">
                                  <string>Maximum </string>
