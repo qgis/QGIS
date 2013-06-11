@@ -22,3 +22,15 @@ __date__ = 'January 2007'
 __copyright__ = '(C) 2007, Martin Dobias'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
+
+from PyQt4.QtCore import QPyNullVariant
+from types import MethodType
+
+# Add a __nonzero__ method onto QPyNullVariant so we can check for null values easier.
+#   >>> value = QPyNullVariant("int")
+#   >>> if value:
+#   >>>	  print "Not a null value"
+def __nonzero__(self):
+    return False
+
+QPyNullVariant.__nonzero__ = MethodType(__nonzero__, None, QPyNullVariant)
