@@ -117,7 +117,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         threshold = self.settings.value("pythonConsole/autoCompThreshold", 2, type=int)
         self.setAutoCompletionThreshold(threshold)
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')
-        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True)
+        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True, type=bool)
         if autoCompEnabled:
             if radioButtonSource == 'fromDoc':
                 self.setAutoCompletionSource(self.AcsDocument)
@@ -135,8 +135,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.historyDlg.activateWindow()
 
     def autoCompleteKeyBinding(self):
-        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource")
-        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled")
+        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')
+        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True, type=bool)
         if autoCompEnabled:
             if radioButtonSource == 'fromDoc':
                 self.autoCompleteFromDocument()
@@ -195,7 +195,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         elif chekBoxPreparedAPI:
             self.api.loadPrepared(self.settings.value("pythonConsole/preparedAPIFile"))
         else:
-            apiPath = self.settings.value("pythonConsole/userAPI")
+            apiPath = self.settings.value("pythonConsole/userAPI", [])
             for i in range(0, len(apiPath)):
                 self.api.load(unicode(apiPath[i]))
             self.api.prepare()
@@ -409,7 +409,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.showNext()
         ## TODO: press event for auto-completion file directory
         else:
-            if self.settings.value("pythonConsole/autoCloseBracket", True):
+            if self.settings.value("pythonConsole/autoCloseBracket", True, type=bool):
                 t = unicode(e.text())
                 ## Close bracket automatically
                 if t in self.opening:
