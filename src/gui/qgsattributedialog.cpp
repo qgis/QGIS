@@ -393,11 +393,11 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
     mFormNr = smFormCounter++;
 
-    QString form =  QString( "_qgis_featureform_%1 = wrapinstance( %2, QtGui.QDialog )" )
+    QString form =  QString( "_qgis_featureform_%1 = sip.wrapinstance( %2, QtGui.QDialog )" )
                     .arg( mFormNr )
                     .arg(( unsigned long ) mDialog );
 
-    QString layer = QString( "_qgis_layer_%1 = wrapinstance( %2, qgis.core.QgsVectorLayer )" )
+    QString layer = QString( "_qgis_layer_%1 = sip.wrapinstance( %2, qgis.core.QgsVectorLayer )" )
                     .arg( vl->id() )
                     .arg(( unsigned long ) vl );
 
@@ -405,7 +405,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     // return a ID that is an invalid python variable when we have new unsaved features.
     QDateTime dt = QDateTime::currentDateTime();
     QString featurevarname = QString( "_qgis_feature_%1" ).arg( dt.toString( "yyyyMMddhhmmsszzz" ) );
-    QString feature = QString( "%1 = wrapinstance( %2, qgis.core.QgsFeature )" )
+    QString feature = QString( "%1 = sip.wrapinstance( %2, qgis.core.QgsFeature )" )
                       .arg( featurevarname )
                       .arg(( unsigned long ) mFeature );
 
