@@ -22,14 +22,14 @@ typedef QVector<QVariant> QgsAttributes;
     // Set the list elements.
     for (int i = 0; i < sipCpp->size(); ++i)
     {
-      const QVariant& v = sipCpp->at(i);
+      QVariant* v = new QVariant(sipCpp->at(i));
       PyObject *tobj;
 
-      if ( v.isNull() )
+      if ( v->isNull() )
       {
         tobj = Py_None;
       }
-      else if ((tobj = sipConvertFromType(&v, sipType_QVariant,Py_None)) == NULL)
+      else if ((tobj = sipConvertFromType(v, sipType_QVariant,Py_None)) == NULL)
       {
         return NULL;
       }
@@ -121,7 +121,7 @@ class QgsFeature
 
   if (fieldIdx >= 0)
   {
-      const QVariant& v = sipCpp->attribute(fieldIdx);
+      QVariant& v = sipCpp->attribute(fieldIdx);
       if ( v.isNull() )
         sipRes = Py_None;
       else
@@ -129,7 +129,7 @@ class QgsFeature
   }
   else if( altfieldIdx >= 0 )
   {
-      const QVariant& v = sipCpp->attribute(altfieldIdx);
+      QVariant& v = sipCpp->attribute(altfieldIdx);
       if ( v.isNull() )
         sipRes = Py_None;
       else
@@ -200,11 +200,11 @@ class QgsFeature
   }
   else
   {
-    const QVariant& v = attrs[a0];
-    if ( v.isNull() )
+    QVariant* v = new QVariant(attrs[a0]);
+    if ( v->isNull() )
       sipRes = Py_None;
     else
-      sipRes = sipConvertFromInstance( &v, sipClass_QVariant, Py_None );
+      sipRes = sipConvertFromInstance( v, sipClass_QVariant, Py_None );
   }
 %End
 
@@ -218,7 +218,7 @@ class QgsFeature
   }
   else
   {
-    const QVariant& v = sipCpp->attribute(fieldIdx);
+    QVariant& v = sipCpp->attribute(fieldIdx);
     if ( v.isNull() )
       sipRes = Py_None;
     else
@@ -258,7 +258,7 @@ class QgsFeature
   {
     if ( a1Wrapper == Py_None )
     {
-      sipCpp->setAttribute(a0, QVariant( QVariant::Int ) );
+      sipCpp->setAttribute(*a0, QVariant( QVariant::Int ) );
     }
     else
     {
@@ -422,7 +422,7 @@ class QgsFeature
   {
     if ( a1Wrapper == Py_None )
     {
-      sipCpp->setAttribute(a0, QVariant( QVariant::Int ) );
+      sipCpp->setAttribute(*a0, QVariant( QVariant::Int ) );
     }
     else
     {
@@ -463,7 +463,7 @@ class QgsFeature
   }
   else
   {
-    const QVariant& v = sipCpp->attribute(fieldIdx);
+    QVariant& v = sipCpp->attribute(fieldIdx);
     if ( v.isNull() )
       sipRes = Py_None;
     else
