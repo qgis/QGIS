@@ -75,13 +75,13 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
             if element.parameters:
                 pt = self.getLinkPointForParameter(-1)
                 x = self.getXPositionForFoldButton()
-                pt = QtCore.QPointF(x, pt.y() + 3)
+                pt = QtCore.QPointF(x, pt.y() + 2)
                 self.inButton = FoldButtonGraphicItem(pt, self.foldInput)
                 self.inButton.setParentItem(self)
             if element.outputs:
                 pt = self.getLinkPointForOutput(-1)
                 x = self.getXPositionForFoldButton()
-                pt = QtCore.QPointF(x, pt.y() + 3)
+                pt = QtCore.QPointF(x, pt.y() + 2)
                 self.outButton = FoldButtonGraphicItem(pt, self.foldOutput)
                 self.outButton.setParentItem(self)
 
@@ -109,10 +109,10 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         fm = QtGui.QFontMetricsF(font)
         numParams = 0 if self.inputFolded else len(self.element.parameters)
         numOutputs = 0 if self.outputFolded else len(self.element.outputs)
-        numElements = numParams + numOutputs + 3
-        h = (fm.height() * 1.2) * numElements
-        rect = QtCore.QRectF(-(ModelerGraphicItem.BOX_WIDTH + 2)/2, -(ModelerGraphicItem.BOX_HEIGHT + 2)/2,
-                             ModelerGraphicItem.BOX_WIDTH + 2, ModelerGraphicItem.BOX_HEIGHT + h)
+        hUp = (fm.height() * 1.2) * (numParams + 2)
+        hDown = (fm.height() * 1.2) * (numOutputs + 2)
+        rect = QtCore.QRectF(-(ModelerGraphicItem.BOX_WIDTH + 2)/2, -(ModelerGraphicItem.BOX_HEIGHT + 2)/2 - hUp,
+                             ModelerGraphicItem.BOX_WIDTH + 2, ModelerGraphicItem.BOX_HEIGHT + hDown + hUp)
         return rect
 
     def mouseDoubleClickEvent(self, event):
@@ -190,8 +190,13 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
 
         rect = QtCore.QRectF(-(ModelerGraphicItem.BOX_WIDTH + 2)/2.0, -(ModelerGraphicItem.BOX_HEIGHT + 2)/2.0,
                              ModelerGraphicItem.BOX_WIDTH + 2, ModelerGraphicItem.BOX_HEIGHT + 2)
-        painter.setPen(QtGui.QPen(QtCore.Qt.gray, 1))
-        painter.setBrush(QtGui.QBrush(QtCore.Qt.white, QtCore.Qt.SolidPattern))
+        painter.setPen(QtGui.QPen(QtCore.Qt.gray, 1))        
+        color = QtGui.QColor(125,232, 232)
+        if isinstance(self.element, Parameter):
+            color = QtGui.QColor(179,179, 255)
+        elif isinstance(self.element, GeoAlgorithm):
+            color = QtCore.Qt.white
+        painter.setBrush(QtGui.QBrush(color, QtCore.Qt.SolidPattern))
         painter.drawRect(rect)
         font = QtGui.QFont("Verdana", 8)
         painter.setFont(font)
@@ -208,24 +213,24 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         painter.drawText(pt, text)
         painter.setPen(QtGui.QPen(QtCore.Qt.black))
         if isinstance(self.element, GeoAlgorithm):
-            h = (fm.height() * 1.2)
-            h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
+            h = -(fm.height() * 1.2)
+            h = h - ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
             pt = QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH)/2 + 25, h)
             painter.drawText(pt, "In")
             i = 1
             if not self.inputFolded:
                 for param in self.element.parameters:
                     text = self.getAdjustedText(param.description)
-                    h = (fm.height() * 1.2) * (i + 1)
-                    h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
+                    h = -(fm.height() * 1.2) * (i + 1)
+                    h = h - ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
                     pt = QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH)/2 + 33, h)
                     painter.drawText(pt, text)
                     i += 1
-            h = (fm.height() * 1.2) * (i + 1)
+            i = 1
+            h = (fm.height() * 1.2) 
             h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
             pt = QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH)/2 + 25, h)
             painter.drawText(pt, "Out")
-            i += 1
             if not self.outputFolded:
                 for out in self.element.outputs:
                     text = self.getAdjustedText(out.description)
@@ -245,8 +250,8 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         font = QtGui.QFont("Verdana", 8)
         fm = QtGui.QFontMetricsF(font)
         if isinstance(self.element, GeoAlgorithm):
-            h = (fm.height() * 1.2) * (paramIndex + 2) - fm.height() / 2.0 + 2
-            h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
+            h = -(fm.height() * 1.2) * (paramIndex + 2) - fm.height() / 2.0 + 8
+            h = h - ModelerGraphicItem.BOX_HEIGHT / 2.0
         else:
             h = 0
         return QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH)/2 + offsetX, h)
@@ -257,14 +262,14 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
 
     def getLinkPointForOutput(self, outputIndex):
         if isinstance(self.element, GeoAlgorithm):
-            numParams = 0 if self.inputFolded else len(self.element.parameters)
+            numParams = 0# if self.inputFolded else len(self.element.parameters)
             outputIndex = outputIndex if not self.outputFolded else -1
             text = self.getAdjustedText(self.element.outputs[outputIndex].description)
             font = QtGui.QFont("Verdana", 8)
             fm = QtGui.QFontMetricsF(font)
             w = fm.width(text)
-            h = (fm.height() * 1.2) * (outputIndex + 3 + numParams) - fm.height() / 2.0
-            y = h + ModelerGraphicItem.BOX_HEIGHT / 2.0  + 2
+            h = (fm.height() * 1.2) * (outputIndex + 1) + fm.height() / 2.0
+            y = h + ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
             x = -(ModelerGraphicItem.BOX_WIDTH)/2 + 33 + w + 5 if not self.outputFolded else 10
             return  QtCore.QPointF(x, y)
         else:
@@ -279,15 +284,15 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
 
     def polygon(self):
         font = QtGui.QFont("Verdana", 8)
-        fm = QtGui.QFontMetricsF(font)
-        numElements = len(self.element.parameters) + len(self.element.outputs) + 3
-        h = (fm.height() * 1.2) * numElements
+        fm = QtGui.QFontMetricsF(font)        
+        hUp = (fm.height() * 1.2) * (len(self.element.parameters) + 2)
+        hDown = (fm.height() * 1.2) * (len(self.element.outputs) + 2)
         pol = QtGui.QPolygonF([
-                    QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH + 2)/2, -(ModelerGraphicItem.BOX_HEIGHT + 2)/2),
-                    QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH + 2)/2, (ModelerGraphicItem.BOX_HEIGHT + 2)/2 + h),
-                    QtCore.QPointF((ModelerGraphicItem.BOX_WIDTH + 2)/2, (ModelerGraphicItem.BOX_HEIGHT + 2)/2 + h),
-                    QtCore.QPointF((ModelerGraphicItem.BOX_WIDTH + 2)/2, -(ModelerGraphicItem.BOX_HEIGHT + 2)/2),
-                    QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH + 2)/2, -(ModelerGraphicItem.BOX_HEIGHT + 2)/2)])
+                    QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH + 2)/2, -(ModelerGraphicItem.BOX_HEIGHT + 2)/2  - hUp),
+                    QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH + 2)/2, (ModelerGraphicItem.BOX_HEIGHT + 2)/2 + hDown),
+                    QtCore.QPointF((ModelerGraphicItem.BOX_WIDTH + 2)/2, (ModelerGraphicItem.BOX_HEIGHT + 2)/2 + hDown),
+                    QtCore.QPointF((ModelerGraphicItem.BOX_WIDTH + 2)/2, -(ModelerGraphicItem.BOX_HEIGHT + 2)/2 - hUp),
+                    QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH + 2)/2, -(ModelerGraphicItem.BOX_HEIGHT + 2)/2 - hUp)])
         return pol
 
 class FlatButtonGraphicItem(QtGui.QGraphicsItem):
@@ -315,7 +320,7 @@ class FlatButtonGraphicItem(QtGui.QGraphicsItem):
             painter.setBrush(QtGui.QBrush(QtCore.Qt.lightGray, QtCore.Qt.SolidPattern))
         else:
             painter.setPen(QtGui.QPen(QtCore.Qt.transparent, 1))
-            painter.setBrush(QtGui.QBrush(QtCore.Qt.white, QtCore.Qt.SolidPattern))
+            painter.setBrush(QtGui.QBrush(QtCore.Qt.transparent, QtCore.Qt.SolidPattern))
         painter.drawRect(rect)
         painter.drawPixmap(pt.x(), pt.y(), self.pixmap)
 
