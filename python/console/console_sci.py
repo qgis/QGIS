@@ -189,8 +189,11 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
         self.api = QsciAPIs(self.lexer)
         chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
+        chekBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
         if chekBoxAPI:
-            self.api.loadPrepared( QgsApplication.pkgDataPath() + "/python/qsci_apis/pyqgis_master.pap" )
+            self.api.loadPrepared(QgsApplication.pkgDataPath() + "/python/qsci_apis/pyqgis_master.pap")
+        elif chekBoxPreparedAPI:
+            self.api.loadPrepared(self.settings.value("pythonConsole/preparedAPIFile"))
         else:
             apiPath = self.settings.value("pythonConsole/userAPI")
             for i in range(0, len(apiPath)):
