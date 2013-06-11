@@ -40,9 +40,10 @@ Data structure:
 mRepositories = dict of dicts: {repoName : {"url" unicode,
                                             "enabled" bool,
                                             "valid" bool,
-                                            "QPHttp" QPHttp,
+                                            "QPNAME" QPNetworkAccessManager,
                                             "Relay" Relay, # Relay object for transmitting signals from QPHttp with adding the repoName information
-                                            "xmlData" QBuffer,
+                                            "Request" QNetworkRequest,
+                                            "xmlData" QNetworkReply,
                                             "state" int,   (0 - disabled, 1-loading, 2-loaded ok, 3-error (to be retried), 4-rejected)
                                             "error" unicode}}
 
@@ -169,17 +170,17 @@ def removeDir(path):
 
 
 
-# --- class QPHttp  ----------------------------------------------------------------------- #
+# --- class QPNetworkAccessManager  ----------------------------------------------------------------------- #
 # --- It's a temporary workaround for broken proxy handling in Qt ------------------------- #
-class QPHttp(QHttp):
+class QPNetworkAccessManager(QNetworkAccessManager):    
   def __init__(self,*args):
-    QHttp.__init__(self,*args)
+    QNetworkAccessManager.__init__(self,)
     settings = QSettings()
     settings.beginGroup("proxy")
     if settings.value("/proxyEnabled", False, type=bool):
       self.proxy=QNetworkProxy()
       proxyType = settings.value( "/proxyType", "0", type=unicode)
-      if len(args) > 0 and args[0] in settings.value("/proxyExcludedUrls","", type=unicode):
+      if len(args)>0 and settings.value("/proxyExcludedUrls","", type=unicode).contains(args[0]):
         proxyType = "NoProxy"
       if proxyType in ["1","Socks5Proxy"]: self.proxy.setType(QNetworkProxy.Socks5Proxy)
       elif proxyType in ["2","NoProxy"]: self.proxy.setType(QNetworkProxy.NoProxy)
@@ -194,7 +195,7 @@ class QPHttp(QHttp):
       self.setProxy(self.proxy)
     settings.endGroup()
     return None
-# --- /class QPHttp  ---------------------------------------------------------------------- #
+# --- /class QPNetworkAccessManager  ---------------------------------------------------------------------- #
 
 
 
@@ -216,7 +217,7 @@ class Relay(QObject):
   # ----------------------------------------- #
   def dataReadProgress(self, done, total):
     state = 4
-    if total:
+    if total > 0:
       progress = int(float(done)/float(total)*100)
     else:
       progress = 0
@@ -379,7 +380,8 @@ class Repositories(QObject):
       self.mRepositories[key]["url"] = settings.value(key+"/url", "", type=unicode)
       self.mRepositories[key]["enabled"] = settings.value(key+"/enabled", True, type=bool)
       self.mRepositories[key]["valid"] = settings.value(key+"/valid", True, type=bool)
-      self.mRepositories[key]["QPHttp"] = QPHttp()
+      self.mRepositories[key]["QPNAM"] = QPNetworkAccessManager()
+
       self.mRepositories[key]["Relay"] = Relay(key)
       self.mRepositories[key]["xmlData"] = QBuffer()
       self.mRepositories[key]["state"] = 0
@@ -392,21 +394,18 @@ class Repositories(QObject):
     """ start fetching the repository given by key """
     self.mRepositories[key]["state"] = 1
     url = QUrl(self.mRepositories[key]["url"])
-    path = url.toPercentEncoding(url.path(), "!$&'()*+,;=:@/")
-    path = unicode(path)
     v=str(QGis.QGIS_VERSION_INT)
-    path += "?qgis=%d.%d" % ( int(v[0]), int(v[1:3]) )
-    port = url.port()
-    if port < 0:
-      port = 80
-    self.mRepositories[key]["QPHttp"] = QPHttp(url.host(), port)
-    self.mRepositories[key]["QPHttp"].requestFinished.connect(self.xmlDownloaded)
-    self.mRepositories[key]["QPHttp"].stateChanged.connect(self.mRepositories[key]["Relay"].stateChanged)
-    self.mRepositories[key]["QPHttp"].dataReadProgress.connect(self.mRepositories[key]["Relay"].dataReadProgress)
-    self.connect(self.mRepositories[key]["Relay"], SIGNAL("anythingChanged(unicode, int, int)"), self, SIGNAL("anythingChanged (unicode, int, int)"))
-    i = self.mRepositories[key]["QPHttp"].get(path, self.mRepositories[key]["xmlData"])
-    self.httpId[i] = key
 
+    
+    url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3], v[3:5]]]) )
+    
+    self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
+    self.mRepositories[key]["QRequest"].setAttribute( QNetworkRequest.User, key)
+    self.mRepositories[key]["xmlData"] = self.mRepositories[key]["QPNAM"].get( self.mRepositories[key]["QRequest"] )
+    self.mRepositories[key]["xmlData"].setProperty( 'reposName', key)
+    self.mRepositories[key]["xmlData"].downloadProgress.connect( self.mRepositories[key]["Relay"].dataReadProgress )
+    self.mRepositories[key]["QPNAM"].finished.connect( self.xmlDownloaded )      
+    
 
   # ----------------------------------------- #
   def fetchingInProgress(self):
@@ -420,23 +419,22 @@ class Repositories(QObject):
   # ----------------------------------------- #
   def killConnection(self, key):
     """ kill the fetching on demand """
-    if self.mRepositories[key]["QPHttp"].state():
-      self.mRepositories[key]["QPHttp"].abort()
+    if self.mRepositories[key]["xmlData"].isRunning():
+      self.mRepositories[key]["QPNAM"].finished.disconnect()
+      self.mRepositories[key]["xmlData"].abort()
 
 
   # ----------------------------------------- #
-  def xmlDownloaded(self,nr,state):
+  def xmlDownloaded(self, reply):
     """ populate the plugins object with the fetched data """
-    if not self.httpId.has_key(nr):
-      return
-    reposName = self.httpId[nr]
-    if state:                             # fetching failed
+    reposName = reply.property( 'reposName' )
+    if reply.error() != QNetworkReply.NoError:                             # fetching failed
       self.mRepositories[reposName]["state"] =  3
-      self.mRepositories[reposName]["error"] = self.mRepositories[reposName]["QPHttp"].errorString()
+      self.mRepositories[reposName]["error"] = str(reply.error())
     else:
       repoData = self.mRepositories[reposName]["xmlData"]
       reposXML = QDomDocument()
-      reposXML.setContent(repoData.data())
+      reposXML.setContent(repoData.readAll())
       pluginNodes = reposXML.elementsByTagName("pyqgis_plugin")
       if pluginNodes.size():
         for i in range(pluginNodes.size()):
