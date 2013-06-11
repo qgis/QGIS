@@ -156,14 +156,14 @@ build-stamp: debian/build/CMakeCache.txt
 	dh_testdir
 
 ifneq (,$(findstring $(DISTRIBUTION),"squeeze lucid"))
-	perl -0777 -i.bak -pe 's/^%Module\(name=(.*),\s*version=(\d+),\s*keyword_arguments="Optional"\s*\)/%Module $$1 $$2/m;' python/core/core.sip python/gui/gui.sip python/analysis/analysis.sip
+	perl -0777 -i.bak -pe 's/^%Module\(name=(.*),\s*version=(\d+),\s*keyword_arguments="Optional"\s*\)/%Module $$1 $$2/m;' python/core/core.sip python/gui/gui.sip python/analysis/analysis.sip python/analysis/network/networkanalysis.sip
 endif
 
 	# Add here commands to compile the package.
 	$(MAKE) -C debian/build
 
 ifneq (,$(findstring $(DISTRIBUTION),"squeeze lucid"))
-	for i in python/core/core.sip python/gui/gui.sip python/analysis/analysis.sip; do mv $$i.bak $$i; done
+	for i in python/core/core.sip python/gui/gui.sip python/analysis/analysis.sip python/analysis/network/networkanalysis.sip; do mv $$i.bak $$i; done
 endif
 
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
