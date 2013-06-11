@@ -235,7 +235,7 @@
          <property name="currentIndex">
           <number>0</number>
          </property>
-         <widget class="QWidget" name="page">
+         <widget class="QWidget" name="pagePlugins">
           <layout class="QVBoxLayout" name="verticalLayout_8">
            <property name="leftMargin">
             <number>2</number>
@@ -279,7 +279,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>&amp;Filters</string>
+                <string>Search</string>
                </property>
                <property name="buddy">
                 <cstring>leFilter</cstring>
@@ -297,23 +297,7 @@
               </widget>
              </item>
              <item>
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>10</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_7">
+              <widget class="QLabel" name="lblIn">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -321,7 +305,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>Search in:</string>
+                <string>in:</string>
                </property>
               </widget>
              </item>
@@ -523,7 +507,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="page_3">
+         <widget class="QWidget" name="pageSettings">
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <property name="leftMargin">
             <number>2</number>
@@ -538,7 +522,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_3">
+            <widget class="QLabel" name="lblSettingsTab">
              <property name="font">
               <font>
                <weight>75</weight>
@@ -615,7 +599,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="label_4">
+               <widget class="QLabel" name="lblCheckUpdates">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
                   <horstretch>0</horstretch>
@@ -672,7 +656,7 @@ p, li { white-space: pre-wrap; }
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_6">
               <item>
-               <widget class="QLabel" name="label_8">
+               <widget class="QLabel" name="lblExperimental">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
                   <horstretch>0</horstretch>
@@ -723,7 +707,7 @@ p, li { white-space: pre-wrap; }
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="label_6">
+            <widget class="QLabel" name="lblRepositories">
              <property name="text">
               <string>Plugin repositories</string>
              </property>
@@ -868,37 +852,10 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item>
-    <widget class="QFrame" name="mButtonBoxFrame">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
      </property>
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0">
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QDialogButtonBox" name="buttonBox">
-        <property name="standardButtons">
-         <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </widget>
    </item>
   </layout>
@@ -931,7 +888,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>buttonAddRep</tabstop>
   <tabstop>buttonEditRep</tabstop>
   <tabstop>buttonDeleteRep</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
