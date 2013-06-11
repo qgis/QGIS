@@ -24,16 +24,15 @@ __copyright__ = '(C) 2007, Martin Dobias'
 __revision__ = '$Format:%H$'
 
 try:
-	# Add a __nonzero__ method onto QPyNullVariant so we can check for null values easier.
-	#   >>> value = QPyNullVariant("int")
-	#   >>> if value:
-	#   >>>	  print "Not a null value"
-	from types import MethodType
-    from PyQt4.QtCore import QPyNullVariant 
+    # Add a __nonzero__ method onto QPyNullVariant so we can check for null values easier.
+    #   >>> value = QPyNullVariant("int")
+    #   >>> if value:
+    #   >>>	  print "Not a null value"
+    from types import MethodType
+    from PyQt4.QtCore import QPyNullVariant
     def __nonzero__(self):
         return False
 
     QPyNullVariant.__nonzero__ = MethodType(__nonzero__, None, QPyNullVariant)
 except ImportError:
     pass
-
