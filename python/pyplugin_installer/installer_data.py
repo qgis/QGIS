@@ -179,7 +179,7 @@ class QPHttp(QHttp):
     if settings.value("/proxyEnabled", False, type=bool):
       self.proxy=QNetworkProxy()
       proxyType = settings.value( "/proxyType", "0", type=unicode)
-      if len(args)>0 and settings.value("/proxyExcludedUrls","", type=unicode).contains(args[0]):
+      if len(args) > 0 and args[0] in settings.value("/proxyExcludedUrls","", type=unicode):
         proxyType = "NoProxy"
       if proxyType in ["1","Socks5Proxy"]: self.proxy.setType(QNetworkProxy.Socks5Proxy)
       elif proxyType in ["2","NoProxy"]: self.proxy.setType(QNetworkProxy.NoProxy)
