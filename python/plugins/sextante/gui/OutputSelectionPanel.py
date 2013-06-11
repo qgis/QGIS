@@ -89,7 +89,7 @@ class OutputSelectionPanel(QWidget):
             files = fileDialog.selectedFiles()
             encoding = unicode(fileDialog.encoding())
             self.output.encoding = encoding
-            filename= unicode(files.first())
+            filename = unicode(files[0])
             self.text.setText(filename)
             settings.setValue("/SextanteQGIS/LastOutputPath", os.path.dirname(filename))
             settings.setValue("/SextanteQGIS/encoding", encoding)
