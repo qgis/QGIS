@@ -643,12 +643,29 @@ class Editor(QsciScintilla):
 
     def keyPressEvent(self, e):
         if self.settings.value("pythonConsole/autoCloseBracketEditor", True, type=bool):
+            startLine, _, endLine, _ = self.getSelection()
             t = unicode(e.text())
             ## Close bracket automatically
             if t in self.opening:
                 i = self.opening.index(t)
-                self.insert(self.closing[i])
-        QsciScintilla.keyPressEvent(self, e)
+                if self.hasSelectedText():
+                    self.beginUndoAction()
+                    selText = self.selectedText()
+                    self.removeSelectedText()
+                    if startLine == endLine:
+                        self.insert(self.opening[i] + selText + self.closing[i])
+                        return
+                    elif startLine < endLine and self.opening[i] in ("'", '"'):
+                        self.insert("'''" + selText + "'''")
+                        return
+                    else:
+                        self.insert(self.closing[i])
+                    self.endUndoAction()
+                else:
+                    self.insert(self.closing[i])
+            QsciScintilla.keyPressEvent(self, e)
+        else:
+            QsciScintilla.keyPressEvent(self, e)
 
     def focusInEvent(self, e):
         pathfile = self.parent.path
