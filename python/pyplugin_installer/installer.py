@@ -485,12 +485,15 @@ class QgsPluginInstaller(QObject):
     """ delete repository connection """
     if not reposName:
       return
+    settings = QSettings()
+    settings.beginGroup(reposGroup)
+    if settings.value(reposName+"/url", "", type=unicode) == officialRepo[1]:
+      QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), self.tr("You can't remove the official QGIS Plugin Repository. You can disable it if needed."))
+      return
     warning = self.tr("Are you sure you want to remove the following repository?") + "\n" + reposName
     if QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), warning , QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
       return
     # delete from the settings, refresh data and repopulate all the widgets
-    settings = QSettings()
-    settings.beginGroup(reposGroup)
     settings.remove(reposName)
     repositories.remove(reposName)
     plugins.removeRepository(reposName)
