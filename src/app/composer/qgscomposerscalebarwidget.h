@@ -64,6 +64,9 @@ class QgsComposerScaleBarWidget: public QWidget, private Ui::QgsComposerScaleBar
     /**Enables/disables the signals of the input gui elements*/
     void blockMemberSignals( bool enable );
 
+    /**Enables/disables controls based on scale bar style*/
+    void toggleStyleSpecificControls( const QString& style );
+
     void connectUpdateSignal();
     void disconnectUpdateSignal();
 };
