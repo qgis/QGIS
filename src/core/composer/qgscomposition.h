@@ -182,6 +182,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     bool printAsRaster() const {return mPrintAsRaster;}
     void setPrintAsRaster( bool enabled ) { mPrintAsRaster = enabled; }
 
+    bool generateWorldFile() const { return mGenerateWorldFile; }
+    void setGenerateWorldFile( bool enabled ) { mGenerateWorldFile = enabled; }
+
+    QgsComposerMap* worldFileMap() const { return mWorldFileMap; }
+    void setWorldFileMap( QgsComposerMap* map ) { mWorldFileMap = map; }
+
     /**Returns true if a composition should use advanced effects such as blend modes
       @note added in 1.9*/
     bool useAdvancedEffects() const {return mUseAdvancedEffects;}
@@ -357,6 +363,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
         @note added in version 1.9*/
     void renderPage( QPainter* p, int page );
 
+    /** Compute world file parameters */
+    void computeWorldFileParameters( double p[6] ) const;
+
     QgsAtlasComposition& atlasComposition() { return mAtlasComposition; }
 
   public slots:
@@ -383,6 +392,11 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Flag if map should be printed as a raster (via QImage). False by default*/
     bool mPrintAsRaster;
+
+    /**Flag if a world file should be generated on raster export */
+    bool mGenerateWorldFile;
+    /** Composer map to use for the world file generation */
+    QgsComposerMap* mWorldFileMap;
 
     /**Flag if advanced visual effects such as blend modes should be used. True by default*/
     bool mUseAdvancedEffects;

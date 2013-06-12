@@ -17,6 +17,8 @@
 #include <qgis.h>
 #include "qgscompositionwidget.h"
 #include "qgscomposition.h"
+#include "qgscomposermap.h"
+#include "qgscomposeritem.h"
 #include <QColorDialog>
 #include <QWidget>
 #include <QPrinter> //for screen resolution
@@ -48,6 +50,29 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
 
     //print as raster
     mPrintAsRasterCheckBox->setChecked( mComposition->printAsRaster() );
+
+    // world file generation
+    mGenerateWorldFileCheckBox->setChecked( mComposition->generateWorldFile() );
+
+    // populate the map list
+    mWorldFileMapComboBox->clear();
+    QList<const QgsComposerMap*> availableMaps = mComposition->composerMapItems();
+    QList<const QgsComposerMap*>::const_iterator mapItemIt = availableMaps.constBegin();
+    for ( ; mapItemIt != availableMaps.constEnd(); ++mapItemIt )
+    {
+      mWorldFileMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ), qVariantFromValue(( void* )*mapItemIt ) );
+    }
+
+    int idx = mWorldFileMapComboBox->findData( qVariantFromValue(( void* )mComposition->worldFileMap() ) );
+    if ( idx != -1 )
+    {
+      mWorldFileMapComboBox->setCurrentIndex( idx );
+    }
+
+    // Connect to addition / removal of maps
+    connect( mComposition, SIGNAL( composerMapAdded( QgsComposerMap* ) ), this, SLOT( onComposerMapAdded( QgsComposerMap* ) ) );
+    connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( onItemRemoved( QgsComposerItem* ) ) );
+
 
     mAlignmentSnapGroupCheckBox->setChecked( mComposition->alignmentSnap() );
     mAlignmentToleranceSpinBox->setValue( mComposition->alignmentSnapTolerance() );
@@ -410,6 +435,70 @@ void QgsCompositionWidget::on_mPrintAsRasterCheckBox_toggled( bool state )
   }
 
   mComposition->setPrintAsRaster( state );
+}
+
+void QgsCompositionWidget::on_mGenerateWorldFileCheckBox_toggled( bool state )
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  mComposition->setGenerateWorldFile( state );
+  mWorldFileMapComboBox->setEnabled( state );
+}
+
+void QgsCompositionWidget::onComposerMapAdded( QgsComposerMap* map )
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  mWorldFileMapComboBox->addItem( tr( "Map %1" ).arg( map->id() ), qVariantFromValue(( void* )map ) );
+  if ( mWorldFileMapComboBox->count() == 1 )
+  {
+    mComposition->setWorldFileMap( map );
+  }
+}
+
+void QgsCompositionWidget::onItemRemoved( QgsComposerItem* item )
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  QgsComposerMap* map = dynamic_cast<QgsComposerMap*>( item );
+  if ( map )
+  {
+    int idx = mWorldFileMapComboBox->findData( qVariantFromValue(( void* )map ) );
+    if ( idx != -1 )
+    {
+      mWorldFileMapComboBox->removeItem( idx );
+    }
+  }
+  if ( mWorldFileMapComboBox->count() == 0 )
+  {
+    mComposition->setWorldFileMap( 0 );
+  }
+}
+
+void QgsCompositionWidget::on_mWorldFileMapComboBox_currentIndexChanged( int index )
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+  if ( index == -1 )
+  {
+    mComposition->setWorldFileMap( 0 );
+  }
+  else
+  {
+    QgsComposerMap* map = reinterpret_cast<QgsComposerMap*>( mWorldFileMapComboBox->itemData( index ).value<void*>() );
+    mComposition->setWorldFileMap( map );
+  }
 }
 
 void QgsCompositionWidget::on_mSnapToGridGroupCheckBox_toggled( bool state )

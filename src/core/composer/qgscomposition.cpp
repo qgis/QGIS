@@ -54,6 +54,8 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
     , mPageHeight( 210 )
     , mSpaceBetweenPages( 10 )
     , mPrintAsRaster( false )
+    , mGenerateWorldFile( false )
+    , mWorldFileMap( 0 )
     , mUseAdvancedEffects( true )
     , mSelectionTolerance( 0.0 )
     , mSnapToGrid( false )
@@ -81,6 +83,8 @@ QgsComposition::QgsComposition()
     mPageHeight( 210 ),
     mSpaceBetweenPages( 10 ),
     mPrintAsRaster( false ),
+    mGenerateWorldFile( false ),
+    mWorldFileMap( 0 ),
     mUseAdvancedEffects( true ),
     mSelectionTolerance( 0.0 ),
     mSnapToGrid( false ),
@@ -420,6 +424,12 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   compositionElem.setAttribute( "printResolution", mPrintResolution );
   compositionElem.setAttribute( "printAsRaster", mPrintAsRaster );
 
+  compositionElem.setAttribute( "generateWorldFile", mGenerateWorldFile ? 1 : 0 );
+  if ( mGenerateWorldFile && mWorldFileMap )
+  {
+    compositionElem.setAttribute( "worldFileMap", mWorldFileMap->id() );
+  }
+
   compositionElem.setAttribute( "alignmentSnap", mAlignmentSnap ? 1 : 0 );
   compositionElem.setAttribute( "alignmentSnapTolerance", mAlignmentSnapTolerance );
 
@@ -504,6 +514,8 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
 
   mPrintAsRaster = compositionElem.attribute( "printAsRaster" ).toInt();
   mPrintResolution = compositionElem.attribute( "printResolution", "300" ).toInt();
+
+  mGenerateWorldFile = compositionElem.attribute( "generateWorldFile", "0" ).toInt() == 1 ? true : false;
 
   updatePaperItems();
 
@@ -2174,3 +2186,64 @@ bool QgsComposition::nearestItem( const QMap< double, const QgsComposerItem* >& 
   }
 }
 
+void QgsComposition::computeWorldFileParameters( double p[6] ) const
+{
+  //
+  // Word file parameters : affine transformation parameters from pixel coordinates to map coordinates
+
+  if ( !mWorldFileMap )
+  {
+    return;
+  }
+
+  QRectF brect = mWorldFileMap->boundingRect();
+  QgsRectangle extent = mWorldFileMap->extent();
+
+  double alpha = mWorldFileMap->rotation() / 180 * M_PI;
+
+  double xr = extent.width() / brect.width();
+  double yr = extent.height() / brect.height();
+
+  double XC = extent.center().x();
+  double YC = extent.center().y();
+
+  // get the extent for the page
+  double xmin = extent.xMinimum() - mWorldFileMap->transform().dx() * xr;
+  double ymax = extent.yMaximum() + mWorldFileMap->transform().dy() * yr;
+  QgsRectangle paperExtent( xmin, ymax - paperHeight() * yr, xmin + paperWidth() * xr, ymax );
+
+  double X0 = paperExtent.xMinimum();
+  double Y0 = paperExtent.yMinimum();
+
+  int widthPx = ( int )( printResolution() * paperWidth() / 25.4 );
+  int heightPx = ( int )( printResolution() * paperHeight() / 25.4 );
+
+  double Ww = paperExtent.width() / widthPx;
+  double Hh = paperExtent.height() / heightPx;
+
+  // scaling matrix
+  double s[6];
+  s[0] = Ww;
+  s[1] = 0;
+  s[2] = X0;
+  s[3] = 0;
+  s[4] = -Hh;
+  s[5] = Y0 + paperExtent.height();
+
+  // rotation matrix
+  double r[6];
+  r[0] = cos( alpha );
+  r[1] = -sin( alpha );
+  r[2] = XC * ( 1 - cos( alpha ) ) + YC * sin( alpha );
+  r[3] = sin( alpha );
+  r[4] = cos( alpha );
+  r[5] = - XC * sin( alpha ) + YC * ( 1 - cos( alpha ) );
+
+  // result = rotation x scaling = rotation(scaling(X))
+  p[0] = r[0] * s[0] + r[1] * s[3];
+  p[1] = r[0] * s[1] + r[1] * s[4];
+  p[2] = r[0] * s[2] + r[1] * s[5] + r[2];
+  p[3] = r[3] * s[0] + r[4] * s[3];
+  p[4] = r[3] * s[1] + r[4] * s[4];
+  p[5] = r[3] * s[2] + r[4] * s[5] + r[5];
+}
