@@ -50,8 +50,35 @@ void QgsNumericScaleBarStyle::draw( QPainter* p, double xOffset ) const
 
   p->save();
   p->setFont( mScaleBar->font() );
-  p->setPen( QColor( 0, 0, 0 ) );
-  mScaleBar->drawText( p, mScaleBar->pen().widthF() + mScaleBar->boxContentSpace(), mScaleBar->boxContentSpace() + mScaleBar->fontAscentMillimeters( mScaleBar->font() ), scaleText(), mScaleBar->font() );
+  p->setPen( mScaleBar->fontColor() );
+
+  //call QgsComposerItem's pen() function, since that refers to the frame pen
+  //and QgsComposerScalebar's pen() function refers to the scale bar line width,
+  //which is not used for numeric scale bars. Divide the pen width by 2 since
+  //half the width of the frame is drawn outside the item.
+  double penWidth = mScaleBar->QgsComposerItem::pen().widthF() / 2.0;
+  double margin = mScaleBar->boxContentSpace();
+  //map scalebar alignment to Qt::AlignmentFlag type
+  Qt::AlignmentFlag hAlign;
+  switch ( mScaleBar->alignment() )
+  {
+    case QgsComposerScaleBar::Left:
+      hAlign = Qt::AlignLeft;
+      break;
+    case QgsComposerScaleBar::Middle:
+      hAlign = Qt::AlignHCenter;
+      break;
+    case QgsComposerScaleBar::Right:
+      hAlign = Qt::AlignRight;
+      break;
+    default:
+      hAlign = Qt::AlignLeft;
+      break;
+  }
+
+  //text destination is item's rect, excluding the margin and frame
+  QRectF painterRect( penWidth + margin, penWidth + margin, mScaleBar->rect().width() - 2 * penWidth - 2 * margin, mScaleBar->rect().height() - 2 * penWidth - 2 * margin );
+  mScaleBar->drawText( p, painterRect, scaleText(), mScaleBar->font(), hAlign, Qt::AlignTop );
 
   p->restore();
 }

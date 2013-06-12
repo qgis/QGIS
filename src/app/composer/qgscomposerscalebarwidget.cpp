@@ -460,6 +460,8 @@ void QgsComposerScaleBarWidget::toggleStyleSpecificControls( const QString& styl
     mGroupBoxSegments->setCollapsed( true );
     mLabelBarSpaceSpinBox->setEnabled( false );
     mLineWidthSpinBox->setEnabled( false );
+    mColorPushButton->setEnabled( false );
+    mStrokeColorPushButton->setEnabled( false );
   }
   else
   {
@@ -468,6 +470,8 @@ void QgsComposerScaleBarWidget::toggleStyleSpecificControls( const QString& styl
     mGroupBoxSegments->setEnabled( true );
     mLabelBarSpaceSpinBox->setEnabled( true );
     mLineWidthSpinBox->setEnabled( true );
+    mColorPushButton->setEnabled( true );
+    mStrokeColorPushButton->setEnabled( true );
   }
 }
 
