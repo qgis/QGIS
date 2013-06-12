@@ -62,7 +62,7 @@ class CORE_EXPORT QgsRasterRendererRegistry
 
     /**Creates a default renderer for a raster drawing style (considering user options such as default contrast enhancement).
         Caller takes ownership*/
-    QgsRasterRenderer* defaultRendererForDrawingStyle( const QgsRasterLayer::DrawingStyle&  theDrawingStyle, QgsRasterDataProvider* provider ) const;
+    QgsRasterRenderer* defaultRendererForDrawingStyle( const QgsRaster::DrawingStyle&  theDrawingStyle, QgsRasterDataProvider* provider ) const;
 
   protected:
     QgsRasterRendererRegistry();

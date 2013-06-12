@@ -107,7 +107,7 @@ QList< QgsRasterRendererRegistryEntry > QgsRasterRendererRegistry::entries() con
   return result;
 }
 
-QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( const QgsRasterLayer::DrawingStyle&  theDrawingStyle, QgsRasterDataProvider* provider ) const
+QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( const QgsRaster::DrawingStyle&  theDrawingStyle, QgsRasterDataProvider* provider ) const
 {
   if ( !provider || provider->bandCount() < 1 )
   {
@@ -118,7 +118,7 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
   QgsRasterRenderer* renderer = 0;
   switch ( theDrawingStyle )
   {
-    case QgsRasterLayer::PalettedColor:
+    case QgsRaster::PalettedColor:
     {
       int grayBand = 1; //reasonable default
       QList<QgsColorRampShader::ColorRampItem> colorEntries = provider->colorTable( grayBand );
@@ -148,8 +148,8 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
           colorArraySize );
     }
     break;
-    case QgsRasterLayer::MultiBandSingleBandGray:
-    case QgsRasterLayer::SingleBandGray:
+    case QgsRaster::MultiBandSingleBandGray:
+    case QgsRaster::SingleBandGray:
     {
       int grayBand = 1;
       renderer = new QgsSingleBandGrayRenderer( provider, grayBand );
@@ -161,7 +161,7 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
       (( QgsSingleBandGrayRenderer* )renderer )->setContrastEnhancement( ce );
       break;
     }
-    case QgsRasterLayer::SingleBandPseudoColor:
+    case QgsRaster::SingleBandPseudoColor:
     {
       int bandNo = 1;
       double minValue = 0;
@@ -172,7 +172,7 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
       renderer = new QgsSingleBandPseudoColorRenderer( provider, bandNo, shader );
       break;
     }
-    case QgsRasterLayer::MultiBandColor:
+    case QgsRaster::MultiBandColor:
     {
       QSettings s;
 
@@ -195,7 +195,7 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
       renderer = new QgsMultiBandColorRenderer( provider, redBand, greenBand, blueBand );
       break;
     }
-    case QgsRasterLayer::SingleBandColorDataStyle:
+    case QgsRaster::SingleBandColorDataStyle:
     {
       renderer = new QgsSingleBandColorDataRenderer( provider, 1 );
       break;

@@ -65,22 +65,6 @@ class QgsRasterLayer : QgsMapLayer
       UserDefinedShader
     };
 
-    /** \brief This enumerator describes the different kinds of drawing we can do */
-    enum DrawingStyle
-    {
-      UndefinedDrawingStyle,
-      SingleBandGray,                 // a single band image drawn as a range of gray colors
-      SingleBandPseudoColor,          // a single band image drawn using a pseudocolor algorithm
-      PalettedColor,                  // a "Palette" image drawn using color table
-      PalettedSingleBandGray,         // a "Palette" layer drawn in gray scale
-      PalettedSingleBandPseudoColor,  // a "Palette" layerdrawn using a pseudocolor algorithm
-      PalettedMultiBandColor,         // currently not supported
-      MultiBandSingleBandGray,        // a layer containing 2 or more bands, but a single band drawn as a range of gray colors
-      MultiBandSingleBandPseudoColor, // a layer containing 2 or more bands, but a single band drawn using a pseudocolor algorithm
-      MultiBandColor,                 // a layer containing 2 or more bands, mapped to RGB color space. In the case of a multiband with only two bands, one band will be mapped to more than one color.
-      SingleBandColorDataStyle        // ARGB values rendered directly
-    };
-
     /** \brief This enumerator describes the type of raster layer */
     enum LayerType
     {
