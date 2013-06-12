@@ -118,7 +118,6 @@ plugins_metadata_parser = {}
 
 def findPlugins(path):
   """ for internal use: return list of plugins in given path """
-  plugins = []
   for plugin in glob.glob(path + "/*"):
     if not os.path.isdir(plugin):
       continue
@@ -134,12 +133,10 @@ def findPlugins(path):
     try:
       cp.readfp(codecs.open(metadataFile, "r", "utf8"))
     except:
-      return None # reading of metadata file failed
+      cp = None
 
     pluginName = os.path.basename(plugin)
-    plugins.append( (pluginName, cp) )
-
-  return plugins
+    yield (pluginName, cp)
 
 
 def updateAvailablePlugins():
@@ -148,11 +145,11 @@ def updateAvailablePlugins():
   plugins = []
   metadata_parser = {}
   for pluginpath in plugin_paths:
-    for p in findPlugins(pluginpath):
-      pluginName = p[0]
+    for pluginName, parser in findPlugins(pluginpath):
+      if parser is None: continue
       if pluginName not in plugins:
         plugins.append(pluginName)
-        metadata_parser[pluginName] = p[1]
+        metadata_parser[pluginName] = parser
 
   global available_plugins
   available_plugins = plugins
