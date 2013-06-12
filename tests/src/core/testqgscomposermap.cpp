@@ -41,6 +41,7 @@ class TestQgsComposerMap: public QObject
     void overviewMapInvert(); //test if invert of overview map frame works
     void uniqueId(); //test if map id is adapted when doing copy paste
     void zebraStyle(); //test zebra map border style
+    void worldFileGeneration(); // test world file generation
 
   private:
     QgsComposition* mComposition;
@@ -83,7 +84,6 @@ void TestQgsComposerMap::cleanupTestCase()
 
 void TestQgsComposerMap::init()
 {
-
 }
 
 void TestQgsComposerMap::cleanup()
@@ -214,6 +214,25 @@ void TestQgsComposerMap::zebraStyle()
                                  "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_zebra_style.png" ) );
   bool testResult = checker.testComposition();
   QVERIFY( testResult );
+}
+
+void TestQgsComposerMap::worldFileGeneration()
+{
+  mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+  mComposerMap->setRotation( 30.0 );
+
+  mComposition->setGenerateWorldFile( true );
+  mComposition->setWorldFileMap( mComposerMap );
+
+  double params[6];
+  mComposition->computeWorldFileParameters( params );
+
+  QVERIFY( fabs(params[0] - 4.18048) < 0.001 );
+  QVERIFY( fabs(params[1] - 2.41331) < 0.001 );
+  QVERIFY( fabs(params[2] - 779444) < 1 );
+  QVERIFY( fabs(params[3] - 2.4136) < 0.001 );
+  QVERIFY( fabs(params[4] + 4.17997) < 0.001 );
+  QVERIFY( fabs(params[5] - 3.34241e+06) < 1e+03 );
 }
 
 QTEST_MAIN( TestQgsComposerMap )
