@@ -25,6 +25,7 @@
 #include "qgslogger.h"
 #include "qgisapp.h"
 #include "qgslegend.h"
+#include "qgsmaplayerregistry.h"
 
 #include <QMouseEvent>
 #include <QRubberBand>
@@ -50,12 +51,35 @@ QgsMapToolNodeTool::~QgsMapToolNodeTool()
 void QgsMapToolNodeTool::createMovingRubberBands()
 {
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+  if ( topologicalEditing )
+  {
+    QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", QStringList() );
+
+    int idx = layerIdList.indexOf( mCanvas->currentLayer()->id() );
+    QStringList topologyGroupList = QgsProject::instance()->readListEntry( "Digitizing", "/TopologyGroupList", QStringList() );
+    QString topologyGroup = topologyGroupList[idx];
 
   Q_ASSERT( mSelectedFeature );
 
   QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
   Q_ASSERT( vlayer );
 
+    QStringList::const_iterator layerIdIt( layerIdList.constBegin() );
+    QStringList::const_iterator topologyGroupIt( topologyGroupList.constBegin() );
+    QList<QgsVectorLayer*> topologyGroupLayers;
+
+    for ( ; layerIdIt != layerIdList.constEnd(); ++layerIdIt, ++topologyGroupIt )
+    {
+      if( topologyGroupIt->toUtf8() == topologyGroup )
+      {
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( *layerIdIt ) );
+        if ( !vlayer )
+          continue;
+        topologyGroupLayers.append(vlayer);
+      }
+    }
+  }
+  
   QList<QgsVertexEntry*> &vertexMap = mSelectedFeature->vertexMap();
   QgsGeometry* geometry = mSelectedFeature->geometry();
   int beforeVertex, afterVertex;
