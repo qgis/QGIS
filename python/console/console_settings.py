@@ -21,6 +21,7 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from console_compile_apis import PrepareAPIDialog
 
 from ui_console_settings import Ui_SettingsDialogPythonConsole
 
@@ -32,6 +33,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.setupUi(self)
 
         self.listPath = []
+        self.lineEdit.setReadOnly(True)
 
         self.restoreSettings()
         self.initialCheck()
@@ -47,6 +49,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
                      SIGNAL("clicked()"), self.loadAPIFile)
         self.connect(self.removeAPIpath,
                      SIGNAL("clicked()"), self.removeAPI)
+        self.compileAPIs.clicked.connect(self._prepareAPI)
 
     def initialCheck(self):
         if self.preloadAPI.isChecked():
@@ -58,6 +61,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.tableWidget.setEnabled(value)
         self.addAPIpath.setEnabled(value)
         self.removeAPIpath.setEnabled(value)
+        self.groupBoxPreparedAPI.setEnabled(value)
 
     def loadAPIFile(self):
         settings = QSettings()
@@ -70,12 +74,41 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             lastDirPath = QFileInfo(fileAPI).path()
             settings.setValue("pythonConsole/lastDirAPIPath", fileAPI)
 
+    def _prepareAPI(self):
+        if self.tableWidget.rowCount() != 0:
+            pap_file = QFileDialog().getSaveFileName(self,
+                                                    "",
+                                                    '*.pap',
+                                                    "Prepared APIs file (*.pap)")
+        else:
+            QMessageBox.information(self, self.tr("Warning!"),
+                                    self.tr('You need to add some APIs file in order to compile'))
+            return
+        if pap_file:
+            api_lexer = 'QsciLexerPython'
+            api_files = []
+            count = self.tableWidget.rowCount()
+            for i in range(0, count):
+                api_files.append(self.tableWidget.item(i, 1).text())
+            api_dlg = PrepareAPIDialog(api_lexer, api_files, pap_file, self)
+            api_dlg.show()
+            api_dlg.activateWindow()
+            api_dlg.raise_()
+            api_dlg.prepareAPI()
+            self.lineEdit.setText(pap_file)
+
     def accept(self):
-        if not self.preloadAPI.isChecked():
+        if not self.preloadAPI.isChecked() and \
+        not self.groupBoxPreparedAPI.isChecked():
             if self.tableWidget.rowCount() == 0:
                 QMessageBox.information(self, self.tr("Warning!"),
-                                              self.tr('Please specify API file or check "Use preloaded API files"'))
+                                        self.tr('Please specify API file or check "Use preloaded API files"'))
                 return
+        if self.groupBoxPreparedAPI.isChecked() and \
+        not self.lineEdit.text():
+            QMessageBox.information(self, self.tr("Warning!"),
+                                    self.tr('The APIs file was not compiled, click on "Compile APIs..."'))
+            return
         self.saveSettings()
         self.listPath = []
         QDialog.accept( self )
@@ -122,6 +155,9 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/autoCompleteEnabledEditor", self.groupBoxAutoCompletionEditor.isChecked())
         settings.setValue("pythonConsole/autoCompleteEnabled", self.groupBoxAutoCompletion.isChecked())
 
+        settings.setValue("pythonConsole/usePreparedAPIFile", self.groupBoxPreparedAPI.isChecked())
+        settings.setValue("pythonConsole/preparedAPIFile", self.lineEdit.text())
+
         if self.autoCompFromAPIEditor.isChecked():
             settings.setValue("pythonConsole/autoCompleteSourceEditor", 'fromAPI')
         elif self.autoCompFromDocEditor.isChecked():
@@ -147,8 +183,9 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.fontComboBox.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytext",
                                                               "Monospace")))
         self.fontComboBoxEditor.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytextEditor",
-                                                                    "Monospace")))
+                                                      "Monospace")))
         self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True, type=bool))
+        self.lineEdit.setText(settings.value("pythonConsole/preparedAPIFile"))
         itemTable = settings.value("pythonConsole/userAPI", [])
         if itemTable:
             for i in range(len(itemTable)):
