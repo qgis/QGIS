@@ -630,8 +630,8 @@ class Plugins(QObject):
       if not isCompatible(QGis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
         error = "incompatible"
         errorDetails = "%s - %s" % (qgisMinimumVersion, qgisMaximumVersion)
-
-      if testLoad:
+      elif testLoad:
+        # only testLoad if compatible version
         try:
           exec "import %s" % key in globals(), locals()
           exec "reload (%s)" % key in globals(), locals()
