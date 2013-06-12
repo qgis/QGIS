@@ -520,6 +520,9 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     bool    mValid;                // !UPDATE!
     long    mNumberFeatures;       // !UPDATE!
 
+    // create QgsFeatureId from GRASS geometry object id and cat
+    static QgsFeatureId makeFeatureId( int grassId, int cat );
+
     // Reopen map after edit or freeze
     bool reopenMap();
 

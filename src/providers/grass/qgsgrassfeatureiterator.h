@@ -39,6 +39,9 @@ class QgsGrassFeatureIterator : public QgsAbstractFeatureIterator
   protected:
     QgsGrassProvider* P;
 
+    // create QgsFeatureId from GRASS geometry object id and cat
+    static QgsFeatureId makeFeatureId( int grassId, int cat );
+
     void setSelectionRect( const QgsRectangle& rect, bool useIntersect );
 
     void setFeatureGeometry( QgsFeature& feature, int id, int type );
