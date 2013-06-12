@@ -1845,11 +1845,14 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
       if ( childelem.attribute( "embedded" ) == "1" )
       {
         theGroup = addEmbeddedGroup( name, QgsProject::instance()->readPath( childelem.attribute( "project" ) ) );
-        if ( childelem.hasAttribute( "drawingOrder" ) )
+        if ( theGroup )
         {
-          theGroup->setDrawingOrder( childelem.attribute( "drawingOrder" ).toInt() );
+          if ( childelem.hasAttribute( "drawingOrder" ) )
+          {
+            theGroup->setDrawingOrder( childelem.attribute( "drawingOrder" ).toInt() );
+          }
+          updateGroupCheckStates( theGroup );
         }
-        updateGroupCheckStates( theGroup );
       }
       else
       {
