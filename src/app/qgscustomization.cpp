@@ -324,7 +324,8 @@ QTreeWidgetItem * QgsCustomizationDialog::createTreeItemWidgets()
     return NULL;
   }
   QTreeWidgetItem *myItem = readWidgetsXmlNode( myRoot );
-  myItem->setData( 0, Qt::DisplayRole, tr( "Widgets" ) );
+  // Do not translate "Widgets", currently it is also used as path
+  myItem->setData( 0, Qt::DisplayRole, "Widgets" );
 
   return myItem;
 }
