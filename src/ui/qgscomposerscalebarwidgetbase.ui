@@ -124,7 +124,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_2">
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mGroupBoxUnits">
          <property name="title">
           <string>Units</string>
          </property>
@@ -184,7 +184,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_3">
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mGroupBoxSegments">
          <property name="title">
           <string>Segments</string>
          </property>

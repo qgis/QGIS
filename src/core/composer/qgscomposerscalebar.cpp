@@ -278,7 +278,11 @@ void QgsComposerScaleBar::adjustBoxSize()
 
 void QgsComposerScaleBar::update()
 {
-  adjustBoxSize();
+  //Don't adjust box size for numeric scale bars:
+  if ( mStyle->name() != "Numeric" )
+  {
+    adjustBoxSize();
+  }
   QgsComposerItem::update();
 }
 
@@ -386,7 +390,6 @@ QFont QgsComposerScaleBar::font() const
 void QgsComposerScaleBar::setFont( const QFont& font )
 {
   mFont = font;
-  adjustBoxSize();
   update();
   emit itemChanged();
 }

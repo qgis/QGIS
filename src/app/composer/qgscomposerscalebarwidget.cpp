@@ -184,6 +184,7 @@ void QgsComposerScaleBarWidget::setGuiElements()
   //style...
   QString style = mComposerScaleBar->style();
   mStyleComboBox->setCurrentIndex( mStyleComboBox->findText( tr( style.toLocal8Bit().data() ) ) );
+  toggleStyleSpecificControls( style );
 
   //alignment
   mAlignmentComboBox->setCurrentIndex(( int )( mComposerScaleBar->alignment() ) );
@@ -438,10 +439,36 @@ void QgsComposerScaleBarWidget::on_mStyleComboBox_currentIndexChanged( const QSt
   {
     untranslatedStyleName = "Numeric";
   }
+
+  //disable or enable controls which apply to specific scale bar styles
+  toggleStyleSpecificControls( untranslatedStyleName );
+
   mComposerScaleBar->setStyle( untranslatedStyleName );
   mComposerScaleBar->update();
   connectUpdateSignal();
   mComposerScaleBar->endCommand();
+}
+
+void QgsComposerScaleBarWidget::toggleStyleSpecificControls( const QString& style )
+{
+  if ( style == "Numeric" )
+  {
+    //Disable controls which don't apply to numeric scale bars
+    mGroupBoxUnits->setEnabled( false );
+    mGroupBoxUnits->setCollapsed( true );
+    mGroupBoxSegments->setEnabled( false );
+    mGroupBoxSegments->setCollapsed( true );
+    mLabelBarSpaceSpinBox->setEnabled( false );
+    mLineWidthSpinBox->setEnabled( false );
+  }
+  else
+  {
+    //Enable all controls
+    mGroupBoxUnits->setEnabled( true );
+    mGroupBoxSegments->setEnabled( true );
+    mLabelBarSpaceSpinBox->setEnabled( true );
+    mLineWidthSpinBox->setEnabled( true );
+  }
 }
 
 void QgsComposerScaleBarWidget::on_mLabelBarSpaceSpinBox_valueChanged( double d )
