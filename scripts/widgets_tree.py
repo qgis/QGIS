@@ -110,8 +110,6 @@ class UiInspector:
 		xml = ''
     # debug
 		for p in glob.glob( self.ui_dir ):
-		#for p in ['/home/radim/devel/qgis_trunk/src/ui/qgsabout.ui']:
-		#for p in ['/home/radim/devel/qgis_trunk/src/ui/qgsrasterlayerpropertiesbase.ui']:
 			self.printMsg ( "Loading " + p )
 			# qgsrasterlayerpropertiesbase.ui is giving: No module named qwt_plot
 			try:
