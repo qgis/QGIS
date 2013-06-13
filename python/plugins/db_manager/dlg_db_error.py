@@ -36,10 +36,10 @@ class DlgDbError(QDialog, Ui_Dialog):
 		def sanitize(txt):
 			return "" if txt == None else "<pre>" + txt.replace('<','&lt;') + "</pre>"
 
-		if isinstance(e, DbError) and hasattr(e, 'query'):
-			self.setQueryMessage( sanitize(e.message), sanitize(e.query) )
+		if isinstance(e, DbError):
+			self.setQueryMessage( sanitize(e.msg), sanitize(e.query) )
 		else:
-			self.setMessage( sanitize(e.message) )
+			self.setMessage( sanitize(e.msg) )
 
 	def setMessage(self, msg):
 		self.txtErrorMsg.setHtml(msg)

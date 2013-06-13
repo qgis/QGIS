@@ -359,7 +359,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionShowPinnedLabels() { return mActionShowPinnedLabels; }
 
     //! Menus
-    QMenu *fileMenu() { return mFileMenu; }
+    Q_DECL_DEPRECATED QMenu *fileMenu() { return mProjectMenu; }
+    QMenu *projectMenu() { return mProjectMenu; }
     QMenu *editMenu() { return mEditMenu; }
     QMenu *viewMenu() { return mViewMenu; }
     QMenu *layerMenu() { return mLayerMenu; }
@@ -587,7 +588,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsMessageLogViewer *logViewer() { return mLogViewer; }
 
-    //! Update file menu with the project templates
+    //! Update project menu with the project templates
     void updateProjectFromTemplates();
 
   protected:
@@ -1161,12 +1162,19 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
      */
     bool addRasterLayer( QgsRasterLayer * theRasterLayer );
 
+    /** Open a raster layer - this is the generic function which takes all parameters
+     * @note added in version 2.0
+      */
+    QgsRasterLayer* addRasterLayerPrivate( const QString & uri, const QString & baseName,
+                                           const QString & providerKey, bool guiWarning,
+                                           bool guiUpdate );
+
     /** add this file to the recently opened/saved projects list
      *  pass settings by reference since creating more than one
      * instance simultaneously results in data loss.
      */
     void saveRecentProjectPath( QString projectPath, QSettings & settings );
-    //! Update file menu with the current list of recently accessed projects
+    //! Update project menu with the current list of recently accessed projects
     void updateRecentProjectPaths();
     //! Read Well Known Binary stream from PostGIS
     //void readWKB(const char *, QStringList tables);

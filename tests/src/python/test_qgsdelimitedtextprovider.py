@@ -94,6 +94,7 @@ def layerData( layer, request={}, offset=0 ):
     first = True
     data = {}
     fields = []
+    fieldTypes = []
     fr = QgsFeatureRequest()
     if request:
         if 'exact' in request and request['exact']:
@@ -112,6 +113,7 @@ def layerData( layer, request={}, offset=0 ):
             first = False
             for field in f.fields():
                 fields.append(str(field.name()))
+                fieldTypes.append(str(field.typeName()))
         fielddata = dict ( (name, unicode(f[name].toString()) ) for name in fields )
         g = f.geometry()
         if g:
@@ -129,7 +131,7 @@ def layerData( layer, request={}, offset=0 ):
     if 'description' not in fields: fields.insert(1,'description')
     fields.append(fidkey)
     fields.append(geomkey)
-    return fields, data
+    return fields, fieldTypes, data
 
 # Retrieve the data for a delimited text url
 
@@ -155,8 +157,9 @@ def delimitedTextData( testname, filename, requests, verbose, **params ):
         basename = os.path.basename(filepath)
         if not basename.startswith('test'):
             basename='file'
-        uri = uri.replace(filepath,basename)
+        uri = re.sub(r'^file\:\/\/[^\?]*','file://'+basename,uri)
         fields = []
+        fieldTypes = []
         data = {}
         if layer.isValid():
             for nr,r in enumerate(requests):
@@ -165,14 +168,16 @@ def delimitedTextData( testname, filename, requests, verbose, **params ):
                 if callable(r):
                     r( layer )
                     continue
-                rfields,rdata = layerData(layer,r,nr*1000)
-                if len(rfields) > len(fields): fields = rfields
+                rfields,rtypes, rdata = layerData(layer,r,nr*1000)
+                if len(rfields) > len(fields):
+                    fields = rfields
+                    fieldTypes=rtypes
                 data.update(rdata)
                 if not rdata:
                     log.append("Request "+str(nr)+" did not return any data")
         for msg in logger.messages():
             log.append(msg.replace(filepath,'file'))
-        return dict( fields=fields, data=data, log=log, uri=uri)
+        return dict( fields=fields, fieldTypes=fieldTypes, data=data, log=log, uri=uri)
 
 def printWanted( testname, result ):
     # Routine to export the result as a function definition
@@ -186,6 +191,7 @@ def printWanted( testname, result ):
     # Dump the data for a layer - used to construct unit tests
     print prefix+"wanted={}"
     print prefix+"wanted['uri']="+repr(result['uri'])
+    print prefix+"wanted['fieldTypes']="+repr(result['fieldTypes'])
     print prefix+"wanted['data']={"
     for k in sorted(data.keys()):
         row = data[k]
@@ -265,6 +271,10 @@ def runTest( file, requests, **params ):
             result['uri'],wanted['uri'])
         print '    '+msg
         failures.append(msg)
+    if result['fieldTypes'] != wanted['fieldTypes']:
+        msg = "Layer field types ({0}) doesn't match expected ({1})".format(
+            result['fieldTypes'],wanted['fieldTypes'])
+        failures.apend
     wanted_data = wanted['data']
     for id in sorted(wanted_data.keys()):
         wrec = wanted_data[id]
@@ -612,6 +622,34 @@ class TestQgsDelimitedTextProvider(TestCase):
             lambda layer: layer.dataProvider().setSubsetString("id % 2 = 0",True),
             {},
         ]
+        runTest(filename,requests,**params)
+
+    def test_034_csvt_file(self):
+        # CSVT field types
+        filename='testcsvt.csv'
+        params={'geomType': 'none', 'type': 'csv'}
+        requests=None
+        runTest(filename,requests,**params)
+
+    def test_035_csvt_file2(self):
+        # CSV field types 2
+        filename='testcsvt2.txt'
+        params={'geomType': 'none', 'type': 'csv', 'delimiter': '|'}
+        requests=None
+        runTest(filename,requests,**params)
+
+    def test_036_csvt_file_invalid_types(self):
+        # CSV field types invalid string format
+        filename='testcsvt3.csv'
+        params={'geomType': 'none', 'type': 'csv'}
+        requests=None
+        runTest(filename,requests,**params)
+
+    def test_037_csvt_file_invalid_file(self):
+        # CSV field types invalid file
+        filename='testcsvt4.csv'
+        params={'geomType': 'none', 'type': 'csv'}
+        requests=None
         runTest(filename,requests,**params)
 
 

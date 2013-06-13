@@ -262,7 +262,7 @@ void QgsRasterProjector::calcSrcExtent()
   // align extent to src resolution to avoid jumping of reprojected pixels
   // when shifting resampled grid.
   // Important especially if we are over mMaxSrcXRes, mMaxSrcYRes limits
-  // Note however, that preceeding filters (like resampler) may read data
+  // Note however, that preceding filters (like resampler) may read data
   // on different resolution.
 
   QgsDebugMsg( "mSrcExtent = " + mSrcExtent.toString() );

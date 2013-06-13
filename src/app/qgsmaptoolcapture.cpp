@@ -67,6 +67,8 @@ void QgsMapToolCapture::deactivate()
   while ( !mSnappingMarkers.isEmpty() )
     delete mSnappingMarkers.takeFirst();
 
+  stopCapturing();
+
   QgsMapToolEdit::deactivate();
 }
 

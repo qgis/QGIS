@@ -326,7 +326,7 @@ void QgsConfigureShortcutsDialog::keyReleaseEvent( QKeyEvent * event )
 {
   if ( !mGettingShortcut )
   {
-    QDialog::keyPressEvent( event );
+    QDialog::keyReleaseEvent( event );
     return;
   }
 

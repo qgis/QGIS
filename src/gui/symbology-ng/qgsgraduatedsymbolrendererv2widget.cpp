@@ -651,7 +651,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
 
 void QgsGraduatedSymbolRendererV2Widget::addClass()
 {
-  mRenderer->addClass( mGraduatedSymbol );
+  mModel->addClass( mGraduatedSymbol );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::deleteClasses()

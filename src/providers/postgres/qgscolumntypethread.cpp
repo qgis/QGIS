@@ -19,6 +19,7 @@ email                : jef at norbit dot de
 #include "qgslogger.h"
 
 #include <QMetaType>
+#include <climits>
 
 QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( QString name, bool useEstimatedMetaData, bool allowGeometrylessTables )
     : QThread()
@@ -77,7 +78,7 @@ void QgsGeomColumnTypeThread::run()
 
       if ( !layerProperty.geometryColName.isNull() &&
            ( layerProperty.types.value( 0, QGis::WKBUnknown ) == QGis::WKBUnknown ||
-             layerProperty.srids.value( 0, 0 ) == 0 ) )
+             layerProperty.srids.value( 0, INT_MIN ) == INT_MIN ) )
       {
         if ( dontResolveType )
         {

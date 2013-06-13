@@ -142,7 +142,7 @@ QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2( QString attrName
     mCategories( categories ),
     mSourceSymbol( NULL ),
     mSourceColorRamp( NULL ),
-    mScaleMethod( QgsSymbolV2::ScaleArea ),
+    mScaleMethod( DEFAULT_SCALE_METHOD ),
     mRotationFieldIdx( -1 ),
     mSizeScaleFieldIdx( -1 )
 {

@@ -345,7 +345,7 @@ void QgsMapToolNodeTool::canvasMoveEvent( QMouseEvent * e )
 
 void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugCall;
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
 
@@ -473,12 +473,11 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
       }
     }
   }
-  QgsDebugMsg( "Leaving." );
 }
 
 void QgsMapToolNodeTool::selectedFeatureDestroyed()
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugCall;
   mSelectedFeature = 0;
 }
 

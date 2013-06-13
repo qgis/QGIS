@@ -1490,7 +1490,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
   bool res = readSymbology( layer_node, theError );
 
   // old wms settings we need to correct
-  if ( res && mProviderKey == "wms" )
+  if ( res && mProviderKey == "wms" && (!renderer() || renderer()->type() != "singlebandcolordata") )
   {
     setRendererForDrawingStyle( SingleBandColorDataStyle );
   }

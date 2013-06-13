@@ -56,23 +56,24 @@
     <message>
         <location filename="../src/gui/symbology-ng/characterwidget.cpp" line="124"/>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Value: 0x%3</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Caracter: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Valor: 0x%3</translation>
     </message>
 </context>
 <context>
     <name>ConfigDialog</name>
     <message>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation>Procurar...</translation>
     </message>
     <message>
         <source>Wrong value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor errado</translation>
     </message>
     <message>
         <source>Wrong parameter value:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor de parâmetro errado:
+%1</translation>
     </message>
 </context>
 <context>
@@ -102,12 +103,13 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="124"/>
         <source>Coordinate in your selected CRS (lat,lon or east,north)</source>
-        <translation type="unfinished">Coordenadas no CRS selecionado (Lat, Long ou Leste, Norte)</translation>
+        <translatorcomment>de acordo com o </translatorcomment>
+        <translation>Coordenadas no SRC selecionado (lat, long ou este, norte)</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="128"/>
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
-        <translation type="unfinished">Coordendas no sistema de coordenadas do mapa (Lat,Long ou Leste, Norte)</translation>
+        <translation>Coordenadas no sistema de coordenadas do mapa (lat, long ou este, norte)</translation>
     </message>
     <message>
         <source>Coordinate in your selected CRS</source>
@@ -144,27 +146,27 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="14"/>
         <source>Add geometry column</source>
-        <translation type="unfinished">Adicionar geometria da coluna</translation>
+        <translation>Adicionar coluna de geometria</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="20"/>
         <source>Name</source>
-        <translation type="unfinished">Nome</translation>
+        <translation>Nome</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="37"/>
         <source>Type</source>
-        <translation type="unfinished">Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="86"/>
         <source>Dimensions</source>
-        <translation type="unfinished">Dimensões</translation>
+        <translation>Dimensões</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="119"/>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
 </context>
 <context>
@@ -172,22 +174,22 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="14"/>
         <source>Add constraint</source>
-        <translation type="unfinished">Adicionar restrição</translation>
+        <translation>Adicionar restrição</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="20"/>
         <source>Column</source>
-        <translation type="unfinished">Coluna</translation>
+        <translation>Coluna</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="37"/>
         <source>Primary key</source>
-        <translation type="unfinished">Chave primária</translation>
+        <translation>Chave primária</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="47"/>
         <source>Unique</source>
-        <translation type="unfinished">Único</translation>
+        <translation>Único</translation>
     </message>
 </context>
 <context>
@@ -195,17 +197,17 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateIndex.ui" line="14"/>
         <source>Create index</source>
-        <translation type="unfinished">Criar índice</translation>
+        <translation>Criar índice</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateIndex.ui" line="20"/>
         <source>Column</source>
-        <translation type="unfinished">Coluna</translation>
+        <translation>Coluna</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateIndex.ui" line="30"/>
         <source>Name</source>
-        <translation type="unfinished">Nome</translation>
+        <translation>Nome</translation>
     </message>
 </context>
 <context>
@@ -213,63 +215,63 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="14"/>
         <source>Create Table</source>
-        <translation type="unfinished">Criar Tabela</translation>
+        <translation>Criar Tabela</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="22"/>
         <source>Schema</source>
-        <translation type="unfinished">Esquema</translation>
+        <translation>Esquema</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="35"/>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="171"/>
         <source>Name</source>
-        <translation type="unfinished">Nome</translation>
+        <translation>Nome</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="56"/>
         <source>Add field</source>
-        <translation type="unfinished">Adicionar campo</translation>
+        <translation>Adicionar campo</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="63"/>
         <source>Delete field</source>
-        <translation type="unfinished">Apagar campo</translation>
+        <translation>Apagar campo</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="83"/>
         <source>Up</source>
-        <translation type="unfinished">Cima</translation>
+        <translation>Cima</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="90"/>
         <source>Down</source>
-        <translation type="unfinished">Baixo</translation>
+        <translation>Baixo</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="104"/>
         <source>Primary key</source>
-        <translation type="unfinished">Chave primária</translation>
+        <translation>Chave primária</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="125"/>
         <source>Create geometry column</source>
-        <translation type="unfinished">Criar geometria da coluna</translation>
+        <translation>Criar coluna de geometria</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="188"/>
         <source>Dimensions</source>
-        <translation type="unfinished">Dimensões</translation>
+        <translation>Dimensões</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="221"/>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="238"/>
         <source>Create spatial index</source>
-        <translation type="unfinished">Criar índice espacial</translation>
+        <translation>Criar índice espacial</translation>
     </message>
 </context>
 <context>
@@ -277,22 +279,22 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgDbError.ui" line="14"/>
         <source>Database Error</source>
-        <translation type="unfinished">Erro na base de dados</translation>
+        <translation>Erro na base de dados</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgDbError.ui" line="30"/>
         <source>An error occured:</source>
-        <translation type="unfinished">Ocorreu um erro:</translation>
+        <translation>Ocorreu um erro:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgDbError.ui" line="54"/>
         <source>An error occured when executing a query:</source>
-        <translation type="unfinished">Ocorreu um erro durante a pesquisa:</translation>
+        <translation>Ocorreu um erro durante a pesquisa:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgDbError.ui" line="71"/>
         <source>Query:</source>
-        <translation type="unfinished">Pesquisa:</translation>
+        <translation>Pesquisa:</translation>
     </message>
 </context>
 <context>
@@ -300,57 +302,57 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="14"/>
         <source>Export to vector file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar para ficheiro vectorial</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="26"/>
         <source>Output file</source>
-        <translation type="unfinished">Ficheiro de saída</translation>
+        <translation>Ficheiro de saída</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="40"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="47"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Ação</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="53"/>
         <source>Create new file</source>
-        <translation type="unfinished"></translation>
+        <translation>Criar novo ficheiro</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="81"/>
         <source>Drop existing one</source>
-        <translation type="unfinished">Anular a tabela existente</translation>
+        <translation>Apagar o existente</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="93"/>
         <source>Append data to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar dados ao ficheiro</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="103"/>
         <source>Options</source>
-        <translation type="unfinished">Opções</translation>
+        <translation>Opções</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="111"/>
         <source>Source SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>SRID Origem</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="144"/>
         <source>Target SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>SRID Destino</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="163"/>
         <source>Encoding</source>
-        <translation type="unfinished">Codificação</translation>
+        <translation>Codificação</translation>
     </message>
 </context>
 <context>
@@ -358,32 +360,32 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="14"/>
         <source>Field properties</source>
-        <translation type="unfinished">Propriedades do campo</translation>
+        <translation>Propriedades do campo</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="22"/>
         <source>Name</source>
-        <translation type="unfinished">Nome</translation>
+        <translation>Nome</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="36"/>
         <source>Type</source>
-        <translation type="unfinished">Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="53"/>
         <source>Can be NULL</source>
-        <translation type="unfinished">Pode ser NULL</translation>
+        <translation>Pode ser NULL</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="70"/>
         <source>Default value</source>
-        <translation type="unfinished">Valor por defeito</translation>
+        <translation>Valor por defeito</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="84"/>
         <source>Length</source>
-        <translation type="unfinished">Comprimento</translation>
+        <translation>Comprimento</translation>
     </message>
 </context>
 <context>
@@ -391,97 +393,97 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="14"/>
         <source>Import vector layer</source>
-        <translation type="unfinished">Importar camada vectorial</translation>
+        <translation>Importar camada vectorial</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="29"/>
         <source>Input</source>
-        <translation type="unfinished">Entrada</translation>
+        <translation>Entrada</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="36"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="81"/>
         <source>Update options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opções de update</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="93"/>
         <source>Output table</source>
-        <translation type="unfinished">Tabela de saída</translation>
+        <translation>Tabela de saída</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="99"/>
         <source>Schema</source>
-        <translation type="unfinished">Esquema</translation>
+        <translation>Esquema</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="116"/>
         <source>Table</source>
-        <translation type="unfinished">Tabela</translation>
+        <translation>Tabela</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="146"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Ação</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="152"/>
         <source>Create new table</source>
-        <translation type="unfinished">Criar nova tabela</translation>
+        <translation>Criar nova tabela</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="180"/>
         <source>Drop existing one</source>
-        <translation type="unfinished">Anular a tabela existente</translation>
+        <translation>Apagar a existente</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="192"/>
         <source>Append data to table</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar dados à tabela</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="202"/>
         <source>Options</source>
-        <translation type="unfinished">Opções</translation>
+        <translation>Opções</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="208"/>
         <source>Primary key</source>
-        <translation type="unfinished">Chave primária</translation>
+        <translation>Chave primária</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="222"/>
         <source>Geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Coluna de geometria</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="238"/>
         <source>Source SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>SRID Origem</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="268"/>
         <source>Target SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>SRID Destino</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="284"/>
         <source>Encoding</source>
-        <translation type="unfinished">Codificação</translation>
+        <translation>Codificação</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="301"/>
         <source>Create single-part geometries instead of multi-part</source>
-        <translation type="unfinished">Criar geometrias single-part em vez de multi-part</translation>
+        <translation>Criar geometrias single-part em vez de multi-part</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="308"/>
         <source>Create spatial index</source>
-        <translation type="unfinished">Criar índice espacial</translation>
+        <translation>Criar índice espacial</translation>
     </message>
 </context>
 <context>
@@ -489,89 +491,90 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="14"/>
         <source>SQL window</source>
-        <translation type="unfinished">Janela SQL</translation>
+        <translation>Janela SQL</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="27"/>
         <source>SQL query:</source>
-        <translation type="unfinished">Pesquisa SQL:</translation>
+        <translation>Pesquisa SQL:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="53"/>
         <source>&amp;Execute (F5)</source>
-        <translation type="unfinished">&amp;Executar (F5)</translation>
+        <translation>&amp;Executar (F5)</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="56"/>
         <source>F5</source>
-        <translation type="unfinished">F5</translation>
+        <translation>F5</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="83"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished">&amp;Limpar</translation>
+        <translation>&amp;Limpar</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="96"/>
         <source>Result:</source>
-        <translation type="unfinished">Resultado:</translation>
+        <translation>Resultado:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="136"/>
         <source>Load as new layer</source>
-        <translation type="unfinished">Carregar como nova camada</translation>
+        <translation>Carregar como nova camada</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="156"/>
         <source>Column with unique 
 integer values</source>
-        <translation type="unfinished">Coluna com valores inteiros únicos</translation>
+        <translation>Coluna com valores inteiros únicos</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="180"/>
         <source>Geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Coluna da geometria</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="222"/>
         <source>Retrieve 
 columns</source>
-        <translation type="unfinished">Recuperar coluna</translation>
+        <translation>Obter
+colunas</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="234"/>
         <source>Layer name (prefix)</source>
-        <translation type="unfinished">Nome da camada (prefixo)</translation>
+        <translation>Nome da camada (prefixo)</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="257"/>
         <source>Type</source>
-        <translation type="unfinished">Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="267"/>
         <source>Vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="277"/>
         <source>Raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="303"/>
         <source>Load now!</source>
-        <translation type="unfinished">Carregar agora!</translation>
+        <translation>Carregar agora!</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="315"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id.  Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Evite selecionar elementos pelo id. Por vezes e especialmente durante a execução de questionários a conjuntos de dados extensos será mais rápida a pesquisa por dados sequenciais em vez da selecção de elementos pelo id.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Evite selecionar elementos pelo id. Por vezes - especialmente durante a execução de questionários a conjuntos de dados extensos - a pesquisa por dados será mais rápida sequencialmente do que pelo id.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="318"/>
         <source>Avoid selecting by feature id</source>
-        <translation type="unfinished">Evite selecionar pelo id do elemento</translation>
+        <translation>Evite selecionar pelo id do elemento</translation>
     </message>
 </context>
 <context>
@@ -579,82 +582,82 @@ columns</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="14"/>
         <source>Table properties</source>
-        <translation type="unfinished">Propriedades da Tabela</translation>
+        <translation>Propriedades da Tabela</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="24"/>
         <source>Columns</source>
-        <translation type="unfinished">Colunas</translation>
+        <translation>Colunas</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="30"/>
         <source>Table columns:</source>
-        <translation type="unfinished">Colunas da tabela:</translation>
+        <translation>Colunas da tabela:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="46"/>
         <source>Add column</source>
-        <translation type="unfinished">Adicionar coluna</translation>
+        <translation>Adicionar coluna</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="53"/>
         <source>Add geometry column</source>
-        <translation type="unfinished">Adicionar geometria da coluna</translation>
+        <translation>Adicionar geometria da coluna</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="60"/>
         <source>Edit column</source>
-        <translation type="unfinished">Editar coluna</translation>
+        <translation>Editar coluna</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="80"/>
         <source>Delete column</source>
-        <translation type="unfinished"></translation>
+        <translation>Apagar coluna</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="90"/>
         <source>Constraints</source>
-        <translation type="unfinished">Restrições</translation>
+        <translation>Restrições</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="96"/>
         <source>Primary, foreign keys, unique and check constraints:</source>
-        <translation type="unfinished">Primário, chaves externas, unico e verificar restrições:</translation>
+        <translation>Primário, chaves externas, único e verificar restrições:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="112"/>
         <source>Add primary key / unique</source>
-        <translation type="unfinished">Adicionar chave primária / única</translation>
+        <translation>Adicionar chave primária / única</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="132"/>
         <source>Delete constraint</source>
-        <translation type="unfinished">Apagar restrição</translation>
+        <translation>Apagar restrição</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="142"/>
         <source>Indexes</source>
-        <translation type="unfinished">Indíces</translation>
+        <translation>Indíces</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="148"/>
         <source>Indexes defined for this table:</source>
-        <translation type="unfinished">Índices definidos para esta tabela:</translation>
+        <translation>Índices definidos para esta tabela:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="164"/>
         <source>Add index</source>
-        <translation type="unfinished">Adicionar índice</translation>
+        <translation>Adicionar índice</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="171"/>
         <source>Add spatial index</source>
-        <translation type="unfinished">Adicionar índice espacial</translation>
+        <translation>Adicionar índice espacial</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="191"/>
         <source>Delete index</source>
-        <translation type="unfinished">Apagar índice</translation>
+        <translation>Apagar índice</translation>
     </message>
 </context>
 <context>
@@ -666,17 +669,17 @@ columns</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="14"/>
         <source>Eliminate sliver polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar polígonos fragmento</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="20"/>
         <source>common boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>limite comum</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="27"/>
         <source>Merge selection with the neighbouring polygon with the largest</source>
-        <translation type="unfinished"></translation>
+        <translation>Juntar seleção ao polígono vizinho com maior</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="43"/>
@@ -698,17 +701,17 @@ columns</source>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="35"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="143"/>
         <source>Browse</source>
-        <translation type="unfinished">Pesquisar</translation>
+        <translation>Procurar</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="100"/>
         <source>Selected features:</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementos selecionados:</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="107"/>
         <source>area</source>
-        <translation type="unfinished">area</translation>
+        <translation>área</translation>
     </message>
     <message>
         <source>OGR Converter</source>
@@ -1004,7 +1007,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="76"/>
         <source>Std. Dev.</source>
-        <translation>Desvio Padrão</translation>
+        <translation> Des. Pad.</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="16"/>
@@ -1067,7 +1070,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="37"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="161"/>
         <source>Use only selected features</source>
-        <translation type="unfinished">Usar apenas elementos selecionados</translation>
+        <translation>Usar apenas elementos selecionados</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="14"/>
@@ -1420,7 +1423,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="169"/>
         <source>Align extents and resolution to selected raster layer</source>
-        <translation type="unfinished">Alinhar a extensão e a resolução da camada raster selecionada</translation>
+        <translation>Alinhar extensão e resolução à camada raster selecionada</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="179"/>
@@ -1485,7 +1488,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="120"/>
         <source>Save errors location</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar localização dos erros</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="127"/>
@@ -1511,19 +1514,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="unfinished">adicionando à selecção atual</translation>
+        <translation>a adicionar à selecção atual</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="unfinished">removendo da seleção atual</translation>
+        <translation>a remover da seleção atual</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">Selecionar por localização</translation>
+        <translation>Selecionar por localização</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="unfinished">Selecionar elementos em:</translation>
+        <translation>Selecionar elementos em:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
@@ -1531,7 +1534,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="unfinished">Modificar seleção atual por:</translation>
+        <translation>Modificar seleção atual por:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
@@ -1607,7 +1610,7 @@ Você gostaria de adicioná-lo a Lista de Camadas?</translation>
     </message>
     <message>
         <source>No Valid CRS selected</source>
-        <translation type="unfinished">SRC selecionado inválido</translation>
+        <translation>SRC selecionado inválido</translation>
     </message>
     <message>
         <source>Output spatial reference system is not valid</source>
@@ -1693,11 +1696,11 @@ Tem a certeza que quer prosseguir?</translation>
     </message>
     <message>
         <source>Use selected features only</source>
-        <translation type="unfinished">Usar apenas elementos selecionados</translation>
+        <translation>Usar apenas elementos selecionados</translation>
     </message>
     <message>
         <source>Select directory with shapefiles to merge</source>
-        <translation type="unfinished">Selecione a pasta com os ficheiros shapefiles a juntar</translation>
+        <translation>Selecione pasta com os shapefiles a juntar</translation>
     </message>
     <message>
         <source>No shapefiles found</source>
@@ -1705,7 +1708,7 @@ Tem a certeza que quer prosseguir?</translation>
     </message>
     <message>
         <source>There are no shapefiles in this directory. Please select another one.</source>
-        <translation type="unfinished">Não existem shapefiles nesta pasta. Selecione outra pasta.</translation>
+        <translation>Não existem shapefiles nesta pasta. Selecione outra pasta.</translation>
     </message>
     <message>
         <source>Select files to merge</source>
@@ -1741,46 +1744,48 @@ Tem a certeza que quer prosseguir?</translation>
     </message>
     <message>
         <source>Selected features: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementos selecionados: %1</translation>
     </message>
     <message>
         <source>Eliminate</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar</translation>
     </message>
     <message>
         <source>No selection in input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada de entrada sem seleção</translation>
     </message>
     <message>
         <source>Commit error:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro de commit:
+ %1</translation>
     </message>
     <message>
         <source>Error creating output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro ao criar ficheiro de saída</translation>
     </message>
     <message>
         <source>Could not delete features</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível apagar elementos</translation>
     </message>
     <message>
         <source>Could not replace geometry of feature with id %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível substituir geometria do elemento com id %1</translation>
     </message>
     <message>
         <source>Could not eliminate features with these ids:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível eliminar os elementos com os ids:
+%1</translation>
     </message>
     <message>
         <source>Could not add features</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível adicionar elementos</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %1</source>
-        <translation type="unfinished">Criado ficheiro shapefile de saída:
+        <translation>Shapefile de saída criado:
 %1</translation>
     </message>
     <message>
@@ -1929,11 +1934,11 @@ Todos aqueles que relataram bugs / correções / sugestões / comentários / etc
     </message>
     <message>
         <source>Please select the projection system that defines the current layer.</source>
-        <translation type="unfinished">Selecione o sistema de coordenadas que define a camada atual.</translation>
+        <translation>Selecione o sistema de coordenadas que define a camada atual.</translation>
     </message>
     <message>
         <source>Layer CRS information will be updated to the selected CRS.</source>
-        <translation type="unfinished">Informação do SRC da camada será atualizada para o SRC selecionado.</translation>
+        <translation>Informação do SRC da camada será atualizada para o SRC selecionado.</translation>
     </message>
     <message>
         <source>Created output shapefiles in folder:
@@ -1947,7 +1952,7 @@ Todos aqueles que relataram bugs / correções / sugestões / comentários / etc
     </message>
     <message>
         <source>There are no shapefiles with the given geometry type. Please select an available geometry type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não existem shapefiles com o tipo de geometria escolhido. Por favor escolha um tipo de geometria disponível.</translation>
     </message>
     <message>
         <source>Please specify input polygon vector layer</source>
@@ -2031,11 +2036,11 @@ Todos aqueles que relataram bugs / correções / sugestões / comentários / etc
     </message>
     <message>
         <source>Please select a raster layer</source>
-        <translation type="unfinished">Por favor selecione uma camada raster</translation>
+        <translation>Por favor selecione uma camada raster</translation>
     </message>
     <message>
         <source>Unable to compute extents aligned on selected raster layer</source>
-        <translation type="unfinished">Impossível calcular a extensão alinhada com a camada raster selecionada</translation>
+        <translation>Impossível calcular a extensão alinhada com a camada raster selecionada</translation>
     </message>
     <message>
         <source>Densify geometries</source>
@@ -2106,7 +2111,7 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="20"/>
         <source>Select by layers in the folder</source>
-        <translation type="unfinished">Selecionar por camadas na pasta</translation>
+        <translation>Selecionar por camadas na pasta</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="29"/>
@@ -2172,12 +2177,12 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="22"/>
         <source>Select files from disk</source>
-        <translation type="unfinished">Selecionar ficheiros do disco</translation>
+        <translation>Selecionar ficheiros do disco</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="29"/>
         <source>Select files...</source>
-        <translation type="unfinished">Selecionar ficheiros...</translation>
+        <translation>Selecionar ficheiros...</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="53"/>
@@ -2187,7 +2192,7 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="60"/>
         <source>Select none</source>
-        <translation type="unfinished">Nada selecionado</translation>
+        <translation>Selecionar nada</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="67"/>
@@ -2274,22 +2279,22 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgConfig.ui" line="14"/>
         <source>SEXTANTE options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opções SEXTANTE</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgConfig.ui" line="26"/>
         <source>Enter setting name to filter list</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserir nome das configurações para filtar lista</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgConfig.ui" line="37"/>
         <source>Setting</source>
-        <translation type="unfinished"></translation>
+        <translation>Configurações</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgConfig.ui" line="42"/>
         <source>Value</source>
-        <translation type="unfinished">Valor</translation>
+        <translation>Valor</translation>
     </message>
 </context>
 <context>
@@ -2464,7 +2469,7 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgHelpEdition.ui" line="14"/>
         <source>Help editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor de ajuda</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgHelpEdition.ui" line="31"/>
@@ -2474,12 +2479,12 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgHelpEdition.ui" line="47"/>
         <source>Select element to edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecionar elemento a editar</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgHelpEdition.ui" line="82"/>
         <source>Element description</source>
-        <translation type="unfinished"></translation>
+        <translation>Descrição do elemento</translation>
     </message>
 </context>
 <context>
@@ -2487,7 +2492,7 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgHistory.ui" line="14"/>
         <source>History and log</source>
-        <translation type="unfinished"></translation>
+        <translation>História e registo</translation>
     </message>
 </context>
 <context>
@@ -2558,32 +2563,32 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgModeler.ui" line="14"/>
         <source>SEXTANTE modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelador SEXTANTE</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgModeler.ui" line="40"/>
         <source>Inputs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inputs</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgModeler.ui" line="68"/>
         <source>Algorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>Algoritmos</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgModeler.ui" line="80"/>
         <source>Enter algorithm name to filter list</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserir nome do algoritmo para filtrar a lista</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgModeler.ui" line="110"/>
         <source>Enter model name here</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserir nome do modelo aqui</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgModeler.ui" line="117"/>
         <source>Enter group name here</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserir nome do grupo aqui</translation>
     </message>
 </context>
 <context>
@@ -2591,7 +2596,7 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgResults.ui" line="14"/>
         <source>Results</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultados</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgResults.ui" line="53"/>
@@ -2820,7 +2825,7 @@ geometry column - column with unique integer values</source>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="75"/>
         <source>create a view with current content (&lt;TABLE&gt;_current)</source>
-        <translation type="unfinished">criar visualização com conteúdo atual (&lt;TABLE&gt;_current)</translation>
+        <translation>criar vista com conteúdo atual (&lt;TABLE&gt;_atual)</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="85"/>
@@ -2867,24 +2872,25 @@ geometry column - column with unique integer values</source>
     <name>EditRScriptDialog</name>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro I/O</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível gravar alterações. Razão:
+ %1</translation>
     </message>
 </context>
 <context>
     <name>EditScriptDialog</name>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro I/O</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -3204,7 +3210,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="115"/>
         <source>Web</source>
-        <translation type="unfinished">Web</translation>
+        <translation>Internet</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="122"/>
@@ -3354,7 +3360,7 @@ Deseja mesmo assim terminá-lo?</translation>
     </message>
     <message>
         <source>Select the raster file to save the results to</source>
-        <translation type="unfinished">Selecione o ficheiro matricial para guardar os resultados</translation>
+        <translation>Selecione o ficheiro raster para guardar os resultados</translation>
     </message>
     <message>
         <source>Select the input file for Near Black</source>
@@ -3362,11 +3368,11 @@ Deseja mesmo assim terminá-lo?</translation>
     </message>
     <message>
         <source>Select the input file for Grid</source>
-        <translation type="unfinished">Selecione o ficheiro de entrada para a Grelha</translation>
+        <translation>Selecione o ficheiro de entrada para a Grelha</translation>
     </message>
     <message>
         <source>Select the input directory with files to Merge</source>
-        <translation type="unfinished">Seleciona a pasta de entrada com os ficheiros a Juntar</translation>
+        <translation>Seleciona a pasta de entrada com os ficheiros a Juntar</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -3378,11 +3384,11 @@ Deseja mesmo assim terminá-lo?</translation>
     </message>
     <message>
         <source>Select the file to analyse</source>
-        <translation type="unfinished">Selecione o ficheiro para analisar</translation>
+        <translation>Selecione o ficheiro a analisar</translation>
     </message>
     <message>
         <source>Select the input directory with files to Assign projection</source>
-        <translation type="unfinished">Selecione a pasta de entrada com os ficheiros para Atribuir projeção</translation>
+        <translation>Selecione a pasta de entrada com os ficheiros a Atribuir projeção</translation>
     </message>
     <message>
         <source>Finished</source>
@@ -3406,11 +3412,11 @@ Deseja mesmo assim terminá-lo?</translation>
     </message>
     <message>
         <source>Select the files for VRT</source>
-        <translation type="unfinished">Selecione os ficheiros para VRT</translation>
+        <translation>Selecione ficheiros para VRT</translation>
     </message>
     <message>
         <source>Select where to save the VRT</source>
-        <translation type="unfinished">Selecione onde guardar o VRT</translation>
+        <translation>Selecione onde guardar o VRT</translation>
     </message>
     <message>
         <source>VRT (*.vrt)</source>
@@ -3422,7 +3428,7 @@ Deseja mesmo assim terminá-lo?</translation>
     </message>
     <message>
         <source>Select the mask file</source>
-        <translation type="unfinished">Selecione o ficheiro de máscara</translation>
+        <translation>Selecione o ficheiro de máscara</translation>
     </message>
     <message>
         <source>Select the input directory with files to Warp</source>
@@ -3651,7 +3657,7 @@ Desmarque a opção &quot;Usar extensão de interseção&quot; para obter result
     <message>
         <location filename="../python/plugins/GdalTools/tools/inOutSelector.ui" line="46"/>
         <source>Select...</source>
-        <translation type="unfinished">Selecione...</translation>
+        <translation>Selecionar...</translation>
     </message>
 </context>
 <context>
@@ -3700,7 +3706,7 @@ Desmarque a opção &quot;Usar extensão de interseção&quot; para obter result
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="156"/>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="187"/>
         <source>Browse</source>
-        <translation type="unfinished">Pesquisar</translation>
+        <translation>Procurar</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="60"/>
@@ -3758,24 +3764,25 @@ MacOS users usually need to set it to something like
     <message>
         <source>A list of colon-separated (Linux and MacOS) or
 semicolon-separated (Windows) paths to python modules.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista de caminhos separados por vírgulas (Linux e Mac) ou ponto e vírgulas(Windows) para módulos python.</translation>
     </message>
     <message>
         <source>Useful to open local GDAL documentation instead of online help
 when pressing on the tool dialog&apos;s Help button.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Útil para abrir documentação local GDAL em vez da ajuda online
+ ao pressionar o botão de ajuda da caixa de diálogo.</translation>
     </message>
     <message>
         <source>Select directory with GDAL executables</source>
-        <translation type="unfinished">Selecione a pasta com os executáveis GDAL</translation>
+        <translation>Selecione pasta com os executáveis GDAL</translation>
     </message>
     <message>
         <source>Select directory with GDAL python modules</source>
-        <translation type="unfinished">Selecionar o directório com os módulos python GDAL</translation>
+        <translation>Selecionar pasta com os módulos python GDAL</translation>
     </message>
     <message>
         <source>Select directory with the GDAL documentation</source>
-        <translation type="unfinished">Selecione a pasta com a documentação do GDAL</translation>
+        <translation>Selecionar pasta com a documentação do GDAL</translation>
     </message>
 </context>
 <context>
@@ -3794,7 +3801,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="74"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="102"/>
         <source>Select...</source>
-        <translation type="unfinished">Selecione...</translation>
+        <translation>Selecionar...</translation>
     </message>
     <message>
         <source>&amp;Output file:</source>
@@ -3814,7 +3821,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="38"/>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="71"/>
         <source>Choose input directory instead of files</source>
-        <translation type="unfinished">Selecione a pasta de entrada ao invés de ficheiros</translation>
+        <translation>Selecionar pasta de entrada em vez de ficheiros</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="45"/>
@@ -4326,7 +4333,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="145"/>
         <source>Mode Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opções do modo</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="164"/>
@@ -4431,7 +4438,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="64"/>
         <source>old</source>
-        <translation type="unfinished"></translation>
+        <translation>Antigo</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="173"/>
@@ -4476,7 +4483,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="220"/>
         <source>new</source>
-        <translation type="unfinished"></translation>
+        <translation>Novo</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="70"/>
@@ -4589,7 +4596,7 @@ adequado para uso directo em Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="33"/>
         <source>WARNING: current projection definition will be cleared</source>
-        <translation type="unfinished">ATENÇÃO: a definição de projecção atual será apagada</translation>
+        <translation>ATENÇÃO: as definições da projecção atual serão apagadas</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="59"/>
@@ -4824,7 +4831,7 @@ O valor &apos;cinza&apos; (a partir do GDAL 1.7.0) permite expandir uma matriz c
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetFillNodata.ui" line="79"/>
         <source>Search distance</source>
-        <translation type="unfinished">Pesquisar distância</translation>
+        <translation>Distância da pesquisa</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetFillNodata.ui" line="99"/>
@@ -4881,7 +4888,7 @@ O valor &apos;cinza&apos; (a partir do GDAL 1.7.0) permite expandir uma matriz c
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="184"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="194"/>
         <source>Selects a subwindow from the source image for copying based on pixel/line location. (Enter Xoff Yoff Xsize Ysize)</source>
-        <translation type="unfinished">Seleciona uma subjanela a partir da imagem de entrada para copiar com base na posição pixel/linha (defina como Xdesloc Ydesloc Xtamanho Ytamanho)</translation>
+        <translation>Seleciona uma subjanela da imagem de entrada para copiar com base na posição pixel/linha (Inserir Xdesloc Ydesloc Xtamanho Ytamanho)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="187"/>
@@ -4901,7 +4908,7 @@ O valor &apos;cinza&apos; (a partir do GDAL 1.7.0) permite expandir uma matriz c
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="201"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="211"/>
         <source>Selects a subwindow from the source image for copying (like -srcwin) but with the corners given in georeferenced coordinates. (Enter ulx uly lrx lry)</source>
-        <translation type="unfinished">Seleciona uma subjanela a partir da imagem de entrada para copiar (tal como - srcwin), mas com cantos fornecidos em coordenadas georreferenciadas (Defina como tex tey fdx fdy)</translation>
+        <translation>Seleciona uma subjanela da imagem de entrada para copiar (como - srcwin), mas com cantos fornecidos em coordenadas georreferenciadas (Definir tex tey fdx fdy)</translation>
     </message>
     <message>
         <source>Prjwin:</source>
@@ -5206,7 +5213,7 @@ Gostaria de o adicionar ao Índice de Camadas?</translation>
     </message>
     <message>
         <source>Layer &apos;%1&apos; updated</source>
-        <translation type="unfinished">Camada &apos;%1&apos; atualizada</translation>
+        <translation>Camada &apos;%1&apos; atualizada</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
@@ -5283,7 +5290,7 @@ Você gostaria de adicioná-lo a Lista de Camadas?</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="unfinished">Nenhum elemento selecionado, por favor desmarque a opção &apos;Use selecionado&apos; ou faça uma seleção</translation>
+        <translation>Nenhum elemento selecionado, desmarque a opção &apos;Use selecionado&apos; ou faça uma seleção</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
@@ -9136,7 +9143,8 @@ Deseja especificar o caminho (GISBASE) para sua instalação GRASS?</translation
         <location filename="../src/app/qgspluginregistry.cpp" line="253"/>
         <source>Plugin &quot;%1&quot; is not compatible with this version of Quantum GIS.
 It will be disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Módulo &quot;%1&quot; não é compatível com esta versão do Quantum GIS.
+Vai ser desactivado.</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="268"/>
@@ -9431,7 +9439,7 @@ Error(%2): %3</source>
         <location filename="../src/core/qgspoint.cpp" line="149"/>
         <location filename="../src/core/qgspoint.cpp" line="170"/>
         <source>W</source>
-        <translation>W</translation>
+        <translation>O</translation>
     </message>
     <message>
         <location filename="../src/core/qgspoint.cpp" line="149"/>
@@ -9483,7 +9491,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="29"/>
         <source>Diagram Overlay (Legacy)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sobreposição de Diagramas (Legacy)</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="30"/>
@@ -9493,7 +9501,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="32"/>
         <source>Version 0.0.1 (Legacy)</source>
-        <translation type="unfinished"></translation>
+        <translation>Versão 0.0.1 (Legacy)</translation>
     </message>
     <message>
         <source>Version 0.0.1</source>
@@ -9561,7 +9569,7 @@ Error(%2): %3</source>
         <comment>number of duplicate nodes</comment>
         <translatorcomment>número de nós duplicados</translatorcomment>
         <translation>
-            <numerusform>linha %1 contém %n nó(s) duplicados em %2</numerusform>
+            <numerusform>linha %1 contém %n nó(s) duplicado(s) em %2</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -9662,7 +9670,7 @@ Error(%2): %3</source>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="817"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="380"/>
         <source>Failed to transform a point while drawing a feature with ID &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao transformar um ponto durante o desenho do elemento com o id &apos;%1&apos;. A escrita parou. (Excepção: %2)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1026"/>
@@ -9733,12 +9741,12 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1117"/>
         <source>Mapinfo TAB</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapinfo TAB</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1125"/>
         <source>Mapinfo MIF</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapinfo MIF</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1146"/>
@@ -9752,7 +9760,7 @@ Error(%2): %3</source>
         <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="186"/>
         <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="295"/>
         <source>SpatiaLite</source>
-        <translation type="unfinished">SpatiaLite</translation>
+        <translation>SpatiaLite</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1182"/>
@@ -9763,7 +9771,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1282"/>
         <source>Failed to transform, writing stopped. (Exception: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha na transformação, a escrita parou. (Exception: %1)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1096"/>
@@ -9882,7 +9890,7 @@ Apenas %1 de %2 elementos escritos.</translation>
         <location filename="../src/app/qgisapp.cpp" line="5232"/>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="42"/>
         <source>To select features, choose a vector layer in the legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Para selecionar elementos, escolha a camada vectorial na legenda</translation>
     </message>
     <message>
         <source>CRS undefined - defaulting to default CRS</source>
@@ -10589,7 +10597,7 @@ Está a ver esta mensagem provavelmente porque não tem a variável de ambiente 
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="1431"/>
         <source>Unary minus only for numeric values.</source>
-        <translation>Sinal negativo apenas para valores numéricos</translation>
+        <translation>Sinal negativo apenas para valores numéricos.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="1481"/>
@@ -10634,7 +10642,7 @@ Está a ver esta mensagem provavelmente porque não tem a variável de ambiente 
     <message>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="349"/>
         <source>Import was canceled at %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Importação cancelada em %1 de %2</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="382"/>
@@ -11528,7 +11536,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="545"/>
         <source>Browser (2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Navegador (2)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="613"/>
@@ -11937,7 +11945,7 @@ SQL: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="6535"/>
         <location filename="../src/app/qgisapp.cpp" line="6544"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Para alterar o brilho ou contraste, tem de ter selecionada uma camada matricial.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6671"/>
@@ -11953,7 +11961,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6804"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
-        <translation type="unfinished"></translation>
+        <translation>O projeto contém camada(s) em edição com alterações por gravar, que NÃO serão gravadas!</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6828"/>
@@ -11963,7 +11971,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6829"/>
         <source>Do you want to save the current project?%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Deseja guardar o projecto atual?%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7412"/>
@@ -11979,14 +11987,14 @@ SQL: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="8240"/>
         <location filename="../src/app/qgisapp.cpp" line="8415"/>
         <source>Error adding valid layer to map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro a adicionar camada válida ao mapa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8241"/>
         <location filename="../src/app/qgisapp.cpp" line="8416"/>
         <location filename="../src/app/qgisapp.cpp" line="8436"/>
         <source>Raster layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada matricial</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8437"/>
@@ -13571,7 +13579,8 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
         <location filename="../src/app/qgisapp.cpp" line="2174"/>
         <source>Update of view in private qgis.db failed.
 %1</source>
-        <translation type="unfinished">Falha na atualização da visualização em qgis.db (modo privado)</translation>
+        <translation>Falha na atualização da vista no qgis.db privado
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2315"/>
@@ -13632,7 +13641,7 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2415"/>
         <source>QScintilla2 Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Versão QScintilla2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2418"/>
@@ -13657,7 +13666,7 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3000"/>
         <source>Oracle</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3000"/>
@@ -13697,17 +13706,17 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3322"/>
         <source>Failed to open: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao abrir: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3345"/>
         <source>Not valid project file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro de projecto inválido: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3358"/>
         <source>Project failed to open: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao abrir projecto: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3365"/>
@@ -13717,7 +13726,7 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3372"/>
         <source>File not found: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro não encontrado: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3469"/>
@@ -13729,7 +13738,7 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3504"/>
         <source>Loading project: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>A carregar projecto: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3572"/>
@@ -42730,12 +42739,12 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="524"/>
         <source>Decimal degrees</source>
-        <translation>Graus Decimais</translation>
+        <translation>Graus decimais</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="371"/>
         <source>Default project title</source>
-        <translation type="unfinished">Título padrão do projeto</translation>
+        <translation>Título do projeto por defeito</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="85"/>
@@ -42752,12 +42761,12 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="616"/>
         <source>Automatically sets the number of decimal places in the mouse position display</source>
-        <translation type="unfinished">Ajustar automaticamente o número de casas decimais na posição (geográfica) mostrada pelo mouse</translation>
+        <translation>Determinar automaticamente o número de casas decimais da posição do rato mostrada</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="619"/>
         <source>The number of decimal places that are used when displaying the mouse position is automatically set to be enough so that moving the mouse by one pixel gives a change in the position display</source>
-        <translation type="unfinished">O número de casas decimais que são usadas para mostrar a posição (geográfica) do mouse é automaticamente ajustado de forma a ser suficientemente precisa, dessa forma, ao mover o mouse em um pixel resulta em uma mudança na posição</translation>
+        <translation>O número de casas decimais usadas para mostrar a posição do rato é automaticamente ajustado de forma a ser suficientemente para, ao mover o rato em um pixel, resultar numa mudança na posição mostrada</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="609"/>
@@ -42768,13 +42777,13 @@ Proceder?</translation>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="603"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="606"/>
         <source>Sets the number of decimal places to use for the mouse position display</source>
-        <translation type="unfinished">Ajusta o número de casas decimais que mostrarão a posição (geográfica) do mouse</translation>
+        <translation>Define o número de casas decimais a usar para mostrar a posição do rato</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="574"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="577"/>
         <source>The number of decimal places for the manual option</source>
-        <translation type="unfinished">O número de casas decimais para a opção manual</translation>
+        <translation>O número de casas decimais para a opção manual</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="590"/>
@@ -42793,7 +42802,7 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="368"/>
         <source>Descriptive project name</source>
-        <translation type="unfinished">Descreve o nome do projeto</translation>
+        <translation>Nome descritivo do projeto</translation>
     </message>
     <message>
         <source>Enable topological editing</source>
@@ -42816,7 +42825,7 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="97"/>
         <source>CRS</source>
-        <translation type="unfinished">SRC</translation>
+        <translation>SRC</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="100"/>
@@ -42826,20 +42835,20 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="109"/>
         <source>Identify layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Camadas identificáveis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="121"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="124"/>
         <source>Default styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Estilos por defeito</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="133"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="136"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1261"/>
         <source>OWS server</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidor OWS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="308"/>
@@ -42849,13 +42858,14 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="397"/>
         <source>Measure tool</source>
-        <translation type="unfinished">Ferramentas de medida</translation>
+        <translation>Ferramenta de medida</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="406"/>
         <source>Ellipsoid
 (for distance calculations)</source>
-        <translation type="unfinished"></translation>
+        <translation>Elipsóide
+(para cálculo de distância)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="414"/>
@@ -42875,7 +42885,7 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="518"/>
         <source>Degree display</source>
-        <translation type="unfinished">Visualização de graus</translation>
+        <translation>Formatação de graus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="531"/>
@@ -42963,22 +42973,22 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="889"/>
         <source>Defaut styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Estilos por defeito</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="914"/>
         <source>Default symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Símbolos por defeito</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1140"/>
         <source>Transparency</source>
-        <translation type="unfinished">Transparência</translation>
+        <translation>Transparência</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1175"/>
         <source> %</source>
-        <translation type="unfinished">.%</translation>
+        <translation> %</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1286"/>
@@ -43041,7 +43051,7 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1647"/>
         <source>Use Current Canvas Extent</source>
-        <translation type="unfinished">Usar extensão atual do mapa</translation>
+        <translation>Usar extensão atual do mapa</translation>
     </message>
     <message>
         <source>Coordinate Systems Restrictions</source>
@@ -43068,7 +43078,7 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="446"/>
         <source>Used when CRS transformation is turned off</source>
-        <translation type="unfinished">Usado quando transformação de SRC está desligado</translation>
+        <translation>Usado quando a transformação de SRC está desligado</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="449"/>
@@ -43096,7 +43106,7 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1079"/>
         <source>Fill</source>
-        <translation type="unfinished">Preenchimento</translation>
+        <translation>Preenchimento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1019"/>
@@ -43106,7 +43116,7 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1212"/>
         <source>Style Manager</source>
-        <translation type="unfinished">Gerenciador de Estilo</translation>
+        <translation>Gestor de Estilos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1129"/>
@@ -43173,7 +43183,7 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1441"/>
         <source>Exclude layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Excluir camadas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1502"/>
@@ -43183,12 +43193,12 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1516"/>
         <source>Width</source>
-        <translation type="unfinished">Largura</translation>
+        <translation>Largura</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1545"/>
         <source>Height</source>
-        <translation type="unfinished">Altura</translation>
+        <translation>Altura</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1552"/>
@@ -43258,7 +43268,7 @@ Proceder?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="844"/>
         <source>Project layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Camadas do projecto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="854"/>
@@ -61292,47 +61302,48 @@ A extensão não será habilitada.</translation>
     </message>
     <message>
         <source>Max. len:</source>
-        <translation type="unfinished">Max. comp:</translation>
+        <translation>Comp. max.:</translation>
     </message>
     <message>
         <source>Min. len:</source>
-        <translation type="unfinished">Min. comp:</translation>
+        <translation>Com. min.p:</translation>
     </message>
     <message>
         <source>Mean. len:</source>
-        <translation type="unfinished">Média. comp:</translation>
+        <translatorcomment>Comp. médio:</translatorcomment>
+        <translation>Média. comp:</translation>
     </message>
     <message>
         <source>Filled:</source>
-        <translation type="unfinished">Preenchido:</translation>
+        <translation>Preenchido:</translation>
     </message>
     <message>
         <source>Empty:</source>
-        <translation type="unfinished">Vazio:</translation>
+        <translation>Vazio:</translation>
     </message>
     <message>
         <source>N:</source>
-        <translation type="unfinished">N:</translation>
+        <translation>N:</translation>
     </message>
     <message>
         <source>Mean:</source>
-        <translation type="unfinished">Média:</translation>
+        <translation>Média:</translation>
     </message>
     <message>
         <source>StdDev:</source>
-        <translation type="unfinished">Desvio Padrão:</translation>
+        <translation>Desvio Padrão:</translation>
     </message>
     <message>
         <source>Sum:</source>
-        <translation type="unfinished">Soma:</translation>
+        <translation>Soma:</translation>
     </message>
     <message>
         <source>Min:</source>
-        <translation type="unfinished">Min:</translation>
+        <translation>Min:</translation>
     </message>
     <message>
         <source>Max:</source>
-        <translation type="unfinished">Max:</translation>
+        <translation>Max:</translation>
     </message>
     <message>
         <source>CV:</source>
@@ -61340,7 +61351,7 @@ A extensão não será habilitada.</translation>
     </message>
     <message>
         <source>Number of unique values:</source>
-        <translation type="unfinished">Número de valores únicos:</translation>
+        <translation>Número de valores únicos:</translation>
     </message>
     <message>
         <source>Range:</source>
@@ -61352,19 +61363,19 @@ A extensão não será habilitada.</translation>
     </message>
     <message>
         <source>Observed mean distance:</source>
-        <translation type="unfinished">Distância média observada:</translation>
+        <translation>Distância média observada:</translation>
     </message>
     <message>
         <source>Expected mean distance:</source>
-        <translation type="unfinished">Distância média esperada:</translation>
+        <translation>Distância média esperada:</translation>
     </message>
     <message>
         <source>Nearest neighbour index:</source>
-        <translation type="unfinished">Índice do vizinho mais próximo:</translation>
+        <translation>Índice de vizinho mais próximo:</translation>
     </message>
     <message>
         <source>Z-Score:</source>
-        <translation type="unfinished">Escore Z:</translation>
+        <translation type="unfinished">Z-Score:</translation>
     </message>
 </context>
 </TS>

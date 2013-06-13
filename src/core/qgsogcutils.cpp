@@ -1032,7 +1032,7 @@ QDomElement QgsOgcUtils::rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument
   QDomElement lowerCornerElem = doc.createElement( "gml:lowerCorner" );
   posList = QString::number( env->xMinimum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
   posList += " ";
-  posList = QString::number( env->yMinimum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+  posList += QString::number( env->yMinimum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
   QDomText lowerCornerText = doc.createTextNode( posList );
   lowerCornerElem.appendChild( lowerCornerText );
   envElem.appendChild( lowerCornerElem );
@@ -1040,7 +1040,7 @@ QDomElement QgsOgcUtils::rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument
   QDomElement upperCornerElem = doc.createElement( "gml:upperCorner" );
   posList = QString::number( env->xMaximum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
   posList += " ";
-  posList = QString::number( env->yMaximum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+  posList += QString::number( env->yMaximum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
   QDomText upperCornerText = doc.createTextNode( posList );
   upperCornerElem.appendChild( upperCornerText );
   envElem.appendChild( upperCornerElem );

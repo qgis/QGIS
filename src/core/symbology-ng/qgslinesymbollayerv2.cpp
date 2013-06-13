@@ -1087,7 +1087,7 @@ void QgsLineDecorationSymbolLayerV2::startRender( QgsSymbolV2RenderContext& cont
   penColor.setAlphaF( mColor.alphaF() * context.alpha() );
 
   double width = mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit );
-  mPen.setWidth( context.outputLineWidth( width ) );
+  mPen.setWidth( width );
   mPen.setColor( penColor );
   QColor selColor = context.renderContext().selectionColor();
   if ( ! selectionIsOpaque )

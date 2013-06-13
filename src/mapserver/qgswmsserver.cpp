@@ -1447,7 +1447,7 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
         {
           layerKeys.push_front( theMapLayer->id() );
           QgsMapLayerRegistry::instance()->addMapLayers(
-            QList<QgsMapLayer *>() << theMapLayer, false );
+            QList<QgsMapLayer *>() << theMapLayer, false, false );
         }
       }
       else

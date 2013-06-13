@@ -31,7 +31,7 @@ import os
 import code
 
 from qgis.core import QgsApplication
-from ui_console_history_dlg import Ui_HistoryDialog
+from ui_console_history_dlg import Ui_HistoryDialogPythonConsole
 
 _init_commands = ["from qgis.core import *", "import qgis.utils",
                   "from qgis.utils import iface"]
@@ -118,7 +118,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.setAutoCompletionThreshold(threshold)
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI').toString()
         autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True).toBool()
-        self.setAutoCompletionThreshold(threshold)
         if autoCompEnabled:
             if radioButtonSource == 'fromDoc':
                 self.setAutoCompletionSource(self.AcsDocument)
@@ -272,7 +271,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                 self.history.append(command)
         self.historyIndex = len(self.history)
 
-    def writeHistoryFile(self):
+    def writeHistoryFile(self, fromCloseConsole=False):
         ok = False
         try:
             wH = open(_historyFile, 'w')
@@ -282,7 +281,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         except:
             raise
         wH.close()
-        if ok:
+        if ok and not fromCloseConsole:
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'History saved successfully.')
             self.parent.callWidgetMessageBar(msgText)
@@ -562,7 +561,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             prompt = getCmdString[0:4]
             sys.stdout.write(prompt+txt+'\n')
 
-class HistoryDialog(QDialog, Ui_HistoryDialog):
+class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
     def __init__(self, parent):
         QDialog.__init__(self, parent)
         self.setupUi(self)
@@ -586,6 +585,8 @@ class HistoryDialog(QDialog, Ui_HistoryDialog):
         self.model.clear()
         for i in self.parent.history:
             item = QStandardItem(i)
+            if sys.platform.startswith('win'):
+                item.setSizeHint(QSize(18, 18))
             self.model.appendRow(item)
 
         self.listView.setModel(self.model)

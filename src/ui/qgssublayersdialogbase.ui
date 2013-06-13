@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsOGRSublayersDialogBase</class>
- <widget class="QDialog" name="QgsOGRSublayersDialogBase">
+ <class>QgsSublayersDialogBase</class>
+ <widget class="QDialog" name="QgsSublayersDialogBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -20,16 +20,6 @@
    <property name="spacing">
     <number>6</number>
    </property>
-   <item row="6" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0">
     <widget class="QTreeWidget" name="layersTable">
      <property name="selectionMode">
@@ -45,6 +35,16 @@
      </column>
     </widget>
    </item>
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -53,7 +53,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>QgsOGRSublayersDialogBase</receiver>
+   <receiver>QgsSublayersDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -69,7 +69,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>QgsOGRSublayersDialogBase</receiver>
+   <receiver>QgsSublayersDialogBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

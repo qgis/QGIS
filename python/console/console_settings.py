@@ -35,7 +35,6 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
         self.restoreSettings()
         self.initialCheck()
-        self.autoCompletionOptions()
 
         self.addAPIpath.setIcon(QIcon(":/images/themes/default/symbologyAdd.png"))
         self.addAPIpath.setToolTip(QCoreApplication.translate("PythonConsole", "Add API path"))
@@ -44,10 +43,6 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
         self.connect( self.preloadAPI,
                       SIGNAL("stateChanged(int)"), self.initialCheck)
-        self.connect( self.autoCompleteEnabled,
-                      SIGNAL("stateChanged(int)"), self.autoCompletionOptions)
-        self.connect( self.autoCompleteEnabledEditor,
-                      SIGNAL("stateChanged(int)"), self.autoCompletionOptions)
         self.connect(self.addAPIpath,
                      SIGNAL("clicked()"), self.loadAPIFile)
         self.connect(self.removeAPIpath,
@@ -63,28 +58,6 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.tableWidget.setEnabled(value)
         self.addAPIpath.setEnabled(value)
         self.removeAPIpath.setEnabled(value)
-
-    def autoCompletionOptions(self):
-        if self.autoCompleteEnabled.isChecked():
-            self.enableDisableAutoCompleteOptions(True)
-        else:
-            self.enableDisableAutoCompleteOptions(False)
-        if self.autoCompleteEnabledEditor.isChecked():
-            self.enableDisableAutoCompleteOptions(True, editor='editor')
-        else:
-            self.enableDisableAutoCompleteOptions(False, editor='editor')
-
-    def enableDisableAutoCompleteOptions(self, value, editor=None):
-        if editor:
-            self.autoCompFromAPIEditor.setEnabled(value)
-            self.autoCompFromDocAPIEditor.setEnabled(value)
-            self.autoCompFromDocEditor.setEnabled(value)
-            self.autoCompThresholdEditor.setEnabled(value)
-        else:
-            self.autoCompFromAPI.setEnabled(value)
-            self.autoCompFromDocAPI.setEnabled(value)
-            self.autoCompFromDoc.setEnabled(value)
-            self.autoCompThreshold.setEnabled(value)
 
     def loadAPIFile(self):
         settings = QSettings()
@@ -146,6 +119,9 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/autoCompThreshold", QVariant(self.autoCompThreshold.value()))
         settings.setValue("pythonConsole/autoCompThresholdEditor", QVariant(self.autoCompThresholdEditor.value()))
 
+        settings.setValue("pythonConsole/autoCompleteEnabledEditor", QVariant(self.groupBoxAutoCompletionEditor.isChecked()))
+        settings.setValue("pythonConsole/autoCompleteEnabled", QVariant(self.groupBoxAutoCompletion.isChecked()))
+
         if self.autoCompFromAPIEditor.isChecked():
             settings.setValue("pythonConsole/autoCompleteSourceEditor", QVariant('fromAPI'))
         elif self.autoCompFromDocEditor.isChecked():
@@ -160,8 +136,6 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         elif self.autoCompFromDocAPI.isChecked():
             settings.setValue("pythonConsole/autoCompleteSource", QVariant('fromDocAPI'))
 
-        settings.setValue("pythonConsole/autoCompleteEnabledEditor", QVariant(self.autoCompleteEnabledEditor.isChecked()))
-        settings.setValue("pythonConsole/autoCompleteEnabled", QVariant(self.autoCompleteEnabled.isChecked()))
         settings.setValue("pythonConsole/enableObjectInsp", QVariant(self.enableObjectInspector.isChecked()))
         settings.setValue("pythonConsole/autoCloseBracket", QVariant(self.autoCloseBracket.isChecked()))
         settings.setValue("pythonConsole/autoCloseBracketEditor", QVariant(self.autoCloseBracketEditor.isChecked()))
@@ -188,8 +162,6 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.autoCompThreshold.setValue(settings.value("pythonConsole/autoCompThreshold", 2).toInt()[0])
         self.autoCompThresholdEditor.setValue(settings.value("pythonConsole/autoCompThresholdEditor", 2).toInt()[0])
 
-        self.autoCompleteEnabledEditor.setChecked(settings.value("pythonConsole/autoCompleteEnabledEditor", True).toBool())
-        self.autoCompleteEnabled.setChecked(settings.value("pythonConsole/autoCompleteEnabled", True).toBool())
         self.enableObjectInspector.setChecked(settings.value("pythonConsole/enableObjectInsp", False).toBool())
         self.autoCloseBracketEditor.setChecked(settings.value("pythonConsole/autoCloseBracketEditor", True).toBool())
         self.autoCloseBracket.setChecked(settings.value("pythonConsole/autoCloseBracket", True).toBool())
