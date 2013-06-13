@@ -353,25 +353,27 @@ static GEOSGeometry *createGeosLinearRing( const QgsPolyline& polyline )
 
 static GEOSGeometry *createGeosPolygon( const QVector<GEOSGeometry*> &rings )
 {
-  GEOSGeometry *shell = rings[0];
-  GEOSGeometry **holes = NULL;
-
   if ( rings.size() > 1 )
   {
+    GEOSGeometry *shell = rings[0];
+    GEOSGeometry **holes = NULL;
+
     holes = new GEOSGeometry*[ rings.size()-1 ];
     if ( !holes )
       return 0;
 
     for ( int i = 0; i < rings.size() - 1; i++ )
       holes[i] = rings[i+1];
+    GEOSGeometry *geom = GEOSGeom_createPolygon( shell, holes, rings.size() - 1 );
+
+    if ( holes )
+      delete [] holes;
+
+    return geom;
   }
-
-  GEOSGeometry *geom = GEOSGeom_createPolygon( shell, holes, rings.size() - 1 );
-
-  if ( holes )
-    delete [] holes;
-
-  return geom;
+  if ( rings.size() == 1 )
+    return GEOSGeom_createPolygon( rings[0], NULL, 0);
+  return GEOSGeom_createEmptyPolygon();
 }
 
 static GEOSGeometry *createGeosPolygon( GEOSGeometry *shell )
