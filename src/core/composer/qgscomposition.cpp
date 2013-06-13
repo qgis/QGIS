@@ -2002,6 +2002,7 @@ QImage QgsComposition::printPageAsRaster( int page )
   //print out via QImage, code copied from on_mActionExportAsImage_activated
   int width = ( int )( printResolution() * paperWidth() / 25.4 );
   int height = ( int )( printResolution() * paperHeight() / 25.4 );
+  int dpi = ( int )( printResolution() );
   QImage image( QSize( width, height ), QImage::Format_ARGB32 );
   if ( !image.isNull() )
   {
@@ -2010,6 +2011,15 @@ QImage QgsComposition::printPageAsRaster( int page )
     image.fill( 0 );
     QPainter imagePainter( &image );
     renderPage( &imagePainter, page );
+  }
+  else
+  {
+    QMessageBox::warning( 0, tr( "Memory Allocation Error" ),
+                                             tr( "Trying to create image %1x%2 @ %3dpi "
+                                                 "may result in a memory overflow.\n"
+                                                 "Please try a lower resolution or a smaller papersize" )
+                                             .arg( width ).arg( height ).arg ( dpi ),
+                                             QMessageBox::Ok ,  QMessageBox::Ok );
   }
   return image;
 }
