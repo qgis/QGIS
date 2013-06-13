@@ -5030,11 +5030,14 @@ font-style: italic;</string>
                                   <verstretch>0</verstretch>
                                  </sizepolicy>
                                 </property>
+                                <property name="toolTip">
+                                 <string>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1.&lt;br&gt;Value of 0 toggles off specific limit.</string>
+                                </property>
                                 <property name="prefix">
                                  <string>Minimum </string>
                                 </property>
                                 <property name="minimum">
-                                 <number>1</number>
+                                 <number>-999999999</number>
                                 </property>
                                 <property name="maximum">
                                  <number>999999999</number>
@@ -5056,11 +5059,14 @@ font-style: italic;</string>
                                   <verstretch>0</verstretch>
                                  </sizepolicy>
                                 </property>
+                                <property name="toolTip">
+                                 <string>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1.&lt;br&gt;Value of 0 toggles off specific limit.</string>
+                                </property>
                                 <property name="prefix">
                                  <string>Maximum </string>
                                 </property>
                                 <property name="minimum">
-                                 <number>1</number>
+                                 <number>-999999999</number>
                                 </property>
                                 <property name="maximum">
                                  <number>999999999</number>

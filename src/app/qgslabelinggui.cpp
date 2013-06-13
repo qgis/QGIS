@@ -1006,13 +1006,17 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
   mCoordRotationDDBtn->setUsageInfo( ddPlaceInfo );
 
   // rendering
+  QString ddScaleVisInfo = tr( "Value &lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1<br>"
+                               "Value of 0 toggles off specific limit" );
   mScaleBasedVisibilityDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::ScaleVisibility ),
                                     QgsDataDefinedButton::AnyType, QgsDataDefinedButton::boolDesc() );
   mScaleBasedVisibilityDDBtn->registerCheckedWidget( mScaleBasedVisibilityChkBx );
   mScaleBasedVisibilityMinDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::MinScale ),
-                                       QgsDataDefinedButton::AnyType, QgsDataDefinedButton::intPosOneDesc() );
+                                       QgsDataDefinedButton::AnyType, QgsDataDefinedButton::intDesc() );
+  mScaleBasedVisibilityMinDDBtn->setUsageInfo( ddScaleVisInfo );
   mScaleBasedVisibilityMaxDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::MaxScale ),
-                                       QgsDataDefinedButton::AnyType, QgsDataDefinedButton::intPosOneDesc() );
+                                       QgsDataDefinedButton::AnyType, QgsDataDefinedButton::intDesc() );
+  mScaleBasedVisibilityMaxDDBtn->setUsageInfo( ddScaleVisInfo );
 
   mFontLimitPixelDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::FontLimitPixel ),
                               QgsDataDefinedButton::AnyType, QgsDataDefinedButton::boolDesc() );
