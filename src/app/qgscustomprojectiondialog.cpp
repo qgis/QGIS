@@ -24,6 +24,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsgenericprojectionselector.h"
+#include "qgscrscache.h"
 
 //qt includes
 #include <QFileInfo>
@@ -290,6 +291,8 @@ bool QgsCustomProjectionDialog::saveCRS( QgsCoordinateReferenceSystem myCRS, QSt
   }
   existingCRSparameters[myId] = myCRS.toProj4();
   existingCRSnames[myId] = myName;
+
+  QgsCRSCache::instance()->updateCRSCache( QString( "USER:%1" ).arg( myId ) );
 
   // If we have a projection acronym not in the user db previously, add it.
   // This is a must, or else we can't select it from the vw_srs table.

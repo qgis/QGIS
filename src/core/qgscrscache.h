@@ -49,6 +49,8 @@ class CORE_EXPORT QgsCRSCache
     const QgsCoordinateReferenceSystem& crsByAuthId( const QString& authid );
     const QgsCoordinateReferenceSystem& crsByEpsgId( long epsg );
 
+    void updateCRSCache( const QString &authid );
+
   protected:
     QgsCRSCache();
 

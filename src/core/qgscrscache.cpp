@@ -77,6 +77,15 @@ QgsCRSCache::~QgsCRSCache()
   delete mInstance;
 }
 
+void QgsCRSCache::updateCRSCache( const QString& authid )
+{
+  QgsCoordinateReferenceSystem s;
+  if ( s.createFromOgcWmsCrs( authid ) )
+  {
+    mCRS.insert( authid, s );
+  }
+}
+
 const QgsCoordinateReferenceSystem& QgsCRSCache::crsByAuthId( const QString& authid )
 {
   QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRS.find( authid );
