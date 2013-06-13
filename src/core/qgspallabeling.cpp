@@ -768,6 +768,13 @@ void QgsPalLayerSettings::readDataDefinedProperty( QgsVectorLayer* layer,
         bufferDraw = true;
         layer->setCustomProperty( "labeling/bufferDraw", true );
       }
+
+      // fix for scale visibility limits triggered off of just its data defined values in the past (<2.0)
+      if ( oldIndx == 16 || oldIndx == 17 ) // old minScale and maxScale enums
+      {
+        scaleVisibility = true;
+        layer->setCustomProperty( "labeling/scaleVisibility", true );
+      }
     }
 
     // remove old-style field index-based property
@@ -853,7 +860,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   // text buffer
   double bufSize = layer->customProperty( "labeling/bufferSize", QVariant( 0.0 ) ).toDouble();
 
-  // fix for buffer being keyed off of just its size in the past
+  // fix for buffer being keyed off of just its size in the past (<2.0)
   QVariant drawBuffer = layer->customProperty( "labeling/bufferDraw", QVariant() );
   if ( drawBuffer.isValid() )
   {
@@ -937,9 +944,30 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   priority = layer->customProperty( "labeling/priority" ).toInt();
 
   // rendering
-  scaleVisibility = layer->customProperty( "labeling/scaleVisibility" ).toBool();
-  scaleMin = layer->customProperty( "labeling/scaleMin", QVariant( 1 ) ).toInt();
-  scaleMax = layer->customProperty( "labeling/scaleMax", QVariant( 10000000 ) ).toInt();
+  int scalemn = layer->customProperty( "labeling/scaleMin", QVariant( 0 ) ).toInt();
+  int scalemx = layer->customProperty( "labeling/scaleMax", QVariant( 0 ) ).toInt();
+
+  // fix for scale visibility limits being keyed off of just its values in the past (<2.0)
+  QVariant scalevis = layer->customProperty( "labeling/scaleVisibility", QVariant() );
+  if ( scalevis.isValid() )
+  {
+    scaleVisibility = scalevis.toBool();
+    scaleMin = scalemn;
+    scaleMax = scalemx;
+  }
+  else if ( scalemn > 0 || scalemx > 0 )
+  {
+    scaleVisibility = true;
+    scaleMin = scalemn;
+    scaleMax = scalemx;
+  }
+  else
+  {
+    // keep scaleMin and scaleMax at new 1.0 defaults (1 and 10000000, were 0 and 0)
+    scaleVisibility = false;
+  }
+
+
   fontLimitPixelSize = layer->customProperty( "labeling/fontLimitPixelSize", QVariant( false ) ).toBool();
   fontMinPixelSize = layer->customProperty( "labeling/fontMinPixelSize", QVariant( 0 ) ).toInt();
   fontMaxPixelSize = layer->customProperty( "labeling/fontMaxPixelSize", QVariant( 10000 ) ).toInt();
@@ -1496,7 +1524,14 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
         minScale = mins;
       }
     }
-    if ( context.rendererScale() < minScale )
+
+    // scales closer than 1:1
+    if ( minScale < 0 )
+    {
+      minScale = 1 / qAbs( minScale );
+    }
+
+    if ( minScale != 0 && context.rendererScale() < minScale )
     {
       return;
     }
@@ -1513,7 +1548,14 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
         maxScale = maxs;
       }
     }
-    if ( context.rendererScale() > maxScale )
+
+    // scales closer than 1:1
+    if ( maxScale < 0 )
+    {
+      maxScale = 1 / qAbs( maxScale );
+    }
+
+    if ( maxScale != 0 && context.rendererScale() > maxScale )
     {
       return;
     }
