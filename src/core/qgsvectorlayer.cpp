@@ -653,6 +653,15 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   //set update threshold before each draw to make sure the current setting is picked up
   QSettings settings;
   mUpdateThreshold = settings.value( "Map/updateThreshold", 0 ).toInt();
+  // users could accidently set updateThreshold threshold to a small value
+  // and complain about bad performance -> force min 1000 here
+  // TODO: improve GUI (checkbox?) to make obvious the min value (cannot set min
+  // on spinbox because 0 as used for no refresh)
+  if ( mUpdateThreshold > 0 && mUpdateThreshold < 1000 )
+  {
+    mUpdateThreshold = 1000;
+  }
+
 #ifdef Q_WS_X11
   mEnableBackbuffer = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
 #endif
