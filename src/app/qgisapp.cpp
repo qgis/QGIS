@@ -638,11 +638,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
-  // now build vector file filter
-  mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
 
-  // now build raster file filter
-  QgsRasterLayer::buildSupportedRasterFileFilter( mRasterFileFilter );
+  // now build vector and raster file filters
+  mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
+  mRasterFileFilter = QgsProviderRegistry::instance()->fileRasterFilters();
 
   // set handler for missing layers (will be owned by QgsProject)
   QgsProject::instance()->setBadLayerHandler( new QgsHandleBadLayersHandler() );
@@ -6596,8 +6595,7 @@ void QgisApp::options()
     //do we need this? TS
     mMapCanvas->refresh();
 
-    mRasterFileFilter.clear();
-    QgsRasterLayer::buildSupportedRasterFileFilter( mRasterFileFilter );
+    mRasterFileFilter = QgsProviderRegistry::instance()->fileRasterFilters();
 
     if ( oldScales != mySettings.value( "Map/scales", PROJECT_SCALES ).toString() )
     {

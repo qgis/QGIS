@@ -36,6 +36,7 @@ typedef QString providerkey_t();
 typedef QString description_t();
 typedef bool    isprovider_t();
 typedef QString fileVectorFilters_t();
+typedef void buildsupportedrasterfilefilter_t( QString & theFileFiltersString );
 typedef QString databaseDrivers_t();
 typedef QString directoryDrivers_t();
 typedef QString protocolDrivers_t();
@@ -182,6 +183,22 @@ QgsProviderRegistry::QgsProviderRegistry( QString pluginPath )
         mVectorFileFilters += fileVectorFilters;
 
       QgsDebugMsg( QString( "Checking %1: ...loaded ok (%2 file filters)" ).arg( myLib.fileName() ).arg( fileVectorFilters.split( ";;" ).count() ) );
+    }
+
+    // now get raster file filters, if any
+    // this replaces deprecated QgsRasterLayer::buildSupportedRasterFileFilter
+    buildsupportedrasterfilefilter_t *pBuild = 
+      ( buildsupportedrasterfilefilter_t * ) cast_to_fptr( myLib.resolve( "buildSupportedRasterFileFilter" ) );
+    if ( pBuild )
+    {
+      QString fileRasterFilters;
+      pBuild( fileRasterFilters );
+
+      QgsDebugMsg( "raster filters: "+fileRasterFilters);
+      if ( !fileRasterFilters.isEmpty() )
+        mRasterFileFilters += fileRasterFilters;
+
+      QgsDebugMsg( QString( "Checking %1: ...loaded ok (%2 file filters)" ).arg( myLib.fileName() ).arg( fileRasterFilters.split( ";;" ).count() ) );
     }
   }
 } // QgsProviderRegistry ctor
@@ -409,6 +426,11 @@ void QgsProviderRegistry::registerGuis( QWidget *parent )
 QString QgsProviderRegistry::fileVectorFilters() const
 {
   return mVectorFileFilters;
+}
+
+QString QgsProviderRegistry::fileRasterFilters() const
+{
+  return mRasterFileFilters;
 }
 
 QString QgsProviderRegistry::databaseDrivers() const

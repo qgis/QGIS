@@ -68,7 +68,6 @@ email                : tim at linfiniti.com
 #include <QTime>
 
 // typedefs for provider plugin functions of interest
-typedef void buildsupportedrasterfilefilter_t( QString & theFileFiltersString );
 typedef bool isvalidrasterfilename_t( QString const & theFileNameQString, QString & retErrMsg );
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
@@ -162,33 +161,6 @@ QgsRasterLayer::~QgsRasterLayer()
 // Static Methods and members
 //
 /////////////////////////////////////////////////////////
-/**
-  Builds the list of file filter strings to later be used by
-  QgisApp::addRasterLayer()
-  We query GDAL for a list of supported raster formats; we then build
-  a list of file filter strings from that list.  We return a string
-  that contains this list that is suitable for use in a
-  QFileDialog::getOpenFileNames() call.
-*/
-void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersString )
-{
-  QgsDebugMsg( "Entered" );
-  buildsupportedrasterfilefilter_t *pBuild = ( buildsupportedrasterfilefilter_t * ) cast_to_fptr( QgsProviderRegistry::instance()->function( "gdal", "buildSupportedRasterFileFilter" ) );
-  if ( ! pBuild )
-  {
-    QgsDebugMsg( "Could not get buildSupportedRasterFileFilter in gdal provider library" );
-    return;
-  }
-
-  pBuild( theFileFiltersString );
-}
-
-QString QgsRasterLayer::buildSupportedRasterFileFilter2( )
-{
-  QString theFileFiltersString;
-  buildSupportedRasterFileFilter( theFileFiltersString );
-  return theFileFiltersString;
-}
 
 /**
  * This helper checks to see whether the file name appears to be a valid raster file name

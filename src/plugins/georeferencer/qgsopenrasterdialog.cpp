@@ -64,8 +64,7 @@ void QgsOpenRasterDialog::on_tbnSelectRaster_clicked()
 
   QString lastUsedFilter = settings.value( "/Plugin-GeoReferencer/lastusedfilter" ).toString();
 
-  QString filters;
-  QgsRasterLayer::buildSupportedRasterFileFilter( filters );
+  QString filters = QgsProviderRegistry::instance()->fileRasterFilters();
   filters.prepend( "(*.*);;" );
   QString rasterFileName = QFileDialog::getOpenFileName( this, tr( "Choose a name of the raster" ), dir,
                            filters, &lastUsedFilter );

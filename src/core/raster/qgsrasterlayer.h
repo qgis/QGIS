@@ -228,9 +228,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       ColorLayer
     };
 
-    static void buildSupportedRasterFileFilter( QString & fileFilters );
-    static QString buildSupportedRasterFileFilter2(); /* for sip api v2 */
-
     /** This helper checks to see whether the file name appears to be a valid
      *  raster file name.  If the file name looks like it could be valid,
      *  but some sort of error occurs in processing the file, the error is
