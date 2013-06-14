@@ -91,12 +91,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.progressBar.setValue(1)
             outPath = self.outShape.text()
             self.progressBar.setValue(2.5)
-            if outPath.contains("\\"):
-                outName = outPath.right((outPath.length() - outPath.lastIndexOf("\\")) - 1)
-            else:
-                outName = outPath.right((outPath.length() - outPath.lastIndexOf("/")) - 1)
-            if outName.endsWith(".shp"):
-                outName = outName.left(outName.length() - 4)
+            outName = ftools_utils.getShapefileName( outPath )
             self.progressBar.setValue(5)
             mLayer = ftools_utils.getMapLayerByName(unicode(inName))
             if mLayer.type() == mLayer.VectorLayer:
