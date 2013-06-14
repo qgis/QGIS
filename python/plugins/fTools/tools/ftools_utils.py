@@ -382,3 +382,11 @@ def getShapesByGeometryType( baseDir, inShapes, geomType ):
     return None
 
   return outShapes
+
+def getShapefileName( outPath, extension='.shp' ):
+    import os.path
+    outName=os.path.basename(outPath)
+    if outName.endswith(extension):
+        outName=outName[:-len(extension)]
+    return outName
+
