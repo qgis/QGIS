@@ -158,6 +158,8 @@ This action will store a temporary file into the temporary system directory
 that will be automatically deleted after running.</li>
 <br>
 <li><label>Using preloaded APIs file:</label> You can choose whether use the preload APIs file or load some APIs files saved on your system.</li>
+<br>
+<li><label>Using prepared APIs file:</label> If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on <label>Compile Apis...</label> button.</li>
 </ul>
 <p style='border: 1px solid; background:#f6f6f6;' align='justify'>
 	<b>Note:</b> To save the state of console's widgets you have to close the Python Console 
