@@ -135,15 +135,15 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
       elif isinstance(fn, str) or isinstance(fn, unicode):
         fn = unicode( fn )
 
-      #TODO fix and test 
-      #elif hasattr(fn, '__iter__') or isinstance(fn, QStringList):
-      #  if len( fn ) > 0:
-      #    fn = QStringList() << fn
-      #    if self.getType() & self.MULTIFILE:
-      #      self.filenames = fn
-      #    fn = fn.join( "," )
-      #  else:
-      #    fn = ''
+      #TODO test 
+      elif isinstance(fn, list):
+        if len( fn ) > 0:
+          if self.getType() & self.MULTIFILE:
+            self.filenames = fn
+          #fn = "".join( fn, "," )
+          fn = ",".join( fn )
+        else:
+          fn = ''
 
       else:
         fn = ''

@@ -106,7 +106,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="creationGroupBox">
+    <widget class="QGroupBox" name="creationOptionsGroupBox">
      <property name="title">
       <string>&amp;Creation Options</string>
      </property>
@@ -121,7 +121,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QgsRasterFormatSaveOptionsWidget" name="creationOptionsTable" native="true"/>
+       <widget class="QgsRasterFormatSaveOptionsWidget" name="creationOptionsWidget" native="true"/>
       </item>
      </layout>
     </widget>

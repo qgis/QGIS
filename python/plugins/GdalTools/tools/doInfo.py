@@ -71,7 +71,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
       items = self.rasterInfoList.selectedItems()
       for r in items:
         output.append( r.text() + "\n" )
-      if not output.isEmpty():
+      if output:
         clipboard = QApplication.clipboard()
         clipboard.setText( output )
 
@@ -79,7 +79,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
       output = ''
       for r in range( self.rasterInfoList.count() ):
         output.append( self.rasterInfoList.item( r ).text() + "\n" )
-      if not output.isEmpty():
+      if output:
         clipboard = QApplication.clipboard()
         clipboard.setText( output )
 
@@ -88,7 +88,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
         items = ''
         for r in range( self.rasterInfoList.count() ):
           items.append( self.rasterInfoList.item( r ).text() + "\n" )
-        if not items.isEmpty():
+        if items:
           clipboard = QApplication.clipboard()
           clipboard.setText( items )
       else:
@@ -111,7 +111,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
   def fillInputFileEdit( self ):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       inputFile = Utils.FileDialog.getOpenFileName( self, self.tr( "Select the file to analyse" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if inputFile.isEmpty():
+      if not inputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
 

@@ -322,15 +322,24 @@ def getRasterExtent(parent, fileName):
     if arr == '':
       return
 
+    ulCoord = lrCoord = ''
+    xUL = yLR = xLR = yUL = 0
     info = string.split( arr, sep="\n" )
-    ulCoord = info[ info.indexOf( QRegExp( "^Upper\sLeft.*" ) ) ].simplified()
-    lrCoord = info[ info.indexOf( QRegExp( "^Lower\sRight.*" ) ) ].simplified()
-    ulCoord = ulCoord[ulCoord.indexOf( "(" ) + 1 : ulCoord.indexOf( ")" ) - 1].split( "," )
-    lrCoord = lrCoord[lrCoord.indexOf( "(" ) + 1 : lrCoord.indexOf( ")" ) - 1].split( "," )
-    xUL = ulCoord[0].toDouble()[0]
-    yUL = ulCoord[1].toDouble()[0]
-    xLR = lrCoord[0].toDouble()[0]
-    yLR = lrCoord[1].toDouble()[0]
+    for elem in info:
+        m = re.match("^Upper\sLeft.*", elem)
+        if m:
+            ulCoord = m.group(0).strip()
+            ulCoord = ulCoord[string.find(ulCoord,"(") + 1 : string.find(ulCoord,")") - 1].split( "," )
+            xUL = float(ulCoord[0])
+            yUL = float(ulCoord[1])
+            continue
+        m = re.match("^Lower\sRight.*", elem)
+        if m:
+            lrCoord = m.group(0).strip()
+            lrCoord = lrCoord[string.find(lrCoord,"(") + 1 : string.find(lrCoord,")") - 1].split( "," )
+            xLR = float(lrCoord[0])
+            yLR = float(lrCoord[1])
+            continue
 
     return QgsRectangle( xUL, yLR, xLR, yUL )
 
