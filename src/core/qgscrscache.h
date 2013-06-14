@@ -34,6 +34,8 @@ class CORE_EXPORT QgsCoordinateTransformCache
         @param srcAuthId auth id string of source crs
         @param destAuthId auth id string of dest crs*/
     const QgsCoordinateTransform* transform( const QString& srcAuthId, const QString& destAuthId );
+    /**Removes transformations where a changed crs is involved from the cache*/
+    void invalidateCrs( const QString& crsAuthId );
 
   private:
     static QgsCoordinateTransformCache* mInstance;

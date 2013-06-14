@@ -57,6 +57,28 @@ const QgsCoordinateTransform* QgsCoordinateTransformCache::transform( const QStr
   }
 }
 
+void QgsCoordinateTransformCache::invalidateCrs( const QString& crsAuthId )
+{
+  //get keys to remove first
+  QHash< QPair< QString, QString >, QgsCoordinateTransform* >::iterator it = mTransforms.begin();
+  QList< QPair< QString, QString > > updateList;
+
+  for ( ; it != mTransforms.end(); ++it )
+  {
+    if ( it.key().first == crsAuthId || it.key().second == crsAuthId )
+    {
+      updateList.append( it.key() );
+    }
+  }
+
+  //and remove after
+  QList< QPair< QString, QString > >::const_iterator updateIt = updateList.constBegin();
+  for ( ; updateIt != updateList.constEnd(); ++updateIt )
+  {
+    mTransforms.remove( *updateIt );
+  }
+}
+
 QgsCRSCache* QgsCRSCache::mInstance = 0;
 
 QgsCRSCache* QgsCRSCache::instance()
@@ -84,6 +106,7 @@ void QgsCRSCache::updateCRSCache( const QString& authid )
   {
     mCRS.insert( authid, s );
   }
+  QgsCoordinateTransformCache::instance()->invalidateCrs( authid );
 }
 
 const QgsCoordinateReferenceSystem& QgsCRSCache::crsByAuthId( const QString& authid )
