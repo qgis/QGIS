@@ -383,12 +383,10 @@ def getShapesByGeometryType( baseDir, inShapes, geomType ):
 
   return outShapes
 
-def getShapefileName( outPath ):
+def getShapefileName( outPath, extension='.shp' ):
     import os.path
     outName=os.path.basename(outPath)
-    if outName.endswith('.shp'):
-        outName=outName[:-4]
-    if outName.endswith('.csv'):
-        outName=outName[:-4]
+    if outName.endswith(extension):
+        outName=outName[:-len(extension)]
     return outName
 

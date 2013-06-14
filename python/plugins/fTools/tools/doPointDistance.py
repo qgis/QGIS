@@ -128,7 +128,7 @@ class Dialog(QDialog, Ui_Dialog):
             else: matType = "Summary"
             if self.chkNearest.isChecked(): nearest = self.spnNearest.value()
             else: nearest = 0
-            outName = ftools_utils.getShapefileName(outPath)
+            outName = ftools_utils.getShapefileName(outPath,'.csv')
             self.outFile.clear()
             self.compute(point1, point2, field1, field2, outPath, matType, nearest, self.progressBar)
             self.progressBar.setValue(100)
