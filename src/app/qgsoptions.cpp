@@ -360,7 +360,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 #endif
 
   // set the display update threshold
-  spinBoxUpdateThreshold->setValue( settings.value( "/Map/updateThreshold" ).toInt() );
+  spinBoxUpdateThreshold->setSpecialValueText( tr( "All" ) );
+  spinBoxUpdateThreshold->setMinimum( 999 );
+  spinBoxUpdateThreshold->setValue( qMax( 999, settings.value( "/Map/updateThreshold" ).toInt() ) );
 
   // log rendering events, for userspace debugging
   mLogCanvasRefreshChkBx->setChecked( settings.value( "/Map/logCanvasRefreshEvent", false ).toBool() );
@@ -1051,7 +1053,8 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Raster/cumulativeCutUpper", mRasterCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
 
   settings.setValue( "/Map/enableBackbuffer", chkEnableBackbuffer->isChecked() );
-  settings.setValue( "/Map/updateThreshold", spinBoxUpdateThreshold->value() );
+  int threshold = spinBoxUpdateThreshold->value();
+  settings.setValue( "/Map/updateThreshold", threshold < 1000 ? 0 : threshold );
 
   // log rendering events, for userspace debugging
   settings.setValue( "/Map/logCanvasRefreshEvent", mLogCanvasRefreshChkBx->isChecked() );

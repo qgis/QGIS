@@ -1645,7 +1645,7 @@
                   <item row="3" column="0" colspan="2">
                    <widget class="QLabel" name="textLabel3">
                     <property name="text">
-                     <string>&lt;b&gt;Note:&lt;/b&gt; Use zero to prevent display updates until all features have been rendered</string>
+                     <string>&lt;b&gt;Note:&lt;/b&gt; Set below 1000 to prevent display updates until all features have been rendered</string>
                     </property>
                    </widget>
                   </item>

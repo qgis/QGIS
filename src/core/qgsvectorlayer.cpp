@@ -655,8 +655,6 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   mUpdateThreshold = settings.value( "Map/updateThreshold", 0 ).toInt();
   // users could accidently set updateThreshold threshold to a small value
   // and complain about bad performance -> force min 1000 here
-  // TODO: improve GUI (checkbox?) to make obvious the min value (cannot set min
-  // on spinbox because 0 as used for no refresh)
   if ( mUpdateThreshold > 0 && mUpdateThreshold < 1000 )
   {
     mUpdateThreshold = 1000;
