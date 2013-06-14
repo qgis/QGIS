@@ -69,7 +69,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillInputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       inputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Contour" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
-      if inputFile.isEmpty():
+      if not inputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -82,7 +82,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       else:
         outputFile, encoding = Utils.FileDialog.getExistingDirectory(self, self.tr( "Select where to save the Contour output" ), True)
 
-      if outputFile.isEmpty():
+      if not outputFile:
         return
 
       if not self.useDirAsOutput:
@@ -92,15 +92,15 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.lastEncoding = encoding
 
   def getArguments(self):
-      arguments = QStringList()
-      if self.attributeCheck.isChecked() and not self.attributeEdit.text().isEmpty():
-        arguments << "-a"
-        arguments << self.attributeEdit.text()
+      arguments = []
+      if self.attributeCheck.isChecked() and self.attributeEdit.text():
+        arguments.append("-a")
+        arguments.append(self.attributeEdit.text())
       if True: # XXX in this moment the -i argument is not optional
-        arguments << "-i"
-        arguments << unicode(self.intervalDSpinBox.value())
-      arguments << self.getInputFileName()
-      arguments << self.outSelector.filename()
+        arguments.append("-i")
+        arguments.append(str(self.intervalDSpinBox.value()))
+      arguments.append(self.getInputFileName())
+      arguments.append(self.outSelector.filename())
       return arguments
 
   def getInputFileName(self):
@@ -109,7 +109,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def getOutputFileName(self):
       if self.useDirAsOutput:
         fn = self.outSelector.filename()
-        return fn if fn.isEmpty() else fn + QDir.separator() + "contour.shp"
+        return fn if not fn else fn + QDir.separator() + "contour.shp"
       return self.outSelector.filename()
 
   def addLayerIntoCanvas(self, fileInfo):
