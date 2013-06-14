@@ -254,7 +254,30 @@ void myMessageOutput( QtMsgType type, const char *msg )
     {
       fprintf( stderr, "Fatal: %s\n", msg );
 #if defined(linux) && !defined(ANDROID)
-      ( void ) write( STDERR_FILENO, "Stacktrace (run through c++filt):\n", 34 );
+      if( access( "/usr/bin/c++filt", X_OK) )
+      {
+        ( void ) write( STDERR_FILENO, "Stacktrace (c++filt NOT FOUND):\n", 32 );
+      }
+      else
+      {
+        int fd[2];
+
+        if( pipe(fd)==0 && fork()==0 )
+        {
+	  close( STDIN_FILENO );
+	  close( fd[1] );
+	  dup( fd[0] );
+	  execl( "/usr/bin/c++filt", "c++filt", (char *) 0 );
+	  exit(1);
+        }
+
+        ( void ) write( STDERR_FILENO, "Stacktrace (piped through c++filt):\n", 36 );
+
+	close( STDERR_FILENO );
+	close( fd[0] );
+	dup( fd[1] );
+      }
+
       void *buffer[256];
       int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
       backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
