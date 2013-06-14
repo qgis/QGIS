@@ -32,14 +32,14 @@ class SLDatabaseInfo(DatabaseInfo):
 
 	def connectionDetails(self):
 		tbl = [
-			(self.tr("Filename:"), self.db.connector.dbname)
+			(QApplication.translate("DBManagerPlugin","Filename:"), self.db.connector.dbname)
 		]
 		return HtmlTable( tbl )
 
 	def generalInfo(self):
 		info = self.db.connector.getInfo()
 		tbl = [
-			(self.tr("SQLite version"), info[0])
+			(QApplication.translate("DBManagerPlugin","SQLite version:"), info[0])
 		]
 		return HtmlTable( tbl )
 
