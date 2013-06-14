@@ -69,12 +69,7 @@ class Dialog(QDialog, Ui_Dialog):
             inName = self.inShape.currentText()
             outPath = self.outShape.text()
             self.outShape.clear()
-            if outPath.contains("\\"):
-                outName = outPath.right((outPath.length() - outPath.lastIndexOf("\\")) - 1)
-            else:
-                outName = outPath.right((outPath.length() - outPath.lastIndexOf("/")) - 1)
-            if outName.endsWith(".shp"):
-                outName = outName.left(outName.length() - 4)
+            outName = ftools_utils.getShapefileName( outPath )
             if self.rdoSpacing.isChecked(): value = self.spnSpacing.value()
             else: value = self.spnNumber.value()
             if self.chkRandom.isChecked(): offset = True
