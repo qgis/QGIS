@@ -51,10 +51,10 @@ class GdalToolsSRSDialog(QDialog):
       return self.selector.selectedProj4String()
 
   def getProjection(self):
-      if self.authid().startswith("EPSG:", Qt.CaseInsensitive):
+      if self.authid().upper().startswith("EPSG:"):
         return self.authid()
 
-      if not self.selector.selectedProj4String().isEmpty():
+      if self.selector.selectedProj4String():
         return self.proj4string()
 
       return ''

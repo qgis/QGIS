@@ -299,16 +299,15 @@ def getRasterSRS( parent, fileName ):
       return ''
 
     info = string.split( arr, sep="\n" )
-    # TODO .filter( "AUTHORITY" )
-    if info.count() == 0:
+    if len(info) == 0:
       return ''
 
-    srs = info[ info.count() - 1 ]
-    srs = srs.simplified().remove( "AUTHORITY[" )
-    srs = re.sub("\"", '', re.sub("\]{2,4},?", '', srs) )
-    info = srs.split( "," )
-    srs = info[ 0 ] + ":" + info[ 1 ]
-    return srs
+    for elem in info:
+        m = re.match("^\s*AUTHORITY\[\"([a-z]*[A-Z]*)\",\"(\d*)\"\]", elem)
+        if m and len(m.groups()) == 2:
+            return '%s:%s' % (m.group(1), m.group(2))
+
+    return ''
 
 def getRasterExtent(parent, fileName):
     processSRS = QProcess( parent )
