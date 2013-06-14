@@ -60,10 +60,10 @@ const QgsCoordinateTransform* QgsCoordinateTransformCache::transform( const QStr
 void QgsCoordinateTransformCache::invalidateCrs( const QString& crsAuthId )
 {
   //get keys to remove first
-  QHash< QPair< QString, QString >, QgsCoordinateTransform* >::iterator it = mTransforms.begin();
+  QHash< QPair< QString, QString >, QgsCoordinateTransform* >::const_iterator it = mTransforms.constBegin();
   QList< QPair< QString, QString > > updateList;
 
-  for ( ; it != mTransforms.end(); ++it )
+  for ( ; it != mTransforms.constEnd(); ++it )
   {
     if ( it.key().first == crsAuthId || it.key().second == crsAuthId )
     {
