@@ -189,7 +189,11 @@ class QPNetworkAccessManager(QNetworkAccessManager):
       elif proxyType in ["5","FtpCachingProxy"] and QT_VERSION >= 0X040400: self.proxy.setType(QNetworkProxy.FtpCachingProxy)
       else: self.proxy.setType(QNetworkProxy.DefaultProxy)
       self.proxy.setHostName(settings.value("/proxyHost","", type=unicode))
-      self.proxy.setPort(settings.value("/proxyPort", 0, type=int))
+      try:
+		# QSettings may contain non-int value...
+        self.proxy.setPort(settings.value("/proxyPort", 0, type=int))
+      except:
+	    pass
       self.proxy.setUser(settings.value("/proxyUser", "", type=unicode))
       self.proxy.setPassword(settings.value("/proxyPassword", "", type=unicode))
       self.setProxy(self.proxy)
@@ -320,7 +324,12 @@ class Repositories(QObject):
   def checkingOnStartInterval(self):
     """ return checking for news and updates interval """
     settings = QSettings()
-    i = settings.value(settingsGroup+"/checkOnStartInterval", 1, type=int)
+    try:
+      # QSettings may contain non-int value...
+      i = settings.value(settingsGroup+"/checkOnStartInterval", 1, type=int)
+    except:
+      # fallback do 1 day by default
+      i = 1
     if i < 0: i = 1
     # allowed values: 0,1,3,7,14,30 days
     interval = 0
@@ -350,7 +359,11 @@ class Repositories(QObject):
     if self.checkingOnStartInterval() == 0:
       return True
     settings = QSettings()
-    interval = settings.value(settingsGroup+"/checkOnStartLastDate",type=QDate).daysTo(QDate.currentDate())
+    try:
+      # QSettings may contain ivalid value...
+      interval = settings.value(settingsGroup+"/checkOnStartLastDate",type=QDate).daysTo(QDate.currentDate())
+    except:
+      interval = 0
     if interval >= self.checkingOnStartInterval():
       return True
     else:
