@@ -335,7 +335,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void createComposerView();
 
     //! Write a world file
-    void writeWorldFile( QString fileName, double params[6] ) const;
+    void writeWorldFile( QString fileName, double a, double b, double c, double d, double e, double f ) const;
 
     /**Composer title*/
     QString mTitle;

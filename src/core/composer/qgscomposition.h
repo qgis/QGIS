@@ -364,7 +364,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     void renderPage( QPainter* p, int page );
 
     /** Compute world file parameters */
-    void computeWorldFileParameters( double p[6] ) const;
+    void computeWorldFileParameters( double& a, double& b, double& c, double& d, double& e, double& f ) const;
 
     QgsAtlasComposition& atlasComposition() { return mAtlasComposition; }
 

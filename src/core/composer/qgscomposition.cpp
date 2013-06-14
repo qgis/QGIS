@@ -2186,7 +2186,7 @@ bool QgsComposition::nearestItem( const QMap< double, const QgsComposerItem* >& 
   }
 }
 
-void QgsComposition::computeWorldFileParameters( double p[6] ) const
+void QgsComposition::computeWorldFileParameters( double& a, double& b, double& c, double& d, double& e, double& f ) const
 {
   //
   // Word file parameters : affine transformation parameters from pixel coordinates to map coordinates
@@ -2240,10 +2240,10 @@ void QgsComposition::computeWorldFileParameters( double p[6] ) const
   r[5] = - XC * sin( alpha ) + YC * ( 1 - cos( alpha ) );
 
   // result = rotation x scaling = rotation(scaling(X))
-  p[0] = r[0] * s[0] + r[1] * s[3];
-  p[1] = r[0] * s[1] + r[1] * s[4];
-  p[2] = r[0] * s[2] + r[1] * s[5] + r[2];
-  p[3] = r[3] * s[0] + r[4] * s[3];
-  p[4] = r[3] * s[1] + r[4] * s[4];
-  p[5] = r[3] * s[2] + r[4] * s[5] + r[5];
+  a = r[0] * s[0] + r[1] * s[3];
+  b = r[0] * s[1] + r[1] * s[4];
+  c = r[0] * s[2] + r[1] * s[5] + r[2];
+  d = r[3] * s[0] + r[4] * s[3];
+  e = r[3] * s[1] + r[4] * s[4];
+  f = r[3] * s[2] + r[4] * s[5] + r[5];
 }

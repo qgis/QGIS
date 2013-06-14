@@ -223,7 +223,7 @@ void TestQgsComposerMap::overviewMapCenter()
   QgsComposerMap* overviewMapCenter = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
   overviewMapCenter->setFrameEnabled( true );
   mComposition->addComposerMap( overviewMapCenter );
-  mComposerMap->setNewExtent( QgsRectangle( 785462.375+5000, 3341423.125, 789262.375+5000, 3343323.125 ) ); //zoom in
+  mComposerMap->setNewExtent( QgsRectangle( 785462.375 + 5000, 3341423.125, 789262.375 + 5000, 3343323.125 ) ); //zoom in
   mComposerMap->setGridEnabled( false );
   overviewMapCenter->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3350923.125 ) );
   overviewMapCenter->setOverviewFrameMap( mComposerMap->id() );
@@ -244,15 +244,15 @@ void TestQgsComposerMap::worldFileGeneration()
   mComposition->setGenerateWorldFile( true );
   mComposition->setWorldFileMap( mComposerMap );
 
-  double params[6];
-  mComposition->computeWorldFileParameters( params );
+  double a, b, c, d, e, f;
+  mComposition->computeWorldFileParameters( a, b, c, d, e, f );
 
-  QVERIFY( fabs(params[0] - 4.18048) < 0.001 );
-  QVERIFY( fabs(params[1] - 2.41331) < 0.001 );
-  QVERIFY( fabs(params[2] - 779444) < 1 );
-  QVERIFY( fabs(params[3] - 2.4136) < 0.001 );
-  QVERIFY( fabs(params[4] + 4.17997) < 0.001 );
-  QVERIFY( fabs(params[5] - 3.34241e+06) < 1e+03 );
+  QVERIFY( fabs( a - 4.18048 ) < 0.001 );
+  QVERIFY( fabs( b - 2.41331 ) < 0.001 );
+  QVERIFY( fabs( c - 779444 ) < 1 );
+  QVERIFY( fabs( d - 2.4136 ) < 0.001 );
+  QVERIFY( fabs( e + 4.17997 ) < 0.001 );
+  QVERIFY( fabs( f - 3.34241e+06 ) < 1e+03 );
 }
 
 QTEST_MAIN( TestQgsComposerMap )

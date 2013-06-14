@@ -1000,15 +1000,15 @@ void QgsComposer::on_mActionExportAsImage_triggered()
     // Write the world file if asked to
     if ( mComposition->generateWorldFile() )
     {
-      double params[6];
-      mComposition->computeWorldFileParameters( params );
+      double a, b, c, d, e, f;
+      mComposition->computeWorldFileParameters( a, b, c, d, e, f );
 
       QFileInfo fi( fileNExt.first );
       // build the world file name
       QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
                               + fi.suffix()[0] + fi.suffix()[fi.suffix().size()-1] + "w";
 
-      writeWorldFile( worldFileName, params );
+      writeWorldFile( worldFileName, a, b, c, d, e, f );
     }
 
     mView->setPaintingEnabled( true );
@@ -1158,15 +1158,15 @@ void QgsComposer::on_mActionExportAsImage_triggered()
       // Write the world file if asked to
       if ( mComposition->generateWorldFile() )
       {
-        double params[6];
-        mComposition->computeWorldFileParameters( params );
-
-        QFileInfo fi( filename );
-        // build the world file name
-        QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
-                                + fi.suffix()[0] + fi.suffix()[fi.suffix().size()-1] + "w";
-
-        writeWorldFile( worldFileName, params );
+	double a, b, c, d, e, f;
+	mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+	
+	QFileInfo fi( filename );
+	// build the world file name
+	QString worldFileName = fi.absolutePath() + "/" + fi.baseName() + "."
+	  + fi.suffix()[0] + fi.suffix()[fi.suffix().size()-1] + "w";
+	
+	writeWorldFile( worldFileName, a, b, c, d, e, f );
       }
     }
     atlasMap->endRender();
@@ -2354,7 +2354,7 @@ void QgsComposer::createComposerView()
   mViewLayout->addWidget( mView, 1, 1 );
 }
 
-void QgsComposer::writeWorldFile( QString worldFileName, double p[6] ) const
+void QgsComposer::writeWorldFile( QString worldFileName, double a, double b, double c, double d, double e, double f ) const
 {
   QFile worldFile( worldFileName );
   if ( !worldFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
@@ -2365,10 +2365,10 @@ void QgsComposer::writeWorldFile( QString worldFileName, double p[6] ) const
 
   // QString::number does not use locale settings (for the decimal point)
   // which is what we want here
-  fout << QString::number( p[0] ) << "\r\n";
-  fout << QString::number( p[3] ) << "\r\n";
-  fout << QString::number( p[1] ) << "\r\n";
-  fout << QString::number( p[4] ) << "\r\n";
-  fout << QString::number( p[2] ) << "\r\n";
-  fout << QString::number( p[5] ) << "\r\n";
+  fout << QString::number(a) << "\r\n";
+  fout << QString::number(b) << "\r\n";
+  fout << QString::number(c) << "\r\n";
+  fout << QString::number(d) << "\r\n";
+  fout << QString::number(e) << "\r\n";
+  fout << QString::number(f) << "\r\n";
 }
