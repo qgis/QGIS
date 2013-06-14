@@ -95,12 +95,7 @@ class Dialog(QDialog, Ui_Dialog):
                 sumList = ["all"]
             if self.rdoKeep.isChecked(): keep = True
             else: keep = False
-            if outPath.contains("\\"):
-                outName = outPath.right((outPath.length() - outPath.lastIndexOf("\\")) - 1)
-            else:
-                outName = outPath.right((outPath.length() - outPath.lastIndexOf("/")) - 1)
-            if outName.endsWith(".shp"):
-                outName = outName.left(outName.length() - 4)
+            outName = ftools_utils.getShapefileName( outPath )
             res = self.compute(inName, joinName, outPath, summary, sumList, keep, self.progressBar)
             self.outShape.clear()
             if res:

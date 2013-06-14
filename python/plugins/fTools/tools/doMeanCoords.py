@@ -85,13 +85,8 @@ class Dialog(QDialog, Ui_Dialog):
         else:
             inName = self.inShape.currentText()
             outPath = self.outShape.text()
+            outName = ftools_utils.getShapefileName(outPath)
 
-            if outPath.contains("\\"):
-                outName = outPath.right((outPath.length() - outPath.lastIndexOf("\\")) - 1)
-            else:
-                outName = outPath.right((outPath.length() - outPath.lastIndexOf("/")) - 1)
-            if outName.endsWith(".shp"):
-                outName = outName.left(outName.length() - 4)
             self.compute(inName, outPath, self.weightField.currentText(), self.sizeValue.value(), self.uniqueField.currentText())
             self.progressBar.setValue(100)
             self.outShape.clear()
