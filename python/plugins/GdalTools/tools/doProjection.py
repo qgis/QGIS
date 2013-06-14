@@ -34,6 +34,7 @@ from dialogSRS import GdalToolsSRSDialog as SRSDialog
 import GdalTools_utils as Utils
 
 import os.path
+import re
 
 
 class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
@@ -96,14 +97,14 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
   def fillInputFileEdit( self ):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       inputFile = Utils.FileDialog.getOpenFileName( self, self.tr( "Select the file to analyse" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if inputFile.isEmpty():
+      if not inputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
       self.inSelector.setFilename( inputFile )
 
   def fillInputDir( self ):
       inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files to Assign projection" ))
-      if inputDir.isEmpty():
+      if not inputDir:
         return
       self.inSelector.setFilename( inputDir )
 
@@ -113,24 +114,24 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
         self.desiredSRSEdit.setText( dialog.getProjection() )
 
   def getArguments( self ):
-      arguments = QStringList()
-      if not self.desiredSRSEdit.text().isEmpty():
-        arguments << "-t_srs"
-        arguments << self.desiredSRSEdit.text()
+      arguments = []
+      if self.desiredSRSEdit.text():
+        arguments.append("-t_srs")
+        arguments.append(self.desiredSRSEdit.text())
       if self.batchCheck.isChecked():
         return arguments
 
       inputFn = self.getInputFileName()
-      arguments << inputFn
+      arguments.append(inputFn)
       self.tempFile = inputFn
       self.needOverwrite = False
-      if not self.tempFile.isEmpty():
-        if self.tempFile.toLower().contains( QRegExp( "\.tif{1,2}" ) ):
-          self.tempFile = self.tempFile.replace( QRegExp( "\.[a-zA-Z]{2,4}$" ), ".tif" ).append( ".tmp" )
+      if self.tempFile:
+        if self.tempFile.lower().endswith(".tif") or self.tempFile.lower().endswith(".tiff") :
+          self.tempFile = re.sub("\.[a-zA-Z]{2,4}$", ".tif", self.tempFile) + ".tmp"
           self.needOverwrite = True
         else:
-          self.tempFile = self.tempFile.replace( QRegExp( "\.[a-zA-Z]{2,4}$" ), ".tif" )
-      arguments << self.tempFile
+          self.tempFile = re.sub("\.[a-zA-Z]{2,4}$", ".tif", self.tempFile)
+      arguments.append(self.tempFile)
       return arguments
 
   def finished( self ):
