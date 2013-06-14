@@ -353,6 +353,10 @@ static GEOSGeometry *createGeosLinearRing( const QgsPolyline& polyline )
 
 static GEOSGeometry *createGeosPolygon( const QVector<GEOSGeometry*> &rings )
 {
+  if ( rings.size() < 1 )
+  {
+    return GEOSGeom_createEmptyPolygon();
+  }
   GEOSGeometry *shell = rings[0];
   GEOSGeometry **holes = NULL;
 
