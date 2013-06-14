@@ -131,6 +131,12 @@ class QgsComposition : QGraphicsScene
     bool printAsRaster() const;
     void setPrintAsRaster( bool enabled );
 
+    bool generateWorldFile() const;
+    void setGenerateWorldFile( bool enabled );
+
+    QgsComposerMap* worldFileMap();
+    void setWorldFileMap( QgsComposerMap* map );
+
     double selectionTolerance() const;
     void setSelectionTolerance( double tol );
 
@@ -270,6 +276,9 @@ class QgsComposition : QGraphicsScene
     /**Render a page to a paint device
         @note added in version 1.9*/
     void renderPage( QPainter* p, int page );
+
+    /** Compute world file parameters */
+    void computeWorldFileParameters( double& a, double& b, double& c, double& d, double& e, double& f ) const;
 
     QgsAtlasComposition& atlasComposition();
 

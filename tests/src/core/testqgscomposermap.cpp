@@ -224,15 +224,15 @@ void TestQgsComposerMap::worldFileGeneration()
   mComposition->setGenerateWorldFile( true );
   mComposition->setWorldFileMap( mComposerMap );
 
-  double params[6];
-  mComposition->computeWorldFileParameters( params );
+  double a, b, c, d, e, f;
+  mComposition->computeWorldFileParameters( a, b, c, d, e, f );
 
-  QVERIFY( fabs(params[0] - 4.18048) < 0.001 );
-  QVERIFY( fabs(params[1] - 2.41331) < 0.001 );
-  QVERIFY( fabs(params[2] - 779444) < 1 );
-  QVERIFY( fabs(params[3] - 2.4136) < 0.001 );
-  QVERIFY( fabs(params[4] + 4.17997) < 0.001 );
-  QVERIFY( fabs(params[5] - 3.34241e+06) < 1e+03 );
+  QVERIFY( fabs(a - 4.18048) < 0.001 );
+  QVERIFY( fabs(b - 2.41331) < 0.001 );
+  QVERIFY( fabs(c - 779444) < 1 );
+  QVERIFY( fabs(d - 2.4136) < 0.001 );
+  QVERIFY( fabs(e + 4.17997) < 0.001 );
+  QVERIFY( fabs(f - 3.34241e+06) < 1e+03 );
 }
 
 QTEST_MAIN( TestQgsComposerMap )
