@@ -168,6 +168,9 @@ bool  QgsCustomProjectionDialog::deleteCRS( QString id )
     QgsDebugMsg( QString( "failed to remove CRS from database in custom projection dialog: %1 [%2]" ).arg( mySql ).arg( sqlite3_errmsg( myDatabase ) ) );
   }
   sqlite3_close( myDatabase );
+
+  QgsCRSCache::instance()->updateCRSCache( QString( "USER:%1" ).arg( id ) );
+
   return myResult == SQLITE_OK;
 }
 
