@@ -6431,11 +6431,6 @@ Funktioniert auf allen ändernbaren Layern</translation>
         <translation>Anpassungen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1608"/>
-        <source>mActionCatchForCustomization</source>
-        <translation>mActionCatchForCustomization</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="1611"/>
         <source>This is here just to avoid shortcut conflicts, the shortcut is caught in QgsCustomization</source>
         <translation>Dies ist nur hier um widersprüchliche Kürzel zu vermeiden, das Kürzel wird in QgsCustomization abgefangen</translation>
@@ -15904,12 +15899,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <translation>Gitter&amp;typ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="348"/>
-        <source>Offset X</source>
-        <translation>X-Versatz</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="391"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="378"/>
         <source>Cross width</source>
         <translation>Kreuzbreite</translation>
     </message>
@@ -15929,24 +15919,29 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <translation>Gitter anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="305"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="451"/>
         <source>Interval</source>
         <translation>Intervall</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="320"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="363"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="307"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="350"/>
         <source>X </source>
         <translation>X </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="333"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="376"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="320"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="363"/>
         <source>Y </source>
         <translation>Y </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="457"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="335"/>
+        <source>Offset</source>
+        <translation>Versatz</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="444"/>
         <source>Blend mode</source>
         <translation>Mischmodi</translation>
     </message>
@@ -16021,22 +16016,22 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <translation>Übersicht invertieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="411"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="398"/>
         <source>Frame style</source>
         <translation>Rahmenstil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="424"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="411"/>
         <source>Frame width</source>
         <translation>Rahmenstärke</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="437"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="424"/>
         <source>Line style</source>
         <translation>Linienstil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="447"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="434"/>
         <source>change...</source>
         <translation>ändern...</translation>
     </message>
@@ -16281,8 +16276,8 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="254"/>
-        <source>Scalebar n segments</source>
-        <translation>Maßstabsleiste n Segmente</translation>
+        <source>Number of scalebar segments changed</source>
+        <translation>Anzahl der Maßstabssegmente geändert</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="268"/>
@@ -16863,8 +16858,13 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="995"/>
-        <source>Aligned items hcenter</source>
+        <source>Aligned items horizontal center</source>
         <translation>Elemente horizontal zentriert</translation>
+    </message>
+    <message>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1085"/>
+        <source>Aligned items vertical center</source>
+        <translation>Elemente vertikal zentriert</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="1026"/>
@@ -16875,11 +16875,6 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <location filename="../src/core/composer/qgscomposition.cpp" line="1056"/>
         <source>Aligned items top</source>
         <translation>Element oben ausgerichtet</translation>
-    </message>
-    <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1085"/>
-        <source>Aligned items vcenter</source>
-        <translation>Element vertikal zentriert</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="1114"/>
@@ -40812,11 +40807,6 @@ standard deviation ×</source>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="705"/>
-        <source>Max.scale</source>
-        <translation>Max. Maßstab</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="705"/>
         <source>Count</source>
         <translation>Anzahl</translation>
     </message>
@@ -40824,6 +40814,11 @@ standard deviation ×</source>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="705"/>
         <source>Duplicate count</source>
         <translation>Doppelte</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="705"/>
+        <source>Max. scale</source>
+        <translation>Max. Maßstab</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="712"/>
