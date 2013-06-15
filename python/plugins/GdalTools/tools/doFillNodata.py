@@ -33,6 +33,7 @@ from widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget
 import GdalTools_utils as Utils
 
 import os.path
+import re
 
 class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
   def __init__( self, iface ):
@@ -228,7 +229,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
       for f in files:
         self.inFiles.append( inDir + "/" + f )
         if outDir != None:
-          outFile = f.replace( QRegExp( "\.[a-zA-Z0-9]{2,4}" ), outExt )
+          outFile = re.sub( f, "\.[a-zA-Z0-9]{2,4}", outExt )
           self.outFiles.append( outDir + "/" + outFile )
 
       self.errors = QStringList()

@@ -34,6 +34,8 @@ from .ui.ui_DlgSqlWindow import Ui_DbManagerDlgSqlWindow as Ui_Dialog
 from .highlighter import SqlHighlighter
 from .completer import SqlCompleter
 
+import re
+
 class DlgSqlWindow(QDialog, Ui_Dialog):
 
   def __init__(self, iface, db, parent=None):
@@ -134,7 +136,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     if sql == "":
       sql = self.editSql.toPlainText()
     # try to sanitize query
-    sql = sql.replace( QRegExp( ";\\s*$" ), "" )
+    sql = re.sub( ";\\s*$", "", sql )
     return sql
 
   def clearSql(self):
