@@ -165,17 +165,17 @@ def testForUniqueness( fieldList1, fieldList2 ):
 
 # Create a unique field name based on input field name
 def createUniqueFieldName( field ):
-    check = field.name().right( 2 )
-    shortName = field.name().left( 8 )
-    if check.startsWith("_"):
-        ( val, test ) = check.right( 1 ).toInt()
-        if test:
+    check = field.name()[-2:]
+    shortName = field.name()[:8]
+    if check[0] == "_":
+        try:
+            val = int( check[-1:] )
             if val < 2:
                 val = 2
             else:
                 val = val + 1
-            field.setName( shortName.left( len( shortName )-1 ) + unicode( val ) )
-        else:
+            field.setName( shortName[len( shortName )-1:] + unicode( val ) )
+        except exceptions.ValueError:
             field.setName( shortName + "_2" )
     else:
         field.setName( shortName + "_2" )
