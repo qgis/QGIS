@@ -106,6 +106,11 @@ void QgsCRSCache::updateCRSCache( const QString& authid )
   {
     mCRS.insert( authid, s );
   }
+  else
+  {
+    mCRS.remove( authid );
+  }
+
   QgsCoordinateTransformCache::instance()->invalidateCrs( authid );
 }
 
