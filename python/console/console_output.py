@@ -133,7 +133,7 @@ class ShellOutputScintilla(QsciScintilla):
 
     def insertInitText(self):
         txtInit = QCoreApplication.translate("PythonConsole",
-                                             "Python {} on {}\n"
+                                             "Python {0} on {1}\n"
                                              "## Type help(iface) for more info and list of methods.\n".format(sys.version,  socket.gethostname()))
         initText = self.setText(txtInit)
 
