@@ -146,6 +146,7 @@ public:
   int fieldOriginIndex( int fieldIdx ) const;
 
   int indexFromName( const QString& name ) const;
+  void extend( const QgsFields& other );
 
 
   QgsField& operator[](int i);

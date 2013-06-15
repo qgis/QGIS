@@ -149,7 +149,7 @@ class Dialog(QDialog, Ui_Dialog):
         # check for correct field names
         print fieldList1
         longNames = ftools_utils.checkFieldNameLength( fieldList1.values() )
-        if not longNames.isEmpty():
+        if len( longNames ) > 0:
             QMessageBox.warning( self, self.tr( 'Incorrect field names' ),
                         self.tr( 'No output will be created.\nFollowing field names are longer than 10 characters:\n%s' ) % ( "\n".join(longNames) ) )
             return False
@@ -202,8 +202,7 @@ class Dialog(QDialog, Ui_Dialog):
                 for i in joinList:
                     #tempGeom = i.geometry()
                     provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(i) ) ).nextFeature( inFeatB )
-                    tmpGeom = QgsGeometry( inFeatB.geometry() )
-                    if inGeom.intersects(tmpGeom):
+                    if inGeom.intersects(inFeatB.geometry()):
                         count = count + 1
                         none = False
                         atMap2 = inFeatB.attributes()

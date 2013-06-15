@@ -185,8 +185,8 @@ def createUniqueFieldName( field ):
 def checkFieldNameLength( fieldList ):
     longNames = []
     for field in fieldList:
-        if field.name().size() > 10:
-            longNames.append(unicode( field.name() ))
+        if len ( field.name() ) > 10:
+            longNames.append( field.name() )
     return longNames
 
 # Return list of names of all layers in QgsMapLayerRegistry
@@ -195,15 +195,15 @@ def getLayerNames( vTypes ):
     layerlist = []
     if vTypes == "all":
         for name, layer in layermap.iteritems():
-            layerlist.append( unicode( layer.name() ) )
+            layerlist.append( layer.name() )
     else:
         for name, layer in layermap.iteritems():
             if layer.type() == QgsMapLayer.VectorLayer:
                 if layer.geometryType() in vTypes:
-                    layerlist.append( unicode( layer.name() ) )
+                    layerlist.append( layer.name() )
             elif layer.type() == QgsMapLayer.RasterLayer:
                 if "Raster" in vTypes:
-                    layerlist.append( unicode( layer.name() ) )
+                    layerlist.append( layer.name() )
     return sorted( layerlist, cmp=locale.strcoll )
 
 # Return list of names of all fields from input QgsVectorLayer
@@ -212,7 +212,7 @@ def getFieldNames( vlayer ):
     fieldlist = []
     for field in fieldmap:
         if not field.name() in fieldlist:
-            fieldlist.append( unicode( field.name() ) )
+            fieldlist.append( field.name() )
     return sorted( fieldlist, cmp=locale.strcoll )
 
 # Return QgsVectorLayer from a layer name ( as string )
