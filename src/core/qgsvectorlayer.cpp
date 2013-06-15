@@ -201,6 +201,8 @@ QgsVectorLayer::~QgsVectorLayer()
 
   delete mActions;
 
+  delete mRendererV2;
+
   //delete remaining overlays
 
   QList<QgsVectorOverlay*>::iterator overlayIt = mOverlays.begin();

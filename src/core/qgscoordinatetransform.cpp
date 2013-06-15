@@ -155,7 +155,9 @@ void QgsCoordinateTransform::initialise()
   }
 
   // init the projections (destination and source)
+  pj_free( mDestinationProjection );
   mDestinationProjection = pj_init_plus( mDestCRS.toProj4().toUtf8() );
+  pj_free( mSourceProjection );
   mSourceProjection = pj_init_plus( mSourceCRS.toProj4().toUtf8() );
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE

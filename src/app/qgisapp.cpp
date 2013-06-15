@@ -745,43 +745,45 @@ QgisApp::~QgisApp()
 #ifdef HAVE_TOUCH
   delete mMapTools.mTouch;
 #endif
-  delete mMapTools.mIdentify;
+  delete mMapTools.mAddFeature;
+  delete mMapTools.mAddPart;
+  delete mMapTools.mAddRing;
+  delete mMapTools.mAnnotation;
+  delete mMapTools.mChangeLabelProperties;
+  delete mMapTools.mDeletePart;
+  delete mMapTools.mDeleteRing;
   delete mMapTools.mFeatureAction;
-  delete mMapTools.mMeasureDist;
-  delete mMapTools.mMeasureArea;
-  delete mMapTools.mMeasureAngle;
-  delete mMapTools.mTextAnnotation;
   delete mMapTools.mFormAnnotation;
   delete mMapTools.mHtmlAnnotation;
-  delete mMapTools.mSvgAnnotation;
-  delete mMapTools.mAnnotation;
-  delete mMapTools.mAddFeature;
+  delete mMapTools.mIdentify;
+  delete mMapTools.mMeasureAngle;
+  delete mMapTools.mMeasureArea;
+  delete mMapTools.mMeasureDist;
   delete mMapTools.mMoveFeature;
-  delete mMapTools.mReshapeFeatures;
-  delete mMapTools.mSplitFeatures;
-  delete mMapTools.mSelect;
-  delete mMapTools.mSelectRectangle;
-  delete mMapTools.mSelectPolygon;
-  delete mMapTools.mSelectFreehand;
-  delete mMapTools.mSelectRadius;
-  delete mMapTools.mAddRing;
-  delete mMapTools.mSimplifyFeature;
-  delete mMapTools.mDeleteRing;
-  delete mMapTools.mDeletePart;
-  delete mMapTools.mAddPart;
-  delete mMapTools.mNodeTool;
-  delete mMapTools.mRotatePointSymbolsTool;
-  delete mMapTools.mPinLabels;
-  delete mMapTools.mShowHideLabels;
   delete mMapTools.mMoveLabel;
+  delete mMapTools.mNodeTool;
+  delete mMapTools.mOffsetCurve;
+  delete mMapTools.mPinLabels;
+  delete mMapTools.mReshapeFeatures;
   delete mMapTools.mRotateFeature;
   delete mMapTools.mRotateLabel;
-  delete mMapTools.mChangeLabelProperties;
-  delete mMapTools.mOffsetCurve;
+  delete mMapTools.mRotatePointSymbolsTool;
+  delete mMapTools.mSelect;
+  delete mMapTools.mSelectFreehand;
+  delete mMapTools.mSelectPolygon;
+  delete mMapTools.mSelectRadius;
+  delete mMapTools.mSelectRectangle;
+  delete mMapTools.mShowHideLabels;
+  delete mMapTools.mSimplifyFeature;
+  delete mMapTools.mSplitFeatures;
+  delete mMapTools.mSvgAnnotation;
+  delete mMapTools.mTextAnnotation;
 
-  delete mPythonUtils;
+  delete mpMaptip;
 
   delete mpGpsWidget;
+
+  delete mOverviewMapCursor;
 
   deletePrintComposers();
   removeAnnotationItems();
@@ -791,6 +793,11 @@ QgisApp::~QgisApp()
 
   // delete map layer registry and provider registry
   QgsApplication::exitQgis();
+
+  delete QgsProject::instance();
+
+  mPythonUtils->exitPython();
+  delete mPythonUtils;
 }
 
 void QgisApp::dragEnterEvent( QDragEnterEvent *event )
@@ -1330,7 +1337,7 @@ void QgisApp::createMenus()
   // Help menu
   // add What's this button to it
   QAction* before = mActionHelpAPI;
-  mHelpMenu->insertAction( before, QWhatsThis::createAction() );
+  mHelpMenu->insertAction( before, QWhatsThis::createAction( this ) );
 }
 
 void QgisApp::createToolBars()
@@ -1457,7 +1464,7 @@ void QgisApp::createToolBars()
 
   // Help Toolbar
 
-  mHelpToolBar->addAction( QWhatsThis::createAction() );
+  mHelpToolBar->addAction( QWhatsThis::createAction( this ) );
 
 }
 
@@ -2172,6 +2179,10 @@ bool QgisApp::createDB()
         sqlite3_close( db );
         return false;
       }
+    }
+    else
+    {
+      sqlite3_free( errmsg );
     }
 
     if ( sqlite3_exec( db, "DROP VIEW vw_srs", 0, 0, &errmsg ) != SQLITE_OK )

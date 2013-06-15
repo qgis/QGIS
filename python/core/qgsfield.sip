@@ -149,13 +149,14 @@ public:
   void extend( const QgsFields& other );
 
 
-  QgsField& operator[](int i);
+  QgsField& operator[](int i) /Factory/;
 %MethodCode
-  int idx = (int)sipConvertFromSequenceIndex(a0, sipCpp->count());
+  int idx = sipConvertFromSequenceIndex(a0, sipCpp->count());
   if (idx < 0)
     sipIsErr = 1;
   else
     sipRes = new QgsField(sipCpp->operator[](idx));
+
 %End
 
 /*  SIP_PYOBJECT __getitem__(int key);
