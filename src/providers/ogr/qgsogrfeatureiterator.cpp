@@ -101,7 +101,8 @@ bool QgsOgrFeatureIterator::nextFeature( QgsFeature& feature )
       return false;
     }
 
-    readFeature( fet, feature );
+    if ( readFeature( fet, feature ) )
+      OGR_F_Destroy( fet );
 
     feature.setValid( true );
     close(); // the feature has been read: we have finished here
