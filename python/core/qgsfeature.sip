@@ -22,15 +22,17 @@ typedef QVector<QVariant> QgsAttributes;
     // Set the list elements.
     for (int i = 0; i < sipCpp->size(); ++i)
     {
-      QVariant* v = new QVariant(sipCpp->at(i));
+      QVariant* v = new QVariant( sipCpp->at(i) );
       PyObject *tobj;
 
       if ( v->isNull() )
       {
         tobj = Py_None;
+        delete v;
       }
-      else if ((tobj = sipConvertFromType(v, sipType_QVariant,Py_None)) == NULL)
+      else if ((tobj = sipConvertFromNewType(v, sipType_QVariant,Py_None)) == NULL)
       {
+        delete v;
         return NULL;
       }
 
@@ -200,11 +202,16 @@ class QgsFeature
   }
   else
   {
-    QVariant* v = new QVariant(attrs[a0]);
+    QVariant* v = new QVariant(attrs.at(a0));
     if ( v->isNull() )
+    {
+      delete v;
       sipRes = Py_None;
+    }
     else
-      sipRes = sipConvertFromInstance( v, sipClass_QVariant, Py_None );
+    {
+      sipRes = sipConvertFromNewInstance( v, sipClass_QVariant, Py_None );
+    }
   }
 %End
 
