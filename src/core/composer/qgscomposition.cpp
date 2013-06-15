@@ -992,7 +992,7 @@ void QgsComposition::alignSelectedItemsHCenter()
   double averageXCoord = ( selectedItemBBox.left() + selectedItemBBox.right() ) / 2.0;
 
   //place items
-  QUndoCommand* parentCommand = new QUndoCommand( tr( "Aligned items hcenter" ) );
+  QUndoCommand* parentCommand = new QUndoCommand( tr( "Aligned items horizontal center" ) );
   QList<QgsComposerItem*>::iterator align_it = selectedItems.begin();
   for ( ; align_it != selectedItems.end(); ++align_it )
   {
@@ -1082,7 +1082,7 @@ void QgsComposition::alignSelectedItemsVCenter()
   }
 
   double averageYCoord = ( selectedItemBBox.top() + selectedItemBBox.bottom() ) / 2.0;
-  QUndoCommand* parentCommand = new QUndoCommand( tr( "Aligned items vcenter" ) );
+  QUndoCommand* parentCommand = new QUndoCommand( tr( "Aligned items vertical center" ) );
   QList<QgsComposerItem*>::iterator align_it = selectedItems.begin();
   for ( ; align_it != selectedItems.end(); ++align_it )
   {

@@ -1605,7 +1605,7 @@ Ctl (Cmd) increments by 15 deg.</string>
   </action>
   <action name="actionActionCatchForCustomization">
    <property name="text">
-    <string>mActionCatchForCustomization</string>
+    <string notr="true">mActionCatchForCustomization</string>
    </property>
    <property name="toolTip">
     <string>This is here just to avoid shortcut conflicts, the shortcut is caught in QgsCustomization</string>

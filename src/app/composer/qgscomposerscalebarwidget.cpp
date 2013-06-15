@@ -251,7 +251,7 @@ void QgsComposerScaleBarWidget::on_mNumberOfSegmentsSpinBox_valueChanged( int i 
     return;
   }
 
-  mComposerScaleBar->beginCommand( tr( "Scalebar n segments" ), QgsComposerMergeCommand::ScaleBarNSegments );
+  mComposerScaleBar->beginCommand( tr( "Number of scalebar segments changed" ), QgsComposerMergeCommand::ScaleBarNSegments );
   disconnectUpdateSignal();
   mComposerScaleBar->setNumSegments( i );
   mComposerScaleBar->update();
