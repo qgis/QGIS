@@ -976,7 +976,7 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
   QgsSymbolV2Map symbols;
   QDomElement rangesElem = doc.createElement( "ranges" );
   QgsRangeList::const_iterator it = mRanges.constBegin();
-  for ( ; it != mRanges.end(); it++ )
+  for ( ; it != mRanges.constEnd(); it++ )
   {
     const QgsRendererRangeV2& range = *it;
     QString symbolName = QString::number( i );
