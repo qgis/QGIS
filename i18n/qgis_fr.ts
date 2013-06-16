@@ -14325,7 +14325,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="602"/>
         <source>Checking provider plugins</source>
-        <translation>Vérification des extension fournisseuses</translation>
+        <translation>Vérification des extension prestataires</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="606"/>
@@ -14621,7 +14621,7 @@ Veuillez contacter les développeurs.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4298"/>
         <source>Labeling</source>
-        <translation type="unfinished">Étiquetage</translation>
+        <translation>Étiquetage</translation>
     </message>
     <message>
         <source>New Shapefile Layer...</source>
@@ -15461,7 +15461,7 @@ Ignorer l&apos;erreur ?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7028"/>
         <source>Do you want to save the current project?%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Voulez-vous sauvegarder le projet courant ? %1</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="7933"/>
@@ -18825,7 +18825,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="322"/>
         <source>Atlas generation</source>
-        <translation>Génération d&apos;atals</translation>
+        <translation>Génération d&apos;atlas</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="669"/>
