@@ -151,7 +151,7 @@ public:
 
   QgsField& operator[](int i) /Factory/;
 %MethodCode
-  int idx = sipConvertFromSequenceIndex(a0, sipCpp->count());
+  SIP_SSIZE_T idx = sipConvertFromSequenceIndex(a0, sipCpp->count());
   if (idx < 0)
     sipIsErr = 1;
   else
