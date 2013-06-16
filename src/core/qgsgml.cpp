@@ -379,8 +379,16 @@ void QgsGml::endElement( const XML_Char* el )
       {
         //error
       }
-      mCurrentWKBFragments.begin()->push_back( wkb );
-      mCurrentWKBFragmentSizes.begin()->push_back( wkbSize );
+      if ( !mCurrentWKBFragments.isEmpty() )
+      {
+        mCurrentWKBFragments.begin()->push_back( wkb );
+        mCurrentWKBFragmentSizes.begin()->push_back( wkbSize );
+      }
+      else
+      {
+        QgsDebugMsg( "No wkb fragments" );
+      }
+
       //wkbList.push_back(wkb);
       //wkbSizeList.push_back(wkbSize);
       //mCurrentWKBFragments.push_back(wkbList);
@@ -418,8 +426,15 @@ void QgsGml::endElement( const XML_Char* el )
       {
         //error
       }
-      mCurrentWKBFragments.begin()->push_back( wkb );
-      mCurrentWKBFragmentSizes.begin()->push_back( wkbSize );
+      if ( !mCurrentWKBFragments.isEmpty() )
+      {
+        mCurrentWKBFragments.begin()->push_back( wkb );
+        mCurrentWKBFragmentSizes.begin()->push_back( wkbSize );
+      }
+      else
+      {
+        QgsDebugMsg( "no wkb fragments" );
+      }
       //wkbList.push_back(wkb);
       //wkbSizeList.push_back(wkbSize);
       //mCurrentWKBFragments.push_back(wkbList);
@@ -439,8 +454,15 @@ void QgsGml::endElement( const XML_Char* el )
     {
       //error
     }
-    mCurrentWKBFragments.begin()->push_back( wkb );
-    mCurrentWKBFragmentSizes.begin()->push_back( wkbSize );
+    if ( !mCurrentWKBFragments.isEmpty() )
+    {
+      mCurrentWKBFragments.begin()->push_back( wkb );
+      mCurrentWKBFragmentSizes.begin()->push_back( wkbSize );
+    }
+    else
+    {
+      QgsDebugMsg( "no wkb fragments" );
+    }
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Polygon" )
   {
