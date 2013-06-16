@@ -146,7 +146,7 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
 
   # called when a value in the plugin widget interface changed
   def refreshArgs(self, args):
-      self.arguments = args
+      self.arguments = [unicode(a) for a in args]
 
       if not self.commandIsEnabled():
         self.textEditCommand.setPlainText(self.command)

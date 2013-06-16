@@ -80,7 +80,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillInputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
       inputFile, encoding = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Rasterize" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter, True)
-      if inputFile.isEmpty():
+      if not inputFile:
         return
       Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
 
@@ -100,7 +100,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         fileDialogFunc = Utils.FileDialog.getOpenFileName
 
       outputFile = fileDialogFunc(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
-      if outputFile.isEmpty():
+      if not outputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -113,24 +113,24 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           self.radioSetSize.setChecked(True)
 
   def getArguments(self):
-      arguments = QStringList()
+      arguments = []
       if self.attributeComboBox.currentIndex() >= 0:
-        arguments << "-a"
-        arguments << self.attributeComboBox.currentText()
+        arguments.append( "-a" )
+        arguments.append( self.attributeComboBox.currentText() )
       if self.radioSetSize.isChecked():
-        arguments << "-ts"
-        arguments << str( self.widthSpin.value() )
-        arguments << str( self.heightSpin.value() )
+        arguments.append( "-ts" )
+        arguments.append( self.widthSpin.value() )
+        arguments.append( self.heightSpin.value() )
       if self.radioSetResolution.isChecked():
-        arguments << "-tr"
-        arguments << str( self.horizresSpin.value() )
-        arguments << str( self.vertresSpin.value() )
+        arguments.append( "-tr" )
+        arguments.append( self.horizresSpin.value() )
+        arguments.append( self.vertresSpin.value() )
       inputFn = self.getInputFileName()
-      if not inputFn.isEmpty():
-        arguments << "-l"
-        arguments << QFileInfo( inputFn ).baseName()
-      arguments << inputFn
-      arguments << self.getOutputFileName()
+      if inputFn:
+        arguments.append( "-l" )
+        arguments.append( QFileInfo( inputFn ).baseName() )
+      arguments.append( inputFn )
+      arguments.append( self.getOutputFileName() )
       return arguments
 
   def getInputFileName(self):
@@ -145,7 +145,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def loadFields(self, vectorFile):
       self.attributeComboBox.clear()
 
-      if vectorFile.isEmpty():
+      if not vectorFile:
         return
 
       try:

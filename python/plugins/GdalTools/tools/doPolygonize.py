@@ -92,21 +92,21 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.maskSelector.setFilename(maskFile)
 
   def getArguments(self):
-      arguments = QStringList()
-      arguments << self.getInputFileName()
+      arguments = []
+      arguments.append( self.getInputFileName() )
       outputFn = self.getOutputFileName()
       maskFn = self.getMaskFileName()
       if self.maskCheck.isChecked() and not maskFn.isEmpty():
-        arguments << "-mask"
-        arguments << maskFn
+        arguments.append( "-mask" )
+        arguments.append( maskFn )
       if not outputFn.isEmpty():
-        arguments << "-f"
-        arguments << self.outputFormat
-      arguments << outputFn
+        arguments.append( "-f" )
+        arguments.append( self.outputFormat )
+      arguments.append( outputFn )
       if not outputFn.isEmpty():
-        arguments << QFileInfo( outputFn ).baseName()
+        arguments.append( QFileInfo( outputFn ).baseName() )
       if self.fieldCheck.isChecked() and not self.fieldEdit.text().isEmpty():
-        arguments << self.fieldEdit.text()
+        arguments.append( self.fieldEdit.text() )
       return arguments
 
   def getOutputFileName(self):
