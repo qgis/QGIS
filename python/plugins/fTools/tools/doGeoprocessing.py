@@ -892,7 +892,7 @@ class geoprocessingThread( QThread ):
         crs_match = crsA == crsB
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
     longNames = ftools_utils.checkFieldNameLength( fields )
-    if not longNames.isEmpty():
+    if longNames:
       message = self.tr('Following field names are longer than 10 characters:\n%s') % ( '\n'.join(longNames) )
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, message
 
@@ -1077,7 +1077,7 @@ class geoprocessingThread( QThread ):
 
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
     longNames = ftools_utils.checkFieldNameLength( fields )
-    if not longNames.isEmpty():
+    if longNames:
       message = self.tr( 'Following field names are longer than 10 characters:\n%s' ) % ( "\n".join(longNames) )
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, message
 
@@ -1263,7 +1263,7 @@ class geoprocessingThread( QThread ):
 
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
     longNames = ftools_utils.checkFieldNameLength( fields )
-    if not longNames.isEmpty():
+    if longNames:
       message = self.tr( 'Following field names are longer than 10 characters:\n%s' ) % ( "\n".join(longNames) )
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, message
 

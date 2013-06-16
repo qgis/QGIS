@@ -133,7 +133,7 @@ class Dialog( QDialog, Ui_Dialog ):
     self.stopProcessing()
     self.restoreGui()
 
-    if not errors.isEmpty():
+    if errors:
       msg = self.tr( "Processing of the following layers/files ended with error:<br><br>" ) + "<br>".join(errors)
       QErrorMessage( self ).showMessage( msg )
 

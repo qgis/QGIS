@@ -72,7 +72,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
       else:
         for rec in range( self.tblUnique.rowCount() ):
           items.append( self.tblUnique.item( rec, 0 ).text() + ":" + self.tblUnique.item( rec, 1 ).text() + "\n" )
-      if not items.isEmpty():
+      if items:
         clip_board = QApplication.clipboard()
         clip_board.setText( items )
     else:

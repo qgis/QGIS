@@ -143,7 +143,7 @@ class Dialog(QDialog, Ui_Dialog):
         fileCheck = QFile(outName)
         filePath = QFileInfo(outName).absoluteFilePath()
         if filePath.right(4) != ".csv": filePath = filePath + ".csv"
-        if not outName.isEmpty():
+        if outName:
             self.outFile.insert(filePath)
 
     def compute(self, line1, line2, field1, field2, outPath, matType, nearest, progressBar):

@@ -115,7 +115,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
       for row in range( self.tblUnique.rowCount() ):
         items.append( self.tblUnique.item( row, 0 ).text()
         + "," + self.tblUnique.item( row, 1 ).text() + "\n" )
-      if not items.isEmpty():
+      if items:
         clip_board = QApplication.clipboard()
         clip_board.setText( items )
     else:

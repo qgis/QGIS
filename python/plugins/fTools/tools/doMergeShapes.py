@@ -53,7 +53,7 @@ class Dialog( QDialog, Ui_Dialog ):
               self.tr( "Select directory with shapefiles to merge" ),
               lastDir )
 
-    if inDir.isEmpty():
+    if not inDir:
       return
 
     workDir = QDir( inDir )
@@ -89,8 +89,8 @@ class Dialog( QDialog, Ui_Dialog ):
       fileName = QFileInfo( f ).fileName()
       self.inputFiles.append( fileName )
 
-    self.progressFiles.setRange( 0, self.inputFiles.count() )
-    self.leInputDir.setText( files.join( ";" ) )
+    self.progressFiles.setRange( 0, len( self.inputFiles ) )
+    self.leInputDir.setText( ";".join( files ) )
 
   def changeMode( self ):
     if self.chkListMode.isChecked():
