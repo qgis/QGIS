@@ -1119,7 +1119,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
     default: //string
       modified = true;
       if ( text.isNull() )
-        value = QVariant();
+        value = QVariant( theField.type() );
       else
         value = QVariant( text );
       break;
