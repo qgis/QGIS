@@ -25,6 +25,8 @@
 
 #include <QColorDialog>
 #include <QFontDatabase>
+#include <QSettings>
+
 
 QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, int featureId, const QFont& labelFont, const QString& labelText, QgsMapRenderer* renderer, QWidget * parent, Qt::WindowFlags f ):
     QDialog( parent, f ), mMapRenderer( renderer ), mLabelFont( labelFont ), mCurLabelField( -1 )
@@ -33,10 +35,15 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, int feat
   fillHaliComboBox();
   fillValiComboBox();
   init( layerId, featureId, labelText );
+
+  QSettings settings;
+  restoreGeometry( settings.value( QString( "/Windows/ChangeLabelProps/geometry" ) ).toByteArray() );
 }
 
 QgsLabelPropertyDialog::~QgsLabelPropertyDialog()
 {
+  QSettings settings;
+  settings.setValue( QString( "/Windows/ChangeLabelProps/geometry" ), saveGeometry() );
 }
 
 void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const QString& labelText )
