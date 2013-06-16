@@ -190,8 +190,7 @@ class CORE_EXPORT QgsFields
     {
       for ( int i = 0; i < other.count(); ++i )
       {
-        if ( other.fieldOrigin( i ) != OriginJoin )
-          append( other.at( i ), other.fieldOrigin( i ), other.fieldOriginIndex( i ) );
+        append( other.at( i ), other.fieldOrigin( i ), other.fieldOriginIndex( i ) );
       }
     }
     inline const QgsField& operator[]( int i ) const { return mFields[i].field; }
