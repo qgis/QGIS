@@ -282,16 +282,16 @@ class GeometryDialog( QDialog, Ui_Dialog ):
       if success:
         if ( self.myFunction == 5 and self.chkWriteShapefile.isChecked() ) or self.myFunction != 5:
           addToTOC = QMessageBox.question( self, self.tr("Geometry"),
-                       self.tr( "Created output shapefile:\n%1\n%2\n\nWould you like to add the new layer to the TOC?" ).arg( unicode( self.shapefileName ) ).arg( extra ),
+                       self.tr( "Created output shapefile:\n{0}\n{1}\n\nWould you like to add the new layer to the TOC?" ).format( self.shapefileName, extra ),
                        QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
           if addToTOC == QMessageBox.Yes:
             if not ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) ):
               QMessageBox.warning( self, self.tr( "Geometry"),
-                                   self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( self.shapefileName ) ) )
+                                   self.tr( "Error loading output shapefile:\n{0}" ).format( self.shapefileName ) )
             self.populateLayers()
         else:
           QMessageBox.information( self, self.tr( "Geometry" ),
-                                   self.tr( "Layer '%1' updated" ).arg( self.inShape.currentText() ) )
+                                   self.tr( "Layer '{0}' updated" ).format( self.inShape.currentText() ) )
       else:
         QMessageBox.warning( self, self.tr( "Geometry" ), self.tr( "Error writing output shapefile." ) )
 
