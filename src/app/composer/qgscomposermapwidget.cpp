@@ -303,6 +303,8 @@ void QgsComposerMapWidget::updateGuiElements()
     mOverviewBlendModeComboBox->setBlendMode( mComposerMap->overviewBlendMode() );
     //overview inverted
     mOverviewInvertCheckbox->setChecked( mComposerMap->overviewInverted() );
+    //center overview
+    mOverviewCenterCheckbox->setChecked( mComposerMap->overviewCentered() );
 
     //grid
     if ( mComposerMap->gridEnabled() )
@@ -452,6 +454,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mOverviewFrameStyleButton->blockSignals( b );
   mOverviewBlendModeComboBox->blockSignals( b );
   mOverviewInvertCheckbox->blockSignals( b );
+  mOverviewCenterCheckbox->blockSignals( b );
 }
 
 void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
@@ -588,6 +591,14 @@ void QgsComposerMapWidget::on_mOverviewInvertCheckbox_toggled( bool state )
   if ( mComposerMap )
   {
     mComposerMap->setOverviewInverted( state );
+  }
+}
+
+void QgsComposerMapWidget::on_mOverviewCenterCheckbox_toggled( bool state )
+{
+  if ( mComposerMap )
+  {
+    mComposerMap->setOverviewCentered( state );
   }
 }
 
