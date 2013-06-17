@@ -796,7 +796,8 @@ QgisApp::~QgisApp()
 
   delete QgsProject::instance();
 
-  mPythonUtils->exitPython();
+  if ( mPythonUtils )
+    mPythonUtils->exitPython();
   delete mPythonUtils;
 }
 
