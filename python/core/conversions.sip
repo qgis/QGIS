@@ -1447,11 +1447,11 @@ template<double, TYPE2>
 
       for( int j = 0; j<sipCpp->at(i).second.size(); j++ )
       {
-        PyObject *t1obj = sipConvertFromNewInstance(new QString(sipCpp->at(i).second.at(j)), sipClass_QString, sipTransferObj);
+        PyObject *t1obj = sipConvertFromNewType(new QString(sipCpp->at(i).second.at(j)), sipType_QString, sipTransferObj);
         PyList_SetItem( l, j, t1obj);
       }
 
-      PyObject *t1obj = sipConvertFromNewInstance(new QString(sipCpp->at(i).first), sipClass_QString, sipTransferObj);
+      PyObject *t1obj = sipConvertFromNewType(new QString(sipCpp->at(i).first), sipType_QString, sipTransferObj);
       PyList_SetItem( p, 0, t1obj );
       PyList_SetItem( p, 1, l);
 
