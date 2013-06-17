@@ -148,7 +148,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
           self.addLayerIntoCanvas( fileInfo )
         QMessageBox.information( self, self.tr( "Finished" ), self.tr( "Processing completed." ) )
       else:
-        QMessageBox.warning( self, self.tr( "Warning" ), self.tr( "%1 not created." ).arg( outFn ) )
+        QMessageBox.warning( self, self.tr( "Warning" ), self.tr( "{0} not created." ).format( outFn ) )
 
   def getInputFileName(self):
       return self.inSelector.filename()

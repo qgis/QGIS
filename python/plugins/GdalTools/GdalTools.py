@@ -42,9 +42,9 @@ except ImportError, e:
   qgisUserPluginPath = os.path.abspath( os.path.join( unicode( QgsApplication.qgisSettingsDirPath() ), "python") )
   if not os.path.dirname(__file__).startswith( qgisUserPluginPath ):
     title = QCoreApplication.translate( "GdalTools", "Plugin error" )
-    message = QCoreApplication.translate( "GdalTools", u'Unable to load %1 plugin. \nThe required "%2" module is missing. \nInstall it and try again.' )
+    message = QCoreApplication.translate( "GdalTools", u'Unable to load {0} plugin. \nThe required "{1}" module is missing. \nInstall it and try again.' )
     import qgis.utils
-    QMessageBox.warning( qgis.utils.iface.mainWindow(), title, message.arg( "GdalTools" ).arg( req_mods["osgeo"] ) )
+    QMessageBox.warning( qgis.utils.iface.mainWindow(), title, message.format( "GdalTools", req_mods["osgeo"] ) )
   else:
     # if a module is missing show a more friendly module's name
     error_str = e.args[0]

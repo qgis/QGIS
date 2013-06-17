@@ -159,5 +159,5 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
       if len( notCreatedList ) == 0:
         QMessageBox.information( self, self.tr( "Finished" ), self.tr( "Operation completed." ) )
       else:
-        QMessageBox.warning( self, self.tr( "Warning" ), self.tr( "The following files were not created: \n%1" ).arg( notCreatedList.join( ", " ) ) )
+        QMessageBox.warning( self, self.tr( "Warning" ), self.tr( "The following files were not created: \n{0}" ).format( ', '.join( notCreatedList ) ) )
 
