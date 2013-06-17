@@ -196,7 +196,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments.append("angle=" + str(self.datametricsAngleSpin.value()))
         arguments.append("min_points=" + str(self.datametricsMinPointsSpin.value()))
         arguments.append("nodata=" + str(self.datametricsNoDataSpin.value()))
-      return arguments.join(":")
+      return ':'.join(arguments)
 
   def loadFields(self, vectorFile = ''):
       self.zfieldCombo.clear()
