@@ -64,16 +64,16 @@ class GdalToolsOptionsTable(QWidget, Ui_OptionsTable):
         self.emit(SIGNAL("rowRemoved()"))
 
   def options(self):
-      options = QStringList()
+      options = []
       for row in range(0, self.table.rowCount()):
         name = self.table.item(row, 0)
-        if name == None or name.text().isEmpty():
+        if not name:
           continue
 
         value = self.table.item(row, 1)
-        if value == None or value.text().isEmpty():
+        if not value:
           continue
 
-        options << name.text() + "=" + value.text()
+        options.append( name.text() + "=" + value.text())
       return options
 

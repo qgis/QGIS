@@ -140,7 +140,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       arguments = []
       if self.noDataCheck.isChecked():
         arguments.append("-a_nodata")
-        arguments << str(self.noDataSpin.value())
+        arguments.append( str(self.noDataSpin.value()))
       if self.extentModeRadio.isChecked() and self.extentSelector.isCoordsValid():
         rect = self.extentSelector.getExtent()
         if rect != None:

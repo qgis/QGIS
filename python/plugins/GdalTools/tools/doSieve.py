@@ -63,7 +63,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillInputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       inputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Sieve" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
-      if inputFile.isEmpty():
+      if not inputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -72,7 +72,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if outputFile.isEmpty():
+      if not outputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -80,18 +80,18 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.outSelector.setFilename(outputFile)
 
   def getArguments(self):
-      arguments = QStringList()
+      arguments = []
       if self.thresholdCheck.isChecked():
-        arguments << "-st"
-        arguments << str(self.thresholdSpin.value())
+        arguments.append( "-st")
+        arguments.append( str(self.thresholdSpin.value()))
       if self.connectionsCheck.isChecked() and self.connectionsCombo.currentIndex() >= 0:
-        arguments << "-" + self.connectionsCombo.currentText()
+        arguments.append( "-" + self.connectionsCombo.currentText())
       outputFn = self.getOutputFileName()
-      if not outputFn.isEmpty():
-        arguments << "-of"
-        arguments << self.outputFormat
-      arguments << self.getInputFileName()
-      arguments << outputFn
+      if outputFn:
+        arguments.append( "-of")
+        arguments.append( self.outputFormat)
+      arguments.append( self.getInputFileName())
+      arguments.append( outputFn)
       return arguments
 
   def getOutputFileName(self):

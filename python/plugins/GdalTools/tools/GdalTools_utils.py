@@ -293,7 +293,7 @@ def getRasterSRS( parent, fileName ):
     if processSRS.waitForFinished():
       arr = processSRS.readAllStandardOutput()
       processSRS.close()
-      
+
     arr = str(arr)
     if arr == '':
       return ''
@@ -545,7 +545,7 @@ class GdalConfig:
           # XXX add check for SDTS; in that case we want (*CATD.DDF)
 
           #TODO fix and test
-          #glob << QString("*." + extensions.replace("/", " *.")).split(" ")
+          #glob.append( QString("*." + extensions.replace("/", " *.")).split(" "))
           glob.append(string.split("*." + string.replace(extensions,"/", " *."), sep=(" ")))
 
           # Add only the first JP2 driver found to the filter list (it's the one GDAL uses)
@@ -837,7 +837,7 @@ def setProcessEnvironment(process):
         if env.contains( QRegExp( "^%s=(.*)" % name, Qt.CaseInsensitive ) ):
           env.replaceInStrings( QRegExp( "^%s=(.*)" % name, Qt.CaseInsensitive ), "%s=\\1%s%s" % (name, sep, gdalPath) )
         else:
-          env << "%s=%s" % (name, val)
+          env.append( "%s=%s" % (name, val))
         process.setEnvironment( env )
 
 

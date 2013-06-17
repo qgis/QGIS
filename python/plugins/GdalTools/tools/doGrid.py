@@ -102,7 +102,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillInputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
       inputFile, encoding = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Grid" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter, True)
-      if inputFile.isEmpty():
+      if not inputFile:
         return
       Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
 
@@ -114,7 +114,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if outputFile.isEmpty():
+      if not outputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -122,36 +122,36 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.outSelector.setFilename(outputFile)
 
   def getArguments(self):
-      arguments = QStringList()
+      arguments = []
       if self.zfieldCheck.isChecked() and self.zfieldCombo.currentIndex() >= 0:
-        arguments << "-zfield"
-        arguments << self.zfieldCombo.currentText()
+        arguments.append( "-zfield")
+        arguments.append( self.zfieldCombo.currentText())
       inputFn = self.getInputFileName()
-      if not inputFn.isEmpty():
-        arguments << "-l"
-        arguments << QFileInfo( inputFn ).baseName()
+      if inputFn:
+        arguments.append( "-l")
+        arguments.append( QFileInfo( inputFn ).baseName())
       if self.extentGroup.isChecked():
         rect = self.extentSelector.getExtent()
         if rect != None:
-          arguments << "-txe"
-          arguments << str(rect.xMinimum())
-          arguments << str(rect.xMaximum())
-          arguments << "-tye"
-          arguments << str(rect.yMaximum())
-          arguments << str(rect.yMinimum())
+          arguments.append( "-txe")
+          arguments.append( str(rect.xMinimum()))
+          arguments.append( str(rect.xMaximum()))
+          arguments.append( "-tye")
+          arguments.append( str(rect.yMaximum()))
+          arguments.append( str(rect.yMinimum()))
       if self.algorithmCheck.isChecked() and self.algorithmCombo.currentIndex() >= 0:
-        arguments << "-a"
-        arguments << self.algorithmArguments(self.algorithmCombo.currentIndex())
+        arguments.append( "-a")
+        arguments.append( self.algorithmArguments(self.algorithmCombo.currentIndex()))
       if self.resizeGroupBox.isChecked():
-        arguments << "-outsize"
-        arguments << str( self.widthSpin.value() )
-        arguments << str( self.heightSpin.value() )
+        arguments.append( "-outsize")
+        arguments.append( str( self.widthSpin.value() ))
+        arguments.append( str( self.heightSpin.value() ))
       outputFn = self.getOutputFileName()
-      if not outputFn.isEmpty():
-        arguments << "-of"
-        arguments << self.outputFormat
-      arguments << inputFn
-      arguments << outputFn
+      if outputFn:
+        arguments.append( "-of")
+        arguments.append( self.outputFormat)
+      arguments.append( inputFn)
+      arguments.append( outputFn)
       return arguments
 
   def getInputFileName(self):
@@ -165,7 +165,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
   def algorithmArguments(self, index):
       algorithm = self.algorithm[index]
-      arguments = QStringList()
+      arguments = []
       if algorithm == "invdist":
         arguments.append(algorithm)
         arguments.append("power=" + str(self.invdistPowerSpin.value()))
@@ -201,7 +201,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def loadFields(self, vectorFile = ''):
       self.zfieldCombo.clear()
 
-      if vectorFile.isEmpty():
+      if not vectorFile:
         return
 
       try:

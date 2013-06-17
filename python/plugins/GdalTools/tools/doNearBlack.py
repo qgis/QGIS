@@ -65,7 +65,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillInputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       inputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Near Black" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if inputFile.isEmpty():
+      if not inputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -74,22 +74,22 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
-      if outputFile.isEmpty():
+      if not outputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
       self.outSelector.setFilename(outputFile)
 
   def getArguments(self):
-      arguments = QStringList()
+      arguments = []
       if self.whiteCheckBox.isChecked():
-        arguments << "-white"
+        arguments.append( "-white")
       if self.nearCheck.isChecked():
-        arguments << "-near"
-        arguments << str(self.nearSpin.value())
-      arguments << "-o"
-      arguments << self.getOutputFileName()
-      arguments << self.getInputFileName()
+        arguments.append( "-near")
+        arguments.append( str(self.nearSpin.value()))
+      arguments.append( "-o")
+      arguments.append( self.getOutputFileName())
+      arguments.append( self.getInputFileName())
       return arguments
 
   def getOutputFileName(self):

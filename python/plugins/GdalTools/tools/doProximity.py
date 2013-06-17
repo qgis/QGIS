@@ -68,7 +68,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillInputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       inputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Proximity" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if inputFile.isEmpty():
+      if not inputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -77,7 +77,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
-      if outputFile.isEmpty():
+      if not outputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -85,30 +85,30 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.outSelector.setFilename(outputFile)
 
   def getArguments(self):
-      arguments = QStringList()
-      arguments << self.getInputFileName()
+      arguments = []
+      arguments.append( self.getInputFileName())
       outputFn = self.getOutputFileName()
-      arguments << outputFn
+      arguments.append( outputFn)
       if self.valuesCheck.isChecked():
         values = self.valuesEdit.text().trimmed()
-        if not values.isEmpty():
-          arguments << "-values"
-          arguments << values.replace(' ', ',')
+        if values:
+          arguments.append( "-values")
+          arguments.append( values.replace(' ', ','))
       if self.distUnitsCheck.isChecked() and self.distUnitsCombo.currentIndex() >= 0:
-        arguments << "-distunits"
-        arguments << self.distUnitsCombo.currentText()
+        arguments.append( "-distunits")
+        arguments.append( self.distUnitsCombo.currentText())
       if self.maxDistCheck.isChecked():
-        arguments << "-maxdist"
-        arguments << str(self.maxDistSpin.value())
+        arguments.append( "-maxdist")
+        arguments.append( str(self.maxDistSpin.value()))
       if self.noDataCheck.isChecked():
-        arguments << "-nodata"
-        arguments << str(self.noDataSpin.value())
+        arguments.append( "-nodata")
+        arguments.append( str(self.noDataSpin.value()))
       if self.fixedBufValCheck.isChecked():
-        arguments << "-fixed-buf-val"
-        arguments << str(self.fixedBufValSpin.value())
-      if not outputFn.isEmpty():
-        arguments << "-of"
-        arguments << self.outputFormat
+        arguments.append( "-fixed-buf-val")
+        arguments.append( str(self.fixedBufValSpin.value()))
+      if outputFn:
+        arguments.append( "-of")
+        arguments.append( self.outputFormat)
       return arguments
 
   def getOutputFileName(self):

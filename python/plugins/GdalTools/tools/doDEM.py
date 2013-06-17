@@ -99,7 +99,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillInputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       inputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the file for DEM" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
-      if inputFile.isEmpty():
+      if not inputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -109,7 +109,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if outputFile.isEmpty():
+      if not outputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -119,52 +119,52 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
   def fillColorConfigFileEdit(self):
       configFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the color configuration file" ))
-      if configFile.isEmpty():
+      if not configFile:
         return
       self.configSelector.setFilename(configFile)
 
   def getArguments(self):
       mode = self.modes[ self.modeCombo.currentIndex() ]
-      arguments = QStringList()
-      arguments << mode
-      arguments << self.getInputFileName()
+      arguments = []
+      arguments.append( mode)
+      arguments.append( self.getInputFileName())
       if mode == "color-relief":
-        arguments << self.configSelector.filename()
+        arguments.append( self.configSelector.filename())
       outputFn = self.getOutputFileName()
-      arguments << outputFn
+      arguments.append( outputFn)
       if mode == "hillshade":
-        arguments << "-z" << str(self.hillshadeZFactorSpin.value())
-        arguments << "-s" << str(self.hillshadeScaleSpin.value())
-        arguments << "-az" << str(self.hillshadeAzimuthSpin.value())
-        arguments << "-alt" << str(self.hillshadeAltitudeSpin.value())
+        arguments.extend( "-z", self.hillshadeZFactorSpin.value())
+        arguments.extend( "-s" , self.hillshadeScaleSpin.value())
+        arguments.extend( "-az" , self.hillshadeAzimuthSpin.value())
+        arguments.extend( "-alt" , self.hillshadeAltitudeSpin.value())
       elif mode == "slope":
         if self.slopePercentCheck.isChecked():
-          arguments << "-p"
-        arguments << "-s" << str(self.slopeScaleSpin.value())
+          arguments.append( "-p")
+        arguments.extend( "-s" , self.slopeScaleSpin.value())
       elif mode == "aspect":
         if self.aspectTrigonometricCheck.isChecked():
-          arguments << "-trigonometric"
+          arguments.append( "-trigonometric")
         if self.aspectZeroForFlatCheck.isChecked():
-          arguments << "-zero_for_flat"
+          arguments.append( "-zero_for_flat")
       elif mode == "color-relief":
         if self.colorAlphaCheck.isChecked():
-          arguments << "-alpha"
+          arguments.append( "-alpha")
         if self.colorMatchGroupBox.isChecked():
           if self.colorExactRadio.isChecked():
-            arguments << "-exact_color_entry"
+            arguments.append( "-exact_color_entry")
           elif self.colorNearestRadio.isChecked():
-            arguments << "-nearest_color_entry"
+            arguments.append( "-nearest_color_entry")
       if self.algorithmCheck.isChecked():
-        arguments << "-alg" << "ZevenbergenThorne"
+        arguments.extend( "-alg", "ZevenbergenThorne")
       if self.computeEdgesCheck.isChecked():
-        arguments << "-compute_edges"
+        arguments.append( "-compute_edges")
       if self.bandCheck.isChecked():
-        arguments << "-b" << str(self.bandSpin.value())
-      if not outputFn.isEmpty():
-        arguments << "-of" << self.outputFormat
+        arguments.extend( "-b" , self.bandSpin.value())
+      if outputFn:
+        arguments.extend( "-of", self.outputFormat)
       if self.creationOptionsGroupBox.isChecked():
         for opt in self.creationOptionsWidget.options():
-          arguments << "-co" << opt
+          arguments.extend( "-co", opt)
       # set creation options filename/layer for validation
       if self.inSelector.layer():
         self.creationOptionsWidget.setRasterLayer(self.inSelector.layer())

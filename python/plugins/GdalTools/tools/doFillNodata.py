@@ -111,7 +111,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
                                                     self.tr( "Select the files to analyse" ),
                                                     Utils.FileFilter.allRastersFilter(),
                                                     lastUsedFilter )
-      if inputFile.isEmpty():
+      if not inputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
       self.inSelector.setFilename( inputFile )
@@ -119,7 +119,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
   def fillOutputFile( self ):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       outputFile = Utils.FileDialog.getSaveFileName( self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if outputFile.isEmpty():
+      if not outputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
 
@@ -132,52 +132,52 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
                                                     self.tr( "Select the files to analyse" ),
                                                     Utils.FileFilter.allRastersFilter(),
                                                     lastUsedFilter )
-      if inputFile.isEmpty():
+      if not inputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
       self.maskSelector.setFilename( inputFile )
 
   def fillInputDir( self ):
       inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files" ))
-      if inputDir.isEmpty():
+      if not inputDir:
         return
       self.inSelector.setFilename( inputDir )
 
   def fillOutputDir( self ):
       outputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the output directory to save the results to" ) )
-      if outputDir.isEmpty():
+      if not outputDir:
         return
       self.outSelector.setFilename( outputDir )
 
   def getArguments(self):
-      arguments = QStringList()
+      arguments = []
       maskFile = self.maskSelector.filename()
       if self.distanceCheck.isChecked() and self.distanceSpin.value() != 0:
-        arguments << "-md"
-        arguments << self.distanceSpin.text()
+        arguments.append( "-md")
+        arguments.append( self.distanceSpin.text())
       if self.smoothCheck.isChecked() and self.smoothSpin.value() != 0:
-        arguments << "-si"
-        arguments << str( self.smoothSpin.value() )
+        arguments.append( "-si")
+        arguments.append( str( self.smoothSpin.value() ))
       if self.bandCheck.isChecked() and self.bandSpin.value() != 0:
-        arguments << "-b"
-        arguments << str( self.bandSpin.value() )
-      if self.maskCheck.isChecked() and not maskFile.isEmpty():
-        arguments << "-mask"
-        arguments << maskFile
+        arguments.append( "-b")
+        arguments.append( str( self.bandSpin.value() ))
+      if self.maskCheck.isChecked() and maskFile:
+        arguments.append( "-mask")
+        arguments.append( maskFile)
       if self.nomaskCheck.isChecked():
-        arguments << "-nomask"
+        arguments.append( "-nomask")
       if self.isBatchEnabled():
         if self.formatCombo.currentIndex() != 0:
-          arguments << "-of"
-          arguments << Utils.fillRasterOutputFormat( self.formatCombo.currentText() )
+          arguments.append( "-of")
+          arguments.append( Utils.fillRasterOutputFormat( self.formatCombo.currentText() ))
         return arguments
       else:
         outputFn = self.getOutputFileName()
-        if not outputFn.isEmpty():
-          arguments << "-of"
-          arguments << self.outputFormat
-        arguments << self.getInputFileName()
-        arguments << outputFn
+        if outputFn:
+          arguments.append( "-of")
+          arguments.append( self.outputFormat)
+        arguments.append( self.getInputFileName())
+        arguments.append( outputFn)
         return arguments
 
   def onLayersChanged( self ):
@@ -206,7 +206,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
   def batchRun(self):
       exts = self.formatCombo.currentText().remove( QRegExp('^.*\(') ).remove( QRegExp('\).*$') ).split( " " )
-      if not exts.isEmpty() and exts != "*" and exts != "*.*":
+      if exts and exts != "*" and exts != "*.*":
         outExt = exts[ 0 ].remove( "*" )
       else:
         outExt = ".tif"
@@ -232,7 +232,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
           outFile = re.sub( f, "\.[a-zA-Z0-9]{2,4}", outExt )
           self.outFiles.append( outDir + "/" + outFile )
 
-      self.errors = QStringList()
+      self.errors = []
       self.batchIndex = 0
       self.batchTotal = len( self.inFiles )
       self.setProgressRange( self.batchTotal )
