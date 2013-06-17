@@ -41,6 +41,7 @@ class TestQgsComposerMap: public QObject
     void overviewMapInvert(); //test if invert of overview map frame works
     void uniqueId(); //test if map id is adapted when doing copy paste
     void zebraStyle(); //test zebra map border style
+    void overviewMapCenter(); //test if centering of overview map frame works
 
   private:
     QgsComposition* mComposition;
@@ -216,5 +217,22 @@ void TestQgsComposerMap::zebraStyle()
   QVERIFY( testResult );
 }
 
+void TestQgsComposerMap::overviewMapCenter()
+{
+  QgsComposerMap* overviewMapCenter = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
+  overviewMapCenter->setFrameEnabled( true );
+  mComposition->addComposerMap( overviewMapCenter );
+  mComposerMap->setNewExtent( QgsRectangle( 785462.375+5000, 3341423.125, 789262.375+5000, 3343323.125 ) ); //zoom in
+  mComposerMap->setGridEnabled( false );
+  overviewMapCenter->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3350923.125 ) );
+  overviewMapCenter->setOverviewFrameMap( mComposerMap->id() );
+  overviewMapCenter->setOverviewCentered( true );
+
+  QgsCompositionChecker checker( "Composer map overview center", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
+                                 "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_landsat_overview_center.png" ) );
+  bool testResult = checker.testComposition();
+  mComposition->removeComposerItem( overviewMapCenter );
+  QVERIFY( testResult );
+}
 QTEST_MAIN( TestQgsComposerMap )
 #include "moc_testqgscomposermap.cxx"
