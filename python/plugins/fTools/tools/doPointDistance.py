@@ -142,7 +142,7 @@ class Dialog(QDialog, Ui_Dialog):
         outName = fileDialog.getSaveFileName(self, "Output Distance Matrix",".", "Delimited txt file (*.csv)")
         fileCheck = QFile(outName)
         filePath = QFileInfo(outName).absoluteFilePath()
-        if filePath.right(4) != ".csv": filePath = filePath + ".csv"
+        if filePath[-4:] != ".csv": filePath = filePath + ".csv"
         if outName:
             self.outFile.insert(filePath)
 
