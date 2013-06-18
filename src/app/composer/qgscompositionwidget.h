@@ -17,6 +17,8 @@
 #include "ui_qgscompositionwidgetbase.h"
 
 class QgsComposition;
+class QgsComposerMap;
+class QgsComposerItem;
 
 /** \ingroup MapComposer
  * Struct to hold map composer paper properties.
@@ -48,6 +50,8 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mNumPagesSpinBox_valueChanged( int value );
     void on_mResolutionSpinBox_valueChanged( const int value );
     void on_mPrintAsRasterCheckBox_toggled( bool state );
+    void on_mGenerateWorldFileCheckBox_toggled( bool state );
+    void on_mWorldFileMapComboBox_currentIndexChanged( int index );
 
     void on_mSnapToGridGroupCheckBox_toggled( bool state );
     void on_mGridResolutionSpinBox_valueChanged( double d );
@@ -64,6 +68,12 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void displayCompositionWidthHeight();
     /**Sets Print as raster checkbox value*/
     void setPrintAsRasterCheckBox( bool state );
+
+  private slots:
+    /* when a new map is added */
+    void onComposerMapAdded( QgsComposerMap* );
+    /* when a map is deleted */
+    void onItemRemoved( QgsComposerItem* );
 
   private:
     QgsComposition* mComposition;
