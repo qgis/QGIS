@@ -18,6 +18,7 @@
 #include "qgsaddremovemultiframecommand.h"
 #include "qgscomposermultiframe.h"
 #include "qgscomposition.h"
+#include "qgsproject.h"
 
 
 QgsAddRemoveMultiFrameCommand::QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame* multiFrame, QgsComposition* c, const QString& text, QUndoCommand* parent ):
@@ -69,6 +70,7 @@ void QgsAddRemoveMultiFrameCommand::switchState()
       mComposition->addMultiFrame( mMultiFrame );
       mState = Added;
     }
+    QgsProject::instance()->dirty( true );
   }
 }
 
