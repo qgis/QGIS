@@ -1236,7 +1236,12 @@ bool QgsVectorLayer::addFeature( QgsFeature& f, bool alsoUpdateExtent )
   if ( !mEditBuffer || !mDataProvider )
     return false;
 
-  return mEditBuffer->addFeature( f );
+  bool success = mEditBuffer->addFeature( f );
+
+  if ( success )
+    updateExtents();
+
+  return success;
 }
 
 bool QgsVectorLayer::updateFeature( QgsFeature &f )
@@ -2436,6 +2441,8 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
   }
 
   return mEditBuffer->changeGeometry( fid, geom );
+
+  updateExtents();
 }
 
 
@@ -2716,6 +2723,8 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList features, bool makeSelected )
 
     setSelectedFeatures( ids );
   }
+
+  updateExtents();
 
   return res;
 }
