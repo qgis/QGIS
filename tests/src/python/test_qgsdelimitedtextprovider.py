@@ -58,9 +58,14 @@ from utilities import (getQgisTestApp,
                        unittest
                        #expectedFailure
                        )
+
+import sip
+
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 
+sipversion=str(sip.getapi('QVariant'))
+sipwanted='2'
 geomkey = "#geometry"
 fidkey = "#fid"
 tolerance = 0.000001 # Tolerance for coordinate comparisons in checkWktEqual
@@ -115,7 +120,7 @@ def layerData( layer, request={}, offset=0 ):
             for field in f.fields():
                 fields.append(str(field.name()))
                 fieldTypes.append(str(field.typeName()))
-        fielddata = dict ( (name, unicode(f[name].toString()) ) for name in fields )
+        fielddata = dict ( (name, unicode(f[name]) ) for name in fields )
         g = f.geometry()
         if g:
             fielddata[geomkey] = str(g.exportToWkt());
@@ -256,6 +261,9 @@ def recordDifference( record1, record2 ):
     return ''
 
 def runTest( file, requests, **params ):
+    # No point doing test if haven't got the right SIP vesion
+    if sipversion != sipwanted:
+        return
     testname=inspect.stack()[1][3];
     verbose = not rebuildTests
     if verbose:
@@ -327,6 +335,7 @@ class TestQgsDelimitedTextProvider(TestCase):
         registry=QgsProviderRegistry.instance()
         metadata = registry.providerMetadata('delimitedtext')
         assert metadata != None, "Delimited text provider is not installed"
+        assert sipversion==sipwanted,"SIP version "+sipversion+" -  require version "+sipwanted+" for delimited text tests"
 
     def test_002_load_csv_file(self):
         # CSV file parsing
