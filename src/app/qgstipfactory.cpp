@@ -23,7 +23,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
 {
   // I'm just doing this in a simple way so
   // its easy for translators...later
-  // it its worth the time Ill move this data
+  // it its worth the time I'll move this data
   // into a sqlite database...
   QgsTip myTip;
   myTip.setTitle( tr( "QGIS is open source" ) );
@@ -187,9 +187,9 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setTitle( tr( "QGIS has Plugins!" ) );
   myTip.setContent( tr( "QGIS has plugins that extend its functionality."
                         " QGIS ships with some core plugins you can explore from the"
-                        " Plugins->Manage Plugins menu. In addition there are over 150"
+                        " Plugins->Manage and Install Plugins menu. In addition there are over 150"
                         " Python plugins contributed by the user community that can be"
-                        " installed from the Plugins->Fetch Python Plugins menu."
+                        " installed via this same menu."
                         " Don't miss out on all QGIS has to offer---check out the"
                         " plugins and see what they can do for you." ) );
   addGenericTip( myTip );
