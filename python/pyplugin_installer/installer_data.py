@@ -173,15 +173,17 @@ def removeDir(path):
 # --- class QPNetworkAccessManager  ----------------------------------------------------------------------- #
 # --- It's a temporary workaround for broken proxy handling in Qt ------------------------- #
 class QPNetworkAccessManager(QNetworkAccessManager):
-  def __init__(self,*args):
+  def __init__(self, repoUrl):
     QNetworkAccessManager.__init__(self,)
     settings = QSettings()
     settings.beginGroup("proxy")
     if settings.value("/proxyEnabled", False, type=bool):
       self.proxy=QNetworkProxy()
       proxyType = settings.value( "/proxyType", "0", type=unicode)
-      if len(args) > 0 and settings.value("/proxyExcludedUrls","", type=unicode).find(args[0]) > -1:
-        proxyType = "NoProxy"
+      if repoUrl:
+        for excludedUrl in settings.value("/proxyExcludedUrls","", type=unicode).split("|"):
+          if repoUrl.find( excludedUrl ) > -1:
+            proxyType = "NoProxy"
       if proxyType in ["1","Socks5Proxy"]: self.proxy.setType(QNetworkProxy.Socks5Proxy)
       elif proxyType in ["2","NoProxy"]: self.proxy.setType(QNetworkProxy.NoProxy)
       elif proxyType in ["3","HttpProxy"]: self.proxy.setType(QNetworkProxy.HttpProxy)
@@ -393,8 +395,7 @@ class Repositories(QObject):
       self.mRepositories[key]["url"] = settings.value(key+"/url", "", type=unicode)
       self.mRepositories[key]["enabled"] = settings.value(key+"/enabled", True, type=bool)
       self.mRepositories[key]["valid"] = settings.value(key+"/valid", True, type=bool)
-      self.mRepositories[key]["QPNAM"] = QPNetworkAccessManager()
-
+      self.mRepositories[key]["QPNAM"] = QPNetworkAccessManager( self.mRepositories[key]["url"] )
       self.mRepositories[key]["Relay"] = Relay(key)
       self.mRepositories[key]["xmlData"] = None
       self.mRepositories[key]["state"] = 0
