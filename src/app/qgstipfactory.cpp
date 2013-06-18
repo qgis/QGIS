@@ -41,7 +41,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "If you write a scientific paper or any other article"
                         " that refers to QGIS we would love to include your work"
                         " in the <a href=\"http://www.qgis.org/en/community/qgis-case-studies.html\">case studies section</a> of"
-                        " the QGIS home page (http://http://www.qgis.org/en/community/qgis-case-studies.html)."
+                        " the QGIS home page (http://www.qgis.org/en/community/qgis-case-studies.html)."
                       ) );
   addGenericTip( myTip );
   myTip.setTitle( tr( "Become an QGIS translator" ) );
@@ -187,11 +187,10 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setTitle( tr( "QGIS has Plugins!" ) );
   myTip.setContent( tr( "QGIS has plugins that extend its functionality."
                         " QGIS ships with some core plugins you can explore from the"
-                        " Plugins->Manage and Install Plugins menu. In addition there are over 150"
-                        " Python plugins contributed by the user community that can be"
-                        " installed via this same menu."
-                        " Don't miss out on all QGIS has to offer---check out the"
-                        " plugins and see what they can do for you." ) );
+                        " Plugins->Manage and Install Plugins menu. In addition there are a lot"
+                        " of Python plugins contributed by the user community that can be"
+                        " installed via this same menu. Don't miss out on all QGIS has to offer!"
+			" Check out the plugins and see what they can do for you." ) );
   addGenericTip( myTip );
 
   /* Template for adding more tips
