@@ -245,7 +245,7 @@ class visualThread( QThread ):
     for item in unique:
       nElement += 1
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
-      lstUnique.append(item.strip())
+      lstUnique.append(unicode(item).strip())
     lstCount = len( unique )
     return ( lstUnique, lstCount )
 
@@ -412,7 +412,6 @@ class visualThread( QThread ):
     A = vlayer.extent()
     A = float( A.width() * A.height() )
     index = ftools_utils.createIndex( vprovider )
-    vprovider.rewind()
     nFeat = vprovider.featureCount()
     nElement = 0
     if nFeat > 0:

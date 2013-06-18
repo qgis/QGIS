@@ -134,6 +134,7 @@ class Dialog(QDialog, Ui_Dialog):
             fieldList.append( QgsField("UID", QVariant.String) )
             writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList, QGis.WKBPoint, sRs)
         outfeat = QgsFeature()
+        outfeat.setFields( fieldList )
         points = []
         weights = []
         nFeat = provider.featureCount() * len(uniqueValues)
@@ -150,16 +151,16 @@ class Dialog(QDialog, Ui_Dialog):
                 nElement += 1
                 self.progressBar.setValue(nElement)
                 if single:
-                    check = j.strip()
+                    check = unicode(j).strip()
                 else:
-                    check = feat.attributes()[uniqueIndex].strip()
-                if check == j.strip():
+                    check = unicode(feat[uniqueIndex]).strip()
+                if check == unicode(j).strip():
                     cx = 0.00
                     cy = 0.00
                     if weightIndex == -1:
                         weight = 1.00
                     else:
-                        weight = float(feat.attributes()[weightIndex])
+                        weight = float(feat[weightIndex])
                     geom = QgsGeometry(feat.geometry())
                     geom = ftools_utils.extractPoints(geom)
                     for i in geom:
