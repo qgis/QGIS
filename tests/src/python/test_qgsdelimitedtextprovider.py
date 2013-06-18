@@ -33,12 +33,18 @@ import test_qgsdelimitedtextprovider_wanted as want
 
 rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ;
 
+
+import sip
+#API_NAMES = ["QDate", "QDateTime", "QString", "QTextStream", "QTime", "QUrl", "QVariant"]
+API_NAMES = ["QString", "QUrl", "QVariant"]
+API_VERSION = 2
+for name in API_NAMES:
+        sip.setapi(name, API_VERSION)
+
 from PyQt4.QtCore import (QVariant,
                           QCoreApplication,
                         QUrl,
-                        QObject,
-                        QString,
-                        pyqtSignal
+                        QObject
                         )
 
 from qgis.core import (QGis,
@@ -59,10 +65,8 @@ from utilities import (getQgisTestApp,
                        #expectedFailure
                        )
 
-import sip
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
-
 
 sipversion=str(sip.getapi('QVariant'))
 sipwanted='2'
