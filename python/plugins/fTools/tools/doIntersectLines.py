@@ -144,7 +144,7 @@ class Dialog(QDialog, Ui_Dialog):
 
         index = ftools_utils.createIndex( provider2 )
 
-        fit1 = vprovider.getFeatures( QgsFeatureRequest().setSubsetOfAttributes([index1]) )
+        fit1 = provider1.getFeatures( QgsFeatureRequest().setSubsetOfAttributes([index1]) )
         while fit1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
             v1 = inFeat.attributes()[index1]
