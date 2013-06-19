@@ -302,7 +302,7 @@ class QgsComposerMap : QgsComposerItem
     void setOverviewInverted( bool inverted );
     bool overviewInverted() const;
 
-    /** Returns true if the extent is forced to center on the overview when the overview is outside the extent */
+    /** Returns true if the extent is forced to center on the overview */
     bool overviewCentered() const;
     /** Set the overview's centering mode */
     void setOverviewCentered( bool centered );

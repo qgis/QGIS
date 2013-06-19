@@ -129,14 +129,12 @@ void QgsComposerMap::extentCenteredOnOverview( QgsRectangle& extent ) const
     const QgsComposerMap* overviewFrameMap = mComposition->getComposerMapById( mOverviewFrameMapId );
     QgsRectangle otherExtent = overviewFrameMap->extent();
 
-    if ( ! mExtent.contains( otherExtent ) ) {
-      QgsPoint center = otherExtent.center();
-      QgsRectangle movedExtent( center.x() - mExtent.width() / 2,
-				center.y() - mExtent.height() / 2,
-				center.x() - mExtent.width() / 2 + mExtent.width(),
-				center.y() - mExtent.height() / 2 + mExtent.height() );
-      extent = movedExtent;
-    }
+    QgsPoint center = otherExtent.center();
+    QgsRectangle movedExtent( center.x() - mExtent.width() / 2,
+			      center.y() - mExtent.height() / 2,
+			      center.x() - mExtent.width() / 2 + mExtent.width(),
+			      center.y() - mExtent.height() / 2 + mExtent.height() );
+    extent = movedExtent;
   }
 }
 

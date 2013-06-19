@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>438</width>
-        <height>1454</height>
+        <y>-376</y>
+        <width>439</width>
+        <height>1439</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -700,7 +700,7 @@
           <item row="4" column="0">
            <widget class="QCheckBox" name="mOverviewCenterCheckbox">
             <property name="text">
-             <string>Center on overview when needed</string>
+             <string>Center on overview</string>
             </property>
            </widget>
           </item>

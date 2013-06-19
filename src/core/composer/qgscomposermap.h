@@ -332,7 +332,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Sets the overview's inversion mode*/
     void setOverviewInverted( bool inverted );
 
-    /** Returns true if the extent is forced to center on the overview when the overview is outside the extent */
+    /** Returns true if the extent is forced to center on the overview */
     bool overviewCentered() const { return mOverviewCentered; }
     /** Set the overview's centering mode */
     void setOverviewCentered( bool centered );
@@ -537,7 +537,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void initGridAnnotationFormatFromProject();
 
     /**
-     * Returns the extent, centered on the overview frame, if needed (when the overview frame is not visible)
+     * Returns the extent, centered on the overview frame
      */
     void extentCenteredOnOverview( QgsRectangle& extent ) const;
 };
