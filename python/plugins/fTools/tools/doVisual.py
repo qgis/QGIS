@@ -271,8 +271,10 @@ class visualThread( QThread ):
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
           self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         for f in selection:
-          atMap = f.attributes()
-          lenVal = float( len( atMap[ index ] ) )
+          try:
+            lenVal = float( len( f[ index ] ) )
+          except TypeError:
+            lenVal = 0
           if first:
             minVal = lenVal
             maxVal = lenVal
@@ -295,8 +297,10 @@ class visualThread( QThread ):
           self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         fit = vprovider.getFeatures()
         while fit.nextFeature( feat ):
-          atMap = feat.attributes()
-          lenVal = float( len( atMap[ index ] ) )
+          try:
+            lenVal = float( len( feat[ index ] ) )
+          except TypeError:
+            lenVal = 0
           if first:
             minVal = lenVal
             maxVal = lenVal
@@ -340,8 +344,7 @@ class visualThread( QThread ):
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
           self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         for f in selection:
-          atMap = f.attributes()
-          value = float( atMap[ index ] )
+          value = float( f[ index ] )
           if first:
             minVal = value
             maxVal = value
@@ -361,8 +364,7 @@ class visualThread( QThread ):
           self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         fit = vprovider.getFeatures()
         while fit.nextFeature( feat ):
-          atMap = feat.attributes()
-          value = float( atMap[ index ] )
+          value = float( feat[ index ] )
           if first:
             minVal = value
             maxVal = value
