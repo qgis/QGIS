@@ -105,7 +105,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       arguments.append( outputFn )
       if outputFn:
         arguments.append( QFileInfo( outputFn ).baseName() )
-      if self.fieldCheck.isChecked() and self.fieldEdit.text()):
+      if (self.fieldCheck.isChecked() and self.fieldEdit.text()):
         arguments.append( self.fieldEdit.text() )
       return arguments
 
