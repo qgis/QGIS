@@ -327,7 +327,7 @@ QVariant QgsMergeAttributesDialog::minimumAttribute( int col )
 
   if ( numberOfConsideredFeatures < 1 )
   {
-    return QString();
+    return QVariant( mVectorLayer->pendingFields()[col].type() );
   }
 
   return QVariant( minimumValue );
@@ -377,6 +377,12 @@ QVariant QgsMergeAttributesDialog::meanAttribute( int col )
       ++numberOfConsideredFeatures;
     }
   }
+
+  if ( numberOfConsideredFeatures < 1 )
+  {
+    return QVariant( mVectorLayer->pendingFields()[col].type() );
+  }
+
   double mean = sum / numberOfConsideredFeatures;
   return QVariant( mean );
 }
@@ -401,6 +407,13 @@ QVariant QgsMergeAttributesDialog::medianAttribute( int col )
 
   double medianValue;
   int size = valueList.size();
+
+
+  if ( size < 1 )
+  {
+    return QVariant( mVectorLayer->pendingFields()[col].type() );
+  }
+
   bool even = ( size % 2 ) < 1;
   if ( even )
   {
