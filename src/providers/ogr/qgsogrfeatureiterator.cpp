@@ -35,7 +35,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatur
   : QgsAbstractFeatureIterator( request ), P( p ), ogrDataSource(0), ogrLayer(0), ogrDriver(0)
 {
 
-  ogrDataSource = OGROpen( TO8F( P->filePath() ), false, &ogrDriver );
+  ogrDataSource = OGROpen( TO8F( P->filePath() ), false, NULL );
 
   if ( P->layerName().isNull() )
   {
@@ -150,7 +150,6 @@ bool QgsOgrFeatureIterator::close()
   if ( mClosed )
     return false;
 
-  OGR_DS_ReleaseResultSet( ogrDataSource, ogrLayer );
   OGR_DS_Destroy( ogrDataSource );
 
   mClosed = true;
