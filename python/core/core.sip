@@ -87,6 +87,7 @@
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayerundocommand.sip
 %Include qgsvectoroverlay.sip
+%Include qgsfontutils.sip
 
 %Include composer/qgsaddremoveitemcommand.sip
 %Include composer/qgsaddremovemultiframecommand.sip
