@@ -456,7 +456,6 @@ SET(QGIS_CORE_HDRS
   diagram/qgstextdiagram.h
   diagram/qgshistogramdiagram.h
 
-
   composer/qgslegendmodel.h
   composer/qgscomposerlegenditem.h
 
@@ -490,8 +489,6 @@ SET(QGIS_CORE_HDRS
   raster/qgshuesaturationfilter.h
   raster/qgsrasternuller.h
   raster/qgsrasterrenderer.h
-
-  
 
   symbology-ng/qgscategorizedsymbolrendererv2.h
   symbology-ng/qgscolorbrewerpalette.h

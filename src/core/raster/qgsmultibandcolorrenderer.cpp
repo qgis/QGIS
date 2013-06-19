@@ -211,10 +211,7 @@ QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
 
   if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
   {
-    for ( int i = 0; i < bandBlocks.size(); i++ )
-    {
-      delete bandBlocks.value( i );
-    }
+    qDeleteAll(bandBlocks);  
     return outputBlock;
   }
 
@@ -309,11 +306,7 @@ QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     }
   }
 
-  for ( int i = 0; i < bandBlocks.size(); i++ )
-  {
-    delete bandBlocks.value( i );
-  }
-
+  qDeleteAll(bandBlocks);
   return outputBlock;
 }
 
