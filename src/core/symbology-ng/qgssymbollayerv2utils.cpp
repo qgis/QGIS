@@ -2557,7 +2557,7 @@ double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, Q
   else //QgsSymbol::MapUnit
   {
     double mup = c.mapToPixel().mapUnitsPerPixel();
-    if ( mup > 0 )
+    if ( mup >= 1 )
     {
       return 1.0 / mup;
     }
