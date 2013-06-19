@@ -6,7 +6,7 @@
     <message>
         <location filename="../python/console/console_compile_apis.ui" line="32"/>
         <source>Generating prepared API file (please wait)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Prestatutako API fitxategia sortzen (itxaron)...</translation>
     </message>
 </context>
 <context>
@@ -38,7 +38,7 @@
     <name>ConnectionItem</name>
     <message>
         <source>Unable to connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin da konektatu</translation>
     </message>
 </context>
 <context>
@@ -100,559 +100,566 @@
     <name>DBManager</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished">Barkatu</translation>
+        <translation>Barkatu</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez da datu-baserik hautatu edo ez zaude hari konektatuta.</translation>
     </message>
     <message>
         <source>Select the table you want export to file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu fitxategira esportatu nahi duzun taula.</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>DB kudeatzailea</translation>
     </message>
     <message>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Info</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Taula</translation>
+        <translation>Taula</translation>
     </message>
     <message>
         <source>Preview</source>
-        <translation type="unfinished">Aurrebista</translation>
+        <translation>Aurrebista</translation>
     </message>
     <message>
         <source>&amp;Database</source>
-        <translation type="unfinished">&amp;Datu-basea</translation>
+        <translation>&amp;Datu-basea</translation>
     </message>
     <message>
         <source>&amp;Schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Eskema</translation>
     </message>
     <message>
         <source>&amp;Table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Taula</translation>
     </message>
     <message>
         <source>&amp;Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Freskatu</translation>
     </message>
     <message>
         <source>&amp;SQL window</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;SQL leihoa</translation>
     </message>
     <message>
         <source>&amp;Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Irten</translation>
     </message>
     <message>
         <source>&amp;Import layer/file</source>
-        <translation type="unfinished"></translation>
+        <translation>I&amp;mportatu geruza/fitxategia</translation>
     </message>
     <message>
         <source>&amp;Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Es&amp;portatu fitxategira</translation>
     </message>
 </context>
 <context>
     <name>DBManagerPlugin</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished">Barkatu</translation>
+        <translation>Barkatu</translation>
     </message>
     <message>
         <source>Unable to find a valid unique field</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin izan da baliozko eremu bakarra aurkitu</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished">Kopiatu</translation>
+        <translation>Kopiatu</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>DB kudeatzailea</translation>
     </message>
     <message>
         <source>Server version: </source>
-        <translation type="unfinished"></translation>
+        <translation>Zerbitzari-bertsioa:</translation>
     </message>
     <message>
         <source>Host:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostalaria:</translation>
     </message>
     <message>
         <source>User:</source>
-        <translation type="unfinished"></translation>
+        <translation>Erabiltzailea:</translation>
     </message>
     <message>
         <source>Library:</source>
-        <translation type="unfinished"></translation>
+        <translation>Liburutegia:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; geometry_columns table doesn&apos;t exist!
 This table is essential for many GIS applications for enumeration of tables.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; geometry_columns taula ez da existitzen!
+Taula hau funtsezkoa da GIS aplikazio askorentzat, taulak zerrendatzeko erabiltzen baitute.</translation>
     </message>
     <message>
         <source>create new schemas</source>
-        <translation type="unfinished"></translation>
+        <translation>sortu eskema berriak</translation>
     </message>
     <message>
         <source>create temporary tables</source>
-        <translation type="unfinished"></translation>
+        <translation>sortu aldi baterako taulak</translation>
     </message>
     <message>
         <source>Not connected</source>
-        <translation type="unfinished">Ez konektatua</translation>
+        <translation>Ez konektatua</translation>
     </message>
     <message>
         <source>Connection details</source>
-        <translation type="unfinished">Konexio-xehetasunak</translation>
+        <translation>Konexio-xehetasunak</translation>
     </message>
     <message>
         <source>General info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informazio orokorra</translation>
     </message>
     <message>
         <source>&lt;warning&gt; %s support not enabled!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; %s(r)en euskarria ez dago gaituta!</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has no privileges!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Erabiltzaile honek ez dauka pribilegiorik!</translation>
     </message>
     <message>
         <source>User has privileges:</source>
-        <translation type="unfinished"></translation>
+        <translation>Erabiltzaileak pribilegioak ditu:</translation>
     </message>
     <message>
         <source>Privileges</source>
-        <translation type="unfinished"></translation>
+        <translation>Pribilegioak</translation>
     </message>
     <message>
         <source>Owner:</source>
-        <translation type="unfinished"></translation>
+        <translation>Jabea:</translation>
     </message>
     <message>
         <source>Comment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Iruzkina:</translation>
     </message>
     <message>
         <source>create new objects</source>
-        <translation type="unfinished"></translation>
+        <translation>sortu objektu berriak</translation>
     </message>
     <message>
         <source>access objects</source>
-        <translation type="unfinished"></translation>
+        <translation>atzitu objektuak</translation>
     </message>
     <message>
         <source>Schema details</source>
-        <translation type="unfinished"></translation>
+        <translation>Eskema-xehetasunak</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has no privileges to access this schema!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Erabiltzaile honek ez dauka eskema hau atzitzeko pribilegiorik!</translation>
     </message>
     <message>
         <source>Relation type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Erlazio-mota:</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished">Bista</translation>
+        <translation>Bista</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Taula</translation>
+        <translation>Taula</translation>
     </message>
     <message>
         <source>Rows:</source>
-        <translation type="unfinished"></translation>
+        <translation>Errenkadak:</translation>
     </message>
     <message>
         <source>Unknown (&lt;a href=&quot;action:rows/count&quot;&gt;find out&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezezaguna (&lt;a href=&quot;action:rows/count&quot;&gt;aurkitu&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Izena</translation>
+        <translation>Izena</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Mota</translation>
+        <translation>Mota</translation>
     </message>
     <message>
         <source>Null</source>
-        <translation type="unfinished"></translation>
+        <translation>Nulua</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished">Lehenetsia</translation>
+        <translation>Lehenetsia</translation>
     </message>
     <message>
         <source>Column(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zutabea(k)</translation>
     </message>
     <message>
         <source>Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Funtzioa</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This is not a spatial table.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Hau es da taula espazial bat.</translation>
     </message>
     <message>
         <source>Fields</source>
-        <translation type="unfinished">Eremuak</translation>
+        <translation>Eremuak</translation>
     </message>
     <message>
         <source>Constraints</source>
-        <translation type="unfinished">Murriztapenak</translation>
+        <translation>Murriztapenak</translation>
     </message>
     <message>
         <source>Indexes</source>
-        <translation type="unfinished">Indizeak</translation>
+        <translation>Indizeak</translation>
     </message>
     <message>
         <source>Triggers</source>
-        <translation type="unfinished"></translation>
+        <translation>Disparadoreak</translation>
     </message>
     <message>
         <source>View definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Bista-definizioa</translation>
     </message>
     <message>
         <source>Column:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zutabea:</translation>
     </message>
     <message>
         <source>Geometry:</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometria:</translation>
     </message>
     <message>
         <source>Dimension:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dimentsioa:</translation>
     </message>
     <message>
         <source>Undefined</source>
-        <translation type="unfinished">Definitu gabea</translation>
+        <translation>Definitu gabea</translation>
     </message>
     <message>
         <source>Spatial ref:</source>
-        <translation type="unfinished"></translation>
+        <translation>Erref. espaziala:</translation>
     </message>
     <message>
         <source>Estimated extent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Estimatutako hedadura:</translation>
     </message>
     <message>
         <source>(unknown) (&lt;a href=&quot;action:extent/get&quot;&gt;find out&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>(ezezaguna) (&lt;a href=&quot;action:rows/get&quot;&gt;aurkitu&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Extent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hedadura:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; There isn&apos;t entry in geometry_columns!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Ez dago sarrerarik geometry_columns taulan!</translation>
     </message>
     <message>
         <source>&lt;warning&gt; No spatial index defined (&lt;a href=&quot;action:spatialindex/create&quot;&gt;create it&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Ez da indize espazialik definitu (&lt;a href=&quot;action:spatialindex/create&quot;&gt;sortu&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Pages:</source>
-        <translation type="unfinished"></translation>
+        <translation>Orriak:</translation>
     </message>
     <message>
         <source>Rows (estimation):</source>
-        <translation type="unfinished"></translation>
+        <translation>Errenkadak (estimazioa):</translation>
     </message>
     <message>
         <source>Privileges:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pribilegioak:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have usage privileges for this schema!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Erabiltzaile honek ez dauka erabilera-pribilegiorik eskema honetarako!</translation>
     </message>
     <message>
         <source>Rows (counted):</source>
-        <translation type="unfinished"></translation>
+        <translation>Errenkadak (zenbatuak):</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has read-only privileges.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Erabiltzaile honek irakurtzeko soilik dauzka pribilegioak.</translation>
     </message>
     <message>
         <source>&lt;warning&gt; There&apos;s a significant difference between estimated and real row count. Consider running &lt;a href=&quot;action:vacuumanalyze/run&quot;&gt;VACUUM ANALYZE&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Ezberdintasun nabarmena dago errenkada-kopuru zenbatetsiaren eta benetakoaren artean. Beharbada &lt;a href=&quot;action:vacuumanalyze/run&quot;&gt;VACUUM ANALYZE&lt;/a&gt;. exekutatu beharko zenuke.</translation>
     </message>
     <message>
         <source>&lt;warning&gt; No primary key defined for this table!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Ez da gako nagusirik definitu taula honetarako!</translation>
     </message>
     <message>
         <source>Scripts:</source>
-        <translation type="unfinished"></translation>
+        <translation>Script-ak:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; Version of installed scripts doesn&apos;t match version of released scripts!
 This is probably a result of incorrect PostGIS upgrade.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Instalatutako script-en bertsioa ez dator bat argitaratutako script-enekin!
+Beharbada PostGISen bertsio-berritze oker baten ondorio da.</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have privileges to read contents of geometry_columns table!
 This table is essential for many GIS applications for enumeration of tables.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Erabiltzaile honek ez dauka geometry_columns taulako edukiak irakurtzeko pribilegiorik!
+Taula hori funtsezkoa da GIS aplikazio askorentzat, taulak zerrendatzeko erabiltzen baitute.</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished">Luzera</translation>
+        <translation>Luzera</translation>
     </message>
     <message>
         <source>Enabled</source>
-        <translation type="unfinished">Gaitua</translation>
+        <translation>Gaitua</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Bai</translation>
+        <translation>Bai</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Ez</translation>
+        <translation>Ez</translation>
     </message>
     <message>
         <source>&lt;a href=&quot;action:triggers/enable&quot;&gt;Enable all triggers&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Disable all triggers&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;a href=&quot;action:triggers/enable&quot;&gt;Gaitu disparadore guztiak&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Desgaitu disparadore guztiak&lt;/a&gt;</translation>
     </message>
     <message>
         <source>Definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Definizioa</translation>
     </message>
     <message>
         <source>Rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Arauak</translation>
     </message>
     <message>
         <source>&amp;Versioning</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bertsioak</translation>
     </message>
     <message>
         <source>&amp;Table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Taula</translation>
     </message>
     <message>
         <source>Filename:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxategi-izena:</translation>
     </message>
     <message>
         <source>SQLite version:</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite bertsioa:</translation>
     </message>
     <message>
         <source>Error:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Errorea:
+%s</translation>
     </message>
     <message>
         <source>
 
 Query:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>
+
+Kontsulta:
+%s</translation>
     </message>
     <message>
         <source>&amp;Re-connect</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Birkonektatu</translation>
     </message>
     <message>
         <source>&amp;Database</source>
-        <translation type="unfinished">&amp;Datu-basea</translation>
+        <translation>&amp;Datu-basea</translation>
     </message>
     <message>
         <source>&amp;Create schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sortu eskema</translation>
     </message>
     <message>
         <source>&amp;Schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Eskema</translation>
     </message>
     <message>
         <source>&amp;Delete (empty) schema</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;zabatu eskema (hutsa)</translation>
     </message>
     <message>
         <source>Delete selected item</source>
-        <translation type="unfinished">Ezabatu hautatutako elementua</translation>
+        <translation>Ezabatu hautatutako elementua</translation>
     </message>
     <message>
         <source>&amp;Create table</source>
-        <translation type="unfinished"></translation>
+        <translation>S&amp;ortu taula</translation>
     </message>
     <message>
         <source>&amp;Edit table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Editatu taula</translation>
     </message>
     <message>
         <source>&amp;Delete table/view</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;zabatu taula/bista</translation>
     </message>
     <message>
         <source>&amp;Empty table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hustu taula</translation>
     </message>
     <message>
         <source>&amp;Move to schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mugitu eskemara</translation>
     </message>
     <message>
         <source>Cannot delete the selected item.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin da hautatutako elementua ezabatu.</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez da datu-baserik hautatu edo ez zaude hari konektatuta.</translation>
     </message>
     <message>
         <source>New schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Eskema berria</translation>
     </message>
     <message>
         <source>Enter new schema name</source>
-        <translation type="unfinished"></translation>
+        <translation>Sartu eskema berrirako izena</translation>
     </message>
     <message>
         <source>Select an empty SCHEMA for deletion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu eskema huts bat hura ezabatzeko.</translation>
     </message>
     <message>
         <source>hey!</source>
-        <translation type="unfinished"></translation>
+        <translation>Aizu!</translation>
     </message>
     <message>
         <source>Really delete schema %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Benetan ezabatu %s eskema?</translation>
     </message>
     <message>
         <source>Select a TABLE for editation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu taula bat ediziorako.</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW for deletion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu taula/bista bat ezabatzeko.</translation>
     </message>
     <message>
         <source>Really delete table/view %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Benetan ezabatu %s taula/bista?</translation>
     </message>
     <message>
         <source>Select a TABLE to empty it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu taula bat hura husteko.</translation>
     </message>
     <message>
         <source>Really delete all items from table %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Benetan ezabatu %s taulako elementu guztiak?</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu taula/bista bat.</translation>
     </message>
     <message>
         <source>Do you want to %s all triggers?</source>
-        <translation type="unfinished"></translation>
+        <translation>Benetan %s disparadore guztiak?</translation>
     </message>
     <message>
         <source>Table triggers</source>
-        <translation type="unfinished"></translation>
+        <translation>Taula-disparadoreak</translation>
     </message>
     <message>
         <source>Do you want to %s trigger %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Benetan %s diparatu %s?</translation>
     </message>
     <message>
         <source>Table trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>Taula-disparadorea</translation>
     </message>
     <message>
         <source>Do you want to %s spatial index for field %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Benetan %s indize espaziala %s eremurako?</translation>
     </message>
     <message>
         <source>Spatial Index</source>
-        <translation type="unfinished">Indize espaziala</translation>
+        <translation>Indize espaziala</translation>
     </message>
     <message>
         <source>Check</source>
-        <translation type="unfinished"></translation>
+        <translation>Egiaztatu</translation>
     </message>
     <message>
         <source>Primary key</source>
-        <translation type="unfinished">Gako nagusia</translation>
+        <translation>Gako nagusia</translation>
     </message>
     <message>
         <source>Foreign key</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanpoko gakoa</translation>
     </message>
     <message>
         <source>Unique</source>
-        <translation type="unfinished">Bakarra</translation>
+        <translation>Bakarra</translation>
     </message>
     <message>
         <source>Exclusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Esklusioa</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished">Ezezaguna</translation>
+        <translation>Ezezaguna</translation>
     </message>
 </context>
 <context>
     <name>DBModel</name>
     <message>
         <source>Databases</source>
-        <translation type="unfinished">Datu-baseak</translation>
+        <translation>Datu-baseak</translation>
     </message>
     <message>
         <source>Invalid MIME uri</source>
-        <translation type="unfinished"></translation>
+        <translation>Baliogabeko MIME URIa</translation>
     </message>
     <message>
         <source>The dropped object is not a valid layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaregindako objektua ez da baliozko geruza bat</translation>
     </message>
     <message>
         <source>Invalid layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Baliogabeko geruza</translation>
     </message>
     <message>
         <source>Unable to load the layer %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin izan da %s geruza kargatu</translation>
     </message>
 </context>
 <context>
     <name>DBTree</name>
     <message>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Berrizendatu</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">Ezabatu</translation>
+        <translation>Ezabatu</translation>
     </message>
     <message>
         <source>Add to canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Gehitu oihalari</translation>
     </message>
     <message>
         <source>Re-connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Birkonektatu</translation>
     </message>
 </context>
 <context>
@@ -2084,23 +2091,30 @@ Geruza berria aurkibideari gehitu nahi diozu?</translation>
 %s
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu da puntuen irteerako shapefile-a:
+%s
+
+Geruza berria aurkibideari gehitu nahi diozu?</translation>
     </message>
     <message>
         <source>Can&apos;t delete file %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin da %s fitxategia ezabatu</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Errorea irteerako shapefile-a kargatzean:
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu da irteerako shapefile-a:
+%s
+
+Geruza berria aurkibideari gehitu nahi diozu?</translation>
     </message>
     <message>
         <source>CRS warning!</source>
@@ -2196,46 +2210,53 @@ Seguru zaude jarraitu nahi duzula?</translation>
     <message>
         <source>Defined Projection For:
 %s.shp</source>
-        <translation type="unfinished"></translation>
+        <translation>Honentzat definitutako proiekzioa:
+%s.shp</translation>
     </message>
     <message>
         <source>Selected features: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatutako elementuak: %s</translation>
     </message>
     <message>
         <source>Commit error:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Egikaritze-errorea:
+%s</translation>
     </message>
     <message>
         <source>Could not replace geometry of feature with id %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin izan da %s IDa duen elementu geografikoaren geometria ordeztu</translation>
     </message>
     <message>
         <source>Could not eliminate features with these ids:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin izan dira ezabatu hurrego IDak dituzten elementu geografikoak:
+%s</translation>
     </message>
     <message>
         <source>There were %d vertices in original dataset which
 were reduced to %d vertices after simplification</source>
-        <translation type="unfinished"></translation>
+        <translation>%d erpin zeuden jatorrizko datu-multzoan eta
+sinplifikazioaren ondoren %d erpin geratu dira</translation>
     </message>
     <message>
         <source>No output will be created.
 Following field names are longer than 10 characters:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez da irteerarik sortuko.
+Hurrengo eremu-izenek 10 karaktere baino gehiago dituzte:
+%s</translation>
     </message>
     <message>
         <source>Can&apos;t delete existing shapefile
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin da existitzen den %s shapefile-a ezabatu</translation>
     </message>
     <message>
         <source>Created output shapefiles in folder:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Irteerako shapegile-ak sortu dira hurrengo karpetan:
+%s</translation>
     </message>
     <message>
         <source>Defined Projection For:
@@ -2375,7 +2396,8 @@ Following field names are longer than 10 characters:
     <message>
         <source>Created output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Irteerako shapefile-a sortu da:
+%s</translation>
     </message>
     <message>
         <source>Line intersections</source>
@@ -2441,7 +2463,7 @@ sinplifikazioaren ondoren %2 erpin geratu dira</translation>
     </message>
     <message>
         <source>Processing of the following layers/files ended with error:&lt;br&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Hurrengo geruzak/fitxategiak prozesatzeak errorea eman du:&lt;br&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
@@ -2519,11 +2541,11 @@ Hurrengo eremu-izenek 10 karaktere baino gehiago dituzte:
     <name>DlgAddGeometryColumn</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished">Barkatu</translation>
+        <translation>Barkatu</translation>
     </message>
     <message>
         <source>field name must not be empty</source>
-        <translation type="unfinished"></translation>
+        <translation>eremu-izenak ezin du hutsik egon</translation>
     </message>
 </context>
 <context>
@@ -2553,113 +2575,114 @@ Hurrengo eremu-izenek 10 karaktere baino gehiago dituzte:
     <name>DlgCreateIndex</name>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Errorea</translation>
+        <translation>Errorea</translation>
     </message>
     <message>
         <source>Please enter some name for the index</source>
-        <translation type="unfinished"></translation>
+        <translation>Sartu izen bat indizerako</translation>
     </message>
 </context>
 <context>
     <name>DlgCreateTable</name>
     <message>
         <source>&amp;Create</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sortu</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished">Barkatu</translation>
+        <translation>Barkatu</translation>
     </message>
     <message>
         <source>no field selected</source>
-        <translation type="unfinished"></translation>
+        <translation>ez da eremurik hautatu</translation>
     </message>
     <message>
         <source>field is at top already</source>
-        <translation type="unfinished"></translation>
+        <translation>eremua goialdean dago jadanik</translation>
     </message>
     <message>
         <source>No field selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez da eremurik hautatu</translation>
     </message>
     <message>
         <source>field is at bottom already</source>
-        <translation type="unfinished"></translation>
+        <translation>eremua behealdean dago jadanik</translation>
     </message>
     <message>
         <source>select schema!</source>
-        <translation type="unfinished"></translation>
+        <translation>hautatu eskema!</translation>
     </message>
     <message>
         <source>enter table name!</source>
-        <translation type="unfinished"></translation>
+        <translation>sartu taularen izena!</translation>
     </message>
     <message>
         <source>add some fields!</source>
-        <translation type="unfinished"></translation>
+        <translation>gehitu ermuak!</translation>
     </message>
     <message>
         <source>set geometry column name</source>
-        <translation type="unfinished"></translation>
+        <translation>ezarri geometria-zutabearen izena</translation>
     </message>
     <message>
         <source>Good</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongi</translation>
     </message>
     <message>
         <source>everything went fine</source>
-        <translation type="unfinished"></translation>
+        <translation>dena ongi joan da</translation>
     </message>
 </context>
 <context>
     <name>DlgExportVector</name>
     <message>
         <source>Choose where to save the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu non gordeko den fitxategia</translation>
     </message>
     <message>
         <source>Shapefiles</source>
-        <translation type="unfinished">Shapefile-ak</translation>
+        <translation>Shapefile-ak</translation>
     </message>
     <message>
         <source>Export to file</source>
-        <translation type="unfinished">Esportatu fitxategira</translation>
+        <translation>Esportatu fitxategira</translation>
     </message>
     <message>
         <source>Output table name is required</source>
-        <translation type="unfinished"></translation>
+        <translation>Irteera-taularen izena beharrezkoa da</translation>
     </message>
     <message>
         <source>Invalid source srid: must be an integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Baliogabeko jatorrizko SRIDa: zenbaki osoa izan behar du</translation>
     </message>
     <message>
         <source>Invalid target srid: must be an integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Baliogabeko helburuko SRIDa: zenbaki osoa izan behar du</translation>
     </message>
     <message>
         <source>Error %d
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>%d errorea
+%s</translation>
     </message>
     <message>
         <source>Export finished.</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportazioa amaitu da.</translation>
     </message>
 </context>
 <context>
     <name>DlgFieldProperties</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished">Barkatu</translation>
+        <translation>Barkatu</translation>
     </message>
     <message>
         <source>field name must not be empty</source>
-        <translation type="unfinished"></translation>
+        <translation>eremu-izenak ezin du hutsik egon</translation>
     </message>
     <message>
         <source>field type must not be empty</source>
-        <translation type="unfinished"></translation>
+        <translation>eremu-motak ezin du hutsik egon</translation>
     </message>
 </context>
 <context>
@@ -2697,36 +2720,37 @@ Hurrengo eremu-izenek 10 karaktere baino gehiago dituzte:
     <name>DlgImportVector</name>
     <message>
         <source>Choose the file to import</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu inportatuko den fitxategia</translation>
     </message>
     <message>
         <source>Import to database</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu datu-basera</translation>
     </message>
     <message>
         <source>Input layer missing or not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Sarrera-geruza falta da edo ez da baliozkoa</translation>
     </message>
     <message>
         <source>Output table name is required</source>
-        <translation type="unfinished"></translation>
+        <translation>Irteera-taularen izena beharrezkoa da</translation>
     </message>
     <message>
         <source>Invalid source srid: must be an integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Baliogabeko jatorrizko SRIDa: zenbaki osoa izan behar du</translation>
     </message>
     <message>
         <source>Invalid target srid: must be an integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Baliogabeko helburuko SRIDa: zenbaki osoa izan behar du</translation>
     </message>
     <message>
         <source>Error %d
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>%d errorea
+%s</translation>
     </message>
     <message>
         <source>Import was successful.</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportazioa ongi egin da.</translation>
     </message>
 </context>
 <context>
@@ -2779,7 +2803,7 @@ Hurrengo eremu-izenek 10 karaktere baino gehiago dituzte:
     <name>DlgSqlWindow</name>
     <message>
         <source>%d rows, %.1f seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>%d errenkada, %.1f segundo</translation>
     </message>
     <message>
         <source>Sorry</source>
@@ -2796,43 +2820,43 @@ geometria-zutabea - balio oso bakarrak dituen zutabea</translation>
     <name>DlgTableProperties</name>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished">Barkatu</translation>
+        <translation>Barkatu</translation>
     </message>
     <message>
         <source>nothing selected</source>
-        <translation type="unfinished"></translation>
+        <translation>ez da ezer hautatu</translation>
     </message>
     <message>
         <source>Are you sure</source>
-        <translation type="unfinished"></translation>
+        <translation>Seguru zaude?</translation>
     </message>
     <message>
         <source>really delete column &apos;%s&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>benetan ezabatu &apos;%s&apos; zutabea?</translation>
     </message>
     <message>
         <source>really delete constraint &apos;%s&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>benetan ezabatu &apos;%s&apos; murriztapena?</translation>
     </message>
     <message>
         <source>The selected table has no geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatutako taulak ez dauka geometriarik</translation>
     </message>
     <message>
         <source>Create?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu?</translation>
     </message>
     <message>
         <source>Create spatial index for field %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Indize espaziala sortu %s eremurako?</translation>
     </message>
     <message>
         <source>Nothing selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez da ezer hautatu</translation>
     </message>
     <message>
         <source>really delete index &apos;%s&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>benetan ezabatu &apos;%s&apos; indizea?</translation>
     </message>
 </context>
 <context>
@@ -3273,7 +3297,7 @@ Amaitu egin nahi al duzu?</translation>
     </message>
     <message>
         <source>%s not created.</source>
-        <translation type="unfinished"></translation>
+        <translation>%s ez da sortu.</translation>
     </message>
     <message>
         <source>%1 not created.</source>
@@ -3559,7 +3583,7 @@ Desgaitu &quot;Erabili ebakitze-hedadura&quot; aukera hutsik egongo ez den irtee
     </message>
     <message>
         <source>[select levels]</source>
-        <translation type="unfinished"></translation>
+        <translation>[hautatu mailak]</translation>
     </message>
 </context>
 <context>
@@ -3683,7 +3707,7 @@ MacOS users usually need to set it to something like
 /Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
         <translation>Bi puntuz bereizitako (Linux eta MacOS) edo
 puntu eta komaz bereizitako (Windows) bideak
-binarioetara eta Python exekutagarrietara.
+bitarretara eta Python exekutagarrietara.
 
 MacOS erabiltzaileek /Library/Frameworks/GDAL.framework/Versions/1.8/Programs
 edo horrelako zerbait ezarri behar dute normalean</translation>
@@ -4897,16 +4921,21 @@ Hautatu beste eremu bat...</translation>
 {1}
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Irteerako shapefile-a sortu da:
+{0}
+{1}
+
+Geruza berria edukien taulan erakutsi nahi al duzu?</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Errorea irteerako shapefile-a kargatzean:
+{0}</translation>
     </message>
     <message>
         <source>Layer &apos;{0}&apos; updated</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;{0}&apos; geruza eguneratu da</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -5040,18 +5069,22 @@ Geruza berria edukien taulan erakutsi nahi al duzu?</translation>
     <message>
         <source>No output created. File creation error:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez da irteerarik sortu. Errorea fitxategia sortzean:
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s
 %s%s</source>
-        <translation type="unfinished"></translation>
+        <translation>Irteerako shapefile-a sortu da:
+%s
+%s%s</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Errorea irteerako shapefile-a kargatzean:
+%s</translation>
     </message>
     <message>
         <source>No output created. File creation error:
@@ -5440,7 +5473,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>InfoViewer</name>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>DB kudeatzailea</translation>
     </message>
 </context>
 <context>
@@ -6109,7 +6142,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1384"/>
         <source>Manage and Install Plugins...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kudeatu eta instalatu pluginak...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1901"/>
@@ -6820,7 +6853,7 @@ Wrong line: %1</source>
     <name>NotSupportedDbType</name>
     <message>
         <source>%s is not supported yet</source>
-        <translation type="unfinished"></translation>
+        <translation>%s ez da onartzen oraindik</translation>
     </message>
 </context>
 <context>
@@ -6865,26 +6898,26 @@ Wrong line: %1</source>
     <name>PGDatabase</name>
     <message>
         <source>&amp;Table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Taula</translation>
     </message>
     <message>
         <source>Run &amp;Vacuum Analyze</source>
-        <translation type="unfinished"></translation>
+        <translation>Exekutatu &amp;garbitze-analisia</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished">Barkatu</translation>
+        <translation>Barkatu</translation>
     </message>
     <message>
         <source>Select a TABLE for vacuum analyze.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu taula bat garbitze-analisia egiteko.</translation>
     </message>
 </context>
 <context>
     <name>PGTable</name>
     <message>
         <source>Table rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Taula-araua</translation>
     </message>
 </context>
 <context>
@@ -6898,26 +6931,26 @@ Wrong line: %1</source>
     <name>PostGisDBPlugin</name>
     <message>
         <source>There is no defined database connection &quot;%s&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez dago &quot;%s&quot; datu-baserako konexiorik definiturik.</translation>
     </message>
     <message>
         <source>Enter password</source>
-        <translation type="unfinished"></translation>
+        <translation>Sartu pasahitza</translation>
     </message>
     <message>
         <source>Enter password for connection &quot;%s&quot;:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sartu &quot;%s&quot; konexiorako pasahitza:</translation>
     </message>
 </context>
 <context>
     <name>PrepareAPIDialog</name>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Errorea</translation>
+        <translation>Errorea</translation>
     </message>
     <message>
         <source>Done</source>
-        <translation type="unfinished">Egina</translation>
+        <translation>Egina</translation>
     </message>
 </context>
 <context>
@@ -6948,23 +6981,23 @@ Wrong line: %1</source>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%s&apos; from [&apos;%s&apos;]</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin izan da &apos;%s&apos; plugina kargatu [&apos;%s&apos;](e)tik</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin izan da %s plugina kargatu</translation>
     </message>
     <message>
         <source>%s due an error when calling its classFactory() method</source>
-        <translation type="unfinished"></translation>
+        <translation>%s bere classFactory() metodoa deitzean gertatutako errore baten erruz</translation>
     </message>
     <message>
         <source>%s due an error when calling its initGui() method</source>
-        <translation type="unfinished"></translation>
+        <translation>%s bere initGui() metodoa deitzean gertatutako errore baten erruz</translation>
     </message>
     <message>
         <source>Error while unloading plugin %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Errorea %s plugina deskargatzean</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
@@ -6999,23 +7032,23 @@ Wrong line: %1</source>
     </message>
     <message>
         <source>Compile APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>Konpilatu APIak</translation>
     </message>
     <message>
         <source>Saving prepared file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Prestatutako fitxategia gordetzen...</translation>
     </message>
     <message>
         <source>Saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Gordea</translation>
     </message>
     <message>
         <source>Done</source>
-        <translation type="unfinished">Egina</translation>
+        <translation>Egina</translation>
     </message>
     <message>
         <source>Error preparing file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Errorea fitxategia prestatzean...</translation>
     </message>
     <message>
         <source>Hide Editor</source>
@@ -9693,7 +9726,7 @@ Zure GRASS instalazioaren bidea (GISBASE) zein den zehaztu nahi duzu?</translati
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1499"/>
         <source>Arc/Info Binary Coverage</source>
-        <translation>Arc/Inforen Coverage (estaldura) binarioa</translation>
+        <translation>Arc/Inforen Coverage (estaldura) bitarra</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1516"/>
@@ -10016,7 +10049,7 @@ Zure GRASS instalazioaren bidea (GISBASE) zein den zehaztu nahi duzu?</translati
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="104"/>
         <source>Couldn&apos;t set SIP API versions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin izan da SIP APIaren bertsioak ezarri.</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="113"/>
@@ -11452,7 +11485,7 @@ Jarri harremanetan garatzaileekin.</translation>
         <location filename="../src/app/qgisapp.cpp" line="3742"/>
         <location filename="../src/app/qgisapp.cpp" line="3801"/>
         <source>QGIS files</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS fitxategiak</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3673"/>
@@ -11467,22 +11500,22 @@ Jarri harremanetan garatzaileekin.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4295"/>
         <source>Default system font substituted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistemaren letra-tipo lehenetsia ordezkatu da.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4298"/>
         <source>Labeling</source>
-        <translation type="unfinished">Etiketatzea</translation>
+        <translation>Etiketatzea</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4299"/>
         <source>Font for layer &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; was not found (&lt;i&gt;%2&lt;/i&gt;). %3</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; geruzarako letra-tipoa ez da aurkitu (&lt;i&gt;%2&lt;/i&gt;). %3</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4312"/>
         <source>Open labeling dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Ireki etiketatze-koadroa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4354"/>
@@ -12658,27 +12691,27 @@ Erabiltzaile.-DBaren bidea:%9
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="865"/>
         <source>Select filename...</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu fitxategi-izena...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="870"/>
         <source>Save current page url in attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Gorde uneko orriaren URLa atributuan</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="875"/>
         <source>Select date in calendar</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu data bat egutegian</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="880"/>
         <source>Select color in browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu kolorea nabigatzailean</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="889"/>
         <source>Open current page in default browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Ireki uneko orria nabigatzaile lehenetsian</translation>
     </message>
 </context>
 <context>
@@ -13185,7 +13218,7 @@ Erabiltzaile.-DBaren bidea:%9
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="119"/>
         <source>Label on top</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiketa gainean</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="356"/>
@@ -13265,7 +13298,7 @@ Erabiltzaile.-DBaren bidea:%9
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="637"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Example formats:&lt;/p&gt;&lt;table border=&quot;0&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;&quot; cellspacing=&quot;2&quot; cellpadding=&quot;0&quot; bgcolor=&quot;#f6f6f6&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;td style=&quot; vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:12px; font-weight:600; color:#363534;&quot;&gt;Format&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td style=&quot; vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:12px; font-weight:600; color:#363534;&quot;&gt;Result&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;dd.MM.yyyy&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;21.05.2001&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;ddd MMMM d yy&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;Tue May 21 01&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;hh:mm:ss.zzz&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;14:13:09.042&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;h:m:s ap&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;2:13:9 pm&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;&lt;a href=&quot;http://qt-project.org/doc/qt-5.0/qtcore/qdatetime.html#toString&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Reference documentation&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Etsenpluko formatuak:&lt;/p&gt;&lt;table border=&quot;0&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;&quot; cellspacing=&quot;2&quot; cellpadding=&quot;0&quot; bgcolor=&quot;#f6f6f6&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;td style=&quot; vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:12px; font-weight:600; color:#363534;&quot;&gt;Formatua&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td style=&quot; vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:12px; font-weight:600; color:#363534;&quot;&gt;Emaitza&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;dd.MM.yyyy&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;21.05.2001&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;ddd MMMM d yy&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;Tue May 21 01&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;hh:mm:ss.zzz&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f6f6f6&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#f6f6f6;&quot;&gt;14:13:09.042&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;h:m:s ap&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffff&quot; style=&quot; vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;Open Sans,sans-serif&apos;; font-size:11px; color:#66666e; background-color:#ffffff;&quot;&gt;2:13:9 pm&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;&lt;a href=&quot;http://qt-project.org/doc/qt-5.0/qtcore/qdatetime.html#toString&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Erreferentzia-dokumentazioa&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="664"/>
@@ -13463,7 +13496,7 @@ Errorea hau da:%2</translation>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="603"/>
         <source>Field contains an URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Eremuak URL bat dauka</translation>
     </message>
 </context>
 <context>
@@ -13568,7 +13601,7 @@ Database: %3</source>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="81"/>
         <source>ID</source>
-        <translation type="unfinished">IDa</translation>
+        <translation>IDa</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="82"/>
@@ -15595,7 +15628,7 @@ Existitzen diren klaseak ezabatuko dira sailkapena egin baino lehen?</translatio
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="287"/>
         <source>Legend title space bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Legenda-izenburuaren tartea behean</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="299"/>
@@ -15897,17 +15930,17 @@ Existitzen diren klaseak ezabatuko dira sailkapena egin baino lehen?</translatio
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="693"/>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="703"/>
         <source>Space below title.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tartea izenburuaren azpian.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="696"/>
         <source>Title space</source>
-        <translation type="unfinished"></translation>
+        <translation>Izenburuaren tartea</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="706"/>
         <source>mm</source>
-        <translation type="unfinished">mm</translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="252"/>
@@ -16346,7 +16379,7 @@ Existitzen diren klaseak ezabatuko dira sailkapena egin baino lehen?</translatio
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="335"/>
         <source>Offset</source>
-        <translation type="unfinished">Desplazamendua</translation>
+        <translation>Desplazamendua</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="444"/>
@@ -16599,7 +16632,7 @@ Existitzen diren klaseak ezabatuko dira sailkapena egin baino lehen?</translatio
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="137"/>
         <source>Loading previews...</source>
-        <translation type="unfinished"></translation>
+        <translation>Aurrebistak kargatzen...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="209"/>
@@ -16763,7 +16796,7 @@ Existitzen diren klaseak ezabatuko dira sailkapena egin baino lehen?</translatio
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="254"/>
         <source>Number of scalebar segments changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Eskala-barraren segmentu-kopurua aldatu da</translation>
     </message>
     <message>
         <source>Scalebar n segments</source>
@@ -17353,12 +17386,12 @@ Existitzen diren klaseak ezabatuko dira sailkapena egin baino lehen?</translatio
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="995"/>
         <source>Aligned items horizontal center</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementuak erdian horizontalean lerrokatu dira</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="1085"/>
         <source>Aligned items vertical center</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementuak erdian bertikalean lerrokatu dira</translation>
     </message>
     <message>
         <source>Aligned items hcenter</source>
@@ -17678,7 +17711,7 @@ Existitzen diren klaseak ezabatuko dira sailkapena egin baino lehen?</translatio
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="242"/>
         <source>Export resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportazio-bereizmena</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="289"/>
@@ -18560,37 +18593,37 @@ existitzen den CRSa</translation>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="80"/>
         <source>Edit...</source>
-        <translation type="unfinished">Editatu...</translation>
+        <translation>Editatu...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="82"/>
         <source>Paste</source>
-        <translation type="unfinished">Itsatsi</translation>
+        <translation>Itsatsi</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="83"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopiatu</translation>
+        <translation>Kopiatu</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="84"/>
         <source>Clear</source>
-        <translation type="unfinished">Garbitu</translation>
+        <translation>Garbitu</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="140"/>
         <source>int</source>
-        <translation type="unfinished"></translation>
+        <translation>int</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="150"/>
         <source>Field type: </source>
-        <translation type="unfinished"></translation>
+        <translation>Eremu-mota:</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="215"/>
         <source>Data defined override</source>
-        <translation type="unfinished"></translation>
+        <translation>Datuek definitutako gainidazketa</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="238"/>
@@ -18601,37 +18634,38 @@ existitzen den CRSa</translation>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="253"/>
         <source>Attribute field</source>
-        <translation type="unfinished">Atributu-eremua</translation>
+        <translation>Atributu-eremua</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="278"/>
         <source>No matching field types found</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez da aurkitu bat datorren eremu-motarik</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="285"/>
         <source>Expression</source>
-        <translation type="unfinished">Adierazpena</translation>
+        <translation>Adierazpena</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="298"/>
         <source>Current: </source>
-        <translation type="unfinished"></translation>
+        <translation>Unekoa:</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="440"/>
         <source>Parse error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Analisi-errorea: %1</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="468"/>
         <source>&lt;b&gt;&lt;u&gt;Data defined override&lt;/u&gt;&lt;/b&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Testu lodia
+&lt;b&gt;&lt;u&gt;Datuek definitutako gainidazketa&lt;/u&gt;&lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="474"/>
         <source>&lt;b&gt;Usage:&lt;/b&gt;&lt;br&gt;%1&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Erabilera:&lt;/b&gt;&lt;br&gt;%1&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="500"/>
@@ -23675,13 +23709,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="297"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="300"/>
         <source>Link Georeferencer to QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Lotu geoerreferentziatzailea QGISi</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="308"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="311"/>
         <source>Link QGIS to Georeferencer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lotu QGIS geoerreferentziatzaileari</translation>
     </message>
     <message>
         <source>Link Georeferencer to QGis</source>
@@ -23961,12 +23995,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsgml.cpp" line="111"/>
         <source>Error: %1 on line %2, column %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Errorea: %1 %2 lerroan, %3 zutabean</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgml.cpp" line="115"/>
         <source>WFS</source>
-        <translation type="unfinished">WFS</translation>
+        <translation>WFS</translation>
     </message>
 </context>
 <context>
@@ -24265,7 +24299,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="422"/>
         <source>Remove the selected layer(s) from canvas before continue.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kendu hautatutako geruza(k) oihaletik aurrera jarraitu baino lehen.</translation>
     </message>
     <message>
         <source>Remove the selected layer(s) from QGis canvas before continue.</source>
@@ -24965,7 +24999,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="171"/>
         <source>Convert x to double-precision floating point</source>
-        <translation>Bihurtu X koma higikorreko doitasun bikoitzera</translation>
+        <translation>Bihurtu X koma mugikorreko doitasun bikoitzera</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="172"/>
@@ -24985,7 +25019,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="175"/>
         <source>Convert x to single-precision floating point</source>
-        <translation>Bihurtu X koma higikorreko doitasun bakunera</translation>
+        <translation>Bihurtu X koma mugikorreko doitasun bakunera</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="176"/>
@@ -27840,7 +27874,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="40"/>
         <source>Available typeface styles</source>
-        <translation type="unfinished">Letra-tipo estilo erabilgarriak</translation>
+        <translation>Letra-tipo estilo erabilgarriak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="75"/>
@@ -27851,51 +27885,51 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="100"/>
         <source>Style</source>
-        <translation type="unfinished">Estiloa</translation>
+        <translation>Estiloa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="130"/>
         <source>Underlined text</source>
-        <translation type="unfinished">Azpimarratutako testua</translation>
+        <translation>Azpimarratutako testua</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="133"/>
         <source>U</source>
-        <translation type="unfinished">U</translation>
+        <translation>U</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="164"/>
         <source>Strikeout text</source>
-        <translation type="unfinished">Marratutako testua</translation>
+        <translation>Marratutako testua</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="167"/>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation>S</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="210"/>
         <source>Bold text
 (data defined only, overrides Style)</source>
-        <translation type="unfinished">Testu lodia
+        <translation>Testu lodia
 (datuek definitutakoa soilik, estiloa gainidazten du)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="214"/>
         <source>B</source>
-        <translation type="unfinished">B</translation>
+        <translation>B</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="245"/>
         <source>Italic text
 (data defined only, overrides Style)</source>
-        <translation type="unfinished">Testu etzana
+        <translation>Testu etzana
 (datuek definitutakoa soilik, estiloa gainidazten du)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="249"/>
         <source>I</source>
-        <translation type="unfinished">I</translation>
+        <translation>I</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="264"/>
@@ -28018,7 +28052,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="986"/>
         <source>In edit mode, layer&apos;s relevant labeling map tool is:&lt;br&gt;&amp;nbsp;&amp;nbsp;Defined attribute field -&amp;gt; &lt;i&gt;enabled&lt;/i&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;Defined expression -&amp;gt; &lt;i&gt;disabled&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Edizio-moduan, geruzaren etiketak jartzeko mapa-tresna hau da: &lt;br&gt;&amp;nbsp;&amp;nbsp;Definitutako atributu-eremua -&amp;gt; &lt;i&gt;gaitua&lt;/i&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;Definitutako adierazpena -&amp;gt; &lt;i&gt;desgaitua&lt;/i&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1025"/>
@@ -28037,17 +28071,17 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="372"/>
         <source>%1 not found. Default substituted.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ez da aurkitu. Lehenetsia ordezkatu da.</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="373"/>
         <source>Chosen font</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatutako letra-tipoa</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1009"/>
         <source>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1&lt;br&gt;Value of 0 disables the specific limit.</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;lt; 0 balioak 1:1etik hurbilago dagoen eskala bat irudikatzen du, adib. -10 = 10:1&lt;br&gt;0 balioak muga espezifikoa desgaitzen du.</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1091"/>
@@ -28443,7 +28477,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
         <location filename="../src/ui/qgslabelingguibase.ui" line="5034"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5063"/>
         <source>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1.&lt;br&gt;Value of 0 disables the specific limit.</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;lt; 0 balioak 1:1etik hurbilago dagoen eskala bat irudikatzen du, adib. -10 = 10:1&lt;br&gt;0 balioak muga espezifikoa desgaitzen du.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5548"/>
@@ -30575,7 +30609,7 @@ ez dira erakutsiko</translation>
     <message>
         <location filename="../src/app/qgsmaptoolvertexedit.cpp" line="47"/>
         <source>Could not snap segment. Have you set the tolerance in Settings &gt; Snapping Options?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin izan da segmentua atxikitu. Ezarri al duzu tolerantzia Ezarpenak &gt; Atxikitze-aukerak atalean?</translation>
     </message>
     <message>
         <source>Don&apos;t show this message again</source>
@@ -33665,7 +33699,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="363"/>
         <source>All</source>
-        <translation type="unfinished">Dena</translation>
+        <translation>Dena</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="539"/>
@@ -33739,7 +33773,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="835"/>
         <source>QGIS files</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS fitxategiak</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="647"/>
@@ -34246,7 +34280,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1648"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Set below 1000 to prevent display updates until all features have been rendered</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Oharra:&lt;/b&gt;Ezarri 1000 azpitik elementu guztiak errendatu baino lehen bistaratzea eguneratu ez dadin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2008"/>
@@ -36178,7 +36212,7 @@ Errorea: %2</translation>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="160"/>
         <source>Enter...</source>
-        <translation type="unfinished">Sartu...</translation>
+        <translation>Sartu...</translation>
     </message>
 </context>
 <context>
@@ -36227,19 +36261,19 @@ Errorea: %2</translation>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="64"/>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="266"/>
         <source>Specify a geometry type</source>
-        <translation type="unfinished"></translation>
+        <translation>Adierazi geometria-mota bat</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="68"/>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="274"/>
         <source>Enter a SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Sartu SRID bat</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="73"/>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="280"/>
         <source>Select a primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Sartu gako nagusi bat</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="77"/>
@@ -36841,7 +36875,7 @@ Errorea: %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="148"/>
         <source>Enter...</source>
-        <translation type="unfinished">Sartu...</translation>
+        <translation>Sartu...</translation>
     </message>
 </context>
 <context>
@@ -36894,7 +36928,7 @@ Errorea: %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="284"/>
         <source>Select a primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Sartu gako nagusi bat</translation>
     </message>
     <message>
         <source>Detecting...</source>
@@ -36914,13 +36948,13 @@ Errorea: %2</translation>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="65"/>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="269"/>
         <source>Specify a geometry type</source>
-        <translation type="unfinished"></translation>
+        <translation>Adierazi geometria-mota bat</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="69"/>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="277"/>
         <source>Enter a SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Sartu SRID bat</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="87"/>
@@ -36984,23 +37018,23 @@ Errorea: %2</translation>
     </message>
     <message>
         <source>QGIS Official Plugin Repository</source>
-        <translation type="unfinished"></translation>
+        <translation>QGISen pluginen biltegi ofiziala</translation>
     </message>
     <message>
         <source>Uninstall (recommended)</source>
-        <translation type="unfinished"></translation>
+        <translation>Desinstalatu (gomendatua)</translation>
     </message>
     <message>
         <source>I will uninstall it later</source>
-        <translation type="unfinished"></translation>
+        <translation>Geroago desinstalatuko dut</translation>
     </message>
     <message>
         <source>Obsolete plugin:</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin zaharkitua:</translation>
     </message>
     <message>
         <source>QGIS has detected an obsolete plugin that masks its more recent version shipped with this copy of QGIS. This is likely due to files associated with a previous installation of QGIS. Do you want to remove the old plugin right now and unmask the more recent version?</source>
-        <translation type="unfinished"></translation>
+        <translation>QGISen kopia honekin banatzen den plugin bat ezkutatzen duen plugin horren bertsio zaharkitu bat detektatu da. Seguru asko QGISen aurreko instalazio batekin lotutako fitxategien ondorio da. Kendu nahi duzu plugin zahar hori eta bertsio berriagoa agerian jarri?</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
@@ -37008,78 +37042,78 @@ Errorea: %2</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="unfinished">Seguru zaude plugina eskuragarri dagoen azken bertsiora aldatu nahi duzula? Instalatutako bertsioa berriagoa da!</translation>
+        <translation>Seguru zaude plugina eskuragarri dagoen azken bertsiora aldatu nahi duzula? Instalatutako bertsioa berriagoa da!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="unfinished">Pluginaren instalazioak huts egin du</translation>
+        <translation>Pluginaren instalazioak huts egin du</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="unfinished">Plugina desagertu egin da</translation>
+        <translation>Plugina desagertu egin da</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="unfinished">Badirudi plugina instalatu dela, baina ez dakit non. Agian plugin-paketeak izen okerreko direktorio bat zuen. Egin bilaketa bat instalatutako pluginen zerrendan, ia seguru nago plugina hor aurkituko duzula, baina ezin dut zehaztu haietako zein den. Honek esan nahi du, baita ere, ezingo dudala zehaztu plugin hau instalatuta dagoen ala ez eta haren eguneraketen berri eman. Hala ere, pluginak beharbada funtzionatuko du. Jarri harremanetan pluginaren egilearekin eta jakinarazi iezaiozu auzi hau.</translation>
+        <translation>Badirudi plugina instalatu dela, baina ez dakit non. Agian plugin-paketeak izen okerreko direktorio bat zuen. Egin bilaketa bat instalatutako pluginen zerrendan, ia seguru nago plugina hor aurkituko duzula, baina ezin dut zehaztu haietako zein den. Honek esan nahi du, baita ere, ezingo dudala zehaztu plugin hau instalatuta dagoen ala ez eta haren eguneraketen berri eman. Hala ere, pluginak beharbada funtzionatuko du. Jarri harremanetan pluginaren egilearekin eta jakinarazi iezaiozu auzi hau.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="unfinished">Plugina ongi instalatu da</translation>
+        <translation>Plugina ongi instalatu da</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="unfinished">Plugina ongi berrinstalatu da</translation>
+        <translation>Plugina ongi berrinstalatu da</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart QGIS in order to reload it.</source>
-        <translation type="unfinished">Python plugina berrinstalatu da.
+        <translation>Python plugina berrinstalatu da.
 QGIS berrabiarazi behar duzu hura birkargatzeko.</translation>
     </message>
     <message>
         <source>The plugin is not compatible with this version of QGIS. It&apos;s designed for QGIS versions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugina ez da bateragarria QGISen bertsio honekin. Hurrengo QGIS bertsioetarako diseinatuta dago:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="unfinished">Pluginak zure sisteman falta diren zenbait osagai behar ditu. Hurrengo Python moduluak instalatu behar dituzu plugina gaitzeko:</translation>
+        <translation>Pluginak zure sisteman falta diren zenbait osagai behar ditu. Hurrengo Python moduluak instalatu behar dituzu plugina gaitzeko:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="unfinished">Plugina hautsita dago. Pythonek hau esan du:</translation>
+        <translation>Plugina hautsita dago. Pythonek hau esan du:</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="unfinished">Plugina desinstalatzeak huts egin du</translation>
+        <translation>Plugina desinstalatzeak huts egin du</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="unfinished">Seguru zaude hurrengo plugina desinstalatu nahi duzula?</translation>
+        <translation>Seguru zaude hurrengo plugina desinstalatu nahi duzula?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="unfinished">Abisua: plugin hau ez dago eskuragarri eskura dituzun biltegietan!</translation>
+        <translation>Abisua: plugin hau ez dago eskuragarri eskura dituzun biltegietan!</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="unfinished">Plugina ongi desinstalatu da</translation>
+        <translation>Plugina ongi desinstalatu da</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="unfinished">Ezin da URL bera duen beste biltegi bat gehitu!</translation>
+        <translation>Ezin da URL bera duen beste biltegi bat gehitu!</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your QGIS version</source>
-        <translation type="unfinished">Biltegi hau blokeatuta dago zure QGIS bertsioarekin bateragarria ez delako</translation>
+        <translation>Biltegi hau blokeatuta dago zure QGIS bertsioarekin bateragarria ez delako</translation>
     </message>
     <message>
         <source>You can&apos;t remove the official QGIS Plugin Repository. You can disable it if needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin duzu QGISen plugin-biltegi ofiziala kendu. Desgaitu egin dezakezu, beharrezko baduzu.</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="unfinished">Seguru zaude hurrengo biltegia kendu nahi duzula?</translation>
+        <translation>Seguru zaude hurrengo biltegia kendu nahi duzula?</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
@@ -37839,22 +37873,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="142"/>
         <source>sort by name</source>
-        <translation type="unfinished"></translation>
+        <translation>ordenatu izenaren arabera</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="143"/>
         <source>sort by downloads</source>
-        <translation type="unfinished"></translation>
+        <translation>ordenatu deskarga-kopuruaren arabera</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="144"/>
         <source>sort by vote</source>
-        <translation type="unfinished"></translation>
+        <translation>ordenatu botoen arabera</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="145"/>
         <source>sort by status</source>
-        <translation type="unfinished"></translation>
+        <translation>ordenatu egoeraren arabera</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="278"/>
@@ -37870,197 +37904,197 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="515"/>
         <source>Only locally available</source>
         <comment>category: plugins that are only locally available</comment>
-        <translation type="unfinished"></translation>
+        <translation>Lokalean eskuragarri soilik</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="516"/>
         <source>Reinstallable</source>
         <comment>category: plugins that are installed and available</comment>
-        <translation type="unfinished"></translation>
+        <translation>Berrinstalagarria</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="517"/>
         <source>Upgradeable</source>
         <comment>category: plugins that are installed and there is a newer version available</comment>
-        <translation type="unfinished"></translation>
+        <translation>Eguneragarria</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="518"/>
         <source>Downgradeable</source>
         <comment>category: plugins that are installed and there is an OLDER version available</comment>
-        <translation type="unfinished"></translation>
+        <translation>Zaharkitu ahal dena</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="582"/>
         <source>This plugin is incompatible with this version of QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin hau ez da bateragarria QGISen bertsio honekin</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="582"/>
         <source>Plugin designed for QGIS %1</source>
         <comment>compatible QGIS version(s)</comment>
-        <translation type="unfinished"></translation>
+        <translation>QGIS %1 bertsiorako diseinatutako plugina</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="586"/>
         <source>This plugin requires a missing module</source>
-        <translation type="unfinished">Plugin honek falta den modulu bat behar du</translation>
+        <translation>Plugin honek falta den modulu bat behar du</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="590"/>
         <source>This plugin is broken</source>
-        <translation type="unfinished">Plugin hau hautsita dago</translation>
+        <translation>Plugin hau hautsita dago</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="600"/>
         <source>There is a new version available</source>
-        <translation type="unfinished"></translation>
+        <translation>Bertsio berria dago eskuragarri</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="606"/>
         <source>This is a new plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Hau plugin berri bat da</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="612"/>
         <source>Installed version of this plugin is higher than any version found in repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin honen instalatutako bertsioa biltegian dagoen beste edozein bertsio baino altuagoa da</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="620"/>
         <source>This plugin is experimental</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin hau esperimentala da</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="648"/>
         <source>&lt;br/&gt;%1 rating vote(s)&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br/&gt;%1 puntuatze-boto&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="652"/>
         <source>%1 downloads&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 deskarga&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="658"/>
         <source>Category</source>
-        <translation type="unfinished">Kategoria</translation>
+        <translation>Kategoria</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="662"/>
         <source>Tags</source>
-        <translation type="unfinished">Etiketak</translation>
+        <translation>Etiketak</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="666"/>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="670"/>
         <source>Author</source>
-        <translation type="unfinished">Egilea</translation>
+        <translation>Egilea</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="674"/>
         <source>More info</source>
-        <translation type="unfinished"></translation>
+        <translation>Info gehiago</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="677"/>
         <source>homepage</source>
-        <translation type="unfinished"></translation>
+        <translation>orri nagusia</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="681"/>
         <source>tracker</source>
-        <translation type="unfinished"></translation>
+        <translation>aztarnaria</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="685"/>
         <source>code_ repository</source>
-        <translation type="unfinished"></translation>
+        <translation>kode_biltegia</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="696"/>
         <source>Installed version: %1 (in %2)&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Instalatutako bertsioa: %1 (%2(e)n)&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="700"/>
         <source>Available version: %1 (in %2)&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Bertsio eskuragarria: %1 (%2(e)n)&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="706"/>
         <source>changelog:&lt;br/&gt;%1 &lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>aldaketa-egunkaria:&lt;br/&gt;%1 &lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="718"/>
         <source>Upgrade plugin</source>
-        <translation type="unfinished">Eguneratu plugina</translation>
+        <translation>Eguneratu plugina</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="723"/>
         <source>Downgrade plugin</source>
-        <translation type="unfinished">Instalatu pluginaren bertsio zaharragoa</translation>
+        <translation>Instalatu pluginaren bertsio zaharragoa</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="727"/>
         <source>Install plugin</source>
-        <translation type="unfinished">Instalatu plugina</translation>
+        <translation>Instalatu plugina</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="732"/>
         <source>Reinstall plugin</source>
-        <translation type="unfinished">Berrinstalatu plugina</translation>
+        <translation>Berrinstalatu plugina</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="808"/>
         <source>Reload all repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>Birkargatu biltegi guztiak</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="809"/>
         <source>Only show plugins from selected repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi hautatutako biltegiko pluginak soilik</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="813"/>
         <source>Clear filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Garbitu iragazkia</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="829"/>
         <source>connected</source>
-        <translation type="unfinished">konektatua</translation>
+        <translation>konektatua</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="831"/>
         <source>The repository is connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Biltegia konektatuta dago</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="835"/>
         <source>unavailable</source>
-        <translation type="unfinished">ezin da eskuratu</translation>
+        <translation>ezin da eskuratu</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="837"/>
         <source>The repository is enabled, but unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>Biltegia gaituta dago, baina ezin da eskuratu</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="842"/>
         <source>disabled</source>
-        <translation type="unfinished">desgaitua</translation>
+        <translation>desgaitua</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="846"/>
         <source>The repository is disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Biltegia desgaituta dago</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="850"/>
         <source>The repository is blocked due to incompatibility with your QGIS version</source>
-        <translation type="unfinished"></translation>
+        <translation>Biltegia blokeatuta dago zure QGIS bertsioarekin bateragarria ez delako</translation>
     </message>
     <message>
         <source>Error</source>
@@ -38073,27 +38107,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="11"/>
         <source>&lt;h3&gt;Installed Plugins&lt;/h3&gt;&lt;p&gt;On the left you see the list of &lt;b&gt;installed plugins&lt;/b&gt; on your system. Both python and cpp plugins are listed. Some plugins come with your QGIS installation while most of them are made available via the plugin repositories.&lt;/p&gt;&lt;p&gt;You can temporarily enable or disable a plugin.To &lt;i&gt;enable&lt;/i&gt; or &lt;i&gt;disable&lt;/i&gt; a plugin, click its checkbox or doubleclick its name...&lt;/p&gt;&lt;p&gt;Plugins showing in &lt;span style=&apos;color:red&apos;&gt;red&lt;/span&gt; are not loaded because there is a problem. Consult the &apos;Invalid&apos; tab to see more details, or to reinstall or uninstall this plugin.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Instalatutako pluginak&lt;/h3&gt;&lt;p&gt;Ezkerrean zure sisteman &lt;b&gt;instalatutako pluginen&lt;/b&gt; zerrenda ikus dezakezu. Python eta CPP pluginak ageri dira zerrendatuta. Zenbait plugin zure QGIS instalazioarekin batera datoz, eta beste asko plugin-biltegien bidez eskura daitezke.&lt;/p&gt;&lt;p&gt;Pluginak aldi baterako gaitu edo desgaitu ahal dituzu. Plugin bat &lt;i&gt;gaitzeko&lt;/i&gt; edo &lt;i&gt;desgaitzeko&lt;/i&gt;, egin klik haren kontrol-laukian edo egin klik bi aldiz haren izenean...&lt;/p&gt;&lt;p&gt;&lt;span style=&apos;color:red&apos;&gt;Gorriz&lt;/span&gt; erakusten diren pluginak ez dira kargatzen arazo bat daukatelako. Begiratu &apos;Baliogabea&apos; fitxa xehetasun gehiago jasotzeko, edo plugina berrinstalatu edo desinstalatzeko.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="32"/>
         <source>&lt;h3&gt;Upgradable plugins&lt;/h3&gt;&lt;p&gt;Here are &lt;b&gt;upgradeable plugins&lt;/b&gt;. It means more recent versions of installed plugins are available in the repositories.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Plugin eguneragarriak&lt;/h3&gt;&lt;p&gt;Hemen &lt;b&gt;plugin eguneragarriak&lt;/b&gt; daude. Horrek esan nahi du biltegietan plugin horien bertsio berriagoak daudela.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="43"/>
         <source>&lt;h3&gt;Get more plugins&lt;/h3&gt;&lt;p&gt;Here you see the list of all plugins available in the repositories, but which are &lt;b&gt;not yet installed&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Click on the name to see details.&lt;/p&gt;&lt;p&gt;You can change the sorting via the context menu (right click).&lt;/p&gt;&lt;p&gt;A plugin can be downloaded and installed by clicking on it&apos;s name, and then click the &apos;Install plugin&apos; button.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Eskuratu plugin gehiago&lt;/h3&gt;&lt;p&gt;Hemen biltegietan eskuragarri dauden, baina oraindik &lt;b&gt;instalatu gabe&lt;/b&gt;dauden, plugin guztien zerrenda ikus dezakezu.&lt;/p&gt;&lt;p&gt;Egin klik izenean xehetasun gehiago jasotzeko.&lt;/p&gt;&lt;p&gt;Haien ordena alda dezakezu testuinguru-menua (eskuineko klik-a) erabiliz.&lt;/p&gt;&lt;p&gt;Plugin bat deskargatu eta instalatzeko, egin klik haren izenean, eta ondoren &apos;Instalatu plugina&apos; botoian.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="64"/>
         <source>&lt;h3&gt;New plugins&lt;/h3&gt;&lt;p&gt;Here you see brand &lt;b&gt;new&lt;/b&gt; plugins which can be installed.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Plugin berriak&lt;/h3&gt;&lt;p&gt;Hemen instala daitezkeen plugin &lt;b&gt;berriak&lt;/b&gt; ikus ditzakezu.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="75"/>
         <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download an other version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Baliogabeko pluginak&lt;/h3&gt;&lt;p&gt;Zerrenda honetako pluginak &lt;b&gt;hautsita daude edo ez dira bateragarriak&lt;/b&gt; zure QGIS bertsioarekin.&lt;/p&gt;&lt;p&gt;Egin klik plugin batean, eta posible bada QGISek hari buruzko informazio gehiago erakutsiko dizu.&lt;/p&gt;&lt;p&gt;Baliogabeko pluginak edukitzearen arrazoi nagusia da plugina ez dagoela egina QGISen bertsio honetarako. Beharbada beste bertsio bat deskarga dezakezu &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt; gunetik.&lt;/p&gt;&lt;p&gt;Beste arrazoi bat izan daiteke Python plugin batek Pythonen kanpoko liburutegi bat behar izatea (alegia, bete gabeko mendekotasunak edukitzea). Batzuetan zure kabuz instala dezakezu mendekotasuna, zure sistema eragileraren arabera. Mendekotasunak ongi instalatu ondoren pluginak ongi funtzionatu beharko luke.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -38125,164 +38159,164 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="20"/>
         <source>Plugin Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin-kudeatzailea</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="109"/>
         <source>Installed</source>
-        <translation type="unfinished"></translation>
+        <translation>Instalatua</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="112"/>
         <source>Installed plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Instalatutako pluginak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="124"/>
         <source>Get more</source>
-        <translation type="unfinished"></translation>
+        <translation>Eskuratu gehiago</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="127"/>
         <source>Not installed plugins available for download</source>
-        <translation type="unfinished"></translation>
+        <translation>Deskartzeko eskuragarri dauden instalatu gabeko pluginak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="139"/>
         <source>Upgradeable</source>
-        <translation type="unfinished"></translation>
+        <translation>Eguneragarria</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="142"/>
         <source>Installed plugins with more recent version available for download</source>
-        <translation type="unfinished"></translation>
+        <translation>Deskargatzeko bertsio berriago bat daukaten instalatutako pluginak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="154"/>
         <source>New</source>
-        <translation type="unfinished">Berria</translation>
+        <translation>Berria</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="157"/>
         <source>Not installed plugins seen for the first time</source>
-        <translation type="unfinished"></translation>
+        <translation>Lehen aldiz ikusten diren instalatu gabeko pluginak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="169"/>
         <source>Invalid</source>
-        <translation type="unfinished">Baliogabea</translation>
+        <translation>Baliogabea</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="172"/>
         <source>Broken and incompatible installed plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautsita dauden eta bateragarriak ez diren instalatutako pluginak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="184"/>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="187"/>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="533"/>
         <source>Settings</source>
-        <translation type="unfinished">Ezarpenak</translation>
+        <translation>Ezarpenak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="267"/>
         <source>Plugins</source>
-        <translation type="unfinished">Pluginak</translation>
+        <translation>Pluginak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="282"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilatu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="308"/>
         <source>in:</source>
-        <translation type="unfinished"></translation>
+        <translation>hemen:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="315"/>
         <source>names</source>
-        <translation type="unfinished"></translation>
+        <translation>izenak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="322"/>
         <source>descriptions</source>
-        <translation type="unfinished"></translation>
+        <translation>deskribapenak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="329"/>
         <source>tags</source>
-        <translation type="unfinished"></translation>
+        <translation>etiketak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="336"/>
         <source>authors</source>
-        <translation type="unfinished"></translation>
+        <translation>egileak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="450"/>
         <source>Upgrade all upgradeable plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Eguneratu egunera daitezkeen plugin guztiak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="453"/>
         <source>Upgrade all</source>
-        <translation type="unfinished">Eguneratu denak</translation>
+        <translation>Eguneratu denak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="476"/>
         <source>Uninstall the selected plugin</source>
-        <translation type="unfinished">Desinstalatu hautatutako plugina</translation>
+        <translation>Desinstalatu hautatutako plugina</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="479"/>
         <source>Uninstall plugin</source>
-        <translation type="unfinished">Desinstalatu plugina</translation>
+        <translation>Desinstalatu plugina</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="495"/>
         <source>Install, reinstall or upgrade the selected plugin</source>
-        <translation type="unfinished">Instalatu, berrinstalatu edo eguneratu hautatutako plugina</translation>
+        <translation>Instalatu, berrinstalatu edo eguneratu hautatutako plugina</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="498"/>
         <source>Reinstall plugin</source>
-        <translation type="unfinished">Berrinstalatu plugina</translation>
+        <translation>Berrinstalatu plugina</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="549"/>
         <source>Check for updates on startup</source>
-        <translation type="unfinished">Begiratu eguneraketak abioan</translation>
+        <translation>Begiratu eguneraketak abioan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="571"/>
         <source>every time QGIS starts</source>
-        <translation type="unfinished">QGIS abiarazten den bakoitzean</translation>
+        <translation>QGIS abiarazten den bakoitzean</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="576"/>
         <source>once a day</source>
-        <translation type="unfinished">egunean behin</translation>
+        <translation>egunean behin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="581"/>
         <source>every 3 days</source>
-        <translation type="unfinished">3 egunetik behin</translation>
+        <translation>3 egunetik behin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="586"/>
         <source>every week</source>
-        <translation type="unfinished">astean behin</translation>
+        <translation>astean behin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="591"/>
         <source>every 2 weeks</source>
-        <translation type="unfinished">2 astetik behin</translation>
+        <translation>2 astetik behin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="596"/>
         <source>every month</source>
-        <translation type="unfinished">hilean behin</translation>
+        <translation>hilean behin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="616"/>
@@ -38291,12 +38325,16 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, QGIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Manager window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Oharra:&lt;/span&gt; Funtzio hau gaituta badago, QGISek jakinaraziko dizu plugin berri bat edo plugin-eguneraketa bat dagoen. Bestela, biltegien atzitzea plugin-instalatzailearen leihoa irekitzean egindo da.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="649"/>
         <source>Show also experimental plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi plugin esperimentalak ere</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="673"/>
@@ -38305,7 +38343,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Experimental plugins are generally unsuitable for production use. These plugins are in early stages of development, and should be considered &apos;incomplete&apos; or &apos;proof of concept&apos; tools. QGIS does not recommend installing these plugins unless you intend to use them for testing purposes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -38314,70 +38352,71 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="712"/>
         <source>Plugin repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>Pluginen biltegiak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="741"/>
         <source>Status</source>
-        <translation type="unfinished">Egoera</translation>
+        <translation>Egoera</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="746"/>
         <source>Name</source>
-        <translation type="unfinished">Izena</translation>
+        <translation>Izena</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="751"/>
         <source>URL</source>
-        <translation type="unfinished">URLa</translation>
+        <translation>URLa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="777"/>
         <source>Reload repository contents
 (useful when you uploaded a plugin there)</source>
-        <translation type="unfinished"></translation>
+        <translation>Birkargatu biltegiko edukiak
+(erabilgarria plugin bat bertara kargatu duzunean)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="781"/>
         <source>Reload repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Birkargatu biltegia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="801"/>
         <source>Configure an additional plugin repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfiguratu beste plugin-biltegi bat</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="804"/>
         <source>Add a new plugin repository</source>
-        <translation type="unfinished">Gehitu plugin-biltegi berria</translation>
+        <translation>Gehitu plugin-biltegi berria</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="807"/>
         <source>Add...</source>
-        <translation type="unfinished">Gehitu...</translation>
+        <translation>Gehitu...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="820"/>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="823"/>
         <source>Edit the selected repository</source>
-        <translation type="unfinished">Editatu hautatutako biltegia</translation>
+        <translation>Editatu hautatutako biltegia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="826"/>
         <source>Edit...</source>
-        <translation type="unfinished">Editatu...</translation>
+        <translation>Editatu...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="833"/>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="836"/>
         <source>Remove the selected repository</source>
-        <translation type="unfinished">Kendu hautatutako biltegia</translation>
+        <translation>Kendu hautatutako biltegia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="839"/>
         <source>Delete</source>
-        <translation type="unfinished">Ezabatu</translation>
+        <translation>Ezabatu</translation>
     </message>
 </context>
 <context>
@@ -39117,7 +39156,7 @@ Hautatu ezikustea falta diren geruzarik gabe kargatzen jarraitzeko. Hautatu uzte
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="112"/>
         <source>QGIS files</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS fitxategiak</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="143"/>
@@ -41330,34 +41369,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1905"/>
         <source>Keyword list</source>
-        <translation type="unfinished">Gako-hitzen zerrenda</translation>
+        <translation>Gako-hitzen zerrenda</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1951"/>
         <source>Attribution</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribuzioa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1970"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1992"/>
         <source>Url</source>
-        <translation type="unfinished"></translation>
+        <translation>URLa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1983"/>
         <source>MetadataUrl</source>
-        <translation type="unfinished"></translation>
+        <translation>Metadatuen URLa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2004"/>
         <source>Type</source>
-        <translation type="unfinished">Mota</translation>
+        <translation>Mota</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1920"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2030"/>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Formatua</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2080"/>
@@ -42735,7 +42774,7 @@ desbiderapen estandarra ×</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="705"/>
         <source>Max. scale</source>
-        <translation type="unfinished">Eskala maximoa</translation>
+        <translation>Eskala maximoa</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="712"/>
@@ -43947,7 +43986,7 @@ enhancement</source>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="571"/>
         <source>Binary object (BLOB)</source>
-        <translation>Objektu binarioa (BLOB)</translation>
+        <translation>Objektu bitarra (BLOB)</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="572"/>
@@ -45821,51 +45860,51 @@ Arazo bat dago zure ikurren datu-basearekin.</translation>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="33"/>
         <source>Select vector layers to add...</source>
-        <translation type="unfinished">Hautatu gehituko diren fitxategi bektorialak...</translation>
+        <translation>Hautatu gehituko diren fitxategi bektorialak...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="34"/>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="40"/>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="45"/>
         <source>Layer ID</source>
-        <translation type="unfinished">Geruzaren IDa</translation>
+        <translation>Geruzaren IDa</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="34"/>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="40"/>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="45"/>
         <source>Layer name</source>
-        <translation type="unfinished">Geruza-izena</translation>
+        <translation>Geruza-izena</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="35"/>
         <source>Number of features</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementu-kopurua</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="35"/>
         <source>Geometry type</source>
-        <translation type="unfinished">Geometria-mota</translation>
+        <translation>Geometria-mota</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="39"/>
         <source>Select raster layers to add...</source>
-        <translation type="unfinished">Hautatu gehituko diren raster-fitxategiak...</translation>
+        <translation>Hautatu gehituko diren raster-fitxategiak...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="44"/>
         <source>Select layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu gehituko diren geruzak...</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="46"/>
         <source>Type</source>
-        <translation type="unfinished">Mota</translation>
+        <translation>Mota</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssublayersdialog.cpp" line="50"/>
         <source>Select All</source>
-        <translation type="unfinished">Hautatu dena</translation>
+        <translation>Hautatu dena</translation>
     </message>
 </context>
 <context>
@@ -45873,12 +45912,12 @@ Arazo bat dago zure ikurren datu-basearekin.</translation>
     <message>
         <location filename="../src/ui/qgssublayersdialogbase.ui" line="14"/>
         <source>Select layers to load</source>
-        <translation type="unfinished">Hautatu kargatuko diren geruzak</translation>
+        <translation>Hautatu kargatuko diren geruzak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssublayersdialogbase.ui" line="33"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
 </context>
 <context>
@@ -46303,7 +46342,7 @@ Arazo bat dago zure ikurren datu-basearekin.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="92"/>
         <source>Moving Elements and Maps in the Print Composer</source>
-        <translation>Mugituu elementuak eta mapa inprimatze-konposatzailean</translation>
+        <translation>Mugitu elementuak edo mapak inprimatze-konposatzailearen barruan</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="93"/>
@@ -47354,39 +47393,39 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1372"/>
         <source>Keyword list</source>
-        <translation type="unfinished">Gako-hitzen zerrenda</translation>
+        <translation>Gako-hitzen zerrenda</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1382"/>
         <source>DataUrl</source>
-        <translation type="unfinished"></translation>
+        <translation>Datuen URLa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1425"/>
         <source>Attribution</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribuzioa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1444"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1466"/>
         <source>Url</source>
-        <translation type="unfinished"></translation>
+        <translation>URLa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1457"/>
         <source>MetadataUrl</source>
-        <translation type="unfinished"></translation>
+        <translation>Metadatuen URLa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1478"/>
         <source>Type</source>
-        <translation type="unfinished">Mota</translation>
+        <translation>Mota</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1394"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1504"/>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Formatu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1554"/>
@@ -47904,12 +47943,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="97"/>
         <source>DescribeFeatureType failed for url %1</source>
-        <translation type="unfinished"></translation>
+        <translation>DescribeFeatureType-k huts egin du URL honetarako: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="97"/>
         <source>WFS</source>
-        <translation type="unfinished">WFS</translation>
+        <translation>WFS</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1358"/>
@@ -50036,19 +50075,19 @@ Erantzuna hau izan da:
     <name>SLDatabase</name>
     <message>
         <source>Run &amp;Vacuum</source>
-        <translation type="unfinished"></translation>
+        <translation>Exekutatu &amp;garbitzea</translation>
     </message>
     <message>
         <source>&amp;Database</source>
-        <translation type="unfinished">&amp;Datu-basea</translation>
+        <translation>&amp;Datu-basea</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished">Barkatu</translation>
+        <translation>Barkatu</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez da datu-baserik hautatu edo ez zaude hari konektatuta.</translation>
     </message>
 </context>
 <context>
@@ -50540,7 +50579,7 @@ Deskribapena: %3</translation>
     <message>
         <location filename="../python/console/console_settings.ui" line="75"/>
         <source>Auto-save script before running</source>
-        <translation type="unfinished"></translation>
+        <translation>Gorde script-a automatikoki hura exekutatu baino lehen</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="169"/>
@@ -50627,7 +50666,7 @@ Deskribapena: %3</translation>
     <message>
         <location filename="../python/console/console_settings.ui" line="392"/>
         <source>Using preloaded APIs file</source>
-        <translation>Erabili aurretiaz kargatutako API-fitxategia</translation>
+        <translation>Aurretiaz kargatutako APIen fitxategia erabiltzen</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="525"/>
@@ -50637,12 +50676,12 @@ Deskribapena: %3</translation>
     <message>
         <location filename="../python/console/console_settings.ui" line="535"/>
         <source>Using prepared APIs file</source>
-        <translation type="unfinished"></translation>
+        <translation>Prestatutako APIen fitxategia erabiltzen</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="556"/>
         <source>Compile APIs...</source>
-        <translation type="unfinished"></translation>
+        <translation>Konpilatu APIak...</translation>
     </message>
     <message>
         <source>API file</source>
@@ -50728,7 +50767,7 @@ gehiago konfiguratzeko</translation>
     <name>SpatiaLiteDBConnector</name>
     <message>
         <source>&quot;%s&quot; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%s&quot; ez da aurkitu</translation>
     </message>
 </context>
 <context>
@@ -50907,12 +50946,17 @@ gehiago konfiguratzeko</translation>
 %s
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Irteerako shapefile-a sortu da:
+%s
+%s
+
+Geruza berria edukien taulan erakutsi nahi al duzu?</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Errorea irteerako shapefile-a kargatzean:
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -53069,7 +53113,7 @@ Detailed description how to proceed with vector data is described in chapter 5 &
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1047"/>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Estilo-kudeatzailea&lt;/h3</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1049"/>
@@ -53728,7 +53772,17 @@ Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
 CNR, Milan Unit (Information Technology), Construction Technologies Institute.
 For support send a mail to scala@itc.cnr.it
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Eremuen deskribapena:
+* Sarrerako DXF fitxategia: bihurtuko den DXF fitxategia dagoen bidea
+* Irteerako SHP fitxategia: sortuko den shapefile-fitxategiaren izena
+* Irteerako fitxategi-mota: irteerako shapefile-fitxategiaren mota
+* &quot;Esportatu testu-etiketak&quot; kontrol-laukia: markatuta badago, puntuen beste SHP bat sortuko da,   eta hari lotutako DBF taulak DXF fitxategian aurkitutako &quot;TEXT&quot; eremuetan dagoen informazioa eta testu-kateak berak gordeko ditu
+
+---
+Garatzaileak: Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
+CNR, Milaneko Unitatea (Informazioaren Teknologia), Eraikuntza Teknologien Institutua.
+Laguntzarako, bidali mezu bat scala@itc.cnr.it helbidera
+</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="157"/>
@@ -53893,7 +53947,7 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="68"/>
         <source>Loads an XML file with predefined queries. Use the Open File window to locate the XML file that contains one or more predefined queries using the format described in the user guide.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aurredefinitutako kontsultak dituen XML fitxategi bat kargatzen du. Erabili &quot;Ireki fitxategia&quot; leihoa erabiltzaile-gidan deskribatutako formatuan dauden kontsulta aurredefinituak dituen XML fitxategia aurkitzeko.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="98"/>
@@ -53903,7 +53957,7 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="108"/>
         <source>Select the predefined query you want to use from the drop-down list containing queries identified from the file loaded using the Open File icon above. To run the query you need to click on the SQL Query tab. The query will be automatically entered in the query window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu erabili nahi duzu kontsulta aurredefinitua goitibeherako zerrendatik. Goiko &quot;Ireki fitxategia&quot; erabiliz ireki den fitxategitik ateratako kontsultak ageri dira bertan. Kontsulta exekutatzeko, &quot;SQL kontsulta&quot; fitxan sakatu behar duzu. Kontsulta automatikoki sartuko da kontsulten leihoan.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="165"/>
@@ -53916,7 +53970,10 @@ For support send a mail to scala@itc.cnr.it
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Connection Status: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Konexioaren egoera: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="185"/>
@@ -53926,7 +53983,7 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="192"/>
         <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
-        <translation type="unfinished"></translation>
+        <translation>Sartu datu-basearen ostalaria. Datu-basea zure ordenagailuan badago, &quot;localhost&quot; sartu behar duzu. &quot;MSAccess&quot; hautatu baduzu datu-basearen mota gisa, aukera hori ez da eskuragarri egongo.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="202"/>
@@ -53946,12 +54003,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="239"/>
         <source>Enter the port through which the database must be accessed if a MYSQL database is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sartu zein ataka erabiliko den datu-basea atzitzeko, MySQL datu-base bat erabiltzen bada.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="249"/>
         <source>Connect to the database using the parameters selected above. If the connection was successful a message will be displayed in the Output Console below saying the connection was established. </source>
-        <translation type="unfinished"></translation>
+        <translation>Konektatu datu-basera goian hautatutako parametroak erabiliz. Konexioa ongi egin bada, mezu bat erakutsiko da beheko irteerako kontsolan, konexioa ezarri dela esanez. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="252"/>
@@ -53966,7 +54023,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="269"/>
         <source>Select the type of database from the list of supported databases in the drop-down menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu datu-basearen mota goitibeherako menuan agertzen diren datu-base onartuen zerrendatik.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="289"/>
@@ -54147,7 +54204,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="63"/>
         <source>Use the Previous button to display the previous photo when more than one photo is available for display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erabili &quot;Aurrekoa&quot; botoia aurreko argazkia erakusteko, argazki bat baino gehiago dagoenean eskuragarri.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="66"/>
@@ -54157,7 +54214,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="82"/>
         <source>Use the Next button to display the next photo when more than one photo is available for display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erabili &quot;Hurrengoa&quot; botoia hurrengo argazkia erakusteko, argazki bat baino gehiago dagoenean eskuragarri.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="85"/>
@@ -54167,7 +54224,7 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="113"/>
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bistan dagoen argazkiari lotutako puntuaren atributu-informazio guztia hemen erakutsiko da. Erakutsitako erregistroan erreferentziatutako fitxategi-mota ez bada irudi bat, baina bai &quot;Konfiguratu kanpoko aplikazioak&quot; fitxan definitutako bat, orduan fitxategiaren bidea duen eremuko balioan klik bi aldiz egitean fitxategia ireki dezakeen aplikazioa abiaraziko da, fitxategiko edukia ikusi edo entzutako. Fitxategi-luzapena ezaguna bada, atributu-datuak berdez erakutsiko dira.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="117"/>
@@ -54197,27 +54254,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="177"/>
         <source>Attribute containing path to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxategiaren bidea gordetzen duen atributua</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="199"/>
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erabili goitibeherako zerrenda irudia atzitzeko direktorio-bidea gordetzen duen eremua hautatzeko. Bidea absolutua edo erlatiboa izan daiteke.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="222"/>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Markatuta badago, irudiaren bidea definitzeko &quot;Fitxategiaren bidea gordetzen duen atributua&quot; zerrendatik hautatutako eremuko atributua behean adierazitako &quot;Oinarrizko bidea&quot; kateari erantsiko zaio.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="225"/>
         <source>Path is relative</source>
-        <translation type="unfinished"></translation>
+        <translation>Bidea erlatiboa da</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="248"/>
         <source>If checked, the relative path values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Markatuta badago, bide-balio erlatiboak hurrengo saiorako gordeko dira.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="254"/>
@@ -54258,161 +54315,161 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="296"/>
         <source>Compass bearing</source>
-        <translation type="unfinished"></translation>
+        <translation>Konpas-norakoa</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="302"/>
         <source>Attribute containing compass bearing</source>
-        <translation type="unfinished"></translation>
+        <translation>Konpas-norakoa gordetzen duen atributua</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="324"/>
         <source>Use the drop-down list to select the field containing the compass bearing for the image. This bearing usually references the direction the camera was pointing when the image was acquired. </source>
-        <translation type="unfinished"></translation>
+        <translation>Erabili goitibeherako zerrenda irudiaren konpas-norakoa gordetzen duen eremua hautatzeko. Norako honek argazkia egitean kamera norantz zuzentzen ari zen gordetzen du normalean.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="347"/>
         <source>If checked an arrow pointing in the direction defined by the attribute in the field selected from the drop-down list to the right will be displayed in the QGIS window on top of the point for this image.</source>
-        <translation type="unfinished"></translation>
+        <translation>Markatuta badago, gezi bat erakutsiko da eskuineko goitibeherako zerrendan hautatu den eremuko atributuak definitutako norabidean, irudi horretako puntuaren gainean.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="350"/>
         <source>Display compass bearing</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi konpas-norakoa</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="373"/>
         <source>If checked, the Display Compass Bearing values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Markatuta badago, &quot;Erakutsi konpas-norakoa&quot; balioak hurrengo saiorako gordeko dira.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="418"/>
         <source>Compass offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Konpas-desplazamendua</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="427"/>
         <source>Define the compass offset manually.</source>
-        <translation type="unfinished"></translation>
+        <translation>Definitu konpas-dekplazamendua eskuz.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="430"/>
         <source>Manual</source>
-        <translation type="unfinished">Eskuz</translation>
+        <translation>Eskuz</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="446"/>
         <source>A value to be added to the compass bearing. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation type="unfinished"></translation>
+        <translation>Konpas-norakoari gehituko zaion balio bat. Honek deklinazioa orekatzen lagunduko dizu (norako magnetikoak erabiliz bildutako norakoak doituko ditu iparralde-norakoen arabera). Ekialdeko deklinazioak balio positiboen bidez sartu behar dira, eta mendebaldekoak balio negatiboen bidez. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="481"/>
         <source>Define the compass offset using a field from the vector layer attribute table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Definitu konpas-desplazamendua geruza bektorialaren atributu-taulako eremu bat erabiliz.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="484"/>
         <source> From Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation> Atribututik</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="506"/>
         <source>Use the drop-down list to select the field containing the compass bearing offset. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation type="unfinished"></translation>
+        <translation>Erabili goitibeherako zerrenda konpas-norakoaren desplazamendua duen eremua hautatzeko. Honek deklinazioa orekatzen lagunduko dizu (norako magnetikoak erabiliz bildutako norakoak doituko ditu iparralde-norakoen arabera). Ekialdeko deklinazioak balio positiboen bidez sartu behar dira, eta mendebaldekoak balio negatiboen bidez. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="542"/>
         <source>If checked, the compass offset values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Markatuta badago, konpas-desplazamenduaren balioak hurrengo saiorako gordeko dira.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="564"/>
         <source>Resets the compass offset values to the default settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konpas-desplazamenduaren balioak berrezartzen ditu ezarpen lehenetsiak erabiliz.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="587"/>
         <source>Relative paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Bide erlatiboak</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="593"/>
         <source>The base path or url from which images and documents can be “relative”</source>
-        <translation type="unfinished"></translation>
+        <translation>Irudiek eta dokumentuek &quot;erlatiboki&quot; erabiliko duten oinarrizko bidea edo URLa</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="613"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="626"/>
         <source>Base Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Oinarrizko bidea</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="629"/>
         <source>The Base Path onto which the relative path defined above will be appended.</source>
-        <translation type="unfinished"></translation>
+        <translation>Goian adierazitako bide erlatiboa itsatsiko den oinarrizko bidea.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="639"/>
         <source>If checked, the Base Path will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Markatuta badago, oinarrizko bidea hurrengo saiorako gordeko da.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="661"/>
         <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Oinarrizko bide lehenetsia sartzen du, alegia, irudiaren informazioa gordetzen duen geruza bektorialaren direktoriorako bidea.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="690"/>
         <source>If checked, the Base Path will append only the file name instead of the entire relative path (defined above) to create the full directory path to the file. </source>
-        <translation type="unfinished"></translation>
+        <translation>Markatuta badago, oinarrizko bideari fitxategi-izena soilik itsatsiko zaio, ez (goian definitutako) bide erlatibo osoa, fitxategia atzitzeko direktorio-bide osoa sortzeko.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="693"/>
         <source>Replace entire path/url stored in image path attribute with user defined
 Base Path (i.e. keep only filename from attribute)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordeztu irudi-bidearen atributuan gordetako bide osoa/URLa erabiltzaileak definitutako oinarrizko bidearekin (atribututik fitxategi-izena soilik hartu)</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="704"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="768"/>
         <source>If checked, the  current check-box setting will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Markatuta badago, kontrol-laukiaren uneko ezarpena hurrengo saiorako gordeko da.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="726"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="790"/>
         <source>Clears the check-box on this line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lerro honetako kontrol-laukia garbitzen du.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="755"/>
         <source>If checked, the same path rules that are defined for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</source>
-        <translation type="unfinished"></translation>
+        <translation>Markatuta badago, irudietarako definituta dauden bide-arau berak erabiliko dira irudiak ez diren beste dokumentu batzuetarako (filmak, testu-dokumentuak, soinu-fitxategiak...) Markatuta ez badago, bide-arauak irudiei soilik aplikatuko zaizkie eta gainerako dokumentuek oinarrizko bidearen parametroa ezikusiko dute.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="758"/>
         <source>Apply Path to Image rules when loading docs in external applications</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplikatu irudi-bidearen arauak dokumentuak kanpoko aplikazioeten kargatzean</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="823"/>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;Gorde&quot; aukeran klik egitean ezarpenak gordeko dira aukeren panela itxi gabe. &quot;Berrezarri lehenetsiak&quot; aukeran klik egitean eremu guztiak balio lehenetsietara berrezarriko dira. &quot;Berrezarri lehenetsietara&quot; botoiek duten efektu bera du.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="834"/>
         <source>Configure External Applications</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfiguratu kanpoko aplikazioak</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="855"/>
         <source>File extension and external application in which to load a document of that type</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxategi-luzapena eta mota horretako dokumentua kargatzeko erabiliko den kanpoko aplikazioa</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="880"/>
         <source>A table containing file types that can be opened using eVis. Each file type needs a file extension and the path to an application that can open that type of file. This provides the capability of opening a broad range of files such as movies, sound recording, and text documents instead of only images. </source>
-        <translation type="unfinished"></translation>
+        <translation>eVis erabiliz ireki daitezkeen fitxategi-motak gordetzen dituen taula bat. Fitxategi-mota bakoitzak zera behar du, fitxategi-luzapen bat eta hura ireki dezakeen aplikazio baten bidea. Honi esker mota askotako fitxategiak ireki ahal dira, esaterako filmak, soinu-grabaketak edo testu-dokumentuak, eta ez irudiak soilik.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="884"/>
@@ -54432,17 +54489,17 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="902"/>
         <source>Add a new file type with a unique extension and the path for the application that can open the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gehitu luzapen bakarra duen fitxategi-mota bat eta fitxategia ireki dezakeen aplikaziorako bidea.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="916"/>
         <source>Delete current row</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezabatu uneko errenkada</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="919"/>
         <source>Delete the file type highlighted in the table and defined by a file extension and a path to an associated application.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezabatu taulan nabarmendutako fitxategi-mota, fitxategi-luzapen batekin eta hari lotutako aplikazio-bide batekin definituta datorrena.</translation>
     </message>
 </context>
 <context>
@@ -54764,7 +54821,9 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;Kolore-taldea&lt;/h3&gt;
+Talde honek kolorea manipulatzeko funtzioak ditu</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="80"/>
@@ -55161,7 +55220,8 @@ This function takes two arguments.
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Geometria-taldea&lt;/h3&gt;
+Talde honek geometria-objektuak erabiltzen dituen funtzioak ditu, adibidez luzera, azalera.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="393"/>
@@ -55379,7 +55439,8 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Orduaren eta egunaren taldea&lt;/h3&gt;
+Talde honek ordua eta egunak maneiatzeko funtzioak ditu.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="567"/>
@@ -55960,7 +56021,8 @@ Returns cosinus of an angle.
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Eragileen taldea&lt;/h3&gt;
+Talde honek eragileak ditu, adib. + - *</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1024"/>
@@ -56672,7 +56734,8 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <source>Following field names are longer than 10 characters:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Hurrengo eremu-izenek 10 karaktere baino gehiago dituzte:
+%s</translation>
     </message>
 </context>
 <context>
@@ -56685,62 +56748,62 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="8"/>
         <source>(Optional) column to read labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiketak irakurtzeko (hautazko) zutabea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="9"/>
         <source>3D-Viewer (NVIZ)</source>
-        <translation type="unfinished"></translation>
+        <translation>3D bisorea (NVIZ)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="10"/>
         <source>3d Visualization</source>
-        <translation type="unfinished"></translation>
+        <translation>3D bisualizazioa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="11"/>
         <source>Add a value to the current category values</source>
-        <translation type="unfinished"></translation>
+        <translation>Gehitu balio bat uneko kategoria-balioei</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="12"/>
         <source>Add elements to layer (ALL elements of the selected layer type!)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gehitu elementuak geruzari (hautatutako geruza-motaren elementu GUZTIAK!)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="13"/>
         <source>Add missing centroids to closed boundaries</source>
-        <translation type="unfinished"></translation>
+        <translation>Gehitu falta diren zentroideak itxitako mugei</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="14"/>
         <source>Add one or more columns to attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Gehitu zutabe bat edo gehiago atributuen taulari</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="15"/>
         <source>Allocate network</source>
-        <translation type="unfinished"></translation>
+        <translation>Esleitu sarea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="16"/>
         <source>Assign constant value to column</source>
-        <translation type="unfinished"></translation>
+        <translation>Esleitu balio konstantea zutabeari</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="17"/>
         <source>Assign new constant value to column only if the result of query is TRUE</source>
-        <translation type="unfinished"></translation>
+        <translation>Esleitu balio konstante berria zutabeari kontsultaren emaitza TRUE bada soilik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="18"/>
         <source>Assign new value as result of operation on columns to column in attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Esleitu balio berria atributu-taulako zutabeari, zutabeen gaineko eragiketen emaitzaren ondorioz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="19"/>
         <source>Assign new value to column as result of operation on columns only if the result of query is TRUE</source>
-        <translation type="unfinished"></translation>
+        <translation>Esleitu balio berria zutabeari, zutabeen gaineko eragiketen emaitzaren ondorioz, kontsultaren emaitza TRUE bada soilik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="20"/>
@@ -56750,57 +56813,57 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="21"/>
         <source>Attribute field (interpolated values)</source>
-        <translation type="unfinished"></translation>
+        <translation>Atributu-eremua (balio interpolatuak)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="22"/>
         <source>Attribute field to (over)write</source>
-        <translation type="unfinished"></translation>
+        <translation>(Gain)idatziko den atributu-eremua</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="23"/>
         <source>Attribute field to join</source>
-        <translation type="unfinished"></translation>
+        <translation>Elkartukod en atributu-eremua</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="24"/>
         <source>Auto-balancing of colors for LANDSAT-TM raster</source>
-        <translation type="unfinished"></translation>
+        <translation>LANDSAT-TM rasterren koloreen balantze automatikoa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="25"/>
         <source>Bicubic or bilinear spline interpolation with Tykhonov regularization</source>
-        <translation type="unfinished"></translation>
+        <translation>Spline interpolazio bilineal edo bikubikoa Tykhonov erregularizazioarekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="26"/>
         <source>Bilinear interpolation utility for raster maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolazio bilinealak egiteko utilitatea mapa rasterretarako</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="27"/>
         <source>Blend color components for two rasters by given ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahastu bi rasterretako kolore-osagaiak emandako proportzioaren arabera</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="28"/>
         <source>Blend red, green, raster layers to obtain one color raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahatu rasterretako geruza gorri, berde eta urdinak kolore bakarreko rasterra lortzeko</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="29"/>
         <source>Break (topologically clean) polygons (imported from non topological format, like ShapeFile). Boundaries are broken on each point shared between 2 and more polygons where angles of segments are different</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautsi (topologikoki garbitu) topologiarik ez duten formatuetatik (adib. SHPtik) inportatutako poligonoak. Mugak hautsiko dira 2 poligonok edo gehiagok partekatutako puntu guztietan, segmentuen angeluak desberdinak badira</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="30"/>
         <source>Break lines at each intersection of vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautsi lerroak ebakidura bektorial guztietan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="31"/>
         <source>Brovey transform to merge multispectral and high-res panchromatic channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Brovey transformazioa espektru anitzeko eta bereizmen handiko kanal pankromatikoak fusionatzeko</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="32"/>
@@ -56815,107 +56878,107 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="34"/>
         <source>Calculate average of raster within areas with the same category in a user-defined base map</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu erabiltzaileak definitutako oinarrizko mapa batean kategoria bereko guneen barruan dauden rasterren batez bestekoa </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="35"/>
         <source>Calculate covariance/correlation matrix for user-defined rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu kobariantza/korrelazio-matrizea erabiltzaileak definitutako rasterretan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="36"/>
         <source>Calculate error matrix and kappa parameter for accuracy assessment of classification result</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu errore-matrizea eta kappa parametroa sailkapen-emaitzaren zehaztasuna ebaluatzeko</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="37"/>
         <source>Calculate geometry statistics for vectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu geometria-estatistikak bektoreetarako</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="38"/>
         <source>Calculate linear regression from two rasters: y = a + b*x</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu bi rasterren erregresio lineala: y = a + b * x</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="39"/>
         <source>Calculate median of raster within areas with the same category in a user-defined base map</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu erabiltzaileak definitutako oinarrizko mapa batean kategoria bereko guneen barruan dauden rasterren mediana</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="40"/>
         <source>Calculate mode of raster within areas with the same category in a user-defined base map</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu erabiltzaileak definitutako oinarrizko mapa batean kategoria bereko guneen barruan dauden rasterren moda</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="41"/>
         <source>Calculate optimal index factor table for LANDSAT-TM raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu LANDSAT-TM rasterretarako indize optimoaren faktore-taula</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="42"/>
         <source>Calculate raster surface area</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu rasterraren azalera</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="43"/>
         <source>Calculate shadow maps from exact sun position</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu eguzki-kokapen zehatz baten itzalen mapa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="44"/>
         <source>Calculate shadow maps from sun position determinated by date/time</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu orduaren eta egunaren arabera zehatutako eguzki-kokapen baten itzalen mapa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="45"/>
         <source>Calculate statistics for raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu estatistikak rasterrerako</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="46"/>
         <source>Calculate univariate statistics for numeric attributes in a data table</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu aldagai bakarreko estatistikak datu-base bateko zenbakizko atributuak erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="47"/>
         <source>Calculate univariate statistics from raster based on vector objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu aldagai bakarreko estatistikak objektu bektorialetan oinarritutako raster bat erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="48"/>
         <source>Calculate univariate statistics from the non-null cells of raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu aldagai bakarreko estatistikak raster bateko gelaxken balio ez nuluak erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="49"/>
         <source>Calculate univariate statistics of vector map features</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu aldagai bakarreko estatistikak mapa bektorialen elementu geografikoak erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="50"/>
         <source>Calculate volume of data clumps, and create vector with centroids of clumps</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulatu datu-piloen bolumena, eta sortu bektorea piloen zentroideekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="51"/>
         <source>Category or object oriented statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorien edo objektuen araberako estatistikak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="52"/>
         <source>Cats</source>
-        <translation type="unfinished"></translation>
+        <translation>Kat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="53"/>
         <source>Cats (select from the map or using their id)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kat (mapatik hautatuak edo haien IDa erabilita)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="54"/>
         <source>Change category values and labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Aldatu kategoria-balioak eta etiketak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="55"/>
@@ -56935,12 +56998,12 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="58"/>
         <source>Change the type of boundary dangle to line</source>
-        <translation type="unfinished"></translation>
+        <translation>Aldatu muga esekiaren mota lerrora</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="59"/>
         <source>Change the type of bridges connecting area and island or 2 islands from boundary to line</source>
-        <translation type="unfinished"></translation>
+        <translation>Aldatu azalera eta uhartea edo 2 uharte lotzen dituzten zubien mota lerrora</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="60"/>
@@ -56960,12 +57023,12 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="63"/>
         <source>Compares bit patterns with raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Konparatu bit-ereduak rasterrarekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="64"/>
         <source>Compress and decompress raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Trinkotu eta destrinkotu rasterra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="65"/>
@@ -56975,57 +57038,57 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="66"/>
         <source>Computes a coordinate transformation based on the control points</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordenatuen transformazio bat kalkulatzen du kontrol-puntuetan oinarrituz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="67"/>
         <source>Concentric circles</source>
-        <translation type="unfinished"></translation>
+        <translation>Zirkulu konzentrikoak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="68"/>
         <source>Connect nodes by shortest route (traveling salesman)</source>
-        <translation type="unfinished"></translation>
+        <translation>Konektatu nodoak biderik laburrena erabiliz (saltzailearen bidaia)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="69"/>
         <source>Connect selected nodes by shortest tree (Steiner tree)</source>
-        <translation type="unfinished"></translation>
+        <translation>Konektatu hautatutako nodoak zuhaitzik laburrena erabiliz (Steinerren zuhaitza)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="70"/>
         <source>Connect vector to database</source>
-        <translation type="unfinished"></translation>
+        <translation>Konektatu bektorea datu-basearekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="71"/>
         <source>Convert 2D vector to 3D by sampling raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Bihurtu 2D bektorea 3Dra rasterra laginduz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="72"/>
         <source>Convert 2D vector to 3D vector by sampling of elevation raster. Default sampling by nearest neighbour</source>
-        <translation type="unfinished"></translation>
+        <translation>Bihurtu 2D bektorea 3Dan garaieren rasterra laginduz. Gertueneko balioa da lagintze lehenetsia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="73"/>
         <source>Convert GRASS binary vector to GRASS ASCII vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Bihurtu GRASS bitar bektoriala GRASS ASCII bektorialean</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="74"/>
         <source>Convert a raster to vector within GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Bihurtu raster bat bektorialean GRASS barruan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="75"/>
         <source>Convert a vector to raster within GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Bihurtu bektorial bat rasterrean GRASS barruan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="76"/>
         <source>Convert bearing and distance measurements to coordinates and vice versa</source>
-        <translation type="unfinished"></translation>
+        <translation>Bihurtu norako- eta distantzia-neurketak koordenatuetan eta alderantziz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="77"/>
@@ -57045,7 +57108,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="80"/>
         <source>Convert coordinates from one projection to another (cs2cs frontend)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bihurtu proiekzio bateko koordenatuak beste proiekzio batera (cs2cs interfazea)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="81"/>
@@ -57075,12 +57138,12 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="86"/>
         <source>Convert vector to raster using attribute values</source>
-        <translation type="unfinished"></translation>
+        <translation>Bihurtu bektoriala rasterrean atributu-balioak erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="87"/>
         <source>Convert vector to raster using constant</source>
-        <translation type="unfinished"></translation>
+        <translation>Bihurtu bektoriala rasterrean konstante bat erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="88"/>
@@ -57095,247 +57158,247 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="90"/>
         <source>Copy also attribute table (only the table of layer 1 is currently supported)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiatu atributu-taula ere bati (1 geruzako taula soilik onartzen da momentuz)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="91"/>
         <source>Count of neighbouring points</source>
-        <translation type="unfinished"></translation>
+        <translation>Gertueneko puntuen zenbaketa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="92"/>
         <source>Create 3D volume map based on 2D elevation and value rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu 3Dko bolumen-mapa bat 2Dko garaiera-balioen rasterra erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="93"/>
         <source>Create a MASK for limiting raster operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu MASKARA bat raster-eragiketak mugatzeko</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="94"/>
         <source>Create a map containing concentric rings</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu eraztun kontzentrikoak dituen mapa bat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="95"/>
         <source>Create a raster plane</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu raster-plano bat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="96"/>
         <source>Create and add new table to vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu taula berri bat eta gehitu bektorialari</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="97"/>
         <source>Create and/or modify raster support files</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu eta/edo aldatu raster-euskarriko fitxategiak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="98"/>
         <source>Create aspect raster from DEM (digital elevation model)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu orientazio-rasterra DEMetik (garaieren eredu digitala)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="99"/>
         <source>Create cross product of category values from multiple rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu raster anitzetik ateratako kategoria-balioen biderkadura bektoriala</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="100"/>
         <source>Create fractal surface of given fractal dimension</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu emandako dimentsio fraktal baten gainazal fraktala</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="101"/>
         <source>Create grid in current region</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu sareta uneko eskualdean</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="102"/>
         <source>Create new GRASS location and transfer data into it</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu GRASS kokapen berria eta transferitu datuak bertara</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="103"/>
         <source>Create new GRASS location from metadata file</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu GRASS kokapen berria metadatu-fitxategitik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="104"/>
         <source>Create new GRASS location from raster data</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu GRASS kokapen berria raster-datuetatik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="105"/>
         <source>Create new GRASS location from vector data</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu GRASS kokapen berria datu bektorialetatik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="106"/>
         <source>Create new layer with category values based upon user&apos;s reclassification of categories in existing raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu geruza berria raster bateko kategoriak birsailkatu ondoren ateratako kategoria-balioekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="107"/>
         <source>Create new location from .prj (WKT) file</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu kokapen berria .prj (WKT) fitxategitik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="108"/>
         <source>Create new raster by combining other rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu raster berria beste raster batzuk konbinatuz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="109"/>
         <source>Create new vector by combining other vectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu bektorial berria beste bektorial batzuk konbinatuz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="110"/>
         <source>Create new vector with current region extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu bektorial berria uneko eskualde-hedaduratik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="111"/>
         <source>Create nodes on network</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu nodoak sarean</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="112"/>
         <source>Create parallel line to input lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu sarrera-lerroekiko paraleloa den lerroa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="113"/>
         <source>Create points</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu puntuak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="114"/>
         <source>Create points along input lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu puntuak sarrera-lerroan zehar</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="115"/>
         <source>Create points/segments from input vector lines and positions</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu puntuak/segmentuak sarrerako lerro eta posizio bektorialetatik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="116"/>
         <source>Create quantization file for floating-point raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu kuantifikazio-fitxategia koma mugikorreko rasterretik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="117"/>
         <source>Create random 2D/3D vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu ausazko 2D/3D puntu bektorialak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="118"/>
         <source>Create random cell values with spatial dependence</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu mendekotasun espaziala duten ausazko gelaxka-balioak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="119"/>
         <source>Create random points</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu ausazko puntuak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="120"/>
         <source>Create random raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu ausazko rasterra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="121"/>
         <source>Create random vector point contained in raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu rasterrean dagoen ausazko puntu bektoriala</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="122"/>
         <source>Create raster images with textural features from raster (first serie of indices)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu raster-irudiak ehundura-elementuekin beste raster batetik (indizeen lehen segida)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="123"/>
         <source>Create raster of distance to features in input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu sarrera-geruzako elementuekiko distantzien rasterra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="124"/>
         <source>Create raster of gaussian deviates with user-defined mean and standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu Gauss-en desbideratuen rasterra erabiltzaileak definitutako batez besteko eta desbiderapen estandarrarekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="125"/>
         <source>Create raster of uniform random deviates with user-defined range</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu ausazko desbideratu uniformeen rasterra erabiltzaileak definitutako tartearekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="126"/>
         <source>Create raster with contiguous areas grown by one cell</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu rasterra aldameneko azalera gehi gelaxka bat gehiagorekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="127"/>
         <source>Create raster with textural features from raster (second serie of indices)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu raster-irudiak ehundura-elementuekin beste raster batetik (indizeen bigarren segida)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="128"/>
         <source>Create red, green and blue rasters combining hue, intensity, and saturation (his) values from rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu raster gorri, berde eta urdinak beste raster batzuen ñabardura, intentsitatea eta saturazioa erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="129"/>
         <source>Create shaded map</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu itzaldun mapa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="130"/>
         <source>Create slope raster from DEM (digital elevation model)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu malden rasterra DEMetik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="131"/>
         <source>Create standard vectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu bektore estandarrak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="132"/>
         <source>Create surface from rasterized contours</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu gainazala rasterizatutako sestra-kurbetatik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="133"/>
         <source>Create vector contour from raster at specified levels</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu sestra-kurba bektorialak rasterretik maila finkoetan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="134"/>
         <source>Create vector contour from raster at specified steps</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu sestra-kurba bektorialak rasterretik urrats finkoetan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="135"/>
         <source>Create watershed basin</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu arro hidrografikoak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="136"/>
         <source>Create watershed subbasins raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu azpiarro hidrografikoen rasterra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="137"/>
         <source>Cut network by cost isolines</source>
-        <translation type="unfinished"></translation>
+        <translation>Moztu sarea kostako isolerroetatik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="138"/>
         <source>DXF vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>DXF geruza bektoriala</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="139"/>
@@ -57345,452 +57408,452 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="140"/>
         <source>Database connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Datu-base konexioa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="141"/>
         <source>Database file</source>
-        <translation type="unfinished"></translation>
+        <translation>Datu-basearen fitxategia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="142"/>
         <source>Database management</source>
-        <translation type="unfinished"></translation>
+        <translation>Datu-basearen kudeaketa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="143"/>
         <source>Delaunay triangulation (areas)</source>
-        <translation type="unfinished"></translation>
+        <translation>Delaunay triangelaketa (azalerak)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="144"/>
         <source>Delaunay triangulation (lines)</source>
-        <translation type="unfinished"></translation>
+        <translation>Delaunay triangelaketa (lerroak)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="145"/>
         <source>Delaunay triangulation, Voronoi diagram and convex hull</source>
-        <translation type="unfinished"></translation>
+        <translation>Delaunay triangelaketa, Voronoi diagrama eta kono ganbila</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="146"/>
         <source>Delete category values</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezabatu kategoria-balioak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="147"/>
         <source>Develop images and group</source>
-        <translation type="unfinished"></translation>
+        <translation>Garatu irudiak eta taldea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="148"/>
         <source>Develop map</source>
-        <translation type="unfinished"></translation>
+        <translation>Garatu mapa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="149"/>
         <source>Directory of rasters to be linked</source>
-        <translation type="unfinished"></translation>
+        <translation>Estekatuko diren rasterren direktorioa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="150"/>
         <source>Disconnect vector from database</source>
-        <translation type="unfinished"></translation>
+        <translation>Deskonektatu bektoriala datu-basetik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="151"/>
         <source>Display general DB connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi DB konexio orokorra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="152"/>
         <source>Display list of category values found in raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi rasterrean aurkitutako kategoria-balioen zerrenda</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="153"/>
         <source>Display projection information from PROJ.4 projection description file</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi PROJ.4 proiekzioaren deskribapen-fitxategiko proiekzio-informazioa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="154"/>
         <source>Display projection information from PROJ.4 projection description file and create a new location based on it</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi PROJ.4 proiekzioaren deskribapen-fitxategiko proiekzio-informazioa eta sortu kokapen berri bat hartan oinarrituta</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="155"/>
         <source>Display projection information from a georeferenced file (raster, vector or image) and create a new location based on it</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi fitxategi geoerreferentziatu baten (rasterra, bektoriala edo irudia) proiekzio-informazioa eta sortu kokapen berri bat hartan oinarrituta</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="156"/>
         <source>Display projection information from georeferenced ASCII file containing WKT projection description</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi WKT proiekzio-deskribapena duen ASCII fitxategi geoerreferentziatu baten proiekzio-informazioa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="157"/>
         <source>Display projection information from georeferenced ASCII file containing WKT projection description and create a new location based on it</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi WKT proiekzio-deskribapena duen ASCII fitxategi geoerreferentziatu baten proiekzio-informazioa eta sortu kokapen berri bat hartan oinarrituta</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="158"/>
         <source>Display projection information from georeferenced file (raster, vector or image)</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi fitxategi geoerreferentziatu baten (rasterra, bektoriala edo irudia) proiekzio-informazioa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="159"/>
         <source>Display projection information of the current location</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi uneko kokapenaren proiekzio-informazioa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="160"/>
         <source>Display raster category values and labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi rasterraren kategoria-balioak eta etiketak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="161"/>
         <source>Display results of SQL selection from database</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi datu-basearen SQL hautapenaren emaitzak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="162"/>
         <source>Display the HTML manual pages of GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi GRASS eskuliburuaren HTML orriak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="163"/>
         <source>Display vector attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi atributu bektorialak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="164"/>
         <source>Display vector map attributes with SQL</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi mapa bektorialaren atributuak SQL bidez</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="165"/>
         <source>Dissolves boundaries between adjacent areas sharing a common category number or attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Elkarren alboan dauden eta kategoria-zenbaki edo atributu komun bat duten azaleren arteko mugak disolbatzen ditu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="166"/>
         <source>Download and import data from WMS server</source>
-        <translation type="unfinished"></translation>
+        <translation>Deskargatu eta inportatu datuak WMS zerbitzaritik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="167"/>
         <source>Drop column from attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezabatu atributu-taulako zutabea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="168"/>
         <source>E00 vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>E00 geruza bektoriala</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="169"/>
         <source>Elevation raster for height extraction (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Garaieren rasterra garaierak erauzteko (hautazkoa)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="170"/>
         <source>Execute any SQL statement</source>
-        <translation type="unfinished"></translation>
+        <translation>Exekutatu edozein SQL instrukzio</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="171"/>
         <source>Export 3 GRASS rasters (R,G,B) to PPM image at the resolution of the current region</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu 3 GRASS raster (R,G,B) PPM irudi batera, uneko eskualdearen bereizmenarekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="172"/>
         <source>Export from GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu GRASSetik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="173"/>
         <source>Export raster as non-georeferenced PNG image format</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu rasterra geoerreferentziatu gabeko PNG irudi gisa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="174"/>
         <source>Export raster from GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu rasterra GRASSetik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="175"/>
         <source>Export raster series to MPEG movie</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu raster-segidak MPEG film batera</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="176"/>
         <source>Export raster to 8/24bit TIFF image at the resolution of the current region</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu rasterra 8/24 biteko TIFF irudira, uneko eskualdearen bereizmenarekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="177"/>
         <source>Export raster to ASCII text file</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu rasterra ASCII testu-fitxategira</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="178"/>
         <source>Export raster to ESRI ARCGRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu rasterra ESRIren ARCGRID formatura</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="179"/>
         <source>Export raster to GRIDATB.FOR map file (TOPMODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu rasterra GRIDATB.FOR mapa-fitxategira (TOPMODEL)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="180"/>
         <source>Export raster to Geo TIFF</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu rasterra GeoTIFFera</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="181"/>
         <source>Export raster to POVRAY height-field file</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu rasterra POVRAY garaiera-eremuen fitxategira</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="182"/>
         <source>Export raster to PPM image at the resolution of the current region</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu rasterra PPM irudira, uneko eskualdearen bereizmenarekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="183"/>
         <source>Export raster to VTK-ASCII</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu rasterra VTK-ASCII formatura</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="184"/>
         <source>Export raster to Virtual Reality Modeling Language (VRML)</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu rasterra Virtual Reality Modeling Language (VRML) formatura</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="185"/>
         <source>Export raster to binary MAT-File</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu rasterra MAT fitxategi bitarrera</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="186"/>
         <source>Export raster to binary array</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu rasterra array bitarrera</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="187"/>
         <source>Export raster to text file as x,y,z values based on cell centers</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu rasterra testu-fitxategira gelaxken erdiguneetan oinarritutako x,y,z balio gisa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="188"/>
         <source>Export raster to various formats (GDAL library)</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu rasterra hainbat formatutara (GDAL liburutegia)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="189"/>
         <source>Export vector from GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu bektoriala GRASSetik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="190"/>
         <source>Export vector table from GRASS to database format</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu taula bektoriala GRASSetik datu-base formatura</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="191"/>
         <source>Export vector to DXF</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu bektoriala DXF formatura</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="192"/>
         <source>Export vector to GML</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu bektoriala GML formatura</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="193"/>
         <source>Export vector to Mapinfo</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu bektoriala MapInfo formatura</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="194"/>
         <source>Export vector to POV-Ray</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu bektoriala POV-Ray formatura</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="195"/>
         <source>Export vector to PostGIS (PostgreSQL) database table</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu bektoriala PostGIS (PostgreSQL) base-datu baten taulara</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="196"/>
         <source>Export vector to SVG</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu bektoriala SVG formatura</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="197"/>
         <source>Export vector to Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu bektoriala SHP formatura</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="198"/>
         <source>Export vector to VTK-ASCII</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu bektoriala VTK-ASCII formatura</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="199"/>
         <source>Export vector to various formats (OGR library)</source>
-        <translation type="unfinished"></translation>
+        <translation>Esportatu bektoriala hainbat formatutara (OGR liburutegia)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="200"/>
         <source>Exports attribute tables into various format</source>
-        <translation type="unfinished"></translation>
+        <translation>Atributu-taulak hainbat formatutara esportatzen du</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="201"/>
         <source>Extract features from vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Erauzi elementu geografikoak bektorialetik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="202"/>
         <source>Extract selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Erauzi hautatutako elementuak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="203"/>
         <source>Extracts terrain parameters from DEM</source>
-        <translation type="unfinished"></translation>
+        <translation>Lurrazalaren parametroak erauzten ditu DEM batetik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="204"/>
         <source>Extrudes flat vector object to 3D with fixed height</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektu bektorial lauak estrusionatzen ditu 3Dra, altuera finko batekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="205"/>
         <source>Extrudes flat vector object to 3D with height based on attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektu bektorial lauak estrusionatzen ditu 3Dra, atributu baten arabera</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="206"/>
         <source>Fast fourier transform for image processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Fourier transformazio azkarra irudiak prozesatzeko</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="207"/>
         <source>Feature type (for polygons, choose Boundary)</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementu-mota (poligonoetarako, hautatu Muga)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="208"/>
         <source>File management</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxategi-kudeaketa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="209"/>
         <source>Fill lake from seed at given level</source>
-        <translation type="unfinished"></translation>
+        <translation>Bete lakua maila jakin batean dagoen hazi batetik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="210"/>
         <source>Fill lake from seed point at given level</source>
-        <translation type="unfinished"></translation>
+        <translation>Bete lakua maila jakin batean dagoen hazi-puntu batetik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="211"/>
         <source>Fill no-data areas in raster using v.surf.rst splines interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Bete rasterraren daturik gabeko azalerak v.surf.rst spline interpolazioa erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="212"/>
         <source>Filter and create depressionless elevation map and flow direction map from elevation raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Iragazi eta sortu sakonunerik gabeko garaieren mapa eta fluxu-norabideen mapa garaieren rasterretik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="213"/>
         <source>Filter image</source>
-        <translation type="unfinished"></translation>
+        <translation>Iragazi irudia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="214"/>
         <source>Find nearest element in vector &apos;to&apos; for elements in vector &apos;from&apos;. Various information about this relation may be uploaded to attribute table of input vector &apos;from&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Aurkitu bektorial bateko elementuetatik hurbilen dauden beste bektorial bateko elementuak. Sarrerako bektorialaren atributu-taulan erlazio horri buruzko hainbat informazio-atal karga daitezke.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="215"/>
         <source>Find shortest path on vector network</source>
-        <translation type="unfinished"></translation>
+        <translation>Aurkitu biderik laburrena sare bektorialean</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="216"/>
         <source>GRASS MODULES</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS MODULES</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="217"/>
         <source>GRASS shell</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS shell</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="218"/>
         <source>Gaussian kernel density</source>
-        <translation type="unfinished"></translation>
+        <translation>Gauss-en kernel-dentsitatea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="219"/>
         <source>Generalization</source>
-        <translation type="unfinished"></translation>
+        <translation>Orokortzea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="220"/>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu kokapenen artean mugitzearen kostu metatuaren rasterra, kostua adierazten duen sarrerako raster bat eta abiapuntu(ar)en koordenatuak erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="221"/>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu kokapenen artean mugitzearen kostu metatuaren rasterra, kostua adierazten duen sarrerako raster bat eta abiapuntu(ar)en rasterra erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="222"/>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu kokapenen artean mugitzearen kostu metatuaren rasterra, kostua adierazten duen sarrerako raster bat eta abiapuntu(ar)en bektoriala erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="223"/>
         <source>Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu kokapenen artean mugitzearen kostu metatuaren rasterra, garaiera eta marruskadura adierazten duten sarrerako rasterrak eta abiapuntu(ar)en koordenatuak erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="224"/>
         <source>Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu kokapenen artean mugitzearen kostu metatuaren rasterra, garaiera eta marruskadura adierazten duten sarrerako rasterrak eta abiapuntu(ar)en bektoriala erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="225"/>
         <source>Generate surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu gainazala</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="226"/>
         <source>Generate vector contour lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu sestra-kurba bektorialak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="227"/>
         <source>Generates area statistics for rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu azalera-estatistikak rasterretarako</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="228"/>
         <source>Georeferencing, rectification, and import Terra-ASTER imagery and DEM using gdalwarp</source>
-        <translation type="unfinished"></translation>
+        <translation>Geoerreferentziatu, errektifikatu eta inportatu Terra-ASTER irudiak eta DEMa gdalwarp erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="229"/>
         <source>Graphical raster map calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterren mapa-kalkulagailu grafikoa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="230"/>
@@ -57800,987 +57863,987 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="231"/>
         <source>Hue Intensity Saturation (HIS) to Red Green Blue (RGB) raster color transform function</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterren koloreak Ñabardura-Intentsitatea-Saturaziotik (HIS) Gorri-Berde-Urdinera (RGB) transformatzeko funtzioa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="232"/>
         <source>Hydrologic modelling</source>
-        <translation type="unfinished"></translation>
+        <translation>Eredu hidrologikoak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="233"/>
         <source>Imagery</source>
-        <translation type="unfinished"></translation>
+        <translation>Irudiak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="234"/>
         <source>Import ASCII raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu ASCII rasterra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="235"/>
         <source>Import DXF vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu DXF bektoriala</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="236"/>
         <source>Import ESRI ARC/INFO ASCII GRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu ESRI ARC/INFO ASCII GRID</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="237"/>
         <source>Import ESRI E00 vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu SRI E00 bektorea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="238"/>
         <source>Import GDAL supported raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu GDALek onartutako rasterra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="239"/>
         <source>Import GDAL supported raster and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu GDALek onartutako rasterra eta sortu doitutako kokapen bat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="240"/>
         <source>Import GRIDATB.FOR (TOPMODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu GRIDATB.FOR (TOPMODEL)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="241"/>
         <source>Import MapGen or MatLab vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu MapGen edo MatLab bektorea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="242"/>
         <source>Import OGR vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu OGR bektorea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="243"/>
         <source>Import OGR vector and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu OGR bektorea eta sortu doitutako kokapen bat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="244"/>
         <source>Import OGR vectors in a given data source combining them in a GRASS vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu emandako datu-iturri bateko OGR bektorialak eta konbinatu GRASS bektorial batean</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="245"/>
         <source>Import SPOT VGT NDVI</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu SPOT VGT NDVI</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="246"/>
         <source>Import SRTM HGT</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu SRTM HGT</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="247"/>
         <source>Import US-NGA GEOnet Names Server (GNS) country file</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu US-NGA GEOnet Names Server (GNS) herrialde-fitxategia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="248"/>
         <source>Import all OGR/PostGIS vectors in a given data source and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu emandako datu-iturri bateko OGR/PostGIS bektore guztiak eta sortu doitutako kokapen bat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="249"/>
         <source>Import attribute tables in various formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu hainbat formatutako atributu-taulak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="250"/>
         <source>Import binary MAT-File(v4)</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu MAT-File(v4) bitarra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="251"/>
         <source>Import binary raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu raster bitarra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="252"/>
         <source>Import from database into GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu datu-basetik GRASSera</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="253"/>
         <source>Import geonames.org country files</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu geonames.org-eko herrialde-fitxategiak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="254"/>
         <source>Import into GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu GRASSera</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="255"/>
         <source>Import loaded raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu kargatutako rasterra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="256"/>
         <source>Import loaded raster and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu kargatutako rasterra eta sortu doitutako kokapen bat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="257"/>
         <source>Import loaded vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu kargatutako bektoriala</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="258"/>
         <source>Import loaded vector and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu kargatutako bektoriala eta sortu doitutako kokapen bat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="259"/>
         <source>Import only some layers of a DXF vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu DXF bektore baten geruza jakin batzuk soilik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="260"/>
         <source>Import raster from ASCII polygon/line</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu rasterra ASCII poligonotik/lerrotik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="261"/>
         <source>Import raster from coordinates using univariate statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu rasterra koordenatuetatik aldagai bakarreko estatistikak erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="262"/>
         <source>Import raster into GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu rasterra GRASSera</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="263"/>
         <source>Import raster into GRASS from QGIS view</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu rasterra GRASSera QGIS bistatik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="264"/>
         <source>Import raster into GRASS from external data sources in GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu rasterra GRASSera kanpoko datu-iturrietatik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="265"/>
         <source>Import text file</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu testu-fitxategia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="266"/>
         <source>Import vector from gps using gpsbabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu bektoriala GPStik gpsbabel erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="267"/>
         <source>Import vector from gps using gpstrans</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu bektoriala GPStik gpstrans erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="268"/>
         <source>Import vector into GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu bektoriala GRASSera</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="269"/>
         <source>Import vector points from database table containing coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu puntu bektorialak koordenatuak dituen datu-base batetik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="270"/>
         <source>Input nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Sarrerako nodoak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="271"/>
         <source>Input table</source>
-        <translation type="unfinished"></translation>
+        <translation>Sarrerako taula</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="272"/>
         <source>Interpolate surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolatu gainazala</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="273"/>
         <source>Inverse distance squared weighting raster interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Distantziaren karratuaren alderantzizkoaren bidez haztatutako raster-interpolazioa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="274"/>
         <source>Inverse distance squared weighting raster interpolation based on vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Distantziaren karratuaren alderantzizkoaren bidez haztatutako raster-interpolazioa, puntu bektorialetan oinarritua</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="275"/>
         <source>Inverse fast fourier transform for image processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Fourier-en alderantzizko tranformatu azkarra irudien prozesamendurako</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="276"/>
         <source>Join table to existing vector table</source>
-        <translation type="unfinished"></translation>
+        <translation>Elkartu taula taula bektorial batekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="277"/>
         <source>Layers categories management</source>
-        <translation type="unfinished"></translation>
+        <translation>Geruza-kategorien kudeaketa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="278"/>
         <source>Line-of-sight raster analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Mira-lerroaren raster-analisia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="279"/>
         <source>Link GDAL supported raster as GRASS raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Estekatu GDALek onartutako rasterra GRASS raster gisa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="280"/>
         <source>Link GDAL supported raster loaded in QGIS as GRASS raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Estekatu GDALek onartutako eta QGISen kargatutako rasterra GRASS raster gisa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="281"/>
         <source>Link all GDAL supported rasters in a directory as GRASS rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Estekatu direktorio batean dauden eta GDALek onartzen dituen rasterrak GRASS raster gisa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="282"/>
         <source>Loaded layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Kargatutako geruza</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="283"/>
         <source>Locate the closest points between objects in two raster maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Aurkitu objektuen arteko punturik hurbilenak bi raster-mapatan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="284"/>
         <source>Make each output cell function of the values assigned to the corresponding cells in the input rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Egin irteerako gelaxka bakoitzaren balioa sarrerako rasterrean hari dagokion gelaxkari esleitutako balioen funtzio izan dadin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="285"/>
         <source>Manage features</source>
-        <translation type="unfinished"></translation>
+        <translation>Kudeatu elementu geografikoak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="286"/>
         <source>Manage image colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Kudeatu irudi-koloreak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="287"/>
         <source>Manage map colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Kudeatu mapa-koloreak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="288"/>
         <source>Manage raster cells value</source>
-        <translation type="unfinished"></translation>
+        <translation>Kudeatu raster-gelaxken balioa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="289"/>
         <source>Manage training dataset</source>
-        <translation type="unfinished"></translation>
+        <translation>Kudeatu trebakuntzako datu-multzoa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="290"/>
         <source>Map algebra</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapa-algebra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="291"/>
         <source>Map type conversion</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapa-motaren bihurketa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="292"/>
         <source>MapGen or MatLab vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>MapGen edo MatLab geruza bektoriala</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="293"/>
         <source>Mask</source>
-        <translation type="unfinished"></translation>
+        <translation>Maskara</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="294"/>
         <source>Maximal tolerance value (higher value=more simplification)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerantzia-balio maximoa (balio altuagoa=sinplifikazio gehiago)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="295"/>
         <source>Metadata support</source>
-        <translation type="unfinished"></translation>
+        <translation>Metadatuen euskarria</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="296"/>
         <source>Minimum size for each basin (number of cells)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamaian minimoa arro bakoitzerako (gelaxka-kopurua)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="297"/>
         <source>Mosaic up to 4 images</source>
-        <translation type="unfinished"></translation>
+        <translation>Egin irudien mosaikoa (4 irudi gehienez)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="298"/>
         <source>Name for new raster file (specify file extension)</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster-fitxategi berriaren izena (adierazi fitxategi-luzapena)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="299"/>
         <source>Name for new vector file (specify file extension)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxategi bektorial berriaren izena (adierazi fitxategi-luzapena)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="300"/>
         <source>Name for output vector map (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Irteerako mapa bektorialaren izena (hautazkoa)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="301"/>
         <source>Name for the output raster map (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Irteerako raster-maparen izena (hautazkoa)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="302"/>
         <source>Neighborhood analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Gertueneko balioen analisia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="303"/>
         <source>Network analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Sarearen analisia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="304"/>
         <source>Network maintenance</source>
-        <translation type="unfinished"></translation>
+        <translation>Sarearen mantenimendua</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="305"/>
         <source>Number of rows to be skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>Saltatuko den errenkada-kopurua</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="306"/>
         <source>Others</source>
-        <translation type="unfinished"></translation>
+        <translation>Beste batzuk</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="307"/>
         <source>Output GML file</source>
-        <translation type="unfinished"></translation>
+        <translation>Irteerako GML fitxategia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="308"/>
         <source>Output Shapefile</source>
-        <translation type="unfinished">Irteerako shapefile-a</translation>
+        <translation>Irteerako shapefile-a</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="309"/>
         <source>Output layer name (used in GML file)</source>
-        <translation type="unfinished"></translation>
+        <translation>Irteerako geruza-izena (GML fitxategian erabilia)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="310"/>
         <source>Output raster values along user-defined transect line(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Irteerako raster-balioak erabiltzaileak definitutako transektu-lerro(et)an zehar</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="311"/>
         <source>Overlay</source>
-        <translation type="unfinished">Gainjarri</translation>
+        <translation>Gainjartzea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="312"/>
         <source>Overlay maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Gainjarri mapak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="313"/>
         <source>Path to GRASS database of input location (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sarrera-kokapenaren GRASS datu-basearen bidea (hautazkoa)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="314"/>
         <source>Path to the OGR data source</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR datu-iturriaren bidea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="315"/>
         <source>Percentage of first layer (0-99)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lehen geruzaren ehunekoa (0-99)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="316"/>
         <source>Perform affine transformation (shift, scale and rotate, or GPCs) on vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Burutu transformazio afina (mugitu, eskalatu eta biratu, edo GPCak) bektorialean</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="317"/>
         <source>Print projection information from a georeferenced file</source>
-        <translation type="unfinished"></translation>
+        <translation>Inprimatu geoerreferentziatutako fitxategi baten proiekzio-informazioa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="318"/>
         <source>Print projection information from a georeferenced file and create a new location based on it</source>
-        <translation type="unfinished"></translation>
+        <translation>Inprimatu geoerreferentziatutako fitxategi baten proiekzio-informazioa eta sortu kokapen berri bat hartan oinarrituta</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="319"/>
         <source>Print projection information of the current location</source>
-        <translation type="unfinished"></translation>
+        <translation>Inprimatu uneko kokapenaren proiekzio-informazioa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="320"/>
         <source>Projection conversion of vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Bektorialaren proiekzio-bihurketa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="321"/>
         <source>Projection management</source>
-        <translation type="unfinished"></translation>
+        <translation>Proiekzio-kudeaketa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="322"/>
         <source>Put geometry variables in database</source>
-        <translation type="unfinished"></translation>
+        <translation>Jarri geometria-aldagaiak datu-basean</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="323"/>
         <source>Query rasters on their category values and labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontsultatu rasterren kategoria-balioak eta etiketak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="324"/>
         <source>Random location perturbations of vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Puntu bektorialen kokapenaren ausazko asaldurak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="325"/>
         <source>Randomly partition points into test/train sets</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausazko zatitze-puntuak proba/trebatze-multzoetan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="326"/>
         <source>Raster</source>
-        <translation type="unfinished">Rasterra</translation>
+        <translation>Rasterra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="327"/>
         <source>Raster buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster-bufferra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="328"/>
         <source>Raster file matrix filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster-fitxategiaren matrize-iragazkia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="329"/>
         <source>Raster neighbours analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterren gertuenekoen analisia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="330"/>
         <source>Raster support</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterren euskarria</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="331"/>
         <source>Re-project raster from a location to the current location</source>
-        <translation type="unfinished"></translation>
+        <translation>Birproiektatu rasterra kokapen batetik uneko kokapenera</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="332"/>
         <source>Rebuild topology of a vector in mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Berreraiki mapa-multzoko bektorial baten topologia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="333"/>
         <source>Rebuild topology of all vectors in mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Berreraiki mapa-multzoko bektorial guztien topologia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="334"/>
         <source>Recategorize contiguous cells to unique categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Birkategorizatu aldameneko gelaxkak kategoria bakarretara</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="335"/>
         <source>Reclass category values</source>
-        <translation type="unfinished"></translation>
+        <translation>Birsailkatu kategoria-balioak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="336"/>
         <source>Reclass category values using a column attribute (integer positive)</source>
-        <translation type="unfinished"></translation>
+        <translation>Birsailkatu kategoria-balioak zutabe-atributu (positibo oso) bat erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="337"/>
         <source>Reclass category values using a rules file</source>
-        <translation type="unfinished"></translation>
+        <translation>Birsailkatu kategoria-balioak arauen fitxategi bat erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="338"/>
         <source>Reclass raster using reclassification rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Birsailkatu raster bat birsailkatze-arauak erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="339"/>
         <source>Reclass raster with patches larger than user-defined area size (in hectares)</source>
-        <translation type="unfinished"></translation>
+        <translation>Birsailkatu raster bat erabiltzaileak definitutako azalera-tamaina baino handiagoak (hektareatan) diren zatiekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="340"/>
         <source>Reclass raster with patches smaller than user-defined area size (in hectares)</source>
-        <translation type="unfinished"></translation>
+        <translation>Birsailkatu raster bat erabiltzaileak definitutako azalera-tamaina baino txikiagoak (hektareatan) diren zatiekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="341"/>
         <source>Reclassify raster greater or less than user-defined area size (in hectares)</source>
-        <translation type="unfinished"></translation>
+        <translation>Birsailkatu raster bat erabiltzaileak definitutako azalera-tamaina handiagoak edo txikiagoak (hektareatan) erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="342"/>
         <source>Recode categorical raster using reclassification rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Kodetu berriz kategorien rasterra birsailkapen-arauak erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="343"/>
         <source>Recode raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Kodetu rasterra berriz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="344"/>
         <source>Reconnect vector to a new database</source>
-        <translation type="unfinished"></translation>
+        <translation>Birkonektatu bektoriala datu-base berri batera</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="345"/>
         <source>Red Green Blue (RGB) to Hue Intensity Saturation (HIS) raster color transformation function</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterren koloreak Gorri-Berde-Urdinetik (RGB) Ñabardura-Intentsitatea-Saturaziora (HIS) transformatzeko funtzioa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="346"/>
         <source>Region settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Eskualdeen ezarpenak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="347"/>
         <source>Register external data sources in GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Erregistratu kanpoko datu-iturri bat GRASSen</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="348"/>
         <source>Regularized spline with tension raster interpolation based on vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentsiodun spline erregularizatuaren bidezko raster-interpolazioa, puntu bektorialetan oinarritua</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="349"/>
         <source>Reinterpolate and compute topographic analysis using regularized spline with tension and smoothing</source>
-        <translation type="unfinished"></translation>
+        <translation>Berrinterpolatu eta kalkulatu analisi topografikoa tentsiodun spline erregularizatu leundua erabiliz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="350"/>
         <source>Remove all lines or boundaries of zero length</source>
-        <translation type="unfinished"></translation>
+        <translation>Kendu zero luzera duten lerro eta muga guztiak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="351"/>
         <source>Remove bridges connecting area and island or 2 islands</source>
-        <translation type="unfinished"></translation>
+        <translation>Kendu azalera bat eta uharte bat edo bi uharte konektatzen dituzten zubiak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="352"/>
         <source>Remove dangles</source>
-        <translation type="unfinished"></translation>
+        <translation>Kendu esekiak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="353"/>
         <source>Remove duplicate area centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>Kendu bikoiztutako azalera-zentroideak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="354"/>
         <source>Remove duplicate lines (pay attention to categories!)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kendu lerro bikoiztuak (kontuan izan kategoriak!)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="355"/>
         <source>Remove existing attribute table of vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Kendu bektoreak duen atributu-taula</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="356"/>
         <source>Remove outliers from vector point data</source>
-        <translation type="unfinished"></translation>
+        <translation>Kendu puntu bektorialen muturreko datuak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="357"/>
         <source>Remove small angles between lines at nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Kendu lerroen arteko angelu txikiak nodoetan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="358"/>
         <source>Remove small areas, the longest boundary with adjacent area is removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Kendu azalera txikiak, aldameneko azalerarekiko mugarik luzeena kenduko da</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="359"/>
         <source>Remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachement of centroid), first and last segment of the boundary is never changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Kendu lerro eta mugetako erpinak atalase batetik gora, muga kimatuko da topologia kaltetzen ez bada (ebakidura berria, zentroidearen eranskina aldatua), mugaren lehen eta azken segmentuak ez dira inoiz aldatzen</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="360"/>
         <source>Rename column in attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Berrizendatu atributu-taulako zutabea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="361"/>
         <source>Reports</source>
-        <translation type="unfinished"></translation>
+        <translation>Txostenak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="362"/>
         <source>Reports and statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Txostenak eta estatistikak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="363"/>
         <source>Reproject raster from another Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Birproiektatu rasterra beste kokapen batetik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="364"/>
         <source>Reproject vector from another Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Birproiektatu bektoriala beste kokapen batetik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="365"/>
         <source>Resample raster using aggregation</source>
-        <translation type="unfinished"></translation>
+        <translation>Birlagindu rasterra agregazioa erabilita</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="366"/>
         <source>Resample raster using interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Birlagindu rasterra interpolazioa erabilita</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="367"/>
         <source>Resample raster. Set new resolution first</source>
-        <translation type="unfinished"></translation>
+        <translation>Birlagindu rasterra. Ezarri bereizmen berria lehenengo</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="368"/>
         <source>Rescale the range of category values in raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Aldatu rasterraren kategoria-balioen barrutia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="369"/>
         <source>Sample raster at site locations</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagin-rasterra guneen kokapenetan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="370"/>
         <source>Save the current region as a named region</source>
-        <translation type="unfinished"></translation>
+        <translation>Gorde uneko eskualdea izendun eskualde gisa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="371"/>
         <source>Select features by attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu elementu geografikoak atributuen bidez</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="372"/>
         <source>Select features overlapped by features in another map</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu beste mapa bateko elementuekin gainjarritako elementuak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="373"/>
         <source>Separator (| , 	 etc.)</source>
-        <translation type="unfinished"></translation>
+        <translation>Banatzailea (| , 	 etab.)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="374"/>
         <source>Set PostgreSQL DB connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri PostgreSQL DB konexioa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="375"/>
         <source>Set boundary definitions by edge (n-s-e-w)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri muga-definizioak ertzaren bidez (i-h-e-m)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="376"/>
         <source>Set boundary definitions for raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri rasterraren muga-definizioak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="377"/>
         <source>Set boundary definitions from raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri muga-definizioak rasterretik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="378"/>
         <source>Set boundary definitions from vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri muga-definizioak bektorialetik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="379"/>
         <source>Set boundary definitions to current or default region</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri muga-definizioak uneko eskualdeari edo eskualde lehenetsiari</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="380"/>
         <source>Set color rules based on stddev from a map&apos;s mean value</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri mapa baten batez besteko baliotik ateratako desbiderapen estandarrean oinarritutako arauak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="381"/>
         <source>Set general DB connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri DB konexio orokorra</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="382"/>
         <source>Set general DB connection with a schema (PostgreSQL only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri DB konexio orokorra eskema batekin (PostgreSQL soilik)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="383"/>
         <source>Set raster color table</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri rasterraren kolore-taula</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="384"/>
         <source>Set raster color table from existing raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri rasterraren kolore-taula beste raster batetik abiatuz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="385"/>
         <source>Set raster color table from setted tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri rasterraren kolore-taula ezarritako raster batetik abiatuz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="386"/>
         <source>Set raster color table from user-defined rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri rasterraren kolore-taula erabiltzaileak definitutako arauetatik abiatuz</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="387"/>
         <source>Set region to align to raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri raster batekin lerrokatuko den eskualdea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="388"/>
         <source>Set the region to match multiple rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri hainbat rasterrekin bat datorren eskualdea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="389"/>
         <source>Set the region to match multiple vectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri hainbat bektorialekin bat datorren eskualdea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="390"/>
         <source>Set user/password for driver/database</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezarri erabiltzailea/pasahitza kontrolagailurako/datu-baserako</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="391"/>
         <source>Sets the boundary definitions for a raster map</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster-mapa baten muga-definizioak ezartzen ditu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="392"/>
         <source>Show database connection for vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi bektorialaren datu-base konexioa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="393"/>
         <source>Shrink current region until it meets non-NULL data from raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Txikitu uneko eskualdea rasterrean NULL ez diren datuekin bat etorri arte</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="394"/>
         <source>Simple map algebra</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapa-algebra sinplea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="395"/>
         <source>Simplify vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinplifikatu bektoriala</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="396"/>
         <source>Snap lines to vertex in threshold</source>
-        <translation type="unfinished"></translation>
+        <translation>Atxikitu lerroak erpinei atalasean</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="397"/>
         <source>Solar and irradiation model</source>
-        <translation type="unfinished"></translation>
+        <translation>Eguzki-eta irradiazio-eredua</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="398"/>
         <source>Spatial analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analisi espaziala</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="399"/>
         <source>Spatial models</source>
-        <translation type="unfinished"></translation>
+        <translation>Eredu espazialak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="400"/>
         <source>Split lines to shorter segments</source>
-        <translation type="unfinished"></translation>
+        <translation>Zatitu lerroak segmentu laburrak egiteko</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="401"/>
         <source>Statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Estatistikak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="402"/>
         <source>Sum raster cell values</source>
-        <translation type="unfinished"></translation>
+        <translation>Batu raster-gelaxken balioak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="403"/>
         <source>Surface management</source>
-        <translation type="unfinished"></translation>
+        <translation>Gainazalen kudeaketa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="404"/>
         <source>Tables management</source>
-        <translation type="unfinished"></translation>
+        <translation>Taulen kudeaketa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="405"/>
         <source>Tabulate mutual occurrence (coincidence) of categories for two rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortu bi rasterren kategorien kointzidentzien taula</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="406"/>
         <source>Take vector stream data, transform it to raster, and subtract depth from the output DEM</source>
-        <translation type="unfinished"></translation>
+        <translation>Hartu datu-korronte bektoriala, bihurtu rasterrean eta kendu irteerako DEMaren sakonera</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="407"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 4 raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasseled Cap (Kauth Thomas) transformazioa LANDSAT-TM 4 rasterretarako</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="408"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 5 raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasseled Cap (Kauth Thomas) transformazioa LANDSAT-TM 5 rasterretarako</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="409"/>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 7 raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasseled Cap (Kauth Thomas) transformazioa LANDSAT-TM 7 rasterretarako</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="410"/>
         <source>Tassled cap vegetation index</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasseled Cap landaredi-indizea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="411"/>
         <source>Terrain analysis</source>
-        <translation type="unfinished">Lurrazalaren analisia</translation>
+        <translation>Lurrazalaren analisia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="412"/>
         <source>Tests of normality on vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Normaltasun-probak puntu bektorialetan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="413"/>
         <source>Text file</source>
-        <translation type="unfinished"></translation>
+        <translation>Testu-fitxategia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="414"/>
         <source>Thin no-zero cells that denote line features</source>
-        <translation type="unfinished"></translation>
+        <translation>Mehetu lerro-elementuak adierazten dituzten ez-zero gelaxkak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="415"/>
         <source>Toolset for cleaning topology of vector map</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapa bektorialen topologia garbitzeko tresna-kutxa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="416"/>
         <source>Topology management</source>
-        <translation type="unfinished"></translation>
+        <translation>Topologia-kudeaketa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="417"/>
         <source>Trace a flow through an elevation model</source>
-        <translation type="unfinished"></translation>
+        <translation>Trazatu fluxu bat garaieren eredu baten gainean</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="418"/>
         <source>Transform cells with value in null cells</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformatu balioa daukaten gelaxkak gelaxka nuluetan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="419"/>
         <source>Transform features</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformatu elementuak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="420"/>
         <source>Transform image</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformatu irudia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="421"/>
         <source>Transform null cells in value cells</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformatu gelaxka nuluak balio daukaten gelaxketan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="422"/>
         <source>Transform value cells in null cells</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformatu balioa-gelaxkak gelaxka nuluetan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="423"/>
         <source>Type in map names separated by a comma</source>
-        <translation type="unfinished"></translation>
+        <translation>Idatzi mapa-izenak komaz bananduta</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="424"/>
         <source>Update raster statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Eguneratu rasterraren estatistikak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="425"/>
         <source>Update vector map metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Eguneratu mapa bektorialaren meta-datuak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="426"/>
         <source>Upload raster values at positions of vector points to the table</source>
-        <translation type="unfinished"></translation>
+        <translation>Kargatu taulan puntu bektorialen posizioetan dauden raster-balioak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="427"/>
         <source>Upload vector values at positions of vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Kargatu puntu bektorialak dauden posizioetako balio bektorialak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="428"/>
@@ -58790,87 +58853,87 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="429"/>
         <source>Vector buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Buffer bektoriala</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="430"/>
         <source>Vector geometry analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometria bektorialaren analisia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="431"/>
         <source>Vector intersection</source>
-        <translation type="unfinished"></translation>
+        <translation>Bektorialen ebakidura</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="432"/>
         <source>Vector non-intersection</source>
-        <translation type="unfinished"></translation>
+        <translation>Bektorialen ebakidura eza</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="433"/>
         <source>Vector subtraction</source>
-        <translation type="unfinished"></translation>
+        <translation>Bektorialen kenketa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="434"/>
         <source>Vector union</source>
-        <translation type="unfinished"></translation>
+        <translation>Bektorialen batuketa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="435"/>
         <source>Vector update by other maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Bektorialaren eguneraketa beste mapa batzuen bidez</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="436"/>
         <source>Visibility graph construction</source>
-        <translation type="unfinished"></translation>
+        <translation>Ikusgaitasun-grafoaren eraikuntza</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="437"/>
         <source>Voronoi diagram (area)</source>
-        <translation type="unfinished"></translation>
+        <translation>Voronoi diagrama (azalera)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="438"/>
         <source>Voronoi diagram (lines)</source>
-        <translation type="unfinished"></translation>
+        <translation>Voronoi diagrama (lerroak)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="439"/>
         <source>Watershed Analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Arro hidrografikoen analisia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="440"/>
         <source>Which column for the X coordinate? The first is 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Zein zutabe X koordenaturako? Lehena 1 da</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="441"/>
         <source>Which column for the Y coordinate?</source>
-        <translation type="unfinished"></translation>
+        <translation>Zein zutabe Y koordenaturako?</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="442"/>
         <source>Which column for the Z coordinate? If 0, z coordinate is not used</source>
-        <translation type="unfinished"></translation>
+        <translation>Zein zutabe Z koordenaturako? 0 bada, Z koordenatua ez da erabiliko</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="443"/>
         <source>Work with vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Egin lan puntu bektorialekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="444"/>
         <source>Write only features link to a record</source>
-        <translation type="unfinished"></translation>
+        <translation>Idazteko soilik diren elementuen lotura erregistro batekin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="445"/>
         <source>Zero-crossing edge detection raster function for image processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeroaren zeharkatzearen bidezko ertz-detekzioa irudien prozesamendurako</translation>
     </message>
 </context>
 <context>
@@ -58881,7 +58944,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     </message>
     <message>
         <source>You need to add some APIs file in order to compile</source>
-        <translation type="unfinished"></translation>
+        <translation>Zenbait APIren fitxategia gehitu behar duzu konpilazioa egiteko</translation>
     </message>
     <message>
         <source>Please specify API file or check &quot;Use preloaded API files&quot;</source>
@@ -58889,7 +58952,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     </message>
     <message>
         <source>The APIs file was not compiled, click on &quot;Compile APIs...&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>APIen fitxategia ez da konpilatu, egin klik &quot;Konpilatu APIak...&quot; aukeran</translation>
     </message>
 </context>
 <context>
@@ -58992,39 +59055,39 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="276"/>
         <source>First geometry invalid in line test.</source>
-        <translation>Baliogabeko lehen geometria lerroaren proban.</translation>
+        <translation>Baliogabeko lehen geometria lerro-proban.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="282"/>
         <source>Failed to import first geometry into GEOS in line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lehen geometria GEOSen inportatzeak huts egin du lerroaren proban.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="408"/>
         <location filename="../src/plugins/topology/topolTest.cpp" line="531"/>
         <source>Invalid second geometry in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Baliogabeko bigarren geometria lerro esekiaren proban.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="414"/>
         <location filename="../src/plugins/topology/topolTest.cpp" line="537"/>
         <source>Failed to import second geometry into GEOS in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bigarren geometria GEOSen inportatzeak huts egin du lerro esekiaren proban.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="543"/>
         <source>Skipping invalid second geometry of feature %1 in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 elementuaren baliogabeko bigarren geometria saltatzen du lerro esekiaren proban.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="767"/>
         <source>Skipping invalid first geometry in pseudo line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Baliogabeko lehen geometria saltatzen sasilerroaren proban.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="773"/>
         <source>Failed to import first geometry into GEOS in pseudo line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lehen geometria GEOSen inportatzeak huts egin du sasilerroaren proban.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="868"/>
@@ -59047,12 +59110,12 @@ Returns a string representation of a color based on its hue, saturation, value a
         <location filename="../src/plugins/topology/topolTest.cpp" line="1438"/>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1512"/>
         <source>No second geometry missing or GEOS import failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bigarren geometria ez da falta edo GEOS inportazioak huts egin du.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1553"/>
         <source>Missing geometry in multipart check.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometria falta da zati anitzen egiaztatzean.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1672"/>
