@@ -27,6 +27,7 @@ typedef QVector<QVariant> QgsAttributes;
 
       if ( v->isNull() )
       {
+        Py_INCREF( Py_None );
         tobj = Py_None;
         delete v;
       }
@@ -125,17 +126,23 @@ class QgsFeature
   {
       QVariant v = sipCpp->attribute(fieldIdx);
       if ( v.isNull() )
+      {
+        Py_INCREF( Py_None );
         sipRes = Py_None;
+      }
       else
-        sipRes = sipConvertFromInstance( &v, sipClass_QVariant, Py_None );
+        sipRes = sipConvertFromType( &v, sipType_QVariant, Py_None );
   }
   else if( altfieldIdx >= 0 )
   {
       QVariant v = sipCpp->attribute(altfieldIdx);
       if ( v.isNull() )
+      {
+        Py_INCREF( Py_None );
         sipRes = Py_None;
+      }
       else
-        sipRes = sipConvertFromInstance( &v, sipClass_QVariant, Py_None );
+        sipRes = sipConvertFromType( &v, sipType_QVariant, Py_None );
   }
   else
   {
@@ -206,11 +213,12 @@ class QgsFeature
     if ( v->isNull() )
     {
       delete v;
+      Py_INCREF( Py_None );
       sipRes = Py_None;
     }
     else
     {
-      sipRes = sipConvertFromNewInstance( v, sipClass_QVariant, Py_None );
+      sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
     }
   }
 %End
@@ -227,9 +235,12 @@ class QgsFeature
   {
     QVariant v = sipCpp->attribute(fieldIdx);
     if ( v.isNull() )
+    {
+      Py_INCREF( Py_None );
       sipRes = Py_None;
+    }
     else
-      sipRes = sipConvertFromInstance( &v, sipClass_QVariant, Py_None );
+      sipRes = sipConvertFromType( &v, sipType_QVariant, Py_None );
   }
 %End
 
@@ -472,9 +483,12 @@ class QgsFeature
   {
     QVariant v = sipCpp->attribute(fieldIdx);
     if ( v.isNull() )
+    {
+      Py_INCREF( Py_None );
       sipRes = Py_None;
+    }
     else
-      sipRes = sipConvertFromInstance( &v, sipClass_QVariant, Py_None );
+      sipRes = sipConvertFromType( &v, sipType_QVariant, Py_None );
   }
 %End
     /** Utility method to get attribute index from name. Returns -1 if field does not exist or field map is not associated.
