@@ -270,8 +270,6 @@ Section "QGIS" SecQGIS
 
 	SectionIn RO
 
-        ;Added by Tim to set the reg key so we get default toolbar layout
-        !include ui.nsh
         ;Added by Tim to set the reg key so we get default plugin loading 
         !include plugins.nsh
         ;Added by Tim to set the reg key so we get default python & py plugins
