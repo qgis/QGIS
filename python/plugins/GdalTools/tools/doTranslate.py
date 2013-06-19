@@ -192,7 +192,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         arguments.append( self.targetSRSEdit.text())
       if self.creationOptionsGroupBox.isChecked():
         for opt in self.creationOptionsWidget.options():
-          arguments.extend( "-co", opt)
+          arguments.extend( [ "-co", opt ] )
       if self.outsizeCheck.isChecked() and self.outsizeSpin.value() != 100:
           arguments.append( "-outsize")
           arguments.append( self.outsizeSpin.text())

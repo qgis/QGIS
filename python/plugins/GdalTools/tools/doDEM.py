@@ -133,14 +133,14 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       outputFn = self.getOutputFileName()
       arguments.append( outputFn)
       if mode == "hillshade":
-        arguments.extend( "-z", self.hillshadeZFactorSpin.value())
-        arguments.extend( "-s" , self.hillshadeScaleSpin.value())
-        arguments.extend( "-az" , self.hillshadeAzimuthSpin.value())
-        arguments.extend( "-alt" , self.hillshadeAltitudeSpin.value())
+        arguments.extend( ["-z", self.hillshadeZFactorSpin.value() ] )
+        arguments.extend( ["-s" , self.hillshadeScaleSpin.value() ] )
+        arguments.extend( ["-az" , self.hillshadeAzimuthSpin.value()] )
+        arguments.extend( ["-alt" , self.hillshadeAltitudeSpin.value() ] )
       elif mode == "slope":
         if self.slopePercentCheck.isChecked():
           arguments.append( "-p")
-        arguments.extend( "-s" , self.slopeScaleSpin.value())
+        arguments.extend( [ "-s" , self.slopeScaleSpin.value() ] )
       elif mode == "aspect":
         if self.aspectTrigonometricCheck.isChecked():
           arguments.append( "-trigonometric")
@@ -155,16 +155,16 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           elif self.colorNearestRadio.isChecked():
             arguments.append( "-nearest_color_entry")
       if self.algorithmCheck.isChecked():
-        arguments.extend( "-alg", "ZevenbergenThorne")
+        arguments.extend( [ "-alg", "ZevenbergenThorne" ] )
       if self.computeEdgesCheck.isChecked():
         arguments.append( "-compute_edges")
       if self.bandCheck.isChecked():
-        arguments.extend( "-b" , self.bandSpin.value())
+        arguments.extend( [ "-b" , self.bandSpin.value() ] )
       if outputFn:
-        arguments.extend( "-of", self.outputFormat)
+        arguments.extend( [ "-of", self.outputFormat ] )
       if self.creationOptionsGroupBox.isChecked():
         for opt in self.creationOptionsWidget.options():
-          arguments.extend( "-co", opt)
+          arguments.extend( [ "-co", opt ] )
       # set creation options filename/layer for validation
       if self.inSelector.layer():
         self.creationOptionsWidget.setRasterLayer(self.inSelector.layer())
