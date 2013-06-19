@@ -101,7 +101,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
       self.rasterInfoList.clear()
       arr = str(self.base.process.readAllStandardOutput()).strip()
       if platform.system() == "Windows":
-        #info = QString.fromLocal8Bit( arr ).trimmed().split( "\r\n" )
+        #info = QString.fromLocal8Bit( arr ).strip().split( "\r\n" )
         # TODO test
         info = string.split(arr, sep="\r\n" )
       else:

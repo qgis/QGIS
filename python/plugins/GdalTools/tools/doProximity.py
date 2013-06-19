@@ -90,10 +90,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       outputFn = self.getOutputFileName()
       arguments.append( outputFn)
       if self.valuesCheck.isChecked():
-        values = self.valuesEdit.text().trimmed()
+        values = self.valuesEdit.text().split()
         if values:
           arguments.append( "-values")
-          arguments.append( values.replace(' ', ','))
+          arguments.append( ','.join( values) )
       if self.distUnitsCheck.isChecked() and self.distUnitsCombo.currentIndex() >= 0:
         arguments.append( "-distunits")
         arguments.append( self.distUnitsCombo.currentText())
