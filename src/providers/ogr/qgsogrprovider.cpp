@@ -360,8 +360,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
 QgsOgrProvider::~QgsOgrProvider()
 {
-  if ( mActiveIterator )
-    mActiveIterator->close();
+  // Do we need to close all active iterators here?
 
   if ( ogrLayer != ogrOrigLayer )
   {

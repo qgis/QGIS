@@ -250,6 +250,12 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** Get single flatten geometry type */
     static OGRwkbGeometryType ogrWkbSingleFlatten( OGRwkbGeometryType type );
 
+    QString layerName() { return mLayerName; }
+
+    QString filePath() { return mFilePath; }
+
+    int layerIndex() { return mLayerIndex; }
+
   protected:
     /** loads fields from input file to member attributeFields */
     void loadFields();
