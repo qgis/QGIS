@@ -54,19 +54,19 @@ class QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeAttributesDi
     /**Calculates the merged value of a column (depending on the selected merge behaviour) and inserts the value in the corresponding cell*/
     void refreshMergedValue( int col );
     /**Inserts the attribute value of a specific feature into the row of merged attributes*/
-    QString featureAttributeString( int featureId, int col );
+    QVariant featureAttribute( int featureId, int col );
     /**Calculates and inserts the minimum attribute value of a column*/
-    QString minimumAttributeString( int col );
+    QVariant minimumAttribute( int col );
     /**Calculates and inserts the maximum value of a column*/
-    QString maximumAttributeString( int col );
+    QVariant maximumAttribute( int col );
     /**Calculates and inserts the mean value of a column*/
-    QString meanAttributeString( int col );
+    QVariant meanAttribute( int col );
     /**Calculates and inserts the median value of a column*/
-    QString medianAttributeString( int col );
+    QVariant medianAttribute( int col );
     /**Calculates and inserts the sum of a column*/
-    QString sumAttributeString( int col );
+    QVariant sumAttribute( int col );
     /**Appends the values of the features for the final value*/
-    QString concatenationAttributeString( int col );
+    QVariant concatenationAttribute( int col );
     /**Sets mSelectionRubberBand to a new feature*/
     void createRubberBandForFeature( int featureId );
 

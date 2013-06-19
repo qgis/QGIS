@@ -243,48 +243,49 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
 
   //evaluate behaviour (feature value or min / max / mean )
   QString mergeBehaviourString = comboBox->currentText();
-  QString evalText; //text that has to be inserted into merge result field
+  QVariant mergeResult; // result to show in the merge result field
   if ( mergeBehaviourString == tr( "Minimum" ) )
   {
-    evalText = minimumAttributeString( col );
+    mergeResult = minimumAttribute( col );
   }
   else if ( mergeBehaviourString == tr( "Maximum" ) )
   {
-    evalText = maximumAttributeString( col );
+    mergeResult = maximumAttribute( col );
   }
   else if ( mergeBehaviourString == tr( "Mean" ) )
   {
-    evalText = meanAttributeString( col );
+    mergeResult = meanAttribute( col );
   }
   else if ( mergeBehaviourString == tr( "Median" ) )
   {
-    evalText = medianAttributeString( col );
+    mergeResult = medianAttribute( col );
   }
   else if ( mergeBehaviourString == tr( "Sum" ) )
   {
-    evalText = sumAttributeString( col );
+    mergeResult = sumAttribute( col );
   }
   else if ( mergeBehaviourString == tr( "Concatenation" ) )
   {
-    evalText = concatenationAttributeString( col );
+    mergeResult = concatenationAttribute( col );
   }
   else if ( mergeBehaviourString == tr( "Skip attribute" ) )
   {
-    evalText = tr( "Skipped" );
+    mergeResult = tr( "Skipped" );
   }
   else //an existing feature value
   {
     int featureId = mergeBehaviourString.split( " " ).at( 1 ).toInt(); //probably not very robust for translations...
-    evalText = featureAttributeString( featureId, col );
+    mergeResult = featureAttribute( featureId, col );
   }
 
   //insert string into table widget
-  QTableWidgetItem* newTotalItem = new QTableWidgetItem( evalText );
+  QTableWidgetItem* newTotalItem = new QTableWidgetItem();
+  newTotalItem->setData( Qt::DisplayRole, mergeResult );
   newTotalItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
   mTableWidget->setItem( mTableWidget->rowCount() - 1, col, newTotalItem );
 }
 
-QString QgsMergeAttributesDialog::featureAttributeString( int featureId, int col )
+QVariant QgsMergeAttributesDialog::featureAttribute( int featureId, int col )
 {
   int idx = mTableWidget->horizontalHeaderItem( col )->data( Qt::UserRole ).toInt();
 
@@ -296,15 +297,15 @@ QString QgsMergeAttributesDialog::featureAttributeString( int featureId, int col
   if ( i < mFeatureList.size() &&
        QgsAttributeEditor::retrieveValue( mTableWidget->cellWidget( i + 1, col ), mVectorLayer, idx, value ) )
   {
-    return value.toString();
+    return value;
   }
   else
   {
-    return "";
+    return QVariant( mVectorLayer->pendingFields()[col].type() );
   }
 }
 
-QString QgsMergeAttributesDialog::minimumAttributeString( int col )
+QVariant QgsMergeAttributesDialog::minimumAttribute( int col )
 {
   double minimumValue = std::numeric_limits<double>::max();
   double currentValue;
@@ -329,10 +330,10 @@ QString QgsMergeAttributesDialog::minimumAttributeString( int col )
     return QString();
   }
 
-  return QString::number( minimumValue, 'f' );
+  return QVariant( minimumValue );
 }
 
-QString QgsMergeAttributesDialog::maximumAttributeString( int col )
+QVariant QgsMergeAttributesDialog::maximumAttribute( int col )
 {
   double maximumValue = -std::numeric_limits<double>::max();
   double currentValue;
@@ -354,13 +355,13 @@ QString QgsMergeAttributesDialog::maximumAttributeString( int col )
 
   if ( numberOfConsideredFeatures < 1 )
   {
-    return QString();
+    return QVariant( mVectorLayer->pendingFields()[col].type() );
   }
 
-  return QString::number( maximumValue, 'f' );
+  return QVariant( maximumValue );
 }
 
-QString QgsMergeAttributesDialog::meanAttributeString( int col )
+QVariant QgsMergeAttributesDialog::meanAttribute( int col )
 {
   int numberOfConsideredFeatures = 0;
   double currentValue;
@@ -377,10 +378,10 @@ QString QgsMergeAttributesDialog::meanAttributeString( int col )
     }
   }
   double mean = sum / numberOfConsideredFeatures;
-  return QString::number( mean, 'f' );
+  return QVariant( mean );
 }
 
-QString QgsMergeAttributesDialog::medianAttributeString( int col )
+QVariant QgsMergeAttributesDialog::medianAttribute( int col )
 {
   //bring all values into a list and sort
   QList<double> valueList;
@@ -409,10 +410,10 @@ QString QgsMergeAttributesDialog::medianAttributeString( int col )
   {
     medianValue = valueList[( size + 1 ) / 2 - 1];
   }
-  return QString::number( medianValue, 'f' );
+  return QVariant( medianValue );
 }
 
-QString QgsMergeAttributesDialog::sumAttributeString( int col )
+QVariant QgsMergeAttributesDialog::sumAttribute( int col )
 {
   double sum = 0.0;
   bool conversion = false;
@@ -425,10 +426,10 @@ QString QgsMergeAttributesDialog::sumAttributeString( int col )
       sum += currentValue;
     }
   }
-  return QString::number( sum, 'f' );
+  return QVariant( sum );
 }
 
-QString QgsMergeAttributesDialog::concatenationAttributeString( int col )
+QVariant QgsMergeAttributesDialog::concatenationAttribute( int col )
 {
   QStringList concatString;
   for ( int i = 0; i < mFeatureList.size(); ++i )
@@ -562,6 +563,8 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
     return QgsAttributes();
   }
 
+  QgsFields fields = mVectorLayer->pendingFields();
+
   QgsAttributes results( mTableWidget->columnCount() );
   for ( int i = 0; i < mTableWidget->columnCount(); i++ )
   {
@@ -577,7 +580,8 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
 
     if ( idx >= results.count() )
       results.resize( idx + 1 ); // make sure the results vector is long enough (maybe not necessary)
-    results[idx] = currentItem->text();
+
+    results[idx] = currentItem->data( Qt::DisplayRole );
   }
 
   return results;
