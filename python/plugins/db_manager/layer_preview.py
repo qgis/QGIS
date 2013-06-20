@@ -41,7 +41,7 @@ class LayerPreview(QgsMapCanvas):
     self.enableAntiAliasing( settings.value( "/qgis/enable_anti_aliasing", False, type=bool ) )
     self.useImageToRender( settings.value( "/qgis/use_qimage_to_render", False, type=bool ) )
     action = settings.value( "/qgis/wheel_action", 0, type=float )
-    zoomFactor = settings.value( "/qgis/zoom_factor", 2, type=int )
+    zoomFactor = settings.value( "/qgis/zoom_factor", 2, type=float )
     self.setWheelAction( QgsMapCanvas.WheelAction(action), zoomFactor )
 
     self._clear()
