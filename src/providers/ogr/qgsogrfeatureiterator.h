@@ -51,6 +51,8 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIterator
 
     OGRDataSourceH ogrDataSource;
     OGRLayerH ogrLayer;
+
+    bool mSubsetStringSet;
 };
 
 

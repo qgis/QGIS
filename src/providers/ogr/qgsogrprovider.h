@@ -15,6 +15,8 @@ email                : sherman at mrcc.com
  *                                                                         *
  ***************************************************************************/
 
+#include "QTextCodec"
+
 #include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
@@ -256,6 +258,10 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     int layerIndex() { return mLayerIndex; }
 
+    QTextCodec* textEncoding() { return mEncoding; }
+
+    QString quotedIdentifier( QString field );
+
   protected:
     /** loads fields from input file to member attributeFields */
     void loadFields();
@@ -328,8 +334,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool addFeature( QgsFeature& f );
     /**Deletes one feature*/
     bool deleteFeature( QgsFeatureId id );
-
-    QString quotedIdentifier( QString field );
 
     /**Calls OGR_L_SyncToDisk and recreates the spatial index if present*/
     bool syncToDisc();
