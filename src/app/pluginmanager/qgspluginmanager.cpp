@@ -88,7 +88,6 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, Qt::WFlags fl )
   // Preset widgets
   leFilter->setFocus( Qt::MouseFocusReason );
   rbFilterNames->setChecked( true );
-  tbDetails->setStyleSheet("QTextEdit { padding: 0px }");
 
   // Don't restore the last used tab from QSettings
   mOptionsListWidget->setCurrentRow( 0 );
