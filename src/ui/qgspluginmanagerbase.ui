@@ -425,9 +425,6 @@
                  <property name="acceptDrops">
                   <bool>false</bool>
                  </property>
-                 <property name="styleSheet">
-                  <string notr="true">padding: 0px</string>
-                 </property>
                  <property name="textInteractionFlags">
                   <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
                  </property>
