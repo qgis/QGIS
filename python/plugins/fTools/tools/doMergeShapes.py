@@ -61,7 +61,7 @@ class Dialog( QDialog, Ui_Dialog ):
     nameFilter = [ "*.shp", "*.SHP" ]
     workDir.setNameFilters( nameFilter )
     self.inputFiles = workDir.entryList()
-    if self.inputFiles.count() == 0:
+    if len( self.inputFiles ) == 0:
       QMessageBox.warning( self, self.tr( "No shapefiles found" ),
         self.tr( "There are no shapefiles in this directory. Please select another one." ) )
       self.inputFiles = None
@@ -69,7 +69,7 @@ class Dialog( QDialog, Ui_Dialog ):
 
     settings.setValue( "/fTools/lastShapeDir", inDir )
 
-    self.progressFiles.setRange( 0, self.inputFiles.count() )
+    self.progressFiles.setRange( 0, len( self.inputFiles ) )
     self.leInputDir.setText( inDir )
 
   def outFile( self ):
@@ -121,7 +121,7 @@ class Dialog( QDialog, Ui_Dialog ):
       nameFilter = [ "*.shp" << "*.SHP" ]
       workDir.setNameFilters( nameFilter )
       self.inputFiles = workDir.entryList()
-      if self.inputFiles.count() == 0:
+      if len( self.inputFiles ) == 0:
         QMessageBox.warning( self, self.tr( "No shapefiles found" ),
           self.tr( "There are no shapefiles in this directory. Please select another one." ) )
         self.inputFiles = None
@@ -143,7 +143,7 @@ class Dialog( QDialog, Ui_Dialog ):
         QMessageBox.warning( self, self.tr( "No shapefiles found" ),
           self.tr( "There are no shapefiles with the given geometry type. Please select an available geometry type." ) )
         return
-      self.progressFiles.setRange( 0, self.inputFiles.count() )
+      self.progressFiles.setRange( 0, len( self.inputFiles ) )
 
     outFile = QFile( self.outFileName )
     if outFile.exists():

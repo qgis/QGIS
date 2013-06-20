@@ -172,7 +172,7 @@ class SplitThread(QThread):
 
 
         for i in unique:
-            check = QFile(baseName + "_" + unicode(i.strip()) + ".shp")
+            check = QFile(baseName + "_" + unicode(i).strip() + ".shp")
             fName = check.fileName()
             if check.exists():
                 if not QgsVectorFileWriter.deleteShapeFile(fName):
