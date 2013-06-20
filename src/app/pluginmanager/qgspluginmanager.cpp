@@ -514,7 +514,7 @@ void QgsPluginManager::reloadModelData()
     // TODO: implement better sort method instead of these dummy -Z statuses
     mModelPlugins->appendRow( createSpacerItem( tr( "Only locally available", "category: plugins that are only locally available" ), "orphanZ" ) );
     if ( hasReinstallablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Reinstallable", "category: plugins that are installed and available" )  , "installedZ" ) );
-    if ( hasUpgradeablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Upgradeable", "category: plugins that are installed and there is a newer version available" ), "upgradeableZ") );
+    if ( hasUpgradeablePlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Upgradeable", "category: plugins that are installed and there is a newer version available" ), "upgradeableZ" ) );
     if ( hasNewerPlugins() ) mModelPlugins->appendRow( createSpacerItem( tr( "Downgradeable", "category: plugins that are installed and there is an OLDER version available" ), "newerZ" ) );
   }
 
@@ -754,11 +754,15 @@ void QgsPluginManager::clearPythonPluginMetadata( )
 {
   for ( QMap<QString, QMap<QString, QString> >::iterator it = mPlugins.begin();
         it != mPlugins.end();
-        it++ )
+      )
   {
     if ( it->value( "pythonic" ) == "true" )
     {
-      mPlugins.remove( it.key() );
+      it = mPlugins.erase( it );
+    }
+    else
+    {
+      ++it;
     }
   }
 }
@@ -805,7 +809,7 @@ void QgsPluginManager::addToRepositoryList( QMap<QString, QString> repository )
   // If it's the second item on the tree, change the button text to plural form and add the filter context menu
   if ( buttonRefreshRepos->isEnabled() && treeRepositories->actions().count() < 1 )
   {
-    buttonRefreshRepos->setText( tr("Reload all repositories") );
+    buttonRefreshRepos->setText( tr( "Reload all repositories" ) );
     QAction* actionEnableThisRepositoryOnly = new QAction( tr( "Only show plugins from selected repository" ), treeRepositories );
     treeRepositories->addAction( actionEnableThisRepositoryOnly );
     connect( actionEnableThisRepositoryOnly, SIGNAL( triggered() ), this, SLOT( setRepositoryFilter() ) );
@@ -1111,7 +1115,7 @@ void QgsPluginManager::setRepositoryFilter( )
 
 void QgsPluginManager::clearRepositoryFilter( )
 {
-  QgsDebugMsg( "Enabling all repositories back");
+  QgsDebugMsg( "Enabling all repositories back" );
   QgsPythonRunner::run( QString( "pyplugin_installer.instance().setRepositoryInspectionFilter()" ) );
 }
 
