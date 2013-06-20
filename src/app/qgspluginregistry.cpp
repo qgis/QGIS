@@ -254,17 +254,17 @@ bool QgsPluginRegistry::checkQgisVersion( QString minVersion, QString maxVersion
 
   // build XxYyZz strings with trailing zeroes if needed
   QString minVer = QString( "%1%2%3" ).arg( minVerMajor, 2, 10, QChar( '0' ) )
-                                      .arg( minVerMinor, 2, 10, QChar( '0' ) )
-                                      .arg( minVerBugfix, 2, 10, QChar( '0' ) );
+                   .arg( minVerMinor, 2, 10, QChar( '0' ) )
+                   .arg( minVerBugfix, 2, 10, QChar( '0' ) );
   QString maxVer = QString( "%1%2%3" ).arg( maxVerMajor, 2, 10, QChar( '0' ) )
-                                      .arg( maxVerMinor, 2, 10, QChar( '0' ) )
-                                      .arg( maxVerBugfix, 2, 10, QChar( '0' ) );
+                   .arg( maxVerMinor, 2, 10, QChar( '0' ) )
+                   .arg( maxVerBugfix, 2, 10, QChar( '0' ) );
   QString curVer = QString( "%1%2%3" ).arg( qgisMajor, 2, 10, QChar( '0' ) )
-                                      .arg( qgisMinor, 2, 10, QChar( '0' ) )
-                                      .arg( qgisBugfix, 2, 10, QChar( '0' ) );
+                   .arg( qgisMinor, 2, 10, QChar( '0' ) )
+                   .arg( qgisBugfix, 2, 10, QChar( '0' ) );
 
   // compare
-  return ( minVer <= curVer && maxVer >= curVer);
+  return ( minVer <= curVer && maxVer >= curVer );
 }
 
 

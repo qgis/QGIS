@@ -38,10 +38,9 @@ class RgExportDlg : public QDialog
   public:
     RgExportDlg( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~RgExportDlg();
+
   public:
     QgsVectorLayer* mapLayer() const;
-  private:
-    static const int context_id = 0;
 
   private slots:
     void on_buttonBox_accepted();

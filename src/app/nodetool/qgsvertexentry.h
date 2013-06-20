@@ -29,7 +29,6 @@ class QgsVertexEntry
     bool mInRubberBand;
     int mRubberBandNr;
     int mRubberBandIndex;
-    int mOriginalIndex;
     int mPenWidth;
     QString mToolTip;
     QgsVertexMarker::IconType mType;
@@ -41,7 +40,6 @@ class QgsVertexEntry
     QgsVertexEntry( QgsMapCanvas *canvas,
                     QgsMapLayer *layer,
                     QgsPoint p,
-                    int originalIndex,
                     QString tooltip = QString::null,
                     QgsVertexMarker::IconType type = QgsVertexMarker::ICON_BOX,
                     int penWidth = 2 );

@@ -190,7 +190,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
 
         rect = QtCore.QRectF(-(ModelerGraphicItem.BOX_WIDTH + 2)/2.0, -(ModelerGraphicItem.BOX_HEIGHT + 2)/2.0,
                              ModelerGraphicItem.BOX_WIDTH + 2, ModelerGraphicItem.BOX_HEIGHT + 2)
-        painter.setPen(QtGui.QPen(QtCore.Qt.gray, 1))        
+        painter.setPen(QtGui.QPen(QtCore.Qt.gray, 1))
         color = QtGui.QColor(125,232, 232)
         if isinstance(self.element, Parameter):
             color = QtGui.QColor(179,179, 255)
@@ -227,7 +227,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
                     painter.drawText(pt, text)
                     i += 1
             i = 1
-            h = (fm.height() * 1.2) 
+            h = (fm.height() * 1.2)
             h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
             pt = QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH)/2 + 25, h)
             painter.drawText(pt, "Out")
@@ -284,7 +284,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
 
     def polygon(self):
         font = QtGui.QFont("Verdana", 8)
-        fm = QtGui.QFontMetricsF(font)        
+        fm = QtGui.QFontMetricsF(font)
         hUp = (fm.height() * 1.2) * (len(self.element.parameters) + 2)
         hDown = (fm.height() * 1.2) * (len(self.element.outputs) + 2)
         pol = QtGui.QPolygonF([

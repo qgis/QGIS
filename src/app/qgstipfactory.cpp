@@ -190,7 +190,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " Plugins->Manage and Install Plugins menu. In addition there are a lot"
                         " of Python plugins contributed by the user community that can be"
                         " installed via this same menu. Don't miss out on all QGIS has to offer!"
-			" Check out the plugins and see what they can do for you." ) );
+                        " Check out the plugins and see what they can do for you." ) );
   addGenericTip( myTip );
 
   /* Template for adding more tips

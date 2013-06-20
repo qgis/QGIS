@@ -135,7 +135,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
       elif isinstance(fn, str) or isinstance(fn, unicode):
         fn = unicode( fn )
 
-      #TODO test 
+      #TODO test
       elif isinstance(fn, list):
         if len( fn ) > 0:
           if self.getType() & self.MULTIFILE:

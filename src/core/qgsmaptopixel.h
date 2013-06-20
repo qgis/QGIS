@@ -121,8 +121,6 @@ class CORE_EXPORT QgsMapToPixel
     double yMax;
     double yMin;
     double xMin;
-    double xMax;
-
 };
 
 

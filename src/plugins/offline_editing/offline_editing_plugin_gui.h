@@ -39,7 +39,6 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
     void saveState();
     void restoreState();
 
-    static const int context_id = 0;
     QString mOfflineDataPath;
     QString mOfflineDbFile;
     QStringList mSelectedLayerIds;

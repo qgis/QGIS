@@ -187,14 +187,14 @@ QgsProviderRegistry::QgsProviderRegistry( QString pluginPath )
 
     // now get raster file filters, if any
     // this replaces deprecated QgsRasterLayer::buildSupportedRasterFileFilter
-    buildsupportedrasterfilefilter_t *pBuild = 
+    buildsupportedrasterfilefilter_t *pBuild =
       ( buildsupportedrasterfilefilter_t * ) cast_to_fptr( myLib.resolve( "buildSupportedRasterFileFilter" ) );
     if ( pBuild )
     {
       QString fileRasterFilters;
       pBuild( fileRasterFilters );
 
-      QgsDebugMsg( "raster filters: "+fileRasterFilters);
+      QgsDebugMsg( "raster filters: " + fileRasterFilters );
       if ( !fileRasterFilters.isEmpty() )
         mRasterFileFilters += fileRasterFilters;
 

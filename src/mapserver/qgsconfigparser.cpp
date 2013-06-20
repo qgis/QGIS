@@ -551,9 +551,9 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
   }
 
   //replace html url
-  foreach (const QgsComposerHtml *currentHtml, composerHtmls )
+  foreach ( const QgsComposerHtml *currentHtml, composerHtmls )
   {
-    QgsComposerHtml * html = const_cast<QgsComposerHtml *>(currentHtml);
+    QgsComposerHtml * html = const_cast<QgsComposerHtml *>( currentHtml );
     QgsComposerFrame *htmlFrame = html->frame( 0 );
     QString htmlId = htmlFrame->id();
     QString url = parameterMap.value( htmlId.toUpper() );

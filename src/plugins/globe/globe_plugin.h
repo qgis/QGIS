@@ -183,7 +183,7 @@ class QueryCoordinatesHandler : public osgGA::GUIEventHandler
   public:
     QueryCoordinatesHandler( GlobePlugin* globe, osgEarth::Util::ElevationManager* elevMan,
                              const osgEarth::SpatialReference* mapSRS )
-        :  mGlobe( globe ), _mapSRS( mapSRS ), _elevMan( elevMan ), _mouseDown( false ) { }
+        :  mGlobe( globe ), _mapSRS( mapSRS ), _elevMan( elevMan ) { }
 
     bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa );
 
@@ -193,7 +193,6 @@ class QueryCoordinatesHandler : public osgGA::GUIEventHandler
     GlobePlugin* mGlobe;
     osg::ref_ptr<const SpatialReference> _mapSRS;
     osg::ref_ptr<osgEarth::Util::ElevationManager> _elevMan;
-    bool _mouseDown;
 };
 #endif
 
@@ -201,15 +200,12 @@ class QueryCoordinatesHandler : public osgGA::GUIEventHandler
 class KeyboardControlHandler : public osgGA::GUIEventHandler
 {
   public:
-    KeyboardControlHandler( osgEarth::Util::EarthManipulator* manip, QgisInterface *qGisIface ) : _manip( manip ), mQGisIface( qGisIface ) { }
+    KeyboardControlHandler( osgEarth::Util::EarthManipulator* manip, QgisInterface * ) : _manip( manip ) { }
 
     bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa );
 
   private:
     osg::observer_ptr<osgEarth::Util::EarthManipulator> _manip;
-
-    //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
 };
 
 

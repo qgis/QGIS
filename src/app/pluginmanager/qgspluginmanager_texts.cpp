@@ -5,7 +5,7 @@
 
 void QgsPluginManager::initTabDescriptions()
 {
-  if( !mTabDescriptions.isEmpty() )
+  if ( !mTabDescriptions.isEmpty() )
     return;
 
   mTabDescriptions.insert( "installed_plugins", tr( "<h3>Installed Plugins</h3>\
@@ -25,7 +25,7 @@ To <i>enable</i> or <i>disable</i> a plugin,\
 Plugins showing in <span style='color:red'>red</span> are not loaded because there is a problem. Consult the \
 'Invalid' tab to see more details, or to reinstall or uninstall this plugin.\
 </p>\
-") );
+" ) );
 
 
 
@@ -36,11 +36,11 @@ Here are <b>upgradeable plugins</b>. It means more recent versions of installed 
 plugins are available in the repositories.\
 </p>\
 \
-") );
+" ) );
 
 
 
-    mTabDescriptions.insert( "get_more_plugins", tr( "<h3>Get more plugins</h3>\
+  mTabDescriptions.insert( "get_more_plugins", tr( "<h3>Get more plugins</h3>\
 \
 <p>\
 Here you see the list of all plugins available in the repositories, but which are <b>not yet installed</b>.\
@@ -57,7 +57,7 @@ then click the 'Install plugin' button.\
 </p>\
 \
 \
-") );
+" ) );
 
 
 
@@ -68,7 +68,7 @@ Here you see brand <b>new</b> plugins which can be installed.\
 </p>\
 \
 \
-") );
+" ) );
 
 
 
@@ -92,6 +92,6 @@ Another common reason is that a python plugin needs some external python librari
 You can install them yourself, depending on your operating system. After a correct \
 install the plugin should work.\
 </p>\
-") );
+" ) );
 
 }

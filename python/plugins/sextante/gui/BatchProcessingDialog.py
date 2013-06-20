@@ -154,7 +154,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     continue
                 widget = self.table.cellWidget(row, col)
                 if not self.setParameterValueFromWidget(param, widget, alg):
-                    self.progressLabel.setText("<b>Missing parameter value: " + param.description + " (row " + str(row + 1) + ")</b>")                    
+                    self.progressLabel.setText("<b>Missing parameter value: " + param.description + " (row " + str(row + 1) + ")</b>")
                     self.algs = None
                     return
                 col+=1
@@ -167,7 +167,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     out.value = text
                     col+=1
                 else:
-                    self.progressLabel.setText("<b>Wrong or missing parameter value: " + out.description + " (row " + str(row + 1) + ")</b>")                    
+                    self.progressLabel.setText("<b>Wrong or missing parameter value: " + out.description + " (row " + str(row + 1) + ")</b>")
                     self.algs = None
                     return
             self.algs.append(alg)

@@ -390,12 +390,12 @@ class RAlgorithm(GeoAlgorithm):
             path = RUtils.RFolder()
             if path == "":
                 return "R folder is not configured.\nPlease configure it before running R scripts."
-    
+
         R_INSTALLED = "R_INSTALLED"
         settings = QSettings()
         if settings.contains(R_INSTALLED):
             return
-        if SextanteUtils.isWindows(): 
+        if SextanteUtils.isWindows():
             if SextanteConfig.getSetting(RUtils.R_USE64):
                 execDir = "x64"
             else:

@@ -101,7 +101,7 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   foreach ( const QString& clsName, apiV2classes )
   {
     if ( !runString( QString( "sip.setapi('%1', 2)" ).arg( clsName ),
-                     QObject::tr( "Couldn't set SIP API versions.") + "\n" + QObject::tr( "Python support will be disabled." ) ) )
+                     QObject::tr( "Couldn't set SIP API versions." ) + "\n" + QObject::tr( "Python support will be disabled." ) ) )
     {
       exitPython();
       return;

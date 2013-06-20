@@ -74,11 +74,6 @@ class Builder: public DL_CreationAdapter
     std::vector <SHPObject *> shpObjects; // all read objects are stored here
     std::vector <DL_TextData> textObjects;
 
-    int numlayers;
-    int numpoints;
-    int numlines;
-    int numplines;
-
     int fetchedprims;
     int fetchedtexts;
 
@@ -86,11 +81,7 @@ class Builder: public DL_CreationAdapter
     bool current_polyline_willclose;
     bool store_next_vertex_for_polyline_close;
 
-    int awaiting_polyline_vertices;
     long current_polyline_pointcount;
-
-    SHPObject *currently_Adding_PolyLine;
-
 
     double closePolyX, closePolyY, closePolyZ;
     double currentBlockX, currentBlockY;

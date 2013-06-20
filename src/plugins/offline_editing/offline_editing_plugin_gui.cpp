@@ -154,7 +154,7 @@ void QgsOfflineEditingPluginGui::on_buttonBox_rejected()
 // TODO: help
 void QgsOfflineEditingPluginGui::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run( context_id );
+  QgsContextHelp::run( metaObject()->className() );
 }
 
 void QgsOfflineEditingPluginGui::restoreState()

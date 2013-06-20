@@ -30,7 +30,6 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
     , yMax( ymax )
     , yMin( ymin )
     , xMin( xmin )
-    , xMax( 0 )                 // XXX wasn't originally specified?  Why?
 {
 }
 

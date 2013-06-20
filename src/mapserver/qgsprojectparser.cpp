@@ -827,7 +827,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
         else if ( metadataUrlType == "TC211" )
         {
           metaUrlElem.setAttribute( "type", "ISO19115:2003" );
-        } 
+        }
         else
         {
           metaUrlElem.setAttribute( "type", metadataUrlType );

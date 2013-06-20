@@ -136,7 +136,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
       # TODO fix batch enabled, argument order is wrong, levels not at end
       if self.isBatchEnabled():
         return arguments
-          
+
       arguments.append(self.getInputFileName())
 
       if len(self.mPyramidOptionsWidget.overviewList()) == 0:

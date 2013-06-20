@@ -131,7 +131,7 @@ class ConvexHull(GeoAlgorithm):
                         outFeat.setAttributes([fid,val,area,perim])
                         writer.addFeature(outFeat)
                     except:
-                        raise GeoAlgorithmExecutionException("Exception while computing convex hull")                        
+                        raise GeoAlgorithmExecutionException("Exception while computing convex hull")
                 fid += 1
         else:
           hull = []
@@ -155,4 +155,4 @@ class ConvexHull(GeoAlgorithm):
               raise GeoAlgorithmExecutionException("Exception while computing convex hull")
 
         del writer
-        
+

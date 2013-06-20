@@ -185,7 +185,8 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
           value = QDateTime( QDate( year, month, day ), QTime( hour, minute, second ) );
       }
       break;
-      default: assert( NULL && "unsupported field type" );
+      default:
+        assert( 0 && "unsupported field type" );
     }
   }
   else

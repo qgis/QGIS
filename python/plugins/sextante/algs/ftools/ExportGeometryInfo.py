@@ -95,7 +95,7 @@ class ExportGeometryInfo(GeoAlgorithm):
         # 0 - layer CRS
         # 1 - project CRS
         # 2 - ellipsoidal
-        if method == 2:            
+        if method == 2:
             ellips = QgsProject.instance().readEntry("Measure", "/Ellipsoid", GEO_NONE)[0]
             crs = layer.crs().srsid()
         elif method == 1:

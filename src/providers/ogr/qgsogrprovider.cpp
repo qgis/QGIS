@@ -528,7 +528,7 @@ QStringList QgsOgrProvider::subLayers() const
     QString theLayerName = FROM8( OGR_FD_GetName( fdef ) );
     OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( fdef );
 
-    QgsDebugMsg( QString("layerGeomType = %1").arg( layerGeomType ) );
+    QgsDebugMsg( QString( "layerGeomType = %1" ).arg( layerGeomType ) );
 
     if ( layerGeomType != wkbUnknown )
     {

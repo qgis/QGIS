@@ -44,7 +44,7 @@ class SextanteTableWriter:
         file.write("\n")
         file.close()
 
-    def addRecord(self, values):        
+    def addRecord(self, values):
         file = open(self.fileName, "a")
         file.write(";".join([unicode(value) for value in values]))
         file.write("\n")

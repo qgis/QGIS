@@ -29,8 +29,10 @@
 #include <QDialog>
 #include <QMouseEvent>
 
-QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas* canvas ): QgsMapTool( canvas ),
-    mActiveItem( 0 ), mCurrentMoveAction( QgsAnnotationItem::NoAction ), mLastMousePosition( 0, 0 )
+QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas* canvas )
+    : QgsMapTool( canvas )
+    , mCurrentMoveAction( QgsAnnotationItem::NoAction )
+    , mLastMousePosition( 0, 0 )
 {
   mCursor = QCursor( Qt::ArrowCursor );
 }

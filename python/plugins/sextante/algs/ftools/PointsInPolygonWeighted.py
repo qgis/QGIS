@@ -105,7 +105,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
                     tmpGeom = QgsGeometry(ftPoint.geometry())
                     if geom.contains(tmpGeom):
                         weight = str(ftPoint.attributes()[fieldIdx])
-                        try:                                                    
+                        try:
                             count += float(weight)
                         except:
                             pass #ignore fields with non-numeric values
