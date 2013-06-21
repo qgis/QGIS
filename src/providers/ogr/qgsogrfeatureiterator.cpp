@@ -32,17 +32,31 @@
 
 
 QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIterator( request ), P( p )
+  : QgsAbstractFeatureIterator( request ), P( p ), ogrDataSource(0), ogrLayer(0), mSubsetStringSet(false)
 {
-  // make sure that only one iterator is active
-  if ( P->mActiveIterator )
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Already active iterator on this provider was closed." ), QObject::tr( "OGR" ) );
-    P->mActiveIterator->close();
-  }
-  P->mActiveIterator = this;
-
   mFeatureFetched = false;
+  P->mActiveIterators.insert( this );
+
+  ogrDataSource = OGROpen( TO8F( P->filePath() ), false, NULL );
+
+  if ( P->layerName().isNull() )
+  {
+    ogrLayer = OGR_DS_GetLayer( ogrDataSource, P->layerIndex() );
+  }
+  else
+  {
+    ogrLayer = OGR_DS_GetLayerByName( ogrDataSource, TO8( p->layerName() ) );
+  }
+
+  if ( !P->subsetString().isEmpty() )
+  {
+      QString sql = QString( "SELECT * FROM %1 WHERE %2" )
+                    .arg( P->quotedIdentifier( FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) ) ) )
+                    .arg( P->subsetString() );
+      QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
+      ogrLayer = OGR_DS_ExecuteSQL( ogrDataSource, P->textEncoding()->fromUnicode( sql ).constData(), NULL, NULL );
+      mSubsetStringSet = true;
+  }
 
   ensureRelevantFields();
 
@@ -56,12 +70,12 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatur
 
     OGR_G_CreateFromWkt(( char ** )&wktText, NULL, &filter );
     QgsDebugMsg( "Setting spatial filter using " + wktExtent );
-    OGR_L_SetSpatialFilter( P->ogrLayer, filter );
+    OGR_L_SetSpatialFilter( ogrLayer, filter );
     OGR_G_DestroyGeometry( filter );
   }
   else
   {
-    OGR_L_SetSpatialFilter( P->ogrLayer, 0 );
+    OGR_L_SetSpatialFilter( ogrLayer, 0 );
   }
 
   //start with first feature
@@ -94,7 +108,7 @@ bool QgsOgrFeatureIterator::nextFeature( QgsFeature& feature )
 
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
-    OGRFeatureH fet = OGR_L_GetFeature( P->ogrLayer, FID_TO_NUMBER( mRequest.filterFid() ) );
+    OGRFeatureH fet = OGR_L_GetFeature( ogrLayer, FID_TO_NUMBER( mRequest.filterFid() ) );
     if ( !fet )
     {
       close();
@@ -111,7 +125,7 @@ bool QgsOgrFeatureIterator::nextFeature( QgsFeature& feature )
 
   OGRFeatureH fet;
 
-  while (( fet = OGR_L_GetNextFeature( P->ogrLayer ) ) )
+  while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
   {
     if ( !readFeature( fet, feature ) )
       continue;
@@ -135,7 +149,7 @@ bool QgsOgrFeatureIterator::rewind()
   if ( mClosed )
     return false;
 
-  OGR_L_ResetReading( P->ogrLayer );
+  OGR_L_ResetReading( ogrLayer );
 
   return true;
 }
@@ -146,10 +160,17 @@ bool QgsOgrFeatureIterator::close()
   if ( mClosed )
     return false;
 
-  // tell provider that this iterator is not active anymore
-  P->mActiveIterator = 0;
+  P->mActiveIterators.remove( this );
+
+  if (mSubsetStringSet)
+  {
+    OGR_DS_ReleaseResultSet(ogrDataSource, ogrLayer );
+  }
+
+  OGR_DS_Destroy( ogrDataSource );
 
   mClosed = true;
+  ogrDataSource = 0;
   return true;
 }
 

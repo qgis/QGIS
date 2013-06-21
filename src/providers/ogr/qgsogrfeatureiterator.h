@@ -48,6 +48,11 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIterator
     void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex );
 
     bool mFeatureFetched;
+
+    OGRDataSourceH ogrDataSource;
+    OGRLayerH ogrLayer;
+
+    bool mSubsetStringSet;
 };
 
 

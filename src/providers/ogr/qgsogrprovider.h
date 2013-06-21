@@ -15,6 +15,8 @@ email                : sherman at mrcc.com
  *                                                                         *
  ***************************************************************************/
 
+#include "QTextCodec"
+
 #include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
@@ -250,6 +252,16 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** Get single flatten geometry type */
     static OGRwkbGeometryType ogrWkbSingleFlatten( OGRwkbGeometryType type );
 
+    QString layerName() { return mLayerName; }
+
+    QString filePath() { return mFilePath; }
+
+    int layerIndex() { return mLayerIndex; }
+
+    QTextCodec* textEncoding() { return mEncoding; }
+
+    QString quotedIdentifier( QString field );
+
   protected:
     /** loads fields from input file to member attributeFields */
     void loadFields();
@@ -323,11 +335,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /**Deletes one feature*/
     bool deleteFeature( QgsFeatureId id );
 
-    QString quotedIdentifier( QString field );
-
     /**Calls OGR_L_SyncToDisk and recreates the spatial index if present*/
     bool syncToDisc();
 
     friend class QgsOgrFeatureIterator;
-    QgsOgrFeatureIterator* mActiveIterator; //!< pointer to currently active iterator (0 if none)
+    QSet< QgsOgrFeatureIterator*> mActiveIterators;
 };
