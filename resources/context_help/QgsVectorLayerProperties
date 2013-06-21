@@ -90,10 +90,10 @@ Within the Attributes tab you also find an edit widget column. This column can b
 <h4>General</h4>
 </a>
 The General tab allows you to change the display name, set scale dependent rendering options, create a spatial index of the vector file (only for OGR supported formats and PostGIS) and view or change the projection of the specific vector layer.<p>
-You can also set filter expressions using the <label>Query Builder</label>.
+You can also set a provider specific filter expressions using the <label>Query Builder</label>.
 
 <h5>Subset</h5>
-The <label>Query Builder</label> button allows you to limit the features of a layer to a subset matching an expression.
+The <label>Query Builder</label> button allows you to limit the features of a layer to a subset matching an provider specific filter expression.
 
 <a name="metadata">
 <h4>Metadata</h4>

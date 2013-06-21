@@ -1,4 +1,0 @@
-<h3>Plugin freccia a Nord</h3>
-Visualizza sulla mappa una freccia orientata a Nord.
-<p>
-Attualmente e' disponibile soltanto uno stile di rappresentazione della freccia. E' possibile modificare l'orientamento della freccia o lasciarlo fare automaticamente a QGIS. Se si sceglie di lasciare a QGIS l'impostazione, verrà proposta una sua ipotesi di orientamento della freccia. Per il posizionamento della freccia ci sono quattro opzioni, corrispondenti ai quattro angoli dell'area mappa.
