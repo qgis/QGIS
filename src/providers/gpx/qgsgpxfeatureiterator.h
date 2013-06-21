@@ -63,7 +63,6 @@ class QgsGPXFeatureIterator : public QgsAbstractFeatureIterator
     //! Current track iterator
     QgsGPSData::TrackIterator mTrkIter;
 
-
     bool mFetchedFid;
 };
 

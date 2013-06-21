@@ -151,7 +151,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
   private:
     bool mNetworkRequestFinished;
     friend class QgsWFSFeatureIterator;
-    QgsWFSFeatureIterator* mActiveIterator;
+    QSet< QgsWFSFeatureIterator * > mActiveIterators;
 
   protected:
     /**Thematic attributes*/

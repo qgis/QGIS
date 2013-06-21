@@ -392,6 +392,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     bool mHasSpatial;                        //! Oracle Spatial is installed
 
     friend class QgsOracleFeatureIterator;
+    QSet< QgsOracleFeatureIterator * > mActiveIterators;
 };
 
 #endif

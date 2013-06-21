@@ -51,18 +51,17 @@ static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 
 QgsWFSProvider::QgsWFSProvider( const QString& uri )
-    : QgsVectorDataProvider( uri ),
-    mNetworkRequestFinished( true ),
-    mActiveIterator( 0 ),
-    mRequestEncoding( QgsWFSProvider::GET ),
-    mUseIntersect( false ),
-    mWKBType( QGis::WKBUnknown ),
-    mSourceCRS( 0 ),
-    mFeatureCount( 0 ),
-    mValid( true ),
-    mLayer( 0 ),
-    mGetRenderedOnly( false ),
-    mInitGro( false )
+    : QgsVectorDataProvider( uri )
+    , mNetworkRequestFinished( true )
+    , mRequestEncoding( QgsWFSProvider::GET )
+    , mUseIntersect( false )
+    , mWKBType( QGis::WKBUnknown )
+    , mSourceCRS( 0 )
+    , mFeatureCount( 0 )
+    , mValid( true )
+    , mLayer( 0 )
+    , mGetRenderedOnly( false )
+    , mInitGro( false )
 {
   mSpatialIndex = 0;
   if ( uri.isEmpty() )
@@ -123,12 +122,15 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
 
 QgsWFSProvider::~QgsWFSProvider()
 {
+  while ( !mActiveIterators.empty() )
+  {
+    QgsWFSFeatureIterator *it = *mActiveIterators.begin();
+    QgsDebugMsg( "closing active iterator" );
+    it->close();
+  }
+
   deleteData();
   delete mSpatialIndex;
-  if ( mActiveIterator )
-  {
-    mActiveIterator->close();
-  }
 }
 
 void QgsWFSProvider::reloadData()

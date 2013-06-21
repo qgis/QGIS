@@ -42,16 +42,9 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteProvide
     , P( p )
     , sqliteStatement( NULL )
 {
-  // make sure that only one iterator is active
-  if ( P->mActiveIterator )
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Already active iterator on this provider was closed." ), QObject::tr( "SpatiaLite" ) );
-    P->mActiveIterator->close();
-  }
-  P->mActiveIterator = this;
+  P->mActiveIterators << this;
 
   QString whereClause;
-
   if ( request.filterType() == QgsFeatureRequest::FilterRect && !P->mGeometryColumn.isNull() )
   {
     // some kind of MBR spatial filtering is required
@@ -125,14 +118,13 @@ bool QgsSpatiaLiteFeatureIterator::close()
   if ( mClosed )
     return false;
 
+  P->mActiveIterators.remove( this );
+
   if ( sqliteStatement )
   {
     sqlite3_finalize( sqliteStatement );
     sqliteStatement = NULL;
   }
-
-  // tell provider that this iterator is not active anymore
-  P->mActiveIterator = 0;
 
   mClosed = true;
   return true;

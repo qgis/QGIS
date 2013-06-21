@@ -169,5 +169,5 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     QgsSpatialIndex* mSpatialIndex;
 
     friend class QgsMemoryFeatureIterator;
-    QgsMemoryFeatureIterator* mActiveIterator;
+    QSet< QgsMemoryFeatureIterator *> mActiveIterators;
 };

@@ -129,15 +129,14 @@ inline bool QgsFeatureIterator::isClosed()
   return mIter ? mIter->mClosed : true;
 }
 
-
 inline bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
 {
   return ( fi1.mIter == fi2.mIter );
 }
+
 inline bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
 {
   return !( fi1 == fi2 );
 }
-
 
 #endif // QGSFEATUREITERATOR_H

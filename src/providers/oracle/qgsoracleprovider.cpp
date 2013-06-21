@@ -196,6 +196,14 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
 QgsOracleProvider::~QgsOracleProvider()
 {
   QgsDebugMsg( "deconstructing." );
+
+  while ( !mActiveIterators.empty() )
+  {
+    QgsOracleFeatureIterator *it = *mActiveIterators.begin();
+    QgsDebugMsg( "closing active iterator" );
+    it->close();
+  }
+
   disconnectDb();
 }
 

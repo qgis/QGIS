@@ -359,10 +359,10 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
 QgsOgrProvider::~QgsOgrProvider()
 {
-  // Do we need to close all active iterators here?
-
-  foreach ( QgsOgrFeatureIterator* it, mActiveIterators )
+  while ( !mActiveIterators.empty() )
   {
+    QgsOgrFeatureIterator *it = *mActiveIterators.begin();
+    QgsDebugMsg( "closing active iterator" );
     it->close();
   }
 

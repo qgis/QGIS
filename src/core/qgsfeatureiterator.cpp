@@ -16,9 +16,9 @@
 
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest& request )
-    : mRequest( request ),
-    mClosed( false ),
-    refs( 0 )
+    : mRequest( request )
+    , mClosed( false )
+    , refs( 0 )
 {
 }
 
@@ -30,6 +30,7 @@ void QgsAbstractFeatureIterator::ref()
 {
   refs++;
 }
+
 void QgsAbstractFeatureIterator::deref()
 {
   refs--;

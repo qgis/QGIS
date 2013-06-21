@@ -82,9 +82,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     , mGeometryType( QGis::UnknownGeometry )
     , mBuildSpatialIndex( false )
     , mSpatialIndex( 0 )
-    , mActiveIterator( 0 )
 {
-
   QgsDebugMsg( "Delimited text file uri is " + uri );
 
   QUrl url = QUrl::fromEncoded( uri.toAscii() );
@@ -169,8 +167,12 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
 
 QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
 {
-  if ( mActiveIterator )
-    mActiveIterator->close();
+  while ( !mActiveIterators.empty() )
+  {
+    QgsDelimitedTextFeatureIterator *it = *mActiveIterators.begin();
+    QgsDebugMsg( "closing active iterator" );
+    it->close();
+  }
 
   if ( mFile )
   {
@@ -1052,7 +1054,13 @@ void QgsDelimitedTextProvider::onFileUpdated()
   messages.append( tr( "The file has been updated by another application - reloading" ) );
   reportErrors( messages, false );
 
-  if ( mActiveIterator ) mActiveIterator->close();
+  while ( !mActiveIterators.empty() )
+  {
+    QgsDelimitedTextFeatureIterator *it = *mActiveIterators.begin();
+    QgsDebugMsg( "closing active iterator" );
+    it->close();
+  }
+
   rescanFile();
 }
 

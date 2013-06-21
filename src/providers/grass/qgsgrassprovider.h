@@ -644,7 +644,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     static  std::vector<GMAP> mMaps;     // Map
 
     friend class QgsGrassFeatureIterator;
-    QgsGrassFeatureIterator* mActiveIterator;
+    QSet< QgsGrassFeatureIterator *> mActiveIterators;
 };
 
 #endif // QGSGRASSPROVIDER_H

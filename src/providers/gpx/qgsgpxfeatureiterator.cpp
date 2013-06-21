@@ -26,16 +26,10 @@
 
 
 QgsGPXFeatureIterator::QgsGPXFeatureIterator( QgsGPXProvider* p, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIterator( request ), P( p )
+    : QgsAbstractFeatureIterator( request )
+    , P( p )
 {
-  // make sure that only one iterator is active
-  if ( P->mActiveIterator )
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Already active iterator on this provider was closed." ), QObject::tr( "GPX" ) );
-    P->mActiveIterator->close();
-  }
-  P->mActiveIterator = this;
-
+  P->mActiveIterators << this;
   rewind();
 }
 
@@ -71,18 +65,11 @@ bool QgsGPXFeatureIterator::close()
   if ( mClosed )
     return false;
 
-  // nothing to do
-
-  // tell provider that this iterator is not active anymore
-  P->mActiveIterator = 0;
+  P->mActiveIterators.remove( this );
 
   mClosed = true;
   return true;
 }
-
-
-
-
 
 bool QgsGPXFeatureIterator::nextFeature( QgsFeature& feature )
 {
@@ -97,7 +84,6 @@ bool QgsGPXFeatureIterator::nextFeature( QgsFeature& feature )
     close();
     return res;
   }
-
 
   if ( P->mFeatureType == QgsGPXProvider::WaypointType )
   {

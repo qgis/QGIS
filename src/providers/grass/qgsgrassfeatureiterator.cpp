@@ -39,13 +39,7 @@ extern "C"
 QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassProvider* p, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIterator( request ), P( p )
 {
-  // make sure that only one iterator is active
-  if ( P->mActiveIterator )
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Already active iterator on this provider was closed." ), QObject::tr( "GRASS" ) );
-    P->mActiveIterator->close();
-  }
-  P->mActiveIterator = this;
+  P->mActiveIterators << this;
 
   // check if outdated and update if necessary
   P->ensureUpdated();
@@ -242,15 +236,14 @@ bool QgsGrassFeatureIterator::close()
   if ( mClosed )
     return false;
 
+  P->mActiveIterators.remove( this );
+
   // finalization
   Vect_destroy_line_struct( mPoints );
   Vect_destroy_cats_struct( mCats );
   Vect_destroy_list( mList );
 
   free( mSelection );
-
-  // tell provider that this iterator is not active anymore
-  P->mActiveIterator = 0;
 
   mClosed = true;
   return true;

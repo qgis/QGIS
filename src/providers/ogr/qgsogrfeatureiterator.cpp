@@ -32,10 +32,13 @@
 
 
 QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatureRequest& request )
-  : QgsAbstractFeatureIterator( request ), P( p ), ogrDataSource(0), ogrLayer(0), mSubsetStringSet(false)
+    : QgsAbstractFeatureIterator( request )
+    , P( p )
+    , ogrDataSource( 0 )
+    , ogrLayer( 0 )
+    , mSubsetStringSet( false )
 {
   mFeatureFetched = false;
-  P->mActiveIterators.insert( this );
 
   ogrDataSource = OGROpen( TO8F( P->filePath() ), false, NULL );
 
@@ -50,12 +53,12 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatur
 
   if ( !P->subsetString().isEmpty() )
   {
-      QString sql = QString( "SELECT * FROM %1 WHERE %2" )
-                    .arg( P->quotedIdentifier( FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) ) ) )
-                    .arg( P->subsetString() );
-      QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-      ogrLayer = OGR_DS_ExecuteSQL( ogrDataSource, P->textEncoding()->fromUnicode( sql ).constData(), NULL, NULL );
-      mSubsetStringSet = true;
+    QString sql = QString( "SELECT * FROM %1 WHERE %2" )
+                  .arg( P->quotedIdentifier( FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) ) ) )
+                  .arg( P->subsetString() );
+    QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
+    ogrLayer = OGR_DS_ExecuteSQL( ogrDataSource, P->textEncoding()->fromUnicode( sql ).constData(), NULL, NULL );
+    mSubsetStringSet = true;
   }
 
   ensureRelevantFields();
@@ -162,9 +165,9 @@ bool QgsOgrFeatureIterator::close()
 
   P->mActiveIterators.remove( this );
 
-  if (mSubsetStringSet)
+  if ( mSubsetStringSet )
   {
-    OGR_DS_ReleaseResultSet(ogrDataSource, ogrLayer );
+    OGR_DS_ReleaseResultSet( ogrDataSource, ogrLayer );
   }
 
   OGR_DS_Destroy( ogrDataSource );

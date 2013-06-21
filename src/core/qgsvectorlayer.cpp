@@ -3582,6 +3582,15 @@ QString QgsVectorLayer::metadata()
   myMetadata += storageType();
   myMetadata += "</p>\n";
 
+  if ( dataProvider() )
+  {
+    //provider description
+    myMetadata += "<p class=\"glossy\">" + tr( "Description of this provider" ) + "</p>\n";
+    myMetadata += "<p>";
+    myMetadata += dataProvider()->description().replace( "\n", "<br>" );
+    myMetadata += "</p>\n";
+  }
+
   // data source
   myMetadata += "<p class=\"glossy\">" + tr( "Source for this layer" ) + "</p>\n";
   myMetadata += "<p>";
