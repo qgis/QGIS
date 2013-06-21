@@ -48,10 +48,8 @@ class QgsMapToolAnnotation: public QgsMapTool
     /**Switches visibility states of text items*/
     void toggleTextItemVisibilities();
 
-    QgsAnnotationItem* mActiveItem;
     QgsAnnotationItem::MouseMoveAction mCurrentMoveAction;
     QPointF mLastMousePosition;
-
 };
 
 #endif // QGSMAPTOOLANNOTATION_H

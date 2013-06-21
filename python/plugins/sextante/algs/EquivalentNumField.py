@@ -63,10 +63,10 @@ class EquivalentNumField(GeoAlgorithm):
             inGeom = feature.geometry()
             outFeat.setGeometry( inGeom )
             atMap = feature.attributes()
-            clazz = atMap[fieldindex].toString()
+            clazz = atMap[fieldindex]
             if clazz not in classes:
                 classes[clazz] = len(classes.keys())
-            atMap.append(QVariant(classes[clazz]))
+            atMap.append(classes[clazz])
             outFeat.setAttributes(atMap)
             writer.addFeature( outFeat )
         del writer

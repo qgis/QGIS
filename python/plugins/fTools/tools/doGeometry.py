@@ -89,7 +89,7 @@ class GeometryDialog( QDialog, Ui_Dialog ):
     (self.shapefileName, self.encoding) = ftools_utils.saveDialog( self )
     if self.shapefileName is None or self.encoding is None:
       return
-    self.outShape.setText( QString( self.shapefileName ) )
+    self.outShape.setText( self.shapefileName )
 
   def manageGui( self ):
     self.lblField.setVisible( False )
@@ -282,16 +282,16 @@ class GeometryDialog( QDialog, Ui_Dialog ):
       if success:
         if ( self.myFunction == 5 and self.chkWriteShapefile.isChecked() ) or self.myFunction != 5:
           addToTOC = QMessageBox.question( self, self.tr("Geometry"),
-                       self.tr( "Created output shapefile:\n%1\n%2\n\nWould you like to add the new layer to the TOC?" ).arg( unicode( self.shapefileName ) ).arg( extra ),
+                       self.tr( "Created output shapefile:\n{0}\n{1}\n\nWould you like to add the new layer to the TOC?" ).format( self.shapefileName, extra ),
                        QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
           if addToTOC == QMessageBox.Yes:
             if not ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) ):
               QMessageBox.warning( self, self.tr( "Geometry"),
-                                   self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( self.shapefileName ) ) )
+                                   self.tr( "Error loading output shapefile:\n{0}" ).format( self.shapefileName ) )
             self.populateLayers()
         else:
           QMessageBox.information( self, self.tr( "Geometry" ),
-                                   self.tr( "Layer '%1' updated" ).arg( self.inShape.currentText() ) )
+                                   self.tr( "Layer '{0}' updated" ).format( self.inShape.currentText() ) )
       else:
         QMessageBox.warning( self, self.tr( "Geometry" ), self.tr( "Error writing output shapefile." ) )
 
@@ -365,12 +365,12 @@ class geometryThread( QThread ):
     if not index == -1:
       unique = ftools_utils.getUniqueValues( vprovider, int( index ) )
     else:
-      unique = [ QVariant( QString() ) ]
+      unique = [ "" ]
     nFeat = vprovider.featureCount() * len( unique )
     nElement = 0
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0 )
     self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, nFeat ) )
-    merge_all = self.myField == QString( "--- " + self.tr( "Merge all" ) + " ---" )
+    merge_all = self.myField == "--- " + self.tr( "Merge all" ) + " ---"
     if not len( unique ) == self.vlayer.featureCount() or merge_all:
       for i in unique:
         multi_feature= []
@@ -381,8 +381,8 @@ class geometryThread( QThread ):
           if not merge_all:
             idVar = atMap[ index ]
           else:
-            idVar = QVariant( QString() )
-          if idVar.toString().trimmed() == i.toString().trimmed() or merge_all:
+            idVar = ""
+          if idVar.strip() == i.strip() or merge_all:
             if first:
               atts = atMap
               first = False
@@ -530,7 +530,7 @@ class geometryThread( QThread ):
     # 2 - ellipsoidal
     if self.myCalcType == 2:
       settings = QSettings()
-      ellips = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString()
+      ellips = settings.value( "/qgis/measure/ellipsoid", "WGS84" )
       crs = self.vlayer.crs().srsid()
     elif self.myCalcType == 1:
       mapCRS = self.parent.iface.mapCanvas().mapRenderer().destinationCrs()
@@ -568,7 +568,7 @@ class geometryThread( QThread ):
         atMap = inFeat.attributes()
         maxIndex = index1 if index1>index2 else index2
         if maxIndex>len(atMap):
-                atMap += [ QVariant() ] * ( index2+1 - len(atMap) )
+                atMap += [ "" ] * ( index2+1 - len(atMap) )
         atMap[ index1 ] = attr1
         if index1!=index2:
           atMap[ index2 ] = attr2
@@ -577,9 +577,9 @@ class geometryThread( QThread ):
       else:
         changeMap = {}
         changeMap[ inFeat.id() ] = {}
-        changeMap[ inFeat.id() ][ index1 ] = QVariant( attr1 )
+        changeMap[ inFeat.id() ][ index1 ] = attr1
         if index1!=index2:
-          changeMap[ inFeat.id() ][ index2 ] = QVariant( attr2 )
+          changeMap[ inFeat.id() ][ index2 ] = attr2
         vprovider.changeAttributeValues( changeMap )
 
     if self.writeShape:
@@ -663,7 +663,7 @@ class geometryThread( QThread ):
         point = QgsPoint( geom.asPoint() )
         polygon.append( point )
         if step <= 3:
-          attrs.append(QVariant( ids[ index ] ) )
+          attrs.append(ids[ index ] )
         step += 1
       feat.setAttributes(attrs)
       geometry = QgsGeometry().fromPolygon( [ polygon ] )
@@ -853,16 +853,16 @@ class geometryThread( QThread ):
     geometry = QgsGeometry().fromPolygon( [ rect ] )
     feat = QgsFeature()
     feat.setGeometry( geometry )
-    feat.setAttributes( [ QVariant( minx ),
-                          QVariant( miny ),
-                          QVariant( maxx ),
-                          QVariant( maxy ),
-                          QVariant( cntx ),
-                          QVariant( cnty ),
-                          QVariant( area ),
-                          QVariant( perim ),
-                          QVariant( height ),
-                          QVariant( width ) ] )
+    feat.setAttributes( [ minx,
+                          miny,
+                          maxx,
+                          maxy,
+                          cntx,
+                          cnty,
+                          area,
+                          perim,
+                          height,
+                          width ] )
     writer.addFeature( feat )
     self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, 100 ) )
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  0 )
@@ -916,16 +916,16 @@ class geometryThread( QThread ):
         geometry = QgsGeometry().fromPolygon( [ rect ] )
 
         outFeat.setGeometry( geometry )
-        outFeat.setAttributes( [ QVariant( minx ),
-                                 QVariant( miny ),
-                                 QVariant( maxx ),
-                                 QVariant( maxy ),
-                                 QVariant( cntx ),
-                                 QVariant( cnty ),
-                                 QVariant( area ),
-                                 QVariant( perim ),
-                                 QVariant( height ),
-                                 QVariant( width ) ] )
+        outFeat.setAttributes( [ minx,
+                                 miny,
+                                 maxx,
+                                 maxy,
+                                 cntx,
+                                 cnty,
+                                 area,
+                                 perim,
+                                 height,
+                                 width ] )
         writer.addFeature( outFeat )
     else:
       self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, vprovider.featureCount() ) )
@@ -953,16 +953,16 @@ class geometryThread( QThread ):
         geometry = QgsGeometry().fromPolygon( [ rect ] )
 
         outFeat.setGeometry( geometry )
-        outFeat.setAttributes( [ QVariant( minx ),
-                                 QVariant( miny ),
-                                 QVariant( maxx ),
-                                 QVariant( maxy ),
-                                 QVariant( cntx ),
-                                 QVariant( cnty ),
-                                 QVariant( area ),
-                                 QVariant( perim ),
-                                 QVariant( height ),
-                                 QVariant( width ) ] )
+        outFeat.setAttributes( [ minx,
+                                 miny,
+                                 maxx,
+                                 maxy,
+                                 cntx,
+                                 cnty,
+                                 area,
+                                 perim,
+                                 height,
+                                 width ] )
         writer.addFeature( outFeat )
 
     del writer

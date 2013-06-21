@@ -52,7 +52,7 @@ bool QgsFeatureSelectionModel::isSelected( QgsFeatureId fid )
 
 bool QgsFeatureSelectionModel::isSelected( const QModelIndex &index )
 {
-  return isSelected( index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toInt() );
+  return isSelected( index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong() );
 }
 
 void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, QItemSelectionModel::SelectionFlags command )
@@ -61,7 +61,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
 
   foreach ( const QModelIndex index, selection.indexes() )
   {
-    QgsFeatureId id = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toInt();
+    QgsFeatureId id = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
 
     ids << id;
   }

@@ -96,7 +96,7 @@ void QgsApplication::init( QString customConfigPath )
   // "/../../.." is for Mac bundled app in build directory
   foreach ( QString path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
   {
-    f.setFileName( prefixPath + path + "/path.txt" );
+    f.setFileName( prefixPath + path + "/qgisbuildpath.txt" );
     if ( f.exists() )
       break;
   }

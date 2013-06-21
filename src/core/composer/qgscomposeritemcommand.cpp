@@ -17,6 +17,7 @@
 
 #include "qgscomposeritemcommand.h"
 #include "qgscomposeritem.h"
+#include "qgsproject.h"
 
 QgsComposerItemCommand::QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent ):
     QUndoCommand( text, parent ), mItem( item ), mFirstRun( true )
@@ -74,6 +75,7 @@ void QgsComposerItemCommand::restoreState( QDomDocument& stateDoc ) const
   {
     mItem->readXML( stateDoc.documentElement().firstChild().toElement(), stateDoc );
     mItem->repaint();
+    QgsProject::instance()->dirty( true );
   }
 }
 

@@ -91,12 +91,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.progressBar.setValue(1)
             outPath = self.outShape.text()
             self.progressBar.setValue(2.5)
-            if outPath.contains("\\"):
-                outName = outPath.right((outPath.length() - outPath.lastIndexOf("\\")) - 1)
-            else:
-                outName = outPath.right((outPath.length() - outPath.lastIndexOf("/")) - 1)
-            if outName.endsWith(".shp"):
-                outName = outName.left(outName.length() - 4)
+            outName = ftools_utils.getShapefileName( outPath )
             self.progressBar.setValue(5)
             mLayer = ftools_utils.getMapLayerByName(unicode(inName))
             if mLayer.type() == mLayer.VectorLayer:
@@ -125,7 +120,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.progressBar.setValue(100)
             self.outShape.clear()
             addToTOC = QMessageBox.question(self, self.tr("Random Points"),
-            self.tr("Created output point shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(outPath), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+            self.tr("Created output point shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % (outPath), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
@@ -138,7 +133,7 @@ class Dialog(QDialog, Ui_Dialog):
         ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( QString( self.shapefileName ) )
+        self.outShape.setText( self.shapefileName )
 
 # combine all polygons in layer to create single polygon (slow for complex polygons)
     def createSinglePolygon(self, vlayer):
@@ -225,7 +220,7 @@ class Dialog(QDialog, Ui_Dialog):
         add = ( 100.00 - 70.00 ) / len(points)
         for i in points:
             outFeat.setGeometry(i)
-            outFeat.setAttribute(0, QVariant(idVar))
+            outFeat.setAttribute(0, idVar)
             writer.addFeature(outFeat)
             idVar = idVar + 1
             count = count + add
@@ -255,7 +250,7 @@ class Dialog(QDialog, Ui_Dialog):
                 value = int(round(numRand * sDistArea.measure(sGeom)))
             elif design == self.tr("field"):
                 sAtMap = sFeat.attributes()
-                value = sAtMap[index].toInt()[0]
+                value = sAtMap[index]
             else:
                 value = numRand
             sExt = sGeom.boundingBox()

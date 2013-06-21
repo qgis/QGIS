@@ -15,6 +15,8 @@ email                : sherman at mrcc.com
  *                                                                         *
  ***************************************************************************/
 
+#include "QTextCodec"
+
 #include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
@@ -247,6 +249,19 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** return OGR geometry type */
     static int getOgrGeomType( OGRLayerH ogrLayer );
 
+    /** Get single flatten geometry type */
+    static OGRwkbGeometryType ogrWkbSingleFlatten( OGRwkbGeometryType type );
+
+    QString layerName() { return mLayerName; }
+
+    QString filePath() { return mFilePath; }
+
+    int layerIndex() { return mLayerIndex; }
+
+    QTextCodec* textEncoding() { return mEncoding; }
+
+    QString quotedIdentifier( QString field );
+
   protected:
     /** loads fields from input file to member attributeFields */
     void loadFields();
@@ -262,6 +277,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
+    QString ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const;
+    OGRwkbGeometryType ogrWkbGeometryTypeFromName( QString typeName ) const;
     QgsFields mAttributeFields;
     OGRDataSourceH ogrDataSource;
     void *extent_;
@@ -280,6 +297,11 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     //! layer index
     int mLayerIndex;
+
+    /** Optional geometry type for layers with multiple geometries,
+     *  otherwise wkbUnknown. This type is always flatten (2D) and single, it means
+     *  that 2D, 25D, single and multi types are mixed in one sublayer */
+    OGRwkbGeometryType mOgrGeometryTypeFilter;
 
     //! current spatial filter
     QgsRectangle mFetchRect;
@@ -313,11 +335,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /**Deletes one feature*/
     bool deleteFeature( QgsFeatureId id );
 
-    QString quotedIdentifier( QString field );
-
     /**Calls OGR_L_SyncToDisk and recreates the spatial index if present*/
     bool syncToDisc();
 
     friend class QgsOgrFeatureIterator;
-    QgsOgrFeatureIterator* mActiveIterator; //!< pointer to currently active iterator (0 if none)
+    QSet< QgsOgrFeatureIterator*> mActiveIterators;
 };

@@ -45,7 +45,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.outSelector.setType( self.outSelector.FILE )
       self.recurseCheck.hide()
       # use this for approx. previous UI
-      #self.creationOptionsTable.setType(QgsRasterFormatSaveOptionsWidget.Table)
+      #self.creationOptionsWidget.setType(QgsRasterFormatSaveOptionsWidget.Table)
 
       self.outputFormat = Utils.fillRasterOutputFormat()
       self.extent = None
@@ -59,7 +59,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           (self.recurseCheck, SIGNAL("stateChanged(int)"), self.inputDirCheck),
           ( self.separateCheck, SIGNAL( "stateChanged( int )" ) ),
           ( self.pctCheck, SIGNAL( "stateChanged( int )" ) ),
-          ( self.intersectCheck, SIGNAL( "stateChanged( int )" ) )
+          ( self.intersectCheck, SIGNAL( "stateChanged( int )" ) ),
+          (self.creationOptionsWidget, SIGNAL("optionsChanged()")),
+          (self.creationOptionsGroupBox, SIGNAL("toggled(bool)"))
         ]
       )
 
@@ -88,20 +90,20 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillInputFilesEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       files = Utils.FileDialog.getOpenFileNames(self, self.tr( "Select the files to Merge" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if files.isEmpty():
+      if not files:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
       self.inSelector.setFilename(files)
 
   def refreshExtent(self):
       files = self.getInputFileNames()
-      self.intersectCheck.setEnabled( files.count() > 1 )
+      self.intersectCheck.setEnabled( len(files) > 1 )
 
       if not self.intersectCheck.isChecked():
         self.someValueChanged()
         return
 
-      if files.count() < 2:
+      if len(files) < 2:
         self.intersectCheck.setChecked( False )
         return
 
@@ -120,7 +122,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select where to save the Merge output" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if outputFile.isEmpty():
+      if not outputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -129,37 +131,37 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
   def fillInputDir( self ):
       inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files to Merge" ))
-      if inputDir.isEmpty():
+      if not inputDir:
         return
       self.inSelector.setFilename( inputDir )
 
   def getArguments(self):
-      arguments = QStringList()
+      arguments = []
       if self.intersectCheck.isChecked():
         if self.extent != None:
-          arguments << "-ul_lr"
-          arguments << str( self.extent.xMinimum() )
-          arguments << str( self.extent.yMaximum() )
-          arguments << str( self.extent.xMaximum() )
-          arguments << str( self.extent.yMinimum() )
+          arguments.append("-ul_lr")
+          arguments.append(str( self.extent.xMinimum() ))
+          arguments.append(str( self.extent.yMaximum() ))
+          arguments.append(str( self.extent.xMaximum() ))
+          arguments.append(str( self.extent.yMinimum() ))
       if self.noDataCheck.isChecked():
-        arguments << "-n"
-        arguments << str(self.noDataSpin.value())
+        arguments.append("-n")
+        arguments.append(str(self.noDataSpin.value()))
       if self.separateCheck.isChecked():
-        arguments << "-separate"
+        arguments.append("-separate")
       if self.pctCheck.isChecked():
-        arguments << "-pct"
-      if self.creationGroupBox.isChecked():
-        for opt in self.creationOptionsTable.options():
-          arguments << "-co"
-          arguments << opt
+        arguments.append("-pct")
+      if self.creationOptionsGroupBox.isChecked():
+        for opt in self.creationOptionsWidget.options():
+          arguments.append("-co")
+          arguments.append(opt)
       outputFn = self.getOutputFileName()
-      if not outputFn.isEmpty():
-        arguments << "-of"
-        arguments << self.outputFormat
-        arguments << "-o"
-        arguments << outputFn
-      arguments << self.getInputFileNames()
+      if outputFn:
+        arguments.append("-of")
+        arguments.append(self.outputFormat)
+        arguments.append("-o")
+        arguments.append(outputFn)
+      arguments.extend(self.getInputFileNames())
       return arguments
 
   def getOutputFileName(self):
@@ -168,12 +170,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def getInputFileName(self):
       if self.inputDirCheck.isChecked():
         return self.inSelector.filename()
-      return self.inSelector.filename().split(",", QString.SkipEmptyParts)
+      return self.inSelector.filename().split(",")
 
   def getInputFileNames(self):
       if self.inputDirCheck.isChecked():
         return Utils.getRasterFiles( self.inSelector.filename(), self.recurseCheck.isChecked() )
-      return self.inSelector.filename().split(",", QString.SkipEmptyParts)
+      return self.inSelector.filename().split(",")
 
   def addLayerIntoCanvas(self, fileInfo):
       self.iface.addRasterLayer(fileInfo.filePath())

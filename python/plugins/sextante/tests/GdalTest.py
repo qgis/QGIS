@@ -83,7 +83,7 @@ class GdalTest(unittest.TestCase):
         feature=features.next()
         attrs=feature.attributes()
         expectedvalues=["1","1.1","string a","2","1","string a"]
-        values=[str(attr.toString()) for attr in attrs]
+        values=[str(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt='POLYGON((270807.08580285 4458940.1594565,270798.42294527 4458914.62661676,270780.81854858 4458914.21983449,270763.52289518 4458920.715993,270760.3449542 4458926.6570575,270763.78234766 4458958.22561242,270794.30290024 4458942.16424502,270807.08580285 4458940.1594565))'
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
@@ -104,7 +104,7 @@ class GdalTest(unittest.TestCase):
             feature=features.next()
             attrs=feature.attributes()
             expectedvalues=["1","1.1","string a","2","1","string a"]
-            values=[str(attr.toString()) for attr in attrs]
+            values=[str(attr) for attr in attrs]
             self.assertEqual(expectedvalues, values)
             wkt='POLYGON((270807.08580285 4458940.1594565,270798.42294527 4458914.62661676,270780.81854858 4458914.21983449,270763.52289518 4458920.715993,270760.3449542 4458926.6570575,270763.78234766 4458958.22561242,270794.30290024 4458942.16424502,270807.08580285 4458940.1594565))'
             self.assertEqual(wkt, str(feature.geometry().exportToWkt()))

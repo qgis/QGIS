@@ -89,7 +89,7 @@ def checkCRSCompatibility( crsA, crsB ):
 
 # Convenience function to write vector layer to shapefile
 def writeVectorLayerToShape( vlayer, outputPath, encoding ):
-    mCodec = QTextCodec.codecForName( QString(encoding).toLocal8Bit().data() )
+    mCodec = QTextCodec.codecForName( encoding )
     if not mCodec:
         return False
     #Here we should check that the output path is valid
@@ -165,17 +165,17 @@ def testForUniqueness( fieldList1, fieldList2 ):
 
 # Create a unique field name based on input field name
 def createUniqueFieldName( field ):
-    check = field.name().right( 2 )
-    shortName = field.name().left( 8 )
-    if check.startsWith("_"):
-        ( val, test ) = check.right( 1 ).toInt()
-        if test:
+    check = field.name()[-2:]
+    shortName = field.name()[:8]
+    if check[0] == "_":
+        try:
+            val = int( check[-1:] )
             if val < 2:
                 val = 2
             else:
                 val = val + 1
-            field.setName( shortName.left( len( shortName )-1 ) + unicode( val ) )
-        else:
+            field.setName( shortName[len( shortName )-1:] + unicode( val ) )
+        except exceptions.ValueError:
             field.setName( shortName + "_2" )
     else:
         field.setName( shortName + "_2" )
@@ -183,10 +183,10 @@ def createUniqueFieldName( field ):
 
 # Return list of field names with more than 10 characters length
 def checkFieldNameLength( fieldList ):
-    longNames = QStringList()
+    longNames = []
     for field in fieldList:
-        if field.name().size() > 10:
-            longNames << unicode( field.name() )
+        if len ( field.name() ) > 10:
+            longNames.append( field.name() )
     return longNames
 
 # Return list of names of all layers in QgsMapLayerRegistry
@@ -195,15 +195,15 @@ def getLayerNames( vTypes ):
     layerlist = []
     if vTypes == "all":
         for name, layer in layermap.iteritems():
-            layerlist.append( unicode( layer.name() ) )
+            layerlist.append( layer.name() )
     else:
         for name, layer in layermap.iteritems():
             if layer.type() == QgsMapLayer.VectorLayer:
                 if layer.geometryType() in vTypes:
-                    layerlist.append( unicode( layer.name() ) )
+                    layerlist.append( layer.name() )
             elif layer.type() == QgsMapLayer.RasterLayer:
                 if "Raster" in vTypes:
-                    layerlist.append( unicode( layer.name() ) )
+                    layerlist.append( layer.name() )
     return sorted( layerlist, cmp=locale.strcoll )
 
 # Return list of names of all fields from input QgsVectorLayer
@@ -212,7 +212,7 @@ def getFieldNames( vlayer ):
     fieldlist = []
     for field in fieldmap:
         if not field.name() in fieldlist:
-            fieldlist.append( unicode( field.name() ) )
+            fieldlist.append( field.name() )
     return sorted( fieldlist, cmp=locale.strcoll )
 
 # Return QgsVectorLayer from a layer name ( as string )
@@ -279,42 +279,42 @@ def getUniqueValues( provider, index ):
 # Generate a save file dialog with a dropdown box for choosing encoding style
 def saveDialog( parent, filtering="Shapefiles (*.shp *.SHP)"):
     settings = QSettings()
-    dirName = settings.value( "/UI/lastShapefileDir" ).toString()
-    encode = settings.value( "/UI/encoding" ).toString()
-    fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, QString(filtering), encode )
-    fileDialog.setDefaultSuffix( QString( "shp" ) )
+    dirName = settings.value( "/UI/lastShapefileDir" )
+    encode = settings.value( "/UI/encoding" )
+    fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, filtering, encode )
+    fileDialog.setDefaultSuffix( "shp" )
     fileDialog.setFileMode( QFileDialog.AnyFile )
     fileDialog.setAcceptMode( QFileDialog.AcceptSave )
     fileDialog.setConfirmOverwrite( True )
     if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
     files = fileDialog.selectedFiles()
-    settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( files.first() ) ).absolutePath() ) )
-    return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
+    settings.setValue("/UI/lastShapefileDir", QFileInfo( unicode( files[0] ) ).absolutePath() )
+    return ( unicode( files[0] ), unicode( fileDialog.encoding() ) )
 
 # Generate a save file dialog with a dropdown box for choosing encoding style
 # with mode="SingleFile" will allow to select only one file, in other cases - several files
 def openDialog( parent, filtering="Shapefiles (*.shp *.SHP)", dialogMode="SingleFile"):
     settings = QSettings()
-    dirName = settings.value( "/UI/lastShapefileDir" ).toString()
-    encode = settings.value( "/UI/encoding" ).toString()
-    fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, QString(filtering), encode )
+    dirName = settings.value( "/UI/lastShapefileDir" )
+    encode = settings.value( "/UI/encoding" )
+    fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, filtering, encode )
     fileDialog.setFileMode( QFileDialog.ExistingFiles )
     fileDialog.setAcceptMode( QFileDialog.AcceptOpen )
     if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
     files = fileDialog.selectedFiles()
-    settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( files.first() ) ).absolutePath() ) )
+    settings.setValue("/UI/lastShapefileDir", QFileInfo( unicode( files[0] ) ).absolutePath() )
     if dialogMode == "SingleFile":
-      return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
+      return ( unicode( files[0] ), unicode( fileDialog.encoding() ) )
     else:
       return ( files, unicode( fileDialog.encoding() ) )
 
 # Generate a select directory dialog with a dropdown box for choosing encoding style
 def dirDialog( parent ):
     settings = QSettings()
-    dirName = settings.value( "/UI/lastShapefileDir" ).toString()
-    encode = settings.value( "/UI/encoding" ).toString()
+    dirName = settings.value( "/UI/lastShapefileDir" )
+    encode = settings.value( "/UI/encoding" )
     fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, encode )
     fileDialog.setFileMode( QFileDialog.DirectoryOnly )
     fileDialog.setAcceptMode( QFileDialog.AcceptSave )
@@ -322,8 +322,8 @@ def dirDialog( parent ):
     if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
     folders = fileDialog.selectedFiles()
-    settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( folders.first() ) ).absolutePath() ) )
-    return ( unicode( folders.first() ), unicode( fileDialog.encoding() ) )
+    settings.setValue("/UI/lastShapefileDir", QFileInfo( unicode( folders[0] ) ).absolutePath() )
+    return ( unicode( folders[0] ), unicode( fileDialog.encoding() ) )
 
 # Return field type from it's name
 def getFieldType(vlayer, fieldName):
@@ -338,7 +338,7 @@ def getUniqueValuesCount( vlayer, fieldIndex, useSelection ):
     if useSelection:
         selection = vlayer.selectedFeatures()
         for f in selection:
-            v = f.attributes()[ fieldIndex ].toString()
+            v = f.attributes()[ fieldIndex ]
             if v not in values:
                 values.append( v )
                 count += 1
@@ -346,7 +346,7 @@ def getUniqueValuesCount( vlayer, fieldIndex, useSelection ):
         feat = QgsFeature()
         fit = vlayer.dataProvider().getFeatures()
         while fit.nextFeature( feat ):
-            v = feat.attributes()[ fieldIndex ].toString()
+            v = feat.attributes()[ fieldIndex ]
             if v not in values:
                 values.append( v )
                 count += 1
@@ -364,7 +364,7 @@ def getGeomType(gT):
     return gTypeListPoint
 
 def getShapesByGeometryType( baseDir, inShapes, geomType ):
-  outShapes = QStringList()
+  outShapes = []
   for fileName in inShapes:
     layerPath = QFileInfo( baseDir + "/" + fileName ).absoluteFilePath()
     vLayer = QgsVectorLayer( layerPath, QFileInfo( layerPath ).baseName(), "ogr" )
@@ -372,13 +372,21 @@ def getShapesByGeometryType( baseDir, inShapes, geomType ):
       continue
     layerGeometry = vLayer.geometryType()
     if layerGeometry == QGis.Polygon and geomType == 0:
-      outShapes << fileName
+      outShapes.append(fileName)
     elif layerGeometry == QGis.Line and geomType == 1:
-      outShapes << fileName
+      outShapes.append(fileName)
     elif layerGeometry == QGis.Point and geomType == 2:
-      outShapes << fileName
+      outShapes.append(fileName)
 
-  if outShapes.count() == 0:
+  if len(outShapes) == 0:
     return None
 
   return outShapes
+
+def getShapefileName( outPath, extension='.shp' ):
+    import os.path
+    outName=os.path.basename(outPath)
+    if outName.endswith(extension):
+        outName=outName[:-len(extension)]
+    return outName
+

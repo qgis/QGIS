@@ -347,6 +347,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     mMaxHeightLineEdit->setText( QString::number( maxHeight ) );
   }
 
+  mWFSUrlLineEdit->setText( QgsProject::instance()->readEntry( "WFSUrl", "/", "" ) );
   QStringList wfsLayerIdList = QgsProject::instance()->readListEntry( "WFSLayers", "/" );
   QStringList wfstUpdateLayerIdList = QgsProject::instance()->readListEntry( "WFSTLayers", "Update" );
   QStringList wfstInsertLayerIdList = QgsProject::instance()->readListEntry( "WFSTLayers", "Insert" );
@@ -740,6 +741,7 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->writeEntry( "WMSMaxHeight", "/", maxHeightText.toInt() );
   }
 
+  QgsProject::instance()->writeEntry( "WFSUrl", "/", mWFSUrlLineEdit->text() );
   QStringList wfsLayerList;
   QStringList wfstUpdateLayerList;
   QStringList wfstInsertLayerList;

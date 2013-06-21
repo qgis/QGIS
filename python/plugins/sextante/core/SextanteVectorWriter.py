@@ -47,7 +47,7 @@ class SextanteVectorWriter:
 
         if encoding is None:
             settings = QSettings()
-            encoding = settings.value("/SextanteQGIS/encoding", "System").toString()
+            encoding = settings.value("/SextanteQGIS/encoding", "System")
 
         if self.fileName.startswith(self.MEMORY_LAYER_PREFIX):
             self.isMemory = True

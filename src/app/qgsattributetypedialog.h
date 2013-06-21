@@ -101,6 +101,12 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
     void setFieldEditable( bool editable );
 
     /**
+     * Setter for checkbox to label on top
+     * @param bool onTop
+     */
+    void setLabelOnTop( bool onTop );
+
+    /**
      * Getter for checked state after editing
      * @return string representing the checked
      */
@@ -137,6 +143,11 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
      * Getter for checkbox for editable state of field
      */
     bool fieldEditable();
+
+    /**
+     * Getter for checkbox for label on top of field
+     */
+    bool labelOnTop();
 
   private slots:
     /**
@@ -194,6 +205,7 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
     void updateMap( const QMap<QString, QVariant> &map );
 
     bool mFieldEditable;
+    bool mLabelOnTop;
 
     QMap<QString, QVariant> mValueMap;
 

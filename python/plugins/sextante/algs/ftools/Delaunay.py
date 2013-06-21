@@ -111,7 +111,7 @@ class Delaunay(GeoAlgorithm):
                 point = QgsPoint(geom.asPoint())
                 polygon.append(point)
                 if step <= 3:
-                    attrs.append(QVariant(ids[index]))
+                    attrs.append(ids[index])
                 step += 1
             feat.setAttributes(attrs)
             geometry = QgsGeometry().fromPolygon([polygon])

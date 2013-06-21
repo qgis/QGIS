@@ -68,7 +68,6 @@ email                : tim at linfiniti.com
 #include <QTime>
 
 // typedefs for provider plugin functions of interest
-typedef void buildsupportedrasterfilefilter_t( QString & theFileFiltersString );
 typedef bool isvalidrasterfilename_t( QString const & theFileNameQString, QString & retErrMsg );
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
@@ -162,26 +161,6 @@ QgsRasterLayer::~QgsRasterLayer()
 // Static Methods and members
 //
 /////////////////////////////////////////////////////////
-/**
-  Builds the list of file filter strings to later be used by
-  QgisApp::addRasterLayer()
-  We query GDAL for a list of supported raster formats; we then build
-  a list of file filter strings from that list.  We return a string
-  that contains this list that is suitable for use in a
-  QFileDialog::getOpenFileNames() call.
-*/
-void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersString )
-{
-  QgsDebugMsg( "Entered" );
-  buildsupportedrasterfilefilter_t *pBuild = ( buildsupportedrasterfilefilter_t * ) cast_to_fptr( QgsProviderRegistry::instance()->function( "gdal", "buildSupportedRasterFileFilter" ) );
-  if ( ! pBuild )
-  {
-    QgsDebugMsg( "Could get buildSupportedRasterFileFilter in gdal provider library" );
-    return;
-  }
-
-  pBuild( theFileFiltersString );
-}
 
 /**
  * This helper checks to see whether the file name appears to be a valid raster file name
@@ -243,7 +222,7 @@ const QString QgsRasterLayer::bandName( int theBandNo )
   return dataProvider()->generateBandName( theBandNo );
 }
 
-void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawingStyle )
+void QgsRasterLayer::setRendererForDrawingStyle( const QgsRaster::DrawingStyle &  theDrawingStyle )
 {
   setRenderer( QgsRasterRendererRegistry::instance()->defaultRendererForDrawingStyle( theDrawingStyle, mDataProvider ) );
 }
@@ -788,7 +767,7 @@ void QgsRasterLayer::init()
 {
   mRasterType = QgsRasterLayer::GrayOrUndefined;
 
-  setRendererForDrawingStyle( QgsRasterLayer::UndefinedDrawingStyle );
+  setRendererForDrawingStyle( QgsRaster::UndefinedDrawingStyle );
 
   //Initialize the last view port structure, should really be a class
   mLastViewPort.mWidth = 0;
@@ -895,16 +874,16 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   QgsDebugMsg( "mRasterType = " + QString::number( mRasterType ) );
   if ( mRasterType == ColorLayer )
   {
-    QgsDebugMsg( "Setting drawing style to SingleBandColorDataStyle " + QString::number( SingleBandColorDataStyle ) );
-    setRendererForDrawingStyle( SingleBandColorDataStyle );
+    QgsDebugMsg( "Setting drawing style to SingleBandColorDataStyle " + QString::number( QgsRaster::SingleBandColorDataStyle ) );
+    setRendererForDrawingStyle( QgsRaster::SingleBandColorDataStyle );
   }
   else if ( mRasterType == Palette && mDataProvider->colorInterpretation( 1 ) == QgsRaster::PaletteIndex )
   {
-    setRendererForDrawingStyle( PalettedColor ); //sensible default
+    setRendererForDrawingStyle( QgsRaster::PalettedColor ); //sensible default
   }
   else if ( mRasterType == Palette && mDataProvider->colorInterpretation( 1 ) == QgsRaster::ContinuousPalette )
   {
-    setRendererForDrawingStyle( SingleBandPseudoColor );
+    setRendererForDrawingStyle( QgsRaster::SingleBandPseudoColor );
     // Load color table
     QList<QgsColorRampShader::ColorRampItem> colorTable = mDataProvider->colorTable( 1 );
     QgsSingleBandPseudoColorRenderer* r = dynamic_cast<QgsSingleBandPseudoColorRenderer*>( renderer() );
@@ -921,11 +900,11 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   }
   else if ( mRasterType == Multiband )
   {
-    setRendererForDrawingStyle( MultiBandColor );  //sensible default
+    setRendererForDrawingStyle( QgsRaster::MultiBandColor );  //sensible default
   }
   else                        //GrayOrUndefined
   {
-    setRendererForDrawingStyle( SingleBandGray );  //sensible default
+    setRendererForDrawingStyle( QgsRaster::SingleBandGray );  //sensible default
   }
 
   // Auto set alpha band
@@ -1149,52 +1128,52 @@ void QgsRasterLayer::setDefaultContrastEnhancement()
 void QgsRasterLayer::setDrawingStyle( QString const & theDrawingStyleQString )
 {
   QgsDebugMsg( "DrawingStyle = " + theDrawingStyleQString );
-  DrawingStyle drawingStyle;
+  QgsRaster::DrawingStyle drawingStyle;
   if ( theDrawingStyleQString == "SingleBandGray" )//no need to tr() this its not shown in ui
   {
-    drawingStyle = SingleBandGray;
+    drawingStyle = QgsRaster::SingleBandGray;
   }
   else if ( theDrawingStyleQString == "SingleBandPseudoColor" )//no need to tr() this its not shown in ui
   {
-    drawingStyle = SingleBandPseudoColor;
+    drawingStyle = QgsRaster::SingleBandPseudoColor;
   }
   else if ( theDrawingStyleQString == "PalettedColor" )//no need to tr() this its not shown in ui
   {
-    drawingStyle = PalettedColor;
+    drawingStyle = QgsRaster::PalettedColor;
   }
   else if ( theDrawingStyleQString == "PalettedSingleBandGray" )//no need to tr() this its not shown in ui
   {
-    drawingStyle = PalettedSingleBandGray;
+    drawingStyle = QgsRaster::PalettedSingleBandGray;
   }
   else if ( theDrawingStyleQString == "PalettedSingleBandPseudoColor" )//no need to tr() this its not shown in ui
   {
-    drawingStyle = PalettedSingleBandPseudoColor;
+    drawingStyle = QgsRaster::PalettedSingleBandPseudoColor;
   }
   else if ( theDrawingStyleQString == "PalettedMultiBandColor" )//no need to tr() this its not shown in ui
   {
-    drawingStyle = PalettedMultiBandColor;
+    drawingStyle = QgsRaster::PalettedMultiBandColor;
   }
   else if ( theDrawingStyleQString == "MultiBandSingleBandGray" )//no need to tr() this its not shown in ui
   {
-    drawingStyle = MultiBandSingleBandGray;
+    drawingStyle = QgsRaster::MultiBandSingleBandGray;
   }
   else if ( theDrawingStyleQString == "MultiBandSingleBandPseudoColor" )//no need to tr() this its not shown in ui
   {
-    drawingStyle = MultiBandSingleBandPseudoColor;
+    drawingStyle = QgsRaster::MultiBandSingleBandPseudoColor;
   }
   else if ( theDrawingStyleQString == "MultiBandColor" )//no need to tr() this its not shown in ui
   {
-    drawingStyle = MultiBandColor;
+    drawingStyle = QgsRaster::MultiBandColor;
   }
   else if ( theDrawingStyleQString == "SingleBandColorDataStyle" )//no need to tr() this its not shown in ui
   {
-    QgsDebugMsg( "Setting drawingStyle to SingleBandColorDataStyle " + QString::number( SingleBandColorDataStyle ) );
-    drawingStyle = SingleBandColorDataStyle;
+    QgsDebugMsg( "Setting drawingStyle to SingleBandColorDataStyle " + QString::number( QgsRaster::SingleBandColorDataStyle ) );
+    drawingStyle = QgsRaster::SingleBandColorDataStyle;
     QgsDebugMsg( "Setted drawingStyle to " + QString::number( drawingStyle ) );
   }
   else
   {
-    drawingStyle = UndefinedDrawingStyle;
+    drawingStyle = QgsRaster::UndefinedDrawingStyle;
   }
   setRendererForDrawingStyle( drawingStyle );
 }
@@ -1490,9 +1469,9 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
   bool res = readSymbology( layer_node, theError );
 
   // old wms settings we need to correct
-  if ( res && mProviderKey == "wms" && (!renderer() || renderer()->type() != "singlebandcolordata") )
+  if ( res && mProviderKey == "wms" && ( !renderer() || renderer()->type() != "singlebandcolordata" ) )
   {
-    setRendererForDrawingStyle( SingleBandColorDataStyle );
+    setRendererForDrawingStyle( QgsRaster::SingleBandColorDataStyle );
   }
 
   // Check timestamp

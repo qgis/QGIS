@@ -41,11 +41,14 @@ email                : jef at norbit dot de
 QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
+
+  QString tableName = index.sibling( index.row(), QgsOracleTableModel::dbtmTable ).data( Qt::DisplayRole ).toString();
+  if ( tableName.isEmpty() )
+    return 0;
+
   if ( index.column() == QgsOracleTableModel::dbtmSql )
   {
-    QLineEdit *le = new QLineEdit( parent );
-    le->setText( index.data( Qt::DisplayRole ).toString() );
-    return le;
+    return new QLineEdit( parent );
   }
 
   if ( index.column() == QgsOracleTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
@@ -63,7 +66,6 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
     {
       cb->addItem( QgsOracleTableModel::iconForWkbType( type ), QgsOracleConn::displayStringForWkbType( type ), type );
     }
-    cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
     return cb;
   }
 
@@ -76,9 +78,7 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
     QStringList values = index.data( Qt::UserRole + 2 ).toStringList();
     if ( values.size() == 0 )
     {
-      QString tableName = index.sibling( index.row(), QgsOracleTableModel::dbtmTable ).data( Qt::DisplayRole ).toString();
       QString ownerName = index.sibling( index.row(), QgsOracleTableModel::dbtmOwner ).data( Qt::DisplayRole ).toString();
-
       values = mConn->pkCandidates( ownerName, tableName );
     }
 
@@ -89,7 +89,6 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
     {
       QComboBox *cb = new QComboBox( parent );
       cb->addItems( values );
-      cb->setCurrentIndex( cb->findText( index.data( Qt::DisplayRole ).toString() ) );
       return cb;
     }
   }
@@ -98,11 +97,36 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
   {
     QLineEdit *le = new QLineEdit( parent );
     le->setValidator( new QIntValidator( -1, 999999, parent ) );
-    le->insert( index.data( Qt::DisplayRole ).toString() );
     return le;
   }
 
   return 0;
+}
+
+void QgsOracleSourceSelectDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+{
+  QString value( index.data( Qt::DisplayRole ).toString() );
+
+  QComboBox *cb = qobject_cast<QComboBox* >( editor );
+  if ( cb )
+  {
+    if ( index.column() == QgsOracleTableModel::dbtmType )
+      cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
+
+    if ( index.column() == QgsOracleTableModel::dbtmPkCol && index.data( Qt::UserRole + 2 ).toBool() )
+      cb->setCurrentIndex( cb->findText( value ) );
+  }
+
+  QLineEdit *le = qobject_cast<QLineEdit*>( editor );
+  if ( le )
+  {
+    bool ok;
+    value.toInt( &ok );
+    if ( index.column() == QgsOracleTableModel::dbtmSrid && !ok )
+      value = "";
+
+    le->setText( value );
+  }
 }
 
 void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
@@ -120,14 +144,24 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
     }
     else if ( index.column() == QgsOracleTableModel::dbtmPkCol )
     {
-      model->setData( index, cb->currentText() );
-      model->setData( index, cb->currentText(), Qt::UserRole + 2 );
+      QString value( cb->currentText() );
+      model->setData( index, value.isEmpty() ? tr( "Select..." ) : value );
+      model->setData( index, !value.isEmpty(), Qt::UserRole + 2 );
     }
   }
 
   QLineEdit *le = qobject_cast<QLineEdit *>( editor );
   if ( le )
-    model->setData( index, le->text() );
+  {
+    QString value( le->text() );
+
+    if ( index.column() == QgsOracleTableModel::dbtmSrid && value.isEmpty() )
+    {
+      value = tr( "Enter..." );
+    }
+
+    model->setData( index, value );
+  }
 }
 
 QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WFlags fl, bool managerMode, bool embeddedMode )

@@ -222,7 +222,9 @@ class QgsPalLayerSettings
     QgsExpression* getLabelExpression();
 
     QFont textFont;
+    //QString textFontFamily;
     QString textNamedStyle;
+    //bool textFontFound;
     bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
     QColor textColor;
     int textTransp;

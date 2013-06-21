@@ -66,7 +66,7 @@ class UniqueValues(GeoAlgorithm):
         values = utils.getUniqueValues(layer, layer.fieldNameIndex(fieldName))
         self.createHTML(outputFile, values)
         self.setOutputValue(self.TOTAL_VALUES, len(values))
-        self.setOutputValue(self.UNIQUE_VALUES, ";".join([unicode(v.toString()) for v in values]))
+        self.setOutputValue(self.UNIQUE_VALUES, ";".join([unicode(v) for v in values]))
 
     def createHTML(self, outputFile, algData):
         f = codecs.open(outputFile, "w", encoding="utf-8")
@@ -76,6 +76,6 @@ class UniqueValues(GeoAlgorithm):
         f.write("<p>Unique values:</p>")
         f.write("<ul>")
         for s in algData:
-            f.write("<li>" + unicode(s.toString()) + "</li>")
+            f.write("<li>" + unicode(s) + "</li>")
         f.write("</ul></body></html>")
         f.close()

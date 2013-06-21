@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : Oct 13, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -61,8 +61,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
 
 	def setupWorkingMode(self, mode):
-		""" hide the widget to select a layer/file if the input layer
-			is already set """
+		""" hide the widget to select a layer/file if the input layer is already set """
 		self.wdgInput.setVisible( mode == self.ASK_FOR_INPUT_MODE )
 		self.resize( 200, 200 )
 
@@ -110,8 +109,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 				self.cboInputLayer.addItem( layer.name(), index )
 
 	def deleteInputLayer(self):
-		""" unset the input layer, then destroy it but only if it was
-			created from this dialog """
+		""" unset the input layer, then destroy it but only if it was created from this dialog """
 		if self.mode == self.ASK_FOR_INPUT_MODE and self.inLayer:
 			if self.inLayerMustBeDestroyed:
 				self.inLayer.deleteLater()
@@ -124,10 +122,10 @@ class DlgImportVector(QDialog, Ui_Dialog):
 		vectorFormats = qgis.core.QgsProviderRegistry.instance().fileVectorFilters()
 		# get last used dir and format
 		settings = QSettings()
-		lastDir = settings.value("/db_manager/lastUsedDir", "").toString()
-		lastVectorFormat = settings.value("/UI/lastVectorFileFilter", "").toString()
+		lastDir = settings.value("/db_manager/lastUsedDir", "")
+		lastVectorFormat = settings.value("/UI/lastVectorFileFilter", "")
 		# ask for a filename
-		filename = QFileDialog.getOpenFileName(self, "Choose the file to import", lastDir, vectorFormats, lastVectorFormat)
+		filename = QFileDialog.getOpenFileName(self, self.tr("Choose the file to import"), lastDir, vectorFormats, lastVectorFormat)
 		if filename == "":
 			return
 		# store the last used dir and format
@@ -167,7 +165,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 			self.inLayerMustBeDestroyed = True
 
 		else:
-			legendIndex = self.cboInputLayer.itemData( index ).toInt()[0]
+			legendIndex = self.cboInputLayer.itemData( index )
 			self.inLayer = iface.legendInterface().layers()[ legendIndex ]
 			self.inLayerMustBeDestroyed = False
 
@@ -236,23 +234,25 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
 		# sanity checks
 		if self.inLayer is None:
-			QMessageBox.information(self, "Import to database", "Input layer missing or not valid")
+			QMessageBox.information(self, self.tr("Import to database"), self.tr("Input layer missing or not valid"))
 			return
 
 		if self.cboTable.currentText() == "":
-			QMessageBox.information(self, "Import to database", "Output table name is required")
+			QMessageBox.information(self, self.tr("Import to database"), self.tr("Output table name is required"))
 			return
 
 		if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
-			sourceSrid, ok = self.editSourceSrid.text().toInt()
-			if not ok:
-				QMessageBox.information(self, "Import to database", "Invalid source srid: must be an integer")
+			try:
+				sourceSrid = self.editSourceSrid.text()
+			except ValueError:
+				QMessageBox.information(self, self.tr("Import to database"), self.tr("Invalid source srid: must be an integer"))
 				return
 
 		if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
-			targetSrid, ok = self.editTargetSrid.text().toInt()
-			if not ok:
-				QMessageBox.information(self, "Import to database", "Invalid target srid: must be an integer")
+			try:
+				targetSrid = self.editTargetSrid.text()
+			except ValueError:
+				QMessageBox.information(self, self.tr("Import to database"), self.tr("Invalid target srid: must be an integer"))
 				return
 
 		# override cursor
@@ -291,12 +291,12 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
 			outCrs = None
 			if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
-				targetSrid = self.editTargetSrid.text().toInt()[0]
+				targetSrid = int(self.editTargetSrid.text())
 				outCrs = qgis.core.QgsCoordinateReferenceSystem(targetSrid)
 
 			# update input layer crs and encoding
 			if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
-				sourceSrid = self.editSourceSrid.text().toInt()[0]
+				sourceSrid = int(self.editSourceSrid.text())
 				inCrs = qgis.core.QgsCoordinateReferenceSystem(sourceSrid)
 				self.inLayer.setCrs( inCrs )
 
@@ -319,8 +319,8 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
 		if ret != 0:
 			output = qgis.gui.QgsMessageViewer()
-			output.setTitle( "Import to database" )
-			output.setMessageAsPlainText( u"Error %d\n%s" % (ret, errMsg) )
+			output.setTitle( self.tr("Import to database") )
+			output.setMessageAsPlainText( self.tr("Error %d\n%s") % (ret, errMsg) )
 			output.showMessage()
 			return
 
@@ -328,7 +328,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 		if self.chkSpatialIndex.isEnabled() and self.chkSpatialIndex.isChecked():
 			self.db.connector.createSpatialIndex( (schema, table), geom )
 
-		QMessageBox.information(self, "Import to database", "Import was successful.")
+		QMessageBox.information(self, self.tr("Import to database"), self.tr("Import was successful."))
 		return QDialog.accept(self)
 
 

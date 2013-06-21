@@ -43,7 +43,6 @@ Builder::Builder( std::string theFname,
     fetchedprims( 0 ),
     fetchedtexts( 0 ),
     ignoringBlock( false ),
-    awaiting_polyline_vertices( 0 ),
     current_polyline_pointcount( 0 ),
     currentBlockX( 0.0 ),
     currentBlockY( 0.0 )

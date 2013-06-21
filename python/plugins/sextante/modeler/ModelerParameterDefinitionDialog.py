@@ -237,7 +237,7 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             if self.parentCombo.currentIndex() < 0:
                 QMessageBox.critical(self, "Unable to define parameter", "Wrong or missing parameter values")
                 return
-            parent = self.parentCombo.itemData(self.parentCombo.currentIndex()).toPyObject()
+            parent = self.parentCombo.itemData(self.parentCombo.currentIndex())
             self.param = ParameterTableField(name, description, parent)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_RASTER or isinstance(self.param, ParameterRaster):
             self.param = ParameterRaster(name, description, self.yesNoCombo.currentIndex() == 1)

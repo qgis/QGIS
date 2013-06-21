@@ -40,10 +40,10 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void writeSettingsToLayer();
 
   public slots:
+    void init();
     void collapseSample( bool collapse );
     void apply();
     void changeTextColor( const QColor &color );
-    void changeTextFont();
     void showEngineConfigDialog();
     void showExpressionDialog();
     void changeBufferColor( const QColor &color );
@@ -57,6 +57,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void on_mPreviewSizeSlider_valueChanged( int i );
     void on_mFontSizeSpinBox_valueChanged( double d );
     void on_mFontCapitalsComboBox_currentIndexChanged( int index );
+    void on_mFontFamilyCmbBx_currentFontChanged( const QFont& f );
     void on_mFontStyleComboBox_currentIndexChanged( const QString & text );
     void on_mFontUnderlineBtn_toggled( bool ckd );
     void on_mFontStrikethroughBtn_toggled( bool ckd );
@@ -81,9 +82,9 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void on_mDirectSymbRightToolBtn_clicked();
 
   protected:
+    void blockInitSignals( bool block );
     void blockFontChangeSignals( bool blk );
     void setPreviewBackground( QColor color );
-    void updateFontViaStyle( const QString & fontstyle );
     void syncDefinedCheckboxFrame( QgsDataDefinedButton* ddBtn, QCheckBox* chkBx, QFrame* f );
     void populateFontCapitalsComboBox();
     void populateFontStyleComboBox();
@@ -105,6 +106,10 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     QButtonGroup* mDirectSymbBtnGrp;
     QButtonGroup* mUpsidedownBtnGrp;
 
+    QButtonGroup* mPlacePointBtnGrp;
+    QButtonGroup* mPlaceLineBtnGrp;
+    QButtonGroup* mPlacePolygonBtnGrp;
+
     // background reference font
     QFont mRefFont;
     int mPreviewSize;
@@ -113,8 +118,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
 
     bool mLoadSvgParams;
 
-    void disableDataDefinedAlignment();
-    void enableDataDefinedAlignment();
+    void enableDataDefinedAlignment( bool enable );
 
   private slots:
     void optionsStackedWidget_CurrentChanged( int indx );

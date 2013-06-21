@@ -846,8 +846,12 @@ bool QgsRasterBlock::createNoDataBitmap()
 
 QRect QgsRasterBlock::subRect( const QgsRectangle & theExtent, int theWidth, int theHeight, const QgsRectangle &  theSubExtent )
 {
+  QgsDebugMsg( "theExtent = " + theExtent.toString() );
+  QgsDebugMsg( "theSubExtent = " + theSubExtent.toString() );
   double xRes = theExtent.width() / theWidth;
   double yRes = theExtent.height() / theHeight;
+
+  QgsDebugMsg( QString( "theWidth = %1 theHeight = %2 xRes = %3 yRes = %4" ).arg( theWidth ).arg( theHeight ).arg( xRes ).arg( yRes ) );
 
   int top = 0;
   int bottom = theHeight - 1;
@@ -871,5 +875,7 @@ QRect QgsRasterBlock::subRect( const QgsRectangle & theExtent, int theWidth, int
   {
     right = qRound(( theSubExtent.xMaximum() - theExtent.xMinimum() ) / xRes ) - 1;
   }
-  return QRect( left, top, right - left + 1, bottom - top + 1 );
+  QRect subRect = QRect( left, top, right - left + 1, bottom - top + 1 );
+  QgsDebugMsg( QString( "subRect: %1 %2 %3 %4" ).arg( subRect.x() ).arg( subRect.y() ).arg( subRect.width() ).arg( subRect.height() ) );
+  return subRect;
 }

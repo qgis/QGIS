@@ -69,7 +69,7 @@ void TestStyleV2::initTestCase()
   QgsApplication::showSettings();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( "QuantumGIS" );
+  QCoreApplication::setOrganizationName( "QGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );
   QCoreApplication::setApplicationName( "QGIS-TEST" );
 

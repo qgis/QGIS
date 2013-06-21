@@ -53,9 +53,18 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
   private slots:
     /**Sets the GUI elements to the values of mPicture*/
     void setGuiElementValues();
+    /** Load SVG and pixel-based image previews
+     * @param collapsed Whether the parent group box is collapsed
+     * @note added in 1.9
+     */
+    void loadPicturePreviews( bool collapsed );
 
   private:
     QgsComposerPicture* mPicture;
+    /** Whether the picture selection previews have been loaded
+     * @note added in 1.9
+     */
+    bool mPreviewsLoaded;
 
     /**Add the icons of a directory to the preview. Returns 0 in case of success*/
     int addDirectoryToPreview( const QString& path );

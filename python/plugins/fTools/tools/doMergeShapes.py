@@ -48,20 +48,20 @@ class Dialog( QDialog, Ui_Dialog ):
 
   def inputDir( self ):
     settings = QSettings()
-    lastDir = settings.value( "/fTools/lastShapeDir", "." ).toString()
+    lastDir = settings.value( "/fTools/lastShapeDir", "." )
     inDir = QFileDialog.getExistingDirectory( self,
               self.tr( "Select directory with shapefiles to merge" ),
               lastDir )
 
-    if inDir.isEmpty():
+    if not inDir:
       return
 
     workDir = QDir( inDir )
     workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-    nameFilter = QStringList() << "*.shp" << "*.SHP"
+    nameFilter = [ "*.shp", "*.SHP" ]
     workDir.setNameFilters( nameFilter )
     self.inputFiles = workDir.entryList()
-    if self.inputFiles.count() == 0:
+    if len( self.inputFiles ) == 0:
       QMessageBox.warning( self, self.tr( "No shapefiles found" ),
         self.tr( "There are no shapefiles in this directory. Please select another one." ) )
       self.inputFiles = None
@@ -69,7 +69,7 @@ class Dialog( QDialog, Ui_Dialog ):
 
     settings.setValue( "/fTools/lastShapeDir", inDir )
 
-    self.progressFiles.setRange( 0, self.inputFiles.count() )
+    self.progressFiles.setRange( 0, len( self.inputFiles ) )
     self.leInputDir.setText( inDir )
 
   def outFile( self ):
@@ -84,13 +84,13 @@ class Dialog( QDialog, Ui_Dialog ):
       self.inputFiles = None
       return
 
-    self.inputFiles = QStringList()
+    self.inputFiles = []
     for f in files:
       fileName = QFileInfo( f ).fileName()
       self.inputFiles.append( fileName )
 
-    self.progressFiles.setRange( 0, self.inputFiles.count() )
-    self.leInputDir.setText( files.join( ";" ) )
+    self.progressFiles.setRange( 0, len( self.inputFiles ) )
+    self.leInputDir.setText( ";".join( files ) )
 
   def changeMode( self ):
     if self.chkListMode.isChecked():
@@ -109,7 +109,7 @@ class Dialog( QDialog, Ui_Dialog ):
   def updateOutFile( self ):
     self.outFileName = self.leOutShape.text()
     settings = QSettings()
-    self.outEncoding = settings.value( "/UI/encoding" ).toString()
+    self.outEncoding = settings.value( "/UI/encoding" )
 
   def reject( self ):
     QDialog.reject( self )
@@ -118,10 +118,10 @@ class Dialog( QDialog, Ui_Dialog ):
     if self.inputFiles is None:
       workDir = QDir( self.leInputDir.text() )
       workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-      nameFilter = QStringList() << "*.shp" << "*.SHP"
+      nameFilter = [ "*.shp" << "*.SHP" ]
       workDir.setNameFilters( nameFilter )
       self.inputFiles = workDir.entryList()
-      if self.inputFiles.count() == 0:
+      if len( self.inputFiles ) == 0:
         QMessageBox.warning( self, self.tr( "No shapefiles found" ),
           self.tr( "There are no shapefiles in this directory. Please select another one." ) )
         self.inputFiles = None
@@ -143,12 +143,12 @@ class Dialog( QDialog, Ui_Dialog ):
         QMessageBox.warning( self, self.tr( "No shapefiles found" ),
           self.tr( "There are no shapefiles with the given geometry type. Please select an available geometry type." ) )
         return
-      self.progressFiles.setRange( 0, self.inputFiles.count() )
+      self.progressFiles.setRange( 0, len( self.inputFiles ) )
 
     outFile = QFile( self.outFileName )
     if outFile.exists():
       if not QgsVectorFileWriter.deleteShapeFile( self.outFileName ):
-        QMessageBox.warning( self, self.tr( "Delete error" ), self.tr( "Can't delete file %1" ).arg( self.outFileName ) )
+        QMessageBox.warning( self, self.tr( "Delete error" ), self.tr( "Can't delete file %s" ) % ( self.outFileName ) )
         return
 
     if self.inEncoding == None:
@@ -197,8 +197,7 @@ class Dialog( QDialog, Ui_Dialog ):
     if self.chkAddToCanvas.isChecked():
       if not ftools_utils.addShapeToCanvas( unicode( self.outFileName ) ):
         QMessageBox.warning( self, self.tr( "Merging" ),
-                             self.tr( "Error loading output shapefile:\n%1" )
-                             .arg( unicode( self.outFileName ) ) )
+                             self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( self.outFileName ) ) )
 
     self.restoreGui()
 
@@ -307,7 +306,7 @@ class ShapeMergeThread( QThread ):
       inGeom = QgsGeometry()
       fit = vprovider.getFeatures()
       while fit.nextFeature( inFeat ):
-        mergedAttrs = [QVariant()] * len(mergedFields)
+        mergedAttrs = [""] * len(mergedFields)
 
         # fill available attributes with values
         fieldIndex = 0

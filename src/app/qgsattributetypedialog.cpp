@@ -99,9 +99,19 @@ bool QgsAttributeTypeDialog::fieldEditable()
   return isFieldEditableCheckBox->isChecked();
 }
 
+bool QgsAttributeTypeDialog::labelOnTop()
+{
+  return labelOnTopCheckBox->isChecked();
+}
+
 void QgsAttributeTypeDialog::setFieldEditable( bool editable )
 {
   isFieldEditableCheckBox->setChecked( editable );
+}
+
+void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )
+{
+  labelOnTopCheckBox->setChecked( onTop );
 }
 
 QPair<QString, QString> QgsAttributeTypeDialog::checkedState()
@@ -513,6 +523,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
       break;
 
     case QgsVectorLayer::Photo:
+    case QgsVectorLayer::WebView:
       sbWidgetWidth->setValue( mWidgetSize.width() );
       sbWidgetHeight->setValue( mWidgetSize.height() );
       break;
@@ -527,7 +538,6 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
     case QgsVectorLayer::Hidden:
     case QgsVectorLayer::TextEdit:
     case QgsVectorLayer::UuidGenerator:
-    case QgsVectorLayer::WebView:
     case QgsVectorLayer::Color:
       break;
   }
@@ -541,47 +551,64 @@ void QgsAttributeTypeDialog::setPage( int index )
 
 void QgsAttributeTypeDialog::setStackPage( int index )
 {
-  stackedWidget->setCurrentIndex( index );
-
   bool okDisabled = false;
-  if ( index == 2 )
-  {
-    if ( mLayer->pendingFields()[mIndex].type() != QVariant::Double &&
-         mLayer->pendingFields()[mIndex].type() != QVariant::Int )
-    {
-      okDisabled = true;
-    }
-    else if ( mLayer->pendingFields()[mIndex].type() != QVariant::Double )
-    {
-      rangeStackedWidget->setCurrentIndex( 0 );
-      //load data
-      minimumSpinBox->setValue( mRangeData.mMin.toInt() );
-      maximumSpinBox->setValue( mRangeData.mMax.toInt() );
-      stepSpinBox->setValue( mRangeData.mStep.toInt() );
-    }
-    else
-    {
-      rangeStackedWidget->setCurrentIndex( 1 );
-      //load data
-      minimumDoubleSpinBox->setValue( mRangeData.mMin.toDouble() );
-      maximumDoubleSpinBox->setValue( mRangeData.mMax.toDouble() );
-      stepDoubleSpinBox->setValue( mRangeData.mStep.toDouble() );
-    }
-  }
-  else if ( index == 6 )
-  {
-    QStringList list;
-    mLayer->dataProvider()->enumValues( mIndex, list );
-    if ( list.size() == 0 )
-    {
-      okDisabled = true;
-      enumerationWarningLabel->setText( tr( "Enumeration is not available for this attribute" ) );
-    }
-    else
-    {
-      enumerationWarningLabel->setText( "" );
-    }
 
+  switch ( index )
+  {
+    case 2:
+      if ( mLayer->pendingFields()[mIndex].type() != QVariant::Double &&
+           mLayer->pendingFields()[mIndex].type() != QVariant::Int )
+      {
+        okDisabled = true;
+      }
+      else if ( mLayer->pendingFields()[mIndex].type() != QVariant::Double )
+      {
+        rangeStackedWidget->setCurrentIndex( 0 );
+        //load data
+        minimumSpinBox->setValue( mRangeData.mMin.toInt() );
+        maximumSpinBox->setValue( mRangeData.mMax.toInt() );
+        stepSpinBox->setValue( mRangeData.mStep.toInt() );
+      }
+      else
+      {
+        rangeStackedWidget->setCurrentIndex( 1 );
+        //load data
+        minimumDoubleSpinBox->setValue( mRangeData.mMin.toDouble() );
+        maximumDoubleSpinBox->setValue( mRangeData.mMax.toDouble() );
+        stepDoubleSpinBox->setValue( mRangeData.mStep.toDouble() );
+      }
+      stackedWidget->setCurrentIndex( 2 );
+      break;
+    case 6:
+    {
+      QStringList list;
+      mLayer->dataProvider()->enumValues( mIndex, list );
+      if ( list.size() == 0 )
+      {
+        okDisabled = true;
+        enumerationWarningLabel->setText( tr( "Enumeration is not available for this attribute" ) );
+      }
+      else
+      {
+        enumerationWarningLabel->setText( "" );
+      }
+      stackedWidget->setCurrentIndex( 6 );
+    }
+    break;
+    case 14:
+      pictureOrUrlLabel->setText( tr( "Field contains a filename for a picture" ) );
+      stackedWidget->setCurrentIndex( 14 );
+      break;
+    case 15:
+      pictureOrUrlLabel->setText( tr( "Field contains an URL" ) );
+      stackedWidget->setCurrentIndex( 14 );
+      break;
+    case 16:
+      stackedWidget->setCurrentIndex( 15 );
+      break;
+    default:
+      stackedWidget->setCurrentIndex( index );
+      break;
   }
 
   stackedWidget->currentWidget()->setDisabled( okDisabled );
@@ -703,6 +730,7 @@ void QgsAttributeTypeDialog::accept()
       break;
     case 15:
       mEditType = QgsVectorLayer::WebView;
+      mWidgetSize = QSize( sbWidgetWidth->value(), sbWidgetHeight->value() );
       break;
     case 16:
       mEditType = QgsVectorLayer::Color;

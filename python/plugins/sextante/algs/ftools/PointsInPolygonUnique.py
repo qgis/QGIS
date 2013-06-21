@@ -102,15 +102,15 @@ class PointsInPolygonUnique(GeoAlgorithm):
                     ftPoint = pointLayer.getFeatures(request).next()
                     tmpGeom = QgsGeometry(ftPoint.geometry())
                     if geom.contains(tmpGeom):
-                        clazz = ftPoint.attributes()[classFieldIndex].toString()
+                        clazz = ftPoint.attributes()[classFieldIndex]
                         if not clazz in classes:
                             classes.append(clazz)
 
             outFeat.setGeometry(geom)
             if idxCount == len(attrs):
-                attrs.append(QVariant(len(classes)))
+                attrs.append(len(classes))
             else:
-                attrs[idxCount] =  QVariant(len(classes))
+                attrs[idxCount] =  len(classes)
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 

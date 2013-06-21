@@ -440,6 +440,11 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
   }
 
   QgsComposerLayerItem* layerItem = new QgsComposerLayerItem( theMapLayer->name() );
+  if ( theMapLayer->title() != "" )
+  {
+    layerItem->setText( theMapLayer->title() );
+    layerItem->setUserText( theMapLayer->title() );
+  }
   layerItem->setLayerID( theMapLayer->id() );
   layerItem->setDefaultStyle();
   layerItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );

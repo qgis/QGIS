@@ -40,6 +40,7 @@
 
 #include "diagram/qgsdiagram.h"
 #include "qgsdiagramrendererv2.h"
+#include "qgsfontutils.h"
 #include "qgslabelsearchtree.h"
 #include "qgsexpression.h"
 #include "qgsdatadefined.h"
@@ -211,12 +212,15 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 
   // text style
   textFont = QApplication::font();
-  fontSizeInMapUnits = false;
   textNamedStyle = QString( "" );
+  fontSizeInMapUnits = false;
   textColor = Qt::black;
   textTransp = 0;
   blendMode = QPainter::CompositionMode_SourceOver;
   previewBkgrdColor = Qt::white;
+  // font processing info
+  mTextFontFound = true;
+  mTextFontFamily = QApplication::font().family();
 
   // text formatting
   wrapChar = "";
@@ -431,12 +435,15 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   fieldName = s.fieldName;
   isExpression = s.isExpression;
   textFont = s.textFont;
-  fontSizeInMapUnits = s.fontSizeInMapUnits;
   textNamedStyle = s.textNamedStyle;
+  fontSizeInMapUnits = s.fontSizeInMapUnits;
   textColor = s.textColor;
   textTransp = s.textTransp;
   blendMode = s.blendMode;
   previewBkgrdColor = s.previewBkgrdColor;
+  // font processing info
+  mTextFontFound = s.mTextFontFound;
+  mTextFontFamily = s.mTextFontFamily;
 
   // text formatting
   wrapChar = s.wrapChar;
@@ -761,6 +768,13 @@ void QgsPalLayerSettings::readDataDefinedProperty( QgsVectorLayer* layer,
         bufferDraw = true;
         layer->setCustomProperty( "labeling/bufferDraw", true );
       }
+
+      // fix for scale visibility limits triggered off of just its data defined values in the past (<2.0)
+      if ( oldIndx == 16 || oldIndx == 17 ) // old minScale and maxScale enums
+      {
+        scaleVisibility = true;
+        layer->setCustomProperty( "labeling/scaleVisibility", true );
+      }
     }
 
     // remove old-style field index-based property
@@ -783,27 +797,6 @@ void QgsPalLayerSettings::readDataDefinedProperty( QgsVectorLayer* layer,
   }
 }
 
-void QgsPalLayerSettings::updateFontViaStyle( QFont& font, const QString & fontstyle )
-{
-  if ( !fontstyle.isEmpty() )
-  {
-    QFont styledfont = mFontDB.font( font.family(), fontstyle, 12 );
-    if ( QApplication::font().toString() != styledfont.toString() )
-    {
-      if ( font.pointSizeF() != -1 )
-      {
-        styledfont.setPointSizeF( font.pointSizeF() );
-      }
-      else if ( font.pixelSize() != -1 )
-      {
-        styledfont.setPixelSize( font.pixelSize() );
-      }
-
-      font = styledfont;
-    }
-  }
-}
-
 void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
 {
   if ( layer->customProperty( "labeling" ).toString() != QString( "pal" ) )
@@ -816,7 +809,21 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   // text style
   fieldName = layer->customProperty( "labeling/fieldName" ).toString();
   isExpression = layer->customProperty( "labeling/isExpression" ).toBool();
-  QString fontFamily = layer->customProperty( "labeling/fontFamily", QVariant( QApplication::font().family() ) ).toString();
+  QFont appFont = QApplication::font();
+  mTextFontFamily = layer->customProperty( "labeling/fontFamily", QVariant( appFont.family() ) ).toString();
+  QString fontFamily = mTextFontFamily;
+  if ( mTextFontFamily != appFont.family() && !QgsFontUtils::fontFamilyMatchOnSystem( mTextFontFamily ) )
+  {
+    // trigger to notify user about font family substitution (signal emitted in QgsVectorLayer::prepareLabelingAndDiagrams)
+    mTextFontFound = false;
+
+    // TODO: update when pref for how to resolve missing family (use matching algorithm or just default font) is implemented
+    // currently only defaults to matching algorithm for resolving [foundry], if a font of similar family is found (default for QFont)
+
+    // for now, do not use matching algorithm for substitution if family not found, substitute default instead
+    fontFamily = appFont.family();
+  }
+
   double fontSize = layer->customProperty( "labeling/fontSize" ).toDouble();
   fontSizeInMapUnits = layer->customProperty( "labeling/fontSizeInMapUnits" ).toBool();
   int fontWeight = layer->customProperty( "labeling/fontWeight" ).toInt();
@@ -824,7 +831,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   textFont = QFont( fontFamily, fontSize, fontWeight, fontItalic );
   textFont.setPointSizeF( fontSize ); //double precision needed because of map units
   textNamedStyle = layer->customProperty( "labeling/namedStyle", QVariant( "" ) ).toString();
-  updateFontViaStyle( textFont, textNamedStyle ); // must come after textFont.setPointSizeF()
+  QgsFontUtils::updateFontViaStyle( textFont, textNamedStyle ); // must come after textFont.setPointSizeF()
   textFont.setCapitalization(( QFont::Capitalization )layer->customProperty( "labeling/fontCapitals", QVariant( 0 ) ).toUInt() );
   textFont.setUnderline( layer->customProperty( "labeling/fontUnderline" ).toBool() );
   textFont.setStrikeOut( layer->customProperty( "labeling/fontStrikeout" ).toBool() );
@@ -853,7 +860,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   // text buffer
   double bufSize = layer->customProperty( "labeling/bufferSize", QVariant( 0.0 ) ).toDouble();
 
-  // fix for buffer being keyed off of just its size in the past
+  // fix for buffer being keyed off of just its size in the past (<2.0)
   QVariant drawBuffer = layer->customProperty( "labeling/bufferDraw", QVariant() );
   if ( drawBuffer.isValid() )
   {
@@ -937,9 +944,30 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   priority = layer->customProperty( "labeling/priority" ).toInt();
 
   // rendering
-  scaleVisibility = layer->customProperty( "labeling/scaleVisibility" ).toBool();
-  scaleMin = layer->customProperty( "labeling/scaleMin", QVariant( 1 ) ).toInt();
-  scaleMax = layer->customProperty( "labeling/scaleMax", QVariant( 10000000 ) ).toInt();
+  int scalemn = layer->customProperty( "labeling/scaleMin", QVariant( 0 ) ).toInt();
+  int scalemx = layer->customProperty( "labeling/scaleMax", QVariant( 0 ) ).toInt();
+
+  // fix for scale visibility limits being keyed off of just its values in the past (<2.0)
+  QVariant scalevis = layer->customProperty( "labeling/scaleVisibility", QVariant() );
+  if ( scalevis.isValid() )
+  {
+    scaleVisibility = scalevis.toBool();
+    scaleMin = scalemn;
+    scaleMax = scalemx;
+  }
+  else if ( scalemn > 0 || scalemx > 0 )
+  {
+    scaleVisibility = true;
+    scaleMin = scalemn;
+    scaleMax = scalemx;
+  }
+  else
+  {
+    // keep scaleMin and scaleMax at new 1.0 defaults (1 and 10000000, were 0 and 0)
+    scaleVisibility = false;
+  }
+
+
   fontLimitPixelSize = layer->customProperty( "labeling/fontLimitPixelSize", QVariant( false ) ).toBool();
   fontMinPixelSize = layer->customProperty( "labeling/fontMinPixelSize", QVariant( 0 ) ).toInt();
   fontMaxPixelSize = layer->customProperty( "labeling/fontMaxPixelSize", QVariant( 10000 ) ).toInt();
@@ -1496,7 +1524,14 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
         minScale = mins;
       }
     }
-    if ( context.rendererScale() < minScale )
+
+    // scales closer than 1:1
+    if ( minScale < 0 )
+    {
+      minScale = 1 / qAbs( minScale );
+    }
+
+    if ( minScale != 0 && context.rendererScale() < minScale )
     {
       return;
     }
@@ -1513,7 +1548,14 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
         maxScale = maxs;
       }
     }
-    if ( context.rendererScale() > maxScale )
+
+    // scales closer than 1:1
+    if ( maxScale < 0 )
+    {
+      maxScale = 1 / qAbs( maxScale );
+    }
+
+    if ( maxScale != 0 && context.rendererScale() > maxScale )
     {
       return;
     }
@@ -2319,12 +2361,14 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
     QString family = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal Font family:%1" ).arg( family ), 4 );
 
-    // testing for mFontDB.families().contains( ddFontFamily ) doesn't always work,
-    // because the families list needs looped to test for 'family [foundry]'
-    // which could bring unnecessary overhead, so fall back to default font instead
     if ( labelFont.family() != family )
     {
-      ddFontFamily = family;
+      // testing for ddFontFamily in QFontDatabase.families() may be slow to do for every feature
+      // (i.e. don't use QgsFontUtils::fontFamilyMatchOnSystem( family ) here)
+      if ( QgsFontUtils::fontFamilyOnSystem( family ) )
+      {
+        ddFontFamily = family;
+      }
     }
   }
 
@@ -2355,7 +2399,10 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
     ddItalic = italic;
   }
 
+  // TODO: update when pref for how to resolve missing family (use matching algorithm or just default font) is implemented
+  //       (currently defaults to what has been read in from layer settings)
   QFont newFont;
+  QFont appFont = QApplication::font();
   bool newFontBuilt = false;
   if ( ddBold || ddItalic )
   {
@@ -2371,8 +2418,8 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
     if ( !ddFontFamily.isEmpty() )
     {
       // both family and style are different, build font from database
-      QFont styledfont = mFontDB.font( ddFontFamily, ddFontStyle, 12 );
-      if ( QApplication::font().toString() != styledfont.toString() )
+      QFont styledfont = mFontDB.font( ddFontFamily, ddFontStyle, appFont.pointSize() );
+      if ( appFont != styledfont )
       {
         newFont = styledfont;
         newFontBuilt = true;
@@ -2380,15 +2427,15 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
     }
 
     // update the font face style
-    updateFontViaStyle( newFontBuilt ? newFont : labelFont, ddFontStyle );
+    QgsFontUtils::updateFontViaStyle( newFontBuilt ? newFont : labelFont, ddFontStyle );
   }
   else if ( !ddFontFamily.isEmpty() )
   {
     if ( ddFontStyle.compare( "Ignore", Qt::CaseInsensitive ) != 0 )
     {
       // just family is different, build font from database
-      QFont styledfont = mFontDB.font( ddFontFamily, textNamedStyle, 12 );
-      if ( QApplication::font().toString() != styledfont.toString() )
+      QFont styledfont = mFontDB.font( ddFontFamily, textNamedStyle, appFont.pointSize() );
+      if ( appFont != styledfont )
       {
         newFont = styledfont;
         newFontBuilt = true;
@@ -3000,9 +3047,12 @@ QgsPalLabeling::~QgsPalLabeling()
 
 bool QgsPalLabeling::willUseLayer( QgsVectorLayer* layer )
 {
-  QgsPalLayerSettings lyrTmp;
-  lyrTmp.readFromLayer( layer );
-  return lyrTmp.enabled;
+  // don't do QgsPalLayerSettings::readFromLayer( layer ) if not needed
+  bool enabled = false;
+  if ( layer->customProperty( "labeling" ).toString() == QString( "pal" ) )
+    enabled = layer->customProperty( "labeling/enabled", QVariant( false ) ).toBool();
+
+  return enabled;
 }
 
 void QgsPalLabeling::clearActiveLayers()
@@ -3031,14 +3081,20 @@ void QgsPalLabeling::clearActiveLayer( QgsVectorLayer* layer )
 
 int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx )
 {
-  QgsDebugMsgLevel( "PREPARE LAYER " + layer->id(), 4 );
   Q_ASSERT( mMapRenderer != NULL );
+
+  if ( !willUseLayer( layer ) )
+  {
+    return 0;
+  }
+
+  QgsDebugMsgLevel( "PREPARE LAYER " + layer->id(), 4 );
 
   // start with a temporary settings class, find out labeling info
   QgsPalLayerSettings lyrTmp;
   lyrTmp.readFromLayer( layer );
 
-  if ( !lyrTmp.enabled || lyrTmp.fieldName.isEmpty() )
+  if ( lyrTmp.fieldName.isEmpty() )
   {
     return 0;
   }

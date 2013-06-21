@@ -79,14 +79,14 @@ class GdalToolsDialog( QDialog, Ui_Dialog ):
   def fillInputFileEdit( self ):
     lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
     inputFile = Utils.FileDialog.getOpenFileName( self, self.tr( "Select the file to analyse" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-    if inputFile.isEmpty():
+    if not inputFile:
       return
     Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
     self.inSelector.setFilename( inputFile )
 
   def fillInputDir( self ):
     inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files to Assign projection" ))
-    if inputDir.isEmpty():
+    if not inputDir:
       return
     self.inSelector.setFilename( inputDir )
 

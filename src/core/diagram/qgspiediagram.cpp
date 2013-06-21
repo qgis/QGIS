@@ -128,19 +128,22 @@ void QgsPieDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& c
     QList< QColor >::const_iterator colIt = s.categoryColors.constBegin();
     for ( ; valIt != values.constEnd(); ++valIt, ++colIt )
     {
-      currentAngle = *valIt / valSum * 360 * 16;
-      mCategoryBrush.setColor( *colIt );
-      p->setBrush( mCategoryBrush );
-      // if only 1 value is > 0, draw a circle
-      if ( valCount == 1 )
+      if ( *valIt )
       {
-        p->drawEllipse( baseX, baseY, w, h );
+        currentAngle = *valIt / valSum * 360 * 16;
+        mCategoryBrush.setColor( *colIt );
+        p->setBrush( mCategoryBrush );
+        // if only 1 value is > 0, draw a circle
+        if ( valCount == 1 )
+        {
+          p->drawEllipse( baseX, baseY, w, h );
+        }
+        else
+        {
+          p->drawPie( baseX, baseY, w, h, totalAngle + s.angleOffset, currentAngle );
+        }
+        totalAngle += currentAngle;
       }
-      else
-      {
-        p->drawPie( baseX, baseY, w, h, totalAngle + s.angleOffset, currentAngle );
-      }
-      totalAngle += currentAngle;
     }
   }
   else // valSum > 0

@@ -89,7 +89,7 @@ class AddTableField(GeoAlgorithm):
             inGeom = inFeat.geometry()
             outFeat.setGeometry( inGeom )
             atMap = inFeat.attributes()
-            atMap.append(QVariant())
+            atMap.append(None)
             outFeat.setAttributes(atMap)
             writer.addFeature( outFeat )
         del writer

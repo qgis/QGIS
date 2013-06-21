@@ -29,6 +29,7 @@
 #include "qgswfsprovider.h"
 #include "qgsspatialindex.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsogcutils.h"
 
@@ -93,9 +94,7 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
   if ( describeFeatureType( uri, mGeometryAttribute, mFields, mWKBType ) )
   {
     mValid = false;
-    QgsDebugMsg( QString( "describeFeatureType failed, URI=%1" ).arg( uri ) );
-    QMessageBox( QMessageBox::Warning, "DescribeFeatureType failed!",
-                 QString( "Layer cannot be created from\n%1" ).arg( uri ) );
+    QgsMessageLog::instance()->logMessage( tr( "DescribeFeatureType failed for url %1" ).arg( uri ), tr( "WFS" ) );
     return;
   }
 

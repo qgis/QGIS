@@ -764,7 +764,7 @@ void QgsGrassPlugin::newMapset()
 
 void QgsGrassPlugin::projectRead()
 {
-// QgsDebugMsg("entered.");
+  QgsDebugMsg( "entered." );
 
   bool ok;
   QString gisdbase = QgsProject::instance()->readEntry(
@@ -774,12 +774,12 @@ void QgsGrassPlugin::projectRead()
   QString mapset = QgsProject::instance()->readEntry(
                      "GRASS", "/WorkingMapset", "", &ok ).trimmed();
 
-  if ( gisdbase.length() == 0 || location.length() == 0 ||
-       mapset.length() == 0 )
+  if ( gisdbase.isEmpty() || location.isEmpty() || mapset.isEmpty() )
   {
-    // Mapset not specified
     return;
   }
+
+  QgsDebugMsg( "Working mapset specified" );
 
   QString currentPath = QgsGrass::getDefaultGisdbase() + "/"
                         + QgsGrass::getDefaultLocation() + "/"

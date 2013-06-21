@@ -69,12 +69,7 @@ class Dialog(QDialog, Ui_Dialog):
             inName = self.inShape.currentText()
             outPath = self.outShape.text()
             self.outShape.clear()
-            if outPath.contains("\\"):
-                outName = outPath.right((outPath.length() - outPath.lastIndexOf("\\")) - 1)
-            else:
-                outName = outPath.right((outPath.length() - outPath.lastIndexOf("/")) - 1)
-            if outName.endsWith(".shp"):
-                outName = outName.left(outName.length() - 4)
+            outName = ftools_utils.getShapefileName( outPath )
             if self.rdoSpacing.isChecked(): value = self.spnSpacing.value()
             else: value = self.spnNumber.value()
             if self.chkRandom.isChecked(): offset = True
@@ -89,7 +84,7 @@ class Dialog(QDialog, Ui_Dialog):
                 print crs.isValid()
                 if not crs.isValid(): crs = None
             self.regularize(boundBox, outPath, offset, value, self.rdoSpacing.isChecked(), self.spnInset.value(), crs)
-            addToTOC = QMessageBox.question(self, self.tr("Generate Regular Points"), self.tr("Created output point shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+            addToTOC = QMessageBox.question(self, self.tr("Generate Regular Points"), self.tr("Created output point shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % ( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
@@ -102,7 +97,7 @@ class Dialog(QDialog, Ui_Dialog):
         ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( QString( self.shapefileName ) )
+        self.outShape.setText( self.shapefileName )
 
 # Generate list of random points
     def simpleRandom(self, n, bound, xmin, xmax, ymin, ymax):
@@ -149,7 +144,7 @@ class Dialog(QDialog, Ui_Dialog):
                     pGeom = QgsGeometry().fromPoint(QgsPoint(x, y))
                 if pGeom.intersects(bound):
                     outFeat.setGeometry(pGeom)
-                    outFeat.setAttribute(0, QVariant(idVar))
+                    outFeat.setAttribute(0, idVar)
                     writer.addFeature(outFeat)
                     idVar = idVar + 1
                     x = x + pointSpacing

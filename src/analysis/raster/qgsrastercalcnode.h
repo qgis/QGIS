@@ -81,7 +81,6 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     Type mType;
     QgsRasterCalcNode* mLeft;
     QgsRasterCalcNode* mRight;
-    QgsRasterMatrix* mRasterMatrix;
     double mNumber;
     QString mRasterName;
     Operator mOperator;

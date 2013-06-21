@@ -20,6 +20,8 @@
 #include "qgsapplication.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposermap.h"
+#include "qgscomposerhtml.h"
+#include "qgscomposerframe.h"
 #include "qgscomposition.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
@@ -407,8 +409,9 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
 {
   QList<QgsComposerMap*> composerMaps;
   QList<QgsComposerLabel*> composerLabels;
+  QList<const QgsComposerHtml*> composerHtmls;
 
-  QgsComposition* c = initComposition( composerTemplate, mapRenderer, composerMaps, composerLabels );
+  QgsComposition* c = initComposition( composerTemplate, mapRenderer, composerMaps, composerLabels, composerHtmls );
   if ( !c )
   {
     return 0;
@@ -534,8 +537,9 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
 
     if ( title.isEmpty() )
     {
-      //remove exported labels not referenced in the request
-      if ( !currentLabel->id().isEmpty() )
+      //remove exported labels referenced in the request
+      //but with empty string
+      if ( parameterMap.contains( currentLabel->id().toUpper() ) )
       {
         c->removeItem( currentLabel );
         delete currentLabel;
@@ -544,7 +548,35 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
     }
 
     currentLabel->setText( title );
-    currentLabel->adjustSizeToText();
+  }
+
+  //replace html url
+  foreach ( const QgsComposerHtml *currentHtml, composerHtmls )
+  {
+    QgsComposerHtml * html = const_cast<QgsComposerHtml *>( currentHtml );
+    QgsComposerFrame *htmlFrame = html->frame( 0 );
+    QString htmlId = htmlFrame->id();
+    QString url = parameterMap.value( htmlId.toUpper() );
+
+    if ( url.isEmpty() )
+    {
+      //remove exported Htmls referenced in the request
+      //but with empty string
+      if ( parameterMap.contains( htmlId.toUpper() ) )
+      {
+        c->removeMultiFrame( html );
+        delete currentHtml;
+      }
+      else
+      {
+        html->update();
+      }
+      continue;
+    }
+
+    QUrl newUrl( url );
+    html->setUrl( newUrl );
+    html->update();
   }
 
   return c;

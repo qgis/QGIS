@@ -56,7 +56,9 @@ class QgsSLDParser: public QgsConfigParser
     /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.*/
     void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const;
 
-    void featureTypeList( QDomElement &, QDomDocument & ) const {}
+    void featureTypeList( QDomElement&, QDomDocument& ) const {}
+
+    void owsGeneralAndResourceList( QDomElement&, QDomDocument& , const QString& ) const {}
 
     void describeFeatureType( const QString& , QDomElement& , QDomDocument& ) const {}
     /**Returns one or possibly several maplayers for a given type name. If no layers/style are found, an empty list is returned*/
@@ -77,7 +79,7 @@ class QgsSLDParser: public QgsConfigParser
     virtual void setParameterMap( const QMap<QString, QString>& parameterMap ) { mParameterMap = parameterMap; }
 
     /**Creates a composition from the project file (delegated to the fallback parser)*/
-    QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList ) const;
+    QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlList ) const;
 
     /**Adds print capabilities to xml document. Delegated to fallback parser*/
     void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;

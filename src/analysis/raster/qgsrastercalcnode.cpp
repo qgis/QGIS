@@ -15,19 +15,36 @@
 #include "qgsrastercalcnode.h"
 #include <cfloat>
 
-QgsRasterCalcNode::QgsRasterCalcNode(): mLeft( 0 ), mRight( 0 ), mRasterMatrix( 0 ), mNumber( 0 )
+QgsRasterCalcNode::QgsRasterCalcNode()
+    : mLeft( 0 )
+    , mRight( 0 )
+    , mNumber( 0 )
 {
 }
 
-QgsRasterCalcNode::QgsRasterCalcNode( double number ): mType( tNumber ), mLeft( 0 ), mRight( 0 ), mRasterMatrix( 0 ), mNumber( number )
+QgsRasterCalcNode::QgsRasterCalcNode( double number )
+    : mType( tNumber )
+    , mLeft( 0 )
+    , mRight( 0 )
+    , mNumber( number )
 {
 }
 
-QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode* left, QgsRasterCalcNode* right ): mType( tOperator ), mLeft( left ), mRight( right ), mRasterMatrix( 0 ), mNumber( 0 ), mOperator( op )
+QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode* left, QgsRasterCalcNode* right )
+    : mType( tOperator )
+    , mLeft( left )
+    , mRight( right )
+    , mNumber( 0 )
+    , mOperator( op )
 {
 }
 
-QgsRasterCalcNode::QgsRasterCalcNode( const QString& rasterName ): mType( tRasterRef ), mLeft( 0 ), mRight( 0 ), mRasterMatrix( 0 ), mNumber( 0 ), mRasterName( rasterName )
+QgsRasterCalcNode::QgsRasterCalcNode( const QString& rasterName )
+    : mType( tRasterRef )
+    , mLeft( 0 )
+    , mRight( 0 )
+    , mNumber( 0 )
+    , mRasterName( rasterName )
 {
 }
 

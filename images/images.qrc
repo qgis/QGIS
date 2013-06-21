@@ -41,8 +41,7 @@
         <file>flags/sk.png</file>
         <file>flags/sl_SI.png</file>
         <file>flags/sq_AL.png</file>
-        <file>flags/sr_Cyrl.png</file>
-        <file>flags/sr_Latn.png</file>
+        <file>flags/sr.png</file>
         <file>flags/sv.png</file>
         <file>flags/sw.png</file>
         <file>flags/ta.png</file>
@@ -76,9 +75,9 @@
         <file>themes/default/console/iconScriptConsole.png</file>
         <file>themes/default/console/iconSettingsConsole.png</file>
         <file>themes/default/console/iconSextanteConsole.png</file>
-        <file>themes/default/console/imgHelpConsole.png</file>
-        <file>themes/default/console/imgHelpDialog.png</file>
-        <file>themes/default/console/imgHelpMenu.png</file>
+        <file>themes/default/console/consoleHelp.png</file>
+        <file>themes/default/console/editorHelp.png</file>
+        <file>themes/default/console/classBrowserHelp.png</file>
         <file>themes/default/console/iconTabEditorConsole.png</file>
         <file>themes/default/console/iconNewTabEditorConsole.png</file>
         <file>themes/default/console/iconRestoreTabsConsole.png</file>
@@ -366,6 +365,7 @@
         <file>themes/default/mMapserverExport.png</file>
         <file>themes/default/pie-chart.png</file>
         <file>themes/default/plugin.png</file>
+        <file>themes/default/pluginExperimental.png</file>
         <file>themes/default/plugins/coordinate_capture/coordinate_capture.png</file>
         <file>themes/default/plugins/copyright_label.png</file>
         <file>themes/default/plugins/dxf2shp_converter.png</file>
@@ -405,15 +405,25 @@
         <file>themes/default/propertyicons/metadata.svg</file>
         <file>themes/default/propertyicons/network_and_proxy.png</file>
         <file>themes/default/propertyicons/overlay.png</file>
+        <file>themes/default/propertyicons/plugin.svg</file>
+        <file>themes/default/propertyicons/plugin-incompatible.svg</file>
+        <file>themes/default/propertyicons/plugin-installed.svg</file>
+        <file>themes/default/propertyicons/plugin-new.svg</file>
+        <file>themes/default/propertyicons/plugin-upgrade.svg</file>
+        <file>themes/default/propertyicons/plugins.svg</file>
         <file>themes/default/propertyicons/pyramids.png</file>
         <file>themes/default/propertyicons/rendering.png</file>
         <file>themes/default/propertyicons/render.svg</file>
+        <file>themes/default/propertyicons/settings.svg</file>
         <file>themes/default/propertyicons/symbology.png</file>
         <file>themes/default/propertyicons/transparency.png</file>
         <file>themes/default/qgis.xpm</file>
         <file>themes/default/rendererCategorizedSymbol.png</file>
         <file>themes/default/rendererGraduatedSymbol.png</file>
         <file>themes/default/rendererSingleSymbol.png</file>
+        <file>themes/default/repositoryConnected.png</file>
+        <file>themes/default/repositoryDisabled.png</file>
+        <file>themes/default/repositoryUnavailable.png</file>
         <file>themes/default/styleicons/color.png</file>
         <file>themes/default/styleicons/style-line.png</file>
         <file>themes/default/styleicons/style-point.png</file>

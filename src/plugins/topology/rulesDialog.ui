@@ -88,16 +88,16 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QPushButton" name="mAddTestButton">
+        <widget class="QPushButton" name="mDeleteTestButton">
          <property name="text">
-          <string>Add New Rule</string>
+          <string>Delete Rule</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="mDeleteTestButton">
+        <widget class="QPushButton" name="mAddTestButton">
          <property name="text">
-          <string>Delete Rule</string>
+          <string>Add Rule</string>
          </property>
         </widget>
        </item>

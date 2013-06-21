@@ -1845,11 +1845,14 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
       if ( childelem.attribute( "embedded" ) == "1" )
       {
         theGroup = addEmbeddedGroup( name, QgsProject::instance()->readPath( childelem.attribute( "project" ) ) );
-        if ( childelem.hasAttribute( "drawingOrder" ) )
+        if ( theGroup )
         {
-          theGroup->setDrawingOrder( childelem.attribute( "drawingOrder" ).toInt() );
+          if ( childelem.hasAttribute( "drawingOrder" ) )
+          {
+            theGroup->setDrawingOrder( childelem.attribute( "drawingOrder" ).toInt() );
+          }
+          updateGroupCheckStates( theGroup );
         }
-        updateGroupCheckStates( theGroup );
       }
       else
       {
@@ -2675,6 +2678,15 @@ void QgsLegend::legendLayerZoom()
     QgsMapLayer* theLayer = currentLayer->layer();
     extent = theLayer->extent();
 
+    QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( theLayer );
+
+    if ( extent.isEmpty() && vLayer )
+    {
+      vLayer->updateExtents();
+      extent = vLayer->extent();
+    }
+
+
     //transform extent if otf-projection is on
     if ( mMapCanvas->hasCrsTransformEnabled() )
     {
@@ -2696,6 +2708,14 @@ void QgsLegend::legendLayerZoom()
     {
       QgsMapLayer* theLayer = layers.at( i )->layer();
       layerExtent = theLayer->extent();
+
+      QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( theLayer );
+
+      if ( extent.isEmpty() && vLayer )
+      {
+        vLayer->updateExtents();
+        layerExtent = vLayer->extent();
+      }
 
       //transform extent if otf-projection is on
       if ( mMapCanvas->hasCrsTransformEnabled() )

@@ -491,6 +491,7 @@ void QgsFieldsProperties::attributeTypeDialog()
   attributeTypeDialog.setDateFormat( cfg.mDateFormat );
   attributeTypeDialog.setWidgetSize( cfg.mWidgetSize );
   attributeTypeDialog.setFieldEditable( cfg.mEditable );
+  attributeTypeDialog.setLabelOnTop( cfg.mLabelOnTop );
 
   attributeTypeDialog.setIndex( index, cfg.mEditType );
 
@@ -499,6 +500,7 @@ void QgsFieldsProperties::attributeTypeDialog()
 
   cfg.mEditType = attributeTypeDialog.editType();
   cfg.mEditable = attributeTypeDialog.fieldEditable();
+  cfg.mLabelOnTop = attributeTypeDialog.labelOnTop();
 
   switch ( cfg.mEditType )
   {
@@ -520,6 +522,7 @@ void QgsFieldsProperties::attributeTypeDialog()
       cfg.mDateFormat = attributeTypeDialog.dateFormat();
       break;
     case QgsVectorLayer::Photo:
+    case QgsVectorLayer::WebView:
       cfg.mWidgetSize = attributeTypeDialog.widgetSize();
       break;
     case QgsVectorLayer::LineEdit:
@@ -532,7 +535,6 @@ void QgsFieldsProperties::attributeTypeDialog()
     case QgsVectorLayer::Immutable:
     case QgsVectorLayer::Hidden:
     case QgsVectorLayer::UuidGenerator:
-    case QgsVectorLayer::WebView:
     case QgsVectorLayer::Color:
       break;
   }
@@ -846,6 +848,7 @@ void QgsFieldsProperties::apply()
     mLayer->setEditType( idx, cfg.mEditType );
 
     mLayer->setFieldEditable( idx, cfg.mEditable );
+    mLayer->setLabelOnTop( idx, cfg.mLabelOnTop );
 
     switch ( cfg.mEditType )
     {
@@ -872,6 +875,7 @@ void QgsFieldsProperties::apply()
         break;
 
       case QgsVectorLayer::Photo:
+      case QgsVectorLayer::WebView:
         mLayer->widgetSize( idx ) = cfg.mWidgetSize;
         break;
 
@@ -885,7 +889,6 @@ void QgsFieldsProperties::apply()
       case QgsVectorLayer::Hidden:
       case QgsVectorLayer::TextEdit:
       case QgsVectorLayer::UuidGenerator:
-      case QgsVectorLayer::WebView:
       case QgsVectorLayer::Color:
         break;
     }
@@ -927,6 +930,7 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
     : mButton( NULL )
 {
   mEditable = layer->fieldEditable( idx );
+  mLabelOnTop = layer->labelOnTop( idx );
   mValueRelationData = layer->valueRelation( idx );
   mValueMap = layer->valueMap( idx );
   mRange = layer->range( idx );

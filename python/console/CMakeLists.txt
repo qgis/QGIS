@@ -7,6 +7,7 @@ SET(PY_CONSOLE_FILES
   console_settings.py
   console_output.py
   console_editor.py
+  console_compile_apis.py
   __init__.py
 )
 

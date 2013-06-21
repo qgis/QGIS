@@ -80,7 +80,7 @@ class Polygonize(GeoAlgorithm):
         for polygon in polygons:
             outFeat.setGeometry(QgsGeometry.fromWkt( polygon.wkt ))
             if self.getParameterValue(self.GEOMETRY):
-                outFeat.setAttributes([None]*fieldsCount + [ QVariant(polygon.area), QVariant(polygon.length)])
+                outFeat.setAttributes([None]*fieldsCount + [ polygon.area, polygon.length])
             writer.addFeature(outFeat)
             current += 1
             progress.setPercentage(50+int(current * total))

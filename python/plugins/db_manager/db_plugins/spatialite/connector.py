@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -37,7 +37,7 @@ class SpatiaLiteDBConnector(DBConnector):
 
 		self.dbname = uri.database()
 		if not QFile.exists( self.dbname ):
-			raise ConnectionError( u'"%s" not found' % self.dbname )
+			raise ConnectionError( self.tr('"%s" not found') % self.dbname )
 
 		try:
 			self.connection = sqlite.connect( self._connectionInfo() )

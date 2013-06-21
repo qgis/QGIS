@@ -73,7 +73,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
   {
     spatialite_init( 0 );
     sqlite3* db;
-    int rc = sqlite3_open( dbPath.toStdString().c_str(), &db );
+    int rc = sqlite3_open( dbPath.toUtf8().constData(), &db );
     if ( rc != SQLITE_OK )
     {
       showWarning( tr( "Could not open the spatialite database" ) );
@@ -794,7 +794,7 @@ sqlite3* QgsOfflineEditing::openLoggingDb()
   QString dbPath = QgsProject::instance()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH );
   if ( !dbPath.isEmpty() )
   {
-    int rc = sqlite3_open( dbPath.toStdString().c_str(), &db );
+    int rc = sqlite3_open( dbPath.toUtf8().constData(), &db );
     if ( rc != SQLITE_OK )
     {
       showWarning( tr( "Could not open the spatialite logging database" ) );

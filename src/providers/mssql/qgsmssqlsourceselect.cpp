@@ -735,8 +735,12 @@ void QgsMssqlGeomColumnTypeThread::run()
 {
   mStopped = false;
 
-  foreach ( QgsMssqlLayerProperty layerProperty, layerProperties )
+  for ( QList<QgsMssqlLayerProperty>::iterator it = layerProperties.begin(),
+        end = layerProperties.end();
+        it != end; ++it )
   {
+    QgsMssqlLayerProperty &layerProperty = *it;
+
     if ( !mStopped )
     {
       QString table;

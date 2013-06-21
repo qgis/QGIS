@@ -119,6 +119,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   // info from table to application
   connect( this, SIGNAL( saveEdits( QgsMapLayer * ) ), QgisApp::instance(), SLOT( saveEdits( QgsMapLayer * ) ) );
 
+  connect( mMainView, SIGNAL( currentChanged( int ) ), mMainViewButtonGroup, SLOT() );
+
   bool myDockFlag = settings.value( "/qgis/dockAttributeTable", false ).toBool();
   if ( myDockFlag )
   {
@@ -419,6 +421,11 @@ void QgsAttributeTableDialog::on_mRemoveSelectionButton_clicked()
 void QgsAttributeTableDialog::on_mDeleteSelectedButton_clicked()
 {
   QgisApp::instance()->deleteSelected( mLayer, this );
+}
+
+void QgsAttributeTableDialog::on_mMainView_currentChanged( int viewMode )
+{
+  mMainViewButtonGroup->button( viewMode )->click();
 }
 
 void QgsAttributeTableDialog::on_mToggleEditingButton_toggled()

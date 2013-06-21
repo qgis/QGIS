@@ -378,8 +378,10 @@ QgsVectorFileWriter::QgsVectorFileWriter(
                       .arg( attrField.name() )
                       .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
       mError = ErrAttributeCreationFailed;
+      OGR_Fld_Destroy( fld );
       return;
     }
+    OGR_Fld_Destroy( fld );
 
     int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( attrField.name() ) );
     if ( ogrIdx < 0 )

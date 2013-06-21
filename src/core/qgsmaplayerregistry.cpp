@@ -132,7 +132,9 @@ void QgsMapLayerRegistry::removeMapLayers( QStringList theLayerIds )
       mOwnedLayers.remove( lyr );
     }
     mMapLayers.remove( myId );
+    emit layerRemoved( myId );
   }
+  emit layersRemoved( theLayerIds );
 }
 
 void QgsMapLayerRegistry::removeMapLayer( const QString& theLayerId )

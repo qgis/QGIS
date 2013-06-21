@@ -207,8 +207,6 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     }
     // handle errors
     QMessageBox::critical( 0, title, mCapabilities->errorMessage() );
-
-    btnAdd->setEnabled( false );
     return;
   }
 

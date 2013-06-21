@@ -176,6 +176,22 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      */
     void layerWillBeRemoved( QString theLayerId );
 
+    /**
+     * Emitted after one or more layers were removed from the registry
+     *
+     * @param theLayerIds  A list of ids of the layers which were removed.
+     */
+    void layersRemoved( QStringList theLayerIds );
+
+    /**
+     * Emitted after a layer was removed from the registry
+     *
+     * @param theLayerId  The id of the layer removed
+     *
+     * @note Consider using {@link layersRemoved()} instead
+     */
+    void layerRemoved( QString theLayerId );
+
 
     /**
      * Emitted, when all layers are removed, before {@link layersWillBeRemoved()} and

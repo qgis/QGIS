@@ -2,7 +2,7 @@
 
 <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
  <mime-type type="application/x-qgis">
-  <comment xml:lang="en">Quantum GIS Project</comment>
+  <comment xml:lang="en">QGIS Project</comment>
   <glob pattern="*.qgs"/>
  </mime-type>
 

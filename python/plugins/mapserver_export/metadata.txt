@@ -3,7 +3,7 @@ name=MapServer Export
 description=Export a saved QGIS project file to a MapServer map file
 category=Web
 version=0.4.4
-qgisMinimumVersion=1.0
+qgisMinimumVersion=2.0
 
 author=Gary E. Sherman
 email=sherman@mrcc.com

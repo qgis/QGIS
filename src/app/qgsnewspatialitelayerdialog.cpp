@@ -244,14 +244,19 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
   QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
   mySelector->setMessage();
   mySelector->setOgcWmsCrsFilter( myCRSs );
+  mySelector->setSelectedCrsId( mCrsId );
 
   if ( mySelector->exec() )
   {
     QgsCoordinateReferenceSystem srs;
     srs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
     bool ok;
-    mCrsId = srs.authid().split( ':' ).at( 1 ).toInt( &ok );
-    leSRID->setText( srs.authid() + " - " + srs.description() );
+    int crsId = srs.authid().split( ':' ).value( 1, QString::number( mCrsId ) ).toInt( &ok );
+    if ( crsId != mCrsId )
+    {
+      mCrsId = crsId;
+      leSRID->setText( srs.authid() + " - " + srs.description() );
+    }
   }
   delete mySelector;
 }

@@ -81,7 +81,7 @@ class QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVec
     void insertExpression();
 
     /** Reset to original (vector layer) values */
-    void reset();
+    void syncToLayer();
 
     /** Get metadata about the layer in nice formatted html */
     QString metadata();

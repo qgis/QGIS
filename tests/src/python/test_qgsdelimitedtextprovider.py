@@ -8,7 +8,7 @@ the Free Software Foundation; either version 2 of the License, or
 """
 __author__ = 'Chris Crook'
 __date__ = '20/04/2013'
-__copyright__ = 'Copyright 2013, The Quantum GIS Project'
+__copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
@@ -28,16 +28,23 @@ import os.path;
 import re
 import tempfile
 import inspect
+import time
 import test_qgsdelimitedtextprovider_wanted as want
 
 rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ;
 
+
+import sip
+#API_NAMES = ["QDate", "QDateTime", "QString", "QTextStream", "QTime", "QUrl", "QVariant"]
+API_NAMES = ["QString", "QUrl", "QVariant"]
+API_VERSION = 2
+for name in API_NAMES:
+        sip.setapi(name, API_VERSION)
+
 from PyQt4.QtCore import (QVariant,
                           QCoreApplication,
                         QUrl,
-                        QObject,
-                        QString,
-                        pyqtSignal
+                        QObject
                         )
 
 from qgis.core import (QGis,
@@ -57,9 +64,12 @@ from utilities import (getQgisTestApp,
                        unittest
                        #expectedFailure
                        )
+
+
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
-
+sipversion=str(sip.getapi('QVariant'))
+sipwanted='2'
 geomkey = "#geometry"
 fidkey = "#fid"
 tolerance = 0.000001 # Tolerance for coordinate comparisons in checkWktEqual
@@ -114,7 +124,7 @@ def layerData( layer, request={}, offset=0 ):
             for field in f.fields():
                 fields.append(str(field.name()))
                 fieldTypes.append(str(field.typeName()))
-        fielddata = dict ( (name, unicode(f[name].toString()) ) for name in fields )
+        fielddata = dict ( (name, unicode(f[name]) ) for name in fields )
         g = f.geometry()
         if g:
             fielddata[geomkey] = str(g.exportToWkt());
@@ -163,10 +173,11 @@ def delimitedTextData( testname, filename, requests, verbose, **params ):
         data = {}
         if layer.isValid():
             for nr,r in enumerate(requests):
-                if verbose:
-                    print "Processing request",nr+1,repr(r)
+                if verbose: print "Processing request",nr+1,repr(r)
                 if callable(r):
                     r( layer )
+                    if verbose: print "Request function executed"
+                if callable(r):
                     continue
                 rfields,rtypes, rdata = layerData(layer,r,nr*1000)
                 if len(rfields) > len(fields):
@@ -175,8 +186,13 @@ def delimitedTextData( testname, filename, requests, verbose, **params ):
                 data.update(rdata)
                 if not rdata:
                     log.append("Request "+str(nr)+" did not return any data")
+                if verbose:
+                    print "Request returned",len(rdata.keys()),"features"
         for msg in logger.messages():
-            log.append(msg.replace(filepath,'file'))
+            filelogname = 'temp_file' if 'tmp' in filename.lower() else filename
+            msg = re.sub(r'file\s+.*'+re.escape(filename),'file '+filelogname,msg)
+            msg = msg.replace(filepath,filelogname)
+            log.append(msg);
         return dict( fields=fields, fieldTypes=fieldTypes, data=data, log=log, uri=uri)
 
 def printWanted( testname, result ):
@@ -249,6 +265,9 @@ def recordDifference( record1, record2 ):
     return ''
 
 def runTest( file, requests, **params ):
+    # No point doing test if haven't got the right SIP vesion
+    if sipversion != sipwanted:
+        return
     testname=inspect.stack()[1][3];
     verbose = not rebuildTests
     if verbose:
@@ -320,6 +339,7 @@ class TestQgsDelimitedTextProvider(TestCase):
         registry=QgsProviderRegistry.instance()
         metadata = registry.providerMetadata('delimitedtext')
         assert metadata != None, "Delimited text provider is not installed"
+        assert sipversion==sipwanted,"SIP version "+sipversion+" -  require version "+sipwanted+" for delimited text tests"
 
     def test_002_load_csv_file(self):
         # CSV file parsing
@@ -531,34 +551,42 @@ class TestQgsDelimitedTextProvider(TestCase):
         (filehandle,filename) = tempfile.mkstemp()
         with os.fdopen(filehandle,"w") as f:
             f.write("id,name\n1,rabbit\n2,pooh\n")
-            QCoreApplication.instance().processEvents()
-        def updatefile1( layer ):
+        def appendfile( layer ):
             with file(filename,'a') as f:
                 f.write('3,tigger\n')
+            # print "Appended to file - sleeping"
+            time.sleep(1);
             QCoreApplication.instance().processEvents()
-        def updatefile2( layer ):
+        def rewritefile( layer ):
             with file(filename,'w') as f:
                 f.write("name,size,id\ntoad,small,5\nmole,medium,6\nbadger,big,7\n")
+            # print "Rewritten file - sleeping"
+            time.sleep(1);
             QCoreApplication.instance().processEvents()
         def deletefile( layer ):
             os.remove(filename)
+            # print "Deleted file - sleeping"
+            time.sleep(1);
+            QCoreApplication.instance().processEvents()
         params={'geomType': 'none', 'type': 'csv', 'watchFile' : 'yes' }
         requests=[
             {'fid': 3},
             {},
             {'fid': 7},
-            updatefile1,
+            appendfile,
             {'fid': 3},
             {'fid': 4},
             {},
             {'fid': 7},
-            updatefile2,
+            rewritefile,
             {'fid': 2},
             {},
             {'fid': 7},
             deletefile,
             {'fid': 2},
             {},
+            rewritefile,
+            {'fid': 2},
             ]
         runTest(filename,requests,**params)
 

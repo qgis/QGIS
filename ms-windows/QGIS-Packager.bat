@@ -33,9 +33,9 @@ rem  Do not modify the following lines
 rem ----------------------------------------------------------------------------------------------------------
 
 @echo -------------------------------------------------------------------------------------------------------
-@echo Self Contained Quantum GIS + GRASS Automated Packager
+@echo Self Contained QGIS + GRASS Automated Packager
 @echo -------------------------------------------------------------------------------------------------------
-@echo Quantum GIS Version: Current SVN Development or Release Version
+@echo QGIS Version: Current SVN Development or Release Version
 @echo GRASS Version: 6.3.0
 @echo.
 @echo Edited by: Marco Pasetti

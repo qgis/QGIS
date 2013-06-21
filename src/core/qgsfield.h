@@ -186,6 +186,13 @@ class CORE_EXPORT QgsFields
     inline bool isEmpty() const { return mFields.isEmpty(); }
     inline int count() const { return mFields.count(); }
     inline int size() const { return mFields.count(); } // TODO[MD]: delete?
+    void extend( const QgsFields& other )
+    {
+      for ( int i = 0; i < other.count(); ++i )
+      {
+        append( other.at( i ), other.fieldOrigin( i ), other.fieldOriginIndex( i ) );
+      }
+    }
     inline const QgsField& operator[]( int i ) const { return mFields[i].field; }
     inline QgsField& operator[]( int i ) { return mFields[i].field; }
     const QgsField& at( int i ) const { return mFields[i].field; }

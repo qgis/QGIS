@@ -21,6 +21,7 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from console_compile_apis import PrepareAPIDialog
 
 from ui_console_settings import Ui_SettingsDialogPythonConsole
 
@@ -32,6 +33,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.setupUi(self)
 
         self.listPath = []
+        self.lineEdit.setReadOnly(True)
 
         self.restoreSettings()
         self.initialCheck()
@@ -47,6 +49,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
                      SIGNAL("clicked()"), self.loadAPIFile)
         self.connect(self.removeAPIpath,
                      SIGNAL("clicked()"), self.removeAPI)
+        self.compileAPIs.clicked.connect(self._prepareAPI)
 
     def initialCheck(self):
         if self.preloadAPI.isChecked():
@@ -58,24 +61,54 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.tableWidget.setEnabled(value)
         self.addAPIpath.setEnabled(value)
         self.removeAPIpath.setEnabled(value)
+        self.groupBoxPreparedAPI.setEnabled(value)
 
     def loadAPIFile(self):
         settings = QSettings()
-        lastDirPath = settings.value("pythonConsole/lastDirAPIPath").toString()
+        lastDirPath = settings.value("pythonConsole/lastDirAPIPath", "", type=str)
         fileAPI = QFileDialog.getOpenFileName(
                         self, "Open API File", lastDirPath, "API file (*.api)")
         if fileAPI:
             self.addAPI(fileAPI)
 
             lastDirPath = QFileInfo(fileAPI).path()
-            settings.setValue("pythonConsole/lastDirAPIPath", QVariant(fileAPI))
+            settings.setValue("pythonConsole/lastDirAPIPath", fileAPI)
+
+    def _prepareAPI(self):
+        if self.tableWidget.rowCount() != 0:
+            pap_file = QFileDialog().getSaveFileName(self,
+                                                    "",
+                                                    '*.pap',
+                                                    "Prepared APIs file (*.pap)")
+        else:
+            QMessageBox.information(self, self.tr("Warning!"),
+                                    self.tr('You need to add some APIs file in order to compile'))
+            return
+        if pap_file:
+            api_lexer = 'QsciLexerPython'
+            api_files = []
+            count = self.tableWidget.rowCount()
+            for i in range(0, count):
+                api_files.append(self.tableWidget.item(i, 1).text())
+            api_dlg = PrepareAPIDialog(api_lexer, api_files, pap_file, self)
+            api_dlg.show()
+            api_dlg.activateWindow()
+            api_dlg.raise_()
+            api_dlg.prepareAPI()
+            self.lineEdit.setText(pap_file)
 
     def accept(self):
-        if not self.preloadAPI.isChecked():
+        if not self.preloadAPI.isChecked() and \
+        not self.groupBoxPreparedAPI.isChecked():
             if self.tableWidget.rowCount() == 0:
                 QMessageBox.information(self, self.tr("Warning!"),
-                                              self.tr('Please specify API file or check "Use preloaded API files"'))
+                                        self.tr('Please specify API file or check "Use preloaded API files"'))
                 return
+        if self.groupBoxPreparedAPI.isChecked() and \
+        not self.lineEdit.text():
+            QMessageBox.information(self, self.tr("Warning!"),
+                                    self.tr('The APIs file was not compiled, click on "Compile APIs..."'))
+            return
         self.saveSettings()
         self.listPath = []
         QDialog.accept( self )
@@ -98,13 +131,13 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
     def saveSettings(self):
         settings = QSettings()
-        settings.setValue("pythonConsole/preloadAPI", QVariant(self.preloadAPI.isChecked()))
-        settings.setValue("pythonConsole/autoSaveScript", QVariant(self.autoSaveScript.isChecked()))
+        settings.setValue("pythonConsole/preloadAPI", self.preloadAPI.isChecked())
+        settings.setValue("pythonConsole/autoSaveScript", self.autoSaveScript.isChecked())
 
         fontFamilyText = self.fontComboBox.currentText()
-        settings.setValue("pythonConsole/fontfamilytext", QVariant(fontFamilyText))
+        settings.setValue("pythonConsole/fontfamilytext", fontFamilyText)
         fontFamilyTextEditor = self.fontComboBoxEditor.currentText()
-        settings.setValue("pythonConsole/fontfamilytextEditor", QVariant(fontFamilyTextEditor))
+        settings.setValue("pythonConsole/fontfamilytextEditor", fontFamilyTextEditor)
 
         fontSize = self.spinBox.value()
         fontSizeEditor = self.spinBoxEditor.value()
@@ -112,59 +145,64 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         for i in range(0, self.tableWidget.rowCount()):
             text = self.tableWidget.item(i, 1).text()
             self.listPath.append(text)
-        settings.setValue("pythonConsole/fontsize", QVariant(fontSize))
-        settings.setValue("pythonConsole/fontsizeEditor", QVariant(fontSizeEditor))
-        settings.setValue("pythonConsole/userAPI", QVariant(self.listPath))
+        settings.setValue("pythonConsole/fontsize", fontSize)
+        settings.setValue("pythonConsole/fontsizeEditor", fontSizeEditor)
+        settings.setValue("pythonConsole/userAPI", self.listPath)
 
-        settings.setValue("pythonConsole/autoCompThreshold", QVariant(self.autoCompThreshold.value()))
-        settings.setValue("pythonConsole/autoCompThresholdEditor", QVariant(self.autoCompThresholdEditor.value()))
+        settings.setValue("pythonConsole/autoCompThreshold", self.autoCompThreshold.value())
+        settings.setValue("pythonConsole/autoCompThresholdEditor", self.autoCompThresholdEditor.value())
 
-        settings.setValue("pythonConsole/autoCompleteEnabledEditor", QVariant(self.groupBoxAutoCompletionEditor.isChecked()))
-        settings.setValue("pythonConsole/autoCompleteEnabled", QVariant(self.groupBoxAutoCompletion.isChecked()))
+        settings.setValue("pythonConsole/autoCompleteEnabledEditor", self.groupBoxAutoCompletionEditor.isChecked())
+        settings.setValue("pythonConsole/autoCompleteEnabled", self.groupBoxAutoCompletion.isChecked())
+
+        settings.setValue("pythonConsole/usePreparedAPIFile", self.groupBoxPreparedAPI.isChecked())
+        settings.setValue("pythonConsole/preparedAPIFile", self.lineEdit.text())
 
         if self.autoCompFromAPIEditor.isChecked():
-            settings.setValue("pythonConsole/autoCompleteSourceEditor", QVariant('fromAPI'))
+            settings.setValue("pythonConsole/autoCompleteSourceEditor", 'fromAPI')
         elif self.autoCompFromDocEditor.isChecked():
-            settings.setValue("pythonConsole/autoCompleteSourceEditor", QVariant('fromDoc'))
+            settings.setValue("pythonConsole/autoCompleteSourceEditor", 'fromDoc')
         elif self.autoCompFromDocAPIEditor.isChecked():
-            settings.setValue("pythonConsole/autoCompleteSourceEditor", QVariant('fromDocAPI'))
+            settings.setValue("pythonConsole/autoCompleteSourceEditor", 'fromDocAPI')
 
         if self.autoCompFromAPI.isChecked():
-            settings.setValue("pythonConsole/autoCompleteSource", QVariant('fromAPI'))
+            settings.setValue("pythonConsole/autoCompleteSource", 'fromAPI')
         elif self.autoCompFromDoc.isChecked():
-            settings.setValue("pythonConsole/autoCompleteSource", QVariant('fromDoc'))
+            settings.setValue("pythonConsole/autoCompleteSource", 'fromDoc')
         elif self.autoCompFromDocAPI.isChecked():
-            settings.setValue("pythonConsole/autoCompleteSource", QVariant('fromDocAPI'))
+            settings.setValue("pythonConsole/autoCompleteSource", 'fromDocAPI')
 
-        settings.setValue("pythonConsole/enableObjectInsp", QVariant(self.enableObjectInspector.isChecked()))
-        settings.setValue("pythonConsole/autoCloseBracket", QVariant(self.autoCloseBracket.isChecked()))
-        settings.setValue("pythonConsole/autoCloseBracketEditor", QVariant(self.autoCloseBracketEditor.isChecked()))
+        settings.setValue("pythonConsole/enableObjectInsp", self.enableObjectInspector.isChecked())
+        settings.setValue("pythonConsole/autoCloseBracket", self.autoCloseBracket.isChecked())
+        settings.setValue("pythonConsole/autoCloseBracketEditor", self.autoCloseBracketEditor.isChecked())
 
     def restoreSettings(self):
         settings = QSettings()
-        self.spinBox.setValue(settings.value("pythonConsole/fontsize", 10).toInt()[0])
-        self.spinBoxEditor.setValue(settings.value("pythonConsole/fontsizeEditor", 10).toInt()[0])
+        self.spinBox.setValue(settings.value("pythonConsole/fontsize", 10, type=int))
+        self.spinBoxEditor.setValue(settings.value("pythonConsole/fontsizeEditor", 10, type=int))
         self.fontComboBox.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytext",
-                                                              "Monospace").toString()))
+                                                              "Monospace")))
         self.fontComboBoxEditor.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytextEditor",
-                                                                    "Monospace").toString()))
-        self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True).toBool())
-        itemTable = settings.value("pythonConsole/userAPI").toStringList()
-        for i in range(len(itemTable)):
-            self.tableWidget.insertRow(i)
-            self.tableWidget.setColumnCount(2)
-            pathSplit = itemTable[i].split("/")
-            apiName = pathSplit[-1][0:-4]
-            self.tableWidget.setItem(i, 0, QTableWidgetItem(apiName))
-            self.tableWidget.setItem(i, 1, QTableWidgetItem(itemTable[i]))
-        self.autoSaveScript.setChecked(settings.value("pythonConsole/autoSaveScript", False).toBool())
+                                                      "Monospace")))
+        self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True, type=bool))
+        self.lineEdit.setText(settings.value("pythonConsole/preparedAPIFile"))
+        itemTable = settings.value("pythonConsole/userAPI", [])
+        if itemTable:
+            for i in range(len(itemTable)):
+                self.tableWidget.insertRow(i)
+                self.tableWidget.setColumnCount(2)
+                pathSplit = itemTable[i].split("/")
+                apiName = pathSplit[-1][0:-4]
+                self.tableWidget.setItem(i, 0, QTableWidgetItem(apiName))
+                self.tableWidget.setItem(i, 1, QTableWidgetItem(itemTable[i]))
+        self.autoSaveScript.setChecked(settings.value("pythonConsole/autoSaveScript", False, type=bool))
 
-        self.autoCompThreshold.setValue(settings.value("pythonConsole/autoCompThreshold", 2).toInt()[0])
-        self.autoCompThresholdEditor.setValue(settings.value("pythonConsole/autoCompThresholdEditor", 2).toInt()[0])
+        self.autoCompThreshold.setValue(settings.value("pythonConsole/autoCompThreshold", 2, type=int))
+        self.autoCompThresholdEditor.setValue(settings.value("pythonConsole/autoCompThresholdEditor", 2, type=int))
 
-        self.enableObjectInspector.setChecked(settings.value("pythonConsole/enableObjectInsp", False).toBool())
-        self.autoCloseBracketEditor.setChecked(settings.value("pythonConsole/autoCloseBracketEditor", True).toBool())
-        self.autoCloseBracket.setChecked(settings.value("pythonConsole/autoCloseBracket", True).toBool())
+        self.enableObjectInspector.setChecked(settings.value("pythonConsole/enableObjectInsp", False, type=bool))
+        self.autoCloseBracketEditor.setChecked(settings.value("pythonConsole/autoCloseBracketEditor", True, type=bool))
+        self.autoCloseBracket.setChecked(settings.value("pythonConsole/autoCloseBracket", True, type=bool))
 
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
             self.autoCompFromDoc.setChecked(True)

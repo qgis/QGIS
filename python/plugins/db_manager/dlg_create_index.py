@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : Oct 13, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -56,7 +56,7 @@ class DlgCreateIndex(QDialog, Ui_Dialog):
 	def createIndex(self):
 		idx = self.getIndex()
 		if idx.name == "":
-			QMessageBox.critical(self, "error", "Please enter some name for the index")
+			QMessageBox.critical(self, self.tr("Error"), self.tr("Please enter some name for the index"))
 			return
 
 		# now create the index

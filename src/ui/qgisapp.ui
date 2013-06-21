@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -1381,7 +1381,7 @@
      <normaloff>:/images/themes/default/mActionShowPluginManager.png</normaloff>:/images/themes/default/mActionShowPluginManager.png</iconset>
    </property>
    <property name="text">
-    <string>Manage Plugins...</string>
+    <string>Manage and Install Plugins...</string>
    </property>
   </action>
   <action name="mActionToggleFullScreen">
@@ -1605,7 +1605,7 @@ Ctl (Cmd) increments by 15 deg.</string>
   </action>
   <action name="actionActionCatchForCustomization">
    <property name="text">
-    <string>mActionCatchForCustomization</string>
+    <string notr="true">mActionCatchForCustomization</string>
    </property>
    <property name="toolTip">
     <string>This is here just to avoid shortcut conflicts, the shortcut is caught in QgsCustomization</string>

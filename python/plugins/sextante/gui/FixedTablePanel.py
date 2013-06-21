@@ -26,11 +26,6 @@ __revision__ = '$Format:%H$'
 from PyQt4 import QtCore, QtGui
 from sextante.gui.FixedTableDialog import FixedTableDialog
 
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    _fromUtf8 = lambda s: s
-
 class FixedTablePanel(QtGui.QWidget):
 
     def __init__(self, param, parent = None):

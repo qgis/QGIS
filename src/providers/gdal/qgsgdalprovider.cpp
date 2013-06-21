@@ -1818,6 +1818,8 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
 
   GDALDriverH jp2Driver = NULL; // first JPEG2000 driver found
 
+  QgsGdalProviderBase::registerGdalDrivers();
+
   // Grind through all the drivers and their respective metadata.
   // We'll add a file filter for those drivers that have a file
   // extension defined for them; the others, well, even though
@@ -1831,6 +1833,8 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
 
   // start with the default case
   theFileFiltersString = QObject::tr( "[GDAL] All files (*)" );
+
+  QgsDebugMsg( QString( "GDAL driver count: %1" ).arg( GDALGetDriverCount() ) );
 
   for ( int i = 0; i < GDALGetDriverCount(); ++i )
   {

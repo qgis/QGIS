@@ -48,8 +48,8 @@ class GeoAlgorithmTest(unittest.TestCase):
         self.assertEqual(2, len(features))
         feature=features.next()
         attrs=feature.attributes()
-        expectedvalues=["1","1.1","string a","6"]
-        values=[str(attr.toString()) for attr in attrs]
+        expectedvalues=["1","1.1","string a","6.0"]
+        values=[str(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
 
 

@@ -8,7 +8,7 @@ the Free Software Foundation; either version 2 of the License, or
 """
 __author__ = 'Nathan Woodrow'
 __date__ = '4/11/2012'
-__copyright__ = 'Copyright 2012, The Quantum GIS Project'
+__copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 

@@ -29,7 +29,6 @@ import platform
 from qgis.core import QgsDataSourceURI
 from qgis.core import QgsMapLayerRegistry
 #from qgis.core import QgsProject
-from PyQt4.QtCore import QString
 from PyQt4.QtCore import QVariant
 
 
@@ -674,13 +673,13 @@ class Qgis2Map:
 
     mlr = QgsMapLayerRegistry.instance()
     layers = mlr.mapLayers()
-    if not QString(layerId) in layers:
+    if not layerId in layers:
       # layerId of this postgis layer NOT in the layerlist...
       # probably the project is not loaded in qgis
       #raise Exception("ERROR: layer not found in project layers.... \nThis happens with postgis layers in a project which \nis not loaded in QGis.\nDid you load this project into QGis? \nIf not please load project first, and then export it to mapserver.")
       return str("%" + tableName + "_id%")
 
-    layer = layers[QString(layerId)]
+    layer = layers[layerId]
     dataProvider = layer.dataProvider()
     fields = dataProvider.fields()
 

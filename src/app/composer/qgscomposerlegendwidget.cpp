@@ -168,6 +168,7 @@ void QgsComposerLegendWidget::setGuiElements()
   mEqualColumnWidthCheckBox->setChecked( mLegend->equalColumnWidth() );
   mSymbolWidthSpinBox->setValue( mLegend->symbolWidth() );
   mSymbolHeightSpinBox->setValue( mLegend->symbolHeight() );
+  mTitleSpaceBottomSpinBox->setValue( mLegend->style( QgsComposerLegendStyle::Title ).margin( QgsComposerLegendStyle::Bottom ) );
   mGroupSpaceSpinBox->setValue( mLegend->style( QgsComposerLegendStyle::Group ).margin( QgsComposerLegendStyle::Top ) );
   mLayerSpaceSpinBox->setValue( mLegend->style( QgsComposerLegendStyle::Subgroup ).margin( QgsComposerLegendStyle::Top ) );
   // We keep Symbol and SymbolLabel Top in sync for now
@@ -273,6 +274,18 @@ void QgsComposerLegendWidget::on_mSymbolHeightSpinBox_valueChanged( double d )
   {
     mLegend->beginCommand( tr( "Legend symbol height" ), QgsComposerMergeCommand::LegendSymbolHeight );
     mLegend->setSymbolHeight( d );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsComposerLegendWidget::on_mTitleSpaceBottomSpinBox_valueChanged( double d )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Legend title space bottom" ), QgsComposerMergeCommand::LegendTitleSpaceBottom );
+    mLegend->rstyle( QgsComposerLegendStyle::Title ).setMargin( QgsComposerLegendStyle::Bottom, d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -685,12 +698,12 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
   }
 
   QList<QPersistentModelIndex> indexes;
-  foreach(const QModelIndex &index, selectionModel->selectedIndexes())
-      indexes << index;
+  foreach ( const QModelIndex &index, selectionModel->selectedIndexes() )
+    indexes << index;
 
-  foreach(const QPersistentModelIndex index, indexes)
+  foreach ( const QPersistentModelIndex index, indexes )
   {
-      itemModel->removeRow( index.row(), index.parent() );
+    itemModel->removeRow( index.row(), index.parent() );
   }
 
   mLegend->adjustBoxSize();

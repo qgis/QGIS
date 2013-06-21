@@ -25,13 +25,6 @@ __revision__ = '$Format:%H$'
 
 from PyQt4 import QtCore, QtGui
 from sextante.gui.MultipleInputDialog import MultipleInputDialog
-from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
-from sextante.core.QGisLayers import QGisLayers
-
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    _fromUtf8 = lambda s: s
 
 class MultipleInputPanel(QtGui.QWidget):
 

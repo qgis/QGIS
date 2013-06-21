@@ -91,6 +91,7 @@ class QgsTileScaleWidget;
 #include "qgspoint.h"
 #include "qgsrasterlayer.h"
 #include "qgssnappingdialog.h"
+#include "qgspluginmanager.h"
 
 #include "ui_qgisapp.h"
 
@@ -406,6 +407,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! returns pointer to map legend
     QgsLegend *legend();
+
+    //! returns pointer to plugin manager
+    QgsPluginManager *pluginManager();
 
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified
@@ -1016,6 +1020,16 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void addSvgAnnotation();
     void modifyAnnotation();
 
+    /** Alerts user when labeling font for layer has not been found on system
+     * @note added in 1.9
+     */
+    void labelingFontNotFound( QgsVectorLayer* vlayer, const QString& fontfamily );
+
+    /** Opens the labeling dialog for a layer when called from labelingFontNotFound alert
+     * @note added in 1.9
+     */
+    void labelingDialogFontNotFound( QAction* act );
+
     //! shows label settings dialog (for labeling-ng)
     void labeling();
 
@@ -1431,6 +1445,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QgsBrowserDockWidget* mBrowserWidget2;
 
     QgsSnappingDialog* mSnappingDialog;
+
+    QgsPluginManager* mPluginManager;
 
     //! Persistent tile scale slider
     QgsTileScaleWidget * mpTileScaleWidget;

@@ -80,7 +80,7 @@ class OutputVector(Output):
 
         if self.encoding is None:
             settings = QSettings()
-            self.encoding = settings.value("/SextanteQGIS/encoding", "System").toString()
+            self.encoding = settings.value("/SextanteQGIS/encoding", "System")
 
         w = SextanteVectorWriter(self.value, self.encoding, fields, geomType, crs, options)
         self.memoryLayer = w.memLayer

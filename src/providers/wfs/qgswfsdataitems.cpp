@@ -153,7 +153,7 @@ QVector<QgsDataItem*> QgsWFSRootItem::createChildren()
 
   foreach ( QString connName, QgsOWSConnection::connectionList( "WFS" ) )
   {
-    QgsOWSConnection connection( "WF", connName );
+    QgsOWSConnection connection( "WFS", connName );
     QgsDataItem * conn = new QgsWFSConnectionItem( this, connName, connection.uri().encodedUri() );
     conn->setIcon( QgsApplication::getThemeIcon( "mIconConnect.png" ) );
     connections.append( conn );

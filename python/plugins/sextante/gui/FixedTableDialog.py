@@ -84,7 +84,7 @@ class FixedTableDialog(QtGui.QDialog):
         for i in range(self.table.rowCount()):
             self.rettable.append(list())
             for j in range(self.table.columnCount()):
-                self.rettable[i].append(str(self.table.item(i,j).text()))
+                self.rettable[i].append(unicode(self.table.item(i,j).text()))
         self.close()
 
     def cancelPressed(self):

@@ -106,7 +106,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     Alignment alignment() const { return mAlignment; }
 
     /**@note: this method was added in version 1.8*/
-    void setAlignment( Alignment a ) { mAlignment = a; }
+    void setAlignment( Alignment a );
 
     /**@note: this method was added in version 1.9*/
     ScaleBarUnits units() const { return mUnits; }

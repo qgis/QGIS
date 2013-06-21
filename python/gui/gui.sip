@@ -1,5 +1,6 @@
-
-%Module qgis.gui 0
+%Module(name=qgis.gui,
+        version=0,
+        keyword_arguments="Optional")
 
 %Import QtCore/QtCoremod.sip
 %Import QtGui/QtGuimod.sip
@@ -31,6 +32,7 @@
 %Include qgsgenericprojectionselector.sip
 %Include qgshtmlannotationitem.sip
 %Include qgslegendinterface.sip
+%Include qgspluginmanagerinterface.sip
 %Include qgslonglongvalidator.sip
 %Include qgsludialog.sip
 %Include qgsmanageconnectionsdialog.sip

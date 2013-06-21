@@ -35,7 +35,7 @@ for inFeat in feats:
     progress.setPercentage(int((100 * nElement)/nFeat))
     nElement += 1
     atMap = inFeat.attributes()
-    clazz = atMap[class_field_index].toString()
+    clazz = atMap[class_field_index]
     if clazz not in writers:
         outputFile = output + "_" + str(len(writers)) + ".shp"
         writers[clazz] = SextanteVectorWriter(outputFile, None, fields, provider.geometryType(), layer.crs() )

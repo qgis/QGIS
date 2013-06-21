@@ -69,6 +69,15 @@ class QgsProviderRegistry
       It'd be nice to eventually be raster/vector neutral.
     */
     virtual QString fileVectorFilters() const;
+    /** return raster file filter string
+
+      Returns a string suitable for a QFileDialog of raster file formats
+      supported by all data providers.
+
+      @note this method was added in QGIS 2.0
+      @note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
+    */
+    virtual QString fileRasterFilters() const;
     /** return a string containing the available database drivers
     * @note this method was added in QGIS 1.1
     */

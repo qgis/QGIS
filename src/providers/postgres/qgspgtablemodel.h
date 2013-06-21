@@ -34,7 +34,7 @@ class QgsPgTableModel : public QStandardItemModel
     ~QgsPgTableModel();
 
     /**Adds entry for one database table to the model*/
-    void addTableEntry( QgsPostgresLayerProperty property );
+    void addTableEntry( const QgsPostgresLayerProperty& property );
 
     /**Sets an sql statement that belongs to a cell specified by a model index*/
     void setSql( const QModelIndex& index, const QString& sql );
@@ -58,7 +58,7 @@ class QgsPgTableModel : public QStandardItemModel
 
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
-    QString layerURI( const QModelIndex &index, QString connInfo, bool useEstimatedMetadata );
+    QString layerURI( const QModelIndex &index, const QString& connInfo, bool useEstimatedMetadata );
 
     static QIcon iconForWkbType( QGis::WkbType type );
 

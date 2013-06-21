@@ -48,6 +48,7 @@
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "../../app/qgsrasterlayerproperties.h"
+#include "qgsproviderregistry.h"
 
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftooladdpoint.h"
@@ -211,8 +212,7 @@ void QgsGeorefPluginGui::openRaster()
   QString otherFiles = tr( "All other files (*)" );
   QString lastUsedFilter = s.value( "/Plugin-GeoReferencer/lastusedfilter", otherFiles ).toString();
 
-  QString filters;
-  QgsRasterLayer::buildSupportedRasterFileFilter( filters );
+  QString filters = QgsProviderRegistry::instance()->fileRasterFilters();
   filters.prepend( otherFiles + ";;" );
   filters.chop( otherFiles.size() + 2 );
   mRasterFileName = QFileDialog::getOpenFileName( this, tr( "Open raster" ), dir, filters, &lastUsedFilter );
