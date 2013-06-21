@@ -209,7 +209,6 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     , ogrDriver( 0 )
     , valid( false )
     , featuresCounted( -1 )
-    , mActiveIterator( 0 )
 {
   QgsCPLErrorHandler handler;
 
@@ -361,6 +360,11 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 QgsOgrProvider::~QgsOgrProvider()
 {
   // Do we need to close all active iterators here?
+
+  foreach ( QgsOgrFeatureIterator* it, mActiveIterators )
+  {
+    it->close();
+  }
 
   if ( ogrLayer != ogrOrigLayer )
   {

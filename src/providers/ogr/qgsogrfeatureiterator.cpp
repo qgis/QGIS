@@ -35,6 +35,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatur
   : QgsAbstractFeatureIterator( request ), P( p ), ogrDataSource(0), ogrLayer(0), mSubsetStringSet(false)
 {
   mFeatureFetched = false;
+  P->mActiveIterators.insert( this );
 
   ogrDataSource = OGROpen( TO8F( P->filePath() ), false, NULL );
 
@@ -158,6 +159,8 @@ bool QgsOgrFeatureIterator::close()
 {
   if ( mClosed )
     return false;
+
+  P->mActiveIterators.remove( this );
 
   if (mSubsetStringSet)
   {
