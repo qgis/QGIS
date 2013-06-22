@@ -757,16 +757,16 @@ class PostGisDBConnector(DBConnector):
 		c = self._get_cursor()
 
 		# update column definition
-		col_actions = QStringList()
+		col_actions = []
 		if data_type != None:
-			col_actions << u"TYPE %s" % data_type
+			col_actions.append( u"TYPE %s" % data_type )
 		if not_null != None:
-			col_actions << (u"SET NOT NULL" if not_null else u"DROP NOT NULL")
+			col_actions.append( u"SET NOT NULL" if not_null else u"DROP NOT NULL" )
 		if default != None:
 			if default and default != '':
-				col_actions << u"SET DEFAULT %s" % default
+				col_actions.append( u"SET DEFAULT %s" % default )
 			else:
-				col_actions << u"DROP DEFAULT"
+				col_actions.append( u"DROP DEFAULT" )
 		if len(col_actions) > 0:
 			sql = u"ALTER TABLE %s" % self.quoteId(table)
 			alter_col_str = u"ALTER %s" % self.quoteId(column)
