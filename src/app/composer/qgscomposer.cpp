@@ -940,6 +940,7 @@ void QgsComposer::on_mActionExportAsImage_triggered()
   // Image size
   int width = ( int )( mComposition->printResolution() * mComposition->paperWidth() / 25.4 );
   int height = ( int )( mComposition-> printResolution() * mComposition->paperHeight() / 25.4 );
+  int dpi = ( int )( mComposition->printResolution() );
 
   int memuse = width * height * 3 / 1000000;  // pixmap + image
   QgsDebugMsg( QString( "Image %1x%2" ).arg( width ).arg( height ) );
@@ -972,6 +973,17 @@ void QgsComposer::on_mActionExportAsImage_triggered()
     for ( int i = 0; i < mComposition->numPages(); ++i )
     {
       QImage image = mComposition->printPageAsRaster( i );
+      if (image.isNull())
+      {
+        QMessageBox::warning( 0, tr( "Memory Allocation Error" ),
+                                             tr( "Trying to create image #%1 ( %2x%3 @ %4dpi )"
+                                                 "may result in a memory overflow.\n"
+                                                 "Please try a lower resolution or a smaller papersize" )
+                                             .arg( i+1 ).arg( width ).arg( height ).arg ( dpi ),
+                                             QMessageBox::Ok ,  QMessageBox::Ok );
+        mView->setPaintingEnabled( true );
+        return;
+      }
       if ( i == 0 )
       {
         image.save( fileNExt.first, fileNExt.second.toLocal8Bit().constData() );
