@@ -191,7 +191,10 @@ int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3* handle )
   // checking if table GEOMETRY_COLUMNS exists and has the expected layout
   ret = sqlite3_get_table( handle, "PRAGMA table_info(geometry_columns)", &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
+  {
+    mErrorMsg = tr( "table info on %1 failed" ).arg( "geometry_columns" );
     goto error;
+  }
   if ( rows < 1 )
     ;
   else
@@ -224,7 +227,10 @@ int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3* handle )
   // checking if table SPATIAL_REF_SYS exists and has the expected layout
   ret = sqlite3_get_table( handle, "PRAGMA table_info(spatial_ref_sys)", &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
+  {
+    mErrorMsg = tr( "table info on %1 failed" ).arg( "spatial_ref_sys" );
     goto error;
+  }
   if ( rows < 1 )
     ;
   else
@@ -263,10 +269,10 @@ int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3* handle )
 
 error:
   // unexpected IO error
-  mErrorMsg = tr( "unknown error cause" );
-  if ( errMsg != NULL )
+  if ( errMsg )
   {
-    mErrorMsg = errMsg;
+    mErrorMsg += "\n";
+    mErrorMsg += errMsg;
     sqlite3_free( errMsg );
   }
   return false;
@@ -341,7 +347,7 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 * handle, b
         case GAIA_VECTOR_GEOMETRYCOLLECTION:
           type = tr( "GEOMETRYCOLLECTION" );
           break;
-      };
+      }
       mTables.append( TableEntry( tableName, column, type ) );
 
       lyr = lyr->Next;
@@ -683,7 +689,7 @@ bool QgsSpatiaLiteConnection::isDeclaredHidden( sqlite3 * handle, QString table,
 error:
   // unexpected IO error
   mErrorMsg = tr( "unknown error cause" );
-  if ( errMsg != NULL )
+  if ( errMsg )
   {
     mErrorMsg = errMsg;
     sqlite3_free( errMsg );
