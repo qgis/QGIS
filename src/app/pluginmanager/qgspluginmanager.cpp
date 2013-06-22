@@ -106,7 +106,7 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, Qt::WFlags fl )
   buttonUpgradeAll->hide();
   buttonInstall->hide();
   buttonUninstall->hide();
-  mOptionsListWidget->item( 5 )->setHidden( true );
+  frameSettings->setHidden( true );
 }
 
 
@@ -133,7 +133,8 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils* pythonUtils )
   buttonUpgradeAll->show();
   buttonInstall->show();
   buttonUninstall->show();
-  mOptionsListWidget->item( 5 )->setHidden( false );
+  frameSettings->setHidden( false );
+  labelNoPython->setHidden( true );
   buttonRefreshRepos->setEnabled( false );
   buttonEditRep->setEnabled( false );
   buttonDeleteRep->setEnabled( false );
