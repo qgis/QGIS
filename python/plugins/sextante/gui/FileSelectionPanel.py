@@ -58,14 +58,14 @@ class FileSelectionPanel(QtGui.QWidget):
             path = ""
 
         if self.isFolder:
-            folder = QtGui.QFileDialog.getExistingDirectory (self, "Select folder", path)
+            folder = QtGui.QFileDialog.getExistingDirectory(self, "Select folder", path)
             if folder:
                 self.text.setText(str(folder))
                 settings.setValue("/SextanteQGIS/LastInputPath", os.path.dirname(unicode(folder)))
         else:
             filenames = QtGui.QFileDialog.getOpenFileNames(self, "Open file", path, "*.*")
             if filenames:
-                self.text.setText(str(filenames.join(";")))
+                self.text.setText(u";".join(filenames))
                 settings.setValue("/SextanteQGIS/LastInputPath", os.path.dirname(unicode(filenames[0])))
 
     def getValue(self):
