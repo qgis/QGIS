@@ -1,41 +1,23 @@
-/***************************************************************************
-    qgscacheindexfeatureid.h
-     --------------------------------------
-    Date                 : 13.2.2013
-    Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
-#ifndef QGSCACHEINDEXFEATUREID_H
-#define QGSCACHEINDEXFEATUREID_H
-
-#include "qgscacheindex.h"
-
-class QgsVectorLayerCache;
-
-class CORE_EXPORT QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
+class QgsAbstractCacheIndex
 {
+%TypeHeaderCode
+#include <qgscacheindex.h>
+%End
   public:
-    QgsCacheIndexFeatureId( QgsVectorLayerCache* );
+    QgsAbstractCacheIndex();
+    virtual ~QgsAbstractCacheIndex();
 
     /**
      * Is called, whenever a feature is removed from the cache. You should update your indexes, so
      * they become invalid in case this feature was required to successfuly answer a request.
      */
-    virtual void flushFeature( const QgsFeatureId fid );
+    virtual void flushFeature( const QgsFeatureId fid ) = 0;
 
     /**
      * Sometimes, the whole cache changes its state and its easier to just withdraw everything.
      * In this case, this method is issued. Be sure to clear all cache information in here.
      */
-    virtual void flush();
+    virtual void flush() = 0;
 
     /**
      * @brief
@@ -62,10 +44,5 @@ class CORE_EXPORT QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
      * @return   True, if this index holds the information to answer the request.
      *
      */
-    virtual bool getCacheIterator( QgsFeatureIterator& featureIterator, const QgsFeatureRequest& featureRequest );
-
-  private:
-    QgsVectorLayerCache* C;
+    virtual bool getCacheIterator( QgsFeatureIterator& featureIterator, const QgsFeatureRequest& featureRequest ) = 0;
 };
-
-#endif // QGSCACHEINDEXFEATUREID_H

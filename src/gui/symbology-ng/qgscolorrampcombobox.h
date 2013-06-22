@@ -39,10 +39,7 @@ class QgsColorRampComboBox : public QComboBox
 
     static QSize rampIconSize;
 
-  signals:
-
   public slots:
-
     void colorRampChanged( int index );
 
   protected:

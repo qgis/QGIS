@@ -26,7 +26,7 @@ class QgsPALGeometry;
 /**A class that uses the PAL library for overlay object placement
 * \note This class has been added in version 1.1
 */
-class QgsPALObjectPositionManager: public QgsOverlayObjectPositionManager
+class CORE_EXPORT QgsPALObjectPositionManager: public QgsOverlayObjectPositionManager
 {
   public:
     QgsPALObjectPositionManager();

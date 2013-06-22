@@ -38,14 +38,16 @@ Output should go to ../resources/customization.xml
 
 import sys
 import os, glob, imp
+from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.uic import loadUi, compileUi
-from xml.etree.ElementTree import Element, SubElement, Comment, tostring
-from xml.dom import minidom
+from PyQt4.QtXml import *
 
 # qwt_plot is missing somehow but it may depend on installed packages
 from PyQt4 import Qwt5 as qwt_plot
 sys.modules['qwt_plot'] = qwt_plot
+
+from qgis.gui import QgsAttributeTableView
 
 # loadUi is looking for custom widget in module which is lowercase version of
 # the class, which do not exist (AFAIK) -> preload them, problems anyway:
@@ -53,19 +55,19 @@ sys.modules['qwt_plot'] = qwt_plot
 # QgsRendererRulesTreeWidget, QgsAttributeTableView
 # and QgsProjectionSelector cannot open db file
 from qgis import gui
-for m in ['qgscolorbutton', 'qgscolorrampcombobox', 'qgsprojectionselector', 'qgslabelpreview', 'qgsrulebasedrendererv2widget', 'qgsattributetableview' ]:
+for m in ['qgscolorbutton', 'qgscolorrampcombobox', 'qgsprojectionselector', 'qgslabelpreview', 'qgsrulebasedrendererv2widget', 'qgscollapsiblegroupbox', 'qgsblendmodecombobox', 'qgsexpressionbuilderwidget', 'qgsrasterformatsaveoptionswidget', 'qgsrasterpyramidsoptionswidget', 'qgsscalecombobox', 'qgsfilterlineedit', 'qgsdualview' ]:
 	sys.modules[m] = gui
 
 class UiInspector:
-	def __init__(self ):
-		self.ui_dir = os.path.abspath ( os.path.join(  os.path.dirname(__file__)	, '../src/ui/*.ui' ) )
+	def __init__(self):
+		self.ui_dir = os.path.abspath ( os.path.join( os.path.dirname(__file__), '../src/ui/*.ui' ) )
 		self.printMsg ( "Loading UI files " + self.ui_dir )
 		# list of widget classes we want to follow
 		self.follow = [
 			QWidget, QDialog,
 			QCheckBox, QComboBox, QDial, QPushButton, QLabel, QLCDNumber, QLineEdit, QRadioButton, QScrollBar, QSlider, QSpinBox, QTextEdit,
 			QDateEdit, QTimeEdit, QDateTimeEdit, QListView, QProgressBar, QTableView, QTabWidget, QTextBrowser, QDialogButtonBox,
-      QScrollArea, QGroupBox, QStackedWidget,
+			QScrollArea, QGroupBox, QStackedWidget,
 		]
 
 	def printMsg ( self, msg ):
@@ -77,7 +79,8 @@ class UiInspector:
 		#self.printMsg ( "objectName: " + widget.objectName() )
 		#self.printMsg ( "windowTitle: " + widget.windowTitle() )
 
-		if not widget.objectName(): return
+		if not widget.objectName():
+			return
 
 		lab = label
 		if hasattr( widget, 'text' ):
@@ -87,12 +90,11 @@ class UiInspector:
 		if not lab:
 			lab = ''
 
-		lab = unicode(lab).encode("ascii","replace")
-
-		sub_element = SubElement( element, 'widget')
-		sub_element.set('class', widget.__class__.__name__ )
-		sub_element.set('objectName', widget.objectName() )
-		sub_element.set('label', lab )
+		subElement = self.doc.createElement('widget')
+		subElement.setAttribute('class', widget.__class__.__name__ )
+		subElement.setAttribute('objectName', widget.objectName() )
+		subElement.setAttribute('label', lab )
+		element.appendChild( subElement )
 
 		#print str ( widget.children () )
 		# tab widget label is stored in QTabWidget->QTabBarPrivate->tabList->QTab ..
@@ -103,35 +105,24 @@ class UiInspector:
 		for child in children:
 			w  = child['widget']
 			if w.isWidgetType() and ( type(w) in self.follow ):
-				self.widgetXml ( sub_element, w, level+1, child['label'] )
+				self.widgetXml( subElement, w, level+1, child['label'] )
 
-
-	def treeXml(self, element ):
-		xml = ''
-    # debug
+	def xml(self) :
+		self.doc = QDomDocument()
+		element = self.doc.createElement( "qgiswidgets" )
+		self.doc.appendChild( element )
 		for p in glob.glob( self.ui_dir ):
 			self.printMsg ( "Loading " + p )
 			# qgsrasterlayerpropertiesbase.ui is giving: No module named qwt_plot
 			try:
 				widget = loadUi ( p )
 				#print dir ( ui )
-				self.widgetXml ( element, widget )
+				self.widgetXml( element, widget )
 			except Exception, e:
 			#except IOError, e:
-				self.printMsg ( str(e) )
-
-		return xml
-
-	def xml( self ) :
-		#xml = "<?xml version='1.0' encoding='UTF-8'?>\n"
-		#xml += "<!DOCTYPE qgiswidgets SYSTEM 'http://mrcc.com/qgiswidgets.dtd'>\n"
-		element = Element('qgiswidgets')
-		self.treeXml( element )
-
-		string =  tostring ( element, 'utf-8' )
-		reparsed = minidom.parseString(string)
-		xml = reparsed.toprettyxml(indent="  ")
-		return xml
+				self.printMsg( str(e) )
+				
+		return self.doc.toString( 2 )
 
 
 if __name__ == '__main__':

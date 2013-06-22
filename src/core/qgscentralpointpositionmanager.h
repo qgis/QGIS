@@ -27,7 +27,7 @@ class QgsPoint;
 a feature. It does not consider conflicts in case of several overlay layers
 * \note This class has been added in version 1.1
 */
-class QgsCentralPointPositionManager: public QgsOverlayObjectPositionManager
+class CORE_EXPORT QgsCentralPointPositionManager : public QgsOverlayObjectPositionManager
 {
   public:
     QgsCentralPointPositionManager();
