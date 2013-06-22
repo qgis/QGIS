@@ -109,8 +109,18 @@ bool QgsSpatiaLiteFeatureIterator::nextFeature( QgsFeature& feature )
 
 bool QgsSpatiaLiteFeatureIterator::rewind()
 {
-  // TODO: implement. use sqlite3_reset
-  return false;
+  if ( mClosed )
+    return false;
+
+  if ( sqlite3_reset( sqliteStatement ) == SQLITE_OK )
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
 }
 
 bool QgsSpatiaLiteFeatureIterator::close()
