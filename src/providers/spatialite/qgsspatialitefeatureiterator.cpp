@@ -121,7 +121,6 @@ bool QgsSpatiaLiteFeatureIterator::rewind()
     return false;
   }
 }
-}
 
 bool QgsSpatiaLiteFeatureIterator::close()
 {
