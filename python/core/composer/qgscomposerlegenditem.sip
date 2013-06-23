@@ -15,7 +15,8 @@ class QgsComposerLegendItem : QStandardItem
       GroupItem = QStandardItem::UserType,
       LayerItem,
       SymbologyV2Item,
-      RasterSymbolItem
+      RasterSymbolItem,
+      StyleItem
     };
 
     virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const = 0;
@@ -27,6 +28,13 @@ class QgsComposerLegendItem : QStandardItem
     virtual ItemType itemType() const = 0;
     virtual QStandardItem* clone() const = 0;
 
+    QgsComposerLegendStyle::Style style() const;
+    void setStyle( QgsComposerLegendStyle::Style style );
+
+    // Get text defined by user
+    virtual QString userText() const;
+    // Set text defined by user
+    virtual void  setUserText( const QString & text );
   protected:
     void writeXMLChildren( QDomElement& elem, QDomDocument& doc ) const;
 };
@@ -99,6 +107,11 @@ class QgsComposerLayerItem : QgsComposerLegendItem
 
     void setLayerID( const QString& id );
     QString layerID() const;
+
+    void setShowFeatureCount( bool show );
+    bool showFeatureCount() const;
+
+    void setDefaultStyle();
 };
 
 class QgsComposerGroupItem : QgsComposerLegendItem

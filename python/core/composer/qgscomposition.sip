@@ -106,7 +106,7 @@ class QgsComposition : QGraphicsScene
     const QgsComposerHtml* getComposerHtmlByItem( QgsComposerItem *item ) const;
 
     /**Returns a composer item given its text identifier.
-      Ids are not necessarely unique, but this function returns only one element.
+       Ids are not necessarely unique, but this function returns only one element.
       @note added in 2.0
       @param theId - A QString representing the identifier of the item to
         retrieve.
@@ -114,15 +114,10 @@ class QgsComposition : QGraphicsScene
       **/
     const QgsComposerItem* getComposerItemById( QString theId ) const;
 
-
     /**Returns a composer item given its unique identifier.
-      Warning : ids are not necessarely unique, but this function returns only one element.
       @note added in 2.0
-      @param theId - A QString representing the UUID of the item to retrieve.
-      @param inAllComposers - Whether the search should be done in all composers of the project
-      @return QgsComposerItem pointer or 0 pointer if no such item exists.
+      @param theUuid A QString representing the UUID of the item to
       **/
-    //const QgsComposerItem* getComposerItemByUuid( QString theUuid, bool inAllComposers = false ) const;
     const QgsComposerItem* getComposerItemByUuid( QString theUuid ) const;
 
     int printResolution() const;
@@ -130,6 +125,13 @@ class QgsComposition : QGraphicsScene
 
     bool printAsRaster() const;
     void setPrintAsRaster( bool enabled );
+
+    /**Returns true if a composition should use advanced effects such as blend modes
+      @note added in 1.9*/
+    bool useAdvancedEffects() const;
+    /**Used to enable or disable advanced effects such as blend modes in a composition
+      @note: added in version 1.9*/
+    void setUseAdvancedEffects( bool effectsEnabled );
 
     double selectionTolerance() const;
     void setSelectionTolerance( double tol );
@@ -167,11 +169,12 @@ class QgsComposition : QGraphicsScene
       @param mapsToRestore for reading from project file: set preview move 'rectangle' to all maps and save the preview states to show composer maps on demand
       @param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
       @param pos item position. Optional, take position from xml if 0
+      @param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
       @note not available in python bindings
      */
     /*
     void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore = 0,
-                          bool addUndoCommands = false, QPointF* pos = 0 );
+                          bool addUndoCommands = false, QPointF* pos = 0, bool pasteInPlace = false );
     */
 
     /**Adds item to z list. Usually called from constructor of QgsComposerItem*/
@@ -204,6 +207,34 @@ class QgsComposition : QGraphicsScene
     /**Snaps a scene coordinate point to grid*/
     QPointF snapPointToGrid( const QPointF& scenePoint ) const;
 
+    /**Snaps item position to align with other items (left / middle / right or top / middle / bottom
+    @param item current item
+    @param alignX x-coordinate of align or -1 if not aligned to x
+    @param alignY y-coordinate of align or -1 if not aligned to y
+    @param dx item shift in x direction
+    @param dy item shift in y direction
+    @return new upper left point after the align*/
+    QPointF alignItem( const QgsComposerItem* item, double& alignX, double& alignY, double dx = 0, double dy = 0 );
+
+    /**Snaps position to align with the boundaries of other items
+    @param pos position to snap
+    @param excludeItem item to exclude
+    @param alignX snapped x coordinate or -1 if not snapped
+    @param alignY snapped y coordinate or -1 if not snapped
+    @return snapped position or original position if no snap*/
+    QPointF alignPos( const QPointF& pos, const QgsComposerItem* excludeItem, double& alignX, double& alignY );
+
+    /**Add a custom snap line (can be horizontal or vertical)*/
+    QGraphicsLineItem* addSnapLine();
+    /**Remove custom snap line (and delete the object)*/
+    void removeSnapLine( QGraphicsLineItem* line );
+    /**Get nearest snap line
+     * @note not availabel in python bindings
+     */
+    // QGraphicsLineItem* nearestSnapLine( bool horizontal, double x, double y, double tolerance, QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >& snappedItems );
+    /**Hides / shows custom snap lines*/
+    void setSnapLinesVisible( bool visible );
+
     /**Allocates new item command and saves initial state in it
       @param item target item
       @param commandText descriptive command text
@@ -222,7 +253,8 @@ class QgsComposition : QGraphicsScene
     void addMultiFrame( QgsComposerMultiFrame* multiFrame );
     /**Removes multi frame (but does not delete it)*/
     void removeMultiFrame( QgsComposerMultiFrame* multiFrame );
-    /**Adds an arrow item to the graphics scene and advices composer to create a widget for it (through signal)*/
+    /**Adds an arrow item to the graphics scene and advices composer to create a widget for it (through signal)
+      @note not available in python bindings*/
     void addComposerArrow( QgsComposerArrow* arrow );
     /**Adds label to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerLabel( QgsComposerLabel* label );

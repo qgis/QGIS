@@ -61,7 +61,7 @@ class QgsComposer;
  * them in a list in ascending z-Order. This list can be changed to lower/raise items one position
  * or to bring them to front/back.
  * */
-class CORE_EXPORT QgsComposition: public QGraphicsScene
+class CORE_EXPORT QgsComposition : public QGraphicsScene
 {
     Q_OBJECT
   public:
@@ -282,7 +282,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     QGraphicsLineItem* addSnapLine();
     /**Remove custom snap line (and delete the object)*/
     void removeSnapLine( QGraphicsLineItem* line );
-    /**Get nearest snap line*/
+    /**Get nearest snap line
+     * @note not availabel in python bindings
+     */
     QGraphicsLineItem* nearestSnapLine( bool horizontal, double x, double y, double tolerance, QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >& snappedItems );
     /**Hides / shows custom snap lines*/
     void setSnapLinesVisible( bool visible );

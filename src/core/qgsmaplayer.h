@@ -221,13 +221,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  @note Added in v1.4 */
     void removeCustomProperty( const QString& key );
 
-#if 0
-    /** Accessor for transparency level. */
-    unsigned int getTransparency();
-
-    /** Mutator for transparency level. Should be between 0 and 255 */
-    virtual void setTransparency( unsigned int );
-#endif
 
     /**
      * If an operation returns 0 (e.g. draw()), this function
@@ -378,7 +371,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @brief Is called when the cache image is being deleted. Overwrite and use to clean up.
      * @note added in 2.0
      */
-    virtual void onCacheImageDelete() {};
+    virtual void onCacheImageDelete() {}
 
   public slots:
 

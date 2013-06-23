@@ -22,7 +22,7 @@ class QgsMapLayerRegistry : QObject
     //! Retrieve a pointer to a loaded layer by id
     QgsMapLayer *mapLayer( QString theLayerId );
 
-    //! Retrieve all layers using their name
+    //! Retrieve a pointer to a loaded layer by name
     QList<QgsMapLayer *> mapLayersByName( QString layerName );
 
     //! Retrieve the mapLayers collection (mainly intended for use by projection)
@@ -35,10 +35,10 @@ class QgsMapLayerRegistry : QObject
      * The layersAdded() and layersWasAdded() signals will be emitted in any case.
      * The legendLayersAdded() signal only if addToLegend is true.
      *
-     * @param theMapLayers A list of layer which should be added to the registry
-     * @param addToLegend  If true (by default), the layers will be added to the
-     *                     legend and to the main canvas. If you have a private
-     *                     layer, you can set this parameter to false to hide it.
+     * @param theMapLayers  A list of layer which should be added to the registry
+     * @param addToLegend   If true (by default), the layers will be added to the
+     *                      legend and to the main canvas. If you have a private
+     *                      layer, you can set this parameter to false to hide it.
      *
      * @return QList<QgsMapLayer *> - a list of the map layers that were added
      *         successfully. If a layer is invalid, or already exists in the registry,
@@ -86,7 +86,7 @@ class QgsMapLayerRegistry : QObject
      *
      * @note As a side-effect QgsProject is made dirty.
      */
-    void removeMapLayers(QStringList theLayerIds );
+    void removeMapLayers( QStringList theLayerIds );
 
     /**
      * @brief

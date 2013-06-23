@@ -53,6 +53,9 @@ class QgsComposerScaleBar: QgsComposerItem
 
     QFont font() const;
 
+    QColor fontColor() const;
+    void setFontColor( const QColor& c );
+
     void setFont( const QFont& font );
 
     QPen pen() const;

@@ -44,6 +44,9 @@ public:
     bool sortAscending() const;
     void setSortAscending( bool ascending );
 
+    bool filterFeatures() const;
+    void setFilterFeatures( bool doFilter );
+
     QString featureFilter() const;
     void setFeatureFilter( const QString& expression );
 
@@ -69,7 +72,7 @@ public:
 
     QgsComposition* composition();
 
- signals:
+  signals:
     /** emitted when one of the parameters changes */
     void parameterChanged();
 };

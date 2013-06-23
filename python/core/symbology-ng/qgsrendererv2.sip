@@ -167,4 +167,6 @@ class QgsFeatureRendererV2
     static unsigned char* _getPoint( QPointF& pt, QgsRenderContext& context, unsigned char* wkb );
     static unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, unsigned char* wkb );
     static unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, unsigned char* wkb );
+
+    void setScaleMethodToSymbol( QgsSymbolV2* symbol, int scaleMethod );
 };

@@ -10,6 +10,8 @@ class QgsCptCityColorRampV2Dialog : QDialog
 
     QString selectedName() const;
 
+    bool saveAsGradientRamp() const;
+
   public slots:
     void populateVariants();
 
@@ -19,7 +21,7 @@ class QgsCptCityColorRampV2Dialog : QDialog
     void on_pbtnLicenseDetails_pressed();
     void on_cboVariantName_currentIndexChanged( int index );
     void onFinished();
-
+    void on_buttonBox_helpRequested();
     /* void refresh(); */
 
   protected:

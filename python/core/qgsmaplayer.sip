@@ -87,6 +87,12 @@ class QgsMapLayer : QObject
     void setKeywordList( const QString& kwdList );
     const QString& keywordList() const;
 
+    /* Layer dataUrl information */
+    void setDataUrl( const QString& dataUrl );
+    const QString& dataUrl() const;
+    void setDataUrlFormat( const QString& dataUrlFormat );
+    const QString& dataUrlFormat() const;
+
     /* Layer attribution information */
     void setAttribution( const QString& attrib );
     const QString& attribution() const;
@@ -100,6 +106,11 @@ class QgsMapLayer : QObject
     const QString& metadataUrlType() const;
     void setMetadataUrlFormat( const QString& metaUrlFormat );
     const QString& metadataUrlFormat() const;
+
+    /* Set the blending mode used for rendering a layer */
+    void setBlendMode( const QPainter::CompositionMode blendMode );
+    /* Returns the current blending mode for a layer */
+    QPainter::CompositionMode blendMode() const;
 
     /**Synchronises with changes in the datasource
         @note added in version 1.6*/
@@ -172,8 +183,8 @@ class QgsMapLayer : QObject
 
 
     /** stores state in Dom node
-       @param layer_node is Dom node corresponding to ``projectlayers'' tag
-       @param document is Dom document
+       @param layerElement is a Dom element corresponding to ``maplayer'' tag
+       @param document is a the dom document being written
        @note
 
        The Dom node corresponds to a Dom document project file XML element to be
@@ -186,7 +197,7 @@ class QgsMapLayer : QObject
 
        @returns true if successful
     */
-    bool writeLayerXML( QDomElement& layerElement, QDomDocument & document );
+    bool writeLayerXML( QDomElement& layerElement, QDomDocument& document );
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      *  @note Added in v1.4 */
@@ -198,11 +209,6 @@ class QgsMapLayer : QObject
      *  @note Added in v1.4 */
     void removeCustomProperty( const QString& key );
 
-    /** Accessor for transparency level. */
-    // unsigned int getTransparency();
-
-    /** Mutator for transparency level. Should be between 0 and 255 */
-    // virtual void setTransparency( unsigned int );
 
     /**
      * If an operation returns 0 (e.g. draw()), this function
@@ -219,6 +225,12 @@ class QgsMapLayer : QObject
      * call a QMessageBox to display the contents.
      */
     virtual QString lastError();
+
+    /** Get current status error. This error describes some principal problem
+     *  for which layer cannot work and thus is not valid. It is not last error
+     *  after accessing data by draw() etc.
+     */
+    virtual QgsError error() const;
 
     /** Returns layer's spatial reference system
     @note This was introduced in QGIS 1.4
@@ -267,6 +279,24 @@ class QgsMapLayer : QObject
     virtual QString loadNamedStyle( const QString theURI, bool & theResultFlag /Out/ );
 
     virtual bool loadNamedStyleFromDb( const QString db, const QString theURI, QString &qml /Out/ );
+
+    //TODO edit infos
+    /**
+     * Export the properties of this layer as named style in a QDomDocument
+     * @param doc the target QDomDocument
+     * @param errorMsg this QString will be initialized on error
+     * during the execution of writeSymbology
+     */
+    virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg );
+
+
+    /**
+     * Export the properties of this layer as SLD style in a QDomDocument
+     * @param doc the target QDomDocument
+     * @param errorMsg this QString will be initialized on error
+     * during the execution of writeSymbology
+     */
+    virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg );
 
     /** Save the properties of this layer as the default style
      * (either as a .qml file on disk or as a
@@ -323,23 +353,22 @@ class QgsMapLayer : QObject
      * @note This method was added in QGIS 1.4 **/
     void setCacheImage( QImage * thepImage /Transfer/ );
 
-    /* Returns the current blending mode for a layer
-        @note added in version 1.9*/
-    const QPainter::CompositionMode blendMode() const;
-    /* Sets the blending mode for a layer
-        @note added in version 1.9*/
-    void setBlendMode( const QPainter::CompositionMode blendMode );
+    /**
+     * @brief Is called when the cache image is being deleted. Overwrite and use to clean up.
+     * @note added in 2.0
+     */
+    virtual void onCacheImageDelete();
 
   public slots:
 
     /** Event handler for when a coordinate transform fails due to bad vertex error */
     virtual void invalidTransformInput();
 
-    /** Accessor and mutator for the minimum scale member */
+    /** Accessor and mutator for the minimum scale denominator member */
     void setMinimumScale( float theMinScale );
     float minimumScale();
 
-    /** Accessor and mutator for the maximum scale member */
+    /** Accessor and mutator for the maximum scale denominator member */
     void setMaximumScale( float theMaxScale );
     float maximumScale();
 
@@ -419,5 +448,8 @@ class QgsMapLayer : QObject
     /** debugging member - invoked when a connect() is made to this object */
     void connectNotify( const char * signal );
 
+    /** Add error message */
+    void appendError( const QgsErrorMessage & theMessage );
+    /** Set error message */
+    void setError( const QgsError & theError );
 };
-

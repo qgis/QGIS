@@ -48,7 +48,6 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     /**Paints the legend and calculates its size. If painter is 0, only size is calculated*/
     QSizeF paintAndDetermineSize( QPainter* painter );
 
-
     /**Sets item box to the whole content*/
     void adjustBoxSize();
 

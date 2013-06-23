@@ -16,9 +16,11 @@ class QgsRasterPipe
       UnknownRole   = 0,
       ProviderRole  = 1,
       RendererRole  = 2,
-      ResamplerRole = 3,
-      ProjectorRole = 4,
-      NullerRole = 5,
+      BrightnessRole = 3,
+      ResamplerRole = 4,
+      ProjectorRole = 5,
+      NullerRole = 6,
+      HueSaturationRole = 7
     };
 
     QgsRasterPipe();

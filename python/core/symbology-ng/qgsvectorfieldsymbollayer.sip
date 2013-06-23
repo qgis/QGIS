@@ -60,4 +60,10 @@ class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayerV2
     AngleOrientation angleOrientation() const;
     void setAngleUnits( AngleUnits units );
     AngleUnits angleUnits() const;
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setDistanceUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit distanceUnit() const;
 };

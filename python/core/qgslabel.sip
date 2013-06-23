@@ -70,7 +70,7 @@ class QgsLabel
     void setFields( const QgsFields & fields );
 
     //! Available vector fields
-    const QgsFields & fields();
+    QgsFields & fields();
 
     /** Pointer to default attributes.
      * @note this replaces the to-be-deprecated layerAttributes method.

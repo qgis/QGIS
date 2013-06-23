@@ -13,7 +13,6 @@ class QgsDataDefined
     /**
      * Construct a new data defined object
      *
-     * @param parent The parent QWidget
      * @param active Whether the current data defined is active
      * @param useexpr Whether to use expression instead of field
      * @param expr Expression string
@@ -35,7 +34,9 @@ class QgsDataDefined
     QString expressionString() const;
     void setExpressionString( const QString& expr );
 
+
     //QMap<QString, QVariant> expressionParams() const;
+
     //void setExpressionParams( QMap<QString, QVariant> params );
     void insertExpressionParam( QString key, QVariant param );
 

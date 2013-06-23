@@ -10,6 +10,10 @@ class QgsFilterLineEdit : QLineEdit
   public:
     QgsFilterLineEdit( QWidget* parent = 0 );
 
+  signals:
+    void cleared();
+
   protected:
     void resizeEvent( QResizeEvent * );
+    void changeEvent( QEvent * );
 };

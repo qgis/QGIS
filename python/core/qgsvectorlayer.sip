@@ -233,7 +233,7 @@ class QgsVectorLayer : QgsMapLayer
     /** Joins another vector layer to this layer
       @param joinInfo join object containing join layer id, target and source field
       @note added in 1.7 */
-    void addJoin( QgsVectorJoinInfo joinInfo );
+    void addJoin( const QgsVectorJoinInfo& joinInfo );
 
     /** Removes  a vector layer join
       @note added in 1.7 */
@@ -812,10 +812,20 @@ class QgsVectorLayer : QgsMapLayer
      **/
     bool fieldEditable( int idx );
 
+    /**label widget on top
+     * @note added in 1.9
+     **/
+    bool labelOnTop( int idx );
+
     /**set edit widget editable
      * @note added in 1.9
      **/
     void setFieldEditable( int idx, bool editable );
+
+    /**label widget on top
+     * @note added in 1.9
+     **/
+    void setLabelOnTop( int idx, bool onTop );
 
     /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
      @note this method was added in version 1.1

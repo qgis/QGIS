@@ -108,6 +108,8 @@ public:
       */
     void setComment( const QString & comment );
 
+    /**Formats string for display*/
+    QString displayString( const QVariant& v ) const;
 }; // class QgsField
 
 
@@ -117,39 +119,38 @@ class QgsFields
 %TypeHeaderCode
 #include <qgsfield.h>
 %End
+  public:
 
-public:
+    enum FieldOrigin { OriginUnknown, OriginProvider, OriginJoin, OriginEdit };
 
-  enum FieldOrigin { OriginUnknown, OriginProvider, OriginJoin, OriginEdit };
+    void clear();
+    void append( const QgsField& field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
+    void remove( int fieldIdx );
 
-  void clear();
-  void append( const QgsField& field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
-  void remove( int fieldIdx );
-
-  bool isEmpty() const;
-  // __len__ annotation since sip 4.10.3
-  //int count() const /__len__/;
-  int count() const;
-  int __len__() const;
+    bool isEmpty() const;
+    // __len__ annotation since sip 4.10.3
+    //int count() const /__len__/;
+    int count() const;
+    int __len__() const;
 %MethodCode
   sipRes = sipCpp->count();
 %End
-  int size() const;
-  //const QgsField& operator[](int i) const;
-  //QgsField& operator[](int i);
-  const QgsField& at(int i) const;
-  QList<QgsField> toList() const;
+    int size() const;
+    //const QgsField& operator[](int i) const;
+    //QgsField& operator[](int i);
+    const QgsField& at(int i) const;
+    QList<QgsField> toList() const;
 
-  const QgsField& field( int fieldIdx ) const;
-  const QgsField& field( const QString& name ) const;
-  FieldOrigin fieldOrigin( int fieldIdx ) const;
-  int fieldOriginIndex( int fieldIdx ) const;
+    const QgsField& field( int fieldIdx ) const;
+    const QgsField& field( const QString& name ) const;
+    FieldOrigin fieldOrigin( int fieldIdx ) const;
+    int fieldOriginIndex( int fieldIdx ) const;
 
-  int indexFromName( const QString& name ) const;
-  void extend( const QgsFields& other );
+    int indexFromName( const QString& name ) const;
+    void extend( const QgsFields& other );
 
 
-  QgsField& operator[](int i) /Factory/;
+    QgsField& operator[](int i) /Factory/;
 %MethodCode
   SIP_SSIZE_T idx = sipConvertFromSequenceIndex(a0, sipCpp->count());
   if (idx < 0)

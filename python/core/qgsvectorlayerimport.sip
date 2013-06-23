@@ -1,8 +1,11 @@
 
 /**
  There are two possibilities how to use this class:
- 1. static call to QgsVectorLayerImport::importLayer(...) which saves the whole vector layer
+ 1. static call to QgsVectorFileWriter::writeAsShapefile(...) which saves the whole vector layer
  2. create an instance of the class and issue calls to addFeature(...)
+
+ Currently supports only writing to shapefiles, but shouldn't be a problem to add capability
+ to support other OGR-writable formats.
  */
 class QgsVectorLayerImport
 {

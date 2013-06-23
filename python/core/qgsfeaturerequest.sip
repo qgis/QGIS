@@ -8,9 +8,10 @@ class QgsFeatureRequest
   public:
     enum Flag
     {
-      NoGeometry         = 0x01,  //!< Do not fetch geometry
-      SubsetOfAttributes = 0x02,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
-      ExactIntersect     = 0x04   //!< Use exact geometry intersection (slower) instead of bounding boxes
+      NoFlags            = 0,
+      NoGeometry         = 1,
+      SubsetOfAttributes = 2,
+      ExactIntersect     = 4
     };
     typedef QFlags<QgsFeatureRequest::Flag> Flags;
 

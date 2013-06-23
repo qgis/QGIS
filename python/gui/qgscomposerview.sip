@@ -60,6 +60,12 @@ class QgsComposerView: QGraphicsView
     void setPaintingEnabled( bool enabled );
     bool paintingEnabled() const;
 
+    /**Update rulers with current scene rect*/
+    void updateRulers();
+
+    void setHorizontalRuler( QgsComposerRuler* r );
+    void setVerticalRuler( QgsComposerRuler* r );
+
   protected:
     void mousePressEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );
@@ -75,6 +81,8 @@ class QgsComposerView: QGraphicsView
     void hideEvent( QHideEvent* e );
     void showEvent( QShowEvent* e );
 
+    void resizeEvent( QResizeEvent* event );
+    void scrollContentsBy( int dx, int dy );
   signals:
     /**Is emitted when selected item changed. If 0, no item is selected*/
     void selectedItemChanged( QgsComposerItem* selected );
