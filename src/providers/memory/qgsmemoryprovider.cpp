@@ -422,9 +422,11 @@ void QgsMemoryProvider::updateExtent()
   }
   else
   {
-    mExtent = mFeatures.begin().value().geometry()->boundingBox();
-    for ( QgsFeatureMap::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it )
-      mExtent.unionRect( it.value().geometry()->boundingBox() );
+    Q_FOREACH( const QgsFeature& feat, mFeatures )
+    {
+      if ( feat.geometry() )
+        mExtent.unionRect( feat.geometry()->boundingBox() );
+    }
   }
 }
 
