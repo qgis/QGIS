@@ -200,7 +200,7 @@ void QgsGeometryValidator::run()
   if ( settings.value( "/qgis/digitizing/validate_geometries", 1 ).toInt() == 2 )
   {
     char *r = 0;
-    GEOSGeometry *g0 = mG.asGeos();
+    const GEOSGeometry *g0 = mG.asGeos();
     if ( !g0 )
     {
       emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error:could not produce geometry for GEOS (check log window)" ) ) );

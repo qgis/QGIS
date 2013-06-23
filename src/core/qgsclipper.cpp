@@ -35,7 +35,7 @@ const double QgsClipper::MIN_Y = -16000;
 
 const double QgsClipper::SMALL_NUM = 1e-12;
 
-unsigned char* QgsClipper::clippedLineWKB( unsigned char* wkb, const QgsRectangle& clipExtent, QPolygonF& line )
+const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const QgsRectangle& clipExtent, QPolygonF& line )
 {
   wkb++; // jump over endian info
   unsigned int wkbType = *(( int* ) wkb );

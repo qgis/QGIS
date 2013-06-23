@@ -193,7 +193,7 @@ namespace pal
   }
 
 //LinkedList<const geos::geom::Geometry*> * unmulti (geos::geom::Geometry *the_geom){
-  LinkedList<const GEOSGeometry*> * unmulti( GEOSGeometry *the_geom )
+  LinkedList<const GEOSGeometry*> * unmulti( const GEOSGeometry *the_geom )
   {
 
     //LinkedList<const geos::geom::Geometry*> *queue = new  LinkedList<const geos::geom::Geometry*>(ptrGeomEq);

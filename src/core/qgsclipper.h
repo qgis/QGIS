@@ -82,7 +82,7 @@ class CORE_EXPORT QgsClipper
       @param wkb pointer to the start of the line wkb
       @param clipExtent clipping bounds
       @param line out: clipped line coordinates*/
-    static unsigned char* clippedLineWKB( unsigned char* wkb, const QgsRectangle& clipExtent, QPolygonF& line );
+    static const unsigned char* clippedLineWKB( const unsigned char* wkb, const QgsRectangle& clipExtent, QPolygonF& line );
 
   private:
 

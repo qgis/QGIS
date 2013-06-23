@@ -1062,7 +1062,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
 
   bool hasZValue = false;
   double *x, *y;
-  unsigned char* wkb = geometry->asWkb();
+  const unsigned char* wkb = geometry->asWkb();
 
   if ( format == "GML3" )
   {
@@ -1110,7 +1110,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
       hasZValue = true;
     case QGis::WKBMultiPoint:
     {
-      unsigned char *ptr;
+      const unsigned char *ptr;
       int idx;
       int *nPoints;
 
@@ -1148,7 +1148,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
       hasZValue = true;
     case QGis::WKBLineString:
     {
-      unsigned char *ptr;
+      const unsigned char *ptr;
       int *nPoints;
       int idx;
 
@@ -1186,7 +1186,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
       hasZValue = true;
     case QGis::WKBMultiLineString:
     {
-      unsigned char *ptr;
+      const unsigned char *ptr;
       int idx, jdx, numLineStrings;
       int *nPoints;
 
@@ -1232,7 +1232,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
       hasZValue = true;
     case QGis::WKBPolygon:
     {
-      unsigned char *ptr;
+      const unsigned char *ptr;
       int idx, jdx;
       int *numRings, *nPoints;
 
@@ -1295,7 +1295,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
       hasZValue = true;
     case QGis::WKBMultiPolygon:
     {
-      unsigned char *ptr;
+      const unsigned char *ptr;
       int idx, jdx, kdx;
       int *numPolygons, *numRings, *nPoints;
 

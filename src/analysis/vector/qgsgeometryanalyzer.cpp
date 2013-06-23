@@ -1186,9 +1186,9 @@ QgsGeometry* QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, dou
   QgsMultiPolyline resultGeom;
 
   //need to go with WKB and z coordinate until QgsGeometry supports M values
-  unsigned char* lineWkb = lineGeom->asWkb();
+  const unsigned char* lineWkb = lineGeom->asWkb();
 
-  unsigned char* ptr = lineWkb + 1;
+  const unsigned char* ptr = lineWkb + 1;
   QGis::WkbType wkbType;
   memcpy( &wkbType, ptr, sizeof( wkbType ) );
   ptr += sizeof( wkbType );
@@ -1230,9 +1230,9 @@ QgsGeometry* QgsGeometryAnalyzer::locateAlongMeasure( double measure, QgsGeometr
   QgsMultiPoint resultGeom;
 
   //need to go with WKB and z coordinate until QgsGeometry supports M values
-  unsigned char* lineWkb = lineGeom->asWkb();
+  const unsigned char* lineWkb = lineGeom->asWkb();
 
-  unsigned char* ptr = lineWkb + 1;
+  const unsigned char* ptr = lineWkb + 1;
   QGis::WkbType wkbType;
   memcpy( &wkbType, ptr, sizeof( wkbType ) );
   ptr += sizeof( wkbType );
@@ -1264,7 +1264,7 @@ QgsGeometry* QgsGeometryAnalyzer::locateAlongMeasure( double measure, QgsGeometr
   return QgsGeometry::fromMultiPoint( resultGeom );
 }
 
-unsigned char* QgsGeometryAnalyzer::locateBetweenWkbString( unsigned char* ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure )
+const unsigned char* QgsGeometryAnalyzer::locateBetweenWkbString( const unsigned char* ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure )
 {
   int* nPoints = ( int* ) ptr;
   ptr += sizeof( int );
@@ -1316,7 +1316,7 @@ unsigned char* QgsGeometryAnalyzer::locateBetweenWkbString( unsigned char* ptr, 
   return ptr;
 }
 
-unsigned char* QgsGeometryAnalyzer::locateAlongWkbString( unsigned char* ptr, QgsMultiPoint& result, double measure )
+const unsigned char* QgsGeometryAnalyzer::locateAlongWkbString( const unsigned char* ptr, QgsMultiPoint& result, double measure )
 {
   int* nPoints = ( int* ) ptr;
   ptr += sizeof( int );

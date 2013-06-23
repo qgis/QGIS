@@ -137,7 +137,7 @@ class QgsSpatialQuery
     */
     void populateIndexResult(
       QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, QgsGeometry *geomTarget,
-      bool ( QgsGeometry::* operation )( QgsGeometry * ) );
+      bool ( QgsGeometry::* operation )( const QgsGeometry * ) const );
     /**
     * \brief Populate index Result Disjoint
     * \param qsetIndexResult    Reference to QSet contains the result query
@@ -147,7 +147,7 @@ class QgsSpatialQuery
     */
     void populateIndexResultDisjoint(
       QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, QgsGeometry *geomTarget,
-      bool ( QgsGeometry::* operation )( QgsGeometry * ) );
+      bool ( QgsGeometry::* operation )( const QgsGeometry * ) const );
 
     MngProgressBar *mPb;
     bool mUseReferenceSelection;

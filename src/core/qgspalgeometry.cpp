@@ -32,7 +32,7 @@ QgsPALGeometry::~QgsPALGeometry()
 {
 }
 
-GEOSGeometry* QgsPALGeometry::getGeosGeometry()
+const GEOSGeometry* QgsPALGeometry::getGeosGeometry()
 {
   if ( mOverlayObjectPtr )
   {
