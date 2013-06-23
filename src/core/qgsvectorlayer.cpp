@@ -2440,9 +2440,9 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
     return false;
   }
 
-  return mEditBuffer->changeGeometry( fid, geom );
-
   updateExtents();
+
+  return mEditBuffer->changeGeometry( fid, geom );
 }
 
 
@@ -2539,6 +2539,8 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   bool res = mEditBuffer->deleteFeature( fid );
   if ( res )
     mSelectedFeatureIds.remove( fid ); // remove it from selection
+
+  updateExtents();
 
   return res;
 }
