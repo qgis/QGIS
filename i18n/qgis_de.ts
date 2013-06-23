@@ -8773,8 +8773,8 @@ Nur %1 von %2 Objekten geschrieben.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1185"/>
-        <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="178"/>
-        <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="287"/>
+        <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="187"/>
+        <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="296"/>
         <source>SpatiaLite</source>
         <translation>SpatiaLite</translation>
     </message>
@@ -9290,23 +9290,23 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <translation>Daten auf einem 3D-Globus überlagern</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3882"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3903"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3928"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3884"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3905"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3930"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="64"/>
         <source>Unable to load %1 provider</source>
         <translation>Kann Datenlieferant %1 nicht laden</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3890"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3911"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3936"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3892"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3913"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3938"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="73"/>
         <source>Provider %1 has no %2 method</source>
         <translation>Datenlieferant %1 hat keine Methode %2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3983"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3985"/>
         <source>Loaded from Provider</source>
         <translation>Aus Datenlieferanten geladen</translation>
     </message>
@@ -9734,14 +9734,14 @@ Datenbankfehler: %2</translation>
         <translation>Es wurde versucht Geometrie aus einem Layer ohne Geometrie abzufragen.</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="178"/>
+        <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="187"/>
         <source>SQLite error: %2
 SQL: %1</source>
         <translation>SQLite-Fehler:%2
 SQL: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="287"/>
+        <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="296"/>
         <source>SQLite error getting feature: %1</source>
         <translation>SQLite-Fehler beim Objektladen: %1</translation>
     </message>
@@ -13791,28 +13791,28 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
 <context>
     <name>QgsComposer</name>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="950"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="951"/>
         <source>Big image</source>
         <translation>Großes Bild</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1151"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1163"/>
         <source>SVG warning</source>
         <translation>SVG-Warnung</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1152"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2105"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1164"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2117"/>
         <source>Don&apos;t show this message again</source>
         <translation>Diese Nachricht nicht mehr anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1156"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1168"/>
         <source>&lt;p&gt;The SVG export function in QGIS has several problems due to bugs and deficiencies in the </source>
         <translation>&lt;p&gt;Die SVG-Exportfunktion in QGIS hat einige Probleme durch Fehler und Einschränkungen im </translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1184"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1196"/>
         <source>SVG Format</source>
         <translation>SVG-Format</translation>
     </message>
@@ -13883,15 +13883,15 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="687"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="993"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1200"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1005"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1212"/>
         <source>Empty filename pattern</source>
         <translation>Dateinamenmuster leer</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="688"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="994"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1201"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1006"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1213"/>
         <source>The filename pattern is empty. A default one will be used.</source>
         <translation>Das Dateinamenmuster ist leer. Eine Voreinstellung wird benutzt.</translation>
     </message>
@@ -13902,39 +13902,51 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="711"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1057"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1225"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1069"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1237"/>
         <source>Unable to write into the directory</source>
         <translation>Konnte nicht in das Verzeichnis schreiben</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="750"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="881"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1084"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1254"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1096"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1266"/>
         <source>Rendering maps...</source>
         <translation>Zeichne Karten...</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="750"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="881"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1084"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1254"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1096"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1266"/>
         <source>Abort</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2118"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="978"/>
+        <source>Memory Allocation Error</source>
+        <translation>Speicherreservierungsfehler</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="979"/>
+        <source>Trying to create image #%1 ( %2x%3 @ %4dpi )may result in a memory overflow.
+Please try a lower resolution or a smaller papersize</source>
+        <translation>Erzeugung des Bildes #%1 (%2x%3 mit %4 DPI) könnte zu einem Speicherüberlauf führen.
+Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2130"/>
         <source>Project contains composition effects</source>
         <translation>Projekt enthält Kompositionseffekte</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2119"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2131"/>
         <source>Advanced composition effects such as blend modes or vector layer transparency are enabled in this project, which cannot be printed as vectors. Printing as a raster is recommended.</source>
         <translation>Erweiterte Kompositionseffekte wie Mischmodi oder Vektorlayertransparenz sind in diesem Projekt eingeschaltet, die nicht als Vektor gedruckt werden können. Drucken als Raster wird empfohlen.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2120"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2132"/>
         <source>Print as raster</source>
         <translation>Als Raster drucken</translation>
     </message>
@@ -13943,72 +13955,72 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <location filename="../src/app/composer/qgscomposer.cpp" line="769"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="874"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="900"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1076"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1103"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1246"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1277"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1088"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1115"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1258"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1289"/>
         <source>Atlas processing error</source>
         <translation>Atlas-Verarbeitungsfehler</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="951"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="952"/>
         <source>To create image %1x%2 requires about %3 MB of memory. Proceed?</source>
         <translation>Die Erzeugung des %1x%2 Bilds benötigt etwa %3 MB Hauptspeicher. Fortfahren?</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="963"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="964"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Namen der Datei des zu speichernden Kartenabbild wählen</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="667"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1182"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1194"/>
         <source>Choose a file name to save the map as</source>
         <translation>Einen Dateinamen zum Speichern des Kartenabbilds wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1475"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1487"/>
         <source>Save template</source>
         <translation>Vorlage speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1477"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1489"/>
         <source>Composer templates</source>
         <translation>Druckvorlagen</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="179"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1831"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1843"/>
         <source>Composer</source>
         <translation>Zusammmenstellung</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1549"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1561"/>
         <source>Composer error</source>
         <translation>Zusammenstellungsfehler</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1549"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1561"/>
         <source>Error, could not create new composer</source>
         <translation>Fehler, konnte keine neue Zusammenstellung erzeugen</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1566"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1578"/>
         <source>Loading template into composer...</source>
         <translation>Lade Zusammenstellung aus Vorlage...</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2103"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2115"/>
         <source>Project contains WMS layers</source>
         <translation>Projekt enthält WMS-Layer</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2104"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2116"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
         <translation>Einige WMS-Server (z.B. UMN-Mapserver) haben Begrenzungen für die WIDTH- und HEIGHT-Parameter. Falls diese Begrenzungen beim Ausdruck überschritten werden, werden diese WMS-Layer nicht gedruckt</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1158"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1170"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
         <translation>Qt4-SVG-Code. Genauergesagt ist die Ausgabebegrenzung der Layer auf die Kartengrenzen ein Problem&lt;/p&gt;</translation>
     </message>
@@ -14019,73 +14031,73 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="712"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1058"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1226"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1070"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1238"/>
         <source>The given output directory is not writable. Cancelling.</source>
         <translation>Im Ausgabeverzeichnis konnte nicht geschrieben werden.  Breche ab.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1008"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1020"/>
         <source>Directory where to save image files</source>
         <translation>Verzeichnis in dem Bilder gespeichert werden sollen</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1032"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1044"/>
         <source>Image format: </source>
         <translation>Bildformat: </translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1161"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1173"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
         <translation>Wenn die SVG-Ausgabe nicht zufriedenstellend ist, wird für vektorbasierende QGIS-Ausgabe der Druck in PostScript empfohlen.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1215"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1227"/>
         <source>Directory where to save SVG files</source>
         <translation>Verzeichnis in dem SVG-Dateien gespeichert werden sollen</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1436"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1448"/>
         <source> copy</source>
         <translation> Kopie</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1443"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1455"/>
         <source>Duplicating composer...</source>
         <translation>Dupliziere Druckzusammenstellung...</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1455"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1467"/>
         <source>Duplicate Composer</source>
         <translation>Druckzusammenstellungsduplizierung</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1456"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1468"/>
         <source>Composer duplication failed.</source>
         <translation>Duplikation der Druckzusammenstellung gescheitert.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1501"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1513"/>
         <source>Save error</source>
         <translation>Fehler beim Speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1501"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1513"/>
         <source>Error, could not save file</source>
         <translation>Fehler, in Datei konnte nicht gespeichert werden</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1519"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1531"/>
         <source>Load template</source>
         <translation>Vorlage laden</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1532"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1544"/>
         <source>Read error</source>
         <translation>Lesefehler</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1532"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1544"/>
         <source>Error, could not read file</source>
         <translation>Fehler, Datei konnte nicht gelesen werden</translation>
     </message>
@@ -36085,234 +36097,234 @@ QGIS muß neugestartet werden, um sie erneut zu laden.</translation>
 <context>
     <name>QgsPluginManager</name>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="142"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="143"/>
         <source>sort by name</source>
         <translation>sortieren nach Namen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="143"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="144"/>
         <source>sort by downloads</source>
         <translation>Sortieren nach Downloads</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="144"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="145"/>
         <source>sort by vote</source>
         <translation>Sortieren nach Stimmen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="145"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="146"/>
         <source>sort by status</source>
         <translation>Sortieren nach Status</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="278"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="279"/>
         <source>No Plugins</source>
         <translation>Keine Erweiterungen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="515"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="516"/>
         <source>Only locally available</source>
         <comment>category: plugins that are only locally available</comment>
         <translation>Nur lokal verfügbare Erweiterungen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="582"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="583"/>
         <source>This plugin is incompatible with this version of QGIS</source>
         <translation>Diese Erweiterung läuft mit der dieser QGIS-Version nicht</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="582"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="583"/>
         <source>Plugin designed for QGIS %1</source>
         <comment>compatible QGIS version(s)</comment>
         <translation>Erweiterung für QGIS %1</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="586"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="587"/>
         <source>This plugin requires a missing module</source>
         <translation>Diese Erweiterung benötigt ein fehlendes Modul</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="590"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="591"/>
         <source>This plugin is broken</source>
         <translation>Diese Erweiterung ist defekt</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="600"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="601"/>
         <source>There is a new version available</source>
         <translation>Es gibt eine neue Version</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="606"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="607"/>
         <source>This is a new plugin</source>
         <translation>Dies ist eine neue Erweiterung</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="612"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="613"/>
         <source>Installed version of this plugin is higher than any version found in repository</source>
         <translation>Installierte Erweiterungsversion ist neuer als alle im Repositorium verfügbarenen Versionen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="620"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="621"/>
         <source>This plugin is experimental</source>
         <translation>Diese Erweiterung ist experimentel</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="658"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="659"/>
         <source>Category</source>
         <translation>Kategorie</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="662"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="663"/>
         <source>Tags</source>
         <translation>Elemente</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="666"/>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="670"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="667"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="671"/>
         <source>Author</source>
         <translation>Autor</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="674"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="675"/>
         <source>More info</source>
         <translation>Weitere Informationen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="677"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="678"/>
         <source>homepage</source>
         <translation>Homepage</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="681"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="682"/>
         <source>tracker</source>
         <translation>Fehlerverfolgung</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="685"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="686"/>
         <source>code_ repository</source>
         <translation>Coderepositorium</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="648"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="649"/>
         <source>&lt;br/&gt;%1 rating vote(s)&lt;br/&gt;</source>
         <translation>&lt;br/&gt;%1 Bewertungsstimme(n)&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="516"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="517"/>
         <source>Reinstallable</source>
         <comment>category: plugins that are installed and available</comment>
         <translation>Wiederinstallierbar</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="517"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="518"/>
         <source>Upgradeable</source>
         <comment>category: plugins that are installed and there is a newer version available</comment>
         <translation>Aktualisierbar</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="518"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="519"/>
         <source>Downgradeable</source>
         <comment>category: plugins that are installed and there is an OLDER version available</comment>
         <translation>Frühere Version verfügbar</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="652"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="653"/>
         <source>%1 downloads&lt;br/&gt;</source>
         <translation>%1 Downloads&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="696"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="697"/>
         <source>Installed version: %1 (in %2)&lt;br/&gt;</source>
         <translation>Installierte Version %1 (in %2)&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="700"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="701"/>
         <source>Available version: %1 (in %2)&lt;br/&gt;</source>
         <translation>Verfügbare Version %1 (in %2)&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="706"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="707"/>
         <source>changelog:&lt;br/&gt;%1 &lt;br/&gt;</source>
         <translation>Anderungsliste:&lt;br/&gt;%1&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="718"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="719"/>
         <source>Upgrade plugin</source>
         <translation>Erweiterung aktualisieren</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="723"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="724"/>
         <source>Downgrade plugin</source>
         <translation>Frühere Version der Erweiterung installieren</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="732"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="733"/>
         <source>Reinstall plugin</source>
         <translation>Erweiterung erneut installieren</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="727"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="728"/>
         <source>Install plugin</source>
         <translation>Erweiterung installieren</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="812"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="813"/>
         <source>Reload all repositories</source>
         <translation>Alle Repositorien neu laden</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="813"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="814"/>
         <source>Only show plugins from selected repository</source>
         <translation>Nur Erweiterungen des gewählten Repositoriums anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="817"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="818"/>
         <source>Clear filter</source>
         <translation>Filter löschen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="833"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="834"/>
         <source>connected</source>
         <translation>verbunden</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="835"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="836"/>
         <source>The repository is connected</source>
         <translation>Repositorium ist verbunden</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="839"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="840"/>
         <source>unavailable</source>
         <translation>nicht verfügbar</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="841"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="842"/>
         <source>The repository is enabled, but unavailable</source>
         <translation>Dieses Repositorium ist aktiv, aber nicht verfügbar</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="846"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="847"/>
         <source>disabled</source>
         <translation>deaktiviert</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="850"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="851"/>
         <source>The repository is disabled</source>
         <translation>Dieses Repositorium ist deaktiviert</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="854"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="855"/>
         <source>The repository is blocked due to incompatibility with your QGIS version</source>
         <translation>Diese Repositorium wurde wegen Inkompatibilität zu Ihrer QGIS-Version blockiert</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="394"/>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1316"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="395"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="1317"/>
         <source>Plugins</source>
         <translation>Erweiterungen</translation>
     </message>
     <message>
-        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="278"/>
+        <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="279"/>
         <source>No QGIS plugins found in %1</source>
         <translation>Keine QGIS-Erweiterung in %1 gefunden</translation>
     </message>
@@ -36472,42 +36484,47 @@ QGIS muß neugestartet werden, um sie erneut zu laden.</translation>
         <translation>Erweiterung neuinstallieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="546"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="543"/>
+        <source>The settings on this tab are only applicable for Python Plugins. No Python support detected, thus no settings available.</source>
+        <translation>Die Einstellungen diese Reiters betreffen nur Python-Erweiterungen. Da keine Python-Unterstützung festgestellt wurde, sind keine Einstellungen verfügbar.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="589"/>
         <source>Check for updates on startup</source>
         <translation>Beim Start nach Aktualisierungen suchen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="568"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="611"/>
         <source>every time QGIS starts</source>
         <translation>bei jedem QGIS-Start</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="573"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="616"/>
         <source>once a day</source>
         <translation>einmal am Tag</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="578"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="621"/>
         <source>every 3 days</source>
         <translation>alle drei Tage</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="583"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="626"/>
         <source>every week</source>
         <translation>jede Woche</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="588"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="631"/>
         <source>every 2 weeks</source>
         <translation>alle zwei Wochen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="593"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="636"/>
         <source>every month</source>
         <translation>jeden Monat</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="613"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="656"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -36520,29 +36537,29 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hinweis:&lt;/span&gt; Wenn diese Funktion aktiv ist, wird QGIS Sie immer informieren, wenn eine neue Erweiterung oder ein Erweiterungsupdate verfügbar ist. Anderenfalls erfolgt die Repositorienabfrage beim Öffnen des Erweiterungsinstallationsfensters.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="774"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="817"/>
         <source>Reload repository contents
 (useful when you uploaded a plugin there)</source>
         <translation>Repositorieninhalt neuladen
 (nützlich, wenn dort eine Erweiterung hochgeladen wurde)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="778"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="821"/>
         <source>Reload repository</source>
         <translation>Repositorium neuladen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="798"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="841"/>
         <source>Configure an additional plugin repository</source>
         <translation>Zusätzliches Erweiterungsrepositorium konfigurieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="646"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="689"/>
         <source>Show also experimental plugins</source>
         <translation>Auch experimentelle Erweiterungen anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="670"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="713"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -36555,54 +36572,54 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hinweis:&lt;/span&gt; Experimentelle Erweiterungen sind grundsätzlich für den Produktiveinsatz ungeeignet. Diese Erweiterungen in einer frühen Entwicklungsphase und sollten als &apos;unvollständig&apos; oder &apos;Machbarkeitsstudie&apos; angesehen werden. QGIS empfiehlt die Installation dieser Erweiterungen außer zu Testzwecken nicht.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="709"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="752"/>
         <source>Plugin repositories</source>
         <translation>Erweiterungsrepositorien</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="738"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="781"/>
         <source>Status</source>
         <translation>Status</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="743"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="786"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="748"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="791"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="801"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="844"/>
         <source>Add a new plugin repository</source>
         <translation>Ein neues Erweiterungsrepository ergänzen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="804"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="847"/>
         <source>Add...</source>
         <translation>Hinzufügen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="817"/>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="820"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="860"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="863"/>
         <source>Edit the selected repository</source>
         <translation>Gewähltes Repositorium bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="823"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="866"/>
         <source>Edit...</source>
         <translation>Bearbeiten...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="830"/>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="833"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="873"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="876"/>
         <source>Remove the selected repository</source>
         <translation>Gewähltes Repositorium entfernen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspluginmanagerbase.ui" line="836"/>
+        <location filename="../src/ui/qgspluginmanagerbase.ui" line="879"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
@@ -42056,60 +42073,65 @@ verbesserung</translation>
         <translation>Veraltete libspatialite: Ein Verbindung zu dieser Datenbank ist v4.0 oder höher erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="266"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="378"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="482"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="685"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="384"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="488"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="691"/>
         <source>unknown error cause</source>
         <translation>unbekannte Fehlerursache</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="293"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="299"/>
         <source>obsolete libspatialite: AbstractInterface is unsupported</source>
         <translation>Veraltete libspatialite: AbstractInterface ist nicht unterstützt</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="317"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="195"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="231"/>
+        <source>table info on %1 failed</source>
+        <translation>Tabellenabfrage auf %1 gescheitert</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="323"/>
         <source>UNKNOWN</source>
         <translation>UNBEKANNT</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="321"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="327"/>
         <source>GEOMETRY</source>
         <translation>GEOMETRIE</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="324"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="330"/>
         <source>POINT</source>
         <translation>PUNKT</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="327"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="333"/>
         <source>LINESTRING</source>
         <translation>Linie</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="330"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="336"/>
         <source>POLYGON</source>
         <translation>Polygon</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="333"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="339"/>
         <source>MULTIPOINT</source>
         <translation>Multipunkt</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="336"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="342"/>
         <source>MULTILINESTRING</source>
         <translation>Multilinie</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="339"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="345"/>
         <source>MULTIPOLYGON</source>
         <translation>Multipolygon</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="342"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="348"/>
         <source>GEOMETRYCOLLECTION</source>
         <translation>Geometriesammlung</translation>
     </message>
@@ -45056,141 +45078,141 @@ p, li { white-space: pre-wrap; }
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2586"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2588"/>
         <source>ERROR: no provider</source>
         <translation>FEHLER: kein Datenlieferant</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2592"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2594"/>
         <source>ERROR: layer not editable</source>
         <translation>FEHLER: Layer ist nicht veränderbar</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2609"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2611"/>
         <source>Commit errors:
   %1</source>
         <translation>Commit-Fehler:
   %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3567"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3569"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3573"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3575"/>
         <source>Layer comment</source>
         <translation>Layerkommentar</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3580"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3582"/>
         <source>Storage type of this layer</source>
         <translation>Speichertyp dieses Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3588"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3590"/>
         <source>Description of this provider</source>
         <translation>Beschreibung dieses Datenlieferanten</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3595"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3597"/>
         <source>Source for this layer</source>
         <translation>Quelle dieses Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3612"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3614"/>
         <source>Geometry type of the features in this layer</source>
         <translation>Geometrietyp der Objekte dieses Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3621"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3623"/>
         <source>Primary key attributes</source>
         <translation>Primärschlüsselattribute</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3632"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3634"/>
         <source>The number of features in this layer</source>
         <translation>Anzahl der Objekte dieses Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3637"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3639"/>
         <source>Editing capabilities of this layer</source>
         <translation>Bearbeitungsmöglichkeiten dieses Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3646"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3648"/>
         <source>Extents</source>
         <translation>Ausdehnung</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3650"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3652"/>
         <source>In layer spatial reference system units</source>
         <translation>In Bezugssystemeinheiten des Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3716"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3751"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3718"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3753"/>
         <source>In project spatial reference system units</source>
         <translation>In Bezugssystemeinheiten des Projekts</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3729"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3731"/>
         <source>Layer Spatial Reference System</source>
         <translation>Räumliches Bezugssystem des Layers</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3740"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3742"/>
         <source>Project (Output) Spatial Reference System</source>
         <translation>Räumliches Bezugssystem des Projekts (Ausgabe)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3762"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3764"/>
         <source>Attribute field info</source>
         <translation>Attributfeldinformationen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4001"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4003"/>
         <source>Error: qgis element could not be found</source>
         <translation>Fehler: Element qgis wurde nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3699"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3718"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3701"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3720"/>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
         <translation>xMin,yMin %1;%2 : xMax,yMax %3;%4</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3704"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3706"/>
         <source>unknown extent</source>
         <translation>Unbekannte Ausmaße</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3753"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3755"/>
         <source>(Invalid transformation of layer extents)</source>
         <translation>(Transformation der Layerausdehnung ungültig)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3768"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3770"/>
         <source>Field</source>
         <translation>Feld</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3771"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3773"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3774"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3776"/>
         <source>Length</source>
         <translation>Länge</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3777"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3779"/>
         <source>Precision</source>
         <translation>Genauigkeit</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3780"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3782"/>
         <source>Comment</source>
         <translation>Kommentar</translation>
     </message>
@@ -50277,6 +50299,102 @@ Durch Abhaken von &lt;label&gt;Suchoptionen&lt;/label&gt; werden weitere Möglic
 </translation>
     </message>
     <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1313"/>
+        <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
+&lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
+raster of an input point vector layer.  The density is calculated based on the
+number of points in a location, with larger numbers of clustered points resulting
+in larger values. Heatmaps allow easy identification of &quot;hotspots&quot; and
+clustering of points.&lt;/p&gt;
+
+&lt;h2&gt;Dialog Parameters&lt;/h2&gt;
+
+&lt;h3&gt;Input point layer&lt;/h3&gt;
+&lt;p&gt;The input is always a vector layer of point type. All the point vector layers that are currently loaded in the canvas are shown in the drop-down list. Click the dropdown button and select the desired layer.&lt;/p&gt;
+
+&lt;h3&gt;Output raster&lt;/h3&gt;
+&lt;p&gt;The output raster location and filename can be set by clicking the &lt;label&gt;...&lt;/label&gt; button next to the output raster textbox.&lt;br/&gt;
+&lt;b&gt;Note:&lt;/b&gt; The file format is automatically added depending upon the output format selected, if not explicitly given.&lt;/p&gt;
+
+&lt;h3&gt;Output format&lt;/h3&gt;
+&lt;p&gt;All the file creation supporting GDAL formats are available in the drop down list. Click and select the required output format for your file.&lt;br/&gt;
+&lt;b&gt;Note:&lt;/b&gt; GeoTiff and ERDAS Imagine .img formats are recommended. Some formats make the application crash. Kindly stick to the recommended formats until the crash issue is resolved or use other formats if you know GDAL supports it completely.&lt;/p&gt;
+
+&lt;h3&gt;Radius (bandwidth)&lt;/h3&gt;
+&lt;p&gt;Used to specify the heatmap search radius (or kernel bandwidth) in meters or map units. The radius specifies the distance around a point at which the influence
+  of the point will be felt. Larger values result in greater smoothing, but smaller values may show finer details and variation in point density.&lt;/p&gt;
+
+&lt;h3&gt;Advanced Options&lt;/h3&gt;
+
+&lt;h4&gt;Rows and Columns&lt;/h4&gt;
+&lt;p&gt;Used to change the dimensions of the output raster file. These values are also linked to the &lt;b&gt;Cell size X&lt;/b&gt; and &lt;b&gt;Cell size Y&lt;/b&gt; values. 
+Increasing the number of rows or colums will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
+are also linked, so doubling the number of rows will automatically double the number of columns and the cell sizes will also be halved. The geographical area of the output raster will remain the same!&lt;/p&gt;
+
+&lt;h4&gt;Cell size X and Y&lt;/h4&gt;
+&lt;p&gt;Control the geographic size of each pixel in the output raster. Changing these values will also change the number of Rows and Columns in the output
+  raster.&lt;/p&gt;
+  
+&lt;h4&gt;Kernel shape&lt;/h4&gt;
+&lt;p&gt;The kernel shape controls the rate at which the influence of a point decreases as the distance from the point increases. Different kernels decay at
+different rates, so a triweight kernel gives features greater weight for distances closer to the point then the Epanechnikov kernel does. Consequently,
+triweight results in &quot;sharper&quot; hotspots, and Epanechnikov results in &quot;smoother&quot; hotspots. A number of standard kernel functions are available in QGIS,
+which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4&gt;Decay ratio&lt;/h4&gt;
+&lt;p&gt;For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.&lt;/p&gt;
+
+&lt;h4&gt;Use radius from field&lt;/h4&gt;
+&lt;p&gt;Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.&lt;/p&gt;
+
+&lt;h4&gt;Use weight from field&lt;/h4&gt;
+&lt;p&gt;Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.&lt;/p&gt;
+
+&lt;h2&gt;Further Details&lt;/h2&gt;
+&lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
+
+</source>
+        <translation>&lt;h1&gt;Heatmap-Erweiterung&lt;/h1&gt;
+&lt;p&gt;Die Heatmap-Erweiterung erzeugt mit Hilfe von Kerndichteschätzung ein Dichteraster (Heatmap) für einen Punktlayer. Die Dichte wird auf Basis der Punktanzahl an einer Stelle berechnet, je größer die Anzahl der in einer Punkthäufung desto größer der Rasterwert.
+
+&lt;h2&gt;Parameter&lt;/h2&gt;
+
+&lt;h3&gt;Eingabepunktlayer&lt;/h3&gt;
+&lt;p&gt;Die Eingabe ist jeweils ein Punktlayer. In die Liste werden alle derzeit in die Karte geladenen Punktlayer übernommen.  Klicken Sie auf den Pfeil neben der Liste und wählen Sie den gewünschten Layer.&lt;/p&gt;
+
+&lt;h3&gt;Ausgaberaster&lt;/h3&gt;
+&lt;p&gt;Der Dateiname für das Ausgaberaster kann durch Klick auf &lt;label&gt;...&lt;/label&gt; neben dem Eingabefeld gewählt werden.&lt;br/&gt;
+&lt;b&gt;Hinweis:&lt;/b&gt; Wenn nicht explizit angegeben, wird die Dateiendung abhängig vom gewählten Ausgabeformat automatisch ergänzt,&lt;/p&gt;
+
+&lt;h3&gt;Ausgabeformat&lt;/h3&gt;
+&lt;p&gt;Alle Formate deren Erzeugung GDAL unterstützt sind in der Liste verfügbar. Wählen Sie das gewünschte Ausgabeformat Ihrer Datei.&lt;br/&gt;
+&lt;b&gt;Hinweis:&lt;/b&gt; Die Formate GeoTiff und ERDAS Imagine .img werden empfohlen. Einige Formate können die Applikation zum Absturz bringen. Bleiben Sie bitte bei den empfohlenen Formate bis die Absturzursache beseitig ist oder wählen Sie ein anderes Format, wenn Sie wissen, dass GDAL es voll unterstützt.&lt;/p&gt;
+
+&lt;h3&gt;Heatmap Punktattribute&lt;/h3&gt;
+&lt;h4&gt;Radius (Bandbreite)&lt;/h4&gt;
+&lt;p&gt;Der Pufferradius gibt den Abstand um einen Punkt herum an, in dem die Wirkung des Punktes spürbar ist. Große Werte führen zu größer Glättung, aber kleinere Werte können genauere Resultate ergeben.&lt;br/&gt;
+&lt;b&gt;Hinweise:&lt;/b&gt; Der Wert ist immer ganzzahlig.&lt;/p&gt;
+
+&lt;h4&gt;Kernform&lt;/h4&gt;
+&lt;p&gt;Der Kernform-Parameter bestimmt die Rate in der der Einfluß eines Punktes mit
+zunehmenden Abstand zum Punkt verfällt. Es sind mehrere Standardkernfunktionen
+verfügbar, welche im &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;englischen
+Wikipedia&lt;/a&gt; näher beschrieben sind.&lt;p&gt;
+
+&lt;h4&gt;Radius aus Feld nutzen&lt;/h4&gt;
+&lt;p&gt;Wahlweise kann auch ein Attribut angegeben werden, das die Kernradien für die einzelnen Punkte des Eingabelayers festlegt.&lt;/p&gt;
+
+&lt;h4&gt;Gewicht aus Feld nutzen&lt;/h4&gt;
+&lt;p&gt;Wahlweise kann auch ein Attribut mit Punktgewichten zur stärkeren Gewichtung einiger Punkte des Eingabelayers verwendet werden.&lt;/p&gt;
+
+&lt;h4&gt;Verfallrate&lt;/h4&gt;
+&lt;p&gt;Für dreieckige Kerne gibt die Verfallrate gibt den Betrag des Einfluß der äußersten Pixel des Pufferradius an. Ein Wert von 0 definiert einen dreieckigen Standardkern, bei dem der Einfluß auf Null sinkt, wenn die Entfernung des Pixels sich dem definierten Radius nähert.  Im Gegensatz dazu definiert ein Wert von 1, dass kein Verfall bei zunehmendem Abstand stattfindet.&lt;/p&gt;
+
+&lt;h2&gt;Weitere Einzelheiten&lt;/h2&gt;
+&lt;p&gt;Sie können über aruntheguy at gmail dot com mit dem Autor Kontakt aufnehmen.&lt;/p&gt;
+</translation>
+    </message>
+    <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1438"/>
         <source>&lt;h3&gt;Create a New PostgreSQL Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a PostgreSQL database.
@@ -53561,7 +53679,6 @@ Die folgenden Optionen können verwendet werden
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1313"/>
         <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
 &lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
 raster of an input point vector layer.  The density is calculated based on the
@@ -53616,7 +53733,7 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation>&lt;h1&gt;Heatmap-Erweiterung&lt;/h1&gt;
+        <translation type="obsolete">&lt;h1&gt;Heatmap-Erweiterung&lt;/h1&gt;
 &lt;p&gt;Die Heatmap-Erweiterung erzeugt mit Hilfe von Kerndichteschätzung ein Dichteraster (Heatmap) für einen Punktlayer. Die Dichte wird auf Basis der Punktanzahl an einer Stelle berechnet, je größer die Anzahl der in einer Punkthäufung desto größer der Rasterwert.
 
 &lt;h2&gt;Parameter&lt;/h2&gt;
