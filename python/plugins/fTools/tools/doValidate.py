@@ -166,7 +166,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
       mc = self.iface.mapCanvas()
       mc.zoomToPreviousExtent()
 
-      e = item.data(Qt.UserRole).toPyObject()
+      e = item.data(Qt.UserRole)
 
       if type(e)==QgsPoint:
         e = mc.mapRenderer().layerToMapCoordinates( self.vlayer, e )
