@@ -106,6 +106,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     /** Changed geometries which are not commited. */
     inline const QgsGeometryMap& changedGeometries() { return mChangedGeometries; }
 
+    inline const QgsFeatureIds deletedFeatureIds() { return mDeletedFeatureIds; }
     //QString dumpEditBuffer();
 
 
@@ -157,7 +158,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
   protected:
     QgsVectorLayer* L;
     friend class QgsVectorLayer;
-    friend class QgsVectorLayerFeatureIterator;
 
     friend class QgsVectorLayerUndoCommand;
     friend class QgsVectorLayerUndoCommandAddFeature;
