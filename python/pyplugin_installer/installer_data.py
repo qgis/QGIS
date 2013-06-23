@@ -40,7 +40,6 @@ Data structure:
 mRepositories = dict of dicts: {repoName : {"url" unicode,
                                             "enabled" bool,
                                             "valid" bool,
-                                            "QPNAME" QPNetworkAccessManager,
                                             "Relay" Relay, # Relay object for transmitting signals from QPHttp with adding the repoName information
                                             "Request" QNetworkRequest,
                                             "xmlData" QNetworkReply,
@@ -165,43 +164,6 @@ def removeDir(path):
       QDir().mkpath(pluginDir)
     return result
 # --- /common functions ------------------------------------------------------------------ #
-
-
-
-
-
-# --- class QPNetworkAccessManager  ----------------------------------------------------------------------- #
-# --- It's a temporary workaround for broken proxy handling in Qt ------------------------- #
-class QPNetworkAccessManager(QNetworkAccessManager):
-  def __init__(self, repoUrl):
-    QNetworkAccessManager.__init__(self,)
-    settings = QSettings()
-    settings.beginGroup("proxy")
-    if settings.value("/proxyEnabled", False, type=bool):
-      self.proxy=QNetworkProxy()
-      proxyType = settings.value( "/proxyType", "0", type=unicode)
-      if repoUrl:
-        for excludedUrl in settings.value("/proxyExcludedUrls","", type=unicode).split("|"):
-          if repoUrl.find( excludedUrl ) > -1:
-            proxyType = "NoProxy"
-      if proxyType in ["1","Socks5Proxy"]: self.proxy.setType(QNetworkProxy.Socks5Proxy)
-      elif proxyType in ["2","NoProxy"]: self.proxy.setType(QNetworkProxy.NoProxy)
-      elif proxyType in ["3","HttpProxy"]: self.proxy.setType(QNetworkProxy.HttpProxy)
-      elif proxyType in ["4","HttpCachingProxy"] and QT_VERSION >= 0X040400: self.proxy.setType(QNetworkProxy.HttpCachingProxy)
-      elif proxyType in ["5","FtpCachingProxy"] and QT_VERSION >= 0X040400: self.proxy.setType(QNetworkProxy.FtpCachingProxy)
-      else: self.proxy.setType(QNetworkProxy.DefaultProxy)
-      self.proxy.setHostName(settings.value("/proxyHost","", type=unicode))
-      try:
-		# QSettings may contain non-int value...
-        self.proxy.setPort(settings.value("/proxyPort", 0, type=int))
-      except:
-	    pass
-      self.proxy.setUser(settings.value("/proxyUser", "", type=unicode))
-      self.proxy.setPassword(settings.value("/proxyPassword", "", type=unicode))
-      self.setProxy(self.proxy)
-    settings.endGroup()
-    return None
-# --- /class QPNetworkAccessManager  ---------------------------------------------------------------------- #
 
 
 
@@ -395,7 +357,6 @@ class Repositories(QObject):
       self.mRepositories[key]["url"] = settings.value(key+"/url", "", type=unicode)
       self.mRepositories[key]["enabled"] = settings.value(key+"/enabled", True, type=bool)
       self.mRepositories[key]["valid"] = settings.value(key+"/valid", True, type=bool)
-      self.mRepositories[key]["QPNAM"] = QPNetworkAccessManager( self.mRepositories[key]["url"] )
       self.mRepositories[key]["Relay"] = Relay(key)
       self.mRepositories[key]["xmlData"] = None
       self.mRepositories[key]["state"] = 0
@@ -413,10 +374,10 @@ class Repositories(QObject):
 
     self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
     self.mRepositories[key]["QRequest"].setAttribute( QNetworkRequest.User, key)
-    self.mRepositories[key]["xmlData"] = self.mRepositories[key]["QPNAM"].get( self.mRepositories[key]["QRequest"] )
+    self.mRepositories[key]["xmlData"] = QgsNetworkAccessManager.instance().get( self.mRepositories[key]["QRequest"] )
     self.mRepositories[key]["xmlData"].setProperty( 'reposName', key)
     self.mRepositories[key]["xmlData"].downloadProgress.connect( self.mRepositories[key]["Relay"].dataReadProgress )
-    self.mRepositories[key]["QPNAM"].finished.connect( self.xmlDownloaded )
+    self.mRepositories[key]["xmlData"].finished.connect( self.xmlDownloaded )
 
 
   # ----------------------------------------- #
@@ -432,21 +393,21 @@ class Repositories(QObject):
   def killConnection(self, key):
     """ kill the fetching on demand """
     if self.mRepositories[key]["xmlData"] and self.mRepositories[key]["xmlData"].isRunning():
-      self.mRepositories[key]["QPNAM"].finished.disconnect()
+      self.mRepositories[key]["xmlData"].finished.disconnect()
       self.mRepositories[key]["xmlData"].abort()
 
 
   # ----------------------------------------- #
-  def xmlDownloaded(self, reply):
+  def xmlDownloaded(self):
     """ populate the plugins object with the fetched data """
+    reply = self.sender()
     reposName = reply.property( 'reposName' )
     if reply.error() != QNetworkReply.NoError:                             # fetching failed
       self.mRepositories[reposName]["state"] =  3
       self.mRepositories[reposName]["error"] = str(reply.error())
     else:
-      repoData = self.mRepositories[reposName]["xmlData"]
       reposXML = QDomDocument()
-      reposXML.setContent(repoData.readAll())
+      reposXML.setContent(reply.readAll())
       pluginNodes = reposXML.elementsByTagName("pyqgis_plugin")
       if pluginNodes.size():
         for i in range(pluginNodes.size()):
@@ -508,6 +469,8 @@ class Repositories(QObject):
     # is the checking done?
     if not self.fetchingInProgress():
       self.checkingDone.emit()
+
+    del reply
 
 
   # ----------------------------------------- #
