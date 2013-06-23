@@ -17,8 +17,6 @@ class QgsColorRampComboBox : QComboBox
     //! return new instance of the current color ramp or NULL if there is no active color ramp
     QgsVectorColorRampV2* currentColorRamp();
 
-    static QSize rampIconSize;
-
   public slots:
     void colorRampChanged( int index );
 };
