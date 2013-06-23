@@ -283,7 +283,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Remove custom snap line (and delete the object)*/
     void removeSnapLine( QGraphicsLineItem* line );
     /**Get nearest snap line
-     * @note not availabel in python bindings
+     * @note not available in python bindings
      */
     QGraphicsLineItem* nearestSnapLine( bool horizontal, double x, double y, double tolerance, QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >& snappedItems );
     /**Hides / shows custom snap lines*/

@@ -21,7 +21,7 @@ available           true | false
 status              not installed | new    |   upgradeable | orphan | downgradeable *
 error               NULL | broken | incompatible | dependent
 error_details
-experimental        choosen version status
+experimental        chosen version status
 version_available
 zip_repository      the remote repository id
 download_url

@@ -70,14 +70,14 @@ mPlugins = dict of dicts {id : {
     "status" unicode,                           # ( not installed | new ) | ( installed | upgradeable | orphan | newer )
     "error" unicode,                            # NULL | broken | incompatible | dependent
     "error_details" unicode,                    # more details
-    "experimental" boolean,                     # choosen version: experimental or stable?
-    "version_available" unicode,                # choosen version: version
-    "zip_repository" unicode,                   # choosen version: the remote repository id
-    "download_url" unicode,                     # choosen version: url for downloading
-    "filename" unicode,                         # choosen version: the zip file to be downloaded
-    "downloads" unicode,                        # choosen version: number of dowloads
-    "average_vote" unicode,                     # choosen version: average vote
-    "rating_votes" unicode,                     # choosen version: number of votes
+    "experimental" boolean,                     # chosen version: experimental or stable?
+    "version_available" unicode,                # chosen version: version
+    "zip_repository" unicode,                   # chosen version: the remote repository id
+    "download_url" unicode,                     # chosen version: url for downloading
+    "filename" unicode,                         # chosen version: the zip file to be downloaded
+    "downloads" unicode,                        # chosen version: number of dowloads
+    "average_vote" unicode,                     # chosen version: average vote
+    "rating_votes" unicode,                     # chosen version: number of votes
     "stable:version_available" unicode,         # stable version found in repositories
     "stable:download_source" unicode,
     "stable:download_url" unicode,
