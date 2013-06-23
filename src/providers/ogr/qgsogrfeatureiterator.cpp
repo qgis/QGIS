@@ -22,6 +22,7 @@
 #include "qgsmessagelog.h"
 
 #include <QTextCodec>
+#include <QFile>
 
 // using from provider:
 // - setRelevantFields(), mRelevantFieldsForNextFeature
