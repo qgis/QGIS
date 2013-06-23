@@ -1,4 +1,4 @@
-INCLUDE(FindQt4)
+#INCLUDE(FindQt4)
 
 set(MOBILITY_CONFIG_MKSPECS_FILE "")
 IF(EXISTS "${QT_MKSPECS_DIR}/features/mobilityconfig.prf")
