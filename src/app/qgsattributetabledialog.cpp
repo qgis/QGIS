@@ -119,7 +119,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   // info from table to application
   connect( this, SIGNAL( saveEdits( QgsMapLayer * ) ), QgisApp::instance(), SLOT( saveEdits( QgsMapLayer * ) ) );
 
-  connect( mMainView, SIGNAL( currentChanged( int ) ), mMainViewButtonGroup, SLOT() );
+  connect( mMainView, SIGNAL( currentChanged( int ) ), mMainViewButtonGroup, SLOT( currentChanged( int ) ) );
 
   bool myDockFlag = settings.value( "/qgis/dockAttributeTable", false ).toBool();
   if ( myDockFlag )

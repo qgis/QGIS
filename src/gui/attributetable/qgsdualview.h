@@ -216,7 +216,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     friend class TestQgsDualView;
 };
 
-class QgsAttributeTableAction : public QAction
+class GUI_EXPORT QgsAttributeTableAction : public QAction
 {
     Q_OBJECT
 

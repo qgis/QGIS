@@ -5,7 +5,7 @@
 
 #include "qgsvectorlayer.h"
 
-class QgsGeometryCache
+class CORE_EXPORT QgsGeometryCache
 {
   public:
     QgsGeometryCache( QgsVectorLayer* layer );

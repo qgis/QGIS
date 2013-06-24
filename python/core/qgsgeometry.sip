@@ -82,10 +82,10 @@ class QgsGeometry
     /**
      * Returns the size of the WKB in asWkb().
      */
-    size_t wkbSize() const;
+    size_t wkbSize();
 
     /** Returns type of wkb (point / linestring / polygon etc.) */
-    QGis::WkbType wkbType() const;
+    QGis::WkbType wkbType();
 
     /** Returns type of the vector */
     QGis::GeometryType type();
@@ -124,7 +124,7 @@ class QgsGeometry
        Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target point
     and the indices of the vertices before/after. The vertices before/after are -1 if not present
     */
-    QgsPoint closestVertex( const QgsPoint& point, int& atVertex /Out/, int& beforeVertex /Out/, int& afterVertex /Out/, double& sqrDist /Out/ ) const;
+    QgsPoint closestVertex( const QgsPoint& point, int& atVertex /Out/, int& beforeVertex /Out/, int& afterVertex /Out/, double& sqrDist /Out/ );
 
 
     /**
@@ -253,41 +253,41 @@ class QgsGeometry
     QgsRectangle boundingBox();
 
     /** Test for intersection with a rectangle (uses GEOS) */
-    bool intersects( const QgsRectangle& r ) const;
+    bool intersects( const QgsRectangle& r );
 
     /** Test for intersection with a geometry (uses GEOS) */
-    bool intersects( const QgsGeometry* geometry ) const;
+    bool intersects( QgsGeometry* geometry );
 
     /** Test for containment of a point (uses GEOS) */
-    bool contains( const QgsPoint* p ) const;
+    bool contains( QgsPoint* p );
 
     /** Test for if geometry is contained in an other (uses GEOS)
      *  @note added in 1.5 */
-    bool contains( const QgsGeometry* geometry ) const;
+    bool contains( QgsGeometry* geometry );
 
     /** Test for if geometry is disjoint of an other (uses GEOS)
      *  @note added in 1.5 */
-    bool disjoint( const QgsGeometry* geometry ) const;
+    bool disjoint( QgsGeometry* geometry );
 
     /** Test for if geometry equals an other (uses GEOS)
      *  @note added in 1.5 */
-    bool equals( const QgsGeometry* geometry ) const;
+    bool equals( QgsGeometry* geometry );
 
     /** Test for if geometry touch an other (uses GEOS)
      *  @note added in 1.5 */
-    bool touches( const QgsGeometry* geometry ) const;
+    bool touches( QgsGeometry* geometry );
 
     /** Test for if geometry overlaps an other (uses GEOS)
      *  @note added in 1.5 */
-    bool overlaps( const QgsGeometry* geometry ) const;
+    bool overlaps( QgsGeometry* geometry );
 
     /** Test for if geometry is within an other (uses GEOS)
      *  @note added in 1.5 */
-    bool within( const QgsGeometry* geometry ) const;
+    bool within( QgsGeometry* geometry );
 
     /** Test for if geometry crosses an other (uses GEOS)
      *  @note added in 1.5 */
-    bool crosses( const QgsGeometry* geometry ) const;
+    bool crosses( QgsGeometry* geometry );
 
     /** Returns a buffer region around this geometry having the given width and with a specified number
         of segments used to approximate curves */
@@ -326,44 +326,44 @@ class QgsGeometry
     /** Exports the geometry to mWkt
      *  @return true in case of success and false else
      */
-    QString exportToWkt() const;
+    QString exportToWkt();
 
     /** Exports the geometry to mGeoJSON
      *  @return true in case of success and false else
      *  @note added in 1.8
      *  @note python binding added in 1.9
      */
-    QString exportToGeoJSON() const;
+    QString exportToGeoJSON();
 
     /* Accessor functions for getting geometry data */
 
     /** return contents of the geometry as a point
         if wkbType is WKBPoint, otherwise returns [0,0] */
-    QgsPoint asPoint() const;
+    QgsPoint asPoint();
 
     /** return contents of the geometry as a polyline
         if wkbType is WKBLineString, otherwise an empty list */
-    QgsPolyline asPolyline() const;
+    QgsPolyline asPolyline();
 
     /** return contents of the geometry as a polygon
         if wkbType is WKBPolygon, otherwise an empty list */
-    QgsPolygon asPolygon() const;
+    QgsPolygon asPolygon();
 
     /** return contents of the geometry as a multi point
         if wkbType is WKBMultiPoint, otherwise an empty list */
-    QgsMultiPoint asMultiPoint() const;
+    QgsMultiPoint asMultiPoint();
 
     /** return contents of the geometry as a multi linestring
         if wkbType is WKBMultiLineString, otherwise an empty list */
-    QgsMultiPolyline asMultiPolyline() const;
+    QgsMultiPolyline asMultiPolyline();
 
     /** return contents of the geometry as a multi polygon
         if wkbType is WKBMultiPolygon, otherwise an empty list */
-    QgsMultiPolygon asMultiPolygon() const;
+    QgsMultiPolygon asMultiPolygon();
 
     /** return contents of the geometry as a list of geometries
      @note added in version 1.1 */
-    QList<QgsGeometry*> asGeometryCollection() const /Factory/;
+    QList<QgsGeometry*> asGeometryCollection() /Factory/;
 
     /** delete a ring in polygon or multipolygon.
       Ring 0 is outer ring and can't be deleted.
@@ -386,6 +386,7 @@ class QgsGeometry
      *          1 if geometry is not of polygon type,
      *          2 if avoid intersection would change the geometry type,
      *          3 other error during intersection removal
+     *  @param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in python bindings)
      *  @note added in 1.5
      */
     int avoidIntersections();

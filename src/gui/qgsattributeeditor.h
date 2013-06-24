@@ -93,7 +93,7 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
     int mIdx;
 };
 
-class QgsStringRelay : public QObject
+class GUI_EXPORT QgsStringRelay : public QObject
 {
     Q_OBJECT
 

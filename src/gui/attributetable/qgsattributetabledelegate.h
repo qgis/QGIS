@@ -29,7 +29,7 @@ class QgsAttributeTableView;
  * QItemDelegate).
  */
 
-class QgsAttributeTableDelegate : public QItemDelegate
+class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
 {
     Q_OBJECT;
 
