@@ -82,6 +82,9 @@ class QgsAttributeAction
 
     //! Removes all actions
     void clearActions();
+    
+    //! List all actions
+    QList<QgsAction> listActions();   
 
     //! Return the layer
     QgsVectorLayer *layer();
