@@ -164,7 +164,7 @@ void QgsWFSProvider::copyFeature( QgsFeature* f, QgsFeature& feature, bool fetch
   QgsGeometry* geometry = f->geometry();
   if ( geometry && fetchGeometry )
   {
-    unsigned char *geom = geometry->asWkb();
+    const unsigned char *geom = geometry->asWkb();
     int geomSize = geometry->wkbSize();
     unsigned char* copiedGeom = new unsigned char[geomSize];
     memcpy( copiedGeom, geom, geomSize );

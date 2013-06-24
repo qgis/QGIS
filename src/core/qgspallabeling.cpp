@@ -90,11 +90,11 @@ class QgsPalGeometry : public PalGeometry
 
     // getGeosGeometry + releaseGeosGeometry is called twice: once when adding, second time when labeling
 
-    GEOSGeometry* getGeosGeometry()
+    const GEOSGeometry* getGeosGeometry()
     {
       return mG;
     }
-    void releaseGeosGeometry( GEOSGeometry* /*geom*/ )
+    void releaseGeosGeometry( const GEOSGeometry* /*geom*/ )
     {
       // nothing here - we'll delete the geometry in destructor
     }
@@ -1819,7 +1819,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     }
   }
 
-  GEOSGeometry* geos_geom = geom->asGeos();
+  const GEOSGeometry* geos_geom = geom->asGeos();
 
   if ( geos_geom == NULL )
     return; // invalid geometry
@@ -3321,7 +3321,7 @@ void QgsPalLabeling::registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& 
     geom->transform( *( layerIt.value().ct ) );
   }
 
-  GEOSGeometry* geos_geom = geom->asGeos();
+  const GEOSGeometry* geos_geom = geom->asGeos();
   if ( geos_geom == 0 )
   {
     return; // invalid geometry

@@ -855,12 +855,12 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
 
   if ( f.geometry() && f.geometry()->wkbSize() > 0 )
   {
-    unsigned char* wkb = f.geometry()->asWkb();
+    const unsigned char* wkb = f.geometry()->asWkb();
     OGRGeometryH geom = NULL;
 
     if ( wkb )
     {
-      if ( OGR_G_CreateFromWkb( wkb, NULL, &geom, f.geometry()->wkbSize() ) != OGRERR_NONE )
+      if ( OGR_G_CreateFromWkb( const_cast<unsigned char *>( wkb ), NULL, &geom, f.geometry()->wkbSize() ) != OGRERR_NONE )
       {
         pushError( tr( "OGR error creating wkb for feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
         return false;
@@ -1163,7 +1163,7 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     }
 
     //create an OGRGeometry
-    if ( OGR_G_CreateFromWkb( it->asWkb(),
+    if ( OGR_G_CreateFromWkb( const_cast<unsigned char*>( it->asWkb() ),
                               OGR_L_GetSpatialRef( ogrLayer ),
                               &theNewGeometry,
                               it->wkbSize() ) != OGRERR_NONE )

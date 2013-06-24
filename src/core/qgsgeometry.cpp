@@ -605,7 +605,7 @@ void QgsGeometry::fromWkb( unsigned char * wkb, size_t length )
   mDirtyGeos  = true;
 }
 
-unsigned char * QgsGeometry::asWkb() const
+const unsigned char * QgsGeometry::asWkb() const
 {
   if ( mDirtyWkb )
   {
@@ -626,7 +626,7 @@ size_t QgsGeometry::wkbSize() const
   return mGeometrySize;
 }
 
-GEOSGeometry* QgsGeometry::asGeos() const
+const GEOSGeometry* QgsGeometry::asGeos() const
 {
   if ( mDirtyGeos )
   {
@@ -641,7 +641,7 @@ GEOSGeometry* QgsGeometry::asGeos() const
 
 QGis::WkbType QgsGeometry::wkbType() const
 {
-  unsigned char *geom = asWkb(); // ensure that wkb representation exists
+  const unsigned char *geom = asWkb(); // ensure that wkb representation exists
   if ( geom && wkbSize() >= 5 )
   {
     unsigned int wkbType;
@@ -6848,7 +6848,7 @@ bool QgsGeometry::isGeosValid()
 {
   try
   {
-    GEOSGeometry *g = asGeos();
+    const GEOSGeometry *g = asGeos();
 
     if ( !g )
       return false;
@@ -6871,7 +6871,7 @@ bool QgsGeometry::isGeosEmpty()
 {
   try
   {
-    GEOSGeometry *g = asGeos();
+    const GEOSGeometry *g = asGeos();
 
     if ( !g )
       return false;

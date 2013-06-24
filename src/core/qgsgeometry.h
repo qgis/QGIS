@@ -119,7 +119,7 @@ class CORE_EXPORT QgsGeometry
        Returns the buffer containing this geometry in WKB format.
        You may wish to use in conjunction with wkbSize().
     */
-    unsigned char * asWkb() const;
+    const unsigned char* asWkb() const;
 
     /**
      * Returns the size of the WKB in asWkb().
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsGeometry
         @note this method was added in version 1.1
         @note not available in python bindings
       */
-    GEOSGeometry* asGeos() const;
+    const GEOSGeometry* asGeos() const;
 
     /** Returns type of wkb (point / linestring / polygon etc.) */
     QGis::WkbType wkbType() const;

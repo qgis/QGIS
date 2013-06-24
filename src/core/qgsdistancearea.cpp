@@ -257,11 +257,11 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
   if ( !geometry )
     return 0.0;
 
-  unsigned char* wkb = geometry->asWkb();
+  const unsigned char* wkb = geometry->asWkb();
   if ( !wkb )
     return 0.0;
 
-  unsigned char* ptr;
+  const unsigned char* ptr;
   unsigned int wkbType;
   double res, resTotal = 0;
   int count, i;
@@ -324,11 +324,11 @@ double QgsDistanceArea::measurePerimeter( QgsGeometry* geometry )
   if ( !geometry )
     return 0.0;
 
-  unsigned char* wkb = geometry->asWkb();
+  const unsigned char* wkb = geometry->asWkb();
   if ( !wkb )
     return 0.0;
 
-  unsigned char* ptr;
+  const unsigned char* ptr;
   unsigned int wkbType;
   double res, resTotal = 0;
   int count, i;
@@ -373,9 +373,9 @@ double QgsDistanceArea::measurePerimeter( QgsGeometry* geometry )
 }
 
 
-unsigned char* QgsDistanceArea::measureLine( unsigned char* feature, double* area, bool hasZptr )
+const unsigned char* QgsDistanceArea::measureLine( const unsigned char* feature, double* area, bool hasZptr )
 {
-  unsigned char *ptr = feature + 5;
+  const unsigned char *ptr = feature + 5;
   unsigned int nPoints = *(( int* )ptr );
   ptr = feature + 9;
 
@@ -481,7 +481,7 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2 )
 }
 
 
-unsigned char* QgsDistanceArea::measurePolygon( unsigned char* feature, double* area, double* perimeter, bool hasZptr )
+const unsigned char* QgsDistanceArea::measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr )
 {
   // get number of rings in the polygon
   unsigned int numRings = *(( int* )( feature + 1 + sizeof( int ) ) );
@@ -490,7 +490,7 @@ unsigned char* QgsDistanceArea::measurePolygon( unsigned char* feature, double* 
     return 0;
 
   // Set pointer to the first ring
-  unsigned char* ptr = feature + 1 + 2 * sizeof( int );
+  const unsigned char* ptr = feature + 1 + 2 * sizeof( int );
 
   QList<QgsPoint> points;
   QgsPoint pnt;
