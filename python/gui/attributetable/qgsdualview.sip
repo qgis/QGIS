@@ -129,7 +129,7 @@ class QgsDualView : QStackedWidget
     void filterChanged();
 };
 
-class QgsAttributeTableAction : public QAction
+class QgsAttributeTableAction : QAction
 {
 %TypeHeaderCode
 #include <qgsdualview.h>

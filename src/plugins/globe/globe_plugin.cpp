@@ -310,10 +310,9 @@ void GlobePlugin::run()
 
     // add our handlers
     mOsgViewer->addEventHandler( new FlyToExtentHandler( this ) );
-    mOsgViewer->addEventHandler( new KeyboardControlHandler( manip, mQGisIface ) );
+    mOsgViewer->addEventHandler( new KeyboardControlHandler( manip ) );
 
-#ifdef HAVE_OSGEARTH_ELEVATION_QUERY
-#else
+#ifndef HAVE_OSGEARTH_ELEVATION_QUERY
     mOsgViewer->addEventHandler( new QueryCoordinatesHandler( this, mElevationManager,
                                  mMapNode->getMap()->getProfile()->getSRS() )
                                );

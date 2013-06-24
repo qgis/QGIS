@@ -1,4 +1,4 @@
-class QgsHighlight : public QgsMapCanvasItem
+class QgsHighlight : QgsMapCanvasItem
 {
 %TypeHeaderCode
 #include <qgshighlight.h>

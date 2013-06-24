@@ -8,7 +8,7 @@
 class QgsVectorLayer;
 class QgsFeatureModel;
 
-class QgsFeatureSelectionModel : public QItemSelectionModel
+class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
 {
     Q_OBJECT
   public:
