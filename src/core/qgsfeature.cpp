@@ -110,9 +110,12 @@ void QgsFeature::deleteAttribute( int field )
 }
 
 
-QgsGeometry *QgsFeature::geometry() const
+QgsGeometry *QgsFeature::geometry( bool copy ) const
 {
-  return mGeometry;
+  if ( copy )
+    return new QgsGeometry( *mGeometry );
+  else
+    return mGeometry;
 }
 
 QgsGeometry *QgsFeature::geometryAndOwnership()

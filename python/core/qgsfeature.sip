@@ -382,7 +382,7 @@ class QgsFeature
     /**
      * Get the geometry object associated with this feature
      */
-    QgsGeometry *geometry();
+    QgsGeometry *geometry( bool copy = true ) /Factory/;
 
     /**
      * Get the geometry object associated with this feature

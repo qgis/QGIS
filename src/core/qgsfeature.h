@@ -185,8 +185,15 @@ class CORE_EXPORT QgsFeature
 
     /**
      * Get the geometry object associated with this feature
+     *
+     * @param copy  This parameter specifies, if a copy of the geometry should be returned.
+     *              If set to true, it is the callers responsibility to delete this object.
+     *
+     * @note        If used from python, default value for copy is true and ownership is
+     *              transferred. If set to false, it is the callers responsibility to keep a
+     *              copy of the containing QgsFeature until this geometry is no longer used.
      */
-    QgsGeometry *geometry() const;
+    QgsGeometry *geometry( bool copy = false) const;
 
     /**
      * Get the geometry object associated with this feature
