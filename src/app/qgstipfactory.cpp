@@ -34,14 +34,15 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " modified versions to, and that you can not create a new version of"
                         " QGIS under a 'closed source' license. Visit"
                         " <a href=\"http://qgis.org\"> the QGIS home page (http://qgis.org)</a>"
-                        " for more information." ) );
+                        " for more information."
+                      ) );
   addGenericTip( myTip );
   //
   myTip.setTitle( tr( "QGIS Publications" ) );
   myTip.setContent( tr( "If you write a scientific paper or any other article"
                         " that refers to QGIS we would love to include your work"
                         " in the <a href=\"http://www.qgis.org/en/community/qgis-case-studies.html\">case studies section</a> of"
-                        " the QGIS home page (http://www.qgis.org/en/community/qgis-case-studies.html)."
+                        " the QGIS home page."
                       ) );
   addGenericTip( myTip );
   myTip.setTitle( tr( "Become an QGIS translator" ) );
@@ -50,7 +51,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " and would appreciate your help! The translation process is"
                         " fairly straight forward - instructions are available in the"
                         " QGIS wiki"
-                        " <a href=\"http://www.qgis.org/wiki/GUI_Translation\">translator's page (http://www.qgis.org/wiki/GUI_Translation).</a>"
+                        " <a href=\"http://www.qgis.org/wiki/GUI_Translation\">translator's page.</a>"
                       ) );
   addGuiTip( myTip );
   myTip.setTitle( tr( "QGIS Mailing lists" ) );
@@ -59,7 +60,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " related to using our sofware. We also have a 'developers' mailing list."
                         " for those wanting help and to discuss things relating to the QGIS code base."
                         " Details on how to subscribe are in the <a href=\"http://www.qgis.org/en/community/mailing-lists.html\">community section</a> of"
-                        " the QGIS home page (http://www.qgis.org/en/community/mailing-lists.html)."
+                        " the QGIS home page."
                       ) );
   addGuiTip( myTip );
   myTip.setTitle( tr( "Is it 'QGIS' or 'Quantum GIS'?" ) );
@@ -85,22 +86,19 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "You can add a current date variable to your map"
                         " layout. Create a regular text label and add the string"
                         " $CURRENT_DATE(yyyy-MM-dd) to the text box. See the"
-                        " <a href=\"http://doc.qt.nokia.com/latest/qdate.html#toString\">"
+                        " <a href=\"http://qt-project.org/doc/qt-5.0/qtcore/qdate.html#toString\">"
                         "QDate::toString format documentation</a> for the possible date formats."
                       ) );
   addGuiTip( myTip );
   myTip.setTitle( tr( "Moving Elements and Maps in the Print Composer" ) );
-  myTip.setContent( tr( "In the print composer tool bar you can find two"
-                        " buttons for moving elements. The left one (a selection cursor"
-                        " with the hand symbol) selects and moves elements in the layout."
-                        " After selecting the element with this tool you can also move"
-                        " them around with the arrow keys. For accurate positioning use"
-                        " the <strong>Position and Size</strong> dialogue, which can be"
-                        " found in the tab <strong>Item &rarr; General Options &rarr; Position"
-                        " and Size</strong>. For easier positioning you can also set"
-                        " specific anchor points of the element within this dialogue."
-                        " The other move tool (the globe icon combined with the hand icon)"
-                        " allows one to move the map content within a map frame."
+  myTip.setContent( tr( "In the print composer tool bar you can find two buttons for moving"
+                        " elements. The left one (right arrow icon) selects and moves elements"
+                        " in the layout. After selecting the element with this tool you can also"
+                        " move them around with the arrow keys. For accurate positioning use the"
+                        " <strong>Position and Size</strong> dialogue, which can be found in the"
+                        " tab <strong>Item Properties -> General Options -> Position and Size</strong>."
+                        " The other move tool (map canvas icon with right arrow) allows one"
+                        " to move the map content within a map frame."
                       ) );
   addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
@@ -117,14 +115,14 @@ QgsTipFactory::QgsTipFactory() : QObject()
   // This  tip contributed by Andreas Neumann
   myTip.setTitle( tr( "Rotating a map and linking a north arrow" ) );
   myTip.setContent( tr( "You can rotate a map by setting its rotation value"
-                        " in the <strong>Item tab &rarr; Map</strong> section. To place a north"
-                        " arrow in your layout you can use the <strong>Add Image</strong>"
-                        " tool, the button with the little camera icon. QGIS comes with a"
-                        " selection of north arrows. After the placement of the north arrow"
-                        " in the layout you can link it with a specific map frame by activating"
-                        " the <strong>Sync with map</strong> checkbox and selecting a map frame."
-                        " Whenever you change the rotation value of a linked map, the north arrow"
-                        " will now automatically adjust its rotation."
+                        " in the <strong>Item Properties -> Map</strong> section."
+                        " To place a north arrow in your layout you can use the"
+                        " <strong>Add Image</strong> tool. After the selection and"
+                        " placement of the north arrow in the layout you can link it"
+                        " with a specific map frame by activating the <strong>Sync with map</strong>"
+                        " checkbox and selecting a map frame. Whenever you change the rotation"
+                        " value of a linked map, the north arrow will now automatically adjust"
+                        " its rotation."
                       ) );
   addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
@@ -146,7 +144,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   // by Tim
   myTip.setTitle( tr( "Stopping rendering" ) );
   myTip.setContent( tr( "Sometimes you have a very large dataset which takes ages"
-                        " to draw. You can press 'esc' (the escape key), or click the small red"
+                        " to draw. You can press 'Esc' (the escape key), or click the small red"
                         " 'X' icon in the status bar to the bottom right of the window at any"
                         " time to halt rendering. If you are going to be performing several"
                         " actions (e.g. modifying symbology options) and wish to temporarily"
@@ -177,8 +175,8 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "If QGIS is saving you money or you like our work and"
                         " have the financial ability to help, please consider sponsoring the"
                         " development of QGIS. We use money from sponsors to pay for"
-                        " travel and costs related to our bi-annual hackfests, and to generally"
-                        " support the goals of our project.  Please see the <a"
+                        " travel and costs related to our regular hackfest meetings, and to generally"
+                        " support the goals of our project. Please see the <a"
                         " href=\"http://qgis.org/en/sponsorship.html\">QGIS Sponsorship Web"
                         " Page</a> for more details."
                       ) );
@@ -188,9 +186,11 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "QGIS has plugins that extend its functionality."
                         " QGIS ships with some core plugins you can explore from the"
                         " Plugins->Manage and Install Plugins menu. In addition there are a lot"
-                        " of Python plugins contributed by the user community that can be"
+                        " of <a href=\"http://plugins.qgis.org/\">Python plugins </a>"
+                        " contributed by the user community that can be"
                         " installed via this same menu. Don't miss out on all QGIS has to offer!"
-                        " Check out the plugins and see what they can do for you." ) );
+                        " Check out the plugins and see what they can do for you."
+                      ) );
   addGenericTip( myTip );
 
   /* Template for adding more tips
