@@ -1,4 +1,4 @@
-class QgsExpressionSelectionDialog : public QDialog
+class QgsExpressionSelectionDialog : QDialog
 {
 %TypeHeaderCode
 #include <qgsexpressionselectiondialog.h>

@@ -1,4 +1,4 @@
-class QgsErrorDialog : public QDialog
+class QgsErrorDialog : QDialog
 {
 %TypeHeaderCode
 #include <qgserrordialog.h>
