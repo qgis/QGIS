@@ -82,10 +82,10 @@ class QgsGeometry
     /**
      * Returns the size of the WKB in asWkb().
      */
-    size_t wkbSize();
+    size_t wkbSize() const;
 
     /** Returns type of wkb (point / linestring / polygon etc.) */
-    QGis::WkbType wkbType();
+    QGis::WkbType wkbType() const;
 
     /** Returns type of the vector */
     QGis::GeometryType type();
@@ -253,41 +253,41 @@ class QgsGeometry
     QgsRectangle boundingBox();
 
     /** Test for intersection with a rectangle (uses GEOS) */
-    bool intersects( const QgsRectangle& r );
+    bool intersects( const QgsRectangle& r ) const;
 
     /** Test for intersection with a geometry (uses GEOS) */
-    bool intersects( QgsGeometry* geometry );
+    bool intersects( const QgsGeometry* geometry ) const;
 
     /** Test for containment of a point (uses GEOS) */
-    bool contains( QgsPoint* p );
+    bool contains( const QgsPoint* p ) const;
 
     /** Test for if geometry is contained in an other (uses GEOS)
      *  @note added in 1.5 */
-    bool contains( QgsGeometry* geometry );
+    bool contains( const QgsGeometry* geometry ) const;
 
     /** Test for if geometry is disjoint of an other (uses GEOS)
      *  @note added in 1.5 */
-    bool disjoint( QgsGeometry* geometry );
+    bool disjoint( const QgsGeometry* geometry ) const;
 
     /** Test for if geometry equals an other (uses GEOS)
      *  @note added in 1.5 */
-    bool equals( QgsGeometry* geometry );
+    bool equals( const QgsGeometry* geometry ) const;
 
     /** Test for if geometry touch an other (uses GEOS)
      *  @note added in 1.5 */
-    bool touches( QgsGeometry* geometry );
+    bool touches( const QgsGeometry* geometry ) const;
 
     /** Test for if geometry overlaps an other (uses GEOS)
      *  @note added in 1.5 */
-    bool overlaps( QgsGeometry* geometry );
+    bool overlaps( const QgsGeometry* geometry ) const;
 
     /** Test for if geometry is within an other (uses GEOS)
      *  @note added in 1.5 */
-    bool within( QgsGeometry* geometry );
+    bool within( const QgsGeometry* geometry ) const;
 
     /** Test for if geometry crosses an other (uses GEOS)
      *  @note added in 1.5 */
-    bool crosses( QgsGeometry* geometry );
+    bool crosses( const QgsGeometry* geometry ) const;
 
     /** Returns a buffer region around this geometry having the given width and with a specified number
         of segments used to approximate curves */
@@ -326,44 +326,44 @@ class QgsGeometry
     /** Exports the geometry to mWkt
      *  @return true in case of success and false else
      */
-    QString exportToWkt();
+    QString exportToWkt() const;
 
     /** Exports the geometry to mGeoJSON
      *  @return true in case of success and false else
      *  @note added in 1.8
      *  @note python binding added in 1.9
      */
-    QString exportToGeoJSON();
+    QString exportToGeoJSON() const;
 
     /* Accessor functions for getting geometry data */
 
     /** return contents of the geometry as a point
         if wkbType is WKBPoint, otherwise returns [0,0] */
-    QgsPoint asPoint();
+    QgsPoint asPoint() const;
 
     /** return contents of the geometry as a polyline
         if wkbType is WKBLineString, otherwise an empty list */
-    QgsPolyline asPolyline();
+    QgsPolyline asPolyline() const;
 
     /** return contents of the geometry as a polygon
         if wkbType is WKBPolygon, otherwise an empty list */
-    QgsPolygon asPolygon();
+    QgsPolygon asPolygon() const;
 
     /** return contents of the geometry as a multi point
         if wkbType is WKBMultiPoint, otherwise an empty list */
-    QgsMultiPoint asMultiPoint();
+    QgsMultiPoint asMultiPoint() const;
 
     /** return contents of the geometry as a multi linestring
         if wkbType is WKBMultiLineString, otherwise an empty list */
-    QgsMultiPolyline asMultiPolyline();
+    QgsMultiPolyline asMultiPolyline() const;
 
     /** return contents of the geometry as a multi polygon
         if wkbType is WKBMultiPolygon, otherwise an empty list */
-    QgsMultiPolygon asMultiPolygon();
+    QgsMultiPolygon asMultiPolygon() const;
 
     /** return contents of the geometry as a list of geometries
      @note added in version 1.1 */
-    QList<QgsGeometry*> asGeometryCollection() /Factory/;
+    QList<QgsGeometry*> asGeometryCollection() const /Factory/;
 
     /** delete a ring in polygon or multipolygon.
       Ring 0 is outer ring and can't be deleted.

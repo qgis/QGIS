@@ -1679,12 +1679,12 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap & a
   return returnvalue;
 }
 
-void QgsOracleProvider::appendGeomParam( QgsGeometry *geom, QSqlQuery &qry ) const
+void QgsOracleProvider::appendGeomParam( const QgsGeometry *geom, QSqlQuery &qry ) const
 {
   QOCISpatialGeometry g;
 
   wkbPtr ptr;
-  ptr.ucPtr = geom ? geom->asWkb() : 0;
+  ptr.ucPtr = geom ? ( unsigned char * ) geom->asWkb() : 0;
   g.isNull = !ptr.ucPtr;
   g.gtype = -1;
   g.srid  = mSrid < 1 ? -1 : mSrid;
