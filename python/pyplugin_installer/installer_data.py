@@ -471,7 +471,7 @@ class Repositories(QObject):
         self.mRepositories[reposName]["state"] = 2
       else:
         self.mRepositories[reposName]["state"] = 3
-        self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Server response doesn't contain plugin metatada.")
+        self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Server response is 200 OK, but doesn't look like plugin metatada.")
 
     self.repositoryFetched.emit( reposName )
 
