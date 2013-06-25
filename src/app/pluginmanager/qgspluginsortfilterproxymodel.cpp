@@ -87,7 +87,7 @@ int QgsPluginSortFilterProxyModel::countWithCurrentStatus( )
   for ( int i = 0; i < sourceModel()->rowCount(); ++i )
   {
     QModelIndex idx = sourceModel()->index( i, 0 );
-    if ( filterByStatus( idx ) )
+    if ( filterByStatus( idx ) && sourceModel()->data( idx, SPACER_ROLE ).toString().isEmpty() )
     {
       result++ ;
     }
