@@ -132,11 +132,8 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   emit requestCreated( reply );
 
   // abort request, when network timeout happens
-  QTimer *timer = new QTimer( reply );
-  connect( timer, SIGNAL( timeout() ), this, SLOT( abortRequest() ) );
-
   QSettings s;
-  timer->start( s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt() );
+  QTimer::singleShot( s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt(), this, SLOT( abortRequested() ) );
 
   return reply;
 }
