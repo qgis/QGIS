@@ -49,54 +49,41 @@ mRepositories = dict of dicts: {repoName : {"url" unicode,
 
 mPlugins = dict of dicts {id : {
     "id" unicode                                # module name
-    "name" unicode,                             #
-    "description" unicode,                      #
+    "name" unicode,                             # human readable plugin name
+    "description" unicode,                      # short description of the plugin purpose only
+    "about" unicode,                            # longer description: how does it work, where does it install, how to run it?
     "category" unicode,                         # will be removed?
     "tags" unicode,                             # comma separated, spaces allowed
     "changelog" unicode,                        # may be multiline
-    "author_name" unicode,                      #
-    "author_email" unicode,                     #
-    "homepage" unicode,                         # url to a tracker site
+    "author_name" unicode,                      # author name
+    "author_email" unicode,                     # author email
+    "homepage" unicode,                         # url to the plugin homepage
     "tracker" unicode,                          # url to a tracker site
-    "code_repository" unicode,                  # url to a repository with code
-    "version_installed" unicode,                #
-    "library" unicode,                          # full path to the installed library/Python module
+    "code_repository" unicode,                  # url to the source code repository
+    "version_installed" unicode,                # installed instance version
+    "library" unicode,                          # absolute path to the installed library / Python module
     "icon" unicode,                             # path to the first:(INSTALLED | AVAILABLE) icon
-    "pythonic" const bool=True
+    "pythonic" const bool=True                  # True if Python plugin
     "readonly" boolean,                         # True if core plugin
     "installed" boolean,                        # True if installed
     "available" boolean,                        # True if available in repositories
     "status" unicode,                           # ( not installed | new ) | ( installed | upgradeable | orphan | newer )
     "error" unicode,                            # NULL | broken | incompatible | dependent
-    "error_details" unicode,                    # more details
-    "experimental" boolean,                     # chosen version: experimental or stable?
-    "version_available" unicode,                # chosen version: version
-    "zip_repository" unicode,                   # chosen version: the remote repository id
-    "download_url" unicode,                     # chosen version: url for downloading
-    "filename" unicode,                         # chosen version: the zip file to be downloaded
-    "downloads" unicode,                        # chosen version: number of dowloads
-    "average_vote" unicode,                     # chosen version: average vote
-    "rating_votes" unicode,                     # chosen version: number of votes
-    "stable:version_available" unicode,         # stable version found in repositories
-    "stable:download_source" unicode,
-    "stable:download_url" unicode,
-    "stable:filename" unicode,
-    "stable:downloads" unicode,
-    "stable:average_vote" unicode,
-    "stable:rating_votes" unicode,
-    "experimental:version_available" unicode,   # experimental version found in repositories
-    "experimental:download_source" unicode,
-    "experimental:download_url" unicode,
-    "experimental:filename" unicode,
-    "experimental:downloads" unicode,
-    "experimental:average_vote" unicode,
-    "experimental:rating_votes" unicode
+    "error_details" unicode,                    # error description
+    "experimental" boolean,                     # true if experimental, false if stable
+    "version_available" unicode,                # available version
+    "zip_repository" unicode,                   # the remote repository id
+    "download_url" unicode,                     # url for downloading the plugin
+    "filename" unicode,                         # the zip file name to be unzipped after downloaded
+    "downloads" unicode,                        # number of dowloads
+    "average_vote" unicode,                     # average vote
+    "rating_votes" unicode,                     # number of votes
 }}
 """
 
 
 
-translatableAttributes = ["name", "description", "tags"]
+translatableAttributes = ["name", "description", "about", "tags"]
 
 reposGroup = "/Qgis/plugin-repos"
 settingsGroup = "/Qgis/plugin-installer"
@@ -434,6 +421,7 @@ class Repositories(QObject):
             "name"          : pluginNodes.item(i).toElement().attribute("name"),
             "version_available" : pluginNodes.item(i).toElement().attribute("version"),
             "description"   : pluginNodes.item(i).firstChildElement("description").text().strip(),
+            "about"         : pluginNodes.item(i).firstChildElement("about").text().strip(),
             "author_name"   : pluginNodes.item(i).firstChildElement("author_name").text().strip(),
             "homepage"      : pluginNodes.item(i).firstChildElement("homepage").text().strip(),
             "download_url"  : pluginNodes.item(i).firstChildElement("download_url").text().strip(),
@@ -647,6 +635,7 @@ class Plugins(QObject):
         "id"                : key,
         "name"              : pluginMetadata("name") or key,
         "description"       : pluginMetadata("description"),
+        "about"             : pluginMetadata("about"),
         "icon"              : icon,
         "category"          : pluginMetadata("category"),
         "tags"              : pluginMetadata("tags"),
@@ -739,7 +728,7 @@ class Plugins(QObject):
                 if not self.mPlugins[key][attrib] and plugin[attrib]:
                     self.mPlugins[key][attrib] = plugin[attrib]
             # other remote metadata is preffered:
-            for attrib in ["name", "description", "category", "tags", "changelog", "author_name", "author_email", "homepage",
+            for attrib in ["name", "description", "about", "category", "tags", "changelog", "author_name", "author_email", "homepage",
                            "tracker", "code_repository", "experimental", "version_available", "zip_repository",
                            "download_url", "filename", "downloads", "average_vote", "rating_votes"]:
               if not attrib in translatableAttributes:

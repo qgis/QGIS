@@ -201,6 +201,7 @@ class QgsPluginInstaller(QObject):
         "id" : key,
         "name" : plugin["name"],
         "description" : plugin["description"],
+        "about" : plugin["about"],
         "category" : plugin["category"],
         "tags" : plugin["tags"],
         "changelog" : plugin["changelog"],

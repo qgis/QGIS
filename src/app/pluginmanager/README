@@ -1,33 +1,34 @@
 PLUGIN METADATA TAGS
 =======================================================
-id                  the key,library base name
+id                  the key; C++ library base name or Python module name
 name                human readable plugin name
-description
-icon                path to installed or available icon
+description         short description of the plugin purpose only
+about               longer description: how does it work, where does it install, how to run it?
 category            isn't it depreciated?
 tags                comma separated, spaces allowed
 changelog           may be multiline
-author_name
-author_email
-homepage            url
-tracker             url
-code_repository     url
-version_installed
-library             absolute path to the installed library / module
+author_name         author name
+author_email        author email
+homepage            url to the plugin homepage
+tracker             url to a tracker site
+code_repository     url to the source code repository
+version_installed   installed instance version
+library             absolute path to the installed library / Python module
+icon                path to the first of (INSTALLED | AVAILABLE) icon
 pythonic            true | false (is plugin pythonic or cpp?)
 readonly            true | false (is core plugin?)
 installed           true | false
 available           true | false
 status              not installed | new    |   upgradeable | orphan | downgradeable *
 error               NULL | broken | incompatible | dependent
-error_details
-experimental        chosen version status
-version_available
+error_details       error description
+experimental        true if experimental, false if stable
+version_available   available version
 zip_repository      the remote repository id
-download_url
-filename            the zip file name to be unpacked
+download_url        url for downloading the plugin
+filename            the zip file name to be unzipped after downloaded
 downloads           number of dowloads
-average_vote
+average_vote        average vote
 rating_votes        number of votes
 
 * status is only obligatory for Pythin plugins and it must match all the tags:
@@ -35,3 +36,4 @@ available, installed. version_available, version_installed.
 orphan = installed and not available to download;
 new = not installed and seen for the first time;
 downgradeable = the available version is lower than installed one.
+
