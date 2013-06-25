@@ -84,7 +84,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     reply = self.sender()
     self.buttonBox.setEnabled(False)
     if reply.error() != QNetworkReply.NoError:
-      self.mResult = self.http.errorString()
+      self.mResult = reply.errorString()
       self.reject()
       del reply
       return
