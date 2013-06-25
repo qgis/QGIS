@@ -403,8 +403,15 @@ class Repositories(QObject):
     reply = self.sender()
     reposName = reply.property( 'reposName' )
     if reply.error() != QNetworkReply.NoError:                             # fetching failed
-      self.mRepositories[reposName]["state"] =  3
-      self.mRepositories[reposName]["error"] = str(reply.error())
+      self.mRepositories[reposName]["state"] = 3
+      self.mRepositories[reposName]["error"] = reply.errorString()
+      if reply.error() == QNetworkReply.OperationCanceledError:
+        self.mRepositories[reposName]["error"] += "\n\n" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't cancelled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.")
+    elif reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) != 200:
+      self.mRepositories[reposName]["state"] = 3
+      self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Status code:") + " %d %s" % (
+                                               reply.attribute(QNetworkRequest.HttpStatusCodeAttribute),
+                                               reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute))
     else:
       reposXML = QDomDocument()
       reposXML.setContent(reply.readAll())
@@ -461,8 +468,10 @@ class Repositories(QObject):
             if isCompatible(QGis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
               #add the plugin to the cache
               plugins.addFromRepository(plugin)
-      # set state=2, even if the repo is empty
-      self.mRepositories[reposName]["state"] = 2
+        self.mRepositories[reposName]["state"] = 2
+      else:
+        self.mRepositories[reposName]["state"] = 3
+        self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Server response doesn't contain plugin metatada.")
 
     self.repositoryFetched.emit( reposName )
 

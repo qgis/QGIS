@@ -79,12 +79,15 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
         self.progressBar.setMaximum(total)
         self.progressBar.setValue(done)
 
+
   # ----------------------------------------- #
   def requestFinished(self):
     reply = self.sender()
     self.buttonBox.setEnabled(False)
     if reply.error() != QNetworkReply.NoError:
       self.mResult = reply.errorString()
+      if reply.error() == QNetworkReply.OperationCanceledError:
+        self.mResult += "<br/><br/>" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't cancelled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.")
       self.reject()
       del reply
       return
