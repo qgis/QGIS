@@ -288,6 +288,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
   QList<QgsMapLayer*> layerList;
   QgsMapLayer* currentLayer = 0;
+  QgsCoordinateReferenceSystem layerCrs;
+  QgsRectangle searchRect(0,0,0,0);
 
   mErrors = QStringList();
   mTypeNames = QStringList();
@@ -401,12 +403,12 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         }
 
         //map extent
-        QgsRectangle searchRect = layer->extent();
+        searchRect = layer->extent();
         searchRect.set( searchRect.xMinimum() - 0.000001
                         , searchRect.yMinimum() - 0.000001
                         , searchRect.xMaximum() + 0.000001
                         , searchRect.yMaximum() + 0.000001 );
-        QgsCoordinateReferenceSystem layerCrs = layer->crs();
+        layerCrs = layer->crs();
 
         if ( maxFeatures == -1 )
           maxFeat += layer->featureCount();
@@ -708,7 +710,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       const QgsFields& fields = provider->fields();
 
       //map extent
-      QgsRectangle searchRect = layer->extent();
+      searchRect = layer->extent();
 
       QgsAttributeList attrIndexes = provider->attributeIndexes();
       if ( mPropertyName != "*" )
@@ -747,7 +749,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
                         searchRect.yMinimum() - 0.000001,
                         searchRect.xMaximum() + 0.000001,
                         searchRect.yMaximum() + 0.000001 );
-      QgsCoordinateReferenceSystem layerCrs = layer->crs();
+      layerCrs = layer->crs();
 
       long featCounter = 0;
       if ( featureIdOk )
@@ -963,9 +965,9 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
   }
   if ( featureCounter == 0 )
-    throw QgsMapServiceException( "RequestNotWellFormed", QString( "No feature found error messages: %1." ).arg( mErrors.join( ". " ) ) );
-  else
-    endGetFeature( request, format );
+    startGetFeature( request, format, layerCrs, &searchRect );
+  
+  endGetFeature( request, format );
 
   return 0;
 }
