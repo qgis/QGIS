@@ -172,9 +172,7 @@ class QgsPluginInstaller(QObject):
     """ Update manager's repository tree widget with current data """
     iface.pluginManagerInterface().clearRepositoryList()
     for key in repositories.all():
-        url = repositories.all()[key]["url"]
-        v=str(QGis.QGIS_VERSION_INT)
-        url += "?qgis=%d.%d" % ( int(v[0]), int(v[1:3]) )
+        url = repositories.all()[key]["url"] + repositories.urlParams()
         repository = repositories.all()[key]
         if repositories.inspectionFilter():
           enabled = ( key == repositories.inspectionFilter() )
@@ -449,6 +447,7 @@ class QgsPluginInstaller(QObject):
     dlg = QgsPluginInstallerRepositoryDialog( iface.mainWindow() )
     dlg.editName.setText(reposName)
     dlg.editURL.setText(repositories.all()[reposName]["url"])
+    dlg.editParams.setText(repositories.urlParams())
     dlg.checkBoxEnabled.setCheckState(checkState[repositories.all()[reposName]["enabled"]])
     if repositories.all()[reposName]["valid"]:
       dlg.checkBoxEnabled.setEnabled(True)

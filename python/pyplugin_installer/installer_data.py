@@ -237,6 +237,13 @@ class Repositories(QObject):
 
 
   # ----------------------------------------- #
+  def urlParams(self):
+    """ return GET parameters to be added to every request """
+    v=str(QGis.QGIS_VERSION_INT)
+    return "?qgis=%d.%d" % ( int(v[0]), int(v[1:3]) )
+
+
+  # ----------------------------------------- #
   def setRepositoryData(self, reposName, key, value):
     """ write data to the mRepositories dict """
     self.mRepositories[reposName][key] = value
@@ -355,9 +362,9 @@ class Repositories(QObject):
   def requestFetching(self,key):
     """ start fetching the repository given by key """
     self.mRepositories[key]["state"] = 1
-    url = QUrl(self.mRepositories[key]["url"])
-    v=str(QGis.QGIS_VERSION_INT)
-    url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
+    url = QUrl(self.mRepositories[key]["url"] + self.urlParams() )
+    #v=str(QGis.QGIS_VERSION_INT)
+    #url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
 
     self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
     self.mRepositories[key]["QRequest"].setAttribute( QNetworkRequest.User, key)
