@@ -131,7 +131,7 @@ class QgsPluginInstaller(QObject):
     if repositories.allUnavailable() and repositories.allUnavailable() != repositories.allEnabled():
       for key in repositories.allUnavailable():
         if not keepQuiet:
-          QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), self.tr("Error reading repository:") + " " + key + "\n" + repositories.all()[key]["error"])
+          QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), self.tr("Error reading repository:") + " " + key + "\n\n" + repositories.all()[key]["error"])
         if QgsApplication.keyboardModifiers() == Qt.KeyboardModifiers(Qt.ShiftModifier):
           keepQuiet = True
     # finally, rebuild plugins from the caches

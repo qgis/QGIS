@@ -393,12 +393,7 @@ class Repositories(QObject):
       self.mRepositories[reposName]["state"] = 3
       self.mRepositories[reposName]["error"] = reply.errorString()
       if reply.error() == QNetworkReply.OperationCanceledError:
-        self.mRepositories[reposName]["error"] += "\n\n" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't cancelled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.")
-    elif reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) != 200:
-      self.mRepositories[reposName]["state"] = 3
-      self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Status code:") + " %d %s" % (
-                                               reply.attribute(QNetworkRequest.HttpStatusCodeAttribute),
-                                               reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute))
+        self.mRepositories[reposName]["error"] += "\n\n" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't cancelled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.")
     else:
       reposXML = QDomDocument()
       reposXML.setContent(reply.readAll())
@@ -458,8 +453,14 @@ class Repositories(QObject):
               plugins.addFromRepository(plugin)
         self.mRepositories[reposName]["state"] = 2
       else:
+        # no plugin metadata found
         self.mRepositories[reposName]["state"] = 3
-        self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Server response is 200 OK, but doesn't look like plugin metatada.")
+        if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 200:
+          self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Server response is 200 OK, but doesn't contain plugin metatada. This is most likely caused by a proxy or a wrong repository URL. You can configure proxy settings in QGIS options.")
+        else:
+          self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Status code:") + " %d %s" % (
+                    reply.attribute(QNetworkRequest.HttpStatusCodeAttribute),
+                    reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute))
 
     self.repositoryFetched.emit( reposName )
 
@@ -723,15 +724,18 @@ class Plugins(QObject):
             self.mPlugins[key] = plugin   # just add a new plugin
           else:
             # update local plugin with remote metadata
-            # name, description, icon: only use remote data if local one is not available (because of i18n and to not download the icon)
+            # description, about, icon: only use remote data if local one not available. Prefer local version because of i18n.
+            # NOTE: don't prefer local name to not desynchronize names if repository doesn't support i18n.
+            # Also prefer local icon to avoid downloading.
             for attrib in translatableAttributes + ["icon"]:
+              if attrib != "name":
                 if not self.mPlugins[key][attrib] and plugin[attrib]:
                     self.mPlugins[key][attrib] = plugin[attrib]
             # other remote metadata is preffered:
             for attrib in ["name", "description", "about", "category", "tags", "changelog", "author_name", "author_email", "homepage",
                            "tracker", "code_repository", "experimental", "version_available", "zip_repository",
                            "download_url", "filename", "downloads", "average_vote", "rating_votes"]:
-              if not attrib in translatableAttributes:
+              if ( not attrib in translatableAttributes ) or ( attrib == "name" ): # include name!
                 if plugin[attrib]:
                     self.mPlugins[key][attrib] = plugin[attrib]
           # set status
