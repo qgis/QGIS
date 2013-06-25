@@ -600,6 +600,10 @@ void QgsComposerMapWidget::on_mOverviewCenterCheckbox_toggled( bool state )
   {
     mComposerMap->setOverviewCentered( state );
   }
+  mComposerMap->beginCommand( tr( "Overview centering mode changed" ) );
+  mComposerMap->cache();
+  mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mGridCheckBox_toggled( bool state )
