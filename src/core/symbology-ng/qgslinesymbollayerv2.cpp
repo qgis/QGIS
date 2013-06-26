@@ -127,12 +127,21 @@ void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
     mPen.setStyle( Qt::CustomDashLine );
 
     //scale pattern vector
+    double dashWidthDiv = scaledWidth;
+    //fix dash pattern width in Qt 4.8
+    QStringList versionSplit = QString( qVersion() ).split( "." );
+    if ( versionSplit.size() > 1
+         && versionSplit.at( 1 ).toInt() >= 8
+         && ( scaledWidth * context.renderContext().rasterScaleFactor() ) < 1.0 )
+    {
+      dashWidthDiv = 1.0;
+    }
     QVector<qreal> scaledVector;
     QVector<qreal>::const_iterator it = mCustomDashVector.constBegin();
     for ( ; it != mCustomDashVector.constEnd(); ++it )
     {
       //the dash is specified in terms of pen widths, therefore the division
-      scaledVector << ( *it ) *  QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mCustomDashPatternUnit ) / scaledWidth;
+      scaledVector << ( *it ) *  QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mCustomDashPatternUnit ) / dashWidthDiv;
     }
     mPen.setDashPattern( scaledVector );
   }
