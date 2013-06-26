@@ -130,7 +130,7 @@
            <string>Rows</string>
           </property>
           <property name="buddy">
-           <cstring>rowLineEdit</cstring>
+           <cstring>mRowsSpinBox</cstring>
           </property>
          </widget>
         </item>
@@ -150,7 +150,7 @@
            <string>Columns</string>
           </property>
           <property name="buddy">
-           <cstring>columnLineEdit</cstring>
+           <cstring>mColumnsSpinBox</cstring>
           </property>
          </widget>
         </item>
@@ -165,10 +165,24 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="rowLineEdit"/>
+         <widget class="QSpinBox" name="mRowsSpinBox">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>999999</number>
+          </property>
+         </widget>
         </item>
         <item row="0" column="3">
-         <widget class="QLineEdit" name="columnLineEdit"/>
+         <widget class="QSpinBox" name="mColumnsSpinBox">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>999999</number>
+          </property>
+         </widget>
         </item>
         <item row="1" column="1">
          <widget class="QLineEdit" name="cellXLineEdit"/>
@@ -292,8 +306,8 @@
   <tabstop>mBufferLineEdit</tabstop>
   <tabstop>mRadiusUnitCombo</tabstop>
   <tabstop>advancedGroupBox</tabstop>
-  <tabstop>rowLineEdit</tabstop>
-  <tabstop>columnLineEdit</tabstop>
+  <tabstop>mRowsSpinBox</tabstop>
+  <tabstop>mColumnsSpinBox</tabstop>
   <tabstop>cellXLineEdit</tabstop>
   <tabstop>cellYLineEdit</tabstop>
   <tabstop>kernelShapeCombo</tabstop>

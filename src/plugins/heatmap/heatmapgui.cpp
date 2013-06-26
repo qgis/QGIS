@@ -37,7 +37,8 @@
 //standard includes
 
 HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl )
-    : QDialog( parent, fl )
+    : QDialog( parent, fl ),
+    mRows( 500 )
 {
   setupUi( this );
 
@@ -79,6 +80,8 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl )
   mFormatCombo->setCurrentIndex( myTiffIndex );
 
   updateBBox();
+  updateSize();
+
   //finally set right the ok button
   enableOrDisableOkButton();
 }
@@ -149,22 +152,22 @@ void HeatmapGui::on_advancedGroupBox_toggled( bool enabled )
   }
 }
 
-void HeatmapGui::on_rowLineEdit_editingFinished()
+void HeatmapGui::on_mRowsSpinBox_editingFinished()
 {
-  mRows = rowLineEdit->text().toInt();
+  mRows = mRowsSpinBox->value();
   mYcellsize = mBBox.height() / mRows;
   mXcellsize = mYcellsize;
-  mColumns = mBBox.width() / mXcellsize + 1;
+  mColumns = max( mBBox.width() / mXcellsize, 1 );
 
   updateSize();
 }
 
-void HeatmapGui::on_columnLineEdit_editingFinished()
+void HeatmapGui::on_mColumnsSpinBox_editingFinished()
 {
-  mColumns = columnLineEdit->text().toInt();
+  mColumns = mColumnsSpinBox->value();
   mXcellsize = mBBox.width() / mColumns;
   mYcellsize = mXcellsize;
-  mRows = mBBox.height() / mYcellsize + 1;
+  mRows = max( mBBox.height() / mYcellsize, 1 );
 
   updateSize();
 }
@@ -173,8 +176,8 @@ void HeatmapGui::on_cellXLineEdit_editingFinished()
 {
   mXcellsize = cellXLineEdit->text().toDouble();
   mYcellsize = mXcellsize;
-  mRows = mBBox.height() / mYcellsize + 1;
-  mColumns = mBBox.width() / mXcellsize + 1;
+  mRows = max( mBBox.height() / mYcellsize, 1 );
+  mColumns = max( mBBox.width() / mXcellsize, 1 );
 
   updateSize();
 }
@@ -183,8 +186,8 @@ void HeatmapGui::on_cellYLineEdit_editingFinished()
 {
   mYcellsize = cellYLineEdit->text().toDouble();
   mXcellsize = mYcellsize;
-  mRows = mBBox.height() / mYcellsize + 1;
-  mColumns = mBBox.width() / mXcellsize + 1;
+  mRows = max( mBBox.height() / mYcellsize, 1 );
+  mColumns = max( mBBox.width() / mXcellsize, 1 );
 
   updateSize();
 }
@@ -316,8 +319,8 @@ void HeatmapGui::populateFields()
 
 void HeatmapGui::updateSize()
 {
-  rowLineEdit->setText( QString::number( mRows ) );
-  columnLineEdit->setText( QString::number( mColumns ) );
+  mRowsSpinBox->setValue( mRows );
+  mColumnsSpinBox->setValue( mColumns );
   cellXLineEdit->setText( QString::number( mXcellsize ) );
   cellYLineEdit->setText( QString::number( mYcellsize ) );
 }
@@ -363,17 +366,13 @@ void HeatmapGui::updateBBox()
   mBBox.setYMinimum( mBBox.yMinimum() - radiusInMapUnits );
   mBBox.setXMaximum( mBBox.xMaximum() + radiusInMapUnits );
   mBBox.setYMaximum( mBBox.yMaximum() + radiusInMapUnits );
-  mRows = 500;
+
+  // Leave number of rows the same, and calculate new corresponding cell size and number of columns
   mYcellsize = mBBox.height() / mRows;
   mXcellsize = mYcellsize;
-  // +1 should be  added wherever a fractional part of cell might occur
-  mColumns = mBBox.width() / mXcellsize + 1;
-  mRows += 1;
+  mColumns = max( mBBox.width() / mXcellsize, 1 );
 
-  if ( advancedGroupBox->isChecked() )
-  {
-    updateSize();
-  }
+  updateSize();
 }
 
 double HeatmapGui::mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs )
