@@ -319,13 +319,14 @@ class QgsPluginInstaller(QObject):
             settings = QSettings()
             settings.setValue("/PythonPlugins/"+plugin["id"], True)
         else:
-          infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Plugin reinstalled successfully"))
           settings = QSettings()
-          if settings.value("/PythonPlugins/"+key, False, type=bool):
+          if settings.value("/PythonPlugins/"+key, False, type=bool): # plugin will be reloaded on the fly only if currently loaded
             reloadPlugin(key) # unloadPlugin + loadPlugin + startPlugin
+            infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Plugin reinstalled successfully"))
           else:
             unloadPlugin(key) # Just for a case. Will exit quietly if really not loaded
             loadPlugin(key)
+            infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Python plugin reinstalled.\nYou need to restart QGIS in order to reload it."))
         if quiet:
           infoString = (None, None)
         QApplication.restoreOverrideCursor()
