@@ -125,21 +125,21 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     { return a > b ? a : b; }
 
   private slots:
-    void on_mButtonBox_accepted();
-    void on_mButtonBox_rejected();
-    void on_mButtonBox_helpRequested();
-    void on_mBrowseButton_clicked();
-    void on_mOutputRasterLineEdit_editingFinished();
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
+    void on_buttonBox_helpRequested();
+    void on_browseButton_clicked();
+    void on_outputRasterLineEdit_editingFinished();
     void on_advancedGroupBox_toggled( bool enabled );
-    void on_mRowsSpinBox_editingFinished();
-    void on_mColumnsSpinBox_editingFinished();
+    void on_rowsSpinBox_editingFinished();
+    void on_columnsSpinBox_editingFinished();
     void on_cellXLineEdit_editingFinished();
     void on_cellYLineEdit_editingFinished();
     void on_radiusFieldCombo_currentIndexChanged( int index );
     void on_radiusFieldUnitCombo_currentIndexChanged( int index );
-    void on_mRadiusUnitCombo_currentIndexChanged( int index );
-    void on_mInputVectorCombo_currentIndexChanged( int index );
-    void on_mBufferLineEdit_editingFinished();
+    void on_radiusUnitCombo_currentIndexChanged( int index );
+    void on_inputLayerCombo_currentIndexChanged( int index );
+    void on_bufferLineEdit_editingFinished();
     void on_kernelShapeCombo_currentIndexChanged( int index );
 };
 

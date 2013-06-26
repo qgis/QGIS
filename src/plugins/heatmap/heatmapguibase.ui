@@ -24,27 +24,27 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QLabel" name="mInputLabel">
+    <widget class="QLabel" name="inputLabel">
      <property name="text">
       <string>Input point layer</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1" colspan="2">
-    <widget class="QComboBox" name="mInputVectorCombo"/>
+    <widget class="QComboBox" name="inputLayerCombo"/>
    </item>
    <item row="1" column="0">
-    <widget class="QLabel" name="mOutputLabel">
+    <widget class="QLabel" name="outputLabel">
      <property name="text">
       <string>Output raster</string>
      </property>
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="mOutputRasterLineEdit"/>
+    <widget class="QLineEdit" name="outputRasterLineEdit"/>
    </item>
    <item row="1" column="2">
-    <widget class="QPushButton" name="mBrowseButton">
+    <widget class="QPushButton" name="browseButton">
      <property name="focusPolicy">
       <enum>Qt::ClickFocus</enum>
      </property>
@@ -57,38 +57,38 @@
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="QLabel" name="mFormatLabel">
+    <widget class="QLabel" name="formatLabel">
      <property name="text">
       <string>Output format</string>
      </property>
     </widget>
    </item>
    <item row="3" column="1" colspan="2">
-    <widget class="QComboBox" name="mFormatCombo"/>
+    <widget class="QComboBox" name="formatCombo"/>
    </item>
    <item row="9" column="0" colspan="3">
-    <widget class="QDialogButtonBox" name="mButtonBox">
+    <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
    <item row="4" column="0">
-    <widget class="QLabel" name="mRadiusLabel">
+    <widget class="QLabel" name="radiusLabel">
      <property name="text">
       <string>Radius</string>
      </property>
     </widget>
    </item>
    <item row="4" column="1">
-    <widget class="QLineEdit" name="mBufferLineEdit">
+    <widget class="QLineEdit" name="bufferLineEdit">
      <property name="text">
       <string>10</string>
      </property>
     </widget>
    </item>
    <item row="4" column="2">
-    <widget class="QComboBox" name="mRadiusUnitCombo">
+    <widget class="QComboBox" name="radiusUnitCombo">
      <item>
       <property name="text">
        <string>meters</string>
@@ -130,7 +130,7 @@
            <string>Rows</string>
           </property>
           <property name="buddy">
-           <cstring>mRowsSpinBox</cstring>
+           <cstring>rowsSpinBox</cstring>
           </property>
          </widget>
         </item>
@@ -150,7 +150,7 @@
            <string>Columns</string>
           </property>
           <property name="buddy">
-           <cstring>mColumnsSpinBox</cstring>
+           <cstring>columnsSpinBox</cstring>
           </property>
          </widget>
         </item>
@@ -165,7 +165,7 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QSpinBox" name="mRowsSpinBox">
+         <widget class="QSpinBox" name="rowsSpinBox">
           <property name="minimum">
            <number>1</number>
           </property>
@@ -175,7 +175,7 @@
          </widget>
         </item>
         <item row="0" column="3">
-         <widget class="QSpinBox" name="mColumnsSpinBox">
+         <widget class="QSpinBox" name="columnsSpinBox">
           <property name="minimum">
            <number>1</number>
           </property>
@@ -195,7 +195,7 @@
       <item row="1" column="0">
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="1" column="0">
-         <widget class="QCheckBox" name="useRadius">
+         <widget class="QCheckBox" name="radiusFieldCheckBox">
           <property name="text">
            <string>Use radius from field</string>
           </property>
@@ -226,7 +226,7 @@
          </widget>
         </item>
         <item row="2" column="0">
-         <widget class="QCheckBox" name="useWeight">
+         <widget class="QCheckBox" name="weightFieldCheckBox">
           <property name="text">
            <string>Use weight from field</string>
           </property>
@@ -240,7 +240,7 @@
          </widget>
         </item>
         <item row="3" column="1" colspan="2">
-         <widget class="QLineEdit" name="mDecayLineEdit">
+         <widget class="QLineEdit" name="decayLineEdit">
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -250,7 +250,7 @@
          </widget>
         </item>
         <item row="3" column="0">
-         <widget class="QLabel" name="mDecayLabel">
+         <widget class="QLabel" name="decayLabel">
           <property name="text">
            <string>Decay ratio</string>
           </property>
@@ -286,7 +286,7 @@
          </widget>
         </item>
         <item row="0" column="0">
-         <widget class="QLabel" name="kernelShapeLable">
+         <widget class="QLabel" name="kernelShapeLabel">
           <property name="text">
            <string>Kernel shape</string>
           </property>
@@ -300,29 +300,29 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>mInputVectorCombo</tabstop>
-  <tabstop>mOutputRasterLineEdit</tabstop>
-  <tabstop>mFormatCombo</tabstop>
-  <tabstop>mBufferLineEdit</tabstop>
-  <tabstop>mRadiusUnitCombo</tabstop>
+  <tabstop>inputLayerCombo</tabstop>
+  <tabstop>outputRasterLineEdit</tabstop>
+  <tabstop>formatCombo</tabstop>
+  <tabstop>bufferLineEdit</tabstop>
+  <tabstop>radiusUnitCombo</tabstop>
   <tabstop>advancedGroupBox</tabstop>
-  <tabstop>mRowsSpinBox</tabstop>
-  <tabstop>mColumnsSpinBox</tabstop>
+  <tabstop>rowsSpinBox</tabstop>
+  <tabstop>columnsSpinBox</tabstop>
   <tabstop>cellXLineEdit</tabstop>
   <tabstop>cellYLineEdit</tabstop>
   <tabstop>kernelShapeCombo</tabstop>
-  <tabstop>useRadius</tabstop>
+  <tabstop>radiusFieldCheckBox</tabstop>
   <tabstop>radiusFieldCombo</tabstop>
   <tabstop>radiusFieldUnitCombo</tabstop>
-  <tabstop>useWeight</tabstop>
+  <tabstop>weightFieldCheckBox</tabstop>
   <tabstop>weightFieldCombo</tabstop>
-  <tabstop>mDecayLineEdit</tabstop>
-  <tabstop>mButtonBox</tabstop>
+  <tabstop>decayLineEdit</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>mButtonBox</sender>
+   <sender>buttonBox</sender>
    <signal>accepted()</signal>
    <receiver>HeatmapGuiBase</receiver>
    <slot>accept()</slot>
@@ -338,7 +338,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>mButtonBox</sender>
+   <sender>buttonBox</sender>
    <signal>rejected()</signal>
    <receiver>HeatmapGuiBase</receiver>
    <slot>reject()</slot>
@@ -354,7 +354,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>useWeight</sender>
+   <sender>weightFieldCheckBox</sender>
    <signal>toggled(bool)</signal>
    <receiver>weightFieldCombo</receiver>
    <slot>setEnabled(bool)</slot>
@@ -370,7 +370,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>useRadius</sender>
+   <sender>radiusFieldCheckBox</sender>
    <signal>toggled(bool)</signal>
    <receiver>radiusFieldCombo</receiver>
    <slot>setEnabled(bool)</slot>
@@ -386,7 +386,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>useRadius</sender>
+   <sender>radiusFieldCheckBox</sender>
    <signal>toggled(bool)</signal>
    <receiver>radiusFieldUnitCombo</receiver>
    <slot>setEnabled(bool)</slot>
@@ -402,9 +402,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>useRadius</sender>
+   <sender>radiusFieldCheckBox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>mBufferLineEdit</receiver>
+   <receiver>bufferLineEdit</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -418,9 +418,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>useRadius</sender>
+   <sender>radiusFieldCheckBox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>mRadiusUnitCombo</receiver>
+   <receiver>radiusUnitCombo</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -434,9 +434,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>useRadius</sender>
+   <sender>radiusFieldCheckBox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>mRadiusLabel</receiver>
+   <receiver>radiusLabel</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
