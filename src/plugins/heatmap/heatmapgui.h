@@ -25,7 +25,7 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
 {
     Q_OBJECT
   public:
-    HeatmapGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
+    HeatmapGui( QWidget* parent, Qt::WFlags fl, QMap<QString, QVariant>* temporarySettings );
     ~HeatmapGui();
 
     // Buffer unit type
@@ -87,10 +87,21 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
   private:
     QMap<QString, QString> mExtensionMap;
 
+    QMap<QString, QVariant> *mHeatmapSessionSettings;
+
     // bbox of layer for lineedit changes
     QgsRectangle mBBox;
     double mXcellsize, mYcellsize;
     int mRows, mColumns;
+
+    /** Restores control values */
+    void restoreSettings( bool usingLastInputLayer );
+
+    /** Saves control values */
+    void saveSettings();
+
+    /** Blocks/unblocks signals for controls */
+    void blockAllSignals( bool b );
 
     /** Function to check wether all constrains are satisfied and enable the OK button */
     void enableOrDisableOkButton();
@@ -106,6 +117,12 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
 
     /** Convert Maters value to the corresponding map units based on Layer projection */
     double mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs );
+
+    /** Estimate a reasonable starting value for the radius field */
+    double estimateRadius();
+
+    inline double max( double a, double b )
+    { return a > b ? a : b; }
 
   private slots:
     void on_mButtonBox_accepted();
@@ -124,12 +141,6 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     void on_mInputVectorCombo_currentIndexChanged( int index );
     void on_mBufferLineEdit_editingFinished();
     void on_kernelShapeCombo_currentIndexChanged( int index );
-
-    /** Estimate a reasonable starting value for the radius field */
-    double estimateRadius();
-
-    inline double max( double a, double b )
-    { return a > b ? a : b; }
 };
 
 #endif

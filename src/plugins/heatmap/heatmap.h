@@ -80,6 +80,8 @@ class Heatmap: public QObject, public QgisPlugin
       Epanechnikov
     };
 
+    QMap<QString, QVariant> mSessionSettings;
+
   public slots:
     //! init the gui
     virtual void initGui();
