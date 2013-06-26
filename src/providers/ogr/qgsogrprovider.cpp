@@ -335,6 +335,9 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     ogrLayer = ogrOrigLayer;
     if ( ogrLayer )
     {
+      // check that the initial encoding setting is fit for this layer
+      setEncoding( encoding() );
+
       valid = setSubsetString( mSubsetString );
       QgsDebugMsg( "Data source is valid" );
     }
