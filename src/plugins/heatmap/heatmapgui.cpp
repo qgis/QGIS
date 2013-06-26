@@ -63,7 +63,9 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl )
   {
     GDALDriver* nthDriver = GetGDALDriverManager()->GetDriver( i );
     char** driverMetadata = nthDriver->GetMetadata();
-    if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
+    // Only formats which allow creation of Float32 data types are valid
+    if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) &&
+         QString( nthDriver->GetMetadataItem( GDAL_DMD_CREATIONDATATYPES, NULL ) ).contains( "Float32" ) )
     {
       ++myIndex;
       QString myLongName = nthDriver->GetMetadataItem( GDAL_DMD_LONGNAME );
