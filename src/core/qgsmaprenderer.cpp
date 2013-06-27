@@ -681,7 +681,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
           }
 
           mRenderContext.setCoordinateTransform( ct );
-
+          delete ct;
           ml->drawLabels( mRenderContext );
           if ( split )
           {
@@ -721,7 +721,6 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
   }
 
   QgsDebugMsg( "Rendering completed in (seconds): " + QString( "%1" ).arg( renderTime.elapsed() / 1000.0 ) );
-
   mDrawing = false;
 }
 
