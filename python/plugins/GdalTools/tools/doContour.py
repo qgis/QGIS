@@ -108,8 +108,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
   def getOutputFileName(self):
       if self.useDirAsOutput:
-        fn = self.outSelector.filename()
-        return fn if not fn else fn + QDir.separator() + "contour.shp"
+        if self.outSelector.filename():
+          return self.outSelector.filename() + QDir.separator() + "contour.shp"
       return self.outSelector.filename()
 
   def addLayerIntoCanvas(self, fileInfo):

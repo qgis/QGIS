@@ -103,9 +103,9 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
       if platform.system() == "Windows":
         #info = QString.fromLocal8Bit( arr ).strip().split( "\r\n" )
         # TODO test
-        info = string.split(arr, sep="\r\n" )
+        info = arr.splitlines()
       else:
-        info = string.split(arr, sep="\n" )
+        info = arr.splitlines()
       self.rasterInfoList.addItems( info )
 
   def fillInputFileEdit( self ):
