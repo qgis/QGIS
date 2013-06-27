@@ -528,7 +528,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   activateDeactivateLayerRelatedActions( NULL );
 
   // initialize the plugin manager
-  mPluginManager = new QgsPluginManager( this );
+  mPluginManager = new QgsPluginManager( this, restorePlugins );
 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
   mUndoWidget->hide();

@@ -428,8 +428,9 @@ void QgsPluginRegistry::unloadPythonPlugin( QString packageName )
 
 void QgsPluginRegistry::unloadCppPlugin( QString theFullPathName )
 {
+  QSettings settings;
   QString baseName = QFileInfo( theFullPathName ).baseName();
-  // first check to see if it's loaded
+  settings.setValue( "/Plugins/" + baseName, false );
   if ( isLoaded( baseName ) )
   {
     QgisPlugin * pluginInstance = plugin( baseName );
@@ -437,8 +438,6 @@ void QgsPluginRegistry::unloadCppPlugin( QString theFullPathName )
     {
       pluginInstance->unload();
     }
-    QSettings settings;
-    settings.setValue( "/Plugins/" + baseName, false );
     // remove the plugin from the registry
     removePlugin( baseName );
     QgsDebugMsg( "Cpp plugin successfully unloaded: " + baseName );

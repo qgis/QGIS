@@ -52,7 +52,7 @@
 #endif
 
 
-QgsPluginManager::QgsPluginManager( QWidget * parent, Qt::WFlags fl )
+QgsPluginManager::QgsPluginManager( QWidget * parent, bool pluginsAreEnabled, Qt::WFlags fl )
     : QgsOptionsDialogBase( "PluginManager", parent, fl )
 {
   // initialize pointer
@@ -74,6 +74,9 @@ QgsPluginManager::QgsPluginManager( QWidget * parent, Qt::WFlags fl )
 
   // load translated description strings from qgspluginmanager_texts
   initTabDescriptions();
+
+  // set internal variable
+  mPluginsAreEnabled = pluginsAreEnabled;
 
   // Init models
   mModelPlugins = new QStandardItemModel( 0, 1 );
@@ -243,6 +246,31 @@ void QgsPluginManager::unloadPlugin( QString id )
   {
     QgsDebugMsg( "Unloading C++ plugin: " + library );
     pRegistry->unloadCppPlugin( library );
+  }
+}
+
+
+
+void QgsPluginManager::savePluginState( QString id, bool state )
+{
+  const QMap<QString, QString>* plugin = pluginMetadata( id );
+  if ( ! plugin )
+  {
+    return;
+  }
+
+  QSettings settings;
+  if ( plugin->value( "pythonic" ) == "true" )
+  {
+    // Python plugin
+    settings.setValue( "/PythonPlugins/" + id, state );
+  }
+  else
+  {
+    // C++ plugin
+    // Trim "cpp:" prefix from cpp plugin id
+    id = id.mid( 4 );
+    settings.setValue( "/Plugins/" + id, state );
   }
 }
 
@@ -493,7 +521,7 @@ void QgsPluginManager::reloadModelData()
         mypDetailItem->setCheckState( Qt::Unchecked );
       }
 
-      if ( isPluginLoaded( it->value( "id" ) ) )
+      if ( isPluginEnabled( it->value( "id" ) ) )
       {
         mypDetailItem->setCheckState( Qt::Checked );
       }
@@ -535,10 +563,20 @@ void QgsPluginManager::reloadModelData()
 void QgsPluginManager::pluginItemChanged( QStandardItem * item )
 {
   QString id = item->data( PLUGIN_BASE_NAME_ROLE ).toString();
-  if ( item->checkState() && ! isPluginLoaded( id ) )
+
+  if ( item->checkState() )
   {
-    QgsDebugMsg( " Loading plugin: " + id );
-    loadPlugin( id );
+    if ( mPluginsAreEnabled && ! isPluginEnabled( id ))
+    {
+      QgsDebugMsg( " Loading plugin: " + id );
+      loadPlugin( id );
+    }
+    else
+    {
+      // only enable the plugin, as we're in --noplugins mode
+      QgsDebugMsg( " Enabling plugin: " + id );
+      savePluginState( id, true );
+    }
   }
   else if ( ! item->checkState() )
   {
@@ -1194,7 +1232,7 @@ void QgsPluginManager::on_ckbExperimental_toggled( bool state )
 // PRIVATE METHODS ///////////////////////////////////////////////////////////////////
 
 
-bool QgsPluginManager::isPluginLoaded( QString key )
+bool QgsPluginManager::isPluginEnabled( QString key )
 {
   const QMap<QString, QString>* plugin = pluginMetadata( key );
   if ( plugin->isEmpty() )
@@ -1203,19 +1241,15 @@ bool QgsPluginManager::isPluginLoaded( QString key )
     return false;
   }
 
+  QSettings mySettings;
   if ( plugin->value( "pythonic" ) != "true" )
   {
-    // For C++ plugins, just check in the QgsPluginRegistry. If the plugin is broken, it was disabled quietly.
     // Trim "cpp:" prefix from cpp plugin id
     key = key.mid( 4 );
-    QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
-    return pRegistry->isLoaded( key );
+    return ( mySettings.value( "/Plugins/" + key, QVariant( false ) ).toBool() );
   }
   else
   {
-    // For Python plugins, check in QSettings if enabled rather than checking in QgsPluginRegistry if loaded.
-    // This will allow to turn off the plugin if broken.
-    QSettings mySettings;
     return ( plugin->value( "installed" ) == "true" && mySettings.value( "/PythonPlugins/" + key, QVariant( false ) ).toBool() );
   }
 }
