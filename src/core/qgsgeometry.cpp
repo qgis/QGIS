@@ -6565,6 +6565,11 @@ QgsGeometry* QgsGeometry::combine( QgsGeometry* geometry )
   try
   {
     GEOSGeometry* unionGeom = GEOSUnion( mGeos, geometry->mGeos );
+    if ( !unionGeom )
+    {
+      return 0;
+    }
+
     if ( type() == QGis::Line )
     {
       GEOSGeometry* mergedGeom = GEOSLineMerge( unionGeom );

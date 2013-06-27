@@ -4765,16 +4765,15 @@ QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList&
     {
       backupPtr = unionGeom;
       unionGeom = unionGeom->combine( currentGeom );
-      if ( !unionGeom )
-      {
-        delete backupPtr;
-        QApplication::restoreOverrideCursor();
-        return 0;
-      }
       if ( i > 1 ) //delete previous intermediate results
       {
         delete backupPtr;
         backupPtr = 0;
+      }
+      if ( !unionGeom )
+      {
+        QApplication::restoreOverrideCursor();
+        return 0;
       }
     }
   }
