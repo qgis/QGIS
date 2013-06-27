@@ -687,7 +687,8 @@ class Plugins(QObject):
       for key in pluginDir.entryList():
         key = unicode(key)
         if not key in [".",".."]:
-          self.localCache[key] = self.getInstalledPlugin(key, readOnly=True, testLoad=False)
+          # only test those not yet loaded. Others proved they're o.k.
+          self.localCache[key] = self.getInstalledPlugin(key, readOnly=True, testLoad=testLoad and not qgis.utils.plugins.has_key(key))
     except:
       # return QCoreApplication.translate("QgsPluginInstaller","Couldn't open the system plugin directory")
       pass # it's not necessary to stop due to this error
@@ -703,7 +704,8 @@ class Plugins(QObject):
     for key in pluginDir.entryList():
       key = unicode(key)
       if not key in [".",".."]:
-        plugin = self.getInstalledPlugin(key, readOnly=False, testLoad=testLoad)
+        # only test those not yet loaded. Others proved they're o.k.
+        plugin = self.getInstalledPlugin(key, readOnly=False, testLoad=testLoad and not qgis.utils.plugins.has_key(key))
         if key in self.localCache.keys() and compareVersions(self.localCache[key]["version_installed"],plugin["version_installed"]) == 1:
           # An obsolete plugin in the "user" location is masking a newer one in the "system" location!
           self.obsoletePlugins += [key]
