@@ -822,7 +822,7 @@ def setProcessEnvironment(process):
       envval = os.getenv(name)
       if envval == None or envval == "":
         envval = str(val)
-      elif (platform.system() == "Windows" and val.lower() not in envval.lower().split( sep )) or
+      elif (platform.system() == "Windows" and val.lower() not in envval.lower().split( sep )) or \
           (platform.system() != "Windows" and val not in envval.split( sep )):
         envval += "%s%s" % (sep, str(val))
       else:
