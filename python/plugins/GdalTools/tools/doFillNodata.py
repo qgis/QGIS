@@ -205,7 +205,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
         self.progressBar.setValue( 0 )
 
   def batchRun(self):
-      exts = self.formatCombo.currentText().remove( QRegExp('^.*\(') ).remove( QRegExp('\).*$') ).split( " " )
+      exts = re.sub('\).*$', '', re.sub('^.*\(', '', self.formatCombo.currentText())).split(" ")
       if exts and exts != "*" and exts != "*.*":
         outExt = exts[ 0 ].remove( "*" )
       else:
@@ -229,7 +229,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
       for f in files:
         self.inFiles.append( inDir + "/" + f )
         if outDir != None:
-          outFile = re.sub( f, "\.[a-zA-Z0-9]{2,4}", outExt )
+          outFile = re.sub( "\.[a-zA-Z0-9]{2,4}", outExt, f )
           self.outFiles.append( outDir + "/" + outFile )
 
       self.errors = []
