@@ -289,16 +289,15 @@ def getVectorFields(vectorFile):
 def getRasterSRS( parent, fileName ):
     processSRS = QProcess( parent )
     processSRS.start( "gdalinfo", [fileName], QIODevice.ReadOnly )
-    arr = QByteArray()
+    arr = ''
     if processSRS.waitForFinished():
-      arr = processSRS.readAllStandardOutput()
+      arr = str(processSRS.readAllStandardOutput())
       processSRS.close()
 
-    arr = str(arr)
     if arr == '':
       return ''
 
-    info = string.split( arr, sep="\n" )
+    info = arr.splitlines()
     if len(info) == 0:
       return ''
 
@@ -312,18 +311,17 @@ def getRasterSRS( parent, fileName ):
 def getRasterExtent(parent, fileName):
     processSRS = QProcess( parent )
     processSRS.start( "gdalinfo", [fileName], QIODevice.ReadOnly )
-    arr = QByteArray()
+    arr = ''
     if processSRS.waitForFinished():
-      arr = processSRS.readAllStandardOutput()
+      arr = str(processSRS.readAllStandardOutput())
       processSRS.close()
-    arr = str(arr)
 
     if arr == '':
       return
 
     ulCoord = lrCoord = ''
     xUL = yLR = xLR = yUL = 0
-    info = string.split( arr, sep="\n" )
+    info = arr.splitlines()
     for elem in info:
         m = re.match("^Upper\sLeft.*", elem)
         if m:
@@ -824,22 +822,14 @@ def setProcessEnvironment(process):
       envval = os.getenv(name)
       if envval == None or envval == "":
         envval = str(val)
-      elif not QString( envval ).split( sep ).contains( val, Qt.CaseInsensitive ):
+      elif (platform.system() == "Windows" and val.lower() not in envval.lower().split( sep )) or
+          (platform.system() != "Windows" and val not in envval.split( sep )):
         envval += "%s%s" % (sep, str(val))
       else:
         envval = None
 
       if envval != None:
         os.putenv( name, envval )
-
-      if False:  # not needed because os.putenv() has already updated the environment for new child processes
-        env = QProcess.systemEnvironment()
-        if env.contains( QRegExp( "^%s=(.*)" % name, Qt.CaseInsensitive ) ):
-          env.replaceInStrings( QRegExp( "^%s=(.*)" % name, Qt.CaseInsensitive ), "%s=\\1%s%s" % (name, sep, gdalPath) )
-        else:
-          env.append( "%s=%s" % (name, val))
-        process.setEnvironment( env )
-
 
 def setMacOSXDefaultEnvironment():
   # fix bug #3170: many GDAL Tools don't work in OS X standalone
