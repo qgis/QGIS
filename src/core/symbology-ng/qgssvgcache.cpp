@@ -136,7 +136,10 @@ const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const Q
       //currentEntry->image = new QImage( 0, 0 );
 
       // instead cache picture
-      cachePicture( currentEntry );
+      if ( !currentEntry->picture )
+      {
+        cachePicture( currentEntry );
+      }
     }
     else
     {
@@ -693,6 +696,11 @@ void QgsSvgCache::printEntryList()
 
 void QgsSvgCache::trimToMaximumSize()
 {
+  //only one entry in cache
+  if ( mLeastRecentEntry == mMostRecentEntry )
+  {
+    return;
+  }
   QgsSvgCacheEntry* entry = mLeastRecentEntry;
   while ( entry && ( mTotalSize > mMaximumSize ) )
   {
