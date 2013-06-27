@@ -277,8 +277,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
   def batchRun(self):
       exts = re.sub('\).*$', '', re.sub('^.*\(', '', self.formatCombo.currentText())).split(" ")
-      if exts and exts != "*" and exts != "*.*":
-        outExt = exts[ 0 ].remove( "*" )
+      if len(exts) > 0 and exts[0] != "*" and exts[0] != "*.*":
+        outExt = exts[0].replace( "*", "" )
       else:
         outExt = ".tif"
 
