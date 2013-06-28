@@ -183,6 +183,9 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! loads providers
     static void initQgis();
 
+    //! initialise qgis.db
+    static bool createDB( QString* errorMessage = 0 );
+
     //! deletes provider registry and map layer registry
     static void exitQgis();
 
