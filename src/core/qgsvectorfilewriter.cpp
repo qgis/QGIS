@@ -803,11 +803,10 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
 
   // enabling transaction on databases that support it
   bool transactionsEnabled = true;
-  OGRLayerH ogrCurrentLayer = writer->getLayer();
 
-  if ( OGRERR_NONE != OGR_L_StartTransaction(ogrCurrentLayer) )
+  if ( OGRERR_NONE != OGR_L_StartTransaction( writer->mLayer ) )
   {
-    QgsDebugMsg("Error when trying to enable transactions on OGRLayer.");
+    QgsDebugMsg( "Error when trying to enable transactions on OGRLayer." );
     transactionsEnabled = false;
   }
 
@@ -874,9 +873,9 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
 
   if ( transactionsEnabled )
   {
-    if ( OGRERR_NONE != OGR_L_CommitTransaction(ogrCurrentLayer) )
+    if ( OGRERR_NONE != OGR_L_CommitTransaction( writer->mLayer ) )
     {
-      QgsDebugMsg("Error while commiting transaction on OGRLayer.");
+      QgsDebugMsg( "Error while commiting transaction on OGRLayer." );
     }
   }
 
