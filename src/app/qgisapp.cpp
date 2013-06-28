@@ -458,7 +458,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mSplash->showMessage( tr( "Checking database" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   // Do this early on before anyone else opens it and prevents us copying it
-  createDB();
+  QString dbError;
+  if ( !QgsApplication::createDB( &dbError ) )
+  {
+    QMessageBox::critical( this, tr( "Private qgis.db" ), dbError );
+  }
 
   mSplash->showMessage( tr( "Reading settings" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
@@ -2116,106 +2120,6 @@ void QgisApp::initLegend()
   mPanelMenu->addAction( mLayerOrderDock->toggleViewAction() );
 
   return;
-}
-
-bool QgisApp::createDB()
-{
-  // Check qgis.db and make private copy if necessary
-  QFile qgisPrivateDbFile( QgsApplication::qgisUserDbFilePath() );
-
-  // first we look for ~/.qgis/qgis.db
-  if ( !qgisPrivateDbFile.exists() )
-  {
-    // if it doesnt exist we copy it in from the global resources dir
-    QString qgisMasterDbFileName = QgsApplication::qgisMasterDbFilePath();
-    QFile masterFile( qgisMasterDbFileName );
-
-    // Must be sure there is destination directory ~/.qgis
-    QDir().mkpath( QgsApplication::qgisSettingsDirPath() );
-
-    //now copy the master file into the users .qgis dir
-    bool isDbFileCopied = masterFile.copy( qgisPrivateDbFile.fileName() );
-
-    if ( !isDbFileCopied )
-    {
-      QgsMessageLog::logMessage( tr( "[ERROR] Can not make qgis.db private copy" ) );
-      return false;
-    }
-  }
-  else
-  {
-    // migrate if necessary
-    sqlite3 *db;
-    if ( sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8().constData(), &db ) != SQLITE_OK )
-    {
-      QMessageBox::critical( this, tr( "Private qgis.db" ), tr( "Could not open qgis.db" ) );
-      return false;
-    }
-
-    char *errmsg;
-    int res = sqlite3_exec( db, "SELECT epsg FROM tbl_srs LIMIT 0", 0, 0, &errmsg );
-    if ( res == SQLITE_OK )
-    {
-      // epsg column exists => need migration
-      if ( sqlite3_exec( db,
-                         "ALTER TABLE tbl_srs RENAME TO tbl_srs_bak;"
-                         "CREATE TABLE tbl_srs ("
-                         "srs_id INTEGER PRIMARY KEY,"
-                         "description text NOT NULL,"
-                         "projection_acronym text NOT NULL,"
-                         "ellipsoid_acronym NOT NULL,"
-                         "parameters text NOT NULL,"
-                         "srid integer,"
-                         "auth_name varchar,"
-                         "auth_id varchar,"
-                         "is_geo integer NOT NULL,"
-                         "deprecated boolean);"
-                         "CREATE INDEX idx_srsauthid on tbl_srs(auth_name,auth_id);"
-                         "INSERT INTO tbl_srs(srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) SELECT srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,'','',is_geo,0 FROM tbl_srs_bak;"
-                         "DROP TABLE tbl_srs_bak", 0, 0, &errmsg ) != SQLITE_OK
-         )
-      {
-        QMessageBox::critical( this, tr( "Private qgis.db" ), tr( "Migration of private qgis.db failed.\n%1" ).arg( QString::fromUtf8( errmsg ) ) );
-        sqlite3_free( errmsg );
-        sqlite3_close( db );
-        return false;
-      }
-    }
-    else
-    {
-      sqlite3_free( errmsg );
-    }
-
-    if ( sqlite3_exec( db, "DROP VIEW vw_srs", 0, 0, &errmsg ) != SQLITE_OK )
-    {
-      QgsDebugMsg( QString( "vw_srs didn't exists in private qgis.db: %1" ).arg( errmsg ) );
-    }
-
-    if ( sqlite3_exec( db,
-                       "CREATE VIEW vw_srs AS"
-                       " SELECT"
-                       " a.description AS description"
-                       ",a.srs_id AS srs_id"
-                       ",a.is_geo AS is_geo"
-                       ",coalesce(b.name,a.projection_acronym) AS name"
-                       ",a.parameters AS parameters"
-                       ",a.auth_name AS auth_name"
-                       ",a.auth_id AS auth_id"
-                       ",a.deprecated AS deprecated"
-                       " FROM tbl_srs a"
-                       " LEFT OUTER JOIN tbl_projection b ON a.projection_acronym=b.acronym"
-                       " ORDER BY coalesce(b.name,a.projection_acronym),a.description", 0, 0, &errmsg ) != SQLITE_OK
-       )
-    {
-      QMessageBox::critical( this, tr( "Private qgis.db" ), tr( "Update of view in private qgis.db failed.\n%1" ).arg( QString::fromUtf8( errmsg ) ) );
-      sqlite3_free( errmsg );
-      sqlite3_close( db );
-      return false;
-    }
-
-    sqlite3_close( db );
-  }
-  return true;
 }
 
 void QgisApp::createMapTips()
