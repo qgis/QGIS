@@ -83,6 +83,9 @@ class QgsMapTool : QObject
     /** Return associated button with map tool or NULL if no button is associated */
     QAbstractButton* button();
 
+    /** Set a user defined cursor */
+    virtual void setCursor(QCursor cursor);    
+
     /** Check whether this MapTool performs a zoom or pan operation.
      * If it does, we will be able to perform the zoom  and then
      * resume operations with the original / previously used tool.*/
