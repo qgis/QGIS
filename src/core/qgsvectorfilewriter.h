@@ -154,6 +154,9 @@ class CORE_EXPORT QgsVectorFileWriter
 
     double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
     void setSymbologyScaleDenominator( double d ) { mSymbologyScaleDenominator = d; }
+    
+    /**Returns OGRLayer used to begin and commit transactions on database*/
+    OGRLayerH getLayer() { return mLayer; }
 
   protected:
     //! @note not available in python bindings
