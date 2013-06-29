@@ -115,7 +115,15 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
 
   for ( int i = 0; i < values.size(); i++ )
   {
-    QStandardItem *myItem = new QStandardItem( values[i].isNull() ? nullValue : values[i].toString() );
+    QString value;
+    if ( values[i].isNull() )
+      value = nullValue;
+    else if ( values[i].type() == QVariant::Date && mLayer->providerType() == "ogr" && mLayer->storageType() == "ESRI Shapefile" )
+      value = values[i].toDate().toString( "yyyy/MM/dd" );
+    else
+      value = values[i].toString();
+
+    QStandardItem *myItem = new QStandardItem( value );
     myItem->setEditable( false );
     myItem->setData( values[i], Qt::UserRole + 1 );
     mModelValues->insertRow( mModelValues->rowCount(), myItem );
@@ -307,6 +315,8 @@ void QgsQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
   QVariant value = mModelValues->data( index, Qt::UserRole + 1 );
   if ( value.isNull() )
     txtSQL->insertPlainText( "NULL" );
+  else if ( value.type() == QVariant::Date && mLayer->providerType() == "ogr" && mLayer->storageType() == "ESRI Shapefile" )
+    txtSQL->insertPlainText( "'" + value.toDate().toString( "yyyy/MM/dd" ) + "'" );
   else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong )
     txtSQL->insertPlainText( value.toString() );
   else

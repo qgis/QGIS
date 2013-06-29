@@ -2019,6 +2019,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     }
     else
     {
+      QgsMessageLog::logMessage( QObject::tr( "field %1 with unsupported type %2 skipped" ).arg( it->first ).arg( fields[0] ), QObject::tr( "OGR" ) );
       continue;
     }
 

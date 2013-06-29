@@ -17,7 +17,6 @@
 
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsapplication.h"
-//#include "qgisapp.h" // <- for theme icons
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
@@ -38,22 +37,24 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/NewVectorLayer/geometry" ).toByteArray() );
 
-  // TODO: do it without QgisApp
-  //mAddAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
-  //mRemoveAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionDeleteAttribute.png" ) );
+  mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.png" ) );
+  mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.png" ) );
   mTypeBox->addItem( tr( "Text data" ), "String" );
   mTypeBox->addItem( tr( "Whole number" ), "Integer" );
   mTypeBox->addItem( tr( "Decimal number" ), "Real" );
+  mTypeBox->addItem( tr( "Date" ), "Date" );
 
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
   mPrecision->setValidator( new QIntValidator( 0, 15, this ) );
 
   mPointRadioButton->setChecked( true );
   mFileFormatComboBox->addItem( tr( "ESRI Shapefile" ), "ESRI Shapefile" );
-  /* Disabled until provider properly supports editing the created file formats */
-  //mFileFormatComboBox->addItem( tr( "Comma Separated Value" ), "Comma Separated Value" );
-  //mFileFormatComboBox->addItem(tr( "GML"), "GML" );
-  //mFileFormatComboBox->addItem(tr( "Mapinfo File" ), "Mapinfo File" );
+#if 0
+  // Disabled until provider properly supports editing the created file formats
+  mFileFormatComboBox->addItem( tr( "Comma Separated Value" ), "Comma Separated Value" );
+  mFileFormatComboBox->addItem( tr( "GML" ), "GML" );
+  mFileFormatComboBox->addItem( tr( "Mapinfo File" ), "Mapinfo File" );
+#endif
   if ( mFileFormatComboBox->count() == 1 )
   {
     mFileFormatComboBox->setVisible( false );
