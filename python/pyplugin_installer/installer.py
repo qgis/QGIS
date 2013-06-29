@@ -418,6 +418,7 @@ class QgsPluginInstaller(QObject):
   def addRepository(self):
     """ add new repository connection """
     dlg = QgsPluginInstallerRepositoryDialog( iface.mainWindow() )
+    dlg.editParams.setText(repositories.urlParams())
     dlg.checkBoxEnabled.setCheckState(Qt.Checked)
     if not dlg.exec_():
       return
