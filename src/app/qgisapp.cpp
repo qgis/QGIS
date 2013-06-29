@@ -2657,10 +2657,17 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
       name.replace( path, "" );
     }
     // remove any : or " left over
-    if ( name.startsWith( ":" ) ) name.remove( 0, 1 );
-    if ( name.startsWith( "\"" ) ) name.remove( 0, 1 );
-    if ( name.endsWith( ":" ) ) name.chop( 1 );
-    if ( name.endsWith( "\"" ) ) name.chop( 1 );
+    if ( name.startsWith( ":" ) )
+      name.remove( 0, 1 );
+
+    if ( name.startsWith( "\"" ) )
+      name.remove( 0, 1 );
+
+    if ( name.endsWith( ":" ) )
+      name.chop( 1 );
+
+    if ( name.endsWith( "\"" ) )
+      name.chop( 1 );
 
     names << name;
     layers << QString( "%1|%2" ).arg( i ).arg( name );
@@ -6555,7 +6562,8 @@ void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRaster::ContrastEnhance
   }
 
   QgsRectangle myRectangle;
-  if ( visibleAreaOnly ) myRectangle = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( myRasterLayer, mMapCanvas->extent() );
+  if ( visibleAreaOnly )
+    myRectangle = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( myRasterLayer, mMapCanvas->extent() );
 
   myRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, theLimits, myRectangle );
 
@@ -7954,6 +7962,12 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     mActionLocalHistogramStretch->setEnabled( false );
     mActionFullHistogramStretch->setEnabled( false );
+    mActionLocalCumulativeCutStretch->setEnabled( false );
+    mActionFullCumulativeCutStretch->setEnabled( false );
+    mActionIncreaseBrightness->setEnabled( false );
+    mActionDecreaseBrightness->setEnabled( false );
+    mActionIncreaseContrast->setEnabled( false );
+    mActionDecreaseContrast->setEnabled( false );
     mActionZoomActualSize->setEnabled( false );
     mActionZoomToLayer->setEnabled( false );
     return;
@@ -7985,6 +7999,12 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     mActionLocalHistogramStretch->setEnabled( false );
     mActionFullHistogramStretch->setEnabled( false );
+    mActionLocalCumulativeCutStretch->setEnabled( false );
+    mActionFullCumulativeCutStretch->setEnabled( false );
+    mActionIncreaseBrightness->setEnabled( false );
+    mActionDecreaseBrightness->setEnabled( false );
+    mActionIncreaseContrast->setEnabled( false );
+    mActionDecreaseContrast->setEnabled( false );
     mActionZoomActualSize->setEnabled( false );
     mActionLabeling->setEnabled( true );
 
@@ -8132,6 +8152,14 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionLocalHistogramStretch->setEnabled( false );
       mActionFullHistogramStretch->setEnabled( false );
     }
+
+    mActionLocalCumulativeCutStretch->setEnabled( true );
+    mActionFullCumulativeCutStretch->setEnabled( true );
+    mActionIncreaseBrightness->setEnabled( true );
+    mActionDecreaseBrightness->setEnabled( true );
+    mActionIncreaseContrast->setEnabled( true );
+    mActionDecreaseContrast->setEnabled( true );
+
     mActionLayerSubsetString->setEnabled( false );
     mActionFeatureAction->setEnabled( false );
     mActionSelect->setEnabled( false );
