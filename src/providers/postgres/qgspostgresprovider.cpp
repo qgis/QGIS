@@ -1926,7 +1926,10 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
   {
     mConnectionRW->PQexecNR( "BEGIN" );
 
-    for ( QgsAttributeIds::const_iterator iter = ids.begin(); iter != ids.end(); ++iter )
+    QList<int> idsList = ids.values();
+    qSort( idsList.begin(), idsList.end(), qGreater<int>() );
+
+    for ( QList<int>::const_iterator iter = idsList.begin(); iter != idsList.end(); ++iter )
     {
       int index = *iter;
       if ( index < 0 || index >= mAttributeFields.count() )

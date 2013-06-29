@@ -1509,11 +1509,6 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
   return returnvalue;
 }
 
-static int moreThan( int a, int b )
-{
-  return a > b;
-}
-
 bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds& ids )
 {
   bool returnvalue = true;
@@ -1535,7 +1530,8 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds& ids )
     qry.finish();
 
     QList<int> idsList = ids.values();
-    qSort( idsList.begin(), idsList.end(), moreThan );
+    qSort( idsList.begin(), idsList.end(), qGreater<int>() );
+
     foreach ( int id, idsList )
     {
       const QgsField &fld = mAttributeFields.at( id );
