@@ -64,7 +64,7 @@ class QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNewSpatialiteL
     static QString quotedValue( QString value );
 
     QPushButton *mOkButton;
-    int mCrsId;
+    QString mCrsId;
 };
 
 #endif // QGSNEWVECTORLAYERDIALOG_H

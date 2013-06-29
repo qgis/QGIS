@@ -76,8 +76,7 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   QgsCoordinateReferenceSystem srs;
   srs.createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
   srs.validate();
-  bool ok;
-  mCrsId = srs.authid().split( ':' ).at( 1 ).toInt( &ok );
+  mCrsId = srs.authid();
   leSRID->setText( srs.authid() + " - " + srs.description() );
 
   pbnFindSRID->setEnabled( mDatabaseComboBox->count() );
@@ -210,7 +209,7 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
   // load up the srid table
   const char *pzTail;
   sqlite3_stmt *ppStmt;
-  QString sql = "select auth_srid, auth_name, ref_sys_name from spatial_ref_sys order by srid asc";
+  QString sql = "select auth_name || ':' || auth_srid from spatial_ref_sys order by srid asc";
 
   QSet<QString> myCRSs;
 
@@ -221,8 +220,7 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
     // get the first row of the result set
     while ( sqlite3_step( ppStmt ) == SQLITE_ROW )
     {
-      myCRSs.insert( QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 1 ) ) +
-                     ":" + QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 0 ) ) );
+      myCRSs.insert( QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 0 ) ) );
     }
   }
   else
@@ -244,14 +242,13 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
   QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
   mySelector->setMessage();
   mySelector->setOgcWmsCrsFilter( myCRSs );
-  mySelector->setSelectedCrsId( mCrsId );
+  mySelector->setSelectedAuthId( mCrsId );
 
   if ( mySelector->exec() )
   {
     QgsCoordinateReferenceSystem srs;
     srs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
-    bool ok;
-    int crsId = srs.authid().split( ':' ).value( 1, QString::number( mCrsId ) ).toInt( &ok );
+    QString crsId = srs.authid();
     if ( crsId != mCrsId )
     {
       mCrsId = crsId;
@@ -375,7 +372,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
   QString sqlAddGeom = QString( "select AddGeometryColumn(%1,%2,%3,%4,2)" )
                        .arg( quotedValue( leLayerName->text() ) )
                        .arg( quotedValue( leGeometryColumn->text() ) )
-                       .arg( mCrsId )
+                       .arg( mCrsId.split( ':' ).value( 1, "0" ).toInt() )
                        .arg( quotedValue( selectedType() ) );
   QgsDebugMsg( sqlAddGeom ); // OK
 
