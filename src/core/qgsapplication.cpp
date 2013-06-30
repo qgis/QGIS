@@ -283,7 +283,7 @@ void QgsApplication::setPrefixPath( const QString thePrefixPath, bool useDefault
     ABISYM( mPrefixPath ).chop( 4 );
   }
 #endif
-  if ( useDefaultPaths )
+  if ( useDefaultPaths && !ABISYM( mRunningFromBuildDir ) )
   {
     setPluginPath( ABISYM( mPrefixPath ) + "/" + QString( QGIS_PLUGIN_SUBDIR ) );
     setPkgDataPath( ABISYM( mPrefixPath ) + "/" + QString( QGIS_DATA_SUBDIR ) );

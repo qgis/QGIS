@@ -223,28 +223,22 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Polygon" )
   {
-    QList<unsigned char*> wkbList;
-    QList<int> wkbSizeList;
-    mCurrentWKBFragments.push_back( wkbList );
-    mCurrentWKBFragmentSizes.push_back( wkbSizeList );
+    mCurrentWKBFragments.push_back( QList<unsigned char*>() );
+    mCurrentWKBFragmentSizes.push_back( QList<int>() );
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiPoint" )
   {
     mParseModeStack.push( QgsGml::multiPoint );
     //we need one nested list for intermediate WKB
-    QList<unsigned char*> wkbList;
-    QList<int> wkbSizeList;
-    mCurrentWKBFragments.push_back( wkbList );
-    mCurrentWKBFragmentSizes.push_back( wkbSizeList );
+    mCurrentWKBFragments.push_back( QList<unsigned char*>() );
+    mCurrentWKBFragmentSizes.push_back( QList<int>() );
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiLineString" )
   {
     mParseModeStack.push( QgsGml::multiLine );
     //we need one nested list for intermediate WKB
-    QList<unsigned char*> wkbList;
-    QList<int> wkbSizeList;
-    mCurrentWKBFragments.push_back( wkbList );
-    mCurrentWKBFragmentSizes.push_back( wkbSizeList );
+    mCurrentWKBFragments.push_back( QList<unsigned char*>() );
+    mCurrentWKBFragmentSizes.push_back( QList<int>() );
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiPolygon" )
   {
@@ -381,8 +375,8 @@ void QgsGml::endElement( const XML_Char* el )
       }
       if ( !mCurrentWKBFragments.isEmpty() )
       {
-        mCurrentWKBFragments.begin()->push_back( wkb );
-        mCurrentWKBFragmentSizes.begin()->push_back( wkbSize );
+        mCurrentWKBFragments.last().push_back( wkb );
+        mCurrentWKBFragmentSizes.last().push_back( wkbSize );
       }
       else
       {
@@ -428,8 +422,8 @@ void QgsGml::endElement( const XML_Char* el )
       }
       if ( !mCurrentWKBFragments.isEmpty() )
       {
-        mCurrentWKBFragments.begin()->push_back( wkb );
-        mCurrentWKBFragmentSizes.begin()->push_back( wkbSize );
+        mCurrentWKBFragments.last().push_back( wkb );
+        mCurrentWKBFragmentSizes.last().push_back( wkbSize );
       }
       else
       {
@@ -456,8 +450,8 @@ void QgsGml::endElement( const XML_Char* el )
     }
     if ( !mCurrentWKBFragments.isEmpty() )
     {
-      mCurrentWKBFragments.begin()->push_back( wkb );
-      mCurrentWKBFragmentSizes.begin()->push_back( wkbSize );
+      mCurrentWKBFragments.last().push_back( wkb );
+      mCurrentWKBFragmentSizes.last().push_back( wkbSize );
     }
     else
     {
