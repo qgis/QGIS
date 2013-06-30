@@ -59,8 +59,8 @@ class GdalToolsBasePluginWidget:
       if not self.initialized:
         self.connect(Utils.LayerRegistry.instance(), SIGNAL("layersChanged"), self.onLayersChanged)
         self.onLayersChanged()
+        self.initialized = True
         self.someValueChanged()
-      self.initialized = True
 
   def exec_(self):
       self.initialize()
