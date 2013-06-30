@@ -677,6 +677,9 @@ void QgsGrassProvider::loadAttributes( GLAYER &layer )
 
 void QgsGrassProvider::closeLayer( int layerId )
 {
+  if ( layerId < 0 )
+    return;
+
   QgsDebugMsg( QString( "Close layer %1 nUsers = %2" ).arg( layerId ).arg( mLayers[layerId].nUsers ) );
 
   // TODO: not tested because delete is never used for providers
