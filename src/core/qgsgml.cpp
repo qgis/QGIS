@@ -128,8 +128,21 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
     QCoreApplication::processEvents();
   }
 
+  QNetworkReply::NetworkError replyError = reply->error();
+  QString replyErrorString = reply->errorString();
+
   delete reply;
   delete progressDialog;
+
+  if ( replyError )
+  {
+    QgsMessageLog::logMessage(
+      tr( "GML Getfeature network request failed with error: %1" ).arg( replyErrorString ),
+      tr( "Network" ),
+      QgsMessageLog::CRITICAL
+    );
+    return 1;
+  }
 
   if ( *mWkbType != QGis::WKBNoGeometry )
   {
