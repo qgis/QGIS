@@ -875,7 +875,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   {
     if ( OGRERR_NONE != OGR_L_CommitTransaction( writer->mLayer ) )
     {
-      QgsDebugMsg( "Error while commiting transaction on OGRLayer." );
+      QgsDebugMsg( "Error while committing transaction on OGRLayer." );
     }
   }
 

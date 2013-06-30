@@ -208,7 +208,7 @@ void HeatmapGui::restoreSettings( bool usingLastInputLayer )
 
 void HeatmapGui::saveSettings()
 {
-  // Save persistant settings
+  // Save persistent settings
   QSettings s;
   s.setValue( "/Heatmap/lastFormat", QVariant( formatCombo->currentIndex() ) );
 
