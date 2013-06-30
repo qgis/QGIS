@@ -17,7 +17,6 @@
 #include "qgsowsprovider.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
-//#include "qgsowssourceselect.h"
 #include "qgsowsconnection.h"
 #include "qgsnewhttpconnection.h"
 
@@ -40,7 +39,6 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
 {
   QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> children;
-
   QVector<QgsDataItem*> serviceItems;
 
   int layerCount = 0;
@@ -49,7 +47,8 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
   {
     QgsDebugMsg( "Add connection for provider " + key );
     QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
-    if ( !library ) continue;
+    if ( !library )
+      continue;
 
     dataItem_t * dItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
     if ( !dItem )
@@ -59,7 +58,10 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
     }
 
     QgsDataItem *item = dItem( mPath, this );  // empty path -> top level
-    if ( !item ) continue;
+    if ( !item )
+      continue;
+
+    item->populate();
 
     layerCount += item->rowCount();
     if ( item->rowCount() > 0 )
@@ -123,24 +125,24 @@ QList<QAction*> QgsOWSConnectionItem::actions()
 
 void QgsOWSConnectionItem::editConnection()
 {
-  /*
-    QgsNewHttpConnection nc( 0, "/Qgis/connections-ows/", mName );
+#if 0
+  QgsNewHttpConnection nc( 0, "/Qgis/connections-ows/", mName );
 
-    if ( nc.exec() )
-    {
-      // the parent should be updated
-      mParent->refresh();
-    }
-  */
+  if ( nc.exec() )
+  {
+    // the parent should be updated
+    mParent->refresh();
+  }
+#endif
 }
 
 void QgsOWSConnectionItem::deleteConnection()
 {
-  /*
-    QgsOWSConnection::deleteConnection( "OWS", mName );
-    // the parent should be updated
-    mParent->refresh();
-  */
+#if 0
+  QgsOWSConnection::deleteConnection( "OWS", mName );
+  // the parent should be updated
+  mParent->refresh();
+#endif
 }
 
 
@@ -159,7 +161,7 @@ QgsOWSRootItem::~QgsOWSRootItem()
 {
 }
 
-QVector<QgsDataItem*>QgsOWSRootItem::createChildren()
+QVector<QgsDataItem*> QgsOWSRootItem::createChildren()
 {
   QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> connections;
@@ -192,22 +194,23 @@ QList<QAction*> QgsOWSRootItem::actions()
 {
   QList<QAction*> lst;
 
-  /*
+#if 0
   QAction* actionNew = new QAction( tr( "New Connection..." ), this );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
-  */
+#endif
+
   return lst;
 }
 
 
 QWidget * QgsOWSRootItem::paramWidget()
 {
-  /*
+#if 0
   QgsOWSSourceSelect *select = new QgsOWSSourceSelect( 0, 0, true, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
-  */
+#endif
   return 0;
 }
 void QgsOWSRootItem::connectionsChanged()
@@ -217,14 +220,14 @@ void QgsOWSRootItem::connectionsChanged()
 
 void QgsOWSRootItem::newConnection()
 {
-  /*
+#if 0
   QgsNewHttpConnection nc( 0, "/Qgis/connections-ows/" );
 
   if ( nc.exec() )
   {
     refresh();
   }
-  */
+#endif
 }
 
 

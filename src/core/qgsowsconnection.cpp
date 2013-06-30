@@ -43,15 +43,6 @@ QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & 
 
   QSettings settings;
 
-  // WMS (providers/wfs/qgswmsconnection.cpp):
-  //QString key = "/Qgis/connections-wms/" + mConnName;
-  //QString credentialsKey = "/Qgis/WMS/" + mConnName;
-
-  // WFS (providers/wfs/qgswfsconnection.cpp):
-  //QString key = "/Qgis/connections-wfs/" + mConnName + "/url";
-
-  // WCS - there was no WCS before
-
   QString key = "/Qgis/connections-" + mService.toLower() + "/" + mConnName;
   QString credentialsKey = "/Qgis/" + mService + "/" + mConnName;
 
@@ -113,8 +104,9 @@ QgsDataSourceURI QgsOWSConnection::uri()
 {
   return mUri;
 }
-/*
-QgsDataProvider * QgsOWSConnection::provider( )
+
+#if 0
+QgsDataProvider * QgsOWSConnection::provider()
 {
   // TODO: remove completely from this class?
 
@@ -128,13 +120,12 @@ QgsDataProvider * QgsOWSConnection::provider( )
 
   return provider;
 }
-*/
+#endif
 
 
 QStringList QgsOWSConnection::connectionList( const QString & theService )
 {
   QSettings settings;
-  //settings.beginGroup( "/Qgis/connections-wms" );
   settings.beginGroup( "/Qgis/connections-" + theService.toLower() );
   return settings.childGroups();
 }
@@ -142,22 +133,18 @@ QStringList QgsOWSConnection::connectionList( const QString & theService )
 QString QgsOWSConnection::selectedConnection( const QString & theService )
 {
   QSettings settings;
-  //return settings.value( "/Qgis/connections-wms/selected" ).toString();
   return settings.value( "/Qgis/connections-" + theService.toLower() + "/selected" ).toString();
 }
 
 void QgsOWSConnection::setSelectedConnection( const QString & theService, const QString & name )
 {
   QSettings settings;
-  //settings.setValue( "/Qgis/connections-wms/selected", name );
   settings.setValue( "/Qgis/connections-" + theService.toLower() + "/selected", name );
 }
 
 void QgsOWSConnection::deleteConnection( const QString & theService, const QString & name )
 {
   QSettings settings;
-  //settings.remove( "/Qgis/connections-wms/" + name );
-  //settings.remove( "/Qgis/WMS/" + name );
   settings.remove( "/Qgis/connections-" + theService.toLower() + "/" + name );
   settings.remove( "/Qgis/" + theService + "/" + name );
 }
