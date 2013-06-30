@@ -10,4 +10,4 @@ ParameterBoolean|-f|Use formfeeds between pages|True
 ParameterBoolean|-e|Scientific format|True
 ParameterBoolean|-n|Filter out all no data cells|True
 ParameterBoolean|-N|Filter out cells where all layers have no data|True
-OutputHTML|output|Output report file
+OutputHTML|html|Output report file
