@@ -125,7 +125,7 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   // Get the item
   QModelIndex idx = mProxyModel->mapToSource( index );
   QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>( mModel->itemFromIndex( idx ) );
-  if ( item == 0 )
+  if ( !item )
     return;
 
   if ( item->getItemType() != QgsExpressionItem::Field )
@@ -133,9 +133,9 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
     mValueListWidget->clear();
   }
 
-  btnLoadAll->setVisible( item->getItemType() == QgsExpressionItem::Field );
-  btnLoadSample->setVisible( item->getItemType() == QgsExpressionItem::Field );
-  mValueGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field );
+  btnLoadAll->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
+  btnLoadSample->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
+  mValueGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
 
   // Show the help for the current item.
   QString help = loadFunctionHelp( item );
@@ -369,7 +369,7 @@ void QgsExpressionBuilderWidget::showContextMenu( const QPoint & pt )
   if ( !item )
     return;
 
-  if ( item->getItemType() == QgsExpressionItem::Field )
+  if ( item->getItemType() == QgsExpressionItem::Field && mLayer )
   {
     QMenu* menu = new QMenu( this );
     menu->addAction( tr( "Load top 10 unique values" ), this, SLOT( loadSampleValues() ) );

@@ -3,3 +3,7 @@ Contains a list of fields from the layer.  Sample values can also be accessed vi
 <br><br>
 Select the field name from the list then right-click to access context menu with options to load sample values from the selected field.
 
+<p><h4>Note:</h4>
+Loading field values from WFS layers isn't supported, before the layer is
+actually inserted, ie. when building queries.
+</p>

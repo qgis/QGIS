@@ -2,3 +2,8 @@
 Double click to add field name to expression string.
 <br><br>
 Right-Click on field name to open context menu sample value loading options.
+
+<p><h4>Note:</h4>
+Loading field values from WFS layers isn't supported, before the layer is
+actually inserted, ie. when building queries.
+</p>

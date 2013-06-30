@@ -91,9 +91,9 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     void capabilitiesReplyFinished();
     void on_btnSave_clicked();
     void on_btnLoad_clicked();
-    void on_treeWidget_itemDoubleClicked( const QModelIndex & index );
-    void on_treeWidget_currentRowChanged( const QModelIndex & current, const QModelIndex & previous );
-    void on_mBuildQueryButton_clicked();
+    void treeWidgetItemDoubleClicked( const QModelIndex & index );
+    void treeWidgetCurrentRowChanged( const QModelIndex & current, const QModelIndex & previous );
+    void buildQueryButtonClicked();
     void filterChanged( QString text );
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }

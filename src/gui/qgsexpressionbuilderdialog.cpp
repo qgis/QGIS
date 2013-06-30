@@ -21,8 +21,8 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, Q
 {
   setupUi( this );
 
-  QPushButton* okButuon = buttonBox->button( QDialogButtonBox::Ok );
-  connect( builder, SIGNAL( expressionParsed( bool ) ), okButuon, SLOT( setEnabled( bool ) ) );
+  QPushButton* okButton = buttonBox->button( QDialogButtonBox::Ok );
+  connect( builder, SIGNAL( expressionParsed( bool ) ), okButton, SLOT( setEnabled( bool ) ) );
 
   builder->setLayer( layer );
   builder->setExpressionText( startText );
