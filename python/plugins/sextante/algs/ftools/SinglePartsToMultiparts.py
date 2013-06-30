@@ -84,7 +84,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
                 for inFeat in features:
                     atMap = inFeat.attributes()
                     idVar = atMap[index]
-                    if idVar.strip() == i.strip():
+                    if unicode(idVar).strip() == unicode(i).strip():
                         if first:
                             attrs = atMap
                             print attrs

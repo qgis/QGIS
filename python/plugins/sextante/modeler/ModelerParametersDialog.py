@@ -735,7 +735,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             except:
                 return False
         else:
-            value = widget.itemData(widget.currentIndex()).toPyObject()
+            value = widget.itemData(widget.currentIndex())
             self.params[param.name] = value
         return True
 
@@ -756,7 +756,7 @@ class ModelerParametersDialog(QtGui.QDialog):
                 return False
             self.values[name] = s
         else:
-            value = widget.itemData(widget.currentIndex()).toPyObject()
+            value = widget.itemData(widget.currentIndex())
             self.params[param.name] = value
         return True
 
