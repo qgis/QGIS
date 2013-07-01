@@ -131,8 +131,8 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     void on_browseButton_clicked();
     void on_outputRasterLineEdit_editingFinished();
     void on_advancedGroupBox_toggled( bool enabled );
-    void on_rowsSpinBox_editingFinished();
-    void on_columnsSpinBox_editingFinished();
+    void on_rowsSpinBox_valueChanged();
+    void on_columnsSpinBox_valueChanged();
     void on_cellXLineEdit_editingFinished();
     void on_cellYLineEdit_editingFinished();
     void on_radiusFieldCombo_currentIndexChanged( int index );
