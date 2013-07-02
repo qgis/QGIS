@@ -910,7 +910,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionIdentify.png</normaloff>:/images/themes/default/mActionIdentify.png</iconset>
+     <normaloff>:/images/themes/default/mActionIdentify.svg</normaloff>:/images/themes/default/mActionIdentify.svg</iconset>
    </property>
    <property name="text">
     <string>Identify Features</string>

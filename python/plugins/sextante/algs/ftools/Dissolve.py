@@ -92,7 +92,7 @@ class Dissolve(GeoAlgorithm):
                     progress.setPercentage(int(nElement/nFeat * 100))
                     atMap = inFeat.attributes()
                     tempItem = atMap[ field ]
-                    if tempItem.strip() == item.strip():
+                    if unicode(tempItem).strip() == unicode(item).strip():
                         if first:
                             QgsGeometry( inFeat.geometry() )
                             tmpInGeom = QgsGeometry( inFeat.geometry() )
