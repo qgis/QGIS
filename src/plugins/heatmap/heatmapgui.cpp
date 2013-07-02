@@ -285,7 +285,7 @@ void HeatmapGui::on_rowsSpinBox_valueChanged()
   mRows = rowsSpinBox->value();
   mYcellsize = mBBox.height() / mRows;
   mXcellsize = mYcellsize;
-  mColumns = max( round( mBBox.width() / mXcellsize ), 1 );
+  mColumns = max( qRound( mBBox.width() / mXcellsize ), 1 );
 
   updateSize();
 }
@@ -295,7 +295,7 @@ void HeatmapGui::on_columnsSpinBox_valueChanged()
   mColumns = columnsSpinBox->value();
   mXcellsize = mBBox.width() / mColumns;
   mYcellsize = mXcellsize;
-  mRows = max( round( mBBox.height() / mYcellsize ), 1 );
+  mRows = max( qRound( mBBox.height() / mYcellsize ), 1 );
 
   updateSize();
 }
@@ -304,8 +304,8 @@ void HeatmapGui::on_cellXLineEdit_editingFinished()
 {
   mXcellsize = cellXLineEdit->text().toDouble();
   mYcellsize = mXcellsize;
-  mRows = max( round( mBBox.height() / mYcellsize ), 1 );
-  mColumns = max( round( mBBox.width() / mXcellsize ), 1 );
+  mRows = max( qRound( mBBox.height() / mYcellsize ), 1 );
+  mColumns = max( qRound( mBBox.width() / mXcellsize ), 1 );
 
   updateSize();
 }
@@ -314,8 +314,8 @@ void HeatmapGui::on_cellYLineEdit_editingFinished()
 {
   mYcellsize = cellYLineEdit->text().toDouble();
   mXcellsize = mYcellsize;
-  mRows = max( round( mBBox.height() / mYcellsize ), 1 );
-  mColumns = max( round( mBBox.width() / mXcellsize ), 1 );
+  mRows = max( qRound( mBBox.height() / mYcellsize ), 1 );
+  mColumns = max( qRound( mBBox.width() / mXcellsize ), 1 );
 
   updateSize();
 }
