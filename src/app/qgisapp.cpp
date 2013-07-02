@@ -1383,9 +1383,40 @@ void QgisApp::createToolBars()
 
   mToolbarMenu->addActions( toolbarMenuActions );
 
+  QToolButton *bt;
+
+  // add layers button
+
+  bt = new QToolButton( mAttributesToolBar );
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  QList<QAction*> addLayerActions;
+  addLayerActions << mActionAddOgrLayer << mActionAddRasterLayer << mActionAddPgLayer
+  << mActionAddSpatiaLiteLayer << mActionAddMssqlLayer << mActionAddOracleLayer
+  << mActionAddWmsLayer << mActionAddWcsLayer << mActionAddWfsLayer << mActionAddDelimitedText;
+  bt->addActions( addLayerActions );
+
+  QAction* defAddLayerAction = mActionAddOgrLayer;
+  switch ( settings.value( "/UI/addLAyerTool", 0 ).toInt() )
+  {
+    case 0: defAddLayerAction = mActionAddOgrLayer; break;
+    case 1: defAddLayerAction = mActionAddRasterLayer; break;
+    case 2: defAddLayerAction = mActionAddPgLayer; break;
+    case 3: defAddLayerAction = mActionAddSpatiaLiteLayer; break;
+    case 4: defAddLayerAction = mActionAddMssqlLayer; break;
+    case 5: defAddLayerAction = mActionAddOracleLayer; break;
+    case 6: defAddLayerAction = mActionAddWmsLayer; break;
+    case 7: defAddLayerAction = mActionAddWcsLayer; break;
+    case 8: defAddLayerAction = mActionAddWfsLayer; break;
+    case 9: defAddLayerAction = mActionAddDelimitedText; break;
+  }
+  bt->setDefaultAction( defAddLayerAction );
+  QAction* addLayerAction = mLayerToolBar->insertWidget( mActionNewVectorLayer, bt );
+  addLayerAction->setObjectName( "ActionAddLayer" );
+  connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+
   // select tool button
 
-  QToolButton *bt = new QToolButton( mAttributesToolBar );
+  bt = new QToolButton( mAttributesToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   QList<QAction*> selectActions;
   selectActions << mActionSelect << mActionSelectRectangle << mActionSelectPolygon
@@ -9006,6 +9037,26 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "UI/annotationTool", 3 );
   else if ( action == mActionAnnotation )
     settings.setValue( "/UI/annotationTool", 4 );
+  else if ( action == mActionAddOgrLayer)
+    settings.setValue( "/UI/addLAyerTool", 0 );
+  else if ( action == mActionAddRasterLayer)
+      settings.setValue( "/UI/addLAyerTool", 1 );
+  else if ( action == mActionAddPgLayer)
+      settings.setValue( "/UI/addLAyerTool", 2 );
+  else if ( action == mActionAddSpatiaLiteLayer)
+      settings.setValue( "/UI/addLAyerTool", 3 );
+  else if ( action == mActionAddMssqlLayer)
+      settings.setValue( "/UI/addLAyerTool", 4 );
+  else if ( action == mActionAddOracleLayer)
+      settings.setValue( "/UI/addLAyerTool", 5 );
+  else if ( action == mActionAddWmsLayer)
+      settings.setValue( "/UI/addLAyerTool", 6 );
+  else if ( action == mActionAddWcsLayer)
+      settings.setValue( "/UI/addLAyerTool", 7 );
+  else if ( action == mActionAddWfsLayer)
+      settings.setValue( "/UI/addLAyerTool", 8 );
+  else if ( action == mActionAddDelimitedText)
+      settings.setValue( "/UI/addLAyerTool", 9 );
   bt->setDefaultAction( action );
 }
 
