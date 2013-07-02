@@ -249,6 +249,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionCutFeatures() { return mActionCutFeatures; }
     QAction *actionCopyFeatures() { return mActionCopyFeatures; }
     QAction *actionPasteFeatures() { return mActionPasteFeatures; }
+    QAction *actionPasteAsNewVector() { return mActionPasteAsNewVector; }
+    QAction *actionPasteAsNewMemoryVector() { return mActionPasteAsNewMemoryVector; }
     QAction *actionDeleteSelected() { return mActionDeleteSelected; }
     QAction *actionAddFeature() { return mActionAddFeature; }
     QAction *actionMoveFeature() { return mActionMoveFeature; }
@@ -533,6 +535,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
                                 (defaults to the active layer on the legend)
      */
     void editPaste( QgsMapLayer * destinationLayer = 0 );
+    //! copies features on the clipboard to a new vector layer
+    void pasteAsNewVector();
+    //! copies features on the clipboard to a new memory vector layer
+    void pasteAsNewMemoryVector();
     //! copies style of the active layer to the clipboard
     /**
        \param sourceLayer  The layer where the style will be taken from
@@ -1212,7 +1218,13 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     /**Deletes all the composer objects and clears mPrintComposers*/
     void deletePrintComposers();
 
-    void saveAsVectorFileGeneral( bool saveOnlySelection );
+    void saveAsVectorFileGeneral( bool saveOnlySelection, QgsVectorLayer* vlayer = 0, bool symbologyOption = true );
+
+    /** Paste features from clipboard into a new memory layer.
+     *  If no features are in clipboard an empty layer is returned.
+     *  @return pointer to a new layer or 0 if failed
+     */
+    QgsVectorLayer * pasteToNewMemoryVector();
 
     /**Returns all annotation items in the canvas*/
     QList<QgsAnnotationItem*> annotationItems();

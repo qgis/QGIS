@@ -29,8 +29,26 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget* par
     : QDialog( parent, fl )
     , mCRS( srsid )
 {
-  setupUi( this );
+  setup();
+}
 
+QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, int options, QWidget* parent, Qt::WFlags fl )
+    : QDialog( parent, fl )
+    , mCRS( srsid )
+{
+  setup();
+  if ( !( options & Symbology ) )
+  {
+    mSymbologyExportLabel->hide();
+    mSymbologyExportComboBox->hide();
+    mScaleLabel->hide();
+    mScaleSpinBox->hide();
+  }
+}
+
+void QgsVectorLayerSaveAsDialog::setup()
+{
+  setupUi( this );
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/VectorLayerSaveAs/geometry" ).toByteArray() );
   QMap<QString, QString> map = QgsVectorFileWriter::ogrDriverList();
@@ -57,7 +75,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget* par
   mCRSSelection->clear();
   mCRSSelection->addItems( QStringList() << tr( "Layer CRS" ) << tr( "Project CRS" ) << tr( "Selected CRS" ) );
 
-  QgsCoordinateReferenceSystem srs( srsid, QgsCoordinateReferenceSystem::InternalCrsId );
+  QgsCoordinateReferenceSystem srs( mCRS, QgsCoordinateReferenceSystem::InternalCrsId );
   leCRS->setText( srs.description() );
 
   mEncodingComboBox->setCurrentIndex( idx );
