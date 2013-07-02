@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -148,19 +148,25 @@
      <addaction name="mActionNewVectorLayer"/>
      <addaction name="mActionNewSpatialiteLayer"/>
     </widget>
+    <widget class="QMenu" name="menuAdd_Layer">
+     <property name="title">
+      <string>Add Layer</string>
+     </property>
+     <addaction name="mActionAddOgrLayer"/>
+     <addaction name="mActionAddRasterLayer"/>
+     <addaction name="mActionAddPgLayer"/>
+     <addaction name="mActionAddSpatiaLiteLayer"/>
+     <addaction name="mActionAddMssqlLayer"/>
+     <addaction name="mActionAddOracleLayer"/>
+     <addaction name="mActionAddWmsLayer"/>
+     <addaction name="mActionAddWcsLayer"/>
+     <addaction name="mActionAddWfsLayer"/>
+     <addaction name="mActionAddDelimitedText"/>
+    </widget>
     <addaction name="mNewLayerMenu"/>
+    <addaction name="menuAdd_Layer"/>
     <addaction name="mActionEmbedLayers"/>
-    <addaction name="mActionAddOgrLayer"/>
-    <addaction name="mActionAddRasterLayer"/>
-    <addaction name="mActionAddPgLayer"/>
-    <addaction name="mActionAddSpatiaLiteLayer"/>
-    <addaction name="mActionAddMssqlLayer"/>
-    <addaction name="mActionAddOracleLayer"/>
-    <addaction name="mActionAddWmsLayer"/>
     <addaction name="mActionAddLayerSeparator"/>
-    <addaction name="mActionAddWcsLayer"/>
-    <addaction name="mActionAddWfsLayer"/>
-    <addaction name="mActionAddDelimitedText"/>
     <addaction name="separator"/>
     <addaction name="mActionCopyStyle"/>
     <addaction name="mActionPasteStyle"/>
@@ -279,16 +285,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionAddOgrLayer"/>
-   <addaction name="mActionAddRasterLayer"/>
-   <addaction name="mActionAddPgLayer"/>
-   <addaction name="mActionAddSpatiaLiteLayer"/>
-   <addaction name="mActionAddMssqlLayer"/>
-   <addaction name="mActionAddOracleLayer"/>
-   <addaction name="mActionAddWmsLayer"/>
-   <addaction name="mActionAddWcsLayer"/>
-   <addaction name="mActionAddWfsLayer"/>
-   <addaction name="mActionAddDelimitedText"/>
    <addaction name="mActionNewVectorLayer"/>
    <addaction name="mActionRemoveLayer"/>
   </widget>
