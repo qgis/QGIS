@@ -25,6 +25,7 @@ from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.outputs.OutputVector import OutputVector
 from sextante.core.QGisLayers import QGisLayers
+from sextante.parameters.ParameterCrs import ParameterCrs
 
 
 class mmqgisx_delete_columns_algorithm(GeoAlgorithm):
@@ -381,6 +382,7 @@ class mmqgisx_grid_algorithm(GeoAlgorithm):
 	CENTERY = "CENTERY"
 	GRIDTYPE = "GRIDTYPE"
 	SAVENAME = "SAVENAME"
+	CRS = "CRS"
 
 	def defineCharacteristics(self):
 		self.name = "Create grid"
@@ -395,6 +397,7 @@ class mmqgisx_grid_algorithm(GeoAlgorithm):
 		self.gridtype_options = ["Rectangle (line)","Rectangle (polygon)","Diamond (polygon)","Hexagon (polygon)"]
 		self.addParameter(ParameterSelection(self.GRIDTYPE, "Grid type",
 			self.gridtype_options, default = 0))
+		self.addParameter(ParameterCrs(self.CRS, "CRS"))
 		self.addOutput(OutputVector(self.SAVENAME, "Output"))
 
 	#===========================================================================
@@ -413,6 +416,9 @@ class mmqgisx_grid_algorithm(GeoAlgorithm):
 		originy = centery - (height / 2.0)
 		gridtype = self.gridtype_options[self.getParameterValue(self.GRIDTYPE)]
 
+		crsId = self.getParameterValue(self.TARGET_CRS)
+		self.crs = QgsCoordinateReferenceSystem(crsId)
+        
 		if (hspacing <= 0) or (vspacing <= 0):
 			raise GeoAlgorithmExecutionException("Invalid grid spacing: " + unicode(hspacing) + " / " + unicode(vspacing))
 

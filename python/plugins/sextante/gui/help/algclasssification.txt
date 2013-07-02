@@ -117,7 +117,7 @@ qgis:fieldcalculator,USE_ORIGINAL_NAME,Vector/Table tools
 qgis:fixeddistancebuffer,USE_ORIGINAL_NAME,Vector/Geometry operations
 qgis:hublines,USE_ORIGINAL_NAME,Vector/Analysis
 qgis:intersection,USE_ORIGINAL_NAME,Vector/Overlay
-qgis:joinattributestable,USE_ORIGINAL_NAME,Vector/Selection
+qgis:joinattributestable,USE_ORIGINAL_NAME,Vector/Table tools
 qgis:lineintersections,USE_ORIGINAL_NAME,Vector/Lines
 qgis:linestopolygons,USE_ORIGINAL_NAME,Vector/Lines
 qgis:listuniquevalues,USE_ORIGINAL_NAME,Vector/Table tools
@@ -126,7 +126,6 @@ qgis:mergevectorlayers,USE_ORIGINAL_NAME,Vector/General tools
 qgis:multiparttosingleparts,USE_ORIGINAL_NAME,Vector/General tools
 qgis:nearestneighbouranalysis,USE_ORIGINAL_NAME,Vector/Points
 qgis:pointslayerfromtable,USE_ORIGINAL_NAME,Vector/Creation
-qgis:polygoncentroids,USE_ORIGINAL_NAME,Vector/Geometry operations
 qgis:polygonfromlayerextent,USE_ORIGINAL_NAME,Vector/Creation
 qgis:polygonstolines,USE_ORIGINAL_NAME,Vector/Polygons
 qgis:randomselection,USE_ORIGINAL_NAME,Vector/Selection
@@ -197,7 +196,6 @@ saga:coordinatetransformationgrid,USE_ORIGINAL_NAME,Raster/General tools
 saga:coordinatetransformationgridlist,USE_ORIGINAL_NAME,Raster/General tools
 saga:coordinatetransformationshapes,USE_ORIGINAL_NAME,Vector/General tools
 saga:coordinatetransformationshapeslist,USE_ORIGINAL_NAME,Vector/General tools
-saga:countpointsinpolygons,USE_ORIGINAL_NAME,Vector/Polygons
 saga:covereddistance,USE_ORIGINAL_NAME,Raster/Analysis
 saga:creategraticule,USE_ORIGINAL_NAME,Vector/Miscellaneous
 saga:croptodata,USE_ORIGINAL_NAME,Raster/General tools
