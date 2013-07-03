@@ -1676,7 +1676,7 @@ Ctl (Cmd) increments by 15 deg.</string>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mAction.png</normaloff>:/images/themes/default/mAction.png</iconset>
+     <normaloff>:/images/themes/default/mAction.svg</normaloff>:/images/themes/default/mAction.svg</iconset>
    </property>
    <property name="text">
     <string>Feature Action</string>

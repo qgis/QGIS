@@ -439,7 +439,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
         continue;
 
       QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << "" << action.name() );
-      twi->setIcon( 0, QgsApplication::getThemeIcon( "/mAction.png" ) );
+      twi->setIcon( 0, QgsApplication::getThemeIcon( "/mAction.svg" ) );
       twi->setData( 0, Qt::UserRole, "action" );
       twi->setData( 0, Qt::UserRole + 1, QVariant::fromValue( i ) );
       actionItem->addChild( twi );
@@ -769,7 +769,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
         continue;
 
       QgsFeatureAction *a = new QgsFeatureAction( action.name(), mFeatures[ featIdx ], vlayer, i, idx, this );
-      mActionPopup->addAction( QgsApplication::getThemeIcon( "/mAction.png" ), action.name(), a, SLOT( execute() ) );
+      mActionPopup->addAction( QgsApplication::getThemeIcon( "/mAction.svg" ), action.name(), a, SLOT( execute() ) );
     }
   }
 
