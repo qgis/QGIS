@@ -2896,7 +2896,7 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
                                  .arg( QgsOracleConn::quotedValue( tableName ) ) )
        || !qry.next() )
   {
-    errCause = QObject::tr( "Unable determine number of geometry columns of layer %1.%2: \n%3" )
+    errCause = QObject::tr( "Unable to determine number of geometry columns of layer %1.%2: \n%3" )
                .arg( ownerName )
                .arg( tableName )
                .arg( qry.lastError().text() );

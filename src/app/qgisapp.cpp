@@ -6160,7 +6160,7 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
     {
       msgBars.append( QgsMessageBar::createMessage(
                         tr( "Duplicate layer: " ),
-                        tr( "%1 (%2type unsupported)" )
+                        tr( "%1 (%2 type unsupported)" )
                         .arg( selectedLyr->name() )
                         .arg( !unSppType.isEmpty() ? QString( "'" ) + unSppType + "' " : "" ),
                         QgsApplication::getThemeIcon( "/mIconWarn.png" ),
@@ -6932,7 +6932,7 @@ bool QgisApp::saveDirty()
 
     // prompt user to save
     answer = QMessageBox::information( this, tr( "Save?" ),
-                                       tr( "Do you want to save the current project?%1" )
+                                       tr( "Do you want to save the current project? %1" )
                                        .arg( whyDirty ),
                                        QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard,
                                        hasUnsavedEdits ? QMessageBox::Cancel : QMessageBox::Save );

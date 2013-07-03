@@ -976,7 +976,7 @@ void QgsComposer::on_mActionExportAsImage_triggered()
       if (image.isNull())
       {
         QMessageBox::warning( 0, tr( "Memory Allocation Error" ),
-                                             tr( "Trying to create image #%1 ( %2x%3 @ %4dpi )"
+                                             tr( "Trying to create image #%1( %2x%3 @ %4dpi ) "
                                                  "may result in a memory overflow.\n"
                                                  "Please try a lower resolution or a smaller papersize" )
                                              .arg( i+1 ).arg( width ).arg( height ).arg ( dpi ),

@@ -443,7 +443,7 @@
      <item>
       <widget class="QToolButton" name="mFilterButton">
        <property name="toolTip">
-        <string>The filter defines, which features are currently shown in the list or on the table</string>
+        <string>The filter defines which features are currently shown in the list or on the table</string>
        </property>
        <property name="text">
         <string>Filter</string>
