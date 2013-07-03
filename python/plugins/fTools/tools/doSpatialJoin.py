@@ -123,7 +123,7 @@ class Dialog(QDialog, Ui_Dialog):
         provider2 = layer2.dataProvider()
 
         fieldList2 = ftools_utils.getFieldList(layer2)
-        fieldList = []
+        fieldList = QgsFields()
         if provider1.crs() != provider2.crs():
             QMessageBox.warning(self, self.tr("CRS warning!"), self.tr("Warning: Input layers have non-matching CRS.\nThis may cause unexpected results."))
         if not summary:
