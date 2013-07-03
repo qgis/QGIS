@@ -109,6 +109,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
   public:
     //! Constructor
     QgisApp( QSplashScreen *splash, bool restorePlugins = true, QWidget * parent = 0, Qt::WFlags fl = Qt::Window );
+    //! Constructor for unit tests
+    QgisApp( );
     //! Destructor
     ~QgisApp();
     /**
@@ -538,7 +540,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! copies features on the clipboard to a new vector layer
     void pasteAsNewVector();
     //! copies features on the clipboard to a new memory vector layer
-    void pasteAsNewMemoryVector();
+    QgsVectorLayer * pasteAsNewMemoryVector( const QString & theLayerName = QString() );
     //! copies style of the active layer to the clipboard
     /**
        \param sourceLayer  The layer where the style will be taken from

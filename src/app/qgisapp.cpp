@@ -738,7 +738,24 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
 } // QgisApp ctor
 
-
+QgisApp::QgisApp( )
+    : QMainWindow( 0, 0 )
+    , mOverviewMapCursor( 0 )
+    , mQgisInterface( 0 )
+    , mInternalClipboard( 0 )
+    , mpMaptip( 0 )
+    , mPythonUtils( 0 )
+    , mpGpsWidget( 0 )
+{
+  smInstance = this;
+  setupUi( this );
+  mInternalClipboard = new QgsClipboard;
+  mMapCanvas = new QgsMapCanvas();
+  mMapCanvas->freeze();
+  mMapLegend = new QgsLegend( mMapCanvas );
+  mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas );
+  // More tests may need more members to be initialized
+}
 
 QgisApp::~QgisApp()
 {
@@ -5564,24 +5581,29 @@ void QgisApp::pasteAsNewVector()
   delete layer;
 }
 
-void QgisApp::pasteAsNewMemoryVector()
+QgsVectorLayer * QgisApp::pasteAsNewMemoryVector( const QString & theLayerName )
 {
-  if ( mMapCanvas && mMapCanvas->isDrawing() ) return;
+  if ( mMapCanvas && mMapCanvas->isDrawing() ) return 0;
 
-  bool ok;
-  QString defaultName = tr( "Pasted" );
-  QString layerName = QInputDialog::getText( this, tr( "New memory layer name" ),
-                      tr( "Layer name" ), QLineEdit::Normal,
-                      defaultName, &ok );
-  if ( !ok ) return;
+  QString layerName = theLayerName;
 
   if ( layerName.isEmpty() )
   {
-    layerName = defaultName;
+    bool ok;
+    QString defaultName = tr( "Pasted" );
+    layerName = QInputDialog::getText( this, tr( "New memory layer name" ),
+                                       tr( "Layer name" ), QLineEdit::Normal,
+                                       defaultName, &ok );
+    if ( !ok ) return 0;
+
+    if ( layerName.isEmpty() )
+    {
+      layerName = defaultName;
+    }
   }
 
   QgsVectorLayer * layer = pasteToNewMemoryVector();
-  if ( !layer ) return;
+  if ( !layer ) return 0;
 
   layer->setLayerName( layerName );
 
@@ -5593,6 +5615,8 @@ void QgisApp::pasteAsNewMemoryVector()
   mMapCanvas->refresh();
 
   qApp->processEvents();
+
+  return layer;
 }
 
 QgsVectorLayer * QgisApp::pasteToNewMemoryVector()
@@ -5634,6 +5658,8 @@ QgsVectorLayer * QgisApp::pasteToNewMemoryVector()
 
   QString typeName = QString( QGis::featureType( wkbType ) ).replace( "WKB", "" );
 
+  QgsDebugMsg( QString( "output wkbType = %1 typeName = %2" ).arg( wkbType ).arg( typeName ) );
+
   QString message;
 
   if ( features.size() == 0 )
@@ -5668,7 +5694,14 @@ QgsVectorLayer * QgisApp::pasteToNewMemoryVector()
 
   foreach ( QgsField f, clipboard()->fields().toList() )
   {
-    layer->addAttribute( f );
+    if ( !layer->addAttribute( f ) )
+    {
+      QMessageBox::warning( this, tr( "Warning" ),
+                            tr( "Cannot create field %1 (%2,%3)" ).arg( f.name() ).arg( f.typeName() ).arg( QVariant::typeToName( f.type() ) ),
+                            QMessageBox::Ok );
+      delete layer;
+      return 0;
+    }
   }
 
   // Convert to multi if necessary
@@ -5678,8 +5711,6 @@ QgsVectorLayer * QgisApp::pasteToNewMemoryVector()
     if ( !feature.geometry() ) continue;
     QGis::WkbType type = QGis::flatType( feature.geometry()->wkbType() );
     if ( type == QGis::WKBUnknown || type == QGis::WKBNoGeometry ) continue;
-
-    QgsDebugMsg( QString( "type = %1" ).arg( type ) );
 
     if ( QGis::singleType( wkbType ) != QGis::singleType( type ) )
     {
@@ -5691,9 +5722,15 @@ QgsVectorLayer * QgisApp::pasteToNewMemoryVector()
       feature.geometry()->convertToMultiType();
     }
   }
-  layer->addFeatures( features );
-  layer->commitChanges();
+  if ( ! layer->addFeatures( features ) || ! layer->commitChanges() )
+  {
+    QgsDebugMsg( "Cannot add features or commit changes" );
+    delete layer;
+    return 0;
+  }
+  layer->removeSelection();
 
+  QgsDebugMsg( QString( "%1 features pasted to memory layer" ).arg( layer->featureCount() ) );
   return layer;
 }
 
