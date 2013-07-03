@@ -109,6 +109,11 @@ void QgsAttributeTypeDialog::setFieldEditable( bool editable )
   isFieldEditableCheckBox->setChecked( editable );
 }
 
+void QgsAttributeTypeDialog::setFieldEditableEnabled( bool enabled )
+{
+  isFieldEditableCheckBox->setEnabled( enabled );
+}
+
 void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )
 {
   labelOnTopCheckBox->setChecked( onTop );

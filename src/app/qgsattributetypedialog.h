@@ -101,6 +101,13 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
     void setFieldEditable( bool editable );
 
     /**
+     * Sets the enabled state of the "editable" checkbox
+     *
+     * @param enabled sets the enabled state of the checkbox
+     */
+    void setFieldEditableEnabled( bool enabled );
+
+    /**
      * Setter for checkbox to label on top
      * @param bool onTop
      */

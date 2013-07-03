@@ -494,6 +494,7 @@ void QgsFieldsProperties::attributeTypeDialog()
   attributeTypeDialog.setLabelOnTop( cfg.mLabelOnTop );
 
   attributeTypeDialog.setIndex( index, cfg.mEditType );
+  attributeTypeDialog.setFieldEditableEnabled( cfg.mEditableEnabled );
 
   if ( !attributeTypeDialog.exec() )
     return;
@@ -930,6 +931,7 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
     : mButton( NULL )
 {
   mEditable = layer->fieldEditable( idx );
+  mEditableEnabled = layer->pendingFields().fieldOrigin( idx ) != QgsFields::OriginJoin;
   mLabelOnTop = layer->labelOnTop( idx );
   mValueRelationData = layer->valueRelation( idx );
   mValueMap = layer->valueMap( idx );
