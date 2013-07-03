@@ -744,7 +744,7 @@ bool QgsStyleV2::group( StyleEntity type, QString name, int groupid )
   return runEmptyQuery( query );
 }
 
-QStringList QgsStyleV2::findSymbols( QString qword )
+QStringList QgsStyleV2::findSymbols( StyleEntity type, QString qword )
 {
   if ( !mCurrentDB )
   {
@@ -752,7 +752,9 @@ QStringList QgsStyleV2::findSymbols( QString qword )
     return QStringList();
   }
 
-  char *query = sqlite3_mprintf( "SELECT name FROM symbol WHERE xml LIKE '%%%q%%'", qword.toUtf8().constData() );
+  QString item = ( type == SymbolEntity ) ? "symbol" : "colorramp";
+  char *query = sqlite3_mprintf( "SELECT name FROM %q WHERE xml LIKE '%%%q%%'",
+                                  item.toUtf8().constData(), qword.toUtf8().constData() );
 
   sqlite3_stmt *ppStmt;
   int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
@@ -764,7 +766,6 @@ QStringList QgsStyleV2::findSymbols( QString qword )
   }
 
   sqlite3_finalize( ppStmt );
-
 
   query = sqlite3_mprintf( "SELECT id FROM tag WHERE name LIKE '%%%q%%'", qword.toUtf8().constData() );
   nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
@@ -780,7 +781,16 @@ QStringList QgsStyleV2::findSymbols( QString qword )
 
   QString dummy = tagids.join( ", " );
 
-  query = sqlite3_mprintf( "SELECT symbol_id FROM tagmap WHERE tag_id IN (%q)", dummy.toUtf8().constData() );
+  if ( type == SymbolEntity )
+  {
+    query = sqlite3_mprintf( "SELECT symbol_id FROM tagmap WHERE tag_id IN (%q)",
+                              dummy.toUtf8().constData() );
+  }
+  else
+  {
+    query = sqlite3_mprintf( "SELECT colorramp_id FROM ctagmap WHERE tag_id IN (%q)",
+                              dummy.toUtf8().constData() );
+  }
   nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
 
   QStringList symbolids;
@@ -793,7 +803,8 @@ QStringList QgsStyleV2::findSymbols( QString qword )
 
 
   dummy = symbolids.join( ", " );
-  query = sqlite3_mprintf( "SELECT name FROM symbol WHERE id IN (%q)", dummy.toUtf8().constData() );
+  query = sqlite3_mprintf( "SELECT name FROM %q  WHERE id IN (%q)",
+                            item.toUtf8().constData(), dummy.toUtf8().constData() );
   nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
   while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
