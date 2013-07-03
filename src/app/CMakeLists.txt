@@ -459,6 +459,7 @@ TARGET_LINK_LIBRARIES(${QGIS_APP_NAME}
   ${QT_QTMAIN_LIBRARY}
   ${QWTPOLAR_LIBRARY}
   ${GDAL_LIBRARY}
+  ${PYTHON_LIBRARY}
   qgis_core
   qgis_gui
   qgis_analysis
