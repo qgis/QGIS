@@ -1701,9 +1701,9 @@ void QgisApp::setTheme( QString theThemeName )
   mActionManagePlugins->setIcon( QgsApplication::getThemeIcon( "/mActionShowPluginManager.png" ) );
   mActionShowPythonDialog->setIcon( QgsApplication::getThemeIcon( "console/iconRunConsole.png" ) );
   mActionCheckQgisVersion->setIcon( QgsApplication::getThemeIcon( "/mActionCheckQgisVersion.png" ) );
-  mActionOptions->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.png" ) );
-  mActionConfigureShortcuts->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.png" ) );
-  mActionCustomization->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.png" ) );
+  mActionOptions->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.svg" ) );
+  mActionConfigureShortcuts->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.svg" ) );
+  mActionCustomization->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.svg" ) );
   mActionHelpContents->setIcon( QgsApplication::getThemeIcon( "/mActionHelpContents.png" ) );
   mActionLocalHistogramStretch->setIcon( QgsApplication::getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
   mActionFullHistogramStretch->setIcon( QgsApplication::getThemeIcon( "/mActionFullHistogramStretch.png" ) );
