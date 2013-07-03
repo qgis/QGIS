@@ -1,0 +1,90 @@
+<?xml version="1.0"?><svg width="225" height="239" xmlns="http://www.w3.org/2000/svg">
+ <title>Mouse Pointer</title>
+ <g>
+  <title>Layer 1</title>
+  <metadata id="svg_35">image/svg+xml</metadata>
+  <path fill="#ffffff" fill-rule="evenodd" stroke="#000000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" id="path827" d="m201.453995,112.872002l-183.068584,-100.156902l78.608601,195.193897l31.298012,-50.675995l61.883972,67.641998l23.437012,-22.837006l-63.26799,-66.993988l51.108978,-22.172005z"/>
+ </g>
+ <defs>
+  <linearGradient id="svg_1" y2="1">
+   <stop stop-color="#e8e8e8" offset="0"/>
+   <stop stop-color="#171717" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_2" y2="1" x1="0" y1="0" x2="1" spreadMethod="pad">
+   <stop stop-color="#e8e8e8" offset="0"/>
+   <stop stop-color="#171717" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_3" y2="1" x1="0.488281" y1="0.363281" x2="1" spreadMethod="pad">
+   <stop stop-color="#e8e8e8" offset="0"/>
+   <stop stop-color="#171717" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_4" y2="1" x1="0" y1="0" x2="1" spreadMethod="pad">
+   <stop stop-color="#efefef" stop-opacity="0.996094" offset="0"/>
+   <stop stop-color="#828282" stop-opacity="0.996094" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_5" y2="1" x1="0" y1="0" x2="1" spreadMethod="pad">
+   <stop stop-color="#ffffff" stop-opacity="0.992188" offset="0"/>
+   <stop stop-color="#828282" stop-opacity="0.996094" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_6" y2="1" x1="0" y1="0" x2="1" spreadMethod="pad">
+   <stop stop-color="#ffffff" stop-opacity="0.992188" offset="0"/>
+   <stop stop-color="#828282" stop-opacity="0.996094" offset="1"/>
+   <stop stop-color="#828282" stop-opacity="0.996094" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_7" y2="1" x1="0" y1="0" x2="1" spreadMethod="pad">
+   <stop stop-color="#ffffff" stop-opacity="0.988281" offset="0"/>
+   <stop stop-color="#cccccc" stop-opacity="0.992188" offset="1"/>
+   <stop stop-color="#828282" stop-opacity="0.996094" offset="1"/>
+   <stop stop-color="#828282" stop-opacity="0.996094" offset="1"/>
+   <stop stop-color="#828282" stop-opacity="0.996094" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_8" y2="1" x1="0" y1="0" x2="1" spreadMethod="pad">
+   <stop stop-color="#ffffff" stop-opacity="0.988281" offset="0"/>
+   <stop stop-color="#cccccc" stop-opacity="0.992188" offset="1"/>
+   <stop stop-color="#cccccc" stop-opacity="0.992188" offset="1"/>
+   <stop stop-color="#828282" stop-opacity="0.996094" offset="1"/>
+   <stop stop-color="#828282" stop-opacity="0.996094" offset="1"/>
+   <stop stop-color="#828282" stop-opacity="0.996094" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_9">
+   <stop stop-color="#ffffff" offset="0"/>
+   <stop stop-color="#000000" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_10">
+   <stop stop-color="#ffffff" offset="0"/>
+   <stop stop-color="#dddddd" stop-opacity="0.996094" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_11" x1="0" y1="0" x2="1" y2="1">
+   <stop stop-color="#ffffff" offset="0"/>
+   <stop stop-color="#dddddd" stop-opacity="0.996094" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_12" x1="0" y1="0" x2="1" y2="1">
+   <stop stop-color="#ffffff" offset="0"/>
+   <stop stop-color="#f2f2f2" stop-opacity="0.992188" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_13" x2="1" y2="1">
+   <stop stop-color="#ffffff" stop-opacity="0.996094" offset="0"/>
+   <stop stop-color="#c1c1c1" stop-opacity="0.996094" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_14" x2="1" y2="1" x1="0" y1="0">
+   <stop stop-color="#ffffff" stop-opacity="0.996094" offset="0"/>
+   <stop stop-color="#c1c1c1" stop-opacity="0.996094" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_15" y2="1" x1="0" y1="0" x2="1" spreadMethod="pad">
+   <stop stop-color="#efefef" stop-opacity="0.996094" offset="0"/>
+   <stop stop-color="#828282" stop-opacity="0.996094" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_16" x2="1" y2="1">
+   <stop stop-color="#ffffff" offset="0"/>
+   <stop stop-color="#000000" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_17" x2="1" y2="1" x1="0" y1="0">
+   <stop stop-color="#ffffff" offset="0"/>
+   <stop stop-color="#e0e0e0" stop-opacity="0.996094" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_18" x2="1" y2="1" x1="0" y1="0">
+   <stop stop-color="#ffffff" offset="0"/>
+   <stop stop-color="#cecece" stop-opacity="0.992188" offset="1"/>
+  </linearGradient>
+ </defs>
+</svg>
