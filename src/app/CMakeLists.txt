@@ -407,7 +407,6 @@ INCLUDE_DIRECTORIES(
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
   ${QEXTSERIALPORT_INCLUDE_DIR}
-  ${PYTHON_INCLUDE_PATH}
   ../analysis/raster ../analysis/openstreetmap
   ../core
   ../core/gps
@@ -459,7 +458,6 @@ TARGET_LINK_LIBRARIES(${QGIS_APP_NAME}
   ${QT_QTMAIN_LIBRARY}
   ${QWTPOLAR_LIBRARY}
   ${GDAL_LIBRARY}
-  ${PYTHON_LIBRARY}
   qgis_core
   qgis_gui
   qgis_analysis
