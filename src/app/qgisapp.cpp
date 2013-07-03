@@ -800,9 +800,11 @@ QgisApp::~QgisApp()
 
   delete QgsProject::instance();
 
+#if SIP_VERSION >= 0x40e06
   if ( mPythonUtils )
     mPythonUtils->exitPython();
   delete mPythonUtils;
+#endif
 }
 
 void QgisApp::dragEnterEvent( QDragEnterEvent *event )
