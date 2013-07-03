@@ -3083,7 +3083,11 @@ bool QgsVectorLayer::fieldEditable( int idx )
 {
   const QgsFields &fields = pendingFields();
   if ( idx >= 0 && idx < fields.count() )
+  {
+    if ( mUpdatedFields.fieldOrigin( idx ) == QgsFields::OriginJoin )
+      return false;
     return mFieldEditables.value( fields[idx].name(), true );
+  }
   else
     return true;
 }
