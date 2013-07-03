@@ -15,6 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgslogger.h"
 #include "qgsvectorlayersaveasdialog.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsvectordataprovider.h"
@@ -51,6 +52,7 @@ void QgsVectorLayerSaveAsDialog::setup()
   setupUi( this );
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/VectorLayerSaveAs/geometry" ).toByteArray() );
+
   QMap<QString, QString> map = QgsVectorFileWriter::ogrDriverList();
   mFormatComboBox->blockSignals( true );
   for ( QMap< QString, QString>::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )

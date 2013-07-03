@@ -5568,8 +5568,22 @@ void QgisApp::pasteAsNewMemoryVector()
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() ) return;
 
+  bool ok;
+  QString defaultName = tr( "Pasted" );
+  QString layerName = QInputDialog::getText( this, tr( "New memory layer name" ),
+                      tr( "Layer name" ), QLineEdit::Normal,
+                      defaultName, &ok );
+  if ( !ok ) return;
+
+  if ( layerName.isEmpty() )
+  {
+    layerName = defaultName;
+  }
+
   QgsVectorLayer * layer = pasteToNewMemoryVector();
   if ( !layer ) return;
+
+  layer->setLayerName( layerName );
 
   mMapCanvas->freeze();
 
