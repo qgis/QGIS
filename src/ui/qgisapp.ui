@@ -680,7 +680,7 @@
   <action name="mActionDeleteSelected">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDeleteSelected.png</normaloff>:/images/themes/default/mActionDeleteSelected.png</iconset>
+     <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
    </property>
    <property name="text">
     <string>Delete Selected</string>
@@ -841,7 +841,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelect.png</normaloff>:/images/themes/default/mActionSelect.png</iconset>
+     <normaloff>:/images/themes/default/mActionSelect.svg</normaloff>:/images/themes/default/mActionSelect.svg</iconset>
    </property>
    <property name="text">
     <string>Select Single Feature</string>
@@ -853,7 +853,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelectRectangle.png</normaloff>:/images/themes/default/mActionSelectRectangle.png</iconset>
+     <normaloff>:/images/themes/default/mActionSelectRectangle.svg</normaloff>:/images/themes/default/mActionSelectRectangle.svg</iconset>
    </property>
    <property name="text">
     <string>Select Features by Rectangle</string>
@@ -865,7 +865,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelectPolygon.png</normaloff>:/images/themes/default/mActionSelectPolygon.png</iconset>
+     <normaloff>:/images/themes/default/mActionSelectPolygon.svg</normaloff>:/images/themes/default/mActionSelectPolygon.svg</iconset>
    </property>
    <property name="text">
     <string>Select Features by Polygon</string>
@@ -877,7 +877,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelectFreehand.png</normaloff>:/images/themes/default/mActionSelectFreehand.png</iconset>
+     <normaloff>:/images/themes/default/mActionSelectFreehand.svg</normaloff>:/images/themes/default/mActionSelectFreehand.svg</iconset>
    </property>
    <property name="text">
     <string>Select Features by Freehand</string>
@@ -889,7 +889,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelectRadius.png</normaloff>:/images/themes/default/mActionSelectRadius.png</iconset>
+     <normaloff>:/images/themes/default/mActionSelectRadius.svg</normaloff>:/images/themes/default/mActionSelectRadius.svg</iconset>
    </property>
    <property name="text">
     <string>Select Features by Radius</string>
@@ -898,7 +898,7 @@
   <action name="mActionDeselectAll">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDeselectAll.png</normaloff>:/images/themes/default/mActionDeselectAll.png</iconset>
+     <normaloff>:/images/themes/default/mActionDeselectAll.svg</normaloff>:/images/themes/default/mActionDeselectAll.svg</iconset>
    </property>
    <property name="text">
     <string>Deselect Features from All Layers</string>

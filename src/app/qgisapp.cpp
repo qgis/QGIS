@@ -1395,9 +1395,9 @@ void QgisApp::createToolBars()
   {
     case 0: defSelectAction = mActionSelect; break;
     case 1: defSelectAction = mActionSelectRectangle; break;
-    case 2: defSelectAction = mActionSelectPolygon; break;
-    case 3: defSelectAction = mActionSelectFreehand; break;
-    case 4: defSelectAction = mActionSelectRadius; break;
+    case 2: defSelectAction = mActionSelectRadius; break;
+    case 3: defSelectAction = mActionSelectPolygon; break;
+    case 4: defSelectAction = mActionSelectFreehand; break;
   }
   bt->setDefaultAction( defSelectAction );
   QAction* selectAction = mAttributesToolBar->insertWidget( mActionDeselectAll, bt );
@@ -1724,7 +1724,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionRotateFeature->setIcon( QgsApplication::getThemeIcon( "/mActionRotateFeature.png" ) );
   mActionReshapeFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionReshape.png" ) );
   mActionSplitFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionSplitFeatures.svg" ) );
-  mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.png" ) );
+  mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.svg" ) );
   mActionNodeTool->setIcon( QgsApplication::getThemeIcon( "/mActionNodeTool.png" ) );
   mActionSimplifyFeature->setIcon( QgsApplication::getThemeIcon( "/mActionSimplify.png" ) );
   mActionUndo->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.png" ) );
@@ -1753,12 +1753,12 @@ void QgisApp::setTheme( QString theThemeName )
   mActionZoomActualSize->setIcon( QgsApplication::getThemeIcon( "/mActionZoomActual.png" ) );
   mActionIdentify->setIcon( QgsApplication::getThemeIcon( "/mActionIdentify.svg" ) );
   mActionFeatureAction->setIcon( QgsApplication::getThemeIcon( "/mAction.svg" ) );
-  mActionSelect->setIcon( QgsApplication::getThemeIcon( "/mActionSelect.png" ) );
-  mActionSelectRectangle->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRectangle.png" ) );
+  mActionSelect->setIcon( QgsApplication::getThemeIcon( "/mActionSelect.svg" ) );
+  mActionSelectRectangle->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRectangle.svg" ) );
   mActionSelectPolygon->setIcon( QgsApplication::getThemeIcon( "/mActionSelectPolygon.svg" ) );
-  mActionSelectFreehand->setIcon( QgsApplication::getThemeIcon( "/mActionSelectFreehand.png" ) );
-  mActionSelectRadius->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRadius.png" ) );
-  mActionDeselectAll->setIcon( QgsApplication::getThemeIcon( "/mActionDeselectAll.png" ) );
+  mActionSelectFreehand->setIcon( QgsApplication::getThemeIcon( "/mActionSelectFreehand.svg" ) );
+  mActionSelectRadius->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRadius.svg" ) );
+  mActionDeselectAll->setIcon( QgsApplication::getThemeIcon( "/mActionDeselectAll.svg" ) );
   mActionSelectByExpression->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionSelect.svg" ) );
   mActionOpenTable->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ) );
   mActionOpenFieldCalc->setIcon( QgsApplication::getThemeIcon( "/mActionCalculateField.png" ) );
@@ -8982,11 +8982,11 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "/UI/selectTool", 0 );
   else if ( action == mActionSelectRectangle )
     settings.setValue( "/UI/selectTool", 1 );
-  else if ( action == mActionSelectPolygon )
-    settings.setValue( "/UI/selectTool", 2 );
-  else if ( action == mActionSelectFreehand )
-    settings.setValue( "/UI/selectTool", 3 );
   else if ( action == mActionSelectRadius )
+    settings.setValue( "/UI/selectTool", 2 );
+  else if ( action == mActionSelectPolygon )
+    settings.setValue( "/UI/selectTool", 3 );
+  else if ( action == mActionSelectFreehand )
     settings.setValue( "/UI/selectTool", 4 );
   else if ( action == mActionMeasure )
     settings.setValue( "/UI/measureTool", 0 );
