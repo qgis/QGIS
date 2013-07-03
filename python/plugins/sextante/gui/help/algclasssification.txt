@@ -100,7 +100,7 @@ qgis:countpointsinpolygon,USE_ORIGINAL_NAME,Vector/Statistics
 qgis:countpointsinpolygonweighted,USE_ORIGINAL_NAME,Vector/Statistics
 qgis:countuniquepointsinpolygon,USE_ORIGINAL_NAME,Vector/Statistics
 qgis:createequivalentnumericalfield,USE_ORIGINAL_NAME,Vector/Table tools
-qgis:creategrid,USE_ORIGINAL_NAME,Vector/Creation
+qgis:creategrid,Create graticule,Vector/Creation
 qgis:delaunaytriangulation,USE_ORIGINAL_NAME,Vector/Geometry operations
 qgis:deletecolumn,USE_ORIGINAL_NAME,Vector/Table tools
 qgis:deleteduplicategeometries,USE_ORIGINAL_NAME,Vector/General tools
@@ -108,7 +108,6 @@ qgis:densifygeometries,USE_ORIGINAL_NAME,Vector/Geometry operations
 qgis:densifygeometriesgivenaninterval,USE_ORIGINAL_NAME,Vector/Geometry operations
 qgis:difference,USE_ORIGINAL_NAME,Vector/Overlay
 qgis:dissolve,USE_ORIGINAL_NAME,Vector/Geometry operations
-qgis:distancematrix,USE_ORIGINAL_NAME,Vector/Points
 qgis:distancetonearesthub,USE_ORIGINAL_NAME,Vector/Analysis
 qgis:explodelines,USE_ORIGINAL_NAME,Vector/Lines
 qgis:exportaddgeometrycolumns,USE_ORIGINAL_NAME,Vector/Table tools
@@ -197,7 +196,7 @@ saga:coordinatetransformationgridlist,USE_ORIGINAL_NAME,Raster/General tools
 saga:coordinatetransformationshapes,USE_ORIGINAL_NAME,Vector/General tools
 saga:coordinatetransformationshapeslist,USE_ORIGINAL_NAME,Vector/General tools
 saga:covereddistance,USE_ORIGINAL_NAME,Raster/Analysis
-saga:creategraticule,USE_ORIGINAL_NAME,Vector/Miscellaneous
+saga:creategraticule,Create graticule from extent,Vector/Creation
 saga:croptodata,USE_ORIGINAL_NAME,Raster/General tools
 saga:crossclassificationandtabulation,USE_ORIGINAL_NAME,Raster/General tools
 saga:crossprofiles,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
@@ -339,7 +338,7 @@ saga:runningaverage,USE_ORIGINAL_NAME,Vector/Table tools
 saga:sagawetnessindex,USE_ORIGINAL_NAME,Domain specific/Hydrology
 saga:separatepointsbydirection,USE_ORIGINAL_NAME,Vector/Points
 saga:shapesbuffer,USE_ORIGINAL_NAME,Vector/Geometry operations
-saga:shapestogrid,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
+saga:shapestogrid,Rasterize vector layer,Raster - vector/Vector -> Raster
 saga:simplefilter,USE_ORIGINAL_NAME,Raster/Filters
 saga:simulation,Fire spreading simulation,Domain specific/Miscellaneous
 saga:sinkdrainageroutedetection,USE_ORIGINAL_NAME,Domain specific/Hydrology
