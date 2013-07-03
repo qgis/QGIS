@@ -330,6 +330,12 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField &field )
   FieldConfig cfg( mLayer, idx );
   cfg.mEditType = mLayer->editType( idx );
   QPushButton *pb = new QPushButton( editTypeButtonText( cfg.mEditType ) );
+
+  // disable the push button if this is a joined field
+  const QgsFields &fields = mLayer->pendingFields();
+  if ( idx >= 0 && idx < fields.count() && fields.fieldOrigin( idx ) == QgsFields::OriginJoin )
+    pb->setEnabled( false );
+
   mAttributesList->setCellWidget( row, attrEditTypeCol, pb );
   connect( pb, SIGNAL( pressed() ), this, SLOT( attributeTypeDialog( ) ) );
 
