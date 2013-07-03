@@ -18,6 +18,11 @@
  ***************************************************************************/
 
 //
+// Include, so we can check for the sip version
+//
+#include <sip.h>
+
+//
 // QT4 includes make sure to use the new <CamelCase> style!
 //
 #include <QAction>

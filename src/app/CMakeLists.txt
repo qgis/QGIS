@@ -407,6 +407,7 @@ INCLUDE_DIRECTORIES(
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
   ${QEXTSERIALPORT_INCLUDE_DIR}
+  ${PYTHON_INCLUDE_PATH}
   ../analysis/raster ../analysis/openstreetmap
   ../core
   ../core/gps
