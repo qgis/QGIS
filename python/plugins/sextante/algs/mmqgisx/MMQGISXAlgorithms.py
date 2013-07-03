@@ -416,9 +416,9 @@ class mmqgisx_grid_algorithm(GeoAlgorithm):
 		originy = centery - (height / 2.0)
 		gridtype = self.gridtype_options[self.getParameterValue(self.GRIDTYPE)]
 
-		crsId = self.getParameterValue(self.TARGET_CRS)
+		crsId = self.getParameterValue(self.CRS)
 		self.crs = QgsCoordinateReferenceSystem(crsId)
-        
+		
 		if (hspacing <= 0) or (vspacing <= 0):
 			raise GeoAlgorithmExecutionException("Invalid grid spacing: " + unicode(hspacing) + " / " + unicode(vspacing))
 
