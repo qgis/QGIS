@@ -111,7 +111,7 @@
         <file>themes/default/join_round.png</file>
         <file>themes/default/join_style.svg</file>
         <file>themes/default/locked.png</file>
-        <file>themes/default/mAction.png</file>
+        <file>themes/default/mAction.svg</file>
         <file>themes/default/mActionAdd.png</file>
         <file>themes/default/mActionAddAllToOverview.png</file>
         <file>themes/default/mActionAddArrow.png</file>
@@ -381,7 +381,7 @@
         <file>themes/default/plugins/quick_print.png</file>
         <file>themes/default/plugins/scale_bar.png</file>
         <file>themes/default/plugins/spit.png</file>
-        <file>themes/default/propertyicons/action.png</file>
+        <file>themes/default/propertyicons/action.svg</file>
         <file>themes/default/propertyicons/attributes.png</file>
         <file>themes/default/propertyicons/colormap.png</file>
         <file>themes/default/propertyicons/CRS.png</file>

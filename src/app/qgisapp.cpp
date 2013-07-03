@@ -1754,7 +1754,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionZoomToLayer->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ) );
   mActionZoomActualSize->setIcon( QgsApplication::getThemeIcon( "/mActionZoomActual.png" ) );
   mActionIdentify->setIcon( QgsApplication::getThemeIcon( "/mActionIdentify.svg" ) );
-  mActionFeatureAction->setIcon( QgsApplication::getThemeIcon( "/mAction.png" ) );
+  mActionFeatureAction->setIcon( QgsApplication::getThemeIcon( "/mAction.svg" ) );
   mActionSelect->setIcon( QgsApplication::getThemeIcon( "/mActionSelect.png" ) );
   mActionSelectRectangle->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRectangle.png" ) );
   mActionSelectPolygon->setIcon( QgsApplication::getThemeIcon( "/mActionSelectPolygon.svg" ) );
