@@ -2999,7 +2999,9 @@ Instala ezazu eta saiatu berriro.</translation>
         <source>Unable to load {0} plugin. 
 The required &quot;{1}&quot; module is missing. 
 Install it and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin izan da {0} plugina kargatu. 
+&quot;{1}&quot; modulua falta da. 
+Instalatu ezazu eta saiatu berriro.</translation>
     </message>
     <message>
         <source>QGIS version detected: </source>
@@ -3262,7 +3264,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>The following files were not created: 
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Hurrengo fitxategiak ez dira sortu: 
+{0}</translation>
     </message>
     <message>
         <source>The following files were not created: 
@@ -3410,7 +3413,7 @@ Amaitu egin nahi al duzu?</translation>
     </message>
     <message>
         <source>{0} not created.</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} ez da sortu.</translation>
     </message>
     <message>
         <source>Select the input directory with files to Translate</source>
@@ -4415,7 +4418,7 @@ Imagine, ArcGIS eta GDAL bidez zuzenean erabiltzeko egokia.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="39"/>
         <source>&amp;Output file for polygons (shapefile)</source>
-        <translation>&amp;Irteera-gitxategia poligonoetarako (shapefile)</translation>
+        <translation>&amp;Irteera-fitxategia poligonoetarako (shapefile)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="52"/>
@@ -5501,7 +5504,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui" line="28"/>
         <source>Symbol layer type</source>
-        <translation>Ikurren geruza-mota</translation>
+        <translation>Ikur-mota</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui" line="51"/>
@@ -8040,7 +8043,7 @@ Errorea(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2376"/>
         <source>Date and Time</source>
-        <translation>Ordua</translation>
+        <translation>Ordua eta eguna</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2377"/>
@@ -8208,7 +8211,7 @@ Errorea(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="287"/>
         <source>polygon %1 has no rings</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 poligonoak ez dauka eraztunik</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="299"/>
@@ -8772,12 +8775,12 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="53"/>
         <source>Line pattern fill</source>
-        <translation>Lerro-ereduaren betegarria</translation>
+        <translation>Lerroz osatutako betegarria</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgssymbollayerv2registry.cpp" line="55"/>
         <source>Point pattern fill</source>
-        <translation>Puntu-ereduaren betegarria</translation>
+        <translation>Puntuz osatutako betegarria</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectbadlayerguihandler.cpp" line="229"/>
@@ -9866,7 +9869,7 @@ Zure GRASS instalazioaren bidea (GISBASE) zein den zehaztu nahi duzu?</translati
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2022"/>
         <source>field %1 with unsupported type %2 skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>onartzen ez den %2 motako %1 eremua saltatu da</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2028"/>
@@ -12228,25 +12231,25 @@ Erabiltzaile.-DBaren bidea:%9
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="911"/>
         <source>[ERROR] Can not make qgis.db private copy</source>
-        <translation type="unfinished">[ERROREA] Ezin da egin qgis.db-ren kopia pribatua</translation>
+        <translation>[ERROREA] Ezin da egin qgis.db-ren kopia pribatua</translation>
     </message>
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="924"/>
         <source>Could not open qgis.db</source>
-        <translation type="unfinished">Ezin da qgis.db ireki</translation>
+        <translation>Ezin da qgis.db ireki</translation>
     </message>
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="954"/>
         <source>Migration of private qgis.db failed.
 %1</source>
-        <translation type="unfinished">qgis.db pribatuaren migrazioak huts egin du.
+        <translation>qgis.db pribatuaren migrazioak huts egin du.
 %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="989"/>
         <source>Update of view in private qgis.db failed.
 %1</source>
-        <translation type="unfinished">qgis.db pribatuko bistaratzearen eguneraketak huts egin du.
+        <translation>qgis.db pribatuko bistaratzearen eguneraketak huts egin du.
 %1</translation>
     </message>
 </context>
@@ -12443,7 +12446,7 @@ Erabiltzaile.-DBaren bidea:%9
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="341"/>
         <source>Clicked coordinates (Run feature actions tool)</source>
-        <translation>Koordenatuetan klik egin da (Exekutatu elementuen ekintzak tresna)</translation>
+        <translation>Koordenatuetan klik egin da (&quot;Exekutatu elementuen ekintzak&quot; tresna)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="342"/>
@@ -14448,13 +14451,14 @@ Existitzen diren klaseak ezabatuko dira sailkapena egin baino lehen?</translatio
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="978"/>
         <source>Memory Allocation Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Errorea memoria-esleipenean</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="979"/>
         <source>Trying to create image #%1 ( %2x%3 @ %4dpi )may result in a memory overflow.
 Please try a lower resolution or a smaller papersize</source>
-        <translation type="unfinished"></translation>
+        <translation>#%1 irudia sortzen saiatzeak ( %2x%3 @ %4dpi ) memoria-gainezkatze bat eragin dezake.
+Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1020"/>
@@ -18782,7 +18786,7 @@ existitzen den CRSa</translation>
     <message>
         <location filename="../src/ui/qgsdatadefinedsymboldialogbase.ui" line="14"/>
         <source>Data defined properties</source>
-        <translation>Datuek definitutako propietateak</translation>
+        <translation>Datuen bidez definitutako propietateak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdatadefinedsymboldialogbase.ui" line="67"/>
@@ -20969,7 +20973,7 @@ Parser error:
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="243"/>
         <source>Show all labels and features for all layers</source>
-        <translation>Erakutsi etiketa elementu guztiak geruza guztietarako</translation>
+        <translation>Erakutsi etiketa eta elementu guztiak geruza guztietarako</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="263"/>
@@ -22554,7 +22558,7 @@ grisa = daturik ez
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="165"/>
         <source>Save new GPX file as...</source>
-        <translation>GordeX gitxategi berria honela...</translation>
+        <translation>Gorde GPX fitxategi berria honela...</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="167"/>
@@ -22998,7 +23002,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/gui/qgsgenericprojectionselector.cpp" line="49"/>
         <source>Define this layer&apos;s coordinate reference system:</source>
-        <translation>Definitu geruza honen koordinatuen erreferentzia-sistema:</translation>
+        <translation>Definitu geruza honen koordenatuen erreferentzia-sistema:</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsgenericprojectionselector.cpp" line="50"/>
@@ -27778,7 +27782,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="548"/>
         <source>Data defined properties</source>
-        <translation>Datuek definitutako propietateak</translation>
+        <translation>Datuen bidez definitutako propietateak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="560"/>
@@ -28213,7 +28217,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="36"/>
         <source>Label this layer with</source>
-        <translation>Etiketatu geruza hau honekin</translation>
+        <translation>Etiketatu geruza datu hauekin</translation>
     </message>
     <message>
         <source>Expression</source>
@@ -28949,7 +28953,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3827"/>
         <source>Horizontal (slow)</source>
-        <translation>Hozizontala (motela)</translation>
+        <translation>Horizontala (motela)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3834"/>
@@ -29274,7 +29278,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5235"/>
         <source>Show all labels for this layer (including colliding labels)</source>
-        <translation>Erakutsi geruza honetako etiketa guztiak (baita talka egiten dituztenak ere)</translation>
+        <translation>Erakutsi geruza honetako etiketa guztiak (baita talka egiten dutenak ere)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5407"/>
@@ -32225,7 +32229,7 @@ Errore-informazio hedatua:
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="228"/>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="231"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation>Adierazi geruza-geometriaren koordinatuen erreferentzia-sistema.</translation>
+        <translation>Adierazi geruza-geometriaren koordenatuen erreferentzia-sistema.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="234"/>
@@ -32304,7 +32308,7 @@ Errore-informazio hedatua:
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="45"/>
         <source>Date</source>
-        <translation type="unfinished">Data</translation>
+        <translation>Data</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="51"/>
@@ -32314,17 +32318,17 @@ Errore-informazio hedatua:
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="54"/>
         <source>Comma Separated Value</source>
-        <translation type="unfinished">Komaz banandutako balioa</translation>
+        <translation>Komaz banandutako balioa</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="55"/>
         <source>GML</source>
-        <translation type="unfinished"></translation>
+        <translation>GML</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="56"/>
         <source>Mapinfo File</source>
-        <translation type="unfinished">MapInfo fitxategia</translation>
+        <translation>MapInfo fitxategia</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="242"/>
@@ -32746,7 +32750,7 @@ Errore-informazio hedatua:
     <message>
         <location filename="../src/providers/ows/qgsowsdataitems.cpp" line="198"/>
         <source>New Connection...</source>
-        <translation type="unfinished">Konexio berria...</translation>
+        <translation>Konexio berria...</translation>
     </message>
 </context>
 <context>
@@ -34315,7 +34319,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1478"/>
         <source>Prompt for raster sublayers when opening</source>
-        <translation>Eskatu raster-azpigeruzak irekitzean</translation>
+        <translation>Irekitzean, eskatu raster-azpigeruzak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1509"/>
@@ -34330,7 +34334,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1526"/>
         <source>Add Oracle layers with double click and select in extended mode</source>
-        <translation>Gehitu Oracle geruzak klik bikoitz eta hautatzearekin modu hedatuan</translation>
+        <translation>Modu hedatuan, gehitu Oracle geruzak klik bi aldiz eginez eta hautatuz</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1594"/>
@@ -34345,7 +34349,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1648"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Set below 1000 to prevent display updates until all features have been rendered</source>
-        <translation>&lt;b&gt;Oharra:&lt;/b&gt;Ezarri 1000 azpitik elementu guztiak errendatu baino lehen bistaratzea eguneratu ez dadin</translation>
+        <translation>&lt;b&gt;Oharra:&lt;/b&gt; Ezarri 1000 azpitik elementu guztiak errendatu baino lehen bistaratzea eguneratu ez dadin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2008"/>
@@ -34355,7 +34359,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2014"/>
         <source>Show these events in the Log Message panel (under Rendering tab)</source>
-        <translation>Erakutsi gertaera hauek egunkari-mezuen panelean (Errendatzea fitxan)</translation>
+        <translation>Erakutsi gertaera hauek egunkari-mezuen panelean (&quot;Errendatzea&quot; fitxan)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2039"/>
@@ -34370,7 +34374,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2103"/>
         <source>Default map appearance (overridden by project properties)</source>
-        <translation>Mapa-itxura lehenetsia (proiektu-propietateek gainidatzia)</translation>
+        <translation>Mapa-itxura lehenetsia (proiektuaren propietateek horiek gainidazten dituzte)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2207"/>
@@ -34380,7 +34384,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2215"/>
         <source>Double click action in legend</source>
-        <translation>Klik bi aldiz ekintza legendan</translation>
+        <translation>Legendan klik bi aldiz egitean</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2236"/>
@@ -34415,7 +34419,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1519"/>
         <source>Add PostGIS layers with double click and select in extended mode</source>
-        <translation>Gehitu PostGIS geruzak klik bikoitz eta hautatzearekin modu hedatuan</translation>
+        <translation>Modu hedatuan, gehitu PostGIS geruzak klik bi aldiz eginez eta hautatuz</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2344"/>
@@ -34553,7 +34557,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1620"/>
         <source>Number of features to draw before updating the display</source>
-        <translation>Marraztuko den elementu-kopurua bistaratzea eguneratu baino lehen</translation>
+        <translation>Bistaratzea eguneratu baino lehen marraztuko den elementu-kopurua</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1633"/>
@@ -34665,12 +34669,12 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2438"/>
         <source>Identify</source>
-        <translation>Identifikatu</translation>
+        <translation>Identifikazioa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2458"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Specify the search radius as a percentage of the map width</source>
-        <translation>&lt;b&gt;Oharra:&lt;/b&gt;Adierazi bilaketa-erradioa mapa-zabaleraren ehuneko gisa</translation>
+        <translation>&lt;b&gt;Oharra:&lt;/b&gt; Adierazi bilaketa-erradioa mapa-zabaleraren ehuneko gisa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2471"/>
@@ -34786,7 +34790,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2517"/>
         <source>Preferred measurements units</source>
-        <translation>Hobetsitako neurketa-unitateak</translation>
+        <translation>Hobetsitako neurtze-unitateak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2524"/>
@@ -34858,7 +34862,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2848"/>
         <source>Feature creation</source>
-        <translation>Elementu-sorrera</translation>
+        <translation>Elementu geografikoen sorrera</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2919"/>
@@ -34999,7 +35003,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3686"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing overide on local requires an application restart</source>
-        <translation>&lt;b&gt;Oharra:&lt;/b&gt; Hizkuntza gainidazteko aukera gaitzeko / aldatzeko, aplikazioa berrabarazi behar da</translation>
+        <translation>&lt;b&gt;Oharra:&lt;/b&gt; Hizkuntza gainidazteko aukera gaitzeko / aldatzeko, aplikazioa berrabiarazi behar da</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3699"/>
@@ -37087,15 +37091,15 @@ Errorea: %2</translation>
     </message>
     <message>
         <source>If you haven&apos;t cancelled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Deskarga eskuz bertan behera utzi ez baduzu, seguru asko denbora-muga gainditu da. Kasu horretan, saiatu konexioaren denbora-muga luzatzen QGISen aukeren leihoan.</translation>
     </message>
     <message>
         <source>Server response is 200 OK, but doesn&apos;t contain plugin metatada. This is most likely caused by a proxy or a wrong repository URL. You can configure proxy settings in QGIS options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zerbitzariaren erantzuna 200 OK izan da, baina erantzun horrek ez dauka pluginen metadaturik. Seguru asko arazo bat dago proxy-an edo biltegiaren URLa gaizki dago. Proxy-ezarpenak QGISen aukeren leihoan konfigura daitezke.</translation>
     </message>
     <message>
         <source>Status code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Egoera-kodea:</translation>
     </message>
     <message>
         <source>Uninstall (recommended)</source>
@@ -37194,7 +37198,7 @@ QGIS berrabiarazi behar duzu hura birkargatzeko.</translation>
     </message>
     <message>
         <source>If you haven&apos;t cancelled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Deskarga eskuz bertan behera utzi ez baduzu, seguru asko denbora-muga gainditu da. Kasu horretan, saiatu konexioaren denbora-muga luzatzen QGISen aukeren leihoan.</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
@@ -37910,7 +37914,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="111"/>
         <source>Name</source>
-        <translation type="unfinished">Izena</translation>
+        <translation>Izena</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="134"/>
@@ -37927,17 +37931,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="172"/>
         <source>Parameters</source>
-        <translation type="unfinished">Parametroak</translation>
+        <translation>Parametroak</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="185"/>
         <source>?qgis=</source>
-        <translation type="unfinished"></translation>
+        <translation>?qgis=</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="202"/>
         <source>URL</source>
-        <translation type="unfinished">URLa</translation>
+        <translation>URLa</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="228"/>
@@ -38097,7 +38101,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="702"/>
         <source>%1 downloads</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 deskarga</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="719"/>
@@ -38267,7 +38271,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="109"/>
         <source>Installed</source>
-        <translation>Instalatua</translation>
+        <translation>Instalatuak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="112"/>
@@ -38389,7 +38393,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="543"/>
         <source>The settings on this tab are only applicable for Python Plugins. No Python support detected, thus no settings available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxa honen ezarpenak Python pluginetarako soilik dira aplikagarriak. Ez da Python euskarririk detektatu, eta beraz ez dago ezarpenik erabilgarri.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="589"/>
@@ -39095,24 +39099,26 @@ SQL: %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3107"/>
         <source>PostgreSQL version: unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>PostgreSQL bertsioa: ezezaguna</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3108"/>
         <source>unknown</source>
-        <translation type="unfinished">ezezaguna</translation>
+        <translation>ezezaguna</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3128"/>
         <source>PostgreSQL not connected</source>
-        <translation type="unfinished"></translation>
+        <translation>PostgreSQL ez da konektatu</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3131"/>
         <source>PostgreSQL/PostGIS provider
 %1
 PostGIS %2</source>
-        <translation type="unfinished"></translation>
+        <translation>PostgreSQL/PostGIS hornitzailea
+%1
+PostGIS %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="176"/>
@@ -40260,7 +40266,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="260"/>
         <source>Provider specific filter expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Hornitzailearen araberako iragazki-adierazpena</translation>
     </message>
     <message>
         <source>SQL where clause</source>
@@ -44068,7 +44074,7 @@ enhancement</source>
         <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="195"/>
         <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="231"/>
         <source>table info on %1 failed</source>
-        <translation type="unfinished"></translation>
+        <translation>%1(e)n taula-informazioa emateak huts egin du</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="323"/>
@@ -46412,7 +46418,7 @@ Arazo bat dago zure ikurren datu-basearekin.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="42"/>
         <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case studies section&lt;/a&gt; of the QGIS home page.</source>
-        <translation type="unfinished"></translation>
+        <translation>QGISen inguruko edozein lan zientifiko edo beste edozein artikulu idazten baduzu, zure lana QGISen orri nagusiaren &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;aplikazio praktikoen atalean&lt;/a&gt; sartu nahi genuke.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="48"/>
@@ -46506,27 +46512,27 @@ Arazo bat dago zure ikurren datu-basearekin.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="49"/>
         <source>Would you like to see QGIS in your native language? We are looking for more translators and would appreciate your help! The translation process is fairly straight forward - instructions are available in the QGIS wiki &lt;a href=&quot;http://www.qgis.org/wiki/GUI_Translation&quot;&gt;translator&apos;s page.&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS euskaraz edo beste hizkuntzaren batean ikusi nahi duzu? Itzultzaile gehiago behar ditugu eta zure laguntza eskertuko genuke! Itzulpen-prozesua erraza da - argibideak QGISen wikiko &lt;a href=&quot;http://www.qgis.org/wiki/GUI_Translation&quot;&gt;itzultzaileen orrian (http://www.qgis.org/wiki/GUI_Translation)&lt;/a&gt; daude.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
         <source>If you need help using QGIS we have a &apos;users&apos;  mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Laguntzarik behar baduzu QGIS erabiltzen, erabiltzaileen posta-zerrenda bat daukagu software hau erabiltzean sortutako auzien inguruan elkarri laguntzeko. Garatzaileen posta-zerrenda bat ere badaukagu, QGISen garapen eta kodearen inguruan eztabaidatu nahi dutenentzat. Haietan izena emateko xehetasunak QGISen webguneko orri nagusiaren &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;komunitate atalean&lt;/a&gt; daude.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="86"/>
         <source>You can add a current date variable to your map layout. Create a regular text label and add the string $CURRENT_DATE(yyyy-MM-dd) to the text box. See the &lt;a href=&quot;http://qt-project.org/doc/qt-5.0/qtcore/qdate.html#toString&quot;&gt;QDate::toString format documentation&lt;/a&gt; for the possible date formats.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uneko dataren aldagai bat erants diezaiokezu zure mapari. Sortu testu-etiketa arrunt bat eta gehitu $CURRENT_DATE(yyyy-MM-dd) katea testu-kutxari. Ikusi &lt;a href=&quot;http://qt-project.org/doc/qt-5.0/qtcore/qdate.html#toString&quot;&gt;QDate::toString formatuaren dokumentazioa&lt;/a&gt; balizko data-formatuak ezagutzeko.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="94"/>
         <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item Properties -&gt; General Options -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows one to move the map content within a map frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>Inprimatze-konposatzailean bi botoi daude elementuak mugitzeko. Ezkerrekoak (eskuineko geziaren ikonoa dauka) mapa-diseinuaren elementuak hautatu eta mugitzen ditu. Elementua tresna honekin hautatu ondoren, gezi-teklekin ere mugi dezakezu. Posizio zehatzagoak lortzeko, erabili &lt;strong&gt;Elementu-propietateak -&gt; Aukera orokorrak -&gt; Posizioa eta tamaina&lt;/strong&gt; menuan aurkituko duzun &lt;strong&gt;Posizioa eta tamaina&lt;/strong&gt; koadroa. Mugitzeko beste tresnak (eskuineko gezia duen mapa-oihalaren ikonoa dauka) mapa-marko baten mapa-edukia mugitzea ahalbidetzen du.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="117"/>
         <source>You can rotate a map by setting its rotation value in the &lt;strong&gt;Item Properties -&gt; Map&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapa bat bira dezakezu haren biraketa-balioa &lt;strong&gt;Elementu-propietateak -&gt; Mapa&lt;/strong&gt; atalean ezarriz. Zure diseinuan iparrorratz bat jartzeko, &lt;strong&gt;Gehitu irudia&lt;/strong&gt; tresna erabil dezakezu. Iparrorratza diseinuan kokatu ondoren, mapa-marko jakin batekin lotu dezakezu &lt;strong&gt;Sinkronizatu maparekin&lt;/strong&gt; kontrol-laukia aktibatuz eta mapa-marko bat hautatuz. Lotutako maparen biraketa-balioa aldatzen duzunero, iparrorratza ere automatikoki doituko da biraketa horretara.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="129"/>
@@ -46556,17 +46562,17 @@ Arazo bat dago zure ikurren datu-basearekin.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="146"/>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;Esc&apos; (the escape key), or click the small red &apos;X&apos; icon in the status bar to the bottom right of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
-        <translation type="unfinished"></translation>
+        <translation>Batzuetan, pantailan marrazten denbora asko behar duen datu-multzo handi bat daukazu. Kasu horretan &apos;Esc&apos; tekla saka dezakezu, edo leihoaren behe eskuinean ageri den egoera-barrako &apos;X&apos; gorri txikia saka dezakezu errendatzea gelditzeko. Ekintza bat baino gehiago egingo baduzu (adib. sinbologia-aukerak moldatu) eta hori egin bitartean mapa aldi baterako desgaitu nahi baduzu, egoera-barraren behe eskuineko &apos;Errendatu&apos; kontrol-laukiaren marka ken dezakezu. Ez ahaztu hura berriro markatzea mapa berriro pantailan ager dadin nahi duzunean!</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="175"/>
         <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our regular hackfest meetings, and to generally support the goals of our project. Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
-        <translation type="unfinished"></translation>
+        <translation>QGISek dirua aurrezten badizu edo gure lana gustuko baduzu eta diruz laguntzeko aukera baduzu, kontuan izan QGISen garapena finantza dezakezula. Bi urtetik behin egiten dugun hackfestari lotutako gastuak eta bidaiak ordaintzeko behar dugu dirua, eta oro har gure proiektuaren helburuak laguntzeko. Begiratu &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS diruz laguntzeko web-orria&lt;/a&gt; xehetasun gehiagorako.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="186"/>
         <source>QGIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage and Install Plugins menu. In addition there are a lot of &lt;a href=&quot;http://plugins.qgis.org/&quot;&gt;Python plugins &lt;/a&gt; contributed by the user community that can be installed via this same menu. Don&apos;t miss out on all QGIS has to offer! Check out the plugins and see what they can do for you.</source>
-        <translation type="unfinished"></translation>
+        <translation>QGISek haren funtzionaltasunak hedatzen dituzten pluginak ditu. QGISek berez badakartza funtsezko zenbait plugin, Pluginak-&gt;Kudeatu eta instalatu pluginak menutik kudea ditzakezunak. Horrez gain, erabiltzaileen komunitateak sortutako &lt;a href=&quot;http://plugins.qgis.org/&quot;&gt;Python plugin&lt;/a&gt; asko daude, menu horixe bera erabiliz instala daitezkeenak. Ez galdu QGISek eskaintzeko duen dena! Arakatu pluginak eta ikusi zer egin dezaketen zugatik.</translation>
     </message>
     <message>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;esc&apos; (the escape key), or click the small red &apos;X&apos; icon in the status bar to the bottom right of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
@@ -47140,7 +47146,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3590"/>
         <source>Description of this provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Hornitzaile honen deskribapena</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3597"/>
@@ -47674,7 +47680,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="400"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="403"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation>Adierazi geruza-geometriaren koordinatuen erreferentzia-sistema.</translation>
+        <translation>Adierazi geruza-geometriaren koordenatuen erreferentzia-sistema.</translation>
     </message>
     <message>
         <source>Specify CRS</source>
@@ -47859,17 +47865,17 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="176"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1138"/>
         <source>Joins</source>
-        <translation>Batuketak</translation>
+        <translation>Elkarketak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1176"/>
         <source>Join layer</source>
-        <translation>Batuketa-geruza</translation>
+        <translation>Elkarketa-geruza</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1181"/>
         <source>Join field</source>
-        <translation>Batuketa-eremua</translation>
+        <translation>Elkarketa-eremua</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1186"/>
@@ -51280,7 +51286,7 @@ Geruza berria edukien taulan erakutsi nahi al duzu?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="267"/>
         <source>Data defined properties...</source>
-        <translation>Datuek definitutako propietateak...</translation>
+        <translation>Datuen bidez definitutako propietateak...</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="324"/>
@@ -51405,7 +51411,7 @@ Geruza berria edukien taulan erakutsi nahi al duzu?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="201"/>
         <source>Data defined properties...</source>
-        <translation>Datuek definitutako propietateak...</translation>
+        <translation>Datuen bidez definitutako propietateak...</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="32"/>
@@ -51480,7 +51486,7 @@ Geruza berria edukien taulan erakutsi nahi al duzu?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="141"/>
         <source>Data defined properties</source>
-        <translation>Datuek definitutako propietateak</translation>
+        <translation>Datuen bidez definitutako propietateak</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="109"/>
@@ -51534,7 +51540,7 @@ Geruza berria edukien taulan erakutsi nahi al duzu?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="202"/>
         <source>Data defined properties...</source>
-        <translation>Datuek definitutako propietateak...</translation>
+        <translation>Datuen bidez definitutako propietateak...</translation>
     </message>
 </context>
 <context>
@@ -51589,7 +51595,7 @@ Geruza berria edukien taulan erakutsi nahi al duzu?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="285"/>
         <source>Data defined properties...</source>
-        <translation>Datuek definitutako propietateak...</translation>
+        <translation>Datuen bidez definitutako propietateak...</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="25"/>
@@ -51654,7 +51660,7 @@ Geruza berria edukien taulan erakutsi nahi al duzu?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="169"/>
         <source>Data defined properties...</source>
-        <translation>Datuek definitutako propietateak...</translation>
+        <translation>Datuen bidez definitutako propietateak...</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="184"/>
@@ -51726,7 +51732,7 @@ Geruza berria edukien taulan erakutsi nahi al duzu?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="248"/>
         <source>Data defined properties...</source>
-        <translation>Datuek definitutako propietateak...</translation>
+        <translation>Datuen bidez definitutako propietateak...</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="180"/>
@@ -51788,7 +51794,7 @@ Geruza berria edukien taulan erakutsi nahi al duzu?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="274"/>
         <source>Data defined properties...</source>
-        <translation>Datuek definitutako propietateak...</translation>
+        <translation>Datuen bidez definitutako propietateak...</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="281"/>
@@ -51850,7 +51856,7 @@ Geruza berria edukien taulan erakutsi nahi al duzu?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="383"/>
         <source>Data defined properties...</source>
-        <translation>Datuek definitutako propietateak...</translation>
+        <translation>Datuen bidez definitutako propietateak...</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="314"/>
@@ -59207,7 +59213,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="100"/>
         <source>Add Rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Gehitu araua</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="112"/>
