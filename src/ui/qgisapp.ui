@@ -1407,7 +1407,7 @@
   <action name="mActionOptions">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionOptions.png</normaloff>:/images/themes/default/mActionOptions.png</iconset>
+     <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
    </property>
    <property name="text">
     <string>Options...</string>
@@ -1428,7 +1428,7 @@
   <action name="mActionConfigureShortcuts">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionOptions.png</normaloff>:/images/themes/default/mActionOptions.png</iconset>
+     <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
    </property>
    <property name="text">
     <string>Configure shortcuts...</string>
@@ -1597,7 +1597,7 @@ Ctl (Cmd) increments by 15 deg.</string>
   <action name="mActionCustomization">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionOptions.png</normaloff>:/images/themes/default/mActionOptions.png</iconset>
+     <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
    </property>
    <property name="text">
     <string>Customization...</string>
