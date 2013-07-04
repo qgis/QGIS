@@ -274,7 +274,7 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   }
   else //an existing feature value
   {
-    int featureId = mergeBehaviourString.split( " " ).at( 1 ).toInt(); //probably not very robust for translations...
+    int featureId = mergeBehaviourString.split( " " ).value( 1 ).toInt(); //probably not very robust for translations...
     mergeResult = featureAttribute( featureId, col );
   }
 
@@ -488,7 +488,7 @@ void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
     QComboBox* currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
     if ( currentComboBox )
     {
-      currentComboBox->setCurrentIndex( currentComboBox->findText( tr( "feature %1" ).arg( featureId ) ) );
+      currentComboBox->setCurrentIndex( currentComboBox->findText( tr( "Feature %1" ).arg( featureId ) ) );
     }
   }
 }
