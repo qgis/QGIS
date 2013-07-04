@@ -244,7 +244,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>:/images/themes/default/mActionPanToSelected.png</normaloff>:/images/themes/default/mActionPanToSelected.png</iconset>
+         <normaloff>:/images/themes/default/mActionPanToSelected.svg</normaloff>../../images/themes/default/mActionPanToSelected.svg</iconset>
        </property>
        <property name="iconSize">
         <size>

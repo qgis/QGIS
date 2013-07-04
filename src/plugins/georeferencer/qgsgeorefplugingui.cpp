@@ -829,7 +829,7 @@ void QgsGeorefPluginGui::createActions()
   connect( mActionMoveGCPPoint, SIGNAL( triggered() ), this, SLOT( setMovePointTool() ) );
 
   // View actions
-  mActionPan->setIcon( getThemeIcon( "/mActionPan.png" ) );
+  mActionPan->setIcon( getThemeIcon( "/mActionPan.svg" ) );
   connect( mActionPan, SIGNAL( triggered() ), this, SLOT( setPanTool() ) );
 
   mActionZoomIn->setIcon( getThemeIcon( "/mActionZoomIn.svg" ) );
@@ -1089,7 +1089,7 @@ void QgsGeorefPluginGui::updateIconTheme( QString theme )
   mActionMoveGCPPoint->setIcon( getThemeIcon( "/mActionMoveGCPPoint.png" ) );
 
   // View actions
-  mActionPan->setIcon( getThemeIcon( "/mActionPan.png" ) );
+  mActionPan->setIcon( getThemeIcon( "/mActionPan.svg" ) );
   mActionZoomIn->setIcon( getThemeIcon( "/mActionZoomIn.svg" ) );
   mActionZoomOut->setIcon( getThemeIcon( "/mActionZoomOut.svg" ) );
   mActionZoomToLayer->setIcon( getThemeIcon( "/mActionZoomToLayer.svg" ) );
