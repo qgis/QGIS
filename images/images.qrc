@@ -166,9 +166,9 @@
         <file>themes/default/mActionDeleteAttribute.png</file>
         <file>themes/default/mActionDeletePart.png</file>
         <file>themes/default/mActionDeleteRing.png</file>
-        <file>themes/default/mActionDeleteSelected.png</file>
+        <file>themes/default/mActionDeleteSelected.svg</file>
         <file>themes/default/mActionDeleteVertex.png</file>
-        <file>themes/default/mActionDeselectAll.png</file>
+        <file>themes/default/mActionDeselectAll.svg</file>
         <file>themes/default/mActionDraw.png</file>
         <file>themes/default/mActionDuplicateComposer.png</file>
         <file>themes/default/mActionEditCopy.png</file>
@@ -256,14 +256,13 @@
         <file>themes/default/mActionSaveEdits.svg</file>
         <file>themes/default/mActionSaveMapAsImage.png</file>
         <file>themes/default/mActionScaleBar.png</file>
-        <file>themes/default/mActionSelect.png</file>
+        <file>themes/default/mActionSelect.svg</file>
         <file>themes/default/mActionSelectedToTop.png</file>
-        <file>themes/default/mActionSelectFreehand.png</file>
+        <file>themes/default/mActionSelectFreehand.svg</file>
         <file>themes/default/mActionSelectPan.png</file>
-        <file>themes/default/mActionSelectPolygon.png</file>
         <file>themes/default/mActionSelectPolygon.svg</file>
-        <file>themes/default/mActionSelectRadius.png</file>
-        <file>themes/default/mActionSelectRectangle.png</file>
+        <file>themes/default/mActionSelectRadius.svg</file>
+        <file>themes/default/mActionSelectRectangle.svg</file>
         <file>themes/default/mActionShowAllLayers.png</file>
         <file>themes/default/mActionShowBookmarks.png</file>
         <file>themes/default/mActionShowHideLabels.svg</file>
