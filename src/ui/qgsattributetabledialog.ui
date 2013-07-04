@@ -119,7 +119,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../images/themes/default/mActionDeleteSelected.png</normaloff>../../images/themes/default/mActionDeleteSelected.png</iconset>
+         <normaloff>../../images/themes/default/mActionDeleteSelected.svg</normaloff>../../images/themes/default/mActionDeleteSelected.svg</iconset>
        </property>
        <property name="iconSize">
         <size>
