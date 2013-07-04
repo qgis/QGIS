@@ -338,7 +338,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   QAction *allEditsAction = QgisApp::instance()->actionAllEdits();
 
   // zoom to layer extent
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ),
+  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.svg" ),
                      tr( "&Zoom to Layer Extent" ), legend(), SLOT( legendLayerZoom() ) );
   if ( lyr->type() == QgsMapLayer::RasterLayer )
   {

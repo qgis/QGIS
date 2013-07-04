@@ -94,7 +94,7 @@
          </property>
          <property name="icon">
           <iconset resource="../../images/images.qrc">
-           <normaloff>:/images/themes/default/mActionDraw.png</normaloff>:/images/themes/default/mActionDraw.png</iconset>
+           <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
          </property>
         </widget>
        </item>

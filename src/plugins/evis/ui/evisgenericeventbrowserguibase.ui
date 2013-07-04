@@ -277,7 +277,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../images/themes/default/mActionDraw.png</normaloff>../../../images/themes/default/mActionDraw.png</iconset>
+              <normaloff>../../../images/themes/default/mActionDraw.svg</normaloff>../../../images/themes/default/mActionDraw.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -399,7 +399,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../images/themes/default/mActionDraw.png</normaloff>../../../images/themes/default/mActionDraw.png</iconset>
+              <normaloff>../../../images/themes/default/mActionDraw.svg</normaloff>../../../images/themes/default/mActionDraw.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -568,7 +568,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../images/themes/default/mActionDraw.png</normaloff>../../../images/themes/default/mActionDraw.png</iconset>
+              <normaloff>../../../images/themes/default/mActionDraw.svg</normaloff>../../../images/themes/default/mActionDraw.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -665,7 +665,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../images/themes/default/mActionDraw.png</normaloff>../../../images/themes/default/mActionDraw.png</iconset>
+              <normaloff>../../../images/themes/default/mActionDraw.svg</normaloff>../../../images/themes/default/mActionDraw.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -730,7 +730,7 @@ Base Path (i.e. keep only filename from attribute)</string>
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../images/themes/default/mActionDraw.png</normaloff>../../../images/themes/default/mActionDraw.png</iconset>
+              <normaloff>../../../images/themes/default/mActionDraw.svg</normaloff>../../../images/themes/default/mActionDraw.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -794,7 +794,7 @@ Base Path (i.e. keep only filename from attribute)</string>
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../images/themes/default/mActionDraw.png</normaloff>../../../images/themes/default/mActionDraw.png</iconset>
+              <normaloff>../../../images/themes/default/mActionDraw.svg</normaloff>../../../images/themes/default/mActionDraw.svg</iconset>
             </property>
             <property name="iconSize">
              <size>

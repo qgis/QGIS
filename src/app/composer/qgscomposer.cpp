@@ -395,10 +395,10 @@ void QgsComposer::setupTheme()
   mActionExportAsSVG->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAsSVG.png" ) );
   mActionExportAsPDF->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAsPDF.png" ) );
   mActionPrint->setIcon( QgsApplication::getThemeIcon( "/mActionFilePrint.png" ) );
-  mActionZoomAll->setIcon( QgsApplication::getThemeIcon( "/mActionZoomFullExtent.png" ) );
-  mActionZoomIn->setIcon( QgsApplication::getThemeIcon( "/mActionZoomIn.png" ) );
-  mActionZoomOut->setIcon( QgsApplication::getThemeIcon( "/mActionZoomOut.png" ) );
-  mActionRefreshView->setIcon( QgsApplication::getThemeIcon( "/mActionDraw.png" ) );
+  mActionZoomAll->setIcon( QgsApplication::getThemeIcon( "/mActionZoomFullExtent.svg" ) );
+  mActionZoomIn->setIcon( QgsApplication::getThemeIcon( "/mActionZoomIn.svg" ) );
+  mActionZoomOut->setIcon( QgsApplication::getThemeIcon( "/mActionZoomOut.svg" ) );
+  mActionRefreshView->setIcon( QgsApplication::getThemeIcon( "/mActionDraw.svg" ) );
   mActionUndo->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.png" ) );
   mActionRedo->setIcon( QgsApplication::getThemeIcon( "/mActionRedo.png" ) );
   mActionAddImage->setIcon( QgsApplication::getThemeIcon( "/mActionAddImage.png" ) );

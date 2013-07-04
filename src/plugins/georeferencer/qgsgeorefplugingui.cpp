@@ -832,19 +832,19 @@ void QgsGeorefPluginGui::createActions()
   mActionPan->setIcon( getThemeIcon( "/mActionPan.png" ) );
   connect( mActionPan, SIGNAL( triggered() ), this, SLOT( setPanTool() ) );
 
-  mActionZoomIn->setIcon( getThemeIcon( "/mActionZoomIn.png" ) );
+  mActionZoomIn->setIcon( getThemeIcon( "/mActionZoomIn.svg" ) );
   connect( mActionZoomIn, SIGNAL( triggered() ), this, SLOT( setZoomInTool() ) );
 
-  mActionZoomOut->setIcon( getThemeIcon( "/mActionZoomOut.png" ) );
+  mActionZoomOut->setIcon( getThemeIcon( "/mActionZoomOut.svg" ) );
   connect( mActionZoomOut, SIGNAL( triggered() ), this, SLOT( setZoomOutTool() ) );
 
-  mActionZoomToLayer->setIcon( getThemeIcon( "/mActionZoomToLayer.png" ) );
+  mActionZoomToLayer->setIcon( getThemeIcon( "/mActionZoomToLayer.svg" ) );
   connect( mActionZoomToLayer, SIGNAL( triggered() ), this, SLOT( zoomToLayerTool() ) );
 
-  mActionZoomLast->setIcon( getThemeIcon( "/mActionZoomLast.png" ) );
+  mActionZoomLast->setIcon( getThemeIcon( "/mActionZoomLast.svg" ) );
   connect( mActionZoomLast, SIGNAL( triggered() ), this, SLOT( zoomToLast() ) );
 
-  mActionZoomNext->setIcon( getThemeIcon( "/mActionZoomNext.png" ) );
+  mActionZoomNext->setIcon( getThemeIcon( "/mActionZoomNext.svg" ) );
   connect( mActionZoomNext, SIGNAL( triggered() ), this, SLOT( zoomToNext() ) );
 
   mActionLinkGeorefToQGis->setIcon( getThemeIcon( "/mActionLinkGeorefToQGis.png" ) );
@@ -1090,11 +1090,11 @@ void QgsGeorefPluginGui::updateIconTheme( QString theme )
 
   // View actions
   mActionPan->setIcon( getThemeIcon( "/mActionPan.png" ) );
-  mActionZoomIn->setIcon( getThemeIcon( "/mActionZoomIn.png" ) );
-  mActionZoomOut->setIcon( getThemeIcon( "/mActionZoomOut.png" ) );
-  mActionZoomToLayer->setIcon( getThemeIcon( "/mActionZoomToLayer.png" ) );
-  mActionZoomLast->setIcon( getThemeIcon( "/mActionZoomLast.png" ) );
-  mActionZoomNext->setIcon( getThemeIcon( "/mActionZoomNext.png" ) );
+  mActionZoomIn->setIcon( getThemeIcon( "/mActionZoomIn.svg" ) );
+  mActionZoomOut->setIcon( getThemeIcon( "/mActionZoomOut.svg" ) );
+  mActionZoomToLayer->setIcon( getThemeIcon( "/mActionZoomToLayer.svg" ) );
+  mActionZoomLast->setIcon( getThemeIcon( "/mActionZoomLast.svg" ) );
+  mActionZoomNext->setIcon( getThemeIcon( "/mActionZoomNext.svg" ) );
   mActionLinkGeorefToQGis->setIcon( getThemeIcon( "/mActionLinkGeorefToQGis.png" ) );
   mActionLinkQGisToGeoref->setIcon( getThemeIcon( "/mActionLinkQGisToGeoref.png" ) );
 
