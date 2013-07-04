@@ -270,7 +270,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../images/themes/default/mActionZoomToSelected.png</normaloff>../../images/themes/default/mActionZoomToSelected.png</iconset>
+         <normaloff>../../images/themes/default/mActionZoomToSelected.svg</normaloff>../../images/themes/default/mActionZoomToSelected.svg</iconset>
        </property>
        <property name="iconSize">
         <size>
