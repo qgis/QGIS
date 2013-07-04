@@ -44,7 +44,7 @@ Selecting an item shows you the plugin information in the detail pane.
 <h4>New tab</h4>
 </a>
 <p>
-This tab will be shown when a new plugin is made available? It will be shown
+This tab will be shown when a new plugin is made available! It will be shown
 just once.
 </p>
 
@@ -52,7 +52,7 @@ just once.
 <h4>Upgradable tab</h4>
 </a>
 <p>
-This tab is only available if there one of your installed plugins can be upgraded
+This tab is only available if one of your installed plugins can be upgraded
 from the remote repositories.
 </p>
 
@@ -60,8 +60,8 @@ from the remote repositories.
 <h4>Invalid tab</h4>
 </a>
 <p>
-This tab is only available if there is a plugin invalid. That is if there was an
-error during loading the plugin.
+This tab is only available if there is a invalid plugin. Mostly caused by an error 
+during loading the plugin.
 </p>
 
 <a name="settingstab">
