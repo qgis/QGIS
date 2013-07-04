@@ -456,12 +456,12 @@ Denne tabel er essentiel for mange GIS-programmer for optælling af tabeller.</t
     </message>
     <message>
         <source>Scripts:</source>
-        <translation>Skripts:</translation>
+        <translation>Scripts:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; Version of installed scripts doesn&apos;t match version of released scripts!
 This is probably a result of incorrect PostGIS upgrade.</source>
-        <translation>&lt;warning&gt; De installerede skripts version passer ikke til version af de frigivne skripts!
+        <translation>&lt;warning&gt; De installerede skripts version passer ikke til version af de frigivne scripts!
 Dette er formentlig resultatet af en forkert PostGIS-opgradering.</translation>
     </message>
     <message>
@@ -8451,7 +8451,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Run script</source>
-        <translation>Kør skript</translation>
+        <translation>Kør script</translation>
     </message>
     <message>
         <source>Comment code</source>
@@ -8507,7 +8507,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Run Script</source>
-        <translation>Kør skript</translation>
+        <translation>Kør script</translation>
     </message>
     <message>
         <source>Undo</source>
@@ -8571,7 +8571,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Script was correctly saved.</source>
-        <translation>Skript blev gemt korrekt.</translation>
+        <translation>Script blev gemt korrekt.</translation>
     </message>
     <message>
         <source>Click on button to restore all tabs from last session.</source>
@@ -8607,7 +8607,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Enter Selected</source>
-        <translation>Angiv valgt</translation>
+        <translation>Eksekvér det valgte</translation>
     </message>
     <message>
         <source>Object Inspector</source>
@@ -9043,7 +9043,7 @@ Den vil blive slået fra.</translation>
         <translation>Plugin %1 returnerede ikke en gyldig værdi og kan ikke indlæses</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="220"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="223"/>
         <source>Python error</source>
         <translation>Python-fejl</translation>
     </message>
@@ -9098,7 +9098,7 @@ Error(%2): %3</source>
         <translation>Gemte bruger-CRS [%1]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1768"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1771"/>
         <source>Imported from GDAL</source>
         <translation>Importeret fra GDAL</translation>
     </message>
@@ -11294,56 +11294,56 @@ Vil du angive stien (GISBASE) til din GRASS-installation?</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="92"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="95"/>
         <source>Couldn&apos;t load SIP module.</source>
         <translation>Kunne ikke indlæse SIP-modul.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="92"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="104"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="113"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="120"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="128"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="95"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="107"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="116"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="123"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="131"/>
         <source>Python support will be disabled.</source>
         <translation>Python-understøttelse vil blive slået fra.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="104"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="107"/>
         <source>Couldn&apos;t set SIP API versions.</source>
         <translation>Kunne ikke sætte SIP API-versioner.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="113"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="116"/>
         <source>Couldn&apos;t load PyQt4.</source>
         <translation>Kunne ikke indlæst PyQt4.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="120"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="123"/>
         <source>Couldn&apos;t load PyQGIS.</source>
         <translation>Kunne ikke indlæse PyQGIS.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="128"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="131"/>
         <source>Couldn&apos;t load QGIS utils.</source>
         <translation>Kunne ikke indlæse QGIS Utils.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="203"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="206"/>
         <source>An error occured during execution of following code:</source>
         <translation>Der opstod en fejl ved eksekvering af flg. kode:</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="214"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="217"/>
         <source>Python version:</source>
         <translation>Python-version:</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="215"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="218"/>
         <source>QGIS version:</source>
         <translation>QGIS-version:</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="216"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="219"/>
         <source>Python path:</source>
         <translation>Python-sti:</translation>
     </message>
@@ -11878,7 +11878,7 @@ SQL: %1</translation>
         <translation type="obsolete">Quantum GIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="449"/>
+        <location filename="../src/app/qgisapp.cpp" line="444"/>
         <source>Multiple Instances of QgisApp</source>
         <translation>Flere instanser af QgisApp</translation>
     </message>
@@ -11890,22 +11890,22 @@ Please contact the developers.
 Kontakt udviklerne af programmet.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="463"/>
+        <location filename="../src/app/qgisapp.cpp" line="458"/>
         <source>Checking database</source>
         <translation>Kontrollerer database</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="472"/>
+        <location filename="../src/app/qgisapp.cpp" line="467"/>
         <source>Reading settings</source>
         <translation>Læser indstillinger</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="475"/>
+        <location filename="../src/app/qgisapp.cpp" line="470"/>
         <source>Setting up the GUI</source>
         <translation>Gør GUI klar</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="493"/>
+        <location filename="../src/app/qgisapp.cpp" line="488"/>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
         <translation>Kortkanvas. Det er her, raster- og vektorlag vises, når de tilføjes til kortet</translation>
     </message>
@@ -11922,12 +11922,12 @@ Kontakt udviklerne af programmet.</translation>
         <translation type="obsolete">Slå til</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="561"/>
+        <location filename="../src/app/qgisapp.cpp" line="556"/>
         <source>GPS Information</source>
         <translation>GPS-information</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="572"/>
+        <location filename="../src/app/qgisapp.cpp" line="567"/>
         <source>Log Messages</source>
         <translation>Logmeddelelser</translation>
     </message>
@@ -11936,114 +11936,114 @@ Kontakt udviklerne af programmet.</translation>
         <translation type="obsolete">Quantum GIS - %1 (&apos;%2&apos;)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="595"/>
+        <location filename="../src/app/qgisapp.cpp" line="590"/>
         <source>QGIS starting...</source>
         <translation>QGIS starter...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="611"/>
+        <location filename="../src/app/qgisapp.cpp" line="606"/>
         <source>Checking provider plugins</source>
         <translation>Kontrollerer udbyder-plugins</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="615"/>
+        <location filename="../src/app/qgisapp.cpp" line="610"/>
         <source>Starting Python</source>
         <translation>Starter Python</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="621"/>
+        <location filename="../src/app/qgisapp.cpp" line="616"/>
         <source>Restoring loaded plugins</source>
         <translation>Gendanner hentede plugins</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="648"/>
+        <location filename="../src/app/qgisapp.cpp" line="643"/>
         <source>Initializing file filters</source>
         <translation>Initialiserer filfiltre</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="676"/>
+        <location filename="../src/app/qgisapp.cpp" line="671"/>
         <source>Restoring window state</source>
         <translation>Gendanner vinduestatus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="683"/>
-        <location filename="../src/app/qgisapp.cpp" line="687"/>
+        <location filename="../src/app/qgisapp.cpp" line="678"/>
+        <location filename="../src/app/qgisapp.cpp" line="682"/>
         <source>QGIS Ready!</source>
         <translation>QGIS er klar!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1056"/>
+        <location filename="../src/app/qgisapp.cpp" line="1047"/>
         <source>Minimize</source>
         <translation>Minimér</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1057"/>
+        <location filename="../src/app/qgisapp.cpp" line="1048"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1058"/>
+        <location filename="../src/app/qgisapp.cpp" line="1049"/>
         <source>Minimizes the active window to the dock</source>
         <translation>Minimerer det aktive vindue til docken</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1061"/>
+        <location filename="../src/app/qgisapp.cpp" line="1052"/>
         <source>Zoom</source>
         <translation>Zoom</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1062"/>
+        <location filename="../src/app/qgisapp.cpp" line="1053"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
         <translation>Skifter mellem en prædefineret størrelse og vinduestørrelsen angivet af brugeren</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1065"/>
+        <location filename="../src/app/qgisapp.cpp" line="1056"/>
         <source>Bring All to Front</source>
         <translation>Bring alt forrest</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1066"/>
+        <location filename="../src/app/qgisapp.cpp" line="1057"/>
         <source>Bring forward all open windows</source>
         <translation>Bring alle åbne vinduer frem</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1176"/>
-        <location filename="../src/app/qgisapp.cpp" line="4446"/>
-        <location filename="../src/app/qgisapp.cpp" line="5468"/>
-        <location filename="../src/app/qgisapp.cpp" line="5494"/>
-        <location filename="../src/app/qgisapp.cpp" line="5506"/>
-        <location filename="../src/app/qgisapp.cpp" line="5626"/>
-        <location filename="../src/app/qgisapp.cpp" line="5643"/>
-        <location filename="../src/app/qgisapp.cpp" line="5695"/>
-        <location filename="../src/app/qgisapp.cpp" line="5725"/>
-        <location filename="../src/app/qgisapp.cpp" line="8375"/>
+        <location filename="../src/app/qgisapp.cpp" line="1167"/>
+        <location filename="../src/app/qgisapp.cpp" line="4437"/>
+        <location filename="../src/app/qgisapp.cpp" line="5459"/>
+        <location filename="../src/app/qgisapp.cpp" line="5485"/>
+        <location filename="../src/app/qgisapp.cpp" line="5497"/>
+        <location filename="../src/app/qgisapp.cpp" line="5617"/>
+        <location filename="../src/app/qgisapp.cpp" line="5634"/>
+        <location filename="../src/app/qgisapp.cpp" line="5686"/>
+        <location filename="../src/app/qgisapp.cpp" line="5716"/>
+        <location filename="../src/app/qgisapp.cpp" line="8366"/>
         <source>Error</source>
         <translation>Fejl</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1170"/>
-        <location filename="../src/app/qgisapp.cpp" line="1176"/>
+        <location filename="../src/app/qgisapp.cpp" line="1161"/>
+        <location filename="../src/app/qgisapp.cpp" line="1167"/>
         <source>Failed to open Python console:</source>
         <translation>Kunne ikke åbne Python-konsol:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1274"/>
+        <location filename="../src/app/qgisapp.cpp" line="1265"/>
         <source>Panels</source>
         <translation>Paneler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1276"/>
+        <location filename="../src/app/qgisapp.cpp" line="1267"/>
         <source>Toolbars</source>
         <translation>Værktøjslinier</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1327"/>
+        <location filename="../src/app/qgisapp.cpp" line="1318"/>
         <source>Window</source>
         <translation>Vindue</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1342"/>
+        <location filename="../src/app/qgisapp.cpp" line="1333"/>
         <source>&amp;Database</source>
         <translation>&amp;Database</translation>
     </message>
@@ -12052,128 +12052,128 @@ Kontakt udviklerne af programmet.</translation>
         <translation type="obsolete">Vekt&amp;or</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1346"/>
+        <location filename="../src/app/qgisapp.cpp" line="1337"/>
         <source>&amp;Web</source>
         <translation>&amp;Web</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1493"/>
+        <location filename="../src/app/qgisapp.cpp" line="1484"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
         <translation>Statuslinje, som viser status på rendering af lag og andre tidskrævende operationer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1508"/>
+        <location filename="../src/app/qgisapp.cpp" line="1499"/>
         <source>Toggle extents and mouse position display</source>
         <translation>Slå visning af omrids og museposition til</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1522"/>
-        <location filename="../src/app/qgisapp.cpp" line="7613"/>
+        <location filename="../src/app/qgisapp.cpp" line="1513"/>
+        <location filename="../src/app/qgisapp.cpp" line="7604"/>
         <source>Coordinate:</source>
         <translation>Koordinat:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1523"/>
+        <location filename="../src/app/qgisapp.cpp" line="1514"/>
         <source>Current map coordinate</source>
         <translation>Nuværende kortkoordinat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1538"/>
+        <location filename="../src/app/qgisapp.cpp" line="1529"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position. The format is lat,lon or east,north</source>
         <translation>Viser kortkoordinatet på den nuværende markørposition. Visningen bliver løbende opdateret, som musen bevæges. Det tillader også flytning af kanvassets centrum til en given position. Formatet er brd,læg eller øst, nord</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1542"/>
+        <location filename="../src/app/qgisapp.cpp" line="1533"/>
         <source>Current map coordinate (lat,lon or east,north)</source>
         <translation>Nuværende kortkoordinat (brd, læn eller øst, nord)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1555"/>
+        <location filename="../src/app/qgisapp.cpp" line="1546"/>
         <source>Scale </source>
         <translation>Målforhold </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1556"/>
+        <location filename="../src/app/qgisapp.cpp" line="1547"/>
         <source>Current map scale</source>
         <translation>Nuværende målforhold</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1569"/>
+        <location filename="../src/app/qgisapp.cpp" line="1560"/>
         <source>Displays the current map scale</source>
         <translation>Viser det aktuelle målforhold</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1570"/>
+        <location filename="../src/app/qgisapp.cpp" line="1561"/>
         <source>Current map scale (formatted as x:y)</source>
         <translation>Aktuelt målforhold (formatteret som x:y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1581"/>
+        <location filename="../src/app/qgisapp.cpp" line="1572"/>
         <source>Stop map rendering</source>
         <translation>Stop kortrendering</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1584"/>
+        <location filename="../src/app/qgisapp.cpp" line="1575"/>
         <source>Render</source>
         <translation>Rendering</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1588"/>
+        <location filename="../src/app/qgisapp.cpp" line="1579"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
         <translation>Ved markering renderes kortlagene i henhold til kortnavigation og andre handlinger. Når markering fjernes renderes kortet ikke. Det giver dig mulighed for at tilføje mange lag og symbolisere dem før rendering.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1592"/>
+        <location filename="../src/app/qgisapp.cpp" line="1583"/>
         <source>Toggle map rendering</source>
         <translation>Slå kortrendering til</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1615"/>
+        <location filename="../src/app/qgisapp.cpp" line="1606"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
         <translation>Dette ikon viser, om on-the-fly-koordinatsystems-transformation er slået til eller ej. Klik på ikonet for at åbne dialogen projektegenskaber for at ændre dette. </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1619"/>
+        <location filename="../src/app/qgisapp.cpp" line="1610"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
         <translation>CRS-status - Klik for at åbne dialogen koordinatsystemer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1624"/>
+        <location filename="../src/app/qgisapp.cpp" line="1615"/>
         <source>Ready</source>
         <translation>Klar</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1995"/>
+        <location filename="../src/app/qgisapp.cpp" line="1986"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>Kortoversigtskanvas. Dette kanvas kan bruges til at vise et positionskort, som viser det aktuelle omrids af kortkanvasset. Det aktuelle omrids vises som en rød rektangel. Alle lag på kortet kan tilføjes til oversigtskanvasset.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2004"/>
+        <location filename="../src/app/qgisapp.cpp" line="1995"/>
         <source>Overview</source>
         <translation>Oversigt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2089"/>
+        <location filename="../src/app/qgisapp.cpp" line="2080"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>Oversigt, som viser alle nuværende lag på kortkanvasset. Klik på afkrydsningsfeltet for at slå et lag til og fra. Dobbeltklik på et lag i oversigten for at tilpasse dets visning og sætte andre egenskaber.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2090"/>
+        <location filename="../src/app/qgisapp.cpp" line="2081"/>
         <source>Layers</source>
         <translation>Lag</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2094"/>
+        <location filename="../src/app/qgisapp.cpp" line="2085"/>
         <source>Control rendering order</source>
         <translation>Kontrollér renderingsrækkefølge</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2111"/>
+        <location filename="../src/app/qgisapp.cpp" line="2102"/>
         <source>Map layer list that displays all layers in drawing order.</source>
         <translation>Liste over kortlag, som viser alle lag i tegningsrækkefølge.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2112"/>
+        <location filename="../src/app/qgisapp.cpp" line="2103"/>
         <source>Layer order</source>
         <translation>Lagrækkefølge</translation>
     </message>
@@ -12182,7 +12182,7 @@ Kontakt udviklerne af programmet.</translation>
         <translation type="obsolete">[FEJL] Kan ikke lave privat kopi af qgis.db</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="469"/>
+        <location filename="../src/app/qgisapp.cpp" line="464"/>
         <source>Private qgis.db</source>
         <translation>Privat qgis.db</translation>
     </message>
@@ -12203,96 +12203,96 @@ Kontakt udviklerne af programmet.</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2262"/>
-        <location filename="../src/app/qgisapp.cpp" line="3405"/>
+        <location filename="../src/app/qgisapp.cpp" line="2253"/>
+        <location filename="../src/app/qgisapp.cpp" line="3396"/>
         <source>&lt; Blank &gt;</source>
         <translation>&lt; Tom &gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2317"/>
+        <location filename="../src/app/qgisapp.cpp" line="2308"/>
         <source>QGIS version</source>
         <translation>QGIS-version</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2318"/>
+        <location filename="../src/app/qgisapp.cpp" line="2309"/>
         <source>QGIS code revision</source>
         <translation>QGIS-koderevision</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2322"/>
+        <location filename="../src/app/qgisapp.cpp" line="2313"/>
         <source>Compiled against Qt</source>
         <translation>Kompileret mod Qt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2323"/>
+        <location filename="../src/app/qgisapp.cpp" line="2314"/>
         <source>Running against Qt</source>
         <translation>Kører mod Qt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2327"/>
+        <location filename="../src/app/qgisapp.cpp" line="2318"/>
         <source>Compiled against GDAL/OGR</source>
         <translation>Kompileret mod GDAL/OGR</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2328"/>
+        <location filename="../src/app/qgisapp.cpp" line="2319"/>
         <source>Running against GDAL/OGR</source>
         <translation>Kører mod GDAL/OGR</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2332"/>
+        <location filename="../src/app/qgisapp.cpp" line="2323"/>
         <source>GEOS Version</source>
         <translation>GEOS-version</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2333"/>
+        <location filename="../src/app/qgisapp.cpp" line="2324"/>
         <source>PostgreSQL Client Version</source>
         <translation>PostgreSQL-klientversion</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2337"/>
+        <location filename="../src/app/qgisapp.cpp" line="2328"/>
         <source>No support.</source>
         <translation>Ingen understøttelse.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2343"/>
+        <location filename="../src/app/qgisapp.cpp" line="2334"/>
         <source>SpatiaLite Version</source>
         <translation>SpatiaLite-version</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2347"/>
+        <location filename="../src/app/qgisapp.cpp" line="2338"/>
         <source>QWT Version</source>
         <translation>QWT-version</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2351"/>
+        <location filename="../src/app/qgisapp.cpp" line="2342"/>
         <source>PROJ.4 Version</source>
         <translation>PROJ.4-version</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2353"/>
+        <location filename="../src/app/qgisapp.cpp" line="2344"/>
         <source>QScintilla2 Version</source>
         <translation>QScintilla2-version</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2356"/>
+        <location filename="../src/app/qgisapp.cpp" line="2347"/>
         <source>This copy of QGIS writes debugging output.</source>
         <translation>Denne kopi af QGIS skriver fejlsøgningsoutput.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2480"/>
+        <location filename="../src/app/qgisapp.cpp" line="2471"/>
         <source>%1 doesn&apos;t have any layers</source>
         <translation>%1 har ikke nogen lag</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2481"/>
-        <location filename="../src/app/qgisapp.cpp" line="2488"/>
-        <location filename="../src/app/qgisapp.cpp" line="2822"/>
+        <location filename="../src/app/qgisapp.cpp" line="2472"/>
+        <location filename="../src/app/qgisapp.cpp" line="2479"/>
+        <location filename="../src/app/qgisapp.cpp" line="2813"/>
         <source>Invalid Data Source</source>
         <translation>Ugyldig datakilde</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2487"/>
-        <location filename="../src/app/qgisapp.cpp" line="2821"/>
+        <location filename="../src/app/qgisapp.cpp" line="2478"/>
+        <location filename="../src/app/qgisapp.cpp" line="2812"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 er ikke en gyldig eller genkendt datakilde</translation>
     </message>
@@ -12301,7 +12301,7 @@ Kontakt udviklerne af programmet.</translation>
         <translation type="obsolete">Vælg zip-lag at tilføje...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2582"/>
+        <location filename="../src/app/qgisapp.cpp" line="2573"/>
         <source>Vector</source>
         <translation>Vektor</translation>
     </message>
@@ -12318,27 +12318,27 @@ Kontakt udviklerne af programmet.</translation>
         <translation type="obsolete">Vælg vektorlag at tilføje...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2849"/>
+        <location filename="../src/app/qgisapp.cpp" line="2840"/>
         <source>PostgreSQL</source>
         <translation>PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2849"/>
+        <location filename="../src/app/qgisapp.cpp" line="2840"/>
         <source>Cannot get PostgreSQL select dialog from provider.</source>
         <translation>Kan ikke hente PostgreSQL-udvælgelsesdialog fra udbyder.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2909"/>
+        <location filename="../src/app/qgisapp.cpp" line="2900"/>
         <source>%1 is an invalid layer - not loaded</source>
         <translation>%1 er et ugyldigt lag - ikke indlæst</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6935"/>
+        <location filename="../src/app/qgisapp.cpp" line="6926"/>
         <source>Do you want to save the current project? %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8355"/>
+        <location filename="../src/app/qgisapp.cpp" line="8346"/>
         <source>Invalid Layer</source>
         <translation>Ugyldigt lag</translation>
     </message>
@@ -12347,123 +12347,123 @@ Kontakt udviklerne af programmet.</translation>
         <translation type="obsolete">%1 er et ugyldigt lag og kan ikke indlæses.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2945"/>
+        <location filename="../src/app/qgisapp.cpp" line="2936"/>
         <source>SpatiaLite</source>
         <translation>SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2945"/>
+        <location filename="../src/app/qgisapp.cpp" line="2936"/>
         <source>Cannot get SpatiaLite select dialog from provider.</source>
         <translation>Kan ikke hente SpatiaLite udvælgelsesdialog fra udbyder.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2991"/>
+        <location filename="../src/app/qgisapp.cpp" line="2982"/>
         <source>MSSQL</source>
         <translation>MSSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2991"/>
+        <location filename="../src/app/qgisapp.cpp" line="2982"/>
         <source>Cannot get MSSQL select dialog from provider.</source>
         <translation>Kan ikke hente MSSQL-udvælgelsesdialog fra udbyder.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3013"/>
+        <location filename="../src/app/qgisapp.cpp" line="3004"/>
         <source>Oracle</source>
         <translation>Oracle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3013"/>
+        <location filename="../src/app/qgisapp.cpp" line="3004"/>
         <source>Cannot get Oracle select dialog from provider.</source>
         <translation>Kan ikke hente Oracle-udvælgelsesdialog fra udbyder.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3040"/>
+        <location filename="../src/app/qgisapp.cpp" line="3031"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3040"/>
+        <location filename="../src/app/qgisapp.cpp" line="3031"/>
         <source>Cannot get WMS select dialog from provider.</source>
         <translation>Kan ikke hente WMS-udvælgelsesdialog fra udbyderen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3061"/>
+        <location filename="../src/app/qgisapp.cpp" line="3052"/>
         <source>WCS</source>
         <translation>WCS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3061"/>
+        <location filename="../src/app/qgisapp.cpp" line="3052"/>
         <source>Cannot get WCS select dialog from provider.</source>
         <translation>Kan ikke hente WCS-udvælgelsesdialog fra udbyderen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3088"/>
+        <location filename="../src/app/qgisapp.cpp" line="3079"/>
         <source>WFS</source>
         <translation>WFS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3088"/>
+        <location filename="../src/app/qgisapp.cpp" line="3079"/>
         <source>Cannot get WFS select dialog from provider.</source>
         <translation>Kan ikke hente WFS-udvælgelsesdialog fra udbyderen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3275"/>
+        <location filename="../src/app/qgisapp.cpp" line="3266"/>
         <source>Default failed to open: %1</source>
         <translation>Standard kunne ikke åbnes: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3279"/>
+        <location filename="../src/app/qgisapp.cpp" line="3270"/>
         <source>Default not found: %1</source>
         <translation>Standard ikke fundet: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3281"/>
+        <location filename="../src/app/qgisapp.cpp" line="3272"/>
         <source>Open Template Project</source>
         <translation>Åbn skabelonprojekt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3306"/>
+        <location filename="../src/app/qgisapp.cpp" line="3297"/>
         <source>Auto-open Project</source>
         <translation>Auto-åbn projekt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3339"/>
+        <location filename="../src/app/qgisapp.cpp" line="3330"/>
         <source>Failed to open: %1</source>
         <translation>Kunne ikke åbne: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3362"/>
+        <location filename="../src/app/qgisapp.cpp" line="3353"/>
         <source>Not valid project file: %1</source>
         <translation>Ugyldig projektfil: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3375"/>
+        <location filename="../src/app/qgisapp.cpp" line="3366"/>
         <source>Project failed to open: %1</source>
         <translation>Projekt kunne ikke åbnes: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3382"/>
+        <location filename="../src/app/qgisapp.cpp" line="3373"/>
         <source>Default template has been reopened: %1</source>
         <translation>Standardskabelon er blevet genåbnet: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3389"/>
+        <location filename="../src/app/qgisapp.cpp" line="3380"/>
         <source>File not found: %1</source>
         <translation>Fil ikke fundet: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3458"/>
+        <location filename="../src/app/qgisapp.cpp" line="3449"/>
         <source>Calculating...</source>
         <translation>Beregner...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3458"/>
-        <location filename="../src/app/qgisapp.cpp" line="4370"/>
+        <location filename="../src/app/qgisapp.cpp" line="3449"/>
+        <location filename="../src/app/qgisapp.cpp" line="4361"/>
         <source>Abort...</source>
         <translation>Afbryd...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3484"/>
+        <location filename="../src/app/qgisapp.cpp" line="3475"/>
         <source>Choose a QGIS project file to open</source>
         <translation>Vælg en QGIS-projektfil, der skal åbnes</translation>
     </message>
@@ -12472,91 +12472,91 @@ Kontakt udviklerne af programmet.</translation>
         <translation type="obsolete">QGIS-filer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3521"/>
+        <location filename="../src/app/qgisapp.cpp" line="3512"/>
         <source>Loading project: %1</source>
         <translation>Indlæser projekt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3535"/>
+        <location filename="../src/app/qgisapp.cpp" line="3526"/>
         <source>Unable to open project</source>
         <translation>Kan ikke åbne projekt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3580"/>
+        <location filename="../src/app/qgisapp.cpp" line="3571"/>
         <source>Security warning</source>
         <translation>Sikkerhedsadvarsel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3581"/>
+        <location filename="../src/app/qgisapp.cpp" line="3572"/>
         <source>project macros have been disabled.</source>
         <translation>projektmakroer er slået fra.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3586"/>
+        <location filename="../src/app/qgisapp.cpp" line="3577"/>
         <source>Enable macros</source>
         <translation>Slå makroer til</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3615"/>
+        <location filename="../src/app/qgisapp.cpp" line="3606"/>
         <source>Project loaded</source>
         <translation>Projekt indlæst</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3647"/>
+        <location filename="../src/app/qgisapp.cpp" line="3638"/>
         <source>Choose a QGIS project file</source>
         <translation>Vælg en QGIS-projektfil</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3668"/>
-        <location filename="../src/app/qgisapp.cpp" line="3727"/>
+        <location filename="../src/app/qgisapp.cpp" line="3659"/>
+        <location filename="../src/app/qgisapp.cpp" line="3718"/>
         <source>Saved project to: %1</source>
         <translation>Gemte projekt til: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3680"/>
-        <location filename="../src/app/qgisapp.cpp" line="3734"/>
+        <location filename="../src/app/qgisapp.cpp" line="3671"/>
+        <location filename="../src/app/qgisapp.cpp" line="3725"/>
         <source>Unable to save project %1</source>
         <translation>Kan ikke gemme projekt %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3706"/>
+        <location filename="../src/app/qgisapp.cpp" line="3697"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>Vælg et filnavn at gemme QGIS-projektfilen som</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3832"/>
+        <location filename="../src/app/qgisapp.cpp" line="3823"/>
         <source>Unable to load %1</source>
         <translation>Kan ikke indlæse %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3880"/>
+        <location filename="../src/app/qgisapp.cpp" line="3871"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Vælg et filnavn at gemme kortbilledet som</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3885"/>
+        <location filename="../src/app/qgisapp.cpp" line="3876"/>
         <source>Saved map image to %1</source>
         <translation>Gemte kortbillede til %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6163"/>
+        <location filename="../src/app/qgisapp.cpp" line="6154"/>
         <source>%1 (%2 type unsupported)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="6600"/>
         <location filename="../src/app/qgisapp.cpp" line="6609"/>
-        <location filename="../src/app/qgisapp.cpp" line="6618"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
         <translation>For at ændre lysstyrke eller kontrast er du nødt til at have valgt et rasterlag.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6644"/>
+        <location filename="../src/app/qgisapp.cpp" line="6635"/>
         <source>en</source>
         <comment>documentation language</comment>
         <translation>en</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6662"/>
+        <location filename="../src/app/qgisapp.cpp" line="6653"/>
         <source>http://www.qgis.org/en/commercial-support.html</source>
         <translation>http://www.qgis.org/en/commercial-support.html</translation>
     </message>
@@ -12565,18 +12565,18 @@ Kontakt udviklerne af programmet.</translation>
         <translation type="obsolete">Vil du gemme det aktuelle projekt?%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8373"/>
+        <location filename="../src/app/qgisapp.cpp" line="8364"/>
         <source>Error adding valid layer to map canvas</source>
         <translation>Fejl ved tilføjelse af gyldigt lag til kortkanvas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8374"/>
-        <location filename="../src/app/qgisapp.cpp" line="8521"/>
+        <location filename="../src/app/qgisapp.cpp" line="8365"/>
+        <location filename="../src/app/qgisapp.cpp" line="8512"/>
         <source>Raster layer</source>
         <translation>Rasterlag</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4205"/>
+        <location filename="../src/app/qgisapp.cpp" line="4196"/>
         <source>Labeling</source>
         <translation>Labelværktøj</translation>
     </message>
@@ -12585,90 +12585,90 @@ Kontakt udviklerne af programmet.</translation>
         <translation type="obsolete">Vælg et vektorlag først.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4270"/>
+        <location filename="../src/app/qgisapp.cpp" line="4261"/>
         <source>Layer labeling settings</source>
         <translation>Indstillinger for laglabels</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4447"/>
+        <location filename="../src/app/qgisapp.cpp" line="4438"/>
         <source>Cannot write raster error code: %1</source>
         <translation>Kan ikke skrive raster-fejlkode: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4538"/>
+        <location filename="../src/app/qgisapp.cpp" line="4529"/>
         <source>Saving done</source>
         <translation>Gemning fuldført</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4539"/>
+        <location filename="../src/app/qgisapp.cpp" line="4530"/>
         <source>Export to vector file has been completed</source>
         <translation>Eksport til vektorfil er gennemført</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4545"/>
+        <location filename="../src/app/qgisapp.cpp" line="4536"/>
         <source>Save error</source>
         <translation>Fejl ved gemning</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4546"/>
+        <location filename="../src/app/qgisapp.cpp" line="4537"/>
         <source>Export to vector file failed.
 Error: %1</source>
         <translation>Eksport til vektorfil mislykkedes.
 Fejl: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4577"/>
+        <location filename="../src/app/qgisapp.cpp" line="4568"/>
+        <location filename="../src/app/qgisapp.cpp" line="6547"/>
         <location filename="../src/app/qgisapp.cpp" line="6556"/>
-        <location filename="../src/app/qgisapp.cpp" line="6565"/>
+        <location filename="../src/app/qgisapp.cpp" line="6599"/>
         <location filename="../src/app/qgisapp.cpp" line="6608"/>
-        <location filename="../src/app/qgisapp.cpp" line="6617"/>
         <source>No Layer Selected</source>
         <translation>Intet lag valgt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4578"/>
+        <location filename="../src/app/qgisapp.cpp" line="4569"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>For at slette objekter skal du vælge et vektorlag i oversigten</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4586"/>
+        <location filename="../src/app/qgisapp.cpp" line="4577"/>
         <source>No Vector Layer Selected</source>
         <translation>Intet vektorlag valgt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4587"/>
+        <location filename="../src/app/qgisapp.cpp" line="4578"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Sletning af objekter virker kun på vektorlag</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4594"/>
+        <location filename="../src/app/qgisapp.cpp" line="4585"/>
         <source>Provider does not support deletion</source>
         <translation>Udbyder understøtter ikke sletning</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4595"/>
+        <location filename="../src/app/qgisapp.cpp" line="4586"/>
         <source>Data provider does not support deleting features</source>
         <translation>Dataudbyder understøtter ikke sletning af objekter</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4602"/>
-        <location filename="../src/app/qgisapp.cpp" line="5063"/>
-        <location filename="../src/app/qgisapp.cpp" line="5122"/>
+        <location filename="../src/app/qgisapp.cpp" line="4593"/>
+        <location filename="../src/app/qgisapp.cpp" line="5054"/>
+        <location filename="../src/app/qgisapp.cpp" line="5113"/>
         <source>Layer not editable</source>
         <translation>Lag kan ikke redigeres</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4603"/>
+        <location filename="../src/app/qgisapp.cpp" line="4594"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>Det aktuelle lag kan ikke redigeres. Vælg &apos;Start redigering&apos; værktøjslinjen Digitalisering.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4610"/>
+        <location filename="../src/app/qgisapp.cpp" line="4601"/>
         <source>Delete features</source>
         <translation>Slet objekter</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="4610"/>
+        <location filename="../src/app/qgisapp.cpp" line="4601"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
@@ -12677,171 +12677,171 @@ Fejl: %1</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4615"/>
+        <location filename="../src/app/qgisapp.cpp" line="4606"/>
         <source>Features deleted</source>
         <translation>Objekter slettet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4618"/>
+        <location filename="../src/app/qgisapp.cpp" line="4609"/>
         <source>Problem deleting features</source>
         <translation>Der var et problem med at slette objekter</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4619"/>
+        <location filename="../src/app/qgisapp.cpp" line="4610"/>
         <source>A problem occured during deletion of features</source>
         <translation>Et problem opstod ved sletning af objekter</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4666"/>
+        <location filename="../src/app/qgisapp.cpp" line="4657"/>
         <source>Merging features...</source>
         <translation>Sammenlægger objekter...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4666"/>
+        <location filename="../src/app/qgisapp.cpp" line="4657"/>
         <source>Abort</source>
         <translation>Afbryd</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4722"/>
+        <location filename="../src/app/qgisapp.cpp" line="4713"/>
         <source>Create unique print composer title</source>
         <translation>Opret unik titel til printlayout</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4725"/>
+        <location filename="../src/app/qgisapp.cpp" line="4716"/>
         <source>(title generated if left empty)</source>
         <translation>(titel dannet hvis tom)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4739"/>
+        <location filename="../src/app/qgisapp.cpp" line="4730"/>
         <source>Composer title</source>
         <translation>Titel på layout</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4754"/>
+        <location filename="../src/app/qgisapp.cpp" line="4745"/>
         <source>Title can not be empty!</source>
         <translation>Titel kan ikke være tom!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4765"/>
+        <location filename="../src/app/qgisapp.cpp" line="4756"/>
         <source>Title already exists!</source>
         <translation>Titel findes allerede!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4782"/>
-        <location filename="../src/app/qgisapp.cpp" line="4863"/>
+        <location filename="../src/app/qgisapp.cpp" line="4773"/>
+        <location filename="../src/app/qgisapp.cpp" line="4854"/>
         <source>Composer %1</source>
         <translation>Layout %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4825"/>
+        <location filename="../src/app/qgisapp.cpp" line="4816"/>
         <source> copy</source>
         <translation> kopi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5048"/>
-        <location filename="../src/app/qgisapp.cpp" line="5111"/>
+        <location filename="../src/app/qgisapp.cpp" line="5039"/>
+        <location filename="../src/app/qgisapp.cpp" line="5102"/>
         <source>No active layer</source>
         <translation>Intet aktivt lag</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5049"/>
-        <location filename="../src/app/qgisapp.cpp" line="5111"/>
+        <location filename="../src/app/qgisapp.cpp" line="5040"/>
+        <location filename="../src/app/qgisapp.cpp" line="5102"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>Intet aktivt lag fundet. Vælg et lag i laglisten</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5057"/>
-        <location filename="../src/app/qgisapp.cpp" line="5117"/>
+        <location filename="../src/app/qgisapp.cpp" line="5048"/>
+        <location filename="../src/app/qgisapp.cpp" line="5108"/>
         <source>Active layer is not vector</source>
         <translation>Aktivt lag er ikke vektor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5057"/>
-        <location filename="../src/app/qgisapp.cpp" line="5117"/>
+        <location filename="../src/app/qgisapp.cpp" line="5048"/>
+        <location filename="../src/app/qgisapp.cpp" line="5108"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>Værktøjet til fletning af objekter virker kun på vektorlag. Vælg et vektorlag i laglisten</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5063"/>
-        <location filename="../src/app/qgisapp.cpp" line="5122"/>
+        <location filename="../src/app/qgisapp.cpp" line="5054"/>
+        <location filename="../src/app/qgisapp.cpp" line="5113"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
         <translation>Fletning af objekter kan kun gøres for lag i redigeringstilstand. Gå til Lag-&gt;Slå redigering til/fra for at bruge sammenlægningsværktøjet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5071"/>
-        <location filename="../src/app/qgisapp.cpp" line="5137"/>
-        <location filename="../src/app/qgisapp.cpp" line="5174"/>
+        <location filename="../src/app/qgisapp.cpp" line="5062"/>
+        <location filename="../src/app/qgisapp.cpp" line="5128"/>
+        <location filename="../src/app/qgisapp.cpp" line="5165"/>
         <source>Not enough features selected</source>
         <translation>Ikke nok objekter valgt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5071"/>
-        <location filename="../src/app/qgisapp.cpp" line="5137"/>
-        <location filename="../src/app/qgisapp.cpp" line="5174"/>
+        <location filename="../src/app/qgisapp.cpp" line="5062"/>
+        <location filename="../src/app/qgisapp.cpp" line="5128"/>
+        <location filename="../src/app/qgisapp.cpp" line="5165"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>Fletteværktøjet kræver mindst 2 valgte objekter</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5085"/>
+        <location filename="../src/app/qgisapp.cpp" line="5076"/>
         <source>Merged feature attributes</source>
         <translation>Flettede objektattributter</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5149"/>
-        <location filename="../src/app/qgisapp.cpp" line="5189"/>
+        <location filename="../src/app/qgisapp.cpp" line="5140"/>
+        <location filename="../src/app/qgisapp.cpp" line="5180"/>
         <source>Merge failed</source>
         <translation>Fletning mislykkedes</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5149"/>
-        <location filename="../src/app/qgisapp.cpp" line="5189"/>
+        <location filename="../src/app/qgisapp.cpp" line="5140"/>
+        <location filename="../src/app/qgisapp.cpp" line="5180"/>
         <source>An error occured during the merge operation</source>
         <translation>Der opstod en fejl ved fletningen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5157"/>
+        <location filename="../src/app/qgisapp.cpp" line="5148"/>
         <source>Union operation canceled</source>
         <translation>Foreningshandling afbrudt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5157"/>
-        <location filename="../src/app/qgisapp.cpp" line="5196"/>
+        <location filename="../src/app/qgisapp.cpp" line="5148"/>
+        <location filename="../src/app/qgisapp.cpp" line="5187"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation>Foreningshandlingen ville resultere i en geometritype, som ikke er kompatibel med det nuværende lag, og er derfor afbrudt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5202"/>
+        <location filename="../src/app/qgisapp.cpp" line="5193"/>
         <source>Merged features</source>
         <translation>Flettede objekter</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5362"/>
+        <location filename="../src/app/qgisapp.cpp" line="5353"/>
         <source>Features cut</source>
         <translation>Objekter klippet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5396"/>
+        <location filename="../src/app/qgisapp.cpp" line="5387"/>
         <source>Features pasted</source>
         <translation>Objekter indsat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5469"/>
+        <location filename="../src/app/qgisapp.cpp" line="5460"/>
         <source>Cannot copy style: %1</source>
         <translation>Kan ikke kopiere stilart: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5495"/>
+        <location filename="../src/app/qgisapp.cpp" line="5486"/>
         <source>Cannot parse style: %1:%2:%3</source>
         <translation>Kan ikke fortolke stilart: %1:%2:%3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5507"/>
+        <location filename="../src/app/qgisapp.cpp" line="5498"/>
         <source>Cannot read style: %1</source>
         <translation>Kan ikke læse stilart: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5627"/>
-        <location filename="../src/app/qgisapp.cpp" line="5696"/>
+        <location filename="../src/app/qgisapp.cpp" line="5618"/>
+        <location filename="../src/app/qgisapp.cpp" line="5687"/>
         <source>Could not commit changes to layer %1
 
 Errors: %2
@@ -12852,27 +12852,27 @@ Fejl: %2
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5588"/>
+        <location filename="../src/app/qgisapp.cpp" line="5579"/>
         <source>Start editing failed</source>
         <translation>Start af redigering mislykkedes</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="313"/>
+        <location filename="../src/app/qgisapp.cpp" line="308"/>
         <source>QGIS </source>
         <translation>QGIS </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="415"/>
+        <location filename="../src/app/qgisapp.cpp" line="410"/>
         <source>CRS undefined - defaulting to project CRS</source>
         <translation>CRS udefineret - falder tilbage til projekt-CRS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="422"/>
+        <location filename="../src/app/qgisapp.cpp" line="417"/>
         <source>CRS undefined - defaulting to default CRS: %1</source>
         <translation>CRS udefineret - falder tilbage til standard-CRS: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="450"/>
+        <location filename="../src/app/qgisapp.cpp" line="445"/>
         <source>Multiple instances of QGIS application object detected.
 Please contact the developers.
 </source>
@@ -12880,109 +12880,109 @@ Please contact the developers.
 Kontakt udviklerne af programmet.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="548"/>
+        <location filename="../src/app/qgisapp.cpp" line="543"/>
         <source>Browser</source>
         <translation>Browser</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="553"/>
+        <location filename="../src/app/qgisapp.cpp" line="548"/>
         <source>Browser (2)</source>
         <translation>Browser (2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="592"/>
+        <location filename="../src/app/qgisapp.cpp" line="587"/>
         <source>QGIS - %1 (&apos;%2&apos;)</source>
         <translation>QGIS - %1 (&apos;%2&apos;)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1074"/>
+        <location filename="../src/app/qgisapp.cpp" line="1065"/>
         <source>Current Edits</source>
         <translation>Aktuelle redigeringer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2910"/>
+        <location filename="../src/app/qgisapp.cpp" line="2901"/>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>%1 er et ugyldigt lag og kan ikke indlæses. Tjek venligst &lt;a href=&quot;#messageLog&quot;&gt;beskedloggen&lt;/a&gt; for yderligere information.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2965"/>
+        <location filename="../src/app/qgisapp.cpp" line="2956"/>
         <source>Delimited Text</source>
         <translation>Afgrænset tekst</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2965"/>
+        <location filename="../src/app/qgisapp.cpp" line="2956"/>
         <source>Cannot get Delimited Text select dialog from provider.</source>
         <translation>Kan ikke hente Afgrænset tekst-dialog fra udbyder.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3486"/>
-        <location filename="../src/app/qgisapp.cpp" line="3649"/>
-        <location filename="../src/app/qgisapp.cpp" line="3708"/>
+        <location filename="../src/app/qgisapp.cpp" line="3477"/>
+        <location filename="../src/app/qgisapp.cpp" line="3640"/>
+        <location filename="../src/app/qgisapp.cpp" line="3699"/>
         <source>QGIS files</source>
         <translation>QGIS-filer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4202"/>
+        <location filename="../src/app/qgisapp.cpp" line="4193"/>
         <source>Default system font substituted.</source>
         <translation>Standard systemfont for substituerede.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4206"/>
+        <location filename="../src/app/qgisapp.cpp" line="4197"/>
         <source>Font for layer &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; was not found (&lt;i&gt;%2&lt;/i&gt;). %3</source>
         <translation>Font til lag &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; blev ikke fundet (&lt;i&gt;%2&lt;/i&gt;). %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4219"/>
+        <location filename="../src/app/qgisapp.cpp" line="4210"/>
         <source>Open labeling dialog</source>
         <translation>Åbn labelværktøj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4261"/>
+        <location filename="../src/app/qgisapp.cpp" line="4252"/>
         <source>Labeling Options</source>
         <translation>Labelmuligheder</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4262"/>
+        <location filename="../src/app/qgisapp.cpp" line="4253"/>
         <source>Please select a vector layer first</source>
         <translation>Vælg et vektorlag først</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4372"/>
+        <location filename="../src/app/qgisapp.cpp" line="4363"/>
         <source>Reading raster</source>
         <translation>Læser raster</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5317"/>
+        <location filename="../src/app/qgisapp.cpp" line="5308"/>
         <source>No active vector layer</source>
         <translation>Intet aktivt vektorlag</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5318"/>
+        <location filename="../src/app/qgisapp.cpp" line="5309"/>
         <source>To select features, choose a vector layer in the legend</source>
         <translation>Vælg et vektorlag i tegnforklaringen for at vælge objekter</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5589"/>
+        <location filename="../src/app/qgisapp.cpp" line="5580"/>
         <source>Provider cannot be opened for editing</source>
         <translation>Udbyder kan ikke åbnes til redigering</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5614"/>
+        <location filename="../src/app/qgisapp.cpp" line="5605"/>
         <source>Stop editing</source>
         <translation>Stop redigering</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5615"/>
+        <location filename="../src/app/qgisapp.cpp" line="5606"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>Vil du gemme ændringerne til lag %1?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5644"/>
+        <location filename="../src/app/qgisapp.cpp" line="5635"/>
         <source>Problems during roll back</source>
         <translation>Problemer med tilbagerulning</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5726"/>
+        <location filename="../src/app/qgisapp.cpp" line="5717"/>
         <source>Could not %1 changes to layer %2
 
 Errors: %3
@@ -12993,70 +12993,70 @@ Fejl: %3
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5727"/>
+        <location filename="../src/app/qgisapp.cpp" line="5718"/>
         <source>rollback</source>
         <translation>rollback</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5727"/>
+        <location filename="../src/app/qgisapp.cpp" line="5718"/>
         <source>cancel</source>
         <translation>annuller</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5763"/>
+        <location filename="../src/app/qgisapp.cpp" line="5754"/>
         <source>Save</source>
         <translation>Gem</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5763"/>
-        <location filename="../src/app/qgisapp.cpp" line="5795"/>
-        <location filename="../src/app/qgisapp.cpp" line="5827"/>
+        <location filename="../src/app/qgisapp.cpp" line="5754"/>
+        <location filename="../src/app/qgisapp.cpp" line="5786"/>
+        <location filename="../src/app/qgisapp.cpp" line="5818"/>
         <source>all</source>
         <translation>alle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5795"/>
+        <location filename="../src/app/qgisapp.cpp" line="5786"/>
         <source>Rollback</source>
         <translation>Rollback</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5827"/>
+        <location filename="../src/app/qgisapp.cpp" line="5818"/>
         <source>Cancel</source>
         <translation>Afbryd</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5843"/>
+        <location filename="../src/app/qgisapp.cpp" line="5834"/>
         <source>Current edits</source>
         <translation>Aktuelle redigeringer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5844"/>
+        <location filename="../src/app/qgisapp.cpp" line="5835"/>
         <source>%1 current changes for %2 layer(s)?</source>
         <translation>%1 aktueller ændringer til %2 lag?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6116"/>
+        <location filename="../src/app/qgisapp.cpp" line="6107"/>
         <source>copy</source>
         <translation>kopiér</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6120"/>
+        <location filename="../src/app/qgisapp.cpp" line="6111"/>
         <source>Plugin layer</source>
         <translation>Pluginlag</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6132"/>
+        <location filename="../src/app/qgisapp.cpp" line="6123"/>
         <source>Memory layer</source>
         <translation>Hukommelseslag</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6152"/>
-        <location filename="../src/app/qgisapp.cpp" line="6162"/>
+        <location filename="../src/app/qgisapp.cpp" line="6143"/>
+        <location filename="../src/app/qgisapp.cpp" line="6153"/>
         <source>Duplicate layer: </source>
         <translation>Dublér lag: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6153"/>
+        <location filename="../src/app/qgisapp.cpp" line="6144"/>
         <source>%1 (duplication resulted in invalid layer)</source>
         <translation>%1 (dublering resulterede i ugyldigt lag)</translation>
     </message>
@@ -13065,83 +13065,83 @@ Fejl: %3
         <translation type="obsolete">%1 (%2type ikke understøttet)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6342"/>
+        <location filename="../src/app/qgisapp.cpp" line="6333"/>
         <source>Couldn&apos;t load Python support library: %1</source>
         <translation>Kunne ikke indlæse bibliotek til Python-understøttelse:%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6353"/>
+        <location filename="../src/app/qgisapp.cpp" line="6344"/>
         <source>Couldn&apos;t resolve python support library&apos;s instance() symbol.</source>
         <translation>Kunne ikke henføre til Python-supportbibliotekets instance()-symbol.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6368"/>
+        <location filename="../src/app/qgisapp.cpp" line="6359"/>
         <source>Python support ENABLED :-) </source>
         <translation>Python-understøttelse SLÅET TIL :-) </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6416"/>
+        <location filename="../src/app/qgisapp.cpp" line="6407"/>
         <source>There is a new version of QGIS available</source>
         <translation>Der er en ny version af QGIS tilgængelig</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6420"/>
+        <location filename="../src/app/qgisapp.cpp" line="6411"/>
         <source>You are running a development version of QGIS</source>
         <translation>Dette er en udvikler version af QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6424"/>
+        <location filename="../src/app/qgisapp.cpp" line="6415"/>
         <source>You are running the current version of QGIS</source>
         <translation>Dette er den aktueller version af QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6429"/>
+        <location filename="../src/app/qgisapp.cpp" line="6420"/>
         <source>Would you like more information?</source>
         <translation>Ønsker du mere information?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6432"/>
-        <location filename="../src/app/qgisapp.cpp" line="6445"/>
-        <location filename="../src/app/qgisapp.cpp" line="6450"/>
-        <location filename="../src/app/qgisapp.cpp" line="6471"/>
+        <location filename="../src/app/qgisapp.cpp" line="6423"/>
+        <location filename="../src/app/qgisapp.cpp" line="6436"/>
+        <location filename="../src/app/qgisapp.cpp" line="6441"/>
+        <location filename="../src/app/qgisapp.cpp" line="6462"/>
         <source>QGIS Version Information</source>
         <translation>QGIS-versionsinformation</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6438"/>
+        <location filename="../src/app/qgisapp.cpp" line="6429"/>
         <source>QGIS - Changes since last release</source>
         <translation>QGIS - Ændringer siden sidste version</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6450"/>
+        <location filename="../src/app/qgisapp.cpp" line="6441"/>
         <source>Unable to get current version information from server</source>
         <translation>Kan ikke hente aktuel versionsinformation fra server</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6460"/>
+        <location filename="../src/app/qgisapp.cpp" line="6451"/>
         <source>Connection refused - server may be down</source>
         <translation>Forbindelse nægtet - server kan være nede</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6463"/>
+        <location filename="../src/app/qgisapp.cpp" line="6454"/>
         <source>QGIS server was not found</source>
         <translation>QGIS-server kunne ikke findes</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6466"/>
+        <location filename="../src/app/qgisapp.cpp" line="6457"/>
         <source>Unknown network socket error: %1</source>
         <translation>Ukendt socketfejl på netværket: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6471"/>
+        <location filename="../src/app/qgisapp.cpp" line="6462"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>Kan ikke kommunikere med QGIS&apos; versionsserver
 %1</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="6548"/>
         <location filename="../src/app/qgisapp.cpp" line="6557"/>
-        <location filename="../src/app/qgisapp.cpp" line="6566"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>For at udføre en fuld histogram-strækning, er du nødt til at have valgt et rasterlag.</translation>
     </message>
@@ -13150,28 +13150,28 @@ Fejl: %3
         <translation type="obsolete">Intet rasterlag valgt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6773"/>
-        <location filename="../src/app/qgisapp.cpp" line="6821"/>
+        <location filename="../src/app/qgisapp.cpp" line="6764"/>
+        <location filename="../src/app/qgisapp.cpp" line="6812"/>
         <source>Layer is not valid</source>
         <translation>Lag er ikke gyldigt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6774"/>
+        <location filename="../src/app/qgisapp.cpp" line="6765"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>Laget %1 er ikke et gyldigt lag og kan ikke tilføjes til kortet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6822"/>
+        <location filename="../src/app/qgisapp.cpp" line="6813"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Laget er ikke et gyldigt lag og kan tilføjes til kortet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6910"/>
+        <location filename="../src/app/qgisapp.cpp" line="6901"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
         <translation>Projekt har lag i redigeringstilstand med ugemte ændringer, som IKKE vil blive gemt!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6934"/>
+        <location filename="../src/app/qgisapp.cpp" line="6925"/>
         <source>Save?</source>
         <translation>Gem?</translation>
     </message>
@@ -13180,37 +13180,37 @@ Fejl: %3
         <translation type="obsolete">Vil du gemme det aktuelle projekt?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7543"/>
+        <location filename="../src/app/qgisapp.cpp" line="7534"/>
         <source>Current CRS: %1 (OTFR enabled)</source>
         <translation>Aktuelt CRS: %1 (OTFR slået til)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7550"/>
+        <location filename="../src/app/qgisapp.cpp" line="7541"/>
         <source>Current CRS: %1 (OTFR disabled)</source>
         <translation>Aktuelt CRS: %1 (OTFR slået fra)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7603"/>
+        <location filename="../src/app/qgisapp.cpp" line="7594"/>
         <source>Map coordinates for the current view extents</source>
         <translation>Kortkoordinater for den aktuelle visnings omrids</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7611"/>
+        <location filename="../src/app/qgisapp.cpp" line="7602"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>Kortkoordinater på musemarkørs position</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7676"/>
+        <location filename="../src/app/qgisapp.cpp" line="7667"/>
         <source>Extents:</source>
         <translation>Omrids:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7748"/>
+        <location filename="../src/app/qgisapp.cpp" line="7739"/>
         <source>Maptips require an active layer</source>
         <translation>Korttips kræver et aktivt lag</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="7840"/>
+        <location filename="../src/app/qgisapp.cpp" line="7831"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation>
@@ -13219,7 +13219,7 @@ Fejl: %3
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8264"/>
+        <location filename="../src/app/qgisapp.cpp" line="8255"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Åbn en GDAL-understøttet raster-datakilde</translation>
     </message>
@@ -13228,68 +13228,68 @@ Fejl: %3
         <translation type="obsolete">%1 er ikke en gyldig eller genkendt datakilde</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8518"/>
+        <location filename="../src/app/qgisapp.cpp" line="8509"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 er ikke en understøttet datakilde</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8523"/>
+        <location filename="../src/app/qgisapp.cpp" line="8514"/>
         <source>Unsupported Data Source</source>
         <translation>Ikke understøttet dataformat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8648"/>
+        <location filename="../src/app/qgisapp.cpp" line="8639"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation>&lt;p&gt;Denne projektfil blev gemt i en ældre version af QGIS. Når denne projektfil gemmes, vil QGIS opdatere den til den nyeste version, som muligvis kan gøre den ubrugelig for ældre versioner af QGIS. &lt;p&gt;Selv om QGIS-udviklerne prøver at bibeholde bagudkompatibilitet, kan nogle af informationerne fra den gamle projektfil gå tabt. For at forbedre kvaliteten af QGIS, vil vi værdsætte, hvis du opretter en fejlrapport på %3. Husk at inkludere den gamle projektfil og angiv den version af QGIS, som du brugte til at opdage fejlen.&lt;p&gt;For at fjerne denne advarsel, når en gammel projektfil åbnes, afmarkér boksen &apos;%5&apos; i %4-menuen.&lt;p&gt;Version af projektfilen: %1&lt;br&gt;Aktuel version af QGIS: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8664"/>
+        <location filename="../src/app/qgisapp.cpp" line="8655"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;Indstillinger:Generelle indstillinger:Generelt&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8665"/>
+        <location filename="../src/app/qgisapp.cpp" line="8656"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>Advar mig ved åbning af projektfil, der er gemt i en ældre version af QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8666"/>
+        <location filename="../src/app/qgisapp.cpp" line="8657"/>
         <source>Project file is older</source>
         <translation>Projektfil er ældre</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8670"/>
+        <location filename="../src/app/qgisapp.cpp" line="8661"/>
         <source>This project file was saved by an older version of QGIS</source>
         <translation>Denne projektfil blev gemt af en ældre version af QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8811"/>
+        <location filename="../src/app/qgisapp.cpp" line="8802"/>
         <source>Warning</source>
         <translation>Advarsel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8812"/>
+        <location filename="../src/app/qgisapp.cpp" line="8803"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>Dette lag har ikke en egenskabsdialog.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8844"/>
+        <location filename="../src/app/qgisapp.cpp" line="8835"/>
         <source>Authentication required</source>
         <translation>Godkendelse påkrævet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8860"/>
+        <location filename="../src/app/qgisapp.cpp" line="8851"/>
         <source>Proxy authentication required</source>
         <translation>Proxygodkendelse påkrævet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8871"/>
+        <location filename="../src/app/qgisapp.cpp" line="8862"/>
         <source>SSL errors occured accessing URL %1:</source>
         <translation>SSL-fejl opstod ved tilgang til URL %1:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8887"/>
+        <location filename="../src/app/qgisapp.cpp" line="8878"/>
         <source>
 
 Always ignore these errors?</source>
@@ -13298,7 +13298,7 @@ Always ignore these errors?</source>
 Ignorér altid disse fejl?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8891"/>
+        <location filename="../src/app/qgisapp.cpp" line="8882"/>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
         <translation>
@@ -14008,7 +14008,7 @@ Bruger-DB-sti:	%9
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="296"/>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
-        <translation>Angiv handlingen her. Dette kan være et vilkårligt program, skript eller kommando, som findes på dit system. Når handlingen er startet, vil alle sæt tegn, som starter med et % og derefter har navnet på feltet, blive erstattet af værdien af feltet. Specialtegnene %% vil blive erstattet af værdien af det valgte felt. Dobbelte anførselstegn markerer tekstgrupper som enkeltargumenter til programmet, skriptet eller kommandoen. Dobbelte anførselstegn ignoreres, hvis de foranstilles med en omvendt skråstreg</translation>
+        <translation>Angiv handlingen her. Dette kan være et vilkårligt program, script eller kommando, som findes på dit system. Når handlingen er startet, vil alle sæt tegn, som starter med et % og derefter har navnet på feltet, blive erstattet af værdien af feltet. Specialtegnene %% vil blive erstattet af værdien af det valgte felt. Dobbelte anførselstegn markerer tekstgrupper som enkeltargumenter til programmet, skriptet eller kommandoen. Dobbelte anførselstegn ignoreres, hvis de foranstilles med en omvendt skråstreg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="350"/>
@@ -14018,7 +14018,7 @@ Bruger-DB-sti:	%9
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="353"/>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters within [% and %] will be evaluated as expression and replaced by its result. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
-        <translation>Angiv handlingen her. Dette kan være et vilkårligt program, skript eller kommando, som findes på dit system. Når handlingen er startet, vil alle sæt tegn indenfor [% og %] blive evalueret som udtryk og erstattet af resultatet. Dobbelte anførselstegn markerer tekstgrupper som enkeltargumenter til programmet, skriptet eller kommandoen. Dobbelte anførselstegn ignoreres, hvis de foranstilles med en omvendt skråstreg</translation>
+        <translation>Angiv handlingen her. Dette kan være et vilkårligt program, skript eller kommando, som findes på dit system. Når handlingen er startet, vil alle sæt tegn indenfor [% og %] blive evalueret som udtryk og erstattet af resultatet. Dobbelte anførselstegn markerer tekstgrupper som enkeltargumenter til programmet, scriptet eller kommandoen. Dobbelte anførselstegn ignoreres, hvis de foranstilles med en omvendt skråstreg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="311"/>
@@ -14454,7 +14454,7 @@ Bruger-DB-sti:	%9
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="548"/>
         <source>Use the Expression Builder to define the filter</source>
-        <translation>Brug udtryksbyggeren til at definere filteret</translation>
+        <translation>Brug udtryksgeneratoren til at definere filteret</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="551"/>
@@ -25607,7 +25607,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="366"/>
         <source>GDAL scripting is not supported for %1 transformation</source>
-        <translation>GDAL-skripts er ikke understøttet for %1-transformering</translation>
+        <translation>GDAL-scripts er ikke understøttet for %1-transformering</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="561"/>
@@ -25820,7 +25820,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1792"/>
         <source>GDAL script</source>
-        <translation>GDAL-skript</translation>
+        <translation>GDAL-script</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1882"/>
@@ -26017,7 +26017,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="283"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="286"/>
         <source>Generate GDAL script</source>
-        <translation>Dan GDAL-skript</translation>
+        <translation>Dan GDAL-script</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="289"/>
@@ -33766,7 +33766,6 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <translation>Flet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="491"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="544"/>
         <source>feature %1</source>
         <translation>objekt %1</translation>
@@ -33779,6 +33778,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="149"/>
+        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="491"/>
         <source>Feature %1</source>
         <translation>Objekt %1</translation>
     </message>
@@ -43222,7 +43222,7 @@ Dataudbyderen meldte:
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="22"/>
         <source>Query Builder</source>
-        <translation>Forespørgselsbygger</translation>
+        <translation>Forespørgselsgenerator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="36"/>
@@ -46787,7 +46787,7 @@ standardafvigelse ×</translation>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="40"/>
         <source>Search query builder</source>
-        <translation>Søgningsforespørgselsbygger</translation>
+        <translation>Søgeforespørgsesgenerator</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="42"/>
@@ -50312,14 +50312,12 @@ Der var et problem med til din symboldatabase.</translation>
         <translation>Du kan tilføje den aktuelle dato-variabel til dit kortlayout. Opret en almindelig tekstetiket og tilføj strengen $CURRENT_DATE(yyyy-MM-dd) til tekstboksen Se &lt;a href=&quot;http://qt-project.org/doc/qt-5.0/qtcore/qdate.html#toString&quot;&gt;QDate::toString-format-dokumentationen&lt;/a&gt; for de mulige datoformater.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="94"/>
         <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item Properties -&gt; General Options -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows one to move the map content within a map frame.</source>
-        <translation>I Printlayouts værktøjslinje kan du finde 2 knapper til at flytte elementer. Den venstre (højrepilsikon) vælger og flytter elementer i layoutet. Når du har valgt elementet med dette værktæj, kan du også flytte det rundt med piletasterne. Brug &lt;strong&gt;Position og størrelse&lt;/strong&gt;-dialogen til præcis positionering, som kan findes på fanen &lt;strong&gt;Elementegenskaber -&gt; Generelle muligheder -&gt; Position og størrelse&lt;/strong&gt;. Det andet flytteværktøj (kortkanvas-ikon med højrepil) tillader dig at flytte kortindholdet inden for en kortramme.</translation>
+        <translation type="obsolete">I Printlayouts værktøjslinje kan du finde 2 knapper til at flytte elementer. Den venstre (højrepilsikon) vælger og flytter elementer i layoutet. Når du har valgt elementet med dette værktæj, kan du også flytte det rundt med piletasterne. Brug &lt;strong&gt;Position og størrelse&lt;/strong&gt;-dialogen til præcis positionering, som kan findes på fanen &lt;strong&gt;Elementegenskaber -&gt; Generelle muligheder -&gt; Position og størrelse&lt;/strong&gt;. Det andet flytteværktøj (kortkanvas-ikon med højrepil) tillader dig at flytte kortindholdet inden for en kortramme.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="117"/>
         <source>You can rotate a map by setting its rotation value in the &lt;strong&gt;Item Properties -&gt; Map&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
-        <translation>Du kan rotere et kort ved at sætte rotationsværdien i &lt;strong&gt;Elementegenskaber -&gt; Kort&lt;/strong&gt;-sektionen. For at placere en nordpil i dit layout, kan du bruge &lt;strong&gt;Tilføj billede&lt;/strong&gt;-værktøjet. Efter udvælgelse og placering af nordpilen i layoutet kan du tilknytte den en specifik kortramme ved at aktivere &lt;strong&gt;Synk med kort&lt;/strong&gt;-checkboke og vælge en kortramme. Når du ændrer rotationensværdien på et tilknyttet kort, vil nordpilen automatisk tilpasse sin rotation.</translation>
+        <translation type="obsolete">Du kan rotere et kort ved at sætte rotationsværdien i &lt;strong&gt;Elementegenskaber -&gt; Kort&lt;/strong&gt;-sektionen. For at placere en nordpil i dit layout, kan du bruge &lt;strong&gt;Tilføj billede&lt;/strong&gt;-værktøjet. Efter udvælgelse og placering af nordpilen i layoutet kan du tilknytte den en specifik kortramme ved at aktivere &lt;strong&gt;Synk med kort&lt;/strong&gt;-checkboke og vælge en kortramme. Når du ændrer rotationensværdien på et tilknyttet kort, vil nordpilen automatisk tilpasse sin rotation.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="129"/>
@@ -50347,9 +50345,8 @@ Der var et problem med til din symboldatabase.</translation>
         <translation>Stop af rendering</translation>
     </message>
     <message>
-        <location filename="../src/app/qgstipfactory.cpp" line="146"/>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;Esc&apos; (the escape key), or click the small red &apos;X&apos; icon in the status bar to the bottom right of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
-        <translation>Indimellem har du et meget stort datasæt, som tager evigheder at tegne. Du kan trykke &apos;Esc&apos; eller klikke på det lille røde &apos;X&apos;-ikon i statuslinjen i nederste højre hjørne af vinduet når som helst for at stoppe rendering. Hvis du skal udføre adskillige handlinger (fx ændring af symbologi-muligheder) og ønsker midlertidigt at deaktivere kortrendering imens, kan du afmarkere &apos;Rendering&apos;-checkboksen nederst til højre i statuslinjen. Glem ikke at markere den igen, når du er klar til at have kortet optegne sig selv igen!</translation>
+        <translation type="obsolete">Indimellem har du et meget stort datasæt, som tager evigheder at tegne. Du kan trykke &apos;Esc&apos; eller klikke på det lille røde &apos;X&apos;-ikon i statuslinjen i nederste højre hjørne af vinduet når som helst for at stoppe rendering. Hvis du skal udføre adskillige handlinger (fx ændring af symbologi-muligheder) og ønsker midlertidigt at deaktivere kortrendering imens, kan du afmarkere &apos;Rendering&apos;-checkboksen nederst til højre i statuslinjen. Glem ikke at markere den igen, når du er klar til at have kortet optegne sig selv igen!</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="175"/>
@@ -50364,6 +50361,21 @@ Der var et problem med til din symboldatabase.</translation>
     <message>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;esc&apos; (the escape key), or click the small red &apos;X&apos; icon in the status bar to the bottom right of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
         <translation type="obsolete">Nogle gange har du et meget stort datasæt, som tager evigheder at tegne. Du kan trykke &apos;Esc&apos; eller klikke på det lille røde &apos;X&apos;-ikon i statuslinjen nederst til højre i vinduet på et vilkårligt tidspunkt for at stoppe rendering. Hvis du vil udføre flere handlinger (fx ændring af symbologi-muligheder) og ønsker at slå kortrendering midlertidigt fra, mens du gør det, kan du afmarkere &apos;Render&apos;-checkboksen nederst til højre i statuslinjen. Glem ikke at aktivere den igen, når du er klar til at lade kortet tegne sig selv igen!</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="94"/>
+        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; section, which can be found in the tab &lt;strong&gt;Item Properties -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows one to move the map content within a map frame.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="117"/>
+        <source>In the Print Composer you can rotate a map by setting its rotation value in the tab &lt;strong&gt;Item Properties -&gt; Map -&gt; Main properties&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="146"/>
+        <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;Esc&apos; (the escape key), or click the &apos;Stop map rendering&apos; icon in the status bar to the bottom of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="157"/>
@@ -51526,12 +51538,12 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="352"/>
         <source>This button opens the query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
-        <translation>Denne knap åbner forespørgselsbyggeren og tillader dig at oprette et undersæt af objekter, som skal vises på kortkanvasset, i stedet for at vise alle objekter i laget</translation>
+        <translation>Denne knap åbner forespørgselsgeneratoren og tillader dig at oprette et undersæt af objekter, som skal vises på kortkanvasset, i stedet for at vise alle objekter i laget</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="355"/>
         <source>The query used to limit the features in the layer is shown here. To enter or modify the query, click on the Query Builder button</source>
-        <translation>Forespørgslen brugt til at begrænse objekterne i laget er vist her. For at angive eller ændre forespørgslen, klik på Forespørgselsbygger-knappen</translation>
+        <translation>Forespørgslen brugt til at begrænse objekterne i laget er vist her. For at angive eller ændre forespørgslen, klik på knappen Forespørgselsgenerator</translation>
     </message>
     <message>
         <source>Line edit</source>
@@ -51990,7 +52002,7 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="652"/>
         <source>Query Builder</source>
-        <translation>Forespørgselsbygger</translation>
+        <translation>Forespørgselsgenerator</translation>
     </message>
     <message>
         <source>Provider-specific options</source>
@@ -55242,7 +55254,7 @@ Beskrivelse: %3</translation>
     <message>
         <location filename="../python/console/console_settings.ui" line="75"/>
         <source>Auto-save script before running</source>
-        <translation>Gem automatisk skript før kørsel</translation>
+        <translation>Gem automatisk script før kørsel</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="82"/>
@@ -56790,14 +56802,14 @@ Kør topologicheck igen.</translation>
 <context>
     <name>context_help</name>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="887"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="666"/>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;Databaseforbindelse&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="34"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="805"/>
         <source>&lt;h3&gt;Create a new WMS connection&lt;/h3&gt;
 WMS layers can be added quite simply, as long as you know the URL to access the WMS server, you have a serviceable connection to that server, and the server understands HTTP as the data transport mechanism.&lt;p&gt;
 QGIS currently can act as a WMS client that understands WMS 1.1, 1.1.1 and 1.3 servers.
@@ -56876,7 +56888,7 @@ Du skal kun forespørge listen af lag ved at klikke på knappen &lt;label&gt;For
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="612"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="843"/>
         <source>&lt;h3&gt;Identify Features&lt;/h3&gt;
 &lt;p&gt;
 The results dialog shows all the features identified within the search tolerance. To see the results details, expand the feature information on the left of each feature.
@@ -56899,7 +56911,7 @@ Identificerbare lag kan sættes i dialogen Projektegenskaber &lt;label&gt;Indsti
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="11"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1594"/>
         <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
 You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
 &lt;h4&gt;Database&lt;/h4&gt;
@@ -56923,32 +56935,32 @@ In this section you can see the list of attributes. To delete one of them, click
 &lt;p&gt;
 Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.  Clicking &lt;label&gt;Apply&lt;/label&gt; also creates the layer, but keeps the dialog open, thereby allowing you to create more similar layers. &lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
-You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
+        <translation>&lt;h3&gt;Opret et nyt SpatiaLite-lag&lt;/h3&gt;
+Du kan bruge denne dialog til at oprette en ny SpatiaLite-database og/eller et tomt SpatiaLite-lag til redigering. Se herunder for en forklaring på felterne.
 &lt;h4&gt;Database&lt;/h4&gt;
-Choose the database from the drop-down list. This list is created from your saved SpatiaLite connections. If you don&apos;t have a saved connection or want to create a new database, click on the button (&lt;label&gt;...&lt;/label&gt;) to the right of the drop-down.
-&lt;h4&gt;Layer name&lt;/h4&gt;
-Enter a name for the layer you want to create. The name should be one word. You can use underscores in the name if you like.
-&lt;h4&gt;Geometry column&lt;/h4&gt;
-Enter a name for the geometry column or accept the default.
+Vælg databasen fra dropdown-listen. Denne liste er oprettet fra dine eksisterende SpatiaLite-forbindelser. Hvis du ikke har en gemt forbindelse eller ønsker at oprette en ny database, så klik på knappen (&lt;label&gt;...&lt;/label&gt;) til højre for dropdownlisten.
+&lt;h4&gt;Lagnavn&lt;/h4&gt;
+Angiv et navn til laget, du vil oprette. Navnet bør være ét ord. Du kan bruge underscore-tegn i navnet, hvis du vil.
+&lt;h4&gt;Geometrikolonne&lt;/h4&gt;
+Angiv et navn for geometrikolonnen eller acceptér standarden.
 &lt;h4&gt;Type&lt;/h4&gt;
-Choose the type of layer you want to create. 
+Vælg den type lag, du vil oprette.
 &lt;h4&gt;EPSG SRID&lt;/h4&gt;
-Enter the EPSG number for the spatial reference id (SRID). By default the SRID for WGS 84 is filled in for you. Click on &lt;label&gt;Find SRID&lt;/label&gt; button to change the coordinate reference system of the layer if needed. The SRID must exist within the spatial_ref_sys in your SpatiaLite database. You can search for the SRID using partial matches on both name and SRID.
-&lt;h4&gt;Create an auto-incrementing Primary Key&lt;/h4&gt;
-Clicking this check box will add a primary key to the new layer. This key field will be auto-incrementing, meaning you don&apos;t have to enter a value for it when adding features to the attribute table of the layer.
-&lt;h4&gt;New attribute&lt;/h4&gt;
-Add the desired attributes by clicking on the &lt;label&gt;Add to attributes list&lt;/label&gt; button after you have specified a name and type for the attribute. Only real, integer, and string attributes are supported.&lt;br/&gt;
-Width and precision are irrelevant in a SpatiaLite database so you do not have to specify these.
-&lt;h4&gt;Attributes list&lt;/h4&gt;
-In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
+Angiv EPSG-nummeret for det spatielle reference-ID (SRID). Som standard er SRID for WGS 84 udfyldt for dig. Klik på knappen &lt;label&gt;Find SRID&lt;/label&gt; for at ændre lagets koordinatsystem om nødvendigt. SRID&apos;et skal findes i spatial_ref_sys i din SpatiaLite-database. Du kan søge efter SRID&apos;et vha. delvis søgning på både navn og SRID.
+&lt;h4&gt;Opret en auto-optællende primær nøgle&lt;/h4&gt;
+At markere denne checkboks vil tilføje en primær nøgle til det nye lag. Denne nøgle vil forøges automatisk, dvs. at du ikke vil skulle angive en værdi for den, når du tilføjer objekter til lagets attributtabel.
+&lt;h4&gt;Ny attribut&lt;/h4&gt;
+Tilføj den ønskede attribut ved at klikke på knappen&lt;label&gt;Føj til attributliste&lt;/label&gt;, efter du har angivet et navn eller type til attributten. Kun real-, integer- og string-attributter er understøttet.&lt;br/&gt;
+Bredde og præcision er irrelevante i en SpatiaLite-database, så du behøver ikke angive disse.
+&lt;h4&gt;Attributliste&lt;/h4&gt;
+I denne sektion kan du attributlisten. Klik på den og vælg knappen &lt;label&gt;Fjern valgt attribut&lt;/label&gt; for at slette en af dem.
 
 &lt;p&gt;
-Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.  Clicking &lt;label&gt;Apply&lt;/label&gt; also creates the layer, but keeps the dialog open, thereby allowing you to create more similar layers. &lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
+Klik på &lt;label&gt;OK&lt;/label&gt; for at oprette laget og lukke dialogen.  At klikke &lt;label&gt;Anvend&lt;/label&gt; opretter også laget, men holder dialogen åben, hvorved du kan oprette lign. lag. &lt;label&gt;Anuller&lt;/label&gt; vil lukke laget uden yderligere ændringer.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1403"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1277"/>
         <source>&lt;h3&gt;Custom Coordinate Reference System Definition&lt;/h3&gt;
 If QGIS does not provide the coordinate reference system you need, you can define a custom CRS. &lt;p&gt;
 To define a CRS, select &lt;label&gt;Custom CRS&lt;/label&gt; from the &lt;label&gt;Edit&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; (KDE, Windows) menu. Custom CRS are stored in your QGIS user database. In addition to your custom CRS, this database also contains your spatial bookmarks and other custom data.
@@ -56966,26 +56978,25 @@ system.
 &lt;p&gt;
 Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Custom Coordinate Reference System Definition&lt;/h3&gt;
-If QGIS does not provide the coordinate reference system you need, you can define a custom CRS. &lt;p&gt;
-To define a CRS, select &lt;label&gt;Custom CRS&lt;/label&gt; from the &lt;label&gt;Edit&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; (KDE, Windows) menu. Custom CRS are stored in your QGIS user database. In addition to your custom CRS, this database also contains your spatial bookmarks and other custom data.
+        <translation>&lt;h3&gt;Brugerdefineret CRS&lt;/h3&gt;
+Hvis QGIS ikke har det CRS, du skal bruge, kan du definere et brugerdefineret CRS. &lt;p&gt;
+For at definere et CRS, vælg &lt;label&gt;Brugerdefineret CRS&lt;/label&gt; fra menuen &lt;label&gt;Redigér&lt;/label&gt; (Gnome, OSX) eller &lt;label&gt;Indstillinger&lt;/label&gt; (KDE, Windows). Et brugerdefineret CRS gemmes i din QGIS-brugerdatabase. Ud over dit brugerdefinerede CRS indeholder denne database også dine spatielle bogmærker og andre brugerdata.
 
-&lt;h4&gt;Define&lt;/h4&gt;
-To create a new CRS, click the &lt;label&gt;New&lt;/label&gt; button and enter:
+&lt;h4&gt;Definér&lt;/h4&gt;
+For at oprette et nyt CRS, klik på knappen &lt;label&gt;Ny&lt;/label&gt; og angiv:
 &lt;ul&gt;
-&lt;li&gt;descriptive name 
-&lt;li&gt;CRS parameters
+&lt;li&gt;beskrivende navn 
+&lt;li&gt;CRS-parametre
 &lt;/ul&gt;
-After that you can save your CRS by clicking the button &lt;label&gt;Save&lt;/label&gt;.
+Derefter kan gemme dit CRS ved at klikke på knappen &lt;label&gt;Gem&lt;/label&gt;.
 &lt;p&gt;
-Note that the Parameters must begin with a +proj=-block, to represent the new coordinate reference
-system.
+NB: Parametre skal start med en +proj=-blok for at repræsentere det nye CRS.
 &lt;p&gt;
-Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
+At definere et brugerdefineret CRS kræver en god forståelse for Proj.4-projektionsbiblioteket. Referér som en start til &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual af Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. Denne manual beskriver brugen af &lt;i&gt;proj.4&lt;/i&gt; og relaterede kommandolinjeværktøjer. De kartografiske parametre brugt med &lt;i&gt;proj.4&lt;/i&gt; er beskrevet i manualen, og er de samme, som QGIS bruger.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="803"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="855"/>
         <source>&lt;h3&gt;Create a New Oracle Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a Oracle database.
 &lt;p&gt;
@@ -57026,49 +57037,49 @@ geometry types and don&apos;t offer to add others.
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Create a New Oracle Connection&lt;/h3&gt;
-This dialog allows you to define the settings for a connection to a Oracle database.
+        <translation>&lt;h3&gt;Opret en ny Oracle-forbindelse&lt;/h3&gt;
+Denne dialog tillader dig at definere indstillingerne for en forbindelse til en Oracle-database.
 &lt;p&gt;
 &lt;ul&gt;
-&lt;li&gt; &lt;label&gt;Name&lt;/label&gt; A name to identify the connection settings.
+&lt;li&gt; &lt;label&gt;Navn&lt;/label&gt; Et navn til at identificere forbindelsesindstillingerne.
 
-&lt;li&gt; &lt;label&gt;Database&lt;/label&gt; SID or SERVICE_NAME of the Oracle instance.
+&lt;li&gt; &lt;label&gt;Database&lt;/label&gt; SID eller SERVICE_NAME fra Oracle-instansen.
 
-&lt;li&gt; &lt;label&gt;Host&lt;/label&gt; Name or IP address of the computer hosting the database server
+&lt;li&gt; &lt;label&gt;Vært&lt;/label&gt; Navn eller IP-adresse på computeren, hvor databaseserveren kører
 
-&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; IP port used by the database server
+&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; IP-port brugt af databaseserveren
 
-&lt;li&gt; &lt;label&gt;Username&lt;/label&gt; Database user name.
-&lt;li&gt; &lt;label&gt;Password&lt;/label&gt; Database password.
+&lt;li&gt; &lt;label&gt;Brugernavn&lt;/label&gt; Brugernavn til database.
+&lt;li&gt; &lt;label&gt;Kodeord&lt;/label&gt; Kodeord til database.
 
-&lt;li&gt; &lt;label&gt;Save Username&lt;/label&gt; Indicates whether to save the database user name in the connection configuration.
+&lt;li&gt; &lt;label&gt;Gem brugernavn&lt;/label&gt; Indikerer, om brugernavnet til databasen skal gemmes i forbindelsesindstillingerne.
 
-&lt;li&gt; &lt;label&gt;Save Password&lt;/label&gt; Indicates whether to save the database password in the connection settings.  &lt;font color=&quot;red&quot;&gt;Passwords are saved in &lt;strong&gt;clear text&lt;/strong&gt; in the system configuration and in the project files!&lt;/font&gt;
+&lt;li&gt; &lt;label&gt;Gem kodeord&lt;/label&gt; Indikerer, om adgangskoden til databasen skal gemmes i forbindelsesindstillingerne.  &lt;font color=&quot;red&quot;&gt;Kodeord gemmes i &lt;strong&gt;klartekst&lt;/strong&gt; i systemkonfigurationen og i projektfilerne!&lt;/font&gt;
 
-&lt;li&gt; &lt;label&gt;Only look in meta data table&lt;/label&gt; Restricts the displayed tables to those that are in the all_sdo_geom_metadata view. This can speed up the initial display of spatial tables.
+&lt;li&gt; &lt;label&gt;Kig kun i metadata-tabellen&lt;/label&gt; Begrænser de viste tabeller til dem, som er i viewet all_sdo_geom_metadata. Dette kan gøre den første visning af spatielle tabeller hurtigere.
 
-&lt;li&gt; &lt;label&gt;Only look for user&apos;s tables&lt;/label&gt; When searching for spatial tables restrict the search to tables that are owner by the user.
+&lt;li&gt; &lt;label&gt;Kig kun efter brugertabeller&lt;/label&gt; Begrænse søgningen til tabeller, der ejes af brugeren, når der søges efter spatielle tabeller.
 
-&lt;li&gt; &lt;label&gt;Also list tables with no geometry&lt;/label&gt;  Indicates that tables without geometry should also be listed by default.
+&lt;li&gt; &lt;label&gt;List også tabeller med ingen geometri&lt;/label&gt;  Indikerer, at tabeller uden geometri også skal listes som standard.
 
-&lt;li&gt; &lt;label&gt;Use estimated table statistics for the layer metadata&lt;/label&gt; When
-the layer is setup various metadata is required for the Oracle table. This
-includes information such as the table row count, geometry type and spatial
-extents of the data in the geometry column. If the table contains a large
-number of rows determining this metadata is time consuming. By activating this
-option the following fast table metadata operations are done: Row count is
-determined from all_tables.num_rows. Table extents are always determined with
-the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied. The table
-geometry is determined from the first 100 non-null geometry rows in the table.
+&lt;li&gt; &lt;label&gt;Brug estimerede tabelstatistik for lag-metadata&lt;/label&gt; Når
+laget er opsat, er diverse metadata påkrævet for Oracle-tabellen. Dette
+inkluderer information såsom tabellens rækkeantal, geometritype og spatielle
+omrids af dataene i geometrikolonnen. Hvis tabellen indeholder et stort
+antal rækker, tager det tid at bestemme disse metadata. Ved at aktivere denne
+mulighed udføres flg. hurtige metadata-handlinger på tabellen: Rækkeantal er 
+bestemt fra all_tables.num_rows. Tabelomrids bestemmes altid med
+funktionen SDO_TUNE.EXTENTS_OF, selv hvis et lagfilter anvendes. Tabellens
+geometri bestemmes fra de første 100 ikke-null-geometrirækker i tabellen.
 
-&lt;li&gt; &lt;label&gt;Only existing geometry types&lt;/label&gt; Only list the existing
-geometry types and don&apos;t offer to add others.
+&lt;li&gt; &lt;label&gt;Kun eksisterende geometrityper&lt;/label&gt; List kun de eksisterende
+geometrityper og tilbyd ikke at tilføje andre.
 
 &lt;/ul&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1340"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1517"/>
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
@@ -57077,7 +57088,7 @@ geometry types and don&apos;t offer to add others.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="519"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="60"/>
         <source>&lt;h3&gt;Finding shortest path&lt;/h3&gt;
 &lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Plugins &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
@@ -57093,24 +57104,24 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Finding shortest path&lt;/h3&gt;
-&lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Plugins &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
+        <translation>&lt;h3&gt;At finde korteste sti&lt;/h3&gt;
+&lt;p&gt;Vejgraf er et C++-plugin til QGIS, som beregner den korteste sti mellem 2 punkter på et vilkårligt linjelag og plotter stien over vejnetværket. Skal konfigureres før brug. Dette kan gøres i menuen &lt;label&gt;Plugins &amp;rarr; Vejgraf &amp;rarr; Indstillinger&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
-&lt;a href=&quot;#howto&quot;&gt;How to&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#howto&quot;&gt;Hvordan&lt;/a&gt;&lt;br/&gt;
 &lt;/p&gt;
 
 &lt;a name=&quot;howto&quot;&gt;
-&lt;h4&gt;How to&lt;/h4&gt;
+&lt;h4&gt;Hvordan&lt;/h4&gt;
 &lt;/a&gt;
-&lt;p&gt;You can select start and end points with the select buttons next to the fields.
-Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest path calculation using the optimization criterion selected in the &lt;label&gt;Criterion&lt;/label&gt; combobox. The &lt;label&gt;Export&lt;/label&gt; button allow you to export a calculated path to a new vector layer, and the button &lt;label&gt;Clear&lt;/label&gt; will erase all fields and remove the points and calculated path from map canvas.&lt;/p&gt;
+&lt;p&gt;Du kan vælge start- og slutpunkter med vælgeknappen ved siden af felterne.
+At trykke på knappen &lt;label&gt;Beregn&lt;/label&gt; vil køre en beregning af den korteste sti vha. optimeringskriterierne valgt i komboboksen &lt;label&gt;Kriterium&lt;/label&gt;. Knappen &lt;label&gt;Eksportér&lt;/label&gt; tillader dig at eksportere en beregnet sti til et nyt vektorlag, og knappen &lt;label&gt;Ryd&lt;/label&gt; vil rydde alle felter og fjerne punkterne og den beregnede sti fra kortkanvasset.&lt;/p&gt;
 
-&lt;h5&gt;Note&lt;/h5&gt;
-&lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
+&lt;h5&gt;NB&lt;/h5&gt;
+&lt;p&gt;For at kunne binde vejnetværkets rutes start- og slutpunkter, vælger Vejgraf grafens nærmeste punkter eller bue. Faktisk kan den tilknyttes en vilkårlig del af vejnetværket. Alligevel tager ruten og dens karakteristika ikke højde for afstanden fra startpunktet til vejnetværket, og vejnetværket til slutpunktet.&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="482"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="23"/>
         <source>&lt;h3&gt;Add PostGIS Tables&lt;/h3&gt;
 This dialog allows you to add PostGIS layers (tables with a geometry column) to the QGIS map canvas.
 &lt;p&gt;
@@ -57148,46 +57159,46 @@ To filter a layer before adding it to the map, double click on its name or use &
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Add PostGIS Tables&lt;/h3&gt;
-This dialog allows you to add PostGIS layers (tables with a geometry column) to the QGIS map canvas.
+        <translation>&lt;h3&gt;Tilføj PostGIS-tabeller&lt;/h3&gt;
+Denne dialog tillader dig at tilføje PostGIS-lag (tabeller med en geometrikolonne) til kortkanvasset i QGIS.
 &lt;p&gt;
-&lt;a href=&quot;#connect&quot;&gt;Connections&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#add&quot;&gt;Adding Layers&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#filter&quot;&gt;Filtering a Layer&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#search&quot;&gt;Search options&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#connect&quot;&gt;Forbindelser&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#add&quot;&gt;Tilføjelse af lag&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#filter&quot;&gt;Filtrering af et lag&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#search&quot;&gt;Søgemuligheder&lt;/a&gt;&lt;br/&gt;
 
 &lt;a href=&quot;#connect&quot;&gt;
-&lt;h4&gt;Connections&lt;/h4&gt;
+&lt;h4&gt;Forbindelser&lt;/h4&gt;
 &lt;/a&gt;
 &lt;ul&gt;
-&lt;li&gt;Choose the connection to use from the drop-down box and click &lt;label&gt;Connect&lt;/label&gt;.
-&lt;li&gt;If there are no connections, use the &lt;label&gt;New&lt;/label&gt; button to create a connection.
-&lt;li&gt;To modify a connection, click the &lt;label&gt;Edit&lt;/label&gt; button.
+&lt;li&gt;Vælg forbindelsen, som skal bruges, fra dropdown-boksen, og klik &lt;label&gt;Forbind&lt;/label&gt;.
+&lt;li&gt;Hvis der ikke er nogen forbindelser, brug knappen &lt;label&gt;Ny&lt;/label&gt; for at oprette en forbindelse.
+&lt;li&gt;For at ændre en forbindelse, klik på knappen &lt;label&gt;Redigér&lt;/label&gt;.
 &lt;/ul&gt;
 &lt;a name=&quot;add&quot;&gt;
-&lt;h4&gt;Adding Layers&lt;/h4&gt;
+&lt;h4&gt;Tilføjelse af lag&lt;/h4&gt;
 &lt;/a&gt;
-To add a layer:
+For at tilføje et lag:
 &lt;ol&gt;
-&lt;li&gt;Choose the desired connection from the drop-down box.
-&lt;li&gt;Click &lt;label&gt;Connect&lt;/label&gt;.
-&lt;li&gt;Find the layer you want to add in the list and click on it to select it.
-&lt;li&gt;You can select additional layers by holding down the Ctrl key and clicking.
-&lt;li&gt;Click &lt;label&gt;Add&lt;/label&gt; to add the layer(s) to the map.
+&lt;li&gt;Vælg den ønskede forbindelse fra dropdown-boksen.
+&lt;li&gt;Klik &lt;label&gt;Forbind&lt;/label&gt;.
+&lt;li&gt;Find laget, du vil tilføje, i listen, og klik på det for at vælge det.
+&lt;li&gt;Du kan vælge yderligere lag ved at holde Ctrl-tasten nede og klikke.
+&lt;li&gt;Klik &lt;label&gt;Tilføj&lt;/label&gt; for at føje laget/lagene til kortet.
 &lt;/ol&gt;
 &lt;a name=&quot;filter&quot;&gt;
-&lt;h4&gt;Filtering a Layer&lt;/h4&gt;
+&lt;h4&gt;Filtrering af et lag&lt;/h4&gt;
 &lt;/a&gt;
-To filter a layer before adding it to the map, double click on its name or use &lt;label&gt;Build query&lt;/label&gt; button. This will open the Query Builder, allowing you to build up a SQL statement to use in filtering the records.
+For at filtrere et lag, før det føjes til kortet, dobbeltklik på dets navn eller brug knappen &lt;label&gt;Byg forespørgsel&lt;/label&gt;. Dette vil åbne Forespørgselsgeneratoren, som tillader dig at opbygge et SQL-udtryk til at filtrere posterne.
 
 &lt;a name=&quot;search&quot;&gt;
-&lt;h4&gt;Search options&lt;/h4&gt;
+&lt;h4&gt;Søgemuligheder&lt;/h4&gt;
 &lt;/a&gt;
-Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
+At markere &lt;label&gt;Søgemuligheder&lt;/label&gt; aktiverer yderligere muligheder for søgning i forskellige kolonnetyper og at bruge 2 søgetilstande: &lt;label&gt;Wildcard&lt;/label&gt; eller &lt;label&gt;RegExp&lt;/label&gt;.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1343"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="547"/>
         <source>&lt;h3&gt;Field Calculator&lt;/h3&gt;
 The field calculator allows you to update fields with expressions.
 
@@ -57248,87 +57259,87 @@ The field calculator allows you to update fields with expressions.
 &lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negative value of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Field Calculator&lt;/h3&gt;
-The field calculator allows you to update fields with expressions.
+        <translation>&lt;h3&gt;Field Calculator&lt;/h3&gt;
+Feltberegneren tillader dig at opdatere felter med udtryk.
 
-&lt;h4&gt;Supported Operations&lt;/h4&gt;
+&lt;h4&gt;Understøttede handlinger&lt;/h4&gt;
 
 &lt;table border=1&gt;
 &lt;tr&gt;
-  &lt;th&gt;Operation&lt;/th&gt;
-  &lt;th&gt;Description&lt;/th&gt;
+  &lt;th&gt;Handling&lt;/th&gt;
+  &lt;th&gt;Beskrivelse&lt;/th&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
   &lt;td&gt;
-    &lt;tt&gt;column_name&lt;/tt&gt;&lt;br&gt;
-    &lt;tt&gt;&quot;column_name&quot;&lt;/tt&gt;
+    &lt;tt&gt;kolonnenavn&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&quot;kolonnenavn&quot;&lt;/tt&gt;
   &lt;/td&gt;
-  &lt;td&gt;value of field &lt;tt&gt;column_name&lt;/tt&gt;&lt;/td&gt;
+  &lt;td&gt;værdi af felt &lt;tt&gt;kolonnenavn&lt;/tt&gt;&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&apos;&lt;tt&gt;string&lt;/tt&gt;&apos;&lt;/td&gt;&lt;td&gt;literal string value&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;tt&gt;number&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;number&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;NULL&lt;/td&gt;&lt;td&gt;null value&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;exp(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Euler&apos;s number e to the power of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;ln(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;natural log (i.e. base e) of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;log10(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;log base 10 of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;log(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;b&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;log base &lt;tt&gt;b&lt;/tt&gt; of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;sqrt(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;square root&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;sin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;sine of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;cos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;cosine of &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;tan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;tangent of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;asin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;inverse sine of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;acos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;inverse cosine of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;atan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;inverse tangent of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;to int(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convert string &lt;tt&gt;a&lt;/tt&gt; to integer&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;to real(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convert string &lt;tt&gt;a&lt;/tt&gt; to real&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;to string(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convert number &lt;tt&gt;a&lt;/tt&gt; to string&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;lower(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convert string &lt;tt&gt;a&lt;/tt&gt; to lower case&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;upper(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convert string &lt;tt&gt;a&lt;/tt&gt; to upper case&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;length(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;length of string &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;atan2(&lt;tt&gt;y&lt;/tt&gt;,&lt;tt&gt;x&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;inverse tangent of &lt;tt&gt;y&lt;/tt&gt;/&lt;tt&gt;x&lt;/tt&gt; using the signs of the two arguments to determine the quadrant of the result.&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;replacethis&lt;/tt&gt;,&lt;tt&gt;withthat&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;replace &lt;tt&gt;replacethis&lt;/tt&gt; with &lt;tt&gt;withthat&lt;/tt&gt; in string &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
-&lt;tr&gt;&lt;td&gt;regexp_replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;replacethis&lt;/tt&gt;,&lt;tt&gt;withthat&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;replace the regular expression &lt;tt&gt;replacethis&lt;/tt&gt; with &lt;tt&gt;withthat&lt;/tt&gt; in string &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
-&lt;tr&gt;&lt;td&gt;substr(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;from&lt;/tt&gt;,&lt;tt&gt;len&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;&lt;tt&gt;len&lt;/tt&gt; characters of string &lt;tt&gt;a&lt;/tt&gt; starting from &lt;tt&gt;from&lt;/tt&gt; (first character index is 1)&lt;/td&gt;&lt;/td&gt;
-&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; || &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;concatenate strings &lt;tt&gt;a&lt;/tt&gt; and &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;$rownum&lt;/td&gt;&lt;td&gt;number current row&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;$area&lt;/td&gt;&lt;td&gt;area of polygon&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;$perimeter&lt;/td&gt;&lt;td&gt;perimeter of polygon&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;$length&lt;/td&gt;&lt;td&gt;area of line&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;$id&lt;/td&gt;&lt;td&gt;feature id&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;$x&lt;/td&gt;&lt;td&gt;x coordinate of point&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;$y&lt;/td&gt;&lt;td&gt;y coordinate of point&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;xat(&lt;tt&gt;n&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;x coordinate of &lt;tt&gt;n&lt;/tt&gt;th point of a line (indices start at 0; negative values apply to the last index)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;yat(&lt;tt&gt;n&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;y coordinate of &lt;tt&gt;n&lt;/tt&gt;th point of a line (indices start at 0; negative values apply to the last index)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ^ &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; raised to the power of &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; * &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; multiplied by &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; / &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; divided by &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&apos;&lt;tt&gt;streng&lt;/tt&gt;&apos;&lt;/td&gt;&lt;td&gt;ordret strengværdi&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;tal&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;tal&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NULL&lt;/td&gt;&lt;td&gt;null-værdi&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;exp(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Euler&apos;s tal e opløftet til potensen &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ln(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;naturlige log (fx base e) af &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;log10(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;log base 10 af &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;log(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;b&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;log base &lt;tt&gt;b&lt;/tt&gt; af &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;sqrt(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;kvadratrod&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;sin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;sinus af &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;cos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;cosinus af &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;tan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;tangens af &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;asin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;omvendt sinus af &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;acos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;omvendt cosinus af &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;atan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;omvendt tangens af &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to int(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;konverter streng &lt;tt&gt;a&lt;/tt&gt; til heltal&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to real(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;konverter streng &lt;tt&gt;a&lt;/tt&gt; til real&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to string(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convert number &lt;tt&gt;a&lt;/tt&gt; til streng&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;lower(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;konverter streng &lt;tt&gt;a&lt;/tt&gt; til små bogstaver&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;upper(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;konverter streng &lt;tt&gt;a&lt;/tt&gt; til store bogstaver&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;length(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;længde på streng &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;atan2(&lt;tt&gt;y&lt;/tt&gt;,&lt;tt&gt;x&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;omvendt tangens af &lt;tt&gt;y&lt;/tt&gt;/&lt;tt&gt;x&lt;/tt&gt; vha fortegnene på de 2 argumenter for af afgøre resultatets kvadrant.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;erstatdette&lt;/tt&gt;,&lt;tt&gt;meddette&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;erstat &lt;tt&gt;erstatdette&lt;/tt&gt; med &lt;tt&gt;meddette&lt;/tt&gt; i streng &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;regexp_replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;erstatdette&lt;/tt&gt;,&lt;tt&gt;meddette&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;erstat det regulær udtryk &lt;tt&gt;erstatdette&lt;/tt&gt; med &lt;tt&gt;meddette&lt;/tt&gt; i streng &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;substr(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;fra&lt;/tt&gt;,&lt;tt&gt;længde&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;&lt;tt&gt;længde&lt;/tt&gt; tegn fra streng &lt;tt&gt;a&lt;/tt&gt; startende fra &lt;tt&gt;fra&lt;/tt&gt; (første tegnindeks er 1)&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; || &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;sammensæt strenge &lt;tt&gt;a&lt;/tt&gt; og &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$rownum&lt;/td&gt;&lt;td&gt;nummer på aktuel række&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$area&lt;/td&gt;&lt;td&gt;areal af polygon&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$perimeter&lt;/td&gt;&lt;td&gt;polygons perimeter&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$length&lt;/td&gt;&lt;td&gt;areal af linje&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$id&lt;/td&gt;&lt;td&gt;objekt-id&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$x&lt;/td&gt;&lt;td&gt;x-koordinat af punkt&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$y&lt;/td&gt;&lt;td&gt;y-koordinat af punkt&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;xat(&lt;tt&gt;n&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;x-koordinat fra &lt;tt&gt;n&lt;/tt&gt;de punkt af en linje (indekser starter med 0; negative værdier anvendes til det sidste indeks)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yat(&lt;tt&gt;n&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;y-koordinat fra &lt;tt&gt;n&lt;/tt&gt;de punkt af en linje (indekser starter med 0; negative værdier anvendes til det sidste indeks)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ^ &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; opløftet til potensen &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; * &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ganget med &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; / &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; divideret med &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; + &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; plus &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; - &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; minus &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;+&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;positive sign&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negative value of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;+&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;positivtegn&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negativ værdi af &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1305"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1209"/>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
+        <translation>&lt;h3&gt;Ny OGR-databaseforbindelsesdialog&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="722"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="715"/>
         <source>&lt;h3&gt; North Arrow Plugin&lt;/h3&gt;
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
 At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.</source>
-        <translation type="unfinished">&lt;h3&gt; North Arrow Plugin&lt;/h3&gt;
-Displays a north arrow overlayed onto the map.
+        <translation>&lt;h3&gt; Nordpilsplugin&lt;/h3&gt;
+Viser en nordpil lagt ovenpå kortet.
 &lt;p&gt;
-At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.</translation>
+Der er pt. kun én stilart tilgængelig. Du kan justere vinklen på pilen eller lade QGIS sætte retningen automatisk. Hvis du vælger at lade QGIS afgøre retningen, gør den sit bedste for at gætte, hvordan pilen skal orienteres. Du har 4 muligheder for placering af pilen, svarende til de 4 hjørner på kortkanvasset.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="306"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="154"/>
         <source>&lt;h3&gt;Export a QGIS Project to MapServer Map File&lt;/h3&gt;
 &lt;p&gt;
 This tool allows you to export a saved QGIS project file to a MapServer map. Only the &lt;b&gt;Map file&lt;/b&gt; and &lt;b&gt;QGIS project file&lt;/b&gt; inputs are required.
@@ -57362,42 +57373,42 @@ These values are written to the map file in the appropriate spots to set things 
   &lt;dt&gt;&lt;label&gt;Footer&lt;/label&gt;&lt;/dt&gt;
   &lt;dd&gt;Full path to the MapServer footer file to be used with the map file.&lt;/dd&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Export a QGIS Project to MapServer Map File&lt;/h3&gt;
+        <translation>&lt;h3&gt;Eksportér et QGIS-projekt til en MapServer-kortfil&lt;/h3&gt;
 &lt;p&gt;
-This tool allows you to export a saved QGIS project file to a MapServer map. Only the &lt;b&gt;Map file&lt;/b&gt; and &lt;b&gt;QGIS project file&lt;/b&gt; inputs are required.
+Dette værktøj tillader dig at eksportere en gemt QGIS-projektfil til et MapServer-kort. Kun navnet på &lt;b&gt;kortfilen&lt;/b&gt; og &lt;b&gt;QGIS-projektfilen&lt;/b&gt; er påkrævet.
 &lt;/p&gt;
-Tick the &lt;label&gt;Use current project&lt;/label&gt; check box or enter the full path to the QGIS project file (.qgs) you want to export. You can use the button at the right to browse for the QGIS project file.
+Markér checkboksen &lt;label&gt;Brug aktuelt projekt&lt;/label&gt;, eller angiv en fuld sti til QGIS-projektfilen (.qgs), som du vil eksportere. Du kan bruge knappen til højre for søge efter QGIS-projektfilen.
 
-&lt;h4&gt;Map file&lt;/h4&gt;
+&lt;h4&gt;Kortfil&lt;/h4&gt;
 
-&lt;label&gt;Map file&lt;/label&gt; Enter the name for the map file to be created. You can use the button at the right to browse for the directory where you want the map file created.
+&lt;label&gt;Kortfil&lt;/label&gt; Angiv navnet på kortfilen, som skal dannes. Du kan bruge knappen til højre for søge efter mappen, hvor du vil have kortfilen dannet.
 
-&lt;h4&gt;Map&lt;/h4&gt;
-These values are written to the map file in the appropriate spots to set things such as output image size, units and image type.
+&lt;h4&gt;Kort&lt;/h4&gt;
+Disse værdier skrives til kortfilen på de rette steder for at sætte ting såsom output-billedstørrelse, enheder og billedtype.
 &lt;dl&gt;
-  &lt;dt&gt;&lt;label&gt;Name&lt;/label&gt;&lt;/dt&gt;
-  &lt;dd&gt;A name for the map. This name is prefixed to all images generated by the MapServer.&lt;/dd&gt;
-  &lt;dt&gt;&lt;label&gt;Width&lt;/label&gt;&lt;/dt&gt;
-  &lt;dd&gt;Width of the output image in pixels.&lt;/dd&gt;
-  &lt;dt&gt;&lt;label&gt;Height&lt;/label&gt;&lt;/dt&gt;
-  &lt;dd&gt;Height of the output image in pixels.&lt;/dd&gt;
-  &lt;dt&gt;&lt;label&gt;Units&lt;/label&gt;&lt;/dt&gt;
-  &lt;dd&gt;Units of measure used for output.&lt;/dd&gt;
-  &lt;dt&gt;&lt;label&gt;Image type&lt;/label&gt;&lt;/dt&gt;
-  &lt;dd&gt;Format for the output image generated by MapServer&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Navn&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Et navn til kortet. Dette navn er foranstillet til alle billeder dannet af MapServer.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Bredde&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Output-billedets bredde i pixels.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Højde&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Output-billedets højde i pixels.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Enheder&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Måleenheder brugt til output.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Billedtype&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Formatet til output-billedet dannet af MapServer&lt;/dd&gt;
 &lt;/dl&gt;
-&lt;h4&gt;Paths&lt;/h4&gt;
+&lt;h4&gt;Stier&lt;/h4&gt;
 &lt;dl&gt;
-  &lt;dt&gt;&lt;label&gt;Template&lt;/label&gt;&lt;/dt&gt;
-  &lt;dd&gt;Full path to the MapServer template file to be used with the map file.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Skabelon&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Fuld sti til MapServers skabelonfil, som skal bruges med kortfilen.&lt;/dd&gt;
   &lt;dt&gt;&lt;label&gt;Header&lt;/label&gt;&lt;/dt&gt;
-  &lt;dd&gt;Full path to the MapServer header file to be used with the map file.&lt;/dd&gt;
+  &lt;dd&gt;Fuld sti til MapServers headerfil, som skal bruges med kortfilen.&lt;/dd&gt;
   &lt;dt&gt;&lt;label&gt;Footer&lt;/label&gt;&lt;/dt&gt;
-  &lt;dd&gt;Full path to the MapServer footer file to be used with the map file.&lt;/dd&gt;
+  &lt;dd&gt;Fuld sti til MapServers footerfil, som skal bruges med kortfilen.&lt;/dd&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1286"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1294"/>
         <source>&lt;h3&gt;Scale bar Plugin&lt;/h3&gt;
 Draws a scale bar on the map.
 &lt;p&gt;
@@ -57417,28 +57428,28 @@ To add a scale bar:
 &lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Scale bar Plugin&lt;/h3&gt;
-Draws a scale bar on the map.
+        <translation>&lt;h3&gt;Målestoksplugin&lt;/h3&gt;
+Tegner en målestok på kortet.
 &lt;p&gt;
-You can control the style and placement, as well as the labeling of the bar.
-QGIS only supports displaying the scale in the same units as your map frame. So
-if the units of your layers are in meters, you can&apos;t create a scale bar in
-feet. Likewise if you are using decimal degrees, you can&apos;t create a scale bar
-to display distance in meters.&lt;/p&gt; &lt;p&gt;
-To add a scale bar:
+Du kan kontrollere stilart og placering, såvel som labeling af målestokken.
+QGIS understøtter kun at vise skalaen i samme enheder som kortrammen. Så
+hvis dine lags enheder er i meter, kan du ikke oprette en målestok i
+fødder. På samme måde, hvis bruger decimalgrader, kan du ikke oprette en målestok
+for at vise en afstand i meter.&lt;/p&gt; &lt;p&gt;
+For at tilføje en målestok:
 &lt;ol&gt;
-&lt;li&gt;Choose the placement from the &lt;label&gt;Placement&lt;/label&gt; drop-down list.&lt;/li&gt;
-&lt;li&gt;Choose the style from the &lt;label&gt;Scale bar style&lt;/label&gt; list.&lt;/li&gt;
-&lt;li&gt;Select the color for the bar &lt;label&gt;Color of bar&lt;/label&gt; or use the default black color.&lt;/li&gt;
-&lt;li&gt;Set the size of the bar and its label &lt;label&gt;Size of bar&lt;/label&gt;. &lt;/li&gt;
-&lt;li&gt;Make sure the &lt;label&gt;Enable scale bar&lt;/label&gt; checkbox is checked.&lt;/li&gt;
-&lt;li&gt;Optionally choose to automatically snap to a round number when the canvas is resized &lt;label&gt;Automatically snap to round number on resize&lt;/label&gt;.&lt;/li&gt;
-&lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
+&lt;li&gt;Vælg en placering fra dropdown-listen &lt;label&gt;Placering&lt;/label&gt;.&lt;/li&gt;
+&lt;li&gt;Vælg stilarten fra listen &lt;label&gt;Målestoksstilarter&lt;/label&gt;.&lt;/li&gt;
+&lt;li&gt;Vælg farven på målestokken &lt;label&gt;Farve på målestok&lt;/label&gt; eller brug standardfarven sort.&lt;/li&gt;
+&lt;li&gt;Sæt størrelsen på målestokken og dens label &lt;label&gt;Størrelse på målestok&lt;/label&gt;. &lt;/li&gt;
+&lt;li&gt;Vær sikker på, at checkboksen &lt;label&gt;Aktivér målestok&lt;/label&gt; checkbox er markeret.&lt;/li&gt;
+&lt;li&gt;Vælg valgfrit automatisk at fastgøre til et afrundet tal, når kanvasset ændrer størrelse &lt;label&gt;Fastgør automatisk til afrundet tal ved ændring af størrelse&lt;/label&gt;.&lt;/li&gt;
+&lt;li&gt;Klik &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1307"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="668"/>
         <source>&lt;h3&gt;Create a New PostgreSQL Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a PostgreSQL database.
 &lt;p&gt;
@@ -57472,42 +57483,41 @@ This dialog allows you to define the settings for a connection to a PostgreSQL d
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Create a New PostgreSQL Connection&lt;/h3&gt;
-This dialog allows you to define the settings for a connection to a PostgreSQL database.
+        <translation>&lt;h3&gt;Opret en ny PostgreSQL-forbindelse&lt;/h3&gt;
+Denne dialog tillader dig at definere indstillingerne for en forbindelse til en PostgreSQL&apos;database.
 &lt;p&gt;
 &lt;ul&gt;
-&lt;li&gt; &lt;label&gt;Name&lt;/label&gt; A name to identify the connection settings.
+&lt;li&gt; &lt;label&gt;Navn&lt;/label&gt; Et navn til at identificere forbindelsesindstillingerne.
 
-&lt;li&gt; &lt;label&gt;Service&lt;/label&gt; A name of a service listed in the &lt;a href=&quot;http://www.postgresql.org/docs/current/static/libpq-pgservice.html&quot;&gt;Connection Service File&lt;/a&gt;.
+&lt;li&gt; &lt;label&gt;Tjeneste&lt;/label&gt; Et navn på en tjeneste listet i &lt;a href=&quot;http://www.postgresql.org/docs/current/static/libpq-pgservice.html&quot;&gt;forbindelsestjenestesfilen&lt;/a&gt;.
 
-&lt;li&gt; &lt;label&gt;Host&lt;/label&gt; Name or IP address of the computer hosting the database server (leave blank for local connections or services).
+&lt;li&gt; &lt;label&gt;Vært&lt;/label&gt; Navn eller IP-adresse på computeren, hvor databaseserveren kører (efterlad blank for lokale forbindelser eller tjenester).  
 
-&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; IP port used by the database server (leave blank for local connections or to use default port 5432).
+&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; IP-port brugt af databaseserver (efterlad blank for lokale forbindelser eller for at bruge standardport 5432).
 
-&lt;li&gt; &lt;label&gt;Database&lt;/label&gt; Name of the database (leave blank for default database).
+&lt;li&gt; &lt;label&gt;Database&lt;/label&gt; Navn på databasen (efterlad blank for standarddatabase).
 
-&lt;li&gt; &lt;label&gt;SSL mode&lt;/label&gt; &lt;a href=&quot;http://www.postgresql.org/docs/9.0/static/libpq-ssl.html#LIBPQ-SSL-SSLMODE-STATEMENTS&quot;&gt;SSL mode&lt;/a&gt; of the connection
+&lt;li&gt; &lt;label&gt;SSL-tilstand&lt;/label&gt; &lt;a href=&quot;http://www.postgresql.org/docs/9.0/static/libpq-ssl.html#LIBPQ-SSL-SSLMODE-STATEMENTS&quot;&gt;SSL-tilstand&lt;/a&gt; for forbindelsen
 
-&lt;li&gt; &lt;label&gt;Username&lt;/label&gt; Database user name.
-&lt;li&gt; &lt;label&gt;Password&lt;/label&gt; Database password.
+&lt;li&gt; &lt;label&gt;Brugernavn&lt;/label&gt; Brugernavn til database.
+&lt;li&gt; &lt;label&gt;Kodeord&lt;/label&gt; Kodeord til database.
 
-&lt;li&gt; &lt;label&gt;Save Username&lt;/label&gt; Indicates whether to save the database user name in the connection configuration.
+&lt;li&gt; &lt;label&gt;Gem brugernavn&lt;/label&gt; Indikerer, om brugernavnet til databasen skal gemmes i forbindelsesindstillingerne.
 
-&lt;li&gt; &lt;label&gt;Save Password&lt;/label&gt; Indicates whether to save the database password in the connection settings.  &lt;font color=&quot;red&quot;&gt;Passwords are saved in &lt;strong&gt;clear text&lt;/strong&gt; in the system configuration and in the project files!&lt;/font&gt;
+&lt;li&gt; &lt;label&gt;Gem kodeord&lt;/label&gt; Indikerer, om adgangskoden til databasen skal gemmes i forbindelsesindstillingerne.  &lt;font color=&quot;red&quot;&gt;Kodeord gemmes i &lt;strong&gt;klartekst&lt;/strong&gt; i systemkonfigurationen og i projektfilerne!&lt;/font&gt;
 
-&lt;li&gt; &lt;label&gt;Only look in the geometry_columns table&lt;/label&gt; Indicates that only &quot;listed&quot; geometry columns should be used - opposed to scanning all tables for geometry columns.
+&lt;li&gt; &lt;label&gt;Kig kun i tabellen geometry_columns&lt;/label&gt; Indikerer, at kun &quot;listede&quot; geometrikolonner skal bruges - i modsætning til at scanne alle tabeller for geometrikolonner.
 
-&lt;li&gt; &lt;label&gt;Only look in the &apos;public&apos; schema&lt;/label&gt; Indicates that only tables in the &apos;public&apos; schema should be considers - opposed to all accessible tables.
+&lt;li&gt; &lt;label&gt;Kig kun i skemaet &apos;public&apos;&lt;/label&gt; Indikerer, at kun tabeller i skemaet &apos;public&apos; skal omfattes - i modsætning til at alle tilgængelige tabeller.
 
-&lt;li&gt; &lt;label&gt;Also list tables with no geometry&lt;/label&gt;  Indicates that tables without geometry should also be listed by default.
+&lt;li&gt; &lt;label&gt;List også tabeller uden geometri&lt;/label&gt;  Indikerer, at tabeller uden geometri også skal listes som standard.
 
-&lt;li&gt; &lt;label&gt;Use estimated table metadata&lt;/label&gt; When initializing layers, various queries may be needed to establish the characteristics of the geometries stored in the database table.  When this option is checked, these queries examine only a sample of the rows and use the table statistics, rather than the entire table.  This can drastically speed up operations on large datasets, but may result in incorrect characterization of layers (eg. the &lt;font color=&quot;red&quot;&gt;feature count&lt;/font&gt; of filtered layers will not be accurately determined).
+&lt;li&gt; &lt;label&gt;Brug estimerede tabel-metadata&lt;/label&gt; Når lag initialiseres, skal diverse forespørgler måske køres for at etablere karakteristika for geometrierne gemt i databasetabellen. Når denne mulighed er markeret, vil disse forespørgsler kun undersøge en del af rækkerne og bruge tabelstatistikken fremfor hele tabellen. Dette kan forøge hastigheden på handlinger på store datasæt væsentligt, men kan medføre forkert karakterisering af lag (fx  &lt;font color=&quot;red&quot;&gt;objektantallet&lt;/font&gt; af filtrerede lag vil ikke blive bestemt præcist).
 
-&lt;/ul&gt;
-</translation>
+&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="889"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="107"/>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
 There are two measure tools: length and area. With them, you can measure both distances and areas on the map canvas. Currently the tools provide results in metric units only. A single right mouse click stops the measuring, while two right mouse clicks starts measuring anew.
 &lt;h4&gt;Measuring Lengths&lt;/h4&gt;
@@ -57515,16 +57525,16 @@ To measure lengths, select the tool and click along the path you want to measure
 &lt;h4&gt;Measuring Areas&lt;/h4&gt;
 To measure areas, select the tool and click to create the area. The total area is dynamically displayed as you click.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Measure Tools&lt;/h3&gt;
-There are two measure tools: length and area. With them, you can measure both distances and areas on the map canvas. Currently the tools provide results in metric units only. A single right mouse click stops the measuring, while two right mouse clicks starts measuring anew.
-&lt;h4&gt;Measuring Lengths&lt;/h4&gt;
-To measure lengths, select the tool and click along the path you want to measure. The length of each segment is displayed as is the total length for the path.
-&lt;h4&gt;Measuring Areas&lt;/h4&gt;
-To measure areas, select the tool and click to create the area. The total area is dynamically displayed as you click.
+        <translation>&lt;h3&gt;Måleværktøjer&lt;/h3&gt;
+Der er 2 måleværktøjer: længde og areal. Med dem kan du måle både afstande og arealer på kortkanvasset. Værktøjerne tilbyder pt. kun resultater i metriske mål. Et enkelt højreklik med musen afslutter målingen, mens 2 højreklik med musen starter en ny måling.
+&lt;h4&gt;At måle længder&lt;/h4&gt;
+Vælg værktøjet og klik langs med stien, du vil måle, for at måle længder. Længden på hvert segment vises som en total længde for stien.
+&lt;h4&gt;At måle arealer&lt;/h4&gt;
+Vælg værktøjet og klik for at danne området for at måle arealer. Den totale arealværdi bliver vist dynamisk, som du klikker.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="622"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1313"/>
         <source>&lt;h3&gt;Copyright Label Plugin&lt;/h3&gt;
 Draws a copyright label with information.&lt;br/&gt;
 You can add any random text to the map not only a copyright label.
@@ -57557,41 +57567,41 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Copyright Label Plugin&lt;/h3&gt;
-Draws a copyright label with information.&lt;br/&gt;
-You can add any random text to the map not only a copyright label.
+        <translation>&lt;h3&gt;Plugin til copyright-label&lt;/h3&gt;
+Tegner en copyright-label med information.&lt;br/&gt;
+Du kan føje en tilfældig tekst til kortet, ikke kun en copyright-label.
 &lt;p&gt;
-&lt;a href=&quot;#howto&quot;&gt;How to&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#text&quot;&gt;Text formatting&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#howto&quot;&gt;Hvordan&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#text&quot;&gt;Tekstformattering&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;howto&quot;&gt;
-&lt;h4&gt;How to&lt;/h4&gt;
+&lt;h4&gt;Hvordan&lt;/h4&gt;
 &lt;/a&gt;
 &lt;ol&gt;
-&lt;li&gt;Make sure the plugin is loaded.
-&lt;li&gt;Click on &lt;label&gt;Plugins &gt; Decorations &gt; Copyright Label&lt;/label&gt; or use the &lt;label&gt;Copyright Label&lt;/label&gt; button from the Toolbar.
-&lt;li&gt;Enter the text you want to place on the map. You can use HTML.
-&lt;li&gt;Choose the placement of the label from the &lt;label&gt;Placement Bottom Right&lt;/label&gt; drop-down box.
-&lt;li&gt;Make sure the &lt;label&gt;Enable Copyright Label check box&lt;/label&gt; is checked.
-&lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.
+&lt;li&gt;Vær sikker på, at pluginet er indlæst.
+&lt;li&gt;Klik på &lt;label&gt;Plugins &gt; Dekorationer &gt; Copyright-label&lt;/label&gt; eller brug knappen &lt;label&gt;Copyright-label&lt;/label&gt; fra værktøjslinjen.
+&lt;li&gt;Angiv teksten, du vil placere på kortet. Du kan bruge HTML.
+&lt;li&gt;Vælg placeringen af labelen fra dropdown-boksen &lt;label&gt;Placering nederst til højre&lt;/label&gt;.
+&lt;li&gt;Vær sikker på, at checkboksen &lt;label&gt;Aktivér Copyright-label&lt;/label&gt; er markeret.
+&lt;li&gt;Klik &lt;label&gt;OK&lt;/label&gt;.
 &lt;/ol&gt;
 &lt;a name=&quot;text&quot;&gt;
-&lt;h4&gt; Text formatting &lt;/h4&gt;
+&lt;h4&gt; Tekstformattering &lt;/h4&gt;
 &lt;/a&gt;
-This plugin supports basic HTML markup tags for formatting text. For example:
+Dette plugin understøtter grundlæggende HTML markup tags til at formatere tekst. For eksempel:
 
 &lt;ul&gt;
-&lt;li&gt;&amp;lt;B&amp;gt;&lt;b&gt; Bold text &lt;/b&gt;&amp;lt;/B&amp;gt;
+&lt;li&gt;&amp;lt;B&amp;gt;&lt;b&gt; Fed tekst &lt;/b&gt;&amp;lt;/B&amp;gt;
 &lt;/li&gt;
-&lt;li&gt;&amp;lt;I&amp;gt;&lt;i&gt; Italics &lt;/i&gt;&amp;lt;/I&amp;gt;
+&lt;li&gt;&amp;lt;I&amp;gt;&lt;i&gt; Kursiv &lt;/i&gt;&amp;lt;/I&amp;gt;
 &lt;/li&gt;
-&lt;li&gt;&amp;lt;U&amp;gt;&lt;u&gt; Underlined text &lt;/u&gt;&amp;lt;/U&amp;gt;
+&lt;li&gt;&amp;lt;U&amp;gt;&lt;u&gt; Understreget tekst &lt;/u&gt;&amp;lt;/U&amp;gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1217"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="187"/>
         <source>&lt;h3&gt;Python Plugin Installer&lt;/h3&gt;
 Downloads and installs plugins from remote repositories.
 &lt;br/&gt;&lt;br/&gt;
@@ -57661,78 +57671,78 @@ In addition, you may specify the type of plugins that are displayed by the Plugi
 Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Python Plugin Installer&lt;/h3&gt;
-Downloads and installs plugins from remote repositories.
+        <translation>&lt;h3&gt;Python-plugin-installer&lt;/h3&gt;
+Downloader og installerer plugins fra online repositories.
 &lt;br/&gt;&lt;br/&gt;
-&lt;a href=&quot;#pltab&quot;&gt;Plugins tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#retab&quot;&gt;Repositories tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#optab&quot;&gt;Options tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#pltab&quot;&gt;Plugins-fane&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#retab&quot;&gt;Repository-fane&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#optab&quot;&gt;Indstillingsfane&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;pltab&quot;&gt;
-&lt;h4&gt;Plugins tab&lt;/h4&gt;
+&lt;h4&gt;Plugins-fane&lt;/h4&gt;
 &lt;/a&gt;
 
 &lt;p align=&apos;justify&apos;&gt;
-The &lt;label&gt;Plugins&lt;/label&gt; tab contains a list of all locally installed Python plugins, as well as plugins available in 
-remote repositories. Each plugin can be either:
+&lt;label&gt;Plugins&lt;/label&gt;-fanen indeholder en liste af alle lokalt installerede Python-plugins, plus plugins tilgængelige i
+online repositories. Hvert plugin kan enten være:
 &lt;dl&gt;
-&lt;dt&gt;not installed&lt;/dt&gt;&lt;dd&gt;this means the plugin is available in the repository, but is not installed yet. In order to install it, select the plugin from the list and click the &lt;label&gt;Install plugin&lt;/label&gt; button.&lt;/dd&gt;
-&lt;dt&gt;new&lt;/dt&gt;&lt;dd&gt;this means that the plugin is newly available in the repository.&lt;/dd&gt;
-&lt;dt&gt;installed&lt;/dt&gt;&lt;dd&gt;this indicates that the plugin is already installed. If it is also available in any repository the &lt;label&gt;Reinstall plugin&lt;/label&gt; button will be enabled. If the available version is older than the installed version, the &lt;label&gt;Downgrade plugin&lt;/label&gt; button will appear instead.&lt;/dd&gt;
-&lt;dt&gt;upgradeable&lt;/dt&gt;&lt;dd&gt;this means that the plugin is installed, but there is an updated version available. In this case, the &lt;label&gt;Upgrade plugin&lt;/label&gt; button will be enabled.&lt;/dd&gt;
-&lt;dt&gt;invalid&lt;/dt&gt;&lt;dd&gt;this means that the plugin is installed, but is unavailable or broken. The reason will be explained in the plugin description field.&lt;/dd&gt;
+&lt;dt&gt;ikke installeret&lt;/dt&gt;&lt;dd&gt;dette betyder, at pluginet er tilgængelig i repositoryet, men ikke installeret endnu. For at installere det, vælg pluginet fra listen og klik på knappen &lt;label&gt;Installér plugin&lt;/label&gt;.&lt;/dd&gt;
+&lt;dt&gt;ny&lt;/dt&gt;&lt;dd&gt;dette betyder, at pluginet er blevet tilgængelig i repositoryet for nylig.&lt;/dd&gt;
+&lt;dt&gt;installeret&lt;/dt&gt;&lt;dd&gt;dette indikerer, at pluginet er allerede installeret. Hvis det også er tilgængeligt i et vilkårligt repository i, vil knappen &lt;label&gt;Geninstallér plugin&lt;/label&gt; være aktiveret. Hvis den tilgængelige version er ældre end den installerede version, vil knappen &lt;label&gt;Downgradér plugin&lt;/label&gt; blive vist i stedet.&lt;/dd&gt;
+&lt;dt&gt;opgraderbar&lt;/dt&gt;&lt;dd&gt;dette betyder, at pluginet er installeret, men der er en opdateret version tilgængelig. I så fald vil knappen &lt;label&gt;Opgradér plugin&lt;/label&gt; blive aktiveret.&lt;/dd&gt;
+&lt;dt&gt;ugyldig&lt;/dt&gt;&lt;dd&gt;dette betyder, at pluginet er installeret, men er utilgængeligt eller ødelagt. Årsagen vil være forklaret i pluginets beskrivelsesfelt.&lt;/dd&gt;
 &lt;/dl&gt;
 &lt;/p&gt;
 
-To install a plugin, select it from the list and click the &lt;label&gt;Install plugin&lt;/label&gt; button. The plugin is installed in its own directory in:
+For at installere et plugin, vælg det fra listen og klik på knappen &lt;label&gt;Installér plugin&lt;/label&gt;. Pluginet installeres i sin egen mappe i:
 &lt;table border=1&gt;
-&lt;tr&gt;&lt;th&gt;OS&lt;/th&gt;&lt;th&gt;system plugins&lt;/th&gt;&lt;th&gt;plugins installed by user&lt;/th&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Linux and other unices&lt;/td&gt;&lt;td&gt;./share/qgis/python/plugins&lt;/td&gt;&lt;td rowspan=2&gt;$HOME/qgis/python/plugins&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;OS&lt;/th&gt;&lt;th&gt;system-plugins&lt;/th&gt;&lt;th&gt;plugins installeret af bruger&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Linux og andre UNIX&apos;er&lt;/td&gt;&lt;td&gt;./share/qgis/python/plugins&lt;/td&gt;&lt;td rowspan=2&gt;$HOME/qgis/python/plugins&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;Mac OS X&lt;/td&gt;&lt;td&gt;./Contents/MacOS/share/qgis/python/plugins&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Windows&lt;/td&gt;&lt;td&gt;(QGIS install directory)&amp;#92;python&amp;#92;plugins&lt;/td&gt;&lt;td&gt;%USERPROFILE%&amp;#92;.qgis&amp;#92;python&amp;#92;plugins&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Windows&lt;/td&gt;&lt;td&gt;(QGIS-installationsmappe)&amp;#92;python&amp;#92;plugins&lt;/td&gt;&lt;td&gt;%USERPROFILE%&amp;#92;.qgis&amp;#92;python&amp;#92;plugins&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 &lt;br/&gt;
 
 &lt;p align=&apos;justify&apos;&gt;
-If the installation is successful, a confirmation message will appear. The plugin is ready to use.
+Hvis installationen lykkes, vil en bekræftelsesbesked blive vist. Pluginet er klar til brug.
 &lt;/p&gt;
 
 &lt;p align=&apos;justify&apos;&gt;
-If the installation fails, the reason for the failure will be displayed in a warning dialog. Most often, errors are the result of connection problems and/or missing Python modules. In the former case you will likely need to wait before trying the install again, in the latter case, you should install the missing modules relevant to your operating system prior to using the plugin. For Linux, most required modules should be available via a package manager. For install instructions in Windows visit the module home page. If you are using a proxy, you may need to configure it under &lt;label&gt;Edit&lt;/label&gt; &gt; &lt;label&gt;Options&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; &gt; &lt;label&gt;Options&lt;/label&gt; (KDE, Windows) on the &lt;label&gt;Proxy&lt;/label&gt; tab.&lt;/p&gt;
+Hvis installationen mislykkes, vil årsagen til fejlen blive vist i en advarselsdialog. For det meste skyldes fejl forbindelsesproblemer og/eller manglende Python-moduler. I det første tilfælde vil du nok skulle vente, før du prøver at installere igen, i det andet tilfælde bør du installere de manglende moduler iht. dit operativsystem, før du bruger pluginet. På Linux bør alle påkrævede moduler være tilgængelige via en package manager. Besøg modulets hjemmeside for installationsinstruktioner for Windows. Hvis du bruger en proxy, kan du skulle konfigurere den under &lt;label&gt;Redigér&lt;/label&gt; &gt; &lt;label&gt;Muligheder&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Indstillinger&lt;/label&gt; &gt; &lt;label&gt;Generelle indstillinger&lt;/label&gt; (KDE, Windows) på fanen &lt;label&gt;Proxy&lt;/label&gt;.&lt;/p&gt;
 
 &lt;p align=&apos;justify&apos;&gt;
-The &lt;label&gt;Uninstall plugin&lt;/label&gt; button is enabled only if the selected plugin is installed and is not a core plugin. Note that if you have installed an update to a core plugin, you can uninstall this update with the &lt;label&gt;Uninstall plugin&lt;/label&gt; and revert to the version shipped with QGIS. This default version however, cannot be uninstalled.&lt;/p&gt;
+Knappen &lt;label&gt;Afinstallér plugin&lt;/label&gt; er kun aktiveret, hvis det valgte plugin er installeret og ikke er et kerneplugin. NB: Hvis du har installeret en opdatering til et kerneplugin, kan du afinstallere denne opdatering med knappen &lt;label&gt;Afinstallér plugin&lt;/label&gt; og vende tilbage til versionen installeret med QGIS. Denne standardversion kan dog ikke afinstalleres.&lt;/p&gt;
 
 &lt;a name=&quot;retab&quot;&gt;
-&lt;h4&gt;Repositories tab&lt;/h4&gt;
+&lt;h4&gt;Repository-fane&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p align=&apos;justify&apos;&gt;
-The second tab &lt;label&gt;Repositories&lt;/label&gt;, contains a list of plugin repositories available for the Plugin Installer. By default, only the QGIS Official Repository is enabled. You can add several user-contributed repositories, including the central QGIS Contributed Repository and other external repositories by clicking the &lt;label&gt;Add 3rd party repositories&lt;/label&gt; button. The added repositories contain a large number of useful plugins which are not maintained by the QGIS Development Team. As such, we cannot take any responsibility for them. You can also manage the repository list manually, that is add, remove, and edit the entries. Temporarily disabling a particular repository is possible by clicking the &lt;label&gt;Edit...&lt;/label&gt; button.&lt;/p&gt;
+Den anden fane, &lt;label&gt;Repositories&lt;/label&gt;, indeholder en liste af plugin-repositories tilgængelig for Plugin-installeren. Kun det officielle QGIS-repository er aktiveret som standard. Du kan tilføje flere brugerdefinerede repositories, inkl. det centrale QGIS bidragede repository og andre eksterne repositories ved at klikke på knappen &lt;label&gt;Tilføj tredjeparts-repositories&lt;/label&gt;. Det tilføjede repository indeholder et stort antal brugbare plugins, som ikke vedligeholdes af QGIS-udviklerholdet. Derfor kan vi ikke tage ansvar for dem. Du kan også styre listen over repositories manuelt, dvs. tilføje, fjerne og slette rækker. Det er muligt midlertidig at deaktivere et bestemt repository ved klikke på knappen &lt;label&gt;Redigér...&lt;/label&gt;.&lt;/p&gt;
 
 &lt;a name=&quot;optab&quot;&gt;
-&lt;h4&gt;Options tab&lt;/h4&gt;
+&lt;h4&gt;Indstillingsfane&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p align=&apos;justify&apos;&gt;
-The &lt;label&gt;Options&lt;/label&gt; tab is where you can configure the settings of the Plugin Installer. The &lt;label&gt;x Check for updates on start up&lt;/label&gt; check box tells QGIS to automatically look for plugin updates and news. By default, if this feature is enabled all repositories listed and enabled in the &lt;label&gt;Repositories&lt;/label&gt; tab are checked for updates each time the program is started. The frequency of update checking can be adjusted using the drop down menu, and may be adjusted from once a day right up to once a month. If a new plugin or update is available for one of the installed plugins, a notification will appear in the Status Bar. If the check box is disabled, looking for updates and news is performed only when the Plugin Installer is manually launched from the menu.&lt;/p&gt;
+&lt;label&gt;Indstillings-&lt;/label&gt;fanen er hvor du kan konfigurere indstillinger for Plugin-installeren. Checkboksen &lt;label&gt;x Tjek for opdateringer ved opstart&lt;/label&gt; får QGIS til automatisk at kigge efter pluginopdateringer og nyheder. Som standard tjekkes alle repositories, som er listet og aktiveret under &lt;label&gt;Repositories&lt;/label&gt;-fanen, for opdateringer, hver gang programmet startes, hvis denne funktion er aktiveret. Opdateringsfrekvensen for at tjekke for opdateringer kan justeres fra dropdown-menuen, og kan justeres fra en gang om dagen helt op til en gang om måneden. Hvis et nyt plugin eller opdatering er tilgængelig for en af de installerede plugins, vil en besked blive vist i statuslinjen. Hvis checkboksen er deaktiveret, vil tjek for opdateringer og nyheder kun foretages, når Plugin-installeren startes manuelt fra menuen.&lt;/p&gt;
 
 &lt;p align=&apos;justify&apos;&gt;
-Some Internet connections will cause problems when attempting to automatically check for updates.  In these cases, a &lt;i&gt;Looking for new plugins...&lt;/i&gt; indicator will remain visible in the Status Bar during your entire QGIS session, and may cause a program crash when exiting. In this case please disable the check box.&lt;/p&gt;
+Nogle interneforbindelser vil skabe problemer, når der forsøges automatisk tjek for opdateringer.  I disse tilfælde vil en &lt;i&gt;Søger efter nye plugins...&lt;/i&gt;-indikator forblive synlig i statuslinjen gennem hele din QGIS-session, og kan forårsage programnedbrud ved afslutning. Deaktivér i så fald checkboksen.&lt;/p&gt;
 
-In addition, you may specify the type of plugins that are displayed by the Plugin Installer. Under &lt;i&gt;Allowed plugins&lt;/i&gt;, you can specify whether you would like to:
+Desuden kan du angive typen af plugins, som vises af Plugin-installeren. Under &lt;i&gt;Tilladte plugins&lt;/i&gt; kan du angive, om du vil:
 &lt;ul&gt;
-&lt;li&gt; Only show plugins from the official repository&lt;/li&gt;
-&lt;li&gt; Show all plugins except those marked as experimental,&lt;/li&gt;
-&lt;li&gt; or Show all plugins, even those marked as experimental.&lt;/li&gt;
+&lt;li&gt; Kun vise plugins fra det officielle repository&lt;/li&gt;
+&lt;li&gt; Vise alle plugins bortset fra dem, som er markeret som eksperimentielle,&lt;/li&gt;
+&lt;li&gt; eller vise alle plugins, selv dem, som er markeret som eksperimentielle.&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;br/&gt;
 &lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
-Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
+NB: Eksperimentielle plugins er generelt upassende til produktionsbrug. Disse plugins er i tidlige stadier af deres udvikling, og bør opfattes som &quot;ufærdige&quot; eller &quot;proof of concept&quot;-værktøjer. QGIS-udviklerholdet anbefaler ikke at installere disse plugins, mm. du vil bruge dem til testformål.
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="72"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="607"/>
         <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
 The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; General&lt;/label&gt;.&lt;p&gt;
 
@@ -57785,61 +57795,61 @@ The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table al
 The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
 The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Attribute table&lt;/h3&gt;
-The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; General&lt;/label&gt;.&lt;p&gt;
+        <translation>&lt;h3&gt;Attributtabel&lt;/h3&gt;
+Attributtabellen viser objekter i et udvalgt lag. Hver række i tabellen repræsenterer et kortobjekt med sine attributter vist i flere kolonner. Objekterne i tabellen kan søges, vælges, flyttes eller endda redigeres. Som standard er attributtabellen et separat vindue. Hvis du har åbnet det og kan ikke se den mere, er det sandsynligvis skjult under det primære QGIS-vindue. Du kan gøre det også til et forankret vindue ved at markere &lt;label&gt;Åbn attributtabellen i et dockvindue &lt;/label&gt; i &lt;label&gt;Indstillinger &gt; Generelle indstillinger &gt; Generelt&lt;/label&gt;.&lt;p&gt;
 
-The number of total number of layer features, filtered features and selected features is printed on the window header.&lt;p&gt;
+Antallet af totale antal lagobjekter, filtrerede objekter og udvalgte objekter er skrevet på vinduesoverskriften.&lt;p&gt;
 &lt;p&gt;
-&lt;a href=&quot;#Selecting&quot;&gt;Selecting&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Sorting&quot;&gt;Sorting&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Filtering&quot;&gt;Filtering&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Editing&quot;&gt;Editing&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#FieldCalc&quot;&gt;Field Calculator&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;Udvælgelse&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;Sortering&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;Filtrering&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;Redigering&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;Feltberegner&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;Selecting&quot;&gt;
-&lt;h4&gt;Selecting&lt;/h4&gt;
+&lt;h4&gt;Udvælgelse&lt;/h4&gt;
 &lt;/a&gt;
-Rows can be selected by clicking on the row number on the left side of the row. Subsequent rows can be selected by holding the mouse button down and moving the mouse to the other end of the selection. Multiple non-subsequent rows can be selected by holding the &lt;label&gt;Ctrl&lt;/label&gt; key.&lt;br&gt;
-A continuous selection can be made by holding the &lt;label&gt;Shift&lt;/label&gt; key and clicking on several row headers on the left side of the rows. All rows between the current cursor position and the clicked row are selected.
+Rækker kan vælges ved at klikke på rækkenummeret på den venstre side af rækken. Efterfølgende rækker kan vælges ved at holde museknappen nede og flytte musen til den anden ende af selektionen. Flere ikke-efterfølgende rækker kan vælges ved at holde &lt;label&gt;Ctrl&lt;/label&gt;-tasten nede.&lt;br&gt;
+En kontinuerlig udvælgelse kan foretages ved at holde &lt;label&gt;Shift&lt;/label&gt;-tasten nede og klikke på flere rækkeoverskrifter på venstre side af rækkerne. Alle rækker mellem den nuværende markørposition og den markerede række er valgt.
 
 &lt;a name=&quot;Sorting&quot;&gt;
-&lt;h4&gt;Sorting&lt;/h4&gt;
+&lt;h4&gt;Sortering&lt;/h4&gt;
 &lt;/a&gt;
-Each column can be sorted by clicking on its column header. A small arrow indicates the sort order (downward pointing means descending values from the top row down, upward pointing means ascending values from the top row down).&lt;br&gt;
-Activate the &lt;label&gt;Selected on top&lt;/label&gt; button to show the selected rows always on top, regardless of the current sort column.
+Hver kolonne kan sorteres ved at klikke på kolonneoverskriften. En lille pil angiver sorteringsrækkefølge (nedadpegende betyder faldende værdier fra den øverste række og ned, opadpegende betyder stigende værdier fra den øverste række og ned).&lt;br&gt;
+Aktivér &lt;label&gt;Valgte øverst&lt;/label&gt; for at vise de markerede rækker altid på toppen, uanset den aktuelle sorteringskolonne.
 
 &lt;a name=&quot;Filtering&quot;&gt;
-&lt;h4&gt;Filtering&lt;/h4&gt;
+&lt;h4&gt;Filtrering&lt;/h4&gt;
 &lt;/a&gt;
-To only navigate through parts of your data, you can use the filter button on the bottom left. The following options are available.
-&lt;h5&gt;Show All Features&lt;/h5&gt;
-Shows all features of the layer.
-&lt;h5&gt;Show Selected Features&lt;/h5&gt;
-Shows all features which are currently selected.
-&lt;h5&gt;Show Features Visible on Map&lt;/h5&gt;
-Shows all features which are currently visible on the map canvas, taking the currently visible extent and scale based visibility into account.
-&lt;h5&gt;Show Edited and New Features&lt;/h5&gt;
-Shows only edited and new features. In this mode, features with uncommitted changes are shown and this is therefore a good filter to review changes, before committing them. Please note, that deleted features are not shown in this mode.
-&lt;h5&gt;Column Filter&lt;/h5&gt;
-A simple filter, which lets you filter by an attribute. If the attribute contains text, it looks for sub-strings also. Searching for &lt;b&gt;man&lt;/b&gt; will therefore also show records containing &lt;b&gt;woman&lt;/b&gt;. After changing the filter text, press &lt;label&gt;Enter&lt;/label&gt; or click on &lt;label&gt;Apply&lt;/label&gt;. You can also toggle the check-box &lt;label&gt;Case sensitive&lt;/label&gt;, so your filter will also match &lt;b&gt;Night&lt;/b&gt; when your search text is &lt;b&gt;night&lt;/b&gt;.   
-&lt;h5&gt;Advanced Filter&lt;/h5&gt;
-For more complex searches, this mode offers a powerful expression builder, which is similar to a SQL WHERE clause. Please refer to the built-in help of the expression builder for details on the syntax.
+For kun at navigere gennem dele af dine data, kan du bruge filterknappen nederst til venstre. Følgende muligheder er tilgængelige.
+&lt;h5&gt;Vis alle objekter&lt;/h5&gt;
+Viser alle objekter i laget.
+&lt;h5&gt;Vis valgte objekter&lt;/h5&gt;
+Viser alle objekter, som er valgt i øjeblikket.
+&lt;h5&gt;Vis objekter, som er synlige på kort&lt;/h5&gt;
+Viser alle objekter, som er synlige på kortkanvasset, det aktuelt synlige omfang og skalabaserede synlighed tages i betragtning.
+&lt;h5&gt;Vis redigerede og nye objekter&lt;/h5&gt;
+Viser kun redigerede og nye objekter. I denne tilstand er objekter med ugemte ændringer vist, og det er derfor et godt filter til at gennemgå ændringer, før de gemmes. NB: Slettede objekter er ikke vist i denne tilstand.
+&lt;h5&gt;Kolonnefilter&lt;/h5&gt;
+Et simpelt filter, som lader dig filtrere efter en attribut. Hvis attributten indeholder tekst, ser den også efter delstrenge. Søgning efter &lt;b&gt;mand&lt;/b&gt; vil derfor også viser poster, der indeholder &lt;b&gt;bemande&lt;/b&gt;. Når du har ændret den filterede tekst, tryk &lt;label&gt;Enter &lt;/label&gt; eller klik på &lt;label&gt;Anvend&lt;/label&gt;. Du kan også markere checkboksen &lt;label&gt;Forskel på store/små bogstaver&lt;/label&gt;, så dit filter vil også matche &lt;b&gt;Nat&lt;/b&gt;, når din søgetekst er &lt;b&gt;nat&lt;/b&gt;.
+&lt;h5&gt;Avanceret filter&lt;/h5&gt;
+For mere komplekse søgninger tilbyder denne tilstand en kraftfuldt udtryksbygger, hvilket svarer til en SQL WHERE-klausul. Der henvises til den indbyggede hjælp af udtryksbyggeren for oplysninger om syntaks.
 
 &lt;a name=&quot;Editing&quot;&gt;
-&lt;h4&gt;Editing&lt;/h4&gt;
+&lt;h4&gt;Redigering&lt;/h4&gt;
 &lt;/a&gt;
-To edit values, you first have to switch the layer to editing mode. To switch to editing mode click on the &lt;label&gt;Toggle editing mode&lt;/label&gt; (pencil) button or press &lt;label&gt;Ctrl + E&lt;/label&gt;. Afterwards double-click on the value you want to edit or place the cursor on it and use the &lt;label&gt;Space&lt;/label&gt;-Key. You can customize the widgets used for field editing in &lt;label&gt;Vector Layer Properties &gt; Fields&lt;/label&gt;  
+For at redigere værdier, skal du først ændre laget til redigeringstilstand. For at skifte til redigeringstilstand, klik på (blyant)-knappen &lt;label&gt;Slå redigeringstilstand til/fra&lt;/label&gt; eller tryk &lt;label&gt;Ctrl + E&lt;/label&gt;. Dobbeltklik bagefter på den værdi, du ønsker at redigere eller placér markøren på det og brug &lt;label&gt;Mellumrums&lt;/label&gt;-tasten. Du kan tilpasse widgets, brugt til feltredigering, i &lt;label&gt; Egenskaber for vektorlag &gt; Felter&lt;/label&gt;
 
 &lt;a name=&quot;FieldCalc&quot;&gt;
-&lt;h4&gt;Field Calculator&lt;/h4&gt;
+&lt;h4&gt;Feltberegner&lt;/h4&gt;
 &lt;/a&gt;
-The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table allows to perform calculations on basis of existing attribute values or defined functions, e.g. to calculate length or area of geometry features.&lt;br&gt;
-The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
-The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
+Knappen &lt;label&gt;Feltberegner&lt;/label&gt; i attributtabellen giver mulighed for at udføre beregninger på grundlag af eksisterende attributværdier eller definerede funktioner, fx til at beregne længde eller areal af geometriobjekter. &lt;br&gt;
+Resultaterne kan skrives til en ny attributkolonne, eller det kan bruges til at opdatere værdierne i en allerede eksisterende kolonne.&lt;br&gt;
+Vektorlaget skal være i redigeringstilstand, før du kan klikke på &lt;label&gt;Feltberegner&lt;/label&gt;-ikonet for at åbne dialogen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1420"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="719"/>
         <source>&lt;h3&gt;Manage and install Plugins&lt;/h3&gt;
 
 &lt;p&gt;
@@ -57926,95 +57936,94 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 
 &lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Manage and install Plugins&lt;/h3&gt;
+        <translation>&lt;h3&gt;Administrér og installér plugin&lt;/h3&gt;
 
 &lt;p&gt;
-Manage and install plugins.
+Administrér og installér plugin.
 &lt;/p&gt;
 
 
-&lt;a href=&quot;#installedtab&quot;&gt;Installed tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#getmoretab&quot;&gt;Get more tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#newtab&quot;&gt;New tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#upgradabletab&quot;&gt;Upgradable tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#invalidtab&quot;&gt;Invalid tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#settingstab&quot;&gt;Settings tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#installedtab&quot;&gt;Fanen Installeret&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#getmoretab&quot;&gt;Fanen Hent flere&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#newtab&quot;&gt;Fanen Ny&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#upgradabletab&quot;&gt;Fanen Opgraderbar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#invalidtab&quot;&gt;Fanen Ugyldige&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#settingstab&quot;&gt;Fanen Indstillinger&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;installedtab&quot;&gt;
-&lt;h4&gt;Installed tab&lt;/h4&gt;
+&lt;h4&gt;Fanen Installeret&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p&gt;
-This tab shows you the list of currently installed plugins on your system. Both
-python and C++ plugins are listed.
+Denne fane viser dig en liste over aktuelt installerede plugins på dit system. Både
+Python og C++-plugins er listet.
 &lt;/p&gt;
 &lt;p&gt;
-You can enable or disable them by clicking the checkbox in front of the name.&lt;br/&gt;
-Selecting an item show the plugin information in the detail pane.
+Du kan aktivere eller deaktivere dem ved at klikke på checkboksen foran navnet.&lt;br/&gt;
+At vælge et element viser plugininformation i detaljeruden.
 &lt;/p&gt;
 &lt;p&gt;
-There is a context menu (right click) available, to change the sorting on:
-name, number of downloads, votes and status.
+Der er en genvejsmenu (højreklik) tilgængelig for at ændre sortering på:
+navn, antal downloads, stemmer og status.
 &lt;/p&gt;
 
 
 &lt;a name=&quot;getmoretab&quot;&gt;
-&lt;h4&gt;Get more tab&lt;/h4&gt;
+&lt;h4&gt;Fanen Hent flere&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p&gt;
-This tab shows you the list of available plugins from the remote repositories.
-It is downloaded once if you start up. But you can change that in the Settings
+Denne fane viser dig en liste over tilgængelige plugins fra online repositories.
+Den er downloadet én gang, hvis du starter op. Men du kan ændre dette i Indstillinger
 &lt;/p&gt;
 &lt;p&gt;
-Selecting an item shows you the plugin information in the detail pane.
+At vælge et element viser dig plugininformation i detaljeruden.
 &lt;/p&gt;
 
 &lt;a name=&quot;newtab&quot;&gt;
-&lt;h4&gt;New tab&lt;/h4&gt;
+&lt;h4&gt;Fanen Ny&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p&gt;
-This tab will be shown when a new plugin is made available? It will be shown
-just once.
+Denne fane vises, når en ny plugin er til rådighed. Det vil kun blive vist
+én gang.
 &lt;/p&gt;
 
 &lt;a name=&quot;upgradabletab&quot;&gt;
-&lt;h4&gt;Upgradable tab&lt;/h4&gt;
+&lt;h4&gt;Fanen Opgraderbar&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p&gt;
-This tab is only available if there one of your installed plugins can be upgraded
-from the remote repositories.
+Denne fane er kun tilgængelig, hvis der en af dine installerede plugins, der kan opgraderes
+fra online repositories.
 &lt;/p&gt;
 
 &lt;a name=&quot;Invalid tab&quot;&gt;
-&lt;h4&gt;Invalid tab&lt;/h4&gt;
+&lt;h4&gt;Fanen Ugyldige&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p&gt;
-This tab is only available if there is a plugin invalid. That is if there was an
-error during loading the plugin.
+Denne fane er kun tilgængelig, hvis der er et ugyldigt plugin. Dvs. hvis der var en
+fejl under indlæsning af pluginet.
 &lt;/p&gt;
 
 &lt;a name=&quot;settingstab&quot;&gt;
-&lt;h4&gt;Settings tab&lt;/h4&gt;
+&lt;h4&gt;Fanen Indstillinger&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p&gt;
-In this tab you can change the Settings for the plugin manager.
+I dette faneblad kan du ændre indstillingerne for Pluginstyring.
 &lt;/p&gt;
 &lt;p&gt;
-It is possible to check how often QGIS will download the list and update information 
-from the available repositories.
+Det er muligt at kontrollere, hvor ofte QGIS vil hente listen og opdatere oplysninger
+fra de tilgængelige repositories.
 &lt;/p&gt;
 &lt;p&gt;
-By checking the &apos;Show experimental plugins&apos; checkbox, all plugins will be shown
-in the lists, even the ones that are considered &apos;experimental&apos; by the author.
+Ved at markere checkboksen &apos;Vis eksperimentelle plugins&apos;, bliver alle plugins blive vist
+på listerne, selv dem, der betragtes som &apos;eksperimentiel&apos; af forfatteren.
 
-&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
-Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
+&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt; &lt;tr&gt; &lt;td&gt;
+NB: Eksperimentielle plugins er generelt uegnede til brug i produktion. Disse plugins er i de tidlige stadier af udvikling, og bør betragtes som &quot;ufærdige&quot; eller &quot;proof of concept&quot;-værktøjer. QGIS-udviklingsholdet anbefaler ikke at installere disse plugins, mm. du agter at bruge dem til testformål.
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-&lt;/p&gt;
-</translation>
+&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1506"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="258"/>
         <source>&lt;h3&gt;Project Properties&lt;/h3&gt;
 This dialog allows you to set a number of properties related to the &lt;label&gt;Project&lt;/label&gt;. A Project is a saved set of layers and their settings, as well as other information required to restore the project from disk.&lt;p&gt;
 
@@ -58050,55 +58059,55 @@ The Coordinate Reference System (CRS) tab allows you to set the projection for t
 &lt;/a&gt;
 On this tab you can choose on which layers the identify tool will work.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Project Properties&lt;/h3&gt;
-This dialog allows you to set a number of properties related to the &lt;label&gt;Project&lt;/label&gt;. A Project is a saved set of layers and their settings, as well as other information required to restore the project from disk.&lt;p&gt;
+        <translation>&lt;h3&gt;Projektegenskaber&lt;/h3&gt;
+Denne dialog lader dig indstille en række egenskaber relateret til &lt;label&gt; Project &lt;/label&gt;. Et projekt er en gemt sæt af lag og deres indstillinger, samt andre oplysninger, der kræves for at genoprette projektet fra disken. &lt;p&gt;
 
-&lt;a href=&quot;#general&quot;&gt;General Tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#crs&quot;&gt;Coordinate Reference System (CRS) Tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#layers&quot;&gt;Identifiable layers Tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#general&quot;&gt;Fanen Generelt&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#crs&quot;&gt;Fanen Koordinatsystem (CRS)&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#layers&quot;&gt;Fanen Identificerbare lag&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;general&quot;&gt;
-&lt;h4&gt;General Tab&lt;/h4&gt;
+&lt;h4&gt;Fanen Generelt&lt;/h4&gt;
 &lt;/a&gt;
 &lt;table border=1&gt;
-&lt;tr&gt;&lt;td&gt;&lt;label&gt;Project title&lt;/label&gt;&lt;/td&gt;&lt;td&gt;A descriptive title for the project. This title will be displayed in the title bar of the QGIS window&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;label&gt;Selection color&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Selected features are displayed on the map using this color.&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;label&gt;Background color&lt;/label&gt;&lt;/td&gt;&lt;td&gt;The color of the map canvas.&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;label&gt;Save paths&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Ability to save the paths as absolute or relative.&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;label&gt;Layer units&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Choose the units appropriate for the layers in the project.&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;label&gt;Precision&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Use the manual setting to set the precision of the display in the status bar. As the mouse is moved over the map canvas, the coordinates are updated and displayed in the status bar using the precision you choose. Automatic (the default) results in a default precision based on the map units.&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;label&gt;Digitizing&lt;/label&gt;&lt;/td&gt;&lt;td&gt;The option &lt;label&gt; Enable topological editing&lt;/label&gt; enables editing and maintaining common boundaries in polygon mosaics. Editing a vertex in shared boundary will result in updating both boundaries.&lt;p&gt;
-To avoid digitizing all vertices of the common boundary select &lt;label&gt;Avoid intersections of new polygons&lt;/label&gt;. In the dialog window tick appropriate layers to which the new polygon will be adjusted. Draw the new polygon in the way it overlap the existing one, it will be cut automatically. &lt;p&gt;
-&lt;label&gt;Snapping options&lt;/label&gt; allows you to set the snapping tolerance in pixels or map units and the snapping mode: &lt;label&gt;to vertex&lt;/label&gt;, &lt;label&gt;to segment&lt;/label&gt;, &lt;label&gt;to vertex and segment&lt;/label&gt; for every layer separately.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Projektets titel&lt;/label&gt;&lt;/td&gt;&lt;td&gt;En beskrivende titel for projektet. Denne titel vil blive vist i titellinjen i QGIS-vinduet &lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Selektionsfarve&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Udvalgte objekter vises på kortet ved hjælp af denne farve.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Baggrundsfarve&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Farven på kortkanvasset.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Gem stier&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Mulighed for at gemme stierne som absolutte eller relative.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Lagenheder&lt;/label&gt;&lt;/td&gt;&lt;td&gt; Vælg de enheder, der passer til lagene i projektet. &lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Præcision&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Brug den manuelle indstilling til at angive præcisionen på skærmen i statuslinjen. Som musen flyttes over kortkanvasset, bliver koordinaterne opdateret og vises i statuslinjen ved hjælp af den præcision, du vælger. Automatisk (standard) resulterer i en standardpræcision, baseret på kortenheder.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Digitalisering&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Indstillingen&lt;label&gt;Aktivér topologisk redigering&lt;/label&gt; muliggør redigering og vedligeholdelse af fælles grænser i polygonmosaikker. Redigering af et hjørne i en delt grænse vil resultere i, at begge grænser opdateres.&lt;p&gt;
+For at undgå at digitalisere alle hjørner i den fælles grænse, vælg &lt;label&gt;Undgå skæringspunkter for nye polygoner&lt;/label&gt;.Markér passende lag i dialogvinduet, som den nye polygon blive justeret til. Tegn den nye polygon på en måde, hvor den overlapper den eksisterende, den vil blive beskåret automatisk.&lt;p&gt;
+&lt;label&gt;Fastgørelsesindstillinger&lt;/label&gt; giver dig mulighed for at indstille fastgørelsestolerance i pixels eller kortenheder og fastgørelsestilstand: &lt;label&gt;Til hjørne &lt;/label&gt;, &lt;label&gt;Til segment&lt;/label&gt;, &lt;label&gt; Til hjørne og segment&lt;label&gt; for alle lag separat.&lt;/td&gt;&lt;/tr&gt;
 
 &lt;/table&gt;
 &lt;a name=&quot;crs&quot;&gt;
-&lt;h4&gt;Coordinate Reference System (CRS) Tab&lt;/h4&gt;
+&lt;h4&gt;Fanen Koordinatsystem (CRS)&lt;/h4&gt;
 &lt;/a&gt;
-The Coordinate Reference System (CRS) tab allows you to set the projection for the current project and enable on the fly transformation. You do not need to have a saved project to setup and enable &apos;on the fly&apos; CRS transformation.
-&lt;p&gt;To use &apos;on the fly&apos; CRS transformation, click the &lt;label&gt;Enable &apos;on the fly&apos; CRS transformation&lt;/label&gt; check box. Then choose the projection for the project (map canvas) from the list of Geographic or Projected coordinate systems.
-&lt;p&gt;You can find a coordinate system by entering its name, EPSG code or the QGIS ID and clicking the &lt;label&gt;Find&lt;/label&gt; button.
-&lt;p&gt;The list of recently used coordinate systems will be available on the bottom for quick access.
+Fanen koordinatsystem (CRS) tillader dig at sætte projektionen for det aktuelle projekt og aktivere realtidstransformation. Du behøver ikke at have et gemt projekt for at konfigurere og aktivere realtids-CRS-transformation.
+&lt;p&gt;For at bruge realtids-CRS-transformation, klik på checkboksen &lt;label&gt;Aktivér  realtids-CRS-transformation&lt;/label&gt;. Vælg derefter projektionen for projektet (kortkanvasset) fra listen over geografiske eller projekterede koordinatsystemer.
+&lt;p&gt; Du kan finde et koordinatsystem ved at angive dets navn, EPSG-koden eller QGIS-ID&apos;et og klikke på knappen&lt;label&gt;Find&lt;/label&gt;.
+&lt;p&gt;Listen over nyligt anvendte koordinatsystemer vil være tilgængelige på bunden for hurtig adgang.
 
 &lt;a name=&quot;layers&quot;&gt;
-&lt;h4&gt;Identifiable layers Tab&lt;/h4&gt;
+&lt;h4&gt;Fanen Identificerbare lag&lt;/h4&gt;
 &lt;/a&gt;
-On this tab you can choose on which layers the identify tool will work.
+På dette faneblad kan du vælge på, hvilke lag identificeringsværktøjet vil virke.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="478"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1345"/>
         <source>&lt;h3&gt;Add SpatiaLite Tables&lt;/h3&gt;
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Add SpatiaLite Tables&lt;/h3&gt;
-To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
-The connections you define will be remembered for further use and available to choose from the drop down menu.
+        <translation>&lt;h3&gt;Tilføj SpatiaLite-tabeller&lt;/h3&gt;
+For at definere en ny forbindelse, klik på knappen &lt;label&gt;Ny&lt;/label&gt; og brug filbrowseren til at udpege din SpatiaLite-database, som er en fil med endelsen &lt;i&gt;.sqlite&lt;/i&gt;.&lt;p&gt;
+Forbindelserne, du definerer, vil blive huske til fremtidig brug og tilgængelige fra dropdown-menuen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="138"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1349"/>
         <source>&lt;style&gt;
 	#toolbarConsole td{
 		background: #f6f6f6;
@@ -58267,46 +58276,46 @@ that will be automatically deleted after running.&lt;/li&gt;
 	from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;style&gt;
+        <translation>&lt;style&gt;
 	#toolbarConsole td{
 		background: #f6f6f6;
 	}
 &lt;/style&gt;
-&lt;h3&gt;Python Console for QGIS&lt;/h3&gt;
-&lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
+&lt;h3&gt;Python-konsole til QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Konsol&lt;/a&gt;&lt;br&gt;
 &lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
-&lt;a href=&quot;#settings&quot;&gt;Settings&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Indstillinger&lt;/a&gt;&lt;br&gt;&lt;br&gt;
 &lt;table&gt;
 	&lt;tr&gt;
 		&lt;td&gt;
 			&lt;p align=&apos;justify&apos;&gt;
-				The QGIS Python Console is an interactive shell for the python command executions. 
-				It also has a python file editor that allows you to edit and save your python scripts. 
-				Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
-				The console is split in two main panes, top and bottom one 
-				resizable by using the horizontal splitter. Output area pane is a widget read-only which 
-				shows the commands output. You can drag and drop or copy and paste text into input area and 
-				execute code snippets from the output pane by selecting some text and clicking on the 
-				&lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
-				No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
-				python shell for input commands.&lt;br&gt;To access to the python file editor use the 
-				&lt;label&gt;Show editor&lt;/label&gt; button 
-				from the toolbar. The editor allows to edit and save python file and it offers basic functionality 
-				for managing your code (comment and 
-				uncomment code, check syntax, share the code via codepad.org and much more).
+				QGIS Python-konsollen er en interaktiv shell til eksekvering Python-kommandoer. 
+				Det har også en Python-fil-editor, der giver dig mulighed for at redigere og gemme dine Python-scripts. 
+				Både konsollen og editoren er baseret på pakken PyQScintilla2.&lt;br&gt;
+				Konsollen er delt i to ruder, top og bund, hvis størrelse kan
+				ændres vha. den vandrette delelinje. Output-områdets rude er en skrivebeskyttet widget, som 
+				viser kommandooutput. Du kan trække og slippe eller kopiere og indsætte tekst i input-området og 
+				eksekvere kodestumper fra outputruden ved at markere noget tekst og klikke på
+				kommandoen &lt;label&gt;Eksekvér det valgte&lt;/label&gt; fra kontextmenuen. 
+				Uanset om markeret tekst indeholder fortolkerprompten (&gt;&gt;&gt;, ...). Input-områdets rude er den interaktive 
+				Python-shell til input-kommandoer.&lt;br&gt;For at tilgå Python-fil-editoren, klik på
+				knappen &lt;label&gt;Vis editor&lt;/label&gt;
+				fra værktøjslinjen. Editoren gør det muligt at redigere og gemme Python-filer, og den giver grundlæggende funktionalitet
+				til styring af din kode (kommentering og 
+				afkommentering af kode, tjek syntaksen, del kode via codepad.org og meget mere.
 			&lt;/p&gt;
 		&lt;/td&gt;
 	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;a name=&quot;console&quot;&gt;
-&lt;h4&gt;Console&lt;/h4&gt;
+&lt;h4&gt;Konsol&lt;/h4&gt;
 &lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;b&gt;&lt;i&gt;Primære funktioner:&lt;/i&gt;&lt;/b&gt;
 &lt;table&gt;
 	&lt;tr&gt;
 		&lt;td&gt;
 			&lt;ul&gt;
-			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+			&lt;li&gt;Kodefuldførelse, syntaksfremhævelse og tips til flg. API&apos;er:
 				&lt;ol&gt;
 				&lt;li&gt;Python&lt;/li&gt;
 				&lt;li&gt;PyQGIS&lt;/li&gt;
@@ -58316,18 +58325,18 @@ that will be automatically deleted after running.&lt;/li&gt;
 				&lt;/ol&gt;
 			&lt;/li&gt;
 			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; for at vise autofuldførelseslisten.&lt;/li&gt;
 			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; for at vise kommandohistorikken.&lt;/li&gt;
 			&lt;br&gt;
-                        &lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
+                        &lt;li&gt;Eksekvér kodestumper med kommandoen &lt;label&gt;Eksekvér det valgte&lt;/label&gt; output-ruden.&lt;/li&gt;
 			&lt;br&gt;
-			&lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;li&gt;Åbn QGIS API-dokumentation ved at skrive &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
 			&lt;br&gt;
-			&lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;li&gt;Åbn PyQGIS Cookbook ved at skrive &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
 			&lt;br&gt;
-			&lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
-			The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
+			&lt;li&gt;Gem og ryd kommandohistorikken fra input-rudens kontekstmenu. 
+			Historikken vil blive gemt i filen ~/.qgis2/console_history.txt&lt;/li&gt;
 			&lt;br&gt;
 			&lt;/ul&gt;
 		&lt;/td&gt;
@@ -58338,40 +58347,40 @@ that will be automatically deleted after running.&lt;/li&gt;
 	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
 		&lt;tr&gt;
 			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Ryd Python-konsol&lt;/td&gt;
 		&lt;/tr&gt;
 		&lt;tr&gt;
 			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
 			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSextanteConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Import Sextante class&lt;/td&gt;
+			&lt;td&gt;Importér SEXTANTE-klasse&lt;/td&gt;
 		&lt;/tr&gt;
 		&lt;tr&gt;
 			&lt;td&gt;&lt;/td&gt;
 			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
+			&lt;td&gt;Importér PyQt4.QtCore-klasse&lt;/td&gt;
 		&lt;/tr&gt;
 		&lt;tr&gt;
 			&lt;td&gt;&lt;/td&gt;
 			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
+			&lt;td&gt;Værktøj til at importere PyQt4.QtGui-klasse&lt;/td&gt;
 		&lt;/tr&gt;
                 &lt;tr&gt;
 			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Kør kommando (som hvis der var trykket Enter)&lt;/td&gt;
 		&lt;/tr&gt;
 		&lt;tr&gt;
 			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Indstillinger&lt;/td&gt;
 		&lt;/tr&gt;
 		&lt;tr&gt;
 			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Hjælp&lt;/td&gt;
 		&lt;/tr&gt;
 &lt;/table&gt;
 &lt;a name=&quot;editor&quot;&gt;
 &lt;h4&gt;Editor&lt;/h4&gt;
 &lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;b&gt;&lt;i&gt;Primære funktioner:&lt;/i&gt;&lt;/b&gt;
 &lt;table&gt;
 	&lt;tr&gt;
 		&lt;td&gt;
@@ -58380,7 +58389,7 @@ that will be automatically deleted after running.&lt;/li&gt;
 		&lt;/td&gt;
 		&lt;td&gt;
 			&lt;ul&gt;
-			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+			&lt;li&gt;Kodefuldførelse, syntaksfremhævelse og tips til flg. API&apos;er:
 				&lt;ol&gt;
 				&lt;li&gt;Python&lt;/li&gt;
 				&lt;li&gt;PyQGIS&lt;/li&gt;
@@ -58390,54 +58399,54 @@ that will be automatically deleted after running.&lt;/li&gt;
 				&lt;/ol&gt;
 			&lt;/li&gt;
 			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; for at vise autofuldførelseslisten.&lt;/li&gt;
 			&lt;br&gt;
-			&lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
+			&lt;li&gt;Del kodestumper via codepad.org.&lt;/li&gt;
 			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntakstjek.&lt;/li&gt; 
 			&lt;br&gt;
-			&lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
+			&lt;li&gt;Objektinspektør: en browser til klasser og funktioner.&lt;/li&gt;
 			&lt;br&gt;
-			&lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
+			&lt;li&gt;Gå til en objektdefinition med et museklik. (fra Objektinspektør)&lt;/li&gt;
 			&lt;br&gt;
-			&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
+			&lt;li&gt;Eksekvér kodestumper med kommandoen &lt;label&gt;Eksekvér det valgte&lt;/label&gt;.&lt;/li&gt;
 			&lt;br&gt;
-			&lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
-			(this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
+			&lt;li&gt;Eksekvér hele scriptet med kommandoen &lt;label&gt;Kør script&lt;/label&gt;
+			(dette opretter en byte-kompileret fil med endelsen .pyc)&lt;/li&gt;
 			&lt;br&gt;
 			&lt;/ul&gt;
 		&lt;/td&gt;
 	&lt;/tr&gt;
 &lt;/table&gt;
 &lt;a name=&quot;settings&quot;&gt;
-&lt;h4&gt;Settings&lt;/h4&gt;
+&lt;h4&gt;Indstillinger&lt;/h4&gt;
 &lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Further settings for python console:&lt;/i&gt;&lt;/b&gt;
+&lt;b&gt;&lt;i&gt;Yderligere indstillinger for Python-konsollen:&lt;/i&gt;&lt;/b&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;label&gt;Autocompletion:&lt;/label&gt; If checked the code completion is enabled. You can get autocompletion
-from current document, from installed APIs and both from APIs and current document&lt;/li&gt;
+&lt;li&gt;&lt;label&gt;Autofuldførelse:&lt;/label&gt; Hvis markeret, er kodefuldførelse aktiveret. Du kan få autofuldførelse
+fra aktuelt dokument, fra installerede API&apos;er og fra både API&apos;er og det aktuelle dokument&lt;/li&gt;
 &lt;br&gt;
-&lt;li&gt;&lt;label&gt;Autocompletion threshold:&lt;/label&gt; Sets the threshold to display the autocompletion list (in chars typed)&lt;/li&gt;
+&lt;li&gt;&lt;label&gt;Tærskelværdi for autofuldførelse:&lt;/label&gt; Indstiller tærskelværdien for at vise autofuldførelseslisten (i skrevne tegn)&lt;/li&gt;
 &lt;br&gt;
-&lt;li&gt;&lt;label&gt;Automatic parentheses insertion:&lt;/label&gt; If checked enables the autoclosing for bracket&lt;/li&gt;
+&lt;li&gt;&lt;label&gt;Automatisk indsættelse af parenteser:&lt;/label&gt; Aktiverer automatisk lukning af klammer, hvis aktiveret&lt;/li&gt;
 &lt;br&gt;
-&lt;li&gt;&lt;label&gt;Auto-save script before running:&lt;/label&gt; Allows you to save automatically the
-script to be executed in order to avoid to save it after any modification.
-This action will store a temporary file into the temporary system directory 
-that will be automatically deleted after running.&lt;/li&gt;
+&lt;li&gt;&lt;label&gt;Auto-gem script før kørsel:&lt;/label&gt; Lader dig automatisk gemme dit
+script, som skal eksekveres, for at undgå at gemme det efter rettelser.
+Denne handling vil gemme en midlertidig fil i systemets temp-mappe
+som automatisk vil blive slettet efter eksekvering.&lt;/li&gt;
 &lt;br&gt;
-&lt;li&gt;&lt;label&gt;Using preloaded APIs file:&lt;/label&gt; You can choose whether use the preload APIs file or load some APIs files saved on your system.&lt;/li&gt;
+&lt;li&gt;&lt;label&gt;Brug forindlæst API-fil:&lt;/label&gt; Du kan vælge enten at bruge den forindlæste API-fil eller indlæse nogle API-filer gemt på dit system.&lt;/li&gt;
 &lt;br&gt;
-&lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
+&lt;li&gt;&lt;label&gt;Brug af forindlæst API-fil:&lt;/label&gt; Hvis markeret, vil *.pap-filen blive brugt til kodefuldførelse. For at danne en forindlæst API-fil er du nødt til at have mindst én *.api-fil og så kompilere den ved at klikke på knappen &lt;label&gt;Kompilér API&apos;er...&lt;/label&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
-	&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
-	from the close button. This allows you to save the geometry to be restored to the next start.
+	&lt;b&gt;NB:&lt;/b&gt; For at gemme tilstanden for konsollens widgets er du nødt til at lukke Python-konsollen
+	fra knappen Luk. Dette lader dig gemme geometrien, så den gendannes efter næste start.
 &lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="339"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="293"/>
         <source>&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
 This dialog allows you to work with vector layer settings and properties. There are seven tabs:
 &lt;p&gt;
@@ -58577,148 +58586,150 @@ The Diagram tab allows you to add a graphic overlay to a vector layer. To activa
 The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
-This dialog allows you to work with vector layer settings and properties. There are seven tabs:
+        <translation>&lt;h3&gt;Egenskaber for vektorlag&lt;/h3&gt;
+Denne dialog lader dig at arbejde med indstillinger og egenskaber for vektorlag. Der er syv faner:
 &lt;p&gt;
-&lt;a href=&quot;#symbology&quot;&gt;Symbology&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#symbology&quot;&gt;Symbologi&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#labels&quot;&gt;Labels&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#attributes&quot;&gt;Attributes&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#general&quot;&gt;General&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Attributter&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#general&quot;&gt;Generelt&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#metadata&quot;&gt;Metadata&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#actions&quot;&gt;Actions&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#diagram&quot;&gt;Diagram Overlay&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#actions&quot;&gt;Handlinger&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#diagram&quot;&gt;Diagrambelægning&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;symbology&quot;&gt;
-&lt;h4&gt;Symbology&lt;/h4&gt;
+&lt;h4&gt;Symbologi&lt;/h4&gt;
 &lt;/a&gt;
-To change the symbology for a layer, simply double click on its legend entry and the vector &lt;label&gt;Layer Properties&lt;/label&gt; dialog will be shown.&lt;p&gt;
-Within this dialog you can style your vector layer. Depending on the selected rendering option you have the possibility to also classify your map features.
+For at ændre symbologien for et lag skal du blot dobbeltklikke på det i oversigten og dialogen &lt;label&gt;Egenskaber for vektorlag&lt;/label&gt; vil blive vist. &lt;p&gt;
+I denne dialog kan du ændre dit vektorlags stilart. Afhængigt af den valgte renderingsindstilling, har du mulighed for også at klassificere dine kortobjekter.
 
-&lt;h5&gt;Legend type&lt;/h5&gt;
-QGIS supports a number of symbology renderers to control how vector features are displayed. Currently the following renderers are available:
+&lt;h5&gt;Oversigtstype&lt;/h5&gt;
+QGIS understøtter en række symbologirenderers, som styrer, hvordan vektorobjekter vises. I øjeblikket er følgende renderers tilgængelige:
+
 &lt;ul&gt;
-&lt;li&gt;&lt;label&gt;Single symbol&lt;/label&gt; - a single style is applied to every object in the layer.
-&lt;li&gt;&lt;label&gt;Graduated symbol&lt;/label&gt; - objects within the layer are displayed with different symbols classified by the values of a particular field.
-&lt;li&gt;&lt;label&gt;Continuous color&lt;/label&gt; - objects within the layer are displayed with a spread of colors classified by the numerical values within a specified field.
-&lt;li&gt;&lt;label&gt;Unique value&lt;/label&gt; - objects are classified by the unique values within a specified field with each value having a different symbol.
+&lt;li&gt; &lt;label&gt;Enkelt symbol&lt;/label&gt; - en enkelt stilart er anvendt på hvert objekt i laget.
+&lt;li&gt; &lt;label&gt;Gradueret symbol&lt;/label&gt; - objekter i laget vises med forskellige symboler klassificeret af værdierne i et bestemt felt.
+&lt;li&gt; &lt;label&gt;Kontinuerlig farve&lt;/label&gt; - objekter i lag vises med en spredning af farver klassificeret af de numeriske værdier inden for et bestemt felt.
+&lt;li&gt; &lt;label&gt;Unik værdi&lt;/label&gt; - objekter er klassificeret af de unikke værdier inden for et bestemt felt, hvor hver værdi har et andet symbol.
 &lt;/ul&gt;
 
-&lt;h5&gt;New symbology&lt;/h5&gt;
-Click &lt;label&gt;New symbology&lt;/label&gt; button to use new symbology implementation for the layer.
+&lt;h5&gt;Ny symbologi&lt;/h5&gt;
+Klik &lt;label&gt;Ny symbologi&lt;/label&gt; for at bruge en ny symbologi-implementering for laget.
 
-&lt;h5&gt;Vector transparency&lt;/h5&gt;
-QGIS allows to set a transparency for every vector layer. This can be done with the slider &lt;label&gt;Transparency&lt;/label&gt;. This is very useful for overlaying several vector layers.
+&lt;h5&gt;Vektortransparens&lt;/h5&gt;
+QGIS gør det muligt at indstille en transparens for hvert vektorlag. Dette kan gøres med skyderen &lt;label&gt;Transparens&lt;/label&gt;. Dette er meget nyttigt for at belægge flere vektorlag.
 
-&lt;h5&gt;Saving styles&lt;/h5&gt;
-Once you have styled your layer you also could save your layer-style to a separate file (with *.qml ending). To do this, use the button &lt;label&gt;Save Style...&lt;/label&gt;. No need to say that &lt;label&gt;Load Style...&lt;/label&gt; loads your saved layer-style-file.&lt;br/&gt;
-If you wish to always use a particular style whenever the layer is loaded, use the &lt;label&gt;Save As Default&lt;/label&gt; button to make your style the default. Also, if you make changes to the style that you are not happy with, use the &lt;label&gt;Restore Default Style&lt;/label&gt; button to revert to your default style.
+&lt;h5&gt;Gemning af stilarter&lt;/h5&gt;
+Når du har sat stilart på dit lag, kan du også gemme dit lags stilart til en separat fil (med endelsen *.qml). For at gøre dette, skal du bruge knappen &lt;label&gt; Gem Style ... &lt;/label&gt;. Ingen grund til at sige, at &lt;label&gt; Load Style ... &lt;/label&gt; belastninger din gemte layer-style-fil. &lt;br/&gt;
+Hvis du ønsker altid at bruge en bestemt stilart, når laget indlæses, skal du bruge knappen &lt;label&gt;Gem som standard&lt;/label&gt; for at gøre din stilart til standard. Også, hvis du foretager ændringer i stilarten, som du ikke er tilfreds med, kan du bruge &lt;label&gt;Gendan standardstilart&lt;/label&gt; for at vende tilbage til din standardstilart.
 
 &lt;a name=&quot;labels&quot;&gt;
 &lt;h4&gt;Labels&lt;/h4&gt;
 &lt;/a&gt;
-The Labels tab allows you to enable labeling features and control a number of options related to fonts, placement, style, alignment and buffering.&lt;br/&gt;
-Check the &lt;label&gt;Display labels&lt;/label&gt; check box to enable labeling.
+Med fanen Labels kan du aktivere labeling af objekter og styre en række muligheder i forbindelse med fonte, placering, stilart, justering og buffer.&lt;br/&gt;
+Markér checkboksen &lt;label&gt;Vis labels&lt;/label&gt; for at aktivere labeling.
 
-&lt;h5&gt;Basic Label options&lt;/h5&gt;
-Choose the field to label with.&lt;p&gt;
-Select the use the &lt;label&gt;Font&lt;/label&gt; and  &lt;label&gt;Color&lt;/label&gt; buttons to set the font and color. You can also change the angle and the placement of the text-label.&lt;p&gt;
-If have labels extending over several lines, check &lt;label&gt;Multiline labels?&lt;/label&gt;. QGIS will check for a true line return in your label field and insert the line breaks accordingly. A true line return is a single character &amp;#92;n, (not two separate characters, like a backslash &amp;#92; followed by the character n).
+&lt;h5&gt;Grundlæggende labelindstillinger&lt;/h5&gt;
+Vælg feltet, som skal bruges som label&lt;p&gt;
+Klik på knapperne &lt;label&gt;Font&lt;/label&gt; og &lt;label&gt;Farve&lt;/label&gt; for at indstille font og farve. Du kan også ændre vinklen og placeringen af tekstlabelen.&lt;p&gt;
+Hvis har labels, der strækker sig over flere linjer, markér &lt;label&gt;Multilinjelabels&lt;/label&gt;. QGIS vil tjekke for et ægte linjeskift i dit labelfelt og indsætte linjeskift i overensstemmelse hermed. Et ægte linjeskift er et enkelt tegn &amp;#92;n, (ikke to separate tegn, ligesom en omvendt backslash &amp;#92; efterfulgt af tegnet n).
 
-&lt;h5&gt;Placement&lt;/h5&gt;
-Change the label placement by selecting one of the radio buttons in the &lt;label&gt;Placement&lt;/label&gt; group.
+&lt;h5&gt;Placering&lt;/h5&gt;
+Skift labelplaceringen ved at vælge en af radio-knapperne i geuppen &lt;label&gt;Placering&lt;/label&gt;.
 
-&lt;h5&gt;Font size units&lt;/h5&gt;
-The &lt;label&gt;Font size units&lt;/label&gt; allows you to select between &lt;label&gt;Points&lt;/label&gt; or &lt;label&gt;Map units&lt;/label&gt;.
+&lt;h5&gt;Enheder for fontstørrelse&lt;/h5&gt;
+&lt;label&gt;Enheder for fontstørrelse&lt;/label&gt; lader dig vælge mellem &lt;label&gt;Punkter&lt;/label&gt; eller &lt;label&gt;Kortenheder&lt;/label&gt;.
 
-&lt;h5&gt;Buffer labels&lt;/h5&gt;
-To buffer the labels means putting a backdrop around them to make them stand out better. To buffer the lakes labels:
+&lt;h5&gt;Bufferlabels&lt;/h5&gt;
+Labelbuffering betyder at sætte en ramme omkring dem for at gøre, at de skiller sig ud bedre. For at lave buffers på etiketter:
+
 &lt;ol&gt;
-&lt;li&gt;Click the &lt;label&gt;Buffer Labels&lt;/label&gt; check box to enable buffering.
-&lt;li&gt;Choose a size for the buffer using the spin box.
-&lt;li&gt;Choose a color by clicking on &lt;label&gt;Color&lt;/label&gt; and choosing your favorite from the color selector. You can also set some transparency for the buffer if you prefer.
-&lt;li&gt;Click &lt;label&gt;Apply&lt;/label&gt; to see if you like the changes.
+&lt;li&gt;Klik checkboksen &lt;label&gt;Buffer labels&lt;/label&gt; for at aktivere buffering.
+&lt;li&gt;Vælg en størrelse for bufferen ved hjælp af spinneren.
+&lt;li&gt;Vælg en farve ved at klikke på &lt;label&gt;Farve&lt;/label&gt; og vælge din favorit fra farvevælgeren. Du kan også indstille en vis transparens for bufferen, hvis du vil.
+&lt;li&gt;Klik &lt;label&gt;Anvend&lt;/label&gt; for at se, om du kan lide ændringerne.
 &lt;/ol&gt;
-Notice you can also specify the buffer size in map 
-units if that works out better for you.
+NB: Du kan også angive bufferstørrelse i kort-
+enheder, hvis det virker bedre for dig.
 
-&lt;h5&gt;Data defined placement, properties, buffer, position&lt;/h5&gt;
-The remaining entries inside the &lt;label&gt;Label&lt;/label&gt; tab allow you control the appearance of the labels using attributes stored in the layer. The entries beginning with &lt;label&gt;Data defined&lt;/label&gt; allow you to set all the parameters for the labels using fields in the layer.
+&lt;h5&gt;Datadefineret placering, egenskaber, buffer, position &lt;/h5&gt;
+De resterende poster inde i fanen &lt;label&gt;Label&lt;/label&gt; lader dig styre udseendet af labels med attributter gemt i laget. De poster, der begynder med &lt;label&gt;Datadefineret&lt;/label&gt;, tillader dig at indstille alle parametre for labels vha. felter i laget.
 
 
 &lt;a name=&quot;attributes&quot;&gt;
-&lt;h4&gt;Attributes&lt;/h4&gt;
+&lt;h4&gt;Attributter&lt;/h4&gt;
 &lt;/a&gt;
-Within the &lt;label&gt;Attributes&lt;/label&gt; tab the attributes of the selected data set can be manipulated. The buttons &lt;label&gt;New Column&lt;/label&gt; and &lt;label&gt;Delete Column&lt;/label&gt; can be used, when the data set is in editing mode. The OGR library supports to add new columns, but not to remove them, if you have a GDAL version &gt;= 1.6 installed. Otherwise only columns from PostGIS layers can be edited.&lt;p&gt;
-The &lt;label&gt;Toggle editing mode&lt;/label&gt; button toggles this mode.&lt;p&gt;
-Within the Attributes tab you also find an edit widget column. This column can be used to define values or a range of values that are allowed to be added to the specific attribute table column. If you click on the &lt;label&gt;edit widget&lt;/label&gt; button, a dialog opens, where you can define different widgets. These widgets are:&lt;br/&gt;
+På fanen &lt;label&gt;Attributter&lt;/label&gt; kan attributterne for det valgte datasæt manipuleres. Knapperne &lt;label&gt;Ny kolonne&lt;/label&gt; og &lt;label&gt;Slet kolonne&lt;/label&gt; kan bruges, når datasættet er i redigeringstilstand. OGR-biblioteket understøtter at tilføje nye kolonner, men ikke at fjerne dem, hvis du har en GDAL-version &gt;= 1.6 installeret. Ellers kan kun kolonner fra PostGIS-lag redigeres.&lt;p&gt;
+Knappen &lt;label&gt;Slå redigeringstilstand til/fra&lt;/label&gt; skifter til denne tilstand. &lt;p&gt;
+På fanen Attributter du også finde en kolonne til redigering af widgets. Denne kolonne kan bruges til at definere værdier eller et interval af værdier, der er tilladt at tilføje til den specifikke attributtabel-kolonne. Hvis du klikker på knappen &lt;label&gt;Redigér widget&lt;/label&gt;, åbnes en dialog, hvor du kan definere forskellige widgets. Disse widgets er: &lt;br/&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;label&gt;Line edit&lt;/label&gt; an edit field which allows to enter simple text (or restrict to numbers for numeric attributes).
-&lt;li&gt;&lt;label&gt;Classification&lt;/label&gt; Displays a combo box with the values used for classification, if you have chosen &lt;label&gt;unique value&lt;/label&gt; as legend type in the symbology tab of the properties dialog.
-&lt;li&gt;&lt;label&gt;Range&lt;/label&gt; Allows to set numeric values from a specific range. The edit widget can be either a slider or a spin box.
-&lt;li&gt;&lt;label&gt;Unique value&lt;/label&gt; The user can select one of the values already used in the attribute table. If &lt;label&gt;editable&lt;/label&gt; is activated, a line edit is shown with auto completion support, but additional values are possible, otherwise a combo box is used.
-&lt;li&gt;&lt;label&gt;File name&lt;/label&gt; Simplifies the selection by adding a file chooser dialog.
-&lt;li&gt;&lt;label&gt;Value map&lt;/label&gt; a combo box with predefined items. The value is stored in the attribute, the description is shown in the combo box. You can define values manually or load them from a layer or a csv file.
-&lt;li&gt;&lt;label&gt;Enumeration&lt;/label&gt; Opens a combo box with values that can be used within the columns type. This is currently only supported by the Postgres provider.
-&lt;li&gt;&lt;label&gt;Immutable&lt;/label&gt; The immutable attribute column is read-only. The user is not able to modify the content.
-&lt;li&gt;&lt;label&gt;Hidden&lt;/label&gt; A hidden attribute column is invisible to the user.
-&lt;li&gt;&lt;label&gt;Checkbox&lt;/label&gt; A check box is shown.  The value representing the state of the check box in the attribute has to be entered.
-&lt;li&gt;&lt;label&gt;Text edit&lt;/label&gt; A text edit field is shown, that allows entering multiline text.
+&lt;li&gt;&lt;label&gt;Linieredigering&lt;/label&gt; et redigeringsfelt, som gør det muligt at indtaste simpel tekst (eller begrænse til tal for numeriske attributter).
+&lt;li&gt;&lt;label&gt;Klassificering&lt;/label&gt; Viser en komboboks med de værdier, der anvendes til klassificering, hvis du har valgt &lt;label&gt;unik værdi&lt;/label&gt; som tegntype i symbologifanen i dialogboksen Egenskaber.
+&lt;li&gt;&lt;label&gt;Interval&lt;/label&gt; Gør det muligt at sætte talværdier fra et bestemt interval. Den redigerede widget kan enten være en skyder eller en spinner.
+&lt;li&gt;&lt;label&gt;Unik værdi&lt;/label&gt; Brugeren kan vælge en af ??de værdier, der allerede anvendes i attributtabellen. Hvis &lt;label&gt;redigerbar&lt;/label&gt; er aktiveret, vises en linieredigering med understøttelse af autofuldførelse, men yderligere værdier er mulige, ellers bruges en komboboks.
+&lt;li&gt;&lt;label&gt;Filnavn&lt;/label&gt; Forenkler valget ved at tilføje en filvælgerdialog.
+&lt;li&gt;&lt;label&gt;Kort&lt;/label&gt; en komboboks med foruddefinerede elementer. Værdien er gemt i attributtet, beskrivelsen er vist i komboboksen. Du kan definere værdier manuelt eller indlæse dem fra et lag eller en csv-fil.
+&lt;li&gt;&lt;label&gt;Optælling&lt;/label&gt; Åbner en komboboks med værdier, der kan anvendes inden for kolonnetyper. Det er i øjeblikket kun understøttet af Postgres-udbyderen.
+&lt;li&gt;&lt;label&gt;Uforanderlig&lt;/label&gt; Uforanderlig-attribut-kolonnen er skrivebeskyttet. Brugeren er ikke i stand til at ændre indholdet.
+&lt;li&gt;&lt;label&gt;Skjult&lt;/label&gt; En skjult attributkolonne er usynlig for brugeren.
+&lt;li&gt;&lt;label&gt;Checkboks&lt;/label&gt; En checkboks vises. Den værdi, der repræsenterer den tilstand, checkboksen i attributten skal være i.
+&lt;li&gt;&lt;label&gt;Tekstredigering&lt;/label&gt; En tekstredigeringsfelt vises, der gør det muligt at indtaste flere linjer tekst.
 &lt;/ul&gt;
 
 &lt;a name=&quot;general&quot;&gt;
-&lt;h4&gt;General&lt;/h4&gt;
+&lt;h4&gt;Generelt&lt;/h4&gt;
 &lt;/a&gt;
-The General tab allows you to change the display name, set scale dependent rendering options, create a spatial index of the vector file (only for OGR supported formats and PostGIS) and view or change the projection of the specific vector layer.&lt;p&gt;
-You can also set a provider specific filter expressions using the &lt;label&gt;Query Builder&lt;/label&gt;.
+På fanen Generelt kan du ændre det viste navn, indstille skalaafhængig renderingindstillinger, oprette et spatielt indeks for vektorfilen (kun for OGR-understøttede formater og PostGIS), og se eller ændre projektionen på det specifikke vektorlag.&lt;p&gt;
+Du kan også indstille et udbyderspecifikt filterudtryk vha. &lt;label&gt;Forespørgselsgeneratoren&lt;/label&gt;.
 
-&lt;h5&gt;Subset&lt;/h5&gt;
-The &lt;label&gt;Query Builder&lt;/label&gt; button allows you to limit the features of a layer to a subset matching an provider specific filter expression.
+&lt;h5&gt;Delmængde&lt;/h5&gt;
+Knappen &lt;label&gt;Forespørgselsbygger&lt;/label&gt; giver dig mulighed for at begrænse objekterne i et lag til en delmængde svarende til et udbyderspecifikt filterudtryk.
 
 &lt;a name=&quot;metadata&quot;&gt;
 &lt;h4&gt;Metadata&lt;/h4&gt;
 &lt;/a&gt;
-The &lt;label&gt;Metadata&lt;/label&gt; tab contains information about the layer, including specifics about the type and location, number of features, feature type, and the editing capabilities. The Layer Spatial Reference System section, providing projection information, is displayed on this tab. This is a quick way to get information about the layer.
+Fanen &lt;label&gt;Metadata &lt;/label&gt; indeholder oplysninger om laget, herunder specifikke oplysninger om type og placering, antal objekter, objekttype, og redigeringsmuligheder. Sektionen Lagets geografiske koordinatsystem, som giver projektionsoplysninger, vises på denne fane. Dette er en hurtig måde at få oplysninger om laget.
 
 &lt;a name=&quot;actions&quot;&gt;
-&lt;h4&gt;Actions&lt;/h4&gt;
+&lt;h4&gt;Handlinger&lt;/h4&gt;
 &lt;/a&gt;
-QGIS provides the ability to perform an action based on the attributes of a feature. This can be used to perform any number of actions, for example, running a program with arguments built from the attributes of a feature or passing parameters to a web reporting tool. &lt;br/&gt;
-Actions are useful when you frequently want to run an external application or view a web page based on one or more values in your vector layer.&lt;p&gt;
+QGIS giver mulighed til at udføre en handling baseret på objekters attributter. Dette kan bruges til at udføre en række af handlinger, fx kørsel af et program med argumenter bygget fra attributterne for et objekt eller videresendelse af parametre til et webrapporteringsværktøj.&lt;br/&gt;
+Handlinger er nyttige, når du ofte ønsker at køre et eksternt program eller se en webside baseret på en eller flere værdier i dit vektorlag.&lt;p&gt;
 
-The new implementation of actions uses the QGIS expression engine to do evaluations. Each expression is evaluated and replaced by its result at runtime.&lt;p&gt;
-An expression must be enclosed between &lt;code&gt;[%&lt;/code&gt; and &lt;code&gt;%]&lt;/code&gt; - the GUI has some buttons which do that for you automatically. 
-The &lt;label&gt;Insert expression...&lt;/label&gt; button launches the &lt;label&gt;Expression builder&lt;/label&gt; which allows to write an expression easily, the &lt;label&gt;Insert field&lt;/label&gt; button inserts into the action a placeholder like &lt;code&gt;[% &quot;fieldname&quot; %]&lt;/code&gt; where fieldname is the name of the field selected in the field dropdown list.&lt;p&gt;
+Den nye implementering af handlinger bruger QGIS-udtryksmotoren til at lave evalueringer. Hvert udtryk evalueres og erstattes af dets resultat ved kørsel.&lt;p&gt;
+Et udtryk skal indkapsles mellem &lt;code&gt;[% &lt;/code&gt; og &lt;code&gt;%]&lt;/code&gt; - GUI&apos;en har nogle knapper, der gør det for dig automatisk.
+Knappen &lt;label&gt;Indsæt udtryk...&lt;/label&gt; starter &lt;label&gt;Udtryksgeneratoren&lt;/label&gt;, som gør det muligt at skrive et udtryk nemt, knappen &lt;label&gt;Indsæt felt&lt;/label&gt; indsætter en pladsholder ind i handlingen, ligesom &lt;code&gt;[% &quot;feltnavn&quot; %]&lt;/code&gt;, hvor feltnavn er navnet på det felt, som er valgt i dropdownlisten.&lt;p&gt;
 
-See the User Guide for further information.
+Se manualen for yderligere oplysninger.
 
-&lt;h5&gt;Using Actions&lt;/h5&gt;
-Actions can be invoked from the &lt;label&gt;Identify Results&lt;/label&gt; dialog or using the &lt;label&gt;Run feature action&lt;/label&gt; tool on the toolbar.&lt;p&gt;
+&lt;h5&gt;Brug af handlinger&lt;/h5&gt;
+Handlinger kan startes fra dialogen &lt;label&gt;Identificér resultater&lt;/label&gt;  eller vha. &lt;label&gt;Kør objekthandling&lt;/label&gt;-værktøjet på værktøjslinjen.&lt;p&gt;
 
-Each action adds a little set of custom expressions to the default set available in the &lt;label&gt;Expression builder&lt;/label&gt;.&lt;br/&gt;
-While running actions from the &lt;label&gt;Identify Results&lt;/label&gt; dialog the custom expression &lt;code&gt;$currfield&lt;/code&gt; will be replaced with the value of the selected field in the dialog, using the &lt;label&gt;Run feature action&lt;/label&gt; tool the following custom expressions are available (instead of $currfield):
+Hver aktion tilføjer et mindre sæt brugerdefinerede udtryk til standardsættet, som er tilgængelig i &lt;label&gt;Udtryksgeneratoren&lt;/label&gt;.&lt;br/&gt;
+Mens du kører handlinger fra dialogen &lt;label&gt;Identificer Resultater &lt;/label&gt;, vil det brugerdefinerede udtryk &lt;code&gt;$currfield&lt;/code&gt; blive erstattet med værdien af det valgte felt i dialogen, vha. &lt;label&gt;Kør objekthandling&lt;/label&gt;-værktøj er følgende brugerdefinerede udtryk til rådighed (i stedet for $currfield):
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;$clickx&lt;/code&gt; returns the x coordinate of the click position on the canvas&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;$clicky&lt;/code&gt; returns the y coordinate of the click position on the canvas&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;$layerid&lt;/code&gt; returns the ID of the selected layer in the legend&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$clickx&lt;/code&gt; returnerer x-koordinaten af klikpositionen på kanvasset&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$clicky&lt;/code&gt; returnerer y-koordinaten af klikpositionen på kanvasset&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$layerid&lt;/code&gt; returnerer ID for det valgte lag i oversigten&lt;/li&gt;
 &lt;/ul&gt;
 
-Note: the &lt;label&gt;Run feature action&lt;/label&gt; tool executes the actions on all the matching features, where as &lt;label&gt;Identify Results&lt;/label&gt; allows you to select which specific feature to run action on.&lt;p&gt;
+NB: &lt;label&gt;Kør objekthandling&lt;/label&gt;-værktøjet eksekverer handlingerne på alle de matchende objekter, hvor &lt;label&gt;Identificér resultater&lt;/label&gt; lader dig vælge, hvilket specifikt objekt, handlingen skal køres på&lt;p&gt;
 
 
-&lt;h5&gt;Action Examples&lt;/h5&gt;
-You can add some example actions by clicking on the &lt;label&gt;Add default actions&lt;/label&gt; button.
+&lt;h5&gt;Eksempelhandlinger&lt;/h5&gt;
+Du kan tilføje nogle eksempelhandlinger ved at klikke på knappen &lt;label&gt;Tilføj standardhandlinger&lt;/label&gt;.
 
 
 &lt;a name=&quot;diagram&quot;&gt;
-&lt;h4&gt;Diagram Overlay&lt;/h4&gt;
+&lt;h4&gt;Diagrambelægning&lt;/h4&gt;
 &lt;/a&gt;
-The Diagram tab allows you to add a graphic overlay to a vector layer. To activate this feature, open the &lt;label&gt;Plugin Manager&lt;/label&gt; and select the &lt;label&gt;Diagram Overlay&lt;/label&gt; plugin. After this, there is a new tab in the vector &lt;label&gt;Layer Properties&lt;/label&gt; dialog where the settings for diagrams may be entered.&lt;p&gt;
-The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
-of the diagram size according to a classification attribute.
+Fanen Diagram lader dig tilføje en grafisk belægning til et vektorlag. For at aktivere denne funktion, skal du åbne &lt;label&gt;Pluginstyring&lt;/label&gt; og vælge &lt;label&gt;Diagrambelægning&lt;/label&gt;-pluginet. Derefter er der en ny fane i dialogen &lt;label&gt;Egenskaber for vektorlag&lt;/label&gt;, hvor indstillingerne for diagrammer kan indtastes.&lt;p&gt;
+Den nuværende implementering af diagrammer understøtter lagkage- og søjlediagrammer til lineær skalering
+af diagrammets størrelse efter en klassifikationsattribut.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="572"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="114"/>
         <source>&lt;h3&gt;Spatial Bookmarks&lt;/h3&gt;
 Spatial Bookmarks allow you to &quot;bookmark&quot; a geographic location and return to it later.
 &lt;p&gt;
@@ -58759,49 +58770,49 @@ To delete a bookmark from the Bookmarks dialog, click on it then click the &lt;l
 To update the extent of a bookmark, click on it then click the &lt;label&gt;Update&lt;/label&gt; button. Confirm your choice by clicking &lt;label&gt;OK&lt;/label&gt; or cancel the update by clicking &lt;label&gt;Cancel&lt;/label&gt;.
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;Spatial Bookmarks&lt;/h3&gt;
-Spatial Bookmarks allow you to &quot;bookmark&quot; a geographic location and return to it later.
+        <translation>&lt;h3&gt;Spatielle bogmærker&lt;/h3&gt;
+Spatielle Bogmærker lader dig &quot;bogmærke&quot; en geografisk placering og vende tilbage til det senere.
 &lt;p&gt;
-&lt;a href=&quot;#creating&quot;&gt;Creating a Bookmark&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#working&quot;&gt;Working with Bookmarks&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#zooming&quot;&gt;Zooming to a Bookmark&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#deleting&quot;&gt;Deleting a Bookmark&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#updating&quot;&gt;Updating a Bookmark&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt; Oprettelse af et bogmærke&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#working&quot;&gt;Arbejde med bogmærker&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#zooming&quot;&gt;Zoome til et bogmærke&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#deleting&quot;&gt;Sletning af et bogmærke&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#updating&quot;&gt;Opdatering af et bogmærke&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;creating&quot;&gt;
-&lt;h4&gt;Creating a Bookmark&lt;/h4&gt;
+&lt;h4&gt;Oprettelse af et bogmærke&lt;/h4&gt;
 &lt;/a&gt;
-To create a bookmark:
+Sådan opretter du et bogmærke:
 &lt;ol&gt;
-&lt;li&gt;Zoom or pan to the area of interest.
-&lt;li&gt;Click on the &lt;label&gt;New bookmark&lt;/label&gt; or type Ctrl-B.
-&lt;li&gt;Enter a descriptive name for the bookmark (up to 255 characters).
-&lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt; to add the bookmark or &lt;label&gt;Cancel&lt;/label&gt; to exit without adding the bookmark.
+&lt;li&gt;Zoom eller panorér til området af interesse.
+&lt;li&gt;Klik på &lt;label&gt;Nyt bogmærke&lt;/label&gt; eller try Ctrl-B.
+&lt;li&gt;Indtast et beskrivende navn til bogmærket (op til 255 tegn).
+&lt;li&gt;Klik &lt;label&gt;OK&lt;/label&gt; for at tilføje bogmærket eller &lt;label&gt;Annuller&lt;/label&gt; for at afslutte uden at tilføje bogmærket.
 &lt;/ol&gt;
-Note that you can have multiple bookmarks with the same name.
+Bemærk, at du kan have flere bogmærker med samme navn.
 &lt;a name=&quot;working&quot;&gt;
-&lt;h4&gt;Working with Bookmarks&lt;/h4&gt;
+&lt;h4&gt;Arbejde med bogmærker&lt;/h4&gt;
 &lt;/a&gt;
-To use or manage bookmarks, click on the &lt;label&gt;Show bookmarks&lt;/label&gt; button or choose &lt;label&gt;Show Bookmarks&lt;/label&gt; from the &lt;label&gt;View&lt;/label&gt; menu. The bookmarks dialog allows you to zoom to or delete a bookmark. You can not edit the bookmark name or coordinates.
+For at bruge eller administrere bogmærker, skal du klikke på knappen &lt;label&gt;Vis bogmærker&lt;/label&gt;, eller vælg &lt;label&gt;Vis bogmærker&lt;/label&gt; fra &lt;label&gt;Visnings&lt;/label&gt;-menuen. Dialogen bogmærker lader dig zoome til eller slette et bogmærke. Du kan ikke redigere navnet på bogmærket eller koordinaterne.
 &lt;a name=&quot;zooming&quot;&gt;
-&lt;h5&gt;Zooming to a Bookmark&lt;/h5&gt;
+&lt;h5&gt;Zoom til et bogmærke&lt;/h5&gt;
 &lt;/a&gt;
-From the Geo spatial Bookmarks dialog, select the desired bookmark by clicking on it, then click the &lt;label&gt;Zoom to&lt;/label&gt; button.
+Vælg det ønskede bogmærke fra dialogen Spatielle bogmærker ved at klikke på det, og klik derefter på knappen &lt;label&gt;Zoom til&lt;/label&gt;.
 &lt;p&gt;
-You can also zoom to a bookmark by double-clicking on it.
+Du kan også zoome til et bogmærke ved at dobbeltklikke på det.
 &lt;a name=&quot;deleting&quot;&gt;
-&lt;h5&gt;Deleting a Bookmark&lt;/h5&gt;
+&lt;h5&gt;Sletning af et bogmærke&lt;/h5&gt;
 &lt;/a&gt;
-To delete a bookmark from the Bookmarks dialog, click on it then click the &lt;label&gt;Delete&lt;/label&gt; button. Confirm your choice by clicking &lt;label&gt;OK&lt;/label&gt; or cancel the delete by clicking &lt;label&gt;Cancel&lt;/label&gt;.
+Hvis du vil slette et bogmærke fra dialogen Bogmærker, klik på det og klik derefter på knappen &lt;label&gt;Slet&lt;/label&gt;. Bekræft dit valg ved at klikke på &lt;label&gt;OK&lt;/label&gt; eller annuller sletningen ved at klikke &lt;label&gt;Annuller&lt;/label&gt;.
 &lt;a name=&quot;updating&quot;&gt;
-&lt;h5&gt;Updating a Bookmark&lt;/h5&gt;
+&lt;h5&gt;Opdatering et bogmærke&lt;/h5&gt;
 &lt;/a&gt;
-To update the extent of a bookmark, click on it then click the &lt;label&gt;Update&lt;/label&gt; button. Confirm your choice by clicking &lt;label&gt;OK&lt;/label&gt; or cancel the update by clicking &lt;label&gt;Cancel&lt;/label&gt;.
+For at opdatere omridset af et bogmærke, skal du klikke på det og derefter klikke på knappen &lt;label&gt;Opdatér&lt;/label&gt;. Bekræft dit valg ved at klikke på &lt;label&gt;OK&lt;/label&gt; eller annuller opdateringen ved at klikke &lt;label&gt;Annuller&lt;/label&gt;.
 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="726"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="516"/>
         <source>&lt;h3&gt;Road graph plugin settings&lt;/h3&gt;
 &lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any polyline layer and plots this path over the road network.&lt;/p&gt;
 &lt;p&gt;
@@ -58833,40 +58844,40 @@ To update the extent of a bookmark, click on it then click the &lt;label&gt;Upda
 &lt;h5&gt;Default settings&lt;/h5&gt;
 &lt;p&gt;If the attribute table of your linear layer does not contain the required fields or fields contain unexpected values, the plugin will use default values. You can set them in the default tab &lt;label&gt;Default settings&lt;/label&gt;.&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Road graph plugin settings&lt;/h3&gt;
-&lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any polyline layer and plots this path over the road network.&lt;/p&gt;
+        <translation>&lt;h3&gt;Indstillinger for Vejgraf-plugin&lt;/h3&gt;
+&lt;p&gt;Vejgrafen er et C++-plugin til QGIS, der beregner den korteste vej mellem to punkter på et vilkårligt polylinjelag og plotter denne sti på vejnettet. &lt;/p&gt;
 &lt;p&gt;
-&lt;a href=&quot;#creating&quot;&gt;Plugin units&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#topologyTolerance&quot;&gt;Topology tolerance&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#layerSettings&quot;&gt;Transport layer settings&lt;/a&gt;&lt;br/&gt;
-&lt;/p&gt;
+&lt;a href=&quot;#creating&quot;&gt;Plugin-enheder&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#topologyTolerance&quot;&gt;Topologi-tolerance&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#layerSettings&quot;&gt;Indstillinger for transportlag&lt;/a&gt;&lt;br/&gt;
+&lt;/P&gt;
 
 &lt;a name=&quot;creating&quot;&gt;
-&lt;h4&gt;Plugin units&lt;/h4&gt;
+&lt;h4&gt;Plugin-enheder&lt;/h4&gt;
 &lt;/a&gt;
-&lt;p&gt;You can adjust the units of the calculated distance and time of the path. Select the units in &lt;label&gt;Distance unit&lt;/label&gt; and &lt;label&gt;Time unit&lt;/label&gt;.&lt;/p&gt;
+&lt;p&gt;Du kan justere enheder til den beregnede afstand og stiens tid. Vælg enhederne i &lt;label&gt;Afstandsenhed&lt;/label&gt; og &lt;label&gt;Tidsenhed&lt;/label&gt;.&lt;/P&gt;
 
 &lt;a name=&quot;topologyTolerance&quot;&gt;
-&lt;h4&gt;Topology tolerance&lt;/h4&gt;
+&lt;h4&gt;Topologi-tolerance&lt;/h4&gt;
 &lt;/a&gt;
-&lt;p&gt;&lt;label&gt;Topology tolerance&lt;/label&gt; - the distance in units of the project. If the distance of two points falls short the topological tolerance, they are considered to be the vertex. A topological tolerance value greater than zero slows down the plugin, but you can use not ideal data sources.&lt;/p&gt;
+&lt;p&gt;&lt;label&gt;Topologi-tolerance &lt;/label&gt; - projektets afstand i enheder. Hvis afstanden mellem to punkter kommer til kort over for den topologiske tolerance, anses de for at være toppunktet. En topologisk toleranceværdi større end nul gør pluginet langsommere, men du kan bruge ikke ideelle datakilder.&lt;/p&gt;
 
-&lt;h5&gt;Note&lt;/h5&gt;
-&lt;p&gt;The Road graph plugin considers two roads as linked, if they have a common node. A Node is uniquely identified by it&apos;s coordinates. However, in the process of digitizing errors may occur. The errors sometimes occur when the network is transformed from one coordinate reference system to another. This might cause the Road graph plugin to consider connected roads as disconnected. In that case the topological tolerance should be set to a value greater than zero.&lt;/p&gt;
+&lt;h5&gt;NB&lt;/h5&gt;
+&lt;p&gt;Vejgraf-pluginet anser to veje som tilknyttet, hvis de har en fælles knude. En knude er entydigt identificeret ved sine koordinater. Dog kan der opstå fejl i processen med at digitalisere. Fejlene forekommer undertiden, når netværket er omdannet fra et koordinatsystem til et andet. Dette kan medføre, at Vejgraf-pluginet anser tilsluttede veje som afbrudte. I så fald bør den topologiske tolerance fastsættes til en værdi større end nul.&lt;/p&gt;
 
 &lt;a name=&quot;LayerSettings&quot;&gt;
-&lt;h4&gt;Transport layer settings&lt;/h4&gt;
+&lt;h4&gt;Indstillinger for transportlag&lt;/h4&gt;
 &lt;/a&gt;
-&lt;p&gt;&lt;label&gt;Layer&lt;/label&gt; - the data layer of roads.&lt;/p&gt;
-&lt;p&gt;&lt;label&gt;Field direction&lt;/label&gt; - the value of this field indicates how to interpret the Road graph plugin layers feature. &lt;label&gt;Value for forward direction&lt;/label&gt; - the direction of movement corresponds to the order of points in a feature. &lt;label&gt;Value for reverse direction&lt;/label&gt; - the direction of movement corresponds to the reverse order of points in the feature. &lt;label&gt;Value for two-way direction&lt;/label&gt; - both possible.&lt;/p&gt;
-&lt;p&gt;Speed field&lt;/p&gt; - field containing the recorded speed on the road.&lt;/p&gt;
+&lt;p&gt;&lt;label&gt;Lag&lt;/label&gt; -. datalaget for vejene &lt;/p&gt;
+&lt;p&gt;&lt;label&gt;Feltretning &lt;/label&gt; - værdien af dette felt angiver, hvordan man fortolker Vejgraf-pluginets lagobjekter. &lt;label&gt;Værdi for fremadgående retning&lt;/label&gt; - bevægelsesretningen svarer til rækkefølgen af punkter i et objekt. &lt;label&gt;Værdi for modsat retning &lt;/label&gt; - bevægelsesretningen svarer til den omvendte rækkefølge af punkter i objektet. &lt;label&gt;Værdi for tovejsretning&lt;/label&gt; -. begge er mulige&lt;/p&gt;
+&lt;p&gt;Feltet Hastighed&lt;/p&gt; -. felt, der indeholder den registrerede hastighed på vejen&lt;/p&gt;
 
-&lt;h5&gt;Default settings&lt;/h5&gt;
-&lt;p&gt;If the attribute table of your linear layer does not contain the required fields or fields contain unexpected values, the plugin will use default values. You can set them in the default tab &lt;label&gt;Default settings&lt;/label&gt;.&lt;/p&gt;
+&lt;h5&gt;Standardindstillinger&lt;/h5&gt;
+&lt;p&gt;Hvis dine lineære lags attributtabel ikke indeholder de krævede felter, eller felter indeholder uventede værdier, vil pluginet bruge standardværdier. Du kan indstille dem som standard på fanen &lt;label&gt;Standardindstillinger&lt;/label&gt;.&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="757"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="470"/>
         <source>&lt;h3&gt;Query Builder&lt;/h3&gt;
 The query builder allows you to create provider specific filter expressions.
 
@@ -58913,55 +58924,54 @@ are sometimes limited (e.g. for shape files) or behave diffently.
 &lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Query Builder&lt;/h3&gt;
-The query builder allows you to create provider specific filter expressions.
+        <translation>&lt;h3&gt;Forespørgselsgeneratoren&lt;/h3&gt;
+Forespørgselsgeneratoren lader dig oprette udbyderspecifikke filterudtryk.
 
-These are usually evaluated much faster than the generic QGIS expressions, but
-are sometimes limited (e.g. for shape files) or behave diffently.
+Disse evalueres normalt meget hurtigere end de generiske QGIS-udtryk, men
+er undertiden begrænsede (f.eks shapefiler) eller opfører sig anderledes.
 
-&lt;h4&gt;Providers&lt;/h4&gt;
+&lt;h4&gt;Udbydere&lt;/h4&gt;
 
 &lt;table border=1&gt;
 &lt;tr&gt;
-  &lt;th&gt;Provider&lt;/th&gt;
-  &lt;th&gt;Documentation&lt;/th&gt;
+   &lt;th&gt;Udbyder&lt;/th&gt;
+   &lt;th&gt;Dokumentation&lt;/th&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-  &lt;td&gt;OGR&lt;/td&gt;
-  &lt;td&gt;where clauses depending on the
-    &lt;a href=&quot;http://www.gdal.org/ogr/ogr_formats.html&quot;&gt;format&lt;/a&gt; (eg.
-    &lt;a href=&quot;http://www.gdal.org/ogr/ogr_sql.html&quot;&gt;OGR SQL&lt;/a&gt;
-    for shape files)
-  &lt;/td&gt;
+   &lt;td&gt;OGR&lt;/td&gt;
+   &lt;td&gt;hvor klausuler afhængiger af
+     &lt;a href=&quot;http://www.gdal.org/ogr/ogr_formats.html&quot;&gt;format&lt;/a&gt; (fx
+     &lt;a href=&quot;http://www.gdal.org/ogr/ogr_sql.html&quot;&gt;OGR SQL&lt;/a&gt;
+     for shapefiler)
+   &lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-  &lt;td&gt;PostgreSQL/PostGIS&lt;/td&gt;
-  &lt;td&gt;where clauses using
-    &lt;a href=&quot;http://www.postgresql.org/docs/&quot;&gt;PostgreSQL&lt;/a&gt; and
-    &lt;a href=&quot;http://postgis.net/documentation&quot;&gt;PostGIS&lt;/a&gt; 
-  &lt;/td&gt;
+   &lt;td&gt;PostgreSQL/PostGIS&lt;/td&gt;
+   &lt;td&gt;hvor klausuler bruger
+     &lt;a href=&quot;http://www.postgresql.org/docs/&quot;&gt;PostgreSQL&lt;/a&gt; og
+     &lt;a href=&quot;http://postgis.net/documentation&quot;&gt;PostGIS&lt;/a&gt;
+   &lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-  &lt;td&gt;SpatiaLite&lt;/td&gt;
-  &lt;td&gt;where clauses using
-    &lt;a href=&quot;http://www.sqlite.org/lang_select.html&quot;&gt;SQLite&lt;/a&gt; and
-    &lt;a href=&quot;http://www.gaia-gis.it/gaia-sins/spatialite-sql-4.1.0.html&quot;&gt;SpatiaLite&lt;/a&gt;
-  &lt;/td&gt;
+   &lt;td&gt;SpatiaLite&lt;/td&gt;
+   &lt;td&gt;hvor klausuler bruger
+     &lt;a href=&quot;http://www.sqlite.org/lang_select.html&quot;&gt;SQLite&lt;/a&gt; og
+     &lt;a href=&quot;http://www.gaia-gis.it/gaia-sins/spatialite-sql-4.1.0.html&quot;&gt;SpatiaLite&lt;/a&gt;
+   &lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-  &lt;td&gt;Oracle Spatial/Locator&lt;/td&gt;
-  &lt;td&gt;where clauses using
-    &lt;a href=&quot;http://docs.oracle.com/cd/B28359_01/appdev.111/b28400/sdo_index_query.htm#autoId9&quot;&gt;Oracle Spatial/Locator&lt;/a&gt;
-  &lt;/td&gt;
+   &lt;td&gt;Oracle Spatial /Locator&lt;/td&gt;
+   &lt;td&gt;hvor klausuler bruger
+     &lt;a href=&quot;http://docs.oracle.com/cd/B28359_01/appdev.111/b28400/sdo_index_query.htm#autoId9&quot;&gt; Oracle Spatial /Locator &lt;/a&gt;
+   &lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-  &lt;td colspan=2&gt;...&lt;/td&gt;
+   &lt;td colspan=2&gt;...&lt;/td&gt;
 &lt;/tr&gt;
-&lt;/table&gt;
-</translation>
+&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="843"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="75"/>
         <source>&lt;h3&gt;Create a New SQL Anywhere Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a
 SQL Anywhere database.
@@ -58994,41 +59004,45 @@ SQL Anywhere database.
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Create a New SQL Anywhere Connection&lt;/h3&gt;
-This dialog allows you to define the settings for a connection to a
-SQL Anywhere database.
+        <translation>&lt;h3&gt;Opret en ny SQL Anywhere-forbindelse&lt;/h3&gt;
+Denne dialog tillader dig at definere indstillingerne for en forbindelse til en SQL Anywhere-database.
 &lt;p&gt;
 &lt;ul&gt;
-&lt;li&gt; &lt;label&gt;Name&lt;/label&gt; A name to identify the connection settings.
+&lt;li&gt; &lt;label&gt;Navn&lt;/label&gt; Et navn til at identificere forbindelsesindstillingerne.
 
-&lt;li&gt; &lt;label&gt;Host&lt;/label&gt; Name or IP address of the computer hosting the database server (leave blank for local connections).  
+&lt;li&gt; &lt;label&gt;Vært&lt;/label&gt; Navn eller IP-adresse på computeren, hvor databaseserveren kører (efterlad blank for lokale forbindelser).  
 
-&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; IP port used by the database server (leave blank for local connections or to use default port 2638).
+&lt;li&gt; &lt;label&gt;Port&lt;/label&gt; IP-port brugt af databaseserveren (efterlad blank for lokale forbindelser eller for at bruge port 2638).
 
-&lt;li&gt; &lt;label&gt;Server&lt;/label&gt; Name of the database server (leave blank for default server on host).
+&lt;li&gt; &lt;label&gt;Server&lt;/label&gt; Navn på databaseserveren (efterlad blank for standardserver på vært).
 
-&lt;li&gt; &lt;label&gt;Database&lt;/label&gt; Name of the database (leave blank for default database on server).
+&lt;li&gt; &lt;label&gt;Database&lt;/label&gt; Navn på database (efterlad blank for standarddatabase på server).
 
-&lt;li&gt; &lt;label&gt;Connection Parameters&lt;/label&gt; Additional parameters to add to the connection string (semi-colon delimitted list).  See the SQL Anywhere documentation for a list and description of available connection parameters.
+&lt;li&gt; &lt;label&gt;Forbindelsesparametre&lt;/label&gt; Yderligere parametre til at føje til forbindelsesstrengen (semikolon-adskilt liste). Se SQL Anywhere-dokumentationen for en liste og en beskrivelse af tilgængelige forbindelsesparametre.
 
-&lt;li&gt; &lt;label&gt;Username&lt;/label&gt; Database user name.
-&lt;li&gt; &lt;label&gt;Password&lt;/label&gt; Database password.
+&lt;li&gt; &lt;label&gt;Brugernavn&lt;/label&gt; Brugernavn til database.
+&lt;li&gt; &lt;label&gt;Kodeord&lt;/label&gt; Kodeord til database.
 
-&lt;li&gt; &lt;label&gt;Save Username&lt;/label&gt; Indicates whether to save the database user name in the connection configuration.
+&lt;li&gt; &lt;label&gt;Gem brugernavn&lt;/label&gt; Indikerer, om brugernavnet til databasen skal gemmes i forbindelsesindstillingerne.
 
-&lt;li&gt; &lt;label&gt;Save Password&lt;/label&gt; Indicates whether to save the database password in the connection settings.  &lt;em&gt;Passwords are saved in &lt;strong&gt;clear text&lt;/strong&gt; in the system configuration!&lt;/em&gt;
+&lt;li&gt; &lt;label&gt;Gem kodeord&lt;/label&gt; Indikerer, om adgangskoden til databasen skal gemmes i forbindelsesindstillingerne.  &lt;font color=&quot;red&quot;&gt;Kodeord gemmes i &lt;strong&gt;klartekst&lt;/strong&gt; i systemkonfigurationen og i projektfilerne!&lt;/font&gt;
 
-&lt;li&gt; &lt;label&gt;Simple Encryption&lt;/label&gt; Secure the connection to the database using simple encryption.
+&lt;li&gt; &lt;label&gt;Simpel kryptering&lt;/label&gt; Sikre forbindelse med en simpel kryptering.
 
-&lt;li&gt; &lt;label&gt;Estimate table metadata&lt;/label&gt; When initializing layers, various queries may be needed to establish the characteristics of the geometries stored in the database table.  When this option is checked, these queries examine only a sample of the rows, rather than the entire table.  This can significantly speed up layer initialization, but may result in incorrect characterization of layers containing heterogenous types.
+&lt;li&gt; &lt;label&gt;Estimér tabelmetadata&lt;/label&gt; Når lag initialiseres, kan der skulle køres diverse forespørgsler for at etablere karakteristika for geometrierne i databasetabellen. Når denne mulighed er markeret, undersøger disse forespørgsler kun en del af rækkerne i stedet for hele tabellen. Dette kan forøge hastigheden væsentligt for laginitialisering, men kan medføre forkert karakterisering af lag, som indeholder heterogene typer.
 
-&lt;li&gt; &lt;label&gt;Search other users&apos; tables&lt;/label&gt; Indicates that the layer list should be populated from all layers stored in the database.  When unchecked (the default), only layers stored in tables owned by the connected user are displayed.
+&lt;li&gt; &lt;label&gt;Søg andre brugeres tabeller&lt;/label&gt; Indikerer, at laglisten skal populeres fra lag gemt i databasen. Hvis afmarkeret (standard) vil kun lag i tabeller, som ejes af den aktuelle bruger, blive vist.
 
-&lt;/ul&gt;
-</translation>
+&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="896"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="256"/>
+        <source>&lt;h3&gt;Identify&lt;/h3&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="659"/>
         <source>&lt;h3&gt;Open Vector Layer Dialog&lt;/h3&gt;
 
 The open vector layer dialog is used to add vector data to the QGIS map view. Vector data are spatial data described using geometries of points, lines and polygons (enclosed areas).&lt;/p&gt;
@@ -59036,23 +59050,22 @@ QGIS supports vector data in a number of formats, including those supported by t
 QGIS supports PostGIS layers in a PostgreSQL database and SpatiaLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats can be found in Appendix A.1 of the User Guide.&lt;/p&gt;
 Detailed description how to proceed with vector data is described in chapter 5 &apos;Working with Vector Data&apos;.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Open Vector Layer Dialog&lt;/h3&gt;
+        <translation>&lt;h3&gt;Åbn vektorlag-dialog&lt;/h3&gt;
 
-The open vector layer dialog is used to add vector data to the QGIS map view. Vector data are spatial data described using geometries of points, lines and polygons (enclosed areas).&lt;/p&gt;
-QGIS supports vector data in a number of formats, including those supported by the OGR library data provider plugin, such as ESRI shape files, MapInfo MIF (interchange format) and MapInfo TAB (native format).&lt;/p&gt;
-QGIS supports PostGIS layers in a PostgreSQL database and SpatiaLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats can be found in Appendix A.1 of the User Guide.&lt;/p&gt;
-Detailed description how to proceed with vector data is described in chapter 5 &apos;Working with Vector Data&apos;.
-</translation>
+Åbn vektorlag-dialogen bruges til at tilføje vektordata til QGIS-kortvisningen. Vektordata er spatielle data beskrevet med geometrier af punkter, linjer og polygoner (lukkede flader).&lt;/p&gt;
+QGIS understøtter vektordata i et antal formater, inkl. dem understøttet af OGR-dataudbyder-pluginet, såsom ESRI shapefiler, MapInfo MIF (udvekslingsformat) og MapInfo TAB (medfødt format).&lt;/p&gt;
+QGIS understøtter PostGIS-lag i en PostgreSQL-database og SpatiaLite-lag. Support for yderligere datatyper (fx afgrænset text) er tilgængelig via yderligere dataudbyder-plugins. En liste over OGR-understøttede vektorformater kan findes i Appendiks A.1 i manualen.&lt;/p&gt;
+Detaljeret beskrivelse af, hvordan der arbejdes med vektordata, er beskrevet i kapitel 5 &apos;Arbejde med vektordata&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="708"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="853"/>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;Stilartsstyring&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1541"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1520"/>
         <source>&lt;h3&gt;Options&lt;/h3&gt;
 This dialog allows you to select some basic options for QGIS. There are eight tabs:
 &lt;p&gt;
@@ -59127,83 +59140,83 @@ Informs you about active system locale. To change it tick &lt;label&gt;Override 
 &lt;/a&gt;
 Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, user, and password.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Options&lt;/h3&gt;
-This dialog allows you to select some basic options for QGIS. There are eight tabs:
+        <translation>&lt;h3&gt;Generelle indstillinger&lt;/h3&gt;
+Denne dialog lader dig vælge nogle grundlæggende indstillinger for QGIS. Der er otte faner:
 &lt;p&gt;
 
-&lt;a href=&quot;#general&quot;&gt;General&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#general&quot;&gt;Generelt&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#ren&quot;&gt;Rendering &amp; SVG&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#map&quot;&gt;Map tools&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#over&quot;&gt;Overlay&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#digit&quot;&gt;Digitizing&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#map&quot;&gt;Kortværktøjer&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#over&quot;&gt;Belægning&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#digit&quot;&gt;Digitalisering&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#crs&quot;&gt;CRS&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#loc&quot;&gt;Locale&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#net&quot;&gt;Network &amp; Proxy&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#loc&quot;&gt;Landekode&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#net&quot;&gt;Netværk &amp; Proxy&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;general&quot;&gt;
-&lt;h4&gt;General&lt;/h4&gt;
+&lt;h4&gt;Generelt&lt;/h4&gt;
 &lt;/a&gt;
-On this tab you can set general options for project behavior on opening/saving, default map appearance, your favorite icon theme and many others.
+På denne fane kan du indstille de generelle muligheder for projektets adfærd ved åbning og gemning, standard kortudseende, dit favorit-ikontema og mange andre.
 &lt;a name=&quot;ren&quot;&gt;
 &lt;h4&gt;Rendering &amp; SVG&lt;/h4&gt;
 &lt;/a&gt;
-Within this tab you can set general rendering options for map layers.&lt;br&gt;
-By default, QGIS renders all visible layers whenever the map canvas must be refreshed. The events that trigger a refresh of the map canvas include:
+På denne fane kan du indstille de generelle renderingsmuligheder for kortlag.&lt;br&gt;
+Som standard gør QGIS alle lag synlige, når kortkanvasset skal opdateres. De begivenheder, der udløser en opdatering af kortkanvasset, inkluderer:
 &lt;ul&gt;
-&lt;li&gt;Adding a layer
-&lt;li&gt;Panning or zooming
-&lt;li&gt;Resizing the QGIS window
-&lt;li&gt;Changing the visibility of a layer or layers
-&lt;/ul&gt;
-QGIS allows you to control the rendering process in a number of ways:&lt;p&gt;
-You can set an option to always load new layers without drawing them.&lt;br&gt;
-This means the layer will be added to the map, but its visibility check box in the legend will be unchecked by default. To set this option, uncheck the &lt;label&gt;By default new layers added to the map should be displayed&lt;/label&gt; check box.&lt;p&gt;
-You can set an option to update the map display as features are drawn. &lt;br&gt;
-By default, QGIS does not display any features for a layer until the entire layer has been rendered. To update the display as features are read from the data store, set the &lt;label&gt;Number of features to draw before updating the display&lt;/label&gt; to an appropriate value. Setting a value of 0 disables update during drawing (this is the default). Setting a value too low will result in poor performance as the map canvas is continually updated during the reading of the features. A suggested value to start with is 500.
+&lt;li&gt;Tilføjelse af et lag
+&lt;li&gt;Panorering eller zoom
+&lt;li&gt;Ændre størrelse på QGIS-vinduet
+&lt;li&gt;Ændring af synligheden af ​​et eller flere lag
+&lt;/Ul&gt;
+QGIS tillader dig at styre renderingsprocessen på en række måder:&lt;p&gt;
+Du kan indstille en mulighed for altid at indlæse nye lag uden at tegne dem.&lt;br&gt;
+Det betyder, at laget vil blive tilføjet til kortet, men dets checkboks for synlighed i tegnforklaringen vil være markeret som standard. For at indstille denne mulighed, skal du fjerne markeringen af checkboksen ​​&lt;label&gt;Som standard  skal nye lag føjet til kortet vises&lt;/label&gt;.&lt;p&gt;
+Du kan indstille en mulighed for at opdatere kortvisningen, som objekter er tegnet.&lt;br&gt;
+Som standard viser QGIS ikke alle objekter for et lag, indtil hele laget er blevet renderet. For at opdatere visningen, som objekter læses fra datalageret, sæt&lt;label&gt;Antal objekter at tegne, før du opdaterer skærmen&lt;/label&gt;til en passende værdi. Indstilling af en værdi på 0 deaktiverer opdatering under tegning (dette er standard). Indstilles af en værdi for lavt, vil det medføre dårlig ydelse, som kortkanvasset løbende opdateres under læsningen af objekter. En foreslået værdi til at starte med er 500.
 &lt;a name=&quot;map&quot;&gt;
-&lt;h4&gt;Map tools&lt;/h4&gt;
+&lt;h4&gt;Kortværktøjer&lt;/h4&gt;
 &lt;/a&gt;
-&lt;h5&gt;Identify&lt;/h5&gt;
-The &lt;label&gt;Mode&lt;/label&gt; setting determines which layers will be shown by the &lt;label&gt;Identify&lt;/label&gt; tool. By switching to &lt;label&gt;Top down&lt;/label&gt; instead of &lt;label&gt;Current layer&lt;/label&gt; attributes for all identifiable layers will be shown with the &lt;label&gt;Identify&lt;/label&gt; tool.
-&lt;h5&gt;Measure tool&lt;/h5&gt;
-Here you can set an ellipsoid for distance calculations, measurement units and preferred color of rubber band.
-&lt;h5&gt;Panning and zooming&lt;/h5&gt;
-Allows to define mouse wheel action and zoom factor.
+&lt;h5&gt;Identificér&lt;/h5&gt;
+&lt;label&gt;Tilstand&lt;/label&gt;sindstillingen afgør, hvilke lag, der skal vises af værktøjet &lt;label&gt;Identificér&lt;/label&gt;. Ved at skifte til &lt;label&gt;Oppefra og ned&lt;/label&gt; i stedet for &lt;label&gt;Aktuelt lag&lt;/label&gt;, vises attributter for alle identificerbare lag med værktøjet &lt;label&gt;Identificér&lt;/label&gt;.
+&lt;h5&gt;Måleværktøj&lt;/h5&gt;
+Her kan du indstille en ellipsoide for afstandsberegninger, måleenheder og foretrukne farve for gummibånd.
+&lt;h5&gt;Panorering og zoom&lt;/h5&gt;
+Gør det muligt at definere musehjulets handling og zoomfaktor.
 &lt;a name=&quot;over&quot;&gt;
-&lt;h4&gt;Overlay&lt;/h4&gt;
+&lt;h4&gt;Belægning&lt;/h4&gt;
 &lt;/a&gt;
-Define placement algorithm for labels. Choose between &lt;label&gt;central point (fastest)&lt;/label&gt;, &lt;label&gt;chain (fast)&lt;/label&gt;, &lt;label&gt;popmusic tabu chain (slow)&lt;/label&gt;, &lt;label&gt;popmusic tabu (slow)&lt;/label&gt; and &lt;label&gt;popmusic chain (very slow)&lt;/label&gt;.
+Definér placeringsalgoritme til labels. Vælg mellem &lt;label&gt;centralt punkt (hurtigst)&lt;/label&gt;, &lt;label&gt;kæde (hurtig)&lt;/label&gt;, &lt;label&gt;popmusik tabukæde (langsom)&lt;/label&gt;, &lt;label&gt;popmusik tabu (langsom)&lt; / label&gt;og&lt;label&gt;popmusik kæde (meget langsom)&lt;/label&gt;.
 
 &lt;a name=&quot;digit&quot;&gt;
-&lt;h4&gt;Digitizing&lt;/h4&gt;
+&lt;h4&gt;Digitalisering&lt;/h4&gt;
 &lt;/a&gt;
-&lt;h5&gt;Rubber band&lt;/h5&gt;
-In the &lt;label&gt;Digitizing&lt;/label&gt; tab you can define settings for digitizing line width and color.
-&lt;h5&gt;Snapping&lt;/h5&gt;
-Here you can define a general, project wide snapping tolerance. &lt;p&gt;
-You can select between &lt;label&gt;To vertex&lt;/label&gt;, &lt;label&gt;To segment&lt;/label&gt; or &lt;label&gt;To vertex and segment&lt;/label&gt; as default snap mode. You can also define a default snapping tolerance and a search radius for vertex edits. The tolerance can be set either in map units or in pixels. The advantage of choosing pixels, is that the snapping tolerance doesn&apos;t have to be changed after zoom operations.&lt;p&gt;
-A layer based snapping tolerance can be defined by choosing &lt;label&gt;Settings&lt;/label&gt; (or &lt;label&gt;File&lt;/label&gt;) &gt; &lt;label&gt;Project Properties...&lt;/label&gt;. In the &lt;label&gt;General&lt;/label&gt; tab, section &lt;label&gt;Digitize&lt;/label&gt; you can click on &lt;label&gt;Snapping options...&lt;/label&gt; to enable and adjust snapping mode and tolerance on a layer basis.
-&lt;h5&gt;Vertex markers&lt;/h5&gt;
-You can define marker style as &lt;label&gt;Semi transparent circle&lt;/label&gt;, &lt;label&gt;Cross&lt;/label&gt; or &lt;label&gt;None&lt;/label&gt; and size; you can also set showing markers only for selected features.
-&lt;h5&gt;Enter attribute values&lt;/h5&gt;
-By default, after digitizing a new feature, QGIS asks you to enter attribute values for that feature. Ticking &lt;label&gt;Suppress attributes pop-up windows after each created feature&lt;/label&gt; allows you to enter the attributes later.
+&lt;h5&gt;Gummibånd&lt;/h5&gt;
+På fanen &lt;label&gt;Digitalisering&lt;/label&gt; kan du definere indstillinger for digitaliserings stregtykkelse og farve.
+&lt;h5&gt;Fastgørelse&lt;/h5&gt;
+Her kan du definere et generelt fastgørelsestolerance for hele projektet.&lt;p&gt;
+Du kan vælge mellem &lt;label&gt;Til hjørne&lt;/label&gt;, &lt;label&gt;Til segment&lt;/label&gt; eller &lt;label&gt;Til hjørne og segment&lt;/label&gt; som standard-fastgørelsestilstand. Du kan også definere en standard-fastgørelsestolerance og en søgningsradius for hjørneredigeringer. Tolerancen kan indstilles enten i kortenheder eller i pixels. Fordelen ved at vælge pixel er, at fastgørelsestolerance ikke behøver at blive ændret efter zoomhandlinger.&lt;p&gt;
+En lagbaseret fastgørelsestolerance kan defineres ved at vælge &lt;label&gt;Indstillinger&lt;/label&gt; (eller &lt;label&gt;Fil&lt;/label&gt;) &gt; &lt;label&gt;Projektegenskaber...&lt;/label&gt;. På fanen &lt;label&gt;Generelt&lt;/label&gt;, sektionen  &lt;label&gt;Digitalisér&lt;/label&gt; kan du klikke på &lt;label&gt;Fastgørelsesmuligheder...&lt;/label&gt; for at aktivere og justere fastgørelsestilstand og -tolerance på lagbasis.
+&lt;h5&gt;Hjørnemarkører&lt;/h5&gt;
+Du kan definere markør-stilart som &lt;label&gt;Semitransparent cirkel&lt;/label&gt;, &lt;label&gt;Cross&lt;/label&gt; eller &lt;label&gt;Ingen&lt;/label&gt; og størrelse; og du kan også indstille visning af markører kun for udvalgte objekter.
+&lt;h5&gt;Angiv attributværdier&lt;/h5&gt;
+Som standard, efter at have digitaliseret et ny objekt, beder QGIS dig om at indtaste attributværdier for det pågældende objekt. At markere &lt;label&gt;Undertryk attribut-popupvinduer efter hvert skabte objekt&lt;/label&gt; giver dig mulighed for at angive attributterne senere.
 &lt;a name=&quot;crs&quot;&gt;
 &lt;h4&gt;CRS&lt;/h4&gt;
 &lt;/a&gt;
-QGIS no longer sets the map CRS to the coordinate reference system of the first layer loaded. When you start a QGIS session with layers that do not have a CRS, you need to check and define the CRS definition for these layers. This can be done globally on this tab.&lt;p&gt;
-The global default CRS &lt;i&gt;proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs&lt;/i&gt; comes predefined in QGIS but can of course be changed, and the new definition will be saved for subsequent QGIS sessions.
+QGIS indstiller ikke længere kortet CRS til det første indlæste lags koordinatsystem. Når du starter en QGIS- session med lag, der ikke har et CRS, er du nødt til at tjekke og definere CRS-definition for disse lag. Dette kan gøres globalt på denne fane.&lt;p&gt;
+Den globale standard-CRS&lt;i&gt;proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs&lt;/i&gt; kommer foruddefineret i QGIS, men kan naturligvis ændres, og den nye definition vil blive gemt til senere QGIS-sessioner.
 &lt;a name=&quot;lov&quot;&gt;
-&lt;h4&gt;Locale&lt;/h4&gt;
+&lt;h4&gt;Landekode&lt;/h4&gt;
 &lt;/a&gt;
-Informs you about active system locale. To change it tick &lt;label&gt;Override system locale&lt;/label&gt; and restart QGIS.
+Informerer dig om aktiv systemlandekode. Markér &lt;label&gt;Overtrumf systemets landekode&lt;/label&gt; for at ændre den, og genstart QGIS.
 &lt;a name=&quot;net&quot;&gt;
-&lt;h4&gt;Network &amp; Proxy&lt;/h4&gt;
+&lt;h4&gt;Netværk &amp; Proxy&lt;/h4&gt;
 &lt;/a&gt;
-Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, user, and password.
+Markér ​​&lt;label&gt;Brug proxy til webadgang&lt;/label&gt; for at definere vært, port, bruger og kodeord.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="710"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1211"/>
         <source>&lt;h3&gt;Create New Vector Layer&lt;/h3&gt;
 To create a new layer for editing, choose &lt;label&gt;New Vector Layer&lt;/label&gt; from the &lt;label&gt;Layer&lt;/label&gt; menu.&lt;br/&gt;
 With this dialog you can create a shape file layer.
@@ -59216,21 +59229,21 @@ You can also define the width and precision of the new attribute column.
 &lt;h4&gt;Attributes list&lt;/h4&gt;
 In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Create New Vector Layer&lt;/h3&gt;
-To create a new layer for editing, choose &lt;label&gt;New Vector Layer&lt;/label&gt; from the &lt;label&gt;Layer&lt;/label&gt; menu.&lt;br/&gt;
-With this dialog you can create a shape file layer.
+        <translation>&lt;h3&gt;Opret nyt vektorlag&lt;/h3&gt;
+For at oprette et nyt lag til redigering, vælg &lt;label&gt;Nyt vektorlag&lt;/label&gt; fra &lt;label&gt;Lag&lt;/label&gt;-menuen.&lt;br/&gt;
+Med denne dialog kan du oprette et shapefil-lag.
 &lt;h4&gt;Type&lt;/h4&gt;
-Choose the type of layer &lt;label&gt;Point&lt;/label&gt;, &lt;label&gt;Line&lt;/label&gt; or &lt;label&gt;Polygon&lt;/label&gt;.&lt;br/&gt;
-Click on &lt;label&gt;Specify CRS&lt;/label&gt; button to change the coordinate reference system of the layer if needed.
-&lt;h4&gt;New attribute&lt;/h4&gt;
-Add the desired attributes by clicking on the &lt;label&gt;Add to attributes list&lt;/label&gt; button after you have specified a name and type for the attribute. Only real, integer, and string attributes are supported.&lt;br/&gt;
-You can also define the width and precision of the new attribute column.
-&lt;h4&gt;Attributes list&lt;/h4&gt;
-In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
+Vælg lagets type &lt;label&gt;Punkt&lt;/label&gt;, &lt;label&gt;Linje&lt;/label&gt; eller &lt;label&gt;Polygon&lt;/label&gt;.&lt;br/&gt;
+Klik på knappen &lt;label&gt;Angiv CRS&lt;/label&gt; for at ændre lagets koordinatsystem om nødvendigt.
+&lt;h4&gt;Ny attribut&lt;/h4&gt;
+Tilføj de ønskede attributter ved at klikke på knappen &lt;label&gt;Føj til attributliste&lt;/label&gt;, efter du har angivet et navn og en type for attributten. Kun real, integer, og string-attributter understøttes.&lt;br/&gt;
+Du kan også definere den nye attributkolonnes bredde og præcision.
+&lt;h4&gt;Attributliste&lt;/h4&gt;
+I denne sektion kan du attributlisten. Klik på en af dem og vælg knappen &lt;label&gt;Fjern valgt attribut&lt;/label&gt; for at slette den.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="534"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="432"/>
         <source>&lt;h3&gt;Add SQL Anywhere Tables&lt;/h3&gt;
 This dialog allows you to add SQL Anywhere layers (tables with a geometry column) to the QGIS map canvas.
 &lt;p&gt;
@@ -59269,47 +59282,47 @@ To filter a layer before adding it to the map, either double click on its name o
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Add SQL Anywhere Tables&lt;/h3&gt;
-This dialog allows you to add SQL Anywhere layers (tables with a geometry column) to the QGIS map canvas.
+        <translation>&lt;h3&gt;Add SQL Anywhere-tabeller&lt;/h3&gt;
+Denne dialog lader dig tilføje SQL Anywhere-lag (tabeller med en geometrikolonne) til QGIS-kortkortkanvasset.
 &lt;p&gt;
-&lt;a href=&quot;#connect&quot;&gt;Connections&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#add&quot;&gt;Adding Layers&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#filter&quot;&gt;Filtering a Layer&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#search&quot;&gt;Search options&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#connect&quot;&gt;Forbindelser&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#add&quot;&gt;Tilføjelse af lag&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#filter&quot;&gt;Filtrering af et lag&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#search&quot;&gt;Søgeindstillinger&lt;/a&gt;&lt;br/&gt;
 
 &lt;a href=&quot;#connect&quot;&gt;
-&lt;h4&gt;Connections&lt;/h4&gt;
+&lt;h4&gt;Forbindelser&lt;/h4&gt;
 &lt;/a&gt;
 &lt;ul&gt;
-&lt;li&gt;Choose the connection to use from the drop-down box and click &lt;label&gt;Connect&lt;/label&gt;.
-&lt;li&gt;If there are no connections, use the &lt;label&gt;New&lt;/label&gt; button to create a connection.
-&lt;li&gt;To modify or delete the selected connection, click the &lt;label&gt;Edit&lt;/label&gt; or &lt;label&gt;Delete&lt;/label&gt; buttons, respectively.
+&lt;li&gt;Vælg forbindelsen, der skal bruges, fra dropdown-boksen og klik &lt;label&gt;Forbind&lt;/label&gt;.
+&lt;li&gt;Hvis der ikke er nogen forbindelse, skal du bruge knappen &lt;label&gt;Ny&lt;/label&gt; for at oprette en forbindelse.
+&lt;li&gt;For at ændre eller slette den valgte forbindelse, skal du klikke på hhv. &lt;label&gt;Redigér&lt;/label&gt; eller &lt;label&gt;Slet&lt;/label&gt;.
 &lt;/ul&gt;
 &lt;a name=&quot;add&quot;&gt;
-&lt;h4&gt;Adding Layers&lt;/h4&gt;
+&lt;h4&gt;Tilføjelse af lag&lt;/h4&gt;
 &lt;/a&gt;
-To add a layer:
+Hvis du vil tilføje et lag:
 &lt;ol&gt;
-&lt;li&gt;Choose the desired connection from the drop-down box.
-&lt;li&gt;Click &lt;label&gt;Connect&lt;/label&gt;, which will populate the list of layers from the database.  Options that affect how this list is populated are described in the help for the new connection dialogue box.
+&lt;li&gt;Vælg den ønskede forbindelse fra dropdown-boksen.
+&lt;li&gt;Klik &lt;label&gt;Tilslut&lt;/label&gt;, som vil udfylde listen af lag fra databasen. Indstillinger, der påvirker, hvordan denne liste udfyldes, er beskrevet i hjælpen til dialogen til den nye forbindelse.
     
-&lt;li&gt;Find the layer you want to add in the list and click on it to select it.
-&lt;li&gt;You can select additional layers by holding down the Ctrl key and clicking.
-&lt;li&gt;Click &lt;label&gt;Add&lt;/label&gt; to add the layer(s) to the map.
+&lt;li&gt;Find det lag, du vil tilføje på listen, og klik på det for at vælge det.
+&lt;li&gt;Du kan vælge yderligere lag ved at holde Ctrl-tasten nede og klikke.
+&lt;li&gt;Klik &lt;label&gt;Tilføj&lt;/label&gt; for at føje lag til kortet.
 &lt;/ol&gt;
 &lt;a name=&quot;filter&quot;&gt;
-&lt;h4&gt;Filtering a Layer&lt;/h4&gt;
+&lt;h4&gt;Filtrering af et lag&lt;/h4&gt;
 &lt;/a&gt;
-To filter a layer before adding it to the map, either double click on its name or select it and click the &lt;label&gt;Build query&lt;/label&gt; button. This will open the Query Builder, allowing you to build up a SQL statement to use in filtering the records.
+Hvis du vil filtrere et lag, før du tilføjer det til kortet, skal du enten dobbeltklikke på dets navn eller markere det og klikke på knappen &lt;label&gt;Byg forespørgsel&lt;/label&gt;. Dette vil åbne Forespørgselsgeneratoren, så du kan opbygge en SQL-sætning til at bruge i filtrering af posterne.
 
 &lt;a name=&quot;search&quot;&gt;
-&lt;h4&gt;Search options&lt;/h4&gt;
+&lt;h4&gt;Søgeindstillinger&lt;/h4&gt;
 &lt;/a&gt;
-Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
+Markering af &lt;label&gt;Søgeindstillinger&lt;/label&gt; muliggør yderligere muligheder for at søge i forskellige kolonnetyper og i 2 søgetilstande: &lt;label&gt;Wildcard&lt;/label&gt; eller &lt;label&gt;RegExp&lt;/label&gt;.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="124"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="701"/>
         <source>&lt;h3&gt;Save vector layer as...&lt;/h3&gt;
 
 &lt;p&gt;This dialog allows you to save vector data in various formats using GDAL/OGR.
@@ -59324,23 +59337,23 @@ Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for
 
 See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Save vector layer as...&lt;/h3&gt;
+        <translation>&lt;h3&gt;Gem vektorlag som...&lt;/h3&gt;
 
-&lt;p&gt;This dialog allows you to save vector data in various formats using GDAL/OGR.
+&lt;p&gt;Denne dialog tillader dig gemme vektordata i diverse formater vha. GDAL/OGR.
 
 &lt;ul&gt;
-&lt;li&gt;From the &lt;label&gt;Format&lt;/label&gt; list you can select the destination format (as advertised by OGR).
-&lt;li&gt;At &lt;label&gt;Save as&lt;/label&gt; you can enter a destination files name or select one using the &lt;label&gt;Browse&lt;/label&gt; button.
-&lt;li&gt;In the &lt;label&gt;Encoding&lt;/label&gt; list you can define in which encoding the data should be saved.
-&lt;li&gt;Using the &lt;label&gt;CRS&lt;/label&gt; you can select a CRS into which the data about to be saved should be reprojected.
-&lt;li&gt;OGR also has various options for the different formats it supports.  Use the &lt;label&gt;datasource&lt;/label&gt; creation field to set the datasource options and the &lt;label&gt;layer&lt;/label&gt; creation options. Enter one options per line (e.g. &lt;code&gt;SPATIALITE=yes&lt;/code&gt; in the &lt;label&gt;datasource&lt;/label&gt; to create a spatialite database using the SQLite driver).
+&lt;li&gt;Fra listen &lt;label&gt;Format&lt;/label&gt; kan du vælge destinationsformatet (som udbudt af OGR).
+&lt;li&gt;I &lt;label&gt;Gem som&lt;/label&gt; kan du angive et destinationsfilnavn eller vælge ét vha knappen &lt;label&gt;Gennemse&lt;/label&gt;.
+&lt;li&gt;I listen &lt;label&gt;Kodning&lt;/label&gt; kan du definere i hvilket kodning, dataene skal gemmes.
+&lt;li&gt;Vha. &lt;label&gt;CRS&lt;/label&gt; kan du vælge et CRS, til hvilket de gemte data skal reprojekteres.
+&lt;li&gt;OGR har også diverse muligheder for de forskellige understøttede formater. Brug oprettelsesfeltet &lt;label&gt;datakilde&lt;/label&gt; til at sætte muligheder for datakilde og oprettelsemuligheder for &lt;label&gt;lag&lt;/label&gt;. Angiv én mulighed pr. linje (fx &lt;code&gt;SPATIALITE=yes&lt;/code&gt; i &lt;label&gt;datakilden&lt;/label&gt; for at oprette en SpatiaLite-database med SQLite-driveren).
 &lt;/ul&gt;
 
-See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
+Se &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for en liste over understøttede formater og de tilgængelige muligheder.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="654"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1223"/>
         <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
 &lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
 raster of an input point vector layer.  The density is calculated based on the
@@ -59395,63 +59408,62 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation type="unfinished">&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
-&lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
-raster of an input point vector layer.  The density is calculated based on the
-number of points in a location, with larger numbers of clustered points resulting
-in larger values. Heatmaps allow easy identification of &quot;hotspots&quot; and
-clustering of points.&lt;/p&gt;
+        <translation>&lt;h1&gt;Hjælp til pluginet Varmekort&lt;/h1&gt;
+&lt;p&gt;Pluginet Varmekort bruger kernetæthedsestimering for at skabe en tæthedsraster (varmekort)
+ af et input-punktvektorlag. Tætheden beregnes på grundlag af
+antal punkter i en placering, hvor et større antal af grupperede punkter resulterer
+i større værdier. Varmekort gøre det let at identificere &quot;hotspots&quot;, og
+grupperinger af punkter.&lt;/p&gt;
 
-&lt;h2&gt;Dialog Parameters&lt;/h2&gt;
+&lt;h2&gt;Dialogparametre&lt;/h2&gt;
 
-&lt;h3&gt;Input point layer&lt;/h3&gt;
-&lt;p&gt;The input is always a vector layer of point type. All the point vector layers that are currently loaded in the canvas are shown in the drop-down list. Click the dropdown button and select the desired layer.&lt;/p&gt;
+&lt;h3&gt;Input-punktlag&lt;/h3&gt;
+&lt;p&gt;Input er altid et punkttype-vektorlag. Alle punktvektorlag, der i øjeblikket er indlæst i kanvasset, er vist i dropdown-listen. Klik på dropdown-knappen og vælg det ønskede lag.&lt;/p&gt;
 
-&lt;h3&gt;Output raster&lt;/h3&gt;
-&lt;p&gt;The output raster location and filename can be set by clicking the &lt;label&gt;...&lt;/label&gt; button next to the output raster textbox.&lt;br/&gt;
-&lt;b&gt;Note:&lt;/b&gt; The file format is automatically added depending upon the output format selected, if not explicitly given.&lt;/p&gt;
+&lt;h3&gt;Output-raster&lt;/h3&gt;
+&lt;p&gt;Placeringen af output-rasteren og filnavnet kan indstilles ved at klikke på knappen &lt;label&gt;...&lt;/label&gt;  ved siden af output-raster-tekstfeltet.&lt;br/&gt;
+&lt;b&gt;NB:&lt;/b&gt; Filformatet tilføjes automatisk afhængigt af det valgte outputformat, hvis ikke angivet eksplicit&lt;/p&gt;
 
-&lt;h3&gt;Output format&lt;/h3&gt;
-&lt;p&gt;All the file creation supporting GDAL formats are available in the drop down list. Click and select the required output format for your file.&lt;br/&gt;
-&lt;b&gt;Note:&lt;/b&gt; GeoTiff and ERDAS Imagine .img formats are recommended. Some formats make the application crash. Kindly stick to the recommended formats until the crash issue is resolved or use other formats if you know GDAL supports it completely.&lt;/p&gt;
+&lt;h3&gt;Outputformat&lt;/h3&gt;
+&lt;p&gt;Alle de af GDAL understøttede filformater er tilgængelige i dropdown-listen. Klik på og vælg det ønskede outputformat til din fil.&lt;br/&gt;
+&lt;b&gt;NB:&lt;/b&gt;GeoTiff og ERDAS Imagine .img-formater anbefales. Nogle formater får programmet til at gå ned. Hold dig venligst til de anbefalede formater, indtil nedbrudsproblemet er løst, eller brug andre formater, hvis du ved, at GDAL understøtter dem fuldstændigt. &lt;/P&gt;
 
-&lt;h3&gt;Radius (bandwidth)&lt;/h3&gt;
-&lt;p&gt;Used to specify the heatmap search radius (or kernel bandwidth) in meters or map units. The radius specifies the distance around a point at which the influence
-  of the point will be felt. Larger values result in greater smoothing, but smaller values may show finer details and variation in point density.&lt;/p&gt;
+&lt;h3&gt;Radius (båndbredde)&lt;/h3&gt;
+&lt;p&gt;Bruges til at specificere varmekortets søgeradius (eller kernebåndbredde) i meter eller kortenheder. Radius angiver afstanden omkring et punkt, hvor indflydelsen
+  af punktet vil kunne mærkes. Større værdier giver større udjævning, men mindre værdier kan vise finere detaljer og variation i punkttæthed. &lt;/P&gt;
 
-&lt;h3&gt;Advanced Options&lt;/h3&gt;
+&lt;h3&gt;Avancerede indstillinger&lt;/h3&gt;
 
-&lt;h4&gt;Rows and Columns&lt;/h4&gt;
-&lt;p&gt;Used to change the dimensions of the output raster file. These values are also linked to the &lt;b&gt;Cell size X&lt;/b&gt; and &lt;b&gt;Cell size Y&lt;/b&gt; values. 
-Increasing the number of rows or colums will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
-are also linked, so doubling the number of rows will automatically double the number of columns and the cell sizes will also be halved. The geographical area of the output raster will remain the same!&lt;/p&gt;
+&lt;h4&gt;Rækker og kolonner&lt;/h4&gt;
+&lt;p&gt;Bruges til at ændre dimensionerne af output-rasterfilen. Disse værdier er også knyttet til værdierne &lt;b&gt;Cellestørrelse X&lt;/b&gt; og &lt;b&gt;Cellestørrelse Y&lt;/b&gt;.
+Forøgelse af antallet af rækker eller kolonner vil formindske cellens størrelse og øge filstørrelsen på output-filen. Værdierne i Rækker og Kolonner
+hænger også sammen, så en fordobling af antallet af rækker vil automatisk fordoble antallet af kolonner og cellestørrelser vil også blive halveret. Det geografiske område for output-rasteren vil forblive det samme! &lt;/P&gt;
 
-&lt;h4&gt;Cell size X and Y&lt;/h4&gt;
-&lt;p&gt;Control the geographic size of each pixel in the output raster. Changing these values will also change the number of Rows and Columns in the output
-  raster.&lt;/p&gt;
+&lt;h4&gt;Cellestørrelse X og Y&lt;/h4&gt;
+&lt;p&gt;Kontrollér den geografiske størrelse af hver pixel i output-rasteren. At ændre af disse værdier vil også ændre antallet af rækker og kolonner i output-
+  rasteren.&lt;/p&gt;
   
-&lt;h4&gt;Kernel shape&lt;/h4&gt;
-&lt;p&gt;The kernel shape controls the rate at which the influence of a point decreases as the distance from the point increases. Different kernels decay at
-different rates, so a triweight kernel gives features greater weight for distances closer to the point then the Epanechnikov kernel does. Consequently,
-triweight results in &quot;sharper&quot; hotspots, and Epanechnikov results in &quot;smoother&quot; hotspots. A number of standard kernel functions are available in QGIS,
-which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+&lt;h4&gt;Kerneformen&lt;/h4&gt;
+&lt;p&gt;Kerneformen styrer den hastighed, ved hvilken indflydelsen på et punkt aftager, efterhånden som afstanden fra punktet stiger. Forskellige kerner henfalder på
+forskellige satser, så en trevægtskerne giver objekter større vægt for afstande tættere på punktet, end Epanechnikov-kernen gør. Følgelig
+resulterer trevægt i &quot;skarpere&quot; hotspots og Epanechnikov resulterer i &quot;glattere&quot; hotspots. En række af standardkernefunktioner er tilgængelige i QGIS,
+der er beskrevet og illustreret på a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
 
-&lt;h4&gt;Decay ratio&lt;/h4&gt;
-&lt;p&gt;For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.&lt;/p&gt;
+&lt;h4&gt;Henfaldsforhold&lt;/h4&gt;
+&lt;p&gt;For trekantede kerner, definerer henfaldsforholdet mængden af indflydelse, der gælder for den yderste pixels i bufferradiusen. En værdi på 0 afspejler en standard trekantet kerne, hvor påvirkningerne falder til nul, efterhånden som afstanden fra pixel til punktet nærmer den sig angivne radius. I modsætning hertil indikerer en værdi på 1, at ingen formindskelse forekommer, som afstanden fra punktet stiger. &lt;/P&gt;
 
-&lt;h4&gt;Use radius from field&lt;/h4&gt;
-&lt;p&gt;Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.&lt;/p&gt;
+&lt;h4&gt;Brug radius fra feltet&lt;/h4&gt;
+&lt;p&gt;Eventuelt kan værdien i et bestemt område bruges til at styre kernens radius for hvert punkt i inputlaget.&lt;/p&gt;
 
-&lt;h4&gt;Use weight from field&lt;/h4&gt;
-&lt;p&gt;Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.&lt;/p&gt;
+&lt;h4&gt;Brug vægt fra feltet&lt;/h4&gt;
+&lt;p&gt;Eventuelt kan en attribut, som indeholder vægte for punkter, bruges til at vægte nogle punkter i inputlaget mere end andre.&lt;/p&gt;
 
-&lt;h2&gt;Further Details&lt;/h2&gt;
-&lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
-
+&lt;h2&gt;Yderligere detaljer&lt;/h2&gt;
+&lt;p&gt;Kontakt forfatteren gennem aruntheguy at gmail dot com&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="903"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="895"/>
         <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
 Loads and displays delimited text files
 &lt;p&gt;
@@ -59766,247 +59778,247 @@ The following options can be added
 
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
-Loads and displays delimited text files
+        <translation>&lt;h3&gt;Afgrænset tekstfil-lag&lt;/h3&gt;
+Indlæser og viser afgrænsede tekstfiler
 &lt;p&gt;
-&lt;a href=&quot;#re&quot;&gt;Overview&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#re&quot;&gt;Overblik&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;Oprettelse af et afgrænset tekstlag&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#csv&quot;&gt;Hvordan afgrænsnings-, citations- og escapetegn virker&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#regexp&quot;&gt;Hvordan regulære udtryks afgrænsningstegn virker&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#wkt&quot;&gt;Hvordan WKT-tekst tolkes&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Attributter i afgrænsede tekstfiler&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#example&quot;&gt;Eksempel på en tekstfil med X, Y-punktkoordinater&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#wkt_example&quot;&gt;Eksempel på en tekstfil med WKT-geometrier&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#python&quot;&gt;Brug afgrænsede tekstlag i Python&lt;/a&gt;&lt;br/&gt;
 &lt;/p&gt;
 
-&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overview&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;A &amp;quot;delimited text file&amp;quot; contains data in which each record starts on a new line, and 
-is split into fields by a delimiter such as a comma.  
-This type of file is commonly exported from spreadsheets (for example CSV files) or databases.  
-Typically the first line of a delimited text file contains the names of the fields.  
+&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overblik&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;En &quot;afgrænset tekstfil&quot; indeholder data, hvor hver post starter på en ny linje, og
+er opdelt i felter af et afgrænsningstegn, såsom et komma.
+Denne type fil er almindeligvis eksporteret fra regneark (f.eks CSV-filer) eller databaser.
+Typisk indeholder den første linje i et afgrænset tekstfil navnene på felterne.
 &lt;/p&gt;
 &lt;p&gt;
-Delimited text files can be loaded into QGIS as a layer. 
-The records can be displayed spatially either as a point
-defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
-describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
-only table, which can then be joined to other tables in QGIS.
+Afgrænsede tekstfiler kan indlæses i QGIS som et lag.
+Registreringerne kan vises spatielt enten som et punkt
+defineret af X og Y-koordinater, eller ved hjælp en Velkendt Tekst (WKT)-definition af en geometri, der kan
+beskrive punkter, linjer og polygoner til vilkårlig kompleksitet. Filen kan også indlæses som en ren attribut-
+tabel, som derefter kan forbindes til andre tabeller i QGIS.
 &lt;/p&gt;
 &lt;p&gt;
-In addition to the geometry definition the file can contain text, integer, and real number fields.  By default 
-QGIS will choose the type of field based on its the non blank values of the field.  If all can be interpreted
-as integer then the type will be integer, if all can be interpreted as real numbers then the type will
-be double, otherwise the type will be text.
+Ud over geometrien kan definitionsfilen indeholde tekst, tal, og reelle tal-felter. Som standard
+vil QGIS vælge typen af feltet baseret på feltets ikke tomme værdier. Hvis alle kan fortolkes
+som heltal, så vil dens type være heltal, hvis alt kan tolkes som reelle tal, så vil dens type
+være double, ellers vil typen blive tekst.
 &lt;/p&gt;
 &lt;p&gt;
-QGIS can also read the types from an OGR CSV driver compatible &amp;quot;csvt&amp;quot; file.  
-This is a file alongside the data file, but with a &amp;quot;t&amp;quot; appended to the file name. 
-The file should just contain one linewhich lists the type of each field. 
-Valid types are &amp;quot;integer&amp;quot;, &amp;quot;real&amp;quot;, &amp;quot;string&amp;quot;, &amp;quot;date&amp;quot;, &amp;quot;time&amp;quot;, and &amp;quot;datetime&amp;quot;. The date, time, and datetime types are treated as strings in QGIS.
-Each type may be followed by a width and precision, for example &amp;quot;real(10.4)&amp;quot;.
-The list of types are separated by commas, regardless of the delimiter used in the data file.  An
-example of a valid format file would be:
+QGIS kan også læse typerne fra en OGR CSV-driver-kompatibel &quot;csvt&quot;-fil.
+Dette er en fil, som ligger sammen med datafilen, men med en &quot;t&quot; føjet til filnavnet.
+Filen skal bare indeholde en linje, som lister typen af hvert felt.
+Gyldige typer er &quot;integer&quot;, &quot;real&quot;, &quot;string&quot;, &quot;date&quot;, &quot;time&quot;, og &quot;datetime&quot;. Den typerne date, time og datetime typer behandles som strenge i QGIS.
+Hver type kan efterfølges af en bredde og præcision, for eksempel &quot;real (10,4)&quot;.
+Listen over typer er adskilt af et komma, uanset afgrænsningstegnet, som anvendes i datafilen. Et
+eksempel på et gyldigt filformat ville være:
 &lt;/p&gt;
 
 &lt;pre&gt;
-&amp;quot;integer&amp;quot;,&amp;quot;string&amp;quot;,&amp;quot;string(20)&amp;quot;,&amp;quot;real(20.4)&amp;quot;
+&quot;integer&quot;, &quot;string&quot;, &quot;string (20)&quot;, &quot;real (20,4)&quot;
 &lt;/pre&gt;
 
-&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
-be split into fields), and defining the geometry is represented.  
-This is managed with the delimited text dialog as detailed below.  
-The dialog box displays a sample from the beginning of the file which shows how the format
-options have been applied.
+&lt;h4&gt; &lt;a name=&quot;creating&quot;&gt;Oprettelse af et afgrænset tekstlag&lt;/a&gt; &lt;/h4&gt;
+&lt;p&gt;Oprettelse af et afgrænset tekstlag indebærer at vælge datafilen, som definerer formatet (hvordan hver post er 
+opdelt i felter) og at definere, hvordan geometrien er repræsenteret.
+Dette administreres med dialogen Afgrænset tekst som beskrevet nedenfor.
+Dialogboksen viser et eksempel fra begyndelsen af filen, som viser, hvordan format-
+indstillingerne er blevet anvendt.
 &lt;/p&gt;
-&lt;h5&gt;Choosing the data file&lt;/h5&gt;
-&lt;p&gt;Use the &amp;quot;Browse...&amp;quot; button to select the data file.  Once the file is selected the
-layer name will automatically be populated based on the file name.  The layer name is used to represent
-the data in the QGIS legend.  
-&lt;/p&gt;
-&lt;p&gt;
-By default files are assumed to be encoded as UTF-8.  However other file
-encodings can be selected.  For example &amp;quot;System&amp;quot; uses the default encoding for the operating system.  
-It is safer to use an explicit coding if the QGIS project needs to be portable.
-&lt;/p&gt;
-&lt;h5&gt;Specifying the file format&lt;/h5&gt;
-&lt;p&gt;The file format can be one of
-&lt;ul&gt;
-    &lt;li&gt;CSV file format.  This is a format commonly used by spreadsheets, in which fields are delimited
-    by a comma character, and quoted using a &amp;quot;(quote) character.  Within quoted fields, a quote
-    mark is entered as &amp;quot;&amp;quot;.&lt;/li&gt;
-    &lt;li&gt;Selected delimiters.  Each record is split into fields using one or more  delimiter character.
-    Quote characters are used for fields which may contain delimiters.  Escape characters may be used 
-    to treat the following character as a normal character (ie to include delimiter, quote, and 
-    new line characters in text fields).  The use of delimiter, quote, and escape characters is detailed &lt;a href=&quot;#csv&quot;&gt;below&lt;/a&gt;.
-    &lt;li&gt;Regular expression.  Each line is split into fields using a &amp;quot;regular expression&amp;quot; delimiter.
-    The use of regular expressions is details &lt;a href=&quot;#regexp&quot;&gt;below&lt;/a&gt;.
-&lt;/ul&gt;
-&lt;h5&gt;Record and field options&lt;/h5&gt;
-&lt;p&gt;The following options affect the selection of records and fields from the data file&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Number of header lines to discard: used to ignore header lines at the beginning of the text file&lt;/li&gt;
-    &lt;li&gt;First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.&lt;/li&gt;
-    &lt;li&gt;Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). &lt;/li&gt;
-    &lt;li&gt;Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
-    affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
-    single delimiter.  Quoted fields are never discarded.&lt;/li&gt;
-    &lt;li&gt;Decimal separator is comma: if selected then commas instead of points are used as the decimal separator in real numbers.  For
-    example &lt;tt&gt;-51,354&lt;/tt&gt; is equivalent to -51.354.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5&gt;Geometry definition&lt;/h5&gt;
-&lt;p&gt;The geometry is can be define as one of&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Point coordinates: each feature is represented as a point defined by X and Y coordinates.&lt;/li&gt;
-    &lt;li&gt;Well known text (WKT) geometry: each feature is represented as a well known text string, for example
-    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  See details of the &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt; format.
-    &lt;li&gt;No geometry (attribute only table): records will not be displayed on the map, but can be viewed
-    in the attribute table and joined to other layers in QGIS&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For point coordinates the following options apply:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;X field: specifies the field containing the X coordinate&lt;/li&gt;
-    &lt;li&gt;Y field: specifies the field containing the Y coordinate&lt;/li&gt;
-    &lt;li&gt;DMS angles: if selected coordinates are represented as degrees/minutes/seconds
-    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
-    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
-    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
-    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Geometry field: the field containing the well known text definition.&lt;/li&gt;
-    &lt;li&gt;Geometry type: one of &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or &amp;quot;Polygon&amp;quot;.
-    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
-    which geometry type is displayed in text files containing multiple geometry types. Records containing
-   other geometry types are discarded.   
-    If &amp;quot;Detect&amp;quot; is selected then the type of the first geometry in the file will be used.
-    &amp;quot;Point&amp;quot; includes POINT and MULTIPOINT WKT types, &amp;quot;Line&amp;quot; includes LINESTRING and
-    MULTLINESTRING WKT types, and &amp;quot;Polygon&amp;quot; includes POLYGON and MULTIPOLYGON WKT types.
-&lt;/ul&gt;
-&lt;h5&gt;Layer settings&lt;/h5&gt;
-&lt;p&gt;Layer settings control the way the layer is managed in QGIS.  The options available are:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
-This option may be useful for files larger than a few megabytes in size.&lt;/li&gt;
-&lt;li&gt;Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
-from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
-for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
-&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
-reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
-extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
-application will change the file. &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Records are split into fields using three character sets: 
-delimiter characters, quote characters, and escape characters.  
-Other characters in the record are considered as data, split into
-fields by delimiter characters. 
-Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
+&lt;h5&gt;At vælge datafilen&lt;/h5&gt;
+&lt;p&gt;Brug knappen &quot;Gennemse...&quot; for at vælge datafilen. Når filen er valgt, vil
+lagnavnet automatisk være udfyldt baseret på filnavnet. Lagnavnet bruges til at repræsentere
+data i QGIS-oversigten.
 &lt;/p&gt;
 &lt;p&gt;
-Quote and escape characters cannot be the same as delimiter characters - they
-will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
-if they are.&lt;/p&gt;
-&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
-is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
-can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
-&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
-contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
-start and end with the same quote character.  Quote characters cannot occur within a field unless they
-are escaped.&lt;/p&gt;
-&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
-(that is, to stop it being treated as a new line, delimiter, or quote character).  
+Som standard antages filer at være kodet som UTF-8. Men andre fil-
+kodninger kan vælges. For eksempel &quot;System&quot; bruger standardkodning fra operativsystemet.
+Det er sikrere at bruge en eksplicit kodning, hvis QGIS projekt skal være flytbart.
 &lt;/p&gt;
-&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
-&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
-&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
+&lt;h5&gt;Angivelse af filformat&lt;/h5&gt;
+&lt;p&gt;Filformatet kan være en af
+&lt;ul&gt;
+    &lt;li&gt;CSV-filformat. Det er et format, der almindeligvis anvendes af regneark, hvor felterne er afgrænset
+    med et kommategn, citeret og ved hjælp af et &quot;(citations)&quot;-tegn. I citationsfelter angives citationen
+    som &quot;&quot;. &lt;/li&gt;
+    &lt;li&gt;Udvalgte afgrænsningstegn. Hver post er opdelt i felter ved hjælp af en eller flere afgrænsningstegn.
+    Citationstegn bruges til felter, der kan indeholde skilletegn. Escapetegn kan anvendes
+    til behandling af følgende tegn som et normalt tegn (dvs. at omfatte afgrænsningstegn, citation og
+    nyt linje-tegn i tekstfelter). Brugen af afgrænsningstegn-, citations- og escapetegn er beskrevet nærmere &lt;a href=&quot;#csv&quot;&gt;nedenfor&lt;/a&gt;.
+    &lt;li&gt;Regulært udtryk. Hver linje er opdelt i felter ved hjælp af en &quot;regulært udtryk&quot;-afgrænsningstegn.
+    Brugen af regulære udtryk er beskrevet nærmere &lt;a href=&quot;#regexp&quot;&gt;nedenfor&lt;/a&gt;.
+&lt;/ul&gt;
+&lt;h5&gt;Indstillinger for for poster og felter&lt;/h5&gt;
+&lt;p&gt;Følgende indstillinger påvirker valget af poster og felter fra datafilen&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Antal hovedlinjer, der skal kasseres: bruges til at ignorere hovedlinjer i begyndelsen af tekstfilen&lt;/li&gt;
+    &lt;li&gt;Første post har feltnavne: Hvis valgt, så tolkes den første post i filen (efter kasserede linjer) som navne på felter, snarere end som en datapost.&lt;/li&gt;.
+    &lt;li&gt;Trim felter: Hvis valgt, så vil indledende og afsluttende blanke tegn blive fjernet fra hvert felt (undtagen citerede felter). &lt;/li&gt;
+    &lt;li&gt;Kassér tomme felter: Hvis valgt, så vil tomme felter blive kasseret (efter trimning). Det
+    påvirker justeringen af data i felter, og svarer til behandling af efterfølgende afgrænsningstegn som en
+    enkelt afgrænsningstegn. Citerede felter kasseres aldrig.&lt;/li&gt;
+    &lt;li&gt;Decimalseparator er komma: Hvis valgt, så anvendes kommaer i stedet for punktummer som decimalseparator i reelle tal. For
+    eksempel &lt;tt&gt; -51.354 &lt;/tt&gt; svarer til -51,354.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5&gt;Geometrydefinition&lt;/h5&gt;
+&lt;p&gt;Geometrien kan defineres som en af&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Punktkoordinater: hvert objekt er repræsenteret som et punkt defineret af X og Y-koordinater.&lt;/li&gt;.
+    &lt;li&gt;Velkendt tekst (WKT)-geometri: Hvert objekt er repræsenteret som en velkendt tekststreng, for eksempel
+    &lt;tt&gt;POINT(1.525622 51,20836)&lt;/tt&gt;. Se detaljer om &lt;a href=&quot;#wkt&quot;&gt;velkendt tekst&lt;/a&gt;-formatet.
+    &lt;li&gt;Ingen geometri (kun attributtabel): poster vil ikke blive vist på kortet, men kan ses
+    i attributtabellen og tilknyttes andre lag i QGIS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For punktkoordinater gælder følgende indstillinger:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;X-felt: angiver felt, der indeholder X-koordinat&lt;/li&gt;
+    &lt;li&gt;Y-felt: angiver felt, der indeholder Y-koordinat&lt;/li&gt;
+    &lt;li&gt;DMS-vinkler: Hvis de valgte koordinater er repræsenteret som grader/minutter/sekunder
+    eller grader/minutter. QGIS er ganske eftergivende i sin fortolkning af grader/minutter/sekunder.
+    Et gyldigt DMS-koordinat vil indeholde tre numeriske felter med et valgfrit halvkuglepræfiks eller suffiks
+    (N, E, eller + er positive, S, W, eller - er negative). Yderligere ikke-numeriske tegn 
+    kasseres generelt. For eksempel er &lt;tt&gt;N41d54&apos;01.54&quot;&lt;/tt&gt; et gyldigt koordinat.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For Velkendt tekst-geometri gælder følgende indstillinger:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt; Geometrifelt: feltet med den velkendte tekst-definition&lt;/li&gt;
+    &lt;li&gt; Geometritype: en af &quot;Detektér&quot;, &quot;Punkt&quot;, &quot;Linje&quot; eller &quot;Polygon&quot;.
+    QGIS-lag kan kun vise én type geometriobjekt (punkt, linje eller polygon). Denne valgmulighed vælger,
+    hvilken geometritype, der vises i tekstfiler, der indeholder flere geometri-typer. Poster, der indeholder
+   andre geometrityperne kasseres.
+    Hvis &quot;Detektér&quot; er valgt, så vil den type af den første geometri i filen blive brugt.
+    &quot;Punkt&quot; omfatter POINT- og MULTIPOINT-WKT-typer, &quot;Linje&quot; omfatter LINESTRING og
+    MULTLINESTRING-WKT-typer, og &quot;Polygon&quot; omfatter POLYGON- og MULTIPOLYGON-WKT-typer.
+&lt;/ul&gt;
+&lt;h5&gt;Lagindstillinger&lt;/h5&gt;
+&lt;p&gt;Lagindstillinger styrer den måde, laget administreres i QGIS. De tilgængelige indstillinger er:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Brug spatielt indeks. Opret et spatielt indeks til at forbedre effektiviteten af visning og valg af spatielle objekter.
+Denne mulighed kan være nyttig for filer større end et par megabyte i størrelse.&lt;/li&gt;
+&lt;li&gt;Brug delmængde-indeks. Opret et indeks, hvis en delmængde af poster bliver brugt (enten ved eksplicit at fastsætte en delmængdestreng
+fra lagets egenskabsdialog, eller en implicit delmængde af objekter, hvor geometrien er gyldig i filer
+eller hvor ikke alle geometrier er gyldige). Indekset vil kun blive oprettet, når en delmængde er defineret.&lt;/li&gt;
+&lt;li&gt;Overvåg fil. Hvis denne indstilling er valgt, vil QGIS overvåge filen for ændringer af andre programmer, og
+genindlæse filen, når den ændres. Kortet vil ikke blive opdateret, før det opdateres af brugeren, men indekser og
+omfang vil blive genindlæst. Denne mulighed bør vælges, hvis indekser er anvendt, og det er sandsynligt, at et andet
+program vil ændre filen.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt; &lt;a name=&quot;csv&quot;&gt;Hvordan afgrænsnings-, citations- og escapetegn virker&lt;/a&gt; &lt;/h4&gt;
+&lt;p&gt;Poster er opdelt i felter ved hjælp af tre tegnsæt:
+afgrænsningstegn-, citations- og escapetegn.
+Andre tegn i posten betragtes som data, opdelt i
+felter af afgrænsningstegn.
+Citationstegn optræder i par og får teksten mellem dem at blive opfattet som data. Escapetegn medfører, at tegn, som følger dem, behandles som data.
+&lt;/p&gt;
+&lt;p&gt;
+Citations- og escapetegn kan ikke være det samme som afgrænsningstegnene - de
+ignoreres, hvis de er. Escape-tegn kan være den samme som citationstegn, men opfører sig anderledes,
+hvis de er. &lt;/p&gt;
+&lt;p&gt;Afgrænsningstegnene benyttes til at markere afslutningen på hvert felt. Hvis mere end et afgrænsningstegn
+defineres, så kan hvilket som helst af tegnene markere slutningen af et felt. Citations- og escapetegn
+kan tilsidesætte afgrænsningstegne, så det behandles som et normalt datategn.&lt;/p&gt;
+&lt;p&gt;Citationstegn kan bruges til at markere begyndelsen og slutningen af citerede felter. Citerede felter kan
+indeholde afgrænsningstegn og kan spænde over flere linjer i tekstfilen. Hvis et felt er citeret, så skal det
+starte og slutte med det samme citationstegn. Citationstegn ikke kan forekomme inden for et felt, medmindre det
+er escaped.&lt;/p&gt;
+&lt;p&gt;Escapetegn, der ikke er citationstegn, tvinger følgende tegn til at blive behandlet som data.
+(Dvs. at stoppe det blive behandlet som en ny linje, afgrænsnings- eller citationstegn).
+&lt;/p&gt;
+&lt;p&gt;Escapetegn, der også er citationstegn, har meget mere begrænset effekt. De gælder kun indenfor citationstegn og escaper kun sig selv. For eksempel, hvis
+&lt;tt&gt; &apos;&lt;/tt&gt; er et citations- og escapetegn, så vil strengen
+&lt;tt&gt; &apos;Smith&apos;&apos; s Creek &quot;&lt;/tt&gt; repræsentere værdien Smiths Creek.
 &lt;/p&gt;
 
 
-&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
-of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
-&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
-If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
- then these are extracted as fields. 
- If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;Hvordan regulære udtryks afgrænsningstegn virker&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Regulære udtryk er et mini-sprog, der bruges til at repræsentere tegnmønstre. Der er mange variationer
+af regulære udtryks syntaks - QGIS bruger syntaksen fra &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt;-klassen i &lt;a href = &quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt;s framework.&lt;/p&gt;
+&lt;p&gt;I en afgrænset fil med regulære udtryk vil hver linje blive behandlet som en post. Hvert match i det regulære udtryk i rækken behandles som slutningen af et felt.
+Hvis det regulære udtryk indeholder capture-grupper (fx &lt;tt&gt; (kat|hund) &lt;/tt&gt;)
+ så udtrækkes disse som felter.
+ Hvis dette ikke ønskes, så brug ikke-capture-grupper (fx &lt;tt&gt; (:kat|hund)&lt;/tt&gt;).
 &lt;/p&gt;
-&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
-In this case the regular expression is matched against each line.  If the line does not match it is discarded
-as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
-is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
-unintuitive) means of loading data with fixed width fields.  For example the 
-expression
+&lt;p&gt;Det regulære udtryk behandles anderledes, hvis det er forankret til starten af linien (dvs. mønsteret starter med &lt;tt&gt;^&lt;/tt&gt;).
+I dette tilfælde bliver regulære udtryk matchet mod hver linje. Hvis linjen ikke matcher, kasseres den
+som en ugyldig post. Hver capture-gruppe i udtryk behandles som et felt. Det regulære udtryk
+er ugyldigt, hvis det ikke har capture-grupper. Som et eksempel kan dette anvendes som en (noget
+uintuitiv) måde at indlæse data med fastbredde-felter. For eksempel vil
+udtrykket
 &lt;pre&gt;
-^(.{5})(.{10})(.{20})(.{20})
+^ (. {5}) (. {10}) (. {20}) (. {20})
 &lt;/pre&gt;
-&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
-Lines less than 55 characters long will be discarded.
+&lt;p&gt; udtrække fire felter med bredderne 5, 10, 20 og 20 tegn fra hver linje.
+Linjer mindre end 55 tegn lange vil blive kasseret.
 &lt;/p&gt;
 
 
-&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;/h4&gt;
+&lt;h4&gt; &lt;a name=&quot;wkt&quot;&gt;Hvordan WKT-tekst tolkes&lt;/a&gt;&lt;/h4&gt;
 &lt;p&gt;
-The delimited text layer recognizes the following 
-&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
-&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
-It will accept geometries with
-a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;
-It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
-system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
-preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
-In both cases the SRID is ignored.
-&lt;/p&gt;
-
-
-
-&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;/h4&gt; 
-&lt;p&gt;Each record in the delimited text file is split into fields representing
-attributes of the record.  Usually the attribute names are taken from the first
-data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
-Also if records have more fields than are defined in the header record then these
-will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
-QGIS may override 
-the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
-or are duplicated.
+Det afgrænsede tekstlag genkender følgende
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;Velkendt tekst&lt;/a&gt;-typer -
+&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt; og &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.
+Det vil acceptere geometrier med
+et Z-koordinat (fx &lt;tt&gt;POINT Z&lt;/tt&gt;), et mål (&lt;tt&gt;POINT M&lt;/tt&gt;) eller begge (&lt;tt&gt;POINT ZM&lt;/tt&gt;).
 &lt;/p&gt;
 &lt;p&gt;
-In addition to the attributes explicitly in the data file QGIS assigns a unique 
-feature id to each record which is the line number in the source file on which
-the record starts.  
+Det kan også håndtere PostGIS-EWKT-varianten, hvor geometrien foranstilles af en spatielt reference-
+systems-ID (fx &lt;tt&gt;SRID=4326,POINT(175,3 41,2)&lt;/tt&gt;), og en variant brugt af Informix, hvor WKT er
+foranstillet af et heltal som spatielt reference-ID (fx &lt;tt&gt;1 POINT(175,3 41,2)&lt;/tt&gt;).
+I begge tilfælde ignoreres SRID.
+&lt;/p&gt;
+
+
+
+&lt;h4&gt; &lt;a name=&quot;attributes&quot;&gt;Attributter i afgrænsede tekstfiler&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Hver post i den afgrænsede tekstfil er opdelt i felter, der repræsenterer
+attributter i posten. Normalt er attributnavne taget fra den første
+datapost i filen. Men hvis det ikke indeholder attributnavne, så vil de blive navngivet &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, og så videre.
+Også hvis poster har flere felter, end der er defineret i overskriftensposten, så vil disse
+blive navngivet &lt;tt&gt;field_ #&lt;/tt&gt;, hvor # er feltnummeret (bemærk, at tomme felter i slutningen af en post ignoreres).
+QGIS kan overtrumfe
+navnene i tekstfilen, hvis de er numre, eller har navne som &lt;tt&gt;field_ #&lt;/tt&gt;,
+eller er dubletter.
 &lt;/p&gt;
 &lt;p&gt;
-Each attribute also has a data type, one of string (text), integer, or real number.
-The data type is inferred from the content of the fields - if every non blank value
-is a valid integer then the type is integer, otherwise if it is a valid real
-number then the type is real, otherwise the type is string.  Note that this is
-based on the content of the fields - quoting fields does not change the way they
-are interpreted.
+Ud over de eksplicitte attributter i datafilen tildeler QGIS et unikt
+objekt-id til hver post, som er linjenummer i kildefilen, hvor
+posten begynder.
+&lt;/p&gt;
+&lt;p&gt;
+Hver attribut har også en datatype, en af string (tekst), integer eller real-tal.
+Datatypen er udledt af indholdet af felterne - hvis alle ikke tomme værdier
+er gyldige heltal, så er typen heltal, ellers hvis det er et gyldigt realtal,
+så er typen real, ellers er typen streng. Bemærk, at dette er
+baseret på indholdet af felterne - at citere felter ændrer ikke den måde, de
+fortolkes.
 &lt;/p&gt;
 
 
-&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;/h4&gt; 
+&lt;h4&gt; &lt;a name=&quot;example&quot;&gt;Eksempel på en tekstfil med X, Y-punktkoordinater&lt;/a&gt;&lt;/h4&gt;
 &lt;pre&gt;
 X;Y;ELEV
 -300120;7689960;13
 -654360;7562040;52
 1640;7512840;3
 &lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
+&lt;p&gt;Denne fil:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
-&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
-&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
-&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
+&lt;li&gt;Bruger &lt;b&gt;;&lt;/b&gt; som afgrænsningstegn. Alle tegn kan bruges til at afgrænse felterne. &lt;/li&gt;
+&lt;li&gt;Den første række er kolonneoverskriften. Den indeholder feltnavnene X, Y og ELEV.&lt;/li&gt;
+&lt;li&gt;X-koordinaterne er indeholdt i X-feltet.&lt;/li&gt;
+&lt;li&gt;Y-koordinaterne er indeholdt i Y-feltet.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;/h4&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Eksempel på en tekstfil med WKT-geometrier&lt;/a&gt; &lt;/h4&gt;
 &lt;pre&gt;
 id|wkt
 1|POINT(172.0702250 -43.6031036)
@@ -60015,74 +60027,72 @@ id|wkt
 4|POINT(171.9282585 -43.5493308)
 5|POINT(171.8827359 -43.5875983)
 &lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
+&lt;p&gt;Denne fil:&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;Has two fields defined in the header row: id and wkt.
-  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
-  &lt;li&gt;Specifies each point using the WKT notation
+  &lt;li&gt;Har to felter defineret i kolonneoverskriften: id og WKT.
+  &lt;li&gt;Bruger &lt;b&gt;|&lt;/b&gt; som afgrænsningstegn &lt;/li&gt;
+  &lt;li&gt;Angiver hvert punkt ved hjælp af WKT-notation
 &lt;/ul&gt;
 
-&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
-The pattern is:
+&lt;h4&gt; &lt;a name=&quot;python&quot;&gt;Brug af afgrænsningstegnsseparerede tekstlag i Python&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Afgrænset tekst-datakilder kan skabes fra Python på samme måde som andre vektorlag.
+Mønstret er:
 &lt;/p&gt;
 &lt;pre&gt;
 from PyQt4.QtCore import QUrl, QString
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
 
-# Define the data source
+# Definér datakilden
 filename=&quot;test.csv&quot;
 uri=QUrl.fromLocalFile(filename)
 uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
 uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
 uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
-# ... other delimited text parameters
+# ... andre afgrænset tekst-parametre
 layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
-# Add the layer to the map
+# Føj laget til kortet
 if layer.isValid():
     QgsMapLayerRegistry.instance().addMapLayer( layer )
 &lt;/pre&gt;
-&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
-&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
-The following options can be added
+&lt;p&gt;Dette kan bruges til at indlæse den anden eksempelfil ovenfor.&lt;/p&gt;
+&lt;p&gt;Konfigurationen af det afgrænsede tekstlag er defineret ved at tilføje forespørgselselementer til URI.
+Følgende muligheder kan tilføjes
 &lt;/p&gt;
 &lt;ul&gt;
-    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
-    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
-       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
-       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
-       no default for regexp files.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
-       Additional fields in each record will be discarded. The default is 0 - include all fields.
-       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
-       used.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
-       specified then a dialog box may request this information from the user
-       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; definerer filkodningen. Standard er &quot;UTF-8&quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type =(csv|regexp|whitespace)&lt;/tt&gt; definerer afgrænsningstype. Gyldige værdier er csv,
+       regexp, og blanke (som er blot et specialtilfælde i regexp). Standarden er csv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; definerer afgrænsingstegn, der vil blive anvendt til csv-formaterede filer,
+       eller regulære udtryk for regexp-formaterede filer. Standarden er for CSV-filer. Der er
+       ingen standard for regexp-filer.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quote =..&lt;/tt&gt; (for CSV-filer) definerer de tegn, der bruges til at citere felter. Standard er &quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for CSV-filer) definerer de tegn, der bruges til at escape den særlige betydning af næste tegn. Standard er &quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; definerer antallet af linjer, der skal kasseres, fra begyndelsen af filen. Standarden er 0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; definerer, om den første datapost indeholder navnene på datafelterne. Standarden er yes.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; definerer, om indledende og afsluttende blanke skal fjernes fra ikke-citerede felter. Standarden er no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;Maxfields=#&lt;/tt&gt; definerer den maksimale antal felter, der vil blive indlæst fra filen.
+       Yderligere felter i hver post vil blive kasseret. Standarden er 0 - omfatter alle felter.
+       (Denne indstilling er ikke tilgængelig fra dialogeb Afgrænset tekstlag).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; definerer, om tomme ikke-citerede felter vil blive kasseret (anvendes efter trimFields). Standarden er no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; angiver et alternativt tegn, der kan anvendes som et komma i numeriske felter. Standarden er et punkttegn (fuldt stop).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;wktField=feltnavn&lt;/tt&gt; angiver navnet eller nummeret (startende med 1) i feltet med en velkendt tekst-geometridefinition&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;xField=feltnavn&lt;/tt&gt; angiver navnet eller nummeret (startende med 1) i felt X-koordinat (gælder kun, hvis wktField ikke er defineret)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;yField=feltnavn&lt;/tt&gt; angiver navnet eller nummeret (startende med 1) i feltet Y-koordinat (gælder kun, hvis wktField ikke er defineret)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; angiver typen af geometri til WKT-felter, eller none for at indlæse filen som en ren attributtabel. Standarden er auto.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subset=udtryk&lt;/tt&gt; angiver et udtryk, som bruges til at identificere en delmængde af de poster, der vil blive
+       brugt.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;CRS=...&lt;/tt&gt; angiver koordinatsystemet til brug for vektorlaget, i et format accepteret af QgsCoordinateReferenceSystem.createFromString (for eksempel &amp;quot;EPSG:4167&amp;quot;). Hvis dette ikke er
+       specificeret, så kan en dialog anmode om disse oplysninger fra brugeren
+       når laget er indlæst (afhængig QGIS CRS-indstillinger).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; angiver, om udbyderen skal oprette et indeks til at definere delmængder under den indledende filscanning. Indekset gælder både for eksplicit definerede delmængder, og for den implicitte delmængde af objekter, hvis geometridefinition er gyldig. Som standard oprettes delmængdeindekset, hvis det er relevant.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; angiver, om udbyderen skal oprette et spatielt indeks under den indledende filscanning. Som standard er det spatielle indeks ikke oprettet.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no).&lt;/tt&gt; angiver, hvorvidt udbyderen skal bruge filsystemsovervågning for at overvåge efter ændringer til filen&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; angiver, om fejl ved indlæsning af laget præsenteres i en dialog (de vil blive skrevet til QGIS&apos; log i alle tilfælde). Standarden er no. Denne indstilling er ikke tilgængelig fra GUI&lt;/li&gt;
 &lt;/ul&gt;
-
-
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="875"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="11"/>
         <source>&lt;h3&gt;Print Composer&lt;/h3&gt;
 
 &lt;p&gt;
@@ -61179,7 +61189,7 @@ Plugin vil ikke blive slået til.</translation>
 <context>
     <name>function_help</name>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="807"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="278"/>
         <source>&lt;h3&gt;week() function&lt;/h3&gt;
 Extract the week number from a date, or the number of weeks
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -61222,7 +61232,7 @@ fra et &lt;code&gt;Interval&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1426"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="94"/>
         <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
 A conditional expression that can be used to evaluate multiple expressions and
 return a result.
@@ -61283,7 +61293,7 @@ returnere et resultat.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1468"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="363"/>
         <source>&lt;h3&gt;right() function&lt;/h3&gt;
 Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters of the string.
 
@@ -61318,7 +61328,7 @@ Returnerer en delstreng, som indeholder &lt;i&gt;n&lt;/i&gt; tegn af strengen fr
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="457"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1429"/>
         <source>
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
@@ -61329,7 +61339,7 @@ Denne gruppe indeholder funktioner til at manipulere farver
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="461"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1086"/>
         <source>&lt;h3&gt;length() function&lt;/h3&gt;
 Returns the length of a string.
 
@@ -61360,7 +61370,7 @@ Returns længden af en streng.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="286"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1480"/>
         <source>&lt;h3&gt;upper() function&lt;/h3&gt;
 Converts a string to upper case letters.
 
@@ -61391,7 +61401,7 @@ Konverterer en streng til store bogstaver.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="923"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="347"/>
         <source>&lt;h3&gt;left() function&lt;/h3&gt;
 Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters of the string.
 
@@ -61426,7 +61436,7 @@ Returnerer en delstreng, som indeholder &lt;i&gt;n&lt;/i&gt; tegn fra venstre i 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1540"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="676"/>
         <source>&lt;h3&gt;regexp_replace() function&lt;/h3&gt;
 Returns a string with the supplied regular expression replaced.
 
@@ -61461,7 +61471,7 @@ Returnerer en streng med det angivne regulære udtryk erstattet.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="566"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="205"/>
         <source>&lt;h3&gt;$scale function&lt;/h3&gt;
 Returns the current scale of the map canvas.
 &lt;br&gt;
@@ -61490,7 +61500,7 @@ NB: Denne funktion vil kun være tilgængelig i nogle sammenhænge og giver elle
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1194"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1512"/>
         <source>
 &lt;h3&gt;color_rgb() function&lt;/h3&gt;
 Returns a string representation of a color based on its red, green, and blue components
@@ -61527,7 +61537,7 @@ Returnerer en strengrepræsentation af en farve baseret på dens rød-, grøn- o
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1386"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="996"/>
         <source>&lt;h3&gt;$numpages function&lt;/h3&gt;
 Returns the total number of pages in the composition.
 
@@ -61556,7 +61566,7 @@ Ingen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="906"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="172"/>
         <source>&lt;h3&gt;rand() function&lt;/h3&gt;
 Returns a random integer within the range specified by the minimum and 
 maximum argument (inclusive).
@@ -61593,7 +61603,7 @@ Denne funktion tager 2 argumenter.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1038"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1317"/>
         <source>&lt;h3&gt;$rownum function&lt;/h3&gt;
 Returns the number of the current row.
 
@@ -61622,7 +61632,7 @@ Ingen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1143"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="660"/>
         <source>&lt;h3&gt;atan2() function&lt;/h3&gt;
 Returns arcustangens of y/x using the signs of the two 
 arguments to determine the quadrant of the result
@@ -61657,7 +61667,7 @@ argumenter for at afgøre resultatets kvadrant
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="669"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="393"/>
         <source>&lt;h3&gt;sin() function&lt;/h3&gt;
 Returns sinus of an angle.
 
@@ -61686,7 +61696,7 @@ Returnerer sinus på en vinkel.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="726"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="465"/>
         <source>&lt;h3&gt;clamp() function&lt;/h3&gt;
 Restricts an input value to a specified range.
 
@@ -61729,7 +61739,7 @@ Begrænser en inputværdi til et angivet interval.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="993"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1433"/>
         <source>&lt;h3&gt;month() function&lt;/h3&gt;
 Extract the month part from a date, or the number of months
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -61772,7 +61782,7 @@ fra et &lt;code&gt;Interval&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="553"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="792"/>
         <source>&lt;h3&gt;$area function&lt;/h3&gt;
 Returns the area size of the current feature.
 
@@ -61801,7 +61811,7 @@ Ingen
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="475"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1392"/>
         <source>&lt;h3&gt;day() function&lt;/h3&gt;
 Extract the day from a date, or the number of days
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -61844,7 +61854,7 @@ fra et &lt;code&gt;Interval&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="827"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1466"/>
         <source>&lt;h3&gt;toreal function&lt;/h3&gt;
 Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
 
@@ -61859,23 +61869,23 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;toreal function&lt;/h3&gt;
-Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
+        <translation>&lt;h3&gt;toreal-funktion&lt;/h3&gt;
+Konverterer en streng til et real-tal. Intet ændres, hvis en værdi ikke kan konverteres til real (fx &apos;123.56asd&apos; is invalid). Tal afrundes efter gemning af ændringer, hvis præcisionen er mindre end resultatet af konverteringen.
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     toreal(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     toreal(&lt;i&gt;streng&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to real number.&lt;/p&gt;
+&lt;i&gt;  streng&lt;/i&gt; &amp;rarr; er string.  Strengen, som skal konverteres til real-tal.&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1102"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="805"/>
         <source>&lt;h3&gt;todate() function&lt;/h3&gt;
 Convert a string into Qt data type.
 
@@ -61889,22 +61899,22 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;todate() function&lt;/h3&gt;
-Convert a string into Qt data type.
+        <translation>&lt;h3&gt;todate()-funktion&lt;/h3&gt;
+Konverterer en streng til en Qt-datatype.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;todate(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;todate(&apos;streng&apos;)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string in Qt date format.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;streng&lt;/code&gt; - er string i Qt-datoformat.
 &lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="518"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1494"/>
         <source>&lt;h3&gt;lpad() function&lt;/h3&gt;
 Returns a string with supplied width padded
 using the fill character.
@@ -61923,27 +61933,27 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;lpad() function&lt;/h3&gt;
-Returns a string with supplied width padded
-using the fill character.
+        <translation>&lt;h3&gt;lpad()-funktion&lt;/h3&gt;
+Returnerer en streng med den angivne længde udfyldt
+med fyldtegnet.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;lpad(string, length, fill)&lt;/code&gt;&lt;br&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;lpad(streng, længde, fyld)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. The string.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;streng&lt;/code&gt; -er string. Strengen.
 &lt;br&gt;
-&lt;code&gt;length&lt;/code&gt; - is int. The length of the new string.
+&lt;code&gt;længde&lt;/code&gt; - er int. Længden af den nye streng.
 &lt;br&gt;
-&lt;code&gt;fill&lt;/code&gt; - is char. The character to padd the remaining space with. 
+&lt;code&gt;fyld&lt;/code&gt; -er char. Tegnet at udfylde den resterende plads med. 
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="357"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="218"/>
         <source>&lt;h3&gt;acos() function&lt;/h3&gt;
 Returns arcuscosinus of a value in radians.
 
@@ -61957,22 +61967,22 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;acos() function&lt;/h3&gt;
-Returns arcuscosinus of a value in radians.
+        <translation>&lt;h3&gt;acos()-funktion&lt;/h3&gt;
+Returnerer arccos af en værdi i radianer.
 
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
      acos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; cos of an angle.&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; cos af en vinkel.&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="508"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="319"/>
         <source>&lt;h3&gt;Fields and Values&lt;/h3&gt;
 Contains a list of fields from the layer.  Sample values can also be accessed via right-click.
 &lt;br&gt;&lt;br&gt;
@@ -61983,19 +61993,19 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Fields and Values&lt;/h3&gt;
-Contains a list of fields from the layer.  Sample values can also be accessed via right-click.
+        <translation>&lt;h3&gt;Felter og værdier&lt;/h3&gt;
+Indeholder en liste af felter fra laget. Eksempelværdier kan også tilgås via højreklik.
 &lt;br&gt;&lt;br&gt;
-Select the field name from the list then right-click to access context menu with options to load sample values from the selected field.
+Vælg filnavnet fra listen, højreklik derefter for tilgå kontektmenuen med instillinger for indlæsning af eksempelværdier fra det valgte felt.
 
-&lt;p&gt;&lt;h4&gt;Note:&lt;/h4&gt;
-Loading field values from WFS layers isn&apos;t supported, before the layer is
-actually inserted, ie. when building queries.
+&lt;p&gt;&lt;h4&gt;NB:&lt;/h4&gt;
+Indlæsning af feltværdier fra WFS-lag er ikke understøttet, før laget faktisk er
+indsat, dvs. når forespørgsler opbygges.
 &lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="536"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="721"/>
         <source>&lt;h3&gt;log() function&lt;/h3&gt;
 Returns the value of the logarithm of the passed value and base.
 &lt;br&gt;
@@ -62013,35 +62023,35 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;log() function&lt;/h3&gt;
-Returns the value of the logarithm of the passed value and base.
+        <translation>&lt;h3&gt;log()-funktion&lt;/h3&gt;
+Returner værdien af the logaritmen af den angivne værdi og base.
 &lt;br&gt;
-This function takes two arguments.
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;log(base, value)&lt;/code&gt;&lt;br&gt;
+Denne funktion tager 2 argumenter.
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;log(base, værdi)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;base&lt;/code&gt; - any positive number.&lt;br&gt;
-&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;base&lt;/code&gt; - vilkårligt positivt tal.&lt;br&gt;
+&lt;code&gt;værdi&lt;/code&gt; - vilkårligt positivt tal.
 &lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="579"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="718"/>
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Geometry Group&lt;/h3&gt;
-This group contains functions that operate on geometry objects e.g length, area.
+        <translation>&lt;h3&gt;Geometrigruppe&lt;/h3&gt;
+Denne gruppe indeholder funktioner, som arbejder på geometriobjekter, fx længde, areal.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="983"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="46"/>
         <source>&lt;h3&gt;Field&lt;/h3&gt;
 Double click to add field name to expression string.
 &lt;br&gt;&lt;br&gt;
@@ -62052,19 +62062,19 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Field&lt;/h3&gt;
-Double click to add field name to expression string.
+        <translation>&lt;h3&gt;Felt&lt;/h3&gt;
+Dobbeltklik for at tilføje feltnavn til udtryksstreng.
 &lt;br&gt;&lt;br&gt;
-Right-Click on field name to open context menu sample value loading options.
+Højreklik på feltnavnet for åbne kontekstmenuen til indlæsning af eksempelværdier.
 
-&lt;p&gt;&lt;h4&gt;Note:&lt;/h4&gt;
-Loading field values from WFS layers isn&apos;t supported, before the layer is
-actually inserted, ie. when building queries.
+&lt;p&gt;&lt;h4&gt;NB:&lt;/h4&gt;
+Indlæsning af feltværdier fra WFS-lag er ikke understøttet, før laget faktisk er
+indsat, dvs. når forespørgsler opbygges.
 &lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1455"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="56"/>
         <source>&lt;h3&gt;$page function&lt;/h3&gt;
 Returns the current page number within a composition.
 
@@ -62078,22 +62088,22 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$page function&lt;/h3&gt;
-Returns the current page number within a composition.
+        <translation>&lt;h3&gt;$page-funktion&lt;/h3&gt;
+Returnerer det aktuelle sidenummer i et layout.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;$page&lt;/pre&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+Ingen
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1064"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1029"/>
         <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
 Return the index of a regular expression in a string.
 
@@ -62112,27 +62122,27 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;strpos() function&lt;/h3&gt;
-Return the index of a regular expression in a string.
+        <translation>&lt;h3&gt;strpos()-funktion&lt;/h3&gt;
+Returner indekset for et regulært udtryk i en streng.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-     strpos(&lt;i&gt;haystack&lt;/i&gt;, &lt;i&gt;needle&lt;/i&gt;)
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+     strpos(&lt;i&gt;høstak&lt;/i&gt;, &lt;i&gt;nål&lt;/i&gt;)
 &lt;br&gt;&lt;br&gt;
-Returns -1 if the expression isn&apos;t found.
+Returnerer -1, hvis udtrykket ikke blev fundet.
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  haystack&lt;/i&gt; &amp;rarr; is string.  The string that is to be searched.&lt;br&gt;
-&lt;i&gt;  needle&lt;/i&gt; &amp;rarr; is number.  The regular expression to look for.&lt;br&gt;
+&lt;i&gt;  høstak&lt;/i&gt; &amp;rarr; er string.  Strengen, som skal søges.&lt;br&gt;
+&lt;i&gt;  nål&lt;/i&gt; &amp;rarr; er number.  Det regulære udtryk at lede efter.&lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="890"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="409"/>
         <source>&lt;h3&gt;Funktion ln()&lt;/h3&gt;
 Returns the value of the natural logarithm of the passed expression.
 &lt;br&gt;
@@ -62149,25 +62159,25 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Funktion ln()&lt;/h3&gt;
-Returns the value of the natural logarithm of the passed expression.
+        <translation>&lt;h3&gt;ln()-funktion&lt;/h3&gt;
+Returnerer værdien af den naturlige logaritme af det angivne udtryk.
 &lt;br&gt;
-This function takes one argument.
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;ln(value)&lt;/code&gt;&lt;br&gt;
+Denne funktion tager 1 argument.
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;ln(værdi)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;værdi&lt;/code&gt; - et vilkårligt positivt tal.
 &lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="50"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1206"/>
         <source>&lt;h3&gt;exp() function&lt;/h3&gt;
 Returns exponential of an value.
 
@@ -62181,22 +62191,22 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;exp() function&lt;/h3&gt;
-Returns exponential of an value.
+        <translation>&lt;h3&gt;exp()-funktion&lt;/h3&gt;
+Returns eksponentialfunktionen af en værdi.
 
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
      exp(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; number.&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; tal.&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="271"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="833"/>
         <source>&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
 Returns the portion of a string which matches a supplied regular expression.
 
@@ -62212,24 +62222,24 @@ Returns the portion of a string which matches a supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
-Returns the portion of a string which matches a supplied regular expression.
+        <translation>&lt;h3&gt;regexp_substr()-funktion&lt;/h3&gt;
+Returner den del af strengen, som matcher med et angivet regulært udtryk.
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     regexp_substr(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     regexp_substr(&lt;i&gt;streng,regex&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The input string.&lt;br&gt;
-&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to match against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character).&lt;br&gt;
+&lt;i&gt;  streng&lt;/i&gt; &amp;rarr; er string.  Input-strengen.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; er string.  Det regulære udtryk at matche imod. Backslash-tegn skal dobbelt-escapes (eg &quot;&amp;#92;&amp;#92;s&quot; for at matche mellemrumstegn).&lt;br&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="746"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1357"/>
         <source>&lt;h3&gt;rpad() function&lt;/h3&gt;
 Returns a string with supplied width padded
 using the fill character.
@@ -62249,28 +62259,28 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;rpad() function&lt;/h3&gt;
-Returns a string with supplied width padded
-using the fill character.
+        <translation>&lt;h3&gt;rpad()-funktion&lt;/h3&gt;
+Returnerer en streng med den angivne længde udfyldt
+med fyldtegnet.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;rpad(string, width, fill)&lt;/code&gt;&lt;br&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;rpad(streng, bredde, fyld)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. The string.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;streng&lt;/code&gt; - er string. Strengen.
 &lt;br&gt;
-&lt;code&gt;width&lt;/code&gt; - is int. The length of the new string.
+&lt;code&gt;bredde&lt;/code&gt; - er int. Længden på den nye streng.
 &lt;br&gt;
-&lt;code&gt;fill&lt;/code&gt; - is char. The character to padd the remaining space with. 
+&lt;code&gt;fyld&lt;/code&gt; - er char. Tegnet, som den resterende plads skal udfyldes med. 
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1399"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="379"/>
         <source>&lt;h3&gt;tostring function&lt;/h3&gt;
 Converts a number to string.
 
@@ -62285,23 +62295,23 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;tostring function&lt;/h3&gt;
-Converts a number to string.
+        <translation>&lt;h3&gt;tostring-funktion&lt;/h3&gt;
+Konverterer et tal til en streng.
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     tostring(&lt;i&gt;number&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     tostring(&lt;i&gt;tal&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;number&lt;/i&gt; &amp;rarr; is integer or real.  The number to convert to string.&lt;/p&gt;
+&lt;i&gt;tal&lt;/i&gt; &amp;rarr; er integer eller real.  Tallet, som skal konverteres stil streng.&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="99"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1296"/>
         <source>&lt;h3&gt;round() function&lt;/h3&gt;
 Rounds a number to number of decimal places.
 &lt;br&gt;
@@ -62323,30 +62333,30 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;round() function&lt;/h3&gt;
-Rounds a number to number of decimal places.
+        <translation>&lt;h3&gt;round()-funktion&lt;/h3&gt;
+Afrunder et tal til et antal decimaler.
 &lt;br&gt;
-This function can take one or two arguments depending on what is needed.
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;round(decimal,places)&lt;/code&gt;&lt;br&gt;
+Denne funktion kan tage 1 eller 2 argumenter, afhængigt af behovet.
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;round(decimal,pladser)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;round(decimal)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;decimal&lt;/code&gt; - is decimal. The decimal number to be rounded.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;decimal&lt;/code&gt; - er decimal. Decimaltallet, som skal afrundes.
 &lt;br&gt;
-&lt;code&gt;places&lt;/code&gt; - is int. The number of places to round decimal too. Can be negative.
+&lt;code&gt;pladser&lt;/code&gt; - er int. Antallet af pladser, der skal afrundes til. Kan være negativt.
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;round(1234.567, 2 ) &amp;rarr; 1234.57&lt;/code&gt;&lt;br&gt;
-use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;br&gt;
+brug &lt;code&gt;round(decimal)&lt;/code&gt; for at afrunde til nærmeste heltal&lt;br&gt;
 &lt;code&gt;round(1234.567) &amp;rarr; 1235&lt;/code&gt;&lt;br&gt;
 
 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="768"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="425"/>
         <source>&lt;h3&gt;$now function&lt;/h3&gt;
 Returns the current date and time
 
@@ -62360,22 +62370,22 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$now function&lt;/h3&gt;
-Returns the current date and time
+        <translation>&lt;h3&gt;$now-funktion&lt;/h3&gt;
+Returnerer den aktuelle dato og tid
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;$now&lt;/pre&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+Ingen
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="134"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="231"/>
         <source>&lt;h3&gt;scale_exp() function&lt;/h3&gt;
 Transforms a given value from an input domain to an output range using an exponential curve. This function can be used to ease values in or out 
 of the specified output range.   
@@ -62405,29 +62415,29 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
      
      
 </source>
-        <translation type="unfinished">&lt;h3&gt;scale_exp() function&lt;/h3&gt;
-Transforms a given value from an input domain to an output range using an exponential curve. This function can be used to ease values in or out 
-of the specified output range.   
+        <translation>&lt;h3&gt;scale_exp()-funktion&lt;/h3&gt;
+Transformerer en given værdi fra et inputdomæne til et outputinterval vha. en eksponentiel kurve. Denne funktion kan bruges til at lempe in- og out-værdier 
+i det angivne interval.   
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     scale_exp(&lt;i&gt;val&lt;/i&gt;,&lt;i&gt;domain_min&lt;/i&gt;,&lt;i&gt;domain_max&lt;/i&gt;,&lt;i&gt;range_min&lt;/i&gt;,&lt;i&gt;range_max&lt;/i&gt;,&lt;i&gt;exponent&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     scale_exp(&lt;i&gt;værdi&lt;/i&gt;,&lt;i&gt;domæne_min&lt;/i&gt;,&lt;i&gt;domæne_maks&lt;/i&gt;,&lt;i&gt;interval_min&lt;/i&gt;,&lt;i&gt;interval_maks&lt;/i&gt;,&lt;i&gt;eksponent&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  val&lt;/i&gt; &amp;rarr; is a value in the input domain. The function will return a corresponding scaled value in the output range.&lt;br&gt;
-&lt;i&gt;  domain_min, domain_max&lt;/i&gt; &amp;rarr; specify the input domain, the smallest and largest values the input &lt;i&gt;val&lt;/i&gt; should take.&lt;br&gt;
-&lt;i&gt;  range_min, range_max&lt;/i&gt; &amp;rarr; specify the output range, the smallest and largest values which should be output by the function.&lt;br&gt;
-&lt;i&gt;  exponent&lt;/i&gt; &amp;rarr; a positive value (greater than 0), which dictates the way input values are mapped to the output range. Large exponents will cause the output values to &apos;ease in&apos;, starting slowly before
-accelerating as the input values approach the domain maximum. Smaller exponents (less than 1) will cause output values to &apos;ease out&apos;, where the mapping starts quickly but slows as it approaches the domain maximum.&lt;br&gt;
+&lt;i&gt;  værdi&lt;/i&gt; &amp;rarr; er værdien i inputdomænet. Funktionen vil returnere en tilsvarende skaleret værdi i output-intervallet.&lt;br&gt;
+&lt;i&gt;  domæne_min, domæne_maks&lt;/i&gt; &amp;rarr; angiver input-domænet, de laveste og højeste værdier, som input-&lt;i&gt;værdi&lt;/i&gt; skal antage.&lt;br&gt;
+&lt;i&gt;  interval_min, interval_maks&lt;/i&gt; &amp;rarr; angiver output-intervallet, den laveste og højeste værdi, som skal outputtes fra funktionen.&lt;br&gt;
+&lt;i&gt;  eksponent&lt;/i&gt; &amp;rarr; en positiv værdi (større end 0), som dikterer måde, hvormed inputværdier mappes til output-intervallet. Store eksponenter vil få outputværdierne til at &apos;lempe ind&apos;, startende langsomt før
+de accelererer, som inputværdierne når domænemaksimum. Mindre eksponenter (mindre end 1) vil få outputværdier til at &apos;lempe ud&apos;, hvor mappingen starter hurtigt, men bliver langsommere, som den når domænemaskimummet.&lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-&lt;b&gt;Easing in, using an exponent of 2:&lt;/b&gt;&lt;br&gt;
+&lt;b&gt;Lemper ind vha. eksponenten 2:&lt;/b&gt;&lt;br&gt;
      scale_exp(5,0,10,0,100,2) &amp;rarr; 25&lt;br&gt;
      scale_exp(7.5,0,10,0,100,2) &amp;rarr; 56.25&lt;br&gt;
      scale_exp(9.5,0,10,0,100,2) &amp;rarr; 90.25&lt;br&gt;               
      &lt;br&gt;
-&lt;b&gt;Easing out, using an exponent of 0.5:&lt;/b&gt;&lt;br&gt;          
+&lt;b&gt;Lemper ud vha. eksponenten 0.5:&lt;/b&gt;&lt;br&gt;          
      scale_exp(3,0,10,0,100,0.5) &amp;rarr; 54.772&lt;br&gt;
      scale_exp(6,0,10,0,100,0.5) &amp;rarr; 77.459&lt;br&gt;
      scale_exp(9,0,10,0,100,0.5) &amp;rarr; 94.868&lt;br&gt;          
@@ -62436,16 +62446,16 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="711"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1268"/>
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Date and Time Group&lt;/h3&gt;
-This group contains functions for handling date and time data.
+        <translation>&lt;h3&gt;Dato- og Tidsgruppe&lt;/h3&gt;
+Denne gruppe indeholder funktioner til at håndtere dato- og tidsdata.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="495"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="81"/>
         <source>&lt;h3&gt;$id function&lt;/h3&gt;
 Returns the feature id of the current row.
 
@@ -62459,22 +62469,22 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$id function&lt;/h3&gt;
-Returns the feature id of the current row.
+        <translation>&lt;h3&gt;$id-funktion&lt;/h3&gt;
+Returerner et objekt-id for den aktuelle række.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;$id&lt;/pre&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+Ingen
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="407"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1142"/>
         <source>&lt;h3&gt;$perimeter function&lt;/h3&gt;
 Returns the perimeter length of the current feature.
 
@@ -62488,22 +62498,22 @@ None
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$perimeter function&lt;/h3&gt;
-Returns the perimeter length of the current feature.
+        <translation>&lt;h3&gt;$perimeter-funktion&lt;/h3&gt;
+Returnerer det aktuelle objekts perimeterværdi.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;$perimeter&lt;/pre&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+Ingen
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="595"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="157"/>
         <source>&lt;h3&gt;regexp_match() function&lt;/h3&gt;
 Returns true if any part of a string matches the supplied regular expression.
 
@@ -62519,24 +62529,24 @@ Returns true if any part of a string matches the supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;regexp_match() function&lt;/h3&gt;
-Returns true if any part of a string matches the supplied regular expression.
+        <translation>&lt;h3&gt;regexp_match()-funktion&lt;/h3&gt;
+Returnerer true hvis en vilkårlig del af en streng matcher det angivne regulære udtryk.
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     regexp_match(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     regexp_match(&lt;i&gt;streng,regex&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to test against the regular expression.&lt;br&gt;
-&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to test against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character).&lt;br&gt;
+&lt;i&gt;  streng&lt;/i&gt; &amp;rarr; er string.  Strengen, der skal testes mod det regulære udtryk.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; er string.  Det regulære udtryk at teste imod. Backslashtegn skal dobbeltescapes (fx &quot;&amp;#92;&amp;#92;s&quot; for at matche et mellemrumstegn).&lt;br&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="955"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1283"/>
         <source>&lt;h3&gt;tointerval() function&lt;/h3&gt;
 Converts a string to a interval type.  Can be used to take days, hours, month, etc off a date. 
 
@@ -62550,22 +62560,22 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;tointerval() function&lt;/h3&gt;
-Converts a string to a interval type.  Can be used to take days, hours, month, etc off a date. 
+        <translation>&lt;h3&gt;tointerval()-funktion&lt;/h3&gt;
+Konverterer en streng til en intervaltype. Kan bruges til at trække dage, timer, måneder osv. fra en dato.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;tointerval(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;tointerval(&apos;streng&apos;)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. Format {n} days {n} hours {n} months
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;streng&lt;/code&gt; - er string. Format {n} days {n} hours {n} months
 &lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="11"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="298"/>
         <source>&lt;h3&gt;hour() function&lt;/h3&gt;
 Extract the hour from a datetime or time, or the number of hours
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -62587,20 +62597,20 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;hour() function&lt;/h3&gt;
-Extract the hour from a datetime or time, or the number of hours
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;hour()-funktion&lt;/h3&gt;
+Udtrækker timen fra en datetime eller time, eller antallet af timer
+fra et &lt;code&gt;Interval&lt;/code&gt;
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;code&gt;hour(datetime)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;hour(Interval)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is datetime or time. The date to extract the hour from.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - er datetime eller time. Datoen, som timen skal trækkes ud af.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of hours from.
+&lt;code&gt;Interval&lt;/code&gt; - is Interval. Intervallet, som antal timer skal returneres fra.
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;hour(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 13&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;hour(tointerval(&apos;3 hours&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
@@ -62610,7 +62620,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="420"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="884"/>
         <source>&lt;h3&gt;color_hsla() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, lightness and alpha (transparency) attributes
 
@@ -62628,26 +62638,26 @@ Returns a string representation of a color based on its hue, saturation, lightne
 &lt;!-- Show example of function.--&gt;
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;color_hsla() function&lt;/h3&gt;
-Returns a string representation of a color based on its hue, saturation, lightness and alpha (transparency) attributes
+        <translation>&lt;h3&gt;color_hsla()-funktion&lt;/h3&gt;
+Returnerer en strengrepræsentation af en farve baseret på dens farvetone-, mætning-, lysheds- og alfa(transparens)-attributter
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     color_hsla(&lt;i&gt;hue, saturation, lightness, alpha&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     color_hsla(&lt;i&gt;farvetone, mætning, lyshed, alfa&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
-&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; the lightness percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).&lt;br&gt;
+&lt;i&gt;  farvetone&lt;/i&gt; &amp;rarr; farvens tone, som et heltalsværdi fra 0 til 360.&lt;br&gt;
+&lt;i&gt;  mætning&lt;/i&gt; &amp;rarr; farvens mætningsprocent som en heltalsværdi fra 0 til 100.&lt;br&gt;
+&lt;i&gt;  lyshed&lt;/i&gt; &amp;rarr; farvens lyshedsprocent som en heltalsværdi fra 0 til 100.&lt;br&gt;
+&lt;i&gt;  alfa&lt;/i&gt; &amp;rarr; alfakomponenten som en heltalsværdi fra  (helt transparent) til 255 (solid).&lt;br&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="714"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1222"/>
         <source>&lt;h3&gt;$pi constant&lt;/h3&gt;
 Returns pi as value for calculations
 
@@ -62660,30 +62670,30 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;$pi constant&lt;/h3&gt;
-Returns pi as value for calculations
+        <translation>&lt;h3&gt;$pi constant&lt;/h3&gt;
+Returnerer pi som en værdi til beregninger
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;$pi&lt;/pre&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+Ingen
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1096"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="406"/>
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Record Group&lt;/h3&gt;
-This group contains functions that operate on record identifiers.
+        <translation>&lt;h3&gt;Postgruppe&lt;/h3&gt;
+Denne gruppe indeholder funktioner, som arbejder på postidentifikatorer.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1025"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="452"/>
         <source>&lt;h3&gt;totime() function&lt;/h3&gt;
 Convert a string into Qt time type.
 
@@ -62697,22 +62707,22 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;totime() function&lt;/h3&gt;
-Convert a string into Qt time type.
+        <translation>&lt;h3&gt;totime()-funktion&lt;/h3&gt;
+Konverterer en streng til en Qt-tidstype.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;totime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;totime(&apos;streng&apos;)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string in Qt time format.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;streng&lt;/code&gt; - er streng i Qt-tidsformat.
 &lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="163"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="776"/>
         <source>&lt;h3&gt;replace() function&lt;/h3&gt;
 Returns a string with the the supplied string replaced.
 
@@ -62729,34 +62739,34 @@ Returns a string with the the supplied string replaced.
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;replace() function&lt;/h3&gt;
-Returns a string with the the supplied string replaced.
+        <translation>&lt;h3&gt;replace()-funktion&lt;/h3&gt;
+Returnerer en streng med angivne streng erstattet.
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     replace(&lt;i&gt;string,before,after&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     replace(&lt;i&gt;streng,før,efter&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
-&lt;i&gt;  before&lt;/i&gt; &amp;rarr; is string.  The string to replace.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace &lt;i&gt;before&lt;/i&gt;&lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  streng&lt;/i&gt; &amp;rarr; er string.  Startstrengen.&lt;br&gt;
+&lt;i&gt;  før&lt;/i&gt; &amp;rarr; er string.  Strengen at erstatte.&lt;br&gt;
+&lt;i&gt;  efter&lt;/i&gt; &amp;rarr; er string.  Strengen, som vil erstatte &lt;i&gt;før&lt;/i&gt;&lt;br&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="193"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="977"/>
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Conditionals Group&lt;/h3&gt;
-This group contains functions to handle conditional checks in expressions.
+        <translation>&lt;h3&gt;Gruppe for betingede udtryk&lt;/h3&gt;
+Denne gruppe indeholder funktioner til at håndtere betingede tjek i udtryk.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="258"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="951"/>
         <source>&lt;h3&gt;abs() function&lt;/h3&gt;
 Returns the absolute value of a number.&lt;br&gt;
 
@@ -62770,22 +62780,22 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;abs() function&lt;/h3&gt;
-Returns the absolute value of a number.&lt;br&gt;
+        <translation>&lt;h3&gt;abs()-funktion&lt;/h3&gt;
+Returnerer den absolutte værdi af et tal.&lt;br&gt;
 
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+abs(&lt;i&gt;værdi&lt;/i&gt;)&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - a number.&lt;br&gt;
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;værdi&lt;/code&gt; - et tal.&lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="120"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1343"/>
         <source>&lt;h3&gt;max() function&lt;/h3&gt;
 Returns the largest value in a set of values.
 
@@ -62800,23 +62810,23 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation type="unfinished">&lt;h3&gt;max() function&lt;/h3&gt;
-Returns the largest value in a set of values.
+        <translation>&lt;h3&gt;max()-funktion&lt;/h3&gt;
+Returnerer den højeste værdi i et sæt af værdier.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-     max(&lt;i&gt;value&lt;i&gt;[,&lt;i&gt;value&lt;/i&gt;...])
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+     max(&lt;i&gt;værdi&lt;i&gt;[,&lt;i&gt;værdi&lt;/i&gt;...])
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; a number.&lt;br&gt;
+&lt;i&gt;  værdi&lt;/i&gt; &amp;rarr; et tal.&lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1159"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1047"/>
         <source>
 &lt;h3&gt;color_cmyk() function&lt;/h3&gt;
 Returns a string representation of a color based on its cyan, magenta, yellow and black components
@@ -62835,27 +62845,27 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">
-&lt;h3&gt;color_cmyk() function&lt;/h3&gt;
-Returns a string representation of a color based on its cyan, magenta, yellow and black components
+        <translation>
+&lt;h3&gt;color_cmyk()-funktion&lt;/h3&gt;
+Returnerer en strengrepræsentation af en farve baseret på dens cyan-, magenta-, gul- og sort-komponenter
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     color_cmyk(&lt;i&gt;cyan, magenta, yellow, black&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     color_cmyk(&lt;i&gt;cyan, magenta, gul, sort&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; the cyan component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; the magenta component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  yellow&lt;/i&gt; &amp;rarr; the yellow component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  black&lt;/i&gt; &amp;rarr; the black component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; cyan-komponenten af farven, som en procentheltalsværdi fra 0 til 100.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; magenta-komponenten af farven, som en procentheltalsværdi fra 0 til 100.&lt;br&gt;
+&lt;i&gt;  gul&lt;/i&gt; &amp;rarr; gul-komponenten af farven, som en procentheltalsværdi fra 0 til 100.&lt;br&gt;
+&lt;i&gt;  sort&lt;/i&gt; &amp;rarr; sort-komponenten af farven, som en procentheltalsværdi fra 0 til 100.&lt;br&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1051"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="705"/>
         <source>&lt;h3&gt;sqrt() function&lt;/h3&gt;
 Returns square root of a value
 
@@ -62869,22 +62879,22 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;sqrt() function&lt;/h3&gt;
-Returns square root of a value
+        <translation>&lt;h3&gt;sqrt()-funktion&lt;/h3&gt;
+Returnerer kvadratroden af en værdi
 
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
      sqrt(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; number.&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; tal.&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="78"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1065"/>
         <source>
 &lt;h3&gt;ramp_color() function&lt;/h3&gt;
 Returns a string representing a color from a color ramp. 
@@ -62906,19 +62916,19 @@ The color ramps available vary between QGIS installations.  This function
 may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished">
-&lt;h3&gt;ramp_color() function&lt;/h3&gt;
-Returns a string representing a color from a color ramp. 
+        <translation>
+&lt;h3&gt;ramp_color()-funktion&lt;/h3&gt;
+Returnerer en streng, som repræsenterer en farve fra en farverampe
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     ramp_color(&lt;i&gt;ramp_name,value&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     ramp_color(&lt;i&gt;rampe_navn,værdi&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  ramp_name&lt;/i&gt; &amp;rarr; the name of the color ramp as a string, for example &apos;Spectral&apos;.&lt;br&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; the position on the ramp to select the color from as a real number between 0 and 1.&lt;br&gt;
+&lt;i&gt;  rampe_navn&lt;/i&gt; &amp;rarr; navnet på farverampen som en streng, fx &apos;Spektral&apos;.&lt;br&gt;
+&lt;i&gt;  værdi&lt;/i&gt; &amp;rarr; positionen på rampen, hvor der skal vælges en farve fra en real mellem 0 og 1.&lt;br&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      ramp_color(&apos;Spectral&apos;,0.3) &amp;rarr; &apos;#fdbe73&apos;&lt;/p&gt;
 
@@ -62929,16 +62939,16 @@ may not give the expected results if you move your Quantum project.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1099"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="980"/>
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Conditions Group&lt;/h3&gt;
-This group contains functions that operate on condition.
+        <translation>&lt;h3&gt;Betingelsesgruppen&lt;/h3&gt;
+Denne gruppe indeholder funktioner, som arbejder på betingelser.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1484"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1529"/>
         <source>
 &lt;h3&gt;color_cmyka() function&lt;/h3&gt;
 Returns a string representation of a color based on its cyan, magenta, yellow, black and alpha (transparency) components
@@ -62958,28 +62968,27 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 &lt;!-- Show example of function.--&gt;
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">
-&lt;h3&gt;color_cmyka() function&lt;/h3&gt;
-Returns a string representation of a color based on its cyan, magenta, yellow, black and alpha (transparency) components
+        <translation>
+&lt;h3&gt;color_cmyka()-funktion&lt;/h3&gt;
+Returnerer en strengrepræsentation af en farve baseret på dens cyan-, magenta-, gul-, sort- og alfa(transparens)-komponenter
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     color_cmyka(&lt;i&gt;cyan, magenta, gul, sort, alfa&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     color_cmyka(&lt;i&gt;cyan, magenta, yellow, black, alpha&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; the cyan component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; the magenta component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  yellow&lt;/i&gt; &amp;rarr; the yellow component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  black&lt;/i&gt; &amp;rarr; the black component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).&lt;br&gt;
+&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; cyan-komponenten af farven, som en procentheltalsværdi fra 0 til 100.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; magenta-komponenten af farven, som en procentheltalsværdi fra 0 til 100.&lt;br&gt;
+&lt;i&gt;  gul&lt;/i&gt; &amp;rarr; gul-komponenten af farven, som en procentheltalsværdi fra 0 til 100.&lt;br&gt;
+&lt;i&gt;  sort&lt;/i&gt; &amp;rarr; sort-komponenten af farven, som en procentheltalsværdi fra 0 til 100.&lt;br&gt;
+&lt;i&gt;  alfa&lt;/i&gt; &amp;rarr; alfa-komponenten som en heltalsværdi mellem 0 (helt transparent) to 255 (solid).&lt;br&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="694"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1100"/>
         <source>&lt;h3&gt;format_number() function&lt;/h3&gt;
 Returns a number formatted with the locale separator for thousands. 
 Also truncates the number to the number of supplied places. 
@@ -62997,26 +63006,26 @@ to.
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;format_number() function&lt;/h3&gt;
-Returns a number formatted with the locale separator for thousands. 
-Also truncates the number to the number of supplied places. 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;format_number(number,places)&lt;/code&gt;&lt;br&gt;
+        <translation>&lt;h3&gt;format_number()-funktion&lt;/h3&gt;
+Returnerer et tal formatteret med landekodeseparatoren for tusinde. 
+Trunkerer også tallet til det angivne antal pladser. 
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;format_number(tal,pladser)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;number&lt;/code&gt; - is number. The number to be formatted.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;tal&lt;/code&gt; - er number. Tallet, der skal formatteres.
 &lt;br&gt;
-&lt;code&gt;places&lt;/code&gt; - is int. The number of decimal places to truncate the string
-to.
+&lt;code&gt;pladser&lt;/code&gt; - er int. Antallet af decimalpladser, tallet skal trunkeres 
+til.
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="856"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1248"/>
         <source>&lt;h3&gt;year() function&lt;/h3&gt;
 Extract the year part from a date, or the number of years
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -63037,20 +63046,20 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;year() function&lt;/h3&gt;
-Extract the year part from a date, or the number of years
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;year()-funktion&lt;/h3&gt;
+Udtrækker året fra en date, eller antallet af år
+fra et &lt;code&gt;Interval&lt;/code&gt;
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;year(date)&lt;/code&gt;&lt;br&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;year(dato)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;year(Interval)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is date or datetime. The date to extract the year from.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;dato&lt;/code&gt; - er date eller datetime. Datoen, som året skal udtrækkes fra.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of years from.
+&lt;code&gt;Interval&lt;/code&gt; - er Interval. Intervallet, som antal år skal returneres fra.
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;year(&apos;2012-05-12&apos;) &amp;rarr; 2012&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;year(tointerval(&apos;3 Years&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
@@ -63059,7 +63068,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1115"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1562"/>
         <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
 A conditional expression that can be used to evaluate multiple expressions and
 return a result.
@@ -63088,37 +63097,37 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;CASE expression&lt;/h3&gt;
-A conditional expression that can be used to evaluate multiple expressions and
-return a result.
+        <translation>&lt;h3&gt;CASE-udtryk&lt;/h3&gt;
+Et betinget udtryk, som kan bruges til at evaluere flere udtryk og
+returnerer et resultat.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;
      CASE
-        WHEN &lt;i&gt;condition&lt;/i&gt; THEN &lt;i&gt;result&lt;/i&gt;
+        WHEN &lt;i&gt;betingelse&lt;/i&gt; THEN &lt;i&gt;resultat&lt;/i&gt;
         [ ...n ]
-        [ ELSE &lt;i&gt;result&lt;/i&gt; ]
+        [ ELSE &lt;i&gt;resultat&lt;/i&gt; ]
      END
 &lt;/pre&gt;
-[ ] marks optional components
+[ ] angiver valgfri komponenter
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  WHEN condition&lt;/i&gt; - The condition expression to evaluate. &lt;br&gt;
-&lt;i&gt;  THEN result&lt;/i&gt; - If &lt;i&gt;condition&lt;/i&gt; evaluates to True then &lt;i&gt;result&lt;/i&gt; is evaluated and returned. &lt;br&gt;
-&lt;i&gt;  ELSE result&lt;/i&gt; - If none of the above conditions evaluated to True then &lt;i&gt;result&lt;/i&gt; is evaluated and returned. &lt;br&gt;
+&lt;i&gt;  WHEN betingelse&lt;/i&gt; - Betingelsen, som skal evalueres. &lt;br&gt;
+&lt;i&gt;  THEN resultat&lt;/i&gt; - Hvis &lt;i&gt;betingelse&lt;/i&gt; evalueres til True, så evalueres &lt;i&gt;resultat&lt;/i&gt; og returneres. &lt;br&gt;
+&lt;i&gt;  ELSE resultat&lt;/i&gt; - Hvis ingen af de ovenstående udtryk evalueres til True, så evalueres &lt;i&gt;resultat&lt;/i&gt; og returneres. &lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;pre&gt;
     CASE
-        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;None&apos;&lt;/i&gt;
+        WHEN &lt;i&gt;&quot;kolonne&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;Ingen&apos;&lt;/i&gt;
     END
 &lt;/pre&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1177"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="26"/>
         <source>&lt;h3&gt;randf() function&lt;/h3&gt;
 Returns a random float within the range specified by the minimum and 
 maximum argument (inclusive).
@@ -63136,26 +63145,26 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;randf() function&lt;/h3&gt;
-Returns a random float within the range specified by the minimum and 
-maximum argument (inclusive).
+        <translation>&lt;h3&gt;randf()-funktion&lt;/h3&gt;
+Returnerer en tilfældig float i intervallet angivet med minimum- og 
+maksimum-argumentet (inklusive).
 &lt;br&gt;
-This function takes two arguments.
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;randf(min, max)&lt;/code&gt;&lt;br&gt;
+Funktionen tager 2 argumenter.
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;randf(min, maks)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;min&lt;/code&gt; - a float representing the smallest possible random number desired.&lt;br&gt;
-&lt;code&gt;max&lt;/code&gt; - a float representing the largest possible random number desired.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;min&lt;/code&gt; - en float, som repræsenterer den laveste mulige tilfældige værdi, som ønskes.&lt;br&gt;
+&lt;code&gt;maks&lt;/code&gt; - en float, som repræsenterer den højeste mulige tilfældige værdi, som ønskes.
 &lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="437"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1009"/>
         <source>&lt;h3&gt;scale_linear() function&lt;/h3&gt;
 Transforms a given value from an input domain to an output range using linear interpolation. 
 
@@ -63176,29 +63185,29 @@ Transforms a given value from an input domain to an output range using linear in
      
      
 </source>
-        <translation type="unfinished">&lt;h3&gt;scale_linear() function&lt;/h3&gt;
-Transforms a given value from an input domain to an output range using linear interpolation. 
+        <translation>&lt;h3&gt;scale_linear()-funktion&lt;/h3&gt;
+Transformerer en given værdi fra et inputdomæne til et outputinterval vha. lineær interpolering. 
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     scale_linear(&lt;i&gt;val&lt;/i&gt;,&lt;i&gt;domain_min&lt;/i&gt;,&lt;i&gt;domain_max&lt;/i&gt;,&lt;i&gt;range_min&lt;/i&gt;,&lt;i&gt;range_max&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     scale_linear(&lt;i&gt;værdi&lt;/i&gt;,&lt;i&gt;domæne_min&lt;/i&gt;,&lt;i&gt;domæne_maks&lt;/i&gt;,&lt;i&gt;interval_min&lt;/i&gt;,&lt;i&gt;interval_maks&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  val&lt;/i&gt; &amp;rarr; is a value in the input domain. The function will return a corresponding scaled value in the output range.&lt;br&gt;
-&lt;i&gt;  domain_min, domain_max&lt;/i&gt; &amp;rarr; specify the input domain, the smallest and largest values the input &lt;i&gt;val&lt;/i&gt; should take.&lt;br&gt;
-&lt;i&gt;  range_min, range_max&lt;/i&gt; &amp;rarr; specify the output range, the smallest and largest values which should be output by the function.&lt;br&gt;
+&lt;i&gt;  værdi&lt;/i&gt; &amp;rarr; er en værdi i inputdomænet. Funktionen vil returnere en tilsvarende skaleret værdi i output-intervallet.&lt;br&gt;
+&lt;i&gt;  domæne_min, domæne_maks&lt;/i&gt; &amp;rarr; angiver inputdomænet, de laveste og højeste værdier, som inputtet &lt;i&gt;val&lt;/i&gt; kan antage.&lt;br&gt;
+&lt;i&gt;  interval_min, interval_maks&lt;/i&gt; &amp;rarr; angiver output-intervallet, de laveste og højeste værdier, som skal outputtes af funktionen.&lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      scale_linear(5,0,10,0,100) &amp;rarr; 50&lt;br&gt;
-     scale_linear(0.2,0,1,0,360) &amp;rarr; 72 &lt;i&gt;(eg, scaling a value between 0 and 1 to an angle between 0 and 360)&lt;/i&gt;&lt;br&gt;
-     scale_linear(1500,1000,10000,9,20) &amp;rarr; 10.22 &lt;i&gt;(eg, scaling a population which varies between 1000 and 10000 to a font size between 9 and 20)&lt;/i&gt;&lt;br&gt;
+     scale_linear(0.2,0,1,0,360) &amp;rarr; 72 &lt;i&gt;(fx, skalering af en værdi mellem 0 og 1 til en vinkel mellem 0 og 360)&lt;/i&gt;&lt;br&gt;
+     scale_linear(1500,1000,10000,9,20) &amp;rarr; 10.22 &lt;i&gt;(eg, skalering af en befolkning, som varierer mellem 1000 og 10000 til en fontstørrelse mellem 9 og 20)&lt;/i&gt;&lt;br&gt;
      
      
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="300"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1548"/>
         <source>&lt;h3&gt;trim() function&lt;/h3&gt;
 Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 
@@ -63213,23 +63222,23 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;trim() function&lt;/h3&gt;
-Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
+        <translation>&lt;h3&gt;trim()-funktion&lt;/h3&gt;
+Fjerner alle foranstillede og bagvedstillede mellemrum (mellumrumstegn, tabulator osv.) fra en streng.
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     trim(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     trim(&lt;i&gt;streng&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string. The string to trim.&lt;/p&gt;
+&lt;i&gt;  streng&lt;/i&gt; &amp;rarr; er string. Strengen, der skal trimmes.&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1503"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="123"/>
         <source>&lt;h3&gt;minute() function&lt;/h3&gt;
 Extract the minute from a datetime or time, or the number of minutes
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -63251,20 +63260,20 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;minute() function&lt;/h3&gt;
-Extract the minute from a datetime or time, or the number of minutes
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;minute()-funktion&lt;/h3&gt;
+Udtrækker antal minutter fra en datetime eller date, eller antallet af minutter
+fra et &lt;code&gt;Interval&lt;/code&gt;
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;minute(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;minute(date)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;minute(Interval)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is datetime or time. The date to extract the minute from.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - er datetime eller time. Datoen, som antallet af minutter skal udtrækkes fra.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of minutes from.
+&lt;code&gt;Interval&lt;/code&gt; - er Interval. Intervallet, som antal minutter skal returneres fra.
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;minute(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 24&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;minute(tointerval(&apos;3 minutes&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
@@ -63274,7 +63283,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="209"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="918"/>
         <source>&lt;h3&gt;age() function&lt;/h3&gt;
 Returns the difference between two dates.
 &lt;br&gt;&lt;br&gt;
@@ -63308,12 +63317,12 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;age() function&lt;/h3&gt;
-Returns the difference between two dates.
+        <translation>&lt;h3&gt;age()-funktion&lt;/h3&gt;
+Returnerer forskellen mellem 2 dage.
 &lt;br&gt;&lt;br&gt;
-The difference is returned as a &lt;code&gt;Interval&lt;/code&gt; 
-and needs to be used with one of the following functions
-in order to extract useful information:
+Forskellen returneres som et &lt;code&gt;Interval&lt;/code&gt; 
+og skal bruges sammen med en af flg. funktioner
+for at udtrække brugbar information:
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;year&lt;/code&gt;
 &lt;li&gt;&lt;code&gt;month&lt;/code&gt;
@@ -63323,27 +63332,27 @@ in order to extract useful information:
 &lt;li&gt;&lt;code&gt;minute&lt;/code&gt;
 &lt;li&gt;&lt;code&gt;second&lt;/code&gt;
 &lt;/ul&gt;
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;age(string,string)&lt;/code&gt;&lt;br&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;age(streng,streng)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;age(datetime,datetime)&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;age(string,datetime)&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;age(datetime,string)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(streng,datetime)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(datetime,streng)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. A string in date format.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;streng&lt;/code&gt; - er string. En streng i datoformat.
 &lt;br&gt;
-&lt;code&gt;datetime&lt;/code&gt; - is date or datetime. A date or datetime type.
+&lt;code&gt;datetime&lt;/code&gt; - er date eller datetime. En date- eller datetime-type.
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;) &amp;rarr; Interval&lt;/code&gt;&lt;br&gt;
-use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
+use &lt;code&gt;day&lt;/code&gt; for at udtrække antal dage&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="370"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1376"/>
         <source>&lt;h3&gt;log10() function&lt;/h3&gt;
 Returns the value of the base 10 logarithm of the passed expression.
 &lt;br&gt;
@@ -63360,34 +63369,34 @@ This function takes one argument.
 &lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;log10() function&lt;/h3&gt;
-Returns the value of the base 10 logarithm of the passed expression.
+        <translation>&lt;h3&gt;log10()-funktion&lt;/h3&gt;
+Returnerer værdien af base10-logaritmen for det angivne udtryk
 &lt;br&gt;
-This function takes one argument.
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;log10(value)&lt;/code&gt;&lt;br&gt;
+Denne funktion tager 1 argument.
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;log10(værdi)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;værdi&lt;/code&gt; - et vilkårligt positivt tal
 &lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="765"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="275"/>
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Conversions Group&lt;/h3&gt;
-This group contains functions to convert on data type to another e.g string to integer, integer to string.
+        <translation>&lt;h3&gt;Konverteringsgruppe&lt;/h3&gt;
+Denne gruppe indeholder funktioner til at konvertere fra en datatype til en anden, fx streng til heltal, heltal til streng.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1013"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="738"/>
         <source>&lt;h3&gt;yat function&lt;/h3&gt;
 Retrieves a y coordinate of the current feature
 
@@ -63400,21 +63409,21 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;yat function&lt;/h3&gt;
-Retrieves a y coordinate of the current feature
+        <translation>&lt;h3&gt;yat-funktion&lt;/h3&gt;
+Henter y-koodinatet fra det aktuelle objekt
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;code&gt;yat(i)&lt;/code&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - er int. indeks af punkt på en linje (indekser starter med 0; negative værdier anvendes på sidste indeks).
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1413"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="763"/>
         <source>&lt;h3&gt;cos() function&lt;/h3&gt;
 Returns cosinus of an angle.
 
@@ -63428,31 +63437,31 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;cos() function&lt;/h3&gt;
-Returns cosinus of an angle.
+        <translation>&lt;h3&gt;cos()-funktion&lt;/h3&gt;
+Returnerer cosinus på en vinkel
 
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
      cos(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; angle in radians.&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; vinkel i radianer.&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="47"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="915"/>
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
-        <translation type="unfinished">&lt;h3&gt;Operators Group&lt;/h3&gt;
-This group contains operators e.g + - * 
+        <translation>&lt;h3&gt;Gruppe med operatorer&lt;/h3&gt;
+Denne gruppe indeholder operatorer, fx + - * 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="968"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="260"/>
         <source>&lt;h3&gt;Function floor()&lt;/h3&gt;
 Rounds a number downwards.
 
@@ -63468,24 +63477,24 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Function floor()&lt;/h3&gt;
-Rounds a number downwards.
+        <translation>&lt;h3&gt;floor()-funktion&lt;/h3&gt;
+Runder et tal nedad
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;floor(value)&lt;/code&gt;&lt;br&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;floor(værdi)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;værdi&lt;/code&gt; - et tal
 &lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="386"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1185"/>
         <source>&lt;h3&gt;second() function&lt;/h3&gt;
 Extract the seconds from a datetime or time, or the number of seconds
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -63507,20 +63516,20 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;second() function&lt;/h3&gt;
-Extract the seconds from a datetime or time, or the number of seconds
-from a &lt;code&gt;Interval&lt;/code&gt;
+        <translation>&lt;h3&gt;second()-funktion&lt;/h3&gt;
+Udtrækker sekunderne fra en datetime eller date, eller antallet af sekunder
+fra et &lt;code&gt;Interval&lt;/code&gt;
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;second(datetime)&lt;/code&gt;&lt;br&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;second(date)&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;second(Interval)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;date&lt;/code&gt; - is datetime or time. The date to extract the second from.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;date&lt;/code&gt; - er datetime eller time. Datoen, som sekunderne skal udtrækkes fra.
 &lt;br&gt;
-&lt;code&gt;Interval&lt;/code&gt; - is Interval. The Interval to return the number of seconds from.
+&lt;code&gt;Interval&lt;/code&gt; - er Interval. Intervallet, som antallet af sekunder skal returneres fra.
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;second(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 57&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;second(tointerval(&apos;3 seconds&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
@@ -63530,7 +63539,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="781"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1330"/>
         <source>&lt;h3&gt;atan() function&lt;/h3&gt;
 Returns arcustanget of a value in radians.
 
@@ -63544,22 +63553,22 @@ Returns arcustanget of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;atan() function&lt;/h3&gt;
-Returns arcustanget of a value in radians.
+        <translation>&lt;h3&gt;atan()-funktion&lt;/h3&gt;
+Returnerer arctangens af en værdi i radianer.
 
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
      atan(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; tan of an angle.&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; tangens af en vinkel.&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="345"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1271"/>
         <source>&lt;h3&gt;$length function&lt;/h3&gt;
 Returns the length of the current feature.
 
@@ -63572,21 +63581,21 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;$length function&lt;/h3&gt;
-Returns the length of the current feature.
+        <translation>&lt;h3&gt;$length-funktion&lt;/h3&gt;
+Returnerer det aktuelle objekts længde.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;$length&lt;/pre&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+Ingen
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="32"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="11"/>
         <source>&lt;h3&gt;title() function&lt;/h3&gt;
 Converts all words of a string to title case (all words lower case with leading
 capital letter).
@@ -63602,24 +63611,24 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;title() function&lt;/h3&gt;
-Converts all words of a string to title case (all words lower case with leading
-capital letter).
+        <translation>&lt;h3&gt;title()-funktion&lt;/h3&gt;
+Konverterer alle ord i en streng til, at alle ord er med små bogstaver med
+stort startbogstav.
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     title(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     title(&lt;i&gt;streng&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to convert to title case.&lt;/p&gt;
+&lt;i&gt;  streng&lt;/i&gt; &amp;rarr; is string.  Strengen, som skal skrives med små bogstaver med stort startbogstav.&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="640"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="189"/>
         <source>&lt;h3&gt;substr() function&lt;/h3&gt;
 Return a part of a string
 
@@ -63636,25 +63645,25 @@ Return a part of a string
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;substr() function&lt;/h3&gt;
-Return a part of a string
+        <translation>&lt;h3&gt;substr()-funktion&lt;/h3&gt;
+Returnerer en del af en streng
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     substr(&lt;i&gt;string,startpos,length&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     substr(&lt;i&gt;streng,startpos,længde&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The full string.&lt;br&gt;
-&lt;i&gt;  startpos&lt;/i&gt; &amp;rarr; is number.  The start position to extract from.&lt;br&gt;
-&lt;i&gt;  length&lt;/i&gt; &amp;rarr; is number.  The length of the string to extract.&lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  streng&lt;/i&gt; &amp;rarr; er string.  Hele strengen.&lt;br&gt;
+&lt;i&gt;  startpos&lt;/i&gt; &amp;rarr; er number.  Startpositionen at udtrække fra.&lt;br&gt;
+&lt;i&gt;  længde&lt;/i&gt; &amp;rarr; er number.  Længden på strengen, der skal udtrækkes.&lt;br&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="179"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="438"/>
         <source>&lt;h3&gt;format() function&lt;/h3&gt;
 Format a string using supplied arguments. 
 
@@ -63669,23 +63678,23 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;format() function&lt;/h3&gt;
-Format a string using supplied arguments. 
+        <translation>&lt;h3&gt;format()-funktion&lt;/h3&gt;
+Formaterer en streng med angivne argumenter. 
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;format(&apos;string&apos;, arg, [arg...n])&lt;/code&gt;&lt;br&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;format(&apos;streng&apos;, arg, [arg...n])&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string.  String with Qt QString place holders.  Use %1, %2, etc for placeholders. Placeholders can be repeated. 
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;streng&lt;/code&gt; - er string.  Streng med Qt&apos;s QString-pladsholdere.  Brug %1, %2, osv som pladsholdere. Pladsholdere kan gentages. 
 &lt;br&gt;
-&lt;code&gt;arg [arg...n]&lt;/code&gt; - any type. Any number of args. 
+&lt;code&gt;arg [arg...n]&lt;/code&gt; - vilkårlig type. Vilkårligt antal args. 
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="332"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1129"/>
         <source>&lt;h3&gt;$y function&lt;/h3&gt;
 Returns the y coordinate of the current feature.
 
@@ -63699,22 +63708,22 @@ None
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$y function&lt;/h3&gt;
-Returns the y coordinate of the current feature.
+        <translation>&lt;h3&gt;$y-funktion&lt;/h3&gt;
+Returner y-koordinatet fra det aktuelle objekt.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;$y&lt;/pre&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+Ingen
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="314"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="329"/>
         <source>
 &lt;h3&gt;color_rgba() function&lt;/h3&gt;
 Returns a string representation of a color based on its red, green, blue, and alpha (transparency) components
@@ -63733,27 +63742,27 @@ Returns a string representation of a color based on its red, green, blue, and al
 &lt;!-- Show example of function.--&gt;
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">
-&lt;h3&gt;color_rgba() function&lt;/h3&gt;
-Returns a string representation of a color based on its red, green, blue, and alpha (transparency) components
+        <translation>
+&lt;h3&gt;color_rgba()-funktion&lt;/h3&gt;
+Returnerer en strengrepræsentation af en farve baseret på dens rød-, grøn-, blå- og alfa(transparens)-attributter
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     color_rgba(&lt;i&gt;red, green, blue, alpha&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     color_rgba(&lt;i&gt;rød, grøn, blå, alfa&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  red&lt;/i&gt; &amp;rarr; the red component as an integer value from 0 to 255.&lt;br&gt;
-&lt;i&gt;  green&lt;/i&gt; &amp;rarr; the green component as an integer value from 0 to 255.&lt;br&gt;
-&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; the blue component as an integer value from 0 to 255.&lt;br&gt;
-&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).&lt;br&gt;
+&lt;i&gt;  rød&lt;/i&gt; &amp;rarr; rød-komponenten som en heltalsværdi fra 0 til 100.&lt;br&gt;
+&lt;i&gt;  grøn&lt;/i&gt; &amp;rarr; grøn-komponenten som en heltalsværdi fra 0 til 100.&lt;br&gt;
+&lt;i&gt;  blå&lt;/i&gt; &amp;rarr; blå-komponenten som en heltalsværdi fra 0 til 100.&lt;br&gt;
+&lt;i&gt;  alfa&lt;/i&gt; &amp;rarr; alfa-komponenten som en heltalsværdi mellem 0 (helt transparent) to 255 (solid).&lt;br&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="794"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="692"/>
         <source>&lt;h3&gt;$x function&lt;/h3&gt;
 Returns the x coordinate of the current feature.
 
@@ -63767,22 +63776,22 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$x function&lt;/h3&gt;
-Returns the x coordinate of the current feature.
+        <translation>&lt;h3&gt;$x-funktion&lt;/h3&gt;
+Returnerer x-koordinatet fra det aktuelle objekt.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;$x&lt;/pre&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+Ingen
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="682"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1117"/>
         <source>&lt;h3&gt;xat function&lt;/h3&gt;
 Retrieves a x coordinate of the current feature
 
@@ -63795,21 +63804,21 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;xat function&lt;/h3&gt;
-Retrieves a x coordinate of the current feature
+        <translation>&lt;h3&gt;xat-funktion&lt;/h3&gt;
+Henter et x-koordinat fra det aktuelle objekt
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;code&gt;xat(i)&lt;/code&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - er int. indeks fra punktet på en linje (indekser starter på 0; negative anvendes til det sidste indeks).
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="841"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="818"/>
         <source>&lt;h3&gt;Function ceil()&lt;/h3&gt;
 Rounds a number upwards.
 
@@ -63825,24 +63834,24 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Function ceil()&lt;/h3&gt;
-Rounds a number upwards.
+        <translation>&lt;h3&gt;ceil()-funktion&lt;/h3&gt;
+Runder et tal opad.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;ceil(value)&lt;/code&gt;&lt;br&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;ceil(værdi)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;værdi&lt;/code&gt; - et tal.
 &lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1524"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="868"/>
         <source>&lt;h3&gt;color_hsv() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, and value attributes
 
@@ -63859,34 +63868,34 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;#ffaa00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;color_hsv() function&lt;/h3&gt;
-Returns a string representation of a color based on its hue, saturation, and value attributes
+        <translation>&lt;h3&gt;color_hsv()-funktion&lt;/h3&gt;
+Returnerer en strengrepræsentation af en farve baseret på dens farvetone-, mætning- og værdiattributter
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     color_hsv(&lt;i&gt;hue, saturation, value&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     color_hsv(&lt;i&gt;farvetone, mætning, værdi&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
-&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; the value percentage of the color as an integer from 0 to 100.&lt;br&gt;
+&lt;i&gt;  farvetone&lt;/i&gt; &amp;rarr; farvens tone, som et heltalsværdi fra 0 til 360.&lt;br&gt;
+&lt;i&gt;  mætning&lt;/i&gt; &amp;rarr; farvens mætningsprocent som en heltalsværdi fra 0 til 100.&lt;br&gt;
+&lt;i&gt;  værdi&lt;/i&gt; &amp;rarr; farvens værdiprocent som en heltalsværdi fra 0 til 100.&lt;br&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;#ffaa00&apos;&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="63"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="43"/>
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
-        <translation type="unfinished">&lt;h3&gt;Math Group&lt;/h3&gt;
-This group contains math functions e.g square root, sin and cos
+        <translation>&lt;h3&gt;Matematik-gruppe&lt;/h3&gt;
+Denne gruppe indeholder matematiske funktion, fx kvadratrod, sinus og cosinus
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="876"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="901"/>
         <source>&lt;h3&gt;min() function&lt;/h3&gt;
 Returns the smallest value in a set of values.
 
@@ -63901,23 +63910,23 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation type="unfinished">&lt;h3&gt;min() function&lt;/h3&gt;
-Returns the smallest value in a set of values.
+        <translation>&lt;h3&gt;min()-funktion&lt;/h3&gt;
+Returnerer den laveste værdi i et sæt af værdier.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-     min(&lt;i&gt;value&lt;i&gt;[,&lt;i&gt;value&lt;/i&gt;...])
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+     min(&lt;i&gt;værdi&lt;i&gt;[,&lt;i&gt;værdi&lt;/i&gt;...])
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; a number.&lt;br&gt;
+&lt;i&gt;  værdi&lt;/i&gt; &amp;rarr; et tal.&lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="66"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="69"/>
         <source>&lt;h3&gt;lower() function&lt;/h3&gt;
 Converts a string to lower case letters.
 
@@ -63930,21 +63939,21 @@ Converts a string to lower case letters.
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;lower() function&lt;/h3&gt;
-Converts a string to lower case letters.
+        <translation>&lt;h3&gt;lower()-funktion&lt;/h3&gt;
+Konverterer en streng til små bogstaver.
 
-&lt;p&gt;&lt;h4&gt;  Syntax&lt;/h4&gt;
-     lower(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;  Syntaks&lt;/h4&gt;
+     lower(&lt;i&gt;streng&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;  Arguments&lt;/h4&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to lower case.&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;  Argumenter&lt;/h4&gt;
+&lt;i&gt;  streng&lt;/i&gt; &amp;rarr; er string.  Strengen, som skal konverteres til små bogstaver.&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;  Eksempel&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="582"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="750"/>
         <source>&lt;h3&gt;$numfeatures function&lt;/h3&gt;
 In atlas generation, returns the total number of features within the coverage layer.
 
@@ -63958,31 +63967,31 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$numfeatures function&lt;/h3&gt;
-In atlas generation, returns the total number of features within the coverage layer.
+        <translation>&lt;h3&gt;$numfeatures-funktion&lt;/h3&gt;
+Returnerer det totale antal objekter i dækningslaget ved oprettelse af atlas.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;$numfeatures&lt;/pre&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+Ingen
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="242"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1219"/>
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
-        <translation type="unfinished">&lt;h3&gt;String Group&lt;/h3&gt;
-This group contains functions that operate on strings e.g replace, convert to upper case.
+        <translation>&lt;h3&gt;Strenggruppe&lt;/h3&gt;
+Denne gruppe indeholder funktioner, som arbejder på strenge, fx erstat, konvertér til store bogstaver.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1082"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1234"/>
         <source>&lt;h3&gt;concat() function&lt;/h3&gt;
 Concatenates several strings to one.
 
@@ -64013,7 +64022,7 @@ Sætter flere strenge sammen til én.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1556"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="848"/>
         <source>&lt;h3&gt;coalesce() function&lt;/h3&gt;
 Returns the first non-NULL value from the expression list.
 &lt;br&gt;
@@ -64034,29 +64043,29 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;coalesce() function&lt;/h3&gt;
-Returns the first non-NULL value from the expression list.
+        <translation>&lt;h3&gt;coalesce()-funktion&lt;/h3&gt;
+Returnerer den første ikke-NULL-værdi fra udtrykslisten.
 &lt;br&gt;
-This function can take any number of arguments.
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;coalesce(expression1, expression2 ...)&lt;/code&gt;&lt;br&gt;
+Funktionen kan tage et vilkårligt antal parametre.
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;coalesce(udtryk1, udtryk2 ...)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;expression&lt;/code&gt; - any valid expression or value, irregardless of type.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;udtryk&lt;/code&gt; - et vilkårligt udtryk eller værdi, uanset type.
 &lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;coalesce(NULL, 2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;coalesce(NULL, 2, 3) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;coalesce(7, NULL, 3*2) &amp;rarr; 7&lt;/code&gt;&lt;br&gt;&lt;br&gt;
-&lt;code&gt;coalesce(&quot;fieldA&quot;, &quot;fallbackField&quot;, &apos;ERROR&apos;) &amp;rarr; value of fieldA if it is non-NULL
- else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(&quot;fieldA&quot;, &quot;fallbackField&quot;, &apos;ERROR&apos;) &amp;rarr; værdi af fieldA, hvis det ikke er NULL,
+ ellers værdien af &quot;fallbackField&quot; eller strengen &apos;ERROR&apos;, hvis begge er NULL&lt;/code&gt;&lt;br&gt;
 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="939"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1169"/>
         <source>&lt;h3&gt;color_hsl() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, and lightness attributes
 
@@ -64073,25 +64082,25 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;color_hsl() function&lt;/h3&gt;
-Returns a string representation of a color based on its hue, saturation, and lightness attributes
+        <translation>&lt;h3&gt;color_hsl()-funktion&lt;/h3&gt;
+Returnerer en strengrepræsentation af en farve baseret på dens farvetone-, mætning- og lyshedsattributter
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     color_hsl(&lt;i&gt;hue, saturation, lightness&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     color_hsl(&lt;i&gt;farvetone, mætning, lyshed&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
-&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; the lightness percentage of the color as an integer value from 0 to 100.&lt;br&gt;
+&lt;i&gt;  farvetone&lt;/i&gt; &amp;rarr; farvens tone, som et heltalsværdi fra 0 til 360.&lt;br&gt;
+&lt;i&gt;  mætning&lt;/i&gt; &amp;rarr; farvens mætningsprocent som en heltalsværdi fra 0 til 100.&lt;br&gt;
+&lt;i&gt;  lyshed&lt;/i&gt; &amp;rarr; farvens lyshedsprocent som en heltalsværdi fra 0 til 100.&lt;br&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="245"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="964"/>
         <source>&lt;h3&gt;asin() function&lt;/h3&gt;
 Returns arcussinus of a value in radians.
 
@@ -64120,7 +64129,7 @@ Returner arcsin af en værdi i radianer.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="196"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="983"/>
         <source>&lt;h3&gt;todatetime() function&lt;/h3&gt;
 Convert a string into Qt data time type.
 
@@ -64134,22 +64143,22 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;todatetime() function&lt;/h3&gt;
-Convert a string into Qt data time type.
+        <translation>&lt;h3&gt;todatetime()-funktion&lt;/h3&gt;
+Konverterer en stregn til en Qt-datetime-type.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;todatetime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
+&lt;code&gt;todatetime(&apos;streng&apos;)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string in Qt date time format.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;streng&lt;/code&gt; - er string i Qt-datetime-format.
 &lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1576"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1155"/>
         <source>&lt;h3&gt;toint function&lt;/h3&gt;
 Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
 
@@ -64164,23 +64173,23 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;toint function&lt;/h3&gt;
-Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
+        <translation>&lt;h3&gt;toint-funktion&lt;/h3&gt;
+Konverterer en streng til et heltal. Intet ændres, hvis værdien ikke kan konverteres til heltal (fx &apos;123asd&apos; er ugyldigt).
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     toint(&lt;i&gt;streng&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to integer number.&lt;/p&gt;
+&lt;i&gt;  streng&lt;/i&gt; &amp;rarr; er string.  Strengen, som skal konverteres til heltal.&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1211"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="485"/>
         <source>&lt;h3&gt;format_date() function&lt;/h3&gt;
 Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
 
@@ -64356,21 +64365,21 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;format_date() function&lt;/h3&gt;
-Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
+        <translation>&lt;h3&gt;format_date()-funktion&lt;/h3&gt;
+Formaterer en date-type eller streng til et tilpasset strengformat. Bruger Qt-data-tidsformats-strenge  Se &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;code&gt;format_date(&apos;string&apos;, &apos;format_string&apos;)&lt;/code&gt;&lt;br&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. Date/Time/DateTime string.
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - er string. Date/Time/DateTime-streng.
 &lt;br&gt;
-&lt;code&gt;format_string&lt;/code&gt; - is string. String template used to format the string.
+&lt;code&gt;format_string&lt;/code&gt; - er string. Strengskabelon, som bruges til at formatere strengen.
 
   &lt;table&gt;
     &lt;thead&gt;
       &lt;tr&gt;
-        &lt;th&gt;Expression&lt;/th&gt;
+        &lt;th&gt;Udtryk&lt;/th&gt;
 
         &lt;th&gt;Output&lt;/th&gt;
       &lt;/tr&gt;
@@ -64379,74 +64388,74 @@ Format a date type or string into a custom string format. Uses Qt data time form
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;d&lt;/td&gt;
 
-      &lt;td&gt;the day as number without a leading zero (1 to 31)&lt;/td&gt;
+      &lt;td&gt;dagen som tal uden et foranstillet 0 (1 til 31)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;dd&lt;/td&gt;
 
-      &lt;td&gt;the day as number with a leading zero (01 to 31)&lt;/td&gt;
+      &lt;td&gt;dagen som tal med et foranstillet 0 (01 til 31)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;ddd&lt;/td&gt;
 
-      &lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos; to &apos;Sun&apos;). Uses &lt;a href=
+      &lt;td&gt;det forkortede lokaliserede dagsnavn (fx &apos;Man&apos; til &apos;Søn&apos;). Bruger &lt;a href=
       &quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;dddd&lt;/td&gt;
 
-      &lt;td&gt;the long localized day name (e.g. &apos;Monday&apos; to &apos;Sunday&apos;). Uses &lt;a href=
+      &lt;td&gt;det lange lokaliserede dagsnavn (fx &apos;Mandag&apos; til &apos;Søndag&apos;). Bruger &lt;a href=
       &quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;M&lt;/td&gt;
 
-      &lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;
+      &lt;td&gt;måneden som tal uden et foranstillet 0 (1-12)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;MM&lt;/td&gt;
 
-      &lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;
+      &lt;td&gt;måneden som tal med et foranstillet 0 (01-12)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;MMM&lt;/td&gt;
 
-      &lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos; to &apos;Dec&apos;). Uses &lt;a href=
+      &lt;td&gt;det forkortede lokaliserede månedsnavn (fx &apos;Jan&apos; til &apos;Dec&apos;). Bruger &lt;a href=
       &quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;MMMM&lt;/td&gt;
 
-      &lt;td&gt;the long localized month name (e.g. &apos;January&apos; to &apos;December&apos;). Uses &lt;a href=
+      &lt;td&gt;det lange lokaliserede månedsnavn (fx &apos;Januar&apos; til &apos;December&apos;). Bruger &lt;a href=
       &quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;yy&lt;/td&gt;
 
-      &lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;
+      &lt;td&gt;året som et 2-cifret tal (00-99)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;yyyy&lt;/td&gt;
 
-      &lt;td&gt;the year as four digit number&lt;/td&gt;
+      &lt;td&gt;året som et 4-cifret tal&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/table&gt;
 
-  &lt;p&gt;These expressions may be used for the time part of the format string:&lt;/p&gt;
+  &lt;p&gt;Disse udtryk kan bruges til tidsdelen af formatstrengen:&lt;/p&gt;
 
   &lt;table&gt;
     &lt;thead&gt;
       &lt;tr&gt;
-        &lt;th&gt;Expression&lt;/th&gt;
+        &lt;th&gt;Udtryk&lt;/th&gt;
 
         &lt;th&gt;Output&lt;/th&gt;
       &lt;/tr&gt;
@@ -64455,85 +64464,85 @@ Format a date type or string into a custom string format. Uses Qt data time form
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;h&lt;/td&gt;
 
-      &lt;td&gt;the hour without a leading zero (0 to 23 or 1 to 12 if AM/PM display)&lt;/td&gt;
+      &lt;td&gt;timen uden et foranstillet 0 (0 til 23 eller 1 til 12, hvis der bruges AM/PM)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;hh&lt;/td&gt;
 
-      &lt;td&gt;the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)&lt;/td&gt;
+      &lt;td&gt;timen med et foranstillet 0 (00 til 23 eller 01 til 12, hvis der bruges AM/PM)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;H&lt;/td&gt;
 
-      &lt;td&gt;the hour without a leading zero (0 to 23, even with AM/PM display)&lt;/td&gt;
+      &lt;td&gt;timen uden et foranstillet 0 (0 til 23, selv hvis der bruges AM/PM)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;HH&lt;/td&gt;
 
-      &lt;td&gt;the hour with a leading zero (00 to 23, even with AM/PM display)&lt;/td&gt;
+      &lt;td&gt;timen med et foranstillet 0 (00 til 23, selv hvis der bruges AM/PM)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;m&lt;/td&gt;
 
-      &lt;td&gt;the minute without a leading zero (0 to 59)&lt;/td&gt;
+      &lt;td&gt;minuttet uden et foranstillet 0 (0 til 59)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;mm&lt;/td&gt;
 
-      &lt;td&gt;the minute with a leading zero (00 to 59)&lt;/td&gt;
+      &lt;td&gt;minuttet med et foranstillet 0 (00 til 59)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;s&lt;/td&gt;
 
-      &lt;td&gt;the second without a leading zero (0 to 59)&lt;/td&gt;
+      &lt;td&gt;sekundet uden et foranstillet 0 (0 til 59)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;ss&lt;/td&gt;
 
-      &lt;td&gt;the second with a leading zero (00 to 59)&lt;/td&gt;
+      &lt;td&gt;sekundet med et foranstillet 0 (00 til 59)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;z&lt;/td&gt;
 
-      &lt;td&gt;the milliseconds without leading zeroes (0 to 999)&lt;/td&gt;
+      &lt;td&gt;millisekunderne uden foranstillede 0&apos;er (0 til 999)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;zzz&lt;/td&gt;
 
-      &lt;td&gt;the milliseconds with leading zeroes (000 to 999)&lt;/td&gt;
+      &lt;td&gt;millisekunderne med foranstillede 0&apos;er (000 til 999)&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;AP or A&lt;/td&gt;
+      &lt;td&gt;AP eller A&lt;/td&gt;
 
-      &lt;td&gt;interpret as an AM/PM time. &lt;i&gt;AP&lt;/i&gt; must be either &quot;AM&quot; or &quot;PM&quot;.&lt;/td&gt;
+      &lt;td&gt;fortolk som en AM/PM-tid. &lt;i&gt;AP&lt;/i&gt; skal være enten &quot;AM&quot; eller &quot;PM&quot;.&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;ap or a&lt;/td&gt;
+      &lt;td&gt;ap eller a&lt;/td&gt;
 
-      &lt;td&gt;Interpret as an AM/PM time. &lt;i&gt;ap&lt;/i&gt; must be either &quot;am&quot; or &quot;pm&quot;.&lt;/td&gt;
+      &lt;td&gt;Fortolk som en AM/PM-tid. &lt;i&gt;ap&lt;/i&gt; skal være enten &quot;am&quot; eller &quot;pm&quot;.&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/table&gt;
 
 &lt;br&gt;
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="610"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="144"/>
         <source>&lt;h3&gt;tan() function&lt;/h3&gt;
 Returns tangent of an angle.
 
@@ -64547,22 +64556,22 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;tan() function&lt;/h3&gt;
-Returns tangent of an angle.
+        <translation>&lt;h3&gt;tan()-funktion&lt;/h3&gt;
+Returnerer tangens af en vinkel.
 
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
      tan(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;i&gt;real&lt;/i&gt; &amp;rarr; angle in radians.&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; vinkel i radianer.&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="656"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1453"/>
         <source>&lt;h3&gt;$feature function&lt;/h3&gt;
 In atlas generation, returns the current feature number that is iterated over on the coverage layer.
 
@@ -64576,22 +64585,22 @@ None
 &lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;$feature function&lt;/h3&gt;
-In atlas generation, returns the current feature number that is iterated over on the coverage layer.
+        <translation>&lt;h3&gt;$feature-funktion&lt;/h3&gt;
+Returnerer det aktuelle objektnummer, som der itereres over på dækningslaget, ved oprettelse af atlas.
 
-&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;$feature&lt;/pre&gt;
 
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
+&lt;h4&gt;Argumenter&lt;/h4&gt;
+Ingen
 
-&lt;h4&gt;Example&lt;/h4&gt;
+&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="623"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1412"/>
         <source>&lt;h3&gt;color_hsva() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, value and alpha (transparency) attributes
 
@@ -64609,20 +64618,20 @@ Returns a string representation of a color based on its hue, saturation, value a
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;color_hsva() function&lt;/h3&gt;
-Returns a string representation of a color based on its hue, saturation, value and alpha (transparency) attributes
+        <translation>&lt;h3&gt;color_hsva()-funktion&lt;/h3&gt;
+Returnerer en strengrepræsentation af en farve baseret på dens farvetone-, mætning-, værdi- og alfa(transparens)-attributter
 
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     color_hsva(&lt;i&gt;hue, saturation, value, alpha&lt;/i&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     color_hsva(&lt;i&gt;farvetone, mætning, værdi, alfa&lt;/i&gt;)&lt;/p&gt;
 
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
-&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; the value percentage of the color as an integer from 0 to 100.&lt;br&gt;
-&lt;i&gt;  alpha&lt;/i&gt; &amp;rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).&lt;br&gt;
+&lt;i&gt;  farvetone&lt;/i&gt; &amp;rarr; farvens tone, som et heltalsværdi fra 0 til 360.&lt;br&gt;
+&lt;i&gt;  mætning&lt;/i&gt; &amp;rarr; farvens mætningsprocent som en heltalsværdi fra 0 til 100.&lt;br&gt;
+&lt;i&gt;  værdi&lt;/i&gt; &amp;rarr; farvens værdiprocent som en heltalsværdi fra 0 til 100.&lt;br&gt;
+&lt;i&gt;  alfa&lt;/i&gt; &amp;rarr; alfa-komponenten som en heltalsværdi mellem 0 (helt transparent) to 255 (solid).&lt;br&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </translation>
