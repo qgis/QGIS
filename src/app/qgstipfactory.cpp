@@ -95,8 +95,8 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " elements. The left one (right arrow icon) selects and moves elements"
                         " in the layout. After selecting the element with this tool you can also"
                         " move them around with the arrow keys. For accurate positioning use the"
-                        " <strong>Position and Size</strong> dialogue, which can be found in the"
-                        " tab <strong>Item Properties -> General Options -> Position and Size</strong>."
+                        " <strong>Position and Size</strong> section, which can be found in the"
+                        " tab <strong>Item Properties -> Position and Size</strong>."
                         " The other move tool (map canvas icon with right arrow) allows one"
                         " to move the map content within a map frame."
                       ) );
@@ -114,8 +114,8 @@ QgsTipFactory::QgsTipFactory() : QObject()
   addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
   myTip.setTitle( tr( "Rotating a map and linking a north arrow" ) );
-  myTip.setContent( tr( "You can rotate a map by setting its rotation value"
-                        " in the <strong>Item Properties -> Map</strong> section."
+  myTip.setContent( tr( "In the Print Composer you can rotate a map by setting its rotation value"
+                        " in the tab <strong>Item Properties -> Map -> Main properties</strong> section."
                         " To place a north arrow in your layout you can use the"
                         " <strong>Add Image</strong> tool. After the selection and"
                         " placement of the north arrow in the layout you can link it"
@@ -144,8 +144,8 @@ QgsTipFactory::QgsTipFactory() : QObject()
   // by Tim
   myTip.setTitle( tr( "Stopping rendering" ) );
   myTip.setContent( tr( "Sometimes you have a very large dataset which takes ages"
-                        " to draw. You can press 'Esc' (the escape key), or click the small red"
-                        " 'X' icon in the status bar to the bottom right of the window at any"
+                        " to draw. You can press 'Esc' (the escape key), or click the 'Stop"
+                        " map rendering' icon in the status bar to the bottom of the window at any"
                         " time to halt rendering. If you are going to be performing several"
                         " actions (e.g. modifying symbology options) and wish to temporarily"
                         " disable map rendering while you do so, you can uncheck the 'Render'"
