@@ -228,7 +228,7 @@
         <file>themes/default/mActionNodeTool.png</file>
         <file>themes/default/mActionOffsetCurve.png</file>
         <file>themes/default/mActionOpenTable.png</file>
-        <file>themes/default/mActionOptions.png</file>
+        <file>themes/default/mActionOptions.svg</file>
         <file>themes/default/mActionPan.png</file>
         <file>themes/default/mActionPanToSelected.png</file>
         <file>themes/default/mActionPanToSelected.svg</file>
@@ -338,7 +338,7 @@
         <file>themes/default/mIconProjectionDisabled.png</file>
         <file>themes/default/mIconProjectionEnabled.png</file>
         <file>themes/default/mIconProjectionProblem.png</file>
-        <file>themes/default/mIconProperties.png</file>
+        <file>themes/default/mIconProperties.svg</file>
         <file>themes/default/mIconPyramid.png</file>
         <file>themes/default/mIconRaster.png</file>
         <file>themes/default/mIconRenderingDisabled.png</file>
@@ -390,7 +390,7 @@
         <file>themes/default/propertyicons/digitising.png</file>
         <file>themes/default/propertyicons/display.svg</file>
         <file>themes/default/propertyicons/gdal.png</file>
-        <file>themes/default/propertyicons/general.png</file>
+        <file>themes/default/propertyicons/general.svg</file>
         <file>themes/default/propertyicons/histogram.png</file>
         <file>themes/default/propertyicons/join.png</file>
         <file>themes/default/propertyicons/labelbackground.svg</file>
@@ -417,6 +417,7 @@
         <file>themes/default/propertyicons/render.svg</file>
         <file>themes/default/propertyicons/settings.svg</file>
         <file>themes/default/propertyicons/symbology.png</file>
+        <file>themes/default/propertyicons/system.svg</file>
         <file>themes/default/propertyicons/transparency.png</file>
         <file>themes/default/qgis.xpm</file>
         <file>themes/default/rendererCategorizedSymbol.png</file>
