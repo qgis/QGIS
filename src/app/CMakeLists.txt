@@ -171,6 +171,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributetabledialog.h
   qgsbookmarks.h
   qgsbrowserdockwidget.h
+  qgsclipboard.h
   qgsconfigureshortcutsdialog.h
   qgscustomization.h
   qgscustomprojectiondialog.h
