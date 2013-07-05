@@ -321,14 +321,11 @@ void QgsMssqlProvider::loadMetadata()
     QString msg = query.lastError().text();
     QgsDebugMsg( msg );
   }
-  if ( query.isActive() )
+  if ( query.isActive() && query.next() )
   {
-    if ( query.next() )
-    {
-      mGeometryColName = query.value( 0 ).toString();
-      mSRId = query.value( 2 ).toInt();
-      mWkbType = getWkbType( query.value( 3 ).toString(), query.value( 1 ).toInt() );
-    }
+    mGeometryColName = query.value( 0 ).toString();
+    mSRId = query.value( 2 ).toInt();
+    mWkbType = getWkbType( query.value( 3 ).toString(), query.value( 1 ).toInt() );
   }
 }
 
@@ -400,13 +397,10 @@ void QgsMssqlProvider::loadFields()
         QString msg = query.lastError().text();
         QgsDebugMsg( msg );
       }
-      if ( query.isActive() )
+      if ( query.isActive() && query.next() )
       {
-        if ( query.next() )
-        {
-          mFidColName = query.value( 3 ).toString();
-          return;
-        }
+        mFidColName = query.value( 3 ).toString();
+        return;
       }
       foreach ( QString pk, pkCandidates )
       {
@@ -420,16 +414,10 @@ void QgsMssqlProvider::loadFields()
           QString msg = query.lastError().text();
           QgsDebugMsg( msg );
         }
-        if ( query.isActive() )
+        if ( query.isActive() && query.next() && query.value( 0 ).toInt() == query.value( 1 ).toInt() )
         {
-          if ( query.next() )
-          {
-            if ( query.value( 0 ).toInt() == query.value( 1 ).toInt() )
-            {
-              mFidColName = pk;
-              return;
-            }
-          }
+          mFidColName = pk;
+          return;
         }
       }
     }
@@ -476,10 +464,9 @@ QVariant QgsMssqlProvider::minimumValue( int index )
     QgsDebugMsg( msg );
   }
 
-  if ( query.isActive() )
+  if ( query.isActive() && query.next() )
   {
-    if ( query.next() )
-      return query.value( 0 );
+    return query.value( 0 );
   }
 
   return QVariant( QString::null );
@@ -512,10 +499,9 @@ QVariant QgsMssqlProvider::maximumValue( int index )
     QgsDebugMsg( msg );
   }
 
-  if ( query.isActive() )
+  if ( query.isActive() && query.next() )
   {
-    if ( query.next() )
-      return query.value( 0 );
+    return query.value( 0 );
   }
 
   return QVariant( QString::null );
@@ -582,23 +568,22 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
   QString sql = "SELECT min(bounding_box_xmin), min(bounding_box_ymin), max(bounding_box_xmax), max(bounding_box_ymax)"
                 " FROM sys.spatial_index_tessellations WHERE object_id =  OBJECT_ID('[%1].[%2]')";
 
-  statement = QString (sql).arg( mSchemaName )
-                           .arg( mTableName );
+  statement = QString( sql ).arg( mSchemaName ).arg( mTableName );
 
   if ( query.exec( statement ) )
   {
-    QgsDebugMsg("Found extents in spatial index");
+    QgsDebugMsg( "Found extents in spatial index" );
     if ( query.next() )
     {
-        mExtent.setXMinimum( query.value( 0 ).toDouble() );
-        mExtent.setYMinimum( query.value( 1 ).toDouble() );
-        mExtent.setXMaximum( query.value( 2 ).toDouble() );
-        mExtent.setYMaximum( query.value( 3 ).toDouble() );
-        return;
+      mExtent.setXMinimum( query.value( 0 ).toDouble() );
+      mExtent.setYMinimum( query.value( 1 ).toDouble() );
+      mExtent.setXMaximum( query.value( 2 ).toDouble() );
+      mExtent.setYMaximum( query.value( 3 ).toDouble() );
+      return;
     }
   }
 
-  QgsDebugMsg(query.lastError().text());
+  QgsDebugMsg( query.lastError().text() );
 
   // If we can't find the extents in the spatial index table just do what we normally do.
   bool readAllGeography = false;
@@ -638,20 +623,17 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
 
   if ( !query.isActive() )
   {
-      return;
+    return;
   }
 
   QgsGeometry geom;
-  if ( !readAllGeography )
+  if ( !readAllGeography && query.next() )
   {
-    if ( query.next() )
-    {
-      mExtent.setXMinimum( query.value( 0 ).toDouble() );
-      mExtent.setYMinimum( query.value( 1 ).toDouble() );
-      mExtent.setXMaximum( query.value( 2 ).toDouble() );
-      mExtent.setYMaximum( query.value( 3 ).toDouble() );
-      return;
-    }
+    mExtent.setXMinimum( query.value( 0 ).toDouble() );
+    mExtent.setYMinimum( query.value( 1 ).toDouble() );
+    mExtent.setXMaximum( query.value( 2 ).toDouble() );
+    mExtent.setYMaximum( query.value( 3 ).toDouble() );
+    return;
   }
 
   // We have to read all the geometry if readAllGeography is true.
@@ -714,15 +696,11 @@ long QgsMssqlProvider::featureCount() const
                 " JOIN sys.partitions p ON t.object_id = p.object_id AND p.index_id IN (0,1)"
                 " WHERE SCHEMA_NAME(t.schema_id) = '%1' AND OBJECT_NAME(t.OBJECT_ID) = '%2'";
 
-  QString statement = QString (sql).arg( mSchemaName )
-                                   .arg( mTableName );
+  QString statement = QString( sql ).arg( mSchemaName ).arg( mTableName );
 
-  if ( query.exec( statement ) )
+  if ( query.exec( statement ) && query.next() )
   {
-      if ( query.next() )
-      {
-        return query.value(0).toInt();
-      }
+    return query.value( 0 ).toInt();
   }
   else
   {
@@ -1311,23 +1289,15 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs()
     query.exec( QString( "select srtext from spatial_ref_sys where srid = %1" ).arg( QString::number( mSRId ) ) );
     if ( query.isActive() )
     {
-      if ( query.next() )
-      {
-        if ( mCrs.createFromWkt( query.value( 0 ).toString() ) )
-          return mCrs;
-      }
+      if ( query.next() && mCrs.createFromWkt( query.value( 0 ).toString() ) )
+        return mCrs;
+
       query.finish();
     }
     query.clear();
     query.exec( QString( "select well_known_text from sys.spatial_reference_systems where spatial_reference_id = %1" ).arg( QString::number( mSRId ) ) );
-    if ( query.isActive() )
-    {
-      if ( query.next() )
-      {
-        if ( mCrs.createFromWkt( query.value( 0 ).toString() ) )
-          return mCrs;
-      }
-    }
+    if ( query.isActive() && query.next() && mCrs.createFromWkt( query.value( 0 ).toString() ) )
+      return mCrs;
   }
   return mCrs;
 }
@@ -1369,11 +1339,8 @@ bool QgsMssqlProvider::setSubsetString( QString theSQL, bool )
     return false;
   }
 
-  if ( query.isActive() )
-  {
-    if ( query.next() )
-      mNumberFeatures = query.value( 0 ).toInt();
-  }
+  if ( query.isActive() && query.next() )
+    mNumberFeatures = query.value( 0 ).toInt();
 
   QgsDataSourceURI anUri = QgsDataSourceURI( dataSourceUri() );
   anUri.setSql( mSqlWhereClause );
