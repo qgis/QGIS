@@ -159,6 +159,9 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     //transfers scroll area ownership so no need to call delete
     mypOuterLayout->addWidget( mypScrollArea );
 
+    QSpacerItem *mypSpacer = new QSpacerItem( 10, 10, QSizePolicy::Fixed, QSizePolicy::Expanding );
+    mypOuterLayout->addItem( mypSpacer );
+
     QFrame *mypInnerFrame = new QFrame();
     mypInnerFrame->setFrameShape( QFrame::NoFrame );
     mypInnerFrame->setFrameShadow( QFrame::Plain );
