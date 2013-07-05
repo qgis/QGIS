@@ -187,7 +187,7 @@
   <action name="mActionNewVectorLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNewVectorLayer.png</normaloff>:/images/themes/default/mActionNewVectorLayer.png</iconset>
+     <normaloff>:/images/themes/default/mActionNewVectorLayer.svg</normaloff>:/images/themes/default/mActionNewVectorLayer.svg</iconset>
    </property>
    <property name="text">
     <string>New Shapefile</string>
@@ -226,7 +226,7 @@
   <action name="mActionWmsConnections">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddWmsLayer.png</normaloff>:/images/themes/default/mActionAddWmsLayer.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddWmsLayer.svg</normaloff>:/images/themes/default/mActionAddWmsLayer.svg</iconset>
    </property>
    <property name="text">
     <string>Manage WMS</string>

@@ -545,7 +545,7 @@ QgsGrassModel::QgsGrassModel( QObject * parent )
   mIconFile = QIcon( style->standardPixmap( QStyle::SP_FileIcon ) );
 
   mIconPointLayer = QgsGrassPlugin::getThemeIcon( "/mIconPointLayer.png" );
-  mIconLineLayer = QgsGrassPlugin::getThemeIcon( "/mIconLineLayer.png" );
+  mIconLineLayer = QgsGrassPlugin::getThemeIcon( "/mIconLineLayer.svg" );
   mIconPolygonLayer = QgsGrassPlugin::getThemeIcon( "/mIconPolygonLayer.png" );
   mIconVectorLayer = QgsGrassPlugin::getThemeIcon( "/grass/grass_browser_vector_layer.png" );
   mIconRasterLayer = QgsGrassPlugin::getThemeIcon( "/grass/grass_browser_raster_layer.png" );

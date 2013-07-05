@@ -51,7 +51,7 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
 {
   setupUi( this );
 
-  mSaveAsImageButton->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.png" ) );
+  mSaveAsImageButton->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.svg" ) );
 
   mRendererWidget = 0;
   mRendererName = "singlebandgray";

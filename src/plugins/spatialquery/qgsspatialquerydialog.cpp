@@ -412,7 +412,7 @@ QIcon QgsSpatialQueryDialog::getIconTypeGeometry( QGis::GeometryType geomType )
   }
   else if ( geomType == QGis::Line )
   {
-    theName = "/mIconLineLayer.png";
+    theName = "/mIconLineLayer.svg";
   }
   else // Polygon
   {
