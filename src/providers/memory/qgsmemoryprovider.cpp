@@ -81,13 +81,14 @@ QgsMemoryProvider::QgsMemoryProvider( QString uri )
   // So the limits set here are not correct but enable use of data from Shapefiles.
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double", QVariant::Double, 0, 32, 0, 30 )
   << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), "string", QVariant::String, 0, 255 )
+  << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 0, 10 )
   ;
 
   if ( url.hasQueryItem( "field" ) )
   {
     QList<QgsField> attributes;
     QRegExp reFieldDef( "\\:"
-                        "(int|integer|real|double|string)" // type
+                        "(int|integer|real|double|string|date)" // type
                         "(?:\\((\\d+)"                // length
                         "(?:\\,(\\d+))?"                // precision
                         "\\))?"
@@ -118,6 +119,12 @@ QgsMemoryProvider::QgsMemoryProvider( QString uri )
           typeName = "double";
           length = 20;
           precision = 5;
+        }
+        else if ( typeName == "date" )
+        {
+          type = QVariant::Date;
+          typeName = "date";
+          length = 10;
         }
 
         if ( reFieldDef.cap( 2 ) != "" )
@@ -321,6 +328,7 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
       case QVariant::Int:
       case QVariant::Double:
       case QVariant::String:
+      case QVariant::Date:
         break;
       default:
         QgsDebugMsg( "Field type not supported: " + it->typeName() );
