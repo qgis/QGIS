@@ -234,7 +234,7 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString & 
       }
     }
 
-    QgsField field( fieldName, fieldType );
+    QgsField field( fieldName, fieldType, fieldTypeName );
     featureClass.fields().append( field );
   }
 

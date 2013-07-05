@@ -5697,6 +5697,7 @@ QgsVectorLayer * QgisApp::pasteToNewMemoryVector()
 
   foreach ( QgsField f, clipboard()->fields().toList() )
   {
+    QgsDebugMsg( QString( "field %1 (%2)" ).arg( f.name() ).arg( QVariant::typeToName( f.type() ) ) );
     if ( !layer->addAttribute( f ) )
     {
       QMessageBox::warning( this, tr( "Warning" ),

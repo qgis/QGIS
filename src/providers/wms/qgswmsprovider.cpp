@@ -4231,6 +4231,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         }
 #endif
 #endif
+        QgsDebugMsg( "GML XSD (first 4000 bytes):\n" + QString::fromUtf8( mIdentifyResultBodies.value( xsdPart ).left( 4000 ) ) );
         gmlSchema.parseXSD( mIdentifyResultBodies.value( xsdPart ) );
       }
       else
