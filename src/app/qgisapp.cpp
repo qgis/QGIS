@@ -1532,7 +1532,7 @@ void QgisApp::createStatusBar()
                                  "center to a given position. The format is lat,lon or east,north" ) );
   mCoordsEdit->setToolTip( tr( "Current map coordinate (lat,lon or east,north)" ) );
   statusBar()->addPermanentWidget( mCoordsEdit, 0 );
-  connect( mCoordsEdit, SIGNAL( editingFinished() ), this, SLOT( userCenter() ) );
+  connect( mCoordsEdit, SIGNAL( returnPressed() ), this, SLOT( userCenter() ) );
 
   // add a label to show current scale
   mScaleLabel = new QLabel( QString(), statusBar() );
