@@ -98,6 +98,7 @@
         <file>themes/default/console/iconSearchNextEditorConsole.png</file>
         <file>themes/default/console/iconSearchPrevEditorConsole.png</file>
         <file>themes/default/console/iconSyntaxErrorConsole.png</file>
+        <file>themes/default/copyright_label.png</file>
         <file>themes/default/extents.png</file>
         <file>themes/default/favourites.png</file>
         <file>themes/default/geographic.png</file>
@@ -267,7 +268,7 @@
         <file>themes/default/mActionShowBookmarks.png</file>
         <file>themes/default/mActionShowHideLabels.svg</file>
         <file>themes/default/mActionShowPinnedLabels.svg</file>
-        <file>themes/default/mActionShowPluginManager.png</file>
+        <file>themes/default/mActionShowPluginManager.svg</file>
         <file>themes/default/mActionShowRasterCalculator.png</file>
         <file>themes/default/mActionSignMinus.png</file>
         <file>themes/default/mActionSignPlus.png</file>
@@ -363,23 +364,10 @@
         <file>themes/default/mIconZip.png</file>
         <file>themes/default/mIconZoom.png</file>
         <file>themes/default/mMapserverExport.png</file>
+        <file>themes/default/north_arrow.png</file>
         <file>themes/default/pie-chart.png</file>
         <file>themes/default/plugin.png</file>
         <file>themes/default/pluginExperimental.png</file>
-        <file>themes/default/plugins/coordinate_capture/coordinate_capture.png</file>
-        <file>themes/default/plugins/copyright_label.png</file>
-        <file>themes/default/plugins/dxf2shp_converter.png</file>
-        <file>themes/default/plugins/gps_importer.png</file>
-        <file>themes/default/plugins/gps_importer/create_gpx.png</file>
-        <file>themes/default/plugins/gps_importer/import_gpx.png</file>
-        <file>themes/default/plugins/interpolation.png</file>
-        <file>themes/default/plugins/mapserver_export.png</file>
-        <file>themes/default/plugins/mGeorefRun.png</file>
-        <file>themes/default/plugins/north_arrow.png</file>
-        <file>themes/default/plugins/ogr_converter.png</file>
-        <file>themes/default/plugins/quick_print.png</file>
-        <file>themes/default/plugins/scale_bar.png</file>
-        <file>themes/default/plugins/spit.png</file>
         <file>themes/default/propertyicons/action.svg</file>
         <file>themes/default/propertyicons/attributes.png</file>
         <file>themes/default/propertyicons/colormap.png</file>
@@ -425,6 +413,7 @@
         <file>themes/default/repositoryConnected.png</file>
         <file>themes/default/repositoryDisabled.png</file>
         <file>themes/default/repositoryUnavailable.png</file>
+        <file>themes/default/scale_bar.png</file>
         <file>themes/default/styleicons/color.png</file>
         <file>themes/default/styleicons/style-line.png</file>
         <file>themes/default/styleicons/style-point.png</file>
