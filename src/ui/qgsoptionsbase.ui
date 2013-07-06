@@ -266,8 +266,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>663</width>
-                <height>564</height>
+                <width>687</width>
+                <height>523</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -912,8 +912,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>663</width>
-                <height>757</height>
+                <width>670</width>
+                <height>750</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1248,8 +1248,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>680</width>
-                <height>511</height>
+                <width>687</width>
+                <height>523</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1505,11 +1505,11 @@
                   </item>
                   <item>
                    <widget class="QCheckBox" name="cbxIgnoreShapeEncoding">
-                    <property name="text">
-                     <string>Ignore shapefile encoding declaration</string>
-                    </property>
                     <property name="toolTip">
                      <string>Disable OGR on-the-fly conversion from declared encoding to UTF-8</string>
+                    </property>
+                    <property name="text">
+                     <string>Ignore shapefile encoding declaration</string>
                     </property>
                    </widget>
                   </item>
@@ -1577,8 +1577,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>663</width>
-                <height>635</height>
+                <width>670</width>
+                <height>611</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -2092,8 +2092,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>452</width>
-                <height>357</height>
+                <width>687</width>
+                <height>523</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2349,38 +2349,6 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="mPositionGroupBox">
-                 <property name="title">
-                  <string>Overlay position</string>
-                 </property>
-                 <layout class="QHBoxLayout" name="horizontalLayout_4">
-                  <item>
-                   <widget class="QLabel" name="mAlgorithmLabel">
-                    <property name="text">
-                     <string>Placement algorithm</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>221</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <widget class="QComboBox" name="mOverlayAlgorithmComboBox"/>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
                 <spacer>
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -2427,8 +2395,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>491</width>
-                <height>636</height>
+                <width>670</width>
+                <height>619</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -2834,8 +2802,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>442</width>
-                <height>574</height>
+                <width>670</width>
+                <height>551</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3335,8 +3303,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>426</width>
-                <height>336</height>
+                <width>687</width>
+                <height>523</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3475,8 +3443,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>582</width>
-                <height>352</height>
+                <width>687</width>
+                <height>523</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -3656,8 +3624,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>268</width>
-                <height>207</height>
+                <width>687</width>
+                <height>523</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -3756,8 +3724,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>663</width>
-                <height>553</height>
+                <width>670</width>
+                <height>528</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">

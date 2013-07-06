@@ -52,11 +52,8 @@
 %Include qgsnetworkaccessmanager.sip
 %Include qgsofflineediting.sip
 %Include qgsogcutils.sip
-%Include qgsoverlayobject.sip
 %Include qgsowsconnection.sip
 %Include qgspaintenginehack.sip
-%Include qgsoverlayobjectpositionmanager.sip
-%Include qgspalgeometry.sip
 %Include qgspallabeling.sip
 %Include qgspluginlayer.sip
 %Include qgspluginlayerregistry.sip
@@ -86,16 +83,13 @@
 %Include qgsvectorlayerimport.sip
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayerundocommand.sip
-%Include qgsvectoroverlay.sip
 %Include qgsfontutils.sip
 
 %Include qgscachedfeatureiterator.sip
 %Include qgscacheindex.sip
 %Include qgscacheindexfeatureid.sip
-%Include qgscentralpointpositionmanager.sip
 %Include qgsfeaturestore.sip
 %Include qgsgeometrycache.sip
-%Include qgspalobjectpositionmanager.sip
 %Include qgsprojectfiletransform.sip
 %Include qgsvectorlayereditutils.sip
 %Include qgsvectorlayerfeatureiterator.sip
