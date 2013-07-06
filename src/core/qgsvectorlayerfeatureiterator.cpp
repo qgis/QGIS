@@ -256,7 +256,11 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
     QgsFeature tmp;
     //mDataProvider->featureAtId( fid, tmp, false, mFetchProvAttributes );
     QgsFeatureRequest request;
-    request.setFilterFid( fid ).setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( mProviderRequest.subsetOfAttributes() );
+    request.setFilterFid( fid ).setFlags( QgsFeatureRequest::NoGeometry );
+    if ( subsetAttrs )
+    {
+      request.setSubsetOfAttributes( mProviderRequest.subsetOfAttributes() );
+    }
     QgsFeatureIterator fi = L->dataProvider()->getFeatures( request );
     if ( fi.nextFeature( tmp ) )
     {
