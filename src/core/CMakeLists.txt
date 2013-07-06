@@ -51,7 +51,6 @@ SET(QGIS_CORE_SRCS
   qgscacheindex.cpp
   qgscacheindexfeatureid.cpp
   qgsbrowsermodel.cpp
-  qgscentralpointpositionmanager.cpp
   qgsclipper.cpp
   qgscontexthelp.cpp
   qgscontexthelp_texts.cpp
@@ -93,11 +92,8 @@ SET(QGIS_CORE_SRCS
   qgscredentials.cpp
   qgsofflineediting.cpp
   qgsogcutils.cpp
-  qgsoverlayobject.cpp
   qgsowsconnection.cpp
-  qgspalgeometry.cpp
   qgspallabeling.cpp
-  qgspalobjectpositionmanager.cpp
   qgspluginlayer.cpp
   qgspluginlayerregistry.cpp
   qgspoint.cpp
@@ -129,7 +125,6 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerimport.cpp
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerundocommand.cpp
-  qgsvectoroverlay.cpp
 
   qgsnetworkaccessmanager.cpp
 
@@ -379,7 +374,6 @@ SET(QGIS_CORE_HDRS
   qgscachedfeatureiterator.h
   qgscacheindex.h
   qgscacheindexfeatureid.h
-  qgscentralpointpositionmanager.h
   qgsclipper.h
   qgscontexthelp.h
   qgscoordinatetransform.h
@@ -415,10 +409,8 @@ SET(QGIS_CORE_HDRS
   qgscredentials.h
   qgsofflineediting.h
   qgsogcutils.h
-  qgsoverlayobjectpositionmanager.h
   qgsowsconnection.h
   qgspallabeling.h
-  qgspalobjectpositionmanager.h
   qgspluginlayer.h
   qgspluginlayerregistry.h
   qgspoint.h
@@ -448,7 +440,6 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerfeatureiterator.h
   qgsvectorlayerimport.h
   qgsvectorlayerundocommand.h
-  qgsvectoroverlay.h
   qgstolerance.h
 
   diagram/qgsdiagram.h

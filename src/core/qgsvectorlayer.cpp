@@ -61,7 +61,6 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerundocommand.h"
-#include "qgsvectoroverlay.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsclipper.h"
 #include "qgsproject.h"
@@ -202,14 +201,6 @@ QgsVectorLayer::~QgsVectorLayer()
   delete mActions;
 
   delete mRendererV2;
-
-  //delete remaining overlays
-
-  QList<QgsVectorOverlay*>::iterator overlayIt = mOverlays.begin();
-  for ( ; overlayIt != mOverlays.end(); ++overlayIt )
-  {
-    delete *overlayIt;
-  }
 }
 
 QString QgsVectorLayer::storageType() const
@@ -2382,16 +2373,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   // add attribute actions
   mActions->writeXML( node, doc );
 
-  //save vector overlays (e.g. diagrams)
-  QList<QgsVectorOverlay*>::const_iterator overlay_it = mOverlays.constBegin();
-  for ( ; overlay_it != mOverlays.constEnd(); ++overlay_it )
-  {
-    if ( *overlay_it )
-    {
-      ( *overlay_it )->writeXML( mapLayerNode, doc );
-    }
-  }
-
   return true;
 }
 
@@ -3114,41 +3095,6 @@ void QgsVectorLayer::setLabelOnTop( int idx, bool onTop )
   if ( idx >= 0 && idx < fields.count() )
     mLabelOnTop[ fields[idx].name()] = onTop;
 }
-
-void QgsVectorLayer::addOverlay( QgsVectorOverlay* overlay )
-{
-  mOverlays.push_back( overlay );
-}
-
-void QgsVectorLayer::removeOverlay( const QString& typeName )
-{
-  for ( int i = mOverlays.size() - 1; i >= 0; --i )
-  {
-    if ( mOverlays.at( i )->typeName() == typeName )
-    {
-      mOverlays.removeAt( i );
-    }
-  }
-}
-
-void QgsVectorLayer::vectorOverlays( QList<QgsVectorOverlay*>& overlayList )
-{
-  overlayList = mOverlays;
-}
-
-QgsVectorOverlay* QgsVectorLayer::findOverlayByType( const QString& typeName )
-{
-  QList<QgsVectorOverlay*>::iterator it = mOverlays.begin();
-  for ( ; it != mOverlays.end(); ++it )
-  {
-    if (( *it )->typeName() == typeName )
-    {
-      return *it;
-    }
-  }
-  return 0; //not found
-}
-
 
 QgsFeatureRendererV2* QgsVectorLayer::rendererV2()
 {

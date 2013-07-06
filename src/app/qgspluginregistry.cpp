@@ -339,7 +339,6 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
   {
     case QgisPlugin::RENDERER:
     case QgisPlugin::UI:
-    case QgisPlugin::VECTOR_OVERLAY:
     {
       // UI only -- doesn't use mapcanvas
       create_ui *cf = ( create_ui * ) cast_to_fptr( myLib.resolve( "classFactory" ) );
