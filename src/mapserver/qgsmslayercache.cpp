@@ -102,14 +102,6 @@ QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& la
   {
     QgsMSLayerCacheEntry &entry = mEntries[ urlNamePair ];
     entry.lastUsedTime = time( NULL );
-#ifdef DIAGRAMSERVER
-    //delete any existing diagram overlays in vectorlayers
-    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( entry.layerPointer );
-    if ( vl )
-    {
-      vl->removeOverlay( "diagram" );
-    }
-#endif //DIAGRAMSERVER
     QgsDebugMsg( "Layer found in cache" );
     return entry.layerPointer;
   }

@@ -59,14 +59,6 @@
 #include "qgsremoteowsbuilder.h"
 #include "qgssentdatasourcebuilder.h"
 
-#ifdef DIAGRAMSERVER
-#include "qgsdiagramoverlay.h"
-#include "qgsbardiagramfactory.h"
-#include "qgspiediagramfactory.h"
-#include "qgsdiagramrenderer.h"
-#include "qgssvgdiagramfactory.h"
-#endif //DIAGRAMSERVER
-
 //for contours
 #include "gdal_alg.h"
 #include "ogr_srs_api.h"
@@ -280,9 +272,6 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
           QgsFeatureRendererV2* r = rendererFromUserStyle( userStyleElement, v );
           v->setRendererV2( r );
           labelSettingsFromUserStyle( userStyleElement, v );
-#ifdef DIAGRAMSERVER
-          overlaysFromUserStyle( userStyleElement, v );
-#endif //DIAGRAMSERVER
 #if 0
           setOpacityForLayer( namedLayerElemList[i], v );
 #endif
@@ -389,11 +378,6 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
     theRenderer = rendererFromUserStyle( userStyleElement, theVectorLayer );
     //apply labels if <TextSymbolizer> tag is present
     labelSettingsFromUserStyle( userStyleElement, theVectorLayer );
-#ifdef DIAGRAMSERVER
-    //apply any vector overlays
-    QgsDebugMsg( "Trying to get overlays from user style" );
-    overlaysFromUserStyle( userStyleElement, theVectorLayer );
-#endif //DIAGRAMSERVER
   }
 
   if ( !theRenderer )
@@ -1596,7 +1580,7 @@ void QgsSLDParser::drawOverlays( QPainter* p, int dpi, int width, int height ) c
   }
 }
 
-#ifdef DIAGRAMSERVER
+#if 0 //This part needs to be ported to the new diagram engine
 int QgsSLDParser::overlaysFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const
 {
   if ( userStyleElement.isNull() || !vec )
@@ -2012,4 +1996,4 @@ double QgsSLDParser::scaleFactorFromScaleTag( const QDomElement& scaleElem ) con
   }
 }
 
-#endif //DIAGRAMSERVER
+#endif //0 part that needs to be ported to the new diagram engine
