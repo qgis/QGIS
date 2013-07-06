@@ -983,8 +983,8 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
     symbols.insert( symbolName, range.symbol() );
 
     QDomElement rangeElem = doc.createElement( "range" );
-    rangeElem.setAttribute( "lower", QString::number( range.lowerValue() ) );
-    rangeElem.setAttribute( "upper", QString::number( range.upperValue() ) );
+    rangeElem.setAttribute( "lower", QString::number( range.lowerValue(), 'f' ) );
+    rangeElem.setAttribute( "upper", QString::number( range.upperValue(), 'f' ) );
     rangeElem.setAttribute( "symbol", symbolName );
     rangeElem.setAttribute( "label", range.label() );
     rangesElem.appendChild( rangeElem );
