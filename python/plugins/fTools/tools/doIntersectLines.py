@@ -148,7 +148,6 @@ class Dialog(QDialog, Ui_Dialog):
 
         index = ftools_utils.createIndex( provider2 )
 
-        singlelayer_tempList = []
         fit1 = provider1.getFeatures( QgsFeatureRequest().setSubsetOfAttributes([index1]) )
         while fit1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
@@ -170,19 +169,10 @@ class Dialog(QDialog, Ui_Dialog):
                             tempList.append(tempGeom.asPoint())
 
                         for j in tempList:
-                            # if same layer, avoid insert duplicated points
-                            if line1 == line2:
-                                if not j in singlelayer_tempList:
-                                    singlelayer_tempList.append(j)
-                                    outFeat.setGeometry(tempGeom.fromPoint(j))
-                                    outFeat.setAttribute(0, v1)
-                                    outFeat.setAttribute(1, v2)
-                                    writer.addFeature(outFeat)
-                            else:
-                                outFeat.setGeometry(tempGeom.fromPoint(j))
-                                outFeat.setAttribute(0, v1)
-                                outFeat.setAttribute(1, v2)
-                                writer.addFeature(outFeat)
+                            outFeat.setGeometry(tempGeom.fromPoint(j))
+                            outFeat.setAttribute(0, v1)
+                            outFeat.setAttribute(1, v2)
+                            writer.addFeature(outFeat)
 
             start = start + add
             progressBar.setValue(start)
