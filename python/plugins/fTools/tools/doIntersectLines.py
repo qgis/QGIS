@@ -139,6 +139,10 @@ class Dialog(QDialog, Ui_Dialog):
         inFeat = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
+        outFields = QgsFields()
+        outFields.append(field1)
+        outFields.append(field2)
+        outFeat.setFields(outFields)
         start = 15.00
         add = 85.00 / layer1.featureCount()
 
