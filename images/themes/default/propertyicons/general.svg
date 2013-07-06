@@ -14,8 +14,8 @@
    width="64"
    height="64"
    id="svg4895"
-   inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="hammer.svg">
+   inkscape:version="0.48.2 r9819"
+   sodipodi:docname="general.svg">
   <sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -26,14 +26,14 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="1149"
-     inkscape:window-height="790"
+     inkscape:window-height="724"
      id="namedview78"
      showgrid="false"
      inkscape:zoom="3.6875"
      inkscape:cx="16.970427"
      inkscape:cy="43.698706"
-     inkscape:window-x="805"
-     inkscape:window-y="119"
+     inkscape:window-x="23"
+     inkscape:window-y="0"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg4895" />
   <defs
@@ -832,7 +832,8 @@
 		.stroke-highlight	{fill:none;stroke:white;stroke-opacity:0.2;stroke-width:4;stroke-linejoin:round;}
 	</style>
   <g
-     id="g3538">
+     id="g3538"
+     transform="matrix(0.86440678,0,0,0.86440678,4.3389831,4.3389831)">
     <use
        transform="matrix(0.53649008,0,0,0.54020471,-3.044024,-2.8522844)"
        height="128"
@@ -904,9 +905,12 @@
             <dc:title>Open Clip Art Library</dc:title>
           </cc:Agent>
         </dc:publisher>
-        <dc:title></dc:title>
+        <dc:title />
         <dc:date>2006-08-29T17:16:52</dc:date>
-        <dc:description>A very glossy yet socialist looking hammer and spanner ;-)\n\n[b]\nContains internal stylesheet with configurable specularity, shade outlines and internal stroke-highlights.[/b]</dc:description>
+        <dc:description>A very glossy yet socialist looking hammer and spanner ;-)
+\n
+\n[b]
+\nContains internal stylesheet with configurable specularity, shade outlines and internal stroke-highlights.[/b]</dc:description>
         <dc:source>http://openclipart.org/detail/67/tools-hammer-spanner-by-andy</dc:source>
         <dc:creator>
           <cc:Agent>
@@ -951,7 +955,7 @@
      id="layer1" />
   <g
      id="g3323"
-     transform="matrix(0,0.14089753,-0.14079879,0,77.710165,-12.323191)">
+     transform="matrix(0,0.12179278,-0.12170743,0,71.512176,-6.3132667)">
     <path
        id="path129"
        d="m 466.84103,111.9571 -137.6603,137.65662 c -7.30253,7.30621 -11.1247,16.31402 -11.1247,25.9319 0,1.80818 0.29402,3.6531 0.56598,5.49803 -1.86698,1.86698 -9.90087,9.90087 -11.37093,11.37093 -2.4256,0.22419 -29.5115,2.69757 -29.5115,2.69757 -0.19478,0.0184 -0.38589,0.0514 -0.577,0.0992 -3.93242,1.00331 -6.68143,3.38849 -7.54509,6.53442 -0.18744,0.68726 -0.27932,1.38554 -0.27932,2.08749 0,2.53218 1.19075,5.13419 3.43995,7.37971 l 58.33942,58.33207 c 2.86662,2.8703 6.32126,4.02429 9.46352,3.16063 3.14961,-0.85998 5.53479,-3.61267 6.54178,-7.54877 0.0478,-0.1911 0.0808,-0.38221 0.0992,-0.577 0,0 2.47338,-27.07854 2.69389,-29.50414 1.47006,-1.47007 9.50395,-9.50763 11.37093,-11.37093 11.65759,1.72364 22.76759,-1.87801 31.42625,-10.56608 l 137.6603,-137.66029 c 7.40911,-7.40544 11.31948,-16.5088 11.31948,-26.32882 0,-11.62084 -5.41718,-23.43279 -15.24822,-33.2675 C 507.7418,97.186619 483.22852,95.569551 466.841,111.95707 z"
@@ -989,7 +993,7 @@
        style="opacity:0.2;fill:#333333" />
     <polygon
        id="polygon152"
-       points="66.688,71.577 83.059,55.208 72.862,45.013 56.494,61.381 "
+       points="83.059,55.208 72.862,45.013 56.494,61.381 66.688,71.577 "
        style="fill:url(#linearGradient3345)"
        transform="matrix(3.6751555,0,0,3.6751555,77.245149,87.054246)" />
     <path
@@ -1004,17 +1008,17 @@
        style="fill:#f36600" />
     <polygon
        id="polygon165"
-       points="22.077,110.449 62.648,69.88 58.191,65.423 17.622,105.992 "
+       points="62.648,69.88 58.191,65.423 17.622,105.992 22.077,110.449 "
        style="fill:url(#linearGradient3347)"
        transform="matrix(3.6751555,0,0,3.6751555,77.245149,87.054246)" />
     <polygon
        id="polygon172"
-       points="12.605,106.83 17.728,105.886 22.185,110.342 21.44,115.264 9.427,123.489 4.78,118.842 "
+       points="17.728,105.886 22.185,110.342 21.44,115.264 9.427,123.489 4.78,118.842 12.605,106.83 "
        style="fill:url(#linearGradient3349)"
        transform="matrix(3.6751555,0,0,3.6751555,77.245149,87.054246)" />
     <polygon
        id="polygon179"
-       points="13.317,107.542 18.139,106.297 21.886,110.043 20.841,114.664 9.098,123.16 5.19,119.252 "
+       points="18.139,106.297 21.886,110.043 20.841,114.664 9.098,123.16 5.19,119.252 13.317,107.542 "
        style="fill:url(#linearGradient3351)"
        transform="matrix(3.6751555,0,0,3.6751555,77.245149,87.054246)" />
     <path
