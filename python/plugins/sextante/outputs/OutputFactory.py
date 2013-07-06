@@ -28,13 +28,15 @@ from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputNumber import OutputNumber
 from sextante.outputs.OutputFile import OutputFile
+from sextante.outputs.OutputDirectory import OutputDirectory
 from sextante.outputs.OutputString import OutputString
 
 class OutputFactory():
 
     @staticmethod
     def getFromString(s):
-        classes = [OutputRaster, OutputVector, OutputTable, OutputHTML, OutputNumber, OutputFile, OutputString]
+        classes = [OutputRaster, OutputVector, OutputTable, OutputHTML,
+                   OutputNumber, OutputFile, OutputDirectory, OutputString]
         for clazz in classes:
             if s.startswith(clazz().outputTypeName()):
                 tokens = s[len(clazz().outputTypeName())+1:].split("|")
