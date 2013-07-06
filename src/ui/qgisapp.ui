@@ -49,7 +49,7 @@
     <addaction name="mActionNodeTool"/>
     <addaction name="mActionRotatePointSymbols"/>
    </widget>
-   <widget class="QMenu" name="mFileMenu">
+   <widget class="QMenu" name="mProjectMenu">
     <property name="title">
      <string>P&amp;roject</string>
     </property>
@@ -241,7 +241,7 @@
     </widget>
     <addaction name="menuOpenStreetMap"/>
    </widget>
-   <addaction name="mFileMenu"/>
+   <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
    <addaction name="mViewMenu"/>
    <addaction name="mLayerMenu"/>
@@ -680,7 +680,7 @@
   <action name="mActionDeleteSelected">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDeleteSelected.png</normaloff>:/images/themes/default/mActionDeleteSelected.png</iconset>
+     <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
    </property>
    <property name="text">
     <string>Delete Selected</string>
@@ -841,7 +841,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelect.png</normaloff>:/images/themes/default/mActionSelect.png</iconset>
+     <normaloff>:/images/themes/default/mActionSelect.svg</normaloff>:/images/themes/default/mActionSelect.svg</iconset>
    </property>
    <property name="text">
     <string>Select Single Feature</string>
@@ -853,7 +853,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelectRectangle.png</normaloff>:/images/themes/default/mActionSelectRectangle.png</iconset>
+     <normaloff>:/images/themes/default/mActionSelectRectangle.svg</normaloff>:/images/themes/default/mActionSelectRectangle.svg</iconset>
    </property>
    <property name="text">
     <string>Select Features by Rectangle</string>
@@ -865,7 +865,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelectPolygon.png</normaloff>:/images/themes/default/mActionSelectPolygon.png</iconset>
+     <normaloff>:/images/themes/default/mActionSelectPolygon.svg</normaloff>:/images/themes/default/mActionSelectPolygon.svg</iconset>
    </property>
    <property name="text">
     <string>Select Features by Polygon</string>
@@ -877,7 +877,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelectFreehand.png</normaloff>:/images/themes/default/mActionSelectFreehand.png</iconset>
+     <normaloff>:/images/themes/default/mActionSelectFreehand.svg</normaloff>:/images/themes/default/mActionSelectFreehand.svg</iconset>
    </property>
    <property name="text">
     <string>Select Features by Freehand</string>
@@ -889,7 +889,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelectRadius.png</normaloff>:/images/themes/default/mActionSelectRadius.png</iconset>
+     <normaloff>:/images/themes/default/mActionSelectRadius.svg</normaloff>:/images/themes/default/mActionSelectRadius.svg</iconset>
    </property>
    <property name="text">
     <string>Select Features by Radius</string>
@@ -898,7 +898,7 @@
   <action name="mActionDeselectAll">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDeselectAll.png</normaloff>:/images/themes/default/mActionDeselectAll.png</iconset>
+     <normaloff>:/images/themes/default/mActionDeselectAll.svg</normaloff>:/images/themes/default/mActionDeselectAll.svg</iconset>
    </property>
    <property name="text">
     <string>Deselect Features from All Layers</string>
@@ -910,7 +910,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionIdentify.png</normaloff>:/images/themes/default/mActionIdentify.png</iconset>
+     <normaloff>:/images/themes/default/mActionIdentify.svg</normaloff>:/images/themes/default/mActionIdentify.svg</iconset>
    </property>
    <property name="text">
     <string>Identify Features</string>
@@ -1378,10 +1378,10 @@
   <action name="mActionManagePlugins">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionShowPluginManager.png</normaloff>:/images/themes/default/mActionShowPluginManager.png</iconset>
+     <normaloff>:/images/themes/default/mActionShowPluginManager.svg</normaloff>:/images/themes/default/mActionShowPluginManager.svg</iconset>
    </property>
    <property name="text">
-    <string>Manage Plugins...</string>
+    <string>Manage and Install Plugins...</string>
    </property>
   </action>
   <action name="mActionToggleFullScreen">
@@ -1407,7 +1407,7 @@
   <action name="mActionOptions">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionOptions.png</normaloff>:/images/themes/default/mActionOptions.png</iconset>
+     <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
    </property>
    <property name="text">
     <string>Options...</string>
@@ -1428,7 +1428,7 @@
   <action name="mActionConfigureShortcuts">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionOptions.png</normaloff>:/images/themes/default/mActionOptions.png</iconset>
+     <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
    </property>
    <property name="text">
     <string>Configure shortcuts...</string>
@@ -1597,7 +1597,7 @@ Ctl (Cmd) increments by 15 deg.</string>
   <action name="mActionCustomization">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionOptions.png</normaloff>:/images/themes/default/mActionOptions.png</iconset>
+     <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
    </property>
    <property name="text">
     <string>Customization...</string>
@@ -1605,7 +1605,7 @@ Ctl (Cmd) increments by 15 deg.</string>
   </action>
   <action name="actionActionCatchForCustomization">
    <property name="text">
-    <string>mActionCatchForCustomization</string>
+    <string notr="true">mActionCatchForCustomization</string>
    </property>
    <property name="toolTip">
     <string>This is here just to avoid shortcut conflicts, the shortcut is caught in QgsCustomization</string>
@@ -1625,7 +1625,7 @@ Ctl (Cmd) increments by 15 deg.</string>
   <action name="mActionDecorationCopyright">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/plugins/copyright_label.png</normaloff>:/images/themes/default/plugins/copyright_label.png</iconset>
+     <normaloff>:/images/themes/default/copyright_label.png</normaloff>:/images/themes/default/copyright_label.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Copyright Label</string>
@@ -1637,7 +1637,7 @@ Ctl (Cmd) increments by 15 deg.</string>
   <action name="mActionDecorationNorthArrow">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/plugins/north_arrow.png</normaloff>:/images/themes/default/plugins/north_arrow.png</iconset>
+     <normaloff>:/images/themes/default/north_arrow.png</normaloff>:/images/themes/default/north_arrow.png</iconset>
    </property>
    <property name="text">
     <string>&amp;North Arrow</string>
@@ -1649,7 +1649,7 @@ Ctl (Cmd) increments by 15 deg.</string>
   <action name="mActionDecorationScaleBar">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/plugins/scale_bar.png</normaloff>:/images/themes/default/plugins/scale_bar.png</iconset>
+     <normaloff>:/images/themes/default/scale_bar.png</normaloff>:/images/themes/default/scale_bar.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Scale Bar</string>
@@ -1676,7 +1676,7 @@ Ctl (Cmd) increments by 15 deg.</string>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mAction.png</normaloff>:/images/themes/default/mAction.png</iconset>
+     <normaloff>:/images/themes/default/mAction.svg</normaloff>:/images/themes/default/mAction.svg</iconset>
    </property>
    <property name="text">
     <string>Feature Action</string>

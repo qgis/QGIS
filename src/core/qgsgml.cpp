@@ -17,6 +17,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include <QBuffer>
 #include <QList>
@@ -104,7 +105,15 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
     QByteArray readData = reply->readAll();
     if ( readData.size() > 0 )
     {
-      XML_Parse( p, readData.constData(), readData.size(), atEnd );
+      if ( XML_Parse( p, readData.constData(), readData.size(), atEnd ) == 0 )
+      {
+        XML_Error errorCode = XML_GetErrorCode( p );
+        QString errorString = tr( "Error: %1 on line %2, column %3" )
+                              .arg( XML_ErrorString( errorCode ) )
+                              .arg( XML_GetCurrentLineNumber( p ) )
+                              .arg( XML_GetCurrentColumnNumber( p ) );
+        QgsMessageLog::instance()->logMessage( errorString, tr( "WFS" ) );
+      }
     }
     QCoreApplication::processEvents();
   }
@@ -214,28 +223,22 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Polygon" )
   {
-    QList<unsigned char*> wkbList;
-    QList<int> wkbSizeList;
-    mCurrentWKBFragments.push_back( wkbList );
-    mCurrentWKBFragmentSizes.push_back( wkbSizeList );
+    mCurrentWKBFragments.push_back( QList<unsigned char*>() );
+    mCurrentWKBFragmentSizes.push_back( QList<int>() );
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiPoint" )
   {
     mParseModeStack.push( QgsGml::multiPoint );
     //we need one nested list for intermediate WKB
-    QList<unsigned char*> wkbList;
-    QList<int> wkbSizeList;
-    mCurrentWKBFragments.push_back( wkbList );
-    mCurrentWKBFragmentSizes.push_back( wkbSizeList );
+    mCurrentWKBFragments.push_back( QList<unsigned char*>() );
+    mCurrentWKBFragmentSizes.push_back( QList<int>() );
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiLineString" )
   {
     mParseModeStack.push( QgsGml::multiLine );
     //we need one nested list for intermediate WKB
-    QList<unsigned char*> wkbList;
-    QList<int> wkbSizeList;
-    mCurrentWKBFragments.push_back( wkbList );
-    mCurrentWKBFragmentSizes.push_back( wkbSizeList );
+    mCurrentWKBFragments.push_back( QList<unsigned char*>() );
+    mCurrentWKBFragmentSizes.push_back( QList<int>() );
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "MultiPolygon" )
   {
@@ -370,8 +373,16 @@ void QgsGml::endElement( const XML_Char* el )
       {
         //error
       }
-      mCurrentWKBFragments.begin()->push_back( wkb );
-      mCurrentWKBFragmentSizes.begin()->push_back( wkbSize );
+      if ( !mCurrentWKBFragments.isEmpty() )
+      {
+        mCurrentWKBFragments.last().push_back( wkb );
+        mCurrentWKBFragmentSizes.last().push_back( wkbSize );
+      }
+      else
+      {
+        QgsDebugMsg( "No wkb fragments" );
+      }
+
       //wkbList.push_back(wkb);
       //wkbSizeList.push_back(wkbSize);
       //mCurrentWKBFragments.push_back(wkbList);
@@ -409,8 +420,15 @@ void QgsGml::endElement( const XML_Char* el )
       {
         //error
       }
-      mCurrentWKBFragments.begin()->push_back( wkb );
-      mCurrentWKBFragmentSizes.begin()->push_back( wkbSize );
+      if ( !mCurrentWKBFragments.isEmpty() )
+      {
+        mCurrentWKBFragments.last().push_back( wkb );
+        mCurrentWKBFragmentSizes.last().push_back( wkbSize );
+      }
+      else
+      {
+        QgsDebugMsg( "no wkb fragments" );
+      }
       //wkbList.push_back(wkb);
       //wkbSizeList.push_back(wkbSize);
       //mCurrentWKBFragments.push_back(wkbList);
@@ -430,8 +448,15 @@ void QgsGml::endElement( const XML_Char* el )
     {
       //error
     }
-    mCurrentWKBFragments.begin()->push_back( wkb );
-    mCurrentWKBFragmentSizes.begin()->push_back( wkbSize );
+    if ( !mCurrentWKBFragments.isEmpty() )
+    {
+      mCurrentWKBFragments.last().push_back( wkb );
+      mCurrentWKBFragmentSizes.last().push_back( wkbSize );
+    }
+    else
+    {
+      QgsDebugMsg( "no wkb fragments" );
+    }
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Polygon" )
   {

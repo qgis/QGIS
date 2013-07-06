@@ -200,21 +200,23 @@ void TerminalDisplay::setVTFont( const QFont& f )
 
   QFontMetrics metrics( font );
 
-  if ( metrics.height() < height() && metrics.maxWidth() < width() )
-  {
-    // hint that text should be drawn without anti-aliasing.
-    // depending on the user's font configuration, this may not be respected
-    if ( !_antialiasText )
-      font.setStyleStrategy( QFont::NoAntialias );
+  // The condition checking if font is smaller than widget was causing #7340 (cursor shift)
+  // probably because this was called before the widget was rendered and got its size
+  //if ( metrics.height() < height() && metrics.maxWidth() < width() )
+  //{
+  // hint that text should be drawn without anti-aliasing.
+  // depending on the user's font configuration, this may not be respected
+  if ( !_antialiasText )
+    font.setStyleStrategy( QFont::NoAntialias );
 
-    // experimental optimization.  Konsole assumes that the terminal is using a
-    // mono-spaced font, in which case kerning information should have an effect.
-    // Disabling kerning saves some computation when rendering text.
-    font.setKerning( false );
+  // experimental optimization.  Konsole assumes that the terminal is using a
+  // mono-spaced font, in which case kerning information should have an effect.
+  // Disabling kerning saves some computation when rendering text.
+  font.setKerning( false );
 
-    QWidget::setFont( font );
-    fontChange( font );
-  }
+  QWidget::setFont( font );
+  fontChange( font );
+  //}
 }
 
 void TerminalDisplay::setFont( const QFont & )
@@ -803,7 +805,7 @@ void TerminalDisplay::scrollImage( int lines , const QRect& screenWindowRegion )
 QRegion TerminalDisplay::hotSpotRegion() const
 {
   QRegion region;
-  foreach( Filter::HotSpot* hotSpot , _filterChain->hotSpots() )
+  foreach ( Filter::HotSpot* hotSpot , _filterChain->hotSpots() )
   {
     QRect rect;
     rect.setLeft( hotSpot->startColumn() );
@@ -1080,9 +1082,13 @@ void TerminalDisplay::paintEvent( QPaintEvent* pe )
   QPainter paint( this );
 //qDebug("%s %d paintEvent %d %d", __FILE__, __LINE__, paint.window().top(), paint.window().right());
 
-  foreach( QRect rect, ( pe->region() & contentsRect() ).rects() )
+  const QColor background = _colorTable[DEFAULT_BACK_COLOR].color;
+  foreach ( QRect rect, ( pe->region() & contentsRect() ).rects() )
   {
-    drawBackground( paint, rect, palette().background().color(), true /* use opacity setting */ );
+    // setStyleSheet() changes background color -> use default
+    //drawBackground( paint, rect, palette().background().color(), true /* use opacity setting */ );
+    drawBackground( paint, rect, background, true );
+
     drawContents( paint, rect );
   }
 //    drawBackground(paint,contentsRect(),palette().background().color(), true /* use opacity setting */);

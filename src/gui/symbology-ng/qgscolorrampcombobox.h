@@ -20,7 +20,7 @@
 class QgsStyleV2;
 class QgsVectorColorRampV2;
 
-class QgsColorRampComboBox : public QComboBox
+class GUI_EXPORT QgsColorRampComboBox : public QComboBox
 {
     Q_OBJECT
   public:
@@ -39,10 +39,7 @@ class QgsColorRampComboBox : public QComboBox
 
     static QSize rampIconSize;
 
-  signals:
-
   public slots:
-
     void colorRampChanged( int index );
 
   protected:

@@ -71,21 +71,21 @@ when pressing on the tool dialog's Help button.""") )
 
   def setBinPath( self ):
     inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select directory with GDAL executables" ) )
-    if inputDir.isEmpty():
+    if not inputDir:
       return
 
     self.leGdalBinPath.setText( inputDir )
 
   def setPymodPath( self ):
     inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select directory with GDAL python modules" ) )
-    if inputDir.isEmpty():
+    if not inputDir:
       return
 
     self.leGdalPymodPath.setText( inputDir )
 
   def setHelpPath( self ):
     inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select directory with the GDAL documentation" ) )
-    if inputDir.isEmpty():
+    if not inputDir:
       return
 
     self.leGdalHelpPath.setText( inputDir )

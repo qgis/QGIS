@@ -39,13 +39,7 @@ extern "C"
 QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassProvider* p, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIterator( request ), P( p )
 {
-  // make sure that only one iterator is active
-  if ( P->mActiveIterator )
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Already active iterator on this provider was closed." ), QObject::tr( "GRASS" ) );
-    P->mActiveIterator->close();
-  }
-  P->mActiveIterator = this;
+  P->mActiveIterators << this;
 
   // check if outdated and update if necessary
   P->ensureUpdated();
@@ -149,6 +143,7 @@ bool QgsGrassFeatureIterator::nextFeature( QgsFeature& feature )
 
   feature.setValid( false );
   int cat = -1, type = -1, id = -1;
+  QgsFeatureId featureId = -1;
 
   QgsDebugMsgLevel( "entered.", 3 );
 
@@ -172,13 +167,19 @@ bool QgsGrassFeatureIterator::nextFeature( QgsFeature& feature )
   {
     Vect_cidx_get_cat_by_index( P->mMap, P->mCidxFieldIndex, mNextCidx++, &cat, &type, &id );
     // Warning: selection array is only of type line/area of current layer -> check type first
-
-    if ( filterById && id != mRequest.filterFid() )
-      continue;
-
     if ( !( type & P->mGrassType ) )
       continue;
 
+    // The 'id' is a unique id of a GRASS geometry object (point, line, area)
+    // but it cannot be used as QgsFeatureId because one geometry object may
+    // represent more features because it may have more categories.
+    featureId = makeFeatureId( id, cat );
+
+    if ( filterById && featureId != mRequest.filterFid() )
+      continue;
+
+    // it is correct to use id with mSelection because mSelection is only used
+    // for geometry selection
     if ( !mSelection[id] )
       continue;
 
@@ -190,11 +191,9 @@ bool QgsGrassFeatureIterator::nextFeature( QgsFeature& feature )
     close();
     return false; // No more features
   }
-#if QGISDEBUG > 3
-  QgsDebugMsg( QString( "cat = %1 type = %2 id = %3" ).arg( cat ).arg( type ).arg( id ) );
-#endif
+  QgsDebugMsgLevel( QString( "cat = %1 type = %2 id = %3 fatureId = %4" ).arg( cat ).arg( type ).arg( id ).arg( featureId ), 3 );
 
-  feature.setFeatureId( id );
+  feature.setFeatureId( featureId );
   feature.initAttributes( P->fields().count() );
   feature.setFields( &P->fields() ); // allow name-based attribute lookups
 
@@ -237,15 +236,14 @@ bool QgsGrassFeatureIterator::close()
   if ( mClosed )
     return false;
 
+  P->mActiveIterators.remove( this );
+
   // finalization
   Vect_destroy_line_struct( mPoints );
   Vect_destroy_cats_struct( mCats );
   Vect_destroy_list( mList );
 
   free( mSelection );
-
-  // tell provider that this iterator is not active anymore
-  P->mActiveIterator = 0;
 
   mClosed = true;
   return true;
@@ -394,4 +392,11 @@ void QgsGrassFeatureIterator::setFeatureGeometry( QgsFeature& feature, int id, i
   }
 
   feature.setGeometryAndOwnership( wkb, wkbsize );
+}
+
+QgsFeatureId QgsGrassFeatureIterator::makeFeatureId( int grassId, int cat )
+{
+  // Because GRASS object id and category are both int and QgsFeatureId is qint64
+  // we can create unique QgsFeatureId from GRASS id and cat
+  return ( QgsFeatureId )grassId * 1000000000 + cat;
 }

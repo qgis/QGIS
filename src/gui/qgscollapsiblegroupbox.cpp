@@ -191,7 +191,7 @@ void QgsCollapsibleGroupBoxBasic::setSyncGroup( QString grp )
   QString tipTxt = QString( "" );
   if ( !grp.isEmpty() )
   {
-    tipTxt = tr( "Ctrl(or Alt)-click to toggle all" ) + "\n" + tr( "Shift-click to expand, then collapse others" );
+    tipTxt = tr( "Ctrl (or Alt)-click to toggle all" ) + "\n" + tr( "Shift-click to expand, then collapse others" );
   }
   mCollapseButton->setToolTip( tipTxt );
 }

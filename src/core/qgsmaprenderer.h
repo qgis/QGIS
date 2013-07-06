@@ -46,9 +46,9 @@ class QgsDiagramLayerSettings;
 class CORE_EXPORT QgsLabelPosition
 {
   public:
-    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, const QString& labeltext, bool upside_down, bool diagram = false, bool pinned = false ):
-        featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), labelText( labeltext ), upsideDown( upside_down ), isDiagram( diagram ), isPinned( pinned ) {}
-    QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), labelText( "" ), upsideDown( false ), isDiagram( false ), isPinned( false ) {}
+    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, const QString& labeltext, const QFont& labelfont, bool upside_down, bool diagram = false, bool pinned = false ):
+        featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), labelText( labeltext ), labelFont( labelfont ), upsideDown( upside_down ), isDiagram( diagram ), isPinned( pinned ) {}
+    QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), labelText( "" ), labelFont( QFont() ), upsideDown( false ), isDiagram( false ), isPinned( false ) {}
     int featureId;
     double rotation;
     QVector< QgsPoint > cornerPoints;
@@ -57,6 +57,7 @@ class CORE_EXPORT QgsLabelPosition
     double height;
     QString layerID;
     QString labelText;
+    QFont labelFont;
     bool upsideDown;
     bool isDiagram;
     bool isPinned;
@@ -75,6 +76,12 @@ class CORE_EXPORT QgsLabelingEngineInterface
     virtual void init( QgsMapRenderer* mp ) = 0;
     //! called to find out whether the layer is used for labeling
     virtual bool willUseLayer( QgsVectorLayer* layer ) = 0;
+    //! clears all PAL layer settings for registered layers
+    //! @note: this method was added in version 1.9
+    virtual void clearActiveLayers() = 0;
+    //! clears data defined objects from PAL layer settings for a registered layer
+    //! @note: this method was added in version 1.9
+    virtual void clearActiveLayer( QgsVectorLayer* layer ) = 0;
     //! called when starting rendering of a layer
     //! @note: this method was added in version 1.6
     virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx ) = 0;

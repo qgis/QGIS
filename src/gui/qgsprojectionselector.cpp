@@ -76,7 +76,7 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name,
       if ( ! crs.isValid() )
       {
         // Couldn't create from EPSG, try the Proj4 string instead
-        if ( ! crs.createFromProj4( projectionsProj4.at( i ) ) )
+        if ( i >= projectionsProj4.size() || !crs.createFromProj4( projectionsProj4.at( i ) ) )
         {
           // No? Skip this entry
           continue;
@@ -273,6 +273,7 @@ void QgsProjectionSelector::applySelection( int column, QString value )
     lstCoordinateSystems->clearSelection();
     lstRecent->clearSelection();
     teProjection->setText( "" );
+    teSelected->setText( "" );
   }
 }
 
@@ -720,6 +721,7 @@ void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWid
     emit sridSelected( QString::number( selectedCrsId() ) );
 
     teProjection->setText( selectedProj4String() );
+    teSelected->setText( selectedName() );
 
     QList<QTreeWidgetItem*> nodes = lstRecent->findItems( current->text( QGIS_CRS_ID_COLUMN ), Qt::MatchExactly, QGIS_CRS_ID_COLUMN );
     if ( nodes.count() > 0 )
@@ -739,6 +741,7 @@ void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWid
     // Not an CRS - remove the highlight so the user doesn't get too confused
     current->setSelected( false );
     teProjection->setText( "" );
+    teSelected->setText( "" );
     lstRecent->clearSelection();
   }
 }
@@ -775,6 +778,7 @@ void QgsProjectionSelector::hideDeprecated( QTreeWidgetItem *item )
     {
       item->setSelected( false );
       teProjection->setText( "" );
+      teSelected->setText( "" );
     }
   }
 

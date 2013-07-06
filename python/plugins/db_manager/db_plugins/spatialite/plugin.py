@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -71,7 +71,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
 		if not settings.contains( "sqlitepath" ): # non-existent entry?
 			raise InvalidDataException( u'there is no defined database connection "%s".' % conn_name )
 
-		database = unicode(settings.value("sqlitepath").toString())
+		database = settings.value("sqlitepath")
 
 		import qgis.core
 		uri = qgis.core.QgsDataSourceURI()
@@ -107,8 +107,8 @@ class SLDatabase(Database):
 
 
 	def registerDatabaseActions(self, mainWindow):
-		action = QAction("Run &Vacuum", self)
-		mainWindow.registerAction( action, "&Database", self.runVacuumActionSlot )
+		action = QAction(self.tr("Run &Vacuum"), self)
+		mainWindow.registerAction( action, self.tr("&Database"), self.runVacuumActionSlot )
 
 		Database.registerDatabaseActions(self, mainWindow)
 
@@ -116,7 +116,7 @@ class SLDatabase(Database):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, (DBPlugin, Table)) or item.database() == None:
-				QMessageBox.information(parent, "Sorry", "No database selected or you are not connected to it.")
+				QMessageBox.information(parent, self.tr("Sorry"), self.tr("No database selected or you are not connected to it."))
 				return
 		finally:
 			QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -217,11 +217,11 @@ class SLRasterTable(SLTable, RasterTable):
 	def gdalUri(self):
 		uri = self.database().uri()
 		gdalUri = u'RASTERLITE:%s,table=%s' % (uri.database(), self.prefixName)
-		return QString( gdalUri )
+		return gdalUri
 
 	def mimeUri(self):
 		uri = u"raster:gdal:%s:%s" % (self.name, self.gdalUri())
-		return QString( uri )
+		return uri
 
 	def toMapLayer(self):
 		from qgis.core import QgsRasterLayer

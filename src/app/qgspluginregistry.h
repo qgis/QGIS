@@ -34,7 +34,7 @@ class QString;
 *
 * plugin key is:
 * - C++ plugins: base name of plugin library, e.g. libgrassplugin
-* - Python plugins: module name (directory) of plugin, e.g. plugin_installer
+* - Python plugins: module name (directory) of plugin, e.g. db_manager
 */
 class QgsPluginRegistry
 {
@@ -46,7 +46,7 @@ class QgsPluginRegistry
     void setQgisInterface( QgisInterface* iface );
 
     //! Check whether this module is loaded
-    bool isLoaded( QString key );
+    bool isLoaded( QString key ) const;
 
     //! Retrieve library of the plugin
     QString library( QString key );
@@ -55,7 +55,7 @@ class QgsPluginRegistry
     QgisPlugin * plugin( QString key );
 
     //! Return whether the plugin is pythonic
-    bool isPythonPlugin( QString key );
+    bool isPythonPlugin( QString key ) const;
 
     //! Add a plugin to the map of loaded plugins
     void addPlugin( QString key, QgsPluginMetadata metadata );
@@ -77,13 +77,18 @@ class QgsPluginRegistry
     //! Python plugin loader
     void loadPythonPlugin( QString packageName );
 
+    //! C++ plugin unloader
+    void unloadCppPlugin( QString theFullPathName );
+    //! Python plugin unloader
+    void unloadPythonPlugin( QString packageName );
+
     //! Overloaded version of the next method that will load from multiple directories not just one
     void restoreSessionPlugins( QStringList thePluginDirList );
     //! Load any plugins used in the last qgis session
     void restoreSessionPlugins( QString thePluginDirString );
 
     //! Check whether plugin is compatible with current version of QGIS
-    bool isPythonPluginCompatible( QString packageName );
+    bool isPythonPluginCompatible( QString packageName ) const;
 
     //! Returns metadata of all loaded plugins
     QList<QgsPluginMetadata*> pluginData();
@@ -97,8 +102,9 @@ class QgsPluginRegistry
     //! Try to load and get metadata from Python plugin, return true on success
     bool checkPythonPlugin( QString packageName );
 
-    //! Check current QGIS version against plugin's minimal requested QGIS version
-    bool checkQgisVersion( QString minVersion );
+    //! Check current QGIS version against requested minimal and optionally maximal QGIS version
+    //! if maxVersion not specified, the default value is assumed: floor(minVersion) + 0.99.99
+    bool checkQgisVersion( QString minVersion, QString maxVersion = "" ) const;
 
   private:
     static QgsPluginRegistry* _instance;

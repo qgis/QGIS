@@ -353,20 +353,37 @@ static GEOSGeometry *createGeosLinearRing( const QgsPolyline& polyline )
 
 static GEOSGeometry *createGeosPolygon( const QVector<GEOSGeometry*> &rings )
 {
-  GEOSGeometry *shell = rings[0];
+  GEOSGeometry *shell;
+
+  if ( rings.size() == 0 )
+  {
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+    ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
+    return GEOSGeom_createEmptyPolygon();
+#else
+    shell = GEOSGeom_createLinearRing( GEOSCoordSeq_create( 0, 2 ) );
+#endif
+  }
+  else
+  {
+    shell = rings[0];
+  }
+
   GEOSGeometry **holes = NULL;
+  int nHoles = 0;
 
   if ( rings.size() > 1 )
   {
-    holes = new GEOSGeometry*[ rings.size()-1 ];
+    nHoles = rings.size() - 1;
+    holes = new GEOSGeometry*[ nHoles ];
     if ( !holes )
       return 0;
 
-    for ( int i = 0; i < rings.size() - 1; i++ )
+    for ( int i = 0; i < nHoles; i++ )
       holes[i] = rings[i+1];
   }
 
-  GEOSGeometry *geom = GEOSGeom_createPolygon( shell, holes, rings.size() - 1 );
+  GEOSGeometry *geom = GEOSGeom_createPolygon( shell, holes, nHoles );
 
   if ( holes )
     delete [] holes;
@@ -588,7 +605,7 @@ void QgsGeometry::fromWkb( unsigned char * wkb, size_t length )
   mDirtyGeos  = true;
 }
 
-unsigned char * QgsGeometry::asWkb()
+const unsigned char * QgsGeometry::asWkb() const
 {
   if ( mDirtyWkb )
   {
@@ -599,7 +616,7 @@ unsigned char * QgsGeometry::asWkb()
   return mGeometry;
 }
 
-size_t QgsGeometry::wkbSize()
+size_t QgsGeometry::wkbSize() const
 {
   if ( mDirtyWkb )
   {
@@ -609,7 +626,7 @@ size_t QgsGeometry::wkbSize()
   return mGeometrySize;
 }
 
-GEOSGeometry* QgsGeometry::asGeos()
+const GEOSGeometry* QgsGeometry::asGeos() const
 {
   if ( mDirtyGeos )
   {
@@ -622,9 +639,9 @@ GEOSGeometry* QgsGeometry::asGeos()
 }
 
 
-QGis::WkbType QgsGeometry::wkbType()
+QGis::WkbType QgsGeometry::wkbType() const
 {
-  unsigned char *geom = asWkb(); // ensure that wkb representation exists
+  const unsigned char *geom = asWkb(); // ensure that wkb representation exists
   if ( geom && wkbSize() >= 5 )
   {
     unsigned int wkbType;
@@ -3841,7 +3858,7 @@ QgsRectangle QgsGeometry::boundingBox()
   return QgsRectangle( xmin, ymin, xmax, ymax );
 }
 
-bool QgsGeometry::intersects( const QgsRectangle& r )
+bool QgsGeometry::intersects( const QgsRectangle& r ) const
 {
   QgsGeometry* g = fromRect( r );
   bool res = intersects( g );
@@ -3849,7 +3866,7 @@ bool QgsGeometry::intersects( const QgsRectangle& r )
   return res;
 }
 
-bool QgsGeometry::intersects( QgsGeometry* geometry )
+bool QgsGeometry::intersects( const QgsGeometry* geometry ) const
 {
   try // geos might throw exception on error
   {
@@ -3869,7 +3886,7 @@ bool QgsGeometry::intersects( QgsGeometry* geometry )
 }
 
 
-bool QgsGeometry::contains( QgsPoint* p )
+bool QgsGeometry::contains( const QgsPoint* p ) const
 {
   exportWkbToGeos();
 
@@ -3902,8 +3919,8 @@ bool QgsGeometry::contains( QgsPoint* p )
 
 bool QgsGeometry::geosRelOp(
   char( *op )( const GEOSGeometry*, const GEOSGeometry * ),
-  QgsGeometry *a,
-  QgsGeometry *b )
+  const QgsGeometry *a,
+  const QgsGeometry *b )
 {
   try // geos might throw exception on error
   {
@@ -3921,42 +3938,42 @@ bool QgsGeometry::geosRelOp(
   CATCH_GEOS( false )
 }
 
-bool QgsGeometry::contains( QgsGeometry* geometry )
+bool QgsGeometry::contains( const QgsGeometry* geometry ) const
 {
   return geosRelOp( GEOSContains, this, geometry );
 }
 
-bool QgsGeometry::disjoint( QgsGeometry* geometry )
+bool QgsGeometry::disjoint( const QgsGeometry* geometry ) const
 {
   return geosRelOp( GEOSDisjoint, this, geometry );
 }
 
-bool QgsGeometry::equals( QgsGeometry* geometry )
+bool QgsGeometry::equals( const QgsGeometry* geometry ) const
 {
   return geosRelOp( GEOSEquals, this, geometry );
 }
 
-bool QgsGeometry::touches( QgsGeometry* geometry )
+bool QgsGeometry::touches( const QgsGeometry* geometry ) const
 {
   return geosRelOp( GEOSTouches, this, geometry );
 }
 
-bool QgsGeometry::overlaps( QgsGeometry* geometry )
+bool QgsGeometry::overlaps( const QgsGeometry* geometry ) const
 {
   return geosRelOp( GEOSOverlaps, this, geometry );
 }
 
-bool QgsGeometry::within( QgsGeometry* geometry )
+bool QgsGeometry::within( const QgsGeometry* geometry ) const
 {
   return geosRelOp( GEOSWithin, this, geometry );
 }
 
-bool QgsGeometry::crosses( QgsGeometry* geometry )
+bool QgsGeometry::crosses( const QgsGeometry* geometry ) const
 {
   return geosRelOp( GEOSCrosses, this, geometry );
 }
 
-QString QgsGeometry::exportToWkt()
+QString QgsGeometry::exportToWkt() const
 {
   QgsDebugMsg( "entered." );
 
@@ -4236,7 +4253,7 @@ QString QgsGeometry::exportToWkt()
   }
 }
 
-QString QgsGeometry::exportToGeoJSON()
+QString QgsGeometry::exportToGeoJSON() const
 {
   QgsDebugMsg( "entered." );
 
@@ -4527,7 +4544,7 @@ QString QgsGeometry::exportToGeoJSON()
 }
 
 
-bool QgsGeometry::exportWkbToGeos()
+bool QgsGeometry::exportWkbToGeos() const
 {
   QgsDebugMsgLevel( "entered.", 3 );
 
@@ -4777,7 +4794,7 @@ bool QgsGeometry::exportWkbToGeos()
   return true;
 }
 
-bool QgsGeometry::exportGeosToWkb()
+bool QgsGeometry::exportGeosToWkb() const
 {
   //QgsDebugMsg("entered.");
   if ( !mDirtyWkb )
@@ -6153,7 +6170,7 @@ int QgsGeometry::mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitRes
   return 0;
 }
 
-QgsPoint QgsGeometry::asPoint( unsigned char*& ptr, bool hasZValue )
+QgsPoint QgsGeometry::asPoint( unsigned char*& ptr, bool hasZValue ) const
 {
   ptr += 5;
   double* x = ( double * )( ptr );
@@ -6167,7 +6184,7 @@ QgsPoint QgsGeometry::asPoint( unsigned char*& ptr, bool hasZValue )
 }
 
 
-QgsPolyline QgsGeometry::asPolyline( unsigned char*& ptr, bool hasZValue )
+QgsPolyline QgsGeometry::asPolyline( unsigned char*& ptr, bool hasZValue ) const
 {
   double x, y;
   ptr += 5;
@@ -6194,7 +6211,7 @@ QgsPolyline QgsGeometry::asPolyline( unsigned char*& ptr, bool hasZValue )
 }
 
 
-QgsPolygon QgsGeometry::asPolygon( unsigned char*& ptr, bool hasZValue )
+QgsPolygon QgsGeometry::asPolygon( unsigned char*& ptr, bool hasZValue ) const
 {
   double x, y;
 
@@ -6236,7 +6253,7 @@ QgsPolygon QgsGeometry::asPolygon( unsigned char*& ptr, bool hasZValue )
 }
 
 
-QgsPoint QgsGeometry::asPoint()
+QgsPoint QgsGeometry::asPoint() const
 {
   QGis::WkbType type = wkbType();
   if ( type != QGis::WKBPoint && type != QGis::WKBPoint25D )
@@ -6246,7 +6263,7 @@ QgsPoint QgsGeometry::asPoint()
   return asPoint( ptr, type == QGis::WKBPoint25D );
 }
 
-QgsPolyline QgsGeometry::asPolyline()
+QgsPolyline QgsGeometry::asPolyline() const
 {
   QGis::WkbType type = wkbType();
   if ( type != QGis::WKBLineString && type != QGis::WKBLineString25D )
@@ -6256,7 +6273,7 @@ QgsPolyline QgsGeometry::asPolyline()
   return asPolyline( ptr, type == QGis::WKBLineString25D );
 }
 
-QgsPolygon QgsGeometry::asPolygon()
+QgsPolygon QgsGeometry::asPolygon() const
 {
   QGis::WkbType type = wkbType();
   if ( type != QGis::WKBPolygon && type != QGis::WKBPolygon25D )
@@ -6266,7 +6283,7 @@ QgsPolygon QgsGeometry::asPolygon()
   return asPolygon( ptr, type == QGis::WKBPolygon25D );
 }
 
-QgsMultiPoint QgsGeometry::asMultiPoint()
+QgsMultiPoint QgsGeometry::asMultiPoint() const
 {
   QGis::WkbType type = wkbType();
   if ( type != QGis::WKBMultiPoint && type != QGis::WKBMultiPoint25D )
@@ -6287,7 +6304,7 @@ QgsMultiPoint QgsGeometry::asMultiPoint()
   return points;
 }
 
-QgsMultiPolyline QgsGeometry::asMultiPolyline()
+QgsMultiPolyline QgsGeometry::asMultiPolyline() const
 {
   QGis::WkbType type = wkbType();
   if ( type != QGis::WKBMultiLineString && type != QGis::WKBMultiLineString25D )
@@ -6309,7 +6326,7 @@ QgsMultiPolyline QgsGeometry::asMultiPolyline()
   return lines;
 }
 
-QgsMultiPolygon QgsGeometry::asMultiPolygon()
+QgsMultiPolygon QgsGeometry::asMultiPolygon() const
 {
   QGis::WkbType type = wkbType();
   if ( type != QGis::WKBMultiPolygon && type != QGis::WKBMultiPolygon25D )
@@ -6548,6 +6565,11 @@ QgsGeometry* QgsGeometry::combine( QgsGeometry* geometry )
   try
   {
     GEOSGeometry* unionGeom = GEOSUnion( mGeos, geometry->mGeos );
+    if ( !unionGeom )
+    {
+      return 0;
+    }
+
     if ( type() == QGis::Line )
     {
       GEOSGeometry* mergedGeom = GEOSLineMerge( unionGeom );
@@ -6618,7 +6640,7 @@ QgsGeometry* QgsGeometry::symDifference( QgsGeometry* geometry )
   CATCH_GEOS( 0 )
 }
 
-QList<QgsGeometry*> QgsGeometry::asGeometryCollection()
+QList<QgsGeometry*> QgsGeometry::asGeometryCollection() const
 {
   if ( mDirtyGeos )
   {
@@ -6831,7 +6853,7 @@ bool QgsGeometry::isGeosValid()
 {
   try
   {
-    GEOSGeometry *g = asGeos();
+    const GEOSGeometry *g = asGeos();
 
     if ( !g )
       return false;
@@ -6854,7 +6876,7 @@ bool QgsGeometry::isGeosEmpty()
 {
   try
   {
-    GEOSGeometry *g = asGeos();
+    const GEOSGeometry *g = asGeos();
 
     if ( !g )
       return false;

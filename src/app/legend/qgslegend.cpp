@@ -34,6 +34,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsclipboard.h"
+#include "qgsmessagelog.h"
 
 #include <QFont>
 #include <QDomDocument>
@@ -1453,7 +1454,7 @@ void QgsLegend::setDrawingOrder( QList<QgsMapLayer *> layers )
   updateMapCanvasLayerSet();
 }
 
-void QgsLegend::setDrawingOrder( const QList<DrawingOrderInfo>& order )
+void QgsLegend::setDrawingOrder( const QList<DrawingOrderInfo> &order )
 {
   QList<QgsMapCanvasLayer> layers;
 
@@ -1680,7 +1681,7 @@ bool QgsLegend::writeXML( QDomNode &legendnode, QDomDocument &document )
 
 bool QgsLegend::writeXML( QList<QTreeWidgetItem *> items, QDomNode &node, QDomDocument &document )
 {
-  foreach ( QTreeWidgetItem * currentItem, items )
+  foreach ( QTreeWidgetItem *currentItem, items )
   {
     QgsLegendItem *item = dynamic_cast<QgsLegendItem *>( currentItem );
     if ( !item )
@@ -1827,6 +1828,9 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
     bkMapExtent = mMapCanvas->extent();
   }
 
+  QString activeLayerId = node.toElement().attribute( "activeLayer" );
+  QgsLegendLayer *activeLayer = 0;
+
   const QDomNodeList &l = node.childNodes();
   for ( int i = 0; i < l.count(); i++ )
   {
@@ -1841,11 +1845,14 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
       if ( childelem.attribute( "embedded" ) == "1" )
       {
         theGroup = addEmbeddedGroup( name, QgsProject::instance()->readPath( childelem.attribute( "project" ) ) );
-        if ( childelem.hasAttribute( "drawingOrder" ) )
+        if ( theGroup )
         {
-          theGroup->setDrawingOrder( childelem.attribute( "drawingOrder" ).toInt() );
+          if ( childelem.hasAttribute( "drawingOrder" ) )
+          {
+            theGroup->setDrawingOrder( childelem.attribute( "drawingOrder" ).toInt() );
+          }
+          updateGroupCheckStates( theGroup );
         }
-        updateGroupCheckStates( theGroup );
       }
       else
       {
@@ -1898,6 +1905,9 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
       {
         continue;
       }
+
+      if ( currentLayer->layer() && currentLayer->layer()->id() == activeLayerId )
+        activeLayer = currentLayer;
 
       if ( currentLayer->layer() && !QgsProject::instance()->layerIsEmbedded( currentLayer->layer()->id() ).isEmpty() )
       {
@@ -1959,11 +1969,15 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
     }
   }
 
+  if ( activeLayer )
+    setCurrentItem( activeLayer );
+
   //restore canvas extent (could be changed by addLayer calls)
   if ( !bkMapExtent.isEmpty() )
   {
     mMapCanvas->setExtent( bkMapExtent );
   }
+
   return true;
 }
 
@@ -1971,10 +1985,24 @@ bool QgsLegend::readXML( QDomNode& legendnode )
 {
   clear(); //remove all items first
   mEmbeddedGroups.clear();
-  mUpdateDrawingOrder = legendnode.toElement().attribute( "updateDrawingOrder", "true" ) == "true";
+
+  mUpdateDrawingOrder = true;
+
+  if ( !readXML( 0, legendnode ) )
+    return false;
+
+  if ( legendnode.toElement().attribute( "updateDrawingOrder", "true" ) != "true" )
+  {
+    if ( !verifyDrawingOrder() )
+      QgsMessageLog::logMessage( tr( "Not fully defined drawing order set to legend order." ), tr( "Legend" ), QgsMessageLog::WARNING );
+
+    mUpdateDrawingOrder = false;
+  }
+
   emit updateDrawingOrderChecked( mUpdateDrawingOrder );
   emit updateDrawingOrderUnchecked( !mUpdateDrawingOrder );
-  return readXML( 0, legendnode );
+
+  return true;
 }
 
 QgsLegendLayer* QgsLegend::readLayerFromXML( QDomElement& childelem, bool& isOpen )
@@ -2650,6 +2678,15 @@ void QgsLegend::legendLayerZoom()
     QgsMapLayer* theLayer = currentLayer->layer();
     extent = theLayer->extent();
 
+    QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( theLayer );
+
+    if ( extent.isEmpty() && vLayer )
+    {
+      vLayer->updateExtents();
+      extent = vLayer->extent();
+    }
+
+
     //transform extent if otf-projection is on
     if ( mMapCanvas->hasCrsTransformEnabled() )
     {
@@ -2671,6 +2708,14 @@ void QgsLegend::legendLayerZoom()
     {
       QgsMapLayer* theLayer = layers.at( i )->layer();
       layerExtent = theLayer->extent();
+
+      QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( theLayer );
+
+      if ( extent.isEmpty() && vLayer )
+      {
+        vLayer->updateExtents();
+        layerExtent = vLayer->extent();
+      }
 
       //transform extent if otf-projection is on
       if ( mMapCanvas->hasCrsTransformEnabled() )
@@ -2794,6 +2839,8 @@ void QgsLegend::writeProject( QDomDocument & doc )
 
   QDomElement mapcanvasNode = doc.createElement( "legend" );
   mapcanvasNode.setAttribute( "updateDrawingOrder", mUpdateDrawingOrder ? "true" : "false" );
+  if ( currentLayer() )
+    mapcanvasNode.setAttribute( "activeLayer", currentLayer()->id() );
   qgisNode.appendChild( mapcanvasNode );
   writeXML( mapcanvasNode, doc );
 }
@@ -2946,10 +2993,39 @@ bool QgsLegend::groupEmbedded( QTreeWidgetItem* item ) const
   return mEmbeddedGroups.contains( gItem->text( 0 ) );
 }
 
+bool QgsLegend::verifyDrawingOrder()
+{
+  Q_ASSERT( mUpdateDrawingOrder );
+
+  // check if the drawing order wasn't already initially set
+  bool hasUndefinedOrder = false;
+  for ( QTreeWidgetItemIterator it( this ); *it && !hasUndefinedOrder; it++ )
+  {
+    QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( *it );
+    hasUndefinedOrder |= ll && ll->drawingOrder() < 0;
+  }
+
+  if ( !hasUndefinedOrder )
+    return true;
+
+  int i = 0;
+  foreach ( QgsLegendLayer *ll, legendLayers() )
+  {
+    ll->setDrawingOrder( i++ );
+  }
+
+  return false;
+}
+
 void QgsLegend::setUpdateDrawingOrder( bool updateDrawingOrder )
 {
   if ( mUpdateDrawingOrder == updateDrawingOrder )
     return;
+
+  if ( !updateDrawingOrder )
+  {
+    verifyDrawingOrder();
+  }
 
   mUpdateDrawingOrder = updateDrawingOrder;
 

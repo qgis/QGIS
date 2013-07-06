@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -50,9 +50,9 @@ class PGTableDataModel(TableDataModel):
 
 	def _sanitizeTableField(self, field):
 		# get fields, ignore geometry columns
-		if QString(field.dataType).toLower() == "geometry":
+		if field.dataType.lower() == "geometry":
 			return u"CASE WHEN %(fld)s IS NULL THEN NULL ELSE GeometryType(%(fld)s) END AS %(fld)s" % {'fld': self.db.quoteId(field.name)}
-		elif QString(field.dataType).toLower() == "raster":
+		elif field.dataType.lower() == "raster":
 			return u"CASE WHEN %(fld)s IS NULL THEN NULL ELSE 'RASTER' END AS %(fld)s" % {'fld': self.db.quoteId(field.name)}
 		return u"%s::text" % self.db.quoteId(field.name)
 

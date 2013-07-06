@@ -44,8 +44,8 @@ MAP
 
   WEB
     METADATA
-      "wcs_label"               "Quantum GIS WCS Test"
-      "wcs_description"         "Test server to be used by Quantum GIS test suite"
+      "wcs_label"               "QGIS WCS Test"
+      "wcs_description"         "Test server to be used by QGIS test suite"
       #"wcs_onlineresource"      "http://127.0.0.1/cgi-bin/mapserv?" ### recommended
       "wcs_crs"                 "EPSG:4326"
       "wcs_fees"                "none"

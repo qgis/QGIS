@@ -53,8 +53,7 @@ class DL_NullStrExc : public DL_Exception {}
  */
 class DL_GroupCodeExc : public DL_Exception
 {
-    DL_GroupCodeExc( int gc = 0 ) : groupCode( gc ) {}
-    int groupCode;
+    DL_GroupCodeExc() {}
 };
 #endif
 

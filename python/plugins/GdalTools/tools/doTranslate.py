@@ -33,6 +33,8 @@ from widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget
 from dialogSRS import GdalToolsSRSDialog as SRSDialog
 import GdalTools_utils as Utils
 
+import re
+
 class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
   def __init__(self, iface):
@@ -124,7 +126,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
   def fillInputFile( self ):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       inputFile = Utils.FileDialog.getOpenFileName( self, self.tr( "Select the input file for Translate" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if inputFile.isEmpty():
+      if not inputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
 
@@ -135,7 +137,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
   def fillInputDir( self ):
       inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files to Translate" ))
-      if inputDir.isEmpty():
+      if not inputDir:
         return
       self.inSelector.setFilename( inputDir )
 
@@ -145,11 +147,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       workDir.setNameFilters( filter )
 
       # search for a valid SRS, then use it as default target SRS
-      srs = QString()
+      srs = ''
       for fname in workDir.entryList():
         fl = inputDir + "/" + fname
         srs = Utils.getRasterSRS( self, fl )
-        if not srs.isEmpty():
+        if srs:
           break
       self.targetSRSEdit.setText( srs )
 
@@ -157,7 +159,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if outputFile.isEmpty():
+      if not outputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -166,7 +168,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
   def fillOutputDir( self ):
       outputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the output directory to save the results to" ) )
-      if outputDir.isEmpty():
+      if not outputDir:
         return
       self.outSelector.setFilename( outputDir )
 
@@ -184,28 +186,28 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         self.targetSRSEdit.setText(dialog.getProjection())
 
   def getArguments(self):
-      arguments = QStringList()
-      if self.targetSRSCheck.isChecked() and not self.targetSRSEdit.text().isEmpty():
-        arguments << "-a_srs"
-        arguments << self.targetSRSEdit.text()
+      arguments = []
+      if self.targetSRSCheck.isChecked() and self.targetSRSEdit.text():
+        arguments.append( "-a_srs")
+        arguments.append( self.targetSRSEdit.text())
       if self.creationOptionsGroupBox.isChecked():
         for opt in self.creationOptionsWidget.options():
-          arguments << "-co" << opt
+          arguments.extend( [ "-co", opt ] )
       if self.outsizeCheck.isChecked() and self.outsizeSpin.value() != 100:
-          arguments << "-outsize"
-          arguments << self.outsizeSpin.text()
-          arguments << self.outsizeSpin.text()
+          arguments.append( "-outsize")
+          arguments.append( self.outsizeSpin.text())
+          arguments.append( self.outsizeSpin.text())
       if self.expandCheck.isChecked():
-          arguments << "-expand"
-          arguments << self.expand_method[self.expandCombo.currentIndex()]
+          arguments.append( "-expand")
+          arguments.append( self.expand_method[self.expandCombo.currentIndex()])
       if self.nodataCheck.isChecked():
-          arguments << "-a_nodata"
-          arguments << str(self.nodataSpin.value())
+          arguments.append( "-a_nodata")
+          arguments.append( str(self.nodataSpin.value()))
       if self.sdsCheck.isChecked():
-          arguments << "-sds"
-      if self.srcwinCheck.isChecked() and not self.srcwinEdit.text().isEmpty():
-          coordList = self.srcwinEdit.text().split( ' ', QString.SkipEmptyParts )
-          if len(coordList) == 4 and not coordList[3].isEmpty():
+          arguments.append( "-sds")
+      if self.srcwinCheck.isChecked() and self.srcwinEdit.text():
+          coordList = self.srcwinEdit.text().split() # split the string on whitespace(s)
+          if len(coordList) == 4 and coordList[3]:
               try:
                   for x in coordList:
                       test = int(x)
@@ -213,12 +215,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
                   #print "Coordinates must be integer numbers."
                   QMessageBox.critical(self, self.tr("Translate - srcwin"), self.tr("Image coordinates (pixels) must be integer numbers."))
               else:
-                  arguments << "-srcwin"
+                  arguments.append( "-srcwin")
                   for x in coordList:
-                      arguments << x
-      if self.prjwinCheck.isChecked() and not self.prjwinEdit.text().isEmpty():
-          coordList = self.prjwinEdit.text().split( ' ', QString.SkipEmptyParts )
-          if len(coordList) == 4 and not coordList[3].isEmpty():
+                      arguments.append( x)
+      if self.prjwinCheck.isChecked() and self.prjwinEdit.text():
+          coordList = self.prjwinEdit.text().split() # split the string on whitespace(s)
+          if len(coordList) == 4 and coordList[3]:
               try:
                   for x in coordList:
                       test = float(x)
@@ -226,23 +228,23 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
                   #print "Coordinates must be integer numbers."
                   QMessageBox.critical(self, self.tr("Translate - prjwin"), self.tr("Image coordinates (geographic) must be numbers."))
               else:
-                  arguments << "-projwin"
+                  arguments.append( "-projwin")
                   for x in coordList:
-                    arguments << x
+                    arguments.append( x)
       if self.isBatchEnabled():
         if self.formatCombo.currentIndex() != 0:
-          arguments << "-of"
-          arguments << Utils.fillRasterOutputFormat( self.formatCombo.currentText() )
+          arguments.append( "-of")
+          arguments.append( Utils.fillRasterOutputFormat( self.formatCombo.currentText() ))
           return arguments
         else:
           return arguments
 
       outputFn = self.getOutputFileName()
-      if not outputFn.isEmpty():
-        arguments << "-of"
-        arguments << self.outputFormat
-      arguments << self.getInputFileName()
-      arguments << outputFn
+      if outputFn:
+        arguments.append( "-of")
+        arguments.append( self.outputFormat)
+      arguments.append( self.getInputFileName())
+      arguments.append( outputFn)
 
       # set creation options filename/layer for validation
       if self.inSelector.layer():
@@ -274,9 +276,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         self.progressBar.setValue( 0 )
 
   def batchRun(self):
-      exts = self.formatCombo.currentText().remove( QRegExp('^.*\(') ).remove( QRegExp('\).*$') ).split( " " )
-      if not exts.isEmpty() and exts != "*" and exts != "*.*":
-        outExt = exts[ 0 ].remove( "*" )
+      exts = re.sub('\).*$', '', re.sub('^.*\(', '', self.formatCombo.currentText())).split(" ")
+      if len(exts) > 0 and exts[0] != "*" and exts[0] != "*.*":
+        outExt = exts[0].replace( "*", "" )
       else:
         outExt = ".tif"
 
@@ -298,10 +300,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       for f in files:
         self.inFiles.append( inDir + "/" + f )
         if outDir != None:
-          outFile = f.replace( QRegExp( "\.[a-zA-Z0-9]{2,4}" ), outExt )
+          outFile = re.sub( "\.[a-zA-Z0-9]{2,4}", outExt, f )
           self.outFiles.append( outDir + "/" + outFile )
 
-      self.errors = QStringList()
+      self.errors = []
       self.batchIndex = 0
       self.batchTotal = len( self.inFiles )
       self.setProgressRange( self.batchTotal )

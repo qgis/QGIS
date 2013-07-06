@@ -20,10 +20,27 @@ my %langmap = (
 		"es_ES" => "es",
 	);
 
+my @lang;
+my @context;
+
+foreach (@ARGV) {
+	if( /-lang=(.*)/ ) {
+		push @lang, $1;
+	}
+
+	if( /-context=(.*)/ ) {
+		push @context, $1;
+	}
+}
+
+
 my %langs;
 my %src;
 for my $f (<resources/{function_help,context_help}/*-*>) {
 	my ($context,$id,$lang) = $f =~ m#^resources/(function_help|context_help)/(.+)-(.+)$#;
+
+	next if @lang && !grep($lang, @lang);
+	next if @context && !grep($context, @context);
 
 	die "lang undefined in $f" unless defined $lang;
 	$langs{$lang}{ts} = "";
@@ -35,12 +52,6 @@ for my $f (<resources/{function_help,context_help}/*-*>) {
 }
 
 delete $langs{en_US};
-if( @ARGV ) {
-	foreach my $l (keys %langs) {
-		next if grep $l, @ARGV;
-		delete $langs{$l};
-	}
-}
 
 my $cmd = "scripts/update_ts_files.sh";
 foreach my $l (keys %langs) {

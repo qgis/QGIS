@@ -65,7 +65,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillInputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       inputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Polygonize" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if inputFile.isEmpty():
+      if not inputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -74,7 +74,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
       outputFile, encoding = Utils.FileDialog.getSaveFileName(self, self.tr( "Select where to save the Polygonize output" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter, True)
-      if outputFile.isEmpty():
+      if not outputFile:
         return
       Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
 
@@ -85,28 +85,28 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def fillMaskFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       maskFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Polygonize" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if maskFile.isEmpty():
+      if not maskFile():
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
       self.maskSelector.setFilename(maskFile)
 
   def getArguments(self):
-      arguments = QStringList()
-      arguments << self.getInputFileName()
+      arguments = []
+      arguments.append( self.getInputFileName() )
       outputFn = self.getOutputFileName()
       maskFn = self.getMaskFileName()
-      if self.maskCheck.isChecked() and not maskFn.isEmpty():
-        arguments << "-mask"
-        arguments << maskFn
-      if not outputFn.isEmpty():
-        arguments << "-f"
-        arguments << self.outputFormat
-      arguments << outputFn
-      if not outputFn.isEmpty():
-        arguments << QFileInfo( outputFn ).baseName()
-      if self.fieldCheck.isChecked() and not self.fieldEdit.text().isEmpty():
-        arguments << self.fieldEdit.text()
+      if self.maskCheck.isChecked() and maskFn:
+        arguments.append( "-mask" )
+        arguments.append( maskFn )
+      if outputFn:
+        arguments.append( "-f" )
+        arguments.append( self.outputFormat )
+      arguments.append( outputFn )
+      if outputFn:
+        arguments.append( QFileInfo( outputFn ).baseName() )
+      if (self.fieldCheck.isChecked() and self.fieldEdit.text()):
+        arguments.append( self.fieldEdit.text() )
       return arguments
 
   def getOutputFileName(self):

@@ -32,6 +32,8 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
+    QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
+
     Qt::BrushStyle brushStyle() const;
     void setBrushStyle( Qt::BrushStyle style );
 
@@ -127,6 +129,8 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
+  protected:
+    void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context );
 };
 
 class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
@@ -152,6 +156,8 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     QgsSymbolLayerV2* clone() const /Factory/;
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    QString ogrFeatureStyleWidth( double widthScaleFactor ) const;
 
     //getters and setters
     void setLineAngle( double a );
@@ -232,6 +238,9 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
+
+  protected:
+    void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context );
 };
 
 class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2
@@ -269,4 +278,7 @@ class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     QgsSymbolV2* subSymbol();
     bool setSubSymbol( QgsSymbolV2* symbol /Transfer/ );
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
 };

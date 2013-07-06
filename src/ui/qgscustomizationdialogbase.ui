@@ -88,7 +88,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSelect.png</normaloff>:/images/themes/default/mActionSelect.png</iconset>
+     <normaloff>:/images/themes/default/mActionSelect.svg</normaloff>:/images/themes/default/mActionSelect.svg</iconset>
    </property>
    <property name="text">
     <string>Catch</string>

@@ -59,7 +59,7 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const ch
 #endif
 
   mTerminal->setSize( 80, 25 );
-  mTerminal->setColorScheme( COLOR_SCHEME_BLACK_ON_LIGHT_YELLOW );
+  mTerminal->setColorScheme( COLOR_SCHEME_BLACK_ON_WHITE );
   mTerminal->startShellProgram();
   mTerminal->setFocus( Qt::MouseFocusReason );
 }

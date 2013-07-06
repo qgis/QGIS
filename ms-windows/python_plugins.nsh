@@ -7,9 +7,10 @@
 #           Please don't remove this header.                                   #
 ################################################################################
 
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\PythonPlugins" "plugin_installer" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\PythonPlugins" "fTools" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\PythonPlugins" "GdalTools" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\PythonPlugins" "mapserver_export" "true"
+WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS2\PythonPlugins" "fTools" "true"
+WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS2\PythonPlugins" "GdalTools" "true"
+WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS2\PythonPlugins" "db_manager" "true"
+WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS2\PythonPlugins" "sextante" "true"
+WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS2\PythonPlugins" "mapserver_export" "false"
 
 ###############################  reg2nsis end  #################################

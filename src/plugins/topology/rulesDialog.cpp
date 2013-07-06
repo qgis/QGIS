@@ -24,6 +24,7 @@
 #include <qgslogger.h>
 #include <qgisinterface.h>
 #include <qgsproject.h>
+#include "qgsapplication.h"
 #include "rulesDialog.h"
 #include "topolTest.h"
 
@@ -41,6 +42,9 @@ rulesDialog::rulesDialog( QMap<QString, TopologyRule> testMap, QgisInterface *th
   mTestConfMap = testMap;
   mRulesTable->setSelectionBehavior( QAbstractItemView::SelectRows );
   mRuleBox->addItems( mTestConfMap.keys() );
+
+  mAddTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
+  mDeleteTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
 
   connect( mAddTestButton, SIGNAL( clicked() ), this, SLOT( addRule() ) );
   connect( mAddTestButton, SIGNAL( clicked() ), mRulesTable, SLOT( resizeColumnsToContents() ) );

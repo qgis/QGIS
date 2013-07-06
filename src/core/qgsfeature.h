@@ -143,10 +143,32 @@ class CORE_EXPORT QgsFeature
     const QgsAttributes& attributes() const { return mAttributes; }
     QgsAttributes& attributes() { return mAttributes; }
     void setAttributes( const QgsAttributes& attrs ) { mAttributes = attrs; }
+
+    /**
+     * Set an attribute by id
+     *
+     * @param field  The index of the field to set
+     * @param attr   The value of the attribute
+     *
+     * @return false, if the field id does not exist
+     *
+     * @note For Python: raises a KeyError exception instead of returning false
+     */
     bool setAttribute( int field, const QVariant& attr );
+
+    /**
+     * Initialize this feature with the given number of fields. Discard any previously set attribute data.
+     * @param fieldCount Number of fields to initialize
+     */
     void initAttributes( int fieldCount );
 
-    /**Deletes an attribute and its value*/
+    /**
+     * Deletes an attribute and its value
+     *
+     * @param field The index of the field
+     *
+     * @note For Python: raises a KeyError exception if the field is not found
+     */
     void deleteAttribute( int field );
 
     /**
@@ -189,9 +211,18 @@ class CORE_EXPORT QgsFeature
     void setGeometryAndOwnership( unsigned char * geom, size_t length );
 
     /** Assign a field map with the feature to allow attribute access by attribute name
+     *
+     *  @param fields         The attribute fields which this feature holds. When used from python, make sure
+     *                        a copy of the fields is held by python, as ownership stays there.
+     *                        I.e. Do not call feature.setFields( myDataProvider.fields() ) but instead call
+     *                        myFields = myDataProvider.fields()
+     *                        feature.setFields( myFields )
+     *  @param initAttributes If true, attributes are initialized. Clears any data previously assigned.
+     *                        C++: Defaults to false
+     *                        Python: Defaults to true
      *  @note added in 2.0
      */
-    void setFields( const QgsFields* fields ) { mFields = fields; }
+    void setFields( const QgsFields* fields, bool initAttributes = false );
 
     /** Get associated field map. may be NULL
      *  @note added in 2.0
@@ -200,29 +231,56 @@ class CORE_EXPORT QgsFeature
 
     /** Insert a value into attribute. Returns false if attribute name could not be converted to index.
      *  Field map must be associated to make this work.
+     *
+     *  @param name The name of the field to set
+     *  @param value The value to set
+     *
+     *  @return false if attribute name could not be converted to index (C++ only)
+     *
+     *  @note For Python: raises a KeyError exception instead of returning false
      *  @note added in 2.0
      */
     bool setAttribute( const QString& name, QVariant value );
 
     /** Remove an attribute value. Returns false if attribute name could not be converted to index.
      *  Field map must be associated to make this work.
+     *
+     *  @param name The name of the field to delete
+     *
+     *  @return false if attribute name could not be converted to index (C++ only)
+     *
+     *  @note For Python: raises a KeyError exception instead of returning false
      *  @note added in 2.0
      */
     bool deleteAttribute( const QString& name );
 
-    /** Lookup attribute value from attribute name. Returns invalid variant if attribute name could not be converted to index.
+    /** Lookup attribute value from attribute name.
+     *  Returns invalid variant if attribute name could not be converted to index (C++ only)
      *  Field map must be associated to make this work.
+     *
+     *  @param name The name of the attribute to get
+     *
+     *  @return The value of the attribute (C++: Invalid variant if no such name exists )
+     *
+     *  @note For Python: raises a KeyError exception if field is not found
      *  @note added in 2.0
      */
     QVariant attribute( const QString& name ) const;
 
     /** Lookup attribute value from its index. Returns invalid variant if the index does not exist.
+     *
+     *  @param fieldIdx The index of the attribute to get
+     *
+     *  @return The value of the attribute (C++: Invalid variant if no such index exists )
+     *
+     *  @note For Python: raises a KeyError exception if field is not found
      *  @note added in 2.0
      */
     QVariant attribute( int fieldIdx ) const;
 
     /** Utility method to get attribute index from name. Returns -1 if field does not exist or field map is not associated.
      *  Field map must be associated to make this work.
+     *
      *  @note added in 2.0
      */
     int fieldNameIndex( const QString& fieldName ) const;

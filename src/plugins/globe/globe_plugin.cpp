@@ -71,6 +71,8 @@ static const QString sDescription = QObject::tr( "Overlay data on a 3D globe" );
 static const QString sCategory = QObject::tr( "Plugins" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
+static const QString sIcon = ":/globe/globe.png";
+static const QString sExperimental = QString( "true" );
 
 
 //constructor
@@ -309,10 +311,9 @@ void GlobePlugin::run()
 
     // add our handlers
     mOsgViewer->addEventHandler( new FlyToExtentHandler( this ) );
-    mOsgViewer->addEventHandler( new KeyboardControlHandler( manip, mQGisIface ) );
+    mOsgViewer->addEventHandler( new KeyboardControlHandler( manip ) );
 
-#ifdef HAVE_OSGEARTH_ELEVATION_QUERY
-#else
+#ifndef HAVE_OSGEARTH_ELEVATION_QUERY
     mOsgViewer->addEventHandler( new QueryCoordinatesHandler( this, mElevationManager,
                                  mMapNode->getMap()->getProfile()->getSRS() )
                                );
@@ -1196,6 +1197,18 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return sPluginVersion;
+}
+
+// Return the icon
+QGISEXTERN QString icon()
+{
+  return sIcon;
+}
+
+// Return the experimental status for the plugin
+QGISEXTERN QString experimental()
+{
+  return sExperimental;
 }
 
 // Delete ourself

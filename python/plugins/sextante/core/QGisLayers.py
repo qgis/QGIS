@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.gdal.GdalUtils import GdalUtils
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -29,6 +28,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from os import path
 from sextante.core.SextanteConfig import SextanteConfig
+from sextante.gdal.GdalUtils import GdalUtils
+
 
 class QGisLayers:
     '''This class contains method to communicate SEXTANTE with the QGIS interface,
@@ -120,7 +121,7 @@ class QGisLayers:
         settings = QSettings()
         if crs != None:
             prjSetting = settings.value("/Projections/defaultBehaviour")
-            settings.setValue("/Projections/defaultBehaviour", QVariant(""))
+            settings.setValue("/Projections/defaultBehaviour", "")
         if name == None:
             name = path.split(fileName)[1]
         qgslayer = QgsVectorLayer(fileName, name , 'ogr')
@@ -183,7 +184,7 @@ class QGisLayers:
         if forceLoad:
             settings = QSettings()
             prjSetting = settings.value("/Projections/defaultBehaviour")
-            settings.setValue("/Projections/defaultBehaviour", QVariant(""))
+            settings.setValue("/Projections/defaultBehaviour", "")
             #if is not opened, we open it
             layer = QgsVectorLayer(uri, uri , 'ogr')
             if layer.isValid():
@@ -196,7 +197,7 @@ class QGisLayers:
                     settings.setValue("/Projections/defaultBehaviour", prjSetting)
                 return layer
             if prjSetting:
-                    settings.setValue("/Projections/defaultBehaviour", prjSetting)
+                settings.setValue("/Projections/defaultBehaviour", prjSetting)
         else:
             return None
 

@@ -42,9 +42,9 @@ except ImportError, e:
   qgisUserPluginPath = os.path.abspath( os.path.join( unicode( QgsApplication.qgisSettingsDirPath() ), "python") )
   if not os.path.dirname(__file__).startswith( qgisUserPluginPath ):
     title = QCoreApplication.translate( "GdalTools", "Plugin error" )
-    message = QCoreApplication.translate( "GdalTools", u'Unable to load %1 plugin. \nThe required "%2" module is missing. \nInstall it and try again.' )
+    message = QCoreApplication.translate( "GdalTools", u'Unable to load {0} plugin. \nThe required "{1}" module is missing. \nInstall it and try again.' )
     import qgis.utils
-    QMessageBox.warning( qgis.utils.iface.mainWindow(), title, message.arg( "GdalTools" ).arg( req_mods["osgeo"] ) )
+    QMessageBox.warning( qgis.utils.iface.mainWindow(), title, message.format( "GdalTools", req_mods["osgeo"] ) )
   else:
     # if a module is missing show a more friendly module's name
     error_str = e.args[0]
@@ -71,11 +71,11 @@ class GdalTools:
       userPluginPath = QFileInfo( QgsApplication.qgisUserDbFilePath() ).path() + "/python/plugins/GdalTools"
       systemPluginPath = QgsApplication.prefixPath() + "/python/plugins/GdalTools"
 
-      overrideLocale = QSettings().value( "locale/overrideFlag", QVariant( False ) ).toBool()
+      overrideLocale = QSettings().value( "locale/overrideFlag", False, type=bool )
       if not overrideLocale:
         localeFullName = QLocale.system().name()
       else:
-        localeFullName = QSettings().value( "locale/userLocale", QVariant( "" ) ).toString()
+        localeFullName = QSettings().value( "locale/userLocale", "" )
 
       if QFileInfo( userPluginPath ).exists():
         translationPath = userPluginPath + "/i18n/GdalTools_" + localeFullName + ".qm"
@@ -92,7 +92,7 @@ class GdalTools:
     if not valid: return
     if int( self.QgisVersion ) < 1:
       QMessageBox.warning( self.iface.getMainWindow(), "Gdal Tools",
-      QCoreApplication.translate( "GdalTools", "Quantum GIS version detected: " ) +unicode( self.QgisVersion )+".xx\n"
+      QCoreApplication.translate( "GdalTools", "QGIS version detected: " ) +unicode( self.QgisVersion )+".xx\n"
       + QCoreApplication.translate( "GdalTools", "This version of Gdal Tools requires at least QGIS version 1.0.0\nPlugin will not be enabled." ) )
       return None
 

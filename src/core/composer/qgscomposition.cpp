@@ -34,6 +34,7 @@
 #include "qgslogger.h"
 #include "qgspaintenginehack.h"
 #include "qgspaperitem.h"
+#include "qgsproject.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -992,7 +993,7 @@ void QgsComposition::alignSelectedItemsHCenter()
   double averageXCoord = ( selectedItemBBox.left() + selectedItemBBox.right() ) / 2.0;
 
   //place items
-  QUndoCommand* parentCommand = new QUndoCommand( tr( "Aligned items hcenter" ) );
+  QUndoCommand* parentCommand = new QUndoCommand( tr( "Aligned items horizontal center" ) );
   QList<QgsComposerItem*>::iterator align_it = selectedItems.begin();
   for ( ; align_it != selectedItems.end(); ++align_it )
   {
@@ -1082,7 +1083,7 @@ void QgsComposition::alignSelectedItemsVCenter()
   }
 
   double averageYCoord = ( selectedItemBBox.top() + selectedItemBBox.bottom() ) / 2.0;
-  QUndoCommand* parentCommand = new QUndoCommand( tr( "Aligned items vcenter" ) );
+  QUndoCommand* parentCommand = new QUndoCommand( tr( "Aligned items vertical center" ) );
   QList<QgsComposerItem*>::iterator align_it = selectedItems.begin();
   for ( ; align_it != selectedItems.end(); ++align_it )
   {
@@ -1572,6 +1573,7 @@ void QgsComposition::endCommand()
     if ( mActiveItemCommand->containsChange() ) //protect against empty commands
     {
       mUndoStack.push( mActiveItemCommand );
+      QgsProject::instance()->dirty( true );
     }
     else
     {
@@ -1602,6 +1604,7 @@ void QgsComposition::endMultiFrameCommand()
     if ( mActiveMultiFrameCommand->containsChange() )
     {
       mUndoStack.push( mActiveMultiFrameCommand );
+      QgsProject::instance()->dirty( true );
     }
     else
     {
@@ -1796,6 +1799,7 @@ void QgsComposition::pushAddRemoveCommand( QgsComposerItem* item, const QString&
   QgsAddRemoveItemCommand* c = new QgsAddRemoveItemCommand( state, item, this, text );
   connectAddRemoveCommandSignals( c );
   undoStack()->push( c );
+  QgsProject::instance()->dirty( true );
 }
 
 void QgsComposition::connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c )

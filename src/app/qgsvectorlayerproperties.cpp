@@ -108,7 +108,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     layout = new QVBoxLayout( labelingFrame );
     layout->setMargin( 0 );
     labelingDialog = new QgsLabelingGui( QgisApp::instance()->palLabeling(), layer, QgisApp::instance()->mapCanvas(), labelingFrame );
-    labelingDialog->layout()->setMargin( 0 );
+    labelingDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
     layout->addWidget( labelingDialog );
     labelingFrame->setLayout( layout );
 
@@ -171,7 +171,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( mFieldsPropertiesDialog, SIGNAL( toggleEditing() ), this, SLOT( toggleEditing() ) );
   connect( this, SIGNAL( toggleEditing( QgsMapLayer* ) ), QgisApp::instance(), SLOT( toggleEditing( QgsMapLayer* ) ) );
 
-  reset();
+  syncToLayer();
 
   if ( layer->dataProvider() )//enable spatial index button group if supported by provider
   {
@@ -228,6 +228,27 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   {
     mLayerTitleLineEdit->setText( layer->title() );
     mLayerAbstractTextEdit->setPlainText( layer->abstract() );
+    mLayerKeywordListLineEdit->setText( layer->keywordList() );
+    mLayerDataUrlLineEdit->setText( layer->dataUrl() );
+    mLayerDataUrlFormatComboBox->setCurrentIndex(
+      mLayerDataUrlFormatComboBox->findText(
+        layer->dataUrlFormat()
+      )
+    );
+    //layer attribution and metadataUrl
+    mLayerAttributionLineEdit->setText( layer->attribution() );
+    mLayerAttributionUrlLineEdit->setText( layer->attributionUrl() );
+    mLayerMetadataUrlLineEdit->setText( layer->metadataUrl() );
+    mLayerMetadataUrlTypeComboBox->setCurrentIndex(
+      mLayerMetadataUrlTypeComboBox->findText(
+        layer->metadataUrlType()
+      )
+    );
+    mLayerMetadataUrlFormatComboBox->setCurrentIndex(
+      mLayerMetadataUrlFormatComboBox->findText(
+        layer->metadataUrlFormat()
+      )
+    );
   }
 
   setWindowTitle( tr( "Layer Properties - %1" ).arg( layer->name() ) );
@@ -322,11 +343,12 @@ void QgsVectorLayerProperties::setDisplayField( QString name )
 }
 
 //! @note in raster props, this method is called sync()
-void QgsVectorLayerProperties::reset( void )
+void QgsVectorLayerProperties::syncToLayer( void )
 {
   // populate the general information
   mLayerOrigNameLineEdit->setText( layer->originalName() );
   txtDisplayName->setText( layer->name() );
+  txtLayerSource->setText( layer->publicSource() );
   pbnQueryBuilder->setWhatsThis( tr( "This button opens the query "
                                      "builder and allows you to create a subset of features to display on "
                                      "the map canvas rather than displaying all features in the layer" ) );
@@ -381,8 +403,10 @@ void QgsVectorLayerProperties::reset( void )
 
   if ( layer->hasGeometryType() )
   {
+    labelingDialog->init();
     labelDialog->init();
   }
+
   labelCheckBox->setChecked( layer->hasLabelsEnabled() );
   labelOptionsFrame->setEnabled( layer->hasLabelsEnabled() );
 
@@ -465,6 +489,15 @@ void QgsVectorLayerProperties::apply()
   //layer title and abstract
   layer->setTitle( mLayerTitleLineEdit->text() );
   layer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
+  layer->setKeywordList( mLayerKeywordListLineEdit->text() );
+  layer->setDataUrl( mLayerDataUrlLineEdit->text() );
+  layer->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
+  //layer attribution and metadataUrl
+  layer->setAttribution( mLayerAttributionLineEdit->text() );
+  layer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
+  layer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
+  layer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
+  layer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
 
   // update symbology
   emit refreshLegend( layer->id(), QgsLegendItem::DontChange );
@@ -583,7 +616,7 @@ void QgsVectorLayerProperties::on_pbnLoadDefaultStyle_clicked()
         }
         else
         {
-          reset();
+          syncToLayer();
         }
 
         return;
@@ -599,7 +632,7 @@ void QgsVectorLayerProperties::on_pbnLoadDefaultStyle_clicked()
   if ( defaultLoadedFlag )
   {
     // all worked ok so no need to inform user
-    reset();
+    syncToLayer();
   }
   else
   {
@@ -674,7 +707,7 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
   //reset if the default style was loaded ok only
   if ( defaultLoadedFlag )
   {
-    reset();
+    syncToLayer();
   }
   else
   {
@@ -791,7 +824,7 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
     //reset if the default style was loaded ok only
     if ( defaultLoadedFlag )
     {
-      reset();
+      syncToLayer();
     }
     else
     {
@@ -853,7 +886,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
     }
     if ( layer->applyNamedStyle( qmlStyle, errorMsg ) )
     {
-      reset();
+      syncToLayer();
     }
     else
     {
@@ -921,6 +954,7 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
       pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
                                    !layer->isEditable() && layer->vectorJoins().size() < 1 );
     }
+    mFieldsPropertiesDialog->init();
   }
 }
 
@@ -962,6 +996,7 @@ void QgsVectorLayerProperties::on_mButtonRemoveJoin_clicked()
   mJoinTreeWidget->takeTopLevelItem( mJoinTreeWidget->indexOfTopLevelItem( currentJoinItem ) );
   pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
                                !layer->isEditable() && layer->vectorJoins().size() < 1 );
+  mFieldsPropertiesDialog->init();
 }
 
 

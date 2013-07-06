@@ -39,7 +39,10 @@ class QgsSimpleLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void offsetChanged();
     void on_mCustomCheckBox_stateChanged( int state );
     void on_mChangePatternButton_clicked();
-
+    void on_mPenWidthUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mDashPatternUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
 
   protected:
     //creates a new icon for the 'change pattern' button
@@ -70,6 +73,11 @@ class QgsSimpleMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void setSize();
     void setAngle();
     void setOffset();
+    void on_mSizeUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mOutlineWidthUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
+    void on_mOutlineWidthSpinBox_valueChanged( double d );
 };
 
 ///////////
@@ -96,6 +104,9 @@ class QgsSimpleFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void borderWidthChanged();
     void borderStyleChanged();
     void offsetChanged();
+    void on_mBorderWidthUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
 };
 
 
@@ -121,6 +132,9 @@ class QgsMarkerLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void setRotate();
     void setOffset();
     void setPlacement();
+    void on_mIntervalUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
 
 };
 
@@ -150,9 +164,14 @@ class QgsSvgMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void setOffset();
     void on_mFileToolButton_clicked();
     void on_mFileLineEdit_textEdited( const QString& text );
+    void on_mFileLineEdit_editingFinished();
     void on_mChangeColorButton_colorChanged( const QColor& color );
     void on_mChangeBorderColorButton_colorChanged( const QColor& color );
     void on_mBorderWidthSpinBox_valueChanged( double d );
+    void on_mSizeUnitComboBox_currentIndexChanged( int index );
+    void on_mBorderWidthUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
 
   protected:
 
@@ -182,6 +201,7 @@ class QgsLineDecorationSymbolLayerV2Widget : QgsSymbolLayerV2Widget
   public slots:
     void colorChanged( const QColor& color );
     void penWidthChanged();
+    void on_mWidthUnitComboBox_currentIndexChanged( int index );
 };
 
 //////////
@@ -200,6 +220,10 @@ class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerV2Widget
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
     virtual QgsSymbolLayerV2* symbolLayer();
+
+  protected:
+    void insertIcons();
+    void updateParamGui();
 };
 
 //////////
@@ -257,6 +281,8 @@ class QgsFontMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void setAngle( double angle );
     void setCharacter( const QChar& chr );
     void setOffset();
+    void on_mSizeUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
 };
 
 //////////

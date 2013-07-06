@@ -54,18 +54,18 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   }
 
   // TODO Can we move this stuff to QgsExpression, like the functions?
-  registerItem( "Operators", "+", " + " );
-  registerItem( "Operators", "-", " -" );
-  registerItem( "Operators", "*", " * " );
-  registerItem( "Operators", "/", " / " );
-  registerItem( "Operators", "%", " % " );
-  registerItem( "Operators", "^", " ^ " );
-  registerItem( "Operators", "=", " = " );
-  registerItem( "Operators", ">", " > " );
-  registerItem( "Operators", "<", " < " );
-  registerItem( "Operators", "<>", " <> " );
-  registerItem( "Operators", "<=", " <= " );
-  registerItem( "Operators", ">=", " >= " );
+  registerItem( "Operators", "+", " + ", tr( "Addition operator" ) );
+  registerItem( "Operators", "-", " -" , tr( "Subtraction operator" ) );
+  registerItem( "Operators", "*", " * ", tr( "Multiplication operator" ) );
+  registerItem( "Operators", "/", " / ", tr( "Division operator" ) );
+  registerItem( "Operators", "%", " % ", tr( "Modulo operator" ) );
+  registerItem( "Operators", "^", " ^ ", tr( "Power operator" ) );
+  registerItem( "Operators", "=", " = ", tr( "Equal operator" ) );
+  registerItem( "Operators", ">", " > ", tr( "Greater as operator" ) );
+  registerItem( "Operators", "<", " < ", tr( "Less than operator" ) );
+  registerItem( "Operators", "<>", " <> ", tr( "Unequal operator" ) );
+  registerItem( "Operators", "<=", " <= ", tr( "Less or equal operator" ) );
+  registerItem( "Operators", ">=", " >= ", tr( "Greater or equal operator" ) );
   registerItem( "Operators", "||", " || ",
                 QString( "<b>|| %1</b><br><i>%2</i><br><i>%3:</i>%4" )
                 .arg( tr( "(String Concatenation)" ) )
@@ -125,7 +125,7 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   // Get the item
   QModelIndex idx = mProxyModel->mapToSource( index );
   QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>( mModel->itemFromIndex( idx ) );
-  if ( item == 0 )
+  if ( !item )
     return;
 
   if ( item->getItemType() != QgsExpressionItem::Field )
@@ -133,9 +133,9 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
     mValueListWidget->clear();
   }
 
-  btnLoadAll->setVisible( item->getItemType() == QgsExpressionItem::Field );
-  btnLoadSample->setVisible( item->getItemType() == QgsExpressionItem::Field );
-  mValueGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field );
+  btnLoadAll->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
+  btnLoadSample->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
+  mValueGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
 
   // Show the help for the current item.
   QString help = loadFunctionHelp( item );
@@ -223,17 +223,17 @@ void QgsExpressionBuilderWidget::registerItem( QString group,
   // Look up the group and insert the new function.
   if ( mExpressionGroups.contains( group ) )
   {
-    QgsExpressionItem* groupNode = mExpressionGroups.value( group );
+    QgsExpressionItem *groupNode = mExpressionGroups.value( group );
     groupNode->appendRow( item );
   }
   else
   {
     // If the group doesn't exist yet we make it first.
-    QgsExpressionItem* newgroupNode = new QgsExpressionItem( QgsExpression::group( group ), "", QgsExpressionItem::Header );
+    QgsExpressionItem *newgroupNode = new QgsExpressionItem( QgsExpression::group( group ), "", QgsExpressionItem::Header );
     newgroupNode->setData( group, Qt::UserRole );
     newgroupNode->appendRow( item );
     mModel->appendRow( newgroupNode );
-    mExpressionGroups.insert( group , newgroupNode );
+    mExpressionGroups.insert( group, newgroupNode );
   }
 }
 
@@ -369,7 +369,7 @@ void QgsExpressionBuilderWidget::showContextMenu( const QPoint & pt )
   if ( !item )
     return;
 
-  if ( item->getItemType() == QgsExpressionItem::Field )
+  if ( item->getItemType() == QgsExpressionItem::Field && mLayer )
   {
     QMenu* menu = new QMenu( this );
     menu->addAction( tr( "Load top 10 unique values" ), this, SLOT( loadSampleValues() ) );
@@ -413,17 +413,13 @@ void QgsExpressionBuilderWidget::setExpressionState( bool state )
 
 QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* expressionItem )
 {
-  if ( expressionItem == NULL )
+  if ( !expressionItem )
     return "";
 
-  QString helpContents;
+  QString helpContents = expressionItem->getHelpText();
 
   // Return the function help that is set for the function if there is one.
-  if ( !expressionItem->getHelpText().isEmpty() )
-  {
-    helpContents = expressionItem->getHelpText();
-  }
-  else
+  if ( helpContents.isEmpty() )
   {
     QString name = expressionItem->data( Qt::UserRole ).toString();
 

@@ -292,7 +292,6 @@ namespace osgEarth { namespace Util { namespace Controls21
         osg::ref_ptr<osg::Image> _image;
         float _rotation_rad;
         bool _fixSizeForRot;
-        osg::Geometry* _geom;
     };
 
     /**

@@ -202,6 +202,13 @@ double QgsComposerScaleBar::mapWidth() const
   }
 }
 
+void QgsComposerScaleBar::setAlignment( Alignment a )
+{
+  mAlignment = a;
+  update();
+  emit itemChanged();
+}
+
 void QgsComposerScaleBar::setUnits( ScaleBarUnits u )
 {
   mUnits = u;
@@ -278,7 +285,11 @@ void QgsComposerScaleBar::adjustBoxSize()
 
 void QgsComposerScaleBar::update()
 {
-  adjustBoxSize();
+  //Don't adjust box size for numeric scale bars:
+  if ( mStyle->name() != "Numeric" )
+  {
+    adjustBoxSize();
+  }
   QgsComposerItem::update();
 }
 
@@ -386,7 +397,6 @@ QFont QgsComposerScaleBar::font() const
 void QgsComposerScaleBar::setFont( const QFont& font )
 {
   mFont = font;
-  adjustBoxSize();
   update();
   emit itemChanged();
 }
@@ -502,6 +512,12 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
 
 void QgsComposerScaleBar::correctXPositionAlignment( double width, double widthAfter )
 {
+  //Don't adjust position for numeric scale bars:
+  if ( mStyle->name() == "Numeric" )
+  {
+    return;
+  }
+
   if ( mAlignment == Middle )
   {
     move( -( widthAfter - width ) / 2.0, 0 );

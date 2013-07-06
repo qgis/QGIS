@@ -15,6 +15,7 @@
 ###########################################################################
 
 use strict;
+use warnings;
 use Locale::Language;
 use Locale::Country;
 
@@ -45,24 +46,24 @@ my $translators= {
 	es => 'Carlos Dávila, Javier César Aldariz, Gabriela Awad, Edwin Amado, Mayeul Kauffmann, Diana Galindo',
 	el_GR => 'Evripidis Argyropoulos, Mike Pegnigiannis, Nikos Ves',
 	et_EE => 'Veiko Viil',
-	eu_ES => 'Irantzu Alvarez',
-	fa => 'Mola Pahnadayan',
-	fi => 'Marko Järvenpää',
+	eu => 'Asier Sarasua Garmendia, Irantzu Alvarez',
+	fa => 'Mola Pahnadayan, Masoud Pashotan , Masoud Erfanyan',
+	fi => 'Kari Salovaara, Marko Järvenpää',
 	fr => 'Eve Rousseau, Marc Monnerat, Lionel Roubeyrie, Jean Roc Morreale, Benjamin Bohard, Jeremy Garniaux, Yves Jacolin, Benjamin Lerre, Stéphane Morel, Marie Silvestre, Tahir Tamba, Xavier M, Mayeul Kauffmann, Mehdi Semchaoui, Robin Cura, Etienne Tourigny, Mathieu Bossaert',
 	gl_ES => 'Xan Vieiro',
 	hu => 'Zoltan Siki',
 	hr_HR => 'Zoran Jankovic',
 	is => 'Thordur Ivarsson',
-	id => 'Januar V. Simarmata, I Made Anombawa',
+	id => 'Trias Aditya, Januar V. Simarmata, I Made Anombawa',
 	it => 'Paolo Cavallini, Flavio Rigolon, Maurizio Napolitano, Roberto Angeletti, Alessandro Fanna, Michele Beneventi, Marco Braida, Luca Casagrande, Luca Delucchi, Anne Gishla',
-	ja => 'BABA Yoshihiko, Yoichi Kayama',
+	ja => 'BABA Yoshihiko, Yoichi Kayama, Minoru Akagi, Takayuki Nuimura, Takayuki Mizutani, Norihiro Yamate',
 	ka_GE => 'Shota Murtskhvaladze, George Machitidze',
 	km => 'Khoem Sokhem',
-	ko_KR => 'BJ Jang',
+	ko_KR => 'OSGeo Korean Chapter',
 	lo => 'Anousak Souphavanh, Soukanh Lathsavong',
 	lv => 'Maris Nartiss, Pēteris Brūns',
 	lt => 'Kestas M',
-	nl => 'Richard Duivenvoorde, Raymond Nijssen, Carlo van Rijswijk',
+	nl => 'Richard Duivenvoorde, Raymond Nijssen, Carlo van Rijswijk, Diethard Jansen',
 	ml_IN => 'Vinayan Parameswaran',
 	mn => 'Bayarmaa Enkhtur',
 	pl_PL => 'Robert Szczepanek, Milena Nowotarska, Borys Jurgiel, Mateusz Loskot, Tomasz Paul, Andrzej Swiader ',
@@ -70,11 +71,11 @@ my $translators= {
 	pt_PT => 'Giovanni Manghi, Joana Simoes, Duarte Carreira, Alexandre Neto, Pedro Pereira, Pedro Palheiro, Nelson Silva',
 	ro => 'Lonut Losifescu-Enescu, Bogdan Pacurar',
 	ru => 'Artem Popov',
-	sk => 'Lubos Balazovic',
+	sk => 'Lubos Balazovic, Jana Kormanikova, Ivan Mincik',
 	sl_SI => 'Jože Detečnik, Dejan Gregor',
 	sq_AL => '',
-	sr_Cyrl => 'Goran Ivanković',
 	sr_Latn => 'Goran Ivanković',
+	sr_Cyrl => 'Goran Ivanković',
 	sv => 'Lars Luthman, Magnus Homann, Victor Axbom',
 	sw => 'Yohana Mapala',
 	th => 'Man Chao',
@@ -89,6 +90,19 @@ my $maxn;
 
 for my $i (<i18n/qgis_*.ts>) {
 	my ($langcode) = $i =~ /i18n\/qgis_(.*).ts/;
+	next if $langcode eq "en";
+
+	my $translator = $translators->{$langcode} || "(orphaned)";
+
+	my $charset = "";
+	my $lc = $langcode;
+	if( $langcode =~ /(.*)_Latn/ ) {
+		$charset = " (latin)";
+		$langcode = $1;
+	} elsif( $langcode =~ /(.*)_Cyrl/ ) {
+		$charset = " (cyrillic)";
+		$langcode = $1;
+	}
 
 	my $name;
 	if($langcode =~ /(.*)_(.*)/) {
@@ -99,10 +113,12 @@ for my $i (<i18n/qgis_*.ts>) {
 		$name = code2language(lc $langcode);
 	}
 
+	$name .= $charset;
 
 	open F, "lrelease $i|";
 
-	my($translations,$finished,$unfinished,$untranslated);
+	my($translations,$finished,$unfinished);
+	my $untranslated=0;
 
 	while(<F>) {
 		if(/Generated (\d+) translation\(s\) \((\d+) finished and (\d+) unfinished\)/) {
@@ -124,7 +140,15 @@ for my $i (<i18n/qgis_*.ts>) {
 		$maxn = $n;
 	}
 
-	push @lang, { code=>$langcode, name=>$name, n=>$n, translations=>$translations, finished=>$finished, unfinished=>$unfinished, untranslated=>$untranslated, };
+	push @lang, {
+		code=>$langcode,
+		name=>$name, n=>$n,
+		translations=>$translations,
+		finished=>$finished,
+		unfinished=>$unfinished,
+		untranslated=>$untranslated,
+		translator=>$translator
+	};
 }
 
 foreach my $l (@lang) {
@@ -132,7 +156,8 @@ foreach my $l (@lang) {
 	$l->{percentage} = ($l->{finished}+$l->{unfinished}/2)/$maxn*100;
 }
 
-if ($ARGV[0] eq "site") {
+
+if ( @ARGV && $ARGV[0] eq "site") {
 	print "<html><body>";
 	print "<head>";
 	print "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>";
@@ -156,7 +181,7 @@ if ($ARGV[0] eq "site") {
 			$l->{diff}==0 ? $l->{n} : "$l->{n} ($l->{diff})",
 			$l->{finished}, $l->{unfinished}, $l->{untranslated},
 			$l->{percentage}, $l->{percentage},
-			$translators->{$l->{code}};
+			$l->{translator};
 	}
 	print "</table></body></html>\n";
 } else {
@@ -177,7 +202,7 @@ if ($ARGV[0] eq "site") {
 			$l->{code}, $l->{name},
 			$l->{finished}, $l->{unfinished}, $l->{untranslated},
 			$l->{percentage}, $l->{percentage},
-			$translators->{$l->{code}};
+			$l->{translator};
 	}
 	print "</table>\n";
 }

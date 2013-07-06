@@ -100,7 +100,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
                 FIDs= []
                 for inFeat in features:
                     attrs = inFeat.attributes()
-                    if attrs[index] == QVariant(i):
+                    if attrs[index] == i:
                         FIDs.append(inFeat.id())
                     current += 1
                     progress.setPercentage(int(current * total))

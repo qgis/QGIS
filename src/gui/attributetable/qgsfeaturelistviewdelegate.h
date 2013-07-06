@@ -11,7 +11,7 @@ class QgsFeatureListModel;
 class QgsFeatureSelectionModel;
 class QPosition;
 
-class QgsFeatureListViewDelegate : public QItemDelegate
+class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
 {
     Q_OBJECT
 

@@ -1,4 +1,6 @@
-%Module qgis.core 0
+%Module(name=qgis.core,
+        version=0,
+        keyword_arguments="Optional")
 
 %Import QtCore/QtCoremod.sip
 %Import QtGui/QtGuimod.sip
@@ -19,6 +21,7 @@
 %Include qgscoordinatetransform.sip
 %Include qgscredentials.sip
 %Include qgscrscache.sip
+%Include qgsdatadefined.sip
 %Include qgsdataitem.sip
 %Include qgsdataprovider.sip
 %Include qgsdatasourceuri.sip
@@ -84,6 +87,18 @@
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayerundocommand.sip
 %Include qgsvectoroverlay.sip
+%Include qgsfontutils.sip
+
+%Include qgscachedfeatureiterator.sip
+%Include qgscacheindex.sip
+%Include qgscacheindexfeatureid.sip
+%Include qgscentralpointpositionmanager.sip
+%Include qgsfeaturestore.sip
+%Include qgsgeometrycache.sip
+%Include qgspalobjectpositionmanager.sip
+%Include qgsprojectfiletransform.sip
+%Include qgsvectorlayereditutils.sip
+%Include qgsvectorlayerfeatureiterator.sip
 
 %Include composer/qgsaddremoveitemcommand.sip
 %Include composer/qgsaddremovemultiframecommand.sip
@@ -114,6 +129,8 @@
 %Include composer/qgssingleboxscalebarstyle.sip
 %Include composer/qgsticksscalebarstyle.sip
 %Include composer/qgscomposertexttable.sip
+%Include composer/qgscomposereffect.sip
+%Include composer/qgscomposerlegendstyle.sip
 
 %Include qgsdiagramrendererv2.sip
 %Include diagram/qgsdiagram.sip
@@ -165,6 +182,9 @@
 %Include raster/qgspalettedrasterrenderer.sip
 %Include raster/qgscubicrasterresampler.sip
 %Include raster/qgsmultibandcolorrenderer.sip
+%Include raster/qgsbrightnesscontrastfilter.sip
+%Include raster/qgshuesaturationfilter.sip
+%Include raster/qgsrasterdrawer.sip
 
 %Include symbology-ng/qgsstylev2.sip
 %Include symbology-ng/qgssvgcache.sip
@@ -189,3 +209,5 @@
 %Include symbology-ng/qgslinesymbollayerv2.sip
 %Include symbology-ng/qgsmarkersymbollayerv2.sip
 %Include symbology-ng/qgssymbollayerv2registry.sip
+
+%Include symbology-ng/qgssymbologyv2conversion.sip

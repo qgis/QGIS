@@ -244,7 +244,7 @@ namespace pal
     }
 
     // Split MULTI GEOM and Collection in simple geometries
-    GEOSGeometry *the_geom = userGeom->getGeosGeometry();
+    const GEOSGeometry *the_geom = userGeom->getGeosGeometry();
 
     Feature* f = new Feature( this, geom_id, userGeom, label_x, label_y );
     if ( fixedPos )

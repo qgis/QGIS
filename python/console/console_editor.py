@@ -116,7 +116,7 @@ class Editor(QsciScintilla):
         #self.setMinimumWidth(300)
 
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-        self.setMatchedBraceBackgroundColor(QColor("#c6c6c6"))
+        self.setMatchedBraceBackgroundColor(QColor("#b7f907"))
 
         # Folding
         self.setFolding(QsciScintilla.PlainFoldStyle)
@@ -183,10 +183,9 @@ class Editor(QsciScintilla):
     def settingsEditor(self):
         # Set Python lexer
         self.setLexers()
-        threshold = self.settings.value("pythonConsole/autoCompThresholdEditor", 2).toInt()[0]
-        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI').toString()
-        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor", True).toBool()
-
+        threshold = self.settings.value("pythonConsole/autoCompThresholdEditor", 2, type=int)
+        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI')
+        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor", True, type=bool)
         self.setAutoCompletionThreshold(threshold)
         if autoCompEnabled:
             if radioButtonSource == 'fromDoc':
@@ -199,8 +198,8 @@ class Editor(QsciScintilla):
             self.setAutoCompletionSource(self.AcsNone)
 
     def autoCompleteKeyBinding(self):
-        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor").toString()
-        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor").toBool()
+        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI')
+        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor", True, type=bool)
         if autoCompEnabled:
             if radioButtonSource == 'fromDoc':
                 self.autoCompleteFromDocument()
@@ -217,8 +216,8 @@ class Editor(QsciScintilla):
         self.lexer.setFoldComments(True)
         self.lexer.setFoldQuotes(True)
 
-        loadFont = self.settings.value("pythonConsole/fontfamilytextEditor", "Monospace").toString()
-        fontSize = self.settings.value("pythonConsole/fontsizeEditor", 10).toInt()[0]
+        loadFont = self.settings.value("pythonConsole/fontfamilytextEditor", "Monospace")
+        fontSize = self.settings.value("pythonConsole/fontsizeEditor", 10, type=int)
 
         font = QFont(loadFont)
         font.setFixedPitch(True)
@@ -237,13 +236,16 @@ class Editor(QsciScintilla):
         self.lexer.setFont(font, 4)
 
         self.api = QsciAPIs(self.lexer)
-        chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True).toBool()
+        chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
+        chekBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
         if chekBoxAPI:
-            self.api.loadPrepared( QgsApplication.pkgDataPath() + "/python/qsci_apis/pyqgis_master.pap" )
+            self.api.loadPrepared(QgsApplication.pkgDataPath() + "/python/qsci_apis/pyqgis_master.pap")
+        elif chekBoxPreparedAPI:
+            self.api.loadPrepared(self.settings.value("pythonConsole/preparedAPIFile"))
         else:
-            apiPath = self.settings.value("pythonConsole/userAPI").toStringList()
+            apiPath = self.settings.value("pythonConsole/userAPI", [])
             for i in range(0, len(apiPath)):
-                self.api.load(QString(unicode(apiPath[i])))
+                self.api.load(unicode(apiPath[i]))
             self.api.prepare()
             self.lexer.setAPIs(self.api)
 
@@ -259,7 +261,7 @@ class Editor(QsciScintilla):
     def get_end_pos(self):
         """Return (line, index) position of the last character"""
         line = self.lines() - 1
-        return (line, self.text(line).length())
+        return (line, len(self.text(line)))
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
@@ -271,53 +273,82 @@ class Editor(QsciScintilla):
         iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
         iconFind = QgsApplication.getThemeIcon("console/iconSearchEditorConsole.png")
         iconSyntaxCk = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
-        hideEditorAction = menu.addAction("Hide Editor",
-                                     self.hideEditor)
+        iconObjInsp = QgsApplication.getThemeIcon("console/iconClassBrowserConsole.png")
+        iconCut = QgsApplication.getThemeIcon("console/iconCutEditorConsole.png")
+        iconCopy = QgsApplication.getThemeIcon("console/iconCopyEditorConsole.png")
+        iconPaste = QgsApplication.getThemeIcon("console/iconPasteEditorConsole.png")
+        hideEditorAction = menu.addAction(QCoreApplication.translate("PythonConsole", "Hide Editor"),
+                                          self.hideEditor)
         menu.addSeparator()
-        syntaxCheck = menu.addAction(iconSyntaxCk, "Check Syntax",
+        syntaxCheck = menu.addAction(iconSyntaxCk,
+                                     QCoreApplication.translate("PythonConsole",
+                                                                "Check Syntax"),
                                      self.syntaxCheck, 'Ctrl+4')
         menu.addSeparator()
         runSelected = menu.addAction(iconRun,
-                                     "Enter selected",
+                                     QCoreApplication.translate("PythonConsole",
+                                                                "Run selected"),
                                      self.runSelectedCode, 'Ctrl+E')
         runScript = menu.addAction(iconRunScript,
-                                   "Run Script",
+                                   QCoreApplication.translate("PythonConsole",
+                                                              "Run Script"),
                                    self.runScriptCode, 'Shift+Ctrl+E')
         menu.addSeparator()
-        undoAction = menu.addAction("Undo", self.undo, QKeySequence.Undo)
-        redoAction = menu.addAction("Redo", self.redo, 'Ctrl+Shift+Z')
+        undoAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                               "Undo"),
+                                    self.undo, QKeySequence.Undo)
+        redoAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                               "Redo"),
+                                    self.redo, 'Ctrl+Shift+Z')
         menu.addSeparator()
         findAction = menu.addAction(iconFind,
-                                    "Find Text",
+                                    QCoreApplication.translate("PythonConsole",
+                                                               "Find Text"),
                                     self.showFindWidget)
         menu.addSeparator()
-        cutAction = menu.addAction("Cut",
+        cutAction = menu.addAction(iconCut,
+                                   QCoreApplication.translate("PythonConsole",
+                                                              "Cut"),
                                     self.cut,
                                     QKeySequence.Cut)
-        copyAction = menu.addAction("Copy",
+        copyAction = menu.addAction(iconCopy,
+                                    QCoreApplication.translate("PythonConsole",
+                                                               "Copy"),
                                     self.copy,
                                     QKeySequence.Copy)
-        pasteAction = menu.addAction("Paste", self.paste, QKeySequence.Paste)
+        pasteAction = menu.addAction(iconPaste,
+                                     QCoreApplication.translate("PythonConsole",
+                                                                "Paste"),
+                                     self.paste, QKeySequence.Paste)
         menu.addSeparator()
-        commentCodeAction = menu.addAction(iconCommentEditor, "Comment",
+        commentCodeAction = menu.addAction(iconCommentEditor,
+                                           QCoreApplication.translate("PythonConsole",
+                                                                      "Comment"),
                                            self.parent.pc.commentCode, 'Ctrl+3')
-        uncommentCodeAction = menu.addAction(iconUncommentEditor, "Uncomment",
+        uncommentCodeAction = menu.addAction(iconUncommentEditor,
+                                             QCoreApplication.translate("PythonConsole",
+                                                                        "Uncomment"),
                                              self.parent.pc.uncommentCode,
                                              'Shift+Ctrl+3')
         menu.addSeparator()
         codePadAction = menu.addAction(iconCodePad,
-                                        "Share on codepad",
-                                        self.codepad)
+                                       QCoreApplication.translate("PythonConsole",
+                                                                  "Share on codepad"),
+                                       self.codepad)
         menu.addSeparator()
-        showCodeInspection = menu.addAction("Hide/Show Object list",
+        showCodeInspection = menu.addAction(iconObjInsp,
+                                            QCoreApplication.translate("PythonConsole",
+                                                                       "Hide/Show Object Inspector"),
                                             self.objectListEditor)
         menu.addSeparator()
-        selectAllAction = menu.addAction("Select All",
+        selectAllAction = menu.addAction(QCoreApplication.translate("PythonConsole",
+                                                                    "Select All"),
                                          self.selectAll,
                                          QKeySequence.SelectAll)
         menu.addSeparator()
         settingsDialog = menu.addAction(iconSettings,
-                                        "Settings",
+                                        QCoreApplication.translate("PythonConsole",
+                                                                   "Settings"),
                                         self.parent.pc.openSettings)
         syntaxCheck.setEnabled(False)
         pasteAction.setEnabled(False)
@@ -328,6 +359,7 @@ class Editor(QsciScintilla):
         selectAllAction.setEnabled(False)
         undoAction.setEnabled(False)
         redoAction.setEnabled(False)
+        showCodeInspection.setEnabled(False)
         if self.hasSelectedText():
             runSelected.setEnabled(True)
             copyAction.setEnabled(True)
@@ -342,6 +374,9 @@ class Editor(QsciScintilla):
             redoAction.setEnabled(True)
         if QApplication.clipboard().text():
             pasteAction.setEnabled(True)
+        if self.settings.value("pythonConsole/enableObjectInsp",
+                                False, type=bool):
+            showCodeInspection.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
 
     def findText(self, forward):
@@ -353,7 +388,7 @@ class Editor(QsciScintilla):
         cs = self.parent.pc.caseSensitive.isChecked()
         wo = self.parent.pc.wholeWord.isChecked()
         notFound = False
-        if not text.isEmpty():
+        if text:
             if not forward:
                 line = lineFrom
                 index = indexFrom
@@ -365,7 +400,7 @@ class Editor(QsciScintilla):
                 styleError = 'QLineEdit {background-color: #d65253; \
                                         color: #ffffff;}'
                 msgText = QCoreApplication.translate('PythonConsole',
-                                                     '<b>"%1"</b> was not found.').arg(text)
+                                                     '<b>"{}"</b> was not found.'.format(text))
                 self.parent.pc.callWidgetMessageBarEditor(msgText, 0, True)
             else:
                 styleError = ''
@@ -430,7 +465,7 @@ class Editor(QsciScintilla):
                 if commentCheck:
                     self.insertAt('#', line, 0)
                 else:
-                    if not self.text(line).trimmed().startsWith('#'):
+                    if not self.text(line).strip().startswith('#'):
                         continue
                     self.setSelection(line, self.indentation(line),
                                       line, self.indentation(line) + 1)
@@ -440,7 +475,7 @@ class Editor(QsciScintilla):
             if commentCheck:
                 self.insertAt('#', line, 0)
             else:
-                if not self.text(line).trimmed().startsWith('#'):
+                if not self.text(line).strip().startswith('#'):
                     return
                 self.setSelection(line, self.indentation(line),
                                   line, self.indentation(line) + 1)
@@ -458,16 +493,20 @@ class Editor(QsciScintilla):
         return tmpFileName
 
     def _runSubProcess(self, filename, tmp=False):
-        dir, name = os.path.split(unicode(filename))
+        dir = QFileInfo(filename).path()
+        file = QFileInfo(filename).fileName()
+        name = QFileInfo(filename).baseName()
         if dir not in sys.path:
             sys.path.append(dir)
+        if name in sys.modules:
+            reload(sys.modules[name])
         try:
             ## set creationflags for running command without shell window
             if sys.platform.startswith('win'):
-                p = subprocess.Popen(['python', str(filename)], shell=False, stdin=subprocess.PIPE,
+                p = subprocess.Popen(['python', unicode(filename)], shell=False, stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE, stdout=subprocess.PIPE, creationflags=0x08000000)
             else:
-                p = subprocess.Popen(['python', str(filename)], shell=False, stdin=subprocess.PIPE,
+                p = subprocess.Popen(['python', unicode(filename)], shell=False, stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE, stdout=subprocess.PIPE)
             out, _traceback = p.communicate()
 
@@ -483,19 +522,19 @@ class Editor(QsciScintilla):
                         else:
                             raise e
             if tmp:
-                tmpFileTr = QCoreApplication.translate('PythonConsole', ' [Temporary file saved in ')
-                name = name + tmpFileTr + dir + ']'
+                tmpFileTr = QCoreApplication.translate('PythonConsole', ' [Temporary file saved in {}]'.format(dir))
+                file = file + tmpFileTr
             if _traceback:
-                msgTraceTr = QCoreApplication.translate('PythonConsole', '## Script error: %1').arg(name)
+                msgTraceTr = QCoreApplication.translate('PythonConsole', '## Script error: {}'.format(file))
                 print "## %s" % datetime.datetime.now()
-                print msgTraceTr
+                print unicode(msgTraceTr)
                 sys.stderr.write(_traceback)
                 p.stderr.close()
             else:
                 msgSuccessTr = QCoreApplication.translate('PythonConsole',
-                                                          '## Script executed successfully: %1').arg(name)
+                                                          '## Script executed successfully: {}'.format(file))
                 print "## %s" % datetime.datetime.now()
-                print msgSuccessTr
+                print unicode(msgSuccessTr)
                 sys.stdout.write(out)
                 p.stdout.close()
             del p
@@ -503,8 +542,7 @@ class Editor(QsciScintilla):
                 os.remove(filename)
         except IOError, error:
             IOErrorTr = QCoreApplication.translate('PythonConsole',
-                                                   'Cannot execute file %1. Error: %2\n') \
-                                                   .arg(unicode(filename)).arg(error.strerror)
+                                                   'Cannot execute file {}. Error: {}\n'.format(unicode(filename), error.strerror))
             print '## Error: ' + IOErrorTr
         except:
             s = traceback.format_exc()
@@ -512,34 +550,26 @@ class Editor(QsciScintilla):
             sys.stderr.write(s)
 
     def runScriptCode(self):
-        autoSave = self.settings.value("pythonConsole/autoSaveScript").toBool()
-
+        autoSave = self.settings.value("pythonConsole/autoSaveScript", False, type=bool)
         tabWidget = self.parent.tw.currentWidget()
-
         filename = tabWidget.path
-
         msgEditorBlank = QCoreApplication.translate('PythonConsole',
-                                                    'Hey, type something for running !')
+                                                    'Hey, type something to run!')
         msgEditorUnsaved = QCoreApplication.translate('PythonConsole',
-                                                      'You have to save the file before running.')
-        if not autoSave:
-            if filename is None:
-                if not self.isModified():
-                    self.parent.pc.callWidgetMessageBarEditor(msgEditorBlank, 0, True)
-                    return
-                else:
-                    self.parent.pc.callWidgetMessageBarEditor(msgEditorUnsaved, 0, True)
-                    return
-            if self.isModified():
-                self.parent.pc.callWidgetMessageBarEditor(msgEditorUnsaved, 0, True)
+                                                      'You have to save the file before running it.')
+        if filename is None:
+            if not self.isModified():
+                self.parent.pc.callWidgetMessageBarEditor(msgEditorBlank, 0, True)
                 return
-            else:
-                if self.syntaxCheck(fromContextMenu=False):
-                    self._runSubProcess(filename)
-        else:
-            if self.syntaxCheck(fromContextMenu=False):
+        if self.isModified() and not autoSave:
+            self.parent.pc.callWidgetMessageBarEditor(msgEditorUnsaved, 0, True)
+            return
+        if self.syntaxCheck(fromContextMenu=False):
+            if autoSave:
                 tmpFile = self.createTempFile()
                 self._runSubProcess(tmpFile, True)
+            else:
+                self._runSubProcess(filename)
 
     def runSelectedCode(self):
         cmd = self.selectedText()
@@ -575,6 +605,8 @@ class Editor(QsciScintilla):
             #source = open(filename, 'r').read() + '\n'
             if type(source) == type(u""):
                 source = source.encode('utf-8')
+            if type(filename) == type(u""):
+                filename = filename.encode('utf-8')
             compile(source, str(filename), 'exec')
         except SyntaxError, detail:
             s = traceback.format_exception_only(SyntaxError, detail)
@@ -592,7 +624,7 @@ class Editor(QsciScintilla):
                 self.bufferMarkerLine.append(eline)
             self.markerAdd(eline, self.MARKER_NUM)
             loadFont = self.settings.value("pythonConsole/fontfamilytextEditor",
-                                           "Monospace").toString()
+                                           "Monospace")
             styleAnn = QsciStyle(-1,"Annotation",
                                  QColor(255,0,0),
                                  QColor(255,200,0),
@@ -613,20 +645,37 @@ class Editor(QsciScintilla):
             return True
 
     def keyPressEvent(self, e):
-        t = unicode(e.text())
-        ## Close bracket automatically
-        if t in self.opening:
-            i = self.opening.index(t)
-            self.insert(self.closing[i])
-        QsciScintilla.keyPressEvent(self, e)
+        if self.settings.value("pythonConsole/autoCloseBracketEditor", True, type=bool):
+            startLine, _, endLine, _ = self.getSelection()
+            t = unicode(e.text())
+            ## Close bracket automatically
+            if t in self.opening:
+                i = self.opening.index(t)
+                if self.hasSelectedText():
+                    self.beginUndoAction()
+                    selText = self.selectedText()
+                    self.removeSelectedText()
+                    if startLine == endLine:
+                        self.insert(self.opening[i] + selText + self.closing[i])
+                        return
+                    elif startLine < endLine and self.opening[i] in ("'", '"'):
+                        self.insert("'''" + selText + "'''")
+                        return
+                    else:
+                        self.insert(self.closing[i])
+                    self.endUndoAction()
+                else:
+                    self.insert(self.closing[i])
+            QsciScintilla.keyPressEvent(self, e)
+        else:
+            QsciScintilla.keyPressEvent(self, e)
 
     def focusInEvent(self, e):
         pathfile = self.parent.path
         if pathfile:
             if not QFileInfo(pathfile).exists():
                 msgText = QCoreApplication.translate('PythonConsole',
-                                                     'The file <b>"%1"</b> has been deleted or is not accessible') \
-                                                     .arg(unicode(pathfile))
+                                                     'The file <b>"{}"</b> has been deleted or is not accessible'.format(unicode(pathfile)))
                 self.parent.pc.callWidgetMessageBarEditor(msgText, 2, False)
                 return
         if pathfile and self.lastModified != QFileInfo(pathfile).lastModified():
@@ -641,22 +690,20 @@ class Editor(QsciScintilla):
             for line in reversed(fileLines):
                 self.insert(line)
             QApplication.restoreOverrideCursor()
-            self.setModified(True)
+            self.setModified(False)
             self.endUndoAction()
 
             self.parent.tw.listObject(self.parent.tw.currentWidget())
             self.lastModified = QFileInfo(pathfile).lastModified()
             msgText = QCoreApplication.translate('PythonConsole',
-                                                 'The file <b>"%1"</b> has been changed and reloaded') \
-                                                 .arg(unicode(pathfile))
+                                                 'The file <b>"{}"</b> has been changed and reloaded'.format(unicode(pathfile)))
             self.parent.pc.callWidgetMessageBarEditor(msgText, 1, False)
         QsciScintilla.focusInEvent(self, e)
 
     def fileReadOnly(self):
         tabWidget = self.parent.tw.currentWidget()
         msgText = QCoreApplication.translate('PythonConsole',
-                                             'The file <b>"%1"</b> is read only, please save to different file first.') \
-                                             .arg(unicode(tabWidget.path))
+                                             'The file <b>"{}"</b> is read only, please save to different file first.'.format(unicode(tabWidget.path)))
         self.parent.pc.callWidgetMessageBarEditor(msgText, 1, False)
 
 class EditorTab(QWidget):
@@ -708,10 +755,10 @@ class EditorTab(QWidget):
         self.newEditor.recolor()
 
     def save(self, fileName=None):
+        index = self.tw.indexOf(self)
         if fileName:
             self.path = fileName
         if self.path is None:
-            index = self.tw.currentIndex()
             saveTr = QCoreApplication.translate('PythonConsole',
                                                 'Python Console: Save file')
             self.path = str(QFileDialog().getSaveFileName(self,
@@ -722,6 +769,7 @@ class EditorTab(QWidget):
             if len(self.path) == 0:
                 self.path = None
                 return
+            self.tw.setCurrentWidget(self)
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'Script was correctly saved.')
             self.pc.callWidgetMessageBarEditor(msgText, 0, True)
@@ -748,8 +796,8 @@ class EditorTab(QWidget):
         if self.newEditor.isReadOnly():
             self.newEditor.setReadOnly(False)
         fN = path.split('/')[-1]
-        self.tw.setTabTitle(self.tw.currentIndex(), fN)
-        self.tw.setTabToolTip(self.tw.currentIndex(), path)
+        self.tw.setTabTitle(index, fN)
+        self.tw.setTabToolTip(index, path)
         self.newEditor.setModified(False)
         self.pc.saveFileButton.setEnabled(False)
         self.newEditor.lastModified = QFileInfo(path).lastModified()
@@ -824,8 +872,8 @@ class EditorTabWidget(QTabWidget):
 
         # Restore script of the previuos session
         self.settings = QSettings()
-        tabScripts = self.settings.value("pythonConsole/tabScripts")
-        self.restoreTabList = tabScripts.toList()
+        tabScripts = self.settings.value("pythonConsole/tabScripts", [])
+        self.restoreTabList = tabScripts
 
         if self.restoreTabList:
             self.topFrame.show()
@@ -872,7 +920,7 @@ class EditorTabWidget(QTabWidget):
 
     def _currentWidgetChanged(self, tab):
         if self.settings.value("pythonConsole/enableObjectInsp",
-                               False).toBool():
+                               False, type=bool):
             self.listObject(tab)
         self.changeLastDirPath(tab)
         self.enableSaveIfModified(tab)
@@ -897,7 +945,7 @@ class EditorTabWidget(QTabWidget):
             saveAction = menu.addAction("Save",
                                         cW.save)
             saveAsAction = menu.addAction("Save As",
-                                          self.parent.saveAsScriptFile)
+                                          self.saveAs)
             closeTabAction.setEnabled(False)
             closeAllTabAction.setEnabled(False)
             closeOthersTabAction.setEnabled(False)
@@ -924,6 +972,11 @@ class EditorTabWidget(QTabWidget):
         self.newTabEditor(tabName='Untitled-0')
         self._removeTab(0)
 
+    def saveAs(self):
+        idx = self.idx
+        self.parent.saveAsScriptFile(idx)
+        self.setCurrentWidget(self.widget(idx))
+
     def enableSaveIfModified(self, tab):
         tabWidget = self.widget(tab)
         if tabWidget:
@@ -944,15 +997,14 @@ class EditorTabWidget(QTabWidget):
                 fn.close()
             except IOError, error:
                 IOErrorTr = QCoreApplication.translate('PythonConsole',
-                                                       'The file %1 could not be opened. Error: %2\n') \
-                                                        .arg(unicode(filename)).arg(error.strerror)
+                                                       'The file {} could not be opened. Error: {}\n'.format(unicode(filename), error.strerror))
                 print '## Error: '
                 sys.stderr.write(IOErrorTr)
                 return
 
         nr = self.count()
         if not tabName:
-            tabName = QCoreApplication.translate('PythonConsole', 'Untitled-%1').arg(nr)
+            tabName = QCoreApplication.translate('PythonConsole', 'Untitled-{}'.format(nr))
         self.tab = EditorTab(self, self.parent, filename, readOnly)
         self.iconTab = QgsApplication.getThemeIcon('console/iconTabEditorConsole.png')
         self.addTab(self.tab, self.iconTab, tabName + ' (ro)' if readOnly else tabName)
@@ -987,8 +1039,7 @@ class EditorTabWidget(QTabWidget):
             txtSaveOnRemove = QCoreApplication.translate("PythonConsole",
                                                          "Python Console: Save File")
             txtMsgSaveOnRemove = QCoreApplication.translate("PythonConsole",
-                                                            "The file <b>'%1'</b> has been modified, save changes ?") \
-                                                            .arg(self.tabText(tab))
+                                                            "The file <b>'{}'</b> has been modified, save changes?".format(self.tabText(tab)))
             res = QMessageBox.question( self, txtSaveOnRemove,
                                         txtMsgSaveOnRemove,
                                         QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel )
@@ -1026,14 +1077,13 @@ class EditorTabWidget(QTabWidget):
 
     def restoreTabs(self):
         for script in self.restoreTabList:
-            pathFile = unicode(script.toString())
+            pathFile = unicode(script)
             if QFileInfo(pathFile).exists():
                 tabName = pathFile.split('/')[-1]
                 self.newTabEditor(tabName, pathFile)
             else:
                 errOnRestore = QCoreApplication.translate("PythonConsole",
-                                                          "Unable to restore the file: \n%1\n") \
-                                                          .arg(unicode(pathFile))
+                                                          "Unable to restore the file: \n{}\n".format(unicode(pathFile)))
                 print  '## Error: '
                 s = errOnRestore
                 sys.stderr.write(s)
@@ -1054,11 +1104,11 @@ class EditorTabWidget(QTabWidget):
         self.fileTabMenu.clear()
         for index in range(self.count()):
             action = self.fileTabMenu.addAction(self.tabIcon(index), self.tabText(index))
-            action.setData(QVariant(index))
+            action.setData(index)
 
     def showFileTabMenuTriggered(self, action):
-        index, ok = action.data().toInt()
-        if ok:
+        index = action.data()
+        if index is not None:
             self.setCurrentIndex(index)
 
     def listObject(self, tab):
@@ -1098,6 +1148,8 @@ class EditorTabWidget(QTabWidget):
                             else:
                                 classItem.setText(0, name)
                                 classItem.setToolTip(0, name)
+                            if sys.platform.startswith('win'):
+                                classItem.setSizeHint(0, QSize(18, 18))
                             classItem.setText(1, str(class_data.lineno))
                             iconClass = QgsApplication.getThemeIcon("console/iconClassTreeWidgetConsole.png")
                             classItem.setIcon(0, iconClass)
@@ -1109,6 +1161,8 @@ class EditorTabWidget(QTabWidget):
                                 methodItem.setToolTip(0, meth)
                                 iconMeth = QgsApplication.getThemeIcon("console/iconMethodTreeWidgetConsole.png")
                                 methodItem.setIcon(0, iconMeth)
+                                if sys.platform.startswith('win'):
+                                    methodItem.setSizeHint(0, QSize(18, 18))
                                 classItem.addChild(methodItem)
                                 dictObject[meth] = lineno
                             self.parent.listClassMethod.addTopLevelItem(classItem)
@@ -1121,6 +1175,8 @@ class EditorTabWidget(QTabWidget):
                             funcItem.setToolTip(0, func_name)
                             iconFunc = QgsApplication.getThemeIcon("console/iconFunctionTreeWidgetConsole.png")
                             funcItem.setIcon(0, iconFunc)
+                            if sys.platform.startswith('win'):
+                                funcItem.setSizeHint(0, QSize(18, 18))
                             dictObject[func_name] = data.lineno
                             self.parent.listClassMethod.addTopLevelItem(funcItem)
                     if found:
@@ -1143,13 +1199,14 @@ class EditorTabWidget(QTabWidget):
             self.widget(i).newEditor.settingsEditor()
 
         objInspectorEnabled = self.settings.value("pythonConsole/enableObjectInsp",
-                                                  False).toBool()
+                                                  False, type=bool)
         listObj = self.parent.objectListButton
-        listObj.setChecked(objInspectorEnabled)
+        if self.parent.listClassMethod.isVisible():
+            listObj.setChecked(objInspectorEnabled)
         listObj.setEnabled(objInspectorEnabled)
         if objInspectorEnabled:
             cW = self.currentWidget()
-            if cW:
+            if cW and not self.parent.listClassMethod.isVisible():
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 self.listObject(cW)
                 QApplication.restoreOverrideCursor()
@@ -1157,7 +1214,7 @@ class EditorTabWidget(QTabWidget):
     def changeLastDirPath(self, tab):
         tabWidget = self.widget(tab)
         if tabWidget:
-            self.settings.setValue("pythonConsole/lastDirPath", QVariant(tabWidget.path))
+            self.settings.setValue("pythonConsole/lastDirPath", tabWidget.path)
 
     def widgetMessageBar(self, iface, text, level, timed=True):
         messageLevel = [QgsMessageBar.INFO, QgsMessageBar.WARNING, QgsMessageBar.CRITICAL]

@@ -55,9 +55,9 @@ struct QgsPostgresLayerProperty
   QList<int>                    srids;
   QString                       sql;
 
-  int size() { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
+  int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
-  QgsPostgresLayerProperty at( int i )
+  QgsPostgresLayerProperty at( int i ) const
   {
     QgsPostgresLayerProperty property;
 
@@ -76,7 +76,7 @@ struct QgsPostgresLayerProperty
   }
 
 #if QGISDEBUG
-  QString toString()
+  QString toString() const
   {
     QString typeString;
     foreach ( QGis::WkbType type, types )

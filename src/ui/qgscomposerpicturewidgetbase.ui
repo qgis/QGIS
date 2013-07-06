@@ -123,7 +123,7 @@
           <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
@@ -133,11 +133,8 @@
               <italic>true</italic>
              </font>
             </property>
-            <property name="styleSheet">
-             <string notr="true">color: rgb(19, 133, 54);</string>
-            </property>
             <property name="text">
-             <string>Loading SVG previews...</string>
+             <string>Loading previews...</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>

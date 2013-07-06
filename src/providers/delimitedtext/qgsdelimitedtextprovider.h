@@ -1,5 +1,5 @@
 /***************************************************************************
-      qgsdelimitedtextprovider.h  -  Data provider for delimted text
+      qgsdelimitedtextprovider.h  -  Data provider for delimited text
                              -------------------
     begin                : 2004-02-27
     copyright            : (C) 2004 by Gary E.Sherman
@@ -201,6 +201,14 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     */
     bool boundsCheck( QgsGeometry *geom );
 
+    /**
+     * Try to read field types from CSVT (or equialent xxxT) file.
+     * @param filename The name of the file from which to read the field types
+     * @param message  Pointer to a string to receive a status message
+     * @return A list of field type strings, empty if not found or not valid
+     */
+    QStringList readCsvtFieldTypes( QString filename, QString *message = 0 );
+
   private slots:
 
     void onFileUpdated();
@@ -231,8 +239,11 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     bool pointFromXY( QString &sX, QString &sY, QgsPoint &point );
     double dmsStringToDouble( const QString &sX, bool *xOk );
 
-
-    QString mUri;
+    // mLayerValid defines whether the layer has been loaded as a valid layer
+    bool mLayerValid;
+    // mValid defines whether the layer is currently valid (may differ from
+    // mLayerValid if the file has been rewritten)
+    bool mValid;
 
     //! Text file
     QgsDelimitedTextFile *mFile;
@@ -262,8 +273,6 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     //! Layer extent
     QgsRectangle mExtent;
-
-    bool mValid;
 
     int mGeomType;
 
@@ -309,7 +318,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QgsSpatialIndex *mSpatialIndex;
 
     friend class QgsDelimitedTextFeatureIterator;
-    QgsDelimitedTextFeatureIterator* mActiveIterator;
+    QSet< QgsDelimitedTextFeatureIterator* > mActiveIterators;
 };
 
 #endif

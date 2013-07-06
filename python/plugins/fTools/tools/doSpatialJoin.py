@@ -95,18 +95,12 @@ class Dialog(QDialog, Ui_Dialog):
                 sumList = ["all"]
             if self.rdoKeep.isChecked(): keep = True
             else: keep = False
-            if outPath.contains("\\"):
-                outName = outPath.right((outPath.length() - outPath.lastIndexOf("\\")) - 1)
-            else:
-                outName = outPath.right((outPath.length() - outPath.lastIndexOf("/")) - 1)
-            if outName.endsWith(".shp"):
-                outName = outName.left(outName.length() - 4)
+            outName = ftools_utils.getShapefileName( outPath )
             res = self.compute(inName, joinName, outPath, summary, sumList, keep, self.progressBar)
             self.outShape.clear()
             if res:
               addToTOC = QMessageBox.question(self, self.tr("Spatial Join"),
-                      self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?")
-                      .arg(unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+                      self.tr("Created output shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % (unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
               if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
@@ -118,18 +112,18 @@ class Dialog(QDialog, Ui_Dialog):
         ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText( QString( self.shapefileName ) )
+        self.outShape.setText( self.shapefileName )
 
     def compute(self, inName, joinName, outName, summary, sumList, keep, progressBar):
         layer1 = ftools_utils.getVectorLayerByName(inName)
         provider1 = layer1.dataProvider()
-        fieldList1 = ftools_utils.getFieldList(layer1).toList()
+        fieldList1 = ftools_utils.getFieldList(layer1)
 
         layer2 = ftools_utils.getVectorLayerByName(joinName)
         provider2 = layer2.dataProvider()
 
-        fieldList2 = ftools_utils.getFieldList(layer2).toList()
-        fieldList = []
+        fieldList2 = ftools_utils.getFieldList(layer2)
+        fieldList = QgsFields()
         if provider1.crs() != provider2.crs():
             QMessageBox.warning(self, self.tr("CRS warning!"), self.tr("Warning: Input layers have non-matching CRS.\nThis may cause unexpected results."))
         if not summary:
@@ -155,10 +149,9 @@ class Dialog(QDialog, Ui_Dialog):
         # check for correct field names
         print fieldList1
         longNames = ftools_utils.checkFieldNameLength( fieldList1.values() )
-        if not longNames.isEmpty():
+        if len( longNames ) > 0:
             QMessageBox.warning( self, self.tr( 'Incorrect field names' ),
-                        self.tr( 'No output will be created.\nFollowing field names are longer than 10 characters:\n%1' )
-                        .arg( longNames.join( '\n' ) ) )
+                        self.tr( 'No output will be created.\nFollowing field names are longer than 10 characters:\n%s' ) % ( "\n".join(longNames) ) )
             return False
 
         sRs = provider1.crs()
@@ -167,7 +160,7 @@ class Dialog(QDialog, Ui_Dialog):
         if check.exists():
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
                 QMessageBox.warning( self, self.tr( 'Error deleting shapefile' ),
-                            self.tr( "Can't delete existing shapefile\n%1" ).arg( self.shapefileName ) )
+                            self.tr( "Can't delete existing shapefile\n%s" ) % ( self.shapefileName ) )
                 return False
         fields = QgsFields()
         for f in fieldList1.values():
@@ -209,8 +202,7 @@ class Dialog(QDialog, Ui_Dialog):
                 for i in joinList:
                     #tempGeom = i.geometry()
                     provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(i) ) ).nextFeature( inFeatB )
-                    tmpGeom = QgsGeometry( inFeatB.geometry() )
-                    if inGeom.intersects(tmpGeom):
+                    if inGeom.intersects(inFeatB.geometry()):
                         count = count + 1
                         none = False
                         atMap2 = inFeatB.attributes()
@@ -222,18 +214,18 @@ class Dialog(QDialog, Ui_Dialog):
                             break
                         else:
                             for j in numFields.keys():
-                                numFields[j].append(atMap2[j].toDouble()[0])
+                                numFields[j].append(atMap2[j])
                 if summary and not none:
                     atMap = atMap1
                     for j in numFields.keys():
                         for k in sumList:
-                            if k == "SUM": atMap.append(QVariant(sum(numFields[j])))
-                            elif k == "MEAN": atMap.append(QVariant(sum(numFields[j]) / count))
-                            elif k == "MIN": atMap.append(QVariant(min(numFields[j])))
-                            elif k == "MED": atMap.append(QVariant(myself(numFields[j])))
-                            else: atMap.append(QVariant(max(numFields[j])))
+                            if k == "SUM": atMap.append(sum(numFields[j]))
+                            elif k == "MEAN": atMap.append(sum(numFields[j]) / count)
+                            elif k == "MIN": atMap.append(min(numFields[j]))
+                            elif k == "MED": atMap.append(myself(numFields[j]))
+                            else: atMap.append(max(numFields[j]))
                         numFields[j] = []
-                    atMap.append(QVariant(count))
+                    atMap.append(count)
                     atMap = dict(zip(seq, atMap))
             if none:
                 outFeat.setAttributes(atMap1)

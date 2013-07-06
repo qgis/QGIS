@@ -156,16 +156,24 @@ QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
       continue;
     }
     double val = inputBlock->value( i );
-    int red, green, blue;
-    if ( !mShader->shade( val, &red, &green, &blue ) )
+    int red, green, blue, alpha;
+    if ( !mShader->shade( val, &red, &green, &blue, &alpha ) )
     {
       outputBlock->setColor( i, myDefaultColor );
       continue;
     }
 
+    if ( alpha < 255 )
+    {
+      // Working with premultiplied colors, so multiply values by alpha
+      red *= ( alpha / 255.0 );
+      blue *= ( alpha / 255.0 );
+      green *= ( alpha / 255.0 );
+    }
+
     if ( !hasTransparency )
     {
-      outputBlock->setColor( i, qRgba( red, green, blue, 255 ) );
+      outputBlock->setColor( i, qRgba( red, green, blue, alpha ) );
     }
     else
     {
@@ -180,7 +188,7 @@ QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
         currentOpacity *= alphaBlock->value( i ) / 255.0;
       }
 
-      outputBlock->setColor( i, qRgba( currentOpacity * red, currentOpacity * green, currentOpacity * blue, currentOpacity * 255 ) );
+      outputBlock->setColor( i, qRgba( currentOpacity * red, currentOpacity * green, currentOpacity * blue, currentOpacity * alpha ) );
     }
   }
 

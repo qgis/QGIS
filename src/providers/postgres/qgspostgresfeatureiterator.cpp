@@ -47,14 +47,9 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresProvider* p, 
     : QgsAbstractFeatureIterator( request ), P( p )
     , mFeatureQueueSize( sFeatureQueueSize )
 {
-  // make sure that only one iterator is active
-  if ( P->mActiveIterator )
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Already active iterator on this provider was closed." ), QObject::tr( "PostgreSQL" ) );
-    P->mActiveIterator->close();
-  }
+  mCursorName = QString( "qgisf%1_%2" ).arg( P->mProviderId ).arg( P->mIteratorCounter++ );
 
-  mCursorName = QString( "qgisf%1" ).arg( P->mProviderId );
+  P->mActiveIterators << this;
 
   QString whereClause;
 
@@ -81,8 +76,6 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresProvider* p, 
     return;
   }
 
-  P->mActiveIterator = this;
-
   mFetched = 0;
 }
 
@@ -99,32 +92,6 @@ bool QgsPostgresFeatureIterator::nextFeature( QgsFeature& feature )
 
   if ( mClosed )
     return false;
-
-#if 0
-  // featureAtId used to have some special checks - necessary?
-  if ( !mUseQueue )
-  {
-    QgsPostgresResult queryResult = P->mConnectionRO->PQexec( QString( "FETCH FORWARD 1 FROM %1" ).arg( mCursorName ) );
-
-    int rows = queryResult.PQntuples();
-    if ( rows == 0 )
-    {
-      QgsMessageLog::logMessage( tr( "feature %1 not found" ).arg( featureId ), tr( "PostGIS" ) );
-      P->mConnectionRO->closeCursor( cursorName );
-      return false;
-    }
-    else if ( rows != 1 )
-    {
-      QgsMessageLog::logMessage( tr( "found %1 features instead of just one." ).arg( rows ), tr( "PostGIS" ) );
-    }
-
-    bool gotit = getFeature( queryResult, 0, feature );
-
-    feature.setValid( gotit );
-    feature.setFields( &P->mAttributeFields ); // allow name-based attribute lookups
-    return gotit;
-  }
-#endif
 
   if ( mFeatureQueue.empty() )
   {
@@ -220,8 +187,7 @@ bool QgsPostgresFeatureIterator::close()
     mFeatureQueue.dequeue();
   }
 
-  // tell provider that this iterator is not active anymore
-  P->mActiveIterator = 0;
+  P->mActiveIterators.remove( this );
 
   mClosed = true;
   return true;
@@ -232,47 +198,43 @@ bool QgsPostgresFeatureIterator::close()
 QString QgsPostgresFeatureIterator::whereClauseRect()
 {
   QgsRectangle rect = mRequest.filterRect();
-  QString whereClause;
   if ( P->mSpatialColType == sctGeography )
   {
     rect = QgsRectangle( -180.0, -90.0, 180.0, 90.0 ).intersect( &rect );
     if ( !rect.isFinite() )
-      whereClause = "false";
+      return "false";
   }
 
-  if ( whereClause.isEmpty() )
+  QString qBox;
+  if ( P->mConnectionRO->majorVersion() < 2 )
   {
-    QString qBox;
-    if ( P->mConnectionRO->majorVersion() < 2 )
-    {
-      qBox = QString( "setsrid('BOX3D(%1)'::box3d,%2)" )
-             .arg( rect.asWktCoordinates() )
-             .arg( P->mRequestedSrid.isEmpty() ? P->mDetectedSrid : P->mRequestedSrid );
-    }
-    else
-    {
-      qBox = QString( "st_makeenvelope(%1,%2,%3,%4,%5)" )
-             .arg( rect.xMinimum(), 0, 'f', 16 )
-             .arg( rect.yMinimum(), 0, 'f', 16 )
-             .arg( rect.xMaximum(), 0, 'f', 16 )
-             .arg( rect.yMaximum(), 0, 'f', 16 )
-             .arg( P->mRequestedSrid.isEmpty() ? P->mDetectedSrid : P->mRequestedSrid );
-    }
-
-    whereClause = QString( "%1 && %2" )
-                  .arg( P->quotedIdentifier( P->mGeometryColumn ) )
-                  .arg( qBox );
-    if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
-    {
-      whereClause += QString( " AND %1(%2%3,%4)" )
-                     .arg( P->mConnectionRO->majorVersion() < 2 ? "intersects" : "st_intersects" )
-                     .arg( P->quotedIdentifier( P->mGeometryColumn ) )
-                     .arg( P->mSpatialColType == sctGeography ? "::geometry" : "" )
-                     .arg( qBox );
-    }
+    qBox = QString( "setsrid('BOX3D(%1)'::box3d,%2)" )
+           .arg( rect.asWktCoordinates() )
+           .arg( P->mRequestedSrid.isEmpty() ? P->mDetectedSrid : P->mRequestedSrid );
+  }
+  else
+  {
+    qBox = QString( "st_makeenvelope(%1,%2,%3,%4,%5)" )
+           .arg( rect.xMinimum(), 0, 'f', 16 )
+           .arg( rect.yMinimum(), 0, 'f', 16 )
+           .arg( rect.xMaximum(), 0, 'f', 16 )
+           .arg( rect.yMaximum(), 0, 'f', 16 )
+           .arg( P->mRequestedSrid.isEmpty() ? P->mDetectedSrid : P->mRequestedSrid );
   }
 
-  if ( !P->mRequestedSrid.isEmpty() && P->mRequestedSrid != P->mDetectedSrid )
+  QString whereClause = QString( "%1 && %2" )
+                        .arg( P->quotedIdentifier( P->mGeometryColumn ) )
+                        .arg( qBox );
+  if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+  {
+    whereClause += QString( " AND %1(%2%3,%4)" )
+                   .arg( P->mConnectionRO->majorVersion() < 2 ? "intersects" : "st_intersects" )
+                   .arg( P->quotedIdentifier( P->mGeometryColumn ) )
+                   .arg( P->mSpatialColType == sctGeography ? "::geometry" : "" )
+                   .arg( qBox );
+  }
+
+  if ( !P->mRequestedSrid.isEmpty() && ( P->mRequestedSrid != P->mDetectedSrid || P->mRequestedSrid.toInt() == 0 ) )
   {
     whereClause += QString( " AND %1(%2%3)=%4" )
                    .arg( P->mConnectionRO->majorVersion() < 2 ? "srid" : "st_srid" )

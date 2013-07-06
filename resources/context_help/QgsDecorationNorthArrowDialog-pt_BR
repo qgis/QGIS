@@ -1,4 +1,0 @@
-<h3>Complemento Rosa dos Ventos</h3>
-Mostra uma rosa dos ventos sobreposta ao mapa.
-<p>
-Atualmente existe apenas um estilo disponível. Vocẽ pode ajustar o ângulo de direção automaticamente. Se você optar por deixar o QGIS determinar a direção, faça sua avaliação sobre a forma como a seta deve ser orientada. Para situar o Norte  você tem quatro opções, correspondente aos cantos da tela.

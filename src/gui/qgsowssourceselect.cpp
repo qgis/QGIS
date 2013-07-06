@@ -710,39 +710,6 @@ void QgsOWSSourceSelect::searchFinished()
   r->deleteLater();
 }
 
-void QgsOWSSourceSelect::on_mAddWMSButton_clicked()
-{
-  // TODO: deactivate button if dialog is open?
-  // TODO: remove from config on close?
-
-  int selectedRow = mSearchTableWidget->currentRow();
-  if ( selectedRow == -1 )
-  {
-    return;
-  }
-
-  QString wmsTitle = mSearchTableWidget->item( selectedRow, 0 )->text();
-  QString wmsUrl = mSearchTableWidget->item( selectedRow, 2 )->text();
-
-  QSettings settings;
-  if ( settings.contains( QString( "Qgis/connections-wms/%1/url" ).arg( wmsTitle ) ) )
-  {
-    QString msg = tr( "The %1 connection already exists. Do you want to overwrite it?" ).arg( wmsTitle );
-    QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Overwrite" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
-    if ( result != QMessageBox::Ok )
-    {
-      return;
-    }
-  }
-
-  // add selected WMS to config and mark as current
-  settings.setValue( QString( "Qgis/connections-wms/%1/url" ).arg( wmsTitle ), wmsUrl );
-  QgsOWSConnection::setSelectedConnection( mService, wmsTitle );
-  populateConnectionList();
-
-  mTabWidget->setCurrentIndex( 0 );
-}
-
 void QgsOWSSourceSelect::on_mSearchTableWidget_itemSelectionChanged()
 {
   mSearchAddButton->setEnabled( mSearchTableWidget->currentRow() != -1 );

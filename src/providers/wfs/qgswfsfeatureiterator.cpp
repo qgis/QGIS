@@ -17,8 +17,9 @@
 #include "qgswfsprovider.h"
 #include "qgsmessagelog.h"
 
-QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSProvider* provider, const QgsFeatureRequest& request ):
-    QgsAbstractFeatureIterator( request ), mProvider( provider )
+QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSProvider* provider, const QgsFeatureRequest& request )
+    : QgsAbstractFeatureIterator( request )
+    , mProvider( provider )
 {
   //select ids
   //get iterator
@@ -27,12 +28,7 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSProvider* provider, const Qg
     return;
   }
 
-  if ( mProvider->mActiveIterator )
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Already active iterator on this provider was closed." ), QObject::tr( "WFS" ) );
-    mProvider->mActiveIterator->close();
-  }
-  mProvider->mActiveIterator = this;
+  mProvider->mActiveIterators << this;
 
   switch ( request.filterType() )
   {
@@ -107,10 +103,10 @@ bool QgsWFSFeatureIterator::rewind()
 bool QgsWFSFeatureIterator::close()
 {
   if ( !mProvider )
-  {
     return false;
-  }
-  mProvider->mActiveIterator = 0;
+
+  mProvider->mActiveIterators.remove( this );
+
   mProvider = 0;
   return true;
 }

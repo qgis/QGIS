@@ -87,8 +87,8 @@ def createTest(text):
                 attrs = feature.attributes()
                 s+="\tfeature=features.next()\n"
                 s+="\tattrs=feature.attributes()\n"
-                s+="\texpectedvalues=[" + ",".join(['"' + str(attr.toString()) + '"' for attr in attrs]) + "]\n"
-                s+="\tvalues=[str(attr.toString()) for attr in attrs]\n"
+                s+="\texpectedvalues=[" + ",".join(['"' + str(attr) + '"' for attr in attrs]) + "]\n"
+                s+="\tvalues=[str(attr) for attr in attrs]\n"
                 s+="\tself.assertEqual(expectedvalues, values)\n"
                 s+="\twkt='" + str(feature.geometry().exportToWkt()) + "'\n"
                 s+="\tself.assertEqual(wkt, str(feature.geometry().exportToWkt()))"

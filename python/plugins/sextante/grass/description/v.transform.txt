@@ -1,7 +1,7 @@
 v.transform
-v.transform - Performs an affine transformation (shift, scale and rotate, or GPCs) on a vector layer.
+v.transform - Performs an affine transformation on a vector layer.
 Vector (v.*)
-ParameterVector|input|Name of input vector map|-1|False
+ParameterVector|input|Input vector layer|-1|False
 ParameterNumber|xshift|X shift|None|None|0.0
 ParameterNumber|yshift|Y shift|None|None|0.0
 ParameterNumber|zshift|Z shift|None|None|0.0
@@ -10,4 +10,3 @@ ParameterNumber|yscale|Y scale|None|None|1.0
 ParameterNumber|zscale|Z scale|None|None|1.0
 ParameterNumber|zrot|Rotation around z axis in degrees counterclockwise|None|None|0.0
 OutputVector|output|Transformed layer
-

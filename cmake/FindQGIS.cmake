@@ -12,27 +12,27 @@
 
 #MESSAGE("Searching for QGIS")
 IF(WIN32)
-  #MESSAGE("Searching for QGIS in $ENV{PROGRAMFILES}/Quantum GIS")
+  #MESSAGE("Searching for QGIS in $ENV{PROGRAMFILES}/QGIS")
   IF (MINGW)
     FIND_PATH(QGIS_PLUGIN_DIR
       NAMES libdelimitedtextplugin.dll
       PATHS
-        "$ENV{PROGRAMFILES}/Quantum GIS/plugins"
+        "$ENV{PROGRAMFILES}/QGIS/plugins"
     )
     FIND_PATH(QGIS_INCLUDE_DIR
       NAMES qgsapplication.h
       PATHS
-        "$ENV{PROGRAMFILES}/Quantum GIS/include"
+        "$ENV{PROGRAMFILES}/QGIS/include"
     )
     FIND_LIBRARY(QGIS_CORE_LIBRARY
       NAMES qgis_core
       PATHS
-        "$ENV{PROGRAMFILES}/Quantum GIS/"
+        "$ENV{PROGRAMFILES}/QGIS/"
     )
     FIND_LIBRARY(QGIS_GUI_LIBRARY
       NAMES qgis_gui
       PATHS
-        "$ENV{PROGRAMFILES}/Quantum GIS/"
+        "$ENV{PROGRAMFILES}/QGIS/"
     )
   ENDIF (MINGW)
 
@@ -41,7 +41,7 @@ IF(WIN32)
       NAMES delimitedtextplugin.dll
       PATHS
         "$ENV{OSGEO4W_ROOT}/apps/qgis/plugins"
-        "$ENV{PROGRAMFILES}/Quantum GIS/plugins"
+        "$ENV{PROGRAMFILES}/QGIS/plugins"
     )
     FIND_PATH(QGIS_INCLUDE_DIR
       NAMES qgsapplication.h
@@ -49,7 +49,7 @@ IF(WIN32)
         "$ENV{INCLUDE}"
         "$ENV{LIB_DIR}/include/qgis"
         "$ENV{OSGEO4W_ROOT}/include"
-        "$ENV{PROGRAMFILES}/Quantum GIS/include"
+        "$ENV{PROGRAMFILES}/QGIS/include"
     )
     FIND_LIBRARY(QGIS_CORE_LIBRARY
       NAMES qgis_core
@@ -57,7 +57,7 @@ IF(WIN32)
         "$ENV{LIB_DIR}/lib/"
         "$ENV{LIB}"
         "$ENV{OSGEO4W_ROOT}/lib"
-        "$ENV{PROGRAMFILES}/Quantum GIS/lib"
+        "$ENV{PROGRAMFILES}/QGIS/lib"
     )
     FIND_LIBRARY(QGIS_GUI_LIBRARY
       NAMES qgis_gui
@@ -65,7 +65,7 @@ IF(WIN32)
         "$ENV{LIB_DIR}"
         "$ENV{LIB}"
         "$ENV{OSGEO4W_ROOT}/lib"
-        "$ENV{PROGRAMFILES}/Quantum GIS/lib"
+        "$ENV{PROGRAMFILES}/QGIS/lib"
     )
     FIND_LIBRARY(QGIS_ANALYSIS_LIBRARY
       NAMES qgis_analysis
@@ -73,7 +73,7 @@ IF(WIN32)
         "$ENV{LIB_DIR}"
         "$ENV{LIB}"
         "$ENV{OSGEO4W_ROOT}/lib"
-        "$ENV{PROGRAMFILES}/Quantum GIS/lib"
+        "$ENV{PROGRAMFILES}/QGIS/lib"
     )
   ENDIF (MSVC)
 ELSE(WIN32)

@@ -129,6 +129,13 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
            this, SLOT( writeProject( QDomDocument & ) ) );
   mMap->resize( size() );
+
+#ifdef Q_OS_WIN
+  // Enable touch event on Windows.
+  // Qt on Windows needs to be told it can take touch events or else it ignores them.
+  grabGesture( Qt::PinchGesture );
+  viewport()->setAttribute( Qt::WA_AcceptTouchEvents );
+#endif
 } // QgsMapCanvas ctor
 
 
@@ -739,7 +746,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
     // zoom in
     QgsPoint c = rect.center();
     rect = extent();
-    rect.scale( 0.5, &c );
+    rect.scale( 1.0, &c );
   }
   //zoom to an area
   else

@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*!  Quantum GIS - Plugin API
+/*!  QGIS - Plugin API
  *
  *  \section about  About QGis Plugins
  * Plugins provide additional functionality to QGis. Plugins must
@@ -201,5 +201,7 @@ typedef QString version_t();
 //! Typedef for getting the plugin icon file name without instantiating the plugin
 typedef QString icon_t();
 
+//! Typedef for getting the experimental status without instantiating the plugin
+typedef QString experimental_t();
 
 #endif //qgisplugin_h

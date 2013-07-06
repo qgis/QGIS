@@ -55,6 +55,7 @@ qgsattributeeditor.cpp
 qgsattributedialog.cpp
 qgsbusyindicatordialog.cpp
 qgslegendinterface.cpp
+qgspluginmanagerinterface.cpp
 qgsblendmodecombobox.cpp
 qgscharacterselectdialog.cpp
 qgscolorbutton.cpp
@@ -62,6 +63,7 @@ qgscolordialog.cpp
 qgscomposerview.cpp
 qgscomposerruler.cpp
 qgscursors.cpp
+qgsdatadefinedbutton.cpp
 qgsdetaileditemdelegate.cpp
 qgsdetaileditemwidget.cpp
 qgsdetaileditemdata.cpp
@@ -114,6 +116,7 @@ qgsexpressionhighlighter.cpp
 qgsquerybuilder.cpp
 qgscollapsiblegroupbox.cpp
 qgsfilterlineedit.cpp
+qgssublayersdialog.cpp
 )
 
 IF (WITH_TOUCH)
@@ -180,10 +183,12 @@ qgsbusyindicatordialog.h
 qgscharacterselectdialog.h
 qgscolordialog.h
 qgscomposerview.h
+qgsdatadefinedbutton.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
 qgsdialog.h
 qgslegendinterface.h
+qgspluginmanagerinterface.h
 qgisinterface.h
 qgsencodingfiledialog.h
 qgserrordialog.h
@@ -219,6 +224,7 @@ qgsexpressionselectiondialog.h
 qgsquerybuilder.h
 qgscollapsiblegroupbox.h
 qgsfilterlineedit.h
+qgssublayersdialog.h
 )
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
@@ -232,6 +238,7 @@ qgsbusyindicatordialog.h
 qgscharacterselectdialog.h
 qgscolordialog.h
 qgscursors.h
+qgsdatadefinedbutton.h
 qgsencodingfiledialog.h
 qgsfiledropedit.h
 qgsgenericprojectionselector.h
@@ -267,6 +274,7 @@ qgsexpressionselectiondialog.h
 qgsexpressionhighlighter.h
 qgscollapsiblegroupbox.h
 qgsfilterlineedit.h
+qgssublayersdialog.h
 
 attributetable/qgsattributetablemodel.h
 attributetable/qgsattributetableview.h
@@ -299,6 +307,7 @@ ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilder.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderdialogbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionselectiondialogbase.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
 )
 
 # ModelTest

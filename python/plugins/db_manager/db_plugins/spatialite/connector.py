@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -37,7 +37,7 @@ class SpatiaLiteDBConnector(DBConnector):
 
 		self.dbname = uri.database()
 		if not QFile.exists( self.dbname ):
-			raise ConnectionError( u'"%s" not found' % self.dbname )
+			raise ConnectionError( self.tr('"%s" not found') % self.dbname )
 
 		try:
 			self.connection = sqlite.connect( self._connectionInfo() )
@@ -314,7 +314,7 @@ class SpatiaLiteDBConnector(DBConnector):
 		c = self._get_cursor()
 
 		if self.isRasterTable(table):
-			tablename = QString(tablename).replace('_rasters', '_metadata')
+			tablename = tablename.replace('_rasters', '_metadata')
 			geom = u'geometry'
 
 		sql = u"""SELECT Min(MbrMinX(%(geom)s)), Min(MbrMinY(%(geom)s)), Max(MbrMaxX(%(geom)s)), Max(MbrMaxY(%(geom)s))
@@ -348,7 +348,7 @@ class SpatiaLiteDBConnector(DBConnector):
 	def isRasterTable(self, table):
 		if self.has_geometry_columns and self.has_raster:
 			schema, tablename = self.getSchemaTableName(table)
-			if not QString(tablename).endsWith( "_rasters" ):
+			if not tablename.endswith( "_rasters" ):
 				return False
 
 			sql = u"""SELECT count(*)

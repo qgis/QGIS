@@ -63,7 +63,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers, const QDo
   setupUi( this );
 
   mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
-  QgsRasterLayer::buildSupportedRasterFileFilter( mRasterFileFilter );
+  mRasterFileFilter = QgsProviderRegistry::instance()->fileRasterFilters();
 
   mBrowseButton = new QPushButton( tr( "Browse" ) );
   buttonBox->addButton( mBrowseButton, QDialogButtonBox::ActionRole );

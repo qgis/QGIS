@@ -158,20 +158,3 @@ def combineVectorFields(layerA, layerB):
 
     return fields
 
-# Create a unique field name based on input field name
-def createUniqueFieldNameFromName(field):
-    check = field.name().right(2)
-    shortName = field.name().left(8)
-    if check.startsWith("_"):
-        (val, test) = check.right(1).toInt()
-        if test:
-            if val < 2:
-                val = 2
-            else:
-                val = val + 1
-            field.setName(shortName.left(len(shortName) - 1) + unicode(val))
-        else:
-            field.setName(shortName + "_2")
-    else:
-        field.setName(shortName + "_2")
-    return field

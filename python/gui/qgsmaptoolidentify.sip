@@ -6,21 +6,21 @@ class QgsMapToolIdentify : QgsMapTool
 %End
 
   public:
+
     enum IdentifyMode
     {
-        DefaultQgsSetting=-1,
-        ActiveLayer,
-        TopDownStopAtFirst,
-        TopDownAll,
+      DefaultQgsSetting = -1,
+      ActiveLayer,
+      TopDownStopAtFirst,
+      TopDownAll
     };
 
     enum LayerType
     {
-        AllLayers=-1,
-        VectorLayer,
-        RasterLayer,
+      AllLayers = -1,
+      VectorLayer,
+      RasterLayer
     };
-    
 
     struct IdentifyResult
     {
@@ -32,16 +32,19 @@ class QgsMapToolIdentify : QgsMapTool
 
       IdentifyResult( QgsMapLayer * layer, QString label, QgsFields fields, QgsFeature feature, QMap< QString, QString > derivedAttributes );
 
-     QgsMapLayer* mLayer;
+      QgsMapLayer* mLayer;
       QString mLabel;
       QgsFields mFields;
       QgsFeature mFeature;
       QMap< QString, QString > mAttributes;
       QMap< QString, QString > mDerivedAttributes;
+      QMap< QString, QVariant > mParams;
     };
 
-	//! constructor
-    QgsMapToolIdentify( QgsMapCanvas* canvas );
+    //! constructor
+    QgsMapToolIdentify( QgsMapCanvas * canvas );
+
+    virtual ~QgsMapToolIdentify();
 
     //! Overridden mouse move event
     virtual void canvasMoveEvent( QMouseEvent * e );
@@ -55,8 +58,6 @@ class QgsMapToolIdentify : QgsMapTool
     virtual void activate();
 
     virtual void deactivate();
-
-    //QgsMapLayer::LayerType LayerType;
 
     /** Performs the identification.
     @param x x coordinates of mouseEvent
@@ -76,14 +77,11 @@ class QgsMapToolIdentify : QgsMapTool
     @return a list of IdentifyResult*/
     QList<QgsMapToolIdentify::IdentifyResult> identify(int x, int y, IdentifyMode mode, LayerType layerType = AllLayers);
 
+  public slots:
+    void formatChanged( QgsRasterLayer *layer );
+
   signals:
     void identifyProgress( int, int );
     void identifyMessage( QString );
-
-  private:
-    //! Private helper
-    virtual void convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea );
-
-    /** Transforms the measurements of derived attributes in the desired units*/
-    virtual QGis::UnitType displayUnits();
+    void changedRasterResults( QList<QgsMapToolIdentify::IdentifyResult>& );
 };

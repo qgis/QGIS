@@ -16,12 +16,11 @@
 #include "nodetool/qgsvertexentry.h"
 #include "qgsmaprenderer.h"
 
-QgsVertexEntry::QgsVertexEntry( QgsMapCanvas *canvas, QgsMapLayer *layer, QgsPoint p, int originalIndex, QString tooltip, QgsVertexMarker::IconType type, int penWidth )
+QgsVertexEntry::QgsVertexEntry( QgsMapCanvas *canvas, QgsMapLayer *layer, QgsPoint p, QString tooltip, QgsVertexMarker::IconType type, int penWidth )
     : mSelected( false )
     , mEquals( -1 )
     , mInRubberBand( false )
     , mRubberBandNr( 0 )
-    , mOriginalIndex( originalIndex )
     , mPenWidth( penWidth )
     , mToolTip( tooltip )
     , mType( type )

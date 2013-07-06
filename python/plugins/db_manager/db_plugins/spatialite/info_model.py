@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -32,14 +32,14 @@ class SLDatabaseInfo(DatabaseInfo):
 
 	def connectionDetails(self):
 		tbl = [
-			("Filename:", self.db.connector.dbname)
+			(QApplication.translate("DBManagerPlugin","Filename:"), self.db.connector.dbname)
 		]
 		return HtmlTable( tbl )
 
 	def generalInfo(self):
 		info = self.db.connector.getInfo()
 		tbl = [
-			("SQLite version", info[0])
+			(QApplication.translate("DBManagerPlugin","SQLite version:"), info[0])
 		]
 		return HtmlTable( tbl )
 

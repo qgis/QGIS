@@ -10,7 +10,7 @@
           <se:PointSymbolizer>
             <se:Graphic>
               <se:ExternalGraphic>
-                <OnlineResource xlink:type="simple" xlink:href="C:/Program Files/qgis1.8.0/svg/gpsicons/skull.svg"/>
+                <OnlineResource xlink:type="simple" xlink:href="file:gpsicons/skull.svg"/>
                 <Format>image/svg+xml</Format>
               </se:ExternalGraphic>
               <se:Size>12</se:Size>

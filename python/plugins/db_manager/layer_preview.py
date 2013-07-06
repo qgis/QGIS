@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -38,10 +38,10 @@ class LayerPreview(QgsMapCanvas):
 
     # reuse settings from QGIS
     settings = QSettings()
-    self.enableAntiAliasing( settings.value( "/qgis/enable_anti_aliasing", QVariant(False) ).toBool() )
-    self.useImageToRender( settings.value( "/qgis/use_qimage_to_render", QVariant(False) ).toBool() )
-    action = settings.value( "/qgis/wheel_action", QVariant(0) ).toInt()[0]
-    zoomFactor = settings.value( "/qgis/zoom_factor", QVariant(2) ).toDouble()[0]
+    self.enableAntiAliasing( settings.value( "/qgis/enable_anti_aliasing", False, type=bool ) )
+    self.useImageToRender( settings.value( "/qgis/use_qimage_to_render", False, type=bool ) )
+    action = settings.value( "/qgis/wheel_action", 0, type=float )
+    zoomFactor = settings.value( "/qgis/zoom_factor", 2, type=float )
     self.setWheelAction( QgsMapCanvas.WheelAction(action), zoomFactor )
 
     self._clear()
@@ -92,7 +92,7 @@ class LayerPreview(QgsMapCanvas):
       if limit and table.rowCount > 1000:
         uniqueField = table.getValidQGisUniqueFields(True)
         if uniqueField == None:
-          QMessageBox.warning(self, "Sorry", "Unable to find a valid unique field")
+          QMessageBox.warning(self, QApplication.translate("DBManagerPlugin", "Sorry"), QApplication.translate("DBManagerPlugin", "Unable to find a valid unique field"))
           return
 
         uri = table.database().uri()

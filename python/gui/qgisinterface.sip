@@ -30,6 +30,8 @@ class QgisInterface : QObject
      */
     virtual QgsLegendInterface* legendInterface() = 0;
 
+    virtual QgsPluginManagerInterface* pluginManagerInterface() = 0;
+
   public slots: // TODO: do these functions really need to be slots?
 
     /* Exposed functions */
@@ -321,7 +323,8 @@ class QgisInterface : QObject
      */
 
     //! Menus
-    virtual QMenu *fileMenu() = 0;
+    virtual QMenu *fileMenu() = 0 /Deprecated/;
+    virtual QMenu *projectMenu() = 0;
     virtual QMenu *editMenu() = 0;
     virtual QMenu *viewMenu() = 0;
     virtual QMenu *layerMenu() = 0;
@@ -366,7 +369,7 @@ class QgisInterface : QObject
     */
     virtual QToolBar *webToolBar() = 0;
 
-    //! File menu actions
+    //! Project menu actions
     virtual QAction *actionNewProject() = 0;
     virtual QAction *actionOpenProject() = 0;
     virtual QAction *actionSaveProject() = 0;
@@ -480,7 +483,8 @@ class QgisInterface : QObject
 
     virtual QDialog* getFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
 
-    virtual void preloadForm(QString uifile) = 0;
+    virtual void preloadForm( QString uifile ) = 0;
+
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified
      * @returns list of layers in legend order, or empty list

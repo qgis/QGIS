@@ -473,7 +473,7 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
   {
     mErrorTitle = tr( "Version not supported" );
     mErrorFormat = "text/plain";
-    mError = tr( "WCS server version %1 is not supported by Quantum GIS (supported versions: 1.0.0, 1.1.0, 1.1.2)" )
+    mError = tr( "WCS server version %1 is not supported by QGIS (supported versions: 1.0.0, 1.1.0, 1.1.2)" )
              .arg( mVersion );
 
     QgsLogger::debug( "WCS version: " + mError );

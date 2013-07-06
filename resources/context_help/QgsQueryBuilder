@@ -1,0 +1,45 @@
+<h3>Query Builder</h3>
+The query builder allows you to create provider specific filter expressions.
+
+These are usually evaluated much faster than the generic QGIS expressions, but
+are sometimes limited (e.g. for shape files) or behave diffently.
+
+<h4>Providers</h4>
+
+<table border=1>
+<tr>
+  <th>Provider</th>
+  <th>Documentation</th>
+</tr>
+<tr>
+  <td>OGR</td>
+  <td>where clauses depending on the
+    <a href="http://www.gdal.org/ogr/ogr_formats.html">format</a> (eg.
+    <a href="http://www.gdal.org/ogr/ogr_sql.html">OGR SQL</a>
+    for shape files)
+  </td>
+</tr>
+<tr>
+  <td>PostgreSQL/PostGIS</td>
+  <td>where clauses using
+    <a href="http://www.postgresql.org/docs/">PostgreSQL</a> and
+    <a href="http://postgis.net/documentation">PostGIS</a> 
+  </td>
+</tr>
+<tr>
+  <td>SpatiaLite</td>
+  <td>where clauses using
+    <a href="http://www.sqlite.org/lang_select.html">SQLite</a> and
+    <a href="http://www.gaia-gis.it/gaia-sins/spatialite-sql-4.1.0.html">SpatiaLite</a>
+  </td>
+</tr>
+<tr>
+  <td>Oracle Spatial/Locator</td>
+  <td>where clauses using
+    <a href="http://docs.oracle.com/cd/B28359_01/appdev.111/b28400/sdo_index_query.htm#autoId9">Oracle Spatial/Locator</a>
+  </td>
+</tr>
+<tr>
+  <td colspan=2>...</td>
+</tr>
+</table>

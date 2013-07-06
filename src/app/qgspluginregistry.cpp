@@ -67,9 +67,9 @@ void QgsPluginRegistry::setPythonUtils( QgsPythonUtils* pythonUtils )
   mPythonUtils = pythonUtils;
 }
 
-bool QgsPluginRegistry::isLoaded( QString key )
+bool QgsPluginRegistry::isLoaded( QString key ) const
 {
-  QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.find( key );
+  QMap<QString, QgsPluginMetadata>::const_iterator it = mPlugins.find( key );
   if ( it != mPlugins.end() ) // found a c++ plugin?
     return true;
 
@@ -107,7 +107,7 @@ QgisPlugin *QgsPluginRegistry::plugin( QString key )
   return it->plugin();
 }
 
-bool QgsPluginRegistry::isPythonPlugin( QString key )
+bool QgsPluginRegistry::isPythonPlugin( QString key ) const
 {
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
@@ -184,10 +184,10 @@ void QgsPluginRegistry::unloadAll()
 }
 
 
-bool QgsPluginRegistry::checkQgisVersion( QString minVersion )
+bool QgsPluginRegistry::checkQgisVersion( QString minVersion, QString maxVersion ) const
 {
+  // Parse qgisMinVersion. Must be in form x.y.z or just x.y
   QStringList minVersionParts = minVersion.split( '.' );
-  // qgis version must be in form x.y.z or just x.y
   if ( minVersionParts.count() != 2 && minVersionParts.count() != 3 )
     return false;
 
@@ -206,31 +206,65 @@ bool QgsPluginRegistry::checkQgisVersion( QString minVersion )
       return false;
   }
 
+  // Parse qgisMaxVersion. Must be in form x.y.z or just x.y
+  int maxVerMajor, maxVerMinor, maxVerBugfix = 99;
+  if ( maxVersion.isEmpty() || maxVersion == "__error__" )
+  {
+    maxVerMajor = minVerMajor;
+    maxVerMinor = 99;
+  }
+  else
+  {
+    QStringList maxVersionParts = maxVersion.split( '.' );
+    if ( maxVersionParts.count() != 2 && maxVersionParts.count() != 3 )
+      return false;
+
+    bool ok;
+    maxVerMajor = maxVersionParts.at( 0 ).toInt( &ok );
+    if ( !ok )
+      return false;
+    maxVerMinor = maxVersionParts.at( 1 ).toInt( &ok );
+    if ( !ok )
+      return false;
+    if ( maxVersionParts.count() == 3 )
+    {
+      maxVerBugfix = maxVersionParts.at( 2 ).toInt( &ok );
+      if ( !ok )
+        return false;
+    }
+  }
+
   // our qgis version - cut release name after version number
   QString qgisVersion = QString( QGis::QGIS_VERSION ).section( '-', 0, 0 );
+
+  // /////////////////////////////////////////////////////////////////////////////
+  // TEMPORARY WORKAROUND UNTIL VERSION NUMBER IS GLOBALY SWITCHED TO 2.0       //
+  // /////////////////////////////////////////////////////////////////////////////
+  //                                            //////////////////////////////////
+  qgisVersion = "2.0.0";                        //////////////////////////////////
+  //                                            //////////////////////////////////
+  // /////////////////////////////////////////////////////////////////////////////
+  // /////////////////////////////////////////////////////////////////////////////
+
   QStringList qgisVersionParts = qgisVersion.split( "." );
 
   int qgisMajor = qgisVersionParts.at( 0 ).toInt();
   int qgisMinor = qgisVersionParts.at( 1 ).toInt();
   int qgisBugfix = qgisVersionParts.at( 2 ).toInt();
 
-  // first check major version
-  if ( minVerMajor > qgisMajor )
-    return false;
-  if ( minVerMajor < qgisMajor )
-    return true;
-  // if same, check minor version
-  if ( minVerMinor > qgisMinor )
-    return false;
-  if ( minVerMinor < qgisMinor )
-    return true;
+  // build XxYyZz strings with trailing zeroes if needed
+  QString minVer = QString( "%1%2%3" ).arg( minVerMajor, 2, 10, QChar( '0' ) )
+                   .arg( minVerMinor, 2, 10, QChar( '0' ) )
+                   .arg( minVerBugfix, 2, 10, QChar( '0' ) );
+  QString maxVer = QString( "%1%2%3" ).arg( maxVerMajor, 2, 10, QChar( '0' ) )
+                   .arg( maxVerMinor, 2, 10, QChar( '0' ) )
+                   .arg( maxVerBugfix, 2, 10, QChar( '0' ) );
+  QString curVer = QString( "%1%2%3" ).arg( qgisMajor, 2, 10, QChar( '0' ) )
+                   .arg( qgisMinor, 2, 10, QChar( '0' ) )
+                   .arg( qgisBugfix, 2, 10, QChar( '0' ) );
 
-  // if still same, check bugfix version
-  if ( minVerBugfix > qgisBugfix )
-    return false;
-
-  // looks like min version is the same as our version - that's fine
-  return true;
+  // compare
+  return ( minVer <= curVer && maxVer >= curVer );
 }
 
 
@@ -250,7 +284,7 @@ void QgsPluginRegistry::loadPythonPlugin( QString packageName )
     // if plugin is not compatible, disable it
     if ( ! isPythonPluginCompatible( packageName ) )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Plugin \"%1\" is not compatible with this version of Quantum GIS.\nIt will be disabled." ).arg( packageName ),
+      QgsMessageLog::logMessage( QObject::tr( "Plugin \"%1\" is not compatible with this version of QGIS.\nIt will be disabled." ).arg( packageName ),
                                  QObject::tr( "Plugins" ) );
       settings.setValue( "/PythonPlugins/" + packageName, false );
       return;
@@ -371,6 +405,46 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
   }
 }
 
+
+void QgsPluginRegistry::unloadPythonPlugin( QString packageName )
+{
+  if ( !mPythonUtils || !mPythonUtils->isEnabled() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Python is not enabled in QGIS." ), QObject::tr( "Plugins" ) );
+    return;
+  }
+
+  if ( isLoaded( packageName ) )
+  {
+    mPythonUtils->unloadPlugin( packageName );
+    QgsDebugMsg( "Python plugin successfully unloaded: " + packageName );
+  }
+
+  // disable the plugin no matter if successfully loaded or not
+  QSettings settings;
+  settings.setValue( "/PythonPlugins/" + packageName, false );
+}
+
+
+void QgsPluginRegistry::unloadCppPlugin( QString theFullPathName )
+{
+  QSettings settings;
+  QString baseName = QFileInfo( theFullPathName ).baseName();
+  settings.setValue( "/Plugins/" + baseName, false );
+  if ( isLoaded( baseName ) )
+  {
+    QgisPlugin * pluginInstance = plugin( baseName );
+    if ( pluginInstance )
+    {
+      pluginInstance->unload();
+    }
+    // remove the plugin from the registry
+    removePlugin( baseName );
+    QgsDebugMsg( "Cpp plugin successfully unloaded: " + baseName );
+  }
+}
+
+
 //overloaded version of the next method that will load from multiple directories not just one
 void QgsPluginRegistry::restoreSessionPlugins( QStringList thePluginDirList )
 {
@@ -418,10 +492,10 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
     QgsDebugMsg( "Loading python plugins" );
 
     QStringList corePlugins = QStringList();
-    corePlugins << "plugin_installer";
     corePlugins << "fTools";
     corePlugins << "GdalTools";
     corePlugins << "db_manager";
+    corePlugins << "sextante";
 
     // make the required core plugins enabled by default:
     for ( int i = 0; i < corePlugins.size(); i++ )
@@ -518,10 +592,12 @@ bool QgsPluginRegistry::checkPythonPlugin( QString packageName )
   return true;
 }
 
-bool QgsPluginRegistry::isPythonPluginCompatible( QString packageName )
+bool QgsPluginRegistry::isPythonPluginCompatible( QString packageName ) const
 {
   QString minVersion = mPythonUtils->getPluginMetadata( packageName, "qgisMinimumVersion" );
-  return minVersion != "__error__" && checkQgisVersion( minVersion );
+  // try to read qgisMaximumVersion. Note checkQgisVersion can cope with "__error__" value.
+  QString maxVersion = mPythonUtils->getPluginMetadata( packageName, "qgisMaximumVersion" );
+  return minVersion != "__error__" && checkQgisVersion( minVersion, maxVersion );
 }
 
 QList<QgsPluginMetadata*> QgsPluginRegistry::pluginData()

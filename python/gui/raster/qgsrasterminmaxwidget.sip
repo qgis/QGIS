@@ -11,6 +11,9 @@ class QgsRasterMinMaxWidget: QWidget
 
     void setBands( const QList<int> & theBands );
 
+    // Load programmaticaly with current values
+    void load();
+
   signals:
     void load( int theBandNo, double theMin, double theMax, int origin );
 };

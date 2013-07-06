@@ -278,7 +278,7 @@ void TestZipLayer::initTestCase()
   QVERIFY( QFile::copy( QString( TEST_DATA_DIR ) + QDir::separator() + "zip" + QDir::separator() + "testzip.zip", QDir::tempPath() + "/testzip.zip" ) );
   mDataDir = QString( TEST_DATA_DIR ) + QDir::separator() + "zip" + QDir::separator();
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( "QuantumGIS" );
+  QCoreApplication::setOrganizationName( "QGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );
   QCoreApplication::setApplicationName( "QGIS-TEST" );
 

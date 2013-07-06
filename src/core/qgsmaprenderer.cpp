@@ -483,10 +483,12 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       }
 
       QSettings mySettings;
+      bool useRenderCaching = false;
       if ( ! split )//render caching does not yet cater for split extents
       {
         if ( mySettings.value( "/qgis/enable_render_caching", false ).toBool() )
         {
+          useRenderCaching = true;
           if ( !mySameAsLastFlag || ml->cacheImage() == 0 )
           {
             QgsDebugMsg( "Caching enabled but layer redraw forced by extent change or empty cache" );
@@ -522,10 +524,10 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
       {
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
-        if (( vl->blendMode() != QPainter::CompositionMode_SourceOver && ( split || !mySettings.value( "/qgis/enable_render_caching", false ).toBool() ) )
-            || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
-            || ( vl->layerTransparency() != 0 ) )
-
+        if (( !useRenderCaching )
+            && (( vl->blendMode() != QPainter::CompositionMode_SourceOver )
+                || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
+                || ( vl->layerTransparency() != 0 ) ) )
         {
           flattenedLayer = true;
           mypFlattenedImage = new QImage( mRenderContext.painter()->device()->width(),
@@ -538,9 +540,18 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
           }
           mypPainter->scale( rasterScaleFactor,  rasterScaleFactor );
           mRenderContext.setPainter( mypPainter );
+        }
+      }
 
-          // set the painter to the feature blend mode
-          mypPainter->setCompositionMode( vl->featureBlendMode() );
+      // Per feature blending mode
+      if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
+      {
+        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
+        if ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
+        {
+          // set the painter to the feature blend mode, so that features drawn
+          // on this layer will interact and blend with each other
+          mRenderContext.painter()->setCompositionMode( vl->featureBlendMode() );
         }
       }
 
@@ -579,22 +590,8 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
         mRenderContext.painter()->restore();
       }
 
-      if ( mySettings.value( "/qgis/enable_render_caching", false ).toBool() )
-      {
-        if ( !split )
-        {
-          // composite the cached image into our view and then clean up from caching
-          // by reinstating the painter as it was swapped out for caching renders
-          delete mRenderContext.painter();
-          mRenderContext.setPainter( mypContextPainter );
-          //draw from cached image that we created further up
-          if ( ml->cacheImage() )
-            mypContextPainter->drawImage( 0, 0, *( ml->cacheImage() ) );
-        }
-      }
-
-      // If we flattened this layer for alternate blend modes, composite it now
-      if ( flattenedLayer )
+      //apply layer transparency for vector layers
+      if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
       {
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( vl->layerTransparency() != 0 )
@@ -604,9 +601,24 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
           QColor transparentFillColor = QColor( 0, 0, 0, 255 - ( 255 * vl->layerTransparency() / 100 ) );
           // use destination in composition mode to merge source's alpha with destination
           mRenderContext.painter()->setCompositionMode( QPainter::CompositionMode_DestinationIn );
-          mRenderContext.painter()->fillRect( mypFlattenedImage->rect(), transparentFillColor );
+          mRenderContext.painter()->fillRect( 0, 0, mRenderContext.painter()->device()->width(),
+                                              mRenderContext.painter()->device()->height(), transparentFillColor );
         }
+      }
 
+      if ( useRenderCaching )
+      {
+        // composite the cached image into our view and then clean up from caching
+        // by reinstating the painter as it was swapped out for caching renders
+        delete mRenderContext.painter();
+        mRenderContext.setPainter( mypContextPainter );
+        //draw from cached image that we created further up
+        if ( ml->cacheImage() )
+          mypContextPainter->drawImage( 0, 0, *( ml->cacheImage() ) );
+      }
+      else if ( flattenedLayer )
+      {
+        // If we flattened this layer for alternate blend modes, composite it now
         delete mRenderContext.painter();
         mRenderContext.setPainter( mypContextPainter );
         mypContextPainter->save();

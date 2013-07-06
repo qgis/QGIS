@@ -100,7 +100,7 @@ void Heatmap::help()
 // not be enough
 void Heatmap::run()
 {
-  HeatmapGui d( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
+  HeatmapGui d( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags, &mSessionSettings );
 
   if ( d.exec() == QDialog::Accepted )
   {

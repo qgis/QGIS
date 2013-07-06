@@ -49,14 +49,14 @@ namespace pal
        *
        * @return GEOSGeometry * a pointer the geos geom
        */
-      virtual GEOSGeometry* getGeosGeometry() = 0;
+      virtual const GEOSGeometry* getGeosGeometry() = 0;
 
 
       /**
        * \brief Called by Pal when it doesn't need the coordinates anymore
        * @param the_geom is the geoms geom  from PalGeometry::getfeomGeometry()
        */
-      virtual void releaseGeosGeometry( GEOSGeometry *the_geom ) = 0;
+      virtual void releaseGeosGeometry( const GEOSGeometry *the_geom ) = 0;
 
 
       virtual ~PalGeometry() {}

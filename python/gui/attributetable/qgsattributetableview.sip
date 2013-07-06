@@ -8,10 +8,12 @@ class QgsAttributeTableView : QTableView
     QgsAttributeTableView( QWidget* parent = 0 );
     virtual ~QgsAttributeTableView();
 
+    virtual void setModel( QgsAttributeTableFilterModel* filterModel );
+
     /**
      * Autocreates the models
-     * @param layerCache The {@link QgsVectorLayerCache} to use ( as backend )
-     * @param canvas     The {@link QgsMapCanvas} to use ( for the currently visible features filter )
+     * @param layerCache The @link QgsVectorLayerCache @endlink to use ( as backend )
+     * @param canvas     The @link QgsMapCanvas @endlink to use ( for the currently visible features filter )
      *
      * @deprecated
      */
@@ -19,16 +21,69 @@ class QgsAttributeTableView : QTableView
 
   protected:
     /**
+     * Called for mouse press events on a table cell.
+     * Disables selection change for these events.
+     *
+     * @param event The mouse event
+     */
+    void mousePressEvent( QMouseEvent *event );
+
+    /**
+     * Called for mouse release events on a table cell.
+     * Disables selection change for these events.
+     *
+     * @param event The mouse event
+     */
+    void mouseReleaseEvent( QMouseEvent *event );
+
+    /**
+     * Called for mouse move events on a table cell.
+     * Disables selection change for these events.
+     *
+     * @param event The mouse event
+     */
+    void mouseMoveEvent( QMouseEvent *event );
+
+    /**
+     * Called for key press events
+     * Disables selection change by only pressing an arrow key
+     *
+     * @param event The mouse event
+     */
+    void keyPressEvent( QKeyEvent *event );
+
+    /**
+     * @brief
+     * Is called when the context menu will be shown. Emits a @link willShowContextMenu @endlink signal,
+     * so the menu can be populated by other parts of the application.
+     *
+     * @param event The associated event object.
+     */
+    void contextMenuEvent( QContextMenuEvent* event );
+
+    /**
      * Saves geometry to the settings on close
      * @param event not used
      */
     void closeEvent( QCloseEvent *event );
 
-    void contextMenuEvent( QContextMenuEvent* );
-
   signals:
+    /**
+     * @brief
+     * Is emitted, in order to provide a hook to add aditional menu entries to the context menu.
+     *
+     * @param menu     If additional QMenuItems are added, they will show up in the context menu.
+     * @param atIndex  The QModelIndex, to which the context menu belongs. Relative to the source model.
+     *                 In most cases, this will be a @link QgsAttributeTableFilterModel @endlink
+     */
     void willShowContextMenu( QMenu* menu, QModelIndex atIndex );
 
     void finished();
-    // void progress( int i, bool &cancel );
+
+  public slots:
+    void repaintRequested( QModelIndexList indexes );
+    void repaintRequested();
+    virtual void selectAll();
+    virtual void selectRow( int row );
+    virtual void _q_selectRow( int row );
 };

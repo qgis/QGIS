@@ -16,8 +16,10 @@ class QgsVectorColorRampV2
   public:
     virtual ~QgsVectorColorRampV2();
 
+    // Number of defined colors
     virtual int count() const = 0;
 
+    // Relative value (0,1) of color at index
     virtual double value( int index ) const = 0;
 
     virtual QColor color( double value ) const = 0;
@@ -62,15 +64,18 @@ class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
 
     QColor color1() const;
     QColor color2() const;
-
     void setColor1( QColor color );
     void setColor2( QColor color );
 
     bool isDiscrete() const;
     void setDiscrete( bool discrete );
+    void convertToDiscrete( bool discrete );
 
     void setStops( const QgsGradientStopsList& stops );
     const QgsGradientStopsList& stops() const;
+
+    QgsStringMap info() const;
+    void setInfo( const QgsStringMap& info );
 };
 
 class QgsVectorRandomColorRampV2 : QgsVectorColorRampV2
@@ -166,6 +171,7 @@ class QgsCptCityColorRampV2
 
     virtual QgsVectorColorRampV2* clone() const /Factory/;
     void copy( const QgsCptCityColorRampV2* other );
+    QgsVectorGradientColorRampV2* cloneGradientRamp() const /Factory/;
 
     virtual QgsStringMap properties() const;
 

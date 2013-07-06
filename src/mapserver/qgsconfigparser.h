@@ -29,6 +29,9 @@
 class QgsComposition;
 class QgsComposerLabel;
 class QgsComposerMap;
+class QgsComposerFrame;
+class QgsComposerMultiFrame;
+class QgsComposerHtml;
 class QDomElement;
 
 /**Interface class for configuration parsing, e.g. SLD configuration or QGIS project file*/
@@ -44,6 +47,8 @@ class QgsConfigParser
     virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const = 0;
 
     virtual void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const = 0;
+
+    virtual void owsGeneralAndResourceList( QDomElement& parentElement, QDomDocument& doc, const QString& strHref ) const = 0;
 
     virtual void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const = 0;
     /**Returns one or possibly several maplayers for a given type name. If no layers/style are found, an empty list is returned*/
@@ -115,7 +120,7 @@ class QgsConfigParser
     QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const;
 
     /**Creates a composition from the project file (probably delegated to the fallback parser)*/
-    virtual QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList ) const = 0;
+    virtual QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const = 0;
 
     /**Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     virtual void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
@@ -125,6 +130,7 @@ class QgsConfigParser
 
     /**Returns service address (or empty string if not defined in the configuration*/
     virtual QString serviceUrl() const { return QString(); }
+    virtual QString wfsServiceUrl() const { return QString(); }
 
     QColor selectionColor() const { return mSelectionColor; }
     void setSelectionColor( const QColor& c ) { mSelectionColor = c; }

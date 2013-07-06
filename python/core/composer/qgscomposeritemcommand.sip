@@ -52,13 +52,18 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       ComposerMapAnnotationDistance,
       //composer legend
       ComposerLegendText,
+      LegendColumnCount,
+      LegendSplitLayer,
+      LegendEqualColumnWidth,
       LegendSymbolWidth,
       LegendSymbolHeight,
+      LegendTitleSpaceBottom,
       LegendGroupSpace,
       LegendLayerSpace,
       LegendSymbolSpace,
       LegendIconSymbolSpace,
       LegendBoxSpace,
+      LegendColumnSpace,
       //composer picture
       ComposerPictureRotation,
       // composer scalebar

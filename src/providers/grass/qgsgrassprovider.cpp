@@ -73,7 +73,6 @@ static QString GRASS_DESCRIPTION = "Grass provider"; // XXX verify this
 
 QgsGrassProvider::QgsGrassProvider( QString uri )
     : QgsVectorDataProvider( uri )
-    , mActiveIterator( 0 )
 {
   QgsDebugMsg( QString( "QgsGrassProvider URI: %1" ).arg( uri ) );
 
@@ -258,8 +257,12 @@ QgsGrassProvider::~QgsGrassProvider()
 {
   QgsDebugMsg( "entered." );
 
-  if ( mActiveIterator )
-    mActiveIterator->close();
+  while ( !mActiveIterators.empty() )
+  {
+    QgsGrassFeatureIterator *it = *mActiveIterators.begin();
+    QgsDebugMsg( "closing active iterator" );
+    it->close();
+  }
 
   closeLayer( mLayerId );
 }
@@ -674,6 +677,9 @@ void QgsGrassProvider::loadAttributes( GLAYER &layer )
 
 void QgsGrassProvider::closeLayer( int layerId )
 {
+  if ( layerId < 0 )
+    return;
+
   QgsDebugMsg( QString( "Close layer %1 nUsers = %2" ).arg( layerId ).arg( mLayers[layerId].nUsers ) );
 
   // TODO: not tested because delete is never used for providers

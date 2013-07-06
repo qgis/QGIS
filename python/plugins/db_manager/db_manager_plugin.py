@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -34,7 +34,7 @@ class DBManagerPlugin:
 		self.dlg = None
 
 	def initGui(self):
-		self.action = QAction( QIcon(":/db_manager/icon"), u"DB Manager", self.iface.mainWindow() )
+		self.action = QAction( QIcon(":/db_manager/icon"), QApplication.translate("DBManagerPlugin","DB Manager"), self.iface.mainWindow() )
 		QObject.connect( self.action, SIGNAL( "triggered()" ), self.run )
 		# Add toolbar button and menu item
 		if hasattr( self.iface, 'addDatabaseToolBarIcon' ):
@@ -42,16 +42,16 @@ class DBManagerPlugin:
 		else:
 			self.iface.addToolBarIcon(self.action)
 		if hasattr( self.iface, 'addPluginToDatabaseMenu' ):
-			self.iface.addPluginToDatabaseMenu( u"DB Manager", self.action )
+			self.iface.addPluginToDatabaseMenu( QApplication.translate("DBManagerPlugin","DB Manager"), self.action )
 		else:
-			self.iface.addPluginToMenu( u"DB Manager", self.action )
+			self.iface.addPluginToMenu( QApplication.translate("DBManagerPlugin","DB Manager"), self.action )
 
 	def unload(self):
 		# Remove the plugin menu item and icon
 		if hasattr( self.iface, 'removePluginDatabaseMenu' ):
-			self.iface.removePluginDatabaseMenu( u"DB Manager", self.action )
+			self.iface.removePluginDatabaseMenu( QApplication.translate("DBManagerPlugin","DB Manager"), self.action )
 		else:
-			self.iface.removePluginMenu( u"DB Manager", self.action )
+			self.iface.removePluginMenu( QApplication.translate("DBManagerPlugin","DB Manager"), self.action )
 		if hasattr( self.iface, 'removeDatabaseToolBarIcon' ):
 			self.iface.removeDatabaseToolBarIcon(self.action)
 		else:
@@ -72,4 +72,3 @@ class DBManagerPlugin:
 
 	def onDestroyed(self, obj):
 		self.dlg = None
-

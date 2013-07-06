@@ -85,6 +85,7 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
     void loadUrl( const QString & );
     void loadPixmap( const QString & );
     void updateUrl();
+    void openUrl();
     void updateColor();
 
   private:
@@ -92,7 +93,7 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
     int mIdx;
 };
 
-class QgsStringRelay : public QObject
+class GUI_EXPORT QgsStringRelay : public QObject
 {
     Q_OBJECT
 

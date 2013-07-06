@@ -91,9 +91,6 @@ class CORE_EXPORT QgsGmlSchema: public QObject
     /** Get list of dot separated paths to feature classes parsed from GML or XSD */
     QStringList typeNames() const;
 
-    /** Get map of fields parsed from XSD by parseXSD */
-    //QMap<int, QgsField> fields();
-
     /** Get fields for type/class name parsed from GML or XSD */
     QList<QgsField> fields( const QString & typeName );
 

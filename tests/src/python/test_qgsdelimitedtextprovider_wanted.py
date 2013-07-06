@@ -2,13 +2,14 @@
 def test_002_load_csv_file():
     wanted={}
     wanted['uri']=u'file://test.csv?geomType=none&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
             'description': u'Basic unquoted record',
             'data': u'Some data',
             'info': u'Some info',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 2L,
             '#geometry': 'None',
             },
@@ -17,7 +18,7 @@ def test_002_load_csv_file():
             'description': u'Quoted field',
             'data': u'Quoted data',
             'info': u'Unquoted',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 3L,
             '#geometry': 'None',
             },
@@ -26,7 +27,7 @@ def test_002_load_csv_file():
             'description': u'Escaped quotes',
             'data': u'Quoted "citation" data',
             'info': u'Unquoted',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 4L,
             '#geometry': 'None',
             },
@@ -35,7 +36,7 @@ def test_002_load_csv_file():
             'description': u'Quoted newlines',
             'data': u'Line 1\nLine 2\n\nLine 4',
             'info': u'No data',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 5L,
             '#geometry': 'None',
             },
@@ -51,9 +52,9 @@ def test_002_load_csv_file():
         10L: {
             'id': u'6',
             'description': u'Missing fields',
-            'data': u'',
-            'info': u'',
-            'field_5': u'',
+            'data': u'None',
+            'info': u'None',
+            'field_5': u'None',
             '#fid': 10L,
             '#geometry': 'None',
             },
@@ -66,19 +67,20 @@ def test_002_load_csv_file():
 def test_003_field_naming():
     wanted={}
     wanted['uri']=u'file://testfields.csv?geomType=none&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
             'description': u'Generation of field names',
             'data': u'Some data',
             'field_4': u'Some info',
-            'data_2': u'',
-            'field_6': u'',
-            'field_7': u'',
-            'field_3_1': u'',
-            'data_1': u'',
-            'field_10': u'',
-            'field_11': u'',
+            'data_2': u'None',
+            'field_6': u'None',
+            'field_7': u'None',
+            'field_3_1': u'None',
+            'data_1': u'None',
+            'field_10': u'None',
+            'field_11': u'None',
             'field_12': u'last data',
             '#fid': 2L,
             '#geometry': 'None',
@@ -92,15 +94,16 @@ def test_003_field_naming():
 def test_004_max_fields():
     wanted={}
     wanted['uri']=u'file://testfields.csv?geomType=none&maxFields=7&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
             'description': u'Generation of field names',
             'data': u'Some data',
             'field_4': u'Some info',
-            'data_1': u'',
-            'field_6': u'',
-            'field_7': u'',
+            'data_1': u'None',
+            'field_6': u'None',
+            'field_7': u'None',
             '#fid': 2L,
             '#geometry': 'None',
             },
@@ -113,14 +116,15 @@ def test_004_max_fields():
 def test_005_load_whitespace():
     wanted={}
     wanted['uri']=u'file://test.space?geomType=none&type=whitespace'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
             'description': u'Simple_whitespace_file',
             'data': u'data1',
             'info': u'info1',
-            'field_5': u'',
-            'field_6': u'',
+            'field_5': u'None',
+            'field_6': u'None',
             '#fid': 2L,
             '#geometry': 'None',
             },
@@ -129,8 +133,8 @@ def test_005_load_whitespace():
             'description': u'Whitespace_at_start_of_line',
             'data': u'data2',
             'info': u'info2',
-            'field_5': u'',
-            'field_6': u'',
+            'field_5': u'None',
+            'field_6': u'None',
             '#fid': 3L,
             '#geometry': 'None',
             },
@@ -139,8 +143,8 @@ def test_005_load_whitespace():
             'description': u'Tab_whitespace',
             'data': u'data3',
             'info': u'info3',
-            'field_5': u'',
-            'field_6': u'',
+            'field_5': u'None',
+            'field_6': u'None',
             '#fid': 4L,
             '#geometry': 'None',
             },
@@ -149,8 +153,8 @@ def test_005_load_whitespace():
             'description': u'Multiple_whitespace_characters',
             'data': u'data4',
             'info': u'info4',
-            'field_5': u'',
-            'field_6': u'',
+            'field_5': u'None',
+            'field_6': u'None',
             '#fid': 5L,
             '#geometry': 'None',
             },
@@ -167,10 +171,10 @@ def test_005_load_whitespace():
         7L: {
             'id': u'6',
             'description': u'Missing_fields',
-            'data': u'',
-            'info': u'',
-            'field_5': u'',
-            'field_6': u'',
+            'data': u'None',
+            'info': u'None',
+            'field_5': u'None',
+            'field_6': u'None',
             '#fid': 7L,
             '#geometry': 'None',
             },
@@ -183,14 +187,15 @@ def test_005_load_whitespace():
 def test_006_quote_escape():
     wanted={}
     wanted['uri']=u'file://test.pipe?geomType=none&quote="&delimiter=|&escape=\\'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
             'description': u'Using pipe delimiter',
             'data': u'data 1',
             'info': u'info 1',
-            'field_5': u'',
-            'field_6': u'',
+            'field_5': u'None',
+            'field_6': u'None',
             '#fid': 2L,
             '#geometry': 'None',
             },
@@ -199,8 +204,8 @@ def test_006_quote_escape():
             'description': u'Using backslash escape on pipe',
             'data': u'data 2 | piped',
             'info': u'info2',
-            'field_5': u'',
-            'field_6': u'',
+            'field_5': u'None',
+            'field_6': u'None',
             '#fid': 3L,
             '#geometry': 'None',
             },
@@ -209,18 +214,18 @@ def test_006_quote_escape():
             'description': u'Backslash escaped newline',
             'data': u'data3 \nline2 \nline3',
             'info': u'info3',
-            'field_5': u'',
-            'field_6': u'',
+            'field_5': u'None',
+            'field_6': u'None',
             '#fid': 4L,
             '#geometry': 'None',
             },
         7L: {
             'id': u'4',
             'description': u'Empty field',
-            'data': u'',
+            'data': u'None',
             'info': u'info4',
-            'field_5': u'',
-            'field_6': u'',
+            'field_5': u'None',
+            'field_6': u'None',
             '#fid': 7L,
             '#geometry': 'None',
             },
@@ -229,8 +234,8 @@ def test_006_quote_escape():
             'description': u'Quoted field',
             'data': u'More | piped data',
             'info': u'info5',
-            'field_5': u'',
-            'field_6': u'',
+            'field_5': u'None',
+            'field_6': u'None',
             '#fid': 8L,
             '#geometry': 'None',
             },
@@ -239,18 +244,18 @@ def test_006_quote_escape():
             'description': u'Escaped quote',
             'data': u'Field "citation" ',
             'info': u'info6',
-            'field_5': u'',
-            'field_6': u'',
+            'field_5': u'None',
+            'field_6': u'None',
             '#fid': 9L,
             '#geometry': 'None',
             },
         10L: {
             'id': u'7',
             'description': u'Missing fields',
-            'data': u'',
-            'info': u'',
-            'field_5': u'',
-            'field_6': u'',
+            'data': u'None',
+            'info': u'None',
+            'field_5': u'None',
+            'field_6': u'None',
             '#fid': 10L,
             '#geometry': 'None',
             },
@@ -273,6 +278,7 @@ def test_006_quote_escape():
 def test_007_multiple_quote():
     wanted={}
     wanted['uri']=u'file://test.quote?geomType=none&quote=\'"&type=csv&escape="\''
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -324,7 +330,7 @@ def test_007_multiple_quote():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file test.quote',
         u'3 records discarded due to invalid format',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid record format at line 7',
@@ -337,6 +343,7 @@ def test_007_multiple_quote():
 def test_008_badly_formed_quotes():
     wanted={}
     wanted['uri']=u'file://test.badquote?geomType=none&quote="&type=csv&escape="'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text']
     wanted['data']={
         4L: {
             'id': u'3',
@@ -348,7 +355,7 @@ def test_008_badly_formed_quotes():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file test.badquote',
         u'2 records discarded due to invalid format',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid record format at line 2',
@@ -360,6 +367,7 @@ def test_008_badly_formed_quotes():
 def test_009_skip_lines():
     wanted={}
     wanted['uri']=u'file://test2.csv?geomType=none&skipLines=2&type=csv&useHeader=no'
+    wanted['fieldTypes']=['integer', 'text', 'text']
     wanted['data']={
         3L: {
             'id': u'3',
@@ -379,34 +387,35 @@ def test_009_skip_lines():
 def test_010_read_coordinates():
     wanted={}
     wanted['uri']=u'file://testpt.csv?yField=geom_y&xField=geom_x&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'double', 'double']
     wanted['data']={
         2L: {
             'id': u'1',
             'description': u'Basic point',
-            'geom_x': u'10',
-            'geom_y': u'20',
+            'geom_x': u'10.5',
+            'geom_y': u'20.82',
             '#fid': 2L,
-            '#geometry': 'POINT(10.0 20.0)',
+            '#geometry': 'POINT(10.5 20.82)',
             },
         3L: {
             'id': u'2',
             'description': u'Integer point',
-            'geom_x': u'11',
-            'geom_y': u'22',
+            'geom_x': u'11.0',
+            'geom_y': u'22.0',
             '#fid': 3L,
             '#geometry': 'POINT(11.0 22.0)',
             },
         5L: {
             'id': u'4',
             'description': u'Final point',
-            'geom_x': u'13',
-            'geom_y': u'23',
+            'geom_x': u'13.0',
+            'geom_y': u'23.0',
             '#fid': 5L,
             '#geometry': 'POINT(13.0 23.0)',
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file testpt.csv',
         u'1 records discarded due to invalid geometry definitions',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid X or Y fields at line 4',
@@ -417,6 +426,7 @@ def test_010_read_coordinates():
 def test_011_read_wkt():
     wanted={}
     wanted['uri']=u'file://testwkt.csv?delimiter=|&type=csv&wktField=geom_wkt'
+    wanted['fieldTypes']=['integer', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -450,7 +460,7 @@ def test_011_read_wkt():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
         u'7 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
@@ -462,6 +472,7 @@ def test_011_read_wkt():
 def test_012_read_wkt_point():
     wanted={}
     wanted['uri']=u'file://testwkt.csv?geomType=point&delimiter=|&type=csv&wktField=geom_wkt'
+    wanted['fieldTypes']=['integer', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -495,7 +506,7 @@ def test_012_read_wkt_point():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
         u'7 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
@@ -507,6 +518,7 @@ def test_012_read_wkt_point():
 def test_013_read_wkt_line():
     wanted={}
     wanted['uri']=u'file://testwkt.csv?geomType=line&delimiter=|&type=csv&wktField=geom_wkt'
+    wanted['fieldTypes']=['integer', 'text']
     wanted['data']={
         4L: {
             'id': u'3',
@@ -540,7 +552,7 @@ def test_013_read_wkt_line():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
         u'7 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
@@ -552,6 +564,7 @@ def test_013_read_wkt_line():
 def test_014_read_wkt_polygon():
     wanted={}
     wanted['uri']=u'file://testwkt.csv?geomType=polygon&delimiter=|&type=csv&wktField=geom_wkt'
+    wanted['fieldTypes']=['integer', 'text']
     wanted['data']={
         6L: {
             'id': u'5',
@@ -567,7 +580,7 @@ def test_014_read_wkt_polygon():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
         u'10 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
@@ -579,6 +592,7 @@ def test_014_read_wkt_polygon():
 def test_015_read_dms_xy():
     wanted={}
     wanted['uri']=u'file://testdms.csv?yField=lat&xField=lon&type=csv&xyDms=yes'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text']
     wanted['data']={
         3L: {
             'id': u'1',
@@ -734,7 +748,7 @@ def test_015_read_dms_xy():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file testdms.csv',
         u'5 records discarded due to invalid geometry definitions',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid X or Y fields at line 27',
@@ -749,13 +763,14 @@ def test_015_read_dms_xy():
 def test_016_decimal_point():
     wanted={}
     wanted['uri']=u'file://testdp.csv?yField=geom_y&xField=geom_x&type=csv&delimiter=;&decimalPoint=,'
+    wanted['fieldTypes']=['integer', 'text', 'double', 'double', 'double', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
             'description': u'Comma as decimal point 1',
-            'geom_x': u'10',
-            'geom_y': u'20',
-            'other': u'30',
+            'geom_x': u'10.0',
+            'geom_y': u'20.0',
+            'other': u'30.0',
             'text field': u'Field with , in it',
             '#fid': 2L,
             '#geometry': 'POINT(10.0 20.0)',
@@ -763,7 +778,7 @@ def test_016_decimal_point():
         3L: {
             'id': u'2',
             'description': u'Comma as decimal point 2',
-            'geom_x': u'12',
+            'geom_x': u'12.0',
             'geom_y': u'25.003',
             'other': u'-38.55',
             'text field': u'Plain text field',
@@ -779,6 +794,7 @@ def test_016_decimal_point():
 def test_017_regular_expression_1():
     wanted={}
     wanted['uri']=u'file://testre.txt?geomType=none&trimFields=Y&delimiter=RE(?:GEXP)?&type=regexp'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -805,6 +821,7 @@ def test_017_regular_expression_1():
 def test_018_regular_expression_2():
     wanted={}
     wanted['uri']=u'file://testre.txt?geomType=none&trimFields=Y&delimiter=(RE)(GEXP)?&type=regexp'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -826,10 +843,10 @@ def test_018_regular_expression_2():
             'GEXP': u'GEXP',
             'description': u'RE',
             'RE_1': u'RE',
-            'GEXP_1': u'',
+            'GEXP_1': u'None',
             'data': u'data2',
             'RE_2': u'RE',
-            'GEXP_2': u'',
+            'GEXP_2': u'None',
             'info': u'info2',
             '#fid': 3L,
             '#geometry': 'None',
@@ -843,6 +860,7 @@ def test_018_regular_expression_2():
 def test_019_regular_expression_3():
     wanted={}
     wanted['uri']=u'file://testre2.txt?geomType=none&trimFields=Y&delimiter=^(.{5})(.{30})(.{5,})&type=regexp'
+    wanted['fieldTypes']=['integer', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -860,7 +878,7 @@ def test_019_regular_expression_3():
             },
         }
     wanted['log']=[
-        u'Errors in file file',
+        u'Errors in file testre2.txt',
         u'1 records discarded due to invalid format',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid record format at line 3',
@@ -871,6 +889,7 @@ def test_019_regular_expression_3():
 def test_020_regular_expression_4():
     wanted={}
     wanted['uri']=u'file://testre3.txt?geomType=none&delimiter=x?&type=regexp'
+    wanted['fieldTypes']=['text', 'text', 'text', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'f',
@@ -894,6 +913,7 @@ def test_020_regular_expression_4():
 def test_021_regular_expression_5():
     wanted={}
     wanted['uri']=u'file://testre3.txt?geomType=none&delimiter=\\b&type=regexp'
+    wanted['fieldTypes']=['text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'fi',
@@ -913,6 +933,7 @@ def test_021_regular_expression_5():
 def test_022_utf8_encoded_file():
     wanted={}
     wanted['uri']=u'file://testutf8.csv?geomType=none&delimiter=|&type=csv&encoding=utf-8'
+    wanted['fieldTypes']=['integer', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -930,6 +951,7 @@ def test_022_utf8_encoded_file():
 def test_023_latin1_encoded_file():
     wanted={}
     wanted['uri']=u'file://testlatin1.csv?geomType=none&delimiter=|&type=csv&encoding=latin1'
+    wanted['fieldTypes']=['integer', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -947,6 +969,7 @@ def test_023_latin1_encoded_file():
 def test_024_filter_rect_xy():
     wanted={}
     wanted['uri']=u'file://testextpt.txt?yField=y&delimiter=|&type=csv&xField=x'
+    wanted['fieldTypes']=['integer', 'text', 'integer', 'integer']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -990,6 +1013,7 @@ def test_024_filter_rect_xy():
 def test_025_filter_rect_wkt():
     wanted={}
     wanted['uri']=u'file://testextw.txt?delimiter=|&type=csv&wktField=wkt'
+    wanted['fieldTypes']=['integer', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -1049,13 +1073,14 @@ def test_025_filter_rect_wkt():
 def test_026_filter_fid():
     wanted={}
     wanted['uri']=u'file://test.csv?geomType=none&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text']
     wanted['data']={
         3L: {
             'id': u'2',
             'description': u'Quoted field',
             'data': u'Quoted data',
             'info': u'Unquoted',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 3L,
             '#geometry': 'None',
             },
@@ -1073,7 +1098,7 @@ def test_026_filter_fid():
             'description': u'Quoted field',
             'data': u'Quoted data',
             'info': u'Unquoted',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 3L,
             '#geometry': 'None',
             },
@@ -1087,58 +1112,59 @@ def test_026_filter_fid():
 def test_027_filter_attributes():
     wanted={}
     wanted['uri']=u'file://test.csv?geomType=none&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
-            'id': u'',
+            'id': u'None',
             'description': u'Basic unquoted record',
-            'data': u'',
+            'data': u'None',
             'info': u'Some info',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 2L,
             '#geometry': 'None',
             },
         3L: {
-            'id': u'',
+            'id': u'None',
             'description': u'Quoted field',
-            'data': u'',
+            'data': u'None',
             'info': u'Unquoted',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 3L,
             '#geometry': 'None',
             },
         4L: {
-            'id': u'',
+            'id': u'None',
             'description': u'Escaped quotes',
-            'data': u'',
+            'data': u'None',
             'info': u'Unquoted',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 4L,
             '#geometry': 'None',
             },
         5L: {
-            'id': u'',
+            'id': u'None',
             'description': u'Quoted newlines',
-            'data': u'',
+            'data': u'None',
             'info': u'No data',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 5L,
             '#geometry': 'None',
             },
         9L: {
-            'id': u'',
+            'id': u'None',
             'description': u'Extra fields',
-            'data': u'',
+            'data': u'None',
             'info': u'info',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 9L,
             '#geometry': 'None',
             },
         10L: {
-            'id': u'',
+            'id': u'None',
             'description': u'Missing fields',
-            'data': u'',
-            'info': u'',
-            'field_5': u'',
+            'data': u'None',
+            'info': u'None',
+            'field_5': u'None',
             '#fid': 10L,
             '#geometry': 'None',
             },
@@ -1152,38 +1178,38 @@ def test_027_filter_attributes():
             '#geometry': 'None',
             },
         2009L: {
-            'id': u'',
+            'id': u'None',
             'description': u'Extra fields',
-            'data': u'',
+            'data': u'None',
             'info': u'info',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 9L,
             '#geometry': 'None',
             },
         3009L: {
-            'id': u'',
+            'id': u'None',
             'description': u'Extra fields',
-            'data': u'',
+            'data': u'None',
             'info': u'info',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 9L,
             '#geometry': 'None',
             },
         4009L: {
-            'id': u'',
+            'id': u'None',
             'description': u'Extra fields',
-            'data': u'',
+            'data': u'None',
             'info': u'info',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 9L,
             '#geometry': 'None',
             },
         5009L: {
-            'id': u'',
-            'description': u'',
-            'data': u'',
-            'info': u'',
-            'field_5': u'',
+            'id': u'None',
+            'description': u'None',
+            'data': u'None',
+            'info': u'None',
+            'field_5': u'None',
             '#fid': 9L,
             '#geometry': 'None',
             },
@@ -1196,13 +1222,14 @@ def test_027_filter_attributes():
 def test_028_substring_test():
     wanted={}
     wanted['uri']=u'file://test.csv?geomType=none&type=csv&subset=id%20%25%202%20%3D%201'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
             'description': u'Basic unquoted record',
             'data': u'Some data',
             'info': u'Some info',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 2L,
             '#geometry': 'None',
             },
@@ -1211,7 +1238,7 @@ def test_028_substring_test():
             'description': u'Escaped quotes',
             'data': u'Quoted "citation" data',
             'info': u'Unquoted',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 4L,
             '#geometry': 'None',
             },
@@ -1233,6 +1260,7 @@ def test_028_substring_test():
 def test_029_file_watcher():
     wanted={}
     wanted['uri']=u'file://file?geomType=none&type=csv&watchFile=yes'
+    wanted['fieldTypes']=['integer', 'text']
     wanted['data']={
         3L: {
             'id': u'2',
@@ -1318,25 +1346,11 @@ def test_029_file_watcher():
             '#fid': 4L,
             '#geometry': 'None',
             },
-        13002L: {
+        16002L: {
             'id': u'5',
             'description': u'toad',
             'name': u'toad',
             '#fid': 2L,
-            '#geometry': 'None',
-            },
-        14003L: {
-            'id': u'6',
-            'description': u'mole',
-            'name': u'mole',
-            '#fid': 3L,
-            '#geometry': 'None',
-            },
-        14004L: {
-            'id': u'7',
-            'description': u'badger',
-            'name': u'badger',
-            '#fid': 4L,
             '#geometry': 'None',
             },
         }
@@ -1344,9 +1358,13 @@ def test_029_file_watcher():
         'Request 2 did not return any data',
         'Request 7 did not return any data',
         'Request 11 did not return any data',
-        u'Errors in file file',
+        'Request 13 did not return any data',
+        'Request 14 did not return any data',
+        u'Errors in file temp_file',
         u'The file has been updated by another application - reloading',
-        u'Errors in file file',
+        u'Errors in file temp_file',
+        u'The file has been updated by another application - reloading',
+        u'Errors in file temp_file',
         u'The file has been updated by another application - reloading',
         ]
     return wanted
@@ -1355,6 +1373,7 @@ def test_029_file_watcher():
 def test_030_filter_rect_xy_spatial_index():
     wanted={}
     wanted['uri']=u'file://testextpt.txt?spatialIndex=Y&yField=y&delimiter=|&type=csv&xField=x'
+    wanted['fieldTypes']=['integer', 'text', 'integer', 'integer']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -1542,6 +1561,7 @@ def test_030_filter_rect_xy_spatial_index():
 def test_031_filter_rect_wkt_spatial_index():
     wanted={}
     wanted['uri']=u'file://testextw.txt?spatialIndex=Y&delimiter=|&type=csv&wktField=wkt'
+    wanted['fieldTypes']=['integer', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -1673,6 +1693,7 @@ def test_031_filter_rect_wkt_spatial_index():
 def test_032_filter_rect_wkt_create_spatial_index():
     wanted={}
     wanted['uri']=u'file://testextw.txt?delimiter=|&type=csv&wktField=wkt'
+    wanted['fieldTypes']=['integer', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
@@ -1866,16 +1887,18 @@ def test_032_filter_rect_wkt_create_spatial_index():
         ]
     return wanted
 
+
 def test_033_reset_subset_string():
     wanted={}
     wanted['uri']=u'file://test.csv?geomType=none&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text']
     wanted['data']={
         2L: {
             'id': u'1',
             'description': u'Basic unquoted record',
             'data': u'Some data',
             'info': u'Some info',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 2L,
             '#geometry': 'None',
             },
@@ -1884,7 +1907,7 @@ def test_033_reset_subset_string():
             'description': u'Quoted field',
             'data': u'Quoted data',
             'info': u'Unquoted',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 3L,
             '#geometry': 'None',
             },
@@ -1893,7 +1916,7 @@ def test_033_reset_subset_string():
             'description': u'Escaped quotes',
             'data': u'Quoted "citation" data',
             'info': u'Unquoted',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 4L,
             '#geometry': 'None',
             },
@@ -1902,7 +1925,7 @@ def test_033_reset_subset_string():
             'description': u'Quoted newlines',
             'data': u'Line 1\nLine 2\n\nLine 4',
             'info': u'No data',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 5L,
             '#geometry': 'None',
             },
@@ -1918,9 +1941,9 @@ def test_033_reset_subset_string():
         10L: {
             'id': u'6',
             'description': u'Missing fields',
-            'data': u'',
-            'info': u'',
-            'field_5': u'',
+            'data': u'None',
+            'info': u'None',
+            'field_5': u'None',
             '#fid': 10L,
             '#geometry': 'None',
             },
@@ -1929,7 +1952,7 @@ def test_033_reset_subset_string():
             'description': u'Basic unquoted record',
             'data': u'Some data',
             'info': u'Some info',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 2L,
             '#geometry': 'None',
             },
@@ -1938,7 +1961,7 @@ def test_033_reset_subset_string():
             'description': u'Escaped quotes',
             'data': u'Quoted "citation" data',
             'info': u'Unquoted',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 4L,
             '#geometry': 'None',
             },
@@ -1954,9 +1977,9 @@ def test_033_reset_subset_string():
         4010L: {
             'id': u'6',
             'description': u'Missing fields',
-            'data': u'',
-            'info': u'',
-            'field_5': u'',
+            'data': u'None',
+            'info': u'None',
+            'field_5': u'None',
             '#fid': 10L,
             '#geometry': 'None',
             },
@@ -1965,7 +1988,7 @@ def test_033_reset_subset_string():
             'description': u'Escaped quotes',
             'data': u'Quoted "citation" data',
             'info': u'Unquoted',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 4L,
             '#geometry': 'None',
             },
@@ -1974,7 +1997,7 @@ def test_033_reset_subset_string():
             'description': u'Basic unquoted record',
             'data': u'Some data',
             'info': u'Some info',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 2L,
             '#geometry': 'None',
             },
@@ -1983,7 +2006,7 @@ def test_033_reset_subset_string():
             'description': u'Escaped quotes',
             'data': u'Quoted "citation" data',
             'info': u'Unquoted',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 4L,
             '#geometry': 'None',
             },
@@ -2001,7 +2024,7 @@ def test_033_reset_subset_string():
             'description': u'Quoted field',
             'data': u'Quoted data',
             'info': u'Unquoted',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 3L,
             '#geometry': 'None',
             },
@@ -2010,17 +2033,151 @@ def test_033_reset_subset_string():
             'description': u'Quoted newlines',
             'data': u'Line 1\nLine 2\n\nLine 4',
             'info': u'No data',
-            'field_5': u'',
+            'field_5': u'None',
             '#fid': 5L,
             '#geometry': 'None',
             },
         10010L: {
             'id': u'6',
             'description': u'Missing fields',
-            'data': u'',
-            'info': u'',
-            'field_5': u'',
+            'data': u'None',
+            'info': u'None',
+            'field_5': u'None',
             '#fid': 10L,
+            '#geometry': 'None',
+            },
+        }
+    wanted['log']=[
+        ]
+    return wanted
+
+
+def test_034_csvt_file():
+    wanted={}
+    wanted['uri']=u'file://testcsvt.csv?geomType=none&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'integer', 'double', 'text', 'text', 'text']
+    wanted['data']={
+        2L: {
+            'id': u'1',
+            'description': u'Test csvt 1',
+            'f1': u'1',
+            'f2': u'1.2',
+            'f3': u'01',
+            'f4': u'text',
+            'f5': u'times',
+            '#fid': 2L,
+            '#geometry': 'None',
+            },
+        3L: {
+            'id': u'2',
+            'description': u'Test csvt 2',
+            'f1': u'3',
+            'f2': u'1.5',
+            'f3': u'99',
+            'f4': u'23.5',
+            'f5': u'80',
+            '#fid': 3L,
+            '#geometry': 'None',
+            },
+        }
+    wanted['log']=[
+        ]
+    return wanted
+
+
+def test_035_csvt_file2():
+    wanted={}
+    wanted['uri']=u'file://testcsvt2.txt?geomType=none&delimiter=|&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'integer', 'double', 'integer', 'text', 'integer']
+    wanted['data']={
+        2L: {
+            'id': u'1',
+            'description': u'Test csvt 1',
+            'f1': u'1',
+            'f2': u'1.2',
+            'f3': u'1',
+            'f4': u'text',
+            'f5': u'None',
+            '#fid': 2L,
+            '#geometry': 'None',
+            },
+        3L: {
+            'id': u'2',
+            'description': u'Test csvt 2',
+            'f1': u'3',
+            'f2': u'1.5',
+            'f3': u'99',
+            'f4': u'23.5',
+            'f5': u'80',
+            '#fid': 3L,
+            '#geometry': 'None',
+            },
+        }
+    wanted['log']=[
+        ]
+    return wanted
+
+
+def test_036_csvt_file_invalid_types():
+    wanted={}
+    wanted['uri']=u'file://testcsvt3.csv?geomType=none&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'integer', 'double', 'integer', 'text', 'text']
+    wanted['data']={
+        2L: {
+            'id': u'1',
+            'description': u'Test csvt 1',
+            'f1': u'1',
+            'f2': u'1.2',
+            'f3': u'1',
+            'f4': u'text',
+            'f5': u'times',
+            '#fid': 2L,
+            '#geometry': 'None',
+            },
+        3L: {
+            'id': u'2',
+            'description': u'Test csvt 2',
+            'f1': u'3',
+            'f2': u'1.5',
+            'f3': u'99',
+            'f4': u'23.5',
+            'f5': u'80',
+            '#fid': 3L,
+            '#geometry': 'None',
+            },
+        }
+    wanted['log']=[
+        u'Errors in file testcsvt3.csv',
+        u'File type string in testcsvt3.csvt is not correctly formatted',
+        ]
+    return wanted
+
+
+def test_037_csvt_file_invalid_file():
+    wanted={}
+    wanted['uri']=u'file://testcsvt4.csv?geomType=none&type=csv'
+    wanted['fieldTypes']=['integer', 'text', 'integer', 'double', 'integer', 'text', 'text']
+    wanted['data']={
+        2L: {
+            'id': u'1',
+            'description': u'Test csvt 1',
+            'f1': u'1',
+            'f2': u'1.2',
+            'f3': u'1',
+            'f4': u'text',
+            'f5': u'times',
+            '#fid': 2L,
+            '#geometry': 'None',
+            },
+        3L: {
+            'id': u'2',
+            'description': u'Test csvt 2',
+            'f1': u'3',
+            'f2': u'1.5',
+            'f3': u'99',
+            'f4': u'23.5',
+            'f5': u'80',
+            '#fid': 3L,
             '#geometry': 'None',
             },
         }

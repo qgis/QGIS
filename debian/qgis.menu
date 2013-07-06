@@ -1,3 +1,3 @@
 ?package(qgis):needs="X11" section="Applications/Science/Geoscience"\
-  icon="/usr/share/pixmaps/qgis-icon.xpm" title="Quantum GIS"\
+  icon="/usr/share/pixmaps/qgis-icon.xpm" title="QGIS"\
   command="/usr/bin/qgis"

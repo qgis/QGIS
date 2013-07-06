@@ -135,10 +135,10 @@ class QgsProjectProperties : public QgsOptionsDialogBase, private Ui::QgsProject
     /*!
      * Slot to link WFS checkboxes
      */
-    void on_cbxWFSPublied_stateChanged( int aIdx );
-    void on_cbxWFSUpdate_stateChanged( int aIdx );
-    void on_cbxWFSInsert_stateChanged( int aIdx );
-    void on_cbxWFSDelete_stateChanged( int aIdx );
+    void cbxWFSPubliedStateChanged( int aIdx );
+    void cbxWFSUpdateStateChanged( int aIdx );
+    void cbxWFSInsertStateChanged( int aIdx );
+    void cbxWFSDeleteStateChanged( int aIdx );
 
     /*!
       * If user changes the CRS, set the corresponding map units

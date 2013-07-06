@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-import os
-from PyQt4 import QtGui
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,11 +23,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
+from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
 from sextante.core.SextanteConfig import SextanteConfig
-
 from sextante.ui.ui_DlgConfig import Ui_DlgConfig
 
 class ConfigDialog(QDialog, Ui_DlgConfig):
@@ -53,12 +51,12 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
 
     def edit(self, item, column):
         if column > 0:
-           self.tree.editItem(item, column)
+            self.tree.editItem(item, column)
 
     def fillTree(self):
         self.items = {}
         self.tree.clear()
-        text = str(self.searchBox.text())
+        text = unicode(self.searchBox.text())
         settings = SextanteConfig.getSettings()
         priorityKeys = ['General', "Models", "Scripts"]
         for group in priorityKeys:

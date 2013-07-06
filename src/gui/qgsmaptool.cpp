@@ -110,6 +110,11 @@ QAbstractButton* QgsMapTool::button()
   return mButton;
 }
 
+void QgsMapTool::setCursor(QCursor cursor)
+{
+  mCursor = cursor;
+}
+
 
 void QgsMapTool::canvasMoveEvent( QMouseEvent *e )
 {

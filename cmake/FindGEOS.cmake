@@ -28,12 +28,6 @@ IF(WIN32)
       "$ENV{LIB_DIR}/lib"
       $ENV{LIB}
       )
-    IF (GEOS_LIBRARY)
-       SET (
-         GEOS_LIBRARY
-         GEOS_LIBRARY;odbc32;odbccp32
-         CACHE STRING INTERNAL)
-    ENDIF (GEOS_LIBRARY)
   ENDIF (MSVC)
 
 ELSE(WIN32)

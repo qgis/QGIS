@@ -50,6 +50,7 @@ void QgsBrowserModel::updateProjectHome()
 
   delete mProjectHome;
 
+  emit layoutAboutToBeChanged();
   mProjectHome = home.isNull() ? 0 : new QgsDirectoryItem( NULL, tr( "Project home" ), home );
   if ( mProjectHome )
   {

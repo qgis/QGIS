@@ -29,6 +29,7 @@
 #include "qgswfsprovider.h"
 #include "qgsspatialindex.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsogcutils.h"
 
@@ -50,18 +51,17 @@ static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 
 QgsWFSProvider::QgsWFSProvider( const QString& uri )
-    : QgsVectorDataProvider( uri ),
-    mNetworkRequestFinished( true ),
-    mActiveIterator( 0 ),
-    mRequestEncoding( QgsWFSProvider::GET ),
-    mUseIntersect( false ),
-    mWKBType( QGis::WKBUnknown ),
-    mSourceCRS( 0 ),
-    mFeatureCount( 0 ),
-    mValid( true ),
-    mLayer( 0 ),
-    mGetRenderedOnly( false ),
-    mInitGro( false )
+    : QgsVectorDataProvider( uri )
+    , mNetworkRequestFinished( true )
+    , mRequestEncoding( QgsWFSProvider::GET )
+    , mUseIntersect( false )
+    , mWKBType( QGis::WKBUnknown )
+    , mSourceCRS( 0 )
+    , mFeatureCount( 0 )
+    , mValid( true )
+    , mLayer( 0 )
+    , mGetRenderedOnly( false )
+    , mInitGro( false )
 {
   mSpatialIndex = 0;
   if ( uri.isEmpty() )
@@ -93,9 +93,7 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
   if ( describeFeatureType( uri, mGeometryAttribute, mFields, mWKBType ) )
   {
     mValid = false;
-    QgsDebugMsg( QString( "describeFeatureType failed, URI=%1" ).arg( uri ) );
-    QMessageBox( QMessageBox::Warning, "DescribeFeatureType failed!",
-                 QString( "Layer cannot be created from\n%1" ).arg( uri ) );
+    QgsMessageLog::instance()->logMessage( tr( "DescribeFeatureType failed for url %1" ).arg( uri ), tr( "WFS" ) );
     return;
   }
 
@@ -124,12 +122,15 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
 
 QgsWFSProvider::~QgsWFSProvider()
 {
+  while ( !mActiveIterators.empty() )
+  {
+    QgsWFSFeatureIterator *it = *mActiveIterators.begin();
+    QgsDebugMsg( "closing active iterator" );
+    it->close();
+  }
+
   deleteData();
   delete mSpatialIndex;
-  if ( mActiveIterator )
-  {
-    mActiveIterator->close();
-  }
 }
 
 void QgsWFSProvider::reloadData()
@@ -163,7 +164,7 @@ void QgsWFSProvider::copyFeature( QgsFeature* f, QgsFeature& feature, bool fetch
   QgsGeometry* geometry = f->geometry();
   if ( geometry && fetchGeometry )
   {
-    unsigned char *geom = geometry->asWkb();
+    const unsigned char *geom = geometry->asWkb();
     int geomSize = geometry->wkbSize();
     unsigned char* copiedGeom = new unsigned char[geomSize];
     memcpy( copiedGeom, geom, geomSize );

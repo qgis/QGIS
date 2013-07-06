@@ -210,7 +210,7 @@ void QgsSnappingDialog::addLayers( QList<QgsMapLayer *> layers )
   }
 }
 
-void QgsSnappingDialog::addLayer( QgsMapLayer * theMapLayer )
+void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
 {
   QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( theMapLayer );
   if ( !currentVectorLayer || currentVectorLayer->geometryType() == QGis::NoGeometry )
@@ -218,7 +218,6 @@ void QgsSnappingDialog::addLayer( QgsMapLayer * theMapLayer )
 
   QSettings myQsettings;
   bool myDockFlag = myQsettings.value( "/qgis/dockSnapping", false ).toBool();
-
   double defaultSnappingTolerance = myQsettings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble();
   int defaultSnappingUnit = myQsettings.value( "/qgis/digitizing/default_snapping_tolerance_unit", 0 ).toInt();
   QString defaultSnappingString = myQsettings.value( "/qgis/digitizing/default_snap_mode", "to vertex" ).toString();
@@ -232,19 +231,19 @@ void QgsSnappingDialog::addLayer( QgsMapLayer * theMapLayer )
   {
     defaultSnappingStringIdx = 1;
   }
-  else //to vertex and segment
+  else
   {
+    // to vertex and segment
     defaultSnappingStringIdx = 2;
   }
 
   bool layerIdListOk, enabledListOk, toleranceListOk, toleranceUnitListOk, snapToListOk, avoidIntersectionListOk;
-  QStringList defList;
-  QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", defList, &layerIdListOk );
-  QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", defList, &enabledListOk );
-  QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", defList, & toleranceListOk );
-  QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", defList, &toleranceUnitListOk );
-  QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", defList, &snapToListOk );
-  QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", defList, &avoidIntersectionListOk );
+  QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", QStringList(), &layerIdListOk );
+  QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", QStringList(), &enabledListOk );
+  QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", QStringList(), & toleranceListOk );
+  QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", QStringList(), &toleranceUnitListOk );
+  QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", QStringList(), &snapToListOk );
+  QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", QStringList(), &avoidIntersectionListOk );
 
   //snap to layer yes/no
   QTreeWidgetItem *item = new QTreeWidgetItem( mLayerTreeWidget );
@@ -252,7 +251,6 @@ void QgsSnappingDialog::addLayer( QgsMapLayer * theMapLayer )
   QCheckBox *cbxEnable = new QCheckBox( mLayerTreeWidget );
   mLayerTreeWidget->setItemWidget( item, 0, cbxEnable );
   item->setData( 0, Qt::UserRole, currentVectorLayer->id() );
-
   item->setText( 1, currentVectorLayer->name() );
 
   //snap to vertex/ snap to segment
@@ -302,6 +300,9 @@ void QgsSnappingDialog::addLayer( QgsMapLayer * theMapLayer )
       setTopologicalEditingState();
       setIntersectionSnappingState();
     }
+
+    cbxEnable->setChecked( defaultSnappingString != "off" );
+
     // no settings for this layer yet
     return;
   }
@@ -321,6 +322,7 @@ void QgsSnappingDialog::addLayer( QgsMapLayer * theMapLayer )
   {
     snappingStringIdx = 2;
   }
+
   cbxSnapTo->setCurrentIndex( snappingStringIdx );
   leTolerance->setText( QString::number( toleranceList[idx].toDouble(), 'f' ) );
   cbxUnits->setCurrentIndex( toleranceUnitList[idx].toInt() );

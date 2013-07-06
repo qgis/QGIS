@@ -116,7 +116,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
   def fillInputFile(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       inputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Warp" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if inputFile.isEmpty():
+      if not inputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
       self.inSelector.setFilename(inputFile)
@@ -127,7 +127,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if outputFile.isEmpty():
+      if not outputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -137,7 +137,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
   def fillMaskFile(self):
       lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
       maskFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the mask file" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter )
-      if maskFile.isEmpty():
+      if not maskFile:
         return
       Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
       self.maskSelector.setFilename(maskFile)
@@ -145,7 +145,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
   def fillInputDir( self ):
       inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files to Warp" ))
-      if inputDir.isEmpty():
+      if not inputDir:
         return
 
       self.inSelector.setFilename( inputDir )
@@ -154,13 +154,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       workDir = QDir( inputDir )
       workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
       workDir.setNameFilters( filter )
-      if workDir.entryList().count() > 0:
+      if len(workDir.entryList()) > 0:
         fl = inputDir + "/" + workDir.entryList()[ 0 ]
         self.sourceSRSEdit.setText( Utils.getRasterSRS( self, fl ) )
 
   def fillOutputDir( self ):
       outputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the output directory to save the results to" ))
-      if outputDir.isEmpty():
+      if not outputDir:
         return
       self.outSelector.setFilename( outputDir )
 
@@ -177,7 +177,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
   def refreshSourceSRS(self):
       crs = Utils.getRasterSRS( self, self.getInputFileName() )
       self.sourceSRSEdit.setText( crs )
-      self.sourceSRSCheck.setChecked( not crs.isEmpty() )
+      self.sourceSRSCheck.setChecked( crs != '' )
 
   def fillTargetSRSEdit(self):
       dialog = SRSDialog( "Select the target SRS", self )
@@ -185,46 +185,46 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         self.targetSRSEdit.setText(dialog.getProjection())
 
   def getArguments(self):
-      arguments = QStringList()
-      if self.sourceSRSCheck.isChecked() and not self.sourceSRSEdit.text().isEmpty():
-        arguments << "-s_srs"
-        arguments << self.sourceSRSEdit.text()
-      if self.targetSRSCheck.isChecked() and not self.targetSRSEdit.text().isEmpty():
-        arguments << "-t_srs"
-        arguments << self.targetSRSEdit.text()
+      arguments = []
+      if self.sourceSRSCheck.isChecked() and self.sourceSRSEdit.text():
+        arguments.append("-s_srs")
+        arguments.append(self.sourceSRSEdit.text())
+      if self.targetSRSCheck.isChecked() and self.targetSRSEdit.text():
+        arguments.append("-t_srs")
+        arguments.append(self.targetSRSEdit.text())
       if self.resamplingCheck.isChecked() and self.resamplingCombo.currentIndex() >= 0:
-        arguments << "-r"
-        arguments << self.resampling_method[self.resamplingCombo.currentIndex()]
+        arguments.append("-r")
+        arguments.append(self.resampling_method[self.resamplingCombo.currentIndex()])
       if self.cacheCheck.isChecked():
-        arguments << "-wm"
-        arguments << str(self.cacheSpin.value())
+        arguments.append("-wm")
+        arguments.append(str(self.cacheSpin.value()))
       if self.resizeGroupBox.isChecked():
-        arguments << "-ts"
-        arguments << str( self.widthSpin.value() )
-        arguments << str( self.heightSpin.value() )
+        arguments.append("-ts")
+        arguments.append(str( self.widthSpin.value() ))
+        arguments.append(str( self.heightSpin.value() ))
       if self.multithreadCheck.isChecked():
-        arguments << "-multi"
+        arguments.append("-multi")
       if self.noDataCheck.isChecked():
-        nodata = self.noDataEdit.text().trimmed()
-        if not nodata.isEmpty():
-          arguments << "-dstnodata"
-          arguments << nodata
+        nodata = self.noDataEdit.text().strip()
+        if nodata:
+          arguments.append("-dstnodata")
+          arguments.append(nodata)
       if self.maskCheck.isChecked():
         mask = self.getMaskFileName()
-        if not mask.isEmpty():
-          arguments << "-q"
-          arguments << "-cutline"
-          arguments << mask
-          arguments << "-dstalpha"
+        if mask:
+          arguments.append("-q")
+          arguments.append("-cutline")
+          arguments.append(mask)
+          arguments.append("-dstalpha")
       if self.isBatchEnabled():
         return arguments
 
       outputFn = self.getOutputFileName()
-      if not outputFn.isEmpty():
-        arguments << "-of"
-        arguments << self.outputFormat
-      arguments << self.getInputFileName()
-      arguments << outputFn
+      if outputFn:
+        arguments.append("-of")
+        arguments.append(self.outputFormat)
+      arguments.append(self.getInputFileName())
+      arguments.append(outputFn)
       return arguments
 
   def getInputFileName(self):

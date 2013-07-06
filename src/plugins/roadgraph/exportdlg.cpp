@@ -111,5 +111,5 @@ void RgExportDlg::on_buttonBox_rejected()
 
 void RgExportDlg::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run( context_id );
+  QgsContextHelp::run( metaObject()->className() );
 }

@@ -3,7 +3,7 @@
 """
 /***************************************************************************
 Name                 : DB Manager
-Description          : Database manager plugin for QuantumGIS
+Description          : Database manager plugin for QGIS
 Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
@@ -29,16 +29,21 @@ from .html_elems import HtmlParagraph, HtmlTable
 class BaseError(Exception):
 	"""Base class for exceptions in the plugin."""
 	def __init__(self, e):
-		msg = e if isinstance(e, (str,unicode,QString)) else e.message
+		if isinstance(e, Exception):
+			msg = e.args[0] if len(e.args) > 0 else ''
+		else:
+			msg = e
 
 		try:
 			msg = unicode( msg )
 		except UnicodeDecodeError:
 			msg = unicode( msg, 'utf-8' )
+
+		self.msg = msg
 		Exception.__init__(self, msg)
 
 	def __unicode__(self):
-		return self.message
+		return self.msg
 
 	def __str__(self):
 		return unicode(self).encode('utf-8')
@@ -55,12 +60,12 @@ class DbError(BaseError):
 		self.query = unicode( query ) if query != None else None
 
 	def __unicode__(self):
-		if self.query == None:
+		if self.query is None:
 			return BaseError.__unicode__(self)
 
-		msg = u"Error:\n%s" % BaseError.__unicode__(self)
+		msg = QApplication.translate("DBManagerPlugin", "Error:\n%s") % BaseError.__unicode__(self)
 		if self.query:
-			msg += u"\n\nQuery:\n%s" % self.query
+			msg += QApplication.translate("DBManagerPlugin", "\n\nQuery:\n%s") % self.query
 		return msg
 
 
@@ -199,7 +204,7 @@ class Database(DbItemObject):
 	def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False):
 		from qgis.core import QgsMapLayer, QgsVectorLayer, QgsRasterLayer
 		uri = self.uri()
-		uri.setDataSource("", u"(%s\n)" % sql, geomCol, QString(), uniqueCol)
+		uri.setDataSource("", u"(%s\n)" % sql, geomCol, "", uniqueCol)
 		if avoidSelectById:
 			uri.disableSelectAtId( True )
 		provider = self.dbplugin().providerName()
@@ -221,34 +226,34 @@ class Database(DbItemObject):
 			load(self, mainWindow)
 
 	def registerDatabaseActions(self, mainWindow):
-		action = QAction("&Re-connect", self)
-		mainWindow.registerAction( action, "&Database", self.reconnectActionSlot )
+		action = QAction(QApplication.translate("DBManagerPlugin", "&Re-connect"), self)
+		mainWindow.registerAction( action, QApplication.translate("DBManagerPlugin", "&Database"), self.reconnectActionSlot )
 
 		if self.schemas() != None:
-			action = QAction("&Create schema", self)
-			mainWindow.registerAction( action, "&Schema", self.createSchemaActionSlot )
-			action = QAction("&Delete (empty) schema", self)
-			mainWindow.registerAction( action, "&Schema", self.deleteSchemaActionSlot )
+			action = QAction(QApplication.translate("DBManagerPlugin", "&Create schema"), self)
+			mainWindow.registerAction( action, QApplication.translate("DBManagerPlugin", "&Schema"), self.createSchemaActionSlot )
+			action = QAction(QApplication.translate("DBManagerPlugin", "&Delete (empty) schema"), self)
+			mainWindow.registerAction( action, QApplication.translate("DBManagerPlugin", "&Schema"), self.deleteSchemaActionSlot )
 
-		action = QAction("Delete selected item", self)
+		action = QAction(QApplication.translate("DBManagerPlugin", "Delete selected item"), self)
 		mainWindow.registerAction( action, None, self.deleteActionSlot )
 		action.setShortcuts(QKeySequence.Delete)
 
-		action = QAction(QIcon(":/db_manager/actions/create_table"), "&Create table", self)
-		mainWindow.registerAction( action, "&Table", self.createTableActionSlot )
-		action = QAction(QIcon(":/db_manager/actions/edit_table"), "&Edit table", self)
-		mainWindow.registerAction( action, "&Table", self.editTableActionSlot )
-		action = QAction(QIcon(":/db_manager/actions/del_table"), "&Delete table/view", self)
-		mainWindow.registerAction( action, "&Table", self.deleteTableActionSlot )
-		action = QAction("&Empty table", self)
-		mainWindow.registerAction( action, "&Table", self.emptyTableActionSlot )
+		action = QAction(QIcon(":/db_manager/actions/create_table"), QApplication.translate("DBManagerPlugin", "&Create table"), self)
+		mainWindow.registerAction( action, QApplication.translate("DBManagerPlugin", "&Table"), self.createTableActionSlot )
+		action = QAction(QIcon(":/db_manager/actions/edit_table"), QApplication.translate("DBManagerPlugin", "&Edit table"), self)
+		mainWindow.registerAction( action, QApplication.translate("DBManagerPlugin", "&Table"), self.editTableActionSlot )
+		action = QAction(QIcon(":/db_manager/actions/del_table"), QApplication.translate("DBManagerPlugin", "&Delete table/view"), self)
+		mainWindow.registerAction( action, QApplication.translate("DBManagerPlugin", "&Table"), self.deleteTableActionSlot )
+		action = QAction(QApplication.translate("DBManagerPlugin", "&Empty table"), self)
+		mainWindow.registerAction( action, QApplication.translate("DBManagerPlugin", "&Table"), self.emptyTableActionSlot )
 
 		if self.schemas() != None:
-			action = QAction("&Move to schema", self)
+			action = QAction(QApplication.translate("DBManagerPlugin", "&Move to schema"), self)
 			action.setMenu( QMenu(mainWindow) )
 			invoke_callback = lambda: mainWindow.invokeCallback(self.prepareMenuMoveTableToSchemaActionSlot)
 			QObject.connect( action.menu(), SIGNAL("aboutToShow()"), invoke_callback )
-			mainWindow.registerAction( action, "&Table" )
+			mainWindow.registerAction( action, QApplication.translate("DBManagerPlugin", "&Table") )
 
 
 	def reconnectActionSlot(self, item, action, parent):
@@ -264,7 +269,7 @@ class Database(DbItemObject):
 			self.deleteTableActionSlot(item, action, parent)
 		else:
 			QApplication.restoreOverrideCursor()
-			QMessageBox.information(parent, "Sorry", "Cannot delete the selected item.")
+			QMessageBox.information(parent, QApplication.translate("DBManagerPlugin", "Sorry"), QApplication.translate("DBManagerPlugin", "Cannot delete the selected item."))
 			QApplication.setOverrideCursor(Qt.WaitCursor)
 
 
@@ -272,9 +277,9 @@ class Database(DbItemObject):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, (DBPlugin, Schema, Table)) or item.database() == None:
-				QMessageBox.information(parent, "Sorry", "No database selected or you are not connected to it.")
+				QMessageBox.information(parent, QApplication.translate("DBManagerPlugin", "Sorry"), QApplication.translate("DBManagerPlugin", "No database selected or you are not connected to it."))
 				return
-			(schema, ok) = QInputDialog.getText(parent, "New schema", "Enter new schema name")
+			(schema, ok) = QInputDialog.getText(parent, QApplication.translate("DBManagerPlugin", "New schema"), QApplication.translate("DBManagerPlugin", "Enter new schema name"))
 			if not ok:
 				return
 		finally:
@@ -286,9 +291,9 @@ class Database(DbItemObject):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, Schema):
-				QMessageBox.information(parent, "Sorry", "Select an empty SCHEMA for deletion.")
+				QMessageBox.information(parent, QApplication.translate("DBManagerPlugin", "Sorry"), QApplication.translate("DBManagerPlugin", "Select an empty SCHEMA for deletion."))
 				return
-			res = QMessageBox.question(parent, "hey!", u"Really delete schema %s ?" % item.name, QMessageBox.Yes | QMessageBox.No)
+			res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"), QApplication.translate("DBManagerPlugin", "Really delete schema %s?") % item.name, QMessageBox.Yes | QMessageBox.No)
 			if res != QMessageBox.Yes:
 				return
 		finally:
@@ -313,7 +318,7 @@ class Database(DbItemObject):
 	def createTableActionSlot(self, item, action, parent):
 		QApplication.restoreOverrideCursor()
 		if not hasattr(item, 'database') or item.database() == None:
-			QMessageBox.information(parent, "Sorry", "No database selected or you are not connected to it.")
+			QMessageBox.information(parent, QApplication.translate("DBManagerPlugin", "Sorry"), QApplication.translate("DBManagerPlugin", "No database selected or you are not connected to it."))
 			return
 		from ..dlg_create_table import DlgCreateTable
 		DlgCreateTable(item, parent).exec_()
@@ -323,7 +328,7 @@ class Database(DbItemObject):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, Table) or item.isView:
-				QMessageBox.information(parent, "Sorry", "Select a TABLE for editation.")
+				QMessageBox.information(parent, QApplication.translate("DBManagerPlugin", "Sorry"), QApplication.translate("DBManagerPlugin", "Select a TABLE for editation."))
 				return
 			from ..dlg_table_properties import DlgTableProperties
 			DlgTableProperties(item, parent).exec_()
@@ -334,9 +339,9 @@ class Database(DbItemObject):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, Table):
-				QMessageBox.information(parent, "Sorry", "Select a TABLE/VIEW for deletion.")
+				QMessageBox.information(parent, QApplication.translate("DBManagerPlugin", "Sorry"), QApplication.translate("DBManagerPlugin", "Select a TABLE/VIEW for deletion."))
 				return
-			res = QMessageBox.question(parent, "hey!", u"Really delete table/view %s ?" % item.name, QMessageBox.Yes | QMessageBox.No)
+			res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"), QApplication.translate("DBManagerPlugin", "Really delete table/view %s?") % item.name, QMessageBox.Yes | QMessageBox.No)
 			if res != QMessageBox.Yes:
 				return
 		finally:
@@ -348,9 +353,9 @@ class Database(DbItemObject):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, Table) or item.isView:
-				QMessageBox.information(parent, "Sorry", "Select a TABLE to empty it.")
+				QMessageBox.information(parent, QApplication.translate("DBManagerPlugin", "Sorry"), QApplication.translate("DBManagerPlugin", "Select a TABLE to empty it."))
 				return
-			res = QMessageBox.question(parent, "hey!", u"Really delete all items from table %s ?" % item.name, QMessageBox.Yes | QMessageBox.No)
+			res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"), QApplication.translate("DBManagerPlugin", "Really delete all items from table %s?") % item.name, QMessageBox.Yes | QMessageBox.No)
 			if res != QMessageBox.Yes:
 				return
 		finally:
@@ -370,7 +375,7 @@ class Database(DbItemObject):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, Table):
-				QMessageBox.information(parent, "Sorry", "Select a TABLE/VIEW.")
+				QMessageBox.information(parent, QApplication.translate("DBManagerPlugin", "Sorry"), QApplication.translate("DBManagerPlugin", "Select a TABLE/VIEW."))
 				return
 		finally:
 			QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -547,9 +552,9 @@ class Table(DbItemObject):
 	def uri(self):
 		uri = self.database().uri()
 		schema = self.schemaName() if self.schemaName() else ''
-		geomCol = self.geomColumn if self.type in [Table.VectorType, Table.RasterType] else QString()
+		geomCol = self.geomColumn if self.type in [Table.VectorType, Table.RasterType] else ""
 		uniqueCol = self.getValidQGisUniqueFields(True) if self.isView else None
-		uri.setDataSource(schema, self.name, geomCol if geomCol else QString(), QString(), uniqueCol.name if uniqueCol else QString() )
+		uri.setDataSource(schema, self.name, geomCol if geomCol else "", "", uniqueCol.name if uniqueCol else "" )
 		return uri
 
 	def mimeUri(self):
@@ -762,10 +767,10 @@ class Table(DbItemObject):
 			parts = action.split('/')
 			trigger_action = parts[1]
 
-			msg = u"Do you want to %s all triggers?" % trigger_action
+			msg = QApplication.translate("DBManagerPlugin", "Do you want to %s all triggers?") % trigger_action
 			QApplication.restoreOverrideCursor()
 			try:
-				if QMessageBox.question(None, "Table triggers", msg, QMessageBox.Yes|QMessageBox.No) == QMessageBox.No:
+				if QMessageBox.question(None, QApplication.translate("DBManagerPlugin", "Table triggers"), msg, QMessageBox.Yes|QMessageBox.No) == QMessageBox.No:
 					return False
 			finally:
 				QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -782,10 +787,10 @@ class Table(DbItemObject):
 			trigger_name = parts[1]
 			trigger_action = parts[2]
 
-			msg = u"Do you want to %s trigger %s?" % (trigger_action, trigger_name)
+			msg = QApplication.translate("DBManagerPlugin", "Do you want to %s trigger %s?") % (trigger_action, trigger_name)
 			QApplication.restoreOverrideCursor()
 			try:
-				if QMessageBox.question(None, "Table trigger", msg, QMessageBox.Yes|QMessageBox.No) == QMessageBox.No:
+				if QMessageBox.question(None, QApplication.translate("DBManagerPlugin", "Table trigger"), msg, QMessageBox.Yes|QMessageBox.No) == QMessageBox.No:
 					return False
 			finally:
 				QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -874,10 +879,10 @@ class VectorTable(Table):
 			parts = action.split('/')
 			spatialIndex_action = parts[1]
 
-			msg = u"Do you want to %s spatial index for field %s?" % ( spatialIndex_action, self.geomColumn )
+			msg = QApplication.translate("DBManagerPlugin", "Do you want to %s spatial index for field %s?") % ( spatialIndex_action, self.geomColumn )
 			QApplication.restoreOverrideCursor()
 			try:
-				if QMessageBox.question(None, "Spatial Index", msg, QMessageBox.Yes|QMessageBox.No) == QMessageBox.No:
+				if QMessageBox.question(None, QApplication.translate("DBManagerPlugin", "Spatial Index"), msg, QMessageBox.Yes|QMessageBox.No) == QMessageBox.No:
 					return False
 			finally:
 				QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -976,8 +981,8 @@ class TableField(TableSubItemObject):
 class TableConstraint(TableSubItemObject):
 	""" class that represents a constraint of a table (relation) """
 
-	TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique = range(4)
-	types = { "c" : TypeCheck, "f" : TypeForeignKey, "p" : TypePrimaryKey, "u" : TypeUnique }
+	TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique, TypeExclusion, TypeUnknown = range(6)
+	types = { "c" : TypeCheck, "f" : TypeForeignKey, "p" : TypePrimaryKey, "u" : TypeUnique, "x" : TypeExclusion }
 
 	onAction = { "a" : "NO ACTION", "r" : "RESTRICT", "c" : "CASCADE", "n" : "SET NULL", "d" : "SET DEFAULT" }
 	matchTypes = { "u" : "UNSPECIFIED", "f" : "FULL", "p" : "PARTIAL" }
@@ -987,11 +992,12 @@ class TableConstraint(TableSubItemObject):
 		self.name = self.type = self.columns = None
 
 	def type2String(self):
-		if self.type == TableConstraint.TypeCheck: return "Check"
-		if self.type == TableConstraint.TypePrimaryKey: return "Primary key"
-		if self.type == TableConstraint.TypeForeignKey: return "Foreign key"
-		if self.type == TableConstraint.TypeUnique: return "Unique"
-		return 'Unknown'
+		if self.type == TableConstraint.TypeCheck: return QApplication.translate("DBManagerPlugin", "Check")
+		if self.type == TableConstraint.TypePrimaryKey: return QApplication.translate("DBManagerPlugin", "Primary key")
+		if self.type == TableConstraint.TypeForeignKey: return QApplication.translate("DBManagerPlugin", "Foreign key")
+		if self.type == TableConstraint.TypeUnique: return QApplication.translate("DBManagerPlugin", "Unique")
+		if self.type == TableConstraint.TypeExclusion: return QApplication.translate("DBManagerPlugin", "Exclusion")
+		return QApplication.translate("DBManagerPlugin", 'Unknown')
 
 	def fields(self):
 		def fieldFromNum(num, fields):

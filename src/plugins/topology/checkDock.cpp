@@ -149,6 +149,9 @@ void checkDock::deleteErrors()
 
   mErrorList.clear();
   mErrorListModel->resetModel();
+
+  qDeleteAll( mRbErrorMarkers );
+  mRbErrorMarkers.clear();
 }
 
 void checkDock::parseErrorListByLayer( QString layerId )
@@ -388,14 +391,7 @@ void checkDock::validate( ValidateType type )
 {
   mErrorList.clear();
 
-  QList<QgsRubberBand*>::const_iterator it;
-  for ( it = mRbErrorMarkers.begin(); it != mRbErrorMarkers.end(); ++it )
-  {
-    QgsRubberBand* rb = *it;
-    rb->reset();
-    delete rb;
-  }
-
+  qDeleteAll( mRbErrorMarkers );
   mRbErrorMarkers.clear();
 
   runTests( type );

@@ -32,8 +32,7 @@ static const QString TEXT_PROVIDER_DESCRIPTION = "Memory provider";
 
 QgsMemoryProvider::QgsMemoryProvider( QString uri )
     : QgsVectorDataProvider( uri )
-    , mSpatialIndex( NULL )
-    , mActiveIterator( 0 )
+    , mSpatialIndex( 0 )
 {
   // Initialize the geometry with the uri to support old style uri's
   // (ie, just 'point', 'line', 'polygon')
@@ -139,8 +138,12 @@ QgsMemoryProvider::QgsMemoryProvider( QString uri )
 
 QgsMemoryProvider::~QgsMemoryProvider()
 {
-  if ( mActiveIterator )
-    mActiveIterator->close();
+  while ( !mActiveIterators.empty() )
+  {
+    QgsMemoryFeatureIterator *it = *mActiveIterators.begin();
+    QgsDebugMsg( "closing active iterator" );
+    it->close();
+  }
 
   delete mSpatialIndex;
 }
@@ -419,9 +422,11 @@ void QgsMemoryProvider::updateExtent()
   }
   else
   {
-    mExtent = mFeatures.begin().value().geometry()->boundingBox();
-    for ( QgsFeatureMap::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it )
-      mExtent.unionRect( it.value().geometry()->boundingBox() );
+    Q_FOREACH( const QgsFeature& feat, mFeatures )
+    {
+      if ( feat.geometry() )
+        mExtent.unionRect( feat.geometry()->boundingBox() );
+    }
   }
 }
 

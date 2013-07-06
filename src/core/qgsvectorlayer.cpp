@@ -122,6 +122,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mRendererV2( NULL )
     , mLabel( 0 )
     , mLabelOn( false )
+    , mLabelFontNotFoundNotified( false )
     , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
     , mLayerTransparency( 0 )
     , mVertexMarkerOnlyForSelection( false )
@@ -199,6 +200,8 @@ QgsVectorLayer::~QgsVectorLayer()
   delete mDiagramLayerSettings;
 
   delete mActions;
+
+  delete mRendererV2;
 
   //delete remaining overlays
 
@@ -652,6 +655,13 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   //set update threshold before each draw to make sure the current setting is picked up
   QSettings settings;
   mUpdateThreshold = settings.value( "Map/updateThreshold", 0 ).toInt();
+  // users could accidently set updateThreshold threshold to a small value
+  // and complain about bad performance -> force min 1000 here
+  if ( mUpdateThreshold > 0 && mUpdateThreshold < 1000 )
+  {
+    mUpdateThreshold = 1000;
+  }
+
 #ifdef Q_WS_X11
   mEnableBackbuffer = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
 #endif
@@ -808,6 +818,23 @@ void QgsVectorLayer::invertSelection()
   }
 
   ids.subtract( mSelectedFeatureIds );
+
+  setSelectedFeatures( ids );
+}
+
+void QgsVectorLayer::selectAll()
+{
+  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                        .setFlags( QgsFeatureRequest::NoGeometry )
+                                        .setSubsetOfAttributes( QgsAttributeList() ) );
+
+  QgsFeatureIds ids;
+
+  QgsFeature fet;
+  while ( fit.nextFeature( fet ) )
+  {
+    ids << fet.id();
+  }
 
   setSelectedFeatures( ids );
 }
@@ -1209,7 +1236,12 @@ bool QgsVectorLayer::addFeature( QgsFeature& f, bool alsoUpdateExtent )
   if ( !mEditBuffer || !mDataProvider )
     return false;
 
-  return mEditBuffer->addFeature( f );
+  bool success = mEditBuffer->addFeature( f );
+
+  if ( success )
+    updateExtents();
+
+  return success;
 }
 
 bool QgsVectorLayer::updateFeature( QgsFeature &f )
@@ -1813,13 +1845,13 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     if ( !singleCatDiagramElem.isNull() )
     {
       mDiagramRenderer = new QgsSingleCategoryDiagramRenderer();
-      mDiagramRenderer->readXML( singleCatDiagramElem );
+      mDiagramRenderer->readXML( singleCatDiagramElem, this );
     }
     QDomElement linearDiagramElem = node.firstChildElement( "LinearlyInterpolatedDiagramRenderer" );
     if ( !linearDiagramElem.isNull() )
     {
       mDiagramRenderer = new QgsLinearlyInterpolatedDiagramRenderer();
-      mDiagramRenderer->readXML( linearDiagramElem );
+      mDiagramRenderer->readXML( linearDiagramElem, this );
     }
 
     if ( mDiagramRenderer )
@@ -1828,7 +1860,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       if ( !diagramSettingsElem.isNull() )
       {
         mDiagramLayerSettings = new QgsDiagramLayerSettings();
-        mDiagramLayerSettings->readXML( diagramSettingsElem );
+        mDiagramLayerSettings->readXML( diagramSettingsElem, this );
       }
     }
   }
@@ -1856,6 +1888,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
       int editable = editTypeElement.attribute( "editable" , "1" ).toInt();
       mFieldEditables.insert( name, editable == 1 );
+
+      int labelOnTop = editTypeElement.attribute( "labelontop" , "0" ).toInt();
+      mLabelOnTop.insert( name, labelOnTop == 1 );
 
       switch ( editType )
       {
@@ -1920,6 +1955,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
           break;
 
         case Photo:
+        case WebView:
           mWidgetSize[ name ] = QSize( editTypeElement.attribute( "widgetWidth" ).toInt(), editTypeElement.attribute( "widgetHeight" ).toInt() );
           break;
 
@@ -1933,7 +1969,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
         case UniqueValues:
         case UniqueValuesEditable:
         case UuidGenerator:
-        case WebView:
         case Color:
           break;
       }
@@ -2151,9 +2186,9 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
     if ( mDiagramRenderer )
     {
-      mDiagramRenderer->writeXML( mapLayerNode, doc );
+      mDiagramRenderer->writeXML( mapLayerNode, doc, this );
       if ( mDiagramLayerSettings )
-        mDiagramLayerSettings->writeXML( mapLayerNode, doc );
+        mDiagramLayerSettings->writeXML( mapLayerNode, doc, this );
     }
   }
 
@@ -2168,6 +2203,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
       editTypeElement.setAttribute( "name", it.key() );
       editTypeElement.setAttribute( "type", it.value() );
       editTypeElement.setAttribute( "editable", mFieldEditables[ it.key()] ? 1 : 0 );
+      editTypeElement.setAttribute( "labelontop", mLabelOnTop[ it.key()] ? 1 : 0 );
 
       switch (( EditType ) it.value() )
       {
@@ -2225,6 +2261,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
           break;
 
         case Photo:
+        case WebView:
           editTypeElement.setAttribute( "widgetWidth", mWidgetSize[ it.key()].width() );
           editTypeElement.setAttribute( "widgetHeight", mWidgetSize[ it.key()].height() );
           break;
@@ -2239,7 +2276,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
         case Enumeration:
         case Immutable:
         case UuidGenerator:
-        case WebView:
         case Color:
           break;
       }
@@ -2404,6 +2440,8 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
     return false;
   }
 
+  updateExtents();
+
   return mEditBuffer->changeGeometry( fid, geom );
 }
 
@@ -2502,6 +2540,8 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   if ( res )
     mSelectedFeatureIds.remove( fid ); // remove it from selection
 
+  updateExtents();
+
   return res;
 }
 
@@ -2571,6 +2611,11 @@ bool QgsVectorLayer::commitChanges()
     QgsMessageLog::logMessage( tr( "Commit errors:\n  %1" ).arg( mCommitErrors.join( "\n  " ) ) );
   }
 
+  if ( mCache )
+  {
+    mCache->deleteCachedGeometries();
+  }
+
   updateFields();
   mDataProvider->updateExtents();
 
@@ -2592,6 +2637,8 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
     return false;
   }
 
+  emit beforeRollBack();
+
   mEditBuffer->rollBack();
 
   if ( isModified() )
@@ -2610,6 +2657,11 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
     undoStack()->clear();
   }
   emit editingStopped();
+
+  if ( mCache )
+  {
+    mCache->deleteCachedGeometries();
+  }
 
   // invalidate the cache so the layer updates properly to show its original
   // after the rollback
@@ -2673,6 +2725,8 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList features, bool makeSelected )
 
     setSelectedFeatures( ids );
   }
+
+  updateExtents();
 
   return res;
 }
@@ -3029,9 +3083,22 @@ bool QgsVectorLayer::fieldEditable( int idx )
 {
   const QgsFields &fields = pendingFields();
   if ( idx >= 0 && idx < fields.count() )
+  {
+    if ( mUpdatedFields.fieldOrigin( idx ) == QgsFields::OriginJoin )
+      return false;
     return mFieldEditables.value( fields[idx].name(), true );
+  }
   else
     return true;
+}
+
+bool QgsVectorLayer::labelOnTop( int idx )
+{
+  const QgsFields &fields = pendingFields();
+  if ( idx >= 0 && idx < fields.count() )
+    return mLabelOnTop.value( fields[idx].name(), false );
+  else
+    return false;
 }
 
 void QgsVectorLayer::setFieldEditable( int idx, bool editable )
@@ -3039,6 +3106,13 @@ void QgsVectorLayer::setFieldEditable( int idx, bool editable )
   const QgsFields &fields = pendingFields();
   if ( idx >= 0 && idx < fields.count() )
     mFieldEditables[ fields[idx].name()] = editable;
+}
+
+void QgsVectorLayer::setLabelOnTop( int idx, bool onTop )
+{
+  const QgsFields &fields = pendingFields();
+  if ( idx >= 0 && idx < fields.count() )
+    mLabelOnTop[ fields[idx].name()] = onTop;
 }
 
 void QgsVectorLayer::addOverlay( QgsVectorOverlay* overlay )
@@ -3428,8 +3502,9 @@ void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererConte
 
   if ( labeling )
   {
-    // see if feature count limit is set for labeling
     QgsPalLayerSettings& palyr = rendererContext.labelingEngine()->layer( this->id() );
+
+    // see if feature count limit is set for labeling
     if ( palyr.limitNumLabels && palyr.maxNumLabels > 0 )
     {
       QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
@@ -3444,6 +3519,13 @@ void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererConte
         nFeatsToLabel++;
       }
       palyr.mFeaturesToLabel = nFeatsToLabel;
+    }
+
+    // notify user about any font substitution
+    if ( !palyr.mTextFontFound && !mLabelFontNotFoundNotified )
+    {
+      emit labelingFontNotFound( this, palyr.mTextFontFamily );
+      mLabelFontNotFoundNotified = true;
     }
   }
 
@@ -3505,6 +3587,15 @@ QString QgsVectorLayer::metadata()
   myMetadata += "<p>";
   myMetadata += storageType();
   myMetadata += "</p>\n";
+
+  if ( dataProvider() )
+  {
+    //provider description
+    myMetadata += "<p class=\"glossy\">" + tr( "Description of this provider" ) + "</p>\n";
+    myMetadata += "<p>";
+    myMetadata += dataProvider()->description().replace( "\n", "<br>" );
+    myMetadata += "</p>\n";
+  }
 
   // data source
   myMetadata += "<p class=\"glossy\">" + tr( "Source for this layer" ) + "</p>\n";
@@ -3895,16 +3986,13 @@ QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFla
         if ( !qml.isEmpty() )
         {
           theResultFlag = this->applyNamedStyle( qml, errorMsg );
+          return QObject::tr( "Loaded from Provider" );
         }
       }
     }
+  }
 
-  }
-  if ( !theResultFlag )
-  {
-    return QgsMapLayer::loadNamedStyle( theURI, theResultFlag );
-  }
-  return QObject::tr( "Loaded from Provider" );
+  return QgsMapLayer::loadNamedStyle( theURI, theResultFlag );
 }
 
 bool QgsVectorLayer::applyNamedStyle( QString namedStyle, QString errorMsg )

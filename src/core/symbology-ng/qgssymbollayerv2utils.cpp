@@ -36,6 +36,7 @@
 #include <QDomElement>
 #include <QIcon>
 #include <QPainter>
+#include <QSettings>
 
 QString QgsSymbolLayerV2Utils::encodeColor( QColor color )
 {
@@ -1179,14 +1180,14 @@ bool QgsSymbolLayerV2Utils::needLinePatternFill( QDomElement &element )
   QString name;
   QColor fillColor, borderColor;
   double size, borderWidth;
-  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderWidth, size ) )
+  if ( !wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderWidth, size ) )
     return false;
 
   if ( name != "horline" )
     return false;
 
   QString angleFunc;
-  if ( !QgsSymbolLayerV2Utils::rotationFromSldElement( graphicElem, angleFunc ) )
+  if ( !rotationFromSldElement( graphicElem, angleFunc ) )
     return false;
 
   bool ok;
@@ -1197,7 +1198,11 @@ bool QgsSymbolLayerV2Utils::needLinePatternFill( QDomElement &element )
   return true;
 }
 
-bool QgsSymbolLayerV2Utils::needPointPatternFill( QDomElement &element ) { Q_UNUSED( element ); return false; }
+bool QgsSymbolLayerV2Utils::needPointPatternFill( QDomElement &element )
+{
+  Q_UNUSED( element );
+  return false;
+}
 
 bool QgsSymbolLayerV2Utils::needSvgFill( QDomElement &element )
 {
@@ -1256,11 +1261,11 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
     {
       QgsStringMap map;
       map["name"] = "square";
-      map["color"] = QgsSymbolLayerV2Utils::encodeColor( validFill ? fillColor : Qt::transparent );
-      map["color_border"] = QgsSymbolLayerV2Utils::encodeColor( validBorder ? borderColor : Qt::transparent );
+      map["color"] = encodeColor( validFill ? fillColor : Qt::transparent );
+      map["color_border"] = encodeColor( validBorder ? borderColor : Qt::transparent );
       map["size"] = QString::number( 6 );
       map["angle"] = QString::number( 0 );
-      map["offset"] = QgsSymbolLayerV2Utils::encodePoint( QPointF( 0, 0 ) );
+      map["offset"] = encodePoint( QPointF( 0, 0 ) );
       layers.append( QgsSymbolLayerV2Registry::instance()->createSymbolLayer( "SimpleMarker", map ) );
     }
   }
@@ -1439,7 +1444,7 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
         if ( !qgsDoubleNear( angle, 0.0 ) )
           map["angle"] = QString::number( angle );
         if ( !offset.isNull() )
-          map["offset"] = QgsSymbolLayerV2Utils::encodePoint( offset );
+          map["offset"] = encodePoint( offset );
         layers.append( QgsSymbolLayerV2Registry::instance()->createSymbolLayer( "SvgMarker", map ) );
       }
       else if ( format == "ttf" )
@@ -1447,13 +1452,13 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
         QgsStringMap map;
         map["font"] = name;
         map["chr"] = markIndex;
-        map["color"] = QgsSymbolLayerV2Utils::encodeColor( validFill ? fillColor : Qt::transparent );
+        map["color"] = encodeColor( validFill ? fillColor : Qt::transparent );
         if ( size > 0 )
           map["size"] = QString::number( size );
         if ( !qgsDoubleNear( angle, 0.0 ) )
           map["angle"] = QString::number( angle );
         if ( !offset.isNull() )
-          map["offset"] = QgsSymbolLayerV2Utils::encodePoint( offset );
+          map["offset"] = encodePoint( offset );
         layers.append( QgsSymbolLayerV2Registry::instance()->createSymbolLayer( "FontMarker", map ) );
       }
     }
@@ -2254,7 +2259,7 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
   }
   else
   {
-    function = expr->expression();
+    function = expr->dump();
   }
 
   delete expr;
@@ -2821,22 +2826,25 @@ QString QgsSymbolLayerV2Utils::symbolNameToPath( QString name )
     return QFileInfo( name ).canonicalFilePath();
 
   // or it might be an url...
-  QUrl url( name );
-  if ( url.isValid() && !url.scheme().isEmpty() )
+  if ( name.contains( "://" ) )
   {
-    if ( url.scheme().compare( "file", Qt::CaseInsensitive ) == 0 )
+    QUrl url( name );
+    if ( url.isValid() && !url.scheme().isEmpty() )
     {
-      // it's a url to a local file
-      name = url.toLocalFile();
-      if ( QFile( name ).exists() )
+      if ( url.scheme().compare( "file", Qt::CaseInsensitive ) == 0 )
       {
-        return QFileInfo( name ).canonicalFilePath();
+        // it's a url to a local file
+        name = url.toLocalFile();
+        if ( QFile( name ).exists() )
+        {
+          return QFileInfo( name ).canonicalFilePath();
+        }
       }
-    }
-    else
-    {
-      // it's a url pointing to a online resource
-      return name;
+      else
+      {
+        // it's a url pointing to a online resource
+        return name;
+      }
     }
   }
 
@@ -2845,11 +2853,17 @@ QString QgsSymbolLayerV2Utils::symbolNameToPath( QString name )
   QStringList svgPaths = QgsApplication::svgPaths();
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
-    QgsDebugMsg( "SvgPath: " + svgPaths[i] );
+    QString svgPath = svgPaths[i];
+    if ( svgPath.endsWith( QString( "/" ) ) )
+    {
+      svgPath.chop( 1 );
+    }
+
+    QgsDebugMsg( "SvgPath: " + svgPath );
     QFileInfo myInfo( name );
     QString myFileName = myInfo.fileName(); // foo.svg
     QString myLowestDir = myInfo.dir().dirName();
-    QString myLocalPath = svgPaths[i] + "/" + myLowestDir + "/" + myFileName;
+    QString myLocalPath = svgPath + QString( myLowestDir.isEmpty() ? "" : "/" + myLowestDir ) + "/" + myFileName;
 
     QgsDebugMsg( "Alternative svg path: " + myLocalPath );
     if ( QFile( myLocalPath ).exists() )

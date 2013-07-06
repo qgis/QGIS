@@ -142,6 +142,8 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     void committedFeaturesRemoved( const QString& qgisLayerId, const QgsFeatureIds& deletedFeatureIds );
     void committedAttributeValuesChanges( const QString& qgisLayerId, const QgsChangedAttributesMap& changedAttrsMap );
     void committedGeometriesChanges( const QString& qgisLayerId, const QgsGeometryMap& changedGeometries );
+    void startListenFeatureChanges();
+    void stopListenFeatureChanges();
 };
 
 #endif // QGS_OFFLINE_EDITING_H

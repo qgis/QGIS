@@ -53,7 +53,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     , mConnectionRO( 0 )
     , mConnectionRW( 0 )
     , mFidCounter( 0 )
-    , mActiveIterator( 0 )
+    , mIteratorCounter( 0 )
 {
   mProviderId = sProviderIds++;
 
@@ -219,8 +219,12 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 
 QgsPostgresProvider::~QgsPostgresProvider()
 {
-  if ( mActiveIterator )
-    mActiveIterator->close();
+  while ( !mActiveIterators.empty() )
+  {
+    QgsPostgresFeatureIterator *it = *mActiveIterators.begin();
+    QgsDebugMsg( "closing active iterator" );
+    it->close();
+  }
 
   disconnectDb();
 
@@ -347,6 +351,7 @@ QgsFeatureIterator QgsPostgresProvider::getFeatures( const QgsFeatureRequest& re
     QgsMessageLog::logMessage( tr( "Read attempt on an invalid postgresql data source" ), tr( "PostGIS" ) );
     return QgsFeatureIterator();
   }
+
   return QgsFeatureIterator( new QgsPostgresFeatureIterator( this, request ) );
 }
 
@@ -516,6 +521,35 @@ QString QgsPostgresProvider::whereClause( QgsFeatureId featureId ) const
   return whereClause;
 }
 
+QString QgsPostgresProvider::filterWhereClause() const
+{
+  QString where;
+  QString delim = " WHERE ";
+
+  if ( !mSqlWhereClause.isEmpty() )
+  {
+    where += delim + "(" + mSqlWhereClause + ")";
+    delim = " AND ";
+  }
+
+  if ( !mRequestedSrid.isEmpty() && ( mRequestedSrid != mDetectedSrid || mRequestedSrid.toInt() == 0 ) )
+  {
+    where += delim + QString( "%1(%2%3)=%4" )
+             .arg( mConnectionRO->majorVersion() < 2 ? "srid" : "st_srid" )
+             .arg( quotedIdentifier( mGeometryColumn ) )
+             .arg( mSpatialColType == sctGeography ? "::geography" : "" )
+             .arg( mRequestedSrid );
+    delim = " AND ";
+  }
+
+  if ( mRequestedGeomType != QGis::WKBUnknown && mRequestedGeomType != mDetectedGeomType )
+  {
+    where += delim + QgsPostgresConn::postgisTypeFilter( mGeometryColumn, mRequestedGeomType, mSpatialColType == sctGeography );
+    delim = " AND ";
+  }
+
+  return where;
+}
 
 void QgsPostgresProvider::setExtent( QgsRectangle& newExtent )
 {
@@ -1023,7 +1057,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
           }
           else
           {
-            QgsMessageLog::logMessage( tr( "The table has no column suitable for use as a key. Quantum GIS requires a primary key, a PostgreSQL oid column or a ctid for tables." ), tr( "PostGIS" ) );
+            QgsMessageLog::logMessage( tr( "The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables." ), tr( "PostGIS" ) );
           }
         }
 
@@ -1128,14 +1162,10 @@ bool QgsPostgresProvider::uniqueData( QString query, QString colName )
 {
   Q_UNUSED( query );
   // Check to see if the given column contains unique data
-  QString sql = QString( "SELECT count(distinct %1)=count(%1) FROM %2" )
+  QString sql = QString( "SELECT count(distinct %1)=count(%1) FROM %2%3" )
                 .arg( quotedIdentifier( colName ) )
-                .arg( mQuery );
-
-  if ( !mSqlWhereClause.isEmpty() )
-  {
-    sql += " WHERE " + mSqlWhereClause;
-  }
+                .arg( mQuery )
+                .arg( filterWhereClause() );
 
   QgsPostgresResult unique = mConnectionRO->PQexec( sql );
 
@@ -1896,7 +1926,10 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
   {
     mConnectionRW->PQexecNR( "BEGIN" );
 
-    for ( QgsAttributeIds::const_iterator iter = ids.begin(); iter != ids.end(); ++iter )
+    QList<int> idsList = ids.values();
+    qSort( idsList.begin(), idsList.end(), qGreater<int>() );
+
+    for ( QList<int>::const_iterator iter = idsList.begin(); iter != idsList.end(); ++iter )
     {
       int index = *iter;
       if ( index < 0 || index >= mAttributeFields.count() )
@@ -2042,7 +2075,7 @@ void QgsPostgresProvider::appendGeomParam( QgsGeometry *geom, QStringList &param
   }
 
   QString param;
-  unsigned char *buf = geom->asWkb();
+  const unsigned char *buf = geom->asWkb();
   for ( uint i = 0; i < geom->wkbSize(); ++i )
   {
     if ( mConnectionRW->useWkbHex() )
@@ -2323,12 +2356,7 @@ long QgsPostgresProvider::featureCount() const
   }
   else
   {
-    sql = QString( "SELECT count(*) FROM %1" ).arg( mQuery );
-
-    if ( !mSqlWhereClause.isEmpty() )
-    {
-      sql += " WHERE " + mSqlWhereClause;
-    }
+    sql = QString( "SELECT count(*) FROM %1%2" ).arg( mQuery ).arg( filterWhereClause() );
   }
 
   QgsPostgresResult result = mConnectionRO->PQexec( sql );
@@ -2410,13 +2438,11 @@ QgsRectangle QgsPostgresProvider::extent()
 
     if ( ext.isEmpty() )
     {
-      sql = QString( "SELECT %1(%2) FROM %3" )
+      sql = QString( "SELECT %1(%2) FROM %3%4" )
             .arg( mConnectionRO->majorVersion() < 2 ? "extent" : "st_extent" )
             .arg( quotedIdentifier( mGeometryColumn ) )
-            .arg( mQuery );
-
-      if ( !mSqlWhereClause.isEmpty() )
-        sql += QString( " WHERE %1" ).arg( mSqlWhereClause );
+            .arg( mQuery )
+            .arg( filterWhereClause() );
 
       result = mConnectionRO->PQexec( sql );
       if ( result.PQresultStatus() != PGRES_TUPLES_OK )
@@ -3078,7 +3104,31 @@ QString  QgsPostgresProvider::name() const
 
 QString  QgsPostgresProvider::description() const
 {
-  return POSTGRES_DESCRIPTION;
+  QString pgVersion( tr( "PostgreSQL version: unknown" ) );
+  QString postgisVersion( tr( "unknown" ) );
+
+  if ( mConnectionRO )
+  {
+    QgsPostgresResult result;
+
+    result = mConnectionRO->PQexec( "SELECT version()" );
+    if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+    {
+      pgVersion = result.PQgetvalue( 0, 0 );
+    }
+
+    result = mConnectionRO->PQexec( "SELECT postgis_version()" );
+    if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+    {
+      postgisVersion = result.PQgetvalue( 0, 0 );
+    }
+  }
+  else
+  {
+    pgVersion = tr( "PostgreSQL not connected" );
+  }
+
+  return tr( "PostgreSQL/PostGIS provider\n%1\nPostGIS %2" ).arg( pgVersion ).arg( postgisVersion );
 } //  QgsPostgresProvider::description()
 
 /**

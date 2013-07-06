@@ -31,7 +31,7 @@
 #include <QSettings>
 #include <QSvgRenderer>
 
-QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QWidget(), mPicture( picture )
+QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QWidget(), mPicture( picture ), mPreviewsLoaded( false )
 {
   setupUi( this );
 
@@ -43,6 +43,11 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   mPreviewsLoadingLabel->hide();
 
   mPreviewListWidget->setIconSize( QSize( 30, 30 ) );
+
+  // mSearchDirectoriesGroupBox is a QgsCollapsibleGroupBoxBasic, so its collapsed state should not be saved/restored
+  mSearchDirectoriesGroupBox->setCollapsed( true );
+  // setup connection for loading previews on first expansion of group box
+  connect( mSearchDirectoriesGroupBox, SIGNAL( collapsedStateChanged( bool ) ), this, SLOT( loadPicturePreviews( bool ) ) );
 
   connect( mPicture, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
   connect( mPicture, SIGNAL( rotationChanged( double ) ), this, SLOT( setGuiElementValues() ) );
@@ -464,6 +469,8 @@ void QgsComposerPictureWidget::addStandardDirectoriesToPreview()
     addDirectoryToPreview( *userDirIt );
     mSearchDirectoriesComboBox->addItem( *userDirIt );
   }
+
+  mPreviewsLoaded = true;
 }
 
 bool QgsComposerPictureWidget::testSvgFile( const QString& filename ) const
@@ -485,12 +492,14 @@ bool QgsComposerPictureWidget::testImageFile( const QString& filename ) const
   return !formatName.isEmpty(); //file is in a supported pixel format
 }
 
-void QgsComposerPictureWidget::showEvent( QShowEvent * event )
+void QgsComposerPictureWidget::loadPicturePreviews( bool collapsed )
 {
-  Q_UNUSED( event );
-  refreshMapComboBox();
+  if ( mPreviewsLoaded )
+  {
+    return;
+  }
 
-  if ( mPreviewListWidget->count() == 0 )
+  if ( !collapsed ) // load the previews only on first parent group box expansion
   {
     mPreviewListWidget->hide();
     mPreviewsLoadingLabel->show();
@@ -498,6 +507,12 @@ void QgsComposerPictureWidget::showEvent( QShowEvent * event )
     mPreviewsLoadingLabel->hide();
     mPreviewListWidget->show();
   }
+}
+
+void QgsComposerPictureWidget::showEvent( QShowEvent * event )
+{
+  Q_UNUSED( event );
+  refreshMapComboBox();
 }
 
 void QgsComposerPictureWidget::resizeEvent( QResizeEvent * event )

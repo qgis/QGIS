@@ -347,19 +347,20 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     mMaxHeightLineEdit->setText( QString::number( maxHeight ) );
   }
 
+  mWFSUrlLineEdit->setText( QgsProject::instance()->readEntry( "WFSUrl", "/", "" ) );
   QStringList wfsLayerIdList = QgsProject::instance()->readListEntry( "WFSLayers", "/" );
   QStringList wfstUpdateLayerIdList = QgsProject::instance()->readListEntry( "WFSTLayers", "Update" );
   QStringList wfstInsertLayerIdList = QgsProject::instance()->readListEntry( "WFSTLayers", "Insert" );
   QStringList wfstDeleteLayerIdList = QgsProject::instance()->readListEntry( "WFSTLayers", "Delete" );
 
   QSignalMapper *smPublied = new QSignalMapper( this );
-  connect( smPublied, SIGNAL( mapped( int ) ), this, SLOT( on_cbxWFSPublied_stateChanged( int ) ) );
+  connect( smPublied, SIGNAL( mapped( int ) ), this, SLOT( cbxWFSPubliedStateChanged( int ) ) );
   QSignalMapper *smUpdate = new QSignalMapper( this );
-  connect( smUpdate, SIGNAL( mapped( int ) ), this, SLOT( on_cbxWFSUpdate_stateChanged( int ) ) );
+  connect( smUpdate, SIGNAL( mapped( int ) ), this, SLOT( cbxWFSUpdateStateChanged( int ) ) );
   QSignalMapper *smInsert = new QSignalMapper( this );
-  connect( smInsert, SIGNAL( mapped( int ) ), this, SLOT( on_cbxWFSInsert_stateChanged( int ) ) );
+  connect( smInsert, SIGNAL( mapped( int ) ), this, SLOT( cbxWFSInsertStateChanged( int ) ) );
   QSignalMapper *smDelete = new QSignalMapper( this );
-  connect( smDelete, SIGNAL( mapped( int ) ), this, SLOT( on_cbxWFSDelete_stateChanged( int ) ) );
+  connect( smDelete, SIGNAL( mapped( int ) ), this, SLOT( cbxWFSDeleteStateChanged( int ) ) );
 
   twWFSLayers->setColumnCount( 5 );
   twWFSLayers->horizontalHeader()->setVisible( true );
@@ -740,6 +741,7 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->writeEntry( "WMSMaxHeight", "/", maxHeightText.toInt() );
   }
 
+  QgsProject::instance()->writeEntry( "WFSUrl", "/", mWFSUrlLineEdit->text() );
   QStringList wfsLayerList;
   QStringList wfstUpdateLayerList;
   QStringList wfstInsertLayerList;
@@ -836,7 +838,7 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
   updateEllipsoidUI( mEllipsoidIndex );
 }
 
-void QgsProjectProperties::on_cbxWFSPublied_stateChanged( int aIdx )
+void QgsProjectProperties::cbxWFSPubliedStateChanged( int aIdx )
 {
   QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 1 ) );
   if ( cb && !cb->isChecked() )
@@ -847,7 +849,7 @@ void QgsProjectProperties::on_cbxWFSPublied_stateChanged( int aIdx )
   }
 }
 
-void QgsProjectProperties::on_cbxWFSUpdate_stateChanged( int aIdx )
+void QgsProjectProperties::cbxWFSUpdateStateChanged( int aIdx )
 {
   QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 2 ) );
   if ( cb && cb->isChecked() )
@@ -864,7 +866,7 @@ void QgsProjectProperties::on_cbxWFSUpdate_stateChanged( int aIdx )
   }
 }
 
-void QgsProjectProperties::on_cbxWFSInsert_stateChanged( int aIdx )
+void QgsProjectProperties::cbxWFSInsertStateChanged( int aIdx )
 {
   QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 3 ) );
   if ( cb && cb->isChecked() )
@@ -881,7 +883,7 @@ void QgsProjectProperties::on_cbxWFSInsert_stateChanged( int aIdx )
   }
 }
 
-void QgsProjectProperties::on_cbxWFSDelete_stateChanged( int aIdx )
+void QgsProjectProperties::cbxWFSDeleteStateChanged( int aIdx )
 {
   QCheckBox* cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( aIdx, 4 ) );
   if ( cb && cb->isChecked() )

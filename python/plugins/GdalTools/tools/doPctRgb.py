@@ -102,7 +102,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
   def fillInputFile(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       inputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for convert" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if inputFile.isEmpty():
+      if not inputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
       self.inSelector.setFilename(inputFile)
@@ -110,7 +110,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
-      if outputFile.isEmpty():
+      if not outputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
@@ -119,30 +119,30 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
   def fillInputDir( self ):
       inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files for convert" ))
-      if inputDir.isEmpty():
+      if not inputDir:
         return
       self.inSelector.setFilename( inputDir )
 
   def fillOutputDir( self ):
       outputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the output directory to save the results to" ))
-      if outputDir.isEmpty():
+      if not outputDir:
         return
       self.outSelector.setFilename( outputDir )
 
   def getArguments(self):
-      arguments = QStringList()
+      arguments = []
       if self.bandCheck.isChecked():
-        arguments << "-b"
-        arguments << str( self.bandSpin.value() )
+        arguments.append( "-b")
+        arguments.append( str( self.bandSpin.value() ))
       if self.isBatchEnabled():
         return arguments
 
       outputFn = self.getOutputFileName()
-      if not outputFn.isEmpty():
-        arguments << "-of"
-        arguments << self.outputFormat
-      arguments << self.getInputFileName()
-      arguments << outputFn
+      if outputFn:
+        arguments.append( "-of")
+        arguments.append( self.outputFormat)
+      arguments.append( self.getInputFileName())
+      arguments.append( outputFn)
       return arguments
 
   def getInputFileName(self):

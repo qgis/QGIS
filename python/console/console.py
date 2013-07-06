@@ -26,9 +26,8 @@ from qgis.utils import iface
 from console_sci import ShellScintilla
 from console_output import ShellOutputScintilla
 from console_editor import EditorTabWidget
-from console_help import HelpDialog
 from console_settings import optionsDialog
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsContextHelp
 from qgis.gui import QgsFilterLineEdit
 
 import sys
@@ -51,6 +50,11 @@ def show_console():
     # set focus to the console so the user can start typing
     if _console.isVisible():
       _console.activate()
+  ## Shows help on first launch of the console
+  settings = QSettings()
+  if settings.value('pythonConsole/contextHelpOnFirstLaunch', True, type=bool):
+      QgsContextHelp.run( "PythonConsole" )
+      settings.setValue('pythonConsole/contextHelpOnFirstLaunch', False)
 
 _old_stdout = sys.stdout
 _console_output = None
@@ -93,7 +97,6 @@ class PythonConsoleWidget(QWidget):
         self.settings = QSettings()
 
         self.options = optionsDialog(self)
-        self.helpDlg = HelpDialog(self)
 
         self.shell = ShellScintilla(self)
         self.setFocusProxy(self.shell)
@@ -221,7 +224,7 @@ class PythonConsoleWidget(QWidget):
         self.runScriptEditorButton.setToolTip(runScriptEditorBt)
         self.runScriptEditorButton.setText(runScriptEditorBt)
         ## Action Run Script (subprocess)
-        commentEditorBt = QCoreApplication.translate("PythonConsole", "Comment code")
+        commentEditorBt = QCoreApplication.translate("PythonConsole", "Comment")
         self.commentEditorButton = QAction(self)
         self.commentEditorButton.setCheckable(False)
         self.commentEditorButton.setEnabled(True)
@@ -231,7 +234,7 @@ class PythonConsoleWidget(QWidget):
         self.commentEditorButton.setToolTip(commentEditorBt)
         self.commentEditorButton.setText(commentEditorBt)
         ## Action Run Script (subprocess)
-        uncommentEditorBt = QCoreApplication.translate("PythonConsole", "Uncomment code")
+        uncommentEditorBt = QCoreApplication.translate("PythonConsole", "Uncomment")
         self.uncommentEditorButton = QAction(self)
         self.uncommentEditorButton.setCheckable(False)
         self.uncommentEditorButton.setEnabled(True)
@@ -245,14 +248,14 @@ class PythonConsoleWidget(QWidget):
         self.objectListButton = QAction(self)
         self.objectListButton.setCheckable(True)
         self.objectListButton.setEnabled(self.settings.value("pythonConsole/enableObjectInsp",
-                                                             False).toBool())
+                                                             False, type=bool))
         self.objectListButton.setIcon(QgsApplication.getThemeIcon("console/iconClassBrowserConsole.png"))
         self.objectListButton.setMenuRole(QAction.PreferencesRole)
         self.objectListButton.setIconVisibleInMenu(True)
         self.objectListButton.setToolTip(objList)
         self.objectListButton.setText(objList)
         ## Action for Find text
-        findText = QCoreApplication.translate("PythonConsole", "Find text")
+        findText = QCoreApplication.translate("PythonConsole", "Find Text")
         self.findTextButton = QAction(self)
         self.findTextButton.setCheckable(True)
         self.findTextButton.setEnabled(True)
@@ -550,7 +553,7 @@ class PythonConsoleWidget(QWidget):
         self.tabEditorWidget.currentWidget().newEditor.findText(False)
 
     def _textFindChanged(self):
-        if not self.lineEditFind.text().isEmpty():
+        if self.lineEditFind.text():
             self.findNextButton.setEnabled(True)
             self.findPrevButton.setEnabled(True)
         else:
@@ -612,23 +615,24 @@ class PythonConsoleWidget(QWidget):
         self.tabEditorWidget.currentWidget().newEditor.commentEditorCode(False)
 
     def openScriptFile(self):
-        lastDirPath = self.settings.value("pythonConsole/lastDirPath").toString()
+        lastDirPath = self.settings.value("pythonConsole/lastDirPath", "")
         openFileTr = QCoreApplication.translate("PythonConsole", "Open File")
-        filename = QFileDialog.getOpenFileName(
+        fileList = QFileDialog.getOpenFileNames(
                         self, openFileTr, lastDirPath, "Script file (*.py)")
-        if not filename.isEmpty():
-            for i in range(self.tabEditorWidget.count()):
-                tabWidget = self.tabEditorWidget.widget(i)
-                if tabWidget.path == filename:
-                    self.tabEditorWidget.setCurrentWidget(tabWidget)
-                    break
-            else:
-                tabName = filename.split('/')[-1]
-                self.tabEditorWidget.newTabEditor(tabName, filename)
+        if fileList:
+            for pyFile in fileList:
+                for i in range(self.tabEditorWidget.count()):
+                    tabWidget = self.tabEditorWidget.widget(i)
+                    if tabWidget.path == pyFile:
+                        self.tabEditorWidget.setCurrentWidget(tabWidget)
+                        break
+                else:
+                    tabName = QFileInfo(pyFile).fileName()
+                    self.tabEditorWidget.newTabEditor(tabName, pyFile)
 
-        lastDirPath = QFileInfo(filename).path()
-        self.settings.setValue("pythonConsole/lastDirPath", QVariant(filename))
-        self.updateTabListScript(filename, action='append')
+                    lastDirPath = QFileInfo(pyFile).path()
+                    self.settings.setValue("pythonConsole/lastDirPath", pyFile)
+                    self.updateTabListScript(pyFile, action='append')
 
     def saveScriptFile(self):
         tabWidget = self.tabEditorWidget.currentWidget()
@@ -637,12 +641,14 @@ class PythonConsoleWidget(QWidget):
         except (IOError, OSError), error:
             errTr = QCoreApplication.translate("PythonConsole", "Save Error")
             msgText = QCoreApplication.translate('PythonConsole',
-                                                 'The file <b>%1</b> could not be saved. Error: %2') \
-                                                 .arg(unicode(tabWidget.path)).arg(error.strerror)
+                                                 'The file <b>{}</b> could not be saved. Error: {}'.format(unicode(tabWidget.path),
+                                                                                                           error.strerror))
             self.callWidgetMessageBarEditor(msgText, 2, False)
 
-    def saveAsScriptFile(self):
+    def saveAsScriptFile(self, index=-1):
         tabWidget = self.tabEditorWidget.currentWidget()
+        if index != -1:
+            tabWidget = self.tabEditorWidget.widget(index)
         index = self.tabEditorWidget.currentIndex()
         if tabWidget is None:
             return
@@ -656,14 +662,14 @@ class PythonConsoleWidget(QWidget):
         filename = QFileDialog.getSaveFileName(self,
                         saveAsFileTr,
                         pathFileName, "Script file (*.py)")
-        if not filename.isEmpty():
+        if filename:
             try:
                 tabWidget.save(filename)
             except (IOError, OSError), error:
                 errTr = QCoreApplication.translate("PythonConsole", "Save Error")
                 msgText = QCoreApplication.translate('PythonConsole',
-                                                     'The file <b>%1</b> could not be saved. Error: %2') \
-                                                     .arg(unicode(tabWidget.path)).arg(error.strerror)
+                                                     'The file <b>{}</b> could not be saved. Error: {}'.format(unicode(tabWidget.path),
+                                                                                                            error.strerror))
                 self.callWidgetMessageBarEditor(msgText, 2, False)
                 if fileNone:
                     tabWidget.path = None
@@ -675,8 +681,7 @@ class PythonConsoleWidget(QWidget):
                 self.updateTabListScript(pathFileName, action='remove')
 
     def openHelp(self):
-        self.helpDlg.show()
-        self.helpDlg.activateWindow()
+        QgsContextHelp.run( "PythonConsole" )
 
     def openSettings(self):
         self.options.exec_()
@@ -696,24 +701,28 @@ class PythonConsoleWidget(QWidget):
         if action == 'remove':
             self.tabListScript.remove(script)
         elif action == 'append':
+            if not self.tabListScript:
+                self.tabListScript = []
             if script not in self.tabListScript:
                 self.tabListScript.append(script)
         else:
             self.tabListScript = []
         self.settings.setValue("pythonConsole/tabScripts",
-                               QVariant(self.tabListScript))
+                               self.tabListScript)
 
     def saveSettingsConsole(self):
+        self.settings.setValue("pythonConsole/splitterConsole", self.splitter.saveState())
         self.settings.setValue("pythonConsole/splitterObj", self.splitterObj.saveState())
         self.settings.setValue("pythonConsole/splitterEditor", self.splitterEditor.saveState())
 
-        self.shell.writeHistoryFile()
+        self.shell.writeHistoryFile(True)
 
     def restoreSettingsConsole(self):
-        storedTabScripts = self.settings.value("pythonConsole/tabScripts")
-        self.tabListScript = storedTabScripts.toList()
-        self.splitterEditor.restoreState(self.settings.value("pythonConsole/splitterEditor").toByteArray())
-        self.splitterObj.restoreState(self.settings.value("pythonConsole/splitterObj").toByteArray())
+        storedTabScripts = self.settings.value("pythonConsole/tabScripts", [])
+        self.tabListScript = storedTabScripts
+        self.splitter.restoreState(self.settings.value("pythonConsole/splitterConsole", QByteArray()))
+        self.splitterEditor.restoreState(self.settings.value("pythonConsole/splitterEditor", QByteArray()))
+        self.splitterObj.restoreState(self.settings.value("pythonConsole/splitterObj", QByteArray()))
 
 if __name__ == '__main__':
     a = QApplication(sys.argv)

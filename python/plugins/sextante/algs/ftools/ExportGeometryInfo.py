@@ -96,7 +96,6 @@ class ExportGeometryInfo(GeoAlgorithm):
         # 1 - project CRS
         # 2 - ellipsoidal
         if method == 2:
-            settings = QSettings()
             ellips = QgsProject.instance().readEntry("Measure", "/Ellipsoid", GEO_NONE)[0]
             crs = layer.crs().srsid()
         elif method == 1:
@@ -123,9 +122,9 @@ class ExportGeometryInfo(GeoAlgorithm):
 
             outFeat.setGeometry(inGeom)
             attrs = f.attributes()
-            attrs.insert(idx1, QVariant(attr1))
+            attrs.insert(idx1, attr1)
             if attr2 is not None:
-                attrs.insert(idx2, QVariant(attr2))
+                attrs.insert(idx2, attr2)
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 

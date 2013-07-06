@@ -18,6 +18,7 @@
 #include "qgsaddremoveitemcommand.h"
 #include "qgscomposeritem.h"
 #include "qgscomposition.h"
+#include "qgsproject.h"
 
 QgsAddRemoveItemCommand::QgsAddRemoveItemCommand( State s, QgsComposerItem* item, QgsComposition* c, const QString& text, QUndoCommand* parent ):
     QUndoCommand( text, parent ), mItem( item ), mComposition( c ), mState( s ), mFirstRun( true )
@@ -72,4 +73,5 @@ void QgsAddRemoveItemCommand::switchState()
     emit itemAdded( mItem );
     mState = Added;
   }
+  QgsProject::instance()->dirty( true );
 }

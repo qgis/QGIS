@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 15.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0"
+	 id="svg5692" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" inkscape:version="0.47 r22583" sodipodi:docname="table-field-add.svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" inkscape:export-filename="/media/home1/robert/svn/graphics/trunk/toolbar-icons/32x32/table-field-create.png" xmlns:svg="http://www.w3.org/2000/svg" inkscape:export-ydpi="90" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:export-xdpi="90"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="16px"
+	 viewBox="4 8 24 16" enable-background="new 4 8 24 16" xml:space="preserve">
+<g>
+	<path id="path3002" fill="#5C3566" d="M9.393,15.346c-1.628-0.579-2.443-1.457-2.443-2.63c0-0.927,0.43-1.667,1.289-2.222
+		c0.868-0.553,1.943-0.831,3.224-0.831c1.163,0,2.086,0.195,2.772,0.583c0.688,0.381,1.03,0.841,1.03,1.378
+		c0,0.281-0.106,0.528-0.323,0.744c-0.213,0.207-0.462,0.311-0.743,0.311c-0.463,0-0.844-0.323-1.142-0.968
+		c-0.411-0.893-1.028-1.34-1.854-1.34c-0.652,0-1.191,0.215-1.613,0.645c-0.423,0.43-0.634,1.03-0.634,1.8
+		c0,1.513,0.783,2.271,2.346,2.271c0.164,0,0.354-0.017,0.567-0.05c0.372-0.049,0.66-0.073,0.867-0.073
+		c0.502,0,0.755,0.144,0.755,0.434c0,0.323-0.256,0.483-0.769,0.483c-0.181,0-0.452-0.028-0.814-0.086
+		c-0.273-0.05-0.483-0.074-0.631-0.074c-1.655,0-2.481,0.84-2.481,2.524c0,0.818,0.22,1.48,0.659,1.985
+		c0.438,0.496,1.052,0.745,1.835,0.745c0.981,0,1.63-0.51,1.954-1.527c0.165-0.537,0.347-0.91,0.545-1.117
+		c0.208-0.206,0.48-0.31,0.82-0.31c0.281,0,0.531,0.104,0.756,0.31c0.232,0.199,0.348,0.455,0.348,0.77
+		c0,0.753-0.422,1.378-1.266,1.875c-0.845,0.486-1.863,0.73-3.059,0.73c-1.313,0-2.484-0.313-3.508-0.941
+		c-1.017-0.63-1.526-1.47-1.526-2.52C6.354,16.929,7.367,15.965,9.393,15.346"/>
+	<path id="path3778" sodipodi:nodetypes="csss" opacity="0.5" fill="#FFFFFF" enable-background="new    " d="M8.364,11.736
+		c-1.534,1.657-1.185-0.272-0.266-0.938c0.953-0.688,1.487-0.671,1.48-0.461C9.57,10.584,8.848,11.215,8.364,11.736z"/>
+	<path id="path3807" sodipodi:nodetypes="csss" opacity="0.5" fill="#FFFFFF" enable-background="new    " d="M7.849,17.074
+		c-1.536,1.655-1.272,0.124-0.351-0.537c0.951-0.685,1.486-0.669,1.479-0.458C8.968,16.324,8.33,16.557,7.849,17.074z"/>
+	<path id="path3809" sodipodi:nodetypes="css" opacity="0.5" fill="#FFFFFF" enable-background="new    " d="M14.591,18.925
+		c-1.481,1.653-1.368,0.083-0.417-0.526C14.902,17.935,15.116,18.337,14.591,18.925z"/>
+</g>
+<circle fill="#1A1A1A" cx="19.018" cy="20.257" r="0.689"/>
+<circle fill="#1A1A1A" cx="22.172" cy="20.257" r="0.689"/>
+<circle fill="#1A1A1A" cx="25.327" cy="20.257" r="0.689"/>
+</svg>

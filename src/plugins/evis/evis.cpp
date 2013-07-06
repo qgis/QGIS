@@ -84,6 +84,8 @@ static const QString sDescription = QObject::tr( "An event visualization tool - 
 static const QString sCategory = QObject::tr( "Database" );
 static const QString sPluginVersion = QObject::tr( "Version 1.1.0" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
+static const QString sIcon = ":/evis/eVisEventBrowser.png";
+
 
 
 eVis::eVis( QgisInterface * theQgisInterface ):
@@ -237,6 +239,12 @@ QGISEXTERN QString category( )
 QGISEXTERN int type( )
 {
   return sPluginType;
+}
+
+// Return the icon
+QGISEXTERN QString icon()
+{
+  return sIcon;
 }
 
 // Return the version number for the plugin

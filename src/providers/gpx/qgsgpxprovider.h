@@ -173,5 +173,5 @@ class QgsGPXProvider : public QgsVectorDataProvider
     wkbPoint mWKBpt;
 
     friend class QgsGPXFeatureIterator;
-    QgsGPXFeatureIterator* mActiveIterator;
+    QSet< QgsGPXFeatureIterator * > mActiveIterators;
 };

@@ -403,9 +403,6 @@ class DL_Dxf
     int* hatchEdgeIndex;
     bool dropEdges;
 
-    // Bulge for the next vertex.
-    double bulge;
-
     // Only the useful part of the group code
     char groupCodeTmp[DL_DXF_MAXLINE+1];
     // ...same as integer

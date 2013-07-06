@@ -324,7 +324,8 @@ QTreeWidgetItem * QgsCustomizationDialog::createTreeItemWidgets()
     return NULL;
   }
   QTreeWidgetItem *myItem = readWidgetsXmlNode( myRoot );
-  myItem->setData( 0, Qt::DisplayRole, tr( "Widgets" ) );
+  // Do not translate "Widgets", currently it is also used as path
+  myItem->setData( 0, Qt::DisplayRole, "Widgets" );
 
   return myItem;
 }
@@ -497,7 +498,8 @@ void QgsCustomization::addTreeItemActions( QTreeWidgetItem* parentItem, const QL
 void QgsCustomization::addTreeItemMenu( QTreeWidgetItem* parentItem, QMenu* menu )
 {
   QStringList menustrs;
-  menustrs << menu->objectName() << menu->title();
+  // remove '&' which are used to mark shortcut key
+  menustrs << menu->objectName() << menu->title().replace( "&", "" );
   QTreeWidgetItem* menuItem = new QTreeWidgetItem( parentItem, menustrs );
   menuItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
   menuItem->setCheckState( 0, Qt::Checked );

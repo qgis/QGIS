@@ -91,6 +91,7 @@ class QgsTileScaleWidget;
 #include "qgspoint.h"
 #include "qgsrasterlayer.h"
 #include "qgssnappingdialog.h"
+#include "qgspluginmanager.h"
 
 #include "ui_qgisapp.h"
 
@@ -359,7 +360,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionShowPinnedLabels() { return mActionShowPinnedLabels; }
 
     //! Menus
-    QMenu *fileMenu() { return mFileMenu; }
+    Q_DECL_DEPRECATED QMenu *fileMenu() { return mProjectMenu; }
+    QMenu *projectMenu() { return mProjectMenu; }
     QMenu *editMenu() { return mEditMenu; }
     QMenu *viewMenu() { return mViewMenu; }
     QMenu *layerMenu() { return mLayerMenu; }
@@ -405,6 +407,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! returns pointer to map legend
     QgsLegend *legend();
+
+    //! returns pointer to plugin manager
+    QgsPluginManager *pluginManager();
 
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified
@@ -587,7 +592,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsMessageLogViewer *logViewer() { return mLogViewer; }
 
-    //! Update file menu with the project templates
+    //! Update project menu with the project templates
     void updateProjectFromTemplates();
 
   protected:
@@ -1015,6 +1020,16 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void addSvgAnnotation();
     void modifyAnnotation();
 
+    /** Alerts user when labeling font for layer has not been found on system
+     * @note added in 1.9
+     */
+    void labelingFontNotFound( QgsVectorLayer* vlayer, const QString& fontfamily );
+
+    /** Opens the labeling dialog for a layer when called from labelingFontNotFound alert
+     * @note added in 1.9
+     */
+    void labelingDialogFontNotFound( QAction* act );
+
     //! shows label settings dialog (for labeling-ng)
     void labeling();
 
@@ -1161,12 +1176,19 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
      */
     bool addRasterLayer( QgsRasterLayer * theRasterLayer );
 
+    /** Open a raster layer - this is the generic function which takes all parameters
+     * @note added in version 2.0
+      */
+    QgsRasterLayer* addRasterLayerPrivate( const QString & uri, const QString & baseName,
+                                           const QString & providerKey, bool guiWarning,
+                                           bool guiUpdate );
+
     /** add this file to the recently opened/saved projects list
      *  pass settings by reference since creating more than one
      * instance simultaneously results in data loss.
      */
     void saveRecentProjectPath( QString projectPath, QSettings & settings );
-    //! Update file menu with the current list of recently accessed projects
+    //! Update project menu with the current list of recently accessed projects
     void updateRecentProjectPaths();
     //! Read Well Known Binary stream from PostGIS
     //void readWKB(const char *, QStringList tables);
@@ -1204,7 +1226,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void initLegend();
     void createOverview();
     void createCanvasTools();
-    bool createDB();
     void createMapTips();
     void updateCRSStatusBar();
     void createDecorations();
@@ -1423,6 +1444,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QgsBrowserDockWidget* mBrowserWidget2;
 
     QgsSnappingDialog* mSnappingDialog;
+
+    QgsPluginManager* mPluginManager;
 
     //! Persistent tile scale slider
     QgsTileScaleWidget * mpTileScaleWidget;

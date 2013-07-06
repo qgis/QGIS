@@ -378,8 +378,10 @@ QgsVectorFileWriter::QgsVectorFileWriter(
                       .arg( attrField.name() )
                       .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
       mError = ErrAttributeCreationFailed;
+      OGR_Fld_Destroy( fld );
       return;
     }
+    OGR_Fld_Destroy( fld );
 
     int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( attrField.name() ) );
     if ( ogrIdx < 0 )
@@ -621,7 +623,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         return 0;
       }
 
-      OGRErr err = OGR_G_ImportFromWkb( mGeom2, geom->asWkb(), geom->wkbSize() );
+      OGRErr err = OGR_G_ImportFromWkb( mGeom2, const_cast<unsigned char *>( geom->asWkb() ), geom->wkbSize() );
       if ( err != OGRERR_NONE )
       {
         mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
@@ -637,7 +639,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
     }
     else if ( geom )
     {
-      OGRErr err = OGR_G_ImportFromWkb( mGeom, geom->asWkb(), geom->wkbSize() );
+      OGRErr err = OGR_G_ImportFromWkb( mGeom, const_cast<unsigned char *>( geom->asWkb() ), geom->wkbSize() );
       if ( err != OGRERR_NONE )
       {
         mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
@@ -799,6 +801,15 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
 
   writer->startRender( layer );
 
+  // enabling transaction on databases that support it
+  bool transactionsEnabled = true;
+
+  if ( OGRERR_NONE != OGR_L_StartTransaction( writer->mLayer ) )
+  {
+    QgsDebugMsg( "Error when trying to enable transactions on OGRLayer." );
+    transactionsEnabled = false;
+  }
+
   // write all features
   while ( fit.nextFeature( fet ) )
   {
@@ -858,6 +869,14 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
       }
     }
     n++;
+  }
+
+  if ( transactionsEnabled )
+  {
+    if ( OGRERR_NONE != OGR_L_CommitTransaction( writer->mLayer ) )
+    {
+      QgsDebugMsg( "Error while committing transaction on OGRLayer." );
+    }
   }
 
   writer->stopRender( layer );

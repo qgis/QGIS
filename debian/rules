@@ -48,6 +48,7 @@ CMAKE_OPTS := \
 	-D PEDANTIC=TRUE \
 	-D WITH_QSPATIALITE=TRUE \
 	-D WITH_MAPSERVER=TRUE \
+	-D MAPSERVER_SKIP_ECW=TRUE \
 	-D QGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-D WITH_APIDOC=TRUE
 
@@ -83,7 +84,7 @@ else
 	CMAKE_OPTS += -D WITH_GLOBE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"raring"))
+ifneq (,$(findstring $(DISTRIBUTION),"raring sid sid-oracle"))
 	CMAKE_OPTS += -D PYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
 
@@ -154,8 +155,16 @@ build: build-stamp
 build-stamp: debian/build/CMakeCache.txt
 	dh_testdir
 
+ifneq (,$(findstring $(DISTRIBUTION),"squeeze lucid"))
+	perl -0777 -i.bak -pe 's/^%Module\(name=(.*),\s*version=(\d+),\s*keyword_arguments="Optional"\s*\)/%Module $$1 $$2/m;' python/core/core.sip python/gui/gui.sip python/analysis/analysis.sip python/analysis/network/networkanalysis.sip
+endif
+
 	# Add here commands to compile the package.
 	$(MAKE) -C debian/build
+
+ifneq (,$(findstring $(DISTRIBUTION),"squeeze lucid"))
+	for i in python/core/core.sip python/gui/gui.sip python/analysis/analysis.sip python/analysis/network/networkanalysis.sip; do mv $$i.bak $$i; done
+endif
 
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	# Code to run the package test suite - and ignore the outcome for now
@@ -227,6 +236,9 @@ binary-arch: build install
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qbrowser
 	
+ifneq (,$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick precise quantal raring sid sid-oracle"))
+	dh_sip
+endif
 ifneq (,$(findstring $(DISTRIBUTION),"wheezy sid quantal raring"))
 	dh_python2 --no-guessing-versions
 else

@@ -140,7 +140,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mInvertSelectionButton->setIcon( QgsApplication::getThemeIcon( "/mActionInvertSelection.png" ) );
   mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.svg" ) );
   mSaveEditsButton->setIcon( QgsApplication::getThemeIcon( "/mActionSaveEdits.svg" ) );
-  mDeleteSelectedButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.png" ) );
+  mDeleteSelectedButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.svg" ) );
   mOpenFieldCalculator->setIcon( QgsApplication::getThemeIcon( "/mActionCalculateField.png" ) );
   mAddAttribute->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.png" ) );
   mRemoveAttribute->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.png" ) );
@@ -419,6 +419,11 @@ void QgsAttributeTableDialog::on_mRemoveSelectionButton_clicked()
 void QgsAttributeTableDialog::on_mDeleteSelectedButton_clicked()
 {
   QgisApp::instance()->deleteSelected( mLayer, this );
+}
+
+void QgsAttributeTableDialog::on_mMainView_currentChanged( int viewMode )
+{
+  mMainViewButtonGroup->button( viewMode )->click();
 }
 
 void QgsAttributeTableDialog::on_mToggleEditingButton_toggled()

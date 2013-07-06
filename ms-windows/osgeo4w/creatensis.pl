@@ -254,7 +254,7 @@ system "unzip packages/Untgz.zip" unless -d "untgz";
 
 chdir "..";
 
-$packagename = "Quantum GIS" unless defined $packagename;
+$packagename = "QGIS" unless defined $packagename;
 $shortname = "qgis" unless defined $shortname;
 
 my $cmd = "makensis";
@@ -295,7 +295,7 @@ creatensis.pl [options] [packages...]
     -version=m.m.p	package version (defaults to CMakeLists.txt setting)
     -binary=b		binary version of package
     -ininame=filename	name of the setup.ini (defaults to setup.ini)
-    -packagename=s	name of package (defaults to 'Quantum GIS')
+    -packagename=s	name of package (defaults to 'QGIS')
     -shortname=s	shortname used for batch file (defaults to 'qgis')
     -help		this help
 

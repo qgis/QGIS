@@ -63,7 +63,7 @@ class Dialog(QDialog, Ui_Dialog):
         (self.shapefileName, self.encoding) = ftools_utils.saveDialog(self)
         if self.shapefileName is None or self.encoding is None:
             return
-        self.outShape.setText(QString(self.shapefileName))
+        self.outShape.setText(self.shapefileName)
 
     def accept(self):
         if self.inPolygon.currentText() == "":
@@ -114,7 +114,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.stopProcessing()
 
         addToTOC = QMessageBox.question(self, self.tr("Count Points in Polygon"),
-                                        self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(self.outShape.text()),
+                                        self.tr("Created output shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % (self.outShape.text()),
                                         QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
         if addToTOC == QMessageBox.Yes:
             fileInfo = QFileInfo( self.outShape.text() )
@@ -188,7 +188,7 @@ class PointsInPolygonThread(QThread):
         pntFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
-	polyFit = polyProvider.getFeatures()
+        polyFit = polyProvider.getFeatures()
         while polyFit.nextFeature(polyFeat):
             inGeom = polyFeat.geometry()
             atMap = polyFeat.attributes()
@@ -218,7 +218,7 @@ class PointsInPolygonThread(QThread):
                         interrupted = True
                         break
 
-            atMap.append(QVariant(count))
+            atMap.append(count)
             outFeat.setAttributes(atMap)
             writer.addFeature(outFeat)
 

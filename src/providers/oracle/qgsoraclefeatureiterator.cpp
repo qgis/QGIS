@@ -27,6 +27,8 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleProvider *p, const 
     , P( p )
     , mRewind( false )
 {
+  P->mActiveIterators << this;
+
   mQry = QSqlQuery( *P->mConnection );
 
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
@@ -237,6 +239,8 @@ bool QgsOracleFeatureIterator::close()
     return false;
 
   mQry.finish();
+
+  P->mActiveIterators.remove( this );
 
   return true;
 }

@@ -93,7 +93,7 @@ class QgsExpressionItem : public QStandardItem
       *
       * @return The QgsExpressionItem::ItemType
       */
-    QgsExpressionItem::ItemType getItemType() { return mType ; }
+    QgsExpressionItem::ItemType getItemType() { return mType; }
 
   private:
     QString mExpressionText;

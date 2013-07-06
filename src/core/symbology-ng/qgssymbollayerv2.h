@@ -21,6 +21,7 @@
 #endif
 
 #define DEG2RAD(x)    ((x)*M_PI/180)
+#define DEFAULT_SCALE_METHOD              QgsSymbolV2::ScaleArea
 
 #include <QColor>
 #include <QMap>

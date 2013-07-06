@@ -1,5 +1,3 @@
-
-
 #############################################################
 # sources
 
@@ -59,6 +57,7 @@ SET(QGIS_CORE_SRCS
   qgscontexthelp_texts.cpp
   qgscoordinatetransform.cpp
   qgscrscache.cpp
+  qgsdatadefined.cpp
   qgsdatasourceuri.cpp
   qgsdataitem.cpp
   qgsdbfilterproxymodel.cpp
@@ -72,6 +71,7 @@ SET(QGIS_CORE_SRCS
   qgsfeaturerequest.cpp
   qgsfeaturestore.cpp
   qgsfield.cpp
+  qgsfontutils.cpp
   qgsgeometry.cpp
   qgsgeometrycache.cpp
   qgsgeometryvalidator.cpp
@@ -383,6 +383,7 @@ SET(QGIS_CORE_HDRS
   qgsclipper.h
   qgscontexthelp.h
   qgscoordinatetransform.h
+  qgsdatadefined.h
   qgsdatasourceuri.h
   qgsdataitem.h
   qgsdistancearea.h
@@ -395,6 +396,7 @@ SET(QGIS_CORE_HDRS
   qgsfeaturerequest.h
   qgsfeaturestore.h
   qgsfield.h
+  qgsfontutils.h
   qgsgeometry.h
   qgsgml.h
   qgsgmlschema.h

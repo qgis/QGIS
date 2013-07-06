@@ -3,6 +3,7 @@ SET (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
 ADD_SUBDIRECTORY(plugins)
 ADD_SUBDIRECTORY(qsci_apis)
 ADD_SUBDIRECTORY(console)
+ADD_SUBDIRECTORY(pyplugin_installer)
 
 IF (WITH_PYSPATIALITE)
   ADD_SUBDIRECTORY(pyspatialite)
@@ -160,8 +161,10 @@ ENDFOREACH(pyfile)
 
 # Byte-compile staged PyQGIS utilities
 IF(WITH_PY_COMPILE)
-  ADD_CUSTOM_TARGET(pycompile_pyutils ALL
+  ADD_CUSTOM_TARGET(pycompile-pyutils ALL
     COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}/qgis"
+    COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}/console"
+    COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}/pyplugin_installer"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     COMMENT "Byte-compiling staged PyQGIS utility modules..."
     DEPENDS pyutils

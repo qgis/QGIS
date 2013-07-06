@@ -31,10 +31,15 @@ QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WFlags fl, bool deleteO
   setCheckBoxState( Qt::Unchecked );
 
   mCheckBoxQSettingsLabel = "";
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/MessageViewer/geometry" ).toByteArray() );
 }
 
 QgsMessageViewer::~QgsMessageViewer()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/MessageViewer/geometry", saveGeometry() );
 }
 
 void QgsMessageViewer::setMessageAsHtml( const QString &msg )

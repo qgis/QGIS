@@ -179,6 +179,12 @@ int main( int argc, char * argv[] )
   }
 #endif
 
+#if defined(MAPSERVER_SKIP_ECW)
+  QgsDebugMsg( "Skipping GDAL ECW drivers in server." );
+  QgsApplication::skipGdalDriver( "ECW" );
+  QgsApplication::skipGdalDriver( "JP2ECW" );
+#endif
+
   QDomImplementation::setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
 
   // Instantiate the plugin directory so that providers are loaded
@@ -189,6 +195,7 @@ int main( int argc, char * argv[] )
   QgsDebugMsg( "User DB PATH: " + QgsApplication::qgisUserDbFilePath() );
 
   QgsDebugMsg( qgsapp.applicationDirPath() + "/qgis_wms_server.log" );
+  QgsApplication::createDB(); //init qgis.db (e.g. necessary for user crs)
 
   //create config cache and search for config files in the current directory.
   //These configurations are used if no mapfile parameter is present in the request
@@ -540,6 +547,22 @@ int main( int argc, char * argv[] )
 
       QString infoFormat = parameterMap.value( "INFO_FORMAT" );
       theRequestHandler->sendGetFeatureInfoResponse( featureInfoDoc, infoFormat );
+      delete theRequestHandler;
+      delete theServer;
+      continue;
+    }
+    else if ( request.compare( "GetContext", Qt::CaseInsensitive ) == 0 )
+    {
+      try
+      {
+        QDomDocument doc = theServer->getContext();
+        theRequestHandler->sendGetStyleResponse( doc );
+      }
+      catch ( QgsMapServiceException& ex )
+      {
+        theRequestHandler->sendServiceException( ex );
+      }
+
       delete theRequestHandler;
       delete theServer;
       continue;

@@ -1127,8 +1127,17 @@ void QgsStyleV2ManagerDialog::setSymbolsChecked( QStringList symbols )
 
 void QgsStyleV2ManagerDialog::filterSymbols( QString qword )
 {
-  QStringList symbols = mStyle->findSymbols( qword );
-  populateSymbols( symbols );
+  QStringList items;
+  if ( currentItemType() == 3 )
+  {
+    items = mStyle->findSymbols( QgsStyleV2::ColorrampEntity, qword );
+    populateColorRamps( items );
+  }
+  else
+  {
+    items = mStyle->findSymbols( QgsStyleV2::SymbolEntity, qword );
+    populateSymbols( items );
+  }
 }
 
 void QgsStyleV2ManagerDialog::tagsChanged()

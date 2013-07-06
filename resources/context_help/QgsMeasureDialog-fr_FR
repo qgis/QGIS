@@ -1,8 +1,0 @@
-<h3>Outils de mesure</h3>
-Il y a 3 outils de mesure : longueur, surface et angle.
-<h4>Mesurer une longueur</h4>
-Pour mesurer une longueur, sélectionner l'outil, faites un clic gauche pour débuter la mesure et un clic droit pour la terminer. Un double clic gauche permet de commencer une nouvelle mesure. Vous pouvez tracer plusieurs sgements de mesure d'affilée, il vous sera indiqué la longueur de chacun ainsi que la longueur totale.
-<h4>Mesurer une surface</h4>
-Pour mesurer une surface, dessiner avec cet outil le contour de l'aire voulue. La surface totale est mise à jour dynamiquement.
-<h4>Mesurer un angle</h4>
-Pour mesurer un angle, tracez un premier segment en le terminant par un clic gauche puis un second. L'angle d'ouverture entre ces deux segments est alors indiqué (par défaut, selon l'ellipsoïde de référence renseigné dans les Options).

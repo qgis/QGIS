@@ -24,7 +24,7 @@
  * A widget renderer for detailed item views.
  * @see also QgsDetailedItem and QgsDetailedItemData.
  */
-class QgsDetailedItemWidget :
+class GUI_EXPORT QgsDetailedItemWidget :
       public QWidget, private Ui::QgsDetailedItemWidgetBase
 {
     Q_OBJECT

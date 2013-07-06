@@ -2,7 +2,7 @@
 Type=MimeType
 MimeType=application/x-qgis-layer-settings
 Hidden=false
-Comment=Quantum GIS layer settings
-Comment[de]=Quantum GIS Layer Einstellungen
+Comment=QGIS layer settings
+Comment[de]=QGIS Layer Einstellungen
 Icon=qgis-mime-icon
 Patterns=*.qml;

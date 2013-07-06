@@ -77,6 +77,8 @@ class QgsSymbolLayerV2
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
+    virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
+
     virtual QgsStringMap properties() const = 0;
 
     virtual void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) = 0;
@@ -157,6 +159,8 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
 
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
+    void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY );
+    static QPointF _rotatedOffset( const QPointF& offset, double angle );
 };
 
 class QgsLineSymbolLayerV2 : QgsSymbolLayerV2

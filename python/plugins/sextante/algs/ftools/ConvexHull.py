@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -68,10 +69,6 @@ class ConvexHull(GeoAlgorithm):
         fieldName = self.getParameterValue(ConvexHull.FIELD)
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(ConvexHull.INPUT))
 
-        GEOS_EXCEPT = True
-        FEATURE_EXCEPT = True
-
-
         f = QgsField("value")
         f.setType(QVariant.String)
         f.setLength(255)
@@ -115,7 +112,7 @@ class ConvexHull(GeoAlgorithm):
                 features = QGisLayers.features(layer)
                 for f in features:
                     idVar = f[fieldName]
-                    if idVar.toString().trimmed() == i.toString().trimmed():
+                    if unicode(idVar).strip() == unicode(i).strip:
                         if first:
                             val = idVar
                             first = False
@@ -131,15 +128,10 @@ class ConvexHull(GeoAlgorithm):
                         outGeom = tmpGeom.convexHull()
                         (area, perim) = utils.simpleMeasure(outGeom)
                         outFeat.setGeometry(outGeom)
-                        outFeat.setAttributes([QVariant(fid),
-                                               QVariant(val),
-                                               QVariant(area),
-                                               QVariant(perim)
-                                             ])
+                        outFeat.setAttributes([fid,val,area,perim])
                         writer.addFeature(outFeat)
                     except:
-                        GEOS_EXCEPT = False
-                        continue
+                        raise GeoAlgorithmExecutionException("Exception while computing convex hull")
                 fid += 1
         else:
           hull = []
@@ -157,18 +149,10 @@ class ConvexHull(GeoAlgorithm):
               outGeom = tmpGeom.convexHull()
               (area, perim) = utils.simpleMeasure(outGeom)
               outFeat.setGeometry(outGeom)
-              outFeat.setAttributes([QVariant(0),
-                                     QVariant("all"),
-                                     QVariant(area),
-                                     QVariant(perim)
-                                   ])
+              outFeat.setAttributes([0, "all", area, perim])
               writer.addFeature(outFeat)
           except:
-              GEOS_EXCEPT = False
+              raise GeoAlgorithmExecutionException("Exception while computing convex hull")
 
         del writer
 
-        if not GEOS_EXCEPT:
-            SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Geometry exception while computing convex hull")
-        if not FEATURE_EXCEPT:
-            SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Feature exception while computing convex hull")

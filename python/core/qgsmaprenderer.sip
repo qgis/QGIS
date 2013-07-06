@@ -6,7 +6,7 @@ class QgsLabelPosition
 #include <qgsmaprenderer.h>
 %End
   public:
-    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, const QString& labeltext, bool upside_down, bool diagram = false, bool pinned = false );
+    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, const QString& labeltext, const QFont& labelfont, bool upside_down, bool diagram = false, bool pinned = false );
     QgsLabelPosition();
     int featureId;
     double rotation;
@@ -16,6 +16,7 @@ class QgsLabelPosition
     double height;
     QString layerID;
     QString labelText;
+    QFont labelFont;
     bool upsideDown;
     bool isDiagram;
     bool isPinned;
@@ -38,6 +39,12 @@ class QgsLabelingEngineInterface
     virtual void init( QgsMapRenderer* mp ) = 0;
     //! called to find out whether the layer is used for labeling
     virtual bool willUseLayer( QgsVectorLayer* layer ) = 0;
+    //! clears all PAL layer settings for registered layers
+    //! @note: this method was added in version 1.9
+    virtual void clearActiveLayers() = 0;
+    //! clears data defined objects from PAL layer settings for a registered layer
+    //! @note: this method was added in version 1.9
+    virtual void clearActiveLayer( QgsVectorLayer* layer ) = 0;
     //! called when starting rendering of a layer
     //! @note: this method was added in version 1.6
     virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx ) = 0;

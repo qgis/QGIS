@@ -51,5 +51,3 @@ class QgsGraphAnalyzer
      */
     static QgsGraph* shortestTree( const QgsGraph* source, int startVertexIdx, int criterionNum );
 };
-
-

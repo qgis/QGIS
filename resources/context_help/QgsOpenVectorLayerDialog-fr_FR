@@ -1,5 +1,0 @@
-<h3>Fenêtre d'ouverture de couche vectorielle</h3>
-Cette fenêtre est utilisée pour ajouter des données vectorielles au canevas de QGIS. Les vecteurs sont des données spatiales décrites en utilisant des figures géométriques telles que les lignes, polygones et points.</p>
-QGIS peut ouvrir un grand nombre de formats, y compris ceux de la bibliothèque OGR tels que les Shapefile d'ESRI ou les MIF/MID/TAB de MapInfo.</p>
-QGIS supporte également les couches PostGIS d'une base de données PostgreSQL et Spatialite. Le support d'autres formats (p. ex. les fichiers de texte délimité comme le CSV) est fourni par des extensions. Une liste des formats supportés peut être trouvée dans l'Annexe A.1 du manuel utilisateur.</p>
-Des descriptions détaillées sur la manière de travailler avec des données vectorielles sont données dans le chapitre 4 "Les données vectorielles".

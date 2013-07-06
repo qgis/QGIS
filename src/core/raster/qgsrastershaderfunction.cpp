@@ -55,46 +55,52 @@ void QgsRasterShaderFunction::setMinimumValue( double theValue )
 }
 
 /**
-  Generates and new RGB value based on one input value
+  Generates and new RGBA value based on one input value
 
-  @param theValue The original value to base a new RGB value on
-  @param theReturnRedValue  The red component of the new RGB value
-  @param theReturnGreenValue  The green component of the new RGB value
-  @param theReturnBlueValue  The blue component of the new RGB value
+  @param theValue The original value to base a new RGBA value on
+  @param theReturnRedValue  The red component of the new RGBA value
+  @param theReturnGreenValue  The green component of the new RGBA value
+  @param theReturnBlueValue  The blue component of the new RGBA value
+  @param theReturnAlphaValue  The blue component of the new RGBA value
   @return True if the return values are valid otherwise false
 */
-bool QgsRasterShaderFunction::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+bool QgsRasterShaderFunction::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int* theReturnAlphaValue )
 {
   Q_UNUSED( theValue );
 
   *theReturnRedValue = 0;
   *theReturnGreenValue = 0;
   *theReturnBlueValue = 0;
+  *theReturnAlphaValue = 0;
 
   return false;
 }
 
 /**
-  Generates and new RGB value based on an original RGB value
+  Generates and new RGBA value based on an original RGBA value
 
 
-  @param theRedValue The red component of the original value to base a new RGB value on
-  @param theGreenValue The green component of the original value to base a new RGB value on
-  @param theBlueValue The blue component of the original value to base a new RGB value on
-  @param theReturnRedValue  The red component of the new RGB value
-  @param theReturnGreenValue  The green component of the new RGB value
-  @param theReturnBlueValue  The blue component of the new RGB value
+  @param theRedValue The red component of the original value to base a new RGBA value on
+  @param theGreenValue The green component of the original value to base a new RGBA value on
+  @param theBlueValue The blue component of the original value to base a new RGBA value on
+  @param theAlphaValue The alpha component of the original value to base a new RGBA value on
+  @param theReturnRedValue  The red component of the new RGBA value
+  @param theReturnGreenValue  The green component of the new RGBA value
+  @param theReturnBlueValue  The blue component of the new RGBA value
+  @param theReturnAlphaValue  The alpha component of the new RGBA value
   @return True if the return values are valid otherwise false
 */
-bool QgsRasterShaderFunction::shade( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+bool QgsRasterShaderFunction::shade( double theRedValue, double theGreenValue, double theBlueValue, double theAlphaValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue , int *theReturnAlphaValue )
 {
   Q_UNUSED( theRedValue );
   Q_UNUSED( theGreenValue );
   Q_UNUSED( theBlueValue );
+  Q_UNUSED( theAlphaValue );
 
   *theReturnRedValue = 0;
   *theReturnGreenValue = 0;
   *theReturnBlueValue = 0;
+  *theReturnAlphaValue = 0;
 
   return false;
 }

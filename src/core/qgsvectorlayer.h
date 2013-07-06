@@ -619,6 +619,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Select not selected features and deselect selected ones */
     void invertSelection();
 
+    /** Select all the features */
+    void selectAll();
+
     /**
      * Invert selection of features found within the search rectangle (in layer's coordinates)
      *
@@ -1098,6 +1101,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** return string representing 'true' for a checkbox (added in 1.4)
      * @note not available in python bindings
+     * FIXME: need SIP binding for QPair<QString, QString>
      */
     QPair<QString, QString> checkedState( int idx );
 
@@ -1145,10 +1149,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      **/
     bool fieldEditable( int idx );
 
+    /**label widget on top
+     * @note added in 1.9
+     **/
+    bool labelOnTop( int idx );
+
     /**set edit widget editable
      * @note added in 1.9
      **/
     void setFieldEditable( int idx, bool editable );
+
+    /**label widget on top
+     * @note added in 1.9
+     **/
+    void setLabelOnTop( int idx, bool onTop );
 
     /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
      @note this method was added in version 1.1
@@ -1301,6 +1315,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     QString metadata();
 
+    /** @note not available in python bindings */
     inline QgsGeometryCache* cache() { return mCache; }
 
     /**
@@ -1334,6 +1349,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Is emitted, before changes are commited to the data provider */
     void beforeCommitChanges();
+
+    /** Is emitted, before changes are rolled back*/
+    void beforeRollBack();
 
     /**
      * Will be emitted, when a new attribute has been added to this vector layer.
@@ -1375,6 +1393,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void committedFeaturesRemoved( const QString& layerId, const QgsFeatureIds& deletedFeatureIds );
     void committedAttributeValuesChanges( const QString& layerId, const QgsChangedAttributesMap& changedAttributesValues );
     void committedGeometriesChanges( const QString& layerId, const QgsGeometryMap& changedGeometries );
+
+    /** Emitted when the font family defined for labeling layer is not found on system
+     * @note added in 1.9
+     */
+    void labelingFontNotFound( QgsVectorLayer* layer, const QString& fontfamily );
 
   protected:
     /** Set the extent */
@@ -1498,6 +1521,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Display labels */
     bool mLabelOn;
 
+    /** Whether 'labeling font not found' has be shown for this layer (only show once in QgsMessageBar, on first rendering) */
+    bool mLabelFontNotFoundNotified;
+
     /** Blend mode for features */
     QPainter::CompositionMode mFeatureBlendMode;
 
@@ -1520,6 +1546,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     QMap< QString, EditType > mEditTypes;
     QMap< QString, bool> mFieldEditables;
+    QMap< QString, bool> mLabelOnTop;
     QMap< QString, QMap<QString, QVariant> > mValueMaps;
     QMap< QString, RangeData > mRanges;
     QMap< QString, QPair<QString, QString> > mCheckedStates;

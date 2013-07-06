@@ -349,6 +349,6 @@ void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( int index )
 
 void QgsSymbolsListWidget::on_groupsCombo_editTextChanged( const QString &text )
 {
-  QStringList symbols = mStyle->findSymbols( text );
+  QStringList symbols = mStyle->findSymbols( QgsStyleV2::SymbolEntity, text );
   populateSymbols( symbols );
 }

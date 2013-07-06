@@ -158,7 +158,7 @@ QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( QString attrName, Qg
     mMode( Custom ),
     mSourceSymbol( NULL ),
     mSourceColorRamp( NULL ),
-    mScaleMethod( QgsSymbolV2::ScaleArea ),
+    mScaleMethod( DEFAULT_SCALE_METHOD ),
     mRotationFieldIdx( -1 ),
     mSizeScaleFieldIdx( -1 )
 {
@@ -976,15 +976,15 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
   QgsSymbolV2Map symbols;
   QDomElement rangesElem = doc.createElement( "ranges" );
   QgsRangeList::const_iterator it = mRanges.constBegin();
-  for ( ; it != mRanges.end(); it++ )
+  for ( ; it != mRanges.constEnd(); it++ )
   {
     const QgsRendererRangeV2& range = *it;
     QString symbolName = QString::number( i );
     symbols.insert( symbolName, range.symbol() );
 
     QDomElement rangeElem = doc.createElement( "range" );
-    rangeElem.setAttribute( "lower", QString::number( range.lowerValue() ) );
-    rangeElem.setAttribute( "upper", QString::number( range.upperValue() ) );
+    rangeElem.setAttribute( "lower", QString::number( range.lowerValue(), 'f' ) );
+    rangeElem.setAttribute( "upper", QString::number( range.upperValue(), 'f' ) );
     rangeElem.setAttribute( "symbol", symbolName );
     rangeElem.setAttribute( "label", range.label() );
     rangesElem.appendChild( rangeElem );

@@ -25,7 +25,6 @@ __revision__ = '$Format:%H$'
 
 import os
 import pickle
-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 

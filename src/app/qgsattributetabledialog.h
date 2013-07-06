@@ -122,6 +122,15 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
     void on_mDeleteSelectedButton_clicked();
 
     /**
+     * Called when the current index changes in the main view
+     * i.e. when the view mode is switched from table to form view
+     * or vice versa.
+     *
+     * Will adjust the button state
+     */
+    void on_mMainView_currentChanged( int );
+
+    /**
      * add feature
      */
     void on_mAddFeature_clicked();

@@ -55,9 +55,9 @@ class fToolsPlugin:
 
   def getThemeIcon(self, icon):
     settings = QSettings()
-    pluginPath = QString(os.path.dirname(__file__))
-    themePath = QString("icons") + QDir.separator() + QString(settings.value("/Themes").toString()) + QDir.separator() + QString(icon)
-    defaultPath = QString("icons") + QDir.separator() + QString("default") + QDir.separator() + QString(icon)
+    pluginPath = os.path.dirname(__file__)
+    themePath = "icons" + QDir.separator() + settings.value("/Themes", "default") + QDir.separator() + icon
+    defaultPath = "icons" + QDir.separator() + "default" + QDir.separator() + icon
     if QFile.exists(pluginPath + QDir.separator() + themePath):
       return QIcon(":" + themePath)
     elif QFile.exists(pluginPath + QDir.separator() + defaultPath):
@@ -120,7 +120,7 @@ class fToolsPlugin:
   def initGui(self):
     if int(self.QgisVersion) < 1:
       QMessageBox.warning(self.iface.getMainWindow(), "fTools",
-      QCoreApplication.translate("fTools", "Quantum GIS version detected: ") +unicode(self.QgisVersion)+".xx\n"
+      QCoreApplication.translate("fTools", "QGIS version detected: ") +unicode(self.QgisVersion)+".xx\n"
       + QCoreApplication.translate("fTools", "This version of fTools requires at least QGIS version 1.0.0\nPlugin will not be enabled."))
       return None
     QObject.connect(self.iface, SIGNAL("currentThemeChanged (QString)"), self.updateThemeIcons)
@@ -189,15 +189,12 @@ class fToolsPlugin:
 
     self.updateThemeIcons("theme")
 
-    self.tmpAct = QAction( self.iface.mainWindow() )
-    self.iface.addPluginToVectorMenu( "tmp", self.tmpAct )
     self.menu = self.iface.vectorMenu()
     self.menu.addMenu( self.analysisMenu )
     self.menu.addMenu( self.researchMenu )
     self.menu.addMenu( self.geoMenu )
     self.menu.addMenu( self.conversionMenu )
     self.menu.addMenu( self.dataManageMenu )
-    self.iface.removePluginVectorMenu( "tmp", self.tmpAct )
 
     QObject.connect(self.distMatrix, SIGNAL("triggered()"), self.dodistMatrix)
     QObject.connect(self.sumLines, SIGNAL("triggered()"), self.dosumLines)
@@ -246,14 +243,11 @@ class fToolsPlugin:
     QObject.connect(self.spatialIndex, SIGNAL("triggered()"), self.doSpatIndex)
 
   def unload(self):
-    self.iface.addPluginToVectorMenu( "tmp", self.tmpAct )
     self.menu.removeAction( self.analysisMenu.menuAction() )
     self.menu.removeAction( self.researchMenu.menuAction() )
     self.menu.removeAction( self.geoMenu.menuAction() )
     self.menu.removeAction( self.conversionMenu.menuAction() )
     self.menu.removeAction( self.dataManageMenu.menuAction() )
-    self.iface.removePluginVectorMenu( "tmp", self.tmpAct )
-
 
   def doSimplify(self):
     d = doSimplify.Dialog(self.iface, 1)

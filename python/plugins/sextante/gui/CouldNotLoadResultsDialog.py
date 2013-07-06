@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-import webbrowser
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,6 +26,7 @@ __revision__ = '$Format:%H$'
 from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+import webbrowser
 
 class CouldNotLoadResultsDialog(QtGui.QDialog):
     def __init__(self, wrongLayers, alg):
@@ -53,7 +53,7 @@ class CouldNotLoadResultsDialog(QtGui.QDialog):
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def linkClicked(self, url):
-        webbrowser.open(str(url.toString()))
+        webbrowser.open(str(url))
 
     def closeButtonPressed(self):
         self.close()

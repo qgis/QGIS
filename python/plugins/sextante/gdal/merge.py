@@ -66,7 +66,7 @@ class merge(GeoAlgorithm):
         arguments.append(out)
         arguments.append("-of")
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
-        arguments.append(self.getParameterValue(merge.INPUT).replace(";", " "))
+        arguments.extend(self.getParameterValue(merge.INPUT).split(";"))
 
         commands = []
         if SextanteUtils.isWindows():

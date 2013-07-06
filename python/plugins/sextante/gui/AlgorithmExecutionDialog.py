@@ -55,11 +55,6 @@ import os
 from sextante.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor
 from sextante.parameters.ParameterString import ParameterString
 
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    _fromUtf8 = lambda s: s
-
 class AlgorithmExecutionDialog(QtGui.QDialog):
     class InvalidParameterValue(Exception):
         def __init__(self, param, widget):
@@ -143,10 +138,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
         for param in params:
             if isinstance(param, ParameterExtent):
-                value = self.paramTable.valueItems[param.name].getValue()
-                if value is not None:
-                    param.value = value
-                else:
+                if not self.setParamValue(param, self.paramTable.valueItems[param.name]):
                     raise AlgorithmExecutionDialog.InvalidParameterValue(param, self.paramTable.valueItems[param.name])
 
         for output in outputs:
@@ -164,7 +156,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             return param.setValue(widget.getValue())
         elif isinstance(param, (ParameterVector, ParameterTable)):
             try:
-                return param.setValue(widget.itemData(widget.currentIndex()).toPyObject())
+                return param.setValue(widget.itemData(widget.currentIndex()))
             except:
                 return param.setValue(widget.getValue())
         elif isinstance(param, ParameterBoolean):
@@ -327,8 +319,8 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     def resetGUI(self):
         QApplication.restoreOverrideCursor()
         self.progressLabel.setText("")
-        self.progress.setValue(0)
-        self.progress.setMaximum(100)
+        self.progress.setValue(100)
+        #self.progress.setMaximum(100)
         self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)

@@ -65,9 +65,9 @@ typedef SInt32 SRefCon;
  */
 void usage( std::string const & appName )
 {
-  std::cerr << "Quantum GIS Benchmark - " << VERSION << " '" << RELEASE_NAME << "' ("
+  std::cerr << "QGIS Benchmark - " << VERSION << " '" << RELEASE_NAME << "' ("
             << QGSVERSION << ")\n"
-            << "Quantum GIS (QGIS) Benchmark is console application for QGIS benchmarking\n"
+            << "QGIS (QGIS) Benchmark is console application for QGIS benchmarking\n"
             << "Usage: " << appName <<  " [options] [FILES]\n"
             << "  options:\n"
             << "\t[--iterations iterations]\tnumber of rendering cycles, default 1\n"
@@ -371,7 +371,7 @@ int main( int argc, char *argv[] )
   QgsApplication::setPrefixPath( myPrefixPath, true );
 
   // Set up the QSettings environment must be done after qapp is created
-  QgsApplication::setOrganizationName( "QuantumGIS" );
+  QgsApplication::setOrganizationName( "QGIS" );
   QgsApplication::setOrganizationDomain( "qgis.org" );
   QgsApplication::setApplicationName( "QGIS2" );
 

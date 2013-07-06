@@ -34,8 +34,8 @@ struct QgsDiagramLayerSettings
     int xPosColumn; //attribute index for x coordinate (or -1 if position not data defined)
     int yPosColumn;//attribute index for y coordinate (or -1 if position not data defined)
 
-    void readXML( const QDomElement& elem );
-    void writeXML( QDomElement& layerElem, QDomDocument& doc ) const;
+    void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
+    void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 };
 
 //diagram settings for rendering
@@ -88,8 +88,8 @@ class QgsDiagramSettings
     //! Scale diagrams smaller than mMinimumSize to mMinimumSize
     double minimumSize;
 
-    void readXML( const QDomElement& elem );
-    void writeXML( QDomElement& rendererElem, QDomDocument& doc ) const;
+    void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
+    void writeXML( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 };
 
 //additional diagram settings for interpolated size rendering
@@ -134,8 +134,8 @@ class QgsDiagramRendererV2
     /**Returns list with all diagram settings in the renderer*/
     virtual QList<QgsDiagramSettings> diagramSettings() const = 0;
 
-    virtual void readXML( const QDomElement& elem ) = 0;
-    virtual void writeXML( QDomElement& layerElem, QDomDocument& doc ) const = 0;
+    virtual void readXML( const QDomElement& elem, const QgsVectorLayer* layer ) = 0;
+    virtual void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const = 0;
 
   protected:
 
@@ -156,8 +156,8 @@ class QgsDiagramRendererV2
     static int dpiPaintDevice( const QPainter* );
 
     //read / write diagram
-    void _readXML( const QDomElement& elem );
-    void _writeXML( QDomElement& rendererElem, QDomDocument& doc ) const;
+    void _readXML( const QDomElement& elem, const QgsVectorLayer* layer );
+    void _writeXML( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 };
 
 /**Renders the diagrams for all features with the same settings*/
@@ -179,8 +179,8 @@ class QgsSingleCategoryDiagramRenderer : QgsDiagramRendererV2
 
     QList<QgsDiagramSettings> diagramSettings() const;
 
-    void readXML( const QDomElement& elem );
-    void writeXML( QDomElement& layerElem, QDomDocument& doc ) const;
+    void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
+    void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 
   protected:
     bool diagramSettings( const QgsAttributes&, const QgsRenderContext& c, QgsDiagramSettings& s );
@@ -222,8 +222,8 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRendererV2
     int classificationAttribute() const;
     void setClassificationAttribute( int index );
 
-    void readXML( const QDomElement& elem );
-    void writeXML( QDomElement& layerElem, QDomDocument& doc ) const;
+    void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
+    void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
 
   protected:
     bool diagramSettings( const QgsAttributes&, const QgsRenderContext& c, QgsDiagramSettings& s );
