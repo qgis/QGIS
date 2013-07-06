@@ -6,8 +6,6 @@ IF (NOT FCGI_FOUND)
   MESSAGE (SEND_ERROR "Fast CGI dependency was not found!")
 ENDIF (NOT FCGI_FOUND)
 
-ADD_DEFINITIONS(-DDIAGRAMSERVER=1)
-
 IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
   ADD_DEFINITIONS(-DQGSMSDEBUG=1)
 ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
@@ -44,15 +42,6 @@ SET ( qgis_mapserv_SRCS
   qgsremotedatasourcebuilder.cpp
   qgssentdatasourcebuilder.cpp
   qgsmsutils.cpp
-
-  ../plugins/diagram_overlay/qgsdiagramcategory.cpp
-  ../plugins/diagram_overlay/qgsdiagramfactory.cpp
-  ../plugins/diagram_overlay/qgswkndiagramfactory.cpp
-  ../plugins/diagram_overlay/qgsbardiagramfactory.cpp
-  ../plugins/diagram_overlay/qgspiediagramfactory.cpp
-  ../plugins/diagram_overlay/qgssvgdiagramfactory.cpp
-  ../plugins/diagram_overlay/qgsdiagramoverlay.cpp
-  ../plugins/diagram_overlay/qgsdiagramrenderer.cpp
   )
 
 # SET (qgis_mapserv_UIS 
