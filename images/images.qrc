@@ -342,6 +342,7 @@
         <file>themes/default/mIconProperties.svg</file>
         <file>themes/default/mIconPyramid.png</file>
         <file>themes/default/mIconRaster.png</file>
+        <file>themes/default/mIconRasterLayer.png</file>
         <file>themes/default/mIconRenderingDisabled.png</file>
         <file>themes/default/mIconRenderingEnabled.png</file>
         <file>themes/default/mIconSelectAdd.svg</file>
