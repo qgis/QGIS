@@ -89,13 +89,13 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
       if reply.error() == QNetworkReply.OperationCanceledError:
         self.mResult += "<br/><br/>" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't cancelled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.")
       self.reject()
-      del reply
+      reply.deleteLater()
       return
     self.file.open(QFile.WriteOnly)
     self.file.write( reply.readAll() )
     self.file.close()
     self.stateChanged(0)
-    del reply
+    reply.deleteLater()
     pluginDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins"
     tmpPath = self.file.fileName()
     # make sure that the parent directory exists
