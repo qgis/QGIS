@@ -101,7 +101,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/CRS.png</normaloff>:/images/themes/default/propertyicons/CRS.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/CRS.svg</normaloff>:/images/themes/default/propertyicons/CRS.svg</iconset>
           </property>
          </item>
          <item>
