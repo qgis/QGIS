@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 15.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0"
+	 id="svg5692" sodipodi:docname="locked.svg" inkscape:version="0.47 r22583" inkscape:export-filename="/mnt/home1/robert/svn/graphics/trunk/toolbar-icons/24x24/locked.png" inkscape:export-xdpi="90" inkscape:export-ydpi="90" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px"
+	 viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
+<g id="layer4" transform="translate(0,-8)" inkscape:groupmode="layer" inkscape:label="1">
+	<g>
+		
+			<path id="path2930_2_" sodipodi:nodetypes="cc" fill="none" stroke="#888A85" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="
+			M6.19,19.6c0-6,1.188-9,5.81-9s5.811,3,5.811,9"/>
+		<path id="path2932_1_" sodipodi:nodetypes="cc" fill="none" stroke="#EEEEEC" stroke-linecap="round" stroke-linejoin="round" d="
+			M6.19,19.6c0-6,1.188-9,5.81-9s5.811,3,5.811,9"/>
+	</g>
+	
+		<linearGradient id="rect2912_1_" gradientUnits="userSpaceOnUse" x1="304.085" y1="-376.5" x2="307.9159" y2="-376.5" gradientTransform="matrix(1 0 0 -1 -294 -351)">
+		<stop  offset="0" style="stop-color:#E9B96E"/>
+		<stop  offset="1" style="stop-color:#E19E36"/>
+	</linearGradient>
+	<path id="rect2912" fill="url(#rect2912_1_)" stroke="#C17D11" stroke-linecap="round" stroke-linejoin="round" d="M4.721,20
+		h14.558c0.423,0,0.766,0.411,0.766,0.917v9.166c0,0.507-0.343,0.917-0.766,0.917H4.721c-0.423,0-0.766-0.41-0.766-0.917v-9.166
+		C3.955,20.411,4.298,20,4.721,20z"/>
+</g>
+</svg>

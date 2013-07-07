@@ -111,7 +111,7 @@
         <file>themes/default/join_miter.png</file>
         <file>themes/default/join_round.png</file>
         <file>themes/default/join_style.svg</file>
-        <file>themes/default/locked.png</file>
+        <file>themes/default/locked.svg</file>
         <file>themes/default/mAction.svg</file>
         <file>themes/default/mActionAdd.png</file>
         <file>themes/default/mActionAddAllToOverview.png</file>
@@ -427,7 +427,7 @@
         <file>themes/default/tracking.png</file>
         <file>themes/default/transformed.png</file>
         <file>themes/default/transp-background_8x8.png</file>
-        <file>themes/default/unlocked.png</file>
+        <file>themes/default/unlocked.svg</file>
         <file>themes/default/user.png</file>
         <file>flags/bs_BA.png</file>
         <file>flags/eu.png</file>
