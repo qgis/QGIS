@@ -52,6 +52,7 @@ from sextante.outputs.OutputNumber import OutputNumber
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.outputs.OutputFile import OutputFile
+from sextante.outputs.OutputDirectory import OutputDirectory
 from sextante.core.WrongHelpFileException import WrongHelpFileException
 from sextante.parameters.ParameterExtent import ParameterExtent
 
@@ -121,7 +122,8 @@ class ModelerParametersDialog(QtGui.QDialog):
         for output in self.alg.outputs:
             if output.hidden:
                 continue
-            if isinstance(output, (OutputRaster, OutputVector, OutputTable, OutputHTML, OutputFile)):
+            if isinstance(output, (OutputRaster, OutputVector, OutputTable,
+                          OutputHTML, OutputFile, OutputDirectory)):
                 label = QtGui.QLabel(output.description + "<" + output.__module__.split(".")[-1] + ">")
                 item = QLineEdit()
                 if hasattr(item, 'setPlaceholderText'):
