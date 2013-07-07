@@ -264,6 +264,7 @@
         <file>themes/default/mActionSelectPolygon.svg</file>
         <file>themes/default/mActionSelectRadius.svg</file>
         <file>themes/default/mActionSelectRectangle.svg</file>
+        <file>themes/default/mActionSetProjection.svg</file>
         <file>themes/default/mActionShowAllLayers.png</file>
         <file>themes/default/mActionShowBookmarks.png</file>
         <file>themes/default/mActionShowHideLabels.svg</file>
