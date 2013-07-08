@@ -43,7 +43,6 @@ class QgsMapToPixel;
 class QgsLabel;
 class QgsRectangle;
 class QgsVectorDataProvider;
-class QgsVectorOverlay;
 class QgsSingleSymbolRendererV2;
 class QgsRectangle;
 class QgsVectorLayerJoinBuffer;
@@ -1164,26 +1163,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      **/
     void setLabelOnTop( int idx, bool onTop );
 
-    /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
-     @note this method was added in version 1.1
-     */
-    void addOverlay( QgsVectorOverlay* overlay );
-
-    /**Removes all overlays of a given type
-    @note this method was added in version 1.1
-    */
-    void removeOverlay( const QString& typeName );
-
-    /**Returns pointers to the overlays of this layer
-    @note this method was added in version 1.1
-    */
-    void vectorOverlays( QList<QgsVectorOverlay*>& overlayList );
-
-    /**Returns the (first) overlay of a type, e.g. diagram or label
-    @note this method was added in version 1.1
-    */
-    QgsVectorOverlay* findOverlayByType( const QString& typeName );
-
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
     QgsVectorLayerEditBuffer* editBuffer() { return mEditBuffer; }
 
@@ -1538,9 +1517,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Flag if the vertex markers should be drawn only for selection (true) or for all features (false) */
     bool mVertexMarkerOnlyForSelection;
-
-    /** List of overlays. Vector overlays will be rendered on top of all maplayers */
-    QList<QgsVectorOverlay*> mOverlays;
 
     QStringList mCommitErrors;
 

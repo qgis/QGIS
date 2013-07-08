@@ -457,207 +457,212 @@ Esto probablemente es el resultado de una actualización incorrecta de PostGIS.<
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have privileges to read contents of geometry_columns table!
 This table is essential for many GIS applications for enumeration of tables.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;advertencia&gt; ¡Este usuario no tiene privilegios para leer el contenido de la tabla columnas_de_geometría!
+Esta tabla es esencial muchas aplicaciones SIG para la numeración de tablas.</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Longitud</translation>
     </message>
     <message>
         <source>Enabled</source>
-        <translation type="unfinished">Activado</translation>
+        <translation>Activado</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Sí</translation>
+        <translation>Sí</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">No</translation>
+        <translation>No</translation>
     </message>
     <message>
         <source>&lt;a href=&quot;action:triggers/enable&quot;&gt;Enable all triggers&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Disable all triggers&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;a href=&quot;action:triggers/enable&quot;&gt;Activar todos los disparadores&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Desactivar todos los disparadores&lt;/a&gt;</translation>
     </message>
     <message>
         <source>Definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Definición</translation>
     </message>
     <message>
         <source>Rules</source>
-        <translation type="unfinished">Reglas</translation>
+        <translation>Reglas</translation>
     </message>
     <message>
         <source>&amp;Versioning</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Versionado</translation>
     </message>
     <message>
         <source>&amp;Table</source>
-        <translation type="unfinished">&amp;Tabla</translation>
+        <translation>&amp;Tabla</translation>
     </message>
     <message>
         <source>Filename:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de archivo:</translation>
     </message>
     <message>
         <source>SQLite version:</source>
-        <translation type="unfinished"></translation>
+        <translation>Versión de SQLite:</translation>
     </message>
     <message>
         <source>Error:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Error:
+%s</translation>
     </message>
     <message>
         <source>
 
 Query:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>
+
+Consulta:
+%s</translation>
     </message>
     <message>
         <source>&amp;Re-connect</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Reconectar</translation>
     </message>
     <message>
         <source>&amp;Database</source>
-        <translation type="unfinished">Base de &amp;datos</translation>
+        <translation>Base de &amp;datos</translation>
     </message>
     <message>
         <source>&amp;Create schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Crear esquema</translation>
     </message>
     <message>
         <source>&amp;Schema</source>
-        <translation type="unfinished">E&amp;squema</translation>
+        <translation>E&amp;squema</translation>
     </message>
     <message>
         <source>&amp;Delete (empty) schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Borrar esquema (vacío)</translation>
     </message>
     <message>
         <source>Delete selected item</source>
-        <translation type="unfinished">Borrar elemento seleccionado</translation>
+        <translation>Borrar elemento seleccionado</translation>
     </message>
     <message>
         <source>&amp;Create table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Crear tabla</translation>
     </message>
     <message>
         <source>&amp;Edit table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Editar tabla</translation>
     </message>
     <message>
         <source>&amp;Delete table/view</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Borrar tabla/vista</translation>
     </message>
     <message>
         <source>&amp;Empty table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vaciar tabla</translation>
     </message>
     <message>
         <source>&amp;Move to schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mover a esquema</translation>
     </message>
     <message>
         <source>Cannot delete the selected item.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede borrar el elemento seleccionado.</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation type="unfinished">Ninguna base de datos seleccionada o no está conectado a ella.</translation>
+        <translation>Ninguna base de datos seleccionada o no está conectado a ella.</translation>
     </message>
     <message>
         <source>New schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuevo esquema</translation>
     </message>
     <message>
         <source>Enter new schema name</source>
-        <translation type="unfinished"></translation>
+        <translation>Introduzca el nombre del nuevo esquema</translation>
     </message>
     <message>
         <source>Select an empty SCHEMA for deletion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione un ESQUEMA vacía para borrar.</translation>
     </message>
     <message>
         <source>hey!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡eh!</translation>
     </message>
     <message>
         <source>Really delete schema %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Borrar realmente el esquema %s?</translation>
     </message>
     <message>
         <source>Select a TABLE for editation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione una TABLA para editar.</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW for deletion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione una TABLA/VISTA para borrar.</translation>
     </message>
     <message>
         <source>Really delete table/view %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Borrar realmente la tabla/vista %s?</translation>
     </message>
     <message>
         <source>Select a TABLE to empty it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione una TABLA para vaciarla.</translation>
     </message>
     <message>
         <source>Really delete all items from table %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Borrar realmente todos los elementos de la tabla %s?</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW.</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar una TABLA/VISTA.</translation>
     </message>
     <message>
         <source>Do you want to %s all triggers?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Quiere %s todos los disparadores?</translation>
     </message>
     <message>
         <source>Table triggers</source>
-        <translation type="unfinished"></translation>
+        <translation>Disparadores de tabla</translation>
     </message>
     <message>
         <source>Do you want to %s trigger %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Quiere %s el disparador %s?</translation>
     </message>
     <message>
         <source>Table trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>Disparador de tabla</translation>
     </message>
     <message>
         <source>Do you want to %s spatial index for field %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Quiere %s el índice espacial para el campo %s?</translation>
     </message>
     <message>
         <source>Spatial Index</source>
-        <translation type="unfinished">Índice espacial</translation>
+        <translation>Índice espacial</translation>
     </message>
     <message>
         <source>Check</source>
-        <translation type="unfinished"></translation>
+        <translation>Comprobar</translation>
     </message>
     <message>
         <source>Primary key</source>
-        <translation type="unfinished">Clave primaria</translation>
+        <translation>Clave primaria</translation>
     </message>
     <message>
         <source>Foreign key</source>
-        <translation type="unfinished"></translation>
+        <translation>Clave externa</translation>
     </message>
     <message>
         <source>Unique</source>
-        <translation type="unfinished">Único</translation>
+        <translation>Único</translation>
     </message>
     <message>
         <source>Exclusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Exclusión</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished">Desconocido</translation>
+        <translation>Desconocido</translation>
     </message>
 </context>
 <context>
@@ -8735,7 +8740,7 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
     <name>QOCISpatialResult</name>
     <message>
         <source>Unable to bind column for batch execute</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede enlazar la columna para ejecución por lotes</translation>
     </message>
     <message>
         <source>Unable to execute batch statement</source>
@@ -8759,7 +8764,7 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
     </message>
     <message>
         <source>Unable to bind value</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede enlazar el valor</translation>
     </message>
     <message>
         <source>Unable to execute statement</source>
@@ -9542,7 +9547,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>A plugin for placing diagrams on vector layers</source>
-        <translation>Un complemento para situar diagramas sobre capas vectoriales</translation>
+        <translation type="obsolete">Un complemento para situar diagramas sobre capas vectoriales</translation>
     </message>
     <message>
         <source>Version 0.0.1</source>
@@ -10276,7 +10281,7 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     </message>
     <message>
         <source>Unable to create the datasource. %1 exists and overwrite flag is false.</source>
-        <translation>No se puede crear la fuente de datos. %1existe y la marca de sobreescritura es falsa.</translation>
+        <translation>No se puede crear la fuente de datos. %1existe y la marca de sobrescritura es falsa.</translation>
     </message>
     <message>
         <source>Unable to get driver %1</source>
@@ -10664,11 +10669,11 @@ Error(%2): %3</translation>
     </message>
     <message>
         <source>Diagram Overlay (Legacy)</source>
-        <translation>Superposición de diagramas (antiguo)</translation>
+        <translation type="obsolete">Superposición de diagramas (antiguo)</translation>
     </message>
     <message>
         <source>Version 0.0.1 (Legacy)</source>
-        <translation>Versión 0.0.1 (antiguo)</translation>
+        <translation type="obsolete">Versión 0.0.1 (antiguo)</translation>
     </message>
     <message>
         <source>To select features, choose a vector layer in the legend</source>
@@ -10994,7 +10999,7 @@ SQL: %1</translation>
     </message>
     <message>
         <source>A style named &quot;%1&quot; already exists in the database for this layer. Do you want to overwrite it?</source>
-        <translation>Ya existe un estilo con nombre &quot;%1&quot; en la base de datos para esta capa. ¿Quiere sobreescribirlo?</translation>
+        <translation>Ya existe un estilo con nombre &quot;%1&quot; en la base de datos para esta capa. ¿Quiere sobrescribirlo?</translation>
     </message>
     <message>
         <source>Operation aborted. No changes were made in the database</source>
@@ -11060,12 +11065,13 @@ Se desactivará.</translation>
     </message>
     <message>
         <source>Attribute index %1 out of bounds [0;%2]</source>
-        <translation type="unfinished">El índice %1 de atributo está fuera de los límites [0;%2] {1 ?} {0;%2]?}</translation>
+        <translation>El índice %1 de atributo está fuera de los límites [0;%2]</translation>
     </message>
     <message>
         <source>Unable to determine number of geometry columns of layer %1.%2: 
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede determinar el número de colomnas de geometría de la capa %1. %2: 
+%3</translation>
     </message>
 </context>
 <context>
@@ -14200,11 +14206,11 @@ Por favor, contacte con los desarrolladores.</translation>
     </message>
     <message>
         <source>%1 (%2 type unsupported)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (tipo %2 no soportado)</translation>
     </message>
     <message>
         <source>Do you want to save the current project? %1</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Quiere guardar el proyecto actual? %1</translation>
     </message>
 </context>
 <context>
@@ -14575,7 +14581,8 @@ Ruta de usuario de DB:	%9
         <source>
 		</source>
         <comment>match indentation of application state</comment>
-        <translation type="unfinished"></translation>
+        <translation>
+		</translation>
     </message>
     <message>
         <source>[ERROR] Can not make qgis.db private copy</source>
@@ -15523,7 +15530,7 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>The filter defines which features are currently shown in the list or on the table</source>
-        <translation type="unfinished"></translation>
+        <translation>El filtro define qué objetos espaciales se ven actualmente en la lista o en la tabla</translation>
     </message>
 </context>
 <context>
@@ -16505,7 +16512,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Ctrl (or Alt)-click to toggle all</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl (o Alt)-clic para conmutar todo</translation>
     </message>
 </context>
 <context>
@@ -16837,7 +16844,8 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Trying to create image #%1( %2x%3 @ %4dpi ) may result in a memory overflow.
 Please try a lower resolution or a smaller papersize</source>
-        <translation type="unfinished"></translation>
+        <translation>Intentar crear una imagen #%1 ( %2x%3 @ %4ppp ) puede resultar en un desbordamiento de memoria.
+Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</translation>
     </message>
 </context>
 <context>
@@ -17270,159 +17278,159 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Paper Navigation</source>
-        <translation type="unfinished"></translation>
+        <translation>Navegación de papeles</translation>
     </message>
     <message>
         <source>Composer Item Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Acciones de elementos del diseñador</translation>
     </message>
     <message>
         <source>Composer Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementos del diseñador</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
-        <translation type="unfinished">Ctrl+P</translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <source>Zoom full</source>
-        <translation type="unfinished"></translation>
+        <translation>Zum general</translation>
     </message>
     <message>
         <source>Zoom in</source>
-        <translation type="unfinished">Acercar zum</translation>
+        <translation>Acercar zum</translation>
     </message>
     <message>
         <source>Zoom out</source>
-        <translation type="unfinished">Alejar zum</translation>
+        <translation>Alejar zum</translation>
     </message>
     <message>
         <source>Export as image</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar como imagen</translation>
     </message>
     <message>
         <source>Add image</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir imagen</translation>
     </message>
     <message>
         <source>Load from Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar de plantilla</translation>
     </message>
     <message>
         <source>Load from template</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar de plantilla</translation>
     </message>
     <message>
         <source>Save as Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar como plantilla</translation>
     </message>
     <message>
         <source>Align Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Alinear a la izquierda</translation>
     </message>
     <message>
         <source>Align Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Alinear al centro</translation>
     </message>
     <message>
         <source>Align Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Alinear a la derecha</translation>
     </message>
     <message>
         <source>Align Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Alinear arriba</translation>
     </message>
     <message>
         <source>Align Center Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Alinear al centro vertical</translation>
     </message>
     <message>
         <source>Align Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Alinear abajo</translation>
     </message>
     <message>
         <source>Add Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir flecha</translation>
     </message>
     <message>
         <source>Add Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir tabla</translation>
     </message>
     <message>
         <source>Add attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Añade tabla de atributos</translation>
     </message>
     <message>
         <source>Page setup</source>
-        <translation type="unfinished"></translation>
+        <translation>Configurar página</translation>
     </message>
     <message>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished">Ctrl+Mayúsculas+P</translation>
+        <translation>Ctrl+Mayúsculas+P</translation>
     </message>
     <message>
         <source>Add rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir rectángulo</translation>
     </message>
     <message>
         <source>Add triangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir triángulo</translation>
     </message>
     <message>
         <source>Add ellipse</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir elipse</translation>
     </message>
     <message>
         <source>Add HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir HTML</translation>
     </message>
     <message>
         <source>Composer Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Administrador de diseñadores</translation>
     </message>
     <message>
         <source>Composer manager</source>
-        <translation type="unfinished">Administrador de diseñadores</translation>
+        <translation>Administrador de diseñadores</translation>
     </message>
     <message>
         <source>&amp;New Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nuevo diseñador de impresión</translation>
     </message>
     <message>
         <source>New composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuevo diseñador de impresión</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
-        <translation type="unfinished">Ctrl+N</translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <source>&amp;Save Project</source>
-        <translation type="unfinished">&amp;Guardar proyecto</translation>
+        <translation>&amp;Guardar proyecto</translation>
     </message>
     <message>
         <source>Save project</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar proyecto</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+G</translation>
     </message>
     <message>
         <source>&amp;Duplicate Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Duplicar diseñador</translation>
     </message>
     <message>
         <source>Duplicate composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplicar diseñador</translation>
     </message>
     <message>
         <source>New from Template</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuevo a partir de plantilla</translation>
     </message>
     <message>
         <source>New from template</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuevo a partir de plantilla</translation>
     </message>
 </context>
 <context>
@@ -17484,15 +17492,15 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>HTML Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Marco HTML</translation>
     </message>
     <message>
         <source>HTML frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Marco HTML</translation>
     </message>
     <message>
         <source>Main properties</source>
-        <translation type="unfinished">Propiedades principales</translation>
+        <translation>Propiedades principales</translation>
     </message>
 </context>
 <context>
@@ -17534,15 +17542,15 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Item background toggled</source>
-        <translation type="unfinished"></translation>
+        <translation>Fondo del elemento conmutado</translation>
     </message>
     <message>
         <source>Select background color</source>
-        <translation type="unfinished">Seleccionar color de fondo</translation>
+        <translation>Seleccionar color de fondo</translation>
     </message>
     <message>
         <source>Select frame color</source>
-        <translation type="unfinished">Seleccionar color del marco</translation>
+        <translation>Seleccionar color del marco</translation>
     </message>
 </context>
 <context>
@@ -17585,67 +17593,67 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Global Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opciones generales</translation>
     </message>
     <message>
         <source>Position and size</source>
-        <translation type="unfinished"></translation>
+        <translation>Posición y tamaño</translation>
     </message>
     <message>
         <source>Reference point</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto de referencia</translation>
     </message>
     <message>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">Anchura</translation>
+        <translation>Anchura</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished">Altura</translation>
+        <translation>Altura</translation>
     </message>
     <message>
         <source>Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Marco</translation>
     </message>
     <message>
         <source>Thickness</source>
-        <translation type="unfinished"></translation>
+        <translation>Delgadez</translation>
     </message>
     <message>
         <source>Color...</source>
-        <translation type="unfinished">Color...</translation>
+        <translation>Color...</translation>
     </message>
     <message>
         <source>Background</source>
-        <translation type="unfinished">Fondo</translation>
+        <translation>Fondo</translation>
     </message>
     <message>
         <source>Uuid (read-only)</source>
-        <translation type="unfinished"></translation>
+        <translation>UUID (sólo lectura)</translation>
     </message>
     <message>
         <source>Id</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <source>Rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Representación</translation>
     </message>
     <message>
         <source>Blending mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo de mezcla</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished">Transparencia</translation>
+        <translation>Transparencia</translation>
     </message>
 </context>
 <context>
@@ -17680,11 +17688,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Insert expression</source>
-        <translation type="unfinished">Insertar expresión</translation>
+        <translation>Insertar expresión</translation>
     </message>
     <message>
         <source>Label text HTML state changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiado el estado HTML del texto de etiqueta</translation>
     </message>
 </context>
 <context>
@@ -17759,43 +17767,43 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Insert an expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Insertar una expresión</translation>
     </message>
     <message>
         <source>Main properties</source>
-        <translation type="unfinished">Propiedades principales</translation>
+        <translation>Propiedades principales</translation>
     </message>
     <message>
         <source>Render as HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>Representar como HTML</translation>
     </message>
     <message>
         <source>Alignment</source>
-        <translation type="unfinished">Alineación</translation>
+        <translation>Alineación</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished">Vertical</translation>
+        <translation>Vertical</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished">Horizontal</translation>
+        <translation>Horizontal</translation>
     </message>
     <message>
         <source>Display</source>
-        <translation type="unfinished">Visualizar</translation>
+        <translation>Visualizar</translation>
     </message>
     <message>
         <source>Margin</source>
-        <translation type="unfinished">Margen</translation>
+        <translation>Margen</translation>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message utf8="true">
         <source> °</source>
-        <translation type="unfinished"></translation>
+        <translation> °</translation>
     </message>
 </context>
 <context>
@@ -17911,27 +17919,27 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Item</source>
-        <translation type="unfinished">Elemento</translation>
+        <translation>Elemento</translation>
     </message>
     <message>
         <source>Title style</source>
-        <translation type="unfinished"></translation>
+        <translation>Estilo del título</translation>
     </message>
     <message>
         <source>Legend column count</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuenta de columnas de la leyenda</translation>
     </message>
     <message>
         <source>Legend split layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Dividir capas de la leyenda</translation>
     </message>
     <message>
         <source>Legend equal column width</source>
-        <translation type="unfinished"></translation>
+        <translation>Anchura de columnas de la leyenda igual</translation>
     </message>
     <message>
         <source>Legend font color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiado el color de letras de la leyenda</translation>
     </message>
     <message>
         <source>Legend title space bottom</source>
@@ -18046,139 +18054,139 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Legend Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opciones de la leyenda</translation>
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished">Leyenda</translation>
+        <translation>Leyenda</translation>
     </message>
     <message>
         <source>Main properties</source>
-        <translation type="unfinished">Propiedades principales</translation>
+        <translation>Propiedades principales</translation>
     </message>
     <message>
         <source>Show feature count for each class of vector layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar cuenta de objetos espaciales para clase de capa vectorial.</translation>
     </message>
     <message>
         <source>Fonts</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipos de letra</translation>
     </message>
     <message>
         <source>Subgroup Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra de subgrupos...</translation>
     </message>
     <message>
         <source>Font color...</source>
-        <translation type="unfinished">Color de letras...</translation>
+        <translation>Color de letras...</translation>
     </message>
     <message>
         <source>Columns</source>
-        <translation type="unfinished">Columnas</translation>
+        <translation>Columnas</translation>
     </message>
     <message>
         <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuenta</translation>
     </message>
     <message>
         <source>Equal column widths</source>
-        <translation type="unfinished"></translation>
+        <translation>Anchura de columnas igual</translation>
     </message>
     <message>
         <source>Allow to split layer items into multiple columns.</source>
-        <translation type="unfinished"></translation>
+        <translation>Permitir dividir los elementos de las capas en múltiples columnas.</translation>
     </message>
     <message>
         <source>Split layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Dividir capas</translation>
     </message>
     <message>
         <source>Symbol</source>
-        <translation type="unfinished">Símbolo</translation>
+        <translation>Símbolo</translation>
     </message>
     <message>
         <source>Symbol width</source>
-        <translation type="unfinished"></translation>
+        <translation>Anchura de símbolo</translation>
     </message>
     <message>
         <source>Symbol height</source>
-        <translation type="unfinished">Altura de símbolo</translation>
+        <translation>Altura de símbolo</translation>
     </message>
     <message>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Separación</translation>
     </message>
     <message>
         <source>Space above text using group style.</source>
-        <translation type="unfinished"></translation>
+        <translation>Espacio sobre el texto usando estilo de grupo.</translation>
     </message>
     <message>
         <source>Group Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Espacio del grupo</translation>
     </message>
     <message>
         <source>Space above text using subgroup style.</source>
-        <translation type="unfinished"></translation>
+        <translation>Espacio sobre el texto usando estilo de subgrupo.</translation>
     </message>
     <message>
         <source>Subgroup space</source>
-        <translation type="unfinished"></translation>
+        <translation>Espacio del subgrupo</translation>
     </message>
     <message>
         <source>Space above symbol and symbol label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Espacio sobre el símbolo y etiqueta del símbolo.</translation>
     </message>
     <message>
         <source>Symbol space</source>
-        <translation type="unfinished"></translation>
+        <translation>Espacio de símbolos</translation>
     </message>
     <message>
         <source>Space between symbol icon and symbol label (symbol label left margin).</source>
-        <translation type="unfinished"></translation>
+        <translation>Espacio entre icono de símbolo y etiqueta de símbolo (margen izquierdo de la etiqueta de símbolo).</translation>
     </message>
     <message>
         <source>Icon label space</source>
-        <translation type="unfinished"></translation>
+        <translation>Espacio de etiqueta de icono</translation>
     </message>
     <message>
         <source>Box space</source>
-        <translation type="unfinished"></translation>
+        <translation>Espacio de caja</translation>
     </message>
     <message>
         <source>Column space</source>
-        <translation type="unfinished"></translation>
+        <translation>Espacio de columnas</translation>
     </message>
     <message>
         <source>Update legend. User defined labels are preserved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizar leyenda. Las etiquetas definidas por el usuario se conservan.</translation>
     </message>
     <message>
         <source>Update item</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizar elemento</translation>
     </message>
     <message>
         <source>Update whole legend. Layers are added/removed according to main application legend. User defined labels will be deleted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizar toda la leyenda. Las capas se añaden/eliminan de acuerdo con la leyenda de la aplicación principal. Las etiquetas definidas por el usuario se borrarán.</translation>
     </message>
     <message>
         <source>Update all</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizar todo</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Space below title.</source>
-        <translation type="unfinished"></translation>
+        <translation>Espacio debajo del título.</translation>
     </message>
     <message>
         <source>Title space</source>
-        <translation type="unfinished"></translation>
+        <translation>Estilo del título</translation>
     </message>
     <message>
         <source>mm</source>
-        <translation type="unfinished">mm</translation>
+        <translation>mm</translation>
     </message>
 </context>
 <context>
@@ -18217,71 +18225,71 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>&amp;Duplicate</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Duplicar</translation>
     </message>
     <message>
         <source>Specific</source>
-        <translation type="unfinished"></translation>
+        <translation>Específico</translation>
     </message>
     <message>
         <source>Template error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de plantilla</translation>
     </message>
     <message>
         <source>Error, template file not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Error, no se encontró el archivo de la plantilla</translation>
     </message>
     <message>
         <source>Error, could not read file</source>
-        <translation type="unfinished">Error, no se pudo leer el archivo</translation>
+        <translation>Error, no se pudo leer el archivo</translation>
     </message>
     <message>
         <source>Composer error</source>
-        <translation type="unfinished">Error del diseñador</translation>
+        <translation>Error del diseñador</translation>
     </message>
     <message>
         <source>Error, could not create composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Error, no se pudo crear el diseñador</translation>
     </message>
     <message>
         <source>Loading template into composer...</source>
-        <translation type="unfinished">Cargando plantilla en el diseñador...</translation>
+        <translation>Cargando plantilla en el diseñador...</translation>
     </message>
     <message>
         <source>Error, could not load template file</source>
-        <translation type="unfinished"></translation>
+        <translation>Error, no se pudo cargar el archivo de la plantilla</translation>
     </message>
     <message>
         <source>Choose template</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar plantilla</translation>
     </message>
     <message>
         <source>Composer templates</source>
-        <translation type="unfinished">Plantillas del diseñador</translation>
+        <translation>Plantillas del diseñador</translation>
     </message>
     <message>
         <source>File system error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error del sistema de archivos</translation>
     </message>
     <message>
         <source>Error, could not open or create local directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Error, no se pudo abrir o crear el directorio local</translation>
     </message>
     <message>
         <source> copy</source>
-        <translation type="unfinished"> copiar</translation>
+        <translation> copiar</translation>
     </message>
     <message>
         <source>Duplicating composer...</source>
-        <translation type="unfinished">Duplicando diseñador...</translation>
+        <translation>Duplicando diseñador...</translation>
     </message>
     <message>
         <source>Duplicate Composer</source>
-        <translation type="unfinished">Duplicar diseñador</translation>
+        <translation>Duplicar diseñador</translation>
     </message>
     <message>
         <source>Composer duplication failed.</source>
-        <translation type="unfinished">Falló la duplicación del diseñador</translation>
+        <translation>Falló la duplicación del diseñador.</translation>
     </message>
 </context>
 <context>
@@ -18296,23 +18304,23 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>New from template</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuevo a partir de plantilla</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Open template directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir directorio de plantillas</translation>
     </message>
     <message>
         <source>user</source>
-        <translation type="unfinished">usuario</translation>
+        <translation>usuario</translation>
     </message>
     <message>
         <source>default</source>
-        <translation type="unfinished">predeterminado</translation>
+        <translation>predeterminado</translation>
     </message>
 </context>
 <context>
@@ -18494,11 +18502,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Select font color</source>
-        <translation type="unfinished">Seleccionar color de letra</translation>
+        <translation>Seleccionar color de letra</translation>
     </message>
     <message>
         <source>Label font changed</source>
-        <translation type="unfinished">Cambiado el tipo de letra de la etiqueta</translation>
+        <translation>Cambiado el tipo de letra de la etiqueta</translation>
     </message>
 </context>
 <context>
@@ -18697,87 +18705,87 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Map Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opciones de mapa</translation>
     </message>
     <message>
         <source>Main properties</source>
-        <translation type="unfinished">Propiedades principales</translation>
+        <translation>Propiedades principales</translation>
     </message>
     <message>
         <source>Show grid</source>
-        <translation type="unfinished">Mostrar cuadrícula</translation>
+        <translation>Mostrar cuadrícula</translation>
     </message>
     <message>
         <source>Interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervalo</translation>
     </message>
     <message>
         <source>X </source>
-        <translation type="unfinished">X</translation>
+        <translation>X </translation>
     </message>
     <message>
         <source>Y </source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y </translation>
     </message>
     <message>
         <source>Line style</source>
-        <translation type="unfinished"></translation>
+        <translation>Estilo de línea</translation>
     </message>
     <message>
         <source>change...</source>
-        <translation type="unfinished"></translation>
+        <translation>cambiar...</translation>
     </message>
     <message>
         <source>Draw coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Dibujar coordenadas</translation>
     </message>
     <message>
         <source>Format</source>
-        <translation type="unfinished">Formato</translation>
+        <translation>Formato</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Izquierda</translation>
+        <translation>Izquierda</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Derecha</translation>
+        <translation>Derecha</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type="unfinished">Arriba</translation>
+        <translation>Arriba</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="unfinished">Abajo</translation>
+        <translation>Abajo</translation>
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra</translation>
     </message>
     <message>
         <source>Overview</source>
-        <translation type="unfinished">Vista general</translation>
+        <translation>Vista general</translation>
     </message>
     <message>
         <source>Overview blending mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo de mezcla de vista general</translation>
     </message>
     <message>
         <source>Invert overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Invertir vista general</translation>
     </message>
     <message>
         <source>Blend mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo de mezcla</translation>
     </message>
     <message>
         <source>Font color...</source>
-        <translation type="unfinished">Color de letras...</translation>
+        <translation>Color de letras...</translation>
     </message>
     <message>
         <source>Offset</source>
-        <translation type="unfinished">Desplazamiento</translation>
+        <translation>Desplazamiento</translation>
     </message>
 </context>
 <context>
@@ -18895,23 +18903,23 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Picture</source>
-        <translation type="unfinished"></translation>
+        <translation>Imagen</translation>
     </message>
     <message>
         <source>Main properties</source>
-        <translation type="unfinished">Propiedades principales</translation>
+        <translation>Propiedades principales</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type="unfinished">Ruta</translation>
+        <translation>Ruta</translation>
     </message>
     <message utf8="true">
         <source> °</source>
-        <translation type="unfinished"></translation>
+        <translation> °</translation>
     </message>
     <message>
         <source>Loading previews...</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargando vistas preliminares...</translation>
     </message>
 </context>
 <context>
@@ -19045,7 +19053,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Scalebar font color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiado el color de la barra de escala</translation>
     </message>
     <message>
         <source>Scalebar stroke color changed</source>
@@ -19053,7 +19061,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Number of scalebar segments changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiado el número de segmentos de la barra de escala</translation>
     </message>
 </context>
 <context>
@@ -19136,67 +19144,67 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Scalebar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barra de escala</translation>
     </message>
     <message>
         <source>Main properties</source>
-        <translation type="unfinished">Propiedades principales</translation>
+        <translation>Propiedades principales</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation type="unfinished">Etiqueta</translation>
+        <translation>Etiqueta</translation>
     </message>
     <message>
         <source>Segments</source>
-        <translation type="unfinished">Segmentos</translation>
+        <translation>Segmentos</translation>
     </message>
     <message>
         <source>left </source>
-        <translation type="unfinished"></translation>
+        <translation>Izquierda </translation>
     </message>
     <message>
         <source>right </source>
-        <translation type="unfinished"></translation>
+        <translation>derecha </translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished">Tamaño</translation>
+        <translation>Tamaño</translation>
     </message>
     <message>
         <source> units</source>
-        <translation type="unfinished"></translation>
+        <translation> unidades</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished">Altura</translation>
+        <translation>Altura</translation>
     </message>
     <message>
         <source>Display</source>
-        <translation type="unfinished">Visualizar</translation>
+        <translation>Visualizar</translation>
     </message>
     <message>
         <source>Box margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Margen de caja</translation>
     </message>
     <message>
         <source>Labels margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Margen de etiquetas</translation>
     </message>
     <message>
         <source>Line width</source>
-        <translation type="unfinished">Ancho de línea</translation>
+        <translation>Ancho de línea</translation>
     </message>
     <message>
         <source>Fonts and colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipos de letra y colores</translation>
     </message>
     <message>
         <source>Font color...</source>
-        <translation type="unfinished">Color de letras...</translation>
+        <translation>Color de letras...</translation>
     </message>
     <message>
         <source>Fill color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Color de relleno...</translation>
     </message>
     <message>
         <source>Stroke color...</source>
@@ -19288,15 +19296,15 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Main properties</source>
-        <translation type="unfinished">Propiedades principales</translation>
+        <translation>Propiedades principales</translation>
     </message>
     <message>
         <source>Rotation</source>
-        <translation type="unfinished">Rotación</translation>
+        <translation>Rotación</translation>
     </message>
     <message utf8="true">
         <source> °</source>
-        <translation type="unfinished"></translation>
+        <translation> °</translation>
     </message>
 </context>
 <context>
@@ -19414,15 +19422,15 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Attribute Table</source>
-        <translation type="unfinished">Tabla de atributos</translation>
+        <translation>Tabla de atributos</translation>
     </message>
     <message>
         <source>Attribute table</source>
-        <translation type="unfinished">Tabla de atributos</translation>
+        <translation>Tabla de atributos</translation>
     </message>
     <message>
         <source>Main properties</source>
-        <translation type="unfinished">Propiedades principales</translation>
+        <translation>Propiedades principales</translation>
     </message>
     <message>
         <source>Stroke width</source>
@@ -19430,11 +19438,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Color...</source>
-        <translation type="unfinished">Color...</translation>
+        <translation>Color...</translation>
     </message>
     <message>
         <source>Fonts</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipos de letra</translation>
     </message>
 </context>
 <context>
@@ -19544,7 +19552,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
 </context>
 <context>
@@ -19627,11 +19635,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Aligned items horizontal center</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementos alineados al centro horizontal</translation>
     </message>
     <message>
         <source>Aligned items vertical center</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementos alineados al centro vertical</translation>
     </message>
 </context>
 <context>
@@ -19797,55 +19805,55 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Select grid color</source>
-        <translation type="unfinished">Seleccionar color de cuadrícula</translation>
+        <translation>Seleccionar color de cuadrícula</translation>
     </message>
     <message>
         <source>Legal (8.5x14 in)</source>
-        <translation type="unfinished"></translation>
+        <translation>Legal (8.5x14 pulgadas)</translation>
     </message>
     <message>
         <source>ANSI A (Letter; 8.5x11 in)</source>
-        <translation type="unfinished"></translation>
+        <translation>ANSI A (Letter; 8.5x11 pulgadas)</translation>
     </message>
     <message>
         <source>ANSI B (Tabloid; 11x17 in)</source>
-        <translation type="unfinished"></translation>
+        <translation>ANSI B (Tabloide; 11x17 pulgadas)</translation>
     </message>
     <message>
         <source>ANSI C (17x22 in)</source>
-        <translation type="unfinished"></translation>
+        <translation>ANSI C (17x22 pulgadas)</translation>
     </message>
     <message>
         <source>ANSI D (22x34 in)</source>
-        <translation type="unfinished"></translation>
+        <translation>ANSI D (22x34 pulgadas)</translation>
     </message>
     <message>
         <source>ANSI E (34x44 in)</source>
-        <translation type="unfinished"></translation>
+        <translation>ANSI E (34x44 pulgadas)</translation>
     </message>
     <message>
         <source>Arch A (9x12 in)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arch A (9x12 pulgadas)</translation>
     </message>
     <message>
         <source>Arch B (12x18 in)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arch B (12x18 pulgadas)</translation>
     </message>
     <message>
         <source>Arch C (18x24 in)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arch C (18x24 pulgadas)</translation>
     </message>
     <message>
         <source>Arch D (24x36 in)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arch D (24x36 pulgadas)</translation>
     </message>
     <message>
         <source>Arch E (36x48 in)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arch E (36x48 pulgadas)</translation>
     </message>
     <message>
         <source>Arch E1 (30x42 in)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arch E1 (30x42 pulgadas)</translation>
     </message>
 </context>
 <context>
@@ -19860,7 +19868,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Units</source>
-        <translation type="unfinished">Unidades</translation>
+        <translation>Unidades</translation>
     </message>
     <message>
         <source>Paper and quality</source>
@@ -19932,15 +19940,15 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Presets</source>
-        <translation type="unfinished"></translation>
+        <translation>Prestablecidos</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">Anchura</translation>
+        <translation>Anchura</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished">Altura</translation>
+        <translation>Altura</translation>
     </message>
     <message>
         <source>Resolution</source>
@@ -19948,47 +19956,47 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Separación</translation>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <source>Grid offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Desplazamiento de la cuadrícula</translation>
     </message>
     <message>
         <source>x: </source>
-        <translation type="unfinished"></translation>
+        <translation>X: </translation>
     </message>
     <message>
         <source>y: </source>
-        <translation type="unfinished"></translation>
+        <translation>Y: </translation>
     </message>
     <message>
         <source>Pen width</source>
-        <translation type="unfinished">Anchura de plumilla</translation>
+        <translation>Anchura de plumilla</translation>
     </message>
     <message>
         <source>Selection tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerancia de selección</translation>
     </message>
     <message>
         <source>Color...</source>
-        <translation type="unfinished">Color...</translation>
+        <translation>Color...</translation>
     </message>
     <message>
         <source>Snap to alignments</source>
-        <translation type="unfinished"></translation>
+        <translation>Autoensamblar a las alineaciones</translation>
     </message>
     <message>
         <source>Tolerance</source>
-        <translation type="unfinished">Tolerancia</translation>
+        <translation>Tolerancia</translation>
     </message>
     <message>
         <source>Export resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Resolución de exportación</translation>
     </message>
 </context>
 <context>
@@ -20104,7 +20112,7 @@ Please try a lower resolution or a smaller papersize</source>
     <name>QgsContextHelp</name>
     <message>
         <source>&lt;h3&gt;Oops! QGIS can&apos;t find help for this form.&lt;/h3&gt;The help file for %1 was not found for your language&lt;br&gt;If you would like to create it, contact the QGIS development team</source>
-        <translation type="unfinished">&lt;h3&gt;¡Vaya! QGIS no puede encontrar ayuda para este formulario.&lt;/h3&gt;No se encontró el archivo de ayuda para %1 en su idioma&lt;br&gt;Si quiere crearlo, póngase en contacto con el equipo de desarrollo de QGIS</translation>
+        <translation>&lt;h3&gt;¡Vaya! QGIS no puede encontrar ayuda para este formulario.&lt;/h3&gt;No se encontró el archivo de ayuda para %1 en su idioma&lt;br&gt;Si quiere crearlo, póngase en contacto con el equipo de desarrollo de QGIS</translation>
     </message>
 </context>
 <context>
@@ -20365,7 +20373,7 @@ y el archivo actual es [%3]</translation>
     </message>
     <message>
         <source>All Ramps (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Todas las rampas (%1)</translation>
     </message>
     <message>
         <source>Error - cpt-city gradient files not found.
@@ -20379,7 +20387,17 @@ You can install the entire cpt-city archive or a selection for QGIS.
 
 This file can be found at [%2]
 and current file is [%3]</source>
-        <translation type="unfinished"></translation>
+        <translation>Error - no se han encontrado los archivos de gradientes de ciudades-cpt.
+
+Tiene dos formas de instalarlos:
+
+1) Instalar el complemento de python &quot;Administrador de rampas de color&quot; (debe activar los complementos experimentales en el administrador de complementos) y úsarlo para descargar el último paquete de ciudades-cpt.
+You can install the entire cpt-city archive or a selection for QGIS.
+
+2) Descargar el archivo completo (en formato svg) y descomprimirlo en su directorio de configuracion de QGIS [%1] .
+
+Este archivo se puede encontrar en [%2]
+y el archivo actual es [%3]</translation>
     </message>
 </context>
 <context>
@@ -20422,7 +20440,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Save as standard gradient</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar como gradiente estándar</translation>
     </message>
 </context>
 <context>
@@ -20517,11 +20535,11 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>new CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>nuevo SRC</translation>
     </message>
     <message>
         <source>The proj4 definition of &apos;%1&apos; is not valid.</source>
-        <translation type="unfinished"></translation>
+        <translation>La definición proj4 de &apos;%1&apos; no es válida.</translation>
     </message>
 </context>
 <context>
@@ -20608,28 +20626,29 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>ID</source>
-        <translation type="unfinished">ID</translation>
+        <translation>ID</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished">Nombre:</translation>
+        <translation>Nombre:</translation>
     </message>
     <message>
         <source>Parameters:</source>
-        <translation type="unfinished">Parámetros:</translation>
+        <translation>Parámetros:</translation>
     </message>
     <message>
         <source>Copy
  existing CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiar
+ SRC existente</translation>
     </message>
     <message>
         <source>Add new CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir nuevo SRC</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">Eliminar</translation>
+        <translation>Eliminar</translation>
     </message>
 </context>
 <context>
@@ -20707,7 +20726,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Enable customization</source>
-        <translation type="unfinished"></translation>
+        <translation>Habilitar personalización</translation>
     </message>
 </context>
 <context>
@@ -20729,47 +20748,47 @@ and current file is [%3]</source>
     <name>QgsDataDefinedButton</name>
     <message>
         <source>Description...</source>
-        <translation type="unfinished"></translation>
+        <translation>Descripción...</translation>
     </message>
     <message>
         <source>Edit...</source>
-        <translation type="unfinished">Editar...</translation>
+        <translation>Editar...</translation>
     </message>
     <message>
         <source>Paste</source>
-        <translation type="unfinished">Pegar</translation>
+        <translation>Pegar</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished">Copiar</translation>
+        <translation>Copiar</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">Limpiar</translation>
+        <translation>Limpiar</translation>
     </message>
     <message>
         <source>string</source>
-        <translation type="unfinished"></translation>
+        <translation>cadena</translation>
     </message>
     <message>
         <source>int</source>
-        <translation type="unfinished"></translation>
+        <translation>entero</translation>
     </message>
     <message>
         <source>double</source>
-        <translation type="unfinished"></translation>
+        <translation>doble</translation>
     </message>
     <message>
         <source>Field type: </source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de campo: </translation>
     </message>
     <message>
         <source>integer</source>
-        <translation type="unfinished"></translation>
+        <translation>entero</translation>
     </message>
     <message>
         <source>unknown type</source>
-        <translation type="unfinished"></translation>
+        <translation>tipo desconocido</translation>
     </message>
     <message>
         <source>Data defined override</source>
@@ -20936,7 +20955,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>double</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">doble</translation>
     </message>
     <message>
         <source>&apos;&lt;red&gt;,&lt;green&gt;,&lt;blue&gt;,&lt;alpha&gt;&apos;</source>
@@ -22932,7 +22951,7 @@ Parser error:
     <name>QgsEllipseSymbolLayerV2Widget</name>
     <message>
         <source>Symbol width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Anchura de símbolo</translation>
     </message>
     <message>
         <source>Symbol height</source>
@@ -30235,11 +30254,11 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Separación</translation>
     </message>
     <message>
         <source>Blend mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Modo de mezcla</translation>
     </message>
     <message>
         <source>word</source>
@@ -30602,7 +30621,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>&amp;Duplicate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Duplicar</translation>
     </message>
     <message>
         <source>&amp;Filter...</source>
@@ -31949,7 +31968,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <name>QgsMarkerLineSymbolLayerV2Widget</name>
     <message>
         <source>Interval</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Intervalo</translation>
     </message>
     <message>
         <source>Line offset</source>
@@ -33546,7 +33565,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Cuenta</translation>
     </message>
     <message>
         <source>SQLite databases (*.db)</source>
@@ -34103,7 +34122,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Offline database file &apos;%1&apos; exists. Overwrite?</source>
-        <translation>El archivo de base de datos &apos;%1&apos; ya existe. Sobreescribir?</translation>
+        <translation>El archivo de base de datos &apos;%1&apos; ya existe. Sobrescribir?</translation>
     </message>
     <message>
         <source>SpatiaLite DB</source>
@@ -34530,23 +34549,23 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Central point (fastest)</source>
-        <translation>Punto central (más rápido)</translation>
+        <translation type="obsolete">Punto central (más rápido)</translation>
     </message>
     <message>
         <source>Chain (fast)</source>
-        <translation>Cadena (rápido)</translation>
+        <translation type="obsolete">Cadena (rápido)</translation>
     </message>
     <message>
         <source>Popmusic tabu chain (slow)</source>
-        <translation>Popmusic tabu chain (lento)</translation>
+        <translation type="obsolete">Popmusic tabu chain (lento)</translation>
     </message>
     <message>
         <source>Popmusic tabu (slow)</source>
-        <translation>Popmusic tabu (lento)</translation>
+        <translation type="obsolete">Popmusic tabu (lento)</translation>
     </message>
     <message>
         <source>Popmusic chain (very slow)</source>
-        <translation>Popmusic chain (muy lento)</translation>
+        <translation type="obsolete">Popmusic chain (muy lento)</translation>
     </message>
     <message>
         <source>Off</source>
@@ -35029,7 +35048,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Placement algorithm</source>
-        <translation>Algoritmo de emplazamiento</translation>
+        <translation type="obsolete">Algoritmo de emplazamiento</translation>
     </message>
     <message>
         <source>Reuse last entered attribute values</source>
@@ -35593,7 +35612,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Specific</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Específico</translation>
     </message>
     <message>
         <source>Open project on launch</source>
@@ -35697,10 +35716,6 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Legend item styles</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Overlay position</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -42573,7 +42588,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Blending mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Modo de mezcla</translation>
     </message>
     <message>
         <source>Brightness</source>
@@ -43555,7 +43570,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Cuenta</translation>
     </message>
     <message>
         <source>Duplicate count</source>
@@ -46337,7 +46352,7 @@ QGIS requires that the relation has an integer column no larger than 32 bits con
         <source>Symbol with name &apos;%1&apos; already exists.
 Overwrite?</source>
         <translation>El símbolo llamado &apos;%1&apos; ya existe.
-¿Sobreescribir?</translation>
+¿Sobrescribir?</translation>
     </message>
     <message>
         <source>Color ramp with name &apos;%1&apos; already exists.
@@ -46461,7 +46476,7 @@ Overwrite?</source>
     </message>
     <message>
         <source>Symbol with name &apos;%1&apos; already exists. Overwrite?</source>
-        <translation>El símbolo llamado &apos;%1&apos; ya existe. ¿Sobreescribir?</translation>
+        <translation>El símbolo llamado &apos;%1&apos; ya existe. ¿Sobrescribir?</translation>
     </message>
     <message>
         <source>Gradient</source>
@@ -46569,7 +46584,7 @@ Overwrite?</source>
     </message>
     <message>
         <source>Color ramp with name &apos;%1&apos; already exists. Overwrite?</source>
-        <translation>Nombre de rampa de color &apos;%1&apos; ya existe. Desea sobreescribir?</translation>
+        <translation>Nombre de rampa de color &apos;%1&apos; ya existe. Desea sobrescribir?</translation>
     </message>
     <message>
         <source>Invalid Selection</source>
@@ -47047,7 +47062,7 @@ Hubo un problema con su base de datos de símbolos.</translation>
     </message>
     <message>
         <source>Symbol with name &apos;%1&apos; already exists. Overwrite?</source>
-        <translation>El símbolo llamado &apos;%1&apos; ya existe. ¿Sobreescribir?</translation>
+        <translation>El símbolo llamado &apos;%1&apos; ya existe. ¿Sobrescribir?</translation>
     </message>
     <message>
         <source>Transparency %1%</source>
@@ -47321,23 +47336,23 @@ La otra herramienta para mover (icono de la Tierra combinado con el de la mano) 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item Properties -&gt; General Options -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows one to move the map content within a map frame.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You can rotate a map by setting its rotation value in the &lt;strong&gt;Item Properties -&gt; Map&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;Esc&apos; (the escape key), or click the small red &apos;X&apos; icon in the status bar to the bottom right of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our regular hackfest meetings, and to generally support the goals of our project. Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>QGIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage and Install Plugins menu. In addition there are a lot of &lt;a href=&quot;http://plugins.qgis.org/&quot;&gt;Python plugins &lt;/a&gt; contributed by the user community that can be installed via this same menu. Don&apos;t miss out on all QGIS has to offer! Check out the plugins and see what they can do for you.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; section, which can be found in the tab &lt;strong&gt;Item Properties -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows one to move the map content within a map frame.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In the Print Composer you can rotate a map by setting its rotation value in the tab &lt;strong&gt;Item Properties -&gt; Map -&gt; Main properties&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;Esc&apos; (the escape key), or click the &apos;Stop map rendering&apos; icon in the status bar to the bottom of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -52982,7 +52997,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message utf8="true">
         <source> °</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> °</translation>
     </message>
     <message>
         <source>Data defined properties...</source>
@@ -56088,6 +56103,11 @@ are sometimes limited (e.g. for shape files) or behave diffently.
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>&lt;h3&gt;Identify&lt;/h3&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;h3&gt;Manage and install Plugins&lt;/h3&gt;
 
 &lt;p&gt;
@@ -56134,7 +56154,7 @@ Selecting an item shows you the plugin information in the detail pane.
 &lt;h4&gt;New tab&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p&gt;
-This tab will be shown when a new plugin is made available? It will be shown
+This tab will be shown when a new plugin is made available! It will be shown
 just once.
 &lt;/p&gt;
 
@@ -56142,7 +56162,7 @@ just once.
 &lt;h4&gt;Upgradable tab&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p&gt;
-This tab is only available if there one of your installed plugins can be upgraded
+This tab is only available if one of your installed plugins can be upgraded
 from the remote repositories.
 &lt;/p&gt;
 
@@ -56150,8 +56170,8 @@ from the remote repositories.
 &lt;h4&gt;Invalid tab&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p&gt;
-This tab is only available if there is a plugin invalid. That is if there was an
-error during loading the plugin.
+This tab is only available if there is a invalid plugin. Mostly caused by an error 
+during loading the plugin.
 &lt;/p&gt;
 
 &lt;a name=&quot;settingstab&quot;&gt;

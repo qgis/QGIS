@@ -37,7 +37,6 @@ class QgsMapRenderer;
 class QgsScaleCalculator;
 class QgsCoordinateReferenceSystem;
 class QgsDistanceArea;
-class QgsOverlayObjectPositionManager;
 class QgsVectorLayer;
 
 class QgsPalLayerSettings;
@@ -322,10 +321,6 @@ class CORE_EXPORT QgsMapRenderer : public QObject
      * also sets the contents of the r2 parameter
      */
     bool splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent, QgsRectangle& r2 );
-
-    /**Creates an overlay object position manager subclass according to the current settings
-    @note this method was added in version 1.1*/
-    QgsOverlayObjectPositionManager* overlayManagerFromSettings();
 
     //! indicates drawing in progress
     static bool mDrawing;

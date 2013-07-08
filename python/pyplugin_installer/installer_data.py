@@ -475,7 +475,7 @@ class Repositories(QObject):
     if not self.fetchingInProgress():
       self.checkingDone.emit()
 
-    del reply
+    reply.deleteLater()
 
 
   # ----------------------------------------- #

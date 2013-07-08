@@ -183,9 +183,9 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.fontComboBox.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytext",
                                                               "Monospace")))
         self.fontComboBoxEditor.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytextEditor",
-                                                      "Monospace")))
+                                                                    "Monospace")))
         self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True, type=bool))
-        self.lineEdit.setText(settings.value("pythonConsole/preparedAPIFile"))
+        self.lineEdit.setText(settings.value("pythonConsole/preparedAPIFile", "", type=str))
         itemTable = settings.value("pythonConsole/userAPI", [])
         if itemTable:
             for i in range(len(itemTable)):

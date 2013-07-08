@@ -1768,7 +1768,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionMapTips->setIcon( QgsApplication::getThemeIcon( "/mActionMapTips.png" ) );
   mActionShowBookmarks->setIcon( QgsApplication::getThemeIcon( "/mActionShowBookmarks.png" ) );
   mActionNewBookmark->setIcon( QgsApplication::getThemeIcon( "/mActionNewBookmark.png" ) );
-  mActionCustomProjection->setIcon( QgsApplication::getThemeIcon( "/mActionCustomProjection.png" ) );
+  mActionCustomProjection->setIcon( QgsApplication::getThemeIcon( "/mActionCustomProjection.svg" ) );
   mActionAddWmsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWmsLayer.png" ) );
   mActionAddWcsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWcsLayer.png" ) );
   mActionAddWfsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWfsLayer.png" ) );
