@@ -2122,6 +2122,10 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
     return; //not a provider field
   }
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM < 1910
+  // avoid GDAL #4509
+  return QgsVectorDataProvider::uniqueValues( index, uniqueValues, limit );
+#else
   QString theLayerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   QString sql = QString( "SELECT DISTINCT %1 FROM %2" )
@@ -2151,6 +2155,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   }
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
+#endif
 }
 
 QVariant QgsOgrProvider::minimumValue( int index )
