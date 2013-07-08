@@ -217,4 +217,3 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   return new QgsWFSConnectionItem( parentItem, "WFS", thePath );
 }
-

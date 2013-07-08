@@ -1,4 +1,0 @@
-<h3>Extension Flèche Nord</h3>
-Affiche une flèche indiquant le Nord sur le canevas de la carte.
-<p>
-Il n'y a qu'un seul style disponible. Vous pouvez ajuster l'angle de la flèche ou laisser QGIS l'orienter automatiquement. Vous pouvez indiquer dans quel coin du canevas doit apparaître la flèche.

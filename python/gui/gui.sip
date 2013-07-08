@@ -8,6 +8,8 @@
 
 %Import core/core.sip
 
+%Include qgsblendmodecombobox.sip
+
 %Include qgisinterface.sip
 %Include qgsannotationitem.sip
 %Include qgsattributeeditor.sip
@@ -67,8 +69,26 @@
 %Include qgstextannotationitem.sip
 %Include qgsvertexmarker.sip
 %Include qgssublayersdialog.sip
+%Include qgscharacterselectdialog.sip
+%Include qgscomposerruler.sip
+%Include qgsdatadefinedbutton.sip
+%Include qgsdetaileditemwidget.sip
+%Include qgserrordialog.sip
+%Include qgsexpressionselectiondialog.sip
+%Include qgshighlight.sip
+%Include qgsoptionsdialogbase.sip
+%Include qgssvgannotationitem.sip
 
+%Include attributetable/qgsattributetabledelegate.sip
+%Include attributetable/qgsattributetablefiltermodel.sip
 %Include attributetable/qgsattributetableview.sip
+%Include attributetable/qgsattributetablemodel.sip
+%Include attributetable/qgsdualview.sip
+%Include attributetable/qgsfeaturelistmodel.sip
+%Include attributetable/qgsfeaturelistview.sip
+%Include attributetable/qgsfeaturelistviewdelegate.sip
+%Include attributetable/qgsfeaturemodel.sip
+%Include attributetable/qgsfeatureselectionmodel.sip
 
 %Include raster/qgsmultibandcolorrendererwidget.sip
 %Include raster/qgspalettedrendererwidget.sip
@@ -100,3 +120,9 @@
 %Include symbology-ng/qgsvectorfieldsymbollayerwidget.sip
 %Include symbology-ng/qgsvectorgradientcolorrampv2dialog.sip
 %Include symbology-ng/qgsvectorrandomcolorrampv2dialog.sip
+%Include symbology-ng/qgscolorrampcombobox.sip
+%Include symbology-ng/characterwidget.sip
+%Include symbology-ng/qgsdashspacedialog.sip
+%Include symbology-ng/qgsdatadefinedsymboldialog.sip
+%Include symbology-ng/qgsstylev2exportimportdialog.sip
+%Include symbology-ng/qgssvgselectorwidget.sip

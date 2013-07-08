@@ -339,5 +339,5 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool syncToDisc();
 
     friend class QgsOgrFeatureIterator;
-    QSet< QgsOgrFeatureIterator*> mActiveIterators;
+    QSet< QgsOgrFeatureIterator* > mActiveIterators;
 };

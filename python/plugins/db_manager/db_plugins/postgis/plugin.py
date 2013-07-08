@@ -85,7 +85,7 @@ class PostGisDBPlugin(DBPlugin):
 
 		settings.endGroup()
 
-		if service != "":
+		if service:
 			uri.setConnection(service, database, username, password, sslmode)
 		else:
 			uri.setConnection(host, port, database, username, password, sslmode)

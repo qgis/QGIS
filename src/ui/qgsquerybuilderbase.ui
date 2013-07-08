@@ -257,7 +257,7 @@ p, li { white-space: pre-wrap; }
       </size>
      </property>
      <property name="title">
-      <string>SQL where clause</string>
+      <string>Provider specific filter expression</string>
      </property>
      <layout class="QGridLayout">
       <property name="margin">

@@ -1,5 +1,23 @@
 //typedef QMap<int, QgsField> QgsFieldMap;
 
+/* Description of feature class in GML */
+class QgsGmlFeatureClass
+{
+  public:
+    QgsGmlFeatureClass( );
+    QgsGmlFeatureClass( QString name, QString path );
+
+    ~QgsGmlFeatureClass();
+
+    QList<QgsField> & fields();
+
+    int fieldIndex( const QString & name );
+
+    QString path() const;
+
+    QStringList & geometryAttributes();
+};
+
 class QgsGmlSchema: QObject 
 {
 
@@ -9,6 +27,7 @@ class QgsGmlSchema: QObject
 
   public:
     QgsGmlSchema();
+
     ~QgsGmlSchema();
 
     /** Get fields info from XSD */
@@ -22,7 +41,9 @@ class QgsGmlSchema: QObject
 
     QStringList typeNames() const;
 
+    /** Get fields for type/class name parsed from GML or XSD */
     QList<QgsField> fields( const QString & typeName );
 
+    /** Get list of geometry attributes for type/class name */
     QStringList geometryAttributes( const QString & typeName );
 };

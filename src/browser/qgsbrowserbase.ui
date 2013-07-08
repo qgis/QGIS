@@ -214,7 +214,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCustomProjection.png</normaloff>:/images/themes/default/mActionCustomProjection.png</iconset>
+     <normaloff>:/images/themes/default/mActionSetProjection.svg</normaloff>:/images/themes/default/mActionSetProjection.svg</iconset>
    </property>
    <property name="text">
     <string>Set layer CRS</string>

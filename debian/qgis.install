@@ -5,7 +5,6 @@ usr/lib/qgis/plugins/libdxf2shpconverterplugin.so
 usr/lib/qgis/plugins/libinterpolationplugin.so 
 usr/lib/qgis/plugins/libcoordinatecaptureplugin.so
 usr/lib/qgis/plugins/liboracleplugin.so
-usr/lib/qgis/plugins/libdiagramoverlay.so 
 usr/lib/qgis/plugins/libevis.so 
 usr/lib/qgis/plugins/librasterterrainplugin.so
 usr/lib/qgis/plugins/libspatialqueryplugin.so

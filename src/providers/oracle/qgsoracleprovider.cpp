@@ -196,6 +196,14 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
 QgsOracleProvider::~QgsOracleProvider()
 {
   QgsDebugMsg( "deconstructing." );
+
+  while ( !mActiveIterators.empty() )
+  {
+    QgsOracleFeatureIterator *it = *mActiveIterators.begin();
+    QgsDebugMsg( "closing active iterator" );
+    it->close();
+  }
+
   disconnectDb();
 }
 
@@ -1501,11 +1509,6 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
   return returnvalue;
 }
 
-static int moreThan( int a, int b )
-{
-  return a > b;
-}
-
 bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds& ids )
 {
   bool returnvalue = true;
@@ -1527,7 +1530,8 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds& ids )
     qry.finish();
 
     QList<int> idsList = ids.values();
-    qSort( idsList.begin(), idsList.end(), moreThan );
+    qSort( idsList.begin(), idsList.end(), qGreater<int>() );
+
     foreach ( int id, idsList )
     {
       const QgsField &fld = mAttributeFields.at( id );
@@ -1671,12 +1675,12 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap & a
   return returnvalue;
 }
 
-void QgsOracleProvider::appendGeomParam( QgsGeometry *geom, QSqlQuery &qry ) const
+void QgsOracleProvider::appendGeomParam( const QgsGeometry *geom, QSqlQuery &qry ) const
 {
   QOCISpatialGeometry g;
 
   wkbPtr ptr;
-  ptr.ucPtr = geom ? geom->asWkb() : 0;
+  ptr.ucPtr = geom ? ( unsigned char * ) geom->asWkb() : 0;
   g.isNull = !ptr.ucPtr;
   g.gtype = -1;
   g.srid  = mSrid < 1 ? -1 : mSrid;
@@ -2892,7 +2896,7 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
                                  .arg( QgsOracleConn::quotedValue( tableName ) ) )
        || !qry.next() )
   {
-    errCause = QObject::tr( "Unable determine number of geometry columns of layer %1.%2: \n%3" )
+    errCause = QObject::tr( "Unable to determine number of geometry columns of layer %1.%2: \n%3" )
                .arg( ownerName )
                .arg( tableName )
                .arg( qry.lastError().text() );

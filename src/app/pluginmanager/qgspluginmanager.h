@@ -38,8 +38,8 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 {
     Q_OBJECT
   public:
-    //! Constructor
-    QgsPluginManager( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    //! Constructor; set pluginsAreEnabled to false in --noplugins mode
+    QgsPluginManager( QWidget *parent = 0, bool pluginsAreEnabled = true, Qt::WFlags fl = QgisGui::ModalDialogFlags );
 
     //! Destructor
     ~QgsPluginManager();
@@ -52,6 +52,9 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
     //! Unload unselected plugin
     void unloadPlugin( QString id );
+
+    //! Save plugin enabled/disabled state to QSettings
+    void savePluginState( QString id, bool state );
 
     //! Get metadata of C++ plugins
     void getCppPluginsMetadata();
@@ -167,8 +170,8 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Load translated descriptions. Source strings implemented in external qgspluginmanager_texts.cpp
     void initTabDescriptions();
 
-    //! Return true if given plugin is present in QgsPluginRegistry (c++ plugins) or is enabled in QSettings (Python plugins)
-    bool isPluginLoaded( QString key );
+    //! Return true if given plugin is enabled in QSettings
+    bool isPluginEnabled( QString key );
 
     //! Return true if there are plugins available for download in the metadata registry
     bool hasAvailablePlugins( );
@@ -193,6 +196,9 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     QgsPluginSortFilterProxyModel * mModelProxy;
 
     QgsPythonUtils* mPythonUtils;
+
+    //! true by default; false in --noplugins mode
+    bool mPluginsAreEnabled;
 
     QMap<QString, QString> mTabDescriptions;
 

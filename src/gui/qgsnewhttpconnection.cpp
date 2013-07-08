@@ -75,9 +75,11 @@ QgsNewHttpConnection::QgsNewHttpConnection(
       cbxIgnoreGetMapURI->setVisible( false );
       cbxIgnoreAxisOrientation->setVisible( false );
       cbxInvertAxisOrientation->setVisible( false );
+      cbxSmoothPixmapTransform->setVisible( false );
       mGroupBox->layout()->removeWidget( cbxIgnoreGetMapURI );
       mGroupBox->layout()->removeWidget( cbxIgnoreAxisOrientation );
       mGroupBox->layout()->removeWidget( cbxInvertAxisOrientation );
+      mGroupBox->layout()->removeWidget( cbxSmoothPixmapTransform );
     }
 
     cbxIgnoreGetFeatureInfoURI->setVisible( false );

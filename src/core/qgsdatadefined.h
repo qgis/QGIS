@@ -56,7 +56,9 @@ class CORE_EXPORT QgsDataDefined
     QString expressionString() const { return mExpressionString; }
     void setExpressionString( const QString& expr ) { mExpressionString = expr; }
 
+    // @note not available in python bindings
     QMap<QString, QVariant> expressionParams() const { return mExpressionParams; }
+    // @note not available in python bindings
     void setExpressionParams( QMap<QString, QVariant> params ) { mExpressionParams = params; }
     void insertExpressionParam( QString key, QVariant param );
 
@@ -69,6 +71,7 @@ class CORE_EXPORT QgsDataDefined
     QString field() const { return mField; }
     void setField( const QString& field ) { mField = field; }
 
+    // @note not available in python bindings
     QMap< QString, QString > toMap();
 
   private:

@@ -54,6 +54,7 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
         FieldConfig( QgsVectorLayer* layer, int idx );
 
         bool mEditable;
+        bool mEditableEnabled;
         bool mLabelOnTop;
         QgsVectorLayer::ValueRelationData mValueRelationData;
         QMap<QString, QVariant> mValueMap;

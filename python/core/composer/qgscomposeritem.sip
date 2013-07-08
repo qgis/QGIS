@@ -5,8 +5,6 @@ class QgsComposerItem: QObject, QGraphicsRectItem
 {
 %TypeHeaderCode
 #include <qgscomposeritem.h>
-//#include <qgscomposerarrow.h>
-//#include <qgscomposeritemgroup.h>
 #include <qgscomposerlabel.h>
 #include <qgscomposerlegend.h>
 #include <qgscomposermap.h>
@@ -16,7 +14,6 @@ class QgsComposerItem: QObject, QGraphicsRectItem
 #include <qgscomposershape.h>
 #include <qgscomposertable.h>
 #include <qgscomposerattributetable.h>
-//#include <qgscomposertexttable.h>
 %End
 
 %ConvertToSubClassCode
@@ -231,6 +228,55 @@ class QgsComposerItem: QObject, QGraphicsRectItem
      */
     void setFrameEnabled( bool drawFrame );
 
+
+    /** Whether this item has a Background or not.
+     * @returns true if there is a Background around this item, otherwise false.
+     * @note introduced since 2.0
+     * @see hasBackground
+     */
+    bool hasBackground() const;
+
+    /** Set whether this item has a Background drawn around it or not.
+     * @param drawBackground draw Background
+     * @returns nothing
+     * @note introduced in 2.0
+     * @see hasBackground
+     */
+    void setBackgroundEnabled( bool drawBackground );
+
+    /** Gets the background color for this item
+     * @returns background color
+     * @note introduced in 2.0
+     */
+    QColor backgroundColor() const;
+
+    /** Sets the background color for this item
+     * @param backgroundColor new background color
+     * @returns nothing
+     * @note introduced in 2.0
+     */
+    void setBackgroundColor( const QColor& backgroundColor );
+
+    /** Returns the item's composition blending mode */
+    QPainter::CompositionMode blendMode() const;
+
+    /** Sets the item's composition blending mode*/
+    void setBlendMode( QPainter::CompositionMode blendMode );
+
+    /** Returns the item's transparency */
+    int transparency() const;
+    /** Sets the item's transparency */
+    void setTransparency( int transparency );
+
+    /** Returns true if effects (eg blend modes) are enabled for the item
+     * @note introduced in 2.0
+    */
+    bool effectsEnabled() const;
+    /** Sets whether effects (eg blend modes) are enabled for the item
+     * @note introduced in 2.0
+    */
+    void setEffectsEnabled( bool effectsEnabled );
+
     /**Composite operations for item groups do nothing per default*/
     virtual void addItem( QgsComposerItem* item );
     virtual void removeItems();
@@ -269,6 +315,9 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double fontAscentMillimeters( const QFont& font ) const;
 
+    /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
+    double fontDescentMillimeters( const QFont& font ) const;
+
     /**Calculates font to from point size to pixel size*/
     double pixelFontSize( double pointSize ) const;
 
@@ -304,30 +353,6 @@ class QgsComposerItem: QObject, QGraphicsRectItem
       @note this method was added in version 2.0
       @note there is not setter since one can't manually set the id*/
     QString uuid() const;
-    
-    /** Gets the background color for this item
-     * @note introduced in 2.0
-     */
-    const QColor backgroundColor() const;
-
-    /** Sets the background color for this item
-     * @note introduced in 2.0
-     */
-    void setBackgroundColor( const QColor& backgroundColor );    
-    
-    /* Returns the current blending mode for the composer item
-        @note added in version 1.9*/
-    const QPainter::CompositionMode blendMode() const;
-    /* Sets the composer item's blending mode
-        @note added in version 1.9*/
-    void setBlendMode( const QPainter::CompositionMode blendMode );
-    
-    /** Returns the composer item's transparency
-        @note added in version 1.9*/    
-    const int transparency() const;
-    /** Sets the composer item's transparency
-        @note added in version 1.9*/
-    void setTransparency( const int transparency );
 
   public slots:
     virtual void setRotation( double r );
@@ -400,6 +425,14 @@ class QgsComposerItem: QObject, QGraphicsRectItem
         @param x in/out: x coordinate before / after the rotation
         @param y in/out: y cooreinate before / after the rotation*/
     void rotate( double angle, double& x, double& y ) const;
+
+    /**Return horizontal align snap item. Creates a new graphics line if 0*/
+    QGraphicsLineItem* hAlignSnapItem();
+    void deleteHAlignSnapItem();
+    /**Return vertical align snap item. Creates a new graphics line if 0*/
+    QGraphicsLineItem* vAlignSnapItem();
+    void deleteVAlignSnapItem();
+    void deleteAlignItems();
 
   signals:
     /**Is emitted on rotation change to notify north arrow pictures*/

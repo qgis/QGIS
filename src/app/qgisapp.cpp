@@ -458,7 +458,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mSplash->showMessage( tr( "Checking database" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   // Do this early on before anyone else opens it and prevents us copying it
-  createDB();
+  QString dbError;
+  if ( !QgsApplication::createDB( &dbError ) )
+  {
+    QMessageBox::critical( this, tr( "Private qgis.db" ), dbError );
+  }
 
   mSplash->showMessage( tr( "Reading settings" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
@@ -528,7 +532,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   activateDeactivateLayerRelatedActions( NULL );
 
   // initialize the plugin manager
-  mPluginManager = new QgsPluginManager( this );
+  mPluginManager = new QgsPluginManager( this, restorePlugins );
 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
   mUndoWidget->hide();
@@ -796,8 +800,6 @@ QgisApp::~QgisApp()
 
   delete QgsProject::instance();
 
-  if ( mPythonUtils )
-    mPythonUtils->exitPython();
   delete mPythonUtils;
 }
 
@@ -1393,9 +1395,9 @@ void QgisApp::createToolBars()
   {
     case 0: defSelectAction = mActionSelect; break;
     case 1: defSelectAction = mActionSelectRectangle; break;
-    case 2: defSelectAction = mActionSelectPolygon; break;
-    case 3: defSelectAction = mActionSelectFreehand; break;
-    case 4: defSelectAction = mActionSelectRadius; break;
+    case 2: defSelectAction = mActionSelectRadius; break;
+    case 3: defSelectAction = mActionSelectPolygon; break;
+    case 4: defSelectAction = mActionSelectFreehand; break;
   }
   bt->setDefaultAction( defSelectAction );
   QAction* selectAction = mAttributesToolBar->insertWidget( mActionDeselectAll, bt );
@@ -1530,7 +1532,7 @@ void QgisApp::createStatusBar()
                                  "center to a given position. The format is lat,lon or east,north" ) );
   mCoordsEdit->setToolTip( tr( "Current map coordinate (lat,lon or east,north)" ) );
   statusBar()->addPermanentWidget( mCoordsEdit, 0 );
-  connect( mCoordsEdit, SIGNAL( editingFinished() ), this, SLOT( userCenter() ) );
+  connect( mCoordsEdit, SIGNAL( returnPressed() ), this, SLOT( userCenter() ) );
 
   // add a label to show current scale
   mScaleLabel = new QLabel( QString(), statusBar() );
@@ -1687,12 +1689,12 @@ void QgisApp::setTheme( QString theThemeName )
   mActionRemoveAllFromOverview->setIcon( QgsApplication::getThemeIcon( "/mActionRemoveAllFromOverview.png" ) );
   mActionToggleFullScreen->setIcon( QgsApplication::getThemeIcon( "/mActionToggleFullScreen.png" ) );
   mActionProjectProperties->setIcon( QgsApplication::getThemeIcon( "/mActionProjectProperties.png" ) );
-  mActionManagePlugins->setIcon( QgsApplication::getThemeIcon( "/mActionShowPluginManager.png" ) );
+  mActionManagePlugins->setIcon( QgsApplication::getThemeIcon( "/mActionShowPluginManager.svg" ) );
   mActionShowPythonDialog->setIcon( QgsApplication::getThemeIcon( "console/iconRunConsole.png" ) );
   mActionCheckQgisVersion->setIcon( QgsApplication::getThemeIcon( "/mActionCheckQgisVersion.png" ) );
-  mActionOptions->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.png" ) );
-  mActionConfigureShortcuts->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.png" ) );
-  mActionCustomization->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.png" ) );
+  mActionOptions->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.svg" ) );
+  mActionConfigureShortcuts->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.svg" ) );
+  mActionCustomization->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.svg" ) );
   mActionHelpContents->setIcon( QgsApplication::getThemeIcon( "/mActionHelpContents.png" ) );
   mActionLocalHistogramStretch->setIcon( QgsApplication::getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
   mActionFullHistogramStretch->setIcon( QgsApplication::getThemeIcon( "/mActionFullHistogramStretch.png" ) );
@@ -1722,7 +1724,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionRotateFeature->setIcon( QgsApplication::getThemeIcon( "/mActionRotateFeature.png" ) );
   mActionReshapeFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionReshape.png" ) );
   mActionSplitFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionSplitFeatures.svg" ) );
-  mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.png" ) );
+  mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.svg" ) );
   mActionNodeTool->setIcon( QgsApplication::getThemeIcon( "/mActionNodeTool.png" ) );
   mActionSimplifyFeature->setIcon( QgsApplication::getThemeIcon( "/mActionSimplify.png" ) );
   mActionUndo->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.png" ) );
@@ -1749,14 +1751,14 @@ void QgisApp::setTheme( QString theThemeName )
   mActionZoomNext->setIcon( QgsApplication::getThemeIcon( "/mActionZoomNext.png" ) );
   mActionZoomToLayer->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ) );
   mActionZoomActualSize->setIcon( QgsApplication::getThemeIcon( "/mActionZoomActual.png" ) );
-  mActionIdentify->setIcon( QgsApplication::getThemeIcon( "/mActionIdentify.png" ) );
-  mActionFeatureAction->setIcon( QgsApplication::getThemeIcon( "/mAction.png" ) );
-  mActionSelect->setIcon( QgsApplication::getThemeIcon( "/mActionSelect.png" ) );
-  mActionSelectRectangle->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRectangle.png" ) );
+  mActionIdentify->setIcon( QgsApplication::getThemeIcon( "/mActionIdentify.svg" ) );
+  mActionFeatureAction->setIcon( QgsApplication::getThemeIcon( "/mAction.svg" ) );
+  mActionSelect->setIcon( QgsApplication::getThemeIcon( "/mActionSelect.svg" ) );
+  mActionSelectRectangle->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRectangle.svg" ) );
   mActionSelectPolygon->setIcon( QgsApplication::getThemeIcon( "/mActionSelectPolygon.svg" ) );
-  mActionSelectFreehand->setIcon( QgsApplication::getThemeIcon( "/mActionSelectFreehand.png" ) );
-  mActionSelectRadius->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRadius.png" ) );
-  mActionDeselectAll->setIcon( QgsApplication::getThemeIcon( "/mActionDeselectAll.png" ) );
+  mActionSelectFreehand->setIcon( QgsApplication::getThemeIcon( "/mActionSelectFreehand.svg" ) );
+  mActionSelectRadius->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRadius.svg" ) );
+  mActionDeselectAll->setIcon( QgsApplication::getThemeIcon( "/mActionDeselectAll.svg" ) );
   mActionSelectByExpression->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionSelect.svg" ) );
   mActionOpenTable->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ) );
   mActionOpenFieldCalc->setIcon( QgsApplication::getThemeIcon( "/mActionCalculateField.png" ) );
@@ -1766,7 +1768,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionMapTips->setIcon( QgsApplication::getThemeIcon( "/mActionMapTips.png" ) );
   mActionShowBookmarks->setIcon( QgsApplication::getThemeIcon( "/mActionShowBookmarks.png" ) );
   mActionNewBookmark->setIcon( QgsApplication::getThemeIcon( "/mActionNewBookmark.png" ) );
-  mActionCustomProjection->setIcon( QgsApplication::getThemeIcon( "/mActionCustomProjection.png" ) );
+  mActionCustomProjection->setIcon( QgsApplication::getThemeIcon( "/mActionCustomProjection.svg" ) );
   mActionAddWmsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWmsLayer.png" ) );
   mActionAddWcsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWcsLayer.png" ) );
   mActionAddWfsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWfsLayer.png" ) );
@@ -1782,9 +1784,9 @@ void QgisApp::setTheme( QString theThemeName )
   mActionMoveLabel->setIcon( QgsApplication::getThemeIcon( "/mActionMoveLabel.png" ) );
   mActionRotateLabel->setIcon( QgsApplication::getThemeIcon( "/mActionRotateLabel.svg" ) );
   mActionChangeLabelProperties->setIcon( QgsApplication::getThemeIcon( "/mActionChangeLabelProperties.png" ) );
-  mActionDecorationCopyright->setIcon( QgsApplication::getThemeIcon( "/plugins/copyright_label.png" ) );
-  mActionDecorationNorthArrow->setIcon( QgsApplication::getThemeIcon( "/plugins/north_arrow.png" ) );
-  mActionDecorationScaleBar->setIcon( QgsApplication::getThemeIcon( "/plugins/scale_bar.png" ) );
+  mActionDecorationCopyright->setIcon( QgsApplication::getThemeIcon( "/copyright_label.png" ) );
+  mActionDecorationNorthArrow->setIcon( QgsApplication::getThemeIcon( "/north_arrow.png" ) );
+  mActionDecorationScaleBar->setIcon( QgsApplication::getThemeIcon( "/scale_bar.png" ) );
   mActionDecorationGrid->setIcon( QgsApplication::getThemeIcon( "/transformed.png" ) );
 
   //change themes of all composers
@@ -2116,106 +2118,6 @@ void QgisApp::initLegend()
   mPanelMenu->addAction( mLayerOrderDock->toggleViewAction() );
 
   return;
-}
-
-bool QgisApp::createDB()
-{
-  // Check qgis.db and make private copy if necessary
-  QFile qgisPrivateDbFile( QgsApplication::qgisUserDbFilePath() );
-
-  // first we look for ~/.qgis/qgis.db
-  if ( !qgisPrivateDbFile.exists() )
-  {
-    // if it doesnt exist we copy it in from the global resources dir
-    QString qgisMasterDbFileName = QgsApplication::qgisMasterDbFilePath();
-    QFile masterFile( qgisMasterDbFileName );
-
-    // Must be sure there is destination directory ~/.qgis
-    QDir().mkpath( QgsApplication::qgisSettingsDirPath() );
-
-    //now copy the master file into the users .qgis dir
-    bool isDbFileCopied = masterFile.copy( qgisPrivateDbFile.fileName() );
-
-    if ( !isDbFileCopied )
-    {
-      QgsMessageLog::logMessage( tr( "[ERROR] Can not make qgis.db private copy" ) );
-      return false;
-    }
-  }
-  else
-  {
-    // migrate if necessary
-    sqlite3 *db;
-    if ( sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8().constData(), &db ) != SQLITE_OK )
-    {
-      QMessageBox::critical( this, tr( "Private qgis.db" ), tr( "Could not open qgis.db" ) );
-      return false;
-    }
-
-    char *errmsg;
-    int res = sqlite3_exec( db, "SELECT epsg FROM tbl_srs LIMIT 0", 0, 0, &errmsg );
-    if ( res == SQLITE_OK )
-    {
-      // epsg column exists => need migration
-      if ( sqlite3_exec( db,
-                         "ALTER TABLE tbl_srs RENAME TO tbl_srs_bak;"
-                         "CREATE TABLE tbl_srs ("
-                         "srs_id INTEGER PRIMARY KEY,"
-                         "description text NOT NULL,"
-                         "projection_acronym text NOT NULL,"
-                         "ellipsoid_acronym NOT NULL,"
-                         "parameters text NOT NULL,"
-                         "srid integer,"
-                         "auth_name varchar,"
-                         "auth_id varchar,"
-                         "is_geo integer NOT NULL,"
-                         "deprecated boolean);"
-                         "CREATE INDEX idx_srsauthid on tbl_srs(auth_name,auth_id);"
-                         "INSERT INTO tbl_srs(srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) SELECT srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,'','',is_geo,0 FROM tbl_srs_bak;"
-                         "DROP TABLE tbl_srs_bak", 0, 0, &errmsg ) != SQLITE_OK
-         )
-      {
-        QMessageBox::critical( this, tr( "Private qgis.db" ), tr( "Migration of private qgis.db failed.\n%1" ).arg( QString::fromUtf8( errmsg ) ) );
-        sqlite3_free( errmsg );
-        sqlite3_close( db );
-        return false;
-      }
-    }
-    else
-    {
-      sqlite3_free( errmsg );
-    }
-
-    if ( sqlite3_exec( db, "DROP VIEW vw_srs", 0, 0, &errmsg ) != SQLITE_OK )
-    {
-      QgsDebugMsg( QString( "vw_srs didn't exists in private qgis.db: %1" ).arg( errmsg ) );
-    }
-
-    if ( sqlite3_exec( db,
-                       "CREATE VIEW vw_srs AS"
-                       " SELECT"
-                       " a.description AS description"
-                       ",a.srs_id AS srs_id"
-                       ",a.is_geo AS is_geo"
-                       ",coalesce(b.name,a.projection_acronym) AS name"
-                       ",a.parameters AS parameters"
-                       ",a.auth_name AS auth_name"
-                       ",a.auth_id AS auth_id"
-                       ",a.deprecated AS deprecated"
-                       " FROM tbl_srs a"
-                       " LEFT OUTER JOIN tbl_projection b ON a.projection_acronym=b.acronym"
-                       " ORDER BY coalesce(b.name,a.projection_acronym),a.description", 0, 0, &errmsg ) != SQLITE_OK
-       )
-    {
-      QMessageBox::critical( this, tr( "Private qgis.db" ), tr( "Update of view in private qgis.db failed.\n%1" ).arg( QString::fromUtf8( errmsg ) ) );
-      sqlite3_free( errmsg );
-      sqlite3_close( db );
-      return false;
-    }
-
-    sqlite3_close( db );
-  }
-  return true;
 }
 
 void QgisApp::createMapTips()
@@ -2753,10 +2655,17 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
       name.replace( path, "" );
     }
     // remove any : or " left over
-    if ( name.startsWith( ":" ) ) name.remove( 0, 1 );
-    if ( name.startsWith( "\"" ) ) name.remove( 0, 1 );
-    if ( name.endsWith( ":" ) ) name.chop( 1 );
-    if ( name.endsWith( "\"" ) ) name.chop( 1 );
+    if ( name.startsWith( ":" ) )
+      name.remove( 0, 1 );
+
+    if ( name.startsWith( "\"" ) )
+      name.remove( 0, 1 );
+
+    if ( name.endsWith( ":" ) )
+      name.chop( 1 );
+
+    if ( name.endsWith( "\"" ) )
+      name.chop( 1 );
 
     names << name;
     layers << QString( "%1|%2" ).arg( i ).arg( name );
@@ -4765,16 +4674,15 @@ QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList&
     {
       backupPtr = unionGeom;
       unionGeom = unionGeom->combine( currentGeom );
-      if ( !unionGeom )
-      {
-        delete backupPtr;
-        QApplication::restoreOverrideCursor();
-        return 0;
-      }
       if ( i > 1 ) //delete previous intermediate results
       {
         delete backupPtr;
         backupPtr = 0;
+      }
+      if ( !unionGeom )
+      {
+        QApplication::restoreOverrideCursor();
+        return 0;
       }
     }
   }
@@ -6243,7 +6151,7 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
     {
       msgBars.append( QgsMessageBar::createMessage(
                         tr( "Duplicate layer: " ),
-                        tr( "%1 (%2type unsupported)" )
+                        tr( "%1 (%2 type unsupported)" )
                         .arg( selectedLyr->name() )
                         .arg( !unSppType.isEmpty() ? QString( "'" ) + unSppType + "' " : "" ),
                         QgsApplication::getThemeIcon( "/mIconWarn.png" ),
@@ -6652,7 +6560,8 @@ void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRaster::ContrastEnhance
   }
 
   QgsRectangle myRectangle;
-  if ( visibleAreaOnly ) myRectangle = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( myRasterLayer, mMapCanvas->extent() );
+  if ( visibleAreaOnly )
+    myRectangle = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( myRasterLayer, mMapCanvas->extent() );
 
   myRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, theLimits, myRectangle );
 
@@ -7014,7 +6923,7 @@ bool QgisApp::saveDirty()
 
     // prompt user to save
     answer = QMessageBox::information( this, tr( "Save?" ),
-                                       tr( "Do you want to save the current project?%1" )
+                                       tr( "Do you want to save the current project? %1" )
                                        .arg( whyDirty ),
                                        QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard,
                                        hasUnsavedEdits ? QMessageBox::Cancel : QMessageBox::Save );
@@ -8051,6 +7960,12 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     mActionLocalHistogramStretch->setEnabled( false );
     mActionFullHistogramStretch->setEnabled( false );
+    mActionLocalCumulativeCutStretch->setEnabled( false );
+    mActionFullCumulativeCutStretch->setEnabled( false );
+    mActionIncreaseBrightness->setEnabled( false );
+    mActionDecreaseBrightness->setEnabled( false );
+    mActionIncreaseContrast->setEnabled( false );
+    mActionDecreaseContrast->setEnabled( false );
     mActionZoomActualSize->setEnabled( false );
     mActionZoomToLayer->setEnabled( false );
     return;
@@ -8082,6 +7997,12 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     mActionLocalHistogramStretch->setEnabled( false );
     mActionFullHistogramStretch->setEnabled( false );
+    mActionLocalCumulativeCutStretch->setEnabled( false );
+    mActionFullCumulativeCutStretch->setEnabled( false );
+    mActionIncreaseBrightness->setEnabled( false );
+    mActionDecreaseBrightness->setEnabled( false );
+    mActionIncreaseContrast->setEnabled( false );
+    mActionDecreaseContrast->setEnabled( false );
     mActionZoomActualSize->setEnabled( false );
     mActionLabeling->setEnabled( true );
 
@@ -8229,6 +8150,14 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionLocalHistogramStretch->setEnabled( false );
       mActionFullHistogramStretch->setEnabled( false );
     }
+
+    mActionLocalCumulativeCutStretch->setEnabled( true );
+    mActionFullCumulativeCutStretch->setEnabled( true );
+    mActionIncreaseBrightness->setEnabled( true );
+    mActionDecreaseBrightness->setEnabled( true );
+    mActionIncreaseContrast->setEnabled( true );
+    mActionDecreaseContrast->setEnabled( true );
+
     mActionLayerSubsetString->setEnabled( false );
     mActionFeatureAction->setEnabled( false );
     mActionSelect->setEnabled( false );
@@ -9053,11 +8982,11 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "/UI/selectTool", 0 );
   else if ( action == mActionSelectRectangle )
     settings.setValue( "/UI/selectTool", 1 );
-  else if ( action == mActionSelectPolygon )
-    settings.setValue( "/UI/selectTool", 2 );
-  else if ( action == mActionSelectFreehand )
-    settings.setValue( "/UI/selectTool", 3 );
   else if ( action == mActionSelectRadius )
+    settings.setValue( "/UI/selectTool", 2 );
+  else if ( action == mActionSelectPolygon )
+    settings.setValue( "/UI/selectTool", 3 );
+  else if ( action == mActionSelectFreehand )
     settings.setValue( "/UI/selectTool", 4 );
   else if ( action == mActionMeasure )
     settings.setValue( "/UI/measureTool", 0 );

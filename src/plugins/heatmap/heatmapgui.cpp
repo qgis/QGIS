@@ -36,24 +36,43 @@
 
 //standard includes
 
-HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl )
-    : QDialog( parent, fl )
+HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl, QMap<QString, QVariant>* temporarySettings )
+    : QDialog( parent, fl ),
+    mRows( 500 )
 {
   setupUi( this );
 
   QgsDebugMsg( QString( "Creating Heatmap Dialog" ) );
 
-  // Adding point layers to the mInputVectorCombo
+  blockAllSignals( true );
+
+  mHeatmapSessionSettings = temporarySettings;
+
+  // Adding point layers to the inputLayerCombo
+  QString defaultLayer = mHeatmapSessionSettings->value( QString( "lastInputLayer" ) ).toString();
+  int defaultLayerIndex = 0;
+  bool usingLastInputLayer = false;
+  int currentIndex = -1;
   foreach ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
     if ( !vl || vl->geometryType() != QGis::Point )
       continue;
 
-    mInputVectorCombo->addItem( vl->name(), vl->id() );
+    currentIndex++;
+    inputLayerCombo->addItem( vl->name(), vl->id() );
+    if ( vl->id() == defaultLayer )
+    {
+      // if this layer is the same layer as a heatmap was last generated using,
+      // then default to this layer
+      usingLastInputLayer = true;
+      defaultLayerIndex = currentIndex;
+    }
   }
 
-  // Adding GDAL drivers with CREATE to the mFormatCombo
+  inputLayerCombo->setCurrentIndex( defaultLayerIndex );
+
+  // Adding GDAL drivers with CREATE to formatCombo
   int myTiffIndex = -1;
   int myIndex = -1;
   GDALAllRegister();
@@ -62,12 +81,14 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl )
   {
     GDALDriver* nthDriver = GetGDALDriverManager()->GetDriver( i );
     char** driverMetadata = nthDriver->GetMetadata();
-    if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
+    // Only formats which allow creation of Float32 data types are valid
+    if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) &&
+         QString( nthDriver->GetMetadataItem( GDAL_DMD_CREATIONDATATYPES, NULL ) ).contains( "Float32" ) )
     {
       ++myIndex;
       QString myLongName = nthDriver->GetMetadataItem( GDAL_DMD_LONGNAME );
       // Add LongName text, shortname variant; GetDescription actually gets the shortname
-      mFormatCombo->addItem( myLongName, QVariant( nthDriver->GetDescription() ) );
+      formatCombo->addItem( myLongName, QVariant( nthDriver->GetDescription() ) );
       // Add the drivers and their extensions to a map for filename correction
       mExtensionMap.insert( nthDriver->GetDescription(), nthDriver->GetMetadataItem( GDAL_DMD_EXTENSION ) );
       if ( myLongName == "GeoTIFF" )
@@ -76,9 +97,17 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl )
       }
     }
   }
-  mFormatCombo->setCurrentIndex( myTiffIndex );
+  //Restore choice of output format from last run
+  QSettings s;
+  int defaultFormatIndex = s.value( "/Heatmap/lastFormat", myTiffIndex ).toInt();
+  formatCombo->setCurrentIndex( defaultFormatIndex );
 
+  restoreSettings( usingLastInputLayer );
   updateBBox();
+  updateSize();
+
+  blockAllSignals( false );
+
   //finally set right the ok button
   enableOrDisableOkButton();
 }
@@ -87,27 +116,128 @@ HeatmapGui::~HeatmapGui()
 {
 }
 
+void HeatmapGui::blockAllSignals( bool b )
+{
+  bufferLineEdit->blockSignals( b );
+  inputLayerCombo->blockSignals( b );
+  rowsSpinBox->blockSignals( b );
+  radiusFieldCombo->blockSignals( b );
+  advancedGroupBox->blockSignals( b );
+  kernelShapeCombo->blockSignals( b );
+}
+
 /*
  *
  * Private Slots
  *
  */
-void HeatmapGui::on_mButtonBox_accepted()
+void HeatmapGui::on_buttonBox_accepted()
 {
+  saveSettings();
   accept();
 }
 
-void HeatmapGui::on_mButtonBox_rejected()
+void HeatmapGui::restoreSettings( bool usingLastInputLayer )
+{
+  // Temporary settings, which are cleared on exit from QGIS
+  // If we are using the same layer as last run, restore layer specific settings
+  if ( usingLastInputLayer )
+  {
+    // Advanced checkbox
+    if ( mHeatmapSessionSettings->value( QString( "advancedEnabled" ) ).toBool() )
+    {
+      advancedGroupBox->setChecked( true );
+    }
+    populateFields();
+
+    // Radius controls
+    bufferLineEdit->setText( mHeatmapSessionSettings->value( QString( "lastRadius" ) ).toString() );
+    radiusUnitCombo->setCurrentIndex( mHeatmapSessionSettings->value( QString( "lastRadiusUnit" ) ).toInt() );
+
+    // Raster size controls
+    mRows = mHeatmapSessionSettings->value( QString( "lastRows" ) ).toInt();
+    rowsSpinBox->setValue( mRows );
+
+    // Data defined radius controls
+    if ( mHeatmapSessionSettings->value( QString( "useRadius" ) ).toBool() )
+    {
+      radiusFieldCheckBox->setChecked( true );
+      radiusFieldUnitCombo->setCurrentIndex( mHeatmapSessionSettings->value( QString( "radiusFieldUnit" ) ).toInt() );
+      // Default to same radius field as last run
+      QString prevRadiusField = mHeatmapSessionSettings->value( QString( "radiusField" ) ).toString();
+      for ( int idx = 0; idx < radiusFieldCombo->count(); ++idx )
+      {
+        if ( radiusFieldCombo->itemText( idx ) == prevRadiusField )
+        {
+          radiusFieldCombo->setCurrentIndex( idx );
+          break;
+        }
+      }
+    }
+
+    // Data defined weight controls
+    if ( mHeatmapSessionSettings->value( QString( "useWeight" ) ).toBool() )
+    {
+      weightFieldCheckBox->setChecked( true );
+      // Default to same weight field as last run
+      QString prevWeightField = mHeatmapSessionSettings->value( QString( "weightField" ) ).toString();
+      for ( int idx = 0; idx < weightFieldCombo->count(); ++idx )
+      {
+        if ( weightFieldCombo->itemText( idx ) == prevWeightField )
+        {
+          weightFieldCombo->setCurrentIndex( idx );
+          break;
+        }
+      }
+    }
+  }
+  else
+  {
+    // Default to estimated radius
+    bufferLineEdit->setText( QString::number( estimateRadius() ) );
+  }
+
+  // Kernel setting - not layer specific
+  if ( mHeatmapSessionSettings->value( QString( "lastKernel" ) ).toInt() )
+  {
+    kernelShapeCombo->setCurrentIndex( mHeatmapSessionSettings->value( QString( "lastKernel" ) ).toInt() );
+    decayLineEdit->setText( mHeatmapSessionSettings->value( QString( "decayRatio" ) ).toString() );
+    decayLineEdit->setEnabled( advancedGroupBox->isChecked() && kernelShapeCombo->currentIndex() == Heatmap::Triangular );
+  }
+}
+
+void HeatmapGui::saveSettings()
+{
+  // Save persistent settings
+  QSettings s;
+  s.setValue( "/Heatmap/lastFormat", QVariant( formatCombo->currentIndex() ) );
+
+  // Store temporary settings, which only apply to this session
+  mHeatmapSessionSettings->insert( QString( "lastInputLayer" ), QVariant( inputLayerCombo->itemData( inputLayerCombo->currentIndex() ) ) );
+  mHeatmapSessionSettings->insert( QString( "lastRadius" ), QVariant( bufferLineEdit->text().toDouble() ) );
+  mHeatmapSessionSettings->insert( QString( "lastRadiusUnit" ), QVariant( radiusUnitCombo->currentIndex() ) );
+  mHeatmapSessionSettings->insert( QString( "advancedEnabled" ), QVariant( advancedGroupBox->isChecked() ) );
+  mHeatmapSessionSettings->insert( QString( "lastRows" ), QVariant( rowsSpinBox->value() ) );
+  mHeatmapSessionSettings->insert( QString( "lastKernel" ), QVariant( kernelShapeCombo->currentIndex() ) );
+  mHeatmapSessionSettings->insert( QString( "useRadius" ), QVariant( radiusFieldCheckBox->isChecked() ) );
+  mHeatmapSessionSettings->insert( QString( "radiusField" ), QVariant( radiusFieldCombo->currentText() ) );
+  mHeatmapSessionSettings->insert( QString( "radiusFieldUnit" ), QVariant( radiusFieldUnitCombo->currentIndex() ) );
+  mHeatmapSessionSettings->insert( QString( "useWeight" ), QVariant( weightFieldCheckBox->isChecked() ) );
+  mHeatmapSessionSettings->insert( QString( "weightField" ), QVariant( weightFieldCombo->currentText() ) );
+  mHeatmapSessionSettings->insert( QString( "decayRatio" ), QVariant( decayLineEdit->text() ) );
+}
+
+void HeatmapGui::on_buttonBox_rejected()
 {
   reject();
 }
 
-void HeatmapGui::on_mButtonBox_helpRequested()
+void HeatmapGui::on_buttonBox_helpRequested()
 {
   QgsContextHelp::run( metaObject()->className() );
 }
 
-void HeatmapGui::on_mBrowseButton_clicked()
+void HeatmapGui::on_browseButton_clicked()
 {
   QSettings s;
   QString lastDir = s.value( "/Heatmap/lastOutputDir", "" ).toString();
@@ -115,7 +245,7 @@ void HeatmapGui::on_mBrowseButton_clicked()
   QString outputFilename = QFileDialog::getSaveFileName( 0, tr( "Save Heatmap as:" ), lastDir );
   if ( !outputFilename.isEmpty() )
   {
-    mOutputRasterLineEdit->setText( outputFilename );
+    outputRasterLineEdit->setText( outputFilename );
     QFileInfo outputFileInfo( outputFilename );
     QDir outputDir = outputFileInfo.absoluteDir();
     if ( outputDir.exists() )
@@ -127,7 +257,7 @@ void HeatmapGui::on_mBrowseButton_clicked()
   enableOrDisableOkButton();
 }
 
-void HeatmapGui::on_mOutputRasterLineEdit_editingFinished()
+void HeatmapGui::on_outputRasterLineEdit_editingFinished()
 {
   enableOrDisableOkButton();
 }
@@ -137,7 +267,7 @@ void HeatmapGui::on_advancedGroupBox_toggled( bool enabled )
   if ( enabled )
   {
     // if there are no layers point layers then show error dialog and toggle
-    if ( mInputVectorCombo->count() == 0 )
+    if ( inputLayerCombo->count() == 0 )
     {
       QMessageBox::information( 0, tr( "No valid layers found!" ), tr( "Advanced options cannot be enabled." ) );
       advancedGroupBox->setChecked( false );
@@ -146,25 +276,26 @@ void HeatmapGui::on_advancedGroupBox_toggled( bool enabled )
     // if there are layers then populate fields
     populateFields();
     updateBBox();
+    decayLineEdit->setEnabled( kernelShapeCombo->currentIndex() == Heatmap::Triangular );
   }
 }
 
-void HeatmapGui::on_rowLineEdit_editingFinished()
+void HeatmapGui::on_rowsSpinBox_valueChanged()
 {
-  mRows = rowLineEdit->text().toInt();
+  mRows = rowsSpinBox->value();
   mYcellsize = mBBox.height() / mRows;
   mXcellsize = mYcellsize;
-  mColumns = mBBox.width() / mXcellsize + 1;
+  mColumns = max( qRound( mBBox.width() / mXcellsize ), 1 );
 
   updateSize();
 }
 
-void HeatmapGui::on_columnLineEdit_editingFinished()
+void HeatmapGui::on_columnsSpinBox_valueChanged()
 {
-  mColumns = columnLineEdit->text().toInt();
+  mColumns = columnsSpinBox->value();
   mXcellsize = mBBox.width() / mColumns;
   mYcellsize = mXcellsize;
-  mRows = mBBox.height() / mYcellsize + 1;
+  mRows = max( qRound( mBBox.height() / mYcellsize ), 1 );
 
   updateSize();
 }
@@ -173,8 +304,8 @@ void HeatmapGui::on_cellXLineEdit_editingFinished()
 {
   mXcellsize = cellXLineEdit->text().toDouble();
   mYcellsize = mXcellsize;
-  mRows = mBBox.height() / mYcellsize + 1;
-  mColumns = mBBox.width() / mXcellsize + 1;
+  mRows = max( qRound( mBBox.height() / mYcellsize ), 1 );
+  mColumns = max( qRound( mBBox.width() / mXcellsize ), 1 );
 
   updateSize();
 }
@@ -183,8 +314,8 @@ void HeatmapGui::on_cellYLineEdit_editingFinished()
 {
   mYcellsize = cellYLineEdit->text().toDouble();
   mXcellsize = mYcellsize;
-  mRows = mBBox.height() / mYcellsize + 1;
-  mColumns = mBBox.width() / mXcellsize + 1;
+  mRows = max( qRound( mBBox.height() / mYcellsize ), 1 );
+  mColumns = max( qRound( mBBox.width() / mXcellsize ), 1 );
 
   updateSize();
 }
@@ -197,7 +328,7 @@ void HeatmapGui::on_radiusFieldUnitCombo_currentIndexChanged( int index )
   QgsDebugMsg( QString( "Unit index set to %1" ).arg( index ) );
 }
 
-void HeatmapGui::on_mRadiusUnitCombo_currentIndexChanged( int index )
+void HeatmapGui::on_radiusUnitCombo_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
   QgsDebugMsg( QString( "Unit index set to %1" ).arg( index ) );
@@ -229,7 +360,7 @@ double HeatmapGui::estimateRadius()
 
   double estimate = maxExtent / 30;
 
-  if ( mRadiusUnitCombo->currentIndex() == HeatmapGui::Meters )
+  if ( radiusUnitCombo->currentIndex() == HeatmapGui::Meters )
   {
     // metres selected, so convert estimate from map units
     QgsCoordinateReferenceSystem layerCrs = inputLayer->crs();
@@ -241,12 +372,12 @@ double HeatmapGui::estimateRadius()
   return floor( estimate / tens + 0.5 ) * tens;
 }
 
-void HeatmapGui::on_mInputVectorCombo_currentIndexChanged( int index )
+void HeatmapGui::on_inputLayerCombo_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
 
   // Set initial value for radius field based on layer's extent
-  mBufferLineEdit->setText( QString::number( estimateRadius() ) );
+  bufferLineEdit->setText( QString::number( estimateRadius() ) );
 
   updateBBox();
 
@@ -264,7 +395,7 @@ void HeatmapGui::on_radiusFieldCombo_currentIndexChanged( int index )
   QgsDebugMsg( QString( "Radius Field index changed to %1" ).arg( index ) );
 }
 
-void HeatmapGui::on_mBufferLineEdit_editingFinished()
+void HeatmapGui::on_bufferLineEdit_editingFinished()
 {
   updateBBox();
 }
@@ -273,7 +404,7 @@ void HeatmapGui::on_kernelShapeCombo_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
   // Only enable the decay edit if the kernel shape is set to triangular
-  mDecayLineEdit->setEnabled( index == Heatmap::Triangular );
+  decayLineEdit->setEnabled( index == Heatmap::Triangular );
 }
 
 /*
@@ -284,13 +415,13 @@ void HeatmapGui::on_kernelShapeCombo_currentIndexChanged( int index )
 void HeatmapGui::enableOrDisableOkButton()
 {
   bool enabled = true;
-  QString filename = mOutputRasterLineEdit->text();
+  QString filename = outputRasterLineEdit->text();
   QFileInfo theFileInfo( filename );
-  if ( filename.isEmpty() || !theFileInfo.dir().exists() || ( mInputVectorCombo->count() == 0 ) )
+  if ( filename.isEmpty() || !theFileInfo.dir().exists() || ( inputLayerCombo->count() == 0 ) )
   {
     enabled = false;
   }
-  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }
 
 void HeatmapGui::populateFields()
@@ -316,8 +447,8 @@ void HeatmapGui::populateFields()
 
 void HeatmapGui::updateSize()
 {
-  rowLineEdit->setText( QString::number( mRows ) );
-  columnLineEdit->setText( QString::number( mColumns ) );
+  rowsSpinBox->setValue( mRows );
+  columnsSpinBox->setValue( mColumns );
   cellXLineEdit->setText( QString::number( mXcellsize ) );
   cellYLineEdit->setText( QString::number( mYcellsize ) );
 }
@@ -333,7 +464,7 @@ void HeatmapGui::updateBBox()
   QgsCoordinateReferenceSystem layerCrs = inputLayer->crs();
 
   double radiusInMapUnits = 0.0;
-  if ( useRadius->isChecked() )
+  if ( radiusFieldCheckBox->isChecked() )
   {
     double maxInField = inputLayer->maximumValue( radiusFieldCombo->itemData( radiusFieldCombo->currentIndex() ).toInt() ).toDouble();
 
@@ -348,12 +479,12 @@ void HeatmapGui::updateBBox()
   }
   else
   {
-    double radiusValue = mBufferLineEdit->text().toDouble();
-    if ( mRadiusUnitCombo->currentIndex() == HeatmapGui::Meters )
+    double radiusValue = bufferLineEdit->text().toDouble();
+    if ( radiusUnitCombo->currentIndex() == HeatmapGui::Meters )
     {
       radiusInMapUnits = mapUnitsOf( radiusValue, layerCrs );
     }
-    else if ( mRadiusUnitCombo->currentIndex() == HeatmapGui::MapUnits )
+    else if ( radiusUnitCombo->currentIndex() == HeatmapGui::MapUnits )
     {
       radiusInMapUnits = radiusValue;
     }
@@ -363,17 +494,13 @@ void HeatmapGui::updateBBox()
   mBBox.setYMinimum( mBBox.yMinimum() - radiusInMapUnits );
   mBBox.setXMaximum( mBBox.xMaximum() + radiusInMapUnits );
   mBBox.setYMaximum( mBBox.yMaximum() + radiusInMapUnits );
-  mRows = 500;
+
+  // Leave number of rows the same, and calculate new corresponding cell size and number of columns
   mYcellsize = mBBox.height() / mRows;
   mXcellsize = mYcellsize;
-  // +1 should be  added wherever a fractional part of cell might occur
-  mColumns = mBBox.width() / mXcellsize + 1;
-  mRows += 1;
+  mColumns = max( mBBox.width() / mXcellsize, 1 );
 
-  if ( advancedGroupBox->isChecked() )
-  {
-    updateSize();
-  }
+  updateSize();
 }
 
 double HeatmapGui::mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs )
@@ -399,18 +526,18 @@ double HeatmapGui::mapUnitsOf( double meters, QgsCoordinateReferenceSystem layer
 
 bool HeatmapGui::weighted()
 {
-  return useWeight->isChecked();
+  return weightFieldCheckBox->isChecked();
 }
 
 bool HeatmapGui::variableRadius()
 {
-  return useRadius->isChecked();
+  return radiusFieldCheckBox->isChecked();
 }
 
 double HeatmapGui::radius()
 {
-  double radius = mBufferLineEdit->text().toDouble();
-  if ( mRadiusUnitCombo->currentIndex() == HeatmapGui::Meters )
+  double radius = bufferLineEdit->text().toDouble();
+  if ( radiusUnitCombo->currentIndex() == HeatmapGui::Meters )
   {
     radius = mapUnitsOf( radius, inputVectorLayer()->crs() );
   }
@@ -419,11 +546,11 @@ double HeatmapGui::radius()
 
 int HeatmapGui::radiusUnit()
 {
-  if ( useRadius->isChecked() )
+  if ( radiusFieldCheckBox->isChecked() )
   {
     return radiusFieldUnitCombo->currentIndex();
   }
-  return mRadiusUnitCombo->currentIndex();
+  return radiusUnitCombo->currentIndex();
 }
 
 int HeatmapGui::kernelShape()
@@ -433,7 +560,7 @@ int HeatmapGui::kernelShape()
 
 double HeatmapGui::decayRatio()
 {
-  return mDecayLineEdit->text().toDouble();
+  return decayLineEdit->text().toDouble();
 }
 
 int HeatmapGui::radiusField()
@@ -455,7 +582,7 @@ QString HeatmapGui::outputFilename()
   QString outputFileName;
   QString outputFormat;
 
-  outputFileName = mOutputRasterLineEdit->text();
+  outputFileName = outputRasterLineEdit->text();
   QFileInfo myFileInfo( outputFileName );
   if ( outputFileName.isEmpty() || !myFileInfo.dir().exists() )
   {
@@ -464,7 +591,7 @@ QString HeatmapGui::outputFilename()
   }
 
   // The output format
-  outputFormat = mFormatCombo->itemData( mFormatCombo->currentIndex() ).toString();
+  outputFormat = formatCombo->itemData( formatCombo->currentIndex() ).toString();
   // append the file format if the suffix is empty
   QString suffix = myFileInfo.suffix();
   if ( suffix.isEmpty() )
@@ -487,12 +614,12 @@ QString HeatmapGui::outputFilename()
 
 QString HeatmapGui::outputFormat()
 {
-  return mFormatCombo->itemData( mFormatCombo->currentIndex() ).toString();
+  return formatCombo->itemData( formatCombo->currentIndex() ).toString();
 }
 
 QgsVectorLayer* HeatmapGui::inputVectorLayer()
 {
-  QString myLayerId = mInputVectorCombo->itemData( mInputVectorCombo->currentIndex() ).toString();
+  QString myLayerId = inputLayerCombo->itemData( inputLayerCombo->currentIndex() ).toString();
 
   QgsVectorLayer* inputLayer = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( myLayerId ) );
   if ( !inputLayer )

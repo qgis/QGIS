@@ -1,11 +1,12 @@
-FILE(GLOB HELP_FILES *-en_US)
+FILE(GLOB HELP_FILES *)
+LIST(REMOVE_ITEM HELP_FILES ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt)
 
 SET(HELP_OUTPUT "${CMAKE_SOURCE_DIR}/src/core/qgscontexthelp_texts.cpp")
 
 FILE(WRITE ${HELP_OUTPUT} "#include \"qgscontexthelp.h\"\n#include <QCoreApplication>\n\nQHash<QString, QString> QgsContextHelp::gContextHelpTexts;\n\nvoid QgsContextHelp::init()\n{\n  if( !gContextHelpTexts.isEmpty() )\n    return;\n")
 
 FOREACH(HELP_FILE ${HELP_FILES})
-  STRING(REGEX REPLACE "^.*/([^/]+)-en_US$" "\\1" CONTEXT ${HELP_FILE})
+  STRING(REGEX REPLACE "^.*/([^/]+)$" "\\1" CONTEXT ${HELP_FILE})
 
   FILE(READ ${HELP_FILE} HELP)
   STRING(REPLACE "\\" "&#92;" HELP "${HELP}")

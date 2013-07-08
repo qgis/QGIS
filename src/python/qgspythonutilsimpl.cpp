@@ -43,6 +43,9 @@ QgsPythonUtilsImpl::QgsPythonUtilsImpl()
 
 QgsPythonUtilsImpl::~QgsPythonUtilsImpl()
 {
+#if SIP_VERSION >= 0x40e06
+  exitPython();
+#endif
 }
 
 void QgsPythonUtilsImpl::initPython( QgisInterface* interface )

@@ -518,7 +518,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cbxAddPostgisDC->setChecked( settings.value( "/qgis/addPostgisDC", false ).toBool() );
   cbxAddOracleDC->setChecked( settings.value( "/qgis/addOracleDC", false ).toBool() );
   cbxAddNewLayersToCurrentGroup->setChecked( settings.value( "/qgis/addNewLayersToCurrentGroup", false ).toBool() );
-  cbxCreateRasterLegendIcons->setChecked( settings.value( "/qgis/createRasterLegendIcons", true ).toBool() );
+  cbxCreateRasterLegendIcons->setChecked( settings.value( "/qgis/createRasterLegendIcons", false ).toBool() );
   cbxCopyWKTGeomFromTable->setChecked( settings.value( "/qgis/copyGeometryAsWKT", true ).toBool() );
   leNullValue->setText( settings.value( "qgis/nullValue", "NULL" ).toString() );
   cbxIgnoreShapeEncoding->setChecked( settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() );
@@ -713,35 +713,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 #ifdef Q_WS_MAC //MH: disable incremental update on Mac for now to avoid problems with resizing
   groupBox_5->setEnabled( false );
 #endif //Q_WS_MAC
-
-  //overlay placement algorithm
-  mOverlayAlgorithmComboBox->insertItem( 0, tr( "Central point (fastest)" ) );
-  mOverlayAlgorithmComboBox->insertItem( 1, tr( "Chain (fast)" ) );
-  mOverlayAlgorithmComboBox->insertItem( 2, tr( "Popmusic tabu chain (slow)" ) );
-  mOverlayAlgorithmComboBox->insertItem( 3, tr( "Popmusic tabu (slow)" ) );
-  mOverlayAlgorithmComboBox->insertItem( 4, tr( "Popmusic chain (very slow)" ) );
-
-  QString overlayAlgorithmString = settings.value( "qgis/overlayPlacementAlgorithm", "Central point" ).toString();
-  if ( overlayAlgorithmString == "Chain" )
-  {
-    mOverlayAlgorithmComboBox->setCurrentIndex( 1 );
-  }
-  else if ( overlayAlgorithmString == "Popmusic tabu chain" )
-  {
-    mOverlayAlgorithmComboBox->setCurrentIndex( 2 );
-  }
-  else if ( overlayAlgorithmString == "Popmusic tabu" )
-  {
-    mOverlayAlgorithmComboBox->setCurrentIndex( 3 );
-  }
-  else if ( overlayAlgorithmString == "Popmusic chain" )
-  {
-    mOverlayAlgorithmComboBox->setCurrentIndex( 4 );
-  }
-  else
-  {
-    mOverlayAlgorithmComboBox->setCurrentIndex( 0 );
-  } //default is central point
 
   // load gdal driver list only when gdal tab is first opened
   mLoadedGdalDriverList = false;
@@ -968,7 +939,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
   settings.setValue( "/qgis/addOracleDC", cbxAddOracleDC->isChecked() );
   settings.setValue( "/qgis/addNewLayersToCurrentGroup", cbxAddNewLayersToCurrentGroup->isChecked() );
-  bool createRasterLegendIcons = settings.value( "/qgis/createRasterLegendIcons", true ).toBool();
+  bool createRasterLegendIcons = settings.value( "/qgis/createRasterLegendIcons", false ).toBool();
   settings.setValue( "/qgis/createRasterLegendIcons", cbxCreateRasterLegendIcons->isChecked() );
   settings.setValue( "/qgis/copyGeometryAsWKT", cbxCopyWKTGeomFromTable->isChecked() );
   settings.setValue( "/qgis/new_layers_visible", chkAddedVisibility->isChecked() );
@@ -996,29 +967,6 @@ void QgsOptions::saveOptions()
 
   settings.setValue( "/qgis/nullValue", leNullValue->text() );
   settings.setValue( "/qgis/style", cmbStyle->currentText() );
-
-  //overlay placement method
-  int overlayIndex = mOverlayAlgorithmComboBox->currentIndex();
-  if ( overlayIndex == 1 )
-  {
-    settings.setValue( "/qgis/overlayPlacementAlgorithm", "Chain" );
-  }
-  else if ( overlayIndex == 2 )
-  {
-    settings.setValue( "/qgis/overlayPlacementAlgorithm", "Popmusic tabu chain" );
-  }
-  else if ( overlayIndex == 3 )
-  {
-    settings.setValue( "/qgis/overlayPlacementAlgorithm",  "Popmusic tabu" );
-  }
-  else if ( overlayIndex == 4 )
-  {
-    settings.setValue( "/qgis/overlayPlacementAlgorithm", "Popmusic chain" );
-  }
-  else
-  {
-    settings.setValue( "/qgis/overlayPlacementAlgorithm", "Central point" );
-  }
 
   if ( cmbTheme->currentText().length() == 0 )
   {

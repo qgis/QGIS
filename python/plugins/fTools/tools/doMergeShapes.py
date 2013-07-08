@@ -118,7 +118,7 @@ class Dialog( QDialog, Ui_Dialog ):
     if self.inputFiles is None:
       workDir = QDir( self.leInputDir.text() )
       workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-      nameFilter = [ "*.shp" << "*.SHP" ]
+      nameFilter = [ "*.shp", "*.SHP" ]
       workDir.setNameFilters( nameFilter )
       self.inputFiles = workDir.entryList()
       if len( self.inputFiles ) == 0:
@@ -251,22 +251,24 @@ class ShapeMergeThread( QThread ):
       if not newLayer.isValid():
         continue
 
+      newLayer.setProviderEncoding( self.inputEncoding )
       vprovider = newLayer.dataProvider()
-
+      fieldMap[shapeIndex] = {}
       fieldIndex = 0
       for layerField in vprovider.fields():
         fieldFound = False
-        for mergedField in mergedFields:
+        for mergedFieldIndex, mergedField in enumerate(mergedFields):
           if mergedField.name() == layerField.name() and mergedField.type() == layerField.type():
             fieldFound = True
+            fieldMap[shapeIndex][fieldIndex] = mergedFieldIndex
+
+            if mergedField.length() < layerField.length():
+              # suit the field size to the field of this layer
+              mergedField.setLength( layerField.length() )
             break
 
         if not fieldFound:
-          if not fieldMap.has_key(shapeIndex):
-            fieldMap[shapeIndex]={}
-
           fieldMap[shapeIndex][fieldIndex] = len(mergedFields)
-
           mergedFields.append( layerField )
 
         fieldIndex += 1
@@ -295,8 +297,8 @@ class ShapeMergeThread( QThread ):
       newLayer = QgsVectorLayer( layerPath, QFileInfo( layerPath ).baseName(), "ogr" )
       if not newLayer.isValid():
         continue
+      newLayer.setProviderEncoding( self.inputEncoding )
       vprovider = newLayer.dataProvider()
-      vprovider.setEncoding( self.inputEncoding )
       layerFields = vprovider.fields()
       nFeat = vprovider.featureCount()
       self.emit( SIGNAL( "rangeChanged( PyQt_PyObject )" ), nFeat )

@@ -76,7 +76,7 @@ bool QgsGdalLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
   return true;
 }
 
-QVector<QgsDataItem*> QgsGdalLayerItem::createChildren( )
+QVector<QgsDataItem*> QgsGdalLayerItem::createChildren()
 {
   QgsDebugMsg( "Entered, path=" + path() );
   QVector<QgsDataItem*> children;

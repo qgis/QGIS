@@ -292,8 +292,8 @@ class TableIndexesModel(SimpleTableModel):
 	def getObject(self, row):
 		val = self.data(self.index(row, 0), Qt.UserRole)
 		idx = val.toPyObject() if val.isValid() else self._getNewObject()
-		idx.name = self.data(self.index(row, 0)).toString()
-		idx.columns = self.data(self.index(row, 1), Qt.UserRole).toList()
+		idx.name = self.data(self.index(row, 0))
+		idx.columns = self.data(self.index(row, 1), Qt.UserRole)
 		return idx
 
 	def getIndexes(self):

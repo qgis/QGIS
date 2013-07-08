@@ -131,7 +131,7 @@ class QgsPluginInstaller(QObject):
     if repositories.allUnavailable() and repositories.allUnavailable() != repositories.allEnabled():
       for key in repositories.allUnavailable():
         if not keepQuiet:
-          QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), self.tr("Error reading repository:") + " " + key + "\n" + repositories.all()[key]["error"])
+          QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), self.tr("Error reading repository:") + " " + key + "\n\n" + repositories.all()[key]["error"])
         if QgsApplication.keyboardModifiers() == Qt.KeyboardModifiers(Qt.ShiftModifier):
           keepQuiet = True
     # finally, rebuild plugins from the caches
@@ -172,9 +172,7 @@ class QgsPluginInstaller(QObject):
     """ Update manager's repository tree widget with current data """
     iface.pluginManagerInterface().clearRepositoryList()
     for key in repositories.all():
-        url = repositories.all()[key]["url"]
-        v=str(QGis.QGIS_VERSION_INT)
-        url += "?qgis=%d.%d" % ( int(v[0]), int(v[1:3]) )
+        url = repositories.all()[key]["url"] + repositories.urlParams()
         repository = repositories.all()[key]
         if repositories.inspectionFilter():
           enabled = ( key == repositories.inspectionFilter() )
@@ -201,6 +199,7 @@ class QgsPluginInstaller(QObject):
         "id" : key,
         "name" : plugin["name"],
         "description" : plugin["description"],
+        "about" : plugin["about"],
         "category" : plugin["category"],
         "tags" : plugin["tags"],
         "changelog" : plugin["changelog"],
@@ -322,9 +321,12 @@ class QgsPluginInstaller(QObject):
         else:
           settings = QSettings()
           if settings.value("/PythonPlugins/"+key, False, type=bool): # plugin will be reloaded on the fly only if currently loaded
+            reloadPlugin(key) # unloadPlugin + loadPlugin + startPlugin
             infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Plugin reinstalled successfully"))
-            reloadPlugin(key)
-          else: infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Python plugin reinstalled.\nYou need to restart QGIS in order to reload it."))
+          else:
+            unloadPlugin(key) # Just for a case. Will exit quietly if really not loaded
+            loadPlugin(key)
+            infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Python plugin reinstalled.\nYou need to restart QGIS in order to reload it."))
         if quiet:
           infoString = (None, None)
         QApplication.restoreOverrideCursor()
@@ -416,6 +418,7 @@ class QgsPluginInstaller(QObject):
   def addRepository(self):
     """ add new repository connection """
     dlg = QgsPluginInstallerRepositoryDialog( iface.mainWindow() )
+    dlg.editParams.setText(repositories.urlParams())
     dlg.checkBoxEnabled.setCheckState(Qt.Checked)
     if not dlg.exec_():
       return
@@ -446,6 +449,7 @@ class QgsPluginInstaller(QObject):
     dlg = QgsPluginInstallerRepositoryDialog( iface.mainWindow() )
     dlg.editName.setText(reposName)
     dlg.editURL.setText(repositories.all()[reposName]["url"])
+    dlg.editParams.setText(repositories.urlParams())
     dlg.checkBoxEnabled.setCheckState(checkState[repositories.all()[reposName]["enabled"]])
     if repositories.all()[reposName]["valid"]:
       dlg.checkBoxEnabled.setEnabled(True)

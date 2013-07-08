@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef QGSSTYLEV2EXPORTIMPORTDIALOG_H
 #define QGSSTYLEV2EXPORTIMPORTDIALOG_H
 
@@ -29,7 +28,7 @@
 
 class QgsStyleV2;
 
-class QgsStyleV2ExportImportDialog : public QDialog, private Ui::QgsStyleV2ExportImportDialogBase
+class GUI_EXPORT QgsStyleV2ExportImportDialog : public QDialog, private Ui::QgsStyleV2ExportImportDialogBase
 {
     Q_OBJECT
 

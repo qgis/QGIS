@@ -61,7 +61,7 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl, bool emb
   connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addLayer() ) );
 
   buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-  connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( on_mBuildQueryButton_clicked() ) );
+  connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQueryButtonClicked() ) );
 
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( btnNew, SIGNAL( clicked() ), this, SLOT( addEntryToServerList() ) );
@@ -94,8 +94,8 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl, bool emb
   mModelProxy->setSortCaseSensitivity( Qt::CaseInsensitive );
   treeView->setModel( mModelProxy );
 
-  connect( treeView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( on_treeWidget_itemDoubleClicked( const QModelIndex& ) ) );
-  connect( treeView->selectionModel(), SIGNAL( currentRowChanged( QModelIndex, QModelIndex ) ), this, SLOT( on_treeWidget_currentRowChanged( const QModelIndex&, const QModelIndex& ) ) );
+  connect( treeView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( treeWidgetItemDoubleClicked( const QModelIndex& ) ) );
+  connect( treeView->selectionModel(), SIGNAL( currentRowChanged( QModelIndex, QModelIndex ) ), this, SLOT( treeWidgetCurrentRowChanged( const QModelIndex&, const QModelIndex& ) ) );
 }
 
 QgsWFSSourceSelect::~QgsWFSSourceSelect()
@@ -519,13 +519,13 @@ void QgsWFSSourceSelect::on_btnLoad_clicked()
   emit connectionsChanged();
 }
 
-void QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked( const QModelIndex& index )
+void QgsWFSSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex& index )
 {
   QgsDebugMsg( "double click called" );
   buildQuery( index );
 }
 
-void QgsWFSSourceSelect::on_treeWidget_currentRowChanged( const QModelIndex & current, const QModelIndex & previous )
+void QgsWFSSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex & current, const QModelIndex & previous )
 {
   Q_UNUSED( previous )
   QgsDebugMsg( "treeWidget_currentRowChanged called" );
@@ -534,7 +534,7 @@ void QgsWFSSourceSelect::on_treeWidget_currentRowChanged( const QModelIndex & cu
   mAddButton->setEnabled( current.isValid() );
 }
 
-void QgsWFSSourceSelect::on_mBuildQueryButton_clicked()
+void QgsWFSSourceSelect::buildQueryButtonClicked()
 {
   QgsDebugMsg( "mBuildQueryButton click called" );
   buildQuery( treeView->selectionModel()->currentIndex() );

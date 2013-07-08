@@ -1,148 +1,49 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <author>Borys Jurgiel</author>
  <class>QgsPluginInstallerRepositoryDetailsDialogBase</class>
- <widget class="QDialog" name="QgsPluginInstallerRepositoryDetailsDialogBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsPluginInstallerRepositoryDetailsDialogBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>522</width>
-    <height>191</height>
+    <height>185</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Repository details</string>
   </property>
-  <property name="statusTip" >
+  <property name="statusTip">
    <string/>
   </property>
-  <property name="whatsThis" >
+  <property name="whatsThis">
    <string/>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" >
-    <widget class="QLabel" name="label" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text" >
-      <string>Name:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Fixed</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>16</width>
-       <height>27</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="2" colspan="2" >
-    <widget class="QLineEdit" name="editName" >
-     <property name="toolTip" >
-      <string>Enter a name for the repository</string>
-     </property>
-     <property name="whatsThis" >
-      <string>Enter a name for the repository</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QLabel" name="label_2" >
-     <property name="text" >
-      <string>URL:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2" colspan="2" >
-    <widget class="QLineEdit" name="editURL" >
-     <property name="toolTip" >
-      <string>Enter the repository URL, beginning with "http://"</string>
-     </property>
-     <property name="whatsThis" >
-      <string>Enter the repository URL, beginning with "http://"</string>
-     </property>
-     <property name="text" >
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2" >
-    <widget class="QCheckBox" name="checkBoxEnabled" >
-     <property name="enabled" >
+  <layout class="QGridLayout">
+   <item row="5" column="1" colspan="2">
+    <widget class="QLabel" name="labelInfo">
+     <property name="enabled">
       <bool>true</bool>
      </property>
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="toolTip" >
-      <string>Enable or disable the repository (disabled repositories will be omitted)</string>
-     </property>
-     <property name="whatsThis" >
-      <string>Enable or disable the repository (disabled repositories will be omitted)</string>
-     </property>
-     <property name="text" >
-      <string>Enabled</string>
-     </property>
-     <property name="checked" >
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="3" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Fixed</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>351</width>
-       <height>23</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="3" column="2" colspan="2" >
-    <widget class="QLabel" name="labelInfo" >
-     <property name="enabled" >
-      <bool>true</bool>
-     </property>
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="palette" >
+     <property name="palette">
       <palette>
        <active>
-        <colorrole role="WindowText" >
-         <brush brushstyle="SolidPattern" >
-          <color alpha="255" >
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
            <red>175</red>
            <green>0</green>
            <blue>0</blue>
@@ -151,9 +52,9 @@
         </colorrole>
        </active>
        <inactive>
-        <colorrole role="WindowText" >
-         <brush brushstyle="SolidPattern" >
-          <color alpha="255" >
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
            <red>175</red>
            <green>0</green>
            <blue>0</blue>
@@ -162,9 +63,9 @@
         </colorrole>
        </inactive>
        <disabled>
-        <colorrole role="WindowText" >
-         <brush brushstyle="SolidPattern" >
-          <color alpha="255" >
+        <colorrole role="WindowText">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
            <red>128</red>
            <green>128</green>
            <blue>128</blue>
@@ -174,32 +75,173 @@
        </disabled>
       </palette>
      </property>
-     <property name="font" >
+     <property name="font">
       <font>
        <weight>75</weight>
        <bold>true</bold>
       </font>
      </property>
-     <property name="frameShape" >
+     <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
-     <property name="text" >
+     <property name="text">
       <string/>
      </property>
     </widget>
    </item>
-   <item row="5" column="0" colspan="4" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
+   <item row="7" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Name</string>
+     </property>
+     <property name="buddy">
+      <cstring>editName</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="2">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QLineEdit" name="editURL">
+     <property name="toolTip">
+      <string>Enter the repository URL, beginning with &quot;http://&quot;</string>
+     </property>
+     <property name="whatsThis">
+      <string>Enter the repository URL, beginning with &quot;http://&quot;</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QCheckBox" name="checkBoxEnabled">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Enable or disable the repository (disabled repositories will be omitted)</string>
+     </property>
+     <property name="whatsThis">
+      <string>Enable or disable the repository (disabled repositories will be omitted)</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Parameters</string>
+     </property>
+     <property name="buddy">
+      <cstring>editParams</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="2">
+    <widget class="QLineEdit" name="editParams">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>?qgis=</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QLineEdit" name="editName">
+     <property name="toolTip">
+      <string>Enter a name for the repository</string>
+     </property>
+     <property name="whatsThis">
+      <string>Enter a name for the repository</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>URL</string>
+     </property>
+     <property name="buddy">
+      <cstring>editURL</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <spacer>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>351</width>
+       <height>23</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Enabled</string>
+     </property>
+     <property name="buddy">
+      <cstring>checkBoxEnabled</cstring>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>editName</tabstop>
+  <tabstop>editURL</tabstop>
+  <tabstop>editParams</tabstop>
+  <tabstop>checkBoxEnabled</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
@@ -207,13 +249,13 @@
    <receiver>QgsPluginInstallerRepositoryDetailsDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>257</x>
-     <y>207</y>
+    <hint type="sourcelabel">
+     <x>276</x>
+     <y>178</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
-     <y>216</y>
+     <y>184</y>
     </hint>
    </hints>
   </connection>
@@ -223,13 +265,13 @@
    <receiver>QgsPluginInstallerRepositoryDetailsDialogBase</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>325</x>
-     <y>207</y>
+    <hint type="sourcelabel">
+     <x>344</x>
+     <y>178</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>286</x>
-     <y>216</y>
+     <y>184</y>
     </hint>
    </hints>
   </connection>

@@ -206,7 +206,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       if self.sdsCheck.isChecked():
           arguments.append( "-sds")
       if self.srcwinCheck.isChecked() and self.srcwinEdit.text():
-          coordList = self.srcwinEdit.text().split( ' ', QString.SkipEmptyParts )
+          coordList = self.srcwinEdit.text().split() # split the string on whitespace(s)
           if len(coordList) == 4 and coordList[3]:
               try:
                   for x in coordList:
@@ -219,7 +219,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
                   for x in coordList:
                       arguments.append( x)
       if self.prjwinCheck.isChecked() and self.prjwinEdit.text():
-          coordList = self.prjwinEdit.text().split( ' ', QString.SkipEmptyParts )
+          coordList = self.prjwinEdit.text().split() # split the string on whitespace(s)
           if len(coordList) == 4 and coordList[3]:
               try:
                   for x in coordList:
@@ -276,9 +276,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         self.progressBar.setValue( 0 )
 
   def batchRun(self):
-      exts = self.formatCombo.currentText().remove( QRegExp('^.*\(') ).remove( QRegExp('\).*$') ).split( " " )
-      if exts and exts != "*" and exts != "*.*":
-        outExt = exts[ 0 ].remove( "*" )
+      exts = re.sub('\).*$', '', re.sub('^.*\(', '', self.formatCombo.currentText())).split(" ")
+      if len(exts) > 0 and exts[0] != "*" and exts[0] != "*.*":
+        outExt = exts[0].replace( "*", "" )
       else:
         outExt = ".tif"
 

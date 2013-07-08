@@ -352,7 +352,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset, bool leftSide
   }
 
   QgsGeometry geomCopy( *mOriginalGeometry );
-  GEOSGeometry* geosGeom = geomCopy.asGeos();
+  const GEOSGeometry* geosGeom = geomCopy.asGeos();
   if ( geosGeom )
   {
     QSettings s;

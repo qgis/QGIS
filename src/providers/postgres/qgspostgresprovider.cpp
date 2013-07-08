@@ -53,7 +53,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     , mConnectionRO( 0 )
     , mConnectionRW( 0 )
     , mFidCounter( 0 )
-    , mActiveIterator( 0 )
+    , mIteratorCounter( 0 )
 {
   mProviderId = sProviderIds++;
 
@@ -219,8 +219,12 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 
 QgsPostgresProvider::~QgsPostgresProvider()
 {
-  if ( mActiveIterator )
-    mActiveIterator->close();
+  while ( !mActiveIterators.empty() )
+  {
+    QgsPostgresFeatureIterator *it = *mActiveIterators.begin();
+    QgsDebugMsg( "closing active iterator" );
+    it->close();
+  }
 
   disconnectDb();
 
@@ -347,6 +351,7 @@ QgsFeatureIterator QgsPostgresProvider::getFeatures( const QgsFeatureRequest& re
     QgsMessageLog::logMessage( tr( "Read attempt on an invalid postgresql data source" ), tr( "PostGIS" ) );
     return QgsFeatureIterator();
   }
+
   return QgsFeatureIterator( new QgsPostgresFeatureIterator( this, request ) );
 }
 
@@ -1921,7 +1926,10 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
   {
     mConnectionRW->PQexecNR( "BEGIN" );
 
-    for ( QgsAttributeIds::const_iterator iter = ids.begin(); iter != ids.end(); ++iter )
+    QList<int> idsList = ids.values();
+    qSort( idsList.begin(), idsList.end(), qGreater<int>() );
+
+    for ( QList<int>::const_iterator iter = idsList.begin(); iter != idsList.end(); ++iter )
     {
       int index = *iter;
       if ( index < 0 || index >= mAttributeFields.count() )
@@ -2067,7 +2075,7 @@ void QgsPostgresProvider::appendGeomParam( QgsGeometry *geom, QStringList &param
   }
 
   QString param;
-  unsigned char *buf = geom->asWkb();
+  const unsigned char *buf = geom->asWkb();
   for ( uint i = 0; i < geom->wkbSize(); ++i )
   {
     if ( mConnectionRW->useWkbHex() )
@@ -3096,7 +3104,31 @@ QString  QgsPostgresProvider::name() const
 
 QString  QgsPostgresProvider::description() const
 {
-  return POSTGRES_DESCRIPTION;
+  QString pgVersion( tr( "PostgreSQL version: unknown" ) );
+  QString postgisVersion( tr( "unknown" ) );
+
+  if ( mConnectionRO )
+  {
+    QgsPostgresResult result;
+
+    result = mConnectionRO->PQexec( "SELECT version()" );
+    if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+    {
+      pgVersion = result.PQgetvalue( 0, 0 );
+    }
+
+    result = mConnectionRO->PQexec( "SELECT postgis_version()" );
+    if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+    {
+      postgisVersion = result.PQgetvalue( 0, 0 );
+    }
+  }
+  else
+  {
+    pgVersion = tr( "PostgreSQL not connected" );
+  }
+
+  return tr( "PostgreSQL/PostGIS provider\n%1\nPostGIS %2" ).arg( pgVersion ).arg( postgisVersion );
 } //  QgsPostgresProvider::description()
 
 /**

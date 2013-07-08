@@ -207,7 +207,7 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
       # show the error message if there's one, otherwise show the process output message
       msg = str(self.process.readAllStandardError())
       if msg == '':
-        outMessages = string.split( str(self.process.readAllStandardOutput()), sep="\n" )
+        outMessages = str(self.process.readAllStandardOutput()).splitlines()
 
         # make sure to not show the help
         for m in outMessages:
@@ -222,7 +222,7 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
           #if m.contains( QRegExp( "0(?:\\.+[1-9]0{1,2})+" ) ):
           #  continue
 
-          if not msg == '':
+          if msg:
             msg += "\n"
           msg += m
 

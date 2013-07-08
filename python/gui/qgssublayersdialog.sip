@@ -4,6 +4,7 @@ class QgsSublayersDialog : QDialog
 #include <qgssublayersdialog.h>
 %End
   public:
+
     enum ProviderType
     {
       Ogr,
@@ -15,6 +16,8 @@ class QgsSublayersDialog : QDialog
     ~QgsSublayersDialog();
 
     void populateLayerTable( QStringList theList, QString delim = ":" );
+    // Returns list of selected layers, if there are more layers with the same name,
+    // geometry type is appended separated by semicolon, example: <layer>:<geometryType>
     QStringList selectionNames();
     QList<int> selectionIndexes();
 

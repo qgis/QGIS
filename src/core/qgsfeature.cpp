@@ -192,7 +192,7 @@ bool QgsFeature::setAttribute( int idx, const QVariant &value )
 {
   if ( idx < 0 || idx >= mAttributes.size() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2[" ).arg( idx ).arg( mAttributes.size() ), QString::null, QgsMessageLog::WARNING );
+    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2]" ).arg( idx ).arg( mAttributes.size() ), QString::null, QgsMessageLog::WARNING );
     return false;
   }
 

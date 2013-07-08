@@ -17,7 +17,8 @@ class QgsManageConnectionsDialog : QDialog
       PostGIS,
       WFS,
       MSSQL,
-      WCS
+      WCS,
+      Oracle,
     };
 
     // constructor

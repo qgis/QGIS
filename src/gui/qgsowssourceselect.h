@@ -244,7 +244,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
 
   private slots:
     void on_mSearchButton_clicked();
-    void on_mAddWMSButton_clicked();
     void on_mSearchTableWidget_itemSelectionChanged();
     void on_mTilesetsTableWidget_itemClicked( QTableWidgetItem *item );
     void on_mLayerUpButton_clicked();

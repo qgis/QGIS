@@ -510,5 +510,5 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     SqliteHandles *handle;
 
     friend class QgsSpatiaLiteFeatureIterator;
-    QgsSpatiaLiteFeatureIterator* mActiveIterator;
+    QSet< QgsSpatiaLiteFeatureIterator * > mActiveIterators;
 };

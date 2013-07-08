@@ -35,14 +35,6 @@ class QgsFeatureRendererV2;
 #include <QList>
 #include <QString>
 
-#ifdef DIAGRAMSERVER
-#include "qgsdiagramcategory.h"
-#include "qgsdiagramrenderer.h"
-class QgsVectorOverlay;
-class QgsVectorDataProvider;
-#endif //DIAGRAMSERVER
-
-
 /**A class that creates QGIS maplayers and layer specific capabilities output from Styled layer descriptor (SLD). A QgsSLDParser object may have a pointer to a fallback object to model the situation where a user defined SLD refers to layers in the administrator sld*/
 class QgsSLDParser: public QgsConfigParser
 {
@@ -136,31 +128,6 @@ class QgsSLDParser: public QgsConfigParser
     void clearRasterSymbology( QgsRasterLayer* rl ) const;
     /**Reads attributes "epsg" or "proj" from layer element and sets specified CRS if present*/
     void setCrsForLayer( const QDomElement& layerElem, QgsMapLayer* ml ) const;
-
-
-#ifdef DIAGRAMSERVER
-    /**Parses the user style and adds the vector overlays contained in it(most likely diagrams)
-       to the vector layer*/
-    int overlaysFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const;
-    /**Creates a diagram overlay from a diagram symbolizer element*/
-    QgsVectorOverlay* vectorOverlayFromDiagramSymbolizer( const QDomElement& symbolizerElem, QgsVectorLayer* vec ) const;
-    /**Returns a list of diagram items from the contents of a <Categorize> element
-       @param attribute name of the scaling attribute
-     @return 0 in case of success*/
-    int diagramItemsFromCategorize( const QDomElement& categorizeElement, QList<QgsDiagramItem>& items, QString& attribute ) const;
-    /**Returns a list of diagram items from the contents of a <Interpolate> element
-       @param attribute name of the scaling attribute
-    @return 0 in case of success*/
-    int diagramItemsFromInterpolate( const QDomElement& interpolateElement, QList<QgsDiagramItem>& items, QString& attribute ) const;
-    /**Returns diagram categories from <Category> tags
-       @param diagramElement <Diagram> xml element containing the categories
-       @param p provider for the vectorlayer (needed to convert attribute names to indices)
-       @param categories list that will contain the created elements
-       @return 0 in case of success*/
-    int symbologyFromCategoryTags( const QDomElement& diagramElement, const QgsVectorDataProvider* p, QList<QgsDiagramCategory>& categories ) const;
-    /**Returns the scale multiplication factor from the <Scale> Element*/
-    double scaleFactorFromScaleTag( const QDomElement& scaleElem ) const;
-#endif //DIAGRAMSERVER
 
     /**SLD as dom document*/
     QDomDocument* mXMLDoc;

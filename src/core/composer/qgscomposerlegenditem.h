@@ -94,7 +94,7 @@ class CORE_EXPORT QgsComposerSymbolV2Item: public QgsComposerLegendItem
     QgsSymbolV2* mSymbolV2;
 };
 
-class CORE_EXPORT QgsComposerRasterSymbolItem: public QgsComposerLegendItem
+class CORE_EXPORT QgsComposerRasterSymbolItem : public QgsComposerLegendItem
 {
   public:
     QgsComposerRasterSymbolItem();
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsComposerRasterSymbolItem: public QgsComposerLegendItem
     QColor mColor;
 };
 
-class CORE_EXPORT QgsComposerLayerItem: public QgsComposerLegendItem
+class CORE_EXPORT QgsComposerLayerItem : public QgsComposerLegendItem
 {
   public:
     QgsComposerLayerItem();

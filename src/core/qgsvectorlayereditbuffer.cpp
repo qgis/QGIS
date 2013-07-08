@@ -462,27 +462,22 @@ void QgsVectorLayerEditBuffer::rollBack()
   Q_ASSERT( mAddedFeatures.isEmpty() );
 }
 
-
-
-
-
-/*QString QgsVectorLayerEditBuffer::dumpEditBuffer()
+#if 0
+QString QgsVectorLayerEditBuffer::dumpEditBuffer()
 {
   QString msg;
-  if (!mChangedGeometries.isEmpty())
+  if ( !mChangedGeometries.isEmpty() )
   {
     msg += "CHANGED GEOMETRIES:\n";
-    for (QgsGeometryMap::const_iterator it = mChangedGeometries.begin(); it != mChangedGeometries.end(); ++it)
+    for ( QgsGeometryMap::const_iterator it = mChangedGeometries.begin(); it != mChangedGeometries.end(); ++it )
     {
       // QgsFeatureId, QgsGeometry
-      msg += QString("- FID %1: %2").arg(it.key()).arg(it.value().to)
+      msg += QString( "- FID %1: %2" ).arg( it.key() ).arg( it.value().to );
     }
   }
   return msg;
-}*/
-
-
-
+}
+#endif
 
 void QgsVectorLayerEditBuffer::handleAttributeAdded( int index )
 {

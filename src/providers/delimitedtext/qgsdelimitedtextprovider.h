@@ -318,7 +318,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QgsSpatialIndex *mSpatialIndex;
 
     friend class QgsDelimitedTextFeatureIterator;
-    QgsDelimitedTextFeatureIterator* mActiveIterator;
+    QSet< QgsDelimitedTextFeatureIterator* > mActiveIterators;
 };
 
 #endif

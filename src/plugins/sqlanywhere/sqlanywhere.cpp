@@ -50,6 +50,7 @@ static const QString sDescription = QObject::tr( "Store vector layers within a S
 static const QString sCategory = QObject::tr( "Layers" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
+static const QString sIcon = ":/sqlanywhere/sqlanywhere.png";
 
 
 /**
@@ -248,6 +249,12 @@ QGISEXTERN int type()
 QGISEXTERN QString version()
 {
   return sPluginVersion;
+}
+
+// Return the icon
+QGISEXTERN QString icon()
+{
+  return sIcon;
 }
 
 // Delete ourself

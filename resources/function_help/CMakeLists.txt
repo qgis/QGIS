@@ -1,11 +1,12 @@
-FILE(GLOB HELP_FILES *-en_US)
+FILE(GLOB HELP_FILES *)
+LIST(REMOVE_ITEM HELP_FILES ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt)
 
 SET(HELP_OUTPUT "${CMAKE_SOURCE_DIR}/src/core/qgsexpression_texts.cpp")
 
 FILE(WRITE ${HELP_OUTPUT} "#include \"qgsexpression.h\"\n#include <QCoreApplication>\n\nQHash<QString, QString> QgsExpression::gFunctionHelpTexts;\n\nvoid QgsExpression::initFunctionHelp()\n{\n  if( !gFunctionHelpTexts.isEmpty() )\n    return;\n")
 
 FOREACH(HELP_FILE ${HELP_FILES})
-  STRING(REGEX REPLACE "^.*/([^/]+)-en_US$" "\\1" FN ${HELP_FILE})
+  STRING(REGEX REPLACE "^.*/([^/]+)$" "\\1" FN ${HELP_FILE})
 
   FILE(READ ${HELP_FILE} HELP)
   STRING(REPLACE "\\" "&#92;" HELP "${HELP}")

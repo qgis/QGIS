@@ -257,11 +257,11 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
   if ( !geometry )
     return 0.0;
 
-  unsigned char* wkb = geometry->asWkb();
+  const unsigned char* wkb = geometry->asWkb();
   if ( !wkb )
     return 0.0;
 
-  unsigned char* ptr;
+  const unsigned char* ptr;
   unsigned int wkbType;
   double res, resTotal = 0;
   int count, i;
@@ -308,6 +308,11 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
       for ( i = 0; i < count; i++ )
       {
         ptr = measurePolygon( ptr, &res, 0, hasZptr );
+        if ( !ptr )
+        {
+          QgsDebugMsg( "measurePolygon returned 0" );
+          break;
+        }
         resTotal += res;
       }
       QgsDebugMsg( "returning " + QString::number( resTotal ) );
@@ -324,13 +329,13 @@ double QgsDistanceArea::measurePerimeter( QgsGeometry* geometry )
   if ( !geometry )
     return 0.0;
 
-  unsigned char* wkb = geometry->asWkb();
+  const unsigned char* wkb = geometry->asWkb();
   if ( !wkb )
     return 0.0;
 
-  unsigned char* ptr;
+  const unsigned char* ptr;
   unsigned int wkbType;
-  double res, resTotal = 0;
+  double res = 0.0, resTotal = 0.0;
   int count, i;
 
   memcpy( &wkbType, ( wkb + 1 ), sizeof( wkbType ) );
@@ -361,6 +366,11 @@ double QgsDistanceArea::measurePerimeter( QgsGeometry* geometry )
       for ( i = 0; i < count; i++ )
       {
         ptr = measurePolygon( ptr, 0, &res, hasZptr );
+        if ( !ptr )
+        {
+          QgsDebugMsg( "measurePolygon returned 0" );
+          break;
+        }
         resTotal += res;
       }
       QgsDebugMsg( "returning " + QString::number( resTotal ) );
@@ -373,9 +383,9 @@ double QgsDistanceArea::measurePerimeter( QgsGeometry* geometry )
 }
 
 
-unsigned char* QgsDistanceArea::measureLine( unsigned char* feature, double* area, bool hasZptr )
+const unsigned char* QgsDistanceArea::measureLine( const unsigned char* feature, double* area, bool hasZptr )
 {
-  unsigned char *ptr = feature + 5;
+  const unsigned char *ptr = feature + 5;
   unsigned int nPoints = *(( int* )ptr );
   ptr = feature + 9;
 
@@ -481,16 +491,25 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2 )
 }
 
 
-unsigned char* QgsDistanceArea::measurePolygon( unsigned char* feature, double* area, double* perimeter, bool hasZptr )
+const unsigned char* QgsDistanceArea::measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr )
 {
+  if ( !feature )
+  {
+    QgsDebugMsg( "no feature to measure" );
+    return 0;
+  }
+
   // get number of rings in the polygon
   unsigned int numRings = *(( int* )( feature + 1 + sizeof( int ) ) );
 
   if ( numRings == 0 )
+  {
+    QgsDebugMsg( "no rings to measure" );
     return 0;
+  }
 
   // Set pointer to the first ring
-  unsigned char* ptr = feature + 1 + 2 * sizeof( int );
+  const unsigned char* ptr = feature + 1 + 2 * sizeof( int );
 
   QList<QgsPoint> points;
   QgsPoint pnt;
@@ -571,7 +590,6 @@ unsigned char* QgsDistanceArea::measurePolygon( unsigned char* feature, double* 
 
 double QgsDistanceArea::measurePolygon( const QList<QgsPoint>& points )
 {
-
   try
   {
     if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )

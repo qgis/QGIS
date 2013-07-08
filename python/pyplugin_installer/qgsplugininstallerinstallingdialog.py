@@ -27,7 +27,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsNetworkAccessManager
 
 from ui_qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase
 from installer_data import *
@@ -55,13 +55,10 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     tmpPath = QDir.cleanPath(tmpDir+"/"+fileName)
     self.file = QFile(tmpPath)
 
-    self.nam = QPNetworkAccessManager(url.host(), )
-    #self.http = QPHttp(url.host(), port)
     self.request = QNetworkRequest(url)
-    self.reply = self.nam.get( self.request )
-
+    self.reply = QgsNetworkAccessManager.instance().get( self.request )
     self.reply.downloadProgress.connect( self.readProgress )
-    self.nam.finished.connect(self.requestFinished)
+    self.reply.finished.connect(self.requestFinished)
 
     self.stateChanged(4)
 
@@ -82,17 +79,23 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
         self.progressBar.setMaximum(total)
         self.progressBar.setValue(done)
 
+
   # ----------------------------------------- #
-  def requestFinished(self, reply):
+  def requestFinished(self):
+    reply = self.sender()
     self.buttonBox.setEnabled(False)
     if reply.error() != QNetworkReply.NoError:
-      self.mResult = self.http.errorString()
+      self.mResult = reply.errorString()
+      if reply.error() == QNetworkReply.OperationCanceledError:
+        self.mResult += "<br/><br/>" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't cancelled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.")
       self.reject()
+      reply.deleteLater()
       return
     self.file.open(QFile.WriteOnly)
     self.file.write( reply.readAll() )
     self.file.close()
     self.stateChanged(0)
+    reply.deleteLater()
     pluginDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins"
     tmpPath = self.file.fileName()
     # make sure that the parent directory exists
@@ -120,7 +123,8 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
   # ----------------------------------------- #
   def abort(self):
     if self.reply.isRunning():
-      self.nam.finished.disconnect()
+      self.reply.finished.disconnect()
       self.reply.abort()
+      del self.reply
     self.mResult = self.tr("Aborted by user")
     self.reject()

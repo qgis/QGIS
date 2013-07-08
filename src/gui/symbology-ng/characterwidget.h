@@ -59,7 +59,7 @@ class QPaintEvent;
 QT_END_NAMESPACE
 
 //! [0]
-class CharacterWidget : public QWidget
+class GUI_EXPORT CharacterWidget : public QWidget
 {
     Q_OBJECT
 

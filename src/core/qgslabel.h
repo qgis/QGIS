@@ -165,7 +165,7 @@ class CORE_EXPORT QgsLabel
     void labelPoint( std::vector<labelpoint>&, QgsFeature &feature );
 
     /** Get label point for the given feature in wkb format. */
-    unsigned char* labelPoint( labelpoint& point, unsigned char* wkb, size_t wkblen );
+    const unsigned char* labelPoint( labelpoint& point, const unsigned char* wkb, size_t wkblen );
 
     /** Color to draw selected features */
     QColor mSelectionColor;

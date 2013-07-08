@@ -1226,7 +1226,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void initLegend();
     void createOverview();
     void createCanvasTools();
-    bool createDB();
     void createMapTips();
     void updateCRSStatusBar();
     void createDecorations();

@@ -138,10 +138,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
         for param in params:
             if isinstance(param, ParameterExtent):
-                value = self.paramTable.valueItems[param.name].getValue()
-                if value is not None:
-                    param.value = value
-                else:
+                if not self.setParamValue(param, self.paramTable.valueItems[param.name]):
                     raise AlgorithmExecutionDialog.InvalidParameterValue(param, self.paramTable.valueItems[param.name])
 
         for output in outputs:

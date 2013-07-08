@@ -49,7 +49,7 @@ class QgsMapTool : QObject
 
     //! Mouse wheel event for overriding. Default implementation does nothing.
     //! Added in version 2.0
-    virtual void wheelEvent( QWheelEvent * e );
+    virtual void wheelEvent( QWheelEvent* e );
 
     //! Key event for overriding. Default implementation does nothing.
     virtual void keyPressEvent( QKeyEvent* e );
@@ -82,6 +82,9 @@ class QgsMapTool : QObject
 
     /** Return associated button with map tool or NULL if no button is associated */
     QAbstractButton* button();
+
+    /** Set a user defined cursor */
+    virtual void setCursor(QCursor cursor);    
 
     /** Check whether this MapTool performs a zoom or pan operation.
      * If it does, we will be able to perform the zoom  and then

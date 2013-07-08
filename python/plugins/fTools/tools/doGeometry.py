@@ -1008,7 +1008,7 @@ class geometryThread( QThread ):
   def doubleFieldIndex( self, name, desc, fieldList ):
     i = 0
     for f in fieldList:
-      if name == f.name().toUpper():
+      if name == f.name().upper():
         return (i, fieldList )
       i += 1
 

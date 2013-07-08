@@ -118,12 +118,10 @@ class Dialog(QDialog, Ui_Dialog):
                 inPath = provider.dataSourceUri()
                 p = re.compile("\|.*")
                 inPath = p.sub("", inPath)
-                print "PATH", inPath
                 self.progressBar.setValue(40)
                 if inPath.endswith(".shp"):
                     inPath = inPath[:-4]
                 self.progressBar.setValue(55)
-                print "PATH2", inPath
                 if not srsDefine.isValid():
                     QMessageBox.information(self, self.tr("Define current projection"), self.tr("Output spatial reference system is not valid"))
                 else:
@@ -147,7 +145,6 @@ class Dialog(QDialog, Ui_Dialog):
                     self.progressBar.setValue(95)
                     vLayer.setCrs(srsDefine)
                     self.progressBar.setValue(100)
-                    print "PATH3", inPath
                     QMessageBox.information(self, self.tr("Define current projection"),
                                             self.tr("Defined Projection For:\n%s.shp") % (inPath) )
         self.progressBar.setValue(0)

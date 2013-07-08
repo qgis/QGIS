@@ -270,7 +270,7 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, QgsGeometry*
   count = 0;
   sum = 0;
 
-  GEOSGeometry* polyGeos = poly->asGeos();
+  const GEOSGeometry* polyGeos = poly->asGeos();
   if ( !polyGeos )
   {
     return;

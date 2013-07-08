@@ -64,10 +64,6 @@ class CORE_EXPORT QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
      */
     virtual bool getCacheIterator( QgsFeatureIterator& featureIterator, const QgsFeatureRequest& featureRequest );
 
-  signals:
-
-  public slots:
-
   private:
     QgsVectorLayerCache* C;
 };

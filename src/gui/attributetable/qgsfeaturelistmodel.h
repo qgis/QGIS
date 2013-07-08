@@ -14,7 +14,7 @@ class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;
 class QgsVectorLayerCache;
 
-class QgsFeatureListModel : public QAbstractProxyModel, public QgsFeatureModel
+class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFeatureModel
 {
     Q_OBJECT
 

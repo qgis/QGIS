@@ -61,7 +61,6 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerundocommand.h"
-#include "qgsvectoroverlay.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsclipper.h"
 #include "qgsproject.h"
@@ -202,14 +201,6 @@ QgsVectorLayer::~QgsVectorLayer()
   delete mActions;
 
   delete mRendererV2;
-
-  //delete remaining overlays
-
-  QList<QgsVectorOverlay*>::iterator overlayIt = mOverlays.begin();
-  for ( ; overlayIt != mOverlays.end(); ++overlayIt )
-  {
-    delete *overlayIt;
-  }
 }
 
 QString QgsVectorLayer::storageType() const
@@ -2382,16 +2373,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   // add attribute actions
   mActions->writeXML( node, doc );
 
-  //save vector overlays (e.g. diagrams)
-  QList<QgsVectorOverlay*>::const_iterator overlay_it = mOverlays.constBegin();
-  for ( ; overlay_it != mOverlays.constEnd(); ++overlay_it )
-  {
-    if ( *overlay_it )
-    {
-      ( *overlay_it )->writeXML( mapLayerNode, doc );
-    }
-  }
-
   return true;
 }
 
@@ -2440,9 +2421,9 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
     return false;
   }
 
-  return mEditBuffer->changeGeometry( fid, geom );
-
   updateExtents();
+
+  return mEditBuffer->changeGeometry( fid, geom );
 }
 
 
@@ -2539,6 +2520,8 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   bool res = mEditBuffer->deleteFeature( fid );
   if ( res )
     mSelectedFeatureIds.remove( fid ); // remove it from selection
+
+  updateExtents();
 
   return res;
 }
@@ -3081,7 +3064,11 @@ bool QgsVectorLayer::fieldEditable( int idx )
 {
   const QgsFields &fields = pendingFields();
   if ( idx >= 0 && idx < fields.count() )
+  {
+    if ( mUpdatedFields.fieldOrigin( idx ) == QgsFields::OriginJoin )
+      return false;
     return mFieldEditables.value( fields[idx].name(), true );
+  }
   else
     return true;
 }
@@ -3108,41 +3095,6 @@ void QgsVectorLayer::setLabelOnTop( int idx, bool onTop )
   if ( idx >= 0 && idx < fields.count() )
     mLabelOnTop[ fields[idx].name()] = onTop;
 }
-
-void QgsVectorLayer::addOverlay( QgsVectorOverlay* overlay )
-{
-  mOverlays.push_back( overlay );
-}
-
-void QgsVectorLayer::removeOverlay( const QString& typeName )
-{
-  for ( int i = mOverlays.size() - 1; i >= 0; --i )
-  {
-    if ( mOverlays.at( i )->typeName() == typeName )
-    {
-      mOverlays.removeAt( i );
-    }
-  }
-}
-
-void QgsVectorLayer::vectorOverlays( QList<QgsVectorOverlay*>& overlayList )
-{
-  overlayList = mOverlays;
-}
-
-QgsVectorOverlay* QgsVectorLayer::findOverlayByType( const QString& typeName )
-{
-  QList<QgsVectorOverlay*>::iterator it = mOverlays.begin();
-  for ( ; it != mOverlays.end(); ++it )
-  {
-    if (( *it )->typeName() == typeName )
-    {
-      return *it;
-    }
-  }
-  return 0; //not found
-}
-
 
 QgsFeatureRendererV2* QgsVectorLayer::rendererV2()
 {
@@ -3581,6 +3533,15 @@ QString QgsVectorLayer::metadata()
   myMetadata += "<p>";
   myMetadata += storageType();
   myMetadata += "</p>\n";
+
+  if ( dataProvider() )
+  {
+    //provider description
+    myMetadata += "<p class=\"glossy\">" + tr( "Description of this provider" ) + "</p>\n";
+    myMetadata += "<p>";
+    myMetadata += dataProvider()->description().replace( "\n", "<br>" );
+    myMetadata += "</p>\n";
+  }
 
   // data source
   myMetadata += "<p class=\"glossy\">" + tr( "Source for this layer" ) + "</p>\n";

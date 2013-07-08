@@ -472,13 +472,14 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     static int sProviderIds;
 
-    QMap<QVariant, QgsFeatureId> mKeyToFid;  // map key values to feature id
-    QMap<QgsFeatureId, QVariant> mFidToKey;  // map feature back to fea
-    QgsFeatureId mFidCounter;       // next feature id if map is used
+    QMap<QVariant, QgsFeatureId> mKeyToFid;      // map key values to feature id
+    QMap<QgsFeatureId, QVariant> mFidToKey;      // map feature back to fea
+    QgsFeatureId mFidCounter;                    // next feature id if map is used
     QgsFeatureId lookupFid( const QVariant &v ); // lookup existing mapping or add a new one
+    int mIteratorCounter;                        // iterator counter
 
     friend class QgsPostgresFeatureIterator;
-    QgsPostgresFeatureIterator* mActiveIterator; //!< pointer to currently active iterator (0 if none)
+    QSet< QgsPostgresFeatureIterator * > mActiveIterators;
 };
 
 #endif

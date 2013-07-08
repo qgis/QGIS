@@ -84,7 +84,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
 
   //create combo boxes and insert attribute names
   const QgsFields& fields = mVectorLayer->pendingFields();
-  QgsAttributeList pkAttrList = mVectorLayer->pendingPkAttributesList();
+  QSet<int> pkAttrList = mVectorLayer->pendingPkAttributesList().toSet();
 
   int col = 0;
   for ( int idx = 0; idx < fields.count(); ++idx )
@@ -274,7 +274,7 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   }
   else //an existing feature value
   {
-    int featureId = mergeBehaviourString.split( " " ).at( 1 ).toInt(); //probably not very robust for translations...
+    int featureId = mergeBehaviourString.split( " " ).value( 1 ).toInt(); //probably not very robust for translations...
     mergeResult = featureAttribute( featureId, col );
   }
 
@@ -483,12 +483,17 @@ void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
     return;
   }
 
+  QSet<int> pkAttributes = mVectorLayer->pendingPkAttributesList().toSet();
   for ( int i = 0; i < mTableWidget->columnCount(); ++i )
   {
+    if ( pkAttributes.contains( i ) )
+    {
+      continue;
+    }
     QComboBox* currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
     if ( currentComboBox )
     {
-      currentComboBox->setCurrentIndex( currentComboBox->findText( tr( "feature %1" ).arg( featureId ) ) );
+      currentComboBox->setCurrentIndex( currentComboBox->findText( tr( "Feature %1" ).arg( featureId ) ) );
     }
   }
 }

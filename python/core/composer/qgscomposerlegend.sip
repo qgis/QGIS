@@ -31,17 +31,28 @@ class QgsComposerLegend : QgsComposerItem
     void setTitle( const QString& t );
     QString title() const;
 
-    /*
-    QgsComposerLegendStyle style(QgsComposerLegendStyle::Style s) const;
-    void setStyle(QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle style);
+    /** Returns reference to modifiable style */
+    QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s );
+    /** Returns style */
+    QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const;
+    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle style );
+
     QFont styleFont( QgsComposerLegendStyle::Style s ) const;
+    /** Set style font */
     void setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f );
+
+    /** Set style margin*/
     void setStyleMargin( QgsComposerLegendStyle::Style s, double margin );
     void setStyleMargin( QgsComposerLegendStyle::Style s, QgsComposerLegendStyle::Side side, double margin );
-    */
 
     double boxSpace() const;
     void setBoxSpace( double s );
+
+    double columnSpace() const;
+    void setColumnSpace( double s );
+
+    QColor fontColor() const;
+    void setFontColor( const QColor& c );
 
     double symbolWidth() const;
     void setSymbolWidth( double w );
@@ -51,6 +62,15 @@ class QgsComposerLegend : QgsComposerItem
 
     void setWrapChar( const QString& t );
     QString wrapChar() const;
+
+    int columnCount() const;
+    void setColumnCount( int c );
+
+    int splitLayer() const;
+    void setSplitLayer( bool s );
+
+    int equalColumnWidth() const;
+    void setEqualColumnWidth( bool s );
 
     void setComposerMap( const QgsComposerMap* map );
     const QgsComposerMap* composerMap() const;

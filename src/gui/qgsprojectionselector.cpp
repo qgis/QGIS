@@ -76,7 +76,7 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name,
       if ( ! crs.isValid() )
       {
         // Couldn't create from EPSG, try the Proj4 string instead
-        if ( ! crs.createFromProj4( projectionsProj4.at( i ) ) )
+        if ( i >= projectionsProj4.size() || !crs.createFromProj4( projectionsProj4.at( i ) ) )
         {
           // No? Skip this entry
           continue;

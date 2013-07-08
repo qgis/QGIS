@@ -159,6 +159,9 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     //transfers scroll area ownership so no need to call delete
     mypOuterLayout->addWidget( mypScrollArea );
 
+    QSpacerItem *mypSpacer = new QSpacerItem( 10, 10, QSizePolicy::Fixed, QSizePolicy::Expanding );
+    mypOuterLayout->addItem( mypSpacer );
+
     QFrame *mypInnerFrame = new QFrame();
     mypInnerFrame->setFrameShape( QFrame::NoFrame );
     mypInnerFrame->setFrameShadow( QFrame::Plain );
@@ -174,6 +177,13 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     {
       //show attribute alias if available
       QString myFieldName = vl->attributeDisplayName( fldIdx );
+      // by default (until user defined alias) append date format
+      // (validator does not allow to enter a value in wrong format)
+      const QgsField &myField = theFields[fldIdx];
+      if ( myField.type() == QVariant::Date && vl->attributeAlias( fldIdx ).isEmpty() )
+      {
+        myFieldName += " (" + vl->dateFormat( fldIdx ) + ")";
+      }
 
       QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, 0, vl, fldIdx, myAttributes[fldIdx], mProxyWidgets );
       if ( !myWidget )

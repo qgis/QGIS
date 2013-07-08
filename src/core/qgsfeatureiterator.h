@@ -73,7 +73,7 @@ class CORE_EXPORT QgsFeatureIterator
     bool close();
 
     //! find out whether the iterator is still valid or closed already
-    bool isClosed();
+    bool isClosed() const;
 
     friend bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 );
     friend bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 );
@@ -124,20 +124,19 @@ inline bool QgsFeatureIterator::close()
   return mIter ? mIter->close() : false;
 }
 
-inline bool QgsFeatureIterator::isClosed()
+inline bool QgsFeatureIterator::isClosed() const
 {
   return mIter ? mIter->mClosed : true;
 }
-
 
 inline bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
 {
   return ( fi1.mIter == fi2.mIter );
 }
+
 inline bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
 {
   return !( fi1 == fi2 );
 }
-
 
 #endif // QGSFEATUREITERATOR_H

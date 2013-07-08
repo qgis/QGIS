@@ -232,7 +232,7 @@ QgsWMSRootItem::~QgsWMSRootItem()
 {
 }
 
-QVector<QgsDataItem*>QgsWMSRootItem::createChildren()
+QVector<QgsDataItem*> QgsWMSRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
 

@@ -125,12 +125,12 @@ class DlgImportVector(QDialog, Ui_Dialog):
 		lastDir = settings.value("/db_manager/lastUsedDir", "")
 		lastVectorFormat = settings.value("/UI/lastVectorFileFilter", "")
 		# ask for a filename
-		filename = QFileDialog.getOpenFileName(self, self.tr("Choose the file to import"), lastDir, vectorFormats, lastVectorFormat)
+		(filename, lastVectorFormat) = QFileDialog.getOpenFileNameAndFilter(self, self.tr("Choose the file to import"), lastDir, vectorFormats, lastVectorFormat)
 		if filename == "":
 			return
 		# store the last used dir and format
 		settings.setValue("/db_manager/lastUsedDir", QFileInfo(filename).filePath())
-		#settings.setValue("/UI/lastVectorFileFilter", lastVectorFormat)
+		settings.setValue("/UI/lastVectorFileFilter", lastVectorFormat)
 
 		self.cboInputLayer.setEditText( filename )
 
@@ -273,10 +273,10 @@ class DlgImportVector(QDialog, Ui_Dialog):
 				geom = self.outUri.geometryColumn() if not self.chkGeomColumn.isChecked() else self.editGeomColumn.text()
 				geom = geom if geom != "" else self.default_geom
 			else:
-				geom = QString()
+				geom = ""
 
 			# get output params, update output URI
-			self.outUri.setDataSource( schema, table, geom, QString(), pk )
+			self.outUri.setDataSource( schema, table, geom, "", pk )
 			uri = self.outUri.uri()
 
 			providerName = self.db.dbplugin().providerName()

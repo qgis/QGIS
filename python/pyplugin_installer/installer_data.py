@@ -40,7 +40,6 @@ Data structure:
 mRepositories = dict of dicts: {repoName : {"url" unicode,
                                             "enabled" bool,
                                             "valid" bool,
-                                            "QPNAME" QPNetworkAccessManager,
                                             "Relay" Relay, # Relay object for transmitting signals from QPHttp with adding the repoName information
                                             "Request" QNetworkRequest,
                                             "xmlData" QNetworkReply,
@@ -50,54 +49,41 @@ mRepositories = dict of dicts: {repoName : {"url" unicode,
 
 mPlugins = dict of dicts {id : {
     "id" unicode                                # module name
-    "name" unicode,                             #
-    "description" unicode,                      #
+    "name" unicode,                             # human readable plugin name
+    "description" unicode,                      # short description of the plugin purpose only
+    "about" unicode,                            # longer description: how does it work, where does it install, how to run it?
     "category" unicode,                         # will be removed?
     "tags" unicode,                             # comma separated, spaces allowed
     "changelog" unicode,                        # may be multiline
-    "author_name" unicode,                      #
-    "author_email" unicode,                     #
-    "homepage" unicode,                         # url to a tracker site
+    "author_name" unicode,                      # author name
+    "author_email" unicode,                     # author email
+    "homepage" unicode,                         # url to the plugin homepage
     "tracker" unicode,                          # url to a tracker site
-    "code_repository" unicode,                  # url to a repository with code
-    "version_installed" unicode,                #
-    "library" unicode,                          # full path to the installed library/Python module
+    "code_repository" unicode,                  # url to the source code repository
+    "version_installed" unicode,                # installed instance version
+    "library" unicode,                          # absolute path to the installed library / Python module
     "icon" unicode,                             # path to the first:(INSTALLED | AVAILABLE) icon
-    "pythonic" const bool=True
+    "pythonic" const bool=True                  # True if Python plugin
     "readonly" boolean,                         # True if core plugin
     "installed" boolean,                        # True if installed
     "available" boolean,                        # True if available in repositories
     "status" unicode,                           # ( not installed | new ) | ( installed | upgradeable | orphan | newer )
     "error" unicode,                            # NULL | broken | incompatible | dependent
-    "error_details" unicode,                    # more details
-    "experimental" boolean,                     # choosen version: experimental or stable?
-    "version_available" unicode,                # choosen version: version
-    "zip_repository" unicode,                   # choosen version: the remote repository id
-    "download_url" unicode,                     # choosen version: url for downloading
-    "filename" unicode,                         # choosen version: the zip file to be downloaded
-    "downloads" unicode,                        # choosen version: number of dowloads
-    "average_vote" unicode,                     # choosen version: average vote
-    "rating_votes" unicode,                     # choosen version: number of votes
-    "stable:version_available" unicode,         # stable version found in repositories
-    "stable:download_source" unicode,
-    "stable:download_url" unicode,
-    "stable:filename" unicode,
-    "stable:downloads" unicode,
-    "stable:average_vote" unicode,
-    "stable:rating_votes" unicode,
-    "experimental:version_available" unicode,   # experimental version found in repositories
-    "experimental:download_source" unicode,
-    "experimental:download_url" unicode,
-    "experimental:filename" unicode,
-    "experimental:downloads" unicode,
-    "experimental:average_vote" unicode,
-    "experimental:rating_votes" unicode
+    "error_details" unicode,                    # error description
+    "experimental" boolean,                     # true if experimental, false if stable
+    "version_available" unicode,                # available version
+    "zip_repository" unicode,                   # the remote repository id
+    "download_url" unicode,                     # url for downloading the plugin
+    "filename" unicode,                         # the zip file name to be unzipped after downloaded
+    "downloads" unicode,                        # number of dowloads
+    "average_vote" unicode,                     # average vote
+    "rating_votes" unicode,                     # number of votes
 }}
 """
 
 
 
-translatableAttributes = ["name", "description", "tags"]
+translatableAttributes = ["name", "description", "about", "tags"]
 
 reposGroup = "/Qgis/plugin-repos"
 settingsGroup = "/Qgis/plugin-installer"
@@ -165,43 +151,6 @@ def removeDir(path):
       QDir().mkpath(pluginDir)
     return result
 # --- /common functions ------------------------------------------------------------------ #
-
-
-
-
-
-# --- class QPNetworkAccessManager  ----------------------------------------------------------------------- #
-# --- It's a temporary workaround for broken proxy handling in Qt ------------------------- #
-class QPNetworkAccessManager(QNetworkAccessManager):
-  def __init__(self, repoUrl):
-    QNetworkAccessManager.__init__(self,)
-    settings = QSettings()
-    settings.beginGroup("proxy")
-    if settings.value("/proxyEnabled", False, type=bool):
-      self.proxy=QNetworkProxy()
-      proxyType = settings.value( "/proxyType", "0", type=unicode)
-      if repoUrl:
-        for excludedUrl in settings.value("/proxyExcludedUrls","", type=unicode).split("|"):
-          if repoUrl.find( excludedUrl ) > -1:
-            proxyType = "NoProxy"
-      if proxyType in ["1","Socks5Proxy"]: self.proxy.setType(QNetworkProxy.Socks5Proxy)
-      elif proxyType in ["2","NoProxy"]: self.proxy.setType(QNetworkProxy.NoProxy)
-      elif proxyType in ["3","HttpProxy"]: self.proxy.setType(QNetworkProxy.HttpProxy)
-      elif proxyType in ["4","HttpCachingProxy"] and QT_VERSION >= 0X040400: self.proxy.setType(QNetworkProxy.HttpCachingProxy)
-      elif proxyType in ["5","FtpCachingProxy"] and QT_VERSION >= 0X040400: self.proxy.setType(QNetworkProxy.FtpCachingProxy)
-      else: self.proxy.setType(QNetworkProxy.DefaultProxy)
-      self.proxy.setHostName(settings.value("/proxyHost","", type=unicode))
-      try:
-		# QSettings may contain non-int value...
-        self.proxy.setPort(settings.value("/proxyPort", 0, type=int))
-      except:
-	    pass
-      self.proxy.setUser(settings.value("/proxyUser", "", type=unicode))
-      self.proxy.setPassword(settings.value("/proxyPassword", "", type=unicode))
-      self.setProxy(self.proxy)
-    settings.endGroup()
-    return None
-# --- /class QPNetworkAccessManager  ---------------------------------------------------------------------- #
 
 
 
@@ -285,6 +234,13 @@ class Repositories(QObject):
       if self.mRepositories[i]["enabled"] and self.mRepositories[i]["valid"] and self.mRepositories[i]["state"] == 3:
         repos[i] = self.mRepositories[i]
     return repos
+
+
+  # ----------------------------------------- #
+  def urlParams(self):
+    """ return GET parameters to be added to every request """
+    v=str(QGis.QGIS_VERSION_INT)
+    return "?qgis=%d.%d" % ( int(v[0]), int(v[1:3]) )
 
 
   # ----------------------------------------- #
@@ -395,7 +351,6 @@ class Repositories(QObject):
       self.mRepositories[key]["url"] = settings.value(key+"/url", "", type=unicode)
       self.mRepositories[key]["enabled"] = settings.value(key+"/enabled", True, type=bool)
       self.mRepositories[key]["valid"] = settings.value(key+"/valid", True, type=bool)
-      self.mRepositories[key]["QPNAM"] = QPNetworkAccessManager( self.mRepositories[key]["url"] )
       self.mRepositories[key]["Relay"] = Relay(key)
       self.mRepositories[key]["xmlData"] = None
       self.mRepositories[key]["state"] = 0
@@ -407,16 +362,16 @@ class Repositories(QObject):
   def requestFetching(self,key):
     """ start fetching the repository given by key """
     self.mRepositories[key]["state"] = 1
-    url = QUrl(self.mRepositories[key]["url"])
-    v=str(QGis.QGIS_VERSION_INT)
-    url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
+    url = QUrl(self.mRepositories[key]["url"] + self.urlParams() )
+    #v=str(QGis.QGIS_VERSION_INT)
+    #url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
 
     self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
     self.mRepositories[key]["QRequest"].setAttribute( QNetworkRequest.User, key)
-    self.mRepositories[key]["xmlData"] = self.mRepositories[key]["QPNAM"].get( self.mRepositories[key]["QRequest"] )
+    self.mRepositories[key]["xmlData"] = QgsNetworkAccessManager.instance().get( self.mRepositories[key]["QRequest"] )
     self.mRepositories[key]["xmlData"].setProperty( 'reposName', key)
     self.mRepositories[key]["xmlData"].downloadProgress.connect( self.mRepositories[key]["Relay"].dataReadProgress )
-    self.mRepositories[key]["QPNAM"].finished.connect( self.xmlDownloaded )
+    self.mRepositories[key]["xmlData"].finished.connect( self.xmlDownloaded )
 
 
   # ----------------------------------------- #
@@ -432,21 +387,23 @@ class Repositories(QObject):
   def killConnection(self, key):
     """ kill the fetching on demand """
     if self.mRepositories[key]["xmlData"] and self.mRepositories[key]["xmlData"].isRunning():
-      self.mRepositories[key]["QPNAM"].finished.disconnect()
+      self.mRepositories[key]["xmlData"].finished.disconnect()
       self.mRepositories[key]["xmlData"].abort()
 
 
   # ----------------------------------------- #
-  def xmlDownloaded(self, reply):
+  def xmlDownloaded(self):
     """ populate the plugins object with the fetched data """
+    reply = self.sender()
     reposName = reply.property( 'reposName' )
     if reply.error() != QNetworkReply.NoError:                             # fetching failed
-      self.mRepositories[reposName]["state"] =  3
-      self.mRepositories[reposName]["error"] = str(reply.error())
+      self.mRepositories[reposName]["state"] = 3
+      self.mRepositories[reposName]["error"] = reply.errorString()
+      if reply.error() == QNetworkReply.OperationCanceledError:
+        self.mRepositories[reposName]["error"] += "\n\n" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't cancelled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.")
     else:
-      repoData = self.mRepositories[reposName]["xmlData"]
       reposXML = QDomDocument()
-      reposXML.setContent(repoData.readAll())
+      reposXML.setContent(reply.readAll())
       pluginNodes = reposXML.elementsByTagName("pyqgis_plugin")
       if pluginNodes.size():
         for i in range(pluginNodes.size()):
@@ -466,6 +423,7 @@ class Repositories(QObject):
             "name"          : pluginNodes.item(i).toElement().attribute("name"),
             "version_available" : pluginNodes.item(i).toElement().attribute("version"),
             "description"   : pluginNodes.item(i).firstChildElement("description").text().strip(),
+            "about"         : pluginNodes.item(i).firstChildElement("about").text().strip(),
             "author_name"   : pluginNodes.item(i).firstChildElement("author_name").text().strip(),
             "homepage"      : pluginNodes.item(i).firstChildElement("homepage").text().strip(),
             "download_url"  : pluginNodes.item(i).firstChildElement("download_url").text().strip(),
@@ -500,14 +458,24 @@ class Repositories(QObject):
             if isCompatible(QGis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
               #add the plugin to the cache
               plugins.addFromRepository(plugin)
-      # set state=2, even if the repo is empty
-      self.mRepositories[reposName]["state"] = 2
+        self.mRepositories[reposName]["state"] = 2
+      else:
+        # no plugin metadata found
+        self.mRepositories[reposName]["state"] = 3
+        if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 200:
+          self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Server response is 200 OK, but doesn't contain plugin metatada. This is most likely caused by a proxy or a wrong repository URL. You can configure proxy settings in QGIS options.")
+        else:
+          self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Status code:") + " %d %s" % (
+                    reply.attribute(QNetworkRequest.HttpStatusCodeAttribute),
+                    reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute))
 
     self.repositoryFetched.emit( reposName )
 
     # is the checking done?
     if not self.fetchingInProgress():
       self.checkingDone.emit()
+
+    reply.deleteLater()
 
 
   # ----------------------------------------- #
@@ -675,6 +643,7 @@ class Plugins(QObject):
         "id"                : key,
         "name"              : pluginMetadata("name") or key,
         "description"       : pluginMetadata("description"),
+        "about"             : pluginMetadata("about"),
         "icon"              : icon,
         "category"          : pluginMetadata("category"),
         "tags"              : pluginMetadata("tags"),
@@ -718,7 +687,8 @@ class Plugins(QObject):
       for key in pluginDir.entryList():
         key = unicode(key)
         if not key in [".",".."]:
-          self.localCache[key] = self.getInstalledPlugin(key, readOnly=True, testLoad=False)
+          # only test those not yet loaded. Others proved they're o.k.
+          self.localCache[key] = self.getInstalledPlugin(key, readOnly=True, testLoad=testLoad and not qgis.utils.plugins.has_key(key))
     except:
       # return QCoreApplication.translate("QgsPluginInstaller","Couldn't open the system plugin directory")
       pass # it's not necessary to stop due to this error
@@ -734,7 +704,8 @@ class Plugins(QObject):
     for key in pluginDir.entryList():
       key = unicode(key)
       if not key in [".",".."]:
-        plugin = self.getInstalledPlugin(key, readOnly=False, testLoad=testLoad)
+        # only test those not yet loaded. Others proved they're o.k.
+        plugin = self.getInstalledPlugin(key, readOnly=False, testLoad=testLoad and not qgis.utils.plugins.has_key(key))
         if key in self.localCache.keys() and compareVersions(self.localCache[key]["version_installed"],plugin["version_installed"]) == 1:
           # An obsolete plugin in the "user" location is masking a newer one in the "system" location!
           self.obsoletePlugins += [key]
@@ -762,15 +733,18 @@ class Plugins(QObject):
             self.mPlugins[key] = plugin   # just add a new plugin
           else:
             # update local plugin with remote metadata
-            # name, description, icon: only use remote data if local one is not available (because of i18n and to not download the icon)
+            # description, about, icon: only use remote data if local one not available. Prefer local version because of i18n.
+            # NOTE: don't prefer local name to not desynchronize names if repository doesn't support i18n.
+            # Also prefer local icon to avoid downloading.
             for attrib in translatableAttributes + ["icon"]:
+              if attrib != "name":
                 if not self.mPlugins[key][attrib] and plugin[attrib]:
                     self.mPlugins[key][attrib] = plugin[attrib]
             # other remote metadata is preffered:
-            for attrib in ["name", "description", "category", "tags", "changelog", "author_name", "author_email", "homepage",
+            for attrib in ["name", "description", "about", "category", "tags", "changelog", "author_name", "author_email", "homepage",
                            "tracker", "code_repository", "experimental", "version_available", "zip_repository",
                            "download_url", "filename", "downloads", "average_vote", "rating_votes"]:
-              if not attrib in translatableAttributes:
+              if ( not attrib in translatableAttributes ) or ( attrib == "name" ): # include name!
                 if plugin[attrib]:
                     self.mPlugins[key][attrib] = plugin[attrib]
           # set status

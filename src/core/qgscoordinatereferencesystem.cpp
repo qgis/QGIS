@@ -1710,7 +1710,7 @@ int QgsCoordinateReferenceSystem::syncDb()
       continue;
     }
 
-    sql = QString( "SELECT parameters FROM tbl_srs WHERE auth_name='EPSG' AND auth_id='%1'" ).arg( it.key() );
+    sql = QString( "SELECT parameters,noupdate FROM tbl_srs WHERE auth_name='EPSG' AND auth_id='%1'" ).arg( it.key() );
     if ( sqlite3_prepare( database, sql.toAscii(), sql.size(), &select, &tail ) != SQLITE_OK )
     {
       qCritical( "Could not prepare: %s [%s]\n", sql.toAscii().constData(), sqlite3_errmsg( database ) );
@@ -1721,6 +1721,9 @@ int QgsCoordinateReferenceSystem::syncDb()
     if ( sqlite3_step( select ) == SQLITE_ROW )
     {
       srsProj4 = ( const char * ) sqlite3_column_text( select, 0 );
+
+      if( QString::fromUtf8(( char * )sqlite3_column_text( select, 1 ) ).toInt() != 0 )
+        continue;
     }
 
     sqlite3_finalize( select );
@@ -1801,7 +1804,7 @@ int QgsCoordinateReferenceSystem::syncDb()
     sql += delim + QString::number( i );
     delim = ",";
   }
-  sql += ")";
+  sql += ") AND NOT noupdate";
 
   if ( sqlite3_exec( database, sql.toUtf8(), 0, 0, 0 ) == SQLITE_OK )
   {
@@ -1816,7 +1819,7 @@ int QgsCoordinateReferenceSystem::syncDb()
   }
 
 #if !defined(PJ_VERSION) || PJ_VERSION!=470
-  sql = QString( "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name<>'EPSG' AND NOT deprecated" );
+  sql = QString( "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name<>'EPSG' AND NOT deprecated AND NOT noupdate" );
   if ( sqlite3_prepare( database, sql.toAscii(), sql.size(), &select, &tail ) == SQLITE_OK )
   {
     while ( sqlite3_step( select ) == SQLITE_ROW )
