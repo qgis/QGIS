@@ -374,11 +374,12 @@
         <file>themes/default/propertyicons/attributes.png</file>
         <file>themes/default/propertyicons/colormap.png</file>
         <file>themes/default/propertyicons/CRS.svg</file>
+        <file>themes/default/propertyicons/datasources.svg</file>
         <file>themes/default/propertyicons/datadefined.svg</file>
         <file>themes/default/propertyicons/diagram.png</file>
-        <file>themes/default/propertyicons/digitising.png</file>
+        <file>themes/default/propertyicons/digitizing.svg</file>
         <file>themes/default/propertyicons/display.svg</file>
-        <file>themes/default/propertyicons/gdal.png</file>
+        <file>themes/default/propertyicons/gdal.svg</file>
         <file>themes/default/propertyicons/general.svg</file>
         <file>themes/default/propertyicons/histogram.png</file>
         <file>themes/default/propertyicons/join.png</file>
@@ -389,12 +390,12 @@
         <file>themes/default/propertyicons/labels.svg</file>
         <file>themes/default/propertyicons/labelshadow.svg</file>
         <file>themes/default/propertyicons/labeltext.svg</file>
-        <file>themes/default/propertyicons/locale.png</file>
-        <file>themes/default/propertyicons/map_tools.png</file>
+        <file>themes/default/propertyicons/locale.svg</file>
+        <file>themes/default/propertyicons/maptools.svg</file>
         <file>themes/default/propertyicons/metadata.png</file>
         <file>themes/default/propertyicons/metadata.svg</file>
-        <file>themes/default/propertyicons/network_and_proxy.png</file>
-        <file>themes/default/propertyicons/overlay.png</file>
+        <file>themes/default/propertyicons/network.svg</file>
+        <file>themes/default/propertyicons/overlay.svg</file>
         <file>themes/default/propertyicons/plugin.svg</file>
         <file>themes/default/propertyicons/plugin-incompatible.svg</file>
         <file>themes/default/propertyicons/plugin-installed.svg</file>
@@ -402,7 +403,7 @@
         <file>themes/default/propertyicons/plugin-upgrade.svg</file>
         <file>themes/default/propertyicons/plugins.svg</file>
         <file>themes/default/propertyicons/pyramids.png</file>
-        <file>themes/default/propertyicons/rendering.png</file>
+        <file>themes/default/propertyicons/rendering.svg</file>
         <file>themes/default/propertyicons/render.svg</file>
         <file>themes/default/propertyicons/settings.svg</file>
         <file>themes/default/propertyicons/symbology.png</file>
