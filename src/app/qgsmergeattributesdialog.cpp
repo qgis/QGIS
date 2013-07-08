@@ -84,7 +84,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
 
   //create combo boxes and insert attribute names
   const QgsFields& fields = mVectorLayer->pendingFields();
-  QgsAttributeList pkAttrList = mVectorLayer->pendingPkAttributesList();
+  QSet<int> pkAttrList = mVectorLayer->pendingPkAttributesList().toSet();
 
   int col = 0;
   for ( int idx = 0; idx < fields.count(); ++idx )
@@ -483,8 +483,13 @@ void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
     return;
   }
 
+  QSet<int> pkAttributes = mVectorLayer->pendingPkAttributesList().toSet();
   for ( int i = 0; i < mTableWidget->columnCount(); ++i )
   {
+    if ( pkAttributes.contains( i ) )
+    {
+      continue;
+    }
     QComboBox* currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
     if ( currentComboBox )
     {
