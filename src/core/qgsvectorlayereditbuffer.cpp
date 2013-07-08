@@ -412,6 +412,10 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
       }
     }
   }
+  else
+  {
+    success = false;
+  }
 
   //
   // update geometries
