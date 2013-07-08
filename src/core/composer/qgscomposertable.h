@@ -76,13 +76,13 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
 
     /**Retrieves feature attributes*/
     //! @note not available in python bindings
-    virtual bool getFeatureAttributes( QList<QgsAttributes>& attributes ) { Q_UNUSED( attributes ); return false; }
+    virtual bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps ) { Q_UNUSED( attributeMaps ); return false; }
     virtual QMap<int, QString> getHeaderLabels() const { return QMap<int, QString>(); } //= 0;
     /**Calculate the maximum width values of the vector attributes*/
-    virtual bool calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributes>& attributeList ) const;
+    virtual bool calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeMaps ) const;
     /**Adapts the size of the item frame to match the content*/
     //! @note not available in python bindings
-    void adaptItemFrame( const QMap<int, double>& maxWidthMap, const QList<QgsAttributes>& attributeList );
+    void adaptItemFrame( const QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeMaps );
     void drawHorizontalGridLines( QPainter* p, int nAttributes );
     //! @note not available in python bindings
     void drawVerticalGridLines( QPainter* p, const QMap<int, double>& maxWidthMap );
