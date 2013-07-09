@@ -266,6 +266,7 @@ void QgsDataItem::deleteChildItem( QgsDataItem * child )
 
 QgsDataItem * QgsDataItem::removeChildItem( QgsDataItem * child )
 {
+  deleteChildItem( child );
   QgsDebugMsgLevel( "mName = " + child->mName, 2 );
   int i = mChildren.indexOf( child );
   Q_ASSERT( i >= 0 );
@@ -731,7 +732,14 @@ void QgsFavouritesItem::removeDirectory( QgsDirectoryItem *item )
   favDirs.removeAll( item->path() );
   settings.setValue( "/browser/favourites", favDirs );
 
-  deleteChildItem( item );
+  int idx = findItem( mChildren, item );
+  if ( idx < 0 )
+  {
+    QgsDebugMsg( QString( "favourites item %1 not found" ).arg( item->path() ) );
+    return;
+  }
+
+  deleteChildItem( mChildren[idx] );
 }
 
 //-----------------------------------------------------------------------
