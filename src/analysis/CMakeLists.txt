@@ -34,7 +34,9 @@ SET(QGIS_ANALYSIS_SRCS
   raster/qgsrastercalcnode.cpp
   raster/qgsrastercalculator.cpp
   raster/qgsrastermatrix.cpp
+  vector/mersenne-twister.cpp
   vector/qgsgeometryanalyzer.cpp
+  vector/qgstransectsample.cpp
   vector/qgszonalstatistics.cpp
   vector/qgsoverlayanalyzer.cpp
 
