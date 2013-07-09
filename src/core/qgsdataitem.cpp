@@ -731,7 +731,14 @@ void QgsFavouritesItem::removeDirectory( QgsDirectoryItem *item )
   favDirs.removeAll( item->path() );
   settings.setValue( "/browser/favourites", favDirs );
 
-  deleteChildItem( item );
+  int idx = findItem( mChildren, item );
+  if ( idx < 0 )
+  {
+    QgsDebugMsg( QString( "favourites item %1 not found" ).arg( item->path() ) );
+    return;
+  }
+
+  deleteChildItem( mChildren[idx] );
 }
 
 //-----------------------------------------------------------------------

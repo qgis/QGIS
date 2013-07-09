@@ -308,7 +308,7 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
     QStringList favDirs = settings.value( "/browser/favourites" ).toStringList();
     bool inFavDirs = favDirs.contains( item->path() );
 
-    if ( item->parent() != NULL && !inFavDirs )
+    if ( item->parent() && !inFavDirs )
     {
       // only non-root directories can be added as favourites
       menu->addAction( tr( "Add as a favourite" ), this, SLOT( addFavourite() ) );

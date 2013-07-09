@@ -262,7 +262,7 @@ class GeoAlgorithm:
                 SextanteUtils.setTempOutput(out, self)
 
     def setOutputCRS(self):
-        layers = QGisLayers.getAllLayers()
+        layers = QGisLayers.getAllLayers()        
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
                 if param.value:
@@ -272,6 +272,14 @@ class GeoAlgorithm:
                             if layer.source() == inputlayer:
                                 self.crs = layer.crs()
                                 return
+                        if (isinstance(param, ParameterRaster) or 
+                            (isinstance(param, ParameterMultipleInput) and param.datatype == ParameterMultipleInput.TYPE_RASTER)):
+                            p = QgsProviderRegistry.instance().provider('gdal', inputlayer)
+                        else:
+                            p = QgsProviderRegistry.instance().provider('ogr', inputlayer)
+                        if p is not None:
+                            self.crs = p.crs()
+                            return                            
         qgis = QGisLayers.iface
         self.crs = qgis.mapCanvas().mapRenderer().destinationCrs()
 

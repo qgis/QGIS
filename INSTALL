@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Tuesday May 21, 2013
+Monday July 08, 2013
 
 
-Last Updated: Tuesday May 21, 2013
-Last Change : Tuesday May 21, 2013
+Last Updated: Monday July 08, 2013
+Last Change : Wednesday May 22, 2013
 
 
   1. Introduction
@@ -1198,6 +1198,10 @@ which can be used in build shell scripts like:
 
   make -j $(/usr/sbin/sysctl -n hw.ncpu)
 
+Note: if you get an error in parallel compilation, try removing the -j # flag,
+so it's just 'make', or using a smaller number.  Sometimes make can hiccup on too
+many threads.
+
 
   5.1. Install Developer Tools
   ============================
@@ -1207,14 +1211,12 @@ Snow Leopard, the Developer Tools, later called Xcode, were included with the
 system install disks, though it's best to download the latest version compatible
 with your system to get important updates fixing various issues.
 Starting with Lion, Xcode is available as a download and from the App Store.
-BUT, there is really no need for the full Xcode on Lion, and in fact could be
-tricky to use for compiling QGIS.
 
-Downloading Xcode/Developer Tools requires a free developer account at
+Downloading Xcode/Developer Tools for up through Snow Leopard requires a free developer account at
 developer.apple.com.  Up through Snow Leopard, get the latest Xcode that is
-supported for your system.  For Lion, all you need is the much smaller
-Command Line Tools for Xcode (you don't get the IDE or system SDKs but they are not
-necessary for QGIS).  When installing Xcode up through Snow Leopard, make sure to
+supported for your system.  For Lion and above, you can get Xcode from either a
+free developer account or for a minimal fee from the app store.
+When installing Xcode up through Snow Leopard, make sure to
 do a custom install and install the Unix Development or Command Line Tools option.
 
 On Lion, if you have installed Xcode 4.0 - 4.2 and are upgrading to 4.3, it's
@@ -1223,8 +1225,7 @@ a good idea to uninstall the old version first with:
   sudo /Developer/Library/uninstall-devtools
 
 On Lion and Mt. Lion, using Xcode 4.4+, the developer command line tools can be
-installed via the Xcode preferences. The tools now appear to require an install
-of Xcode, regardless of using a separate DMG installer for just the tools.
+installed via the Xcode preferences.
 
 Xcode 4.3+ also introduces the clang frontend to the LLVM compiler as default.
 
@@ -1421,7 +1422,7 @@ http://download.osgeo.org/libspatialindex/
 Double-click the source tarball to unpack, then, in Terminal.app, cd to the
 source folder and:
 
-  ./configure
+  ./configure --disable-dependency-tracking CFLAGS=-Os
   make
   sudo make install
 
@@ -1445,6 +1446,9 @@ your own risk.
 
     5.4.5. Additional dependencies: SIP
     ===================================
+
+Mt Lion note: SIP 4.15.7 appears to not work on Mt Lion.  Install 4.14.6.
+(or a later working version when available)
 
 Retrieve the python bindings toolkit SIP from
 
@@ -1488,10 +1492,17 @@ For 64-bit Qt (Qt Cocoa), use this configure line:
 Lion+ system Python
 
 Similar to Snow Leopard, you should install outside the system Python path.
-There is no need for the SDK option or arch option:
+The SDK option should match the system you are compiling on:
+
+for Lion:
 
   python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin \
-  -e /usr/local/include -v /usr/local/share/sip
+  -e /usr/local/include -v /usr/local/share/sip --arch=x86_64 -s MacOSX10.7.sdk
+
+for Mt. Lion:
+
+  python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin \
+  -e /usr/local/include -v /usr/local/share/sip --arch=x86_64 -s MacOSX10.8.sdk
 
 continue...
 
@@ -1596,7 +1607,7 @@ For 64-bit Qt (Qt Cocoa), use this configure line:
 Lion and Mt. Lion system Python
 
 Similar to Snow Leopard, you should install outside the system Python path.
-But you don't need the arch option:
+But you don't need the use-arch option:
 
   python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin -n /usr/local/Qt4.8/qsci -v /usr/local/share/sip/PyQt4
 
@@ -1622,7 +1633,11 @@ Snow Leopard: substitute '2.6' for Python version
   cd Python
   python2.7 configure.py -o /usr/local/lib -n /usr/local/include \
   -d /Library/Python/2.7/site-packages/PyQt4 -v /usr/local/share/sip/PyQt4 \
-  --pyqt-sipdir=/usr/local/share/sip/PyQt4
+  --sip-incdir=/usr/local/include --pyqt-sipdir=/usr/local/share/sip/PyQt4
+  cat >>Qsci.pro <<EOF
+  QMAKE_LFLAGS_PLUGIN -= -dynamiclib
+  QMAKE_LFLAGS_PLUGIN += -bundle
+  EOF
   qmake -spec macx-g++ Qsci.pro
   make -j [#cpus]
   sudo make install
@@ -1764,7 +1779,7 @@ In a new Terminal cd to the source folder and:
   make install
   sudo mkdir -p "/Library/Application Support/OpenSceneGraph/PlugIns"
 
-Enter the staging path you chose for the CMAKE_INSTALL_PREFIX option above.
+Open the staging folder you chose for the CMAKE_INSTALL_PREFIX option above.
 
 Now move all .frameworks from the lib/ folder in the staging area to /Library/Frameworks.  Move the files in the osgPlugins folder in the lib/ folder
 to /Library/Application Support/OpenSceneGraph/PlugIns.  The bin/ executables
@@ -1788,6 +1803,8 @@ http://github.com/gwaldron/osgearth/tags
 Download a tarball for the latest stable release (sorting can be confusing here).
 Double-click the source tarball to unpack it.
 
+Note: for now stick with version 2.3.  There are compile errors in 2.4 that need attention.
+
 This one also needs an intermediate staging area.  Choose a folder similar to OSG.
 
 In a new Terminal cd to the source folder and:
@@ -1803,13 +1820,14 @@ In a new Terminal cd to the source folder and:
   make install
   sudo mkdir -p "/Library/Application Support/OpenSceneGraph/Headers"
 
-Enter the staging path you chose for the CMAKE_INSTALL_PREFIX option above.
-Also enter the OSG staging path /bin folder in the export above.
+Open the staging folder you chose for the CMAKE_INSTALL_PREFIX option above.
+Also open the OSG staging path /bin folder from the OSG build.
 
 Move all the .frameworks from the lib/ folder to /Library/Frameworks.
 Move the files in the osgPlugins folder in the lib/ folder to
 /Library/Application Support/OpenSceneGraph/PlugIns.  Move the osgEarthDrivers
 folder in the include/ folder to /Library/Application Support/OpenSceneGraph/Headers.
+(you may need to create this folder)
 And as for OSG, you can leave the bin/ executables where they are.
 
 

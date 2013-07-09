@@ -25,6 +25,7 @@ __revision__ = '$Format:%H$'
 
 import os
 from PyQt4 import QtGui
+from qgis.core import *
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterRaster import ParameterRaster
@@ -75,7 +76,7 @@ class translate(GeoAlgorithm):
         noData = str(self.getParameterValue(translate.NO_DATA))
         expand = str(self.getParameterFromName(translate.EXPAND).options[self.getParameterValue(translate.EXPAND)])
         projwin = str(self.getParameterValue(translate.PROJWIN))
-        srs = self.getParameterValue(translate.SRS)
+        crsId = self.getParameterValue(translate.SRS)
         sds = self.getParameterValue(translate.SDS)
         extra = str(self.getParameterValue(translate.EXTRA))
 
@@ -101,9 +102,9 @@ class translate(GeoAlgorithm):
         arguments.append(regionCoords[3])
         arguments.append(regionCoords[1])
         arguments.append(regionCoords[2])
-        if srs is not None:
+        if crsId is not None:
             arguments.append("-a_srs")
-            arguments.append(str(srs))
+            arguments.append(str(crsId))
             self.crs = QgsCoordinateReferenceSystem(crsId)
         if sds:
             arguments.append("-sds")
