@@ -20,12 +20,13 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 
-QgsComposerAttributeTableCompare::QgsComposerAttributeTableCompare(): mCurrentSortColumn( 0 ), mAscending( true )
+QgsComposerAttributeTableCompare::QgsComposerAttributeTableCompare()
+    : mCurrentSortColumn( 0 ), mAscending( true )
 {
 }
 
 
-bool QgsComposerAttributeTableCompare::operator()( const QgsAttributes& m1, const QgsAttributes& m2 )
+bool QgsComposerAttributeTableCompare::operator()( const QgsAttributeMap& m1, const QgsAttributeMap& m2 )
 {
   QVariant v1 = m1[mCurrentSortColumn];
   QVariant v2 = m2[mCurrentSortColumn];
@@ -44,8 +45,11 @@ bool QgsComposerAttributeTableCompare::operator()( const QgsAttributes& m1, cons
 
 
 QgsComposerAttributeTable::QgsComposerAttributeTable( QgsComposition* composition )
-    : QgsComposerTable( composition ), mVectorLayer( 0 ), mComposerMap( 0 ),
-    mMaximumNumberOfFeatures( 5 ), mShowOnlyVisibleFeatures( true )
+    : QgsComposerTable( composition )
+    , mVectorLayer( 0 )
+    , mComposerMap( 0 )
+    , mMaximumNumberOfFeatures( 5 )
+    , mShowOnlyVisibleFeatures( true )
 {
   //set first vector layer from layer registry as default one
   QMap<QString, QgsMapLayer*> layerMap =  QgsMapLayerRegistry::instance()->mapLayers();
@@ -64,7 +68,6 @@ QgsComposerAttributeTable::QgsComposerAttributeTable( QgsComposition* compositio
 
 QgsComposerAttributeTable::~QgsComposerAttributeTable()
 {
-
 }
 
 void QgsComposerAttributeTable::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
@@ -116,13 +119,14 @@ void QgsComposerAttributeTable::setComposerMap( const QgsComposerMap* map )
   }
 }
 
-bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributes>& attributes )
+bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &attributeMaps )
 {
   if ( !mVectorLayer )
   {
     return false;
   }
-  attributes.clear();
+
+  attributeMaps.clear();
 
   QgsRectangle selectionRect;
   if ( mComposerMap && mShowOnlyVisibleFeatures )
@@ -147,19 +151,29 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributes>& attr
 
   QgsFeatureRequest req;
   if ( !selectionRect.isEmpty() )
-  {
     req.setFilterRect( selectionRect );
-  }
+
   req.setFlags( mShowOnlyVisibleFeatures ? QgsFeatureRequest::ExactIntersect : QgsFeatureRequest::NoGeometry );
-  if ( mDisplayAttributes.size() > 0 )
+
+  if ( !mDisplayAttributes.isEmpty() )
     req.setSubsetOfAttributes( mDisplayAttributes.toList() );
 
   QgsFeature f;
   int counter = 0;
   QgsFeatureIterator fit = mVectorLayer->getFeatures( req );
+
   while ( fit.nextFeature( f ) && counter < mMaximumNumberOfFeatures )
   {
-    attributes.push_back( f.attributes() );
+    attributeMaps.push_back( QgsAttributeMap() );
+
+    for ( int i = 0; i < f.attributes().size(); i++ )
+    {
+      if ( !mDisplayAttributes.isEmpty() && !mDisplayAttributes.contains( i ) )
+        continue;
+
+      attributeMaps.last().insert( i, f.attributes()[i] );
+    }
+
     ++counter;
   }
 
@@ -169,7 +183,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributes>& attr
   {
     c.setSortColumn( mSortInformation.at( i ).first );
     c.setAscending( mSortInformation.at( i ).second );
-    qStableSort( attributes.begin(), attributes.end(), c );
+    qStableSort( attributeMaps.begin(), attributeMaps.end(), c );
   }
   return true;
 }
@@ -194,15 +208,7 @@ QMap<int, QString> QgsComposerAttributeTable::getHeaderLabels() const
 
 QString QgsComposerAttributeTable::attributeDisplayName( int attributeIndex, const QString& name ) const
 {
-  QMap<int, QString>::const_iterator it = mFieldAliasMap.find( attributeIndex );
-  if ( it != mFieldAliasMap.constEnd() )
-  {
-    return it.value();
-  }
-  else
-  {
-    return name;
-  }
+  return mFieldAliasMap.value( attributeIndex, name );
 }
 
 void QgsComposerAttributeTable::removeLayer( QString layerId )

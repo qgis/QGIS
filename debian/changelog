@@ -14,7 +14,7 @@ qgis (1.9.0) UNRELEASED; urgency=low
   * remove js files and add libjs-jquery/libjs-underscore dependency
   * add spatialite qt sql driver
   * include topology plugin
-  * drop delimited text plugin (now in core)
+  * drop delimited text and diagram overlay plugin (now in core)
   * drop context_help, function_help and qgis_help.db files
   * use dh_sip
 

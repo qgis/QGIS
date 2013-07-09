@@ -43,17 +43,17 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
 
   //getFeatureAttributes
-  QList<QgsAttributes> attributeList;
-  if ( !getFeatureAttributes( attributeList ) )
+  QList<QgsAttributeMap> attributeMaps;
+  if ( !getFeatureAttributes( attributeMaps ) )
   {
     return;
   }
 
   QMap<int, double> maxColumnWidthMap;
   //check how much space each column needs
-  calculateMaxColumnWidths( maxColumnWidthMap, attributeList );
+  calculateMaxColumnWidths( maxColumnWidthMap, attributeMaps );
   //adapt item frame to max width / height
-  adaptItemFrame( maxColumnWidthMap, attributeList );
+  adaptItemFrame( maxColumnWidthMap, attributeMaps );
 
   drawBackground( painter );
   painter->setPen( Qt::SolidLine );
@@ -77,14 +77,14 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     currentY += mGridStrokeWidth;
 
     //draw the attribute values
-    QList<QgsAttributes>::const_iterator attIt = attributeList.begin();
-    for ( ; attIt != attributeList.end(); ++attIt )
+    QList<QgsAttributeMap>::const_iterator attIt = attributeMaps.begin();
+    for ( ; attIt != attributeMaps.end(); ++attIt )
     {
       currentY += fontAscentMillimeters( mContentFont );
       currentY += mLineTextDistance;
 
-      QgsAttributes currentAttributeMap = *attIt;
-      QString str = currentAttributeMap.at( columnIt.key() ).toString();
+      const QgsAttributeMap &currentAttributeMap = *attIt;
+      QString str = currentAttributeMap[ columnIt.key()].toString();
       drawText( painter, currentX, currentY, str, mContentFont );
       currentY += mLineTextDistance;
       currentY += mGridStrokeWidth;
@@ -102,7 +102,7 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     gridPen.setWidthF( mGridStrokeWidth );
     gridPen.setColor( mGridColor );
     painter->setPen( gridPen );
-    drawHorizontalGridLines( painter, attributeList.size() );
+    drawHorizontalGridLines( painter, attributeMaps.size() );
     drawVerticalGridLines( painter, maxColumnWidthMap );
   }
 
@@ -116,17 +116,14 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
 void QgsComposerTable::adjustFrameToSize()
 {
-  QList<QgsAttributes> attributes;
+  QList<QgsAttributeMap> attributes;
   if ( !getFeatureAttributes( attributes ) )
-  {
     return;
-  }
 
   QMap<int, double> maxWidthMap;
   if ( !calculateMaxColumnWidths( maxWidthMap, attributes ) )
-  {
     return;
-  }
+
   adaptItemFrame( maxWidthMap, attributes );
 }
 
@@ -172,7 +169,7 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
   return true;
 }
 
-bool QgsComposerTable::calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributes>& attributeList ) const
+bool QgsComposerTable::calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeMaps ) const
 {
   maxWidthMap.clear();
   QMap<int, QString> headerMap = getHeaderLabels();
@@ -183,34 +180,33 @@ bool QgsComposerTable::calculateMaxColumnWidths( QMap<int, double>& maxWidthMap,
   }
 
   //go through all the attributes and adapt the max width values
-  QList<QgsAttributes>::const_iterator attIt = attributeList.constBegin();
+  QList<QgsAttributeMap>::const_iterator attIt = attributeMaps.constBegin();
 
-  QgsAttributeMap currentAttributeMap;
   double currentAttributeTextWidth;
 
-  for ( ; attIt != attributeList.constEnd(); ++attIt )
+  for ( ; attIt != attributeMaps.constEnd(); ++attIt )
   {
-    for ( int i = 0; i < attIt->size(); ++i )
+    QgsAttributeMap::const_iterator attIt2 = attIt->constBegin();
+    for ( ; attIt2 != attIt->constEnd(); ++attIt2 )
     {
-      currentAttributeTextWidth = textWidthMillimeters( mContentFont, attIt->at( i ).toString() );
-      if ( currentAttributeTextWidth > maxWidthMap[i] )
+      currentAttributeTextWidth = textWidthMillimeters( mContentFont, attIt2.value().toString() );
+      if ( currentAttributeTextWidth > maxWidthMap[ attIt2.key()] )
       {
-        maxWidthMap[i] = currentAttributeTextWidth;
+        maxWidthMap[ attIt2.key()] = currentAttributeTextWidth;
       }
     }
   }
   return true;
 }
 
-
-
-
-
-void QgsComposerTable::adaptItemFrame( const QMap<int, double>& maxWidthMap, const QList<QgsAttributes>& attributeList )
+void QgsComposerTable::adaptItemFrame( const QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeMaps )
 {
   //calculate height
-  double totalHeight = fontAscentMillimeters( mHeaderFont ) + attributeList.size() * fontAscentMillimeters( mContentFont )
-                       + ( attributeList.size() + 1 ) * mLineTextDistance * 2 + ( attributeList.size() + 2 ) * mGridStrokeWidth;
+  int n = attributeMaps.size();
+  double totalHeight = fontAscentMillimeters( mHeaderFont )
+                       + n * fontAscentMillimeters( mContentFont )
+                       + ( n + 1 ) * mLineTextDistance * 2
+                       + ( n + 2 ) * mGridStrokeWidth;
 
   //adapt frame to total width
   double totalWidth = 0;

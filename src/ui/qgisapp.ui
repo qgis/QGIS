@@ -1419,7 +1419,7 @@
   <action name="mActionCustomProjection">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCustomProjection.png</normaloff>:/images/themes/default/mActionCustomProjection.png</iconset>
+     <normaloff>:/images/themes/default/mActionCustomProjection.svg</normaloff>:/images/themes/default/mActionCustomProjection.svg</iconset>
    </property>
    <property name="text">
     <string>Custom CRS...</string>

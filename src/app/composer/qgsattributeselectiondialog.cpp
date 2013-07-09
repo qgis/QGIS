@@ -24,11 +24,16 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QSettings>
 
 QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( const QgsVectorLayer* vLayer, const QSet<int>& enabledAttributes, const QMap<int, QString>& aliasMap,
     const QList< QPair<int, bool> >& sortColumns, QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f ), mVectorLayer( vLayer )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/AttributeSelectionDialog/geometry" ).toByteArray() );
+
   if ( vLayer )
   {
     const QgsFields& fieldMap = vLayer->pendingFields();
@@ -79,7 +84,8 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( const QgsVectorLayer* 
 
 QgsAttributeSelectionDialog::~QgsAttributeSelectionDialog()
 {
-
+  QSettings settings;
+  settings.setValue( "/Windows/AttributeSelectionDialog/geometry", saveGeometry() );
 }
 
 QSet<int> QgsAttributeSelectionDialog::enabledAttributes() const

@@ -51,8 +51,8 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::WFlag
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/CustomProjection/geometry" ).toByteArray() );
 
-  pbnAdd->setIcon( QgsApplication::getThemeIcon( "mIconNew.png" ) );
-  pbnRemove->setIcon( QgsApplication::getThemeIcon( "mIconDelete.png" ) );
+  pbnAdd->setIcon( QgsApplication::getThemeIcon( "symbologyAdd.png" ) );
+  pbnRemove->setIcon( QgsApplication::getThemeIcon( "symbologyRemove.png" ) );
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
   QFileInfo myFileInfo;

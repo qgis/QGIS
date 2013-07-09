@@ -794,11 +794,11 @@ PGresult *QgsPostgresConn::PQexec( QString query, bool logError )
   }
   else if ( logError )
   {
-    QgsMessageLog::logMessage( tr( "Query failed: %1\nError: no result buffer" ).arg( query ) );
+    QgsMessageLog::logMessage( tr( "Query failed: %1\nError: no result buffer" ).arg( query ), tr( "PostGIS" ) );
   }
   else
   {
-    QgsDebugMsg( tr( "Not logged query failed: %1\nError: no result buffer" ).arg( query ) );
+    QgsDebugMsg( QString( "Not logged query failed: %1\nError: no result buffer" ).arg( query ) );
   }
 
   return res;

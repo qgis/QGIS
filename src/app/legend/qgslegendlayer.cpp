@@ -321,7 +321,7 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
       }
       else
       {
-        return QPixmap();
+        return QgsApplication::getThemePixmap( "/mIconRasterLayer.png" );
       }
     }
   }

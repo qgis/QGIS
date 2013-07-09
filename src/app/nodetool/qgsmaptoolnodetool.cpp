@@ -49,7 +49,11 @@ void QgsMapToolNodeTool::createMovingRubberBands()
 {
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
 
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  Q_ASSERT( mSelectedFeature );
+
+  QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
+  Q_ASSERT( vlayer );
+
   QList<QgsVertexEntry*> &vertexMap = mSelectedFeature->vertexMap();
   QgsGeometry* geometry = mSelectedFeature->geometry();
   int beforeVertex, afterVertex;
@@ -84,7 +88,7 @@ void QgsMapToolNodeTool::createMovingRubberBands()
       int index = 0;
       if ( beforeVertex != -1 ) // adding first point which is not moving
       {
-        rb->addPoint( toMapCoordinates( mCanvas->currentLayer(), vertexMap[beforeVertex]->point() ), false );
+        rb->addPoint( toMapCoordinates( vlayer, vertexMap[beforeVertex]->point() ), false );
         vertexMap[beforeVertex]->setRubberBandValues( true, lastRubberBand, index );
         index++;
       }
@@ -96,7 +100,7 @@ void QgsMapToolNodeTool::createMovingRubberBands()
           createTopologyRubberBands( vlayer, vertexMap, vertex );
         }
         // adding point which will be moved
-        rb->addPoint( toMapCoordinates( mCanvas->currentLayer(), vertexMap[vertex]->point() ), false );
+        rb->addPoint( toMapCoordinates( vlayer, vertexMap[vertex]->point() ), false );
         // setting values about added vertex
         vertexMap[vertex]->setRubberBandValues( true, lastRubberBand, index );
         index++;
@@ -104,7 +108,7 @@ void QgsMapToolNodeTool::createMovingRubberBands()
       }
       if ( vertex != -1 && !vertexMap[vertex]->isSelected() ) // add last point not moving if exists
       {
-        rb->addPoint( toMapCoordinates( mCanvas->currentLayer(), vertexMap[vertex]->point() ), true );
+        rb->addPoint( toMapCoordinates( vlayer, vertexMap[vertex]->point() ), true );
         vertexMap[vertex]->setRubberBandValues( true, lastRubberBand, index );
         index++;
       }
@@ -225,9 +229,8 @@ void QgsMapToolNodeTool::canvasMoveEvent( QMouseEvent * e )
   if ( !mSelectedFeature || !mClicked )
     return;
 
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-  if ( !vlayer )
-    return;
+  QgsVectorLayer* vlayer = mSelectedFeature->vlayer();
+  Q_ASSERT( vlayer );
 
   mSelectAnother = false;
 
@@ -347,13 +350,15 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
 {
   QgsDebugCall;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-
   mClicked = true;
   mPressCoordinates = e->pos();
   QList<QgsSnappingResult> snapResults;
   if ( !mSelectedFeature )
   {
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+    if ( !vlayer )
+      return;
+
     mSelectAnother = false;
     mSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToVertexAndSegment, -1 );
 
@@ -369,6 +374,9 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
   }
   else
   {
+    QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
+    Q_ASSERT( vlayer );
+
     // some feature already selected
     QgsPoint layerCoordPoint = toLayerCoordinates( vlayer, e->pos() );
 
@@ -488,7 +496,8 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
 
   removeRubberBands();
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
+  Q_ASSERT( vlayer );
 
   mClicked = false;
   mSelectionRectangle = false;
@@ -626,9 +635,11 @@ void QgsMapToolNodeTool::removeRubberBands()
 
 void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-  if ( !vlayer )
+  if ( !mSelectedFeature )
     return;
+
+  QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
+  Q_ASSERT( vlayer );
 
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
   QMultiMap<double, QgsSnappingResult> currentResultList;
