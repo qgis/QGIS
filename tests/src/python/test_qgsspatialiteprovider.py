@@ -70,7 +70,6 @@ class TestQgsSpatialiteProvider(TestCase):
     def test_SplitFeature(self):
         """Create spatialite database"""
         layer = QgsVectorLayer("dbname=test.sqlite table=test_pg (geometry)", "test_pg", "spatialite")
-        help(QgsVectorLayer)
         assert(layer.isValid())
         assert(layer.hasGeometryType())
         layer.startEditing()
