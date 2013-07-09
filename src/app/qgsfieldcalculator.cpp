@@ -47,6 +47,11 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
   mOutputFieldWidthSpinBox->setValue( 10 );
   mOutputFieldPrecisionSpinBox->setValue( 3 );
 
+  if ( vl->providerType() == "ogr" && vl->storageType() == "ESRI Shapefile" )
+  {
+    mOutputFieldNameLineEdit->setMaxLength( 10 );
+  }
+
   mUpdateExistingGroupBox->setEnabled( vl->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues );
   mNewFieldGroupBox->setEnabled( vl->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes );
 

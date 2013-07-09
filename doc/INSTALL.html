@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Tuesday May 21, 2013</H3>
+<H3>Monday July 08, 2013</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Tuesday May 21, 2013
-Last Change : Tuesday May 21, 2013
+Last Updated: Monday July 08, 2013
+Last Change : Wednesday May 22, 2013
 </P>
 <DIV CLASS="toc">
 
@@ -1712,6 +1712,12 @@ which can be used in build shell scripts like:
 make -j $(/usr/sbin/sysctl -n hw.ncpu)
 </PRE></div>
 
+<P>
+<U>Note:</U> if you get an error in parallel compilation, try removing the -j # flag,
+so it's just 'make', or using a smaller number.  Sometimes make can hiccup on too
+many threads.
+</P>
+
 <A NAME="toc18"></A>
 <H2>5.1. Install Developer Tools</H2>
 
@@ -1721,15 +1727,13 @@ Snow Leopard, the Developer Tools, later called Xcode, were included with the
 system install disks, though it's best to download the latest version compatible
 with your system to get important updates fixing various issues.
 Starting with Lion, Xcode is available as a download and from the App Store.
-BUT, there is really no need for the full Xcode on Lion, and in fact could be
-tricky to use for compiling QGIS.
 </P>
 <P>
-Downloading Xcode/Developer Tools requires a free developer account at
+Downloading Xcode/Developer Tools for up through Snow Leopard requires a free developer account at
 developer.apple.com.  Up through Snow Leopard, get the latest <U>Xcode</U> that is
-supported for your system.  For Lion, all you need is the much smaller
-<U>Command Line Tools for Xcode</U> (you don't get the IDE or system SDKs but they are not
-necessary for QGIS).  When installing Xcode up through Snow Leopard, make sure to
+supported for your system.  For Lion and above, you can get Xcode from either a
+free developer account or for a minimal fee from the app store.
+When installing Xcode up through Snow Leopard, make sure to
 do a custom install and install the Unix Development or Command Line Tools option.
 </P>
 <P>
@@ -1743,8 +1747,7 @@ sudo /Developer/Library/uninstall-devtools
 
 <P>
 On Lion and Mt. Lion, using Xcode 4.4+, the developer command line tools can be
-installed via the Xcode preferences. The tools now appear to require an install
-of Xcode, regardless of using a separate DMG installer for just the tools.
+installed via the Xcode preferences.
 </P>
 <P>
 Xcode 4.3+ also introduces the clang frontend to the LLVM compiler as default.
@@ -2001,7 +2004,7 @@ source folder and:
 </P>
 
 <div class="code"><PRE>
-./configure
+./configure --disable-dependency-tracking CFLAGS=-Os
 make
 sudo make install
 </PRE></div>
@@ -2028,6 +2031,10 @@ your own risk.
 
 <H3>5.4.5. Additional dependencies: SIP</H3>
 
+<P>
+<U>Mt Lion note:</U> SIP 4.15.7 appears to not work on Mt Lion.  Install 4.14.6.
+(or a later working version when available)
+</P>
 <P>
 Retrieve the python bindings toolkit SIP from
 </P>
@@ -2094,12 +2101,24 @@ python2.6 configure.py -n -d /Library/Python/2.6/site-packages -b /usr/local/bin
 </P>
 <P>
 Similar to Snow Leopard, you should install outside the system Python path.
-There is no need for the SDK option or arch option:
+The SDK option should match the system you are compiling on:
+</P>
+<P>
+for Lion:
 </P>
 
 <div class="code"><PRE>
 python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin \
--e /usr/local/include -v /usr/local/share/sip
+-e /usr/local/include -v /usr/local/share/sip --arch=x86_64 -s MacOSX10.7.sdk
+</PRE></div>
+
+<P>
+for Mt. Lion:
+</P>
+
+<div class="code"><PRE>
+python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin \
+-e /usr/local/include -v /usr/local/share/sip --arch=x86_64 -s MacOSX10.8.sdk
 </PRE></div>
 
 <P>
@@ -2251,7 +2270,7 @@ python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
 </P>
 <P>
 Similar to Snow Leopard, you should install outside the system Python path.
-But you don't need the arch option:
+But you don't need the use-arch option:
 </P>
 
 <div class="code"><PRE>
@@ -2288,7 +2307,11 @@ cd &lt;QScintilla2 source dir&gt;
 cd Python
 python2.7 configure.py -o /usr/local/lib -n /usr/local/include \
 -d /Library/Python/2.7/site-packages/PyQt4 -v /usr/local/share/sip/PyQt4 \
---pyqt-sipdir=/usr/local/share/sip/PyQt4
+--sip-incdir=/usr/local/include --pyqt-sipdir=/usr/local/share/sip/PyQt4
+cat &gt;&gt;Qsci.pro &lt;&lt;EOF
+QMAKE_LFLAGS_PLUGIN -= -dynamiclib
+QMAKE_LFLAGS_PLUGIN += -bundle
+EOF
 qmake -spec macx-g++ Qsci.pro
 make -j [#cpus]
 sudo make install
@@ -2482,7 +2505,7 @@ sudo mkdir -p "/Library/Application Support/OpenSceneGraph/PlugIns"
 </PRE></div>
 
 <P>
-Enter the staging path you chose for the CMAKE_INSTALL_PREFIX option above.
+Open the staging folder you chose for the CMAKE_INSTALL_PREFIX option above.
 </P>
 <P>
 Now move all .frameworks from the lib/ folder in the staging area to /Library/Frameworks.  Move the files in the osgPlugins folder in the lib/ folder
@@ -2517,6 +2540,9 @@ Download a tarball for the latest stable release (sorting can be confusing here)
 Double-click the source tarball to unpack it.
 </P>
 <P>
+<U>Note:</U> for now stick with version 2.3.  There are compile errors in 2.4 that need attention.
+</P>
+<P>
 This one also needs an intermediate staging area.  Choose a folder similar to OSG.
 </P>
 <P>
@@ -2537,14 +2563,15 @@ sudo mkdir -p "/Library/Application Support/OpenSceneGraph/Headers"
 </PRE></div>
 
 <P>
-Enter the staging path you chose for the CMAKE_INSTALL_PREFIX option above.
-Also enter the OSG staging path /bin folder in the export above.
+Open the staging folder you chose for the CMAKE_INSTALL_PREFIX option above.
+Also open the OSG staging path /bin folder from the OSG build.
 </P>
 <P>
 Move all the .frameworks from the lib/ folder to /Library/Frameworks.
 Move the files in the osgPlugins folder in the lib/ folder to
 /Library/Application Support/OpenSceneGraph/PlugIns.  Move the osgEarthDrivers
 folder in the include/ folder to /Library/Application Support/OpenSceneGraph/Headers.
+(you may need to create this folder)
 And as for OSG, you can leave the bin/ executables where they are.
 </P>
 
@@ -3193,5 +3220,5 @@ The following people have contributed to this document:
 
 </DIV>
 <!-- html code generated by txt2tags 2.6 (http://txt2tags.org) -->
-<!-- cmdline: txt2tags -t html -o INSTALL.html INSTALL.t2t -->
+<!-- cmdline: txt2tags -t html -o ../INSTALL.html INSTALL.t2t -->
 </BODY></HTML>

@@ -498,227 +498,146 @@ void GlobePlugin::setupControls()
 {
 
   std::string imgDir = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/gui" ).toStdString();
-
-//MOVE CONTROLS
-  //Horizontal container
-  HBox* moveHControls = new HBox();
-  moveHControls->setFrame( new RoundedFrame() );
-  moveHControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
-  moveHControls->setMargin( 0 );
-#if HAVE_OSGEARTH_CHILD_SPACING
-  moveHControls->setChildSpacing( 47 );
-#else
-  moveHControls->setSpacing( 47 );
-#endif
-  moveHControls->setVertAlign( Control::ALIGN_CENTER );
-  moveHControls->setHorizAlign( Control::ALIGN_CENTER );
-  moveHControls->setPosition( 5, 30 );
-  moveHControls->setPadding( 6 );
-
   osgEarth::Util::EarthManipulator* manip = dynamic_cast<osgEarth::Util::EarthManipulator*>( mOsgViewer->getCameraManipulator() );
-  //Move Left
-  osg::Image* moveLeftImg = osgDB::readImageFile( imgDir + "/move-left.png" );
-  ImageControl* moveLeft = new NavigationControl( moveLeftImg );
-  moveLeft->addEventHandler( new PanControlHandler( manip, -MOVE_OFFSET, 0 ) );
 
-  //Move Right
-  osg::Image* moveRightImg = osgDB::readImageFile( imgDir + "/move-right.png" );
-  ImageControl* moveRight = new NavigationControl( moveRightImg );
-  moveRight->addEventHandler( new PanControlHandler( manip, MOVE_OFFSET, 0 ) );
+  osg::Image* yawPitchWheelImg = osgDB::readImageFile( imgDir + "/YawPitchWheel.png" );
+  ImageControl* yawPitchWheel = new ImageControl( yawPitchWheelImg );
+  int imgLeft = 16;
+  int imgTop = 20;
+  yawPitchWheel->setPosition( imgLeft, imgTop );
+  mControlCanvas->addControl( yawPitchWheel );
 
-  //Vertical container
-  VBox* moveVControls = new VBox();
-  moveVControls->setFrame( new RoundedFrame() );
-  moveVControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
-  moveVControls->setMargin( 0 );
-#if HAVE_OSGEARTH_CHILD_SPACING
-  moveVControls->setChildSpacing( 36 );
-#else
-  moveVControls->setSpacing( 36 );
-#endif
-  moveVControls->setVertAlign( Control::ALIGN_CENTER );
-  moveVControls->setHorizAlign( Control::ALIGN_CENTER );
-  moveVControls->setPosition( 35, 5 );
-  moveVControls->setPadding( 6 );
-
-  //Move Up
-  osg::Image* moveUpImg = osgDB::readImageFile( imgDir + "/move-up.png" );
-  ImageControl* moveUp = new NavigationControl( moveUpImg );
-  moveUp->addEventHandler( new PanControlHandler( manip, 0, MOVE_OFFSET ) );
-
-  //Move Down
-  osg::Image* moveDownImg = osgDB::readImageFile( imgDir + "/move-down.png" );
-  ImageControl* moveDown = new NavigationControl( moveDownImg );
-  moveDown->addEventHandler( new PanControlHandler( manip, 0, -MOVE_OFFSET ) );
-
-  //add controls to moveControls group
-  moveHControls->addControl( moveLeft );
-  moveHControls->addControl( moveRight );
-  moveVControls->addControl( moveUp );
-  moveVControls->addControl( moveDown );
-
-//END MOVE CONTROLS
-
-//ROTATE CONTROLS
-  //Horizontal container
-  HBox* rotateControls = new HBox();
-  rotateControls->setFrame( new RoundedFrame() );
-  rotateControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
-  rotateControls->setMargin( 0 );
-#if HAVE_OSGEARTH_CHILD_SPACING
-  rotateControls->setChildSpacing( 10 );
-#else
-  rotateControls->setSpacing( 10 );
-#endif
-  rotateControls->setVertAlign( Control::ALIGN_CENTER );
-  rotateControls->setHorizAlign( Control::ALIGN_CENTER );
-  rotateControls->setPosition( 5, 113 );
-  rotateControls->setPadding( 6 );
-
-  //Rotate CCW
-  osg::Image* rotateCCWImg = osgDB::readImageFile( imgDir + "/rotate-ccw.png" );
-  ImageControl* rotateCCW = new NavigationControl( rotateCCWImg );
+  //ROTATE CONTROLS
+  Control* rotateCCW = new NavigationControl();
+  rotateCCW->setHeight( 22 );
+  rotateCCW->setWidth( 20 );
+  rotateCCW->setPosition( imgLeft+0, imgTop+18 );
   rotateCCW->addEventHandler( new RotateControlHandler( manip, MOVE_OFFSET, 0 ) );
+  mControlCanvas->addControl( rotateCCW );
 
-  //Rotate CW
-  osg::Image* rotateCWImg = osgDB::readImageFile( imgDir + "/rotate-cw.png" );
-  ImageControl* rotateCW = new NavigationControl( rotateCWImg );
+  Control* rotateCW = new NavigationControl();
+  rotateCW->setHeight( 22 );
+  rotateCW->setWidth( 20 );
+  rotateCW->setPosition( imgLeft+36, imgTop+18 );
   rotateCW->addEventHandler( new RotateControlHandler( manip, -MOVE_OFFSET , 0 ) );
+  mControlCanvas->addControl( rotateCW );
 
   //Rotate Reset
-  osg::Image* rotateResetImg = osgDB::readImageFile( imgDir + "/rotate-reset.png" );
-  ImageControl* rotateReset = new NavigationControl( rotateResetImg );
+  Control* rotateReset = new NavigationControl();
+  rotateReset->setHeight( 22 );
+  rotateReset->setWidth( 16 );
+  rotateReset->setPosition( imgLeft+20, imgTop+18 );
   rotateReset->addEventHandler( new RotateControlHandler( manip, 0, 0 ) );
+  mControlCanvas->addControl( rotateReset );
 
-  //add controls to rotateControls group
-  rotateControls->addControl( rotateCCW );
-  rotateControls->addControl( rotateReset );
-  rotateControls->addControl( rotateCW );
-
-//END ROTATE CONTROLS
-
-//TILT CONTROLS
-  //Vertical container
-  VBox* tiltControls = new VBox();
-  tiltControls->setFrame( new RoundedFrame() );
-  tiltControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
-  tiltControls->setMargin( 0 );
-#if HAVE_OSGEARTH_CHILD_SPACING
-  tiltControls->setChildSpacing( 30 );
-#else
-  tiltControls->setSpacing( 30 );
-#endif
-  tiltControls->setVertAlign( Control::ALIGN_CENTER );
-  tiltControls->setHorizAlign( Control::ALIGN_CENTER );
-  tiltControls->setPosition( 35, 90 );
-  tiltControls->setPadding( 6 );
-
-  //tilt Up
-  osg::Image* tiltUpImg = osgDB::readImageFile( imgDir + "/tilt-up.png" );
-  ImageControl* tiltUp = new NavigationControl( tiltUpImg );
+  //TILT CONTROLS
+  Control* tiltUp = new NavigationControl();
+  tiltUp->setHeight( 19 );
+  tiltUp->setWidth( 24 );
+  tiltUp->setPosition( imgLeft+20, imgTop+0 );
   tiltUp->addEventHandler( new RotateControlHandler( manip, 0, MOVE_OFFSET ) );
+  mControlCanvas->addControl( tiltUp );
 
-  //tilt Down
-  osg::Image* tiltDownImg = osgDB::readImageFile( imgDir + "/tilt-down.png" );
-  ImageControl* tiltDown = new NavigationControl( tiltDownImg );
+  Control* tiltDown = new NavigationControl();
+  tiltDown->setHeight( 19 );
+  tiltDown->setWidth( 24 );
+  tiltDown->setPosition( imgLeft+16, imgTop+36 );
   tiltDown->addEventHandler( new RotateControlHandler( manip, 0, -MOVE_OFFSET ) );
+  mControlCanvas->addControl( tiltDown );
 
-  //add controls to tiltControls group
-  tiltControls->addControl( tiltUp );
-  tiltControls->addControl( tiltDown );
+  // -------
 
-//END TILT CONTROLS
+  osg::Image* moveWheelImg = osgDB::readImageFile( imgDir + "/MoveWheel.png" );
+  ImageControl* moveWheel = new ImageControl( moveWheelImg );
+  imgTop = 80;
+  moveWheel->setPosition( imgLeft, imgTop );
+  mControlCanvas->addControl( moveWheel );
 
-//ZOOM CONTROLS
-  //Vertical container
-  VBox* zoomControls = new VBox();
-  zoomControls->setFrame( new RoundedFrame() );
-  zoomControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
-  zoomControls->setMargin( 0 );
-#if HAVE_OSGEARTH_CHILD_SPACING
-  zoomControls->setChildSpacing( 5 );
-#else
-  zoomControls->setSpacing( 5 );
-#endif
-  zoomControls->setVertAlign( Control::ALIGN_CENTER );
-  zoomControls->setHorizAlign( Control::ALIGN_CENTER );
-  zoomControls->setPosition( 35, 170 );
-  zoomControls->setPadding( 6 );
+  //MOVE CONTROLS
+  Control* moveLeft = new NavigationControl();
+  moveLeft->setHeight( 22 );
+  moveLeft->setWidth( 20 );
+  moveLeft->setPosition( imgLeft+0, imgTop+18 );
+  moveLeft->addEventHandler( new PanControlHandler( manip, -MOVE_OFFSET, 0 ) );
+  mControlCanvas->addControl( moveLeft );
 
-  //Zoom In
-  osg::Image* zoomInImg = osgDB::readImageFile( imgDir + "/zoom-in.png" );
-  ImageControl* zoomIn = new NavigationControl( zoomInImg );
+  Control* moveRight = new NavigationControl();
+  moveRight->setHeight( 22 );
+  moveRight->setWidth( 20 );
+  moveRight->setPosition( imgLeft+36, imgTop+18 );
+  moveRight->addEventHandler( new PanControlHandler( manip, MOVE_OFFSET, 0 ) );
+  mControlCanvas->addControl( moveRight );
+
+  Control* moveUp = new NavigationControl();
+  moveUp->setHeight( 19 );
+  moveUp->setWidth( 24 );
+  moveUp->setPosition( imgLeft+20, imgTop+0 );
+  moveUp->addEventHandler( new PanControlHandler( manip, 0, MOVE_OFFSET ) );
+  mControlCanvas->addControl( moveUp );
+
+  Control* moveDown = new NavigationControl();
+  moveDown->setHeight( 19 );
+  moveDown->setWidth( 24 );
+  moveDown->setPosition( imgLeft+16, imgTop+36 );
+  moveDown->addEventHandler(new PanControlHandler( manip, 0, -MOVE_OFFSET ) );
+  mControlCanvas->addControl( moveDown );
+
+  //Zoom Reset
+  Control* zoomHome = new NavigationControl();
+  zoomHome->setHeight( 22 );
+  zoomHome->setWidth( 16 );
+  zoomHome->setPosition( imgLeft+20, imgTop+18 );
+  zoomHome->addEventHandler( new HomeControlHandler( manip ) );
+  mControlCanvas->addControl( zoomHome );
+
+  // -------
+
+  osg::Image* backgroundImg = osgDB::readImageFile( imgDir + "/button-background.png" );
+  ImageControl* backgroundGrp1 = new ImageControl( backgroundImg );
+  imgTop = imgTop+62;
+  backgroundGrp1->setPosition( imgLeft+12, imgTop );
+  mControlCanvas->addControl( backgroundGrp1 );
+
+  osg::Image* plusImg = osgDB::readImageFile( imgDir + "/zoom-in.png" );
+  ImageControl* zoomIn = new NavigationControl( plusImg );
+  zoomIn->setPosition( imgLeft+12+3, imgTop+3 );
   zoomIn->addEventHandler( new ZoomControlHandler( manip, 0, -MOVE_OFFSET ) );
+  mControlCanvas->addControl( zoomIn );
 
-  //Zoom Out
-  osg::Image* zoomOutImg = osgDB::readImageFile( imgDir + "/zoom-out.png" );
-  ImageControl* zoomOut = new NavigationControl( zoomOutImg );
+  osg::Image* minusImg = osgDB::readImageFile( imgDir + "/zoom-out.png" );
+  ImageControl* zoomOut = new NavigationControl( minusImg );
+  zoomOut->setPosition( imgLeft+12+3, imgTop+3+23+2 );
   zoomOut->addEventHandler( new ZoomControlHandler( manip, 0, MOVE_OFFSET ) );
+  mControlCanvas->addControl( zoomOut );
 
-  //add controls to zoomControls group
-  zoomControls->addControl( zoomIn );
-  zoomControls->addControl( zoomOut );
+  // -------
 
-//END ZOOM CONTROLS
+  ImageControl* backgroundGrp2 = new ImageControl( backgroundImg );
+  imgTop = imgTop+60;
+  backgroundGrp2->setPosition( imgLeft+12, imgTop );
+  mControlCanvas->addControl( backgroundGrp2 );
 
-  //EXTRA CONTROLS
-  //#define ENABLE_SYNC_BUTTON 1
-#if ENABLE_SYNC_BUTTON
-  //Horizontal container
-  HBox* extraControls = new HBox();
-#else
-  VBox* extraControls = new VBox();
-#endif
-  extraControls->setFrame( new RoundedFrame() );
-  extraControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
-  extraControls->setMargin( 0 );
-#if HAVE_OSGEARTH_CHILD_SPACING
-  extraControls->setChildSpacing( 10 );
-#else
-  extraControls->setSpacing( 10 );
-#endif
-  extraControls->setVertAlign( Control::ALIGN_CENTER );
-  extraControls->setHorizAlign( Control::ALIGN_CENTER );
-#if ENABLE_SYNC_BUTTON
-  extraControls->setPosition( 5, 231 );
-#else
-  extraControls->setPosition( 35, 231 );
-#endif
-  extraControls->setPadding( 6 );
+  //Zoom Reset
+  osg::Image* homeImg = osgDB::readImageFile( imgDir + "/zoom-home.png" );
+  ImageControl* home = new NavigationControl( homeImg );
+  home->setPosition( imgLeft+12+3, imgTop+2 );
+  home->addEventHandler( new HomeControlHandler( manip ) );
+  mControlCanvas->addControl( home );
+
+  //refresh layers
+  osg::Image* refreshImg = osgDB::readImageFile( imgDir + "/refresh-view.png" );
+  ImageControl* refresh = new NavigationControl( refreshImg );
+  refresh->setPosition( imgLeft+12+3, imgTop+2+23+2 );
+  refresh->addEventHandler( new RefreshControlHandler( this ) );
+  mControlCanvas->addControl( refresh );
 
   //Sync Extent
 #if ENABLE_SYNC_BUTTON
-  osg::Image* extraSyncImg = osgDB::readImageFile( imgDir + "/sync-extent.png" );
-  ImageControl* extraSync = new NavigationControl( extraSyncImg );
-  extraSync->addEventHandler( new SyncExtentControlHandler( this ) );
+  osg::Image* syncImg = osgDB::readImageFile( imgDir + "/sync-extent.png" );
+  ImageControl* sync = new NavigationControl( syncImg );
+  sync->addEventHandler( new SyncExtentControlHandler( this ) );
+  mControlCanvas->addControl( sync );
 #endif
-
-  //Zoom Reset
-  osg::Image* extraHomeImg = osgDB::readImageFile( imgDir + "/zoom-home.png" );
-  ImageControl* extraHome = new NavigationControl( extraHomeImg );
-  extraHome->addEventHandler( new HomeControlHandler( manip ) );
-
-  //refresh layers
-  osg::Image* extraRefreshImg = osgDB::readImageFile( imgDir + "/refresh-view.png" );
-  ImageControl* extraRefresh = new NavigationControl( extraRefreshImg );
-  extraRefresh->addEventHandler( new RefreshControlHandler( this ) );
-
-  //add controls to extraControls group
-#if ENABLE_SYNC_BUTTON
-  extraControls->addControl( extraSync );
-#endif
-  extraControls->addControl( extraHome );
-  extraControls->addControl( extraRefresh );
-
-//END EXTRA CONTROLS
-
-//add controls groups to canavas
-  mControlCanvas->addControl( moveHControls );
-  mControlCanvas->addControl( moveVControls );
-  mControlCanvas->addControl( tiltControls );
-  mControlCanvas->addControl( rotateControls );
-  mControlCanvas->addControl( zoomControls );
-  mControlCanvas->addControl( extraControls );
 }
 
 void GlobePlugin::setupProxy()

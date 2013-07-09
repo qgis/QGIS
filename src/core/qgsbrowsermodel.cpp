@@ -45,12 +45,14 @@ QgsBrowserModel::~QgsBrowserModel()
 
 void QgsBrowserModel::updateProjectHome()
 {
-  int idx = mRootItems.indexOf( mProjectHome );
   QString home = QgsProject::instance()->homePath();
-
-  delete mProjectHome;
+  if ( mProjectHome && mProjectHome->path() == home )
+    return;
 
   emit layoutAboutToBeChanged();
+
+  int idx = mRootItems.indexOf( mProjectHome );
+  delete mProjectHome;
   mProjectHome = home.isNull() ? 0 : new QgsDirectoryItem( NULL, tr( "Project home" ), home );
   if ( mProjectHome )
   {
@@ -64,6 +66,7 @@ void QgsBrowserModel::updateProjectHome()
   {
     mRootItems.remove( idx );
   }
+
   emit layoutChanged();
 }
 

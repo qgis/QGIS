@@ -21,12 +21,8 @@
 
 #include <QObject>
 #include <QHash>
+#include <QProcess>
 
-class QProcess;
-
-#ifdef Q_OS_MACX
-#define QGSCONTEXTHELP_REUSE 1
-#endif
 /** \ingroup core
  * Provides a context based help browser for a dialog.
  *
@@ -35,11 +31,6 @@ class QProcess;
  * viewer using QProcess and ensures that only one viewer is open.
  * The viewer will be terminated if open when the main application quits.
  *
- * If the compile-time flag QGSCONTEXTHELP_REUSE is defined, the help viewer
- * will be reused if it is still open. If this flag is not set, the viewer
- * process will be terminated if open and restarted; this makes it the top
- * window for window managers such as Linux/GNOME which will make a window
- * active but not bring it to the top if raised programatically.
  */
 class CORE_EXPORT QgsContextHelp : public QObject
 {
@@ -49,6 +40,7 @@ class CORE_EXPORT QgsContextHelp : public QObject
 
   private slots:
     void processExited();
+    void error( QProcess::ProcessError error );
 
   private:
     //! Constructor

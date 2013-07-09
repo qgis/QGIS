@@ -969,6 +969,7 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList & flist )
   {
     returnvalue = false;
   }
+
   recalculateFeatureCount();
 
   if ( returnvalue )
@@ -1139,7 +1140,10 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
     }
   }
 
-  OGR_L_SyncToDisk( ogrLayer );
+  if ( OGR_L_SyncToDisk( ogrLayer ) != OGRERR_NONE )
+  {
+    pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
+  }
   return true;
 }
 
@@ -1254,11 +1258,39 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
     returnvalue = false;
   }
 
-  QString layerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
+  // run REPACK on shape files
+  if ( ogrDriverName == "ESRI Shapefile" )
+  {
+    QString layerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
 
-  QString sql = QString( "REPACK %1" ).arg( layerName );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
-  QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, NULL );
+    QString sql = QString( "REPACK %1" ).arg( layerName );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
+    QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
+    OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, NULL );
+
+    if ( mFilePath.endsWith( ".shp", Qt::CaseInsensitive ) || mFilePath.endsWith( ".dbf", Qt::CaseInsensitive ) )
+    {
+      QString packedDbf( mFilePath.left( mFilePath.size() - 4 ) + "_packed.dbf" );
+      if ( QFile::exists( packedDbf ) )
+      {
+        QgsMessageLog::logMessage( tr( "Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF." ).arg( packedDbf ), tr( "OGR" ), QgsMessageLog::CRITICAL );
+
+        OGR_DS_Destroy( ogrDataSource );
+
+        ogrDataSource = OGROpen( TO8F( mFilePath ), true, NULL );
+
+        if ( mLayerName.isNull() )
+        {
+          ogrOrigLayer = OGR_DS_GetLayer( ogrDataSource, mLayerIndex );
+        }
+        else
+        {
+          ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, TO8( mLayerName ) );
+        }
+
+        ogrLayer = ogrOrigLayer;
+      }
+    }
+  }
 
   recalculateFeatureCount();
 
@@ -2122,6 +2154,10 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
     return; //not a provider field
   }
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM < 1910
+  // avoid GDAL #4509
+  return QgsVectorDataProvider::uniqueValues( index, uniqueValues, limit );
+#else
   QString theLayerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   QString sql = QString( "SELECT DISTINCT %1 FROM %2" )
@@ -2151,6 +2187,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   }
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
+#endif
 }
 
 QVariant QgsOgrProvider::minimumValue( int index )
@@ -2249,7 +2286,10 @@ QString QgsOgrProvider::quotedIdentifier( QString field )
 
 bool QgsOgrProvider::syncToDisc()
 {
-  OGR_L_SyncToDisk( ogrLayer );
+  if ( OGR_L_SyncToDisk( ogrLayer ) != OGRERR_NONE )
+  {
+    pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
+  }
 
   //for shapefiles: is there already a spatial index?
   if ( !mFilePath.isEmpty() )
