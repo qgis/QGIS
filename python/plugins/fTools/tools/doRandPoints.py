@@ -116,15 +116,15 @@ class Dialog(QDialog, Ui_Dialog):
                 QMessageBox.information(self, self.tr("Random Points"), self.tr("Unknown layer type..."))
             minimum = 0.00
             self.progressBar.setValue(10)
-            self.randomize(inLayer, outPath, minimum, design, value)
-            self.progressBar.setValue(100)
-            self.outShape.clear()
-            addToTOC = QMessageBox.question(self, self.tr("Random Points"),
-            self.tr("Created output point shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % (outPath), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
-            if addToTOC == QMessageBox.Yes:
-                self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
-                QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
-                self.populateLayers()
+            if self.randomize(inLayer, outPath, minimum, design, value):
+              self.progressBar.setValue(100)
+              self.outShape.clear()
+              addToTOC = QMessageBox.question(self, self.tr("Random Points"),
+              self.tr("Created output point shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % (outPath), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+              if addToTOC == QMessageBox.Yes:
+                  self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
+                  QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
+                  self.populateLayers()
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 
@@ -204,28 +204,32 @@ class Dialog(QDialog, Ui_Dialog):
             else:
                 points = self.vectorRandom(int(value), inLayer,
                 ext.xMinimum(), ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
-        else: points = self.loopThruPolygons(inLayer, value, design)
-        crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
-        if not crs.isValid(): crs = None
-        fields = QgsFields()
-        fields.append( QgsField("ID", QVariant.Int) )
-        outFeat.setFields(fields)
-        check = QFile(self.shapefileName)
-        if check.exists():
-            if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
-                return
-        writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, QGis.WKBPoint, crs)
-        idVar = 0
-        count = 70.00
-        add = ( 100.00 - 70.00 ) / len(points)
-        for i in points:
-            outFeat.setGeometry(i)
-            outFeat.setAttribute(0, idVar)
-            writer.addFeature(outFeat)
-            idVar = idVar + 1
-            count = count + add
-            self.progressBar.setValue(count)
-        del writer
+        else:
+          points = self.loopThruPolygons(inLayer, value, design)
+        if len(points):
+          crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
+          if not crs.isValid(): crs = None
+          fields = QgsFields()
+          fields.append( QgsField("ID", QVariant.Int) )
+          outFeat.setFields(fields)
+          check = QFile(self.shapefileName)
+          if check.exists():
+              if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
+                  return
+          writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, QGis.WKBPoint, crs)
+          idVar = 0
+          count = 70.00
+          add = ( 100.00 - 70.00 ) / len(points)
+          for i in points:
+              outFeat.setGeometry(i)
+              outFeat.setAttribute(0, idVar)
+              writer.addFeature(outFeat)
+              idVar = idVar + 1
+              count = count + add
+              self.progressBar.setValue(count)
+          del writer
+          return True
+        return False
 
 #
     def loopThruPolygons(self, inLayer, numRand, design):
@@ -234,12 +238,7 @@ class Dialog(QDialog, Ui_Dialog):
         sGeom = QgsGeometry()
         sPoints = []
         if design == self.tr("field"):
-            i = 0
-            for attr in sProvider.fields():
-                if (unicode(numRand) == attr.name()):
-                    index = i #get input field index
-                    break
-                i += 1
+          index = sProvider.fieldNameIndex(numRand)
         count = 10.00
         add = 60.00 / sProvider.featureCount()
         sFit = sProvider.getFeatures()
@@ -250,7 +249,12 @@ class Dialog(QDialog, Ui_Dialog):
                 value = int(round(numRand * sDistArea.measure(sGeom)))
             elif design == self.tr("field"):
                 sAtMap = sFeat.attributes()
-                value = sAtMap[index]
+                try:
+                  value = int(sAtMap[index])
+                except (ValueError,TypeError):
+                  warn_msg = self.tr("The selected field has NULL values.\nTry to select other field.")
+                  QMessageBox.warning(self, self.tr("Warning"), warn_msg)
+                  return list()
             else:
                 value = numRand
             sExt = sGeom.boundingBox()
