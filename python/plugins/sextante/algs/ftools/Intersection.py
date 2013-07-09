@@ -68,25 +68,21 @@ class Intersection(GeoAlgorithm):
                 request = QgsFeatureRequest().setFilterFid(i)
                 inFeatB = vlayerB.getFeatures(request).next()
                 tmpGeom = QgsGeometry(inFeatB.geometry())
-                try:
-                    if geom.intersects( tmpGeom ):
-                        atMapB = inFeatB.attributes()
-                        int_geom = QgsGeometry( geom.intersection( tmpGeom ) )
-                        if int_geom.wkbType() == 7:
-                            int_com = geom.combine( tmpGeom )
-                            int_sym = geom.symDifference( tmpGeom )
-                            int_geom = QgsGeometry( int_com.difference( int_sym ) )
-                    try:
-                        outFeat.setGeometry( int_geom )
-                        attrs = []
-                        attrs.extend(atMapA)
-                        attrs.extend(atMapB)
-                        outFeat.setAttributes(attrs)
-                        writer.addFeature( outFeat )
-                    except:
-                        raise GeoAlgorithmExecutionException("Feature exception while computing intersection")
-                except:
-                    raise GeoAlgorithmExecutionException("Geometry exception while computing intersection")
+                if geom.intersects( tmpGeom ):
+                    print "hola"
+                    atMapB = inFeatB.attributes()
+                    int_geom = QgsGeometry( geom.intersection( tmpGeom ) )
+                    if int_geom.wkbType() == 7:
+                        int_com = geom.combine( tmpGeom )
+                        int_sym = geom.symDifference( tmpGeom )
+                        int_geom = QgsGeometry( int_com.difference( int_sym ) )
+                    outFeat.setGeometry( int_geom )
+                    attrs = []
+                    attrs.extend(atMapA)
+                    attrs.extend(atMapB)
+                    outFeat.setAttributes(attrs)
+                    writer.addFeature( outFeat )
+
 
 
         del writer
