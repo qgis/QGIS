@@ -266,7 +266,6 @@ void QgsDataItem::deleteChildItem( QgsDataItem * child )
 
 QgsDataItem * QgsDataItem::removeChildItem( QgsDataItem * child )
 {
-  deleteChildItem( child );
   QgsDebugMsgLevel( "mName = " + child->mName, 2 );
   int i = mChildren.indexOf( child );
   Q_ASSERT( i >= 0 );
