@@ -487,11 +487,10 @@ class geoprocessingThread( QThread ):
           hull = []
           first = True
           outID = 0
-          vproviderA.rewind()
           for inFeat in selectionA:
             atMap = inFeat.attributes()
             idVar = atMap[ self.myParam ]
-            if idVar.strip() == i.strip():
+            if idVar == i:
               if first:
                 outID = idVar
                 first = False
@@ -505,10 +504,6 @@ class geoprocessingThread( QThread ):
             try:
               outGeom = tmpGeom.convexHull()
               outFeat.setGeometry( outGeom )
-              (area, perim) = self.simpleMeasure( outGeom )
-              outFeat.setAttribute( 0, outID )
-              outFeat.setAttribute( 1, area )
-              outFeat.setAttribute( 2, perim )
               writer.addFeature( outFeat )
             except:
               GEOS_EXCEPT = False
@@ -547,7 +542,7 @@ class geoprocessingThread( QThread ):
           while fitA.nextFeature( inFeat ):
             atMap = inFeat.attributes()
             idVar = atMap[ self.myParam ]
-            if idVar.strip() == i.strip():
+            if idVar == i:
               if first:
                 outID = idVar
                 first = False
@@ -561,10 +556,6 @@ class geoprocessingThread( QThread ):
             try:
               outGeom = tmpGeom.convexHull()
               outFeat.setGeometry( outGeom )
-              (area, perim) = self.simpleMeasure( outGeom )
-              outFeat.setAttribute( 0, outID )
-              outFeat.setAttribute( 1, area )
-              outFeat.setAttribute( 2, perim )
               writer.addFeature( outFeat )
             except:
               GEOS_EXCEPT = False
