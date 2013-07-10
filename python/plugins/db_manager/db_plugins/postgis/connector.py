@@ -783,7 +783,7 @@ class PostGisDBConnector(DBConnector):
 			if self.has_geometry_columns and not self.is_geometry_columns_view:
 				schema, tablename = self.getSchemaTableName(table)
 				schema_where = u" f_table_schema=%s AND " % self.quoteString(schema) if schema is not None else ""
-				sql = u"UPDATE geometry_columns SET f_geometry_column=%s WHERE %s f_table_name=%s AND f_geometry_column=%s" % (self.quoteString(new_name), schema_where, self.quoteString(tablename), self.quoteString(name))
+				sql = u"UPDATE geometry_columns SET f_geometry_column=%s WHERE %s f_table_name=%s AND f_geometry_column=%s" % (self.quoteString(new_name), schema_where, self.quoteString(tablename), self.quoteString(column))
 				self._execute(c, sql)
 
 		self._commit()
