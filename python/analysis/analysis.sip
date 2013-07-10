@@ -10,6 +10,7 @@
 
 %Include vector/qgsgeometryanalyzer.sip
 %Include vector/qgsoverlayanalyzer.sip
+%Include vector/qgstransectsample.sip
 %Include vector/qgszonalstatistics.sip
 
 // // %Include interpolation/Bezier3D.sip
