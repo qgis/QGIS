@@ -938,8 +938,7 @@ class geoprocessingThread( QThread ):
                     gList = ftools_utils.getGeomType( geom.wkbType() )
                     if int_geom.wkbType() in gList:
                       outFeat.setGeometry( int_geom )
-                      atMapA.extend( atMapB )
-                      outFeat.setAttributes( atMapA )
+                      outFeat.setAttributes( atMapA + atMapB )
                       writer.addFeature( outFeat )
                   except:
                     FEATURE_EXCEPT = False
@@ -970,8 +969,7 @@ class geoprocessingThread( QThread ):
                   gList = ftools_utils.getGeomType( geom.wkbType() )
                   if int_geom.wkbType() in gList:
                     outFeat.setGeometry( int_geom )
-                    atMapA.extend( atMapB )
-                    outFeat.setAttributes( atMapA )
+                    outFeat.setAttributes( atMapA + atMapB )
                     writer.addFeature( outFeat )
                 except:
                   EATURE_EXCEPT = False
@@ -1010,8 +1008,7 @@ class geoprocessingThread( QThread ):
                     gList = ftools_utils.getGeomType( geom.wkbType() )
                     if int_geom.wkbType() in gList:
                       outFeat.setGeometry( int_geom )
-                      atMapA.extend( atMapB )
-                      outFeat.setAttributes( atMapA )
+                      outFeat.setAttributes( atMapA + atMapB )
                       writer.addFeature( outFeat )
                   except:
                     FEATURE_EXCEPT = False
@@ -1044,8 +1041,7 @@ class geoprocessingThread( QThread ):
                   gList = ftools_utils.getGeomType( geom.wkbType() )
                   if int_geom.wkbType() in gList:
                     outFeat.setGeometry( int_geom )
-                    atMapA.extend( atMapB )
-                    outFeat.setAttributes( atMapA )
+                    outFeat.setAttributes( atMapA + atMapB )
                     writer.addFeature( outFeat )
                 except:
                   FEATURE_EXCEPT = False
@@ -1141,8 +1137,7 @@ class geoprocessingThread( QThread ):
                     int_geom = QgsGeometry( i )
                     try:
                       outFeat.setGeometry( int_geom )
-                      atMapA.extend( atMapB )
-                      outFeat.setAttributes( atMapA )
+                      outFeat.setAttributes( atMapA + atMapB )
                       writer.addFeature( outFeat )
                     except Exception, err:
                       FEATURE_EXCEPT = False
@@ -1155,8 +1150,7 @@ class geoprocessingThread( QThread ):
                 if int_geom.wkbType() in gList:
                   try:
                     outFeat.setGeometry( int_geom )
-                    atMapA.extend( atMapB )
-                    outFeat.setAttributes( atMapA )
+                    outFeat.setAttributes( atMapA + atMapB )
                     writer.addFeature( outFeat )
                   except Exception, err:
                     FEATURE_EXCEPT = False
