@@ -26,6 +26,20 @@ ba = s.value("/UI/state").toByteArray()
 for chunk in chunks(ba,16):
 	f.write( "  %s,\n" % ", ".join( map( lambda x : "0x%02x" % ord(x), chunk ) ) )
 
+ba = s.value("/Composer/geometry").toByteArray()
+
+f.write( "};\n\nstatic const unsigned char defaultComposerUIgeometry[] =\n{\n" )
+
+for chunk in chunks(ba,16):
+        f.write( "  %s,\n" % ", ".join( map( lambda x : "0x%02x" % ord(x), chunk ) ) )
+
+f.write( "};\n\nstatic const unsigned char defaultComposerUIstate[] =\n{\n" )
+
+ba = s.value("/ComposerUI/state").toByteArray()
+
+for chunk in chunks(ba,16):
+	f.write( "  %s,\n" % ", ".join( map( lambda x : "0x%02x" % ord(x), chunk ) ) )
+
 f.write( "};\n\n#endif // UI_DEFAULTS_H\n" )
 
 f.close()

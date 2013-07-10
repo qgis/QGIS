@@ -1756,14 +1756,22 @@ void QgsComposer::saveWindowState()
   settings.setValue( "/ComposerUI/state", saveState() );
 }
 
+#include "ui_defaults.h"
+
 void QgsComposer::restoreWindowState()
 {
+  // restore the toolbar and dock widgets postions using Qt4 settings API
   QSettings settings;
-  if ( ! restoreState( settings.value( "/ComposerUI/state" ).toByteArray() ) )
+
+  if ( !restoreState( settings.value( "/ComposerUI/state", QByteArray::fromRawData(( char * )defaultComposerUIstate, sizeof defaultComposerUIstate ) ).toByteArray() ) )
   {
-    QgsDebugMsg( "RESTORE STATE FAILED!!" );
+    QgsDebugMsg( "restore of composer UI state failed" );
   }
-  restoreGeometry( settings.value( "/Composer/geometry" ).toByteArray() );
+  // restore window geometry
+  if ( !restoreGeometry( settings.value( "/Composer/geometry", QByteArray::fromRawData(( char * )defaultComposerUIgeometry, sizeof defaultComposerUIgeometry ) ).toByteArray() ) )
+  {
+    QgsDebugMsg( "restore of composer UI geometry failed" );
+  }
 }
 
 void  QgsComposer::writeXML( QDomDocument& doc )
