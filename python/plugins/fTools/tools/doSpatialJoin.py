@@ -146,14 +146,6 @@ class Dialog(QDialog, Ui_Dialog):
             seq = range(0, len(fieldList1))
             fieldList1 = dict(zip(seq, fieldList1))
 
-        # check for correct field names
-        print fieldList1
-        longNames = ftools_utils.checkFieldNameLength( fieldList1.values() )
-        if len( longNames ) > 0:
-            QMessageBox.warning( self, self.tr( 'Incorrect field names' ),
-                        self.tr( 'No output will be created.\nFollowing field names are longer than 10 characters:\n%s' ) % ( "\n".join(longNames) ) )
-            return False
-
         sRs = provider1.crs()
         progressBar.setValue(13)
         check = QFile(self.shapefileName)
