@@ -41,7 +41,7 @@ class TestQgsSpatialiteProvider(TestCase):
         cur = con.cursor()
         sql = "SELECT InitSpatialMetadata()"
         cur.execute(sql)
-        sql = "CREATE TABLE test_pg (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        sql = "CREATE TABLE test_pg (id INTEGER NOT NULL, name TEXT NOT NULL, PRIMARY KEY (id, name))"
         cur.execute(sql)
         sql = "SELECT AddGeometryColumn('test_pg', 'geometry', 4326, 'POLYGON', 'XY')"
         cur.execute(sql)

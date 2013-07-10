@@ -124,10 +124,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     */
     virtual void updateExtents();
 
-    /**  * Get the name of the primary key for the layer
-    */
-    QString getPrimaryKey();
-
     /**
       * Get the field information for the layer
       * @return vector of QgsField objects
