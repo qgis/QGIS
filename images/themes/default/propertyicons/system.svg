@@ -14,7 +14,7 @@
    height="64"
    width="64"
    version="1.0"
-   inkscape:version="0.48.2 r9819"
+   inkscape:version="0.48.3.1 r9886"
    sodipodi:docname="system.svg">
   <metadata
      id="metadata61">
@@ -37,15 +37,15 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1315"
-     inkscape:window-height="724"
+     inkscape:window-width="1410"
+     inkscape:window-height="861"
      id="namedview59"
      showgrid="false"
      inkscape:zoom="8.375"
-     inkscape:cx="32"
+     inkscape:cx="10.985075"
      inkscape:cy="32"
-     inkscape:window-x="39"
-     inkscape:window-y="0"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
      inkscape:window-maximized="0"
      inkscape:current-layer="g4032" />
   <defs
@@ -796,11 +796,11 @@
        x1="302.29001">
       <stop
          id="stop7383-3"
-         style="stop-color:#babdb6"
+         style="stop-color:#b2b5ae;stop-opacity:1;"
          offset="0" />
       <stop
          id="stop7385-9"
-         style="stop-color:#fff"
+         style="stop-color:#d1d1d1;stop-opacity:1;"
          offset="1" />
     </linearGradient>
     <linearGradient
