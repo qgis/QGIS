@@ -3506,10 +3506,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
   QString values;
   QString separator;
   int ia, ret;
-
   
-  const QString primaryKey = getPrimaryKey();
-
   if ( flist.size() == 0 )
     return true;
   const QgsAttributes & attributevec = flist[0].attributes();
@@ -3609,7 +3606,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         continue;
 
       // replace primary key with NULL so that sqlite will generate one for us
-      if ( primaryKey == fieldname )
+      if ( mPrimaryKey == fieldname )
       { 
         v = QVariant();
         assert(v.toString().isEmpty());
@@ -5208,35 +5205,3 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
   return true;
 }
 
-QString QgsSpatiaLiteProvider::getPrimaryKey()
-{
-  char **results;
-  int rows;
-  int columns;
-  char *errMsg = NULL;
-  QString sql = QString( "PRAGMA table_info(%1)" ).arg( mQuery );
-
-  int ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
-  if ( ret != SQLITE_OK )
-  {
-    QgsDebugMsg( "sqlite error: " + QString::fromUtf8( errMsg ) );
-  }
-
-  int pkColIdx=0;
-  for (; (pkColIdx < columns) && (QString("pk") != results[pkColIdx]) ; pkColIdx++){}
-  assert(pkColIdx<columns); // we must find it
-
-  int nameIdx=0;
-  for (; (nameIdx < columns) && (QString("name") != results[nameIdx]) ; nameIdx++){}
-  assert(nameIdx<columns); // we must find it
-
-  for (int r=0; r<rows; r++)
-  {
-    if ( QString("1") == results[r*columns + pkColIdx] )
-    { 
-      return QString::fromUtf8( results[r*columns + nameIdx] );
-    }
-  }
-
-  return QString();
-}
