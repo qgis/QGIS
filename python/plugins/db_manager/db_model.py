@@ -94,7 +94,7 @@ class TreeItem(QObject):
 	def path(self):
 		pathList = []
 		if self.parent():
-			pathList.append( self.parent().path() )
+			pathList.extend( self.parent().path() )
 		pathList.append( self.data(0) )
 		return pathList
 
@@ -253,7 +253,7 @@ class TableItem(TreeItem):
 	def path(self):
 		pathList = []
 		if self.parent():
-			pathList.append( self.parent().path() )
+			pathList.extend( self.parent().path() )
 
 		if self.getItemData().type == Table.VectorType:
 			pathList.append( "%s::%s" % ( self.data(0), self.getItemData().geomColumn ) )
@@ -288,6 +288,8 @@ class DBModel(QAbstractItemModel):
 			index = self._rItem2Index(item)
 		if index.isValid():
 			self._refreshIndex(index)
+		else:
+			qDebug( "invalid index" )
 
 	def _rItem2Index(self, item, parent=None):
 		if parent == None:
@@ -602,4 +604,3 @@ class DBModel(QAbstractItemModel):
 				self._refreshIndex( parent )
 		finally:
 			inLayer.deleteLater()
-
