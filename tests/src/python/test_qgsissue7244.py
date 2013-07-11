@@ -59,12 +59,19 @@ class TestQgsSpatialiteProvider(TestCase):
                 sql += str(i+1) + " " + str(j)   + ","
                 sql += str(i+1) + " " + str(j+1) + ","
                 sql += str(i)   + " " + str(j+1) + ","
-                sql += str(i)   + " " + str(j) 
+                sql += str(i)   + " " + str(j)
                 sql += ")),"
         sql = sql[:-1] # remove last comma
         sql += ")', 4326))"
         cur.execute(sql)
- 
+
+        sql = "CREATE TABLE test_pg (id SERIAL PRIMARY KEY, name STRING NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_pg', 'geometry', 4326, 'POLYGON', 'XY')"
+        cur.execute(sql)
+        sql = "INSERT INTO test_pg (name, geometry) "
+        sql +=    "VALUES ('polygon with interior ring', GeomFromText('POLYGON((0 0,3 0,3 3,0 3,0 0),(1 1,1 2,2 2,2 1,1 1))', 4326))"
+        cur.execute(sql)
         con.commit()
         con.close()
 
@@ -85,16 +92,27 @@ class TestQgsSpatialiteProvider(TestCase):
         pass
 
     def test_SplitMultipolygon(self):
-        """Create spatialite database"""
+        """Split multipolygon"""
         layer = QgsVectorLayer("dbname=test.sqlite table=test_mpg (geometry)", "test_mpg", "spatialite")
         assert(layer.isValid())
         assert(layer.hasGeometryType())
-        layer.featureCount() == 1 or die("we should have 1 features")
+        layer.featureCount() == 1 or die("wrong number of features")
         layer.startEditing()
         layer.splitFeatures([QgsPoint(0.5, -0.5), QgsPoint(0.5, 1.5)], 0)==0 or die("error in split of one polygon of multipolygon")
         layer.splitFeatures([QgsPoint(2.5, -0.5), QgsPoint(2.5, 4)], 0)==0 or die("error in split of two polygons of multipolygon at a time")
         layer.commitChanges() or die("this commit should work")
-        #layer.featureCount() == 9 or die("we should have 9 features after 2 split")
+        layer.featureCount() == 7 or die("wrong number of features after 2 split")
+
+    def test_SplitTruToCreateCutEdge(self):
+        """Try to creat a cut edge"""
+        layer = QgsVectorLayer("dbname=test.sqlite table=test_pg (geometry)", "test_pg", "spatialite")
+        assert(layer.isValid())
+        assert(layer.hasGeometryType())
+        layer.featureCount() == 1 or die("wrong number of features")
+        layer.startEditing()
+        layer.splitFeatures([QgsPoint(1.5, -0.5), QgsPoint(1.5, 1.5)], 0)==0 or die("error when trying to create an invalid polygon in split")
+        layer.commitChanges() or die("this commit should work")
+        layer.featureCount() == 1 or die("wrong number of features, polygon should be unafected by cut")
 
 
 
