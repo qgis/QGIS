@@ -52,6 +52,15 @@ class TestQgsSpatialiteProvider(TestCase):
         sql +=    "VALUES (1, 'toto', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
         cur.execute(sql)
 
+        # table with multiple column primary key
+        sql = "CREATE TABLE test_pg_mk (id INTEGER NOT NULL, name TEXT NOT NULL, PRIMARY KEY(id,name))"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_pg_mk', 'geometry', 4326, 'POLYGON', 'XY')"
+        cur.execute(sql)
+        sql = "INSERT INTO test_pg_mk (id, name, geometry) "
+        sql +=    "VALUES (1, 'toto', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
+        cur.execute(sql)
+
         con.commit()
         con.close()
 
@@ -74,6 +83,17 @@ class TestQgsSpatialiteProvider(TestCase):
     def test_SplitFeature(self):
         """Create spatialite database"""
         layer = QgsVectorLayer("dbname=test.sqlite table=test_pg (geometry)", "test_pg", "spatialite")
+        assert(layer.isValid())
+        assert(layer.hasGeometryType())
+        layer.startEditing()
+        layer.splitFeatures([QgsPoint(0.5, -0.5), QgsPoint(0.5, 1.5)], 0)==0 or die("error in split")
+        layer.splitFeatures([QgsPoint(-0.5, 0.5), QgsPoint(1.5, 0.5)], 0)==0 or die("error in split")
+        layer.commitChanges() or die("this commit should work")
+        layer.featureCount() == 4 or die("we should have 4 features after 2 split")
+
+    def test_SplitFeatureWithFailedCommit(self):
+        """Create spatialite database"""
+        layer = QgsVectorLayer("dbname=test.sqlite table=test_pg_mk (geometry)", "test_pg_mk", "spatialite")
         assert(layer.isValid())
         assert(layer.hasGeometryType())
         layer.startEditing()
