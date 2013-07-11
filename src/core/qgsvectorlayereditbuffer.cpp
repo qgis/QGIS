@@ -340,7 +340,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
     //
     // delete features
     //
-    if ( !mDeletedFeatureIds.isEmpty() )
+    if ( success && !mDeletedFeatureIds.isEmpty() )
     {
       if (( cap & QgsVectorDataProvider::DeleteFeatures ) && provider->deleteFeatures( mDeletedFeatureIds ) )
       {
@@ -366,7 +366,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
     //
     //  add features
     //
-    if ( !mAddedFeatures.isEmpty() )
+    if ( success && !mAddedFeatures.isEmpty() )
     {
       if ( cap & QgsVectorDataProvider::AddFeatures )
       {
@@ -418,7 +418,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
   //
   // update geometries
   //
-  if ( !mChangedGeometries.isEmpty() )
+  if ( success && !mChangedGeometries.isEmpty() )
   {
     if (( cap & QgsVectorDataProvider::ChangeGeometries ) && provider->changeGeometryValues( mChangedGeometries ) )
     {

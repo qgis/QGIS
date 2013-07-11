@@ -597,6 +597,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
 
   attributeFields.clear();
   mPrimaryKey.clear(); // cazzo cazzo cazzo
+  mPrimaryKeyAttrs.clear();
 
   gaiaLayerAttributeFieldPtr fld = lyr->First;
   if ( fld == NULL )
@@ -692,6 +693,7 @@ void QgsSpatiaLiteProvider::loadFields()
   if ( !isQuery )
   {
     mPrimaryKey.clear();
+    mPrimaryKeyAttrs.clear();
 
     sql = QString( "PRAGMA table_info(%1)" ).arg( quotedIdentifier( mTableName ) );
 
@@ -712,6 +714,8 @@ void QgsSpatiaLiteProvider::loadFields()
           // found a Primary Key column
           pkCount++;
           pkName = name;
+          mPrimaryKeyAttrs << i - 1;
+          QgsDebugMsg( "found primaryKey " + name );
         }
 
         if ( name != mGeometryColumn )
@@ -777,6 +781,8 @@ void QgsSpatiaLiteProvider::loadFields()
         {
           pkCount++;
           pkName = name;
+          mPrimaryKeyAttrs << i - 1;
+          QgsDebugMsg( "found primaryKey " + name );
         }
 
         if ( name != mGeometryColumn )
@@ -5197,3 +5203,9 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
 
   return true;
 }
+
+QgsAttributeList QgsSpatiaLiteProvider::pkAttributeIndexes()
+{
+  return mPrimaryKeyAttrs;
+}
+
