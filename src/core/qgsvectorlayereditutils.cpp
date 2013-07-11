@@ -244,15 +244,15 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
         QgsFeature newFeature;
         newFeature.setGeometry( newGeometry );
 
-        //use default value where possible (primary key issue), otherwise the value from the original (split) feature
+        //use default value where possible for primary key (e.g. autoincrement),
+        //and use the value from the original (split) feature if not primary key
         QgsAttributes newAttributes = select_it->attributes();
-        QVariant defaultValue;
-        for ( int j = 0; j < newAttributes.count(); ++j )
+        foreach ( int pkIdx, L->dataProvider()->pkAttributeIndexes() )
         {
-          defaultValue = L->dataProvider()->defaultValue( j );
+          const QVariant defaultValue = L->dataProvider()->defaultValue( pkIdx );
           if ( !defaultValue.isNull() )
           {
-            newAttributes[ j ] = defaultValue;
+            newAttributes[ pkIdx ] = defaultValue;
           }
         }
 

@@ -35,22 +35,26 @@ class TestQgsSpatialiteProvider(TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        # create test db
         if os.path.exists("test.sqlite") :
             os.remove("test.sqlite")
         con = sqlite3.connect("test.sqlite")
         cur = con.cursor()
         sql = "SELECT InitSpatialMetadata()"
         cur.execute(sql)
-        sql = "CREATE TABLE test_pg (id INTEGER NOT NULL, name TEXT NOT NULL, PRIMARY KEY (id, name))"
+
+        # simple table with primary key
+        sql = "CREATE TABLE test_pg (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
         cur.execute(sql)
         sql = "SELECT AddGeometryColumn('test_pg', 'geometry', 4326, 'POLYGON', 'XY')"
         cur.execute(sql)
         sql = "INSERT INTO test_pg (id, name, geometry) "
-        sql +=    "VALUES (11, 'toto', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
-        rs = cur.execute(sql)
+        sql +=    "VALUES (1, 'toto', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
+        cur.execute(sql)
+
         con.commit()
         con.close()
-        
+
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
@@ -74,9 +78,19 @@ class TestQgsSpatialiteProvider(TestCase):
         assert(layer.hasGeometryType())
         layer.startEditing()
         layer.splitFeatures([QgsPoint(0.5, -0.5), QgsPoint(0.5, 1.5)], 0)==0 or die("error in split")
-        layer.commitChanges() or die("error in commit")
-        
-
+        layer.splitFeatures([QgsPoint(-0.5, 0.5), QgsPoint(1.5, 0.5)], 0)==0 or die("error in split")
+        if layer.commitChanges():
+            die("this commit should fail")
+        layer.rollBack()
+        feat = QgsFeature()
+        it=layer.getFeatures()
+        it.nextFeature(feat)
+        ref = [[(0,0), (1,0), (1,1), (0,1), (0,0)]]
+        res = feat.geometry().asPolygon()
+        for ring1, ring2 in zip(ref ,res):
+            for p1, p2 in zip(ring1, ring2):
+                for c1, c2 in zip(p1,p2):
+                    c1 == c2 or die("polygon has been altered by failed edition")
 
 if __name__ == '__main__':
     unittest.main()

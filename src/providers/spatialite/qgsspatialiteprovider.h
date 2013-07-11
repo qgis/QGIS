@@ -220,6 +220,12 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     */
     QString description() const;
 
+    /**
+     * Return list of indexes of fields that make up the primary key
+     * @note added in 2.0
+     */
+    QgsAttributeList pkAttributeIndexes();
+
   signals:
     /**
      *   This is emitted whenever the worker thread has fully calculated the
@@ -297,6 +303,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
        * Name of the primary key column in the table
        */
     QString mPrimaryKey;
+    /**
+       * List of primary key columns in the table
+       */
+    QgsAttributeList mPrimaryKeyAttrs;
     /**
        * Name of the geometry column in the table
        */
