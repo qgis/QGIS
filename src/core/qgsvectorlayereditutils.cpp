@@ -254,6 +254,10 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
           {
             newAttributes[ pkIdx ] = defaultValue;
           }
+          else //try with NULL
+          {
+            newAttributes[ pkIdx ] = QVariant();
+          }
         }
 
         newFeature.setAttributes( newAttributes );
