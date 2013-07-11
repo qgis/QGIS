@@ -189,6 +189,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     void renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context );
     void renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context, Placement placement = Vertex );
     void renderPolylineCentral( const QPolygonF& points, QgsSymbolV2RenderContext& context );
+    double markerAngle( const QPolygonF& points, bool isRing, int vertex );
 
     bool mRotateMarker;
     double mInterval;
