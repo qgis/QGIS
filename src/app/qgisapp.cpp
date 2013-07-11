@@ -6187,6 +6187,16 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
       copyStyle( selectedLyr );
       pasteStyle( dupLayer );
 
+      QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( selectedLyr );
+      QgsVectorLayer* vDupLayer = dynamic_cast<QgsVectorLayer*>( dupLayer );
+      if ( vLayer && vDupLayer )
+      {
+          foreach( const QgsVectorJoinInfo join, vLayer->vectorJoins() )
+          {
+            vDupLayer->addJoin( join );
+          }
+      }
+
       // always set duplicated layers to not visible
       // so layer can be configured before being turned on,
       // and no map canvas refresh needed when doing multiple duplications
