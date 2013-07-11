@@ -198,7 +198,7 @@ class Dialog(QDialog, Ui_Dialog):
       outFeat.initAttributes(1)
       if design == self.tr("unstratified"):
           ext = inLayer.extent()
-          if inLayer.type() == inLayer.RasterLayer:
+          if inLayer.type() == QgsMapLayer.RasterLayer:
               points = self.simpleRandom(int(value), ext, ext.xMinimum(),
               ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
           else:
