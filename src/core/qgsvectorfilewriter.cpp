@@ -354,8 +354,35 @@ QgsVectorFileWriter::QgsVectorFileWriter(
         return;
     }
 
+    QString name( attrField.name() );
+
+    if ( driverName == "SQLite" && name.compare( "ogc_fid", Qt::CaseInsensitive ) == 0 )
+    {
+      int i;
+      for ( i = 0; i < 10; i++ )
+      {
+        name = QString( "ogc_fid%1" ).arg( i );
+
+        int j;
+        for ( j = 0; j < fields.size() && name.compare( fields[j].name(), Qt::CaseInsensitive ) != 0; j++ )
+          ;
+
+        if ( j == fields.size() )
+          break;
+      }
+
+      if ( i == 10 )
+      {
+        mErrorMessage = QObject::tr( "no available replacement for internal fieldname ogc_fid found" ).arg( attrField.name() );
+        mError = ErrAttributeCreationFailed;
+        return;
+      }
+
+      QgsMessageLog::logMessage( QObject::tr( "Reserved attribute name ogc_fid replaced with %1" ).arg( name ), QObject::tr( "OGR" ) );
+    }
+
     // create field definition
-    OGRFieldDefnH fld = OGR_Fld_Create( mCodec->fromUnicode( attrField.name() ), ogrType );
+    OGRFieldDefnH fld = OGR_Fld_Create( mCodec->fromUnicode( name ), ogrType );
     if ( ogrWidth > 0 )
     {
       OGR_Fld_SetWidth( fld, ogrWidth );
@@ -383,7 +410,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     }
     OGR_Fld_Destroy( fld );
 
-    int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( attrField.name() ) );
+    int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( name ) );
     if ( ogrIdx < 0 )
     {
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM < 1700
