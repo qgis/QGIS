@@ -597,6 +597,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
 
   attributeFields.clear();
   mPrimaryKey.clear(); // cazzo cazzo cazzo
+  mPrimaryKeyAttrs.clear();
 
   gaiaLayerAttributeFieldPtr fld = lyr->First;
   if ( fld == NULL )
@@ -692,6 +693,7 @@ void QgsSpatiaLiteProvider::loadFields()
   if ( !isQuery )
   {
     mPrimaryKey.clear();
+    mPrimaryKeyAttrs.clear();
 
     sql = QString( "PRAGMA table_info(%1)" ).arg( quotedIdentifier( mTableName ) );
 
@@ -712,6 +714,8 @@ void QgsSpatiaLiteProvider::loadFields()
           // found a Primary Key column
           pkCount++;
           pkName = name;
+          mPrimaryKeyAttrs << i - 1;
+          QgsDebugMsg( "found primaryKey " + name );
         }
 
         if ( name != mGeometryColumn )
@@ -777,6 +781,8 @@ void QgsSpatiaLiteProvider::loadFields()
         {
           pkCount++;
           pkName = name;
+          mPrimaryKeyAttrs << i - 1;
+          QgsDebugMsg( "found primaryKey " + name );
         }
 
         if ( name != mGeometryColumn )
@@ -3506,7 +3512,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
   QString values;
   QString separator;
   int ia, ret;
-  
+
   if ( flist.size() == 0 )
     return true;
   const QgsAttributes & attributevec = flist[0].attributes();
@@ -3604,13 +3610,6 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
       QString fieldname = attributeFields[i].name();
       if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
         continue;
-
-      // replace primary key with NULL so that sqlite will generate one for us
-      if ( mPrimaryKey == fieldname )
-      { 
-        v = QVariant();
-        assert(v.toString().isEmpty());
-      }
 
       QVariant::Type type = attributeFields[i].type();
       if ( v.toString().isEmpty() )
@@ -5203,5 +5202,10 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
   QgsSpatiaLiteProvider::SqliteHandles::closeDb( hndl );
 
   return true;
+}
+
+QgsAttributeList QgsSpatiaLiteProvider::pkAttributeIndexes()
+{
+  return mPrimaryKeyAttrs;
 }
 
