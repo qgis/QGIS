@@ -194,42 +194,59 @@ class Dialog(QDialog, Ui_Dialog):
         return points
 
     def randomize(self, inLayer, outPath, minimum, design, value):
-        outFeat = QgsFeature()
-        outFeat.initAttributes(1)
-        if design == self.tr("unstratified"):
-            ext = inLayer.extent()
-            if inLayer.type() == inLayer.RasterLayer:
-                points = self.simpleRandom(int(value), ext, ext.xMinimum(),
-                ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
-            else:
-                points = self.vectorRandom(int(value), inLayer,
-                ext.xMinimum(), ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
-        else:
-          points = self.loopThruPolygons(inLayer, value, design)
-        if len(points):
-          crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
-          if not crs.isValid(): crs = None
-          fields = QgsFields()
-          fields.append( QgsField("ID", QVariant.Int) )
-          outFeat.setFields(fields)
-          check = QFile(self.shapefileName)
-          if check.exists():
-              if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
-                  return
-          writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, QGis.WKBPoint, crs)
-          idVar = 0
-          count = 70.00
-          add = ( 100.00 - 70.00 ) / len(points)
-          for i in points:
-              outFeat.setGeometry(i)
-              outFeat.setAttribute(0, idVar)
-              writer.addFeature(outFeat)
-              idVar = idVar + 1
-              count = count + add
-              self.progressBar.setValue(count)
-          del writer
-          return True
-        return False
+      outFeat = QgsFeature()
+      outFeat.initAttributes(1)
+      if design == self.tr("unstratified"):
+          ext = inLayer.extent()
+          if inLayer.type() == inLayer.RasterLayer:
+              points = self.simpleRandom(int(value), ext, ext.xMinimum(),
+              ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
+          else:
+              points = self.vectorRandom(int(value), inLayer,
+              ext.xMinimum(), ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
+      else:
+        points, featErrors = self.loopThruPolygons(inLayer, value, design)
+        if featErrors:
+          if len(featErrors) >= 10:
+            err_msg = "Too many features couldn't be calculated due to conversion error. "
+            err_msg += "Please check out message log for more info."
+            msgLogInstance = QgsMessageLog.instance( )
+            msgLogInstance.logMessage( "WARNING - fTools: " + self.tr( "Random Points" ) )
+            msgLogInstance.logMessage( "The following feature ids should be checked." )
+            for feat in featErrors:
+              msgLogInstance.logMessage( "Feature id: %d" % feat.id( ) )
+            msgLogInstance.logMessage( "End of features to be checked." )
+          else:
+            features_ids = []
+            for feat in featErrors:
+              features_ids.append( str( feat.id( ) ) )
+            erroneous_ids = ', '.join(features_ids)
+            err_msg = "The following features IDs couldn't be calculated due to conversion error: %s" % erroneous_ids
+          self.iface.messageBar().pushMessage("Errors", err_msg)
+      if len(points):
+        crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
+        if not crs.isValid(): crs = None
+        fields = QgsFields()
+        fields.append( QgsField("ID", QVariant.Int) )
+        outFeat.setFields(fields)
+        check = QFile(self.shapefileName)
+        if check.exists():
+            if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
+                return
+        writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, QGis.WKBPoint, crs)
+        idVar = 0
+        count = 70.00
+        add = ( 100.00 - 70.00 ) / len(points)
+        for i in points:
+            outFeat.setGeometry(i)
+            outFeat.setAttribute(0, idVar)
+            writer.addFeature(outFeat)
+            idVar = idVar + 1
+            count = count + add
+            self.progressBar.setValue(count)
+        del writer
+        return True
+      return False
 
 #
     def loopThruPolygons(self, inLayer, numRand, design):
@@ -242,6 +259,7 @@ class Dialog(QDialog, Ui_Dialog):
         count = 10.00
         add = 60.00 / sProvider.featureCount()
         sFit = sProvider.getFeatures()
+        featureErrors = []
         while sFit.nextFeature(sFeat):
             sGeom = sFeat.geometry()
             if design == self.tr("density"):
@@ -252,13 +270,12 @@ class Dialog(QDialog, Ui_Dialog):
                 try:
                   value = int(sAtMap[index])
                 except (ValueError,TypeError):
-                  warn_msg = self.tr("The selected field has NULL values.\nTry to select other field.")
-                  QMessageBox.warning(self, self.tr("Warning"), warn_msg)
-                  return list()
+                  featureErrors.append(sFeat)
+                  continue
             else:
                 value = numRand
             sExt = sGeom.boundingBox()
             sPoints.extend(self.simpleRandom(value, sGeom, sExt.xMinimum(), sExt.xMaximum(), sExt.yMinimum(), sExt.yMaximum()))
             count = count + add
             self.progressBar.setValue(count)
-        return sPoints
+        return sPoints, featureErrors
