@@ -23,6 +23,7 @@
 #define MERSENNE_TWISTER_H
 
 #include <stdint.h>
+#include <limits>
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,7 +32,7 @@ extern "C" {
 /*
  * Maximum number you can get from rand().
  */
-#define RAND_MAX INT32_MAX
+#define RAND_MAX std::numeric_limits<int32_t>::max()
 
 /*
  * Initialize the number generator with given seed.

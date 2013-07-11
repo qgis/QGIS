@@ -188,7 +188,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
 
     while ( nCreatedTransects < nTransects && nIterations < nMaxIterations )
     {
-      double randomPosition = (( double )mt_rand() / std::numeric_limits<int32_t>::max() ) * clippedBaseline->length();
+      double randomPosition = (( double )mt_rand() / RAND_MAX ) * clippedBaseline->length();
       QgsGeometry* samplePoint = clippedBaseline->interpolate( randomPosition );
       ++nIterations;
       if ( !samplePoint )

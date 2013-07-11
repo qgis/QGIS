@@ -22,7 +22,6 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include <limits>
 #include "mersenne-twister.h"
 
 /*
