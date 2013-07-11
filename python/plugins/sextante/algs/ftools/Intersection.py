@@ -69,7 +69,6 @@ class Intersection(GeoAlgorithm):
                 inFeatB = vlayerB.getFeatures(request).next()
                 tmpGeom = QgsGeometry(inFeatB.geometry())
                 if geom.intersects( tmpGeom ):
-                    print "hola"
                     atMapB = inFeatB.attributes()
                     int_geom = QgsGeometry( geom.intersection( tmpGeom ) )
                     if int_geom.wkbType() == 7:
