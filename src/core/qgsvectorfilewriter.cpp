@@ -1016,6 +1016,7 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
             if ( ds )
             {
               writableDrivers << "SpatiaLite";
+              OGR_Dr_DeleteDataSource( poDriver, TO8( QString( "/vsimem/spatialitetest.sqlite" ) ));
               OGR_DS_Destroy( ds );
             }
           }
