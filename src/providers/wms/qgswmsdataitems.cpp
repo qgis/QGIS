@@ -30,7 +30,7 @@
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconWms.png" );
+  mIcon = QgsApplication::getThemeIcon( "mIconWms.svg" );
 }
 
 QgsWMSConnectionItem::~QgsWMSConnectionItem()
@@ -165,7 +165,7 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
   if ( mChildren.size() == 0 )
   {
     //mIcon = iconRaster();
-    mIcon = QgsApplication::getThemeIcon( "mIconWms.png" );
+    mIcon = QgsApplication::getThemeIcon( "mIconWms.svg" );
   }
   mPopulated = true;
 }
@@ -223,7 +223,7 @@ QString QgsWMSLayerItem::createUri()
 QgsWMSRootItem::QgsWMSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconWms.png" );
+  mIcon = QgsApplication::getThemeIcon( "mIconWms.svg" );
 
   populate();
 }

@@ -240,7 +240,7 @@ QIcon QgsPgTableModel::iconForWkbType( QGis::WkbType type )
     case QGis::WKBLineString25D:
     case QGis::WKBMultiLineString:
     case QGis::WKBMultiLineString25D:
-      return QgsApplication::getThemeIcon( "/mIconLineLayer.png" );
+      return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
     case QGis::WKBPolygon:
     case QGis::WKBPolygon25D:
     case QGis::WKBMultiPolygon:

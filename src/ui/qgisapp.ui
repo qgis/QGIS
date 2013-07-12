@@ -476,7 +476,7 @@
   <action name="mActionNewProject">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFileNew.png</normaloff>:/images/themes/default/mActionFileNew.png</iconset>
+     <normaloff>:/images/themes/default/mActionFileNew.svg</normaloff>:/images/themes/default/mActionFileNew.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;New</string>
@@ -488,7 +488,7 @@
   <action name="mActionOpenProject">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFileOpen.png</normaloff>:/images/themes/default/mActionFileOpen.png</iconset>
+     <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Open...</string>
@@ -500,7 +500,7 @@
   <action name="mActionSaveProject">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFileSave.png</normaloff>:/images/themes/default/mActionFileSave.png</iconset>
+     <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -512,7 +512,7 @@
   <action name="mActionSaveProjectAs">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFileSaveAs.png</normaloff>:/images/themes/default/mActionFileSaveAs.png</iconset>
+     <normaloff>:/images/themes/default/mActionFileSaveAs.svg</normaloff>:/images/themes/default/mActionFileSaveAs.svg</iconset>
    </property>
    <property name="text">
     <string>Save &amp;As...</string>
@@ -533,7 +533,7 @@
   <action name="mActionNewPrintComposer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNewComposer.png</normaloff>:/images/themes/default/mActionNewComposer.png</iconset>
+     <normaloff>:/images/themes/default/mActionNewComposer.svg</normaloff>:/images/themes/default/mActionNewComposer.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;New Print Composer</string>
@@ -545,7 +545,7 @@
   <action name="mActionShowComposerManager">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionComposerManager.png</normaloff>:/images/themes/default/mActionComposerManager.png</iconset>
+     <normaloff>:/images/themes/default/mActionComposerManager.svg</normaloff>:/images/themes/default/mActionComposerManager.svg</iconset>
    </property>
    <property name="text">
     <string>Composer Manager...</string>
@@ -1126,7 +1126,7 @@
   <action name="mActionNewVectorLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNewVectorLayer.png</normaloff>:/images/themes/default/mActionNewVectorLayer.png</iconset>
+     <normaloff>:/images/themes/default/mActionNewVectorLayer.svg</normaloff>:/images/themes/default/mActionNewVectorLayer.svg</iconset>
    </property>
    <property name="text">
     <string>New Shapefile Layer...</string>
@@ -1138,7 +1138,7 @@
   <action name="mActionNewSpatialiteLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNewVectorLayer.png</normaloff>:/images/themes/default/mActionNewVectorLayer.png</iconset>
+     <normaloff>:/images/themes/default/mActionNewVectorLayer.svg</normaloff>:/images/themes/default/mActionNewVectorLayer.svg</iconset>
    </property>
    <property name="text">
     <string>New SpatiaLite Layer ...</string>
@@ -1159,7 +1159,7 @@
   <action name="mActionAddOgrLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddOgrLayer.png</normaloff>:/images/themes/default/mActionAddOgrLayer.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddOgrLayer.svg</normaloff>:/images/themes/default/mActionAddOgrLayer.svg</iconset>
    </property>
    <property name="text">
     <string>Add Vector Layer...</string>
@@ -1171,7 +1171,7 @@
   <action name="mActionAddRasterLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddRasterLayer.png</normaloff>:/images/themes/default/mActionAddRasterLayer.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddRasterLayer.svg</normaloff>:/images/themes/default/mActionAddRasterLayer.svg</iconset>
    </property>
    <property name="text">
     <string>Add Raster Layer...</string>
@@ -1183,7 +1183,7 @@
   <action name="mActionAddPgLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddLayer.png</normaloff>:/images/themes/default/mActionAddLayer.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddPostgisLayer.svg</normaloff>:/images/themes/default/mActionAddPostgisLayer.svg</iconset>
    </property>
    <property name="text">
     <string>Add PostGIS Layers...</string>
@@ -1195,7 +1195,7 @@
   <action name="mActionAddSpatiaLiteLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddSpatiaLiteLayer.png</normaloff>:/images/themes/default/mActionAddSpatiaLiteLayer.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddSpatiaLiteLayer.svg</normaloff>:/images/themes/default/mActionAddSpatiaLiteLayer.svg</iconset>
    </property>
    <property name="text">
     <string>Add SpatiaLite Layer...</string>
@@ -1207,7 +1207,7 @@
   <action name="mActionAddMssqlLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddMssqlLayer.png</normaloff>:/images/themes/default/mActionAddMssqlLayer.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddMssqlLayer.svg</normaloff>:/images/themes/default/mActionAddMssqlLayer.svg</iconset>
    </property>
    <property name="text">
     <string>Add MSSQL Spatial Layer...</string>
@@ -1219,7 +1219,7 @@
   <action name="mActionAddOracleLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddOracleLayer.png</normaloff>:/images/themes/default/mActionAddOracleLayer.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddOracleLayer.svg</normaloff>:/images/themes/default/mActionAddOracleLayer.svg</iconset>
    </property>
    <property name="text">
     <string>Add Oracle Spatial Layer...</string>
@@ -1231,7 +1231,7 @@
   <action name="mActionAddWmsLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddWmsLayer.png</normaloff>:/images/themes/default/mActionAddWmsLayer.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddWmsLayer.svg</normaloff>:/images/themes/default/mActionAddWmsLayer.svg</iconset>
    </property>
    <property name="text">
     <string>Add WMS Layer...</string>
@@ -1289,7 +1289,7 @@
   <action name="mActionRemoveLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRemoveLayer.png</normaloff>:/images/themes/default/mActionRemoveLayer.png</iconset>
+     <normaloff>:/images/themes/default/mActionRemoveLayer.svg</normaloff>:/images/themes/default/mActionRemoveLayer.svg</iconset>
    </property>
    <property name="text">
     <string>Remove Layer(s)</string>
@@ -1324,7 +1324,7 @@
   <action name="mActionAddToOverview">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionInOverview.png</normaloff>:/images/themes/default/mActionInOverview.png</iconset>
+     <normaloff>:/images/themes/default/mActionInOverview.svg</normaloff>:/images/themes/default/mActionInOverview.svg</iconset>
    </property>
    <property name="text">
     <string>Add to Overview</string>
@@ -1336,7 +1336,7 @@
   <action name="mActionAddAllToOverview">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddAllToOverview.png</normaloff>:/images/themes/default/mActionAddAllToOverview.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddAllToOverview.svg</normaloff>:/images/themes/default/mActionAddAllToOverview.svg</iconset>
    </property>
    <property name="text">
     <string>Add All to Overview</string>
@@ -1345,7 +1345,7 @@
   <action name="mActionRemoveAllFromOverview">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRemoveAllFromOverview.png</normaloff>:/images/themes/default/mActionRemoveAllFromOverview.png</iconset>
+     <normaloff>:/images/themes/default/mActionRemoveAllFromOverview.svg</normaloff>:/images/themes/default/mActionRemoveAllFromOverview.svg</iconset>
    </property>
    <property name="text">
     <string>Remove All from Overview</string>
@@ -1452,7 +1452,7 @@
   <action name="mActionHelpContents">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionHelpContents.png</normaloff>:/images/themes/default/mActionHelpContents.png</iconset>
+     <normaloff>:/images/themes/default/mActionHelpContents.svg</normaloff>:/images/themes/default/mActionHelpContents.svg</iconset>
    </property>
    <property name="text">
     <string>Help Contents</string>
@@ -1661,7 +1661,7 @@ Ctl (Cmd) increments by 15 deg.</string>
   <action name="mActionAddWfsLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddWfsLayer.png</normaloff>:/images/themes/default/mActionAddWfsLayer.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddWfsLayer.svg</normaloff>:/images/themes/default/mActionAddWfsLayer.svg</iconset>
    </property>
    <property name="text">
     <string>Add WFS Layer...</string>
@@ -1745,7 +1745,7 @@ Ctl (Cmd) increments by 15 deg.</string>
   <action name="mActionAddWcsLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddWcsLayer.png</normaloff>:/images/themes/default/mActionAddWcsLayer.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddWcsLayer.svg</normaloff>:/images/themes/default/mActionAddWcsLayer.svg</iconset>
    </property>
    <property name="text">
     <string>Add WCS Layer...</string>
@@ -1802,7 +1802,7 @@ Acts on all editable layers</string>
   <action name="mActionNewBlankProject">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFileNew.png</normaloff>:/images/themes/default/mActionFileNew.png</iconset>
+     <normaloff>:/images/themes/default/mActionFileNew.svg</normaloff>:/images/themes/default/mActionFileNew.svg</iconset>
    </property>
    <property name="text">
     <string>New Blank Project</string>
@@ -1871,7 +1871,7 @@ Acts on currently active editable layer</string>
   <action name="mActionDuplicateLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddMap.png</normaloff>:/images/themes/default/mActionAddMap.png</iconset>
+     <normaloff>:/images/themes/default/mActionDuplicateLayer.svg</normaloff>:/images/themes/default/mActionDuplicateLayer.svg</iconset>
    </property>
    <property name="text">
     <string>Duplicate Layer(s)</string>
@@ -2092,7 +2092,7 @@ Acts on currently active editable layer</string>
   <action name="mActionAddDelimitedText">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddDelimitedTextLayer.png</normaloff>:/images/themes/default/mActionAddDelimitedTextLayer.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddDelimitedTextLayer.svg</normaloff>:/images/themes/default/mActionAddDelimitedTextLayer.svg</iconset>
    </property>
    <property name="text">
     <string>Add Delimited Text Layer...</string>

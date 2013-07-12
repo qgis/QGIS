@@ -1340,7 +1340,9 @@ void QgisApp::createMenus()
   // Help menu
   // add What's this button to it
   QAction* before = mActionHelpAPI;
-  mHelpMenu->insertAction( before, QWhatsThis::createAction( this ) );
+  QAction* actionWhatsThis = QWhatsThis::createAction( this );
+  actionWhatsThis->setIcon( QgsApplication::getThemeIcon( "/mActionWhatsThis.svg" ) );
+  mHelpMenu->insertAction( before, actionWhatsThis );
 }
 
 void QgisApp::createToolBars()
@@ -1467,7 +1469,9 @@ void QgisApp::createToolBars()
 
   // Help Toolbar
 
-  mHelpToolBar->addAction( QWhatsThis::createAction( this ) );
+  QAction* actionWhatsThis = QWhatsThis::createAction( this );
+  actionWhatsThis->setIcon( QgsApplication::getThemeIcon( "/mActionWhatsThis.svg" ) );
+  mHelpToolBar->addAction( actionWhatsThis );
 
 }
 
@@ -1657,45 +1661,45 @@ void QgisApp::setTheme( QString theThemeName )
   */
   QgsApplication::setThemeName( theThemeName );
   //QgsDebugMsg("Setting theme to \n" + theThemeName);
-  mActionNewProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileNew.png" ) );
-  mActionOpenProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.png" ) );
-  mActionSaveProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.png" ) );
-  mActionSaveProjectAs->setIcon( QgsApplication::getThemeIcon( "/mActionFileSaveAs.png" ) );
-  mActionNewPrintComposer->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.png" ) );
-  mActionShowComposerManager->setIcon( QgsApplication::getThemeIcon( "/mActionComposerManager.png" ) );
+  mActionNewProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileNew.svg" ) );
+  mActionOpenProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.svg" ) );
+  mActionSaveProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.svg" ) );
+  mActionSaveProjectAs->setIcon( QgsApplication::getThemeIcon( "/mActionFileSaveAs.svg" ) );
+  mActionNewPrintComposer->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.svg" ) );
+  mActionShowComposerManager->setIcon( QgsApplication::getThemeIcon( "/mActionComposerManager.svg" ) );
   mActionSaveMapAsImage->setIcon( QgsApplication::getThemeIcon( "/mActionSaveMapAsImage.png" ) );
   mActionExit->setIcon( QgsApplication::getThemeIcon( "/mActionFileExit.png" ) );
-  mActionAddOgrLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddOgrLayer.png" ) );
-  mActionAddRasterLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddRasterLayer.png" ) );
+  mActionAddOgrLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddOgrLayer.svg" ) );
+  mActionAddRasterLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddRasterLayer.svg" ) );
 #ifdef HAVE_POSTGRESQL
-  mActionAddPgLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddLayer.png" ) );
+  mActionAddPgLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddPostgisLayer.svg" ) );
 #endif
-  mActionNewSpatialiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewVectorLayer.png" ) );
-  mActionAddSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddSpatiaLiteLayer.png" ) );
+  mActionNewSpatialiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewVectorLayer.svg" ) );
+  mActionAddSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddSpatiaLiteLayer.svg" ) );
 #ifdef HAVE_MSSQL
-  mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMssqlLayer.png" ) );
+  mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMssqlLayer.svg" ) );
 #endif
 #ifdef HAVE_ORACLE
-  mActionAddOracleLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddOracleLayer.png" ) );
+  mActionAddOracleLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddOracleLayer.svg" ) );
 #endif
-  mActionRemoveLayer->setIcon( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ) );
-  mActionDuplicateLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMap.png" ) );
+  mActionRemoveLayer->setIcon( QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ) );
+  mActionDuplicateLayer->setIcon( QgsApplication::getThemeIcon( "/mActionDuplicateLayer.svg" ) );
   mActionSetLayerCRS->setIcon( QgsApplication::getThemeIcon( "/mActionSetLayerCRS.png" ) );
   mActionSetProjectCRSFromLayer->setIcon( QgsApplication::getThemeIcon( "/mActionSetProjectCRSFromLayer.png" ) );
-  mActionNewVectorLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewVectorLayer.png" ) );
-  mActionAddAllToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionAddAllToOverview.png" ) );
+  mActionNewVectorLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewVectorLayer.svg" ) );
+  mActionAddAllToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionAddAllToOverview.svg" ) );
   mActionHideAllLayers->setIcon( QgsApplication::getThemeIcon( "/mActionHideAllLayers.png" ) );
   mActionShowAllLayers->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
-  mActionRemoveAllFromOverview->setIcon( QgsApplication::getThemeIcon( "/mActionRemoveAllFromOverview.png" ) );
+  mActionRemoveAllFromOverview->setIcon( QgsApplication::getThemeIcon( "/mActionRemoveAllFromOverview.svg" ) );
   mActionToggleFullScreen->setIcon( QgsApplication::getThemeIcon( "/mActionToggleFullScreen.png" ) );
   mActionProjectProperties->setIcon( QgsApplication::getThemeIcon( "/mActionProjectProperties.png" ) );
-  mActionManagePlugins->setIcon( QgsApplication::getThemeIcon( "/mActionShowPluginManager.svg" ) );
+  mActionManagePlugins->setIcon( QgsApplication::getThemeIcon( "/mActionShowPluginManager.png" ) );
   mActionShowPythonDialog->setIcon( QgsApplication::getThemeIcon( "console/iconRunConsole.png" ) );
   mActionCheckQgisVersion->setIcon( QgsApplication::getThemeIcon( "/mActionCheckQgisVersion.png" ) );
   mActionOptions->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.svg" ) );
   mActionConfigureShortcuts->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.svg" ) );
   mActionCustomization->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.svg" ) );
-  mActionHelpContents->setIcon( QgsApplication::getThemeIcon( "/mActionHelpContents.png" ) );
+  mActionHelpContents->setIcon( QgsApplication::getThemeIcon( "/mActionHelpContents.svg" ) );
   mActionLocalHistogramStretch->setIcon( QgsApplication::getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
   mActionFullHistogramStretch->setIcon( QgsApplication::getThemeIcon( "/mActionFullHistogramStretch.png" ) );
   mActionIncreaseBrightness->setIcon( QgsApplication::getThemeIcon( "/mActionIncreaseBrightness.svg" ) );
@@ -1769,10 +1773,10 @@ void QgisApp::setTheme( QString theThemeName )
   mActionShowBookmarks->setIcon( QgsApplication::getThemeIcon( "/mActionShowBookmarks.png" ) );
   mActionNewBookmark->setIcon( QgsApplication::getThemeIcon( "/mActionNewBookmark.png" ) );
   mActionCustomProjection->setIcon( QgsApplication::getThemeIcon( "/mActionCustomProjection.svg" ) );
-  mActionAddWmsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWmsLayer.png" ) );
-  mActionAddWcsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWcsLayer.png" ) );
-  mActionAddWfsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWfsLayer.png" ) );
-  mActionAddToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionInOverview.png" ) );
+  mActionAddWmsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWmsLayer.svg" ) );
+  mActionAddWcsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWcsLayer.svg" ) );
+  mActionAddWfsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWfsLayer.svg" ) );
+  mActionAddToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionInOverview.svg" ) );
   mActionAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionAnnotation.png" ) );
   mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.png" ) );
   mActionHtmlAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.png" ) );

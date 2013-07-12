@@ -384,13 +384,13 @@ void QgsComposer::setupTheme()
   //now set all the icons - getThemeIcon will fall back to default theme if its
   //missing from active theme
   mActionQuit->setIcon( QgsApplication::getThemeIcon( "/mActionFileExit.png" ) );
-  mActionSaveProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.png" ) );
-  mActionNewComposer->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.png" ) );
-  mActionDuplicateComposer->setIcon( QgsApplication::getThemeIcon( "/mActionDuplicateComposer.png" ) );
-  mActionComposerManager->setIcon( QgsApplication::getThemeIcon( "/mActionComposerManager.png" ) );
-  mActionNewFromTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.png" ) );
-  mActionLoadFromTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.png" ) );
-  mActionSaveAsTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionFileSaveAs.png" ) );
+  mActionSaveProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.svg" ) );
+  mActionNewComposer->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.svg" ) );
+  mActionDuplicateComposer->setIcon( QgsApplication::getThemeIcon( "/mActionDuplicateComposer.svg" ) );
+  mActionComposerManager->setIcon( QgsApplication::getThemeIcon( "/mActionComposerManager.svg" ) );
+  mActionNewFromTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.svg" ) );
+  mActionLoadFromTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.svg" ) );
+  mActionSaveAsTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionFileSaveAs.svg" ) );
   mActionExportAsImage->setIcon( QgsApplication::getThemeIcon( "/mActionSaveMapAsImage.png" ) );
   mActionExportAsSVG->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAsSVG.png" ) );
   mActionExportAsPDF->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAsPDF.png" ) );

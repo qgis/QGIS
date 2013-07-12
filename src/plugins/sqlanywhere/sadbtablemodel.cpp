@@ -297,7 +297,7 @@ QIcon SaDbTableModel::iconForType( QGis::WkbType type ) const
   }
   else if ( type == QGis::WKBLineString || type == QGis::WKBLineString25D || type == QGis::WKBMultiLineString || type == QGis::WKBMultiLineString25D )
   {
-    return SqlAnywhere::getThemeIcon( "/mIconLineLayer.png" );
+    return SqlAnywhere::getThemeIcon( "/mIconLineLayer.svg" );
   }
   else if ( type == QGis::WKBPolygon || type == QGis::WKBPolygon25D || type == QGis::WKBMultiPolygon || type == QGis::WKBMultiPolygon25D )
   {

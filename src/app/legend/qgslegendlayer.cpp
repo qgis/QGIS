@@ -302,7 +302,7 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
         case QGis::Point:
           return QgsApplication::getThemePixmap( "/mIconPointLayer.png" );
         case QGis::Line:
-          return QgsApplication::getThemePixmap( "/mIconLineLayer.png" );
+          return QgsApplication::getThemePixmap( "/mIconLineLayer.svg" );
         case QGis::Polygon:
           return QgsApplication::getThemePixmap( "/mIconPolygonLayer.png" );
         case QGis::NoGeometry:
@@ -321,7 +321,7 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
       }
       else
       {
-        return QgsApplication::getThemePixmap( "/mIconRasterLayer.png" );
+        return QgsApplication::getThemePixmap( "/mIconRasterLayer.svg" );
       }
     }
   }
@@ -359,10 +359,10 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   showInOverviewAction->blockSignals( false );
 
   // remove from canvas
-  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
   // duplicate layer
-  QAction* duplicateLayersAction = theMenu.addAction( QgsApplication::getThemeIcon( "/mActionAddMap.png" ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
+  QAction* duplicateLayersAction = theMenu.addAction( QgsApplication::getThemeIcon( "/mActionDuplicateLayer.svg" ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
 
   // set layer crs
   theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );

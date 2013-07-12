@@ -29,8 +29,7 @@ QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSour
 {
   mUri = QgsWFSCapabilities( uri.encodedUri() ).uriGetFeature( featureType );
   mPopulated = true;
-  //mIcon = QIcon( getThemePixmap( "mIconVectorLayer.png" ) );
-  mIcon = QgsApplication::getThemeIcon( "mIconWfs.png" );
+  mIcon = QgsApplication::getThemeIcon( "mIconWfs.svg" );
 }
 
 QgsWFSLayerItem::~QgsWFSLayerItem()
@@ -42,7 +41,7 @@ QgsWFSLayerItem::~QgsWFSLayerItem()
 QgsWFSConnectionItem::QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path ), mName( name ), mCapabilities( NULL )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconWfs.png" );
+  mIcon = QgsApplication::getThemeIcon( "mIconWfs.svg" );
 }
 
 QgsWFSConnectionItem::~QgsWFSConnectionItem()
@@ -138,7 +137,7 @@ void QgsWFSConnectionItem::deleteConnection()
 QgsWFSRootItem::QgsWFSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconWfs.png" );
+  mIcon = QgsApplication::getThemeIcon( "mIconWfs.svg" );
 
   populate();
 }
