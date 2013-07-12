@@ -300,11 +300,11 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
       switch ( vlayer->geometryType() )
       {
         case QGis::Point:
-          return QgsApplication::getThemePixmap( "/mIconPointLayer.png" );
+          return QgsApplication::getThemePixmap( "/mIconPointLayer.svg" );
         case QGis::Line:
           return QgsApplication::getThemePixmap( "/mIconLineLayer.svg" );
         case QGis::Polygon:
-          return QgsApplication::getThemePixmap( "/mIconPolygonLayer.png" );
+          return QgsApplication::getThemePixmap( "/mIconPolygonLayer.svg" );
         case QGis::NoGeometry:
           return QgsApplication::getThemePixmap( "/mIconTableLayer.png" );
         default:
