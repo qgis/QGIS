@@ -384,7 +384,7 @@ void QgsPGSchemaItem::addLayer( QgsPostgresLayerProperty layerProperty )
 QgsPGRootItem::QgsPGRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconPostgis.png" );
+  mIcon = QgsApplication::getThemeIcon( "mIconPostgis.svg" );
   populate();
 }
 

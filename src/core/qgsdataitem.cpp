@@ -55,7 +55,7 @@ const QIcon &QgsLayerItem::iconLine()
   static QIcon icon;
 
   if ( icon.isNull() )
-    icon = QgsApplication::getThemeIcon( "/mIconLineLayer.png" );
+    icon = QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
 
   return icon;
 }
@@ -85,7 +85,7 @@ const QIcon &QgsLayerItem::iconRaster()
   static QIcon icon;
 
   if ( icon.isNull() )
-    icon = QgsApplication::getThemeIcon( "/mIconRaster.png" );
+    icon = QgsApplication::getThemeIcon( "/mIconRaster.svg" );
 
   return icon;
 }
