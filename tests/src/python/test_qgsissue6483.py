@@ -14,6 +14,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import random
+import math
 
 from qgis.core import *
 from qgis.gui import *
@@ -45,23 +46,29 @@ class TestQgsSpatialiteProvider(TestCase):
         sql = "SELECT InitSpatialMetadata()"
         cur.execute(sql)
 
-        # simple table with primary key
-        sql = "CREATE TABLE test_mpg (id SERIAL PRIMARY KEY, height DOUBLE)"
-        cur.execute(sql)
-        sql = "SELECT AddGeometryColumn('test_mpg', 'geometry', 4326, 'MULTIPOLYGON', 'XY')"
-        cur.execute(sql)
-        for i in range(0,253):
-            for j in range (0,253):
-                sql = "INSERT INTO test_mpg (height, geometry) "
-                sql +=    "VALUES ("+str(random.random())+", GeomFromText('MULTIPOLYGON((("
-                sql += str(i)   + " " + str(j)   + ","
-                sql += str(i+1) + " " + str(j)   + ","
-                sql += str(i+1) + " " + str(j+1) + ","
-                sql += str(i)   + " " + str(j+1) + ","
-                sql += str(i)   + " " + str(j) + ")))', 4326))"
-                cur.execute(sql)
+        # growing size tables
+        nbOrders = 7
+        for order in range(0,nbOrders):
+            size = 10000*pow(2,order);
+            tab = "test_mpg_" + str(size) + "_rows"
+            print "creating table " + tab + " " + str(order) + "/" + str(nbOrders)
+            sql = "CREATE TABLE " + tab + " (id SERIAL PRIMARY KEY, height DOUBLE)"
+            cur.execute(sql)
+            sql = "SELECT AddGeometryColumn('" + tab + "', 'geometry', 4326, 'MULTIPOLYGON', 'XY')"
+            cur.execute(sql)
+            r = int(math.sqrt(size))
+            for i in range(0,r):
+                for j in range (0,r):
+                    sql = "INSERT INTO " + tab + " (height, geometry) "
+                    sql +=    "VALUES ("+str(random.random())+", GeomFromText('MULTIPOLYGON((("
+                    sql += str(i)   + " " + str(j)   + ","
+                    sql += str(i+1) + " " + str(j)   + ","
+                    sql += str(i+1) + " " + str(j+1) + ","
+                    sql += str(i)   + " " + str(j+1) + ","
+                    sql += str(i)   + " " + str(j) + ")))', 4326))"
+                    cur.execute(sql)
+                con.commit()
 
-        con.commit()
         con.close()
 
     @classmethod
@@ -81,10 +88,7 @@ class TestQgsSpatialiteProvider(TestCase):
         pass
 
     def test_Nothing(self):
-        """Create spatialite database"""
-        layer = QgsVectorLayer("dbname=test.sqlite table=test_mpg (geometry)", "test_mpg", "spatialite")
-        assert(layer.isValid())
-        assert(layer.hasGeometryType())
+        """do nothing"""
 
 
 
