@@ -28,6 +28,12 @@
 
 #include <QSettings>
 
+// sort function for QList<QgsDataItem*>, e.g. sorted/grouped provider listings
+static bool cmpByDataItemName_( QgsDataItem* a, QgsDataItem* b )
+{
+  return QString::localeAwareCompare( a->name(), b->name() ) < 0;
+}
+
 QgsBrowserModel::QgsBrowserModel( QObject *parent )
     : QAbstractItemModel( parent )
     , mFavourites( 0 )
@@ -109,7 +115,10 @@ void QgsBrowserModel::addRootItems()
 
   // Add non file top level items
   QStringList providersList = QgsProviderRegistry::instance()->providerList();
-  providersList.sort();
+
+  // container for displaying providers as sorted groups (by QgsDataProvider::DataCapability enum)
+  QMap<int, QgsDataItem *> providerMap;
+
   foreach ( QString key, providersList )
   {
     QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
@@ -142,7 +151,22 @@ void QgsBrowserModel::addRootItems()
     {
       QgsDebugMsg( "Add new top level item : " + item->name() );
       connectItem( item );
-      mRootItems << item;
+      providerMap.insertMulti( capabilities, item );
+    }
+  }
+
+  // add as sorted groups by QgsDataProvider::DataCapability enum
+  foreach ( int key, providerMap.uniqueKeys() )
+  {
+    QList<QgsDataItem *> providerGroup = providerMap.values( key );
+    if ( providerGroup.size() > 1 )
+    {
+      qSort( providerGroup.begin(), providerGroup.end(), cmpByDataItemName_ );
+    }
+
+    foreach ( QgsDataItem * ditem, providerGroup )
+    {
+      mRootItems << ditem;
     }
   }
 }
