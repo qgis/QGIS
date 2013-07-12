@@ -161,7 +161,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void updateTransformParamLabel();
 
     // gdal script
-    void showGDALScript( int argNum... );
+    void showGDALScript( const QStringList& commands );
     QString generateGDALtranslateCommand( bool generateTFW = true );
     /* Generate command-line for gdalwarp based on current GCPs and given parameters.
      * For values in the range 1 to 3, the parameter "order" prescribes the degree of the interpolating polynomials to use,
