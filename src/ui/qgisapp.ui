@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>21</height>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -146,7 +146,7 @@
       <string>New</string>
      </property>
      <addaction name="mActionNewVectorLayer"/>
-     <addaction name="mActionNewSpatialiteLayer"/>
+     <addaction name="mActionNewSpatiaLiteLayer"/>
     </widget>
     <addaction name="mNewLayerMenu"/>
     <addaction name="mActionEmbedLayers"/>
@@ -289,7 +289,6 @@
    <addaction name="mActionAddWcsLayer"/>
    <addaction name="mActionAddWfsLayer"/>
    <addaction name="mActionAddDelimitedText"/>
-   <addaction name="mActionNewVectorLayer"/>
    <addaction name="mActionRemoveLayer"/>
   </widget>
   <widget class="QToolBar" name="mDigitizeToolBar">
@@ -1135,10 +1134,10 @@
     <string>Ctrl+Shift+N</string>
    </property>
   </action>
-  <action name="mActionNewSpatialiteLayer">
+  <action name="mActionNewSpatiaLiteLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNewVectorLayer.svg</normaloff>:/images/themes/default/mActionNewVectorLayer.svg</iconset>
+     <normaloff>:/images/themes/default/mActionNewSpatiaLiteLayer.svg</normaloff>:/images/themes/default/mActionNewSpatiaLiteLayer.svg</iconset>
    </property>
    <property name="text">
     <string>New SpatiaLite Layer ...</string>

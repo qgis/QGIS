@@ -989,7 +989,7 @@ void QgisApp::createActions()
   // Layer Menu Items
 
   connect( mActionNewVectorLayer, SIGNAL( triggered() ), this, SLOT( newVectorLayer() ) );
-  connect( mActionNewSpatialiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
+  connect( mActionNewSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
   connect( mActionShowRasterCalculator, SIGNAL( triggered() ), this, SLOT( showRasterCalculator() ) );
   connect( mActionEmbedLayers, SIGNAL( triggered() ) , this, SLOT( embedLayers() ) );
   connect( mActionAddOgrLayer, SIGNAL( triggered() ), this, SLOT( addVectorLayer() ) );
@@ -1467,6 +1467,24 @@ void QgisApp::createToolBars()
   QToolButton* tbAllEdits = qobject_cast<QToolButton *>( mDigitizeToolBar->widgetForAction( mActionAllEdits ) );
   tbAllEdits->setPopupMode( QToolButton::InstantPopup );
 
+  // new layer tool button
+
+  bt = new QToolButton();
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  bt->addAction( mActionNewSpatiaLiteLayer );
+  bt->addAction( mActionNewVectorLayer );
+
+  QAction* defNewLayerAction = mActionNewVectorLayer;
+  switch ( settings.value( "/UI/defaultNewLayer", 1 ).toInt() )
+  {
+    case 0: defNewLayerAction = mActionNewSpatiaLiteLayer; break;
+    case 1: defNewLayerAction = mActionNewVectorLayer; break;
+  }
+  bt->setDefaultAction( defNewLayerAction );
+  QAction* newLayerAction = mLayerToolBar->insertWidget( mActionRemoveLayer, bt );
+  newLayerAction->setObjectName( "ActionNewLayer" );
+  connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+
   // Help Toolbar
 
   QAction* actionWhatsThis = QWhatsThis::createAction( this );
@@ -1674,7 +1692,7 @@ void QgisApp::setTheme( QString theThemeName )
 #ifdef HAVE_POSTGRESQL
   mActionAddPgLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddPostgisLayer.svg" ) );
 #endif
-  mActionNewSpatialiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewVectorLayer.svg" ) );
+  mActionNewSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewSpatiaLiteLayer.svg" ) );
   mActionAddSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddSpatiaLiteLayer.svg" ) );
 #ifdef HAVE_MSSQL
   mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMssqlLayer.svg" ) );
@@ -6195,10 +6213,10 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
       QgsVectorLayer* vDupLayer = dynamic_cast<QgsVectorLayer*>( dupLayer );
       if ( vLayer && vDupLayer )
       {
-          foreach( const QgsVectorJoinInfo join, vLayer->vectorJoins() )
-          {
-            vDupLayer->addJoin( join );
-          }
+        foreach ( const QgsVectorJoinInfo join, vLayer->vectorJoins() )
+        {
+          vDupLayer->addJoin( join );
+        }
       }
 
       // always set duplicated layers to not visible
@@ -9018,6 +9036,10 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "UI/annotationTool", 3 );
   else if ( action == mActionAnnotation )
     settings.setValue( "/UI/annotationTool", 4 );
+  else if ( action == mActionNewSpatiaLiteLayer )
+    settings.setValue( "/UI/defaultNewLayer", 0 );
+  else if ( action == mActionNewVectorLayer )
+    settings.setValue( "/UI/defaultNewLayer", 1 );
   bt->setDefaultAction( action );
 }
 

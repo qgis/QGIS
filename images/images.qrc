@@ -435,6 +435,7 @@
         <file>flags/bs_BA.png</file>
         <file>flags/eu.png</file>
         <file>flags/bn.png</file>
+        <file>themes/default/mActionNewSpatiaLiteLayer.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

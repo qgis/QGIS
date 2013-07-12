@@ -288,7 +288,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionDraw() { return mActionDraw; }
 
     QAction *actionNewVectorLayer() { return mActionNewVectorLayer; }
-    QAction *actionNewSpatialLiteLayer() { return mActionNewSpatialiteLayer; }
+    QAction *actionNewSpatialLiteLayer() { return mActionNewSpatiaLiteLayer; }
     QAction *actionEmbedLayers() { return mActionEmbedLayers; }
     QAction *actionAddOgrLayer() { return mActionAddOgrLayer; }
     QAction *actionAddRasterLayer() { return mActionAddRasterLayer; }
