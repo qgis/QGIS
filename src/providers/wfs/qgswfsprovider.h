@@ -49,29 +49,6 @@ class QgsWFSProvider: public QgsVectorDataProvider
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
 
-    /**
-     * Gets the feature at the given feature ID.
-     * @param featureId of the feature to be returned
-     * @param feature which will receive the data
-     * @param fetchGeometry flag which if true, will cause the geometry to be fetched from the provider
-     * @param fetchAttributes a list containing the indexes of the attribute fields to copy
-     * @return True when feature was found, otherwise false
-     *
-     * Default implementation traverses all features until it finds the one with correct ID.
-     * In case the provider supports reading the feature directly, override this function.
-     */
-    virtual bool featureAtId( QgsFeatureId featureId,
-                              QgsFeature& feature,
-                              bool fetchGeometry = true,
-                              QgsAttributeList fetchAttributes = QgsAttributeList() );
-
-    /**
-     * Get the next feature resulting from a select operation.
-     * @param feature feature which will receive data from the provider
-     * @return true when there was a feature to fetch, false when end was hit
-     */
-    virtual bool nextFeature( QgsFeature& feature );
-
     QGis::WkbType geometryType() const;
     long featureCount() const;
 
