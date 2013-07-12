@@ -50,6 +50,10 @@
 #define HAVE_LIBUTIL_H
 #endif
 
+#if defined(__FreeBSD__)
+#define HAVE_UTEMPTER
+#endif
+
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <sys/time.h>
