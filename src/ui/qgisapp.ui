@@ -1353,7 +1353,7 @@
   <action name="mActionShowAllLayers">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionShowAllLayers.png</normaloff>:/images/themes/default/mActionShowAllLayers.png</iconset>
+     <normaloff>:/images/themes/default/mActionShowAllLayers.svg</normaloff>:/images/themes/default/mActionShowAllLayers.svg</iconset>
    </property>
    <property name="text">
     <string>Show All Layers</string>
@@ -1365,7 +1365,7 @@
   <action name="mActionHideAllLayers">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionHideAllLayers.png</normaloff>:/images/themes/default/mActionHideAllLayers.png</iconset>
+     <normaloff>:/images/themes/default/mActionHideAllLayers.svg</normaloff>:/images/themes/default/mActionHideAllLayers.svg</iconset>
    </property>
    <property name="text">
     <string>Hide All Layers</string>
