@@ -16,6 +16,8 @@
 #include "qgsoracle_plugin.h"
 #include "qgsselectgeoraster_ui.h"
 
+#include <QMenu>
+
 static const QString sName = QObject::tr( "Oracle Spatial GeoRaster" );
 static const QString sDescription = QObject::tr( "Access Oracle Spatial GeoRaster" );
 static const QString sCategory = QObject::tr( "Layers" );
@@ -51,17 +53,17 @@ QgsOraclePlugin::~QgsOraclePlugin()
  */
 void QgsOraclePlugin::initGui()
 {
-
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/oracleplugin/oracleplugin.png" ), tr( "Add Oracle GeoRaster Layer..." ), this );
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Add a Oracle Spatial GeoRaster..." ) );
   // Connect the action to the run
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
-  // Add the icon to the toolbar
-  mQGisIface->layerToolBar()->addAction( mQActionPointer );
-  mQGisIface->insertAddLayerAction( mQActionPointer );
 
+  // Add the icon to the new layers toolbar
+  mQGisIface->layerToolBar()->insertAction( mQGisIface->actionAddWmsLayer(), mQActionPointer );
+  // Also add to Layer menu
+  mQGisIface->layerMenu()->insertAction( mQGisIface->actionAddWmsLayer(), mQActionPointer );
 }
 //method defined in interface
 
