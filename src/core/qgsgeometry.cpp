@@ -5401,22 +5401,6 @@ int QgsGeometry::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsGeometr
     return 2; //an error occured during noding
   }
 
-#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
-    ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=1)))
-  GEOSGeometry *cutEdges = GEOSPolygonizer_getCutEdges( &nodedGeometry, 1 );
-  if ( cutEdges )
-  {
-    if ( numberOfGeometries( cutEdges ) > 0 )
-    {
-      GEOSGeom_destroy( cutEdges );
-      GEOSGeom_destroy( nodedGeometry );
-      return 3;
-    }
-
-    GEOSGeom_destroy( cutEdges );
-  }
-#endif
-
   GEOSGeometry *polygons = GEOSPolygonize( &nodedGeometry, 1 );
   if ( !polygons || numberOfGeometries( polygons ) == 0 )
   {
@@ -5484,6 +5468,14 @@ int QgsGeometry::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsGeometr
     GEOSGeom_destroy( mGeos );
     mGeos = testedGeometries[0];
     mDirtyWkb = true;
+  }
+
+  for ( int i = 1; i < testedGeometries.size(); ++i )
+  {
+    if ( GEOSisValid( testedGeometries[i] ) != 1 )
+    {
+      return 3;
+    }
   }
 
   for ( int i = 1; i < testedGeometries.size(); ++i )
