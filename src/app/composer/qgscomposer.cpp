@@ -973,14 +973,14 @@ void QgsComposer::on_mActionExportAsImage_triggered()
     for ( int i = 0; i < mComposition->numPages(); ++i )
     {
       QImage image = mComposition->printPageAsRaster( i );
-      if (image.isNull())
+      if ( image.isNull() )
       {
         QMessageBox::warning( 0, tr( "Memory Allocation Error" ),
-                                             tr( "Trying to create image #%1( %2x%3 @ %4dpi ) "
-                                                 "may result in a memory overflow.\n"
-                                                 "Please try a lower resolution or a smaller papersize" )
-                                             .arg( i+1 ).arg( width ).arg( height ).arg ( dpi ),
-                                             QMessageBox::Ok ,  QMessageBox::Ok );
+                              tr( "Trying to create image #%1( %2x%3 @ %4dpi ) "
+                                  "may result in a memory overflow.\n"
+                                  "Please try a lower resolution or a smaller papersize" )
+                              .arg( i + 1 ).arg( width ).arg( height ).arg( dpi ),
+                              QMessageBox::Ok ,  QMessageBox::Ok );
         mView->setPaintingEnabled( true );
         return;
       }

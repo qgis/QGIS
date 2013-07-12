@@ -289,7 +289,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   QList<QgsMapLayer*> layerList;
   QgsMapLayer* currentLayer = 0;
   QgsCoordinateReferenceSystem layerCrs;
-  QgsRectangle searchRect(0,0,0,0);
+  QgsRectangle searchRect( 0, 0, 0, 0 );
 
   mErrors = QStringList();
   mTypeNames = QStringList();
@@ -966,7 +966,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   }
   if ( featureCounter == 0 )
     startGetFeature( request, format, layerCrs, &searchRect );
-  
+
   endGetFeature( request, format );
 
   return 0;
@@ -1604,7 +1604,7 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateRefer
   for ( int i = 0; i < attrIndexes.count(); ++i )
   {
     int idx = attrIndexes[i];
-    QString attributeName = fields->at(idx).name();
+    QString attributeName = fields->at( idx ).name();
     //skip attribute if it is excluded from WFS publication
     if ( excludedAttributes.contains( attributeName ) )
     {
@@ -1682,7 +1682,7 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
   for ( int i = 0; i < attrIndexes.count(); ++i )
   {
     int idx = attrIndexes[i];
-    QString attributeName = fields->at(idx).name();
+    QString attributeName = fields->at( idx ).name();
     //skip attribute if it is excluded from WFS publication
     if ( excludedAttributes.contains( attributeName ) )
     {
@@ -1741,7 +1741,7 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
   for ( int i = 0; i < attrIndexes.count(); ++i )
   {
     int idx = attrIndexes[i];
-    QString attributeName = fields->at(idx).name();
+    QString attributeName = fields->at( idx ).name();
     //skip attribute if it is excluded from WFS publication
     if ( excludedAttributes.contains( attributeName ) )
     {

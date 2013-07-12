@@ -229,7 +229,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
         mypInnerLayout->addWidget( mypLabel, index, 0 );
         mypInnerLayout->addWidget( myWidget, index, 1 );
         ++index;
-      }      
+      }
     }
 
     // Set focus to first widget in list, to help entering data without moving the mouse.

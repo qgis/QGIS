@@ -234,9 +234,9 @@ class SagaAlgorithm(GeoAlgorithm):
                             raise GeoAlgorithmExecutionException("Unsupported file format")
 
         #2: set parameters and outputs
-        
+
         command = self.undecoratedGroup  + " \"" + self.cmdname + "\""
-        
+
         if self.hardcodedStrings:
             for s in self.hardcodedStrings:
                 command += " " + s
@@ -298,9 +298,9 @@ class SagaAlgorithm(GeoAlgorithm):
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
-                filename2 = SextanteUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"                
+                filename2 = SextanteUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
                 commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 4 -TYPE 0 -FILE \"" + filename + "\"");
-                
+
 
         #4 Run SAGA
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
