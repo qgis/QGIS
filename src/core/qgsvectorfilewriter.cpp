@@ -356,7 +356,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
     QString name( attrField.name() );
 
-    if ( driverName == "SQLite" && name.compare( "ogc_fid", Qt::CaseInsensitive ) == 0 )
+    if ( ogrDriverName == "SQLite" && name.compare( "ogc_fid", Qt::CaseInsensitive ) == 0 )
     {
       int i;
       for ( i = 0; i < 10; i++ )
