@@ -56,6 +56,9 @@ class QgsProjectParser: public QgsConfigParser
     /**Returns one or possibly several maplayers for a given layer name and style. If no layers/style are found, an empty list is returned*/
     virtual QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache = true ) const;
 
+    /**Returns maplayers for a layer Id.*/
+    virtual QgsMapLayer* mapLayerFromLayerId( const QString& lId ) const;
+
     /**Fills a layer and a style list. The two list have the same number of entries and the style and the layer at a position belong together (similar to the HTTP parameters 'Layers' and 'Styles'. Returns 0 in case of success*/
     virtual int layersAndStyles( QStringList& layers, QStringList& styles ) const;
 

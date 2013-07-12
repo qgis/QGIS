@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaplayerregistry.h"
+
 #include "qgsprojectparser.h"
 #include "qgsconfigcache.h"
 #include "qgscrscache.h"
@@ -426,6 +428,23 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
         {
           continue;
         }
+        if ( layer->vectorJoins().size() > 0 )
+        {
+          QList<QgsMapLayer *> joinLayers;
+          //JoinBuffer is based on qgsmaplayerregistry!!!!!
+          //insert existing join info
+          const QList< QgsVectorJoinInfo >& joins = layer->vectorJoins();
+          for ( int i = 0; i < joins.size(); ++i )
+          {
+            QgsMapLayer* joinLayer = mapLayerFromLayerId( joins[i].joinLayerId );
+            if ( joinLayer )
+            {
+              joinLayers << joinLayer;
+            }
+            QgsMapLayerRegistry::instance()->addMapLayers( joinLayers, false, true );
+          }
+          layer->updateFields();
+        }
 
         //hidden attributes for this layer
         const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWFS();
@@ -496,7 +515,8 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
           sequenceElem.appendChild( geomElem );
         }
 
-        const QgsFields& fields = provider->fields();
+        //const QgsFields& fields = provider->fields();
+        const QgsFields& fields = layer->pendingFields();
         for ( int idx = 0; idx < fields.count(); ++idx )
         {
 
@@ -529,6 +549,7 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
       }
     }
   }
+  QgsMapLayerRegistry::instance()->removeAllMapLayers();
   return;
 }
 
@@ -1454,6 +1475,16 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
   }
 
   return layerList;
+}
+
+QgsMapLayer* QgsProjectParser::mapLayerFromLayerId( const QString& lId ) const
+{
+  QHash< QString, QDomElement >::const_iterator layerIt = mProjectLayerElementsById.find( lId );
+  if ( layerIt != mProjectLayerElementsById.constEnd() )
+  {
+    return createLayerFromElement( layerIt.value(), true );
+  }
+  return 0;
 }
 
 void QgsProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem, QList<QgsMapLayer*>& layerList, bool useCache ) const
