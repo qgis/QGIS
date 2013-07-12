@@ -41,9 +41,9 @@ QgsGml::QgsGml(
     , mTypeName( typeName )
     , mGeometryAttribute( geometryAttribute )
     , mFinished( false )
+    , mCurrentFeature( 0 )
     , mFeatureCount( 0 )
     , mCurrentWKBSize( 0 )
-    , mCurrentFeature( 0 )
 {
   mThematicAttributes.clear();
   for ( int i = 0; i < fields.size(); i++ )
