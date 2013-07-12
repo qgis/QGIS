@@ -334,8 +334,8 @@
         <file>themes/default/mIconNoPyramid.png</file>
         <file>themes/default/mIconOracle.svg</file>
         <file>themes/default/mIconOws.svg</file>
-        <file>themes/default/mIconPointLayer.png</file>
-        <file>themes/default/mIconPolygonLayer.png</file>
+        <file>themes/default/mIconPointLayer.svg</file>
+        <file>themes/default/mIconPolygonLayer.svg</file>
         <file>themes/default/mIconPostgis.svg</file>
         <file>themes/default/mIconPrevious.png</file>
         <file>themes/default/mIconProjectionDisabled.png</file>
