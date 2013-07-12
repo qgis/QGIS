@@ -5470,15 +5470,20 @@ int QgsGeometry::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsGeometr
     mDirtyWkb = true;
   }
 
-  for ( int i = 1; i < testedGeometries.size(); ++i )
+  int i;
+  for ( i = 1; i < testedGeometries.size() && GEOSisValid( testedGeometries[i] ); ++i )
+    ;
+
+  if ( i < testedGeometries.size() )
   {
-    if ( GEOSisValid( testedGeometries[i] ) != 1 )
+    for ( i = 0; i < testedGeometries.size(); ++i )
     {
-      return 3;
+      GEOSGeom_destroy( testedGeometries[i] );
     }
+    return 3;
   }
 
-  for ( int i = 1; i < testedGeometries.size(); ++i )
+  for ( i = 1; i < testedGeometries.size(); ++i )
   {
     newGeometries << fromGeosGeom( testedGeometries[i] );
   }
