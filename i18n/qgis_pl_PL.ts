@@ -116,15 +116,15 @@
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie wybrana lub nie podłączona baza danych</translation>
     </message>
     <message>
         <source>Select the table you want export to file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz tabelę do eksportu.</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Zarządzanie bazami</translation>
     </message>
     <message>
         <source>Info</source>
@@ -192,7 +192,7 @@
     <message>
         <source>&lt;warning&gt; geometry_columns table doesn&apos;t exist!
 This table is essential for many GIS applications for enumeration of tables.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>create new schemas</source>
@@ -216,11 +216,11 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>&lt;warning&gt; %s support not enabled!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;ostrzeżenie&gt; obsługa %s niedostępna!</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has no privileges!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;ostrzeżenie&gt; Ten użytkownik nie ma uprawnień!</translation>
     </message>
     <message>
         <source>User has privileges:</source>
@@ -244,7 +244,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>access objects</source>
-        <translation type="unfinished"></translation>
+        <translation>dostęp do obiektów</translation>
     </message>
     <message>
         <source>Schema details</source>
@@ -252,7 +252,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>&lt;warning&gt; This user has no privileges to access this schema!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;ostrzeżenie&gt; Ten użytkownik nie ma uprawnień do tego schematu!</translation>
     </message>
     <message>
         <source>Relation type:</source>
@@ -300,7 +300,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>&lt;warning&gt; This is not a spatial table.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;ostrzeżenie&gt; To nie jest tabela geometrii.</translation>
     </message>
     <message>
         <source>Fields</source>
@@ -356,11 +356,11 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>&lt;warning&gt; There isn&apos;t entry in geometry_columns!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;ostrzeżenie&gt; Brak wpisu w polu geometrii!</translation>
     </message>
     <message>
         <source>&lt;warning&gt; No spatial index defined (&lt;a href=&quot;action:spatialindex/create&quot;&gt;create it&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;ostrzeżenie&gt; Niezdefiniowany indeks przestrzenny (&lt;a href=&quot;action:spatialindex/create&quot;&gt;stwórz go&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Filename:</source>
@@ -440,11 +440,11 @@ Zapytanie:
     </message>
     <message>
         <source>Cannot delete the selected item.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można usunąć wybranego obiektu.</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie wybrana lub nie podłączona baza danych.</translation>
     </message>
     <message>
         <source>New schema</source>
@@ -464,35 +464,35 @@ Zapytanie:
     </message>
     <message>
         <source>Really delete schema %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Usunąć schemat &apos;%s&apos;?</translation>
     </message>
     <message>
         <source>Select a TABLE for editation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz tabelę do edycji.</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW for deletion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz tabelę/widok do usunięcia.</translation>
     </message>
     <message>
         <source>Really delete table/view %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Usunąć tabelę/widok &apos;%s&apos;?</translation>
     </message>
     <message>
         <source>Select a TABLE to empty it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz tabelę do wyczyszczenia.</translation>
     </message>
     <message>
         <source>Really delete all items from table %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Usunąć wszystkie obiekty z tabeli  &apos;%s&apos;?</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz tabelę/widok.</translation>
     </message>
     <message>
         <source>Do you want to %s all triggers?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy chcesz %s wszystkie wyzwalacze?</translation>
     </message>
     <message>
         <source>Table triggers</source>
@@ -500,7 +500,7 @@ Zapytanie:
     </message>
     <message>
         <source>Do you want to %s trigger %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy chcesz %s wyzwalacz %s?</translation>
     </message>
     <message>
         <source>Table trigger</source>
@@ -508,7 +508,7 @@ Zapytanie:
     </message>
     <message>
         <source>Do you want to %s spatial index for field %s?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy chcesz %s indeksy przestrzenne dla pól %s?</translation>
     </message>
     <message>
         <source>Spatial Index</source>
@@ -532,7 +532,7 @@ Zapytanie:
     </message>
     <message>
         <source>Exclusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Z wyłączeniem</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -552,7 +552,7 @@ Zapytanie:
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have usage privileges for this schema!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;ostrzeżenie&gt; Ten użytkownik nie ma uprawnień do tego schematu!</translation>
     </message>
     <message>
         <source>Rows (counted):</source>
@@ -560,15 +560,15 @@ Zapytanie:
     </message>
     <message>
         <source>&lt;warning&gt; This user has read-only privileges.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;ostrzeżenie&gt; Ten użytkownik ma tylko uprawnienie do odczytu!</translation>
     </message>
     <message>
         <source>&lt;warning&gt; There&apos;s a significant difference between estimated and real row count. Consider running &lt;a href=&quot;action:vacuumanalyze/run&quot;&gt;VACUUM ANALYZE&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;ostrzeżenie&gt; Istnieje znacząca różnica pomiędzy szacowaną a rzeczywistą liczbą rekordów. Rozważ uruchomienie &lt;a href=&quot;action:vacuumanalyze/run&quot;&gt;VACUUM ANALYZE&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>&lt;warning&gt; No primary key defined for this table!</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;ostrzeżenie&gt; Nie zdefiniowano klucza głównego dla tej tabeli!</translation>
     </message>
     <message>
         <source>Scripts:</source>
@@ -577,12 +577,14 @@ Zapytanie:
     <message>
         <source>&lt;warning&gt; Version of installed scripts doesn&apos;t match version of released scripts!
 This is probably a result of incorrect PostGIS upgrade.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;ostrzeżenie&gt; Wersja zainstalowanych skryptów nie jest zgodna z wersją skryptów w programie!
+To prawdopodobnie wynik aktualizacji PostGIS.</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have privileges to read contents of geometry_columns table!
 This table is essential for many GIS applications for enumeration of tables.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;ostrzeżenie&gt; Ten użytkownik nie ma uprawnień do odczytu tabeli geometrii!
+Ta tabela jest kluczowa dla wielu operacji przestrzennych.</translation>
     </message>
     <message>
         <source>Length</source>
@@ -602,7 +604,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>&lt;a href=&quot;action:triggers/enable&quot;&gt;Enable all triggers&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Disable all triggers&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;a href=&quot;action:triggers/enable&quot;&gt;Uruchom wyzwalacze&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Wyłącz wyzwalacze&lt;/a&gt;</translation>
     </message>
     <message>
         <source>Definition</source>
@@ -622,11 +624,11 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Zarządzanie bazami</translation>
     </message>
     <message>
         <source>Unable to find a valid unique field</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można odnaleźć unikalnego pola</translation>
     </message>
 </context>
 <context>
@@ -637,11 +639,11 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Invalid MIME uri</source>
-        <translation type="unfinished"></translation>
+        <translation>Błędne MIME uri</translation>
     </message>
     <message>
         <source>The dropped object is not a valid layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuwany obiekt nie jest poprawną warstwą</translation>
     </message>
     <message>
         <source>Invalid layer</source>
@@ -2285,7 +2287,10 @@ Czy chcesz dodać go do mapy?</translation>
 %s
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Utworzono punktową warstwę Shapefile:
+%s
+
+Czy chcesz dodać ją do mapy?</translation>
     </message>
     <message>
         <source>Can&apos;t delete file %s</source>
@@ -2294,7 +2299,8 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>There were %d vertices in original dataset which
 were reduced to %d vertices after simplification</source>
-        <translation type="unfinished"></translation>
+        <translation>W procesie uproszczenia zredukowano %d wierzchołków 
+do %d</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
@@ -2307,7 +2313,10 @@ were reduced to %d vertices after simplification</source>
 %s
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Utworzono plik Shapefile:
+%s
+
+Czy chcesz dodać go do mapy?</translation>
     </message>
     <message>
         <source>CRS warning!</source>
@@ -2321,7 +2330,7 @@ Może to powodować nieoczekiwane rezultaty.</translation>
     </message>
     <message>
         <source>Processing of the following layers/files ended with error:&lt;br&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Przetwarzanie następujących warstw/plików zakończyło się błędem:&lt;br&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>Created output shapefiles in folder:
@@ -2337,7 +2346,9 @@ Może to powodować nieoczekiwane rezultaty.</translation>
         <source>No output will be created.
 Following field names are longer than 10 characters:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie wykonano.
+Następujące nazwy pól są dłuższe niż 10 znaków:
+%s</translation>
     </message>
     <message>
         <source>Can&apos;t delete existing shapefile
@@ -2365,12 +2376,13 @@ Following field names are longer than 10 characters:
     </message>
     <message>
         <source>Could not replace geometry of feature with id %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można zmienić geometrii obiektu o id %s</translation>
     </message>
     <message>
         <source>Could not eliminate features with these ids:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można usunąć obiektów o id:
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -2465,7 +2477,7 @@ Na pewno chcesz kontynuować?</translation>
     </message>
     <message>
         <source>There are no shapefiles with the given geometry type. Please select an available geometry type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak plików Shapefile o zadanym typie geometrii. Wybierz inny typ.</translation>
     </message>
     <message>
         <source>stratified</source>
@@ -2762,7 +2774,7 @@ Na pewno chcesz kontynuować?</translation>
     </message>
     <message>
         <source>field name must not be empty</source>
-        <translation type="unfinished"></translation>
+        <translation>pole nazwy nie może być puste</translation>
     </message>
 </context>
 <context>
@@ -2808,7 +2820,7 @@ Na pewno chcesz kontynuować?</translation>
     </message>
     <message>
         <source>Please enter some name for the index</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj nazwę indeksu</translation>
     </message>
 </context>
 <context>
@@ -2951,7 +2963,7 @@ Na pewno chcesz kontynuować?</translation>
     <name>DlgExportVector</name>
     <message>
         <source>Choose where to save the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj gdzie zapisać plik</translation>
     </message>
     <message>
         <source>Shapefiles</source>
@@ -2963,15 +2975,15 @@ Na pewno chcesz kontynuować?</translation>
     </message>
     <message>
         <source>Output table name is required</source>
-        <translation type="unfinished"></translation>
+        <translation>Wymagane podanie nazwy tabeli wyjściowej</translation>
     </message>
     <message>
         <source>Invalid source srid: must be an integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Niepoprawny numer srid źródła; musi być liczą całkowitą</translation>
     </message>
     <message>
         <source>Invalid target srid: must be an integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Niepoprawny docelowy numer srid; musi być liczą całkowitą</translation>
     </message>
     <message>
         <source>Error %d
@@ -3134,11 +3146,11 @@ Na pewno chcesz kontynuować?</translation>
     </message>
     <message>
         <source>Invalid source srid: must be an integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Niepoprawny numer srid źródła; musi być liczą całkowitą</translation>
     </message>
     <message>
         <source>Invalid target srid: must be an integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Niepoprawny docelowy numer srid; musi być liczą całkowitą</translation>
     </message>
     <message>
         <source>Error %d
@@ -3719,7 +3731,9 @@ Wtyczka nie zostanie włączona.</translation>
         <source>Unable to load {0} plugin. 
 The required &quot;{1}&quot; module is missing. 
 Install it and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można wczytać wtyczki {0}. 
+Brak modułu &quot;{1}&quot;. 
+Zainstaluj go i spróbuj ponownie.</translation>
     </message>
     <message>
         <source>RGB to PCT</source>
@@ -3937,7 +3951,8 @@ http://trac.faunalia.it/GdalTools-plugin</translation>
     <message>
         <source>The following files were not created: 
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Następujące pliki nie zostały utworzone: 
+{0}</translation>
     </message>
     <message>
         <source>The following files were not created: 
@@ -4080,7 +4095,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     </message>
     <message>
         <source>The output file doesn&apos;t exist. You must set up the output size or resolution to create it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik wynikowy nie istnieje. Należy go wcześniej stworzyć podając rozmiar lub rozdzielczość.</translation>
     </message>
     <message>
         <source>Select the mask file</source>
@@ -4176,7 +4191,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     </message>
     <message>
         <source>[select levels]</source>
-        <translation type="unfinished"></translation>
+        <translation>[wybierz warstwy]</translation>
     </message>
     <message>
         <source>Select the input directory with files to Merge</source>
@@ -5839,16 +5854,22 @@ Wartość &apos;gray&apos; (z GDAL 1.7.0) umożliwia rozszerzenie danych z tabel
 {1}
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Utworzono plik Shapefile:
+{0}
+{1}
+
+Czy chcesz dodać go do mapy?
+</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd wczytywania wyjściowego pliku Shapefile:
+{0}</translation>
     </message>
     <message>
         <source>Layer &apos;{0}&apos; updated</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono warstwę &apos;{0}&apos;</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
@@ -6059,18 +6080,22 @@ Czy chcesz dodać go do mapy?</translation>
     <message>
         <source>No output created. File creation error:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie stworzono pliku. Błąd operacji:
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s
 %s%s</source>
-        <translation type="unfinished"></translation>
+        <translation>Utworzono wyjściowy Shapefile:
+%s
+%s%s</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd wczytywania wyjściowego pliku Shapefile:
+%s</translation>
     </message>
     <message>
         <source>Difference layer</source>
@@ -6548,7 +6573,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <name>InfoViewer</name>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Zarządzanie bazami</translation>
     </message>
 </context>
 <context>
@@ -8014,7 +8039,9 @@ Działa na aktualnie edytowanej warstwie</translation>
         <source>This model can&apos;t be saved in its original location
 (probably you do not have permission to do it).
 Please, use the &apos;Save as...&apos; option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie udało się zapisać w podanej lokalizacji.
+Prawdopodobnie nie masz do niej uprawnień zapisu.
+Wybierz opcję &apos;Zapisz jako...&apos;.</translation>
     </message>
     <message>
         <source>Model saved</source>
@@ -8096,7 +8123,7 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Run &amp;Vacuum Analyze</source>
-        <translation type="unfinished"></translation>
+        <translation>Uruchom i uprzątnij bazę</translation>
     </message>
     <message>
         <source>Sorry</source>
@@ -8104,7 +8131,7 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Select a TABLE for vacuum analyze.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz tabelę do uprzątnięcia (VACUUM ANALYZE).</translation>
     </message>
 </context>
 <context>
@@ -8125,7 +8152,7 @@ Linia z błędem: %1</translation>
     <name>PostGisDBPlugin</name>
     <message>
         <source>There is no defined database connection &quot;%s&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak zdefiniowanego połączenia z bazą &quot;%s&quot;.</translation>
     </message>
     <message>
         <source>Enter password</source>
@@ -8175,23 +8202,23 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%s&apos; from [&apos;%s&apos;]</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można wczytać wtyczki &apos;%s&apos; z [&apos;%s&apos;]</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można wczytać wtyczki %s</translation>
     </message>
     <message>
         <source>%s due an error when calling its classFactory() method</source>
-        <translation type="unfinished"></translation>
+        <translation>%s z powodu błędu wywołania jej metody classFactory()</translation>
     </message>
     <message>
         <source>%s due an error when calling its initGui() method</source>
-        <translation type="unfinished"></translation>
+        <translation>%s z powodu błędu wywołania jej metody initGui()</translation>
     </message>
     <message>
         <source>Error while unloading plugin %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd podczas usuwania wtyczki %s</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
@@ -8274,7 +8301,7 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Saving prepared file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapis przygotowanego pliku...</translation>
     </message>
     <message>
         <source>Saved</source>
@@ -8286,7 +8313,7 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Error preparing file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd przygotowania pliku...</translation>
     </message>
     <message>
         <source>Hide Editor</source>
@@ -8330,39 +8357,39 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>URL copied to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>URL skopiowany do schowka</translation>
     </message>
     <message>
         <source>Connection error: </source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd połączenia:</translation>
     </message>
     <message>
         <source>Hey, type something to run!</source>
-        <translation type="unfinished"></translation>
+        <translation>Zanim uruchomisz, najpierw coś wpisz!</translation>
     </message>
     <message>
         <source>You have to save the file before running it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Przed uruchomieniem należy zapisać plik.</translation>
     </message>
     <message>
         <source>Syntax ok</source>
-        <translation type="unfinished"></translation>
+        <translation>Składnia w porządku</translation>
     </message>
     <message>
         <source>Python Console: Save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Konsola Pytona: Zapisz plik</translation>
     </message>
     <message>
         <source>Script was correctly saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Skrypt został pomyślnie zapisany.</translation>
     </message>
     <message>
         <source>Click on button to restore all tabs from last session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kliknij aby odzyskać wszystkie zakładki z poprzedniej sesji.</translation>
     </message>
     <message>
         <source>Restore tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Odzyskaj zakładki</translation>
     </message>
     <message>
         <source>Close</source>
@@ -8370,27 +8397,27 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>List all tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista zakładek</translation>
     </message>
     <message>
         <source>New Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowy edytor</translation>
     </message>
     <message>
         <source>Python Console: Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>Konsola Pytona: Zapisz plik</translation>
     </message>
     <message>
         <source>Hide/Show Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl/ukryj pasek narzędzi</translation>
     </message>
     <message>
         <source>Show Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż edytor</translation>
     </message>
     <message>
         <source>Enter Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Wprowadź zaznaczone</translation>
     </message>
     <message>
         <source>Import Class</source>
@@ -8398,27 +8425,27 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Enter text to find...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekst do wyszukania...</translation>
     </message>
     <message>
         <source>Find Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Znajdź następny</translation>
     </message>
     <message>
         <source>Find Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Znajdź poprzedni</translation>
     </message>
     <message>
         <source>Case Sensitive</source>
-        <translation type="unfinished"></translation>
+        <translation>Uwzględniaj wielkość liter</translation>
     </message>
     <message>
         <source>Whole Word</source>
-        <translation type="unfinished"></translation>
+        <translation>Całe słowa</translation>
     </message>
     <message>
         <source>Wrap Around</source>
-        <translation type="unfinished"></translation>
+        <translation>Zawijaj</translation>
     </message>
     <message>
         <source>Open File</source>
@@ -8426,55 +8453,55 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>Save Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd zapisu</translation>
     </message>
     <message>
         <source>History saved successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomyślnie zapisano historię.</translation>
     </message>
     <message>
         <source>Session and file history cleared successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomyślnie wyczyszczono sesję i historię.</translation>
     </message>
     <message>
         <source>History cleared successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomyślnie wyczyszczono historię.</translation>
     </message>
     <message>
         <source>Command History</source>
-        <translation type="unfinished"></translation>
+        <translation>Historia poleceń</translation>
     </message>
     <message>
         <source>Show</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetl</translation>
     </message>
     <message>
         <source>Clear File</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyczyść plik</translation>
     </message>
     <message>
         <source>Clear Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyczyść sesję</translation>
     </message>
     <message>
         <source>Python Console - Command History</source>
-        <translation type="unfinished"></translation>
+        <translation>Konsola Pytona: Historia poleceń</translation>
     </message>
     <message>
         <source>Double click on item to execute</source>
-        <translation type="unfinished"></translation>
+        <translation>Dwuklik na obiekcie, aby uruchomić</translation>
     </message>
     <message>
         <source>Add API path</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj ścieżkę API</translation>
     </message>
     <message>
         <source>Remove API path</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń ścieżkę API</translation>
     </message>
     <message>
         <source>Save File As</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz jako</translation>
     </message>
     <message>
         <source>Manage Script</source>
@@ -8545,27 +8572,27 @@ Linia z błędem: %1</translation>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3278"/>
         <source>Unable to initialize</source>
         <comment>QOCISpatialDriver</comment>
-        <translation type="unfinished"></translation>
+        <translation>Nieudana inicjalizacja</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3448"/>
         <source>Unable to logon</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudane logowanie</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3527"/>
         <source>Unable to begin transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudane rozpoczęcie transakcji</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3549"/>
         <source>Unable to commit transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudane zatwierdzenie transakcji</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3571"/>
         <source>Unable to rollback transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudane cofnięcie transakcji</translation>
     </message>
 </context>
 <context>
@@ -8575,42 +8602,42 @@ Linia z błędem: %1</translation>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="2037"/>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="2053"/>
         <source>Unable to bind column for batch execute</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudane połączenie kolumny do trybu wsadowego</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="2069"/>
         <source>Unable to execute batch statement</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudane uruchomienie trybu wsadowego</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3011"/>
         <source>Unable to goto next</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudany kolejny krok</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3093"/>
         <source>Unable to alloc statement</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudane polecenie alokacji</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3109"/>
         <source>Unable to prepare statement</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudane polecenie przygotowania</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3138"/>
         <source>Unable to get statement type</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudane polecenie pobrania</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3164"/>
         <source>Unable to bind value</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudana związanie wartośći</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3177"/>
         <source>Unable to execute statement</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudane wykonanie zapytania</translation>
     </message>
 </context>
 <context>
@@ -9341,7 +9368,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="104"/>
         <source>Couldn&apos;t set SIP API versions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można ustawić wersji SIP API.</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="113"/>
@@ -9817,7 +9844,7 @@ Błąd (%2): %3</translation>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="29"/>
         <source>Diagram Overlay (Legacy)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartodiagramy</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="30"/>
@@ -10654,7 +10681,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2022"/>
         <source>field %1 with unsupported type %2 skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>pominięto pole %1 z nieobsługiwanym typem %2</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2028"/>
@@ -10754,7 +10781,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2763"/>
         <source>Cubic</source>
-        <translation type="unfinished"></translation>
+        <translation>sześcienna</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2764"/>
@@ -10818,7 +10845,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
         <location filename="../src/core/qgsexpression.cpp" line="90"/>
         <source>second</source>
         <comment>Note: Word is part matched in code</comment>
-        <translation type="unfinished">sekunda</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="91"/>
@@ -10842,7 +10869,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
         <location filename="../src/core/qgsexpression.cpp" line="98"/>
         <source>hour</source>
         <comment>Note: Word is part matched in code</comment>
-        <translation type="unfinished">godzina</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="99"/>
@@ -10889,12 +10916,12 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
         <location filename="../src/core/qgsexpression.cpp" line="452"/>
         <location filename="../src/core/qgsexpression.cpp" line="485"/>
         <source>Domain max must be greater than domain min</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimum zakresu musi być większe od minimum</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="490"/>
         <source>Exponent must be greater than 0</source>
-        <translation type="unfinished"></translation>
+        <translation>Wykładnik musi być większy od 0</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="654"/>
@@ -10913,7 +10940,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
         <location filename="../src/core/qgsexpression.cpp" line="1250"/>
         <location filename="../src/core/qgsexpression.cpp" line="1290"/>
         <source>Cannot convert &apos;%1:%2:%3&apos; to color</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudana konwersja &apos;%1:%2:%3&apos; na kolor</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="1217"/>
@@ -10921,17 +10948,17 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
         <location filename="../src/core/qgsexpression.cpp" line="1311"/>
         <location filename="../src/core/qgsexpression.cpp" line="1332"/>
         <source>Cannot convert &apos;%1:%2:%3:%4&apos; to color</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudana konwersja &apos;%1:%2:%3:%4&apos; na kolor</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="1229"/>
         <source>&quot;%1&quot; is not a valid color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; nie jest poprawną paletą kolorów</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="1355"/>
         <source>Cannot convert &apos;%1:%2:%3:%4:%5&apos; to color</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudana konwersja &apos;%1:%2:%3:%4:%5&apos; na kolor</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2374"/>
@@ -11007,7 +11034,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2362"/>
         <source>function help for %1 missing</source>
-        <translation type="unfinished"></translation>
+        <translation>brak pomocy dla %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2371"/>
@@ -11037,12 +11064,12 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
         <location filename="../src/core/qgsvectorlayer.cpp" line="3938"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="73"/>
         <source>Provider %1 has no %2 method</source>
-        <translation type="unfinished"></translation>
+        <translation>Źródło %1 nie posiada mettody %2</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3985"/>
         <source>Loaded from Provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Wczytane ze źródła</translation>
     </message>
     <message>
         <source>Provider %1 has no createEmptyLayer method</source>
@@ -11129,7 +11156,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2664"/>
         <source>Field name clash found (%1 not remappable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Konflikt nazw pól (%1 niemapowalne)</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2883"/>
@@ -11154,7 +11181,8 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2942"/>
         <source>Unable to clean metadata %1.%2: 
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można wyczyścić metadanych %1.%2: 
+%3</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3232"/>
@@ -11177,12 +11205,12 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3353"/>
         <source>A style named &quot;%1&quot; already exists in the database for this layer. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Styl &quot;%1&quot; już istnieje w bazie dla tej warstwy. Chcesz go nadpisać?</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3357"/>
         <source>Operation aborted. No changes were made in the database</source>
-        <translation type="unfinished"></translation>
+        <translation>Operacja przerwana. Nie wprowadzono zmian do bazy</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3403"/>
@@ -11193,14 +11221,14 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3448"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3512"/>
         <source>Connection to database failed using username: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Połączenie z bazą dla użytkownika %1 nie powiodło się</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3466"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3491"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3520"/>
         <source>Error executing query: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd uruchomienia zapytanie: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3467"/>
@@ -11215,12 +11243,12 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3521"/>
         <source>Error executing the select query. The query was logged</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd uruchomienia zapytania. Zapisano w logu</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3531"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd niespójnośći w tabeli &apos;%1&apos;. ID stylu powinno być unikalne</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1721"/>
@@ -11496,7 +11524,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/core/qgsfeature.cpp" line="195"/>
         <source>Attribute index %1 out of bounds [0;%2[</source>
-        <translation type="unfinished"></translation>
+        <translation>Indeks %1 jest poza zakresem [0;%2]</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgscptcityarchive.cpp" line="82"/>
@@ -11517,7 +11545,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/plugins/topology/topolError.cpp" line="24"/>
         <source>Using fix %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Poprawka %1.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolError.cpp" line="24"/>
@@ -11663,7 +11691,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="750"/>
         <source>Save style to DB (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz style w bazie (%1)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="953"/>
@@ -12358,7 +12386,10 @@ Prosimy o kontakt z autorami.</translation>
 
 Errors: %3
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można %1 zmian do warstwy %2
+
+Błędy: %3
+</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5720"/>
@@ -12400,7 +12431,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5837"/>
         <source>%1 current changes for %2 layer(s)?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 zmian dla %2 warstw?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6109"/>
@@ -12410,12 +12441,12 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6113"/>
         <source>Plugin layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa wtyczki</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6125"/>
         <source>Memory layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warstwa (w) pamięci</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6145"/>
@@ -13980,7 +14011,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2903"/>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 nie jest poprawną warstwą i nie może zostać wczytana. Sprawdź &lt;a href=&quot;#messageLog&quot;&gt; log komunikatów&lt;/a&gt; aby dowiedzieć się więcej.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2938"/>
@@ -14000,7 +14031,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2958"/>
         <source>Cannot get Delimited Text select dialog from provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można pobrać okna dialogowego wyboru dla tekstu z separatorami.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2984"/>
@@ -14020,7 +14051,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3006"/>
         <source>Cannot get Oracle select dialog from provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można pobrać okna dialogowego wyboru dla Oracle.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3033"/>
@@ -14090,7 +14121,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3375"/>
         <source>Default template has been reopened: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ponownie wczytano szablon domyślny %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3382"/>
@@ -14144,7 +14175,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4195"/>
         <source>Default system font substituted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zastąpiono domyślne czcionki systemowe.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4199"/>
@@ -14154,7 +14185,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4212"/>
         <source>Open labeling dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwórz okno dialogowe etykietowania</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4254"/>
@@ -14179,7 +14210,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4440"/>
         <source>Cannot write raster error code: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można zapisać kodu błędu rastrowego: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4531"/>
@@ -15488,7 +15519,8 @@ Nazwa motywu:		%5
         <location filename="../src/core/qgsapplication.cpp" line="989"/>
         <source>Update of view in private qgis.db failed.
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodła się aktualizacja qgis.db użytkownika.
+%1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="622"/>
@@ -59115,27 +59147,27 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>&amp;SEXTANTE toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>SEXTANTE - narzędzia</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>SEXTANTE - modelarz</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE history and log</source>
-        <translation type="unfinished"></translation>
+        <translation>SEXTANTE - historia i logi</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE options and configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>SEXTANTE - opcje i konfiguracja</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE results viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>SEXTANTE - podgląd wyników</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE commander</source>
-        <translation type="unfinished"></translation>
+        <translation>SEXTANTE - polecenia</translation>
     </message>
 </context>
 <context>
@@ -59860,13 +59892,13 @@ Opis: %3</translation>
     <message>
         <location filename="../python/plugins/sextante/ui/SextanteToolbox.ui" line="14"/>
         <source>SEXTANTE Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Narzędzia SEXTANTE</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/SextanteToolbox.ui" line="27"/>
         <source>Click here to learn more
 about SEXTANTE</source>
-        <translation type="unfinished"></translation>
+        <translation>Więcej o SEXTANTE</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/SextanteToolbox.ui" line="35"/>
@@ -59879,15 +59911,15 @@ about SEXTANTE</source>
     </message>
     <message>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation>Uruchom</translation>
     </message>
     <message>
         <source>Execute as batch process</source>
-        <translation type="unfinished"></translation>
+        <translation>Uruchom w trybie wsadowym</translation>
     </message>
     <message>
         <source>Edit rendering styles for outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmień styl wyświetalania wyników</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -59895,7 +59927,7 @@ about SEXTANTE</source>
     </message>
     <message>
         <source>Recently used algorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostatnie algorytmy</translation>
     </message>
 </context>
 <context>
@@ -59961,17 +59993,17 @@ about SEXTANTE</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="41"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="46"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="54"/>
         <source>Opacity</source>
-        <translation type="unfinished">Przezroczystość</translation>
+        <translation>Przezroczystość</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="80"/>
@@ -59995,7 +60027,7 @@ about SEXTANTE</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="144"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrót</translation>
     </message>
     <message utf8="true">
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="151"/>
@@ -60005,7 +60037,7 @@ about SEXTANTE</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="171"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerokość</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="209"/>
