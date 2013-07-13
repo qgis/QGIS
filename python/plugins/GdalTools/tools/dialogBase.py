@@ -205,9 +205,9 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
         return
 
       # show the error message if there's one, otherwise show the process output message
-      msg = str(self.process.readAllStandardError())
+      msg = Utils.decodeLocal8Bit( self.process.readAllStandardError() )
       if msg == '':
-        outMessages = str(self.process.readAllStandardOutput()).splitlines()
+        outMessages = Utils.decodeLocal8Bit( self.process.readAllStandardOutput() ).splitlines()
 
         # make sure to not show the help
         for m in outMessages:

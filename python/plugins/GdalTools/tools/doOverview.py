@@ -186,7 +186,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
         BasePluginWidget.onFinished(self, exitCode, status)
         return
 
-      msg = str( self.base.process.readAllStandardError() )
+      msg = Utils.decodeLocal8Bit( self.base.process.readAllStandardError() )
       if msg != '':
         self.errors.append( ">> " + self.inFiles[self.batchIndex] + "<br>" + msg.replace( "\n", "<br>" ) )
 
