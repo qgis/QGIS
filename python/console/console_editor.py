@@ -638,9 +638,6 @@ class Editor(QsciScintilla):
         else:
             self.markerDeleteAll()
             self.clearAnnotations()
-            if fromContextMenu:
-                msgText = QCoreApplication.translate('PythonConsole', 'Syntax ok')
-                self.parent.pc.callWidgetMessageBarEditor(msgText, 0, True)
             return True
 
     def keyPressEvent(self, e):
