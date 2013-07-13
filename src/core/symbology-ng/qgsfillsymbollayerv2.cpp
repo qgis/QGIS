@@ -302,6 +302,7 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
     return;
   }
 
+  mNextAngle = mAngle;
   applyDataDefinedSettings( context );
 
   p->setPen( QPen( Qt::NoPen ) );
@@ -315,14 +316,14 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
     _renderPolygon( p, points, rings );
   }
 
-  if ( qgsDoubleNear( mAngle, 0.0 ) )
+  if ( qgsDoubleNear( mNextAngle, 0.0 ) )
   {
     p->setBrush( mBrush );
   }
   else
   {
     QTransform t = mBrush.transform();
-    t.rotate( mAngle );
+    t.rotate( mNextAngle );
     QBrush rotatedBrush = mBrush;
     rotatedBrush.setTransform( t );
     p->setBrush( rotatedBrush );
@@ -766,9 +767,15 @@ void QgsSVGFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2RenderCon
   QgsExpression* fillColorExpression = expression( "svgFillColor" );
   QgsExpression* outlineColorExpression = expression( "svgOutlineColor" );
   QgsExpression* outlineWidthExpression = expression( "svgOutlineWidth" );
-  if ( !widthExpression && !svgFileExpression && !fillColorExpression && !outlineColorExpression && !outlineWidthExpression )
+  QgsExpression* angleExpression = expression( "angle" );
+  if ( !widthExpression && !svgFileExpression && !fillColorExpression && !outlineColorExpression && !outlineWidthExpression && !angleExpression )
   {
     return; //no data defined settings
+  }
+
+  if ( angleExpression )
+  {
+    mNextAngle = angleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
 
   double width = mPatternWidth;

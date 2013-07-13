@@ -308,7 +308,12 @@ saga:polartocartesiancoordinates,USE_ORIGINAL_NAME,Domain specific/Cost analysis
 saga:polygon-lineintersection,USE_ORIGINAL_NAME,Vector/Geometry operations
 saga:polygoncentroids,USE_ORIGINAL_NAME,Vector/Polygons
 saga:polygondissolve,USE_ORIGINAL_NAME,Vector/Polygons
-saga:polygonintersection,USE_ORIGINAL_NAME,Vector/Polygons
+saga:intersect,Polygon intersection,Vector/Polygons
+saga:difference,Polygon difference,Vector/Polygons
+saga:update,Polygon update,Vector/Polygons
+saga:identity,Polygon identity,Vector/Polygons
+saga:union,Polygon union,Vector/Polygons
+saga:symmetricaldifference,Polygon symmetrical difference,Vector/Polygons
 saga:polygonpartstoseparatepolygons,USE_ORIGINAL_NAME,Vector/Polygons
 saga:polygonproperties,USE_ORIGINAL_NAME,Vector/Polygons
 saga:polygonshapeindices,USE_ORIGINAL_NAME,Vector/Polygons

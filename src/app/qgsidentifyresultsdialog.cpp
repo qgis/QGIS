@@ -1374,7 +1374,7 @@ void QgsIdentifyResultsDialog::printCurrentItem()
 
   if ( !wv )
   {
-    QMessageBox::warning( this, tr( "Cannot not print" ), tr( "Cannot print this item" ) );
+    QMessageBox::warning( this, tr( "Cannot print" ), tr( "Cannot print this item" ) );
     return;
   }
 

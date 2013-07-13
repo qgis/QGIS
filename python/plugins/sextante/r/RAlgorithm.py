@@ -400,7 +400,7 @@ class RAlgorithm(GeoAlgorithm):
                 execDir = "x64"
             else:
                 execDir = "i386"
-            command = [RUtils.RFolder() + os.sep + "bin" + os.sep + execDir + os.sep + "R.exe --version"]
+            command = [RUtils.RFolder() + os.sep + "bin" + os.sep + execDir + os.sep + "R.exe", "--version"]
         else:
             command = ["R --version"]
         proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout

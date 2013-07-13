@@ -24,12 +24,12 @@
 
 QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl )
+    , mIsShapeFile( vlayer && vlayer->providerType() == "ogr" && vlayer->storageType() == "ESRI Shapefile" )
 {
   setupUi( this );
 
   //fill data types into the combo box
   const QList< QgsVectorDataProvider::NativeType > &typelist = vlayer->dataProvider()->nativeTypes();
-  mLayerType = vlayer->storageType();
 
   for ( int i = 0; i < typelist.size(); i++ )
   {
@@ -50,6 +50,9 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
   }
 
   on_mTypeBox_currentIndexChanged( 0 );
+
+  if ( mIsShapeFile )
+    mNameEdit->setMaxLength( 10 );
 }
 
 void QgsAddAttrDialog::on_mTypeBox_currentIndexChanged( int idx )
@@ -86,7 +89,7 @@ void QgsAddAttrDialog::setPrecisionMinMax()
 
 void QgsAddAttrDialog::accept()
 {
-  if ( mLayerType == "ESRI Shapefile" && mNameEdit->text().toLower() == "shape" )
+  if ( mIsShapeFile && mNameEdit->text().toLower() == "shape" )
   {
     QMessageBox::warning( this, tr( "Warning" ),
                           tr( "Invalid field name. This field name is reserved and cannot be used." ) );

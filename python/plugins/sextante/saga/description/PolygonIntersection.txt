@@ -1,9 +1,0 @@
-Polygon Intersection
-shapes_polygons
-ParameterVector|SHAPES_A|Layer A|2|False
-ParameterTableField|FIELD_A|Attribute A|SHAPES_A|-1|False
-ParameterVector|SHAPES_B|Layer B|2|False
-ParameterTableField|FIELD_B|Attribute B|SHAPES_B|-1|False
-ParameterSelection|METHOD|Method|[0] Complete Intersection;[1] Intersection;[2] Difference (A - B);[3] Difference (B - A)
-ParameterBoolean|SPLITPARTS     |Split Parts|True
-OutputVector|SHAPES_AB|Intersection

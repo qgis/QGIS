@@ -192,67 +192,6 @@ void QgsWFSProvider::copyFeature( QgsFeature* f, QgsFeature& feature, bool fetch
   feature.setFields( &mFields ); // allow name-based attribute lookups
 }
 
-bool QgsWFSProvider::featureAtId( QgsFeatureId featureId,
-                                  QgsFeature& feature,
-                                  bool fetchGeometry,
-                                  QgsAttributeList fetchAttributes )
-{
-  QMap<QgsFeatureId, QgsFeature* >::iterator it = mFeatures.find( featureId );
-  if ( it == mFeatures.end() )
-  {
-    return false;
-  }
-
-  QgsFeature* f = it.value();
-  if ( !f )
-  {
-    return false;
-  }
-
-  copyFeature( f, feature, fetchGeometry, fetchAttributes );
-  return true;
-}
-
-bool QgsWFSProvider::nextFeature( QgsFeature& feature )
-{
-  feature.setValid( false );
-
-  while ( true ) //go through the loop until we find a feature in the filter
-  {
-    if ( mSelectedFeatures.size() == 0 || mFeatureIterator == mSelectedFeatures.end() )
-    {
-      return 0;
-    }
-
-    QgsFeature* f = mFeatures[*mFeatureIterator];
-    ++mFeatureIterator;
-    if ( !f )
-    {
-      continue;
-    }
-
-    copyFeature( f, feature, mFetchGeom, mAttributesToFetch );
-
-    if ( mUseIntersect )
-    {
-      if ( feature.geometry() && feature.geometry()->intersects( mSpatialFilter ) )
-      {
-        return true;
-      }
-      else
-      {
-        continue; //go for the next feature
-      }
-    }
-    else
-    {
-      return true;
-    }
-  }
-}
-
-
-
 QGis::WkbType QgsWFSProvider::geometryType() const
 {
   return mWKBType;

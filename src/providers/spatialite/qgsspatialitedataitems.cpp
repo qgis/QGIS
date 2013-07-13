@@ -247,7 +247,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 QgsSLRootItem::QgsSLRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconSpatialite.png" );
+  mIcon = QgsApplication::getThemeIcon( "mIconSpatialite.svg" );
   populate();
 }
 

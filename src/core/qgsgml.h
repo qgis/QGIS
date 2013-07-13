@@ -38,7 +38,7 @@ class QgsCoordinateReferenceSystem;
  * uses the expat XML parser and an event based model to keep performance high.
  * The parsing starts when the first data arrives, it does not wait until the
  * request is finished */
-class CORE_EXPORT QgsGml: public QObject
+class CORE_EXPORT QgsGml : public QObject
 {
     Q_OBJECT
   public:
@@ -85,14 +85,10 @@ class CORE_EXPORT QgsGml: public QObject
     {
       none,
       boundingBox,
-      //featureMember, // gml:featureMember
-      feature,  // feature element containint attrs and geo (inside gml:featureMember)
+      feature,  // feature element containing attrs and geo (inside gml:featureMember)
       attribute,
       geometry,
       coordinate,
-      point,
-      line,
-      polygon,
       multiPoint,
       multiLine,
       multiPolygon

@@ -65,12 +65,8 @@ QgsLabel::~QgsLabel()
 
 QString QgsLabel::fieldValue( int attr, QgsFeature &feature )
 {
-  if ( mLabelFieldIdx[attr] == -1 )
-  {
-    return QString();
-  }
-
-  return feature.attribute( attr ).toString();
+  int idx = mLabelFieldIdx[attr];
+  return idx < 0 ? QString() : feature.attribute( idx ).toString();
 }
 
 void QgsLabel::renderLabel( QgsRenderContext &renderContext,

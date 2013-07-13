@@ -4164,7 +4164,7 @@ bool QgsSpatiaLiteProvider::checkLayerTypeAbstractInterface( gaiaVectorLayerPtr 
     case GAIA_VECTOR_VIRTUAL:
       mVShapeBased = true;
       break;
-  };
+  }
 
   if ( lyr->AuthInfos )
   {
@@ -4400,7 +4400,8 @@ bool QgsSpatiaLiteProvider::getGeometryDetailsAbstractInterface( gaiaVectorLayer
     default:
       geomType = QGis::WKBUnknown;
       break;
-  };
+  }
+
   mSrid = lyr->Srid;
   if ( lyr->SpatialIndex == GAIA_SPATIAL_INDEX_RTREE )
   {
@@ -4424,7 +4425,7 @@ bool QgsSpatiaLiteProvider::getGeometryDetailsAbstractInterface( gaiaVectorLayer
     case GAIA_XY_Z_M:
       nDims = GAIA_XY_Z_M;
       break;
-  };
+  }
 
   if ( mViewBased && spatialIndexRTree )
     getViewSpatialIndexName();
@@ -4915,9 +4916,14 @@ bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr
     layerExtent.set( lyr->ExtentInfos->MinX, lyr->ExtentInfos->MinY,
                      lyr->ExtentInfos->MaxX, lyr->ExtentInfos->MaxY );
     numberFeatures = lyr->ExtentInfos->Count;
-    return true;
   }
-  return false;
+  else
+  {
+    layerExtent.setMinimal();
+    numberFeatures = 0;
+  }
+
+  return true;
 }
 #endif
 

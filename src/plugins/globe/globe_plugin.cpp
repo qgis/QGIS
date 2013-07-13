@@ -511,14 +511,14 @@ void GlobePlugin::setupControls()
   Control* rotateCCW = new NavigationControl();
   rotateCCW->setHeight( 22 );
   rotateCCW->setWidth( 20 );
-  rotateCCW->setPosition( imgLeft+0, imgTop+18 );
+  rotateCCW->setPosition( imgLeft + 0, imgTop + 18 );
   rotateCCW->addEventHandler( new RotateControlHandler( manip, MOVE_OFFSET, 0 ) );
   mControlCanvas->addControl( rotateCCW );
 
   Control* rotateCW = new NavigationControl();
   rotateCW->setHeight( 22 );
   rotateCW->setWidth( 20 );
-  rotateCW->setPosition( imgLeft+36, imgTop+18 );
+  rotateCW->setPosition( imgLeft + 36, imgTop + 18 );
   rotateCW->addEventHandler( new RotateControlHandler( manip, -MOVE_OFFSET , 0 ) );
   mControlCanvas->addControl( rotateCW );
 
@@ -526,7 +526,7 @@ void GlobePlugin::setupControls()
   Control* rotateReset = new NavigationControl();
   rotateReset->setHeight( 22 );
   rotateReset->setWidth( 16 );
-  rotateReset->setPosition( imgLeft+20, imgTop+18 );
+  rotateReset->setPosition( imgLeft + 20, imgTop + 18 );
   rotateReset->addEventHandler( new RotateControlHandler( manip, 0, 0 ) );
   mControlCanvas->addControl( rotateReset );
 
@@ -534,14 +534,14 @@ void GlobePlugin::setupControls()
   Control* tiltUp = new NavigationControl();
   tiltUp->setHeight( 19 );
   tiltUp->setWidth( 24 );
-  tiltUp->setPosition( imgLeft+20, imgTop+0 );
+  tiltUp->setPosition( imgLeft + 20, imgTop + 0 );
   tiltUp->addEventHandler( new RotateControlHandler( manip, 0, MOVE_OFFSET ) );
   mControlCanvas->addControl( tiltUp );
 
   Control* tiltDown = new NavigationControl();
   tiltDown->setHeight( 19 );
   tiltDown->setWidth( 24 );
-  tiltDown->setPosition( imgLeft+16, imgTop+36 );
+  tiltDown->setPosition( imgLeft + 16, imgTop + 36 );
   tiltDown->addEventHandler( new RotateControlHandler( manip, 0, -MOVE_OFFSET ) );
   mControlCanvas->addControl( tiltDown );
 
@@ -557,36 +557,36 @@ void GlobePlugin::setupControls()
   Control* moveLeft = new NavigationControl();
   moveLeft->setHeight( 22 );
   moveLeft->setWidth( 20 );
-  moveLeft->setPosition( imgLeft+0, imgTop+18 );
+  moveLeft->setPosition( imgLeft + 0, imgTop + 18 );
   moveLeft->addEventHandler( new PanControlHandler( manip, -MOVE_OFFSET, 0 ) );
   mControlCanvas->addControl( moveLeft );
 
   Control* moveRight = new NavigationControl();
   moveRight->setHeight( 22 );
   moveRight->setWidth( 20 );
-  moveRight->setPosition( imgLeft+36, imgTop+18 );
+  moveRight->setPosition( imgLeft + 36, imgTop + 18 );
   moveRight->addEventHandler( new PanControlHandler( manip, MOVE_OFFSET, 0 ) );
   mControlCanvas->addControl( moveRight );
 
   Control* moveUp = new NavigationControl();
   moveUp->setHeight( 19 );
   moveUp->setWidth( 24 );
-  moveUp->setPosition( imgLeft+20, imgTop+0 );
+  moveUp->setPosition( imgLeft + 20, imgTop + 0 );
   moveUp->addEventHandler( new PanControlHandler( manip, 0, MOVE_OFFSET ) );
   mControlCanvas->addControl( moveUp );
 
   Control* moveDown = new NavigationControl();
   moveDown->setHeight( 19 );
   moveDown->setWidth( 24 );
-  moveDown->setPosition( imgLeft+16, imgTop+36 );
-  moveDown->addEventHandler(new PanControlHandler( manip, 0, -MOVE_OFFSET ) );
+  moveDown->setPosition( imgLeft + 16, imgTop + 36 );
+  moveDown->addEventHandler( new PanControlHandler( manip, 0, -MOVE_OFFSET ) );
   mControlCanvas->addControl( moveDown );
 
   //Zoom Reset
   Control* zoomHome = new NavigationControl();
   zoomHome->setHeight( 22 );
   zoomHome->setWidth( 16 );
-  zoomHome->setPosition( imgLeft+20, imgTop+18 );
+  zoomHome->setPosition( imgLeft + 20, imgTop + 18 );
   zoomHome->addEventHandler( new HomeControlHandler( manip ) );
   mControlCanvas->addControl( zoomHome );
 
@@ -594,40 +594,40 @@ void GlobePlugin::setupControls()
 
   osg::Image* backgroundImg = osgDB::readImageFile( imgDir + "/button-background.png" );
   ImageControl* backgroundGrp1 = new ImageControl( backgroundImg );
-  imgTop = imgTop+62;
-  backgroundGrp1->setPosition( imgLeft+12, imgTop );
+  imgTop = imgTop + 62;
+  backgroundGrp1->setPosition( imgLeft + 12, imgTop );
   mControlCanvas->addControl( backgroundGrp1 );
 
   osg::Image* plusImg = osgDB::readImageFile( imgDir + "/zoom-in.png" );
   ImageControl* zoomIn = new NavigationControl( plusImg );
-  zoomIn->setPosition( imgLeft+12+3, imgTop+3 );
+  zoomIn->setPosition( imgLeft + 12 + 3, imgTop + 3 );
   zoomIn->addEventHandler( new ZoomControlHandler( manip, 0, -MOVE_OFFSET ) );
   mControlCanvas->addControl( zoomIn );
 
   osg::Image* minusImg = osgDB::readImageFile( imgDir + "/zoom-out.png" );
   ImageControl* zoomOut = new NavigationControl( minusImg );
-  zoomOut->setPosition( imgLeft+12+3, imgTop+3+23+2 );
+  zoomOut->setPosition( imgLeft + 12 + 3, imgTop + 3 + 23 + 2 );
   zoomOut->addEventHandler( new ZoomControlHandler( manip, 0, MOVE_OFFSET ) );
   mControlCanvas->addControl( zoomOut );
 
   // -------
 
   ImageControl* backgroundGrp2 = new ImageControl( backgroundImg );
-  imgTop = imgTop+60;
-  backgroundGrp2->setPosition( imgLeft+12, imgTop );
+  imgTop = imgTop + 60;
+  backgroundGrp2->setPosition( imgLeft + 12, imgTop );
   mControlCanvas->addControl( backgroundGrp2 );
 
   //Zoom Reset
   osg::Image* homeImg = osgDB::readImageFile( imgDir + "/zoom-home.png" );
   ImageControl* home = new NavigationControl( homeImg );
-  home->setPosition( imgLeft+12+3, imgTop+2 );
+  home->setPosition( imgLeft + 12 + 3, imgTop + 2 );
   home->addEventHandler( new HomeControlHandler( manip ) );
   mControlCanvas->addControl( home );
 
   //refresh layers
   osg::Image* refreshImg = osgDB::readImageFile( imgDir + "/refresh-view.png" );
   ImageControl* refresh = new NavigationControl( refreshImg );
-  refresh->setPosition( imgLeft+12+3, imgTop+2+23+2 );
+  refresh->setPosition( imgLeft + 12 + 3, imgTop + 2 + 23 + 2 );
   refresh->addEventHandler( new RefreshControlHandler( this ) );
   mControlCanvas->addControl( refresh );
 

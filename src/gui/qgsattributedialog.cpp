@@ -159,9 +159,6 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     //transfers scroll area ownership so no need to call delete
     mypOuterLayout->addWidget( mypScrollArea );
 
-    QSpacerItem *mypSpacer = new QSpacerItem( 10, 10, QSizePolicy::Fixed, QSizePolicy::Expanding );
-    mypOuterLayout->addItem( mypSpacer );
-
     QFrame *mypInnerFrame = new QFrame();
     mypInnerFrame->setFrameShape( QFrame::NoFrame );
     mypInnerFrame->setFrameShadow( QFrame::Plain );
@@ -242,6 +239,9 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       if ( widget )
         widget->setFocus( Qt::OtherFocusReason );
     }
+
+    QSpacerItem *mypSpacer = new QSpacerItem( 10, 10, QSizePolicy::Fixed, QSizePolicy::Expanding );
+    mypInnerLayout->addItem( mypSpacer, mypInnerLayout->rowCount() + 1, 0 );
   }
   else
   {

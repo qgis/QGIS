@@ -2231,7 +2231,7 @@ bool QgsOracleProvider::createSpatialIndex()
                 .arg( quotedValue( mGeometryColumn ) ) )
        )
     {
-      QgsMessageLog::logMessage( tr( "Could not update metadata for %1.%2.\nSQL:%1\nError: %2" )
+      QgsMessageLog::logMessage( tr( "Could not update metadata for %1.%2.\nSQL:%3\nError: %4" )
                                  .arg( mTableName )
                                  .arg( mGeometryColumn )
                                  .arg( qry.lastQuery() )

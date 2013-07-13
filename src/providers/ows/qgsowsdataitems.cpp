@@ -152,7 +152,7 @@ void QgsOWSConnectionItem::deleteConnection()
 QgsOWSRootItem::QgsOWSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconOws.png" );
+  mIcon = QgsApplication::getThemeIcon( "mIconOws.svg" );
 
   populate();
 }

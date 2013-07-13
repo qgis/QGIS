@@ -326,6 +326,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
     {
       // reloading the fields might help next time around
       rewind();
+      P->loadFields();
       return false;
     }
   }
