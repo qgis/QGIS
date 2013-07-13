@@ -916,6 +916,7 @@ class geoprocessingThread( QThread ):
     inFeatA = QgsFeature()
     inFeatB = QgsFeature()
     outFeat = QgsFeature()
+    outFeat.setFields(fields)
     nElement = 0
 
     index = ftools_utils.createIndex( vproviderB )
@@ -955,8 +956,7 @@ class geoprocessingThread( QThread ):
                     gList = ftools_utils.getGeomType( geom.wkbType() )
                     if int_geom.wkbType() in gList:
                       outFeat.setGeometry( int_geom )
-                      atMapA.extend( atMapB )
-                      outFeat.setAttributes( atMapA )
+                      ftools_utils.combineVectorFeatures ( inFeatA, inFeatB, outFeat, fields )
                       writer.addFeature( outFeat )
                   except:
                     FEATURE_EXCEPT = False
@@ -987,8 +987,7 @@ class geoprocessingThread( QThread ):
                   gList = ftools_utils.getGeomType( geom.wkbType() )
                   if int_geom.wkbType() in gList:
                     outFeat.setGeometry( int_geom )
-                    atMapA.extend( atMapB )
-                    outFeat.setAttributes( atMapA )
+                    ftools_utils.combineVectorFeatures ( inFeatA, inFeatB, outFeat, fields )
                     writer.addFeature( outFeat )
                 except:
                   EATURE_EXCEPT = False
@@ -1027,8 +1026,7 @@ class geoprocessingThread( QThread ):
                     gList = ftools_utils.getGeomType( geom.wkbType() )
                     if int_geom.wkbType() in gList:
                       outFeat.setGeometry( int_geom )
-                      atMapA.extend( atMapB )
-                      outFeat.setAttributes( atMapA )
+                      ftools_utils.combineVectorFeatures ( inFeatA, inFeatB, outFeat, fields )
                       writer.addFeature( outFeat )
                   except:
                     FEATURE_EXCEPT = False
@@ -1061,8 +1059,7 @@ class geoprocessingThread( QThread ):
                   gList = ftools_utils.getGeomType( geom.wkbType() )
                   if int_geom.wkbType() in gList:
                     outFeat.setGeometry( int_geom )
-                    atMapA.extend( atMapB )
-                    outFeat.setAttributes( atMapA )
+                    ftools_utils.combineVectorFeatures ( inFeatA, inFeatB, outFeat, fields )
                     writer.addFeature( outFeat )
                 except:
                   FEATURE_EXCEPT = False

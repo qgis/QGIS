@@ -70,6 +70,17 @@ def convertFieldNameType( inName ):
         return "double"
     else:
         return "string"
+# combine the common fields of features in a third feature.
+# the field value of feature B has priority on feature A
+def combineVectorFeatures( featA, featB, featC, commomFields ):
+  aFields = featA.fields()
+  bFields = featB.fields()
+  for field in commomFields:
+    fname = field.name()
+    if field in aFields:
+      featC.setAttribute ( fname, featA.attribute ( fname ) )
+    if field in bFields:
+      featC.setAttribute ( fname, featB.attribute ( fname ) )
 
 # From two input field maps, create single field map
 def combineVectorFields( layerA, layerB ):
