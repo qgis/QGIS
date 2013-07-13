@@ -67,9 +67,12 @@ class SpatiaLiteDBConnector(DBConnector):
 		try:
 			c = self._get_cursor()
 			self._execute(c, u"SELECT CheckSpatialMetaData()")
-			self.has_geometry_columns = c.fetchone()[0] == 1
+			v = c.fetchone()[0]
+			self.has_geometry_columns = v == 1 or v == 3
+			self.has_spatialite4 = v == 3
 		except Exception, e:
 			self.has_geometry_columns = False
+			self.has_spatialite4 = False
 
 		self.has_geometry_columns_access = self.has_geometry_columns
 		return self.has_geometry_columns
@@ -206,11 +209,31 @@ class SpatiaLiteDBConnector(DBConnector):
 
 		c = self._get_cursor()
 
+		if self.has_spatialite4:
+			cols = """CASE geometry_type % 10
+				  WHEN 1 THEN 'POINT'
+				  WHEN 2 THEN 'LINESTRING'
+				  WHEN 3 THEN 'POLYGON'
+				  WHEN 4 THEN 'MULTIPOINT'
+				  WHEN 5 THEN 'MULTILINESTRING'
+				  WHEN 6 THEN 'MULTIPOLYGON'
+				  WHEN 7 THEN 'GEOMETRYCOLLECTION'
+				  END AS gtype,
+				  CASE geometry_type / 1000
+				  WHEN 0 THEN 'XY'
+				  WHEN 1 THEN 'XYZ'
+				  WHEN 2 THEN 'XYM'
+				  WHEN 3 THEN 'XYZM'
+				  ELSE NULL
+				  END AS coord_dimension"""
+		else:
+			cols = "g.type,g.coord_dimension"
+
 		# get geometry info from geometry_columns if exists
-		sql = u"""SELECT m.name, m.type = 'view', g.f_table_name, g.f_geometry_column, g.type, g.coord_dimension, g.srid
+		sql = u"""SELECT m.name, m.type = 'view', g.f_table_name, g.f_geometry_column, %s, g.srid
 						FROM sqlite_master AS m JOIN geometry_columns AS g ON upper(m.name) = upper(g.f_table_name)
 						WHERE m.type in ('table', 'view')
-						ORDER BY m.name, g.f_geometry_column"""
+						ORDER BY m.name, g.f_geometry_column""" % cols
 
 		self._execute(c, sql)
 
