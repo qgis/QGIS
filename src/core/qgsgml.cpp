@@ -113,7 +113,7 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
                               .arg( XML_ErrorString( errorCode ) )
                               .arg( XML_GetCurrentLineNumber( p ) )
                               .arg( XML_GetCurrentColumnNumber( p ) );
-        QgsMessageLog::instance()->logMessage( errorString, tr( "WFS" ) );
+        QgsMessageLog::logMessage( errorString, tr( "WFS" ) );
       }
     }
     QCoreApplication::processEvents();

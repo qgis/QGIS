@@ -93,7 +93,7 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
   if ( describeFeatureType( uri, mGeometryAttribute, mFields, mWKBType ) )
   {
     mValid = false;
-    QgsMessageLog::instance()->logMessage( tr( "DescribeFeatureType failed for url %1" ).arg( uri ), tr( "WFS" ) );
+    QgsMessageLog::logMessage( tr( "DescribeFeatureType failed for url %1" ).arg( uri ), tr( "WFS" ) );
     return;
   }
 
@@ -789,12 +789,14 @@ int QgsWFSProvider::describeFeatureTypeGET( const QString& uri, QString& geometr
   }
 
   mNetworkRequestFinished = false;
+
   QUrl describeFeatureUrl( uri );
   describeFeatureUrl.removeQueryItem( "SRSNAME" );
   describeFeatureUrl.removeQueryItem( "REQUEST" );
   describeFeatureUrl.addQueryItem( "REQUEST", "DescribeFeatureType" );
   QNetworkRequest request( describeFeatureUrl.toString() );
   QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
+
   connect( reply, SIGNAL( finished() ), this, SLOT( networkRequestFinished() ) );
   while ( !mNetworkRequestFinished )
   {
@@ -814,7 +816,7 @@ int QgsWFSProvider::describeFeatureTypeGET( const QString& uri, QString& geometr
   if ( readAttributesFromSchema( describeFeatureDocument,
                                  geometryAttribute, fields, geomType ) != 0 )
   {
-    QgsDebugMsg( QString( "FAILED: readAttributesFromSchema" ) );
+    QgsDebugMsg( "FAILED: readAttributesFromSchema" );
     return 3;
   }
 
@@ -1511,8 +1513,6 @@ void QgsWFSProvider::getLayerCapabilities()
   }
   mNetworkRequestFinished = false;
 
-
-  //get capabilities document
   QString uri = dataSourceUri();
   uri.replace( QString( "GetFeature" ), QString( "GetCapabilities" ) );
   QNetworkRequest request( uri );
@@ -1523,6 +1523,7 @@ void QgsWFSProvider::getLayerCapabilities()
   {
     QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WFS_THRESHOLD );
   }
+
   QByteArray response = reply->readAll();
   reply->deleteLater();
 
@@ -1542,11 +1543,7 @@ void QgsWFSProvider::getLayerCapabilities()
     return;
   }
 
-  QDomElement operationsElem = featureTypeListElem.firstChildElement( "Operations" );
-  if ( !operationsElem.isNull() )
-  {
-    appendSupportedOperations( operationsElem, capabilities );
-  }
+  appendSupportedOperations( featureTypeListElem.firstChildElement( "Operations" ), capabilities );
 
   //find the <FeatureType> for this layer
   QString thisLayerName = parameterFromUrl( "typename" );

@@ -1482,7 +1482,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
 
         QDomElement mesElem = doc.createElement( "Message" );
         QStringList mesErrors;
-        mesErrors << QString( "ERROR: %n feature(s) not added." ).arg( inFeatList.size() );
+        mesErrors << QString( "ERROR: %1 feature(s) not added." ).arg( inFeatList.size() );
         if ( provider->hasErrors() )
         {
           mesErrors << "\n  Provider errors:" << provider->errors();
