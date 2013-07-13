@@ -1055,24 +1055,27 @@ void QgsWmsProvider::tileReplyFinished()
   }
 #endif
 
-  QNetworkCacheMetaData cmd = QgsNetworkAccessManager::instance()->cache()->metaData( reply->request().url() );
-
-  QNetworkCacheMetaData::RawHeaderList hl;
-  foreach ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
+  if ( QgsNetworkAccessManager::instance()->cache() )
   {
-    if ( h.first != "Cache-Control" )
-      hl.append( h );
-  }
-  cmd.setRawHeaders( hl );
+    QNetworkCacheMetaData cmd = QgsNetworkAccessManager::instance()->cache()->metaData( reply->request().url() );
 
-  QgsDebugMsg( QString( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
-  if ( cmd.expirationDate().isNull() )
-  {
-    QSettings s;
-    cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( "/qgis/defaultTileExpiry", "24" ).toInt() * 60 * 60 ) );
-  }
+    QNetworkCacheMetaData::RawHeaderList hl;
+    foreach ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
+    {
+      if ( h.first != "Cache-Control" )
+        hl.append( h );
+    }
+    cmd.setRawHeaders( hl );
 
-  QgsNetworkAccessManager::instance()->cache()->updateMetaData( cmd );
+    QgsDebugMsg( QString( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
+    if ( cmd.expirationDate().isNull() )
+    {
+      QSettings s;
+      cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( "/qgis/defaultTileExpiry", "24" ).toInt() * 60 * 60 ) );
+    }
+
+    QgsNetworkAccessManager::instance()->cache()->updateMetaData( cmd );
+  }
 
   int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ) ).toInt();
   int tileNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ) ).toInt();
