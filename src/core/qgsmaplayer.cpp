@@ -155,7 +155,6 @@ bool QgsMapLayer::draw( QgsRenderContext& rendererContext )
 void QgsMapLayer::drawLabels( QgsRenderContext& rendererContext )
 {
   Q_UNUSED( rendererContext );
-  // QgsDebugMsg("entered.");
 }
 
 bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
@@ -411,7 +410,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   readCustomProperties( layerElement );
 
   return true;
-} // void QgsMapLayer::readXML
+} // bool QgsMapLayer::readLayerXML
 
 
 bool QgsMapLayer::readXml( const QDomNode& layer_node )
