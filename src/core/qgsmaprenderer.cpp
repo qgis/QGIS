@@ -958,6 +958,12 @@ void QgsMapRenderer::updateFullExtent()
       QgsDebugMsg( "Updating extent using " + lyr->name() );
       QgsDebugMsg( "Input extent: " + lyr->extent().toString() );
 
+      if ( lyr->extent().isEmpty() )
+      {
+          it++;
+          continue;
+      }
+
       // Layer extents are stored in the coordinate system (CS) of the
       // layer. The extent must be projected to the canvas CS
       QgsRectangle extent = layerExtentToOutputExtent( lyr, lyr->extent() );
