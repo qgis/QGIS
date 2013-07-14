@@ -1423,9 +1423,11 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
           QDomNodeList featNodes = actionElem.childNodes();
           for ( int l = 0; l < featNodes.count(); l++ )
           {
-            // Create feature for this layer
-            QgsFeature* f = new QgsFeature();
+            // Add the feature to the layer
+            // and store it to put it's Feature Id in the response
+            inFeatList << QgsFeature( fields );
 
+            // Create feature for this layer
             QDomElement featureElem = featNodes.at( l ).toElement();
 
             QDomNode currentAttributeChild = featureElem.firstChild();
@@ -1447,23 +1449,21 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
                   const QgsField& field = fields[fieldMapIt.value()];
                   QString attrValue = currentAttributeElement.text();
                   int attrType = field.type();
-                  if ( attrType == 2 )
-                    f->setAttribute( fieldMapIt.value(), attrValue.toInt() );
-                  else if ( attrType == 6 )
-                    f->setAttribute( fieldMapIt.value(), attrValue.toDouble() );
+                  QgsDebugMsg( QString( "attr: name=%1 idx=%2 value=%3" ).arg( attrName ).arg( fieldMapIt.value() ).arg( attrValue ) );
+                  if ( attrType == QVariant::Int )
+                    inFeatList.last().setAttribute( fieldMapIt.value(), attrValue.toInt() );
+                  else if ( attrType == QVariant::Double )
+                    inFeatList.last().setAttribute( fieldMapIt.value(), attrValue.toDouble() );
                   else
-                    f->setAttribute( fieldMapIt.value(), attrValue );
+                    inFeatList.last().setAttribute( fieldMapIt.value(), attrValue );
                 }
                 else //a geometry attribute
                 {
-                  f->setGeometry( QgsOgcUtils::geometryFromGML( currentAttributeElement ) );
+                  inFeatList.last().setGeometry( QgsOgcUtils::geometryFromGML( currentAttributeElement ) );
                 }
               }
               currentAttributeChild = currentAttributeChild.nextSibling();
             }
-            // Add the feature to th layer
-            // and store it to put it's Feature Id in the response
-            inFeatList.append( *f );
           }
         }
       }
