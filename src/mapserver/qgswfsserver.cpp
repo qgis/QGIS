@@ -1348,6 +1348,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
       // Commit the changes of the update elements
       if ( !layer->commitChanges() )
       {
+        QgsDebugMsg( QString( "update errors:\n  %1" ).arg( layer->commitErrors().join( "\n  " ) ) );
         QDomElement trElem = doc.createElement( "TransactionResult" );
         QDomElement stElem = doc.createElement( "Status" );
         QDomElement successElem = doc.createElement( "PARTIAL" );
@@ -1384,6 +1385,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
       // Commit the changes of the delete elements
       if ( !layer->commitChanges() )
       {
+        QgsDebugMsg( QString( "delete errors:\n  %1" ).arg( layer->commitErrors().join( "\n  " ) ) );
         QDomElement trElem = doc.createElement( "TransactionResult" );
         QDomElement stElem = doc.createElement( "Status" );
         QDomElement successElem = doc.createElement( "PARTIAL" );
@@ -1401,8 +1403,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
 
         return resp;
       }
-      // Start the insert transaction
-      layer->startEditing();
+
       // Store the inserted features
       QgsFeatureList inFeatList;
       if ( cap & QgsVectorDataProvider::AddFeatures )
@@ -1466,7 +1467,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
           }
         }
       }
-      // Commit the changes of the insert elements
+      // add the features
       if ( !provider->addFeatures( inFeatList ) )
       {
         QDomElement trElem = doc.createElement( "TransactionResult" );
@@ -1488,7 +1489,12 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
           mesErrors << "\n  Provider errors:" << provider->errors();
           provider->clearErrors();
         }
-        mesElem.appendChild( doc.createTextNode( layer->commitErrors().join( "\n  " ) ) );
+        else
+        {
+          mesErrors << "\n  Provider didn't report any errors:";
+        }
+        QgsDebugMsg( QString( "add errors:\n  %1" ).arg( mesErrors.join( "\n  " ) ) );
+        mesElem.appendChild( doc.createTextNode( mesErrors.join( "\n  " ) ) );
         trElem.appendChild( mesElem );
 
         return resp;

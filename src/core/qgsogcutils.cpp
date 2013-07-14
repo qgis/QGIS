@@ -20,7 +20,9 @@ QgsGeometry* QgsOgcUtils::geometryFromGML( const QDomNode& geometryNode )
   QDomElement geometryTypeElement = geometryNode.toElement();
   QString geomType = geometryTypeElement.tagName();
 
-  if ( !( geomType == "Point" || geomType == "LineString" || geomType == "Polygon" || geomType == "MultiPoint" || geomType == "MultiLineString" || geomType == "MultiPolygon" || geomType == "Box" || geomType == "Envelope" ) )
+  if ( !( geomType == "Point" || geomType == "LineString" || geomType == "Polygon" ||
+          geomType == "MultiPoint" || geomType == "MultiLineString" || geomType == "MultiPolygon" ||
+          geomType == "Box" || geomType == "Envelope" ) )
   {
     QDomNode geometryChild = geometryNode.firstChild();
     if ( geometryChild.isNull() )
@@ -31,7 +33,9 @@ QgsGeometry* QgsOgcUtils::geometryFromGML( const QDomNode& geometryNode )
     geomType = geometryTypeElement.tagName();
   }
 
-  if ( !( geomType == "Point" || geomType == "LineString" || geomType == "Polygon" || geomType == "MultiPoint" || geomType == "MultiLineString" || geomType == "MultiPolygon" || geomType == "Box" || geomType == "Envelope" ) )
+  if ( !( geomType == "Point" || geomType == "LineString" || geomType == "Polygon" ||
+          geomType == "MultiPoint" || geomType == "MultiLineString" || geomType == "MultiPolygon" ||
+          geomType == "Box" || geomType == "Envelope" ) )
     return 0;
 
   if ( geomType == "Point" )
@@ -525,7 +529,6 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement& geo
   if ( nLines < 1 )
     return 0;
 
-
   //calculate the required wkb size
   int size = ( lineCoordinates.size() + 1 ) * ( 1 + 2 * sizeof( int ) );
   for ( std::list<std::list<QgsPoint> >::const_iterator it = lineCoordinates.begin(); it != lineCoordinates.end(); ++it )
@@ -560,9 +563,8 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement& geo
     for ( std::list<QgsPoint>::const_iterator iter = it->begin(); iter != it->end(); ++iter )
     {
       x = iter->x();
-      //qWarning("x is: " + QString::number(x));
       y = iter->y();
-      //qWarning("y is: " + QString::number(y));
+      // QgsDebugMsg( QString( "x, y is %1,%2" ).arg( x, 'f' ).arg( y, 'f' ) );
       memcpy( &( wkb )[wkbPosition], &x, sizeof( double ) );
       wkbPosition += sizeof( double );
       memcpy( &( wkb )[wkbPosition], &y, sizeof( double ) );

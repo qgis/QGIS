@@ -49,6 +49,8 @@ static const QString TEXT_PROVIDER_DESCRIPTION = "WFS data provider";
 
 static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
+static const QString OGC_NAMESPACE = "http://www.opengis.net/ogc";
+static const QString OWS_NAMESPACE = "http://www.opengis.net/ows";
 
 QgsWFSProvider::QgsWFSProvider( const QString& uri )
     : QgsVectorDataProvider( uri )
@@ -332,7 +334,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
   for ( ; featureIt != flist.end(); ++featureIt )
   {
     //Insert element
-    QDomElement insertElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Insert" );
+    QDomElement insertElem = transactionDoc.createElementNS( WFS_NAMESPACE, "Insert" );
     transactionElem.appendChild( insertElem );
 
     QDomElement featureElem = transactionDoc.createElementNS( mWfsNamespace, tname );
@@ -424,9 +426,9 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
   QDomElement transactionElem = createTransactionElement( transactionDoc );
   transactionDoc.appendChild( transactionElem );
   //delete element
-  QDomElement deleteElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Delete" );
+  QDomElement deleteElem = transactionDoc.createElementNS( WFS_NAMESPACE, "Delete" );
   deleteElem.setAttribute( "typeName", tname );
-  QDomElement filterElem = transactionDoc.createElementNS( "http://www.opengis.net/ogc", "Filter" );
+  QDomElement filterElem = transactionDoc.createElementNS( OGC_NAMESPACE, "Filter" );
 
 
   QgsFeatureIds::const_iterator idIt = id.constBegin();
@@ -438,7 +440,7 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
     {
       continue;
     }
-    QDomElement featureIdElem = transactionDoc.createElementNS( "http://www.opengis.net/ogc", "FeatureId" );
+    QDomElement featureIdElem = transactionDoc.createElementNS( OGC_NAMESPACE, "FeatureId" );
     featureIdElem.setAttribute( "fid", fidIt.value() );
     filterElem.appendChild( featureIdElem );
   }
@@ -502,23 +504,23 @@ bool QgsWFSProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       continue;
     }
 
-    QDomElement updateElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Update" );
+    QDomElement updateElem = transactionDoc.createElementNS( WFS_NAMESPACE, "Update" );
     updateElem.setAttribute( "typeName", tname );
     //Property
-    QDomElement propertyElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Property" );
-    QDomElement nameElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Name" );
+    QDomElement propertyElem = transactionDoc.createElementNS( WFS_NAMESPACE, "Property" );
+    QDomElement nameElem = transactionDoc.createElementNS( WFS_NAMESPACE, "Name" );
     QDomText nameText = transactionDoc.createTextNode( mGeometryAttribute );
     nameElem.appendChild( nameText );
     propertyElem.appendChild( nameElem );
-    QDomElement valueElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Value" );
+    QDomElement valueElem = transactionDoc.createElementNS( WFS_NAMESPACE, "Value" );
     QDomElement gmlElem = QgsOgcUtils::geometryToGML( &geomIt.value(), transactionDoc );
     valueElem.appendChild( gmlElem );
     propertyElem.appendChild( valueElem );
     updateElem.appendChild( propertyElem );
 
     //filter
-    QDomElement filterElem = transactionDoc.createElementNS( "http://www.opengis.net/ogc", "Filter" );
-    QDomElement featureIdElem = transactionDoc.createElementNS( "http://www.opengis.net/ogc", "FeatureId" );
+    QDomElement filterElem = transactionDoc.createElementNS( OGC_NAMESPACE, "Filter" );
+    QDomElement featureIdElem = transactionDoc.createElementNS( OGC_NAMESPACE, "FeatureId" );
     featureIdElem.setAttribute( "fid", fidIt.value() );
     filterElem.appendChild( featureIdElem );
     updateElem.appendChild( filterElem );
@@ -589,21 +591,21 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       continue;
     }
 
-    QDomElement updateElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Update" );
+    QDomElement updateElem = transactionDoc.createElementNS( WFS_NAMESPACE, "Update" );
     updateElem.setAttribute( "typeName", tname );
 
     QgsAttributeMap::const_iterator attMapIt = attIt.value().constBegin();
     for ( ; attMapIt != attIt.value().constEnd(); ++attMapIt )
     {
       QString fieldName = mFields.at( attMapIt.key() ).name();
-      QDomElement propertyElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Property" );
+      QDomElement propertyElem = transactionDoc.createElementNS( WFS_NAMESPACE, "Property" );
 
-      QDomElement nameElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Name" );
+      QDomElement nameElem = transactionDoc.createElementNS( WFS_NAMESPACE, "Name" );
       QDomText nameText = transactionDoc.createTextNode( fieldName );
       nameElem.appendChild( nameText );
       propertyElem.appendChild( nameElem );
 
-      QDomElement valueElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Value" );
+      QDomElement valueElem = transactionDoc.createElementNS( WFS_NAMESPACE, "Value" );
       QDomText valueText = transactionDoc.createTextNode( attMapIt.value().toString() );
       valueElem.appendChild( valueText );
       propertyElem.appendChild( valueElem );
@@ -612,8 +614,8 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     }
 
     //Filter
-    QDomElement filterElem = transactionDoc.createElementNS( "http://www.opengis.net/ogc", "Filter" );
-    QDomElement featureIdElem = transactionDoc.createElementNS( "http://www.opengis.net/ogc", "FeatureId" );
+    QDomElement filterElem = transactionDoc.createElementNS( OGC_NAMESPACE, "Filter" );
+    QDomElement featureIdElem = transactionDoc.createElementNS( OGC_NAMESPACE, "FeatureId" );
     featureIdElem.setAttribute( "fid", fidIt.value() );
     filterElem.appendChild( featureIdElem );
     updateElem.appendChild( filterElem );
@@ -1407,7 +1409,7 @@ bool QgsWFSProvider::sendTransactionDocument( const QDomDocument& doc, QDomDocum
 
 QDomElement QgsWFSProvider::createTransactionElement( QDomDocument& doc ) const
 {
-  QDomElement transactionElem = doc.createElementNS( "http://www.opengis.net/wfs", "Transaction" );
+  QDomElement transactionElem = doc.createElementNS( WFS_NAMESPACE, "Transaction" );
   transactionElem.setAttribute( "version", "1.0.0" );
   transactionElem.setAttribute( "service", "WFS" );
   transactionElem.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
@@ -1437,13 +1439,13 @@ bool QgsWFSProvider::transactionSuccess( const QDomDocument& serverResponse ) co
     return false;
   }
 
-  QDomNodeList transactionResultList = documentElem.elementsByTagNameNS( "http://www.opengis.net/wfs", "TransactionResult" );
+  QDomNodeList transactionResultList = documentElem.elementsByTagNameNS( WFS_NAMESPACE, "TransactionResult" );
   if ( transactionResultList.size() < 1 )
   {
     return false;
   }
 
-  QDomNodeList statusList = transactionResultList.at( 0 ).toElement().elementsByTagNameNS( "http://www.opengis.net/wfs", "Status" );
+  QDomNodeList statusList = transactionResultList.at( 0 ).toElement().elementsByTagNameNS( WFS_NAMESPACE, "Status" );
   if ( statusList.size() < 1 )
   {
     return false;
@@ -1473,10 +1475,10 @@ QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument& serverRespon
     return ids;
   }
 
-  QDomNodeList insertResultList = rootElem.elementsByTagNameNS( "http://www.opengis.net/wfs", "InsertResult" );
+  QDomNodeList insertResultList = rootElem.elementsByTagNameNS( WFS_NAMESPACE, "InsertResult" );
   for ( int i = 0; i < insertResultList.size(); ++i )
   {
-    QDomNodeList featureIdList = insertResultList.at( i ).toElement().elementsByTagNameNS( "http://www.opengis.net/ogc", "FeatureId" );
+    QDomNodeList featureIdList = insertResultList.at( i ).toElement().elementsByTagNameNS( OGC_NAMESPACE, "FeatureId" );
     for ( int j = 0; j < featureIdList.size(); ++j )
     {
       QString fidString = featureIdList.at( j ).toElement().attribute( "fid" );
@@ -1640,21 +1642,40 @@ QGis::WkbType QgsWFSProvider::geomTypeFromPropertyType( QString attName, QString
   return ( QGis::WkbType ) i;
 }
 
-void QgsWFSProvider::handleException( const QDomDocument& serverResponse ) const
+void QgsWFSProvider::handleException( const QDomDocument& serverResponse )
 {
+  QgsDebugMsg( QString( "server response: %1" ).arg( serverResponse.toString() ) );
+
   QDomElement exceptionElem = serverResponse.documentElement();
-  if ( exceptionElem.isNull() || exceptionElem.tagName() != "ServiceExceptionReport" )
+  if ( exceptionElem.isNull() )
   {
+    pushError( QObject::tr( "empty response" ).arg( exceptionElem.tagName() ) );
     return;
   }
 
-  //possibly this class is used not in a gui application
-  if ( QApplication::topLevelWidgets().size() < 1 )
+  if ( exceptionElem.tagName() == "ServiceExceptionReport" )
   {
+    pushError( QObject::tr( "WFS service exception:%1" ).arg( exceptionElem.firstChildElement( "ServiceException" ).text() ) );
     return;
   }
-  QString message = exceptionElem.firstChildElement( "ServiceException" ).text();
-  QMessageBox::critical( 0, tr( "Error" ), message );
+
+  if ( exceptionElem.tagName() == "WFS_TransactionResponse" )
+  {
+    pushError( QObject::tr( "unsuccessful service response: %1" ).arg( exceptionElem.firstChildElement( "TransactionResult" ).firstChildElement( "Message" ).text() ) );
+    return;
+  }
+
+  if ( exceptionElem.tagName() == "ExceptionReport" )
+  {
+    QDomElement exception = exceptionElem.firstChildElement( "Exception" );
+    pushError( QObject::tr( "WFS exception report (code=%1 text=%2)" )
+               .arg( exception.attribute( "exceptionCode", QObject::tr( "missing" ) ) )
+               .arg( exception.firstChildElement( "ExceptionText" ).text() )
+             );
+    return;
+  }
+
+  pushError( QObject::tr( "unhandled response: %1" ).arg( exceptionElem.tagName() ) );
 }
 
 QGISEXTERN QgsWFSProvider* classFactory( const QString *uri )
