@@ -2190,8 +2190,8 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
         result = mConnectionRO->PQexecPrepared( "getid", params );
         if ( result.PQresultStatus() != PGRES_TUPLES_OK )
         {
-          QgsDebugMsg( QString( "Exception thrown due to PQexecPrepared of 'getid' returning != PGRES_COMMAND_OK (%1 != expected %2)" )
-                       .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ) );
+          QgsDebugMsg( QString( "Exception thrown due to PQexecPrepared of 'getid' returning != PGRES_TUPLES_OK (%1 != expected %2)" )
+                       .arg( result.PQresultStatus() ).arg( PGRES_TUPLES_OK ) );
           throw PGException( result );
         }
         // TODO: watch out for NULL , handle somehow
@@ -2207,7 +2207,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       int expected_status = ( mSpatialColType == sctTopoGeometry ) ? PGRES_TUPLES_OK : PGRES_COMMAND_OK;
       if ( result.PQresultStatus() != expected_status )
       {
-        QgsDebugMsg( QString( "Exception thrown due to PQexecPrepared of 'getid' returning != PGRES_COMMAND_OK (%1 != expected %2)" )
+        QgsDebugMsg( QString( "Exception thrown due to PQexecPrepared of 'updatefeatures' returning %1 != expected %2" )
                      .arg( result.PQresultStatus() ).arg( expected_status ) );
         throw PGException( result );
       }

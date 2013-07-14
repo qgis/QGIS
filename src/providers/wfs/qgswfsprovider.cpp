@@ -1651,7 +1651,7 @@ void QgsWFSProvider::handleException( const QDomDocument& serverResponse )
   QDomElement exceptionElem = serverResponse.documentElement();
   if ( exceptionElem.isNull() )
   {
-    pushError( QObject::tr( "empty response" ).arg( exceptionElem.tagName() ) );
+    pushError( QObject::tr( "empty response" ) );
     return;
   }
 
