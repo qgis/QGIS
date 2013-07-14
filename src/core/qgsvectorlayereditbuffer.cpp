@@ -435,13 +435,14 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
     }
   }
 
-  if ( !success )
+  if ( !success && provider->hasErrors() )
   {
-    if ( provider->hasErrors() )
+    commitErrors << tr( "\n  Provider errors:" );
+    foreach ( QString e, provider->errors() )
     {
-      commitErrors << tr( "\n  Provider errors:" ) << provider->errors();
-      provider->clearErrors();
+      commitErrors << "    " + e.replace( "\n", "\n    " );
     }
+    provider->clearErrors();
   }
 
   return success;

@@ -5635,11 +5635,14 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
       case QMessageBox::Save:
         if ( !vlayer->commitChanges() )
         {
-          QMessageBox::information( 0,
-                                    tr( "Error" ),
-                                    tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
-                                    .arg( vlayer->name() )
-                                    .arg( vlayer->commitErrors().join( "\n  " ) ) );
+          QgsMessageViewer *mv = new QgsMessageViewer( this );
+          mv->setWindowTitle( tr( "Error" ) );
+          mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
+                                     .arg( vlayer->name() )
+                                     .arg( vlayer->commitErrors().join( "\n  " ) )
+                                   );
+          mv->exec();
+
           // Leave the in-memory editing state alone,
           // to give the user a chance to enter different values
           // and try the commit again later
@@ -5704,11 +5707,13 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
   if ( !vlayer->commitChanges() )
   {
     mSaveRollbackInProgress = false;
-    QMessageBox::information( 0,
-                              tr( "Error" ),
-                              tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
-                              .arg( vlayer->name() )
-                              .arg( vlayer->commitErrors().join( "\n  " ) ) );
+    QgsMessageViewer * mv = new QgsMessageViewer( this );
+    mv->setWindowTitle( tr( "Error" ) );
+    mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
+                               .arg( vlayer->name() )
+                               .arg( vlayer->commitErrors().join( "\n  " ) )
+                             );
+    mv->exec();
   }
 
   if ( leaveEditable )
