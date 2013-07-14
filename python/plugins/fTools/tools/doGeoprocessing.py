@@ -463,15 +463,24 @@ class geoprocessingThread( QThread ):
     GEOS_EXCEPT = True
     FEATURE_EXCEPT = True
     vproviderA = self.vlayerA.dataProvider()
+    #
+    outFeatFields = QgsFields()
+    if useField:
+      importedField = vproviderA.fields().at( self.myParam )
+      outFeatFields.append( importedField )
+      #
+      importedFieldName = importedField.name( )
+    else:
+      outIdField = QgsField( "hullGeneratedID", QVariant.String )
+      outFeatFields.append( outIdField )
     # creating fields
-    idField = QgsField("outID", QVariant.String)
     areaField = QgsField("area", QVariant.Double)
     perimField = QgsField("perim", QVariant.Double)
     # appending fields
-    outFeatFields = QgsFields()
-    outFeatFields.append(idField)
     outFeatFields.append(areaField)
     outFeatFields.append(perimField)
+    #
+    outFeatFields.extend( vproviderA.fields() )
     #
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, outFeatFields,
                                   QGis.WKBPolygon, vproviderA.crs() )
@@ -497,15 +506,14 @@ class geoprocessingThread( QThread ):
         self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
         self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         for i in unique:
-          hull = []
           first = True
-          outID = 0
+          hull = []
           for inFeat in selectionA:
             atMap = inFeat.attributes()
             idVar = atMap[ self.myParam ]
             if idVar == i:
               if first:
-                outID = idVar
+                firstFeature = QgsFeature( inFeat )
                 first = False
               inGeom = QgsGeometry( inFeat.geometry() )
               points = ftools_utils.extractPoints( inGeom )
@@ -518,7 +526,8 @@ class geoprocessingThread( QThread ):
               outGeom = tmpGeom.convexHull()
               outFeat.setGeometry( outGeom )
               (area, perim) = self.simpleMeasure( outGeom )
-              outFeat.setAttribute( "outID", outID )
+              for f in firstFeature.fields():
+                outFeat.setAttribute( f.name( ), firstFeature.attribute( f.name( ) ) )
               outFeat.setAttribute( "area", area )
               outFeat.setAttribute( "perim", perim )
               writer.addFeature( outFeat )
@@ -539,6 +548,12 @@ class geoprocessingThread( QThread ):
         try:
           outGeom = tmpGeom.convexHull()
           outFeat.setGeometry( outGeom )
+          (area, perim) = self.simpleMeasure( outGeom )
+          for f in inFeat.fields():
+            outFeat.setAttribute( f.name( ), inFeat.attribute( f.name( ) ) )
+          outFeat.setAttribute( "hullGeneratedID", 'hullPolygonGenerated' )
+          outFeat.setAttribute( "area", area )
+          outFeat.setAttribute( "perim", perim )
           writer.addFeature( outFeat )
         except:
           GEOS_EXCEPT = False
@@ -550,18 +565,16 @@ class geoprocessingThread( QThread ):
         nFeat = nFeat * len( unique )
         self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
         self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
-        for i in unique:
-          hull = []
-          first = True
-          outID = 0
 
+        for i in unique:
+          first = True
+          hull = []
           fitA = vproviderA.getFeatures()
           while fitA.nextFeature( inFeat ):
-            atMap = inFeat.attributes()
-            idVar = atMap[ self.myParam ]
+            idVar = inFeat.attribute( importedFieldName ) 
             if idVar == i:
               if first:
-                outID = idVar
+                firstFeature = QgsFeature( inFeat )
                 first = False
               inGeom = QgsGeometry( inFeat.geometry() )
               points = ftools_utils.extractPoints( inGeom )
@@ -574,7 +587,8 @@ class geoprocessingThread( QThread ):
               outGeom = tmpGeom.convexHull()
               outFeat.setGeometry( outGeom )
               (area, perim) = self.simpleMeasure( outGeom )
-              outFeat.setAttribute( "outID", outID )
+              for f in firstFeature.fields():
+                outFeat.setAttribute( f.name( ), firstFeature.attribute( f.name( ) ) )
               outFeat.setAttribute( "area", area )
               outFeat.setAttribute( "perim", perim )
               writer.addFeature( outFeat )
@@ -596,6 +610,12 @@ class geoprocessingThread( QThread ):
         try:
           outGeom = tmpGeom.convexHull()
           outFeat.setGeometry( outGeom )
+          (area, perim) = self.simpleMeasure( outGeom )
+          for f in inFeat.fields():
+            outFeat.setAttribute( f.name( ), inFeat.attribute( f.name( ) ) )
+          outFeat.setAttribute( "hullGeneratedID", 'hullPolygonGenerated' )
+          outFeat.setAttribute( "area", area )
+          outFeat.setAttribute( "perim", perim )
           writer.addFeature( outFeat )
         except:
           GEOS_EXCEPT = False
