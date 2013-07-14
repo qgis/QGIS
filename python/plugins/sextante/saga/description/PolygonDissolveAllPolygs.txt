@@ -1,0 +1,5 @@
+Polygon dissolve (all polygons)|Polygon Dissolve
+shapes_polygons
+ParameterVector|POLYGONS|Polygons|2|False
+ParameterBoolean|BND_KEEP|Keep inner boundaries|True
+OutputVector|DISSOLVED|Dissolved Polygons

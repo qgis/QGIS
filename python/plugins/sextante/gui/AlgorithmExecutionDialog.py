@@ -70,9 +70,12 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Close|QtGui.QDialogButtonBox.Ok)
+            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Close)
         self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
-
+        self.runButton = QtGui.QPushButton()
+        self.runButton.setText("Run")
+        self.buttonBox.addButton(self.runButton, QtGui.QDialogButtonBox.ActionRole)
+        self.runButton.clicked.connect(self.accept)
         self.scrollArea = QtGui.QScrollArea()
         if self.mainWidget:
             self.scrollArea.setWidget(self.mainWidget)
@@ -118,7 +121,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.verticalLayout.addWidget(self.progress)
         self.verticalLayout.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout)
-        self.buttonBox.accepted.connect(self.accept)
+        #self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.close)
         self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).clicked.connect(self.cancel)
         #~ QtCore.QMetaObject.connectSlotsByName(self)
@@ -207,7 +210,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             if msg:
                 QMessageBox.critical(self, "Unable to execute algorithm", msg)
                 return
-            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
+            self.runButton.setEnabled(False)
             self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(False)
             buttons = self.paramTable.iterateButtons
             self.iterateParam = None
@@ -321,7 +324,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.progressLabel.setText("")
         self.progress.setValue(100)
         #self.progress.setMaximum(100)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+        self.runButton.setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
 

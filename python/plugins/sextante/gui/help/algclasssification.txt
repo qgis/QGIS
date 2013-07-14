@@ -308,6 +308,8 @@ saga:polartocartesiancoordinates,USE_ORIGINAL_NAME,Domain specific/Cost analysis
 saga:polygon-lineintersection,USE_ORIGINAL_NAME,Vector/Geometry operations
 saga:polygoncentroids,USE_ORIGINAL_NAME,Vector/Polygons
 saga:polygondissolve,USE_ORIGINAL_NAME,Vector/Polygons
+saga:polygondissolvebyattribute,Polygon dissolve (by attribute),Vector/Polygons
+saga:polygondissolveallpolygons,Polygon dissolve (all polygons),Vector/Polygons
 saga:intersect,Polygon intersection,Vector/Polygons
 saga:difference,Polygon difference,Vector/Polygons
 saga:update,Polygon update,Vector/Polygons

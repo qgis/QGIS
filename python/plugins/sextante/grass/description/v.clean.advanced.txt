@@ -3,6 +3,6 @@ v.clean.advanced - Toolset for cleaning topology of vector map (Advanced).
 Vector (v.*)
 ParameterVector|input|Layer to clean|-1|False
 ParameterString|tool|Cleaning tools (comma separated)|break
-ParameterNumber|thresh|Threshold|None|None|0..1
+ParameterNumber|thresh|Threshold|None|None|0.0001
 OutputVector|output|Cleaned vector layer
 OutputVector|error|Errors layer
