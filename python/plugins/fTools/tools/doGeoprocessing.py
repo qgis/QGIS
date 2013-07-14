@@ -468,15 +468,14 @@ class geoprocessingThread( QThread ):
     if useField:
       importedField = vproviderA.fields().at( self.myParam )
       importedFieldName = importedField.name( )
-      outFeatFields.append( importedField )
+    #
+    outFeatFields.extend( vproviderA.fields() )
     # creating area and perimeter fields
     areaField = QgsField("area", QVariant.Double)
     perimField = QgsField("perim", QVariant.Double)
     # appending fields
     outFeatFields.append(areaField)
     outFeatFields.append(perimField)
-    #
-    outFeatFields.extend( vproviderA.fields() )
     #
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, outFeatFields,
                                   QGis.WKBPolygon, vproviderA.crs() )
