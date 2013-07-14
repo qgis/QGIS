@@ -383,13 +383,14 @@ class geoprocessingThread( QThread ):
           inGeom = QgsGeometry( inFeat.geometry() )
           try:
             outGeom = inGeom.buffer( float( value ), self.mySegments )
-            try:
-              outFeat.setGeometry( outGeom )
-              outFeat.setAttributes( atMap )
-              writer.addFeature( outFeat )
-            except:
-              FEATURE_EXCEPT = False
-              continue
+            if not outGeom.isGeosEmpty():
+              try:
+                outFeat.setGeometry( outGeom )
+                outFeat.setAttributes( atMap )
+                writer.addFeature( outFeat )
+              except:
+                FEATURE_EXCEPT = False
+                continue
           except:
             GEOS_EXCEPT = False
             continue
@@ -444,13 +445,14 @@ class geoprocessingThread( QThread ):
           inGeom = QgsGeometry( inFeat.geometry() )
           try:
             outGeom = inGeom.buffer( float( value ), self.mySegments )
-            try:
-              outFeat.setGeometry( outGeom )
-              outFeat.setAttributes( atMap )
-              writer.addFeature( outFeat )
-            except:
-              FEATURE_EXCEPT = False
-              continue
+            if not outGeom.isGeosEmpty():
+              try:
+                outFeat.setGeometry( outGeom )
+                outFeat.setAttributes( atMap )
+                writer.addFeature( outFeat )
+              except:
+                FEATURE_EXCEPT = False
+                continue
           except:
             GEOS_EXCEPT = False
             continue
