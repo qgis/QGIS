@@ -515,6 +515,7 @@ bool QgsWFSProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     propertyElem.appendChild( nameElem );
     QDomElement valueElem = transactionDoc.createElementNS( WFS_NAMESPACE, "Value" );
     QDomElement gmlElem = QgsOgcUtils::geometryToGML( &geomIt.value(), transactionDoc );
+    gmlElem.setAttribute( "srsName", crs().authid() );
     valueElem.appendChild( gmlElem );
     propertyElem.appendChild( valueElem );
     updateElem.appendChild( propertyElem );
