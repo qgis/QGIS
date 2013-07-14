@@ -364,15 +364,16 @@ class SagaAlgorithm(GeoAlgorithm):
                 layer = QGisLayers.getObjectFromUri(value)
                 if layer is not None and layer.bandCount() > 1:
                         return ("Input layer " + str(layer.name()) + " has more than one band.\n"
-                                + "Multiband layers are not supported by SAGA")
-
+                                + "Multiband layers are not supported by SAGA")    
 
     def helpFile(self):
         return  os.path.join(os.path.dirname(__file__), "help", self.name.replace(" ", "") + ".html")
 
 
-    def commandLineName(self):
-        name = self.provider.getName().lower() + ":" + self.cmdname.lower()
-        validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
-        name = ''.join(c for c in name if c in validChars)
-        return name
+    #===========================================================================
+    # def commandLineName(self):
+    #    name = self.provider.getName().lower() + ":" + self.cmdname.lower()
+    #    validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
+    #    name = ''.join(c for c in name if c in validChars)
+    #    return name
+    #===========================================================================
