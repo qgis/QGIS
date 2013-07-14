@@ -4241,6 +4241,40 @@ void QgisApp::labelingFontNotFound( QgsVectorLayer* vlayer, const QString& fontf
   messageBar()->pushWidget( fontMsg, QgsMessageBar::WARNING );
 }
 
+void QgisApp::commitError( QgsVectorLayer* vlayer )
+{
+  QWidget *errorMsg = QgsMessageBar::createMessage(
+                        tr( "Commit errors" ),
+                        tr( "Could not commit changes to layer %1" ).arg( vlayer->name() ),
+                        QgsApplication::getThemeIcon( "/mIconWarn.png" ),
+                        messageBar() );
+
+  QgsMessageViewer *mv = new QgsMessageViewer( errorMsg );
+  mv->setWindowTitle( tr( "Commit errors" ) );
+  mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() )
+                             + "\n\n"
+                             + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( "\n  " ) )
+                           );
+
+  // store pointer to vlayer in data of QAction
+  QAction *act = new QAction( errorMsg );
+  act->setData( QVariant( QMetaType::QObjectStar, &vlayer ) );
+  act->setText( tr( "Show more" ) );
+
+  QToolButton *showMore = new QToolButton( errorMsg );
+  showMore->setStyleSheet( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" );
+  showMore->setCursor( Qt::PointingHandCursor );
+  showMore->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+  showMore->addAction( act );
+  showMore->setDefaultAction( act );
+
+  connect( showMore, SIGNAL( triggered( QAction* ) ), mv, SLOT( exec() ) );
+  errorMsg->layout()->addWidget( showMore );
+
+  // no timeout set, since notice needs attention and is only shown first time layer is labeled
+  messageBar()->pushWidget( errorMsg, QgsMessageBar::WARNING );
+}
+
 void QgisApp::labelingDialogFontNotFound( QAction* act )
 {
   if ( !act )
@@ -5635,14 +5669,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
       case QMessageBox::Save:
         if ( !vlayer->commitChanges() )
         {
-          QgsMessageViewer *mv = new QgsMessageViewer( this );
-          mv->setWindowTitle( tr( "Error" ) );
-          mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
-                                     .arg( vlayer->name() )
-                                     .arg( vlayer->commitErrors().join( "\n  " ) )
-                                   );
-          mv->exec();
-
+          commitError( vlayer );
           // Leave the in-memory editing state alone,
           // to give the user a chance to enter different values
           // and try the commit again later
@@ -5707,13 +5734,7 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
   if ( !vlayer->commitChanges() )
   {
     mSaveRollbackInProgress = false;
-    QgsMessageViewer * mv = new QgsMessageViewer( this );
-    mv->setWindowTitle( tr( "Error" ) );
-    mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
-                               .arg( vlayer->name() )
-                               .arg( vlayer->commitErrors().join( "\n  " ) )
-                             );
-    mv->exec();
+    commitError( vlayer );
   }
 
   if ( leaveEditable )
@@ -6243,7 +6264,6 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
   {
     mInfoBar->pushWidget( msgBar, QgsMessageBar::WARNING );
   }
-
 }
 
 void QgisApp::setLayerCRS()

@@ -1025,6 +1025,11 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void labelingFontNotFound( QgsVectorLayer* vlayer, const QString& fontfamily );
 
+    /** Alerts user when commit errors occured
+     * @note added in 2.0
+     */
+    void commitError( QgsVectorLayer* vlayer );
+
     /** Opens the labeling dialog for a layer when called from labelingFontNotFound alert
      * @note added in 1.9
      */
