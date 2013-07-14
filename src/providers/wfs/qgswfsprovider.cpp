@@ -365,6 +365,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
     QDomElement gmlElem = QgsOgcUtils::geometryToGML( featureIt->geometry(), transactionDoc );
     if ( !gmlElem.isNull() )
     {
+      gmlElem.setAttribute( "srsName", crs().authid() );
       geomElem.appendChild( gmlElem );
       featureElem.appendChild( geomElem );
     }
