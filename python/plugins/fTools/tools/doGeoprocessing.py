@@ -467,13 +467,9 @@ class geoprocessingThread( QThread ):
     outFeatFields = QgsFields()
     if useField:
       importedField = vproviderA.fields().at( self.myParam )
-      outFeatFields.append( importedField )
-      #
       importedFieldName = importedField.name( )
-    else:
-      outIdField = QgsField( "hullGeneratedID", QVariant.String )
-      outFeatFields.append( outIdField )
-    # creating fields
+      outFeatFields.append( importedField )
+    # creating area and perimeter fields
     areaField = QgsField("area", QVariant.Double)
     perimField = QgsField("perim", QVariant.Double)
     # appending fields
@@ -551,7 +547,6 @@ class geoprocessingThread( QThread ):
           (area, perim) = self.simpleMeasure( outGeom )
           for f in inFeat.fields():
             outFeat.setAttribute( f.name( ), inFeat.attribute( f.name( ) ) )
-          outFeat.setAttribute( "hullGeneratedID", 'hullPolygonGenerated' )
           outFeat.setAttribute( "area", area )
           outFeat.setAttribute( "perim", perim )
           writer.addFeature( outFeat )
@@ -613,7 +608,6 @@ class geoprocessingThread( QThread ):
           (area, perim) = self.simpleMeasure( outGeom )
           for f in inFeat.fields():
             outFeat.setAttribute( f.name( ), inFeat.attribute( f.name( ) ) )
-          outFeat.setAttribute( "hullGeneratedID", 'hullPolygonGenerated' )
           outFeat.setAttribute( "area", area )
           outFeat.setAttribute( "perim", perim )
           writer.addFeature( outFeat )
