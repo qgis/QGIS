@@ -15,8 +15,6 @@ from sextante.core.SextanteVectorWriter import SextanteVectorWriter
 # We get the actual object,
 layer = sextante.getobject(input)
 provider = layer.dataProvider()
-allAttrs = provider.attributeIndexes()
-provider.select( allAttrs )
 fields = provider.fields()
 writers = {}
 
@@ -43,7 +41,6 @@ for inFeat in feats:
     outFeat.setGeometry(inGeom)
     outFeat.setAttributes(atMap)
     writers[clazz].addFeature(outFeat)
-
 
 for writer in writers.values():
     del writer
