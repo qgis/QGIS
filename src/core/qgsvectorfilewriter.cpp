@@ -198,7 +198,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   }
 
   // create the data source
-  mDS = OGR_Dr_CreateDataSource( poDriver, TO8( vectorFileName ), options );
+  mDS = OGR_Dr_CreateDataSource( poDriver, TO8F( vectorFileName ), options );
 
   if ( options )
   {
@@ -1012,11 +1012,11 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
           poDriver = OGRGetDriverByName( drvName.toLocal8Bit().data() );
           if ( poDriver )
           {
-            OGRDataSourceH ds = OGR_Dr_CreateDataSource( poDriver, TO8( QString( "/vsimem/spatialitetest.sqlite" ) ), options );
+            OGRDataSourceH ds = OGR_Dr_CreateDataSource( poDriver, TO8F( QString( "/vsimem/spatialitetest.sqlite" ) ), options );
             if ( ds )
             {
               writableDrivers << "SpatiaLite";
-              OGR_Dr_DeleteDataSource( poDriver, TO8( QString( "/vsimem/spatialitetest.sqlite" ) ) );
+              OGR_Dr_DeleteDataSource( poDriver, TO8F( QString( "/vsimem/spatialitetest.sqlite" ) ) );
               OGR_DS_Destroy( ds );
             }
           }

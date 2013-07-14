@@ -26,9 +26,11 @@
 #include <ogr_srs_api.h>
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8(x) (x).toUtf8().constData()
+#define TO8(x)   (x).toUtf8().constData()
+#define TO8F(x)  (x).toUtf8().constData()
 #else
-#define TO8(x) (x).toLocal8Bit().constData()
+#define TO8(x)   (x).toLocal8Bit().constData()
+#define TO8F(x)  QFile::encodeName( x ).constData()
 #endif
 
 QgsRasterCalculator::QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
@@ -66,7 +68,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
     {
       return 2;
     }
-    GDALDatasetH inputDataset = GDALOpen( TO8( it->raster->source() ), GA_ReadOnly );
+    GDALDatasetH inputDataset = GDALOpen( TO8F( it->raster->source() ), GA_ReadOnly );
     if ( inputDataset == NULL )
     {
       return 2;
@@ -237,7 +239,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
   if ( p && p->wasCanceled() )
   {
     //delete the dataset without closing (because it is faster)
-    GDALDeleteDataset( outputDriver, mOutputFile.toLocal8Bit().data() );
+    GDALDeleteDataset( outputDriver, TO8F( mOutputFile ) );
     return 3;
   }
   GDALClose( outputDataset );
@@ -274,7 +276,7 @@ GDALDatasetH QgsRasterCalculator::openOutputFile( GDALDriverH outputDriver )
 {
   //open output file
   char **papszOptions = NULL;
-  GDALDatasetH outputDataset = GDALCreate( outputDriver, mOutputFile.toLocal8Bit().data(), mNumOutputColumns, mNumOutputRows, 1, GDT_Float32, papszOptions );
+  GDALDatasetH outputDataset = GDALCreate( outputDriver, TO8F( mOutputFile ), mNumOutputColumns, mNumOutputRows, 1, GDT_Float32, papszOptions );
   if ( outputDataset == NULL )
   {
     return outputDataset;
