@@ -170,7 +170,7 @@
         <file>themes/default/mActionDeleteSelected.svg</file>
         <file>themes/default/mActionDeleteVertex.png</file>
         <file>themes/default/mActionDeselectAll.svg</file>
-        <file>themes/default/mActionDraw.png</file>
+        <file>themes/default/mActionDraw.svg</file>
         <file>themes/default/mActionDuplicateLayer.svg</file>
         <file>themes/default/mActionDuplicateComposer.svg</file>
         <file>themes/default/mActionEditCopy.png</file>
@@ -199,7 +199,6 @@
         <file>themes/default/mActionHelpContents.svg</file>
         <file>themes/default/mActionHelpSponsors.png</file>
         <file>themes/default/mActionHideAllLayers.png</file>
-        <file>themes/default/mActionIdentify.png</file>
         <file>themes/default/mActionIdentify.svg</file>
         <file>themes/default/mActionIncreaseBrightness.svg</file>
         <file>themes/default/mActionIncreaseContrast.svg</file>
@@ -226,6 +225,7 @@
         <file>themes/default/mActionNewBookmark.png</file>
         <file>themes/default/mActionNewComposer.svg</file>
         <file>themes/default/mActionNewFolder.png</file>
+        <file>themes/default/mActionNewSpatiaLiteLayer.svg</file>
         <file>themes/default/mActionNewVectorLayer.svg</file>
         <file>themes/default/mActionNodeTool.png</file>
         <file>themes/default/mActionOffsetCurve.png</file>
@@ -287,14 +287,14 @@
         <file>themes/default/mActionUngroupItems.png</file>
         <file>themes/default/mActionUnselectAttributes.png</file>
         <file>themes/default/mActionWhatsThis.svg</file>
-        <file>themes/default/mActionZoomActual.png</file>
-        <file>themes/default/mActionZoomFullExtent.png</file>
-        <file>themes/default/mActionZoomIn.png</file>
-        <file>themes/default/mActionZoomLast.png</file>
-        <file>themes/default/mActionZoomNext.png</file>
-        <file>themes/default/mActionZoomOut.png</file>
-        <file>themes/default/mActionZoomToLayer.png</file>
-        <file>themes/default/mActionZoomToSelected.png</file>
+        <file>themes/default/mActionZoomActual.svg</file>
+        <file>themes/default/mActionZoomFullExtent.svg</file>
+        <file>themes/default/mActionZoomIn.svg</file>
+        <file>themes/default/mActionZoomLast.svg</file>
+        <file>themes/default/mActionZoomNext.svg</file>
+        <file>themes/default/mActionZoomOut.svg</file>
+        <file>themes/default/mActionZoomToLayer.svg</file>
+        <file>themes/default/mActionZoomToSelected.svg</file>
         <file>themes/default/mIconAutoPlacementSettings.svg</file>
         <file>themes/default/mIconClear.svg</file>
         <file>themes/default/mIconClose.png</file>
@@ -365,7 +365,7 @@
         <file>themes/default/mIconWms.svg</file>
         <file>themes/default/mIconWmsLayer.png</file>
         <file>themes/default/mIconZip.png</file>
-        <file>themes/default/mIconZoom.png</file>
+        <file>themes/default/mIconZoom.svg</file>
         <file>themes/default/mMapserverExport.png</file>
         <file>themes/default/north_arrow.png</file>
         <file>themes/default/pie-chart.png</file>
@@ -435,7 +435,6 @@
         <file>flags/bs_BA.png</file>
         <file>flags/eu.png</file>
         <file>flags/bn.png</file>
-        <file>themes/default/mActionNewSpatiaLiteLayer.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
