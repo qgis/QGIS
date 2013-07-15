@@ -111,18 +111,21 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
 
   //add the new count, sum, mean fields to the provider
   QList<QgsField> newFieldList;
-  QgsField countField( mAttributePrefix + "count", QVariant::Double, "double precision" );
-  QgsField sumField( mAttributePrefix + "sum", QVariant::Double, "double precision" );
-  QgsField meanField( mAttributePrefix + "mean", QVariant::Double, "double precision" );
+  QString countFieldName = getUniqueFieldName( mAttributePrefix + "count" );
+  QString sumFieldName = getUniqueFieldName( mAttributePrefix + "sum" );
+  QString meanFieldName = getUniqueFieldName( mAttributePrefix + "mean" );
+  QgsField countField( countFieldName, QVariant::Double, "double precision" );
+  QgsField sumField( sumFieldName, QVariant::Double, "double precision" );
+  QgsField meanField( meanFieldName, QVariant::Double, "double precision" );
   newFieldList.push_back( countField );
   newFieldList.push_back( sumField );
   newFieldList.push_back( meanField );
   vectorProvider->addAttributes( newFieldList );
 
   //index of the new fields
-  int countIndex = vectorProvider->fieldNameIndex( mAttributePrefix + "count" );
-  int sumIndex = vectorProvider->fieldNameIndex( mAttributePrefix + "sum" );
-  int meanIndex = vectorProvider->fieldNameIndex( mAttributePrefix + "mean" );
+  int countIndex = vectorProvider->fieldNameIndex( countFieldName );
+  int sumIndex = vectorProvider->fieldNameIndex( sumFieldName );
+  int meanIndex = vectorProvider->fieldNameIndex( meanFieldName );
 
   if ( countIndex == -1 || sumIndex == -1 || meanIndex == -1 )
   {
@@ -362,4 +365,55 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, QgsGeome
   CPLFree( pixelData );
 }
 
+QString QgsZonalStatistics::getUniqueFieldName( QString fieldName )
+{
+  QgsVectorDataProvider* dp = mPolygonLayer->dataProvider();
 
+  if ( !dp->storageType().contains( "ESRI Shapefile" ) )
+  {
+    return fieldName;
+  }
+
+  const QgsFields& providerFields = dp->fields();
+  QString shortName = fieldName.mid( 0, 10 );
+
+  bool found = false;
+  for ( int idx = 0; idx < providerFields.count(); ++idx )
+  {
+    if ( shortName == providerFields[idx].name() )
+    {
+      found = true;
+      break;
+    }
+  }
+
+  if ( !found )
+  {
+    return shortName;
+  }
+
+  int n = 1;
+  shortName = QString( "%1_%2" ).arg( fieldName.mid( 0, 8 ) ).arg( n );
+  found = true;
+  while ( found )
+  {
+    found = false;
+    for ( int idx = 0; idx < providerFields.count(); ++idx )
+    {
+      if ( shortName == providerFields[idx].name() )
+      {
+        n += 1;
+        if ( n < 9 )
+        {
+          shortName = QString( "%1_%2" ).arg( fieldName.mid( 0, 8 ) ).arg( n );
+        }
+        else
+        {
+          shortName = QString( "%1_%2" ).arg( fieldName.mid( 0, 7 ) ).arg( n );
+        }
+        found = true;
+      }
+    }
+  }
+  return shortName;
+}

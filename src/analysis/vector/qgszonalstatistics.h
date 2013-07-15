@@ -54,6 +54,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     void statisticsFromPreciseIntersection( void* band, QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
                                             double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count );
 
+    QString getUniqueFieldName( QString fieldName );
 
     QString mRasterFilePath;
     /**Raster band to calculate statistics from (defaults to 1)*/
