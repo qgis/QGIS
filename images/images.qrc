@@ -32,7 +32,6 @@
         <file>flags/ml_IN.png</file>
         <file>flags/mn.png</file>
         <file>flags/nl.png</file>
-        <file>flags/no.png</file>
         <file>flags/pl_PL.png</file>
         <file>flags/pt_BR.png</file>
         <file>flags/pt_PT.png</file>
@@ -435,6 +434,7 @@
         <file>flags/bs_BA.png</file>
         <file>flags/eu.png</file>
         <file>flags/bn.png</file>
+        <file>flags/nb_NO.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
