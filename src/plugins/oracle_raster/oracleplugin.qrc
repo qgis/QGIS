@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/oracleplugin/" >
-        <file>oracleplugin.png</file>
+        <file>oracleraster.svg</file>
     </qresource>
 </RCC>
