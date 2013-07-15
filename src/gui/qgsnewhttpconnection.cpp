@@ -149,7 +149,9 @@ void QgsNewHttpConnection::accept()
     params.insert( QString( it->first ).toUpper(), *it );
   }
 
-  if ( params["SERVICE"].second.toUpper() == "WMS" )
+  if ( params["SERVICE"].second.toUpper() == "WMS" ||
+       params["SERVICE"].second.toUpper() == "WFS" ||
+       params["SERVICE"].second.toUpper() == "WCS" )
   {
     url.removeEncodedQueryItem( params["SERVICE"].first );
     url.removeEncodedQueryItem( params["REQUEST"].first );
