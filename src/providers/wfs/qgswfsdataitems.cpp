@@ -24,10 +24,10 @@
 #include <QCoreApplication>
 
 
-QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSourceURI uri, QString featureType, QString title )
+QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSourceURI uri, QString featureType, QString title, QString crsString )
     : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Vector, "WFS" )
 {
-  mUri = QgsWFSCapabilities( uri.encodedUri() ).uriGetFeature( featureType );
+  mUri = QgsWFSCapabilities( uri.encodedUri() ).uriGetFeature( featureType, crsString );
   mPopulated = true;
   mIcon = QgsApplication::getThemeIcon( "mIconWfs.svg" );
 }
@@ -74,7 +74,7 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
     foreach ( const QgsWFSCapabilities::FeatureType& featureType, caps.featureTypes )
     {
       //QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, featureType.name, featureType.title );
-      QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, uri, featureType.name, featureType.title );
+      QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, uri, featureType.name, featureType.title, featureType.crslist.first() );
       layers.append( layer );
     }
   }
