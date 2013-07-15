@@ -111,6 +111,7 @@ bool QgsSpatialIndex::insertFeature( QgsFeature& f )
   try
   {
     mRTree->insertData( 0, 0, r, FID_TO_NUMBER( id ) );
+    return true;
   }
   catch ( Tools::Exception &e )
   {
@@ -127,7 +128,7 @@ bool QgsSpatialIndex::insertFeature( QgsFeature& f )
     QgsDebugMsg( "unknown spatial index exception caught" );
   }
 
-  return true;
+  return false;
 }
 
 bool QgsSpatialIndex::deleteFeature( QgsFeature& f )

@@ -153,7 +153,7 @@ void QgsWFSProvider::deleteData()
   mFeatures.clear();
 }
 
-void QgsWFSProvider::copyFeature( QgsFeature* f, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
+void QgsWFSProvider::copyFeature( QgsFeature* f, QgsFeature& feature, bool fetchGeometry )
 {
   Q_UNUSED( fetchGeometry );
 
@@ -178,14 +178,14 @@ void QgsWFSProvider::copyFeature( QgsFeature* f, QgsFeature& feature, bool fetch
   }
 
   //and the attributes
-  const QgsAttributes& attributes = f->attributes();
-  feature.setAttributes( attributes );
-
-  int i = 0;
-  for ( QgsAttributeList::const_iterator it = fetchAttributes.begin(); it != fetchAttributes.end(); ++it )
+  feature.initAttributes( mFields.size() );
+  for ( int i = 0; i < mFields.size(); i++ )
   {
-    feature.setAttribute( i, attributes[*it] );
-    ++i;
+    const QVariant &v = f->attributes().value( i );
+    if ( v.type() != mFields[i].type() )
+      feature.setAttribute( i, convertValue( mFields[i].type(), v.toString() ) );
+    else
+      feature.setAttribute( i, v );
   }
 
   //id and valid
@@ -1206,14 +1206,12 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
 
   for ( int i = 0; i < featureTypeNodeList.size(); ++i )
   {
-    f = new QgsFeature( mFeatureCount );
+    f = new QgsFeature( fields(), mFeatureCount );
     currentFeatureMemberElem = featureTypeNodeList.at( i ).toElement();
     //the first child element is always <namespace:layer>
     layerNameElem = currentFeatureMemberElem.firstChild().toElement();
     //the children are the attributes
     currentAttributeChild = layerNameElem.firstChild();
-    int attr = 0;
-    bool numeric = false;
 
     while ( !currentAttributeChild.isNull() )
     {
@@ -1221,17 +1219,19 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
 
       if ( currentAttributeElement.localName() != "boundedBy" )
       {
-        currentAttributeElement.text().toDouble( &numeric );
+
         if (( currentAttributeElement.localName() ) != geometryAttribute ) //a normal attribute
         {
-          if ( numeric )
+          int attr = fieldNameIndex( currentAttributeElement.localName() );
+          if ( attr < 0 )
           {
-            f->setAttribute( attr++, QVariant( currentAttributeElement.text().toDouble() ) );
+            QgsDebugMsg( QString( "attribute %1 not found in fields" ).arg( currentAttributeElement.localName() ) );
+            continue;
           }
-          else
-          {
-            f->setAttribute( attr++, QVariant( currentAttributeElement.text() ) );
-          }
+
+          const QgsField &fld = mFields[attr];
+          QgsDebugMsg( QString( "set attribute %1: type=%2 value=%3" ).arg( attr ).arg( QVariant::typeToName( fld.type() ) ).arg( currentAttributeElement.text() ) );
+          f->setAttribute( attr, convertValue( fld.type(), currentAttributeElement.text() ) );
         }
         else //a geometry attribute
         {

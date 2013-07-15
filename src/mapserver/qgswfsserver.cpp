@@ -415,7 +415,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
         QgsFeatureIterator fit = layer->getFeatures(
                                    QgsFeatureRequest()
-                                   .setFilterRect( searchRect )
                                    .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) )
                                    .setSubsetOfAttributes( attrIndexes ) );
 
@@ -778,8 +777,15 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         QgsFeatureRequest req;
         if ( layer->wkbType() != QGis::WKBNoGeometry )
         {
-          req.setFilterRect( searchRect )
-          .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+          if ( bboxOk )
+          {
+            req.setFilterRect( searchRect );
+            req.setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+          }
+          else
+          {
+            req.setFlags( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
+          }
         }
         else
         {
@@ -898,8 +904,14 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             QgsFeatureRequest req;
             if ( layer->wkbType() != QGis::WKBNoGeometry )
             {
-              req.setFilterRect( searchRect )
-              .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+              if ( bboxOk )
+              {
+                req.setFilterRect( searchRect ).setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+              }
+              else
+              {
+                req.setFlags( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
+              }
             }
             else
             {
@@ -935,8 +947,14 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         QgsFeatureRequest req;
         if ( layer->wkbType() != QGis::WKBNoGeometry )
         {
-          req.setFilterRect( searchRect )
-          .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+          if ( bboxOk )
+          {
+            req.setFilterRect( searchRect ).setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+          }
+          else
+          {
+            req.setFlags( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
+          }
         }
         else
         {
