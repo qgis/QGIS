@@ -446,7 +446,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   gaiaVectorLayersListPtr list = NULL;
   gaiaVectorLayerPtr lyr = NULL;
   bool specialCase = false;
-  if ( mGeometryColumn.isNull() )
+  if ( mGeometryColumn.isEmpty() )
     specialCase = true; // non-spatial table
   if ( mQuery.startsWith( "(" ) && mQuery.endsWith( ")" ) )
     specialCase = true;
@@ -493,7 +493,8 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   {
     // enabling editing only for Tables [excluding Views and VirtualShapes]
     enabledCapabilities |= QgsVectorDataProvider::DeleteFeatures;
-    enabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
+    if ( !mGeometryColumn.isEmpty() )
+      enabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
     enabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
     enabledCapabilities |= QgsVectorDataProvider::AddFeatures;
     enabledCapabilities |= QgsVectorDataProvider::AddAttributes;
@@ -3523,7 +3524,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
   values = QString( ") VALUES (" );
   separator = "";
 
-  if ( !mGeometryColumn.isNull() )
+  if ( !mGeometryColumn.isEmpty() )
   {
     sql += separator + quotedIdentifier( mGeometryColumn );
     values += separator + geomParam();
@@ -3570,7 +3571,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
     // initializing the column counter
     ia = 0;
 
-    if ( !mGeometryColumn.isNull() )
+    if ( !mGeometryColumn.isEmpty() )
     {
       // binding GEOMETRY to Prepared Statement
       if ( !features->geometry() )
@@ -4202,7 +4203,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
 
   QString sql;
 
-  if ( mGeometryColumn.isNull() )
+  if ( mGeometryColumn.isEmpty() )
   {
     // checking if is a non-spatial table
     sql = QString( "SELECT type FROM sqlite_master "
@@ -4479,7 +4480,7 @@ error:
 bool QgsSpatiaLiteProvider::getGeometryDetails()
 {
   bool ret = false;
-  if ( mGeometryColumn.isNull() )
+  if ( mGeometryColumn.isEmpty() )
   {
     geomType = QGis::WKBNoGeometry;
     return true;
@@ -4936,9 +4937,8 @@ bool QgsSpatiaLiteProvider::getTableSummary()
   int columns;
   char *errMsg = NULL;
 
-  QString sql = QString( "SELECT Min(MbrMinX(%1)), Min(MbrMinY(%1)), "
-                         "Max(MbrMaxX(%1)), Max(MbrMaxY(%1)), Count(*) " "FROM %2" )
-                .arg( quotedIdentifier( mGeometryColumn ) )
+  QString sql = QString( "SELECT Count(*)%1 FROM %2" )
+                .arg( mGeometryColumn.isEmpty() ? "" : QString( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedIdentifier( mGeometryColumn ) ) )
                 .arg( mQuery );
 
   if ( !mSubsetString.isEmpty() )
@@ -4955,14 +4955,22 @@ bool QgsSpatiaLiteProvider::getTableSummary()
   {
     for ( i = 1; i <= rows; i++ )
     {
-      QString minX = results[( i * columns ) + 0];
-      QString minY = results[( i * columns ) + 1];
-      QString maxX = results[( i * columns ) + 2];
-      QString maxY = results[( i * columns ) + 3];
-      QString count = results[( i * columns ) + 4];
-
-      layerExtent.set( minX.toDouble(), minY.toDouble(), maxX.toDouble(), maxY.toDouble() );
+      QString count = results[( i * columns ) + 0];
       numberFeatures = count.toLong();
+
+      if ( mGeometryColumn.isEmpty() )
+      {
+        layerExtent.setMinimal();
+      }
+      else
+      {
+        QString minX = results[( i * columns ) + 1];
+        QString minY = results[( i * columns ) + 2];
+        QString maxX = results[( i * columns ) + 3];
+        QString maxY = results[( i * columns ) + 4];
+
+        layerExtent.set( minX.toDouble(), minY.toDouble(), maxX.toDouble(), maxY.toDouble() );
+      }
     }
   }
   sqlite3_free_table( results );
