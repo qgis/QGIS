@@ -312,6 +312,7 @@ void QgsLegend::setLayersVisible( bool visible )
 
   // Turn on rendering (if it was on previously)
   mMapCanvas->freeze( false );
+  mMapCanvas->refresh();
 
   QgsProject::instance()->dirty( true );
 }
