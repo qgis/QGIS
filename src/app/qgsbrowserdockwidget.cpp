@@ -415,7 +415,7 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
   {
     QModelIndex idx = mModel->index( i, 0, index );
     QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
-    if ( mBrowserView->isExpanded( proxyIdx ) || !mModel->hasChildren( proxyIdx ) )
+    if ( mBrowserView->isExpanded( proxyIdx ) || !mProxyModel->hasChildren( proxyIdx ) )
     {
       refreshModel( idx );
     }
