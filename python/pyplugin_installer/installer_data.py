@@ -620,6 +620,10 @@ class Plugins(QObject):
           exec "%s.classFactory(iface)" % key in globals(), locals()
         except Exception, error:
           error = unicode(error.args[0])
+        except SystemExit, error:
+          error = QCoreApplication.translate("QgsPluginInstaller", "Plugin exited with error status: {0}").format(error.args[0])
+        except:
+          error = QCoreApplication.translate("QgsPluginInstaller", "Unknown error")
     else:
         # seems there is no metadata.txt file. Maybe it's an old plugin for QGIS 1.x.
         version = "-1"
