@@ -602,7 +602,9 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request.compare( "GetLegendGraphic", Qt::CaseInsensitive ) == 0 || request.compare( "GetLegendGraphics", Qt::CaseInsensitive ) == 0 ) // GetLegendGraphics for compatibility with earlier QGIS versions
+    else if ( request.compare( "GetLegendGraphic", Qt::CaseInsensitive ) == 0 ||
+              request.compare( "GetLegendGraphics", Qt::CaseInsensitive ) == 0 )
+              // GetLegendGraphics for compatibility with earlier QGIS versions
     {
       QImage* result = 0;
       try
@@ -611,6 +613,7 @@ int main( int argc, char * argv[] )
       }
       catch ( QgsMapServiceException& ex )
       {
+        QgsDebugMsg( "Caught exception during GetLegendGraphic request" );
         theRequestHandler->sendServiceException( ex );
       }
 
@@ -619,6 +622,7 @@ int main( int argc, char * argv[] )
         QgsDebugMsg( "Sending GetLegendGraphic response" );
         //sending is the same for GetMap and GetLegendGraphic
         theRequestHandler->sendGetMapResponse( serviceString, result );
+        QgsDebugMsg( "Response sent" );
       }
       else
       {
@@ -629,7 +633,6 @@ int main( int argc, char * argv[] )
       delete theRequestHandler;
       delete theServer;
       continue;
-
     }
     else if ( request.compare( "GetPrint", Qt::CaseInsensitive ) == 0 )
     {
