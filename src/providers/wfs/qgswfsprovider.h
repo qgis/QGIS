@@ -190,7 +190,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
     int guessAttributesFromFile( const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes, QGis::WkbType& geomType ) const;
 
     /**Copies feature attributes / geometry from f to feature*/
-    void copyFeature( QgsFeature* f, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes );
+    void copyFeature( QgsFeature* f, QgsFeature& feature, bool fetchGeometry );
 
     //GML2 specific methods
     int getExtentFromGML2( QgsRectangle* extent, const QDomElement& wfsCollectionElement ) const;

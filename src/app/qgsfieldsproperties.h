@@ -138,6 +138,7 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
       attrIdCol = 0,
       attrNameCol,
       attrTypeCol,
+      attrTypeNameCol,
       attrLengthCol,
       attrPrecCol,
       attrCommentCol,
