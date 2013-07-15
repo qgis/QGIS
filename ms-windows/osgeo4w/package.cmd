@@ -13,7 +13,7 @@ REM *   (at your option) any later version.                                   *
 REM *                                                                         *
 REM ***************************************************************************
 @echo off
-set GRASS_VERSION=6.4.3RC3
+set GRASS_VERSION=6.4.3RC4
 
 set BUILDDIR=%CD%\build
 REM set BUILDDIR=%TEMP%\qgis_unstable
