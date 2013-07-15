@@ -621,7 +621,7 @@ class Plugins(QObject):
         except Exception, error:
           error = unicode(error.args[0])
         except SystemExit, error:
-          error = QCoreApplication.translate("QgsPluginInstaller", "Plugin exited with error status: {0}").format(error.args[0])
+          error = QCoreApplication.translate("QgsPluginInstaller", "The plugin exited with error status: {0}").format(error.args[0])
         except:
           error = QCoreApplication.translate("QgsPluginInstaller", "Unknown error")
     else:
