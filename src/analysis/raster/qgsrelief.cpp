@@ -28,9 +28,9 @@
 #include <QTextStream>
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8(x) (x).toUtf8().constData()
+#define TO8F(x) (x).toUtf8().constData()
 #else
-#define TO8(x) (x).toLocal8Bit().constData()
+#define TO8F(x) QFile::encodeName( x ).constData()
 #endif
 
 QgsRelief::QgsRelief( const QString& inputFile, const QString& outputFile, const QString& outputFormat ): \
@@ -269,7 +269,7 @@ int QgsRelief::processRaster( QProgressDialog* p )
   if ( p && p->wasCanceled() )
   {
     //delete the dataset without closing (because it is faster)
-    GDALDeleteDataset( outputDriver, mOutputFile.toLocal8Bit().data() );
+    GDALDeleteDataset( outputDriver, TO8F( mOutputFile ) );
     return 7;
   }
   GDALClose( outputDataset );
@@ -390,7 +390,7 @@ bool QgsRelief::setElevationColor( double elevation, int* red, int* green, int* 
 //duplicated from QgsNineCellFilter. Todo: make common base class
 GDALDatasetH QgsRelief::openInputFile( int& nCellsX, int& nCellsY )
 {
-  GDALDatasetH inputDataset = GDALOpen( TO8( mInputFile ), GA_ReadOnly );
+  GDALDatasetH inputDataset = GDALOpen( TO8F( mInputFile ), GA_ReadOnly );
   if ( inputDataset != NULL )
   {
     nCellsX = GDALGetRasterXSize( inputDataset );
@@ -444,7 +444,7 @@ GDALDatasetH QgsRelief::openOutputFile( GDALDatasetH inputDataset, GDALDriverH o
   papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "PACKBITS" );
 
   //create three band raster (reg, green, blue)
-  GDALDatasetH outputDataset = GDALCreate( outputDriver, mOutputFile.toLocal8Bit().data(), xSize, ySize, 3, GDT_Byte, papszOptions );
+  GDALDatasetH outputDataset = GDALCreate( outputDriver, TO8F( mOutputFile ), xSize, ySize, 3, GDT_Byte, papszOptions );
   if ( outputDataset == NULL )
   {
     return outputDataset;

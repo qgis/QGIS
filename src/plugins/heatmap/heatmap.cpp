@@ -47,6 +47,12 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8F(x) (x).toUtf8().constData()
+#else
+#define TO8F(x) QFile::encodeName( x ).constData()
+#endif
+
 static const QString sName = QObject::tr( "Heatmap" );
 static const QString sDescription = QObject::tr( "Creates a Heatmap raster for the input point vector" );
 static const QString sCategory = QObject::tr( "Raster" );
@@ -157,7 +163,7 @@ void Heatmap::run()
 
     // open the raster in GA_Update mode
     GDALDataset *heatmapDS;
-    heatmapDS = ( GDALDataset * ) GDALOpen( d.outputFilename().toUtf8(), GA_Update );
+    heatmapDS = ( GDALDataset * ) GDALOpen( TO8F( d.outputFilename() ), GA_Update );
     if ( !heatmapDS )
     {
       QMessageBox::information( 0, tr( "Raster update error" ), tr( "Could not open the created raster for updating. The heatmap was not generated." ) );

@@ -2505,7 +2505,7 @@ QGISEXTERN QgsGdalProvider * create(
   //create dataset
   CPLErrorReset();
   char **papszOptions = papszFromStringList( createOptions );
-  GDALDatasetH dataset = GDALCreate( driver, uri.toLocal8Bit().data(), width, height, nBands, ( GDALDataType )type, papszOptions );
+  GDALDatasetH dataset = GDALCreate( driver, TO8F( uri ), width, height, nBands, ( GDALDataType )type, papszOptions );
   CSLDestroy( papszOptions );
   if ( dataset == NULL )
   {
