@@ -50,7 +50,7 @@ static const QString sDescription = QObject::tr( "Store vector layers within a S
 static const QString sCategory = QObject::tr( "Layers" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
-static const QString sIcon = ":/sqlanywhere/sqlanywhere.png";
+static const QString sIcon = ":/sqlanywhere/sqlanywhere.svg";
 
 
 /**
@@ -79,7 +79,7 @@ SqlAnywhere::~SqlAnywhere()
 void SqlAnywhere::initGui()
 {
   // Create the action for tool
-  mActionAddSqlAnywhereLayer = new QAction( QIcon( ":/sqlanywhere/sqlanywhere.png" ), tr( "Add SQL Anywhere Layer..." ), this );
+  mActionAddSqlAnywhereLayer = new QAction( QIcon( ":/sqlanywhere/sqlanywhere.svg" ), tr( "Add SQL Anywhere Layer..." ), this );
   mActionAddSqlAnywhereLayer->setWhatsThis( tr( "Store vector layers within a SQL Anywhere database" ) );
   connect( mActionAddSqlAnywhereLayer, SIGNAL( triggered() ), this, SLOT( addSqlAnywhereLayer() ) );
 
