@@ -138,7 +138,7 @@
   <action name="mActionZoomAll">
    <property name="icon">
     <iconset>
-     <normaloff>../themes/default/mActionZoomFullExtent.png</normaloff>../themes/default/mActionZoomFullExtent.png</iconset>
+     <normaloff>../themes/default/mActionZoomFullExtent.svg</normaloff>../themes/default/mActionZoomFullExtent.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom Full</string>
@@ -150,7 +150,7 @@
   <action name="mActionZoomIn">
    <property name="icon">
     <iconset>
-     <normaloff>../themes/default/mActionZoomIn.png</normaloff>../themes/default/mActionZoomIn.png</iconset>
+     <normaloff>../themes/default/mActionZoomIn.svg</normaloff>../themes/default/mActionZoomIn.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom In</string>
@@ -162,7 +162,7 @@
   <action name="mActionZoomOut">
    <property name="icon">
     <iconset>
-     <normaloff>../themes/default/mActionZoomOut.png</normaloff>../themes/default/mActionZoomOut.png</iconset>
+     <normaloff>../themes/default/mActionZoomOut.svg</normaloff>../themes/default/mActionZoomOut.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom Out</string>
@@ -264,7 +264,7 @@
   <action name="mActionRefreshView">
    <property name="icon">
     <iconset>
-     <normaloff>../themes/default/mActionDraw.png</normaloff>../themes/default/mActionDraw.png</iconset>
+     <normaloff>../themes/default/mActionDraw.svg</normaloff>../themes/default/mActionDraw.svg</iconset>
    </property>
    <property name="text">
     <string>Refresh</string>

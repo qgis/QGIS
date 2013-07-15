@@ -810,7 +810,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionZoomIn.png</normaloff>:/images/themes/default/mActionZoomIn.png</iconset>
+     <normaloff>:/images/themes/default/mActionZoomIn.svg</normaloff>:/images/themes/default/mActionZoomIn.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom In</string>
@@ -825,7 +825,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionZoomOut.png</normaloff>:/images/themes/default/mActionZoomOut.png</iconset>
+     <normaloff>:/images/themes/default/mActionZoomOut.svg</normaloff>:/images/themes/default/mActionZoomOut.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom Out</string>
@@ -963,7 +963,7 @@
   <action name="mActionZoomFullExtent">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionZoomFullExtent.png</normaloff>:/images/themes/default/mActionZoomFullExtent.png</iconset>
+     <normaloff>:/images/themes/default/mActionZoomFullExtent.svg</normaloff>:/images/themes/default/mActionZoomFullExtent.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom Full</string>
@@ -975,7 +975,7 @@
   <action name="mActionZoomToLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionZoomToLayer.png</normaloff>:/images/themes/default/mActionZoomToLayer.png</iconset>
+     <normaloff>:/images/themes/default/mActionZoomToLayer.svg</normaloff>:/images/themes/default/mActionZoomToLayer.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom to Layer</string>
@@ -984,7 +984,7 @@
   <action name="mActionZoomToSelected">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionZoomToSelected.png</normaloff>:/images/themes/default/mActionZoomToSelected.png</iconset>
+     <normaloff>:/images/themes/default/mActionZoomToSelected.svg</normaloff>:/images/themes/default/mActionZoomToSelected.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom to Selection</string>
@@ -996,7 +996,7 @@
   <action name="mActionZoomLast">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionZoomLast.png</normaloff>:/images/themes/default/mActionZoomLast.png</iconset>
+     <normaloff>:/images/themes/default/mActionZoomLast.svg</normaloff>:/images/themes/default/mActionZoomLast.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom Last</string>
@@ -1005,7 +1005,7 @@
   <action name="mActionZoomNext">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionZoomNext.png</normaloff>:/images/themes/default/mActionZoomNext.png</iconset>
+     <normaloff>:/images/themes/default/mActionZoomNext.svg</normaloff>:/images/themes/default/mActionZoomNext.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom Next</string>
@@ -1014,7 +1014,7 @@
   <action name="mActionZoomActualSize">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionZoomActual.png</normaloff>:/images/themes/default/mActionZoomActual.png</iconset>
+     <normaloff>:/images/themes/default/mActionZoomActual.svg</normaloff>:/images/themes/default/mActionZoomActual.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom Actual Size</string>
@@ -1065,7 +1065,7 @@
   <action name="mActionDraw">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDraw.png</normaloff>:/images/themes/default/mActionDraw.png</iconset>
+     <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
    </property>
    <property name="text">
     <string>Refresh</string>
