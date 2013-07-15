@@ -198,7 +198,7 @@
         <file>themes/default/mActionHelpAPI.png</file>
         <file>themes/default/mActionHelpContents.svg</file>
         <file>themes/default/mActionHelpSponsors.png</file>
-        <file>themes/default/mActionHideAllLayers.png</file>
+        <file>themes/default/mActionHideAllLayers.svg</file>
         <file>themes/default/mActionIdentify.png</file>
         <file>themes/default/mActionIdentify.svg</file>
         <file>themes/default/mActionIncreaseBrightness.svg</file>
@@ -266,7 +266,7 @@
         <file>themes/default/mActionSelectRadius.svg</file>
         <file>themes/default/mActionSelectRectangle.svg</file>
         <file>themes/default/mActionSetProjection.svg</file>
-        <file>themes/default/mActionShowAllLayers.png</file>
+        <file>themes/default/mActionShowAllLayers.svg</file>
         <file>themes/default/mActionShowBookmarks.png</file>
         <file>themes/default/mActionShowHideLabels.svg</file>
         <file>themes/default/mActionShowPinnedLabels.svg</file>
