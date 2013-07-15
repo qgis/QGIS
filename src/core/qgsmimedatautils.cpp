@@ -12,6 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <QStringList>
+
 #include "qgsmimedatautils.h"
 
 #include "qgsdataitem.h"
@@ -39,20 +41,50 @@ QgsMimeDataUtils::Uri::Uri( QgsLayerItem* layerItem )
 
 QgsMimeDataUtils::Uri::Uri( QString& encData )
 {
-  QRegExp rx( "^([^:]+):([^:]+):([^:]+):(.+)" );
-  if ( rx.indexIn( encData ) != -1 )
+  QStringList parts;
+  QChar split = ':';
+  QChar escape = '\\';
+  QString part;
+  bool inEscape = false;
+  for (int i = 0; i < encData.length(); ++i)
   {
-    layerType = rx.cap( 1 );
-    providerKey = rx.cap( 2 );
-    name = rx.cap( 3 );
-    uri = rx.cap( 4 );
+      if (encData.at(i) == escape && !inEscape)
+      {
+          inEscape = true;
+      }
+      else if (encData.at(i) == split && !inEscape)
+      {
+          parts << part;
+          part = "";
+      }
+      else
+      {
+          part += encData.at(i);
+          inEscape = false;
+      }
+  }
+  if (!part.isEmpty())
+  {
+      parts << part;
+  }
+
+  if ( parts.size() == 4 )
+  {
+    layerType = parts[0];
+    providerKey = parts[1];
+    name = parts[2];
+    uri = parts[3];
     QgsDebugMsg( "type: " + layerType + " key: " + providerKey + " name: " + name + " uri: " + uri );
   }
 }
 
 QString QgsMimeDataUtils::Uri::data() const
 {
-  return layerType + ":" + providerKey + ":" + name + ":" + uri;
+    QString escapedName = name;
+    QString escapeUri = uri;
+    escapedName.replace(":", "\\:");
+    escapeUri.replace(":", "\\:");
+    return layerType + ":" + providerKey + ":" + escapedName + ":" + escapeUri;
 }
 
 // -----

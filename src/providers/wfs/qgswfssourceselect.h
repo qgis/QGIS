@@ -60,7 +60,6 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
      The first string is the typename, the corresponding list
     stores the CRS for the typename in the form 'EPSG:XXXX'*/
     std::map<QString, std::list<QString> > mAvailableCRS;
-    QAbstractButton* btnAdd;
     QgsWFSCapabilities* mCapabilities;
     QString mUri;            // data source URI
     QgsWFSItemDelegate* mItemDelegate;
