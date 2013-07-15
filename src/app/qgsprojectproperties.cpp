@@ -834,8 +834,11 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
     btnGrpMapUnits->setTitle( unitsOnFlyState.arg( tr( "ON" ) ) );
   }
 
+  setMapUnitsToCurrentProjection();
+
   // Enable/Disable selector and update tool-tip
-  updateEllipsoidUI( mEllipsoidIndex );
+  updateEllipsoidUI( mEllipsoidIndex ); // maybe already done by setMapUnitsToCurrentProjection
+
 }
 
 void QgsProjectProperties::cbxWFSPubliedStateChanged( int aIdx )
@@ -906,6 +909,20 @@ void QgsProjectProperties::setMapUnitsToCurrentProjection()
     radMeters->setChecked( units == QGis::Meters );
     radFeet->setChecked( units == QGis::Feet );
     radDegrees->setChecked( units == QGis::Degrees );
+
+    // attempt to reset the projection ellipsoid according to the srs
+    {
+      int myIndex = 0;
+      for ( int i = 0; i < mEllipsoidList.length(); i++ )
+      {
+        if ( mEllipsoidList[ i ].description  == srs.description() )
+        {
+          myIndex = i;
+          break;
+        }
+      }
+      if ( myIndex ) updateEllipsoidUI( myIndex );
+    }
   }
 }
 
