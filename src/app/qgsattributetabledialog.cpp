@@ -568,6 +568,11 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
 
 void QgsAttributeTableDialog::filterQueryAccepted()
 {
+  if ( mFilterQuery->text().isEmpty() )
+  {
+      filterShowAll();
+      return;
+  }
   filterQueryChanged( mFilterQuery->text() );
 }
 
