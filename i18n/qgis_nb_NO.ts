@@ -7208,7 +7208,7 @@ Error(%2): %3</source>
         <location filename="../src/core/qgsdistancearea.cpp" line="222"/>
         <location filename="../src/mapserver/qgssldparser.cpp" line="1521"/>
         <location filename="../src/providers/grass/qgsgrassgislib.cpp" line="231"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3213"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3214"/>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1896"/>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
@@ -9153,7 +9153,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3280"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3418"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="140"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5141"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5149"/>
         <source>Connection to database failed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9303,30 +9303,30 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5081"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5089"/>
         <source>Unable to initialize SpatialMetadata:
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5108"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5116"/>
         <source>Could not create a new database
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5118"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5126"/>
         <source>Unable to activate FOREIGN_KEY constraints [%1]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5154"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5162"/>
         <source>Unable to delete table %1
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5177"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5185"/>
         <source>Unable to delete table %1:
 </source>
         <translation type="unfinished"></translation>
@@ -41701,108 +41701,108 @@ enhancement</source>
 <context>
     <name>QgsSpatiaLiteProvider</name>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="570"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="571"/>
         <source>Binary object (BLOB)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="571"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="572"/>
         <source>Text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="572"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="573"/>
         <source>Decimal number (double)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="573"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="574"/>
         <source>Whole number (integer)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="651"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="652"/>
         <source>Retrieval of spatialite version failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="666"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="667"/>
         <source>Could not parse spatialite version string &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="753"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="821"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3299"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3362"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3405"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3441"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3557"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3669"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3705"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3747"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3803"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3905"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3945"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3997"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4230"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4268"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4312"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4332"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4352"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4473"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4589"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4675"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4745"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4861"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4899"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4975"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="754"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="822"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3300"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3363"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3406"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3442"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3558"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3670"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3706"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3748"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3804"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3906"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3946"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3998"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4231"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4269"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4313"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4333"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4353"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4474"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4590"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4676"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4746"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4862"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4900"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4983"/>
         <source>SQLite error: %2
 SQL: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="651"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="666"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="753"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="821"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3299"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3362"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3405"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3441"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3557"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3945"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4230"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4268"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4312"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4332"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4352"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4473"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4589"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4675"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4745"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4861"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4899"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4975"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4985"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="652"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="667"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="754"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="822"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3300"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3363"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3406"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3442"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3558"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3946"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4231"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4269"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4313"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4333"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4353"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4474"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4590"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4676"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4746"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4862"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4900"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4983"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4993"/>
         <source>SpatiaLite</source>
         <translation type="unfinished">SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="821"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3299"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3362"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3669"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3747"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3803"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3905"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3997"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4589"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="822"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3300"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3363"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3670"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3748"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3804"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3906"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="3998"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4590"/>
         <source>unknown cause</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4985"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="4993"/>
         <source>FAILURE: Field %1 not found.</source>
         <translation type="unfinished"></translation>
     </message>
