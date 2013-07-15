@@ -23,6 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os.path
+import re
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.gui import *
@@ -90,6 +91,11 @@ class OutputSelectionPanel(QWidget):
             encoding = unicode(fileDialog.encoding())
             self.output.encoding = encoding
             filename = unicode(files[0])
+            selectedFilefilter = unicode(fileDialog.selectedNameFilter())
+            if not filename.lower().endswith(tuple(re.findall("\*(\.[a-z]{1,5})", filefilter))):
+                ext = re.search("\*(\.[a-z]{1,5})", selectedFilefilter)
+                if ext:
+                    filename = filename + ext.group(1)
             self.text.setText(filename)
             settings.setValue("/SextanteQGIS/LastOutputPath", os.path.dirname(filename))
             settings.setValue("/SextanteQGIS/encoding", encoding)
