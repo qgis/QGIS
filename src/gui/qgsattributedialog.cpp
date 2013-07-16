@@ -433,7 +433,11 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     QgsPythonRunner::run( expr );
   }
 
-  restoreGeometry();
+  // Only restore the geometry of the dialog if it's not a custom one.
+  if (!vl->editorLayout() == QgsVectorLayer::UiFileLayout)
+  {
+    restoreGeometry();
+  }
 }
 
 
@@ -450,7 +454,11 @@ QgsAttributeDialog::~QgsAttributeDialog()
     delete mFeature;
   }
 
-  saveGeometry();
+  // Only save the geometry of the dialog if it's not a custom one.
+  if (!mLayer->editorLayout() == QgsVectorLayer::UiFileLayout)
+  {
+    saveGeometry();
+  }
 
   if ( mDialog )
   {
