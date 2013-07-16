@@ -137,6 +137,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       break;
     }
   }
+
   // Update paramaters if present.
   if ( mySplitEllipsoid.length() >= 3 )
   {
@@ -900,30 +901,23 @@ void QgsProjectProperties::cbxWFSDeleteStateChanged( int aIdx )
 void QgsProjectProperties::setMapUnitsToCurrentProjection()
 {
   long myCRSID = projectionSelector->selectedCrsId();
-  if ( isProjected() && myCRSID )
-  {
-    QgsCoordinateReferenceSystem srs( myCRSID, QgsCoordinateReferenceSystem::InternalCrsId );
-    //set radio button to crs map unit type
-    QGis::UnitType units = srs.mapUnits();
+  if ( !isProjected() || !myCRSID )
+    return;
 
-    radMeters->setChecked( units == QGis::Meters );
-    radFeet->setChecked( units == QGis::Feet );
-    radDegrees->setChecked( units == QGis::Degrees );
+  QgsCoordinateReferenceSystem srs( myCRSID, QgsCoordinateReferenceSystem::InternalCrsId );
+  //set radio button to crs map unit type
+  QGis::UnitType units = srs.mapUnits();
 
-    // attempt to reset the projection ellipsoid according to the srs
-    {
-      int myIndex = 0;
-      for ( int i = 0; i < mEllipsoidList.length(); i++ )
-      {
-        if ( mEllipsoidList[ i ].description  == srs.description() )
-        {
-          myIndex = i;
-          break;
-        }
-      }
-      if ( myIndex ) updateEllipsoidUI( myIndex );
-    }
-  }
+  radMeters->setChecked( units == QGis::Meters );
+  radFeet->setChecked( units == QGis::Feet );
+  radDegrees->setChecked( units == QGis::Degrees );
+
+  // attempt to reset the projection ellipsoid according to the srs
+  int i;
+  for ( i = 0; i < mEllipsoidList.length() && mEllipsoidList[ i ].description != srs.description(); i++ )
+    ;
+  if ( i < mEllipsoidList.length() )
+    updateEllipsoidUI( i );
 }
 
 /*!
