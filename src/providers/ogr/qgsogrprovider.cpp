@@ -1216,6 +1216,40 @@ bool QgsOgrProvider::createSpatialIndex()
 
   QString layerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
 
+  // run REPACK on shape files
+  if ( ogrDriverName == "ESRI Shapefile" )
+  {
+    QString layerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
+
+    QString sql = QString( "REPACK %1" ).arg( layerName );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
+    QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
+    OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, NULL );
+
+    if ( mFilePath.endsWith( ".shp", Qt::CaseInsensitive ) || mFilePath.endsWith( ".dbf", Qt::CaseInsensitive ) )
+    {
+      QString packedDbf( mFilePath.left( mFilePath.size() - 4 ) + "_packed.dbf" );
+      if ( QFile::exists( packedDbf ) )
+      {
+        QgsMessageLog::logMessage( tr( "Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF." ).arg( packedDbf ), tr( "OGR" ), QgsMessageLog::CRITICAL );
+
+        OGR_DS_Destroy( ogrDataSource );
+
+        ogrDataSource = OGROpen( TO8F( mFilePath ), true, NULL );
+
+        if ( mLayerName.isNull() )
+        {
+          ogrOrigLayer = OGR_DS_GetLayer( ogrDataSource, mLayerIndex );
+        }
+        else
+        {
+          ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, TO8( mLayerName ) );
+        }
+
+        ogrLayer = ogrOrigLayer;
+      }
+    }
+  }
+
   QString sql = QString( "CREATE SPATIAL INDEX ON %1" ).arg( quotedIdentifier( layerName ) );  // quote the layer name so spaces are handled
   QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
   OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "" );
@@ -1256,40 +1290,6 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
   if ( !syncToDisc() )
   {
     returnvalue = false;
-  }
-
-  // run REPACK on shape files
-  if ( ogrDriverName == "ESRI Shapefile" )
-  {
-    QString layerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
-
-    QString sql = QString( "REPACK %1" ).arg( layerName );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
-    QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-    OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, NULL );
-
-    if ( mFilePath.endsWith( ".shp", Qt::CaseInsensitive ) || mFilePath.endsWith( ".dbf", Qt::CaseInsensitive ) )
-    {
-      QString packedDbf( mFilePath.left( mFilePath.size() - 4 ) + "_packed.dbf" );
-      if ( QFile::exists( packedDbf ) )
-      {
-        QgsMessageLog::logMessage( tr( "Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF." ).arg( packedDbf ), tr( "OGR" ), QgsMessageLog::CRITICAL );
-
-        OGR_DS_Destroy( ogrDataSource );
-
-        ogrDataSource = OGROpen( TO8F( mFilePath ), true, NULL );
-
-        if ( mLayerName.isNull() )
-        {
-          ogrOrigLayer = OGR_DS_GetLayer( ogrDataSource, mLayerIndex );
-        }
-        else
-        {
-          ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, TO8( mLayerName ) );
-        }
-
-        ogrLayer = ogrOrigLayer;
-      }
-    }
   }
 
   recalculateFeatureCount();
