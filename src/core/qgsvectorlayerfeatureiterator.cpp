@@ -407,7 +407,31 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   else
     joinFieldName = joinInfo->joinFieldName;
 
-  subsetString.append( "\"" + joinFieldName + "\"" + " = " + "\"" + joinValue.toString() + "\"" );
+  subsetString.append( QString( "\"%1\"" ).arg( joinFieldName ) );
+
+  if ( joinValue.isNull() )
+  {
+    subsetString += " IS NULL";
+  }
+  else
+  {
+    QString v = joinValue.toString();
+    switch ( joinValue.type() )
+    {
+      case QVariant::Int:
+      case QVariant::LongLong:
+      case QVariant::Double:
+        break;
+
+      default:
+      case QVariant::String:
+        v.replace( "'", "''" );
+        v.prepend( "'" ).append( "'" );
+        break;
+    }
+    subsetString += "=" + v;
+  }
+
   joinLayer->dataProvider()->setSubsetString( subsetString, false );
 
   // select (no geometry)
