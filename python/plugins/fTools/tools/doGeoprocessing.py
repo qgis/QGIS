@@ -172,9 +172,9 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
       elif self.myFunction == 5: # Intersect
         self.label_2.setText( self.tr( "Intersect layer" ) )
         self.setWindowTitle( self.tr( "Intersect" ) )
-      elif self.myFunction == 7: # Symetrical difference
+      elif self.myFunction == 7: # Symmetrical difference
         self.label_2.setText( self.tr( "Difference layer" ) )
-        self.setWindowTitle( self.tr( "Symetrical difference" ) )
+        self.setWindowTitle( self.tr( "Symmetrical difference" ) )
         self.useSelectedA.hide()
         self.useSelectedB.hide()
       elif self.myFunction == 8: # Clip
