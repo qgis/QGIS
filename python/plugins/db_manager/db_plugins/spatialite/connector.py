@@ -37,7 +37,7 @@ class SpatiaLiteDBConnector(DBConnector):
 
 		self.dbname = uri.database()
 		if not QFile.exists( self.dbname ):
-			raise ConnectionError( self.tr('"%s" not found') % self.dbname )
+			raise ConnectionError( QApplication.translate("DBManagerPlugin", '"{0}" not found').format( self.dbname ) )
 
 		try:
 			self.connection = sqlite.connect( self._connectionInfo() )
