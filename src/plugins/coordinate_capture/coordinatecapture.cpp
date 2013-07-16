@@ -221,9 +221,11 @@ void CoordinateCapture::copy()
 {
   QClipboard *myClipboard = QApplication::clipboard();
   //if we are on x11 system put text into selection ready for middle button pasting
+  //and ctrl+v
   if ( myClipboard->supportsSelection() )
   {
     myClipboard->setText( mpUserCrsEdit->text() + "," + mpCanvasEdit->text(), QClipboard::Selection );
+    myClipboard->setText( mpUserCrsEdit->text() + "," + mpCanvasEdit->text(), QClipboard::Clipboard );
     //QString myMessage = tr("Clipboard contents set to: ");
     //statusBar()->showMessage(myMessage + myClipboard->text(QClipboard::Selection));
   }
