@@ -309,9 +309,11 @@ QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     }
   }
 
-  for ( int i = 0; i < bandBlocks.size(); i++ )
+  //delete input blocks
+  QMap<int, QgsRasterBlock*>::const_iterator bandDelIt = bandBlocks.constBegin();
+  for ( ; bandDelIt != bandBlocks.constEnd(); ++bandDelIt )
   {
-    delete bandBlocks.value( i );
+    delete bandDelIt.value();
   }
 
   return outputBlock;
