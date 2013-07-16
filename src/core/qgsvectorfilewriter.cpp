@@ -89,6 +89,15 @@ QgsVectorFileWriter::QgsVectorFileWriter(
       dsOptions.append( "SPATIALITE=YES" );
     }
   }
+  else if ( driverName == "DBF file" )
+  {
+    ogrDriverName = "ESRI Shapefile";
+    if ( !layOptions.contains( "SHPT=NULL" ) )
+    {
+      layOptions.append( "SHPT=NULL" );
+    }
+    srs = 0;
+  }
   else
   {
     ogrDriverName = driverName;
@@ -109,7 +118,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     return;
   }
 
-  if ( driverName == "ESRI Shapefile" )
+  if ( ogrDriverName == "ESRI Shapefile" )
   {
     if ( layOptions.join( "" ).toUpper().indexOf( "ENCODING=" ) == -1 )
     {
@@ -118,10 +127,13 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
     CPLSetConfigOption( "SHAPE_ENCODING", "" );
 
-    if ( !vectorFileName.endsWith( ".shp", Qt::CaseInsensitive ) &&
-         !vectorFileName.endsWith( ".dbf", Qt::CaseInsensitive ) )
+    if ( driverName == "ESRI Shapefile" && !vectorFileName.endsWith( ".shp", Qt::CaseInsensitive ) )
     {
       vectorFileName += ".shp";
+    }
+    else if ( driverName == "DBF file" && !vectorFileName.endsWith( ".dbf", Qt::CaseInsensitive ) )
+    {
+      vectorFileName += ".dbf";
     }
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM < 1700
@@ -270,7 +282,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
   if ( srs )
   {
-    if ( driverName == "ESRI Shapefile" )
+    if ( ogrDriverName == "ESRI Shapefile" )
     {
       QString layerName = vectorFileName.left( vectorFileName.indexOf( ".shp", Qt::CaseInsensitive ) );
       QFile prjFile( layerName + ".qpj" );
@@ -730,7 +742,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   QgsCoordinateTransform* ct = 0;
   int shallTransform = false;
 
-  if ( layer == NULL )
+  if ( !layer )
   {
     return ErrInvalidLayer;
   }
@@ -1023,6 +1035,10 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
           CPLFree( options[0] );
           delete [] options;
         }
+        else if ( drvName == "ESRI Shapefile" )
+        {
+          writableDrivers << "DBF file";
+        }
         writableDrivers << drvName;
       }
     }
@@ -1116,6 +1132,13 @@ bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName,
     trLongName = QObject::tr( "ESRI Shapefile" );
     glob = "*.shp";
     ext = "shp";
+  }
+  else if ( driverName.startsWith( "DBF file" ) )
+  {
+    longName = "DBF File";
+    trLongName = QObject::tr( "DBF file" );
+    glob = "*.dbf";
+    ext = "dbf";
   }
   else if ( driverName.startsWith( "FMEObjects Gateway" ) )
   {
