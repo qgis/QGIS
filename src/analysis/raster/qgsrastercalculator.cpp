@@ -21,6 +21,7 @@
 #include "qgsrastermatrix.h"
 #include "cpl_string.h"
 #include <QProgressDialog>
+#include <QFile>
 
 #include "gdalwarper.h"
 #include <ogr_srs_api.h>
