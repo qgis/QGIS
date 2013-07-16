@@ -105,28 +105,25 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
 
 void QgsMapToolCapture::canvasMoveEvent( QMouseEvent * e )
 {
-  if ( mCaptureMode == CapturePoint )
-    return;
-
-  if ( mRubberBand && mCapturing )
+  QgsPoint mapPoint;
+  QList<QgsSnappingResult> snapResults;
+  if ( mSnapper.snapToBackgroundLayers( e->pos(), snapResults ) == 0 )
   {
-    QgsPoint mapPoint;
-    QList<QgsSnappingResult> snapResults;
-    if ( mSnapper.snapToBackgroundLayers( e->pos(), snapResults ) == 0 )
+    while ( !mSnappingMarkers.isEmpty() )
+      delete mSnappingMarkers.takeFirst();
+
+    foreach ( const QgsSnappingResult &r, snapResults )
     {
-      while ( !mSnappingMarkers.isEmpty() )
-        delete mSnappingMarkers.takeFirst();
+      QgsVertexMarker *m = new QgsVertexMarker( mCanvas );
+      m->setIconType( QgsVertexMarker::ICON_CROSS );
+      m->setColor( Qt::green );
+      m->setPenWidth( 2 );
+      m->setCenter( r.snappedVertex );
+      mSnappingMarkers << m;
+    }
 
-      foreach ( const QgsSnappingResult &r, snapResults )
-      {
-        QgsVertexMarker *m = new QgsVertexMarker( mCanvas );
-        m->setIconType( QgsVertexMarker::ICON_CROSS );
-        m->setColor( Qt::green );
-        m->setPenWidth( 1 );
-        m->setCenter( r.snappedVertex );
-        mSnappingMarkers << m;
-      }
-
+    if ( mCaptureMode != CapturePoint && mRubberBand && mCapturing )
+    {
       mapPoint = snapPointFromResults( snapResults, e->pos() );
       mRubberBand->movePoint( mapPoint );
     }
