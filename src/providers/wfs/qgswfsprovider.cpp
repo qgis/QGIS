@@ -701,9 +701,7 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
   }
 
   QString typeName = parameterFromUrl( "typename" );
-  //QgsWFSData dataReader( uri, &mExtent, mFeatures, mIdMap, geometryAttribute, thematicAttributes, &mWKBType );
   QgsGml dataReader( typeName, geometryAttribute, mFields );
-  //dataReader.setFeatureType( typeName, geometryAttribute, mFields );
 
   QObject::connect( &dataReader, SIGNAL( dataProgressAndSteps( int , int ) ), this, SLOT( handleWFSProgressMessage( int, int ) ) );
 

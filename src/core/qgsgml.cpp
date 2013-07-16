@@ -197,7 +197,7 @@ void QgsGml::handleProgressEvent( qint64 progress, qint64 totalSteps )
 
 void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
 {
-  QString elementName( el );
+  QString elementName( QString::fromUtf8( el ) );
   ParseMode theParseMode( mParseModeStack.isEmpty() ? none : mParseModeStack.top() );
   QStringList splitName =  elementName.split( NS_SEPARATOR );
   QString localName = splitName.last();
@@ -279,7 +279,7 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
 
 void QgsGml::endElement( const XML_Char* el )
 {
-  QString elementName( el );
+  QString elementName( QString::fromUtf8( el ) );
   ParseMode theParseMode( mParseModeStack.isEmpty() ? none : mParseModeStack.top() );
   QStringList splitName =  elementName.split( NS_SEPARATOR );
   QString localName = splitName.last();
