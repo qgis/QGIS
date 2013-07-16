@@ -12,166 +12,73 @@
    width="24"
    height="24"
    id="svg2"
-   sodipodi:version="0.32"
+   version="1.1"
    inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="mActionShowAllLayers.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   version="1.0">
+   sodipodi:docname="mActionShowAllLayers.svg">
   <defs
-     id="defs4">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       id="perspective10" />
-    <inkscape:perspective
-       id="perspective3331"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       id="perspective2502" />
-    <inkscape:perspective
-       id="perspective2504"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       id="perspective2448" />
-    <inkscape:perspective
-       id="perspective2409"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       id="perspective2407"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-  </defs>
+     id="defs4" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
      bordercolor="#666666"
      borderopacity="1.0"
-     gridtolerance="10000"
-     guidetolerance="10"
-     objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="22.061732"
-     inkscape:cx="0.04832133"
-     inkscape:cy="10.251019"
+     inkscape:zoom="15.839192"
+     inkscape:cx="5.9594555"
+     inkscape:cy="-0.51959608"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     showgrid="false"
-     inkscape:window-width="1423"
-     inkscape:window-height="963"
-     inkscape:window-x="2058"
-     inkscape:window-y="24"
-     inkscape:window-maximized="0" />
+     showgrid="true"
+     inkscape:window-width="1370"
+     inkscape:window-height="933"
+     inkscape:window-x="2255"
+     inkscape:window-y="77"
+     inkscape:window-maximized="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2985"
+       empspacing="4"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     style="display:inline"
-     transform="translate(-73.24779,-219.17833)">
-    <text
-       xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Kochi Gothic;-inkscape-font-specification:Kochi Gothic"
-       x="39.930447"
-       y="150.48622"
-       id="text3228">         <tspan
-   sodipodi:role="line"
-   id="tspan3230"
-   x="39.930447"
-   y="150.48622" />       </text>
+     transform="translate(0,-1028.3622)">
     <path
-       inkscape:connector-curvature="0"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#406640;fill-opacity:1;stroke:none;font-family:Webdings;-inkscape-font-specification:Webdings"
-       d="m 78.918123,232.66186 c 0.428571,1e-5 0.752746,0.35166 0.972526,1.05495 0.439558,1.31868 0.752747,1.97803 0.939562,1.97801 0.142854,2e-5 0.291201,-0.10988 0.445062,-0.32968 3.08789,-4.94503 5.945022,-8.94502 8.571409,-11.99998 0.681304,-0.79118 1.763719,-1.18678 3.247256,-1.18681 0.351624,3e-5 0.587885,0.033 0.708783,0.0989 0.120857,0.066 0.181301,0.14835 0.181322,0.24724 -2.1e-5,0.15387 -0.181342,0.45607 -0.543955,0.90659 -4.241767,5.09892 -8.175831,10.48351 -11.802181,16.15382 -0.252764,0.39562 -0.769238,0.59341 -1.549455,0.59341 -0.791214,0 -1.258242,-0.033 -1.401096,-0.0989 -0.373631,-0.16483 -0.81319,-1.00549 -1.318676,-2.52197 -0.571435,-1.68131 -0.857152,-2.73625 -0.857142,-3.16483 -1e-5,-0.46152 0.384609,-0.90658 1.153847,-1.33516 0.472523,-0.26373 0.890095,-0.3956 1.252738,-0.39561"
-       id="path2510" />
+       sodipodi:type="arc"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.10206461;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path3021"
+       sodipodi:cx="11"
+       sodipodi:cy="6"
+       sodipodi:rx="11"
+       sodipodi:ry="6"
+       d="M 22,6 A 11,6 0 1 1 0,6 11,6 0 1 1 22,6 z"
+       transform="matrix(1.0309808,0,0,1.15,0.6592112,1033.4622)" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#779fc8;fill-opacity:1;fill-rule:nonzero;stroke:#2d4e74;stroke-width:0.89552239000000000;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path3791"
+       sodipodi:cx="12.5"
+       sodipodi:cy="12.5"
+       sodipodi:rx="2.5"
+       sodipodi:ry="2.5"
+       d="m 15,12.5 a 2.5,2.5 0 1 1 -5,0 2.5,2.5 0 1 1 5,0 z"
+       transform="matrix(1.34,0,0,1.34,-4.75,1023.6122)" />
   </g>
-  <metadata
-     id="metadata18">
-    <rdf:RDF>
-      <cc:Work>
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <cc:license
-           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
-        <dc:publisher>
-          <cc:Agent
-             rdf:about="http://openclipart.org/">
-            <dc:title>Open Clip Art Library</dc:title>
-          </cc:Agent>
-        </dc:publisher>
-        <dc:title>checkmark_on_circle</dc:title>
-        <dc:date>2008-10-26T10:10:59</dc:date>
-        <dc:description>Checkmarks/ticks on circles
-\nLeft version comes with an intersected circle (as a path). Right version has a full circle. There the tick is a overlay (with a &quot;shadow&quot;; made gray only for visibility)</dc:description>
-        <dc:source>http://openclipart.org/detail/19803/checkmark_on_circle-by-andrea_s</dc:source>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>andrea_S</dc:title>
-          </cc:Agent>
-        </dc:creator>
-        <dc:subject>
-          <rdf:Bag>
-            <rdf:li>check</rdf:li>
-            <rdf:li>check</rdf:li>
-            <rdf:li>checkmark</rdf:li>
-            <rdf:li>checkmark</rdf:li>
-            <rdf:li>circle</rdf:li>
-            <rdf:li>circle</rdf:li>
-            <rdf:li>clip art</rdf:li>
-            <rdf:li>clipart</rdf:li>
-            <rdf:li>image</rdf:li>
-            <rdf:li>media</rdf:li>
-            <rdf:li>png</rdf:li>
-            <rdf:li>public domain</rdf:li>
-            <rdf:li>round</rdf:li>
-            <rdf:li>round</rdf:li>
-            <rdf:li>sign</rdf:li>
-            <rdf:li>sign</rdf:li>
-            <rdf:li>svg</rdf:li>
-            <rdf:li>symbol</rdf:li>
-            <rdf:li>symbol</rdf:li>
-            <rdf:li>tick</rdf:li>
-            <rdf:li>tick</rdf:li>
-          </rdf:Bag>
-        </dc:subject>
-      </cc:Work>
-      <cc:License
-         rdf:about="http://creativecommons.org/licenses/publicdomain/">
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Reproduction" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Distribution" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
-      </cc:License>
-    </rdf:RDF>
-  </metadata>
 </svg>
