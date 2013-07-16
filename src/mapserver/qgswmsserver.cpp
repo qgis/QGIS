@@ -1287,9 +1287,13 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     {
       searchRadius = layerRect.width() / 400;
     }
-    else
+    else if ( layer->geometryType() == QGis::Line )
     {
       searchRadius = layerRect.width() / 200;
+    }
+    else
+    {
+      searchRadius = layerRect.width() / 100;
     }
 
     searchRect.set( infoPoint->x() - searchRadius, infoPoint->y() - searchRadius,
