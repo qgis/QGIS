@@ -434,7 +434,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   }
 
   // Only restore the geometry of the dialog if it's not a custom one.
-  if (!vl->editorLayout() == QgsVectorLayer::UiFileLayout)
+  if ( vl->editorLayout() != QgsVectorLayer::UiFileLayout )
   {
     restoreGeometry();
   }
@@ -455,7 +455,7 @@ QgsAttributeDialog::~QgsAttributeDialog()
   }
 
   // Only save the geometry of the dialog if it's not a custom one.
-  if (!mLayer->editorLayout() == QgsVectorLayer::UiFileLayout)
+  if ( mLayer->editorLayout() != QgsVectorLayer::UiFileLayout )
   {
     saveGeometry();
   }
