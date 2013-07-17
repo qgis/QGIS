@@ -398,7 +398,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   QString bkSubsetString = subsetString;
   if ( !subsetString.isEmpty() )
   {
-    subsetString.append( " AND " );
+    subsetString.prepend( "(" ).append( ") AND " );
   }
 
   QString joinFieldName;
