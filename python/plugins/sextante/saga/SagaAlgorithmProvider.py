@@ -73,6 +73,12 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         folder = SagaUtils.sagaDescriptionPath()
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith("txt"):
+                if SextanteUtils.isWindows() or SextanteUtils.isMac():
+                    if descriptionFile.startswith("2.0.8"):
+                        continue
+                else:
+                    if descriptionFile.startswith("2.1"):
+                        continue
                 try:
                     alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
                     if alg.name.strip() != "":
