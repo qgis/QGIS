@@ -227,10 +227,10 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
     if ( P->spatialIndexRTree )
     {
       // using the RTree spatial index
-      QString mbrFilter = QString( "xmin <= %1 AND " ).arg( QString::number( rect.xMaximum(), 'f', 6 ) );
-      mbrFilter += QString( "xmax >= %1 AND " ).arg( QString::number( rect.xMinimum(), 'f', 6 ) );
-      mbrFilter += QString( "ymin <= %1 AND " ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
-      mbrFilter += QString( "ymax >= %1" ).arg( QString::number( rect.yMinimum(), 'f', 6 ) );
+      QString mbrFilter = QString( "xmin <= %1 AND " ).arg( qgsDoubleToString( rect.xMaximum() ) );
+      mbrFilter += QString( "xmax >= %1 AND " ).arg( qgsDoubleToString( rect.xMinimum() ) );
+      mbrFilter += QString( "ymin <= %1 AND " ).arg( qgsDoubleToString( rect.yMaximum() ) );
+      mbrFilter += QString( "ymax >= %1" ).arg( qgsDoubleToString( rect.yMinimum() ) );
       QString idxName = QString( "idx_%1_%2" ).arg( P->mIndexTable ).arg( P->mIndexGeometry );
       whereClause += QString( "%1 IN (SELECT pkid FROM %2 WHERE %3)" )
                      .arg( quotedPrimaryKey() )
@@ -258,11 +258,11 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
 
 QString QgsSpatiaLiteFeatureIterator::mbr( const QgsRectangle& rect )
 {
-  return QString( "%1, %2, %3, %4" ).
-         arg( QString::number( rect.xMinimum(), 'f', 6 ) ).
-         arg( QString::number( rect.yMinimum(), 'f', 6 ) ).
-         arg( QString::number( rect.xMaximum(), 'f', 6 ) ).
-         arg( QString::number( rect.yMaximum(), 'f', 6 ) );
+  return QString( "%1, %2, %3, %4" )
+         .arg( qgsDoubleToString( rect.xMinimum() ) )
+         .arg( qgsDoubleToString( rect.yMinimum() ) )
+         .arg( qgsDoubleToString( rect.xMaximum() ) )
+         .arg( qgsDoubleToString( rect.yMaximum() ) );
 }
 
 
