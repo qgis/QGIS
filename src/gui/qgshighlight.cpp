@@ -20,8 +20,6 @@
 #include "qgscoordinatetransform.h"
 #include "qgsvectorlayer.h"
 
-#include "qgslogger.h"
-
 /*!
   \class QgsHighlight
   \brief The QgsHighlight class provides a transparent overlay widget
@@ -94,7 +92,7 @@ void QgsHighlight::paintLine( QPainter *p, QgsPolyline line )
 
 void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
 {
-  //// OddEven fill rule by default
+  // OddEven fill rule by default
   QPainterPath path;
 
   p->setPen( mPen );
