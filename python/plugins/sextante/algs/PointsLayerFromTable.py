@@ -18,6 +18,7 @@
 """
 from sextante.parameters.ParameterTable import ParameterTable
 from sextante.parameters.ParameterTableField import ParameterTableField
+from sextante.parameters.ParameterCrs import ParameterCrs
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2013'
@@ -38,6 +39,7 @@ class PointsLayerFromTable(GeoAlgorithm):
     XFIELD = "XFIELD"
     YFIELD = "YFIELD"
     OUTPUT = "OUTPUT"
+    TARGET_CRS = "TARGET_CRS"
 
     def processAlgorithm(self, progress):
         source = self.getParameterValue(self.INPUT)
@@ -48,6 +50,10 @@ class PointsLayerFromTable(GeoAlgorithm):
         writer = output.getVectorWriter(fields, QGis.WKBPoint, self.crs)
         xfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.XFIELD))
         yfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.YFIELD))
+        
+        crsId = self.getParameterValue(self.TARGET_CRS)
+        targetCrs = QgsCoordinateReferenceSystem(crsId)
+        self.crs = targetCrs
 
         outFeat = QgsFeature()
         nElement = 0
@@ -76,5 +82,6 @@ class PointsLayerFromTable(GeoAlgorithm):
         self.addParameter(ParameterTable(self.INPUT, "Input layer"))
         self.addParameter(ParameterTableField(self.XFIELD, "X field", self.INPUT, ParameterTableField.DATA_TYPE_ANY))
         self.addParameter(ParameterTableField(self.YFIELD, "Y field", self.INPUT, ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterCrs(self.TARGET_CRS, "Target CRS", "EPSG:4326"))
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 
