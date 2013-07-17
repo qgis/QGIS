@@ -28,17 +28,17 @@ ELSE(EXISTS QSCINTILLA_VERSION_STR)
     NAMES qsciglobal.h
     PATHS
       "${QT_INCLUDE_DIR}/Qsci"
-      /usr/include
-      /usr/include/Qsci
       /usr/local/include/Qsci
+      /usr/include/Qsci
+      /usr/include
     )
 
   FIND_LIBRARY(QSCINTILLA_LIBRARY
     NAMES qscintilla2 libqscintilla2 libqscintilla2.dylib
     PATHS
       "${QT_LIBRARY_DIR}"
-      /usr/lib
       /usr/local/lib
+      /usr/lib
     )
 
   IF(QSCINTILLA_LIBRARY)

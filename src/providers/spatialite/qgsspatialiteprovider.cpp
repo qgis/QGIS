@@ -446,7 +446,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   gaiaVectorLayersListPtr list = NULL;
   gaiaVectorLayerPtr lyr = NULL;
   bool specialCase = false;
-  if ( mGeometryColumn.isNull() )
+  if ( mGeometryColumn.isEmpty() )
     specialCase = true; // non-spatial table
   if ( mQuery.startsWith( "(" ) && mQuery.endsWith( ")" ) )
     specialCase = true;
@@ -493,7 +493,8 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   {
     // enabling editing only for Tables [excluding Views and VirtualShapes]
     enabledCapabilities |= QgsVectorDataProvider::DeleteFeatures;
-    enabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
+    if ( !mGeometryColumn.isEmpty() )
+      enabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
     enabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
     enabledCapabilities |= QgsVectorDataProvider::AddFeatures;
     enabledCapabilities |= QgsVectorDataProvider::AddAttributes;
@@ -597,6 +598,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
 
   attributeFields.clear();
   mPrimaryKey.clear(); // cazzo cazzo cazzo
+  mPrimaryKeyAttrs.clear();
 
   gaiaLayerAttributeFieldPtr fld = lyr->First;
   if ( fld == NULL )
@@ -692,6 +694,7 @@ void QgsSpatiaLiteProvider::loadFields()
   if ( !isQuery )
   {
     mPrimaryKey.clear();
+    mPrimaryKeyAttrs.clear();
 
     sql = QString( "PRAGMA table_info(%1)" ).arg( quotedIdentifier( mTableName ) );
 
@@ -712,6 +715,8 @@ void QgsSpatiaLiteProvider::loadFields()
           // found a Primary Key column
           pkCount++;
           pkName = name;
+          mPrimaryKeyAttrs << i - 1;
+          QgsDebugMsg( "found primaryKey " + name );
         }
 
         if ( name != mGeometryColumn )
@@ -777,6 +782,8 @@ void QgsSpatiaLiteProvider::loadFields()
         {
           pkCount++;
           pkName = name;
+          mPrimaryKeyAttrs << i - 1;
+          QgsDebugMsg( "found primaryKey " + name );
         }
 
         if ( name != mGeometryColumn )
@@ -3523,7 +3530,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
   values = QString( ") VALUES (" );
   separator = "";
 
-  if ( !mGeometryColumn.isNull() )
+  if ( !mGeometryColumn.isEmpty() )
   {
     sql += separator + quotedIdentifier( mGeometryColumn );
     values += separator + geomParam();
@@ -3570,7 +3577,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
     // initializing the column counter
     ia = 0;
 
-    if ( !mGeometryColumn.isNull() )
+    if ( !mGeometryColumn.isEmpty() )
     {
       // binding GEOMETRY to Prepared Statement
       if ( !features->geometry() )
@@ -4164,7 +4171,7 @@ bool QgsSpatiaLiteProvider::checkLayerTypeAbstractInterface( gaiaVectorLayerPtr 
     case GAIA_VECTOR_VIRTUAL:
       mVShapeBased = true;
       break;
-  };
+  }
 
   if ( lyr->AuthInfos )
   {
@@ -4202,7 +4209,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
 
   QString sql;
 
-  if ( mGeometryColumn.isNull() )
+  if ( mGeometryColumn.isEmpty() )
   {
     // checking if is a non-spatial table
     sql = QString( "SELECT type FROM sqlite_master "
@@ -4400,7 +4407,8 @@ bool QgsSpatiaLiteProvider::getGeometryDetailsAbstractInterface( gaiaVectorLayer
     default:
       geomType = QGis::WKBUnknown;
       break;
-  };
+  }
+
   mSrid = lyr->Srid;
   if ( lyr->SpatialIndex == GAIA_SPATIAL_INDEX_RTREE )
   {
@@ -4424,7 +4432,7 @@ bool QgsSpatiaLiteProvider::getGeometryDetailsAbstractInterface( gaiaVectorLayer
     case GAIA_XY_Z_M:
       nDims = GAIA_XY_Z_M;
       break;
-  };
+  }
 
   if ( mViewBased && spatialIndexRTree )
     getViewSpatialIndexName();
@@ -4478,7 +4486,7 @@ error:
 bool QgsSpatiaLiteProvider::getGeometryDetails()
 {
   bool ret = false;
-  if ( mGeometryColumn.isNull() )
+  if ( mGeometryColumn.isEmpty() )
   {
     geomType = QGis::WKBNoGeometry;
     return true;
@@ -4915,9 +4923,14 @@ bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr
     layerExtent.set( lyr->ExtentInfos->MinX, lyr->ExtentInfos->MinY,
                      lyr->ExtentInfos->MaxX, lyr->ExtentInfos->MaxY );
     numberFeatures = lyr->ExtentInfos->Count;
-    return true;
   }
-  return false;
+  else
+  {
+    layerExtent.setMinimal();
+    numberFeatures = 0;
+  }
+
+  return true;
 }
 #endif
 
@@ -4930,9 +4943,8 @@ bool QgsSpatiaLiteProvider::getTableSummary()
   int columns;
   char *errMsg = NULL;
 
-  QString sql = QString( "SELECT Min(MbrMinX(%1)), Min(MbrMinY(%1)), "
-                         "Max(MbrMaxX(%1)), Max(MbrMaxY(%1)), Count(*) " "FROM %2" )
-                .arg( quotedIdentifier( mGeometryColumn ) )
+  QString sql = QString( "SELECT Count(*)%1 FROM %2" )
+                .arg( mGeometryColumn.isEmpty() ? "" : QString( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedIdentifier( mGeometryColumn ) ) )
                 .arg( mQuery );
 
   if ( !mSubsetString.isEmpty() )
@@ -4949,14 +4961,22 @@ bool QgsSpatiaLiteProvider::getTableSummary()
   {
     for ( i = 1; i <= rows; i++ )
     {
-      QString minX = results[( i * columns ) + 0];
-      QString minY = results[( i * columns ) + 1];
-      QString maxX = results[( i * columns ) + 2];
-      QString maxY = results[( i * columns ) + 3];
-      QString count = results[( i * columns ) + 4];
-
-      layerExtent.set( minX.toDouble(), minY.toDouble(), maxX.toDouble(), maxY.toDouble() );
+      QString count = results[( i * columns ) + 0];
       numberFeatures = count.toLong();
+
+      if ( mGeometryColumn.isEmpty() )
+      {
+        layerExtent.setMinimal();
+      }
+      else
+      {
+        QString minX = results[( i * columns ) + 1];
+        QString minY = results[( i * columns ) + 2];
+        QString maxX = results[( i * columns ) + 3];
+        QString maxY = results[( i * columns ) + 4];
+
+        layerExtent.set( minX.toDouble(), minY.toDouble(), maxX.toDouble(), maxY.toDouble() );
+      }
     }
   }
   sqlite3_free_table( results );
@@ -5197,3 +5217,9 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
 
   return true;
 }
+
+QgsAttributeList QgsSpatiaLiteProvider::pkAttributeIndexes()
+{
+  return mPrimaryKeyAttrs;
+}
+

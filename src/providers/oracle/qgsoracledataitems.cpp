@@ -404,7 +404,7 @@ void QgsOracleOwnerItem::addLayer( QgsOracleLayerProperty layerProperty )
 QgsOracleRootItem::QgsOracleRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconOracle.png" );
+  mIcon = QgsApplication::getThemeIcon( "mIconOracle.svg" );
   populate();
 }
 

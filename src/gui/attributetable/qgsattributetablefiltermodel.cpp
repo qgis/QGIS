@@ -78,6 +78,12 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
     case QVariant::Double:
       return leftData.toDouble() < rightData.toDouble();
 
+    case QVariant::Date:
+      return leftData.toDate() < rightData.toDate();
+
+    case QVariant::DateTime:
+      return leftData.toDateTime() < rightData.toDateTime();
+
     default:
       return leftData.toString().localeAwareCompare( rightData.toString() ) < 0;
   }

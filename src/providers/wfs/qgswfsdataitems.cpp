@@ -24,13 +24,12 @@
 #include <QCoreApplication>
 
 
-QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSourceURI uri, QString featureType, QString title )
+QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSourceURI uri, QString featureType, QString title, QString crsString )
     : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Vector, "WFS" )
 {
-  mUri = QgsWFSCapabilities( uri.encodedUri() ).uriGetFeature( featureType );
+  mUri = QgsWFSCapabilities( uri.encodedUri() ).uriGetFeature( featureType, crsString );
   mPopulated = true;
-  //mIcon = QIcon( getThemePixmap( "mIconVectorLayer.png" ) );
-  mIcon = QgsApplication::getThemeIcon( "mIconWfs.png" );
+  mIcon = QgsApplication::getThemeIcon( "mIconWfs.svg" );
 }
 
 QgsWFSLayerItem::~QgsWFSLayerItem()
@@ -42,7 +41,7 @@ QgsWFSLayerItem::~QgsWFSLayerItem()
 QgsWFSConnectionItem::QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path ), mName( name ), mCapabilities( NULL )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconWfs.png" );
+  mIcon = QgsApplication::getThemeIcon( "mIconWfs.svg" );
 }
 
 QgsWFSConnectionItem::~QgsWFSConnectionItem()
@@ -75,7 +74,7 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
     foreach ( const QgsWFSCapabilities::FeatureType& featureType, caps.featureTypes )
     {
       //QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, featureType.name, featureType.title );
-      QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, uri, featureType.name, featureType.title );
+      QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, uri, featureType.name, featureType.title, featureType.crslist.first() );
       layers.append( layer );
     }
   }
@@ -138,7 +137,7 @@ void QgsWFSConnectionItem::deleteConnection()
 QgsWFSRootItem::QgsWFSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconWfs.png" );
+  mIcon = QgsApplication::getThemeIcon( "mIconWfs.svg" );
 
   populate();
 }

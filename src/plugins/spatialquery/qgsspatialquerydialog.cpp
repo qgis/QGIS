@@ -408,15 +408,15 @@ QIcon QgsSpatialQueryDialog::getIconTypeGeometry( QGis::GeometryType geomType )
   QString theName;
   if ( geomType == QGis::Point )
   {
-    theName = "/mIconPointLayer.png";
+    theName = "/mIconPointLayer.svg";
   }
   else if ( geomType == QGis::Line )
   {
-    theName = "/mIconLineLayer.png";
+    theName = "/mIconLineLayer.svg";
   }
   else // Polygon
   {
-    theName = "/mIconPolygonLayer.png";
+    theName = "/mIconPolygonLayer.svg";
   }
   // Copy from qgisapp.cpp
   QString myPreferredPath = QgsApplication::activeThemePath() + QDir::separator() + theName;

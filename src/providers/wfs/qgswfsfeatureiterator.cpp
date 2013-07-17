@@ -74,16 +74,7 @@ bool QgsWFSFeatureIterator::nextFeature( QgsFeature& f )
   }
   QgsFeature* fet =  it.value();
 
-  QgsAttributeList attributes;
-  if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
-  {
-    attributes = mRequest.subsetOfAttributes();
-  }
-  else
-  {
-    attributes = mProvider->attributeIndexes();
-  }
-  mProvider->copyFeature( fet, f, !( mRequest.flags() & QgsFeatureRequest::NoGeometry ), attributes );
+  mProvider->copyFeature( fet, f, !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) );
   ++mFeatureIterator;
   return true;
 }

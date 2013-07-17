@@ -42,6 +42,10 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       // iterate proxies factories and take first non empty list
       foreach ( QNetworkProxyFactory *f, nam->proxyFactories() )
       {
+        QList<QNetworkProxy> systemproxies = f->systemProxyForQuery( query );
+        if ( systemproxies.size() > 0 )
+          return systemproxies;
+
         QList<QNetworkProxy> proxies = f->queryProxy( query );
         if ( proxies.size() > 0 )
           return proxies;

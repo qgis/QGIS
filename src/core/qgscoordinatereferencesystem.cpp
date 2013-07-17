@@ -1722,7 +1722,7 @@ int QgsCoordinateReferenceSystem::syncDb()
     {
       srsProj4 = ( const char * ) sqlite3_column_text( select, 0 );
 
-      if( QString::fromUtf8(( char * )sqlite3_column_text( select, 1 ) ).toInt() != 0 )
+      if ( QString::fromUtf8(( char * )sqlite3_column_text( select, 1 ) ).toInt() != 0 )
         continue;
     }
 

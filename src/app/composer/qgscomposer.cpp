@@ -384,21 +384,21 @@ void QgsComposer::setupTheme()
   //now set all the icons - getThemeIcon will fall back to default theme if its
   //missing from active theme
   mActionQuit->setIcon( QgsApplication::getThemeIcon( "/mActionFileExit.png" ) );
-  mActionSaveProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.png" ) );
-  mActionNewComposer->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.png" ) );
-  mActionDuplicateComposer->setIcon( QgsApplication::getThemeIcon( "/mActionDuplicateComposer.png" ) );
-  mActionComposerManager->setIcon( QgsApplication::getThemeIcon( "/mActionComposerManager.png" ) );
-  mActionNewFromTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.png" ) );
-  mActionLoadFromTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.png" ) );
-  mActionSaveAsTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionFileSaveAs.png" ) );
+  mActionSaveProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.svg" ) );
+  mActionNewComposer->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.svg" ) );
+  mActionDuplicateComposer->setIcon( QgsApplication::getThemeIcon( "/mActionDuplicateComposer.svg" ) );
+  mActionComposerManager->setIcon( QgsApplication::getThemeIcon( "/mActionComposerManager.svg" ) );
+  mActionNewFromTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.svg" ) );
+  mActionLoadFromTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.svg" ) );
+  mActionSaveAsTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionFileSaveAs.svg" ) );
   mActionExportAsImage->setIcon( QgsApplication::getThemeIcon( "/mActionSaveMapAsImage.png" ) );
   mActionExportAsSVG->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAsSVG.png" ) );
   mActionExportAsPDF->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAsPDF.png" ) );
   mActionPrint->setIcon( QgsApplication::getThemeIcon( "/mActionFilePrint.png" ) );
-  mActionZoomAll->setIcon( QgsApplication::getThemeIcon( "/mActionZoomFullExtent.png" ) );
-  mActionZoomIn->setIcon( QgsApplication::getThemeIcon( "/mActionZoomIn.png" ) );
-  mActionZoomOut->setIcon( QgsApplication::getThemeIcon( "/mActionZoomOut.png" ) );
-  mActionRefreshView->setIcon( QgsApplication::getThemeIcon( "/mActionDraw.png" ) );
+  mActionZoomAll->setIcon( QgsApplication::getThemeIcon( "/mActionZoomFullExtent.svg" ) );
+  mActionZoomIn->setIcon( QgsApplication::getThemeIcon( "/mActionZoomIn.svg" ) );
+  mActionZoomOut->setIcon( QgsApplication::getThemeIcon( "/mActionZoomOut.svg" ) );
+  mActionRefreshView->setIcon( QgsApplication::getThemeIcon( "/mActionDraw.svg" ) );
   mActionUndo->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.png" ) );
   mActionRedo->setIcon( QgsApplication::getThemeIcon( "/mActionRedo.png" ) );
   mActionAddImage->setIcon( QgsApplication::getThemeIcon( "/mActionAddImage.png" ) );
@@ -973,14 +973,14 @@ void QgsComposer::on_mActionExportAsImage_triggered()
     for ( int i = 0; i < mComposition->numPages(); ++i )
     {
       QImage image = mComposition->printPageAsRaster( i );
-      if (image.isNull())
+      if ( image.isNull() )
       {
         QMessageBox::warning( 0, tr( "Memory Allocation Error" ),
-                                             tr( "Trying to create image #%1( %2x%3 @ %4dpi ) "
-                                                 "may result in a memory overflow.\n"
-                                                 "Please try a lower resolution or a smaller papersize" )
-                                             .arg( i+1 ).arg( width ).arg( height ).arg ( dpi ),
-                                             QMessageBox::Ok ,  QMessageBox::Ok );
+                              tr( "Trying to create image #%1( %2x%3 @ %4dpi ) "
+                                  "may result in a memory overflow.\n"
+                                  "Please try a lower resolution or a smaller papersize" )
+                              .arg( i + 1 ).arg( width ).arg( height ).arg( dpi ),
+                              QMessageBox::Ok ,  QMessageBox::Ok );
         mView->setPaintingEnabled( true );
         return;
       }
@@ -1756,14 +1756,22 @@ void QgsComposer::saveWindowState()
   settings.setValue( "/ComposerUI/state", saveState() );
 }
 
+#include "ui_defaults.h"
+
 void QgsComposer::restoreWindowState()
 {
+  // restore the toolbar and dock widgets postions using Qt4 settings API
   QSettings settings;
-  if ( ! restoreState( settings.value( "/ComposerUI/state" ).toByteArray() ) )
+
+  if ( !restoreState( settings.value( "/ComposerUI/state", QByteArray::fromRawData(( char * )defaultComposerUIstate, sizeof defaultComposerUIstate ) ).toByteArray() ) )
   {
-    QgsDebugMsg( "RESTORE STATE FAILED!!" );
+    QgsDebugMsg( "restore of composer UI state failed" );
   }
-  restoreGeometry( settings.value( "/Composer/geometry" ).toByteArray() );
+  // restore window geometry
+  if ( !restoreGeometry( settings.value( "/Composer/geometry", QByteArray::fromRawData(( char * )defaultComposerUIgeometry, sizeof defaultComposerUIgeometry ) ).toByteArray() ) )
+  {
+    QgsDebugMsg( "restore of composer UI geometry failed" );
+  }
 }
 
 void  QgsComposer::writeXML( QDomDocument& doc )

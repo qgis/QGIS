@@ -25,11 +25,9 @@
 
 static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 
-QgsWFSCapabilities::QgsWFSCapabilities( QString theUri ) :
-    //QObject( parent ),
-    //mConnName( connName ),
-    mCapabilitiesReply( 0 ),
-    mErrorCode( QgsWFSCapabilities::NoError )
+QgsWFSCapabilities::QgsWFSCapabilities( QString theUri )
+    : mCapabilitiesReply( 0 )
+    , mErrorCode( QgsWFSCapabilities::NoError )
 {
   mUri.setEncodedUri( theUri );
   QgsDebugMsg( "theUri = " + theUri );
@@ -38,7 +36,7 @@ QgsWFSCapabilities::QgsWFSCapabilities( QString theUri ) :
   QgsDebugMsg( "mBaseUrl = " + mBaseUrl );
 
   //find out the server URL
-  /*
+#if 0
   QSettings settings;
   QString key = "/Qgis/connections-wfs/" + mConnName + "/url";
   mUri = settings.value( key ).toString();
@@ -54,7 +52,7 @@ QgsWFSCapabilities::QgsWFSCapabilities( QString theUri ) :
   {
     mUri.append( "&" );
   }
-  */
+#endif
 }
 
 QString QgsWFSCapabilities::prepareUri( QString uri )
@@ -148,8 +146,7 @@ void QgsWFSCapabilities::requestCapabilities()
 
 void QgsWFSCapabilities::capabilitiesReplyFinished()
 {
-  QNetworkReply* reply = mCapabilitiesReply;
-
+  QNetworkReply *reply = mCapabilitiesReply;
   reply->deleteLater();
   mCapabilitiesReply = 0;
 

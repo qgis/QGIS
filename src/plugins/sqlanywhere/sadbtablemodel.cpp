@@ -293,15 +293,15 @@ QIcon SaDbTableModel::iconForType( QGis::WkbType type ) const
 {
   if ( type == QGis::WKBPoint || type == QGis::WKBPoint25D || type == QGis::WKBMultiPoint || type == QGis::WKBMultiPoint25D )
   {
-    return SqlAnywhere::getThemeIcon( "/mIconPointLayer.png" );
+    return SqlAnywhere::getThemeIcon( "/mIconPointLayer.svg" );
   }
   else if ( type == QGis::WKBLineString || type == QGis::WKBLineString25D || type == QGis::WKBMultiLineString || type == QGis::WKBMultiLineString25D )
   {
-    return SqlAnywhere::getThemeIcon( "/mIconLineLayer.png" );
+    return SqlAnywhere::getThemeIcon( "/mIconLineLayer.svg" );
   }
   else if ( type == QGis::WKBPolygon || type == QGis::WKBPolygon25D || type == QGis::WKBMultiPolygon || type == QGis::WKBMultiPolygon25D )
   {
-    return SqlAnywhere::getThemeIcon( "/mIconPolygonLayer.png" );
+    return SqlAnywhere::getThemeIcon( "/mIconPolygonLayer.svg" );
   }
   else
   {

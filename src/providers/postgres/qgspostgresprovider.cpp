@@ -164,8 +164,8 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (decimal)" ), "decimal", QVariant::Double, 1, 20, 0, 20 )
 
   // floating point
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "real", QVariant::Double )
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "double precision", QVariant::Double )
+  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "real", QVariant::Double, -1, -1, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "double precision", QVariant::Double, -1, -1, -1, -1 )
 
   // string types
   << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "char", QVariant::String, 1, 255 )
@@ -2190,8 +2190,8 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
         result = mConnectionRO->PQexecPrepared( "getid", params );
         if ( result.PQresultStatus() != PGRES_TUPLES_OK )
         {
-          QgsDebugMsg( QString( "Exception thrown due to PQexecPrepared of 'getid' returning != PGRES_COMMAND_OK (%1 != expected %2)" )
-                       .arg( result.PQresultStatus() ).arg( PGRES_COMMAND_OK ) );
+          QgsDebugMsg( QString( "Exception thrown due to PQexecPrepared of 'getid' returning != PGRES_TUPLES_OK (%1 != expected %2)" )
+                       .arg( result.PQresultStatus() ).arg( PGRES_TUPLES_OK ) );
           throw PGException( result );
         }
         // TODO: watch out for NULL , handle somehow
@@ -2207,7 +2207,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       int expected_status = ( mSpatialColType == sctTopoGeometry ) ? PGRES_TUPLES_OK : PGRES_COMMAND_OK;
       if ( result.PQresultStatus() != expected_status )
       {
-        QgsDebugMsg( QString( "Exception thrown due to PQexecPrepared of 'getid' returning != PGRES_COMMAND_OK (%1 != expected %2)" )
+        QgsDebugMsg( QString( "Exception thrown due to PQexecPrepared of 'updatefeatures' returning %1 != expected %2" )
                      .arg( result.PQresultStatus() ).arg( expected_status ) );
         throw PGException( result );
       }

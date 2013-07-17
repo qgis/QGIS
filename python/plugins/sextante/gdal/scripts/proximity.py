@@ -32,7 +32,7 @@ __revision__ = '$Format:%H$'
 ##values=string
 ##maxdist=number 0
 ##nodata=number 0
-##distunits=selection PIXEL;GEO
+##distunits=selection GEO,PIXEL
 ##fixed_buf_val=number 0
 from sextante.gdal.GdalUtils import GdalUtils
 try:

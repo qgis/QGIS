@@ -124,6 +124,10 @@ void HeatmapGui::blockAllSignals( bool b )
   radiusFieldCombo->blockSignals( b );
   advancedGroupBox->blockSignals( b );
   kernelShapeCombo->blockSignals( b );
+  rowsSpinBox->blockSignals( b );
+  columnsSpinBox->blockSignals( b );
+  cellXLineEdit->blockSignals( b );
+  cellYLineEdit->blockSignals( b );
 }
 
 /*
@@ -285,7 +289,7 @@ void HeatmapGui::on_rowsSpinBox_valueChanged()
   mRows = rowsSpinBox->value();
   mYcellsize = mBBox.height() / mRows;
   mXcellsize = mYcellsize;
-  mColumns = max( qRound( mBBox.width() / mXcellsize ), 1 );
+  mColumns = max( qRound( mBBox.width() / mXcellsize ) + 1, 1 );
 
   updateSize();
 }
@@ -293,7 +297,7 @@ void HeatmapGui::on_rowsSpinBox_valueChanged()
 void HeatmapGui::on_columnsSpinBox_valueChanged()
 {
   mColumns = columnsSpinBox->value();
-  mXcellsize = mBBox.width() / mColumns;
+  mXcellsize = mBBox.width() / ( mColumns - 1 );
   mYcellsize = mXcellsize;
   mRows = max( qRound( mBBox.height() / mYcellsize ), 1 );
 
@@ -304,8 +308,8 @@ void HeatmapGui::on_cellXLineEdit_editingFinished()
 {
   mXcellsize = cellXLineEdit->text().toDouble();
   mYcellsize = mXcellsize;
-  mRows = max( qRound( mBBox.height() / mYcellsize ), 1 );
-  mColumns = max( qRound( mBBox.width() / mXcellsize ), 1 );
+  mRows = max( qRound( mBBox.height() / mYcellsize ) + 1, 1 );
+  mColumns = max( qRound( mBBox.width() / mXcellsize ) + 1, 1 );
 
   updateSize();
 }
@@ -314,8 +318,8 @@ void HeatmapGui::on_cellYLineEdit_editingFinished()
 {
   mYcellsize = cellYLineEdit->text().toDouble();
   mXcellsize = mYcellsize;
-  mRows = max( qRound( mBBox.height() / mYcellsize ), 1 );
-  mColumns = max( qRound( mBBox.width() / mXcellsize ), 1 );
+  mRows = max( qRound( mBBox.height() / mYcellsize ) + 1, 1 );
+  mColumns = max( qRound( mBBox.width() / mXcellsize ) + 1, 1 );
 
   updateSize();
 }
@@ -447,10 +451,12 @@ void HeatmapGui::populateFields()
 
 void HeatmapGui::updateSize()
 {
+  blockAllSignals( true );
   rowsSpinBox->setValue( mRows );
   columnsSpinBox->setValue( mColumns );
   cellXLineEdit->setText( QString::number( mXcellsize ) );
   cellYLineEdit->setText( QString::number( mYcellsize ) );
+  blockAllSignals( false );
 }
 
 void HeatmapGui::updateBBox()
@@ -496,10 +502,9 @@ void HeatmapGui::updateBBox()
   mBBox.setYMaximum( mBBox.yMaximum() + radiusInMapUnits );
 
   // Leave number of rows the same, and calculate new corresponding cell size and number of columns
-  mYcellsize = mBBox.height() / mRows;
+  mYcellsize = mBBox.height() / ( mRows - 1 );
   mXcellsize = mYcellsize;
-  mColumns = max( mBBox.width() / mXcellsize, 1 );
-
+  mColumns = max( mBBox.width() / mXcellsize + 1, 1 );
   updateSize();
 }
 

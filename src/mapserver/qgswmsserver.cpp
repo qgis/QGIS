@@ -380,17 +380,18 @@ QImage* QgsWMSServer::getLegendGraphics()
                            boxSpace, layerSpace, layerTitleSpace, symbolSpace, iconLabelSpace, symbolWidth, symbolHeight, fontOversamplingFactor,
                            theImage->dotsPerMeterX() * 0.0254 );
     }
+    currentY += layerSpace;
   }
   currentY += boxSpace;
 
   //create second image with the right dimensions
-  QImage* paintImage = createImage( maxTextWidth + maxSymbolWidth, currentY );
+  QImage* paintImage = createImage( maxTextWidth + maxSymbolWidth, ceil( currentY ) );
 
   //go through the items a second time for painting
   QPainter p( paintImage );
   p.setRenderHint( QPainter::Antialiasing, true );
-  currentY = boxSpace;
 
+  currentY = boxSpace;
   for ( int i = 0; i < numLayerItems; ++i )
   {
     QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( rootItem->child( i ) );
@@ -1286,9 +1287,13 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     {
       searchRadius = layerRect.width() / 400;
     }
-    else
+    else if ( layer->geometryType() == QGis::Line )
     {
       searchRadius = layerRect.width() / 200;
+    }
+    else
+    {
+      searchRadius = layerRect.width() / 100;
     }
 
     searchRect.set( infoPoint->x() - searchRadius, infoPoint->y() - searchRadius,

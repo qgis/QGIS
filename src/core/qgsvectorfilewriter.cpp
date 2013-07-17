@@ -89,6 +89,15 @@ QgsVectorFileWriter::QgsVectorFileWriter(
       dsOptions.append( "SPATIALITE=YES" );
     }
   }
+  else if ( driverName == "DBF file" )
+  {
+    ogrDriverName = "ESRI Shapefile";
+    if ( !layOptions.contains( "SHPT=NULL" ) )
+    {
+      layOptions.append( "SHPT=NULL" );
+    }
+    srs = 0;
+  }
   else
   {
     ogrDriverName = driverName;
@@ -109,7 +118,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     return;
   }
 
-  if ( driverName == "ESRI Shapefile" )
+  if ( ogrDriverName == "ESRI Shapefile" )
   {
     if ( layOptions.join( "" ).toUpper().indexOf( "ENCODING=" ) == -1 )
     {
@@ -118,10 +127,13 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
     CPLSetConfigOption( "SHAPE_ENCODING", "" );
 
-    if ( !vectorFileName.endsWith( ".shp", Qt::CaseInsensitive ) &&
-         !vectorFileName.endsWith( ".dbf", Qt::CaseInsensitive ) )
+    if ( driverName == "ESRI Shapefile" && !vectorFileName.endsWith( ".shp", Qt::CaseInsensitive ) )
     {
       vectorFileName += ".shp";
+    }
+    else if ( driverName == "DBF file" && !vectorFileName.endsWith( ".dbf", Qt::CaseInsensitive ) )
+    {
+      vectorFileName += ".dbf";
     }
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM < 1700
@@ -198,7 +210,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   }
 
   // create the data source
-  mDS = OGR_Dr_CreateDataSource( poDriver, TO8( vectorFileName ), options );
+  mDS = OGR_Dr_CreateDataSource( poDriver, TO8F( vectorFileName ), options );
 
   if ( options )
   {
@@ -270,7 +282,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
   if ( srs )
   {
-    if ( driverName == "ESRI Shapefile" )
+    if ( ogrDriverName == "ESRI Shapefile" )
     {
       QString layerName = vectorFileName.left( vectorFileName.indexOf( ".shp", Qt::CaseInsensitive ) );
       QFile prjFile( layerName + ".qpj" );
@@ -354,8 +366,35 @@ QgsVectorFileWriter::QgsVectorFileWriter(
         return;
     }
 
+    QString name( attrField.name() );
+
+    if ( ogrDriverName == "SQLite" && name.compare( "ogc_fid", Qt::CaseInsensitive ) == 0 )
+    {
+      int i;
+      for ( i = 0; i < 10; i++ )
+      {
+        name = QString( "ogc_fid%1" ).arg( i );
+
+        int j;
+        for ( j = 0; j < fields.size() && name.compare( fields[j].name(), Qt::CaseInsensitive ) != 0; j++ )
+          ;
+
+        if ( j == fields.size() )
+          break;
+      }
+
+      if ( i == 10 )
+      {
+        mErrorMessage = QObject::tr( "no available replacement for internal fieldname ogc_fid found" ).arg( attrField.name() );
+        mError = ErrAttributeCreationFailed;
+        return;
+      }
+
+      QgsMessageLog::logMessage( QObject::tr( "Reserved attribute name ogc_fid replaced with %1" ).arg( name ), QObject::tr( "OGR" ) );
+    }
+
     // create field definition
-    OGRFieldDefnH fld = OGR_Fld_Create( mCodec->fromUnicode( attrField.name() ), ogrType );
+    OGRFieldDefnH fld = OGR_Fld_Create( mCodec->fromUnicode( name ), ogrType );
     if ( ogrWidth > 0 )
     {
       OGR_Fld_SetWidth( fld, ogrWidth );
@@ -383,7 +422,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     }
     OGR_Fld_Destroy( fld );
 
-    int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( attrField.name() ) );
+    int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( name ) );
     if ( ogrIdx < 0 )
     {
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM < 1700
@@ -703,7 +742,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   QgsCoordinateTransform* ct = 0;
   int shallTransform = false;
 
-  if ( layer == NULL )
+  if ( !layer )
   {
     return ErrInvalidLayer;
   }
@@ -985,15 +1024,20 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
           poDriver = OGRGetDriverByName( drvName.toLocal8Bit().data() );
           if ( poDriver )
           {
-            OGRDataSourceH ds = OGR_Dr_CreateDataSource( poDriver, TO8( QString( "/vsimem/spatialitetest.sqlite" ) ), options );
+            OGRDataSourceH ds = OGR_Dr_CreateDataSource( poDriver, TO8F( QString( "/vsimem/spatialitetest.sqlite" ) ), options );
             if ( ds )
             {
               writableDrivers << "SpatiaLite";
+              OGR_Dr_DeleteDataSource( poDriver, TO8F( QString( "/vsimem/spatialitetest.sqlite" ) ) );
               OGR_DS_Destroy( ds );
             }
           }
           CPLFree( options[0] );
           delete [] options;
+        }
+        else if ( drvName == "ESRI Shapefile" )
+        {
+          writableDrivers << "DBF file";
         }
         writableDrivers << drvName;
       }
@@ -1088,6 +1132,13 @@ bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName,
     trLongName = QObject::tr( "ESRI Shapefile" );
     glob = "*.shp";
     ext = "shp";
+  }
+  else if ( driverName.startsWith( "DBF file" ) )
+  {
+    longName = "DBF File";
+    trLongName = QObject::tr( "DBF file" );
+    glob = "*.dbf";
+    ext = "dbf";
   }
   else if ( driverName.startsWith( "FMEObjects Gateway" ) )
   {

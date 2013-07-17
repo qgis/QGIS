@@ -126,7 +126,7 @@ bool QgsCompositionChecker::compareImages( const QImage& imgExpected, const QIma
     differenceImage.save( differenceImagePath, "PNG" );
   }
 
-  //allow pixel deviation of 1 percent
+  //allow pixel deviation of 1 per mille
   int pixelCount = imageWidth * imageHeight;
-  return (( double )mismatchCount / ( double )pixelCount ) < 0.01;
+  return (( double )mismatchCount / ( double )pixelCount ) < 0.001;
 }

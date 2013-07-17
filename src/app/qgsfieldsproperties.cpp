@@ -294,6 +294,7 @@ void QgsFieldsProperties::loadRows()
   mAttributesList->setHorizontalHeaderItem( attrIdCol, new QTableWidgetItem( tr( "Id" ) ) );
   mAttributesList->setHorizontalHeaderItem( attrNameCol, new QTableWidgetItem( tr( "Name" ) ) );
   mAttributesList->setHorizontalHeaderItem( attrTypeCol, new QTableWidgetItem( tr( "Type" ) ) );
+  mAttributesList->setHorizontalHeaderItem( attrTypeNameCol, new QTableWidgetItem( tr( "Type name" ) ) );
   mAttributesList->setHorizontalHeaderItem( attrLengthCol, new QTableWidgetItem( tr( "Length" ) ) );
   mAttributesList->setHorizontalHeaderItem( attrPrecCol, new QTableWidgetItem( tr( "Precision" ) ) );
   mAttributesList->setHorizontalHeaderItem( attrCommentCol, new QTableWidgetItem( tr( "Comment" ) ) );
@@ -319,7 +320,8 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField &field )
   mAttributesList->setItem( row, attrIdCol, new QTableWidgetItem( idx ) );
   mIndexedWidgets.insert( idx, mAttributesList->item( row, 0 ) );
   mAttributesList->setItem( row, attrNameCol, new QTableWidgetItem( field.name() ) );
-  mAttributesList->setItem( row, attrTypeCol, new QTableWidgetItem( field.typeName() ) );
+  mAttributesList->setItem( row, attrTypeCol, new QTableWidgetItem( QVariant::typeToName( field.type() ) ) );
+  mAttributesList->setItem( row, attrTypeNameCol, new QTableWidgetItem( field.typeName() ) );
   mAttributesList->setItem( row, attrLengthCol, new QTableWidgetItem( QString::number( field.length() ) ) );
   mAttributesList->setItem( row, attrPrecCol, new QTableWidgetItem( QString::number( field.precision() ) ) );
   mAttributesList->setItem( row, attrCommentCol, new QTableWidgetItem( field.comment() ) );

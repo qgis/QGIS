@@ -118,6 +118,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
 
   protected:
     QBrush mBrush;
+    double mNextAngle; // mAngle / data defined angle
 
     /**Outline width*/
     double mOutlineWidth;

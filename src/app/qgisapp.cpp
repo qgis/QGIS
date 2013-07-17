@@ -989,7 +989,7 @@ void QgisApp::createActions()
   // Layer Menu Items
 
   connect( mActionNewVectorLayer, SIGNAL( triggered() ), this, SLOT( newVectorLayer() ) );
-  connect( mActionNewSpatialiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
+  connect( mActionNewSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
   connect( mActionShowRasterCalculator, SIGNAL( triggered() ), this, SLOT( showRasterCalculator() ) );
   connect( mActionEmbedLayers, SIGNAL( triggered() ) , this, SLOT( embedLayers() ) );
   connect( mActionAddOgrLayer, SIGNAL( triggered() ), this, SLOT( addVectorLayer() ) );
@@ -1340,7 +1340,9 @@ void QgisApp::createMenus()
   // Help menu
   // add What's this button to it
   QAction* before = mActionHelpAPI;
-  mHelpMenu->insertAction( before, QWhatsThis::createAction( this ) );
+  QAction* actionWhatsThis = QWhatsThis::createAction( this );
+  actionWhatsThis->setIcon( QgsApplication::getThemeIcon( "/mActionWhatsThis.svg" ) );
+  mHelpMenu->insertAction( before, actionWhatsThis );
 }
 
 void QgisApp::createToolBars()
@@ -1465,9 +1467,29 @@ void QgisApp::createToolBars()
   QToolButton* tbAllEdits = qobject_cast<QToolButton *>( mDigitizeToolBar->widgetForAction( mActionAllEdits ) );
   tbAllEdits->setPopupMode( QToolButton::InstantPopup );
 
+  // new layer tool button
+
+  bt = new QToolButton();
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  bt->addAction( mActionNewSpatiaLiteLayer );
+  bt->addAction( mActionNewVectorLayer );
+
+  QAction* defNewLayerAction = mActionNewVectorLayer;
+  switch ( settings.value( "/UI/defaultNewLayer", 1 ).toInt() )
+  {
+    case 0: defNewLayerAction = mActionNewSpatiaLiteLayer; break;
+    case 1: defNewLayerAction = mActionNewVectorLayer; break;
+  }
+  bt->setDefaultAction( defNewLayerAction );
+  QAction* newLayerAction = mLayerToolBar->insertWidget( mActionRemoveLayer, bt );
+  newLayerAction->setObjectName( "ActionNewLayer" );
+  connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+
   // Help Toolbar
 
-  mHelpToolBar->addAction( QWhatsThis::createAction( this ) );
+  QAction* actionWhatsThis = QWhatsThis::createAction( this );
+  actionWhatsThis->setIcon( QgsApplication::getThemeIcon( "/mActionWhatsThis.svg" ) );
+  mHelpToolBar->addAction( actionWhatsThis );
 
 }
 
@@ -1657,36 +1679,36 @@ void QgisApp::setTheme( QString theThemeName )
   */
   QgsApplication::setThemeName( theThemeName );
   //QgsDebugMsg("Setting theme to \n" + theThemeName);
-  mActionNewProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileNew.png" ) );
-  mActionOpenProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.png" ) );
-  mActionSaveProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.png" ) );
-  mActionSaveProjectAs->setIcon( QgsApplication::getThemeIcon( "/mActionFileSaveAs.png" ) );
-  mActionNewPrintComposer->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.png" ) );
-  mActionShowComposerManager->setIcon( QgsApplication::getThemeIcon( "/mActionComposerManager.png" ) );
+  mActionNewProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileNew.svg" ) );
+  mActionOpenProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.svg" ) );
+  mActionSaveProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.svg" ) );
+  mActionSaveProjectAs->setIcon( QgsApplication::getThemeIcon( "/mActionFileSaveAs.svg" ) );
+  mActionNewPrintComposer->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.svg" ) );
+  mActionShowComposerManager->setIcon( QgsApplication::getThemeIcon( "/mActionComposerManager.svg" ) );
   mActionSaveMapAsImage->setIcon( QgsApplication::getThemeIcon( "/mActionSaveMapAsImage.png" ) );
   mActionExit->setIcon( QgsApplication::getThemeIcon( "/mActionFileExit.png" ) );
-  mActionAddOgrLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddOgrLayer.png" ) );
-  mActionAddRasterLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddRasterLayer.png" ) );
+  mActionAddOgrLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddOgrLayer.svg" ) );
+  mActionAddRasterLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddRasterLayer.svg" ) );
 #ifdef HAVE_POSTGRESQL
-  mActionAddPgLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddLayer.png" ) );
+  mActionAddPgLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddPostgisLayer.svg" ) );
 #endif
-  mActionNewSpatialiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewVectorLayer.png" ) );
-  mActionAddSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddSpatiaLiteLayer.png" ) );
+  mActionNewSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewSpatiaLiteLayer.svg" ) );
+  mActionAddSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddSpatiaLiteLayer.svg" ) );
 #ifdef HAVE_MSSQL
-  mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMssqlLayer.png" ) );
+  mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMssqlLayer.svg" ) );
 #endif
 #ifdef HAVE_ORACLE
-  mActionAddOracleLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddOracleLayer.png" ) );
+  mActionAddOracleLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddOracleLayer.svg" ) );
 #endif
-  mActionRemoveLayer->setIcon( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ) );
-  mActionDuplicateLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMap.png" ) );
+  mActionRemoveLayer->setIcon( QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ) );
+  mActionDuplicateLayer->setIcon( QgsApplication::getThemeIcon( "/mActionDuplicateLayer.svg" ) );
   mActionSetLayerCRS->setIcon( QgsApplication::getThemeIcon( "/mActionSetLayerCRS.png" ) );
   mActionSetProjectCRSFromLayer->setIcon( QgsApplication::getThemeIcon( "/mActionSetProjectCRSFromLayer.png" ) );
-  mActionNewVectorLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewVectorLayer.png" ) );
-  mActionAddAllToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionAddAllToOverview.png" ) );
+  mActionNewVectorLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewVectorLayer.svg" ) );
+  mActionAddAllToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionAddAllToOverview.svg" ) );
   mActionHideAllLayers->setIcon( QgsApplication::getThemeIcon( "/mActionHideAllLayers.png" ) );
   mActionShowAllLayers->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
-  mActionRemoveAllFromOverview->setIcon( QgsApplication::getThemeIcon( "/mActionRemoveAllFromOverview.png" ) );
+  mActionRemoveAllFromOverview->setIcon( QgsApplication::getThemeIcon( "/mActionRemoveAllFromOverview.svg" ) );
   mActionToggleFullScreen->setIcon( QgsApplication::getThemeIcon( "/mActionToggleFullScreen.png" ) );
   mActionProjectProperties->setIcon( QgsApplication::getThemeIcon( "/mActionProjectProperties.png" ) );
   mActionManagePlugins->setIcon( QgsApplication::getThemeIcon( "/mActionShowPluginManager.svg" ) );
@@ -1695,7 +1717,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionOptions->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.svg" ) );
   mActionConfigureShortcuts->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.svg" ) );
   mActionCustomization->setIcon( QgsApplication::getThemeIcon( "/mActionOptions.svg" ) );
-  mActionHelpContents->setIcon( QgsApplication::getThemeIcon( "/mActionHelpContents.png" ) );
+  mActionHelpContents->setIcon( QgsApplication::getThemeIcon( "/mActionHelpContents.svg" ) );
   mActionLocalHistogramStretch->setIcon( QgsApplication::getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
   mActionFullHistogramStretch->setIcon( QgsApplication::getThemeIcon( "/mActionFullHistogramStretch.png" ) );
   mActionIncreaseBrightness->setIcon( QgsApplication::getThemeIcon( "/mActionIncreaseBrightness.svg" ) );
@@ -1706,7 +1728,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionQgisHomePage->setIcon( QgsApplication::getThemeIcon( "/mActionQgisHomePage.png" ) );
   mActionAbout->setIcon( QgsApplication::getThemeIcon( "/mActionHelpAbout.png" ) );
   mActionSponsors->setIcon( QgsApplication::getThemeIcon( "/mActionHelpSponsors.png" ) );
-  mActionDraw->setIcon( QgsApplication::getThemeIcon( "/mActionDraw.png" ) );
+  mActionDraw->setIcon( QgsApplication::getThemeIcon( "/mActionDraw.svg" ) );
   mActionToggleEditing->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.svg" ) );
   mActionSaveLayerEdits->setIcon( QgsApplication::getThemeIcon( "/mActionSaveAllEdits.svg" ) );
   mActionAllEdits->setIcon( QgsApplication::getThemeIcon( "/mActionAllEdits.svg" ) );
@@ -1737,20 +1759,20 @@ void QgisApp::setTheme( QString theThemeName )
   mActionOffsetCurve->setIcon( QgsApplication::getThemeIcon( "/mActionOffsetCurve.png" ) );
   mActionMergeFeatureAttributes->setIcon( QgsApplication::getThemeIcon( "/mActionMergeFeatureAttributes.png" ) );
   mActionRotatePointSymbols->setIcon( QgsApplication::getThemeIcon( "mActionRotatePointSymbols.png" ) );
-  mActionZoomIn->setIcon( QgsApplication::getThemeIcon( "/mActionZoomIn.png" ) );
-  mActionZoomOut->setIcon( QgsApplication::getThemeIcon( "/mActionZoomOut.png" ) );
-  mActionZoomFullExtent->setIcon( QgsApplication::getThemeIcon( "/mActionZoomFullExtent.png" ) );
-  mActionZoomToSelected->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToSelected.png" ) );
+  mActionZoomIn->setIcon( QgsApplication::getThemeIcon( "/mActionZoomIn.svg" ) );
+  mActionZoomOut->setIcon( QgsApplication::getThemeIcon( "/mActionZoomOut.svg" ) );
+  mActionZoomFullExtent->setIcon( QgsApplication::getThemeIcon( "/mActionZoomFullExtent.svg" ) );
+  mActionZoomToSelected->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToSelected.svg" ) );
   mActionShowRasterCalculator->setIcon( QgsApplication::getThemeIcon( "/mActionShowRasterCalculator.png" ) );
 #ifdef HAVE_TOUCH
   mActionTouch->setIcon( QgsApplication::getThemeIcon( "/mActionTouch.png" ) );
 #endif
   mActionPan->setIcon( QgsApplication::getThemeIcon( "/mActionPan.png" ) );
   mActionPanToSelected->setIcon( QgsApplication::getThemeIcon( "/mActionPanToSelected.svg" ) );
-  mActionZoomLast->setIcon( QgsApplication::getThemeIcon( "/mActionZoomLast.png" ) );
-  mActionZoomNext->setIcon( QgsApplication::getThemeIcon( "/mActionZoomNext.png" ) );
-  mActionZoomToLayer->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ) );
-  mActionZoomActualSize->setIcon( QgsApplication::getThemeIcon( "/mActionZoomActual.png" ) );
+  mActionZoomLast->setIcon( QgsApplication::getThemeIcon( "/mActionZoomLast.svg" ) );
+  mActionZoomNext->setIcon( QgsApplication::getThemeIcon( "/mActionZoomNext.svg" ) );
+  mActionZoomToLayer->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToLayer.svg" ) );
+  mActionZoomActualSize->setIcon( QgsApplication::getThemeIcon( "/mActionZoomActual.svg" ) );
   mActionIdentify->setIcon( QgsApplication::getThemeIcon( "/mActionIdentify.svg" ) );
   mActionFeatureAction->setIcon( QgsApplication::getThemeIcon( "/mAction.svg" ) );
   mActionSelect->setIcon( QgsApplication::getThemeIcon( "/mActionSelect.svg" ) );
@@ -1769,10 +1791,10 @@ void QgisApp::setTheme( QString theThemeName )
   mActionShowBookmarks->setIcon( QgsApplication::getThemeIcon( "/mActionShowBookmarks.png" ) );
   mActionNewBookmark->setIcon( QgsApplication::getThemeIcon( "/mActionNewBookmark.png" ) );
   mActionCustomProjection->setIcon( QgsApplication::getThemeIcon( "/mActionCustomProjection.svg" ) );
-  mActionAddWmsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWmsLayer.png" ) );
-  mActionAddWcsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWcsLayer.png" ) );
-  mActionAddWfsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWfsLayer.png" ) );
-  mActionAddToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionInOverview.png" ) );
+  mActionAddWmsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWmsLayer.svg" ) );
+  mActionAddWcsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWcsLayer.svg" ) );
+  mActionAddWfsLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddWfsLayer.svg" ) );
+  mActionAddToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionInOverview.svg" ) );
   mActionAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionAnnotation.png" ) );
   mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.png" ) );
   mActionHtmlAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.png" ) );
@@ -4219,6 +4241,40 @@ void QgisApp::labelingFontNotFound( QgsVectorLayer* vlayer, const QString& fontf
   messageBar()->pushWidget( fontMsg, QgsMessageBar::WARNING );
 }
 
+void QgisApp::commitError( QgsVectorLayer* vlayer )
+{
+  QWidget *errorMsg = QgsMessageBar::createMessage(
+                        tr( "Commit errors" ),
+                        tr( "Could not commit changes to layer %1" ).arg( vlayer->name() ),
+                        QgsApplication::getThemeIcon( "/mIconWarn.png" ),
+                        messageBar() );
+
+  QgsMessageViewer *mv = new QgsMessageViewer( errorMsg );
+  mv->setWindowTitle( tr( "Commit errors" ) );
+  mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() )
+                             + "\n\n"
+                             + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( "\n  " ) )
+                           );
+
+  // store pointer to vlayer in data of QAction
+  QAction *act = new QAction( errorMsg );
+  act->setData( QVariant( QMetaType::QObjectStar, &vlayer ) );
+  act->setText( tr( "Show more" ) );
+
+  QToolButton *showMore = new QToolButton( errorMsg );
+  showMore->setStyleSheet( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" );
+  showMore->setCursor( Qt::PointingHandCursor );
+  showMore->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+  showMore->addAction( act );
+  showMore->setDefaultAction( act );
+
+  connect( showMore, SIGNAL( triggered( QAction* ) ), mv, SLOT( exec() ) );
+  errorMsg->layout()->addWidget( showMore );
+
+  // no timeout set, since notice needs attention and is only shown first time layer is labeled
+  messageBar()->pushWidget( errorMsg, QgsMessageBar::WARNING );
+}
+
 void QgisApp::labelingDialogFontNotFound( QAction* act )
 {
   if ( !act )
@@ -5613,11 +5669,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
       case QMessageBox::Save:
         if ( !vlayer->commitChanges() )
         {
-          QMessageBox::information( 0,
-                                    tr( "Error" ),
-                                    tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
-                                    .arg( vlayer->name() )
-                                    .arg( vlayer->commitErrors().join( "\n  " ) ) );
+          commitError( vlayer );
           // Leave the in-memory editing state alone,
           // to give the user a chance to enter different values
           // and try the commit again later
@@ -5682,11 +5734,7 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
   if ( !vlayer->commitChanges() )
   {
     mSaveRollbackInProgress = false;
-    QMessageBox::information( 0,
-                              tr( "Error" ),
-                              tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
-                              .arg( vlayer->name() )
-                              .arg( vlayer->commitErrors().join( "\n  " ) ) );
+    commitError( vlayer );
   }
 
   if ( leaveEditable )
@@ -6187,6 +6235,16 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
       copyStyle( selectedLyr );
       pasteStyle( dupLayer );
 
+      QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( selectedLyr );
+      QgsVectorLayer* vDupLayer = dynamic_cast<QgsVectorLayer*>( dupLayer );
+      if ( vLayer && vDupLayer )
+      {
+        foreach ( const QgsVectorJoinInfo join, vLayer->vectorJoins() )
+        {
+          vDupLayer->addJoin( join );
+        }
+      }
+
       // always set duplicated layers to not visible
       // so layer can be configured before being turned on,
       // and no map canvas refresh needed when doing multiple duplications
@@ -6206,7 +6264,6 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
   {
     mInfoBar->pushWidget( msgBar, QgsMessageBar::WARNING );
   }
-
 }
 
 void QgisApp::setLayerCRS()
@@ -9004,6 +9061,10 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "UI/annotationTool", 3 );
   else if ( action == mActionAnnotation )
     settings.setValue( "/UI/annotationTool", 4 );
+  else if ( action == mActionNewSpatiaLiteLayer )
+    settings.setValue( "/UI/defaultNewLayer", 0 );
+  else if ( action == mActionNewVectorLayer )
+    settings.setValue( "/UI/defaultNewLayer", 1 );
   bt->setDefaultAction( action );
 }
 

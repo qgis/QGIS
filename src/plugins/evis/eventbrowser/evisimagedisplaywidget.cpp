@@ -53,9 +53,9 @@ eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget* parent, Qt::WFlags fl )
   pbtnZoomOut->setWhatsThis( tr( "Zoom out to see more area." ) );
   pbtnZoomFull->setToolTip( tr( "Zoom to full extent" ) );
   pbtnZoomFull->setWhatsThis( tr( "Zoom to display the entire image." ) );
-  pbtnZoomIn->setIcon( QIcon( QPixmap( myThemePath + "/mActionZoomIn.png" ) ) );
-  pbtnZoomOut->setIcon( QIcon( QPixmap( myThemePath + "/mActionZoomOut.png" ) ) );
-  pbtnZoomFull->setIcon( QIcon( QPixmap( myThemePath + "/mActionZoomFullExtent.png" ) ) );
+  pbtnZoomIn->setIcon( QIcon( QPixmap( myThemePath + "/mActionZoomIn.svg" ) ) );
+  pbtnZoomOut->setIcon( QIcon( QPixmap( myThemePath + "/mActionZoomOut.svg" ) ) );
+  pbtnZoomFull->setIcon( QIcon( QPixmap( myThemePath + "/mActionZoomFullExtent.svg" ) ) );
   connect( pbtnZoomIn, SIGNAL( clicked( ) ), this, SLOT( on_pbtnZoomIn_clicked( ) ) );
   connect( pbtnZoomOut, SIGNAL( clicked( ) ), this, SLOT( on_pbtnZoomOut_clicked( ) ) );
   connect( pbtnZoomFull, SIGNAL( clicked( ) ), this, SLOT( on_pbtnZoomFull_clicked( ) ) );

@@ -51,7 +51,7 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
 {
   setupUi( this );
 
-  mSaveAsImageButton->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.png" ) );
+  mSaveAsImageButton->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.svg" ) );
 
   mRendererWidget = 0;
   mRendererName = "singlebandgray";
@@ -550,7 +550,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
   disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   stackedWidget2->setCurrentIndex( 0 );
   // icon from http://findicons.com/icon/169577/14_zoom?id=171427
-  mpPlot->canvas()->setCursor( QCursor( QgsApplication::getThemePixmap( "/mIconZoom.png" ) ) );
+  mpPlot->canvas()->setCursor( QCursor( QgsApplication::getThemePixmap( "/mIconZoom.svg" ) ) );
   //  on_cboHistoBand_currentIndexChanged( -1 );
   QApplication::restoreOverrideCursor();
 }

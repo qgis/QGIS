@@ -518,7 +518,7 @@ QgsMssqlLayerItem* QgsMssqlSchemaItem::addLayer( QgsMssqlLayerProperty layerProp
 QgsMssqlRootItem::QgsMssqlRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconMssql.png" );
+  mIcon = QgsApplication::getThemeIcon( "mIconMssql.svg" );
   populate();
 }
 

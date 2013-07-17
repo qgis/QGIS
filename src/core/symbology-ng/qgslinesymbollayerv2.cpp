@@ -694,7 +694,6 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
   QgsRenderContext& rc = context.renderContext();
 
   double origAngle = mMarker->angle();
-  double angle;
   int i, maxCount;
   bool isRing = false;
 
@@ -718,58 +717,14 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
 
   for ( ; i < maxCount; ++i )
   {
-    const QPointF& pt = points[i];
-
+    if ( isRing && placement == Vertex && i == points.count() - 1 )
+    {
+      continue; // don't draw the last marker - it has been drawn already
+    }
     // rotate marker (if desired)
     if ( mRotateMarker )
     {
-      if ( i == 0 )
-      {
-        if ( !isRing )
-        {
-          // use first segment's angle
-          const QPointF& nextPt = points[i+1];
-          if ( pt == nextPt )
-            continue;
-          angle = MyLine( pt, nextPt ).angle();
-        }
-        else
-        {
-          // closed ring: use average angle between first and last segment
-          const QPointF& prevPt = points[points.count() - 2];
-          const QPointF& nextPt = points[1];
-          if ( prevPt == pt || nextPt == pt )
-            continue;
-
-          angle = _averageAngle( prevPt, pt, nextPt );
-        }
-      }
-      else if ( i == points.count() - 1 )
-      {
-        if ( !isRing )
-        {
-          // use last segment's angle
-          const QPointF& prevPt = points[i-1];
-          if ( pt == prevPt )
-            continue;
-          angle = MyLine( prevPt, pt ).angle();
-        }
-        else
-        {
-          // don't draw the last marker - it has been drawn already
-          continue;
-        }
-      }
-      else
-      {
-        // use average angle
-        const QPointF& prevPt = points[i-1];
-        const QPointF& nextPt = points[i+1];
-        if ( prevPt == pt || nextPt == pt )
-          continue;
-
-        angle = _averageAngle( prevPt, pt, nextPt );
-      }
+      double angle = markerAngle( points, isRing, i );
       mMarker->setAngle( origAngle + angle * 180 / M_PI );
     }
 
@@ -778,6 +733,81 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
 
   // restore original rotation
   mMarker->setAngle( origAngle );
+}
+
+double QgsMarkerLineSymbolLayerV2::markerAngle( const QPolygonF& points, bool isRing, int vertex )
+{
+  double angle = 0;
+  const QPointF& pt = points[vertex];
+
+  if ( isRing || ( vertex > 0 && vertex < points.count() - 1 ) )
+  {
+    int prevIndex = vertex - 1;
+    int nextIndex = vertex + 1;
+
+    if ( isRing && ( vertex == 0 || vertex == points.count() - 1 ) )
+    {
+      prevIndex = points.count() - 2;
+      nextIndex = 1;
+    }
+
+    QPointF prevPoint, nextPoint;
+    while ( prevIndex >= 0 )
+    {
+      prevPoint = points[ prevIndex ];
+      if ( prevPoint != pt )
+      {
+        break;
+      }
+      --prevIndex;
+    }
+
+    while ( nextIndex < points.count() )
+    {
+      nextPoint = points[ nextIndex ];
+      if ( nextPoint != pt )
+      {
+        break;
+      }
+      ++nextIndex;
+    }
+
+    if ( prevIndex >= 0 && nextIndex < points.count() )
+    {
+      angle = _averageAngle( prevPoint, pt, nextPoint );
+    }
+  }
+  else //no ring and vertex is at start / at end
+  {
+    if ( vertex == 0 )
+    {
+      while ( vertex < points.size() - 1 )
+      {
+        const QPointF& nextPt = points[vertex+1];
+        if ( pt != nextPt )
+        {
+          angle = MyLine( pt, nextPt ).angle();
+          return angle;
+        }
+        ++vertex;
+      }
+    }
+    else
+    {
+      // use last segment's angle
+      while ( vertex >= 1 ) //in case of duplicated vertices, take the next suitable one
+      {
+        const QPointF& prevPt = points[vertex-1];
+        if ( pt != prevPt )
+        {
+          angle = MyLine( prevPt, pt ).angle();
+          return angle;
+        }
+        --vertex;
+      }
+    }
+  }
+  return angle;
 }
 
 void QgsMarkerLineSymbolLayerV2::renderPolylineCentral( const QPolygonF& points, QgsSymbolV2RenderContext& context )

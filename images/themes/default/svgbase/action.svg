@@ -15,7 +15,7 @@
    width="48"
    version="1.0"
    inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="mAction.svg">
+   sodipodi:docname="action.svg">
   <metadata
      id="metadata61">
     <rdf:RDF>
@@ -42,7 +42,7 @@
      id="namedview59"
      showgrid="false"
      inkscape:zoom="13.906433"
-     inkscape:cx="14.850554"
+     inkscape:cx="2.1945408"
      inkscape:cy="23.276487"
      inkscape:window-x="1920"
      inkscape:window-y="24"
@@ -516,7 +516,7 @@
      d="m 24.004097,11.24931 c -6.868582,0 -12.436085,5.323365 -12.436085,11.889816 0,6.566865 5.567935,11.889815 12.436085,11.889815 6.868581,0 12.436084,-5.323365 12.436084,-11.889815 0,-6.566864 -5.567934,-11.889816 -12.436084,-11.889816 z m 0,19.753253 c -4.542541,0 -8.224214,-3.520287 -8.224214,-7.862816 0,-4.342943 3.681673,-7.862817 8.224214,-7.862817 4.542109,0 8.224214,3.519874 8.224214,7.862817 0,4.342632 -3.681997,7.862816 -8.224214,7.862816 z" />
   <path
      sodipodi:type="arc"
-     style="fill:#729fcf;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+     style="fill:#6d97c4;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
      id="path3030"
      sodipodi:cx="39.559322"
      sodipodi:cy="10.220339"

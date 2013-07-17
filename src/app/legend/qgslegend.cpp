@@ -312,6 +312,7 @@ void QgsLegend::setLayersVisible( bool visible )
 
   // Turn on rendering (if it was on previously)
   mMapCanvas->freeze( false );
+  mMapCanvas->refresh();
 
   QgsProject::instance()->dirty( true );
 }
@@ -838,11 +839,11 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
     }
     else if ( li->type() == QgsLegendItem::LEGEND_GROUP )
     {
-      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ),
+      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.svg" ),
                          tr( "Zoom to Group" ), this, SLOT( legendLayerZoom() ) );
 
       // use QGisApp::removeLayer() to remove all selected layers+groups
-      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
       theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ),
                          tr( "&Set Group CRS" ), this, SLOT( legendGroupSetCRS() ) );
@@ -887,7 +888,7 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
 void QgsLegend::initPixmaps()
 {
   mPixmaps.mOriginalPixmap = QgsApplication::getThemePixmap( "/mActionFileSmall.png" );
-  mPixmaps.mInOverviewPixmap = QgsApplication::getThemePixmap( "/mActionInOverview.png" );
+  mPixmaps.mInOverviewPixmap = QgsApplication::getThemePixmap( "/mActionInOverview.svg" );
   mPixmaps.mEditablePixmap = QgsApplication::getThemePixmap( "/mIconEditable.png" );
   mPixmaps.mProjectionErrorPixmap = QgsApplication::getThemePixmap( "/mIconProjectionProblem.png" );
 }

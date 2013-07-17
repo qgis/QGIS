@@ -566,7 +566,7 @@ void QgsPluginManager::pluginItemChanged( QStandardItem * item )
 
   if ( item->checkState() )
   {
-    if ( mPluginsAreEnabled && ! isPluginEnabled( id ))
+    if ( mPluginsAreEnabled && ! isPluginEnabled( id ) )
     {
       QgsDebugMsg( " Loading plugin: " + id );
       loadPlugin( id );

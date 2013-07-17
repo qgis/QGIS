@@ -32,7 +32,10 @@ map service syntax for SOAP/HTTP POST
 #include "qgspallabeling.h"
 #include "qgsprojectparser.h"
 #include "qgssldparser.h"
+#include "qgsnetworkaccessmanager.h"
+
 #include <QDomDocument>
+#include <QNetworkDiskCache>
 #include <QImage>
 #include <QSettings>
 #include <QDateTime>
@@ -184,6 +187,22 @@ int main( int argc, char * argv[] )
   QgsApplication::skipGdalDriver( "ECW" );
   QgsApplication::skipGdalDriver( "JP2ECW" );
 #endif
+
+  QSettings settings;
+
+  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
+  QNetworkDiskCache *cache = new QNetworkDiskCache( 0 );
+
+  QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
+  qint64 cacheSize = settings.value( "cache/size", 50 * 1024 * 1024 ).toULongLong();
+  QgsDebugMsg( QString( "setCacheDirectory: %1" ).arg( cacheDirectory ) );
+  QgsDebugMsg( QString( "setMaximumCacheSize: %1" ).arg( cacheSize ) );
+  cache->setCacheDirectory( cacheDirectory );
+  cache->setMaximumCacheSize( cacheSize );
+  QgsDebugMsg( QString( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ) );
+  QgsDebugMsg( QString( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ) );
+
+  nam->setCache( cache );
 
   QDomImplementation::setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
 
@@ -583,7 +602,9 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request.compare( "GetLegendGraphic", Qt::CaseInsensitive ) == 0 || request.compare( "GetLegendGraphics", Qt::CaseInsensitive ) == 0 ) // GetLegendGraphics for compatibility with earlier QGIS versions
+    else if ( request.compare( "GetLegendGraphic", Qt::CaseInsensitive ) == 0 ||
+              request.compare( "GetLegendGraphics", Qt::CaseInsensitive ) == 0 )
+              // GetLegendGraphics for compatibility with earlier QGIS versions
     {
       QImage* result = 0;
       try
@@ -592,6 +613,7 @@ int main( int argc, char * argv[] )
       }
       catch ( QgsMapServiceException& ex )
       {
+        QgsDebugMsg( "Caught exception during GetLegendGraphic request" );
         theRequestHandler->sendServiceException( ex );
       }
 
@@ -600,6 +622,7 @@ int main( int argc, char * argv[] )
         QgsDebugMsg( "Sending GetLegendGraphic response" );
         //sending is the same for GetMap and GetLegendGraphic
         theRequestHandler->sendGetMapResponse( serviceString, result );
+        QgsDebugMsg( "Response sent" );
       }
       else
       {
@@ -610,7 +633,6 @@ int main( int argc, char * argv[] )
       delete theRequestHandler;
       delete theServer;
       continue;
-
     }
     else if ( request.compare( "GetPrint", Qt::CaseInsensitive ) == 0 )
     {

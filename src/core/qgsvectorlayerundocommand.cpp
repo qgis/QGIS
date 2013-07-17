@@ -146,6 +146,9 @@ bool QgsVectorLayerUndoCommandChangeGeometry::mergeWith( const QUndoCommand *oth
   if ( !merge )
     return false;
 
+  if ( merge->mFid != mFid )
+    return false;
+
   delete mNewGeom;
   mNewGeom = merge->mNewGeom;
   merge->mNewGeom = 0;

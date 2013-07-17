@@ -137,6 +137,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       break;
     }
   }
+
   // Update paramaters if present.
   if ( mySplitEllipsoid.length() >= 3 )
   {
@@ -834,8 +835,11 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
     btnGrpMapUnits->setTitle( unitsOnFlyState.arg( tr( "ON" ) ) );
   }
 
+  setMapUnitsToCurrentProjection();
+
   // Enable/Disable selector and update tool-tip
-  updateEllipsoidUI( mEllipsoidIndex );
+  updateEllipsoidUI( mEllipsoidIndex ); // maybe already done by setMapUnitsToCurrentProjection
+
 }
 
 void QgsProjectProperties::cbxWFSPubliedStateChanged( int aIdx )
@@ -897,16 +901,23 @@ void QgsProjectProperties::cbxWFSDeleteStateChanged( int aIdx )
 void QgsProjectProperties::setMapUnitsToCurrentProjection()
 {
   long myCRSID = projectionSelector->selectedCrsId();
-  if ( isProjected() && myCRSID )
-  {
-    QgsCoordinateReferenceSystem srs( myCRSID, QgsCoordinateReferenceSystem::InternalCrsId );
-    //set radio button to crs map unit type
-    QGis::UnitType units = srs.mapUnits();
+  if ( !isProjected() || !myCRSID )
+    return;
 
-    radMeters->setChecked( units == QGis::Meters );
-    radFeet->setChecked( units == QGis::Feet );
-    radDegrees->setChecked( units == QGis::Degrees );
-  }
+  QgsCoordinateReferenceSystem srs( myCRSID, QgsCoordinateReferenceSystem::InternalCrsId );
+  //set radio button to crs map unit type
+  QGis::UnitType units = srs.mapUnits();
+
+  radMeters->setChecked( units == QGis::Meters );
+  radFeet->setChecked( units == QGis::Feet );
+  radDegrees->setChecked( units == QGis::Degrees );
+
+  // attempt to reset the projection ellipsoid according to the srs
+  int i;
+  for ( i = 0; i < mEllipsoidList.length() && mEllipsoidList[ i ].description != srs.description(); i++ )
+    ;
+  if ( i < mEllipsoidList.length() )
+    updateEllipsoidUI( i );
 }
 
 /*!

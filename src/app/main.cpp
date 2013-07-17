@@ -79,7 +79,7 @@ typedef SInt32 SRefCon;
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 
-#if defined(linux) && !defined(ANDROID)
+#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
 #include <unistd.h>
 #include <execinfo.h>
 #include <signal.h>
@@ -194,7 +194,7 @@ LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
 }
 #endif
 
-#if defined(linux) && !defined(ANDROID)
+#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
 void qgisCrash( int signal )
 {
   qFatal( "QGIS died on signal %d", signal );
@@ -231,7 +231,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
            || 0 == strncmp( msg, "QPainter::", 10 ) )
       {
 #if 0
-#if defined(linux) && !defined(ANDROID)
+#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
         fprintf( stderr, "Stacktrace (run through c++filt):\n" );
         void *buffer[256];
         int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
@@ -253,7 +253,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
     case QtFatalMsg:
     {
       fprintf( stderr, "Fatal: %s\n", msg );
-#if defined(linux) && !defined(ANDROID)
+#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
       if ( access( "/usr/bin/c++filt", X_OK ) )
       {
         ( void ) write( STDERR_FILENO, "Stacktrace (c++filt NOT FOUND):\n", 32 );
@@ -298,7 +298,7 @@ int main( int argc, char *argv[] )
 #endif  // _MSC_VER
 #endif  // WIN32
 
-#if defined(linux) && !defined(ANDROID)
+#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
   // Set up the custom qWarning/qDebug custom handler
   qInstallMsgHandler( myMessageOutput );
 

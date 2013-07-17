@@ -1206,7 +1206,7 @@ void QgsDelimitedTextProvider::fetchAttribute( QgsFeature& feature, int fieldIdx
   {
     case QVariant::Int:
     {
-      int ivalue;
+      int ivalue = 0;
       bool ok = false;
       if ( ! value.isEmpty() ) ivalue = value.toInt( &ok );
       if ( ok )
@@ -1217,7 +1217,7 @@ void QgsDelimitedTextProvider::fetchAttribute( QgsFeature& feature, int fieldIdx
     }
     case QVariant::Double:
     {
-      double dvalue;
+      double dvalue = 0.0;
       bool ok = false;
       if ( ! value.isEmpty() )
       {

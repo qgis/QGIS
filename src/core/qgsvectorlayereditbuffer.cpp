@@ -99,9 +99,7 @@ bool QgsVectorLayerEditBuffer::addFeature( QgsFeature& f )
   {
     return false;
   }
-
-  int layerFieldCount = L->dataProvider()->fields().count() + mAddedAttributes.count() - mDeletedAttributeIds.count();
-  if ( layerFieldCount != f.attributes().count() )
+  if ( L->mUpdatedFields.count() != f.attributes().count() )
     return false;
 
   // TODO: check correct geometry type
@@ -342,7 +340,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
     //
     // delete features
     //
-    if ( !mDeletedFeatureIds.isEmpty() )
+    if ( success && !mDeletedFeatureIds.isEmpty() )
     {
       if (( cap & QgsVectorDataProvider::DeleteFeatures ) && provider->deleteFeatures( mDeletedFeatureIds ) )
       {
@@ -368,7 +366,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
     //
     //  add features
     //
-    if ( !mAddedFeatures.isEmpty() )
+    if ( success && !mAddedFeatures.isEmpty() )
     {
       if ( cap & QgsVectorDataProvider::AddFeatures )
       {
@@ -412,11 +410,15 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
       }
     }
   }
+  else
+  {
+    success = false;
+  }
 
   //
   // update geometries
   //
-  if ( !mChangedGeometries.isEmpty() )
+  if ( success && !mChangedGeometries.isEmpty() )
   {
     if (( cap & QgsVectorDataProvider::ChangeGeometries ) && provider->changeGeometryValues( mChangedGeometries ) )
     {
@@ -433,13 +435,14 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
     }
   }
 
-  if ( !success )
+  if ( !success && provider->hasErrors() )
   {
-    if ( provider->hasErrors() )
+    commitErrors << tr( "\n  Provider errors:" );
+    foreach ( QString e, provider->errors() )
     {
-      commitErrors << tr( "\n  Provider errors:" ) << provider->errors();
-      provider->clearErrors();
+      commitErrors << "    " + e.replace( "\n", "\n    " );
     }
+    provider->clearErrors();
   }
 
   return success;

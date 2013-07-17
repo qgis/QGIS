@@ -181,12 +181,12 @@ bool eVisGenericEventBrowserGui::initBrowser( )
   chkboxUseOnlyFilename->setChecked( false );
 
   QString myThemePath = QgsApplication::activeThemePath( );
-  pbtnResetEventImagePathData->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.png" ) ) );
-  pbtnResetCompassBearingData->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.png" ) ) );
-  pbtnResetCompassOffsetData->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.png" ) ) );
-  pbtnResetBasePathData->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.png" ) ) );
-  pbtnResetUseOnlyFilenameData->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.png" ) ) );
-  pbtnResetApplyPathRulesToDocs->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.png" ) ) );
+  pbtnResetEventImagePathData->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.svg" ) ) );
+  pbtnResetCompassBearingData->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.svg" ) ) );
+  pbtnResetCompassOffsetData->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.svg" ) ) );
+  pbtnResetBasePathData->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.svg" ) ) );
+  pbtnResetUseOnlyFilenameData->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.svg" ) ) );
+  pbtnResetApplyPathRulesToDocs->setIcon( QIcon( QPixmap( myThemePath + "/mActionDraw.svg" ) ) );
 
   chkboxSaveEventImagePathData->setChecked( false );
   chkboxSaveCompassBearingData->setChecked( false );

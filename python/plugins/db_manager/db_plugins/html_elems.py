@@ -75,7 +75,7 @@ class HtmlElem:
 	def getAttrsHtml(self):
 		html = u''
 		for k, v in self.attrs.iteritems():
-			html += u' %s="%s"' % ( k, u' '.join(v) )
+			html += u' %s="%s"' % ( k, v )
 		return html
 
 	def openTagHtml(self):

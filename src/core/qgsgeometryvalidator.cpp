@@ -282,7 +282,7 @@ void QgsGeometryValidator::run()
 
       for ( int i = 0; !mStop && i < mp.size(); i++ )
       {
-	if ( mp[i].isEmpty() )
+        if ( mp[i].isEmpty() )
         {
           emit errorFound( QgsGeometry::Error( QObject::tr( "polygon %1 has no rings" ).arg( i ) ) );
           mErrorCount++;
@@ -291,8 +291,8 @@ void QgsGeometryValidator::run()
 
         for ( int j = i + 1;  !mStop && j < mp.size(); j++ )
         {
-	  if ( mp[j].isEmpty() )
-	    continue;
+          if ( mp[j].isEmpty() )
+            continue;
 
           if ( ringInRing( mp[i][0], mp[j][0] ) )
           {

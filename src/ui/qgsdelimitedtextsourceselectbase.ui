@@ -512,13 +512,13 @@
        <item>
         <widget class="QRadioButton" name="delimiterCSV">
          <property name="toolTip">
-          <string>The file a comma separated value file, fields delimited by commas and quoted by &quot;</string>
+          <string>The file is a comma separated value file, fields delimited by commas and quoted by &quot;</string>
          </property>
          <property name="statusTip">
-          <string>The file a comma separated value file, fields delimited by commas and quoted by &quot;</string>
+          <string>The file is a comma separated value file, fields delimited by commas and quoted by &quot;</string>
          </property>
          <property name="whatsThis">
-          <string>The file a comma separated value file, fields delimited by commas and quoted by &quot;</string>
+          <string>The file is a comma separated value file, fields delimited by commas and quoted by &quot;</string>
          </property>
          <property name="text">
           <string>CSV (comma separated values)</string>
@@ -556,13 +556,13 @@
           </sizepolicy>
          </property>
          <property name="toolTip">
-          <string>Each line in the  file is split using a regular expression to define the end of each field</string>
+          <string>Each line in the file is split using a regular expression to define the end of each field</string>
          </property>
          <property name="statusTip">
-          <string>Each line in the  file is split using a regular expression to define the end of each field</string>
+          <string>Each line in the file is split using a regular expression to define the end of each field</string>
          </property>
          <property name="whatsThis">
-          <string>Each line in the  file is split using a regular expression to define the end of each field</string>
+          <string>Each line in the file is split using a regular expression to define the end of each field</string>
          </property>
          <property name="text">
           <string>Regular expression delimiter</string>
