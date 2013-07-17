@@ -224,16 +224,9 @@ void CoordinateCapture::copy()
   if ( myClipboard->supportsSelection() )
   {
     myClipboard->setText( mpUserCrsEdit->text() + "," + mpCanvasEdit->text(), QClipboard::Selection );
-    //QString myMessage = tr("Clipboard contents set to: ");
-    //statusBar()->showMessage(myMessage + myClipboard->text(QClipboard::Selection));
   }
-  else
-  {
-    //user has an inferior operating system....
-    myClipboard->setText( mpUserCrsEdit->text() + "," + mpCanvasEdit->text(), QClipboard::Clipboard );
-    //QString myMessage = tr("Clipboard contents set to: ");
-    //statusBar()->showMessage(myMessage + myClipboard->text(QClipboard::Clipboard));
-  }
+
+  myClipboard->setText( mpUserCrsEdit->text() + "," + mpCanvasEdit->text(), QClipboard::Clipboard );
 }
 
 
