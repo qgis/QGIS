@@ -215,10 +215,10 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
   else
   {
     qBox = QString( "st_makeenvelope(%1,%2,%3,%4,%5)" )
-           .arg( rect.xMinimum(), 0, 'f', 16 )
-           .arg( rect.yMinimum(), 0, 'f', 16 )
-           .arg( rect.xMaximum(), 0, 'f', 16 )
-           .arg( rect.yMaximum(), 0, 'f', 16 )
+           .arg( qgsDoubleToString( rect.xMinimum() ) )
+           .arg( qgsDoubleToString( rect.yMinimum() ) )
+           .arg( qgsDoubleToString( rect.xMaximum() ) )
+           .arg( qgsDoubleToString( rect.yMaximum() ) )
            .arg( P->mRequestedSrid.isEmpty() ? P->mDetectedSrid : P->mRequestedSrid );
   }
 

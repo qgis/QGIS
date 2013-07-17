@@ -372,6 +372,15 @@ void QgsMssqlProvider::loadFields()
               sqlTypeName,
               query.value( 7 ).toInt() ) );
         }
+        else if ( sqlType == QVariant::Double )
+        {
+          mAttributeFields.append(
+            QgsField(
+              query.value( 3 ).toString(), sqlType,
+              sqlTypeName,
+              query.value( 7 ).toInt(),
+              query.value( 8 ).toInt() ) );
+        }
         else
         {
           mAttributeFields.append(

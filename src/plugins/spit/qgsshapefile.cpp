@@ -388,7 +388,7 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
 
           // FIXME: OGR_F_GetFieldAsString returns junk when called with a 8.255 float field
           if ( column_types[n] == "float" )
-            val = QString::number( OGR_F_GetFieldAsDouble( feat, n ), 'f', 16 );
+            val = qgsDoubleToString( OGR_F_GetFieldAsDouble( feat, n ) );
           else
             val = codec->toUnicode( OGR_F_GetFieldAsString( feat, n ) );
 

@@ -590,10 +590,10 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 
   // Bounding box in WMS format (Warning: does not work with scientific notation)
   QString bbox = QString( changeXY ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                 .arg( viewExtent.xMinimum(), 0, 'f', 16 )
-                 .arg( viewExtent.yMinimum(), 0, 'f', 16 )
-                 .arg( viewExtent.xMaximum(), 0, 'f', 16 )
-                 .arg( viewExtent.yMaximum(), 0, 'f', 16 );
+                 .arg( qgsDoubleToString( viewExtent.xMinimum() ) )
+                 .arg( qgsDoubleToString( viewExtent.yMinimum() ) )
+                 .arg( qgsDoubleToString( viewExtent.xMaximum() ) )
+                 .arg( qgsDoubleToString( viewExtent.yMaximum() ) );
 
   mCachedImage = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
   mCachedImage->fill( 0 );
@@ -745,15 +745,15 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     }
 
     QgsDebugMsg( QString( "layer extent: %1,%2 %3x%4" )
-                 .arg( mLayerExtent.xMinimum(), 0, 'f' )
-                 .arg( mLayerExtent.yMinimum(), 0, 'f' )
+                 .arg( qgsDoubleToString( mLayerExtent.xMinimum() ) )
+                 .arg( qgsDoubleToString( mLayerExtent.yMinimum() ) )
                  .arg( mLayerExtent.width() )
                  .arg( mLayerExtent.height() )
                );
 
     QgsDebugMsg( QString( "view extent: %1,%2 %3x%4  res:%5" )
-                 .arg( viewExtent.xMinimum(), 0, 'f' )
-                 .arg( viewExtent.yMinimum(), 0, 'f' )
+                 .arg( qgsDoubleToString( viewExtent.xMinimum() ) )
+                 .arg( qgsDoubleToString( viewExtent.yMinimum() ) )
                  .arg( viewExtent.width() )
                  .arg( viewExtent.height() )
                  .arg( vres, 0, 'f' )
@@ -769,7 +769,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     // calculate tile coordinates
     double twMap = tm->tileWidth * tres;
     double thMap = tm->tileHeight * tres;
-    QgsDebugMsg( QString( "tile map size: %1,%2" ).arg( twMap, 0, 'f' ).arg( thMap, 0, 'f' ) );
+    QgsDebugMsg( QString( "tile map size: %1,%2" ).arg( qgsDoubleToString( twMap ) ).arg( qgsDoubleToString( thMap ) ) );
 
     int minTileCol = 0;
     int maxTileCol = tm->matrixWidth - 1;
@@ -851,10 +851,10 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
             QString turl;
             turl += url.toString();
             turl += QString( changeXY ? "&BBOX=%2,%1,%4,%3" : "&BBOX=%1,%2,%3,%4" )
-                    .arg( tm->topLeft.x() +         col * twMap /* + twMap * 0.001 */, 0, 'f', 16 )
-                    .arg( tm->topLeft.y() - ( row + 1 ) * thMap /* - thMap * 0.001 */, 0, 'f', 16 )
-                    .arg( tm->topLeft.x() + ( col + 1 ) * twMap /* - twMap * 0.001 */, 0, 'f', 16 )
-                    .arg( tm->topLeft.y() -         row * thMap /* + thMap * 0.001 */, 0, 'f', 16 );
+                    .arg( qgsDoubleToString( tm->topLeft.x() +         col * twMap /* + twMap * 0.001 */ ) )
+                    .arg( qgsDoubleToString( tm->topLeft.y() - ( row + 1 ) * thMap /* - thMap * 0.001 */ ) )
+                    .arg( qgsDoubleToString( tm->topLeft.x() + ( col + 1 ) * twMap /* - twMap * 0.001 */ ) )
+                    .arg( qgsDoubleToString( tm->topLeft.y() -         row * thMap /* + thMap * 0.001 */ ) );
 
             QNetworkRequest request( turl );
             setAuthorization( request );
@@ -4005,10 +4005,10 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
   // Compose request to WMS server
   QString bbox = QString( changeXY ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                 .arg( myExtent.xMinimum(), 0, 'f', 16 )
-                 .arg( myExtent.yMinimum(), 0, 'f', 16 )
-                 .arg( myExtent.xMaximum(), 0, 'f', 16 )
-                 .arg( myExtent.yMaximum(), 0, 'f', 16 );
+                 .arg( qgsDoubleToString( myExtent.xMinimum() ) )
+                 .arg( qgsDoubleToString( myExtent.yMinimum() ) )
+                 .arg( qgsDoubleToString( myExtent.xMaximum() ) )
+                 .arg( qgsDoubleToString( myExtent.yMaximum() ) );
 
   //QgsFeatureList featureList;
 

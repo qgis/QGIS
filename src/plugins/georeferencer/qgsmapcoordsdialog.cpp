@@ -116,8 +116,8 @@ void QgsMapCoordsDialog::maybeSetXY( const QgsPoint & xy, Qt::MouseButton button
 
     leXCoord->clear();
     leYCoord->clear();
-    leXCoord->setText( QString::number( mapCoordPoint.x(), 'f', 7 ) );
-    leYCoord->setText( QString::number( mapCoordPoint.y(), 'f', 7 ) );
+    leXCoord->setText( qgsDoubleToString( mapCoordPoint.x() ) );
+    leYCoord->setText( qgsDoubleToString( mapCoordPoint.y() ) );
   }
 
   parentWidget()->showNormal();

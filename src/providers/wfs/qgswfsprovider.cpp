@@ -284,10 +284,10 @@ QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest& request
                        .arg( mLayer->name(), mGetExtent.asWktCoordinates() ) );
           dsURI = dsURI.replace( QRegExp( "BBOX=[^&]*" ),
                                  QString( "BBOX=%1,%2,%3,%4" )
-                                 .arg( mGetExtent.xMinimum(), 0, 'f' )
-                                 .arg( mGetExtent.yMinimum(), 0, 'f' )
-                                 .arg( mGetExtent.xMaximum(), 0, 'f' )
-                                 .arg( mGetExtent.yMaximum(), 0, 'f' ) );
+                                 .arg( qgsDoubleToString( mGetExtent.xMinimum() ) )
+                                 .arg( qgsDoubleToString( mGetExtent.yMinimum() ) )
+                                 .arg( qgsDoubleToString( mGetExtent.xMaximum() ) )
+                                 .arg( qgsDoubleToString( mGetExtent.yMaximum() ) ) );
           //TODO: BBOX may not be combined with FILTER. WFS spec v. 1.1.0, sec. 14.7.3 ff.
           //      if a FILTER is present, the BBOX must be merged into it, capabilities permitting.
           //      Else one criterion must be abandoned and the user warned.  [WBC 111221]

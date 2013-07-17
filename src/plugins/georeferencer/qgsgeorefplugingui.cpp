@@ -1223,9 +1223,12 @@ void QgsGeorefPluginGui::saveGCPs()
     points << "mapX,mapY,pixelX,pixelY,enable" << endl;
     foreach ( QgsGeorefDataPoint *pt, mPoints )
     {
-      points << ( QString( "%1,%2,%3,%4,%5" ).arg( pt->mapCoords().x(), 0, 'f', 15 ).
-                  arg( pt->mapCoords().y(), 0, 'f', 15 ).arg( pt->pixelCoords().x(), 0, 'f', 15 ).
-                  arg( pt->pixelCoords().y(), 0, 'f', 15 ) ).arg( pt->isEnabled() ) << endl;
+      points << QString( "%1,%2,%3,%4,%5" )
+      .arg( qgsDoubleToString( pt->mapCoords().x() ) )
+      .arg( qgsDoubleToString( pt->mapCoords().y() ) )
+      .arg( qgsDoubleToString( pt->pixelCoords().x() ) )
+      .arg( qgsDoubleToString( pt->pixelCoords().y() ) )
+      .arg( pt->isEnabled() ) << endl;
     }
 
     mInitialPoints = mPoints;
@@ -1377,12 +1380,12 @@ bool QgsGeorefPluginGui::writeWorldFile( QgsPoint origin, double pixelXSize, dou
   }
 
   QTextStream stream( &file );
-  stream << QString::number( pixelXSize, 'f', 15 ) << endl
+  stream << qgsDoubleToString( pixelXSize ) << endl
   << rotationX << endl
   << rotationY << endl
-  << QString::number( -pixelYSize, 'f', 15 ) << endl
-  << QString::number( origin.x(), 'f', 15 ) << endl
-  << QString::number( origin.y(), 'f', 15 ) << endl;
+  << qgsDoubleToString( -pixelYSize ) << endl
+  << qgsDoubleToString( origin.x() ) << endl
+  << qgsDoubleToString( origin.y() ) << endl;
   return true;
 }
 
@@ -1703,7 +1706,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     {
       currentGCPStrings << tr( "no" );
     }
-    currentGCPStrings << QString::number(( *gcpIt )->pixelCoords().x(), 'f', 0 ) << QString::number(( *gcpIt )->pixelCoords().y(), 'f', 0 ) << QString::number(( *gcpIt )->mapCoords().x(), 'f', 3 )\
+    currentGCPStrings << QString::number(( *gcpIt )->pixelCoords().x(), 'f', 0 ) << QString::number(( *gcpIt )->pixelCoords().y(), 'f', 0 ) << QString::number(( *gcpIt )->mapCoords().x(), 'f', 3 )
     <<  QString::number(( *gcpIt )->mapCoords().y(), 'f', 3 ) <<  QString::number( residual.x() ) <<  QString::number( residual.y() ) << QString::number( residualTot );
     gcpTable->addRow( currentGCPStrings );
   }

@@ -4269,6 +4269,7 @@ void QgisApp::commitError( QgsVectorLayer* vlayer )
   showMore->setDefaultAction( act );
 
   connect( showMore, SIGNAL( triggered( QAction* ) ), mv, SLOT( exec() ) );
+  connect( showMore, SIGNAL( triggered( QAction* ) ), showMore, SLOT( deleteLater() ) );
   errorMsg->layout()->addWidget( showMore );
 
   // no timeout set, since notice needs attention and is only shown first time layer is labeled

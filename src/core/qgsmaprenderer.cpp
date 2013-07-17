@@ -190,9 +190,9 @@ void QgsMapRenderer::adjustExtentToSize()
     dymax = mExtent.yMaximum() + whitespace;
   }
 
-  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( mapUnitsPerPixelX, 0, 'f', 8 ).arg( mapUnitsPerPixelY, 0, 'f', 8 ) );
-  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( myWidth, 0, 'f', 8 ).arg( myHeight, 0, 'f', 8 ) );
-  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( mExtent.width(), 0, 'f', 8 ).arg( mExtent.height(), 0, 'f', 8 ) );
+  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ) ).arg( qgsDoubleToString( mapUnitsPerPixelY ) ) );
+  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( myWidth ) ).arg( qgsDoubleToString( myHeight ) ) );
+  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ) ).arg( qgsDoubleToString( mExtent.height() ) ) );
   QgsDebugMsg( mExtent.toString() );
 
   // update extent
@@ -201,14 +201,14 @@ void QgsMapRenderer::adjustExtentToSize()
   mExtent.setYMinimum( dymin );
   mExtent.setYMaximum( dymax );
 
-  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( mExtent.width() / myWidth, 0, 'f', 8 ).arg( mExtent.height() / myHeight, 0, 'f', 8 ) );
+  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() / myWidth ) ).arg( qgsDoubleToString( mExtent.height() / myHeight ) ) );
 
-  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( mExtent.width() / mMapUnitsPerPixel, 0, 'f', 8 ).arg( mExtent.height() / mMapUnitsPerPixel, 0, 'f', 8 ) );
+  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() / mMapUnitsPerPixel ) ).arg( qgsDoubleToString( mExtent.height() / mMapUnitsPerPixel ) ) );
 
   // update the scale
   updateScale();
 
-  QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( mScale, 0, 'f', 8 ) );
+  QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ) );
 
   newCoordXForm.setParameters( mMapUnitsPerPixel, dxmin, dymin, myHeight );
   mRenderContext.setMapToPixel( newCoordXForm );
@@ -960,8 +960,8 @@ void QgsMapRenderer::updateFullExtent()
 
       if ( lyr->extent().isEmpty() )
       {
-          it++;
-          continue;
+        it++;
+        continue;
       }
 
       // Layer extents are stored in the coordinate system (CS) of the
@@ -1129,10 +1129,10 @@ bool QgsMapRenderer::writeXML( QDomNode & theNode, QDomDocument & theDoc )
   QDomElement yMax = theDoc.createElement( "ymax" );
 
   QgsRectangle r = extent();
-  QDomText xMinText = theDoc.createTextNode( QString::number( r.xMinimum(), 'f' ) );
-  QDomText yMinText = theDoc.createTextNode( QString::number( r.yMinimum(), 'f' ) );
-  QDomText xMaxText = theDoc.createTextNode( QString::number( r.xMaximum(), 'f' ) );
-  QDomText yMaxText = theDoc.createTextNode( QString::number( r.yMaximum(), 'f' ) );
+  QDomText xMinText = theDoc.createTextNode( qgsDoubleToString( r.xMinimum() ) );
+  QDomText yMinText = theDoc.createTextNode( qgsDoubleToString( r.yMinimum() ) );
+  QDomText xMaxText = theDoc.createTextNode( qgsDoubleToString( r.xMaximum() ) );
+  QDomText yMaxText = theDoc.createTextNode( qgsDoubleToString( r.yMaximum() ) );
 
   xMin.appendChild( xMinText );
   yMin.appendChild( yMinText );
