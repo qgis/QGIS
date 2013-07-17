@@ -463,20 +463,20 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2 )
   {
     QgsPoint pp1 = p1, pp2 = p2;
 
-    QgsDebugMsg( QString( "Measuring from %1 to %2" ).arg( p1.toString( 4 ) ).arg( p2.toString( 4 ) ) );
+    //QgsDebugMsg( QString( "Measuring from %1 to %2" ).arg( p1.toString( 4 ) ).arg( p2.toString( 4 ) ) );
     if ( mEllipsoidalMode && ( mEllipsoid != GEO_NONE ) )
     {
-      QgsDebugMsg( QString( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ) );
-      QgsDebugMsg( QString( "From proj4 : %1" ).arg( mCoordTransform->sourceCrs().toProj4() ) );
-      QgsDebugMsg( QString( "To   proj4 : %1" ).arg( mCoordTransform->destCRS().toProj4() ) );
+      //QgsDebugMsg( QString( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ) );
+      //QgsDebugMsg( QString( "From proj4 : %1" ).arg( mCoordTransform->sourceCrs().toProj4() ) );
+      //QgsDebugMsg( QString( "To   proj4 : %1" ).arg( mCoordTransform->destCRS().toProj4() ) );
       pp1 = mCoordTransform->transform( p1 );
       pp2 = mCoordTransform->transform( p2 );
-      QgsDebugMsg( QString( "New points are %1 and %2, calculating..." ).arg( pp1.toString( 4 ) ).arg( pp2.toString( 4 ) ) );
+      //QgsDebugMsg( QString( "New points are %1 and %2, calculating..." ).arg( pp1.toString( 4 ) ).arg( pp2.toString( 4 ) ) );
       result = computeDistanceBearing( pp1, pp2 );
     }
     else
     {
-      QgsDebugMsg( "Cartesian calculation on canvas coordinates" );
+      //QgsDebugMsg( "Cartesian calculation on canvas coordinates" );
       result = sqrt(( p2.x() - p1.x() ) * ( p2.x() - p1.x() ) + ( p2.y() - p1.y() ) * ( p2.y() - p1.y() ) );
     }
   }
@@ -486,7 +486,7 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2 )
     QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate line length." ) );
     result = 0.0;
   }
-  QgsDebugMsg( QString( "The result was %1" ).arg( result ) );
+  //QgsDebugMsg( QString( "The result was %1" ).arg( result ) );
   return result;
 }
 
