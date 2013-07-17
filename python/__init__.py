@@ -23,6 +23,16 @@ __copyright__ = '(C) 2007, Martin Dobias'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import sip
+
+try:
+    apis = ["QDate", "QDateTime", "QString", "QTextStream", "QTime", "QUrl", "QVariant"]
+    for api in apis:
+        sip.setapi(api, 2)
+except ValueError:
+    # API has already been set so we can't set it again.
+    pass
+
 try:
     # Add a __nonzero__ method onto QPyNullVariant so we can check for null values easier.
     #   >>> value = QPyNullVariant("int")

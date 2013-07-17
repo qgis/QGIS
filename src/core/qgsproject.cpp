@@ -958,6 +958,8 @@ bool QgsProject::write()
     return false;
   }
 
+
+
   QDomImplementation DomImplementation;
   DomImplementation.setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
 
