@@ -127,6 +127,7 @@ qgis:nearestneighbouranalysis,USE_ORIGINAL_NAME,Vector/Points
 qgis:pointslayerfromtable,USE_ORIGINAL_NAME,Vector/Creation
 qgis:polygonfromlayerextent,USE_ORIGINAL_NAME,Vector/Creation
 qgis:polygonstolines,USE_ORIGINAL_NAME,Vector/Polygons
+qgis:polygoncentroids,USE_ORIGINAL_NAME,Vector/Polygons
 qgis:randomselection,USE_ORIGINAL_NAME,Vector/Selection
 qgis:randomselectionwithinsubsets,USE_ORIGINAL_NAME,Vector/Selection
 qgis:rasterlayerhistogram,USE_ORIGINAL_NAME,Raster/Statistics
@@ -306,7 +307,6 @@ saga:pointstatisticsforpolygons,USE_ORIGINAL_NAME,Raster - vector/Raster - vecto
 saga:pointsthinning,USE_ORIGINAL_NAME,Vector/Points
 saga:polartocartesiancoordinates,USE_ORIGINAL_NAME,Domain specific/Cost analysis
 saga:polygon-lineintersection,USE_ORIGINAL_NAME,Vector/Geometry operations
-saga:polygoncentroids,USE_ORIGINAL_NAME,Vector/Polygons
 saga:polygondissolve,USE_ORIGINAL_NAME,Vector/Polygons
 saga:polygondissolvebyattribute,Polygon dissolve (by attribute),Vector/Polygons
 saga:polygondissolveallpolygons,Polygon dissolve (all polygons),Vector/Polygons
