@@ -631,6 +631,32 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
     }
     fld = fld->Next;
   }
+
+  mPrimaryKey.clear();
+  mPrimaryKeyAttrs.clear();
+
+  QString sql = QString( "PRAGMA table_info(%1)" ).arg( quotedIdentifier( mTableName ) );
+
+  char **results;
+  int rows;
+  int columns;
+  char *errMsg = NULL;
+  int ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  if ( ret == SQLITE_OK )
+  {
+    for ( int i = 1; i <= rows; i++ )
+    {
+      QString name = QString::fromUtf8( results[( i * columns ) + 1] );
+      QString pk = results[( i * columns ) + 5];
+      if ( pk.toInt() == 0 )
+	continue;
+
+      if( mPrimaryKey.isEmpty() )
+        mPrimaryKey = name;
+      mPrimaryKeyAttrs << i - 1;
+    }
+  }
+  sqlite3_free_table( results );
 }
 #endif
 
