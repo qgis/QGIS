@@ -399,20 +399,18 @@ void QgsRubberBand::setToCanvasRectangle( const QRect& rect )
   */
 void QgsRubberBand::paint( QPainter* p )
 {
-  QList<QgsPoint> currentList;
   if ( mPoints.size() > 0 )
   {
     p->setBrush( mBrush );
     mPen.setWidth( mWidth );
     p->setPen( mPen );
 
-    for ( int i = 0; i < mPoints.size(); ++i )
+    Q_FOREACH( const QList<QgsPoint>& line, mPoints )
     {
       QVector<QPointF> pts;
-      QList<QgsPoint>::const_iterator it = mPoints.at( i ).constBegin();
-      for ( ; it != mPoints.at( i ).constEnd(); ++it )
+      Q_FOREACH( const QgsPoint& pt, line )
       {
-        const QPointF cur = toCanvasCoordinates( QgsPoint( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY ) ) - pos();
+        const QPointF cur = toCanvasCoordinates( QgsPoint( pt.x() + mTranslationOffsetX, pt.y() + mTranslationOffsetY ) ) - pos();
         if ( pts.empty() || std::abs( pts.back().x() - cur.x() ) > 1 ||  std::abs( pts.back().y() - cur.y() ) > 1 )
           pts.append( cur );
       }
@@ -427,11 +425,10 @@ void QgsRubberBand::paint( QPainter* p )
 
         case QGis::Point:
         {
-          QVector<QPointF>::const_iterator ptIt = pts.constBegin();
-          for ( ; ptIt != pts.constEnd(); ++ptIt )
+          Q_FOREACH( const QPointF& pt, pts )
           {
-            double x = ( *ptIt ).x();
-            double y = ( *ptIt ).y();
+            double x = pt.x();
+            double y = pt.y();
 
             qreal s = ( mIconSize - 1 ) / 2;
 
