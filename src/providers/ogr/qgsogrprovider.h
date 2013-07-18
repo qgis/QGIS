@@ -321,6 +321,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     int geomType;
     long featuresCounted;
 
+    //! There are deleted feature - REPACK before creating a spatialindex
+    bool mDeletedFeatures;
+
     mutable QStringList mSubLayerList;
 
     /** Flag whether OGR will return fields required by nextFeature() calls.

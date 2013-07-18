@@ -209,6 +209,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     , ogrDriver( 0 )
     , valid( false )
     , featuresCounted( -1 )
+    , mDeletedFeatures( false )
 {
   QgsCPLErrorHandler handler;
 
@@ -1212,15 +1213,16 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
 bool QgsOgrProvider::createSpatialIndex()
 {
+  if ( ogrDriverName != "ESRI Shapefile" )
+    return false;
+
   QgsCPLErrorHandler handler;
 
   QString layerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
 
   // run REPACK on shape files
-  if ( ogrDriverName == "ESRI Shapefile" )
+  if ( mDeletedFeatures )
   {
-    QString layerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
-
     QString sql = QString( "REPACK %1" ).arg( layerName );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
     QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
     OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, NULL );
@@ -1233,26 +1235,45 @@ bool QgsOgrProvider::createSpatialIndex()
         QgsMessageLog::logMessage( tr( "Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF." ).arg( packedDbf ), tr( "OGR" ), QgsMessageLog::CRITICAL );
 
         OGR_DS_Destroy( ogrDataSource );
+        ogrLayer = ogrOrigLayer = 0;
 
         ogrDataSource = OGROpen( TO8F( mFilePath ), true, NULL );
-
-        if ( mLayerName.isNull() )
+        if ( ogrDataSource )
         {
-          ogrOrigLayer = OGR_DS_GetLayer( ogrDataSource, mLayerIndex );
+          if ( mLayerName.isNull() )
+          {
+            ogrOrigLayer = OGR_DS_GetLayer( ogrDataSource, mLayerIndex );
+          }
+          else
+          {
+            ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, TO8( mLayerName ) );
+          }
+
+          if ( !ogrOrigLayer )
+          {
+            QgsMessageLog::logMessage( tr( "Original layer could not be reopened." ), tr( "OGR" ), QgsMessageLog::CRITICAL );
+            valid = false;
+          }
+
+          ogrLayer = ogrOrigLayer;
         }
         else
         {
-          ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, TO8( mLayerName ) );
+          QgsMessageLog::logMessage( tr( "Original datasource could not be reopened." ), tr( "OGR" ), QgsMessageLog::CRITICAL );
+          valid = false;
         }
-
-        ogrLayer = ogrOrigLayer;
       }
     }
+
+    mDeletedFeatures = false;
   }
 
-  QString sql = QString( "CREATE SPATIAL INDEX ON %1" ).arg( quotedIdentifier( layerName ) );  // quote the layer name so spaces are handled
-  QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "" );
+  if ( ogrDataSource )
+  {
+    QString sql = QString( "CREATE SPATIAL INDEX ON %1" ).arg( quotedIdentifier( layerName ) );  // quote the layer name so spaces are handled
+    QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
+    OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "" );
+  }
 
   QFileInfo fi( mFilePath );     // to get the base name
   //find out, if the .qix file is there
@@ -1281,7 +1302,11 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
   bool returnvalue = true;
   for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
   {
-    if ( !deleteFeature( *it ) )
+    if ( deleteFeature( *it ) )
+    {
+      mDeletedFeatures = true;
+    }
+    else
     {
       returnvalue = false;
     }
