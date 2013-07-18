@@ -135,18 +135,7 @@ void QgsRubberBand::addPoint( const QgsPoint & p, bool doUpdate /* = true */, in
   }
   else
   {
-    // add point only if it is further than a pixel appart from the previous point
-    if ( mPoints[geometryIndex].empty() )
-    {
-      mPoints[geometryIndex] << p;
-    }
-    else
-    {
-      const QPointF curr = toCanvasCoordinates( p );
-      const QPointF prev = toCanvasCoordinates( mPoints[geometryIndex].last() );
-      if ( std::abs( prev.x() - curr.x() ) > 1 || std::abs( prev.y() - curr.y() ) > 1 )
-        mPoints[geometryIndex] << p;
-    }
+    mPoints[geometryIndex] << p;
   }
 
 
