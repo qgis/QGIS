@@ -26,4 +26,4 @@ ADD_PYTHON_TEST(PyQgsExpression test_qgsexpression.py)
 ADD_PYTHON_TEST(PyQgsVectorFileWriter test_qgsvectorfilewriter.py)
 ADD_PYTHON_TEST(PyQgsSpatialiteProvider test_qgsspatialiteprovider.py)
 ADD_PYTHON_TEST(PyQgsZonalStatistics test_qgszonalstatistics.py)
-
+ADD_PYTHON_TEST(PyQgsAppStartup test_qgsappstartup.py)
