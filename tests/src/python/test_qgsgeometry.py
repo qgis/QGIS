@@ -321,7 +321,7 @@ class TestQgsGeometry(TestCase):
                 #print 'Difference: %s' % myDifferenceGeometry.exportToWkt()
                 print 'Symmetrical: %s' % mySymmetricalGeometry.exportToWkt()
 
-                myExpectedWkt = 'LINESTRING(20.0 20.0, 30.0 30.0)'
+                myExpectedWkt = 'LINESTRING(20 20, 30 30)'
                 # There should only be one feature that intersects this clip
                 # poly so this assertion should work.
                 self.assertEqual(myExpectedWkt,
