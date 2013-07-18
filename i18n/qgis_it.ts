@@ -74,12 +74,12 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="124"/>
         <source>Coordinate in your selected CRS (lat,lon or east,north)</source>
-        <translation>Coordinate nel SR selezionato (lat,lon o est,ovest)</translation>
+        <translation>Coordinate nel SR selezionato (lat,lon o est,nord)</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="128"/>
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
-        <translation>Coordinate nel sistema di riferimento spaziale della vista (lat,lon o est,ovest)</translation>
+        <translation>Coordinate nel sistema di riferimento spaziale della vista (lat,lon o est,nord)</translation>
     </message>
     <message>
         <source>Coordinate in your selected CRS</source>
@@ -146,7 +146,7 @@
     </message>
     <message>
         <source>&amp;Schema</source>
-        <translation></translation>
+        <translation>&amp;Schema</translation>
     </message>
     <message>
         <source>&amp;Table</source>
@@ -181,7 +181,7 @@
     </message>
     <message>
         <source>Unable to find a valid unique field</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile trovare un campo univoco valido</translation>
     </message>
     <message>
         <source>Copy</source>
@@ -375,11 +375,11 @@ Questa tabella è essenziale a molte applicazioni GIS per elencare le tabelle.</
     </message>
     <message>
         <source>&lt;warning&gt; There isn&apos;t entry in geometry_columns!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;warning&gt; Non ci sono valori nella tabella geometry_columns!</translation>
     </message>
     <message>
         <source>&lt;warning&gt; No spatial index defined (&lt;a href=&quot;action:spatialindex/create&quot;&gt;create it&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;warning&gt; Nessun indice spaziale definito(&lt;a href=&quot;action:spatialindex/create&quot;&gt;crealo&lt;/a&gt;)</translation>
     </message>
     <message>
         <source>Pages:</source>
@@ -395,113 +395,120 @@ Questa tabella è essenziale a molte applicazioni GIS per elencare le tabelle.</
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have usage privileges for this schema!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;warning&gt; Questo utente non ha i privilegi per questo schema!</translation>
     </message>
     <message>
         <source>Rows (counted):</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Righe (conteggio):</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has read-only privileges.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;warning&gt; Questo utente ha privilegi di sola lettura </translation>
     </message>
     <message>
         <source>&lt;warning&gt; There&apos;s a significant difference between estimated and real row count. Consider running &lt;a href=&quot;action:vacuumanalyze/run&quot;&gt;VACUUM ANALYZE&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;warning&gt; C&apos;è una differenza significativa tra il numero di righe stimate e conteggiate. Prova ad eseguire &lt;a href=&quot;action:vacuumanalyze/run&quot;&gt;VACUUM ANALYZE&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>&lt;warning&gt; No primary key defined for this table!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;warning&gt; Nessuna chiave primaria definita per questa tabella!</translation>
     </message>
     <message>
         <source>Scripts:</source>
-        <translation type="unfinished"></translation>
+        <translation>Script:</translation>
     </message>
     <message>
         <source>&lt;warning&gt; Version of installed scripts doesn&apos;t match version of released scripts!
 This is probably a result of incorrect PostGIS upgrade.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Sono in dubbio sulla traduzione di&quot;version of released scripts&quot; (flavio) </translatorcomment>
+        <translation type="unfinished">&lt;warning&gt; La versione degli script installati non corrisponde alla versione degli script di rilascio!
+Questo dipende probabilmente da un aggiornamento non corretto di PostGIS.</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user doesn&apos;t have privileges to read contents of geometry_columns table!
 This table is essential for many GIS applications for enumeration of tables.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;warning&gt; Questo utente non ha i privilegi per leggere i contenuti della tabella geometry_columns!
+Questa tabella è essenziale a molte applicazioni GIS per elencare le tabelle.</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished">Lunghezza</translation>
+        <translation>Lunghezza</translation>
     </message>
     <message>
         <source>Enabled</source>
-        <translation type="unfinished">Abilitato</translation>
+        <translation>Abilitato</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Sì</translation>
+        <translation>Sì</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">No</translation>
+        <translation>No</translation>
     </message>
     <message>
         <source>&lt;a href=&quot;action:triggers/enable&quot;&gt;Enable all triggers&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Disable all triggers&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;a href=&quot;action:triggers/enable&quot;&gt;Abilita tutti i trigger&lt;/a&gt; / &lt;a href=&quot;action:triggers/disable&quot;&gt;Disabilita tutti i trigger&lt;/a&gt;</translation>
     </message>
     <message>
         <source>Definition</source>
-        <translation type="unfinished"></translation>
+        <translation>Definizione</translation>
     </message>
     <message>
         <source>Rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Regole</translation>
     </message>
     <message>
         <source>&amp;Versioning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Versioni</translation>
     </message>
     <message>
         <source>&amp;Table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tabella</translation>
     </message>
     <message>
         <source>Filename:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome file:</translation>
     </message>
     <message>
         <source>SQLite version:</source>
-        <translation type="unfinished"></translation>
+        <translation>Versione SQLite:</translation>
     </message>
     <message>
         <source>Error:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Errore:
+%</translation>
     </message>
     <message>
         <source>
 
 Query:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">
+
+Query:
+%</translation>
     </message>
     <message>
         <source>&amp;Re-connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Ri-connetti</translation>
     </message>
     <message>
         <source>&amp;Database</source>
-        <translation type="unfinished">&amp;Database</translation>
+        <translation>&amp;Database</translation>
     </message>
     <message>
         <source>&amp;Create schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Crea schema</translation>
     </message>
     <message>
         <source>&amp;Schema</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Schema</translation>
     </message>
     <message>
         <source>&amp;Delete (empty) schema</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Elimina schema (vuoto)</translation>
     </message>
     <message>
         <source>Delete selected item</source>
@@ -509,79 +516,82 @@ Query:
     </message>
     <message>
         <source>&amp;Create table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Crea tabella</translation>
     </message>
     <message>
         <source>&amp;Edit table</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Modifica tabella</translation>
     </message>
     <message>
         <source>&amp;Delete table/view</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Elimina tabella/vista</translation>
     </message>
     <message>
         <source>&amp;Empty table</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Svuota tabella</translation>
     </message>
     <message>
         <source>&amp;Move to schema</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Non so se regge la traduzione ma &quot;Muovi a schema&quot; o &quot;Muovi su schema&quot; non mi convinceva (flavio)</translatorcomment>
+        <translation type="unfinished">&amp;Sposta su altro schema</translation>
     </message>
     <message>
         <source>Cannot delete the selected item.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Impossibile eliminare l&apos;oggetto selezionato.</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun database selezionato oppure non è connesso.</translation>
     </message>
     <message>
         <source>New schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuovo schema</translation>
     </message>
     <message>
         <source>Enter new schema name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inserisci nuovo nome per lo schema</translation>
     </message>
     <message>
         <source>Select an empty SCHEMA for deletion.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Seleziona uno schema vuoto per l&apos;eliminazione.</translation>
     </message>
     <message>
         <source>hey!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">hey!</translation>
     </message>
     <message>
         <source>Really delete schema %s?</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>ho aggiunto la versione al plurale: vi sembra corretto? (flavio)</translatorcomment>
+        <translation type="unfinished">Eliminare veramente lo%(gli) schema %(i)?</translation>
     </message>
     <message>
         <source>Select a TABLE for editation.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Scegli una TABELLA per modificarla.</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW for deletion.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Scegli una TABELLA/VISTA per eliminarla.</translation>
     </message>
     <message>
         <source>Really delete table/view %s?</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>ho aggiunto la versione al plurale: vi sembra corretto? (flavio)</translatorcomment>
+        <translation type="unfinished">Eliminare veramente la %(le) tabella/vista %(e)?</translation>
     </message>
     <message>
         <source>Select a TABLE to empty it.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Scegli una TABELLA per svuotarla.</translation>
     </message>
     <message>
         <source>Really delete all items from table %s?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eliminare veramente tutti gli oggetti dalla%(e) tabella %(e)?</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Scegli una TABELLA/VISTA.</translation>
     </message>
     <message>
         <source>Do you want to %s all triggers?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vuoi %s tutti il trigger?</translation>
     </message>
     <message>
         <source>Table triggers</source>
@@ -613,7 +623,7 @@ Query:
     </message>
     <message>
         <source>Foreign key</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Foreign key</translation>
     </message>
     <message>
         <source>Unique</source>
@@ -621,7 +631,7 @@ Query:
     </message>
     <message>
         <source>Exclusion</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Esclusione</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -648,7 +658,7 @@ Query:
     </message>
     <message>
         <source>Unable to load the layer %s</source>
-        <translation>Impossibile cancellare layer %1s</translation>
+        <translation type="unfinished">Impossibile caricare il layer %s</translation>
     </message>
 </context>
 <context>
@@ -765,7 +775,7 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="63"/>
         <source>Delete field</source>
-        <translation>Cancella campo</translation>
+        <translation>Elimina campo</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="83"/>
@@ -2595,7 +2605,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgConfig.ui" line="14"/>
         <source>SEXTANTE options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Opzioni SEXTANTE</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgConfig.ui" line="26"/>
@@ -2605,12 +2615,12 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgConfig.ui" line="37"/>
         <source>Setting</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Preferenze</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgConfig.ui" line="42"/>
         <source>Value</source>
-        <translation type="unfinished">Valore</translation>
+        <translation>Valore</translation>
     </message>
 </context>
 <context>
@@ -2894,17 +2904,17 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgHelpEdition.ui" line="31"/>
         <source>about:blank</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">vuoto</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgHelpEdition.ui" line="47"/>
         <source>Select element to edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Seleziona elemento da modificare</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgHelpEdition.ui" line="82"/>
         <source>Element description</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Descrizione elemento</translation>
     </message>
 </context>
 <context>
@@ -11649,27 +11659,27 @@ SQL: %1</translation>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="578"/>
         <source>Error opening database</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore apertura database</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="592"/>
         <source>Error closing database</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore chiusura database</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="612"/>
         <source>Unable to begin transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile iniziare la transazione</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="627"/>
         <source>Unable to commit transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile effettuare il commit della transazione</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="642"/>
         <source>Unable to rollback transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile effettuare il rollback della transazione</translation>
     </message>
 </context>
 <context>
@@ -11679,37 +11689,37 @@ SQL: %1</translation>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="292"/>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="300"/>
         <source>Unable to fetch row</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Impossibile recuperare la riga</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="230"/>
         <source>No query</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nessuna interrogazione</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="365"/>
         <source>Unable to execute statement</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Impossibile eseguire l&apos;istruzione</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="370"/>
         <source>Unable to execute multiple statements at a time</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Impossibile eseguire istruzioni multiple contemporaneamente</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="390"/>
         <source>Unable to reset statement</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Impossibile resettare l&apos;istruzione</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="435"/>
         <source>Unable to bind parameters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Impossibile associare i parametri</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="442"/>
         <source>Parameter count mismatch</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Incongruenza nel conteggio dei parametri</translation>
     </message>
 </context>
 <context>
@@ -13639,12 +13649,12 @@ Percorso DB utente:	%8</translation>
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="111"/>
         <source>Filename parsing error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Errore nel nome file: %1</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="127"/>
         <source>Feature filter parser error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Errore nel filtro oggetti: %1</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="143"/>
@@ -23283,7 +23293,7 @@ Parser error:
     <message>
         <location filename="../src/ui/qgserrordialogbase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Finestra di dialogo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgserrordialogbase.ui" line="49"/>
@@ -26339,7 +26349,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/core/qgsgml.cpp" line="90"/>
         <source>Loading GML data
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Caricamento dati GML
+%1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgml.cpp" line="90"/>
@@ -26349,12 +26360,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsgml.cpp" line="111"/>
         <source>Error: %1 on line %2, column %3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Errore: %1 alla riga %2, colunna %3</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgml.cpp" line="115"/>
         <source>WFS</source>
-        <translation type="unfinished">WFS</translation>
+        <translation>WFS</translation>
     </message>
 </context>
 <context>
@@ -32829,22 +32840,22 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooledit.cpp" line="127"/>
         <source>No active vector layer</source>
-        <translation type="unfinished">Nessun vettoriale attivo</translation>
+        <translation>Nessun vettoriale attivo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooledit.cpp" line="128"/>
         <source>Choose a vector layer in the legend</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Seleziona un layer vettoriale dalla legenda</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooledit.cpp" line="136"/>
         <source>Layer not editable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vettore non modificabile</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooledit.cpp" line="137"/>
         <source>Use &apos;Toggle Editing&apos; to make it editable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Abilitare la modalità di modifica</translation>
     </message>
 </context>
 <context>
@@ -35137,17 +35148,17 @@ Ulteriori informazioni sull&apos;errore:
     <message>
         <location filename="../src/analysis/openstreetmap/qgsosmdownload.cpp" line="46"/>
         <source>No query has been specified.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessuna interrogazione selezionata</translation>
     </message>
     <message>
         <location filename="../src/analysis/openstreetmap/qgsosmdownload.cpp" line="52"/>
         <source>There is already a pending request for data.</source>
-        <translation type="unfinished"></translation>
+        <translation>E&apos; già in corso una richiesta dati </translation>
     </message>
     <message>
         <location filename="../src/analysis/openstreetmap/qgsosmdownload.cpp" line="58"/>
         <source>Cannot open output file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile aprire il file di output: %1</translation>
     </message>
 </context>
 <context>
@@ -37992,17 +38003,17 @@ Mancano alcuni oggetti del modello d&apos;interfaccia:</translation>
     <message>
         <location filename="../src/providers/oracle/qgsoraclecolumntypethread.cpp" line="49"/>
         <source>Retrieving tables of %1...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Recupero tabelle di %1...</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclecolumntypethread.cpp" line="69"/>
         <source>Scanning column %1.%2.%3...</source>
-        <translation type="unfinished"></translation>
+        <translation>Scansione colonna %1.%2.%3...</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclecolumntypethread.cpp" line="87"/>
         <source>Table retrieval finished.</source>
-        <translation type="unfinished"></translation>
+        <translation>Recupero tabella completato</translation>
     </message>
 </context>
 <context>
@@ -42136,17 +42147,17 @@ Selezionare ignora per continuare il caricamento a meno dei layer mancanti. Sele
     <message>
         <location filename="../src/ui/qgsprojectlayergroupdialogbase.ui" line="14"/>
         <source>Select layers and groups to embed</source>
-        <translation type="unfinished">Seleziona livelli e gruppi da includere</translation>
+        <translation>Seleziona livelli e gruppi da includere</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectlayergroupdialogbase.ui" line="22"/>
         <source>Project file</source>
-        <translation type="unfinished">File di progetto</translation>
+        <translation>File di progetto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectlayergroupdialogbase.ui" line="32"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -47008,17 +47019,17 @@ L´errore era:
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="560"/>
         <source>Color</source>
-        <translation type="unfinished">Colore</translation>
+        <translation>Colore</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="561"/>
         <source>Border color</source>
-        <translation type="unfinished">Colore del bordo</translation>
+        <translation>Colore del bordo</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="563"/>
         <source>Border width</source>
-        <translation type="unfinished">Larghezza bordo</translation>
+        <translation>Larghezza bordo</translation>
     </message>
 </context>
 <context>
@@ -54876,19 +54887,19 @@ URL provata: %1</translation>
     <name>SLDatabase</name>
     <message>
         <source>Run &amp;Vacuum</source>
-        <translation type="unfinished"></translation>
+        <translation>Avvia &amp;Vacuum</translation>
     </message>
     <message>
         <source>&amp;Database</source>
-        <translation type="unfinished">&amp;Database</translation>
+        <translation>&amp;Database</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished">Spiacente</translation>
+        <translation>Spiacente</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun database selezionato oppure non è connesso.</translation>
     </message>
 </context>
 <context>
@@ -55681,17 +55692,17 @@ about SEXTANTE</source>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="69"/>
         <source>TopologyChecker</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Validatore topologico</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="77"/>
         <source>Topology Checker for vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Validatore Topologico per layer vettoriale</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="82"/>
         <source>&amp;Topology Checker</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Validatore Topologico</translation>
     </message>
 </context>
 <context>
