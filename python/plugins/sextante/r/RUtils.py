@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+import re
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -24,6 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtGui import *
+from PyQt4.QtCore import *
 from sextante.core.SextanteConfig import SextanteConfig
 import os
 from sextante.core.SextanteUtils import mkdir, SextanteUtils
@@ -123,3 +125,41 @@ class RUtils:
         s+="</font>\n"
 
         return s
+    
+    @staticmethod
+    def checkRIsInstalled(ignoreRegistrySettings=False):
+        if SextanteUtils.isWindows():
+            path = RUtils.RFolder()
+            if path == "":
+                return "R folder is not configured.\nPlease configure it before running R scripts."
+
+        R_INSTALLED = "R_INSTALLED"
+        settings = QSettings()
+        if not ignoreRegistrySettings:
+            if settings.contains(R_INSTALLED):
+                return
+        if SextanteUtils.isWindows():
+            if SextanteConfig.getSetting(RUtils.R_USE64):
+                execDir = "x64"
+            else:
+                execDir = "i386"
+            command = [RUtils.RFolder() + os.sep + "bin" + os.sep + execDir + os.sep + "R.exe", "--version"]
+        else:
+            command = ["R --version"]
+        proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
+
+        for line in iter(proc.readline, ""):
+            if "R version" in line:
+                settings.setValue(R_INSTALLED, True)
+                return
+        html = ("<p>This algorithm requires R to be run."
+            "Unfortunately, it seems that R is not installed in your system, or it is not correctly configured to be used from QGIS</p>"
+            '<p><a href= "http://docs.qgis.org/2.0/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a>'
+             'to know more about how to install and configure R to be used with SEXTANTE</p>')
+        return html
+        
+    @staticmethod
+    def getRequiredPackages(code):
+        regex = re.compile('library\("?(.*?)"?\)')
+        return regex.findall(code)
+        

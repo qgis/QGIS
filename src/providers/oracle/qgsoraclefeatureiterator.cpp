@@ -53,10 +53,10 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleProvider *p, const 
                                 "mdsys.sdo_ordinate_array(%2,%3,%4,%5)"
                                 ")" )
                        .arg( P->mSrid < 1 ? "NULL" : QString::number( P->mSrid ) )
-                       .arg( rect.xMinimum(), 0, 'f', 16 )
-                       .arg( rect.yMinimum(), 0, 'f', 16 )
-                       .arg( rect.xMaximum(), 0, 'f', 16 )
-                       .arg( rect.yMaximum(), 0, 'f', 16 );
+                       .arg( qgsDoubleToString( rect.xMinimum() ) )
+                       .arg( qgsDoubleToString( rect.yMinimum() ) )
+                       .arg( qgsDoubleToString( rect.xMaximum() ) )
+                       .arg( qgsDoubleToString( rect.yMaximum() ) );
 
         if ( !P->mSpatialIndex.isNull() )
         {

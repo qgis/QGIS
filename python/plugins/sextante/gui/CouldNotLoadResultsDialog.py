@@ -42,7 +42,7 @@ class CouldNotLoadResultsDialog(QtGui.QDialog):
         webView = QtWebKit.QWebView()
         webView.page().setLinkDelegationPolicy(QtWebKit.QWebPage.DelegateAllLinks)
         webView.connect(webView, SIGNAL("linkClicked(const QUrl&)"), self.linkClicked)
-        html = self.alg.provider.getPostProcessingErrorMessage(self.wrongLayers)
+        html = self.alg.getPostProcessingErrorMessage(self.wrongLayers)
         webView.setHtml(html)
         closeButton = QtGui.QPushButton()
         closeButton.setText("Close")

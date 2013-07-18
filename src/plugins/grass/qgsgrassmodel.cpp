@@ -421,21 +421,21 @@ QString QgsGrassModelItem::info()
         str += htmlTableRow( QObject::tr( "Projection Type" ), proj );
         if ( window.proj == PROJECTION_UTM )
           str += htmlTableRow( QObject::tr( "Zone" ), QString::number( window.zone ) );
-        str += htmlTableRow( QObject::tr( "North" ), QString::number( window.north, 'f', 8 ) );
-        str += htmlTableRow( QObject::tr( "South" ), QString::number( window.south, 'f', 8 ) );
-        str += htmlTableRow( QObject::tr( "East" ), QString::number( window.east, 'f', 8 ) );
-        str += htmlTableRow( QObject::tr( "West" ), QString::number( window.west, 'f', 8 ) );
+        str += htmlTableRow( QObject::tr( "North" ), qgsDoubleToString( window.north ) );
+        str += htmlTableRow( QObject::tr( "South" ), qgsDoubleToString( window.south ) );
+        str += htmlTableRow( QObject::tr( "East" ), qgsDoubleToString( window.east ) );
+        str += htmlTableRow( QObject::tr( "West" ), qgsDoubleToString( window.west ) );
         str += htmlTableRow( QObject::tr( "Columns" ), QString::number( window.cols ) );
         str += htmlTableRow( QObject::tr( "Rows" ), QString::number( window.rows ) );
-        str += htmlTableRow( QObject::tr( "E-W resolution" ), QString::number( window.ew_res, 'f', 8 ) );
-        str += htmlTableRow( QObject::tr( "N-S resolution" ), QString::number( window.ns_res, 'f', 8 ) );
+        str += htmlTableRow( QObject::tr( "E-W resolution" ), qgsDoubleToString( window.ew_res ) );
+        str += htmlTableRow( QObject::tr( "N-S resolution" ), qgsDoubleToString( window.ns_res ) );
         str += htmlTableRow( QObject::tr( "Top" ), QString::number( window.top ) );
         str += htmlTableRow( QObject::tr( "Bottom" ), QString::number( window.bottom ) );
         str += htmlTableRow( QObject::tr( "3D Cols" ), QString::number( window.cols3 ) );
         str += htmlTableRow( QObject::tr( "3D Rows" ), QString::number( window.rows3 ) );
         str += htmlTableRow( QObject::tr( "Depths" ), QString::number( window.depths ) );
-        str += htmlTableRow( QObject::tr( "E-W 3D resolution" ), QString::number( window.ew_res3, 'f', 8 ) );
-        str += htmlTableRow( QObject::tr( "N-S 3D resolution" ), QString::number( window.ns_res3, 'f', 8 ) );
+        str += htmlTableRow( QObject::tr( "E-W 3D resolution" ), qgsDoubleToString( window.ew_res3 ) );
+        str += htmlTableRow( QObject::tr( "N-S 3D resolution" ), qgsDoubleToString( window.ns_res3 ) );
       }
       str += "</table>";
       return str;

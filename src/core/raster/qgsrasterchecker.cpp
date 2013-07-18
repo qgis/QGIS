@@ -211,7 +211,7 @@ double QgsRasterChecker::tolerance( double val, int places )
 QString QgsRasterChecker::compareHead()
 {
   QString html;
-  html += QString( "<tr><th style='%1'>Param name</th><th style='%1'>Verified value</th><th style='%1'>Eexpected value</th><th style='%1'>Difference</th><th style='%1'>Tolerance</th></tr>" ).arg( mCellStyle );
+  html += QString( "<tr><th style='%1'>Param name</th><th style='%1'>Verified value</th><th style='%1'>Expected value</th><th style='%1'>Difference</th><th style='%1'>Tolerance</th></tr>" ).arg( mCellStyle );
   return html;
 }
 

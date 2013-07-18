@@ -1004,13 +1004,13 @@ QDomElement QgsOgcUtils::rectangleToGMLBox( QgsRectangle* box, QDomDocument& doc
   coordElem.setAttribute( "ts", " " );
 
   QString coordString;
-  coordString += QString::number( box->xMinimum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+  coordString += qgsDoubleToString( box->xMinimum() );
   coordString += ",";
-  coordString += QString::number( box->yMinimum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+  coordString += qgsDoubleToString( box->yMinimum() );
   coordString += " ";
-  coordString += QString::number( box->xMaximum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+  coordString += qgsDoubleToString( box->xMaximum() );
   coordString += ",";
-  coordString += QString::number( box->yMaximum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+  coordString += qgsDoubleToString( box->yMaximum() );
 
   QDomText coordText = doc.createTextNode( coordString );
   coordElem.appendChild( coordText );
@@ -1030,17 +1030,17 @@ QDomElement QgsOgcUtils::rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument
   QString posList;
 
   QDomElement lowerCornerElem = doc.createElement( "gml:lowerCorner" );
-  posList = QString::number( env->xMinimum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+  posList = qgsDoubleToString( env->xMinimum() );
   posList += " ";
-  posList += QString::number( env->yMinimum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+  posList += qgsDoubleToString( env->yMinimum() );
   QDomText lowerCornerText = doc.createTextNode( posList );
   lowerCornerElem.appendChild( lowerCornerText );
   envElem.appendChild( lowerCornerElem );
 
   QDomElement upperCornerElem = doc.createElement( "gml:upperCorner" );
-  posList = QString::number( env->xMaximum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+  posList = qgsDoubleToString( env->xMaximum() );
   posList += " ";
-  posList += QString::number( env->yMaximum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+  posList += qgsDoubleToString( env->yMaximum() );
   QDomText upperCornerText = doc.createTextNode( posList );
   upperCornerElem.appendChild( upperCornerText );
   envElem.appendChild( upperCornerElem );
@@ -1097,10 +1097,10 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
       QDomElement coordElem = baseCoordElem.cloneNode().toElement();
       QString coordString;
       x = ( double * )( wkb + 5 );
-      coordString += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+      coordString += qgsDoubleToString( *x );
       coordString += cs;
       y = ( double * )( wkb + 5 + sizeof( double ) );
-      coordString += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+      coordString += qgsDoubleToString( *y );
       QDomText coordText = doc.createTextNode( coordString );
       coordElem.appendChild( coordText );
       pointElem.appendChild( coordElem );
@@ -1125,11 +1125,11 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
         QDomElement coordElem = baseCoordElem.cloneNode().toElement();
         QString coordString;
         x = ( double * )( ptr );
-        coordString += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+        coordString += qgsDoubleToString( *x );
         coordString += cs;
         ptr += sizeof( double );
         y = ( double * )( ptr );
-        coordString += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+        coordString += qgsDoubleToString( *y );
         QDomText coordText = doc.createTextNode( coordString );
         coordElem.appendChild( coordText );
         pointElem.appendChild( coordElem );
@@ -1166,11 +1166,11 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
           coordString += ts;
         }
         x = ( double * ) ptr;
-        coordString += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+        coordString += qgsDoubleToString( *x );
         coordString += cs;
         ptr += sizeof( double );
         y = ( double * ) ptr;
-        coordString += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+        coordString += qgsDoubleToString( *y );
         ptr += sizeof( double );
         if ( hasZValue )
         {
@@ -1209,11 +1209,11 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
             coordString += ts;
           }
           x = ( double * ) ptr;
-          coordString += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+          coordString += qgsDoubleToString( *x );
           ptr += sizeof( double );
           coordString += cs;
           y = ( double * ) ptr;
-          coordString += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+          coordString += qgsDoubleToString( *y );
           ptr += sizeof( double );
           if ( hasZValue )
           {
@@ -1270,11 +1270,11 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
             coordString += ts;
           }
           x = ( double * ) ptr;
-          coordString += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+          coordString += qgsDoubleToString( *x );
           coordString += cs;
           ptr += sizeof( double );
           y = ( double * ) ptr;
-          coordString += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+          coordString += qgsDoubleToString( *y );
           ptr += sizeof( double );
           if ( hasZValue )
           {
@@ -1330,11 +1330,11 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
               coordString += ts;
             }
             x = ( double * ) ptr;
-            coordString += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+            coordString += qgsDoubleToString( *x );
             ptr += sizeof( double );
             coordString += cs;
             y = ( double * ) ptr;
-            coordString += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+            coordString += qgsDoubleToString( *y );
             ptr += sizeof( double );
             if ( hasZValue )
             {
@@ -1376,9 +1376,9 @@ QDomElement QgsOgcUtils::createGMLCoordinates( const QgsPolyline &points, QDomDo
     {
       coordString += " ";
     }
-    coordString += QString::number( pointIt->x(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+    coordString += qgsDoubleToString( pointIt->x() );
     coordString += ",";
-    coordString += QString::number( pointIt->y(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+    coordString += qgsDoubleToString( pointIt->y() );
   }
 
   QDomText coordText = doc.createTextNode( coordString );
@@ -1401,9 +1401,9 @@ QDomElement QgsOgcUtils::createGMLPositions( const QgsPolyline &points, QDomDocu
     {
       coordString += " ";
     }
-    coordString += QString::number( pointIt->x(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+    coordString += qgsDoubleToString( pointIt->x() );
     coordString += " ";
-    coordString += QString::number( pointIt->y(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+    coordString += qgsDoubleToString( pointIt->y() );
   }
 
   QDomText coordText = doc.createTextNode( coordString );

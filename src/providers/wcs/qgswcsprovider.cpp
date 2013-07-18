@@ -689,10 +689,10 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
 
   // Bounding box in WCS format (Warning: does not work with scientific notation)
   QString bbox = QString( changeXY ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                 .arg( extent.xMinimum(), 0, 'f', 16 )
-                 .arg( extent.yMinimum(), 0, 'f', 16 )
-                 .arg( extent.xMaximum(), 0, 'f', 16 )
-                 .arg( extent.yMaximum(), 0, 'f', 16 );
+                 .arg( qgsDoubleToString( extent.xMinimum() ) )
+                 .arg( qgsDoubleToString( extent.yMinimum() ) )
+                 .arg( qgsDoubleToString( extent.xMaximum() ) )
+                 .arg( qgsDoubleToString( extent.yMaximum() ) );
 
   QUrl url( mIgnoreGetCoverageUrl ? mBaseUrl : mCapabilities.getCoverageUrl() );
 
@@ -756,8 +756,8 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
     // Mapserver 6.0.3 does not work with origin on yMinimum (lower left)
     // Geoserver works OK with yMinimum (lower left)
     QString gridOrigin = QString( changeXY ? "%2,%1" : "%1,%2" )
-                         .arg( extent.xMinimum(), 0, 'f', 16 )
-                         .arg( extent.yMaximum(), 0, 'f', 16 );
+                         .arg( qgsDoubleToString( extent.xMinimum() ) )
+                         .arg( qgsDoubleToString( extent.yMaximum() ) );
     setQueryItem( url, "GRIDORIGIN", gridOrigin );
 
     // GridOffsets WCS 1.1:
@@ -776,8 +776,8 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
     QString gridOffsets = QString( changeXY ? "%2,%1" : "%1,%2" )
                           //setQueryItem( url, "GRIDTYPE", "urn:ogc:def:method:WCS:1.1:2dGridIn2dCrs" );
                           //QString gridOffsets = QString( changeXY ? "%2,0,0,%1" : "%1,0,0,%2" )
-                          .arg( xRes, 0, 'f', 16 )
-                          .arg( yOff, 0, 'f', 16 );
+                          .arg( qgsDoubleToString( xRes ) )
+                          .arg( qgsDoubleToString( yOff ) );
     setQueryItem( url, "GRIDOFFSETS", gridOffsets );
   }
 

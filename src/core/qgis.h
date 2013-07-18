@@ -20,6 +20,7 @@
 
 #include <QEvent>
 #include <QString>
+#include <QRegExp>
 #include <QMetaType>
 #include <QVariant>
 #include <stdlib.h>
@@ -241,6 +242,14 @@ inline void ( *cast_to_fptr( void *p ) )()
 
   u.p = p;
   return u.f;
+}
+
+//
+// return a string representation of a double
+//
+inline QString qgsDoubleToString( const double &a )
+{
+  return QString::number( a, 'f', 17 ).remove( QRegExp( "\\.?0+$" ) );
 }
 
 //

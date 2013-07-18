@@ -325,7 +325,6 @@ class GrassUtils:
         if not ignoreRegistrySettings:
             if settings.contains(GRASS_INSTALLED):
                 return
-
         try:
             from sextante import runalg
             result = runalg("grass:v.voronoi", points(),False,False,"270778.60198,270855.745301,4458921.97814,4458983.8488",-1,0.0001, 0, None)

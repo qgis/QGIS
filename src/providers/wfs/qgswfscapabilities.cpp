@@ -118,10 +118,10 @@ QString QgsWFSCapabilities::uriGetFeature( QString typeName, QString crsString, 
   if ( !bBox.isEmpty() )
   {
     bBoxString = QString( "&BBOX=%1,%2,%3,%4" )
-                 .arg( bBox.xMinimum(), 0, 'f' )
-                 .arg( bBox.yMinimum(), 0, 'f' )
-                 .arg( bBox.xMaximum(), 0, 'f' )
-                 .arg( bBox.yMaximum(), 0, 'f' );
+                 .arg( qgsDoubleToString( bBox.xMinimum() ) )
+                 .arg( qgsDoubleToString( bBox.yMinimum() ) )
+                 .arg( qgsDoubleToString( bBox.xMaximum() ) )
+                 .arg( qgsDoubleToString( bBox.yMaximum() ) );
   }
 
   QString uri = mBaseUrl;

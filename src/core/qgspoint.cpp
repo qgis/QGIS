@@ -180,7 +180,7 @@ QString QgsPoint::toDegreesMinutes( int thePrecision ) const
 
 QString QgsPoint::wellKnownText() const
 {
-  return QString( "POINT(%1 %2)" ).arg( QString::number( m_x, 'f', 18 ) ).arg( QString::number( m_y, 'f', 18 ) );
+  return QString( "POINT(%1 %2)" ).arg( qgsDoubleToString( m_x ) ).arg( qgsDoubleToString( m_y ) );
 }
 
 double QgsPoint::sqrDist( double x, double y ) const

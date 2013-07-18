@@ -4006,10 +4006,10 @@ QString QgsGeometry::exportToWkt() const
     {
       mWkt += "POINT(";
       x = ( double * )( mGeometry + 5 );
-      mWkt += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+      mWkt += qgsDoubleToString( *x );
       mWkt += " ";
       y = ( double * )( mGeometry + 5 + sizeof( double ) );
-      mWkt += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+      mWkt += qgsDoubleToString( *y );
       mWkt += ")";
       return mWkt;
     }
@@ -4035,11 +4035,11 @@ QString QgsGeometry::exportToWkt() const
           mWkt += ", ";
         }
         x = ( double * ) ptr;
-        mWkt += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+        mWkt += qgsDoubleToString( *x );
         mWkt += " ";
         ptr += sizeof( double );
         y = ( double * ) ptr;
-        mWkt += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+        mWkt += qgsDoubleToString( *y );
         ptr += sizeof( double );
         if ( hasZValue )
         {
@@ -4090,11 +4090,11 @@ QString QgsGeometry::exportToWkt() const
             mWkt += ",";
           }
           x = ( double * ) ptr;
-          mWkt += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+          mWkt += qgsDoubleToString( *x );
           mWkt += " ";
           ptr += sizeof( double );
           y = ( double * ) ptr;
-          mWkt += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+          mWkt += qgsDoubleToString( *y );
           ptr += sizeof( double );
           if ( hasZValue )
           {
@@ -4128,11 +4128,11 @@ QString QgsGeometry::exportToWkt() const
           mWkt += ", ";
         }
         x = ( double * )( ptr );
-        mWkt += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+        mWkt += qgsDoubleToString( *x );
         mWkt += " ";
         ptr += sizeof( double );
         y = ( double * )( ptr );
-        mWkt += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+        mWkt += qgsDoubleToString( *y );
         ptr += sizeof( double );
         if ( hasZValue )
         {
@@ -4172,11 +4172,11 @@ QString QgsGeometry::exportToWkt() const
             mWkt += ", ";
           }
           x = ( double * ) ptr;
-          mWkt += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+          mWkt += qgsDoubleToString( *x );
           ptr += sizeof( double );
           mWkt += " ";
           y = ( double * ) ptr;
-          mWkt += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+          mWkt += qgsDoubleToString( *y );
           ptr += sizeof( double );
           if ( hasZValue )
           {
@@ -4228,11 +4228,11 @@ QString QgsGeometry::exportToWkt() const
               mWkt += ",";
             }
             x = ( double * ) ptr;
-            mWkt += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+            mWkt += qgsDoubleToString( *x );
             ptr += sizeof( double );
             mWkt += " ";
             y = ( double * ) ptr;
-            mWkt += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+            mWkt += qgsDoubleToString( *y );
             ptr += sizeof( double );
             if ( hasZValue )
             {
@@ -4286,10 +4286,10 @@ QString QgsGeometry::exportToGeoJSON() const
     {
       mWkt += "{ \"type\": \"Point\", \"coordinates\": [";
       x = ( double * )( mGeometry + 5 );
-      mWkt += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+      mWkt += qgsDoubleToString( *x );
       mWkt += ", ";
       y = ( double * )( mGeometry + 5 + sizeof( double ) );
-      mWkt += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+      mWkt += qgsDoubleToString( *y );
       mWkt += "] }";
       return mWkt;
     }
@@ -4316,11 +4316,11 @@ QString QgsGeometry::exportToGeoJSON() const
         }
         mWkt += "[";
         x = ( double * ) ptr;
-        mWkt += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+        mWkt += qgsDoubleToString( *x );
         mWkt += ", ";
         ptr += sizeof( double );
         y = ( double * ) ptr;
-        mWkt += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+        mWkt += qgsDoubleToString( *y );
         ptr += sizeof( double );
         if ( hasZValue )
         {
@@ -4373,11 +4373,11 @@ QString QgsGeometry::exportToGeoJSON() const
           }
           mWkt += "[";
           x = ( double * ) ptr;
-          mWkt += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+          mWkt += qgsDoubleToString( *x );
           mWkt += ", ";
           ptr += sizeof( double );
           y = ( double * ) ptr;
-          mWkt += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+          mWkt += qgsDoubleToString( *y );
           ptr += sizeof( double );
           if ( hasZValue )
           {
@@ -4413,11 +4413,11 @@ QString QgsGeometry::exportToGeoJSON() const
         }
         mWkt += "[";
         x = ( double * )( ptr );
-        mWkt += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+        mWkt += qgsDoubleToString( *x );
         mWkt += ", ";
         ptr += sizeof( double );
         y = ( double * )( ptr );
-        mWkt += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+        mWkt += qgsDoubleToString( *y );
         ptr += sizeof( double );
         if ( hasZValue )
         {
@@ -4459,11 +4459,11 @@ QString QgsGeometry::exportToGeoJSON() const
           }
           mWkt += "[";
           x = ( double * ) ptr;
-          mWkt += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+          mWkt += qgsDoubleToString( *x );
           ptr += sizeof( double );
           mWkt += ", ";
           y = ( double * ) ptr;
-          mWkt += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+          mWkt += qgsDoubleToString( *y );
           ptr += sizeof( double );
           if ( hasZValue )
           {
@@ -4517,11 +4517,11 @@ QString QgsGeometry::exportToGeoJSON() const
             }
             mWkt += "[";
             x = ( double * ) ptr;
-            mWkt += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+            mWkt += qgsDoubleToString( *x );
             ptr += sizeof( double );
             mWkt += ", ";
             y = ( double * ) ptr;
-            mWkt += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+            mWkt += qgsDoubleToString( *y );
             ptr += sizeof( double );
             if ( hasZValue )
             {

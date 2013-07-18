@@ -72,7 +72,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
     const QImage& svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                               double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache );
     const QPicture& svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                  double widthScaleFactor, double rasterScaleFactor );
+                                  double widthScaleFactor, double rasterScaleFactor, bool forceVectorOutput = false );
 
     /**Tests if an svg file contains parameters for fill, outline color, outline width. If yes, possible default values are returned. If there are several
       default values in the svg file, only the first one is considered*/
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
 
     void replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry );
     void cacheImage( QgsSvgCacheEntry* entry );
-    void cachePicture( QgsSvgCacheEntry* entry );
+    void cachePicture( QgsSvgCacheEntry* entry, bool forceVectorOutput = false );
     /**Returns entry from cache or creates a new entry if it does not exist already*/
     QgsSvgCacheEntry* cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                   double widthScaleFactor, double rasterScaleFactor );

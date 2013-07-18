@@ -234,8 +234,10 @@ class SagaAlgorithm(GeoAlgorithm):
                             raise GeoAlgorithmExecutionException("Unsupported file format")
 
         #2: set parameters and outputs
-
-        command = self.undecoratedGroup  + " \"" + self.cmdname + "\""
+        if SextanteUtils.isWindows() or SextanteUtils.isMac():
+            command = self.undecoratedGroup  + " \"" + self.cmdname + "\""
+        else:
+            command = "lib" + self.undecoratedGroup  + " \"" + self.cmdname + "\""
 
         if self.hardcodedStrings:
             for s in self.hardcodedStrings:
@@ -299,7 +301,10 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
                 filename2 = SextanteUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
-                commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 4 -TYPE 0 -FILE \"" + filename + "\"");
+                if SextanteUtils.isWindows() or SextanteUtils.isMac():
+                    commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 4 -TYPE 0 -FILE \"" + filename + "\"");
+                else:
+                    commands.append("libio_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");
 
 
         #4 Run SAGA
@@ -332,9 +337,14 @@ class SagaAlgorithm(GeoAlgorithm):
             inputFilename = layer
         destFilename = SextanteUtils.getTempFilename("sgrd")
         self.exportedLayers[layer]= destFilename
-        s = "grid_tools \"Resampling\" -INPUT \"" + inputFilename + "\" -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
-            str(self.xmin) + " -USER_XMAX " + str(self.xmax) + " -USER_YMIN " + str(self.ymin) + " -USER_YMAX "  + str(self.ymax) +\
-            " -USER_SIZE " + str(self.cellsize) + " -USER_GRID \"" + destFilename + "\""
+        if SextanteUtils.isWindows() or SextanteUtils.isMac():
+            s = "grid_tools \"Resampling\" -INPUT \"" + inputFilename + "\" -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
+                str(self.xmin) + " -USER_XMAX " + str(self.xmax) + " -USER_YMIN " + str(self.ymin) + " -USER_YMAX "  + str(self.ymax) +\
+                " -USER_SIZE " + str(self.cellsize) + " -USER_GRID \"" + destFilename + "\""
+        else:
+            s = "libgrid_tools \"Resampling\" -INPUT \"" + inputFilename + "\" -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
+                str(self.xmin) + " -USER_XMAX " + str(self.xmax) + " -USER_YMIN " + str(self.ymin) + " -USER_YMAX "  + str(self.ymax) +\
+                " -USER_SIZE " + str(self.cellsize) + " -USER_GRID \"" + destFilename + "\""
         return s
 
 
@@ -352,7 +362,7 @@ class SagaAlgorithm(GeoAlgorithm):
         if msg is not None:
             html = ("<p>This algorithm requires SAGA to be run."
             "Unfortunately, it seems that SAGA is not installed in your system, or it is not correctly configured to be used from QGIS</p>")
-            html += '<p><a href= "http://docs.qgis.org/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure SAGA to be used with SEXTANTE</p>'
+            html += '<p><a href= "http://docs.qgis.org/2.0/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure SAGA to be used with SEXTANTE</p>'
             return html
 
 
@@ -369,7 +379,18 @@ class SagaAlgorithm(GeoAlgorithm):
     def helpFile(self):
         return  os.path.join(os.path.dirname(__file__), "help", self.name.replace(" ", "") + ".html")
 
+    def getPostProcessingErrorMessage(self, wrongLayers):
+        html = GeoAlgorithm.getPostProcessingErrorMessage(self, wrongLayers)
+        msg = SagaUtils.checkSagaIsInstalled(True)
+        html += ("<p>This algorithm requires SAGA to be run. A test to check if SAGA is correctly installed "
+                "and configured in your system has been performed, with the following result:</p><ul><i>")
+        if msg is None:
+            html += "SAGA seems to be correctly installed and configured</li></ul>"
+        else:
+            html += msg + "</i></li></ul>"
+            html += '<p><a href= "http://docs.qgis.org/2.0/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure SAGA to be used with SEXTANTE</p>'
 
+        return html
     #===========================================================================
     # def commandLineName(self):
     #    name = self.provider.getName().lower() + ":" + self.cmdname.lower()
