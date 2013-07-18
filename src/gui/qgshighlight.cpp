@@ -100,14 +100,22 @@ void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
 
   for ( int i = 0; i < polygon.size(); i++ )
   {
-    QPolygonF ring( polygon[i].size() + 1 );
+    if ( polygon[i].empty() ) continue;
+
+    QPolygonF ring;
+    ring.reserve( polygon[i].size() + 1 );
 
     for ( int j = 0; j < polygon[i].size(); j++ )
     {
-      ring[ j ] = toCanvasCoordinates( polygon[i][j] ) - pos();
+      //adding point only if it is more than a pixel appart from the previous one
+      const QPointF cur = toCanvasCoordinates( polygon[i][j] ) - pos();
+      if ( 0 == j || std::abs( ring.back().x() - cur.x() ) > 1 || std::abs( ring.back().y() - cur.y() ) > 1 )
+      {
+        ring.push_back( cur );
+      }
     }
 
-    ring[ polygon[i].size()] = ring[ 0 ];
+    ring.push_back( ring[ 0 ] );
 
     path.addPolygon( ring );
   }
