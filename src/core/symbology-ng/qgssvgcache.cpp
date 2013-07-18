@@ -138,7 +138,7 @@ const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const Q
       // instead cache picture
       if ( !currentEntry->picture )
       {
-        cachePicture( currentEntry );
+        cachePicture( currentEntry, false );
       }
     }
     else
@@ -152,7 +152,7 @@ const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const Q
 }
 
 const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-    double widthScaleFactor, double rasterScaleFactor )
+    double widthScaleFactor, double rasterScaleFactor, bool forceVectorOutput )
 {
   QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
 
@@ -160,7 +160,7 @@ const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, con
   //update stats for memory usage
   if ( !currentEntry->picture )
   {
-    cachePicture( currentEntry );
+    cachePicture( currentEntry, forceVectorOutput );
     trimToMaximumSize();
   }
 
@@ -398,7 +398,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
   mTotalSize += ( image->width() * image->height() * 32 );
 }
 
-void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry )
+void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput )
 {
   if ( !entry )
   {
@@ -418,7 +418,7 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry )
     hwRatio = r.viewBoxF().height() / r.viewBoxF().width();
   }
   bool drawOnScreen = qgsDoubleNear( entry->rasterScaleFactor, 1.0, 0.1 );
-  if ( drawOnScreen )
+  if ( drawOnScreen && forceVectorOutput ) //forceVectorOutput always true in case of composer draw / composer preview
   {
     // fix to ensure rotated symbols scale with composer page (i.e. not map item) zoom
     double wSize = entry->size;
