@@ -74,6 +74,8 @@ QWidget *QgsAttributeTableDelegate::createEditor(
     }
   }
 
+  w->setEnabled( vl->fieldEditable( fieldIdx ) );
+
   return w;
 }
 
