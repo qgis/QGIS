@@ -27,7 +27,8 @@ from qgis.core import (QGis,
 
 from utilities import (getQgisTestApp,
                        TestCase,
-                       unittest
+                       unittest,
+                       compareWkt,
                        #expectedFailure
                        )
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
@@ -98,7 +99,7 @@ class TestQgsMemoryProvider(TestCase):
             myMessage = ('Expected: %s\nGot: %s\n' %
                         ("POINT(10.0 10.0)", str(geom.exportToWkt())))
 
-            assert str(geom.exportToWkt()) == "POINT(10.0 10.0)", myMessage
+            assert compareWkt( str(geom.exportToWkt()), "POINT(10.0 10.0)" ), myMessage
 
     def testGetFields(self):
         layer = QgsVectorLayer("Point", "test", "memory")
