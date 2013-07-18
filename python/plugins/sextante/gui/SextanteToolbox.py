@@ -220,8 +220,8 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             for alg in algs:
                 if not alg.showInToolbox:
                     continue
-                altgroup, altsubgroup, altname = AlgorithmDecorator.getGroupsAndName(alg)
-                if altgroup is None:
+                altgroup, altsubgroup, altname = AlgorithmDecorator.getGroupsAndName(alg)                
+                if altgroup is None:                    
                     continue
                 if text =="" or text.lower() in altname.lower():
                     if altgroup not in groups:
