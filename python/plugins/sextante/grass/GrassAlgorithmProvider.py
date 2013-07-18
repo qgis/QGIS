@@ -83,19 +83,6 @@ class GrassAlgorithmProvider(AlgorithmProvider):
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/grass.png")
 
-    def getPostProcessingErrorMessage(self, wrongLayers):
-        html = AlgorithmProvider.getPostProcessingErrorMessage(self, wrongLayers)
-        msg = GrassUtils.checkGrassIsInstalled(True)
-        html += ("<p>This algorithm requires GRASS to be run. A test to check if GRASS is correctly installed "
-                "and configured in your system has been performed, with the following result:</p><ul><i>")
-        if msg is None:
-            html += "GRASS seems to be correctly installed and configured</li></ul>"
-        else:
-            html += msg + "</i></li></ul>"
-            html += '<p><a href= "http://docs.qgis.org/2.0/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure GRASS to be used with SEXTANTE</p>'
-
-        return html
-
     def getSupportedOutputVectorLayerExtensions(self):
         return ["shp"]
 
