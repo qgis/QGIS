@@ -83,7 +83,6 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                     alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
                     if alg.name.strip() != "":
                         self.preloadedAlgs.append(alg)
-                        print alg.name
                     else:                        
                         SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
                 except Exception,e:

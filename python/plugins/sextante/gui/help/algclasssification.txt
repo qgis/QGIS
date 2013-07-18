@@ -215,7 +215,7 @@ saga:edgecontamination,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and ge
 saga:effectiveairflowheights,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:enumeratetablefield,USE_ORIGINAL_NAME,Vector/Table tools
 saga:fillgapsinrecords,USE_ORIGINAL_NAME,Vector/Table tools
-saga:fillsinksplanchondarboux2001,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:fillsinks,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:fillsinkswangliu,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:fillsinksxxlwangliu,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:filterclumps,Remove small pixel clumps (to no-data),Raster/General tools
@@ -245,7 +245,7 @@ saga:gradientvectorsfromdirectionalcomponents,USE_ORIGINAL_NAME,Raster - vector/
 saga:gradientvectorsfromdirectionandlength,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
 saga:gradientvectorsfromsurface,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
 saga:gridbuffer,USE_ORIGINAL_NAME,Raster/General tools
-saga:gridcalculator,USE_ORIGINAL_NAME,Raster/General tools
+saga:rastercalculator,USE_ORIGINAL_NAME,Raster/General tools
 saga:griddifference,USE_ORIGINAL_NAME,Raster/General tools
 saga:griddivision,USE_ORIGINAL_NAME,Raster/General tools
 saga:gridmasking,USE_ORIGINAL_NAME,Raster/General tools
@@ -280,7 +280,7 @@ saga:lsfactor,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphome
 saga:majorityfilter,USE_ORIGINAL_NAME,Raster/Filters
 saga:massbalanceindex,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:mergeshapeslayers,USE_ORIGINAL_NAME,Vector/General tools
-saga:merging,Merge raster layers,Raster/General tools
+saga:mergerasterlayers,USE_ORIGINAL_NAME,Raster/General tools
 saga:metricconversions,USE_ORIGINAL_NAME,Raster/Edition
 saga:minimumdistanceanalysis,USE_ORIGINAL_NAME,Vector/Points
 saga:modifedquadraticshepard,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
