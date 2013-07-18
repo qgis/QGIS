@@ -956,7 +956,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   {
     p->setOpacity( context.alpha() );
     const QPicture& pct = QgsSvgCache::instance()->svgAsPicture( path, size, fillColor, outlineColor, outlineWidth,
-                          context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
+                          context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor(), context.renderContext().forceVectorOutput() );
 
     if ( pct.width() > 1 )
     {
