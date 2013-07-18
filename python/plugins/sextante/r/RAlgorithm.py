@@ -270,22 +270,19 @@ class RAlgorithm(GeoAlgorithm):
 
     def getImportCommands(self):
         commands = []
-        # if rgdal is not available, try to install it
+        
         # just use main mirror
         commands.append('options("repos"="http://cran.at.r-project.org/")')
-        rLibDir = "%s/rlibs" % SextanteUtils.userFolder().replace("\\","/")
-        if not os.path.isdir(rLibDir):
-            os.mkdir(rLibDir)
-        # .libPaths("%s") substitutes the personal libPath with "%s"! With '.libPaths(c("%s",deflibloc))' it is added without replacing and we can use all installed R packages!
-        commands.append('deflibloc <- .libPaths()[1]')
-        commands.append('.libPaths(c("%s",deflibloc))' % rLibDir )
-        commands.append(
-            'tryCatch(find.package("rgdal"), error=function(e) install.packages("rgdal", dependencies=TRUE, lib="%s"))' % rLibDir)
-        commands.append("library(\"rgdal\")");
-        #if not self.useRasterPackage or self.passFileNames:
-        commands.append(
-                'tryCatch(find.package("raster"), error=function(e) install.packages("raster", dependencies=TRUE, lib="%s"))' % rLibDir)
-        commands.append("library(\"raster\")");
+        
+        # try to install packages if needed
+        packages = RUtils.getRequiredPackages(self.script)
+        packages.extend(['rgdal', 'raster'])
+        for p in packages:            
+            commands.append(
+                            'tryCatch(find.package("' + p + 
+                            '"), error=function(e) install.packages("' + p +'", dependencies=TRUE))')        
+        commands.append('library("raster")')
+        commands.append('library("rgdal")')
 
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
@@ -386,28 +383,28 @@ class RAlgorithm(GeoAlgorithm):
             return None
 
     def checkBeforeOpeningParametersDialog(self):
-        if SextanteUtils.isWindows():
-            path = RUtils.RFolder()
-            if path == "":
-                return "R folder is not configured.\nPlease configure it before running R scripts."
+        msg = RUtils.checkRIsInstalled()
+        if msg is not None:
+            html = ("<p>This algorithm requires R to be run."
+            "Unfortunately, it seems that R is not installed in your system, or it is not correctly configured to be used from QGIS</p>")
+            html += '<p><a href= "http://docs.qgis.org/2.0/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure R to be used with SEXTANTE</p>'
+            return html
 
-        R_INSTALLED = "R_INSTALLED"
-        settings = QSettings()
-        if settings.contains(R_INSTALLED):
-            return
-        if SextanteUtils.isWindows():
-            if SextanteConfig.getSetting(RUtils.R_USE64):
-                execDir = "x64"
-            else:
-                execDir = "i386"
-            command = [RUtils.RFolder() + os.sep + "bin" + os.sep + execDir + os.sep + "R.exe", "--version"]
+
+    def getPostProcessingErrorMessage(self, wrongLayers):
+        html = GeoAlgorithm.getPostProcessingErrorMessage(self, wrongLayers)
+        msg = RUtils.checkRIsInstalled(True)
+        html += ("<p>This algorithm requires R to be run. A test to check if R is correctly installed "
+                "and configured in your system has been performed, with the following result:</p><ul><i>")
+        if msg is None:
+            html += "GRASS seems to be correctly installed and configured</i></li></ul>"
+            html += "<p>The script you have executed needs the following packages:</p><ul>"
+            packages = RUtils.getRequiredPackages(self.script)
+            for p in packages:
+                html += '<li>' + p + '</li>'            
+            html += "</ul><p>Make sure they are installed in your R environment before trying to execute this script.</p>"
         else:
-            command = ["R --version"]
-        proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
+            html += msg + "</i></li></ul>"
+            html += '<p><a href= "http://docs.qgis.org/2.0/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure R to be used with SEXTANTE</p>'
 
-        for line in iter(proc.readline, ""):
-            if "R version" in line:
-                settings.setValue(R_INSTALLED, True)
-                return
-        return "It seems that R is not correctly installed in your system.\nPlease install it before running R Scripts."
-
+        return html

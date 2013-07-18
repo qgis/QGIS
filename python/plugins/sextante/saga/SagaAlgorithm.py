@@ -362,7 +362,7 @@ class SagaAlgorithm(GeoAlgorithm):
         if msg is not None:
             html = ("<p>This algorithm requires SAGA to be run."
             "Unfortunately, it seems that SAGA is not installed in your system, or it is not correctly configured to be used from QGIS</p>")
-            html += '<p><a href= "http://docs.qgis.org/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure SAGA to be used with SEXTANTE</p>'
+            html += '<p><a href= "http://docs.qgis.org/2.0/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure SAGA to be used with SEXTANTE</p>'
             return html
 
 
@@ -379,7 +379,18 @@ class SagaAlgorithm(GeoAlgorithm):
     def helpFile(self):
         return  os.path.join(os.path.dirname(__file__), "help", self.name.replace(" ", "") + ".html")
 
+    def getPostProcessingErrorMessage(self, wrongLayers):
+        html = GeoAlgorithm.getPostProcessingErrorMessage(self, wrongLayers)
+        msg = SagaUtils.checkSagaIsInstalled(True)
+        html += ("<p>This algorithm requires SAGA to be run. A test to check if SAGA is correctly installed "
+                "and configured in your system has been performed, with the following result:</p><ul><i>")
+        if msg is None:
+            html += "SAGA seems to be correctly installed and configured</li></ul>"
+        else:
+            html += msg + "</i></li></ul>"
+            html += '<p><a href= "http://docs.qgis.org/2.0/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure SAGA to be used with SEXTANTE</p>'
 
+        return html
     #===========================================================================
     # def commandLineName(self):
     #    name = self.provider.getName().lower() + ":" + self.cmdname.lower()
