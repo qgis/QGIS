@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsattributeeditor.h"
+#include "qgscustomwidgets.h"
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
 #include <qgscategorizedsymbolrendererv2.h>
@@ -512,7 +513,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           }
           else if ( editType == QgsVectorLayer::DialRange )
           {
-            sl = new QDial( parent );
+            sl = new EQDial( parent );
           }
           else
           {
