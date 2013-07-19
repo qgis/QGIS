@@ -86,6 +86,7 @@ qgsdetaileditemdata.cpp
 qgsdatumtransformdialog.cpp
 qgsdetaileditemdelegate.cpp
 qgsdetaileditemwidget.cpp
+qgsdial.cpp
 qgsdialog.cpp
 qgsencodingfiledialog.cpp
 qgserrordialog.cpp
@@ -148,6 +149,7 @@ qgsscalecombobox.cpp
 qgsscalerangewidget.cpp
 qgsscalevisibilitydialog.cpp
 qgssearchquerybuilder.cpp
+qgsslider.cpp
 qgssublayersdialog.cpp
 qgssvgannotationitem.cpp
 qgstextannotationitem.cpp
@@ -243,6 +245,7 @@ qgsdatadefinedbutton.h
 qgsdatumtransformdialog.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
+qgsdial.h
 qgsdialog.h
 qgsencodingfiledialog.h
 qgserrordialog.h
@@ -295,6 +298,7 @@ qgsscalecombobox.h
 qgsscalerangewidget.h
 qgsscalevisibilitydialog.h
 qgssearchquerybuilder.h
+qgsslider.h
 qgssublayersdialog.h
 qgsunitselectionwidget.h
 )
@@ -322,6 +326,7 @@ qgscolordialog.h
 qgscredentialdialog.h
 qgscursors.h
 qgsdatadefinedbutton.h
+qgsdial.h
 qgsencodingfiledialog.h
 qgsexpressionbuilderdialog.h
 qgsexpressionbuilderwidget.h
@@ -363,6 +368,7 @@ qgsscalecombobox.h
 qgsscalerangewidget.h
 qgsscalevisibilitydialog.h
 qgssearchquerybuilder.h
+qgsslider.h
 qgssublayersdialog.h
 qgsvectorlayertools.h
 qgsvertexmarker.h
