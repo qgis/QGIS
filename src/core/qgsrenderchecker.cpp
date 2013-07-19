@@ -75,7 +75,7 @@ bool QgsRenderChecker::isKnownAnomaly( QString theDiffImageFile )
   QString myFilename = "*";
   myList = myDirectory.entryList( QStringList( myFilename ),
                                   QDir::Files | QDir::NoSymLinks );
-  //remove the control file from teh list as the anomalies are
+  //remove the control file from the list as the anomalies are
   //all files except the control file
   myList.removeAt( myList.indexOf( mExpectedImageFile ) );
 
@@ -241,11 +241,11 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //
   QString myDashMessage = "<DartMeasurementFile name=\"Rendered Image " + theTestName + "\""
                           " type=\"image/png\">" + mRenderedImageFile +
-                          "</DartMeasurementFile>"
+                          "</DartMeasurementFile>\n"
                           "<DartMeasurementFile name=\"Expected Image " + theTestName + "\" type=\"image/png\">" +
-                          mExpectedImageFile + "</DartMeasurementFile>"
+                          mExpectedImageFile + "</DartMeasurementFile>\n"
                           "<DartMeasurementFile name=\"Difference Image " + theTestName + "\" type=\"image/png\">" +
-                          myDiffImageFile + "</DartMeasurementFile>";
+                          myDiffImageFile + "</DartMeasurementFile>\n";
   qDebug( ) << myDashMessage;
 
   //

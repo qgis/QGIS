@@ -21,6 +21,7 @@
 #include <qgsexpression.h>
 #include <qgsfeature.h>
 #include <qgsgeometry.h>
+#include <qgsrenderchecker.h>
 
 #if QT_VERSION < 0x40701
 // See http://hub.qgis.org/issues/4284
@@ -809,7 +810,7 @@ class TestQgsExpression: public QObject
 
       QCOMPARE( out.canConvert<QgsGeometry>(), true );
       QgsGeometry outGeom = out.value<QgsGeometry>();
-      QCOMPARE( outGeom.exportToWkt(), result->exportToWkt() );
+      QVERIFY( compareWkt( outGeom.exportToWkt(), result->exportToWkt() ) );
     }
 
     void eval_special_columns()

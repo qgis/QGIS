@@ -14,8 +14,9 @@ __revision__ = '$Format:%H$'
 
 import os
 import unittest
+import qgis
 
-from PyQt4.QtCore import QFileInfo, QString, QStringList
+from PyQt4.QtCore import QFileInfo
 from PyQt4 import QtGui
 
 from qgis.core import (QgsRaster,
@@ -60,7 +61,7 @@ class TestQgsRasterLayer(TestCase):
 
         # Get the name of the first band
         myBand = myRasterValues.keys()[0]
-        #myExpectedName = QString('Band 1')
+        #myExpectedName = 'Band 1
         myExpectedBand = 1
         myMessage = 'Expected "%s" got "%s" for first raster band name' % (
                     myExpectedBand, myBand)
@@ -71,8 +72,7 @@ class TestQgsRasterLayer(TestCase):
         myValues = myRasterValues.values()
         myIntValues = []
         for myValue in myValues:
-          #myIntValues.append(int(str(myValue)))
-          myIntValues.append( myValue.toInt()[0] )
+          myIntValues.append( int(myValue) )
         myValues = str(myIntValues)
         myExpectedValues = '[127, 141, 112, 72, 86, 126, 156, 211, 170]'
         myMessage = 'Expected: %s\nGot: %s' % (myValues, myExpectedValues)
@@ -140,7 +140,7 @@ class TestQgsRasterLayer(TestCase):
 
         myMapRenderer = QgsMapRenderer()
 
-        myLayers = QStringList()
+        myLayers = []
         myLayers.append(myRasterLayer.id())
         myMapRenderer.setLayerSet(myLayers)
         myMapRenderer.setExtent(myRasterLayer.extent())

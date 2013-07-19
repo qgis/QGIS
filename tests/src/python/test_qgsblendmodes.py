@@ -24,6 +24,7 @@ __copyright__ = '(C) 2013, Nyall Dawson, Massimo Endrighi'
 __revision__ = '$Format:%H$'
 
 import os
+import qgis
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -95,7 +96,7 @@ class TestQgsBlendModes(TestCase):
         """Test that blend modes work for vector layers."""
 
         #Add vector layers to map
-        myLayers = QStringList()
+        myLayers = []
         myLayers.append(self.mLineLayer.id())
         myLayers.append(self.mPolygonLayer.id())
         self.mMapRenderer.setLayerSet(myLayers)
@@ -121,7 +122,7 @@ class TestQgsBlendModes(TestCase):
         """Test that feature blend modes work for vector layers."""
 
         #Add vector layers to map
-        myLayers = QStringList()
+        myLayers = []
         myLayers.append(self.mLineLayer.id())
         myLayers.append(self.mPolygonLayer.id())
         self.mMapRenderer.setLayerSet(myLayers)
@@ -145,7 +146,7 @@ class TestQgsBlendModes(TestCase):
         """Test that layer transparency works for vector layers."""
 
         #Add vector layers to map
-        myLayers = QStringList()
+        myLayers = []
         myLayers.append(self.mLineLayer.id())
         myLayers.append(self.mPolygonLayer.id())
         self.mMapRenderer.setLayerSet(myLayers)
@@ -165,7 +166,7 @@ class TestQgsBlendModes(TestCase):
     def testRasterBlending(self):
         """Test that blend modes work for raster layers."""
         #Add raster layers to map
-        myLayers = QStringList()
+        myLayers = []
         myLayers.append(self.mRasterLayer1.id())
         myLayers.append(self.mRasterLayer2.id())
         self.mMapRenderer.setLayerSet(myLayers)

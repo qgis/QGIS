@@ -23,8 +23,8 @@ __revision__ = '$Format:%H$'
 #
 # To recreate all tests, set rebuildTests to true
 
-import os;
-import os.path;
+import os
+import os.path
 import re
 import tempfile
 import inspect
@@ -33,13 +33,7 @@ import test_qgsdelimitedtextprovider_wanted as want
 
 rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ;
 
-
-import sip
-#API_NAMES = ["QDate", "QDateTime", "QString", "QTextStream", "QTime", "QUrl", "QVariant"]
-API_NAMES = ["QString", "QUrl", "QVariant"]
-API_VERSION = 2
-for name in API_NAMES:
-        sip.setapi(name, API_VERSION)
+import qgis
 
 from PyQt4.QtCore import (QVariant,
                           QCoreApplication,
@@ -69,6 +63,7 @@ from utilities import (getQgisTestApp,
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
+import sip
 sipversion=str(sip.getapi('QVariant'))
 sipwanted='2'
 geomkey = "#geometry"

@@ -14,6 +14,7 @@ __revision__ = '$Format:%H$'
 
 import tempfile
 import os
+import qgis
 from qgis.core import QgsLogger
 from utilities import (TestCase,
                        unittest
