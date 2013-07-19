@@ -33,6 +33,7 @@
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
+#include "qgscredentialdialog.h"
 
 #ifdef ANDROID
 #define QGIS_ICON_SIZE 32
@@ -95,6 +96,9 @@ QgsBrowser::QgsBrowser( QWidget *parent, Qt::WFlags flags )
   {
     toolbar->setIconSize( QSize( size, size ) );
   }
+
+  // set graphical credential requester
+  new QgsCredentialDialog( this );
 }
 
 QgsBrowser::~QgsBrowser()
