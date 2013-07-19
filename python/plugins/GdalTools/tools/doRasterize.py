@@ -93,8 +93,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
 
       # rasterize supports output file creation for GDAL 1.8
-      gdalVersion = Utils.GdalConfig.version()
-      if gdalVersion >= "1.8.0":
+      gdalVersion = Utils.GdalConfig.versionNum()
+      if gdalVersion >= 1800:
         fileDialogFunc = Utils.FileDialog.getSaveFileName
       else:
         fileDialogFunc = Utils.FileDialog.getOpenFileName
@@ -107,7 +107,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.outSelector.setFilename(outputFile)
 
       # required either -ts or -tr to create the output file
-      if gdalVersion >= "1.8.0":
+      if gdalVersion >= 1800:
         if not QFileInfo(outputFile).exists():
           QMessageBox.information( self, self.tr( "Output size or resolution required" ), self.tr( "The output file doesn't exist. You must set up the output size or resolution to create it." ) )
           self.radioSetSize.setChecked(True)

@@ -50,8 +50,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         [
           (self.inSelector, SIGNAL("filenameChanged()") ),
           (self.outSelector, SIGNAL("filenameChanged()") ),
-          (self.noDataSpin, SIGNAL("valueChanged(int)"), self.noDataCheck, "1.7.0"),
-          (self.maskSelector, SIGNAL("filenameChanged()"), self.maskModeRadio, "1.6.0"),
+          (self.noDataSpin, SIGNAL("valueChanged(int)"), self.noDataCheck, 1700),
+          (self.maskSelector, SIGNAL("filenameChanged()"), self.maskModeRadio, 1600),
           (self.alphaBandCheck, SIGNAL( "stateChanged( int )") ),
           (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentModeRadio),
           (self.modeStackedWidget, SIGNAL("currentIndexChanged(int)"))
@@ -168,7 +168,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           arguments.append("-q")
           arguments.append("-cutline")
           arguments.append(mask)
-          if Utils.GdalConfig.version() >= "1.8.0":
+          if Utils.GdalConfig.versionNum() >= 1800:
             arguments.append("-crop_to_cutline")
           if self.alphaBandCheck.isChecked():
             arguments.append("-dstalpha")
