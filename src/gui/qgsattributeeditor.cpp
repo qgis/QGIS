@@ -517,7 +517,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           }
           else
           {
-            sl = new QSlider( Qt::Horizontal, parent );
+            sl = new EQSlider( Qt::Horizontal, parent );
           }
 
           if ( sl )
