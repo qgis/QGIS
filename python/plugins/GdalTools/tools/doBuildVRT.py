@@ -52,10 +52,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           (self.inSelector, SIGNAL("filenameChanged()")),
           (self.outSelector, SIGNAL("filenameChanged()")),
           (self.resolutionComboBox, SIGNAL("currentIndexChanged(int)"), self.resolutionCheck),
-          (self.srcNoDataSpin, SIGNAL("valueChanged(int)"), self.srcNoDataCheck, "1.7.0"),
+          (self.srcNoDataSpin, SIGNAL("valueChanged(int)"), self.srcNoDataCheck, 1700),
           (self.inputDirCheck, SIGNAL("stateChanged(int)")),
-          (self.separateCheck, SIGNAL("stateChanged(int)"), None, "1.7.0"),
-          (self.allowProjDiffCheck, SIGNAL("stateChanged(int)"), None, "1.7.0"),
+          (self.separateCheck, SIGNAL("stateChanged(int)"), None, 1700),
+          (self.allowProjDiffCheck, SIGNAL("stateChanged(int)"), None, 1700),
           (self.recurseCheck, SIGNAL("stateChanged(int)"), self.inputDirCheck),
           (self.inputSelLayersCheck, SIGNAL("stateChanged(int)"))
         ]

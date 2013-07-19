@@ -56,7 +56,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       self.formatLabel.hide()
       self.formatCombo.hide()
 
-      if Utils.Version( Utils.GdalConfig.version() ) < "1.7":
+      if Utils.GdalConfig.versionNum() < 1700:
         index = self.expandCombo.findText('gray', Qt.MatchFixedString)
         if index >= 0:
           self.expandCombo.removeItem(index)
