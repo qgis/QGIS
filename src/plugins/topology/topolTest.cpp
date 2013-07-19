@@ -273,13 +273,13 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer
 
     if ( !g1 )
     {
-      QgsMessageLog::logMessage( tr( "First geometry invalid in line test." ), tr( "Topology plugin" ) );
+      QgsMessageLog::logMessage( tr( "First geometry invalid in dangling line test." ), tr( "Topology plugin" ) );
       continue;
     }
 
     if ( !g1->asGeos() )
     {
-      QgsMessageLog::logMessage( tr( "Failed to import first geometry into GEOS in line test." ), tr( "Topology plugin" ) );
+      QgsMessageLog::logMessage( tr( "Failed to import first geometry into GEOS in dangling line test." ), tr( "Topology plugin" ) );
       continue;
     }
 
@@ -405,13 +405,13 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
       QgsGeometry* g2 = mFeatureMap2[*cit].feature.geometry();
       if ( !g2 )
       {
-        QgsMessageLog::logMessage( tr( "Invalid second geometry in dangling line test." ), tr( "Topology plugin" ) );
+        QgsMessageLog::logMessage( tr( "Invalid second geometry in duplicate geometry test." ), tr( "Topology plugin" ) );
         continue;
       }
 
       if ( !g2->asGeos() )
       {
-        QgsMessageLog::logMessage( tr( "Failed to import second geometry into GEOS in dangling line test." ), tr( "Topology plugin" ) );
+        QgsMessageLog::logMessage( tr( "Failed to import second geometry into GEOS in duplicate geometry test." ), tr( "Topology plugin" ) );
         continue;
       }
 
@@ -528,19 +528,19 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
       QgsGeometry* g2 = mFeatureMap2[*cit].feature.geometry();
       if ( !g2 )
       {
-        QgsMessageLog::logMessage( tr( "Invalid second geometry in dangling line test." ), tr( "Topology plugin" ) );
+        QgsMessageLog::logMessage( tr( "Invalid second geometry in overlaps test." ), tr( "Topology plugin" ) );
         continue;
       }
 
       if ( !g2->asGeos() )
       {
-        QgsMessageLog::logMessage( tr( "Failed to import second geometry into GEOS in dangling line test." ), tr( "Topology plugin" ) );
+        QgsMessageLog::logMessage( tr( "Failed to import second geometry into GEOS in overlaps test." ), tr( "Topology plugin" ) );
         continue;
       }
 
       if ( g2->isGeosValid() == false )
       {
-        QgsMessageLog::logMessage( tr( "Skipping invalid second geometry of feature %1 in dangling line test." ).arg( it->feature.id() ), tr( "Topology plugin" ) );
+        QgsMessageLog::logMessage( tr( "Skipping invalid second geometry of feature %1 in overlaps test." ).arg( it->feature.id() ), tr( "Topology plugin" ) );
         continue;
       }
 
@@ -1259,7 +1259,7 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
       QgsGeometry* g2 = f.geometry();
       if ( !g2 || !g2->asGeos() )
       {
-        QgsMessageLog::logMessage( tr( "No second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
+        QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
       }
       QgsGeometry* startPoint = QgsGeometry::fromPoint( g2->asPolyline().first() );
@@ -1344,7 +1344,7 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
       QgsGeometry* g2 = f.geometry();
       if ( !g2 || !g2->asGeos() )
       {
-        QgsMessageLog::logMessage( tr( "No second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
+        QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
       }
 
@@ -1435,7 +1435,7 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
       QgsGeometry* g2 = f.geometry();
       if ( !g2 || !g2->asGeos() )
       {
-        QgsMessageLog::logMessage( tr( "No second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
+        QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
       }
       if ( g2->contains( g1 ) )
@@ -1509,7 +1509,7 @@ ErrorList topolTest::checkPolygonContainsPoint( double tolerance, QgsVectorLayer
       QgsGeometry* g2 = f.geometry();
       if ( !g2 || !g2->asGeos() )
       {
-        QgsMessageLog::logMessage( tr( "No second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
+        QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
       }
       if ( g1->contains( g2 ) )
