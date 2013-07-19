@@ -395,6 +395,15 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
     mMetadataUrlFormat = metaUrlElem.attribute( "format", "" );
   }
 
+  //legendUrl
+  QDomElement legendUrlElem = layerElement.firstChildElement( "legendUrl" );
+  if ( !legendUrlElem.isNull() )
+  {
+    mLegendUrl = legendUrlElem.text();
+    mLegendUrlFormat = legendUrlElem.attribute( "format", "" );
+  }
+
+
 #if 0
   //read transparency level
   QDomNode transparencyNode = layer_node.namedItem( "transparencyLevelInt" );
@@ -542,6 +551,18 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
     layerMetadataUrl.setAttribute( "format", metadataUrlFormat() );
     layerElement.appendChild( layerMetadataUrl );
   }
+
+  // layer legendUrl
+  QString aLegendUrl = legendUrl();
+  if ( !aLegendUrl.isEmpty() )
+  {
+    QDomElement layerLegendUrl = document.createElement( "legendUrl" ) ;
+    QDomText layerLegendUrlText = document.createTextNode( aLegendUrl );
+    layerLegendUrl.appendChild( layerLegendUrlText );
+    layerLegendUrl.setAttribute( "format", legendUrlFormat() );
+    layerElement.appendChild( layerLegendUrl );
+  }
+
 
   // timestamp if supported
   if ( timestamp() > QDateTime() )
@@ -1376,6 +1397,11 @@ void QgsMapLayer::clearCacheImage()
 }
 
 QString QgsMapLayer::metadata()
+{
+  return QString();
+}
+
+QString QgsMapLayer::legend()
 {
   return QString();
 }

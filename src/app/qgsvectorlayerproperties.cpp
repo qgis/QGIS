@@ -248,7 +248,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
         layer->metadataUrlFormat()
       )
     );
-  }
+    mLayerLegendUrlLineEdit->setText( layer->legendUrl() );
+    mLayerLegendUrlFormatComboBox->setCurrentIndex(
+      mLayerLegendUrlFormatComboBox->findText(
+        layer->legendUrlFormat()
+      )
+    );
+}
 
   setWindowTitle( tr( "Layer Properties - %1" ).arg( layer->name() ) );
 
@@ -485,12 +491,14 @@ void QgsVectorLayerProperties::apply()
   layer->setKeywordList( mLayerKeywordListLineEdit->text() );
   layer->setDataUrl( mLayerDataUrlLineEdit->text() );
   layer->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
-  //layer attribution and metadataUrl
+  //layer attribution metadataUrl and legendUrl
   layer->setAttribution( mLayerAttributionLineEdit->text() );
   layer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
   layer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
   layer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
   layer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
+  layer->setLegendUrl( mLayerLegendUrlLineEdit->text() );
+  layer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
 
   // update symbology
   emit refreshLegend( layer->id(), QgsLegendItem::DontChange );

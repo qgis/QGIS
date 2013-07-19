@@ -118,6 +118,8 @@ class QgsProjectParser: public QgsConfigParser
 
     QString serviceUrl() const;
 
+    QString getCapaServiceUrl( QDomDocument& doc ) const;
+
     QString wfsServiceUrl() const;
 
     /**Returns the names of the published wfs layers (not the ids as in wfsLayers() )*/
