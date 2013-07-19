@@ -165,7 +165,9 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
         QDomElement nameElem = doc.createElement( "Name" );
         //We use the layer name even though it might not be unique.
         //Because the id sometimes contains user/pw information and the name is more descriptive
-        QDomText nameText = doc.createTextNode( layer->name() );
+        QString typeName = layer->name();
+        typeName = typeName.replace( QString( " " ), QString( "_" ) );
+        QDomText nameText = doc.createTextNode( typeName );
         nameElem.appendChild( nameText );
         layerElem.appendChild( nameElem );
 
