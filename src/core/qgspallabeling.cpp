@@ -1771,7 +1771,17 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   }
 
   if ( ct ) // reproject the geometry if necessary
-    geom->transform( *ct );
+  {
+    try
+    {
+      geom->transform( *ct );
+    }
+    catch ( QgsCsException &cse )
+    {
+      QgsDebugMsgLevel( QString( "Ignoring feature %1 due transformation exception" ).arg( f.id() ), 4 );
+      return;
+    }
+  }
 
   if ( !checkMinimumSizeMM( context, geom, minFeatureSize ) )
   {
@@ -2069,7 +2079,15 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
         double z = 0;
         if ( ct )
         {
-          ct->transformInPlace( xPos, yPos, z );
+          try
+          {
+            ct->transformInPlace( xPos, yPos, z );
+          }
+          catch ( QgsCsException &e )
+          {
+            QgsDebugMsgLevel( QString( "Ignoring feature %1 due transformation exception on data-defined position" ).arg( f.id() ), 4 );
+            return;
+          }
         }
 
         xPos += xdiff;
