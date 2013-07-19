@@ -12,16 +12,16 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis
 from utilities import unittest, TestCase
 from qgis.utils import qgsfunction
 from qgis.core import QgsExpression
-from PyQt4.QtCore import QString
 
 class TestQgsExpressionCustomFunctions(TestCase):
 	@qgsfunction(1, 'testing', register=False)
 	def testfun(values, feature, parent):
 		""" Function help """
-		return "Testing_%s" % str(values[0].toString())
+		return "Testing_%s" % values[0]
 
 	@qgsfunction(0, 'testing', register=False)
 	def special(values, feature, parent):
@@ -51,8 +51,8 @@ class TestQgsExpressionCustomFunctions(TestCase):
 	def testCanEvaluateFunction(self):
 		QgsExpression.registerFunction(self.testfun)
 		exp = QgsExpression('testfun(1)')
-		result = exp.evaluate().toString()
-		self.assertEqual(QString('Testing_1'), result)
+		result = exp.evaluate()
+		self.assertEqual('Testing_1', result)
 
 	def testZeroArgFunctionsAreSpecialColumns(self):
 		special = self.special

@@ -14,6 +14,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import glob
+import qgis
 
 from PyQt4.QtCore import (QTemporaryFile,
                           QDir)

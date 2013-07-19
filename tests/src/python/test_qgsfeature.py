@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import QVariant
+import qgis
 from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
@@ -44,6 +44,7 @@ class TestQgsFeature(TestCase):
         fit = provider.getFeatures()
         feat = QgsFeature()
         fit.nextFeature(feat)
+        fit.close()
         myValidValue = feat.isValid()
         myMessage = '\nExpected: %s\nGot: %s' % ("True", myValidValue)
         assert myValidValue == True, myMessage
@@ -55,13 +56,14 @@ class TestQgsFeature(TestCase):
         fit = provider.getFeatures()
         feat = QgsFeature()
         fit.nextFeature(feat)
+        fit.close()
         myAttributes = feat.attributes()
-        myExpectedAttributes = [ QVariant("Highway"), QVariant(1) ]
+        myExpectedAttributes = [ "Highway", 1 ]
 
         # Only for printing purposes
         myAttributeDict = [
-            str(myAttributes[0].toString()),
-            int(myAttributes[1].toString()) ]
+            myAttributes[0],
+            myAttributes[1] ]
         myExpectedAttributes = [ "Highway",  1 ]
         myMessage = '\nExpected: %s\nGot: %s' % (myExpectedAttributes,
             myAttributes)
@@ -71,11 +73,11 @@ class TestQgsFeature(TestCase):
     def test_DeleteAttribute(self):
         feat = QgsFeature()
         feat.initAttributes(3)
-        feat[0] = QVariant("text1")
-        feat[1] = QVariant("text2")
-        feat[2] = QVariant("text3")
+        feat[0] = "text1"
+        feat[1] = "text2"
+        feat[2] = "text3"
         feat.deleteAttribute(1)
-        myAttrs = [ str(feat[0].toString()), str(feat[1].toString()) ]
+        myAttrs = [ feat[0], feat[1] ]
         myExpectedAttrs = [ "text1", "text3" ]
         myMessage = '\nExpected: %s\nGot: %s' % (str(myExpectedAttrs), str(myAttrs))
         assert myAttrs == myExpectedAttrs, myMessage

@@ -370,7 +370,6 @@ void TestQgsGeometry::dumpPolyline( QgsPolyline &thePolyline )
   mpPainter->drawPolyline( myPoints );
 }
 
-
 QTEST_MAIN( TestQgsGeometry )
 #include "moc_testqgsgeometry.cxx"
 

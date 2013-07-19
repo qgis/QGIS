@@ -14,7 +14,8 @@ __revision__ = '$Format:%H$'
 
 import unittest
 import os
-from PyQt4.QtCore import QUrl, QString, qDebug
+import qgis
+from PyQt4.QtCore import QUrl, qDebug
 from PyQt4.QtXml import QDomDocument
 from qgis.core import (QgsComposition,
                        QgsComposerHtml,
@@ -54,7 +55,7 @@ class TestQgsComposerHtml(TestCase):
     def htmlUrl(self):
         """Helper to get the url of the html doc."""
         myPath = os.path.join(TEST_DATA_DIR, "html_table.html")
-        myUrl = QUrl(QString("file:///%1").arg(myPath))
+        myUrl = QUrl("file:///%1").arg(myPath)
         return myUrl
 
     @expectedFailure

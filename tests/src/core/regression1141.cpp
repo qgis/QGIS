@@ -19,7 +19,6 @@
 #include <QObject>
 #include <QPainter>
 #include <QTime>
-#include <iostream>
 
 #include <QApplication>
 #include <QDesktopServices>
@@ -35,6 +34,11 @@
 #include <qgsfield.h>
 #include <qgis.h> //defines GEOWkt
 #include <qgsproviderregistry.h>
+#include <qgslogger.h>
+
+#if defined(linux)
+#include <langinfo.h>
+#endif
 
 
 /** \ingroup UnitTests
@@ -90,6 +94,16 @@ void Regression1141::cleanupTestCase()
 
 void Regression1141::diacriticalTest()
 {
+#if defined(linux)
+  const char *cs = nl_langinfo( CODESET );
+  QgsDebugMsg( QString( "CODESET:%1" ).arg( cs ? cs : "unset" ) );
+  if ( !cs || strcmp( cs, "UTF-8" ) != 0 )
+  {
+    QSKIP( "This test requires a UTF-8 locale", SkipSingle );
+    return;
+  }
+#endif
+
   //create some objects that will be used in all tests...
   mEncoding = "UTF-8";
   QgsField myField( "ąęćń", QVariant::Int, "int", 10, 0, "Value on lon" );

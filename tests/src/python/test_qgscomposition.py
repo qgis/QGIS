@@ -13,8 +13,9 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
+import qgis
 
-from PyQt4.QtCore import QFileInfo, QDir, QStringList
+from PyQt4.QtCore import QFileInfo, QDir
 from PyQt4.QtXml import QDomDocument
 
 from qgis.core import (QgsComposition,
@@ -104,7 +105,7 @@ class TestQgsComposition(TestCase):
         QgsMapLayerRegistry.instance().addMapLayers([myRasterLayer])
 
         myMapRenderer = QgsMapRenderer()
-        myLayerStringList = QStringList()
+        myLayerStringList = []
         myLayerStringList.append(myRasterLayer.id())
         myMapRenderer.setLayerSet(myLayerStringList)
         myMapRenderer.setProjectionsEnabled(False)

@@ -13,8 +13,8 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtCore import (QStringList,
-                          QFileInfo)
+import qgis
+from PyQt4.QtCore import QFileInfo
 from PyQt4.QtXml import QDomDocument
 from PyQt4.QtGui import (QPainter,
                           QColor)
@@ -57,7 +57,7 @@ class TestQgsComposerMap(TestCase):
 
         # create composition with composer map
         self.mMapRenderer = QgsMapRenderer()
-        layerStringList = QStringList()
+        layerStringList = []
         layerStringList.append(mRasterLayer.id())
         self.mMapRenderer.setLayerSet(layerStringList)
         self.mMapRenderer.setProjectionsEnabled(False)

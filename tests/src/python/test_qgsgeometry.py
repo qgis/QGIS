@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import QVariant
+import qgis
 
 from qgis.core import (QgsGeometry,
                        QgsVectorLayer,
@@ -264,7 +264,7 @@ class TestQgsGeometry(TestCase):
             QgsPoint(40,10),
             ]
         ))
-        myFeature1.setAttributes([QVariant('Johny')])
+        myFeature1.setAttributes(['Johny'])
 
         myFeature2 = QgsFeature()
         myFeature2.setGeometry(QgsGeometry.fromPolyline([
@@ -274,7 +274,7 @@ class TestQgsGeometry(TestCase):
             QgsPoint(40,40),
             ]
         ))
-        myFeature2.setAttributes([QVariant('Be')])
+        myFeature2.setAttributes(['Be'])
 
         myFeature3 = QgsFeature()
         myFeature3.setGeometry(QgsGeometry.fromPolyline([
@@ -285,7 +285,7 @@ class TestQgsGeometry(TestCase):
             ]
         ))
 
-        myFeature3.setAttributes([QVariant('Good')])
+        myFeature3.setAttributes(['Good'])
 
         myResult, myFeatures = myProvider.addFeatures(
             [myFeature1, myFeature2, myFeature3])

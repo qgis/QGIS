@@ -13,6 +13,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import sys
+import qgis
 from PyQt4 import QtGui, QtCore
 from qgis.core import (QgsApplication,
                        QgsCoordinateReferenceSystem,
@@ -166,9 +167,9 @@ def writeShape(theMemoryLayer, theFileName):
     myFileName = os.path.join(str(QtCore.QDir.tempPath()), theFileName)
     print myFileName
     # Explicitly giving all options, not really needed but nice for clarity
-    myErrorMessage = QtCore.QString()
-    myOptions = QtCore.QStringList()
-    myLayerOptions = QtCore.QStringList()
+    myErrorMessage = ''
+    myOptions = []
+    myLayerOptions = []
     mySelectedOnlyFlag = False
     mySkipAttributesFlag = False
     myGeoCrs = QgsCoordinateReferenceSystem()

@@ -14,6 +14,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import tempfile
+import qgis
 
 from qgis.core import *
 

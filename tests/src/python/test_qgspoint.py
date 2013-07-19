@@ -13,6 +13,7 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
+import qgis
 
 from qgis.core import QgsPoint
 
