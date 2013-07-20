@@ -448,7 +448,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     void init( bool manageZValue );
 
-    friend QgsComposerItemGroup; // to access mTemplateUuid
+    friend class QgsComposerItemGroup; // to access mTemplateUuid
 };
 
 #endif
