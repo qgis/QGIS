@@ -17,6 +17,7 @@
 
 #include "qgscomposeritemgroup.h"
 #include "qgscomposition.h"
+
 #include <QPen>
 #include <QPainter>
 
@@ -89,7 +90,6 @@ void QgsComposerItemGroup::addItem( QgsComposerItem* item )
   }
 
   QgsComposerItem::setSceneRect( mSceneBoundingRectangle ); //call method of superclass to avoid repositioning of items
-
 }
 
 void QgsComposerItemGroup::removeItems()
@@ -167,4 +167,56 @@ void QgsComposerItemGroup::drawFrame( QPainter* p )
     p->setRenderHint( QPainter::Antialiasing, true );
     p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
   }
+}
+
+bool QgsComposerItemGroup::writeXML( QDomElement& elem, QDomDocument & doc ) const
+{
+  QDomElement group = doc.createElement( "ComposerItemGroup" );
+
+  QSet<QgsComposerItem*>::const_iterator itemIt = mItems.begin();
+  for ( ; itemIt != mItems.end(); ++itemIt )
+  {
+    QDomElement item = doc.createElement( "ComposerItemGroupElement" );
+    item.setAttribute( "uuid", ( *itemIt )->uuid() );
+    group.appendChild( item );
+  }
+
+  elem.appendChild( group );
+
+  return _writeXML( group, doc );
+}
+
+bool QgsComposerItemGroup::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+{
+  //restore general composer item properties
+  QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
+  if ( composerItemList.size() > 0 )
+  {
+    QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
+    _readXML( composerItemElem, doc );
+  }
+
+  QList<QGraphicsItem *> items = mComposition->items();
+
+  QDomNodeList elementNodes = itemElem.elementsByTagName( "ComposerItemGroupElement" );
+  for ( int i = 0; i < elementNodes.count(); ++i )
+  {
+    QDomNode elementNode = elementNodes.at( i );
+    if ( !elementNode.isElement() )
+      continue;
+
+    QString uuid = elementNode.toElement().attribute( "uuid" );
+
+    for ( QList<QGraphicsItem *>::iterator it = items.begin(); it != items.end(); ++it )
+    {
+      QgsComposerItem *item = dynamic_cast<QgsComposerItem *>( *it );
+      if ( item && ( item->mUuid == uuid || item->mTemplateUuid == uuid ) )
+      {
+        addItem( item );
+        break;
+      }
+    }
+  }
+
+  return true;
 }

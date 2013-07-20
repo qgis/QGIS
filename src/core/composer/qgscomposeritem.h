@@ -28,6 +28,7 @@ class QWidget;
 class QDomDocument;
 class QDomElement;
 class QGraphicsLineItem;
+class QgsComposerItemGroup;
 
 /** \ingroup MapComposer
  * A item that forms part of a map composition.
@@ -442,8 +443,12 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     QString mId;
     // name (unique)
     QString mUuid;
+    // name (temporary when loaded from template)
+    QString mTemplateUuid;
 
     void init( bool manageZValue );
+
+    friend QgsComposerItemGroup; // to access mTemplateUuid
 };
 
 #endif
