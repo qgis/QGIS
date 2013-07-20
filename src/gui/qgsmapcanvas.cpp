@@ -495,18 +495,18 @@ void QgsMapCanvas::saveAsImage( QString theFileName, QPixmap * theQPixmap, QStri
   QString myHeader;
   // note: use 17 places of precision for all numbers output
   //Pixel XDim
-  myHeader += QString::number( mapUnitsPerPixel(), 'g', 17 ) + "\r\n";
+  myHeader += qgsDoubleToString( mapUnitsPerPixel() ) + "\r\n";
   //Rotation on y axis - hard coded
   myHeader += "0 \r\n";
   //Rotation on x axis - hard coded
   myHeader += "0 \r\n";
   //Pixel YDim - almost always negative - see
   //http://en.wikipedia.org/wiki/World_file#cite_note-2
-  myHeader += "-" + QString::number( mapUnitsPerPixel(), 'g', 17 ) + "\r\n";
+  myHeader += "-" + qgsDoubleToString( mapUnitsPerPixel() ) + "\r\n";
   //Origin X (center of top left cell)
-  myHeader += QString::number( myRect.xMinimum() + ( mapUnitsPerPixel() / 2 ), 'g', 17 ) + "\r\n";
+  myHeader += qgsDoubleToString( myRect.xMinimum() + ( mapUnitsPerPixel() / 2 ) ) + "\r\n";
   //Origin Y (center of top left cell)
-  myHeader += QString::number( myRect.yMaximum() - ( mapUnitsPerPixel() / 2 ), 'g', 17 ) + "\r\n";
+  myHeader += qgsDoubleToString( myRect.yMaximum() - ( mapUnitsPerPixel() / 2 ) ) + "\r\n";
   QFileInfo myInfo  = QFileInfo( theFileName );
   // allow dotted names
   QString myWorldFileName = myInfo.absolutePath() + "/" + myInfo.completeBaseName() + "." + theFormat + "w";
