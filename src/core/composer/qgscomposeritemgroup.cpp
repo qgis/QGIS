@@ -21,7 +21,8 @@
 #include <QPen>
 #include <QPainter>
 
-QgsComposerItemGroup::QgsComposerItemGroup( QgsComposition* c ): QgsComposerItem( c )
+QgsComposerItemGroup::QgsComposerItemGroup( QgsComposition* c )
+  : QgsComposerItem( c )
 {
   setZValue( 90 );
   show();
@@ -51,6 +52,9 @@ void QgsComposerItemGroup::addItem( QgsComposerItem* item )
   {
     return;
   }
+
+  connect( item, SIGNAL( destroyed() ), this, SLOT( itemDestroyed() ) );
+
   mItems.insert( item );
   item->setSelected( false );
   item->setFlag( QGraphicsItem::ItemIsSelectable, false ); //item in groups cannot be selected
@@ -68,7 +72,6 @@ void QgsComposerItemGroup::addItem( QgsComposerItem* item )
     mSceneBoundingRectangle.setRight( maxXItem );
     mSceneBoundingRectangle.setBottom( maxYItem );
   }
-
   else
   {
     if ( minXItem < mSceneBoundingRectangle.left() )
@@ -101,6 +104,11 @@ void QgsComposerItemGroup::removeItems()
     ( *item_it )->setSelected( true );
   }
   mItems.clear();
+}
+
+void QgsComposerItemGroup::itemDestroyed()
+{
+  mItems.remove( static_cast<QgsComposerItem*>( sender() ) );
 }
 
 void QgsComposerItemGroup::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
