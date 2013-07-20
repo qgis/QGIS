@@ -267,7 +267,7 @@ def runTest( file, requests, **params ):
     if result['fieldTypes'] != wanted['fieldTypes']:
         msg = "Layer field types ({0}) doesn't match expected ({1})".format(
             result['fieldTypes'],wanted['fieldTypes'])
-        failures.apend
+        failures.append(msg)
     wanted_data = wanted['data']
     for id in sorted(wanted_data.keys()):
         wrec = wanted_data[id]
