@@ -36,7 +36,8 @@ Build-Depends:
  doxygen,
  graphviz,
  txt2tags,
- xvfb, xauth, xfonts-base
+ xvfb, xauth,
+ xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.9.3
 XS-Python-Version: current

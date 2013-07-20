@@ -70,7 +70,7 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	MAKEFLAGS += -j$(NUMJOBS)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick natty oneiric precise raring"))
+ifneq (,$(findstring $(DISTRIBUTION),"squeeze wheezy sid lucid maverick natty oneiric precise raring"))
 	CMAKE_OPTS += -D WITH_PYSPATIALITE=TRUE
 endif
 
@@ -236,7 +236,7 @@ binary-arch: build install
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qbrowser
 	
-ifneq (,$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick precise quantal raring sid sid-oracle"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"natty oneiric"))
 	dh_sip
 endif
 ifneq (,$(findstring $(DISTRIBUTION),"wheezy sid quantal raring"))
