@@ -17,8 +17,9 @@ qgis (1.9.0) UNRELEASED; urgency=low
   * drop delimited text and diagram overlay plugin (now in core)
   * drop context_help, function_help and qgis_help.db files
   * use dh_sip
+  * add build dependency to xfonts (100dpi, 75dpi, scalable) for tests
 
- -- Jürgen E. Fischer <jef@norbit.de>  Sun, 02 Jun 2013 11:52:24 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 20 Jul 2013 13:18:52 +0200
 
 qgis (1.8.0) UNRELEASED; urgency=low
 
