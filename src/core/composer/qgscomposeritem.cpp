@@ -232,6 +232,9 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   //uuid
   mUuid = itemElem.attribute( "uuid", QUuid::createUuid().toString() );
 
+  // temporary for groups imported from templates
+  mTemplateUuid = itemElem.attribute( "templateUuid" );
+
   //id
   QString id = itemElem.attribute( "id", "" );
   setId( id );

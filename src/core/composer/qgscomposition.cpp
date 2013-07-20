@@ -14,8 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <stdexcept>
-
 #include "qgscomposition.h"
 #include "qgscomposerarrow.h"
 #include "qgscomposerframe.h"
@@ -31,7 +29,6 @@
 #include "qgscomposerattributetable.h"
 #include "qgsaddremovemultiframecommand.h"
 #include "qgscomposermultiframecommand.h"
-#include "qgslogger.h"
 #include "qgspaintenginehack.h"
 #include "qgspaperitem.h"
 #include "qgsproject.h"
@@ -39,6 +36,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsexpression.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QGraphicsRectItem>
@@ -49,24 +47,24 @@
 
 
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
-    : QGraphicsScene( 0 ),
-    mMapRenderer( mapRenderer ),
-    mPlotStyle( QgsComposition::Preview ),
-    mPageWidth( 297 ),
-    mPageHeight( 210 ),
-    mSpaceBetweenPages( 10 ),
-    mPrintAsRaster( false ),
-    mUseAdvancedEffects( true ),
-    mSelectionTolerance( 0.0 ),
-    mSnapToGrid( false ),
-    mSnapGridResolution( 10.0 ),
-    mSnapGridOffsetX( 0.0 ),
-    mSnapGridOffsetY( 0.0 ),
-    mAlignmentSnap( true ),
-    mAlignmentSnapTolerance( 2 ),
-    mActiveItemCommand( 0 ),
-    mActiveMultiFrameCommand( 0 ),
-    mAtlasComposition( this )
+    : QGraphicsScene( 0 )
+    , mMapRenderer( mapRenderer )
+    , mPlotStyle( QgsComposition::Preview )
+    , mPageWidth( 297 )
+    , mPageHeight( 210 )
+    , mSpaceBetweenPages( 10 )
+    , mPrintAsRaster( false )
+    , mUseAdvancedEffects( true )
+    , mSelectionTolerance( 0.0 )
+    , mSnapToGrid( false )
+    , mSnapGridResolution( 10.0 )
+    , mSnapGridOffsetX( 0.0 )
+    , mSnapGridOffsetY( 0.0 )
+    , mAlignmentSnap( true )
+    , mAlignmentSnapTolerance( 2 )
+    , mActiveItemCommand( 0 )
+    , mActiveMultiFrameCommand( 0 )
+    , mAtlasComposition( this )
 {
   setBackgroundBrush( Qt::gray );
   addPaperItem();
@@ -293,13 +291,14 @@ const QgsComposerItem* QgsComposition::getComposerItemById( QString theId ) cons
   }
   return 0;
 }
-/*
+
+#if 0
 const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid, bool inAllComposers ) const
 {
   //This does not work since it seems impossible to get the QgisApp::instance() from here... Is there a workaround ?
   QSet<QgsComposer*> composers = QSet<QgsComposer*>();
 
-  if( inAllComposers )
+  if ( inAllComposers )
   {
     composers = QgisApp::instance()->printComposers();
   }
@@ -328,7 +327,7 @@ const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid, b
 
   return 0;
 }
-*/
+#endif
 
 const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid ) const
 {
@@ -507,6 +506,7 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   mPrintResolution = compositionElem.attribute( "printResolution", "300" ).toInt();
 
   updatePaperItems();
+
   return true;
 }
 
@@ -574,6 +574,7 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
     QDomNode composerItemNode = composerItemsNodes.at( i );
     if ( composerItemNode.isElement() )
     {
+      composerItemNode.toElement().setAttribute( "templateUuid", composerItemNode.toElement().attribute( "uuid" ) );
       composerItemNode.toElement().removeAttribute( "uuid" );
     }
   }
@@ -803,7 +804,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       pushAddRemoveCommand( newTable, tr( "Table added" ) );
     }
   }
-  //html
+  // html
   QDomNodeList composerHtmlList = elem.elementsByTagName( "ComposerHtml" );
   for ( int i = 0; i < composerHtmlList.size(); ++i )
   {
@@ -812,6 +813,17 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     newHtml->readXML( currentHtmlElem, doc );
     newHtml->setCreateUndoCommands( true );
     this->addMultiFrame( newHtml );
+  }
+
+
+  // groups (must be last as it references uuids of above items)
+  QDomNodeList groupList = elem.elementsByTagName( "ComposerItemGroup" );
+  for ( int i = 0; i < groupList.size(); ++i )
+  {
+    QDomElement groupElem = groupList.at( i ).toElement();
+    QgsComposerItemGroup *newGroup = new QgsComposerItemGroup( this );
+    newGroup->readXML( groupElem, doc );
+    addItem( newGroup );
   }
 }
 
@@ -822,7 +834,6 @@ void QgsComposition::addItemToZList( QgsComposerItem* item )
     return;
   }
   mItemZList.push_back( item );
-  QgsDebugMsg( QString::number( mItemZList.size() ) );
   item->setZValue( mItemZList.size() );
 }
 
@@ -1386,7 +1397,7 @@ QGraphicsLineItem* QgsComposition::nearestSnapLine( bool horizontal, double x, d
         {
           snappedItems.append( qMakePair( currentItem, QgsComposerItem::Middle ) );
         }
-        else if ( qgsDoubleNear( currentXCoord,  currentItem->transform().dx() + currentItem->rect().width(), itemTolerance ) )
+        else if ( qgsDoubleNear( currentXCoord, currentItem->transform().dx() + currentItem->rect().width(), itemTolerance ) )
         {
           snappedItems.append( qMakePair( currentItem, QgsComposerItem::MiddleRight ) );
         }
