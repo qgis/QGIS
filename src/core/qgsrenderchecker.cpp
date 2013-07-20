@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrenderchecker.h"
+#include "qgis.h"
 
 #include <QColor>
 #include <QPainter>
@@ -161,8 +162,23 @@ bool QgsRenderChecker::runTest( QString theTestName,
   mRenderedImageFile = QDir::tempPath() + QDir::separator() +
                        theTestName + "_result.png";
   myImage.save( mRenderedImageFile, "PNG", 100 );
-  return compareImages( theTestName, theMismatchCount );
 
+  //create a world file to go with the image...
+
+  QFile wldFile( QDir::tempPath() + QDir::separator() + theTestName + "_result.wld" );
+  if ( wldFile.open( QIODevice::WriteOnly ) )
+  {
+    QgsRectangle r = mpMapRenderer->extent();
+
+    QTextStream stream( &wldFile );
+    stream << QString( "%1\r\n0 \r\n0 \r\n%2\r\n%3\r\n%4\r\n" )
+    .arg( qgsDoubleToString( mpMapRenderer->mapUnitsPerPixel() ) )
+    .arg( qgsDoubleToString( -mpMapRenderer->mapUnitsPerPixel() ) )
+    .arg( qgsDoubleToString( r.xMinimum() + mpMapRenderer->mapUnitsPerPixel() / 2.0 ) )
+    .arg( qgsDoubleToString( r.yMaximum() - mpMapRenderer->mapUnitsPerPixel() / 2.0 ) );
+  }
+
+  return compareImages( theTestName, theMismatchCount );
 }
 
 
@@ -333,7 +349,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
                                " If you feel the difference image should be considered an anomaly "
                                "you can do something like this\n"
                                "cp " + myDiffImageFile  + " ../tests/testdata/control_images/" + theTestName +
-                               "/<imagename>.png"
+                               "/<imagename>.{wld,png}"
                                "</DartMeasurement>";
     qDebug() << myMeasureMessage;
   }

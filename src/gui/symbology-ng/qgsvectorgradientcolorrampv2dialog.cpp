@@ -268,8 +268,8 @@ void QgsVectorGradientColorRampV2Dialog::stopDoubleClicked( QTreeWidgetItem* ite
       mCurrentItem = item;
       color = QgsColorDialog::getLiveColor(
                 item->data( 0, StopColorRole ).value<QColor>(),
-              this, SLOT( setItemStopColor( const QColor& ) ),
-              this, tr("Edit Stop Color"), QColorDialog::ShowAlphaChannel );
+                this, SLOT( setItemStopColor( const QColor& ) ),
+                this, tr( "Edit Stop Color" ), QColorDialog::ShowAlphaChannel );
       mCurrentItem = 0;
     }
     else
