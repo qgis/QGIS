@@ -16,6 +16,7 @@
 #include "qgsspatialindex.h"
 #include "qgswfsprovider.h"
 #include "qgsmessagelog.h"
+#include "qgsgeometry.h"
 
 QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSProvider* provider, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIterator( request )
@@ -67,12 +68,24 @@ bool QgsWFSFeatureIterator::nextFeature( QgsFeature& f )
     return false;
   }
 
-  QMap<QgsFeatureId, QgsFeature* >::iterator it = mProvider->mFeatures.find( *mFeatureIterator );
-  if ( it == mProvider->mFeatures.end() )
+  QgsFeature *fet = 0;
+
+  for ( ;; )
   {
-    return false;
+    QMap<QgsFeatureId, QgsFeature* >::iterator it = mProvider->mFeatures.find( *mFeatureIterator );
+    if ( it == mProvider->mFeatures.end() )
+      return false;
+
+    fet = it.value();
+    if (( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) == 0 )
+      break;
+
+    if ( fet->geometry() && fet->geometry()->intersects( mRequest.filterRect() ) )
+      break;
+
+    ++mFeatureIterator;
   }
-  QgsFeature* fet =  it.value();
+
 
   mProvider->copyFeature( fet, f, !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) );
   ++mFeatureIterator;
