@@ -186,12 +186,13 @@ void QgsGml::setFinished( )
 
 void QgsGml::handleProgressEvent( qint64 progress, qint64 totalSteps )
 {
-  emit dataReadProgress( progress );
   if ( totalSteps < 0 )
   {
     totalSteps = 0;
+    progress = 0;
   }
   emit totalStepsUpdate( totalSteps );
+  emit dataReadProgress( progress );
   emit dataProgressAndSteps( progress, totalSteps );
 }
 
