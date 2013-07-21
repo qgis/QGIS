@@ -143,7 +143,7 @@ static GEOSInit geosinit;
 #define GEOSIntersection(g0,g1) GEOSIntersection( (GEOSGeometry*) g0, (GEOSGeometry*)g1 )
 #define GEOSBuffer(g, d, s) GEOSBuffer( (GEOSGeometry*) g, d, s )
 #define GEOSArea(g, a) GEOSArea( (GEOSGeometry*) g, a )
-#define GEOSSimplify(g, t) GEOSSimplify( (GEOSGeometry*) g, t )
+#define GEOSTopologyPreserveSimplify(g, t) GEOSTopologyPreserveSimplify( (GEOSGeometry*) g, t )
 #define GEOSGetCentroid(g) GEOSGetCentroid( (GEOSGeometry*) g )
 
 #define GEOSCoordSeq_getSize(cs,n) GEOSCoordSeq_getSize( (GEOSCoordSequence *) cs, n )
@@ -6446,7 +6446,7 @@ QgsGeometry* QgsGeometry::simplify( double tolerance )
   }
   try
   {
-    return fromGeosGeom( GEOSSimplify( mGeos, tolerance ) );
+    return fromGeosGeom( GEOSTopologyPreserveSimplify( mGeos, tolerance ) );
   }
   CATCH_GEOS( 0 )
 }
