@@ -4,7 +4,7 @@ Priority: extra
 Maintainer: QGIS developers <qgis-developer@lists.osgeo.org>
 Build-Depends:
  bison,
- cmake (>= 2.6),
+ cmake (>= 2.8),
  debhelper (>= 7),
  flex,
  grass-dev,

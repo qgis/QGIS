@@ -1,9 +1,9 @@
 QGIS
 Building QGIS from source - step by step
-Monday July 08, 2013
+Sunday July 21, 2013
 
 
-Last Updated: Monday July 08, 2013
+Last Updated: Sunday July 21, 2013
 Last Change : Wednesday May 22, 2013
 
 
@@ -92,7 +92,7 @@ Following a summary of the required dependencies for building:
 
 Required build tools:
 
-- CMake >= 2.6.2
+- CMake >= 2.8.0
 - Flex
 - Bison >= 2.4
 

@@ -18,8 +18,7 @@ MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSIO
 #############################################################
 # CMake settings
 
-# 2.6.2 required for VERSION_LESS
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0)
 
 SET(CMAKE_COLOR_MAKEFILE ON)
 
