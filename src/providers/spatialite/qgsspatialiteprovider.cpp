@@ -649,9 +649,9 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
       QString name = QString::fromUtf8( results[( i * columns ) + 1] );
       QString pk = results[( i * columns ) + 5];
       if ( pk.toInt() == 0 )
-	continue;
+        continue;
 
-      if( mPrimaryKey.isEmpty() )
+      if ( mPrimaryKey.isEmpty() )
         mPrimaryKey = name;
       mPrimaryKeyAttrs << i - 1;
     }

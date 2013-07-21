@@ -408,7 +408,7 @@ class GeoAlgorithm:
                 s+=out.getValueAsCommandLineParameter() + ","
         s= s[:-1] + ")"
         return s
-    
+
     def getPostProcessingErrorMessage(self, wrongLayers):
         '''Returns the message to be shown to the user when, after running this algorithm,
         there is a problem loading the resulting layer.

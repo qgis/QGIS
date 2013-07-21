@@ -22,7 +22,7 @@
 #include <QPainter>
 
 QgsComposerItemGroup::QgsComposerItemGroup( QgsComposition* c )
-  : QgsComposerItem( c )
+    : QgsComposerItem( c )
 {
   setZValue( 90 );
   show();

@@ -270,17 +270,17 @@ class RAlgorithm(GeoAlgorithm):
 
     def getImportCommands(self):
         commands = []
-        
+
         # just use main mirror
         commands.append('options("repos"="http://cran.at.r-project.org/")')
-        
+
         # try to install packages if needed
         packages = RUtils.getRequiredPackages(self.script)
         packages.extend(['rgdal', 'raster'])
-        for p in packages:            
+        for p in packages:
             commands.append(
-                            'tryCatch(find.package("' + p + 
-                            '"), error=function(e) install.packages("' + p +'", dependencies=TRUE))')        
+                            'tryCatch(find.package("' + p +
+                            '"), error=function(e) install.packages("' + p +'", dependencies=TRUE))')
         commands.append('library("raster")')
         commands.append('library("rgdal")')
 
@@ -401,7 +401,7 @@ class RAlgorithm(GeoAlgorithm):
             html += "<p>The script you have executed needs the following packages:</p><ul>"
             packages = RUtils.getRequiredPackages(self.script)
             for p in packages:
-                html += '<li>' + p + '</li>'            
+                html += '<li>' + p + '</li>'
             html += "</ul><p>Make sure they are installed in your R environment before trying to execute this script.</p>"
         else:
             html += msg + "</i></li></ul>"

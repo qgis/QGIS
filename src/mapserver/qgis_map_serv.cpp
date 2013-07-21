@@ -604,7 +604,7 @@ int main( int argc, char * argv[] )
     }
     else if ( request.compare( "GetLegendGraphic", Qt::CaseInsensitive ) == 0 ||
               request.compare( "GetLegendGraphics", Qt::CaseInsensitive ) == 0 )
-              // GetLegendGraphics for compatibility with earlier QGIS versions
+      // GetLegendGraphics for compatibility with earlier QGIS versions
     {
       QImage* result = 0;
       try

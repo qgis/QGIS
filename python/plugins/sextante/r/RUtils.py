@@ -125,7 +125,7 @@ class RUtils:
         s+="</font>\n"
 
         return s
-    
+
     @staticmethod
     def checkRIsInstalled(ignoreRegistrySettings=False):
         if SextanteUtils.isWindows():
@@ -157,9 +157,8 @@ class RUtils:
             '<p><a href= "http://docs.qgis.org/2.0/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a>'
              'to know more about how to install and configure R to be used with SEXTANTE</p>')
         return html
-        
+
     @staticmethod
     def getRequiredPackages(code):
         regex = re.compile('library\("?(.*?)"?\)')
         return regex.findall(code)
-        
