@@ -25,6 +25,7 @@ from qgis.core import (QgsGeometry,
 from utilities import (getQgisTestApp,
                        TestCase,
                        unittest,
+                       compareWkt,
                        expectedFailure,
                        unitTestDataPath,
                        writeShape)
@@ -324,8 +325,8 @@ class TestQgsGeometry(TestCase):
                 myExpectedWkt = 'LINESTRING(20 20, 30 30)'
                 # There should only be one feature that intersects this clip
                 # poly so this assertion should work.
-                self.assertEqual(myExpectedWkt,
-                                 mySymmetricalGeometry.exportToWkt())
+                assert compareWkt( myExpectedWkt,
+                                 mySymmetricalGeometry.exportToWkt() )
 
                 myNewFeature = QgsFeature()
                 myNewFeature.setAttributes(myFeature.attributes())

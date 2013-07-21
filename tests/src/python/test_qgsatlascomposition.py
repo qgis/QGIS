@@ -85,12 +85,16 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mLabel1.adjustSizeToText()
         self.mLabel1.setItemPosition( 150, 5 )
 
+        qWarning( "header label font: %s exactMatch:%s" % ( self.mLabel1.font().toString(), self.mLabel1.font().exactMatch() ) )
+
         # feature number label
         self.mLabel2 = QgsComposerLabel( self.mComposition )
         self.mComposition.addComposerLabel( self.mLabel2 )
         self.mLabel2.setText( "# [%$feature || ' / ' || $numfeatures%]" )
         self.mLabel2.adjustSizeToText()
         self.mLabel2.setItemPosition( 150, 200 )
+
+        qWarning( "feature number label font: %s exactMatch:%s" % ( self.mLabel2.font().toString(), self.mLabel2.font().exactMatch() ) )
 
         self.filename_test()
         self.autoscale_render_test()

@@ -18,6 +18,7 @@ from qgis.core import (QgsRectangle,
 
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
+                       compareWkt,
                        TestCase,
                        unittest,
                        expectedFailure
@@ -185,7 +186,7 @@ class TestQgsRectangle(TestCase):
         myWkt = rect1.asWktCoordinates()
         myMessage = ('Expected: %s\nGot: %s\n' %
                       (myExpectedWkt, myWkt))
-        self.assertEquals(myWkt, myExpectedWkt, myMessage)
+        assert compareWkt( myWkt, myExpectedWkt ), myMessage
 
     def testAsWktPolygon(self):
         """Test that we can get a proper rect wkt polygon representation for rect"""
@@ -198,7 +199,7 @@ class TestQgsRectangle(TestCase):
         myWkt = rect1.asWktPolygon()
         myMessage = ('Expected: %s\nGot: %s\n' %
                       (myExpectedWkt, myWkt))
-        self.assertEquals(myWkt, myExpectedWkt, myMessage)
+        assert compareWkt( myWkt, myExpectedWkt ), myMessage
 
 
 if __name__ == '__main__':
