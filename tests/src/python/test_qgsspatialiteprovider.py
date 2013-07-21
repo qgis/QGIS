@@ -15,6 +15,7 @@ __revision__ = '$Format:%H$'
 import os
 import tempfile
 import qgis
+import sys
 
 from qgis.core import *
 
@@ -23,7 +24,11 @@ from utilities import (getQgisTestApp,
                        unittest
                        )
 
-from pyspatialite import dbapi2 as sqlite3
+try:
+    from pyspatialite import dbapi2 as sqlite3
+except ImportError:
+    print "You should install pyspatialite to run the tests"
+    sys.exit(0)
 
 # Convenience instances in case you may need them
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()

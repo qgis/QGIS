@@ -129,6 +129,9 @@ void TestQgsAtlasComposition::initTestCase()
   mLabel2->setText( "# [%$feature || ' / ' || $numfeatures%]" );
   mLabel2->adjustSizeToText();
   mLabel2->setItemPosition( 150, 200 );
+
+  qWarning() << "header label font: " << mLabel1->font().toString() << " exactMatch:" << mLabel1->font().exactMatch();
+  qWarning() << "feature number label font: " << mLabel2->font().toString() << " exactMatch:" << mLabel2->font().exactMatch();
 }
 
 void TestQgsAtlasComposition::cleanupTestCase()
@@ -140,12 +143,10 @@ void TestQgsAtlasComposition::cleanupTestCase()
 
 void TestQgsAtlasComposition::init()
 {
-
 }
 
 void TestQgsAtlasComposition::cleanup()
 {
-
 }
 
 void TestQgsAtlasComposition::filename()
