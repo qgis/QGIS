@@ -694,6 +694,11 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
   //qDebug() << "extent wkt - " << bufferExtent->exportToWkt();
 
   QgsGeometry* diffGeoms = bufferExtent->difference( &test );
+  if ( !diffGeoms )
+  {
+    qDebug() << "difference result 0-";
+    return errorList;
+  }
 
   //qDebug() << "difference gometry - " << diffGeoms->exportToWkt() ;
 
