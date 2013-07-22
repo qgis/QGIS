@@ -1718,6 +1718,18 @@ bool QgsCentroidFillSymbolLayerV2::setSubSymbol( QgsSymbolV2* symbol )
   return true;
 }
 
+QSet<QString> QgsCentroidFillSymbolLayerV2::usedAttributes() const
+{
+  QSet<QString> attributes;
+
+  attributes.unite( QgsSymbolLayerV2::usedAttributes() );
+
+  if ( mMarker )
+    attributes.unite( mMarker->usedAttributes() );
+
+  return attributes;
+}
+
 QgsSymbolV2::OutputUnit QgsCentroidFillSymbolLayerV2::outputUnit() const
 {
   if ( mMarker )
