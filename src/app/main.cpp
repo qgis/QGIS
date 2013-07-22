@@ -199,6 +199,37 @@ void qgisCrash( int signal )
 {
   qFatal( "QGIS died on signal %d", signal );
 }
+
+void dumpBacktrace()
+{
+  if ( access( "/usr/bin/c++filt", X_OK ) )
+  {
+    ( void ) write( STDERR_FILENO, "Stacktrace (c++filt NOT FOUND):\n", 32 );
+  }
+  else
+  {
+    int fd[2];
+
+    if ( pipe( fd ) == 0 && fork() == 0 )
+    {
+      close( STDIN_FILENO );
+      close( fd[1] );
+      dup( fd[0] );
+      execl( "/usr/bin/c++filt", "c++filt", ( char * ) 0 );
+      exit( 1 );
+    }
+
+    ( void ) write( STDERR_FILENO, "Stacktrace (piped through c++filt):\n", 36 );
+
+    close( STDERR_FILENO );
+    close( fd[0] );
+    dup( fd[1] );
+  }
+
+  void *buffer[256];
+  int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
+  backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
+}
 #endif
 
 /*
@@ -218,6 +249,10 @@ void myMessageOutput( QtMsgType type, const char *msg )
   {
     case QtDebugMsg:
       fprintf( stderr, "Debug: %s\n", msg );
+#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
+      if ( strncmp( msg, "Backtrace", 9 ) == 0 )
+        dumpBacktrace();
+#endif
       break;
     case QtCriticalMsg:
       fprintf( stderr, "Critical: %s\n", msg );
@@ -228,14 +263,12 @@ void myMessageOutput( QtMsgType type, const char *msg )
 #ifdef QGISDEBUG
       if ( 0 == strncmp( msg, "Object::", 8 )
            || 0 == strncmp( msg, "QWidget::", 9 )
-           || 0 == strncmp( msg, "QPainter::", 10 ) )
+           || 0 == strncmp( msg, "QPainter::", 10 )
+         )
       {
 #if 0
 #if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
-        fprintf( stderr, "Stacktrace (run through c++filt):\n" );
-        void *buffer[256];
-        int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
-        backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
+        dumpBacktrace();
 #endif
 #endif
         QgsMessageLog::logMessage( msg, "Qt" );
@@ -254,33 +287,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
     {
       fprintf( stderr, "Fatal: %s\n", msg );
 #if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
-      if ( access( "/usr/bin/c++filt", X_OK ) )
-      {
-        ( void ) write( STDERR_FILENO, "Stacktrace (c++filt NOT FOUND):\n", 32 );
-      }
-      else
-      {
-        int fd[2];
-
-        if ( pipe( fd ) == 0 && fork() == 0 )
-        {
-          close( STDIN_FILENO );
-          close( fd[1] );
-          dup( fd[0] );
-          execl( "/usr/bin/c++filt", "c++filt", ( char * ) 0 );
-          exit( 1 );
-        }
-
-        ( void ) write( STDERR_FILENO, "Stacktrace (piped through c++filt):\n", 36 );
-
-        close( STDERR_FILENO );
-        close( fd[0] );
-        dup( fd[1] );
-      }
-
-      void *buffer[256];
-      int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
-      backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
+      dumpBacktrace();
 #endif
       abort();                    // deliberately core dump
     }
@@ -852,17 +859,20 @@ int main( int argc, char *argv[] )
       QCoreApplication::addLibraryPath( QTPLUGINSDIR );
     }
     //next two lines should not be needed, testing only
-    //QCoreApplication::addLibraryPath( myPath + "/imageformats" );
-    //QCoreApplication::addLibraryPath( myPath + "/sqldrivers" );
-    //foreach (myPath, myApp.libraryPaths())
-    //{
-    //qDebug("Path:" + myPath.toLocal8Bit());
-    //}
-    //qDebug( "Added %s to plugin search path", qPrintable( myPath ) );
-    //QList<QByteArray> myFormats = QImageReader::supportedImageFormats();
-    //for ( int x = 0; x < myFormats.count(); ++x ) {
-    //  qDebug("Format: " + myFormats[x]);
-    //}
+#if 0
+    QCoreApplication::addLibraryPath( myPath + "/imageformats" );
+    QCoreApplication::addLibraryPath( myPath + "/sqldrivers" );
+    foreach ( myPath, myApp.libraryPaths() )
+    {
+      qDebug( "Path:" + myPath.toLocal8Bit() );
+    }
+    qDebug( "Added %s to plugin search path", qPrintable( myPath ) );
+    QList<QByteArray> myFormats = QImageReader::supportedImageFormats();
+    for ( int x = 0; x < myFormats.count(); ++x )
+    {
+      qDebug( "Format: " + myFormats[x] );
+    }
+#endif
   }
 #endif
 
