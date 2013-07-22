@@ -565,16 +565,16 @@ class Editor(QsciScintilla):
         if self.isModified() and not autoSave:
             self.parent.pc.callWidgetMessageBarEditor(msgEditorUnsaved, 0, True)
             return
-        
+
         if self.syntaxCheck(fromContextMenu=False):
             if autoSave and filename:
                 self.parent.save(filename)
-                
+
             if autoSave and not filename:
                 # Create a new temp file if the file isn't already saved.
                 tmpFile = self.createTempFile()
                 filename = tmpFile
-            
+
             self.parent.pc.shell.runCommand("execfile(r'{0}')".format(filename))
 
     def runSelectedCode(self):

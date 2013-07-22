@@ -8,59 +8,212 @@ class QgsRasterBlock
   public:
     QgsRasterBlock();
 
+    /** \brief Constructor which allocates data block in memory
+     *  @param theDataType raster data type
+     *  @param theWidth width of data matrix
+     *  @param theHeight height of data matrix
+     *  @param theNoDataValue the value representing no data (NULL)
+     */
     QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
 
     virtual ~QgsRasterBlock();
 
     bool reset( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
 
+    // TODO: consider if use isValid() at all, isEmpty() should be sufficient
+    // and works also if block is valid but empty - difference between valid and empty?
+    /** \brief Returns true if the block is valid (correctly filled with data).
+     *  An empty block may still be valid (if zero size block was requested).
+     *  If the block is not valid, error may be retrieved by error() method.
+     */
+    bool isValid() const;
+
+    /** \brief Mark block as valid or invalid */
+    void setValid( bool valid );
+
+    /** Returns true if block is empty, i.e. its size is 0 (zero rows or cols).
+     *  This method does not return true if size is not zero and all values are
+     *  'no data' (null).
+     */
     bool isEmpty() const;
 
-    int typeSize( int dataType ) const;
+    // Return data type size in bytes
+    static int typeSize( int dataType );
 
+    // Data type in bytes
     int dataTypeSize() const;
 
     /** Returns true if data type is numeric */
-    bool typeIsNumeric( QGis::DataType type ) const;
+    static bool typeIsNumeric( QGis::DataType type );
 
     /** Returns true if data type is color */
-    bool typeIsColor( QGis::DataType type ) const;
+    static bool typeIsColor( QGis::DataType type );
 
-    /** Returns data type for the band specified by number */
-    virtual QGis::DataType dataType() const;
+    /** Returns data type */
+    QGis::DataType dataType() const;
 
     /** For given data type returns wider type and sets no data value */
     static QGis::DataType typeWithNoDataValue( QGis::DataType dataType, double *noDataValue );
 
+    /** True if the block has no data value.
+     * @return true if the block has no data value */
     bool hasNoDataValue() const;
-    
+
+    /** Returns true if thee block may contain no data. It does not guarantee
+     * that it really contains any no data. It can be used to speed up processing.
+     * Not the difference between this method and hasNoDataValue().
+     * @return true if the block may contain no data */
     bool hasNoData() const;
 
+    /** Return no data value. If the block does not have a no data value the
+     *  returned value is undefined.
+     * @return No data value */
     double noDataValue() const;
 
-    //void setNoDataValue( double noDataValue );
+    /** Get byte array representing a value.
+     * @param theDataType data type
+     * @param theValue value
+     * @return byte array representing the value */
+    static QByteArray valueBytes( QGis::DataType theDataType, double theValue );
 
-    //static bool isNoDataValue( double value, double noDataValue );
-
-    //bool isNoDataValue( double value ) const;
-
+    /** \brief Read a single value if type of block is numeric. If type is color,
+     *  returned value is undefined.
+     *  @param row row index
+     *  @param column column index
+     *  @return value */
     double value( int row, int column ) const;
-    double value( size_t index) const;
+
+    /** \brief Read a single value if type of block is numeric. If type is color,
+     *  returned value is undefined.
+     *  @param index data matrix index
+     *  @return value */
+    double value( size_t index ) const;
+
+    /** \brief Read a single color
+     *  @param row row index
+     *  @param column column index
+     *  @return color */
     QRgb color( int row, int column ) const;
-    QRgb color( size_t index) const;
+
+    /** \brief Read a single value
+     *  @param index data matrix index
+     *  @return color */
+    QRgb color( size_t index ) const;
+
+    /** \brief Check if value at position is no data
+     *  @param row row index
+     *  @param column column index
+     *  @return true if value is no data */
     bool isNoData( int row, int column );
+
+    /** \brief Check if value at position is no data
+     *  @param index data matrix index
+     *  @return true if value is no data */
     bool isNoData( size_t index );
+
+    /** \brief Set value on position
+     *  @param row row index
+     *  @param column column index
+     *  @param value the value to be set
+     *  @return true on success */
     bool setValue( int row, int column, double value );
+
+    /** \brief Set value on index (indexed line by line)
+     *  @param index data matrix index
+     *  @param value the value to be set
+     *  @return true on success */
     bool setValue( size_t index, double value );
+
+    /** \brief Set color on position
+     *  @param row row index
+     *  @param column column index
+     *  @param color the color to be set, QRgb value
+     *  @return true on success */
     bool setColor( int row, int column, QRgb color );
+
+    /** \brief Set color on index (indexed line by line)
+     *  @param index data matrix index
+     *  @param color the color to be set, QRgb value
+     *  @return true on success */
     bool setColor( size_t index, QRgb color );
-    // Not desired to give direct access to data in Python, could cause crash
-    //char * bits( int row, int column );
-    //char * bits( size_t index );
+
+    /** \brief Set no data on pixel
+     *  @param row row index
+     *  @param column column index
+     *  @return true on success */
+    bool setIsNoData( int row, int column );
+
+    /** \brief Set no data on pixel
+     *  @param index data matrix index
+     *  @return true on success */
+    bool setIsNoData( size_t index );
+
+    /** \brief Set the whole block to no data
+     *  @return true on success */
+    bool setIsNoData();
+
+    /** \brief Set the whole block to no data except specified rectangle
+     *  @return true on success */
+    bool setIsNoDataExcept( const QRect & theExceptRect );
+
+    /** \brief Get pointer to data
+     *  @param row row index
+     *  @param column column index
+     *  @return pointer to data
+     *  @note not available in python bindings
+     */
+    // char * bits( int row, int column );
+
+    /** \brief Get pointer to data
+     *  @param index data matrix index
+     *  @return pointer to data
+     *  @note not available in python bindings
+     */
+    // char * bits( size_t index );
+
+    /** \brief Get pointer to data
+     *  @return pointer to data
+     *  @note not available in python bindings
+     */
+    // char * bits();
+
+    /** \brief Print double value with all necessary significant digits.
+     *         It is ensured that conversion back to double gives the same number.
+     *  @param value the value to be printed
+     *  @return string representing the value*/
     static QString printValue( double value );
 
+    /** \brief Convert data to different type.
+     *  @param destDataType dest data type
+     *  @return true on success */
     bool convert( QGis::DataType destDataType );
+
+    /** \brief Get image if type is color.
+    *   @return image */
     QImage image() const;
+
+    /** \brief set image.
+     *  @param image image
+     *  @return true on success */
     bool setImage( const QImage * image );
+
+    void applyNoDataValues( const QgsRasterRangeList & rangeList );
+
+    /** \brief Get error */
+    QgsError error() const;
+
+    /** \brief Set error */
+    void setError( const QgsError & theError );
+
+    /** \brief For theExtent and theWidht, theHeight find rectangle covered by subextent.
+     * The output rect has x oriented from left to right and y from top to bottom
+     * (upper-left to lower-right orientation).
+     * @param theExtent extent, usually the larger
+     * @param theWidth numbers of columns in theExtent
+     * @param theHeight numbers of rows in theExtent
+     * @param theSubExtent extent, usually smaller than theExtent
+     * @return the rectangle covered by sub extent
+     */
+    static QRect subRect( const QgsRectangle &theExtent, int theWidth, int theHeight, const QgsRectangle &theSubExtent );
 };
 
