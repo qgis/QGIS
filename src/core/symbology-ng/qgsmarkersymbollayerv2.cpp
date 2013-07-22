@@ -462,6 +462,10 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     // move to the desired position
     transform.translate( point.x() + off.x(), point.y() + off.y() );
 
+    bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || angleExpression;
+    if ( angle != 0 && hasDataDefinedRotation )
+      transform.rotate( angle );
+
     double size = mSize;
     QgsExpression* sizeExpression = expression( "size" );
 
