@@ -33,8 +33,10 @@ class QgsRasterBlock
     static QGis::DataType typeWithNoDataValue( QGis::DataType dataType, double *noDataValue );
 
     bool hasNoDataValue() const;
+    
+    bool hasNoData() const;
 
-    double noDataValue( ) const;
+    double noDataValue() const;
 
     //void setNoDataValue( double noDataValue );
 
