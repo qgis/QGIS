@@ -223,7 +223,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     virtual QgsLegendSymbolList legendSymbolItems();
 
     //! for debugging
-    virtual QString dump();
+    virtual QString dump() const;
 
     //! return whether the renderer will render a feature or not.
     //! Must be called between startRender() and stopRender() calls.

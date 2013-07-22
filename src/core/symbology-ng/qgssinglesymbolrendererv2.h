@@ -53,7 +53,7 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 2.0
     QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
 
-    virtual QString dump();
+    virtual QString dump() const;
 
     virtual QgsFeatureRendererV2* clone();
 

@@ -41,7 +41,7 @@ class CORE_EXPORT QgsRendererRangeV2
     void setUpperValue( double upperValue );
 
     // debugging
-    QString dump();
+    QString dump() const;
 
     void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
 
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual QList<QString> usedAttributes();
 
-    virtual QString dump();
+    virtual QString dump() const;
 
     virtual QgsFeatureRendererV2* clone();
 

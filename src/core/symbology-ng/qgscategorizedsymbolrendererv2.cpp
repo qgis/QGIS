@@ -97,7 +97,7 @@ void QgsRendererCategoryV2::setLabel( const QString &label )
   mLabel = label;
 }
 
-QString QgsRendererCategoryV2::dump()
+QString QgsRendererCategoryV2::dump() const
 {
   return QString( "%1::%2::%3\n" ).arg( mValue.toString() ).arg( mLabel ).arg( mSymbol->dump() );
 }
@@ -425,7 +425,7 @@ QList<QString> QgsCategorizedSymbolRendererV2::usedAttributes()
   return attributes.toList();
 }
 
-QString QgsCategorizedSymbolRendererV2::dump()
+QString QgsCategorizedSymbolRendererV2::dump() const
 {
   QString s = QString( "CATEGORIZED: idx %1\n" ).arg( mAttrName );
   for ( int i = 0; i < mCategories.count(); i++ )

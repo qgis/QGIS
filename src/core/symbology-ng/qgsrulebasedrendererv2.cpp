@@ -886,7 +886,7 @@ void QgsRuleBasedRendererV2::refineRuleScales( QgsRuleBasedRendererV2::Rule* ini
   initialRule->appendChild( new Rule( symbol->clone(), oldScale, maxDenom, QString(), QString( "%1 - %2" ).arg( oldScale ).arg( maxDenom ) ) );
 }
 
-QString QgsRuleBasedRendererV2::dump()
+QString QgsRuleBasedRendererV2::dump() const
 {
   QString msg( "Rule-based renderer:\n" );
   msg += mRootRule->dump();

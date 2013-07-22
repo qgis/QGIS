@@ -22,7 +22,7 @@ class QgsRendererCategoryV2
     void setLabel( const QString &label );
 
     // debugging
-    QString dump();
+    QString dump() const;
 
     void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
 };
@@ -49,7 +49,7 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual QList<QString> usedAttributes();
 
-    virtual QString dump();
+    virtual QString dump() const;
 
     virtual QgsFeatureRendererV2* clone() /Factory/;
 
