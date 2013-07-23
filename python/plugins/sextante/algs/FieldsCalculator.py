@@ -47,8 +47,8 @@ class FieldsCalculator(GeoAlgorithm):
     FORMULA = "FORMULA"
     OUTPUT_LAYER = "OUTPUT_LAYER"
 
-    TYPE_NAMES = ["Float", "Integer", "String", "Boolean"]
-    TYPES = [QVariant.Double, QVariant.Int, QVariant.String, QVariant.Bool]
+    TYPE_NAMES = ["Float", "Integer", "String"]
+    TYPES = [QVariant.Double, QVariant.Int, QVariant.String]
 
 
     def defineCharacteristics(self):
@@ -96,7 +96,6 @@ class FieldsCalculator(GeoAlgorithm):
                 result = eval(expression)
             except Exception:                                                
                 result = None
-                #raise GeoAlgorithmExecutionException("Problem evaluation formula: Wrong field values or formula")
             nElement += 1
             inGeom = inFeat.geometry()
             outFeat.setGeometry(inGeom)
