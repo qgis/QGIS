@@ -48,7 +48,7 @@ class FieldsCalculator(GeoAlgorithm):
     OUTPUT_LAYER = "OUTPUT_LAYER"
 
     TYPE_NAMES = ["Float", "Integer", "String", "Boolean"]
-    TYPES = [QVariant.Double, QVariant.Int, QVariant.String. QVariant.Bool]
+    TYPES = [QVariant.Double, QVariant.Int, QVariant.String, QVariant.Bool]
 
 
     def defineCharacteristics(self):

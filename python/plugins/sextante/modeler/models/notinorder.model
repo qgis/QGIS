@@ -31,7 +31,7 @@ None
 None
 None
 None
-ALGORITHM:saga:fillsinksplanchondarboux2001
+ALGORITHM:saga:fillsinks
 340.0,260.0
 None
 -1|RASTERLAYER_RASTER
