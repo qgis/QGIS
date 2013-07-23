@@ -55,6 +55,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
     #===========================================================================
 
     def defineCharacteristics(self):
+        self.allowOnlyOpenedLayers = True
         self.name = "Random selection within subsets"
         self.group = "Vector selection tools"
 
