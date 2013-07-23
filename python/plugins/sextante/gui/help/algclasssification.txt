@@ -394,3 +394,6 @@ saga:waterretentioncapacity,USE_ORIGINAL_NAME,Domain specific/Hydrology
 saga:watershedbasins,USE_ORIGINAL_NAME,Domain specific/Hydrology
 saga:windeffectwindwardleewardindex,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
 saga:zonalgridstatistics,USE_ORIGINAL_NAME,Raster/Statistics
+modelertools:calculator,USE_ORIGINAL_NAME,Modeler/Modeler tools
+modelertools:rasterlayerbounds,USE_ORIGINAL_NAME,Modeler/Modeler tools
+modelertools:vectorlayerbounds,USE_ORIGINAL_NAME,Modeler/Modeler tools
