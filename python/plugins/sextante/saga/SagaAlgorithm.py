@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-import importlib
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,6 +24,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import importlib
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -336,7 +336,7 @@ class SagaAlgorithm(GeoAlgorithm):
     def editCommands(self, commands):
         name = self.commandLineName()[len('saga:'):]
         try:
-            module = importlib.import_module('sextante.grass.ext.' + name)
+            module = importlib.import_module('sextante.saga.ext.' + name)
         except ImportError:
             return commands
         if hasattr(module, 'editCommands'):

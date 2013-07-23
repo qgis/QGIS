@@ -16,16 +16,17 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.tests.TestData import table
+
 __author__ = 'Victor Olaya'
 __date__ = 'July 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+from sextante.tests.TestData import table
 
 def editCommands(commands):    
-    commands[-1] = commands[-1] + " -STATS" + table()
+    commands[-3] = commands[-3] + " -STATS " + table()
     return commands 
     
 
