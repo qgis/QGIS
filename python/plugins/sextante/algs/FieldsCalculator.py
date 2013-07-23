@@ -47,13 +47,9 @@ class FieldsCalculator(GeoAlgorithm):
     FORMULA = "FORMULA"
     OUTPUT_LAYER = "OUTPUT_LAYER"
 
-    TYPE_NAMES = ["Integer", "Float", "String"]
-    TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
+    TYPE_NAMES = ["Float", "Integer", "String", "Boolean"]
+    TYPES = [QVariant.Double, QVariant.Int, QVariant.String. QVariant.Bool]
 
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/qgis.png")
-    #===========================================================================
 
     def defineCharacteristics(self):
         self.name = "Field calculator"
@@ -62,7 +58,7 @@ class FieldsCalculator(GeoAlgorithm):
         self.addParameter(ParameterString(self.FIELD_NAME, "Result field name"))
         self.addParameter(ParameterSelection(self.FIELD_TYPE, "Field type", self.TYPE_NAMES))
         self.addParameter(ParameterNumber(self.FIELD_LENGTH, "Field length", 1, 255, 10))
-        self.addParameter(ParameterNumber(self.FIELD_PRECISION, "Field precision", 0, 10, 0))
+        self.addParameter(ParameterNumber(self.FIELD_PRECISION, "Field precision", 0, 10, 5))
         self.addParameter(ParameterString(self.FORMULA, "Formula"))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 
@@ -85,17 +81,20 @@ class FieldsCalculator(GeoAlgorithm):
         nFeat = provider.featureCount()
         nElement = 0
         features = QGisLayers.features(layer)
+        
+        fieldnames = [field.name() for field in provider.fields()]        
+        fieldnames.sort(key=len, reverse=False)
+        fieldidx = [fieldnames.index(field.name()) for field in provider.fields()]
+        print fieldidx
         for inFeat in features:
             progress.setPercentage(int((100 * nElement) / nFeat))
             attrs = inFeat.attributes()
-            expression = formula
-            k = 0
-            for attr in attrs:
-                expression = expression.replace(unicode(fields[k].name()), unicode(attr))
-                k += 1
-            try:
+            expression = formula            
+            for idx in fieldidx:            
+                expression = expression.replace(unicode(fields[idx].name()), unicode(attrs[idx]))                
+            try:                          
                 result = eval(expression)
-            except Exception:
+            except Exception:                                                
                 result = None
                 #raise GeoAlgorithmExecutionException("Problem evaluation formula: Wrong field values or formula")
             nElement += 1

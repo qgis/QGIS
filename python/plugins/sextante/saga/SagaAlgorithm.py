@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+import importlib
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -180,6 +181,8 @@ class SagaAlgorithm(GeoAlgorithm):
                 raise GeoAlgorithmExecutionException("SAGA folder is not configured.\nPlease configure it before running SAGA algorithms.")
         commands = list()
         self.exportedLayers = {}
+                
+        self.preProcessInputs()
 
         #1: Export rasters to sgrd and vectors to shp
         #   Tables must be in dbf format. We check that.
@@ -306,8 +309,9 @@ class SagaAlgorithm(GeoAlgorithm):
                 else:
                     commands.append("libio_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");
 
-
+        
         #4 Run SAGA
+        commands = self.editCommands(commands)
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
         loglines = []
         loglines.append("SAGA execution commands")
@@ -318,6 +322,28 @@ class SagaAlgorithm(GeoAlgorithm):
             SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
         SagaUtils.executeSaga(progress);
 
+
+    def preProcessInputs(self):
+        name = self.commandLineName().replace('.','_')[len('saga:'):]
+        try:
+            module = importlib.import_module('sextante.grass.ext.' + name)
+        except ImportError:
+            return
+        if hasattr(module, 'preProcessInputs'):
+            func = getattr(module,'preProcessInputs')
+            func(self)
+            
+    def editCommands(self, commands):
+        name = self.commandLineName()[len('saga:'):]
+        try:
+            module = importlib.import_module('sextante.grass.ext.' + name)
+        except ImportError:
+            return commands
+        if hasattr(module, 'editCommands'):
+            func = getattr(module,'editCommands')
+            return func(commands)
+        else:
+            return commands
 
     def getOutputCellsize(self):
         '''tries to guess the cellsize of the output, searching for a parameter with an appropriate name for it'''
