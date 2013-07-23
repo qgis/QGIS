@@ -3855,14 +3855,14 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     }
 
     //layer names
-    QString layerNameUtf8 = QString::fromUtf8(( *it )->getLayerName() );
+    QString layerName = QString::fromUtf8( ( *it )->getLayerName() );
     if ( palGeometry->isDiagram() )
     {
       //render diagram
       QHash<QgsVectorLayer*, QgsDiagramLayerSettings>::iterator dit = mActiveDiagramLayers.begin();
       for ( dit = mActiveDiagramLayers.begin(); dit != mActiveDiagramLayers.end(); ++dit )
       {
-        if ( dit.key() && dit.key()->id().append( "d" ) == layerNameUtf8 )
+        if ( dit.key() && dit.key()->id().append( "d" ) == layerName )
         {
           QgsPoint outPt = xform->transform(( *it )->getX(), ( *it )->getY() );
           dit.value().renderer->renderDiagram( palGeometry->diagramAttributes(), context, QPointF( outPt.x(), outPt.y() ) );
@@ -3873,14 +3873,14 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
       if ( mLabelSearchTree )
       {
         //for diagrams, remove the additional 'd' at the end of the layer id
-        QString layerId = layerNameUtf8;
+        QString layerId = layerName;
         layerId.chop( 1 );
         mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), QString( "" ), layerId, QFont(), true, false );
       }
       continue;
     }
 
-    const QgsPalLayerSettings& lyr = layer( layerNameUtf8 );
+    const QgsPalLayerSettings& lyr = layer( layerName );
 
     // Copy to temp, editable layer settings
     // these settings will be changed by any data defined values, then used for rendering label components
@@ -3951,7 +3951,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     if ( mLabelSearchTree )
     {
       QString labeltext = (( QgsPalGeometry* )( *it )->getFeaturePart()->getUserGeometry() )->text();
-      mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), ( *it )->getLayerName(), labeltext, dFont, false, palGeometry->isPinned() );
+      mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), layerName, labeltext, dFont, false, palGeometry->isPinned() );
     }
   }
 
