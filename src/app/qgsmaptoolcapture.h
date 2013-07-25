@@ -82,6 +82,9 @@ class QgsMapToolCapture : public QgsMapToolEdit
     /**Removes the last vertex from mRubberBand and mCaptureList*/
     void undo();
 
+    /**Reset the last vertex from RubberBand to the previous one position*/
+    void resetLastVertex();
+
     void startCapturing();
     void stopCapturing();
 
