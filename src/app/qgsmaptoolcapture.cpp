@@ -114,8 +114,8 @@ void QgsMapToolCapture::canvasMoveEvent( QMouseEvent * e )
     {
       QgsVertexMarker *m = new QgsVertexMarker( mCanvas );
       m->setIconType( QgsVertexMarker::ICON_CROSS );
-      m->setColor( Qt::green );
-      m->setPenWidth( 2 );
+      m->setColor( Qt::magenta );
+      m->setPenWidth( 3 );
       m->setCenter( r.snappedVertex );
       mSnappingMarkers << m;
     }
