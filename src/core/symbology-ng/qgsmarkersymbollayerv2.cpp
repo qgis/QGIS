@@ -462,21 +462,35 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     // move to the desired position
     transform.translate( point.x() + off.x(), point.y() + off.y() );
 
+    QgsExpression *sizeExpression = expression( "size" );
+    bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || sizeExpression;
+
+    // resize if necessary
+    if ( hasDataDefinedSize )
+    {
+      double scaledSize = mSize;
+      if ( sizeExpression )
+      {
+        scaledSize = sizeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+      }
+      scaledSize *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit );
+
+      switch ( mScaleMethod )
+      {
+        case QgsSymbolV2::ScaleArea:
+          scaledSize = sqrt( scaledSize );
+          break;
+        case QgsSymbolV2::ScaleDiameter:
+          break;
+      }
+
+      double half = scaledSize / 2.0;
+      transform.scale( half, half );
+    }
+
     bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || angleExpression;
     if ( angle != 0 && hasDataDefinedRotation )
       transform.rotate( angle );
-
-    double size = mSize;
-    QgsExpression* sizeExpression = expression( "size" );
-
-    if ( sizeExpression )
-    {
-      size = sizeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
-    }
-    size *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit );
-
-    double half = size / 2.0;
-    transform.scale( half, half );
 
     QgsExpression* colorExpression = expression( "color" );
     QgsExpression* colorBorderExpression = expression( "color_border" );
