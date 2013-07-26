@@ -423,11 +423,13 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     QgsPythonRunner::run( feature );
     QgsPythonRunner::run( layer );
 
-    QString expr = QString( "%1(_qgis_featureform_%2, _qgis_layer_%3, %4)" )
+    QString returnvarname = QString( "_qgis_feature_form_%1" ).arg( dt.toString( "yyyyMMddhhmmsszzz" ) );
+    QString expr = QString( "%5 = %1(_qgis_featureform_%2, _qgis_layer_%3, %4)" )
                    .arg( vl->editFormInit() )
                    .arg( mFormNr )
                    .arg( vl->id() )
-                   .arg( featurevarname );
+                   .arg( featurevarname )
+                   .arg( returnvarname );
 
     QgsDebugMsg( QString( "running featureForm init: %1" ).arg( expr ) );
     QgsPythonRunner::run( expr );
