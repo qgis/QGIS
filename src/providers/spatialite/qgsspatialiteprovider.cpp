@@ -5182,36 +5182,24 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
     return false;
   }
   sqlite3* sqlite_handle = hndl->handle();
-
+  int ret;
 #ifdef SPATIALITE_VERSION_GE_4_0_0
   // only if libspatialite version is >= 4.0.0
+  // if libspatialite is v.4.0 (or higher) using the internal library
+  // method is highly recommended
+  if ( !gaiaDropTable( sqlite_handle, tableName.toUtf8().constData() ) )
   {
-    // if libspatialite is v.4.0 (or higher) using the internal library
-    // method is highly recommended
-    if ( !gaiaDropTable( sqlite_handle, tableName.toUtf8().constData() ) )
-    {
-      // unexpected error
-      errCause = QObject::tr( "Unable to delete table %1\n" ).arg( tableName );
-      QgsSpatiaLiteProvider::SqliteHandles::closeDb( hndl );
-      return false;
-    }
-    // run VACUUM to free unused space and compact the database
-    int ret = sqlite3_exec( sqlite_handle, "VACUUM", NULL, NULL, NULL );
-    if ( ret != SQLITE_OK )
-    {
-      QgsDebugMsg( "Failed to run VACUUM after deleting table on database " + dbPath );
-    }
+    // unexpected error
+    errCause = QObject::tr( "Unable to delete table %1\n" ).arg( tableName );
     QgsSpatiaLiteProvider::SqliteHandles::closeDb( hndl );
-    return true;
+    return false;
   }
-#endif
-
+#else
   // drop the table
-
   QString sql = QString( "DROP TABLE " ) + QgsSpatiaLiteProvider::quotedIdentifier( tableName );
   QgsDebugMsg( sql );
   char *errMsg = NULL;
-  int ret = sqlite3_exec( sqlite_handle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+  ret = sqlite3_exec( sqlite_handle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
   if ( ret != SQLITE_OK )
   {
     errCause = QObject::tr( "Unable to delete table %1:\n" ).arg( tableName );
@@ -5229,11 +5217,11 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
   {
     QgsDebugMsg( "sqlite error: " + QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) ) );
   }
+#endif
 
   // TODO: remove spatial indexes?
-
   // run VACUUM to free unused space and compact the database
-  ret = sqlite3_exec( sqlite_handle, "VACUUM", NULL, NULL, &errMsg );
+  ret = sqlite3_exec( sqlite_handle, "VACUUM", NULL, NULL, NULL );
   if ( ret != SQLITE_OK )
   {
     QgsDebugMsg( "Failed to run VACUUM after deleting table on database " + dbPath );
