@@ -35,12 +35,12 @@ from qgis.core import (QgsRaster,
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
-                       unittest
-                       #expectedFailure
-                      )
+                       unittest)
+                       #expectedFailure)
 # Convenience instances in case you may need them
 # not used in this test
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+
 
 class TestQgsRasterLayer(TestCase):
 
@@ -178,14 +178,14 @@ class TestQgsRasterLayer(TestCase):
         myColorRampShader = QgsColorRampShader()
         myColorRampShader.setColorRampType(QgsColorRampShader.INTERPOLATED)
         myItems = []
-        myItem = QgsColorRampShader.ColorRampItem(10,
-                                                  QtGui.QColor('#ffff00'), 'foo')
+        myItem = QgsColorRampShader.ColorRampItem(
+            10, QtGui.QColor('#ffff00'), 'foo')
         myItems.append(myItem)
-        myItem = QgsColorRampShader.ColorRampItem(100,
-                                                  QtGui.QColor('#ff00ff'), 'bar')
+        myItem = QgsColorRampShader.ColorRampItem(
+            100, QtGui.QColor('#ff00ff'), 'bar')
         myItems.append(myItem)
-        myItem = QgsColorRampShader.ColorRampItem(1000,
-                                                  QtGui.QColor('#00ff00'), 'kazam')
+        myItem = QgsColorRampShader.ColorRampItem(
+            1000, QtGui.QColor('#00ff00'), 'kazam')
         myItems.append(myItem)
         myColorRampShader.setColorRampItemList(myItems)
         myRasterShader.setRasterShaderFunction(myColorRampShader)
