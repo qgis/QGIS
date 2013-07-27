@@ -2557,6 +2557,39 @@ double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, Q
   else //QgsSymbol::MapUnit
   {
     double mup = c.mapToPixel().mapUnitsPerPixel();
+
+    // adjust the scale factor considering the native-to-target projection transform
+    // For layers in degrees, the translation uses 1 arcminute of latitude = 1 nautical mile = 1852m
+
+    const QgsCoordinateTransform * transform=c.coordinateTransform();
+    if(transform) {
+      switch(transform->sourceCrs().mapUnits())
+      {
+        case QGis::UnknownUnit: //assume degrees
+        case QGis::DecimalDegrees:
+          mup/=111120.;
+          break;
+        case QGis::Feet:
+          mup/=0.3048;
+          break;
+        case QGis::Meters:
+        default:;
+      }
+
+      switch(transform->destCRS().mapUnits())
+      {
+        case QGis::UnknownUnit: //assume degrees
+        case QGis::DecimalDegrees:
+          mup*=111120.;
+          break;
+        case QGis::Feet:
+          mup*=0.3048;
+          break;
+        case QGis::Meters:
+        default:;
+      }
+    }
+
     if ( mup > 0 )
     {
       return 1.0 / mup;

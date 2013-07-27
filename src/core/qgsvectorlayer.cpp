@@ -1208,7 +1208,34 @@ bool QgsVectorLayer::setSubsetString( QString subset )
   updateExtents();
 
   if ( res )
+  {
+    // update the cached joins pointing to this layer
+    const QMap< QString, QgsMapLayer * > & layerList=QgsMapLayerRegistry::instance()->mapLayers();
+    QMap<QString, QgsMapLayer*>::const_iterator it=layerList.constBegin();
+
+    // track the updates we make
+    bool some_updates=false;
+
+    for ( ; it != layerList.constEnd(); ++it )
+    {
+      QgsMapLayer* currentLayer = it.value();
+      if ( currentLayer->type() != QgsMapLayer::VectorLayer ) { continue; }
+      QgsVectorLayer* currentVectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+      if ( ! currentVectorLayer || currentVectorLayer == this ) { continue; }
+      if( currentVectorLayer->updateJoinCache(id()) ) {
+        some_updates=true;
+        currentVectorLayer->updateFields();
+      }
+    }
+
     setCacheImage( 0 );
+
+    if(some_updates)
+    {
+        // call for refresh
+        emit repaintRequested();
+    }
+  }
 
   return res;
 }
@@ -3214,6 +3241,13 @@ void QgsVectorLayer::createJoinCaches()
     mJoinBuffer->createJoinCaches();
   }
 }
+
+bool QgsVectorLayer::updateJoinCache(QString joinDestLayer)
+{
+  if ( ! mJoinBuffer ) { return false; }
+  return mJoinBuffer->updateJoinCache(joinDestLayer);
+}
+
 
 void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit )
 {

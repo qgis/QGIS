@@ -49,6 +49,9 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer
     /**Calls cacheJoinLayer() for all vector joins*/
     void createJoinCaches();
 
+    /**Updates the cache of a join pointing to a given (or any) layer*/
+    bool updateJoinCache(QString joinDestLayer="");
+
     /**Saves mVectorJoins to xml under the layer node*/
     void writeXml( QDomNode& layer_node, QDomDocument& document ) const;
 
