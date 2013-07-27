@@ -15,7 +15,7 @@ Build-Depends:
  libgsl0-dev,
  libpq-dev,
  libproj-dev,
- libqt4-dev (>=4.4.0),
+ libqt4-dev (>=4.6.0),
  libqt4-opengl-dev,
  libqtwebkit-dev,
  libqwt5-qt4-dev,
@@ -92,11 +92,11 @@ Depends:
  libpq-dev,
  libproj-dev,
  libqgis{QGIS_ABI} (= ${binary:Version}),
- libqt4-dev (>=4.4.0),
+ libqt4-dev (>=4.6.0),
  libsqlite3-dev,
  python-qt4 (>=4.1.0),
  python-qt4-dev (>=4.1.0),
- qt4-designer (>=4.4.0),
+ qt4-designer (>=4.6.0),
  ${misc:Depends}
 Provides: qgis-dev
 Replaces: qgis-dev, libqgis1-dev, libqgis1.4.0-dev

@@ -15,7 +15,7 @@ Required build tools:
 
 Required build deps:
 
-- Qt >= 4.4.0
+- Qt >= 4.5.0
 - Proj >= 4.4.x
 - GEOS >= 3.0
 - Sqlite3 >= 3.0.0

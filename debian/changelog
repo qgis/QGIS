@@ -18,8 +18,9 @@ qgis (1.9.0) UNRELEASED; urgency=low
   * drop context_help, function_help and qgis_help.db files
   * use dh_sip
   * add build dependency to xfonts (100dpi, 75dpi, scalable) for tests
+  * raise Qt dependency to 4.6
 
- -- Jürgen E. Fischer <jef@norbit.de>  Sat, 20 Jul 2013 13:18:52 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 27 Jul 2013 16:45:43 +0200
 
 qgis (1.8.0) UNRELEASED; urgency=low
 

@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Sunday July 21, 2013
+Saturday July 27, 2013
 
 
-Last Updated: Sunday July 21, 2013
-Last Change : Wednesday May 22, 2013
+Last Updated: Saturday July 27, 2013
+Last Change : Saturday July 27, 2013
 
 
   1. Introduction
@@ -98,7 +98,7 @@ Required build tools:
 
 Required build deps:
 
-- Qt >= 4.4.0
+- Qt >= 4.5.0
 - Proj >= 4.4.x
 - GEOS >= 3.0
 - Sqlite3 >= 3.0.0

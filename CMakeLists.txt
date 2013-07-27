@@ -220,7 +220,7 @@ SET (HAVE_MSSQL TRUE)
 
 #############################################################
 # search for Qt4
-SET(QT_MIN_VERSION 4.4.0)
+SET(QT_MIN_VERSION 4.5.0)
 FIND_PACKAGE(Qt4 ${QT_MIN_VERSION} REQUIRED)
 SET(QT_USE_QTXML 1)
 SET(QT_USE_QTNETWORK 1)
