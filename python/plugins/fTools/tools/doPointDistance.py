@@ -86,24 +86,38 @@ class Dialog(QDialog, Ui_Dialog):
         self.progressBar.setValue(0)
         mapCanvas = self.iface.mapCanvas()
         layers = ftools_utils.getLayerNames( [ QGis.Point ] )
+        self.firstLayer = None
+        self.secondLayer = None
         self.inPoint1.addItems(layers)
         self.inPoint2.addItems(layers)
 
     def update1(self, inputLayer):
         self.inField1.clear()
-        changedLayer = ftools_utils.getVectorLayerByName(unicode(inputLayer))
+        self.firstLayer = changedLayer = ftools_utils.getVectorLayerByName(unicode(inputLayer))
         changedField = ftools_utils.getFieldList(changedLayer)
         for f in changedField:
             if f.type() == QVariant.Int or f.type() == QVariant.String:
                 self.inField1.addItem(unicode(f.name()))
+        self.check_same_layer()
 
     def update2(self, inputLayer):
         self.inField2.clear()
-        changedLayer = ftools_utils.getVectorLayerByName(unicode(inputLayer))
+        self.secondLayer = changedLayer = ftools_utils.getVectorLayerByName(unicode(inputLayer))
         changedField = ftools_utils.getFieldList(changedLayer)
         for f in changedField:
             if f.type() == QVariant.Int or f.type() == QVariant.String:
                 self.inField2.addItem(unicode(f.name()))
+        self.check_same_layer()
+    
+    def check_same_layer(self):
+      #test if both are valid
+      if self.firstLayer and self.secondLayer:
+        if self.firstLayer is self.secondLayer:
+          self.spnNearest.setMinimum(2)
+          self.spnNearest.setValue(2)
+        else:
+          self.spnNearest.setMinimum(1)
+          self.spnNearest.setValue(1)
 
     def accept(self):
         self.buttonOk.setEnabled( False )
@@ -228,8 +242,10 @@ class Dialog(QDialog, Ui_Dialog):
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
                 if dist > 0:
-                    if matType == "Linear": writer.writerow([unicode(inID), unicode(outID), str(dist)])
-                    else: distList.append(float(dist))
+                  if matType == "Linear":
+                    writer.writerow( [ unicode( inID ), unicode( outID ), str( dist ) ] )
+                  else:
+                    distList.append( float( dist ) )
             if matType == "Summary":
                 mean = sum(distList) / len(distList)
                 for i in distList:
