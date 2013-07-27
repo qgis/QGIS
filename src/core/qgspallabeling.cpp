@@ -1778,6 +1778,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     }
     catch ( QgsCsException &cse )
     {
+      Q_UNUSED( cse );
       QgsDebugMsgLevel( QString( "Ignoring feature %1 due transformation exception" ).arg( f.id() ), 4 );
       return;
     }
@@ -2085,6 +2086,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
           }
           catch ( QgsCsException &e )
           {
+            Q_UNUSED( e );
             QgsDebugMsgLevel( QString( "Ignoring feature %1 due transformation exception on data-defined position" ).arg( f.id() ), 4 );
             return;
           }

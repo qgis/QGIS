@@ -1287,7 +1287,7 @@
 font-style: italic;</string>
                               </property>
                               <property name="text">
-                               <string notr="true">missing font text</string>
+                               <string>Font is missing.</string>
                               </property>
                               <property name="alignment">
                                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

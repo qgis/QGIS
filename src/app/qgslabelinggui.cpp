@@ -48,7 +48,8 @@
 QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
     : QWidget( parent ), mLBL( lbl ), mLayer( layer ), mMapCanvas( mapCanvas )
 {
-  if ( !layer ) return;
+  if ( !layer )
+    return;
 
   setupUi( this );
   mCharDlg = new QgsCharacterSelectorDialog( this );
@@ -111,8 +112,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
       break;
     case QGis::NoGeometry:
       break;
-    default:
-      Q_ASSERT( 0 && "NOOOO!" );
+    case QGis::UnknownGeometry:
+      qFatal( "unknown geometry type unexpected" );
   }
 
   // show/hide options based upon geometry type
@@ -281,8 +282,6 @@ void QgsLabelingGui::init()
     case QgsPalLayerSettings::Free:
       radPolygonFree->setChecked( true );
       break;
-    default:
-      Q_ASSERT( 0 && "NOOO!" );
   }
 
   if ( lyr.placement == QgsPalLayerSettings::Line || lyr.placement == QgsPalLayerSettings::Curved )
@@ -366,9 +365,9 @@ void QgsLabelingGui::init()
   updateFont( mRefFont );
 
   // show 'font not found' if substitution has occurred (should come after updateFont())
+  mFontMissingLabel->setVisible( !lyr.mTextFontFound );
   if ( !lyr.mTextFontFound )
   {
-    mFontMissingLabel->setVisible( true );
     QString missingTxt = tr( "%1 not found. Default substituted." );
     QString txtPrepend = tr( "Chosen font" );
     if ( !lyr.mTextFontFamily.isEmpty() )
@@ -565,7 +564,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     lyr.placement = QgsPalLayerSettings::Free;
   }
   else
-    Q_ASSERT( 0 && "NOOO!" );
+  {
+    qFatal( "Invalid settings" );
+  }
 
 
   lyr.textColor = btnTextColor->color();
@@ -1048,7 +1049,7 @@ void QgsLabelingGui::updateFont( QFont font )
   }
 
   // test if font is actually available
-  mFontMissingLabel->setVisible( QgsFontUtils::fontMatchOnSystem( mRefFont ) );
+  mFontMissingLabel->setVisible( !QgsFontUtils::fontMatchOnSystem( mRefFont ) );
 
   mDirectSymbLeftLineEdit->setFont( mRefFont );
   mDirectSymbRightLineEdit->setFont( mRefFont );
@@ -1115,7 +1116,8 @@ void QgsLabelingGui::updatePreview()
   }
   else // in points
   {
-    previewFont.setPointSize( fontSize );
+    if ( fontSize > 0 )
+      previewFont.setPointSize( fontSize );
     mPreviewSizeSlider->setEnabled( false );
     grpboxtitle = sampleTxt;
 
