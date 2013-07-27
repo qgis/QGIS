@@ -3050,6 +3050,7 @@ QgsPalLabeling::QgsPalLabeling()
   }
 
   mShowingCandidates = false;
+  mShowingShadowRects = false;
   mShowingAllLabels = false;
 
   mLabelSearchTree = new QgsLabelSearchTree();
