@@ -84,7 +84,8 @@ Qt::DropActions QgsCategorizedSymbolRendererV2Model::supportedDropActions() cons
 
 QVariant QgsCategorizedSymbolRendererV2Model::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() || !mRenderer ) return QVariant();
+  if ( !index.isValid() || !mRenderer )
+    return QVariant();
 
   const QgsRendererCategoryV2 category = mRenderer->categories().value( index.row() );
 
@@ -504,7 +505,6 @@ void QgsCategorizedSymbolRendererV2Widget::updateCategorizedSymbolIcon()
 
 void QgsCategorizedSymbolRendererV2Widget::populateCategories()
 {
-
 }
 
 void QgsCategorizedSymbolRendererV2Widget::populateColumns()
@@ -605,9 +605,11 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
     }
   }
 
-  //DlgAddCategories dlg(mStyle, createDefaultSymbol(), unique_vals, this);
-  //if (!dlg.exec())
-  //  return;
+#if 0
+  DlgAddCategories dlg( mStyle, createDefaultSymbol(), unique_vals, this );
+  if ( !dlg.exec() )
+    return;
+#endif
 
   QgsVectorColorRampV2* ramp = cboCategorizedColorRamp->currentColorRamp();
 

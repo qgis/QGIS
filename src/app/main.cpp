@@ -85,12 +85,6 @@ typedef SInt32 SRefCon;
 #include <signal.h>
 #endif
 
-// (if Windows/Mac, use icon from resource)
-#if !defined(Q_WS_WIN) && !defined(Q_WS_MAC)
-#include "../../images/themes/default/qgis.xpm" // Linux
-#include <QIcon>
-#endif
-
 /** print usage text
  */
 void usage( std::string const & appName )
@@ -623,7 +617,7 @@ int main( int argc, char *argv[] )
 
 // (if Windows/Mac, use icon from resource)
 #if !defined(Q_WS_WIN) && !defined(Q_WS_MAC)
-  myApp.setWindowIcon( QPixmap( qgis_xpm ) );        // Linux
+  myApp.setWindowIcon( QIcon( QgsApplication::iconsPath() + "qgis-icon-60x60.png" ) );
 #endif
 
   //
