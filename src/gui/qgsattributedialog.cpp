@@ -423,13 +423,13 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     QgsPythonRunner::run( feature );
     QgsPythonRunner::run( layer );
 
-    QString returnvarname = QString( "_qgis_feature_form_%1" ).arg( dt.toString( "yyyyMMddhhmmsszzz" ) );
+    mReturnvarname = QString( "_qgis_feature_form_%1" ).arg( dt.toString( "yyyyMMddhhmmsszzz" ) );
     QString expr = QString( "%5 = %1(_qgis_featureform_%2, _qgis_layer_%3, %4)" )
                    .arg( vl->editFormInit() )
                    .arg( mFormNr )
                    .arg( vl->id() )
                    .arg( featurevarname )
-                   .arg( returnvarname );
+                   .arg( mReturnvarname );
 
     QgsDebugMsg( QString( "running featureForm init: %1" ).arg( expr ) );
     QgsPythonRunner::run( expr );
@@ -548,6 +548,12 @@ void QgsAttributeDialog::dialogDestroyed()
   {
     QString expr = QString( "if locals().has_key('_qgis_featureform_%1'): del _qgis_featureform_%1\n" ).arg( mFormNr );
     QgsPythonRunner::run( expr );
+  }
+
+  if ( !mReturnvarname.isEmpty() )
+  {
+      QString expr = QString( "if locals().has_key('%1'): del %1\n" ).arg( mReturnvarname );
+      QgsPythonRunner::run( expr );
   }
 
   mDialog = NULL;

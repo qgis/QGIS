@@ -73,6 +73,7 @@ class GUI_EXPORT QgsAttributeDialog : public QObject
     int mFormNr;
     static int smFormCounter;
     bool mShowDialogButtons;
+    QString mReturnvarname;
 };
 
 #endif
