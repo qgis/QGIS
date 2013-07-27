@@ -1209,10 +1209,12 @@ bool QgsVectorLayer::setSubsetString( QString subset )
 
   if ( res )
   {
-    // update the cached joins to this layer
+    // update the cached joins pointing to this layer
     const QMap< QString, QgsMapLayer * > & layerList=QgsMapLayerRegistry::instance()->mapLayers();
     QMap<QString, QgsMapLayer*>::const_iterator it=layerList.constBegin();
-    bool updated=false;
+
+    // track the updates we make
+    bool some_updates=false;
 
     for ( ; it != layerList.constEnd(); ++it )
     {
@@ -1221,18 +1223,18 @@ bool QgsVectorLayer::setSubsetString( QString subset )
       QgsVectorLayer* currentVectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
       if ( ! currentVectorLayer || currentVectorLayer == this ) { continue; }
       if( currentVectorLayer->updateJoinCache(id()) ) {
-        updated=true;
+        some_updates=true;
         currentVectorLayer->updateFields();
       }
     }
 
-    if(updated)
+    setCacheImage( 0 );
+
+    if(some_updates)
     {
-        // refresh
+        // call for refresh
         emit repaintRequested();
     }
-
-    setCacheImage( 0 );
   }
 
   return res;
