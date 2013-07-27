@@ -41,6 +41,7 @@
 #include <cstdio>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #ifdef WIN32
 // Open files in binary mode
@@ -83,6 +84,8 @@ typedef SInt32 SRefCon;
 #include <unistd.h>
 #include <execinfo.h>
 #include <signal.h>
+#include <sys/wait.h>
+#include <errno.h>
 #endif
 
 /** print usage text
@@ -193,12 +196,113 @@ void qgisCrash( int signal )
 {
   qFatal( "QGIS died on signal %d", signal );
 }
+#endif
 
-void dumpBacktrace()
+void myPrint( const char *fmt, ... )
 {
-  if ( access( "/usr/bin/c++filt", X_OK ) )
+  va_list ap;
+  va_start( ap, fmt );
+#if defined(Q_OS_WIN)
+  char buffer[1024];
+  vsnprintf( buffer, sizeof buffer, fmt, ap );
+  OutputDebugString( buffer );
+#else
+  vfprintf( stderr, fmt, ap );
+#endif
+}
+
+void dumpBacktrace( unsigned int depth = 0 )
+{
+  if ( depth == 0 )
+    depth = 10;
+
+#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
+#if defined(linux) && !defined(ANDROID)
+  if ( QgsLogger::debugLevel() >= 4 )
   {
-    ( void ) write( STDERR_FILENO, "Stacktrace (c++filt NOT FOUND):\n", 32 );
+    static int gdbRunning = -1;
+    static int gdbpipe[2];
+    static int gdbpid;
+
+    if ( gdbRunning == -1 )
+    {
+      gdbRunning = 0;
+
+      myPrint( "starting gdb\n" );
+      if ( access( "/usr/bin/gdb", X_OK ) == 0 )
+      {
+        // take full stacktrace using gdb
+        // http://stackoverflow.com/questions/3151779/how-its-better-to-invoke-gdb-from-program-to-print-its-stacktrace
+
+        char exename[512];
+        int len = readlink( "/proc/self/exe", exename, sizeof( exename ) - 1 );
+        if ( len < 0 )
+        {
+          myPrint( "Could not read link.\n" );
+        }
+        else
+        {
+          exename[ len ] = 0;
+
+          if ( pipe( gdbpipe ) == 0 )
+          {
+            char pidstr[32];
+            snprintf( pidstr, sizeof pidstr, "--pid=%d", getpid() );
+
+            gdbpid = fork();
+            fprintf( stderr, "fork returned: %d\n", gdbpid );
+            if ( gdbpid == 0 )
+            {
+              close( STDIN_FILENO ); // close stdin
+              dup( gdbpipe[0] );     // stdin from pipe
+              close( gdbpipe[1] );   // close writing end
+
+              // attach, backtrace and continue
+              char btcmd[32];
+              snprintf( btcmd, sizeof btcmd, "bt full %u", depth );
+
+              execl( "/usr/bin/gdb", "gdb", "-q", "-ex", "set height 0", "-n", pidstr, "-ex", "thread", "-ex", btcmd, "-ex", "cont", exename, NULL );
+              perror( "could not start gdb" );
+              exit( 0 );
+            }
+            else if ( gdbpid >= 0 )
+            {
+              close( gdbpipe[0] ); // close reading end
+              gdbRunning = 1;
+            }
+            else
+            {
+              myPrint( "Could not start gdb (%d:%s).\n", errno, strerror( errno ) );
+            }
+          }
+          else
+          {
+            myPrint( "Could not create pipe (%d:%s).\n", errno, strerror( errno ) );
+          }
+        }
+      }
+      else
+      {
+        myPrint( "gdb not available.\n" );
+      }
+    }
+    else if ( gdbRunning == 1 )
+    {
+      myPrint( "Stacktrace (using gdb):\n" );
+      char btcmd[20];
+      snprintf( btcmd, sizeof btcmd, "bt full %u\ncont\n", depth );
+      if ( write( gdbpipe[1], btcmd, strlen( btcmd ) ) == ( int ) strlen( btcmd ) && kill( gdbpid, SIGINT ) == 0 )
+        return;
+
+      myPrint( "write error to gdb [%d:%s]\n", errno, strerror( errno ) );
+      gdbRunning = 0;
+    }
+  }
+#endif
+
+  if ( access( "/usr/bin/c++filt", X_OK ) < 0 )
+  {
+    myPrint( "Stacktrace (c++filt NOT FOUND):\n" );
   }
   else
   {
@@ -206,25 +310,45 @@ void dumpBacktrace()
 
     if ( pipe( fd ) == 0 && fork() == 0 )
     {
-      close( STDIN_FILENO );
-      close( fd[1] );
-      dup( fd[0] );
+      close( STDIN_FILENO ); // close stdin
+      dup( fd[0] );          // stdin from pipe
+      close( fd[1] );        // close writing end
       execl( "/usr/bin/c++filt", "c++filt", ( char * ) 0 );
+      perror( "could not start c++filt" );
       exit( 1 );
     }
 
-    ( void ) write( STDERR_FILENO, "Stacktrace (piped through c++filt):\n", 36 );
-
-    close( STDERR_FILENO );
-    close( fd[0] );
-    dup( fd[1] );
+    myPrint( "Stacktrace (piped through c++filt):\n" );
+    close( fd[0] );          // close reading end
+    close( STDERR_FILENO );  // close stderr
+    dup( fd[1] );            // stderr to pipe
   }
 
-  void *buffer[256];
-  int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
+  void **buffer = new void *[ depth ];
+  int nptrs = backtrace( buffer, depth );
   backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
-}
+  delete [] buffer;
+#elif defined(Q_OS_WIN)
+  void **buffer = new void *[ depth ];
+
+  SymSetOptions( SYMOPT_DEFERRED_LOADS | SYMOPT_INCLUDE_32BIT_MODULES | SYMOPT_UNDNAME );
+  SymInitialize( GetCurrentProcess(), "http://msdl.microsoft.com/download/symbols", TRUE );
+
+  unsigned short nFrames = CaptureStackBackTrace( 1, depth, buffer, NULL );
+  SYMBOL_INFO *symbol = ( SYMBOL_INFO * ) qgsMalloc( sizeof( SYMBOL_INFO ) + 256 );
+  symbol->MaxNameLen = 255;
+  symbol->SizeOfStruct = sizeof( SYMBOL_INFO );
+
+  for ( int i = 0; i < nFrames; i++ )
+  {
+    SymFromAddr( GetCurrentProcess(), ( DWORD64 )( buffer[ i ] ), 0, symbol );
+    symbol->Name[ 255 ] = 0;
+    myPrint( "%d: %s [%x]\n", i, symbol->Name, symbol->Address );
+  }
+
+  qgsFree( symbol );
 #endif
+}
 
 /*
  * Hook into the qWarning/qFatal mechanism so that we can channel messages
@@ -242,31 +366,19 @@ void myMessageOutput( QtMsgType type, const char *msg )
   switch ( type )
   {
     case QtDebugMsg:
-      fprintf( stderr, "Debug: %s\n", msg );
-#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
+      myPrint( "%s\n", msg );
       if ( strncmp( msg, "Backtrace", 9 ) == 0 )
-        dumpBacktrace();
-#endif
+        dumpBacktrace( atoi( msg + 9 ) );
       break;
     case QtCriticalMsg:
-      fprintf( stderr, "Critical: %s\n", msg );
+      myPrint( "Critical: %s\n", msg );
       break;
     case QtWarningMsg:
-      fprintf( stderr, "Warning: %s\n", msg );
+      myPrint( "Warning: %s\n", msg );
 
 #ifdef QGISDEBUG
-      if ( 0 == strncmp( msg, "Object::", 8 )
-           || 0 == strncmp( msg, "QWidget::", 9 )
-           || 0 == strncmp( msg, "QPainter::", 10 )
-         )
-      {
-#if 0
-#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
-        dumpBacktrace();
-#endif
-#endif
-        QgsMessageLog::logMessage( msg, "Qt" );
-      }
+      dumpBacktrace( 20 );
+      QgsMessageLog::logMessage( msg, "Qt" );
 #endif
 
       // TODO: Verify this code in action.
@@ -279,11 +391,9 @@ void myMessageOutput( QtMsgType type, const char *msg )
       break;
     case QtFatalMsg:
     {
-      fprintf( stderr, "Fatal: %s\n", msg );
-#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
-      dumpBacktrace();
-#endif
-      abort();                    // deliberately core dump
+      myPrint( "Fatal: %s\n", msg );
+      dumpBacktrace( 256 );
+      abort();                    // deliberately dump core
     }
   }
 }
@@ -299,10 +409,10 @@ int main( int argc, char *argv[] )
 #endif  // _MSC_VER
 #endif  // WIN32
 
-#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
   // Set up the custom qWarning/qDebug custom handler
   qInstallMsgHandler( myMessageOutput );
 
+#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
   signal( SIGQUIT, qgisCrash );
   signal( SIGILL, qgisCrash );
   signal( SIGFPE, qgisCrash );
@@ -775,9 +885,6 @@ int main( int argc, char *argv[] )
     }
   }
 
-#ifdef QGISDEBUG
-// QgsDebugMsg(QString("Setting translation to %1/qgis_%2").arg(i18nPath).arg(myTranslationCode));
-#endif
   QTranslator qgistor( 0 );
   if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )
   {
