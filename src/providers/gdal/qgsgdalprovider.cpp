@@ -139,7 +139,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri, bool update )
   QString gdalUri = dataSourceUri();
 
   CPLErrorReset();
-  mGdalBaseDataset = GDALOpen( TO8F( gdalUri ), mUpdate ? GA_Update : GA_ReadOnly );
+  mGdalBaseDataset = gdalOpen( TO8F( gdalUri ), mUpdate ? GA_Update : GA_ReadOnly );
 
   if ( !mGdalBaseDataset )
   {
@@ -1424,12 +1424,12 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
       GDALClose( mGdalDataset );
       //mGdalBaseDataset = GDALOpen( QFile::encodeName( dataSourceUri() ).constData(), GA_Update );
 
-      mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), GA_Update );
+      mGdalBaseDataset = gdalOpen( TO8F( dataSourceUri() ), GA_Update );
 
       // if the dataset couldn't be opened in read / write mode, tell the user
       if ( !mGdalBaseDataset )
       {
-        mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), GA_ReadOnly );
+        mGdalBaseDataset = gdalOpen( TO8F( dataSourceUri() ), GA_ReadOnly );
         //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
         mGdalDataset = mGdalBaseDataset;
         return "ERROR_WRITE_FORMAT";
@@ -1521,7 +1521,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
       //something bad happenend
       //QString myString = QString (CPLGetLastError());
       GDALClose( mGdalBaseDataset );
-      mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), mUpdate ? GA_Update : GA_ReadOnly );
+      mGdalBaseDataset = gdalOpen( TO8F( dataSourceUri() ), mUpdate ? GA_Update : GA_ReadOnly );
       //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
       mGdalDataset = mGdalBaseDataset;
 
@@ -1576,7 +1576,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
     QgsDebugMsg( "Reopening dataset ..." );
     //close the gdal dataset and reopen it in read only mode
     GDALClose( mGdalBaseDataset );
-    mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), mUpdate ? GA_Update : GA_ReadOnly );
+    mGdalBaseDataset = gdalOpen( TO8F( dataSourceUri() ), mUpdate ? GA_Update : GA_ReadOnly );
     //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
     mGdalDataset = mGdalBaseDataset;
   }
@@ -2029,7 +2029,7 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
 
   //open the file using gdal making sure we have handled locale properly
   //myDataset = GDALOpen( QFile::encodeName( theFileNameQString ).constData(), GA_ReadOnly );
-  myDataset = GDALOpen( TO8F( fileName ), GA_ReadOnly );
+  myDataset = QgsGdalProviderBase::gdalOpen( TO8F( fileName ), GA_ReadOnly );
   if ( !myDataset )
   {
     if ( CPLGetLastErrorNo() != CPLE_OpenFailed )

@@ -15,6 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#define CPL_SUPRESS_CPLUSPLUS
+#include "cpl_conv.h"
+
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsgdalproviderbase.h"
@@ -272,4 +275,22 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
 
   QgsRectangle extent( myGeoTransform[0], myYMin, myXMax, myGeoTransform[3] );
   return extent;
+}
+
+GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess eAccess )
+{
+  // See http://hub.qgis.org/issues/8356 and http://trac.osgeo.org/gdal/ticket/5170
+#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
+  char* pszOldVal = CPLStrdup( CPLGetConfigOption( "VSI_CACHE", "FALSE" ) );
+  CPLSetThreadLocalConfigOption( "VSI_CACHE", "FALSE" );
+#endif
+
+  GDALDatasetH hDS = GDALOpen( pszFilename, eAccess );
+
+#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
+  CPLSetThreadLocalConfigOption( "VSI_CACHE", pszOldVal );
+  CPLFree( pszOldVal );
+#endif
+
+  return hDS;
 }
