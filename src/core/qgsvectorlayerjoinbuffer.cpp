@@ -121,6 +121,21 @@ void QgsVectorLayerJoinBuffer::createJoinCaches()
   }
 }
 
+bool QgsVectorLayerJoinBuffer::updateJoinCache(QString joinDestLayer)
+{
+  bool updated=false;
+  QList< QgsVectorJoinInfo >::iterator joinIt = mVectorJoins.begin();
+  for ( ; joinIt != mVectorJoins.end(); ++joinIt )
+  {
+    if ( joinDestLayer == "" || joinDestLayer == joinIt->joinLayerId )
+    {
+      joinIt->cachedAttributes.clear();
+      cacheJoinLayer( *joinIt );
+      updated=true;
+    }
+  }
+  return updated;
+}
 
 void QgsVectorLayerJoinBuffer::writeXml( QDomNode& layer_node, QDomDocument& document ) const
 {
