@@ -29,7 +29,8 @@ SET(QGIS_NETWORK_ANALYSIS_HDRS
   qgsdistancearcproperter.h 
   qgsgraphdirector.h 
   qgslinevectorlayerdirector.h 
-  qgsgraphanalyzer.h )
+  qgsgraphanalyzer.h
+)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} 

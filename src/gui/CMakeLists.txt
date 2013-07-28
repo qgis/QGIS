@@ -275,6 +275,12 @@ qgsexpressionhighlighter.h
 qgscollapsiblegroupbox.h
 qgsfilterlineedit.h
 qgssublayersdialog.h
+qgsnumericsortlistviewitem.h
+qgsannotationitem.h
+qgstextannotationitem.h
+qgssvgannotationitem.h
+qgscomposerruler.h
+qgsdetaileditemdata.h
 
 attributetable/qgsattributetablemodel.h
 attributetable/qgsattributetableview.h
@@ -286,6 +292,8 @@ attributetable/qgsfeaturelistmodel.h
 attributetable/qgsfeaturelistviewdelegate.h
 attributetable/qgsfeatureselectionmodel.h
 attributetable/qgsdualview.h
+
+raster/qgsrasterrendererwidget.h
 )
 
 IF (WITH_TOUCH)
