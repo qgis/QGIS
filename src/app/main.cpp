@@ -191,13 +191,6 @@ LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
 }
 #endif
 
-#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
-void qgisCrash( int signal )
-{
-  qFatal( "QGIS died on signal %d", signal );
-}
-#endif
-
 void myPrint( const char *fmt, ... )
 {
   va_list ap;
@@ -211,95 +204,12 @@ void myPrint( const char *fmt, ... )
 #endif
 }
 
-void dumpBacktrace( unsigned int depth = 0 )
+static void dumpBacktrace( unsigned int depth )
 {
   if ( depth == 0 )
-    depth = 10;
+    depth = 20;
 
 #if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
-#if defined(linux) && !defined(ANDROID)
-  if ( QgsLogger::debugLevel() >= 4 )
-  {
-    static int gdbRunning = -1;
-    static int gdbpipe[2];
-    static int gdbpid;
-
-    if ( gdbRunning == -1 )
-    {
-      gdbRunning = 0;
-
-      myPrint( "starting gdb\n" );
-      if ( access( "/usr/bin/gdb", X_OK ) == 0 )
-      {
-        // take full stacktrace using gdb
-        // http://stackoverflow.com/questions/3151779/how-its-better-to-invoke-gdb-from-program-to-print-its-stacktrace
-
-        char exename[512];
-        int len = readlink( "/proc/self/exe", exename, sizeof( exename ) - 1 );
-        if ( len < 0 )
-        {
-          myPrint( "Could not read link.\n" );
-        }
-        else
-        {
-          exename[ len ] = 0;
-
-          if ( pipe( gdbpipe ) == 0 )
-          {
-            char pidstr[32];
-            snprintf( pidstr, sizeof pidstr, "--pid=%d", getpid() );
-
-            gdbpid = fork();
-            fprintf( stderr, "fork returned: %d\n", gdbpid );
-            if ( gdbpid == 0 )
-            {
-              close( STDIN_FILENO ); // close stdin
-              dup( gdbpipe[0] );     // stdin from pipe
-              close( gdbpipe[1] );   // close writing end
-
-              // attach, backtrace and continue
-              char btcmd[32];
-              snprintf( btcmd, sizeof btcmd, "bt full %u", depth );
-
-              execl( "/usr/bin/gdb", "gdb", "-q", "-ex", "set height 0", "-n", pidstr, "-ex", "thread", "-ex", btcmd, "-ex", "cont", exename, NULL );
-              perror( "could not start gdb" );
-              exit( 0 );
-            }
-            else if ( gdbpid >= 0 )
-            {
-              close( gdbpipe[0] ); // close reading end
-              gdbRunning = 1;
-            }
-            else
-            {
-              myPrint( "Could not start gdb (%d:%s).\n", errno, strerror( errno ) );
-            }
-          }
-          else
-          {
-            myPrint( "Could not create pipe (%d:%s).\n", errno, strerror( errno ) );
-          }
-        }
-      }
-      else
-      {
-        myPrint( "gdb not available.\n" );
-      }
-    }
-    else if ( gdbRunning == 1 )
-    {
-      myPrint( "Stacktrace (using gdb):\n" );
-      char btcmd[20];
-      snprintf( btcmd, sizeof btcmd, "bt full %u\ncont\n", depth );
-      if ( write( gdbpipe[1], btcmd, strlen( btcmd ) ) == ( int ) strlen( btcmd ) && kill( gdbpid, SIGINT ) == 0 )
-        return;
-
-      myPrint( "write error to gdb [%d:%s]\n", errno, strerror( errno ) );
-      gdbRunning = 0;
-    }
-  }
-#endif
-
   if ( access( "/usr/bin/c++filt", X_OK ) < 0 )
   {
     myPrint( "Stacktrace (c++filt NOT FOUND):\n" );
@@ -350,6 +260,55 @@ void dumpBacktrace( unsigned int depth = 0 )
 #endif
 }
 
+#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
+void qgisCrash( int signal )
+{
+  fprintf( stderr, "QGIS died on signal %d", signal );
+
+  if ( access( "/usr/bin/gdb", X_OK ) == 0 )
+  {
+    // take full stacktrace using gdb
+    // http://stackoverflow.com/questions/3151779/how-its-better-to-invoke-gdb-from-program-to-print-its-stacktrace
+
+    char exename[512];
+    int len = readlink( "/proc/self/exe", exename, sizeof( exename ) - 1 );
+    if ( len < 0 )
+    {
+      myPrint( "Could not read link (%d:%s)\n", errno, strerror( errno ) );
+    }
+    else
+    {
+      exename[ len ] = 0;
+
+      char pidstr[32];
+      snprintf( pidstr, sizeof pidstr, "--pid=%d", getpid() );
+
+      int gdbpid = fork();
+      if ( gdbpid == 0 )
+      {
+        // attach, backtrace and continue
+        execl( "/usr/bin/gdbx", "gdb", "-q", "-batch", "-n", pidstr, "-ex", "thread", "-ex", "bt full", exename, NULL );
+        perror( "cannot exec gdb" );
+        exit( 1 );
+      }
+      else if ( gdbpid >= 0 )
+      {
+        int status;
+        waitpid( gdbpid, &status, 0 );
+        myPrint( "gdb returned %d\n", status );
+      }
+      else
+      {
+        myPrint( "Cannot fork (%d:%s)\n", errno, strerror( errno ) );
+        dumpBacktrace( 256 );
+      }
+    }
+  }
+
+  abort();
+}
+#endif
+
 /*
  * Hook into the qWarning/qFatal mechanism so that we can channel messages
  * from libpng to the user.
@@ -392,8 +351,12 @@ void myMessageOutput( QtMsgType type, const char *msg )
     case QtFatalMsg:
     {
       myPrint( "Fatal: %s\n", msg );
+#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
+      qgisCrash( -1 );
+#else
       dumpBacktrace( 256 );
       abort();                    // deliberately dump core
+#endif
     }
   }
 }
