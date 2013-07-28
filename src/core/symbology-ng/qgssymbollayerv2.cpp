@@ -68,11 +68,7 @@ void QgsSymbolLayerV2::removeDataDefinedProperty( const QString& property )
 
 void QgsSymbolLayerV2::removeDataDefinedProperties()
 {
-  QMap< QString, QgsExpression* >::iterator it = mDataDefinedProperties.begin();
-  for ( ; it != mDataDefinedProperties.constEnd(); ++it )
-  {
-    delete( it.value() );
-  }
+  qDeleteAll(mDataDefinedProperties);
   mDataDefinedProperties.clear();
 }
 
