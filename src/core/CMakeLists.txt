@@ -477,6 +477,10 @@ SET(QGIS_CORE_HDRS
   raster/qgsrastershader.h
   raster/qgsrastershaderfunction.h
   raster/qgsrasterviewport.h
+  raster/qgsbrightnesscontrastfilter.h
+  raster/qgshuesaturationfilter.h
+  raster/qgsrasternuller.h
+  raster/qgsrasterrenderer.h
 
   symbology-ng/qgscategorizedsymbolrendererv2.h
   symbology-ng/qgscolorbrewerpalette.h
