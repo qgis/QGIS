@@ -1482,8 +1482,8 @@
                        <string>...</string>
                       </property>
                       <property name="icon">
-                       <iconset>
-                        <normaloff>../../images/themes/default/mActionContextHelp.png</normaloff>../../images/themes/default/mActionContextHelp.png</iconset>
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/mActionContextHelp.png</normaloff>:/images/themes/default/mActionContextHelp.png</iconset>
                       </property>
                      </widget>
                     </item>
@@ -1538,8 +1538,8 @@
                        <string>...</string>
                       </property>
                       <property name="icon">
-                       <iconset>
-                        <normaloff>../../images/themes/default/mActionFileSave.svg</normaloff>../../images/themes/default/mActionFileSave.svg</iconset>
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
                       </property>
                      </widget>
                     </item>

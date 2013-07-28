@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Layer labeling settings</string>
   </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>../../../../../../../../../../private/var/.designer/backup</normaloff>../../../../../../../../../../private/var/.designer/backup</iconset>
-  </property>
   <layout class="QGridLayout" name="gridLayout_8">
    <property name="verticalSpacing">
     <number>6</number>
