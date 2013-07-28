@@ -379,6 +379,7 @@ void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, con
                                  ( mSizeScaleFieldIdx != -1 ? QgsSymbolV2::DataDefinedSizeScale : 0 ) );
       tempSymbol->startRender( context, vlayer );
       mTempSymbols[ it->value().toString()] = tempSymbol;
+      delete tempSymbol;
     }
   }
 
@@ -395,8 +396,9 @@ void QgsCategorizedSymbolRendererV2::stopRender( QgsRenderContext& context )
   for ( ; it2 != mTempSymbols.end(); ++it2 )
   {
     it2.value()->stopRender( context );
-    delete it2.value();
   }
+  
+  qDeleteAll(mTempSymbols);
   mTempSymbols.clear();
 }
 

@@ -35,6 +35,7 @@ QgsRenderContext::QgsRenderContext()
 
 QgsRenderContext::~QgsRenderContext()
 {
+    delete mCoordTransform;
 }
 
 void QgsRenderContext::setCoordinateTransform( const QgsCoordinateTransform* t )
