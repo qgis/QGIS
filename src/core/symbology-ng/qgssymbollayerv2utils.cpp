@@ -2438,7 +2438,7 @@ QgsSymbolV2Map QgsSymbolLayerV2Utils::loadSymbols( QDomElement& element )
     if ( parts.count() < 3 )
     {
       QgsDebugMsg( "found subsymbol with invalid name: " + it.key() );
-      delete it.value(); // we must delete it
+      delete *it; // we must delete it
       continue; // some invalid syntax
     }
     QString symname = parts[1];
@@ -2447,7 +2447,7 @@ QgsSymbolV2Map QgsSymbolLayerV2Utils::loadSymbols( QDomElement& element )
     if ( !symbols.contains( symname ) )
     {
       QgsDebugMsg( "subsymbol references invalid symbol: " + symname );
-      delete it.value(); // we must delete it
+      delete *it; // we must delete it
       continue;
     }
 
@@ -2455,7 +2455,7 @@ QgsSymbolV2Map QgsSymbolLayerV2Utils::loadSymbols( QDomElement& element )
     if ( symlayer < 0 || symlayer >= sym->symbolLayerCount() )
     {
       QgsDebugMsg( "subsymbol references invalid symbol layer: " + QString::number( symlayer ) );
-      delete it.value(); // we must delete it
+      delete *it; // we must delete it
       continue;
     }
 
@@ -2492,10 +2492,7 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbols( QgsSymbolV2Map& symbols, QString
 
 void QgsSymbolLayerV2Utils::clearSymbolMap( QgsSymbolV2Map& symbols )
 {
-  foreach ( QString name, symbols.keys() )
-  {
-    delete symbols.value( name );
-  }
+  qDeleteAll(symbols);
   symbols.clear();
 }
 
@@ -2557,7 +2554,7 @@ double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, Q
   else //QgsSymbol::MapUnit
   {
     double mup = c.mapToPixel().mapUnitsPerPixel();
-    if ( mup > 0 )
+    if ( mup >= 1 )
     {
       return 1.0 / mup;
     }
@@ -2577,7 +2574,7 @@ double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, Q
   else //QgsSymbol::MapUnit
   {
     double mup = c.mapToPixel().mapUnitsPerPixel();
-    if ( mup > 0 )
+    if ( mup >= 1 )
     {
       return c.rasterScaleFactor() / c.mapToPixel().mapUnitsPerPixel();
     }
