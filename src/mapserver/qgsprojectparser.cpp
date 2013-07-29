@@ -756,61 +756,6 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       //Ex_GeographicBoundingBox
       appendLayerBoundingBoxes( layerElem, doc, currentLayer->extent(), currentLayer->crs() );
 
-      //Duplicate ??
-      //Prepare url
-       //Some client requests already have http://<SERVER_NAME> in the REQUEST_URI variable
-       QString hrefString;
-       QString requestUrl = getenv( "REQUEST_URI" );
-       QUrl mapUrl( requestUrl );
-       mapUrl.setHost( getenv( "SERVER_NAME" ) );
-
-       //Add non-default ports to url
-       QString portString = getenv( "SERVER_PORT" );
-       if ( !portString.isEmpty() )
-       {
-         bool portOk;
-         int portNumber = portString.toInt( &portOk );
-         if ( portOk )
-         {
-           if ( portNumber != 80 )
-           {
-             mapUrl.setPort( portNumber );
-           }
-         }
-       }
-
-       if ( QString( getenv( "HTTPS" ) ).compare( "on", Qt::CaseInsensitive ) == 0 )
-       {
-         mapUrl.setScheme( "https" );
-       }
-       else
-       {
-         mapUrl.setScheme( "http" );
-       }
-
-       QList<QPair<QString, QString> > queryItems = mapUrl.queryItems();
-       QList<QPair<QString, QString> >::const_iterator queryIt = queryItems.constBegin();
-       for ( ; queryIt != queryItems.constEnd(); ++queryIt )
-       {
-         if ( queryIt->first.compare( "REQUEST", Qt::CaseInsensitive ) == 0 )
-         {
-           mapUrl.removeQueryItem( queryIt->first );
-         }
-         else if ( queryIt->first.compare( "VERSION", Qt::CaseInsensitive ) == 0 )
-         {
-           mapUrl.removeQueryItem( queryIt->first );
-         }
-         else if ( queryIt->first.compare( "SERVICE", Qt::CaseInsensitive ) == 0 )
-         {
-           mapUrl.removeQueryItem( queryIt->first );
-         }
-         else if ( queryIt->first.compare( "_DC", Qt::CaseInsensitive ) == 0 )
-         {
-           mapUrl.removeQueryItem( queryIt->first );
-         }
-       }
-       hrefString = mapUrl.toString();
-
 
       //only one default style in project file mode
       QDomElement styleElem = doc.createElement( "Style" );
@@ -824,29 +769,61 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       styleElem.appendChild( styleTitleElem );
 
 
-      //QString getlayerlegendgraphic aus projekt?
+      // QString LegendURL for explicit layerbased GetLegendGraphic request
       QDomElement getLayerLegendGraphicElem = doc.createElement( "LegendURL" );
-      QStringList getLayerLegendGraphicFormats;
-      getLayerLegendGraphicFormats << "jpeg" << "image/jpeg" << "image/png";
-      for ( int i = 0; i < getLayerLegendGraphicFormats.size(); ++i )
-       {
-          QDomElement getLayerLegendGraphicFormatElem = doc.createElement( "Format" );
-          QString getLayerLegendGraphicFormat = getLayerLegendGraphicFormats[i];
-          QDomText getLayerLegendGraphicFormatText = doc.createTextNode( getLayerLegendGraphicFormat );
-          getLayerLegendGraphicFormatElem.appendChild( getLayerLegendGraphicFormatText );
-          getLayerLegendGraphicElem.appendChild( getLayerLegendGraphicFormatElem );
-       }
-      QDomElement getLayerLegendGraphicORElem = doc.createElement( "OnlineResource" );
-      if ( version == "1.3.0" )
+
+      // TODO: make configurable from GUI. Not yet implemented.
+      //QString hrefString = currentLayer->LegendUrl();
+      //if ( hrefString.isEmpty() )
+      //{
+      //    hrefString = serviceUrl();
+      //}
+      //
+      QString hrefString = serviceUrl();
+      if ( hrefString.isEmpty() )
       {
-      	hrefString += "&SLD_VERSION=1.1.1";
+    	  QDomNodeList getCapNodeList = doc.elementsByTagName( "GetCapabilities" );
+          if ( getCapNodeList.count() > 0 )
+          {
+              QDomElement getCapElem = getCapNodeList.at( 0 ).toElement();
+              QDomNodeList getCapORNodeList = getCapElem.elementsByTagName( "OnlineResource" );
+              if ( getCapORNodeList.count() > 0 )
+              {
+                  hrefString = getCapORNodeList.at( 0 ).toElement().attribute( "xlink:href", "" );
+              }
+          }
       }
-      getLayerLegendGraphicORElem.setAttribute( "xlink:type", "simple" );
-      getLayerLegendGraphicORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
-      getLayerLegendGraphicORElem.setAttribute( "xlink:href", hrefString+"&FORMAT=image/png&SERVICE=WMS&REQUEST=GetLegendGraphic&STYLE=default&VERSION="+version+"&LAYER="+currentLayer->name() );
-      getLayerLegendGraphicElem.appendChild( getLayerLegendGraphicORElem );
-      //layerElem.appendChild( getLayerLegendGraphicElem );
-      styleElem.appendChild( getLayerLegendGraphicElem );
+      if ( !hrefString.isEmpty() )
+      {
+          QStringList getLayerLegendGraphicFormats;
+          getLayerLegendGraphicFormats << "image/png"; // << "jpeg" << "image/jpeg"
+          for ( int i = 0; i < getLayerLegendGraphicFormats.size(); ++i )
+          {
+              QDomElement getLayerLegendGraphicFormatElem = doc.createElement( "Format" );
+              QString getLayerLegendGraphicFormat = getLayerLegendGraphicFormats[i];
+              QDomText getLayerLegendGraphicFormatText = doc.createTextNode( getLayerLegendGraphicFormat );
+              getLayerLegendGraphicFormatElem.appendChild( getLayerLegendGraphicFormatText );
+              getLayerLegendGraphicElem.appendChild( getLayerLegendGraphicFormatElem );
+          }
+          QUrl mapUrl( hrefString );
+          mapUrl.addQueryItem( "SERVICE", "WMS" );
+          mapUrl.addQueryItem( "VERSION", version );
+          mapUrl.addQueryItem( "REQUEST", "GetLegendGraphic" );
+          mapUrl.addQueryItem( "LAYER", currentLayer->name() );
+          mapUrl.addQueryItem( "FORMAT", "image/png" );
+          mapUrl.addQueryItem( "STYLE", styleNameText.data() );
+          if ( version == "1.3.0" )
+          {
+        	  mapUrl.addQueryItem( "SLD_VERSION", "1.1.1" );
+          }
+          hrefString = mapUrl.toString();
+          QDomElement getLayerLegendGraphicORElem = doc.createElement( "OnlineResource" );
+          getLayerLegendGraphicORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+          getLayerLegendGraphicORElem.setAttribute( "xlink:type", "simple" );
+          getLayerLegendGraphicORElem.setAttribute( "xlink:href", hrefString );
+          getLayerLegendGraphicElem.appendChild( getLayerLegendGraphicORElem );
+          styleElem.appendChild( getLayerLegendGraphicElem );
+      }
 
       layerElem.appendChild( styleElem );
 
