@@ -756,7 +756,6 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       //Ex_GeographicBoundingBox
       appendLayerBoundingBoxes( layerElem, doc, currentLayer->extent(), currentLayer->crs() );
 
-
       //only one default style in project file mode
       QDomElement styleElem = doc.createElement( "Style" );
       QDomElement styleNameElem = doc.createElement( "Name" );
