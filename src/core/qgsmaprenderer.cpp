@@ -463,6 +463,13 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
             QgsDebugMsg( "Caching enabled but layer redraw forced by extent change or empty cache" );
             QImage * mypImage = new QImage( mRenderContext.painter()->device()->width(),
                                             mRenderContext.painter()->device()->height(), QImage::Format_ARGB32 );
+            if ( mypImage->isNull() )
+            {
+              QgsDebugMsg( "insufficient memory for image " + QString::number(mRenderContext.painter()->device()->width()) + "x" + QString::number(mRenderContext.painter()->device()->height()) );
+              emit drawError( ml );
+              painter->end(); // drawError is not caught by anyone, so we end painting to notify caller
+              return;
+            }
             mypImage->fill( 0 );
             ml->setCacheImage( mypImage ); //no need to delete the old one, maplayer does it for you
             QPainter * mypPainter = new QPainter( ml->cacheImage() );
@@ -501,6 +508,13 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
           flattenedLayer = true;
           mypFlattenedImage = new QImage( mRenderContext.painter()->device()->width(),
                                           mRenderContext.painter()->device()->height(), QImage::Format_ARGB32 );
+          if ( mypFlattenedImage->isNull() )
+          {
+            QgsDebugMsg( "insufficient memory for image " + QString::number(mRenderContext.painter()->device()->width()) + "x" + QString::number(mRenderContext.painter()->device()->height()) );
+            emit drawError( ml );
+            painter->end(); // drawError is not caught by anyone, so we end painting to notify caller
+            return;
+          }
           mypFlattenedImage->fill( 0 );
           QPainter * mypPainter = new QPainter( mypFlattenedImage );
           if ( mySettings.value( "/qgis/enable_anti_aliasing", true ).toBool() )

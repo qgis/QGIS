@@ -2014,6 +2014,7 @@ QImage QgsComposition::printPageAsRaster( int page )
     image.fill( 0 );
     QPainter imagePainter( &image );
     renderPage( &imagePainter, page );
+    if ( !imagePainter.isActive() ) return QImage();
   }
   return image;
 }
