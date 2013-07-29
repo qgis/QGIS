@@ -813,7 +813,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
           mapUrl.addQueryItem( "STYLE", styleNameText.data() );
           if ( version == "1.3.0" )
           {
-        	  mapUrl.addQueryItem( "SLD_VERSION", "1.1.1" );
+        	  mapUrl.addQueryItem( "SLD_VERSION", "1.1.0" );
           }
           hrefString = mapUrl.toString();
           QDomElement getLayerLegendGraphicORElem = doc.createElement( "OnlineResource" );
