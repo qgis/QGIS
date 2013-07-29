@@ -125,8 +125,8 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>../themes/default/mActionFilePrint.png</normaloff>../themes/default/mActionFilePrint.png</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilePrint.png</normaloff>:/images/themes/default/mActionFilePrint.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Print...</string>
@@ -137,8 +137,8 @@
   </action>
   <action name="mActionZoomAll">
    <property name="icon">
-    <iconset>
-     <normaloff>../themes/default/mActionZoomFullExtent.svg</normaloff>../themes/default/mActionZoomFullExtent.svg</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomFullExtent.svg</normaloff>:/images/themes/default/mActionZoomFullExtent.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom Full</string>
@@ -149,8 +149,8 @@
   </action>
   <action name="mActionZoomIn">
    <property name="icon">
-    <iconset>
-     <normaloff>../themes/default/mActionZoomIn.svg</normaloff>../themes/default/mActionZoomIn.svg</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomIn.svg</normaloff>:/images/themes/default/mActionZoomIn.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom In</string>
@@ -161,8 +161,8 @@
   </action>
   <action name="mActionZoomOut">
    <property name="icon">
-    <iconset>
-     <normaloff>../themes/default/mActionZoomOut.svg</normaloff>../themes/default/mActionZoomOut.svg</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomOut.svg</normaloff>:/images/themes/default/mActionZoomOut.svg</iconset>
    </property>
    <property name="text">
     <string>Zoom Out</string>
@@ -173,8 +173,8 @@
   </action>
   <action name="mActionAddNewMap">
    <property name="icon">
-    <iconset>
-     <normaloff>../themes/default/mActionAddMap.png</normaloff>../themes/default/mActionAddMap.png</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddMap.png</normaloff>:/images/themes/default/mActionAddMap.png</iconset>
    </property>
    <property name="text">
     <string>Add Map</string>
@@ -185,8 +185,8 @@
   </action>
   <action name="mActionAddNewLabel">
    <property name="icon">
-    <iconset>
-     <normaloff>../themes/default/mActionLabel.png</normaloff>../themes/default/mActionLabel.png</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionLabel.png</normaloff>:/images/themes/default/mActionLabel.png</iconset>
    </property>
    <property name="text">
     <string>Add Label</string>
@@ -197,8 +197,8 @@
   </action>
   <action name="mActionAddNewLegend">
    <property name="icon">
-    <iconset>
-     <normaloff>../themes/default/mActionAddLegend.png</normaloff>../themes/default/mActionAddLegend.png</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddLegend.png</normaloff>:/images/themes/default/mActionAddLegend.png</iconset>
    </property>
    <property name="text">
     <string>Add Legend</string>
@@ -209,8 +209,8 @@
   </action>
   <action name="mActionSelectMoveItem">
    <property name="icon">
-    <iconset>
-     <normaloff>../themes/default/mActionPan.png</normaloff>../themes/default/mActionPan.png</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionPan.png</normaloff>:/images/themes/default/mActionPan.png</iconset>
    </property>
    <property name="text">
     <string>Move Item</string>
@@ -221,8 +221,8 @@
   </action>
   <action name="mActionExportAsImage">
    <property name="icon">
-    <iconset>
-     <normaloff>../themes/default/mActionSaveMapAsImage.png</normaloff>../themes/default/mActionSaveMapAsImage.png</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveMapAsImage.png</normaloff>:/images/themes/default/mActionSaveMapAsImage.png</iconset>
    </property>
    <property name="text">
     <string>Export as Image...</string>
@@ -233,8 +233,8 @@
   </action>
   <action name="mActionExportAsPDF">
    <property name="icon">
-    <iconset>
-     <normaloff>../themes/default/mActionSaveAsPDF.png</normaloff>../themes/default/mActionSaveAsPDF.png</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsPDF.png</normaloff>:/images/themes/default/mActionSaveAsPDF.png</iconset>
    </property>
    <property name="text">
     <string>Export as PDF...</string>
@@ -242,8 +242,8 @@
   </action>
   <action name="mActionExportAsSVG">
    <property name="icon">
-    <iconset>
-     <normaloff>../themes/default/mActionSaveAsSVG.png</normaloff>../themes/default/mActionSaveAsSVG.png</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsSVG.png</normaloff>:/images/themes/default/mActionSaveAsSVG.png</iconset>
    </property>
    <property name="text">
     <string>Export as SVG...</string>
@@ -251,8 +251,8 @@
   </action>
   <action name="mActionAddNewScalebar">
    <property name="icon">
-    <iconset>
-     <normaloff>../../plugins/scale_bar/icon.xpm</normaloff>../../plugins/scale_bar/icon.xpm</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionScaleBar.png</normaloff>:/images/themes/default/mActionScaleBar.png</iconset>
    </property>
    <property name="text">
     <string>Add Scalebar</string>
@@ -263,8 +263,8 @@
   </action>
   <action name="mActionRefreshView">
    <property name="icon">
-    <iconset>
-     <normaloff>../themes/default/mActionDraw.svg</normaloff>../themes/default/mActionDraw.svg</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
    </property>
    <property name="text">
     <string>Refresh</string>
@@ -275,8 +275,8 @@
   </action>
   <action name="mActionAddImage">
    <property name="icon">
-    <iconset>
-     <normaloff>../themes/default/mActionAddImage.png</normaloff>../themes/default/mActionAddImage.png</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddImage.png</normaloff>:/images/themes/default/mActionAddImage.png</iconset>
    </property>
    <property name="text">
     <string>Add Image</string>
@@ -451,7 +451,7 @@
   </action>
   <action name="mActionUndo">
    <property name="icon">
-    <iconset>
+    <iconset resource="../../images/images.qrc">
      <normalon>:/images/themes/default/mActionUndo.png</normalon>
     </iconset>
    </property>
