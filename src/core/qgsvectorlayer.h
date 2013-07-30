@@ -69,6 +69,7 @@ class CORE_EXPORT QgsAttributeEditorElement : public QObject
       AeTypeInvalid
     };
 
+
     QgsAttributeEditorElement( AttributeEditorType type, QString name, QObject *parent = NULL )
         : QObject( parent ), mType( type ), mName( name ) {}
 
@@ -430,19 +431,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       Classification,
       EditRange,
       SliderRange,
-      CheckBox,      /* added in 1.4 */
+      CheckBox,      /** @note added in 1.4 */
       FileName,
       Enumeration,
-      Immutable,     /* The attribute value should not be changed in the attribute form */
-      Hidden,        /* The attribute value should not be shown in the attribute form @added in 1.4 */
-      TextEdit,      /* multiline edit @added in 1.4*/
-      Calendar,      /* calendar widget @added in 1.5 */
-      DialRange,     /* dial range @added in 1.5 */
-      ValueRelation, /* value map from an table @added in 1.8 */
-      UuidGenerator, /* uuid generator - readonly and automatically intialized @added in 1.9 */
-      Photo,         /* phote widget @added in 1.9 */
-      WebView,       /* webview widget @added in 1.9 */
-      Color,         /* color @added in 1.9 */
+      Immutable,     /** The attribute value should not be changed in the attribute form */
+      Hidden,        /** The attribute value should not be shown in the attribute form @note added in 1.4 */
+      TextEdit,      /** multiline edit @note added in 1.4*/
+      Calendar,      /** calendar widget @note added in 1.5 */
+      DialRange,     /** dial range @note added in 1.5 */
+      ValueRelation, /** value map from an table @note added in 1.8 */
+      UuidGenerator, /** uuid generator - readonly and automatically intialized @note added in 1.9 */
+      Photo,         /** phote widget @note added in 1.9 */
+      WebView,       /** webview widget @note added in 1.9 */
+      Color,         /** color @note added in 1.9 */
     };
 
     struct RangeData
@@ -1019,6 +1020,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Adds a tab (for the attribute editor form) holding groups and fields
       @note added in version 1.9*/
     void addAttributeEditorWidget( QgsAttributeEditorElement* data );
+
+    const QString& editorWidgetV2( int fieldIdx );
+
+    const QMap<QString, QVariant>& editorWidgetV2Config( int fieldIdx );
+
+    QgsEditorWidgetWrapper* editorWidgetWrapper( int idx, QWidget* editor, const QVariant& value, QWidget* parent );
+
     /**Returns a list of tabs holding groups and fields
       @note added in version 1.9*/
     QList< QgsAttributeEditorElement* > &attributeEditorElements();
@@ -1095,6 +1103,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** set the active layout for the attribute editor for this layer (added in 1.9) */
     void setEditorLayout( EditorLayout editorLayout );
 
+    void setEditorWidgetV2( int attrIdx, const QString& widgetType );
+
+    void setEditorWidgetV2Config( int attrIdx, const QMap<QString, QVariant>& config );
+
     /** set string representing 'true' for a checkbox (added in 1.4) */
     void setCheckedState( int idx, QString checked, QString notChecked );
 
@@ -1132,6 +1144,22 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in 1.8
      **/
     ValueRelationData &valueRelation( int idx );
+
+    /**
+     * Get relations, where the foreign key is on this layer
+     *
+     * @param Only get relations, where idx forms part of the foreign key
+     * @return A list of relations
+     */
+    QList<QgsRelation> referencingRelations( int idx );
+
+    /**
+     * Get relations, where the foreign key is on another layer, referencing this layer
+     *
+     * @param Only get relations, where idx forms part of the referenced key
+     * @return A list of relations
+     */
+    QList<QgsRelation> referencedRelations( int idx );
 
     /**access date format
      * @note added in 1.9
@@ -1373,6 +1401,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void committedAttributeValuesChanges( const QString& layerId, const QgsChangedAttributesMap& changedAttributesValues );
     void committedGeometriesChanges( const QString& layerId, const QgsGeometryMap& changedGeometries );
 
+    void saveLayerToProject();
+
     /** Emitted when the font family defined for labeling layer is not found on system
      * @note added in 1.9
      */
@@ -1529,6 +1559,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QMap< QString, ValueRelationData > mValueRelations;
     QMap< QString, QString> mDateFormats;
     QMap< QString, QSize> mWidgetSize;
+
+    QMap<int, QString> mEditorWidgetV2Types;
+    QMap<int, QMap<QString, QVariant> > mEditorWidgetV2Configs;
 
     /** Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated) */
     EditorLayout mEditorLayout;
