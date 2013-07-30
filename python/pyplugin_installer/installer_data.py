@@ -591,7 +591,9 @@ class Plugins(QObject):
         return metadataParser( fct )
 
     if readOnly:
-      path = QDir.cleanPath( QgsApplication.pkgDataPath() ) + "/python/plugins/" + key
+      appPythonDir = QgsApplication.pkgDataPath()
+      if QgsApplication.isRunningFromBuildDir(): appPythonDir = QgsApplication.buildOutputPath()
+      path = QDir.cleanPath( appPythonDir ) + "/python/plugins/" + key
     else:
       path = QDir.cleanPath( QgsApplication.qgisSettingsDirPath() ) + "/python/plugins/" + key
 
@@ -682,7 +684,9 @@ class Plugins(QObject):
     """ Build the localCache """
     self.localCache = {}
     # first, try to add the readonly plugins...
-    pluginsPath = unicode(QDir.convertSeparators(QDir.cleanPath(QgsApplication.pkgDataPath() + "/python/plugins")))
+    appPythonDir = QgsApplication.pkgDataPath()
+    if QgsApplication.isRunningFromBuildDir(): appPythonDir = QgsApplication.buildOutputPath()
+    pluginsPath = unicode(QDir.convertSeparators(QDir.cleanPath(appPythonDir + "/python/plugins")))
     #  temporarily add the system path as the first element to force loading the readonly plugins, even if masked by user ones.
     sys.path = [pluginsPath] + sys.path
     try:
