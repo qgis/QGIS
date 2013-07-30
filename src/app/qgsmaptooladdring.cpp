@@ -17,7 +17,6 @@
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
-#include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include <QMessageBox>
 #include <QMouseEvent>
@@ -50,26 +49,28 @@ void QgsMapToolAddRing::canvasReleaseEvent( QMouseEvent * e )
   }
 
   //add point to list and to rubber band
-  int error = addVertex( e->pos() );
-  if ( error == 1 )
-  {
-    //current layer is not a vector layer
-    return;
-  }
-  else if ( error == 2 )
-  {
-    //problem with coordinate transformation
-    QMessageBox::information( 0, tr( "Coordinate transform error" ),
-                              tr( "Cannot transform the point to the layers coordinate system" ) );
-    return;
-  }
-
   if ( e->button() == Qt::LeftButton )
   {
+    int error = addVertex( e->pos() );
+    if ( error == 1 )
+    {
+      //current layer is not a vector layer
+      return;
+    }
+    else if ( error == 2 )
+    {
+      //problem with coordinate transformation
+      QMessageBox::information( 0, tr( "Coordinate transform error" ),
+                                   tr( "Cannot transform the point to the layers coordinate system" ) );
+     return;
+    }
+
     startCapturing();
   }
   else if ( e->button() == Qt::RightButton )
   {
+    resetLastVertex();
+
     closePolygon();
 
     vlayer->beginEditCommand( tr( "Ring added" ) );

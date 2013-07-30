@@ -231,6 +231,20 @@ void QgsMapToolCapture::undo()
   }
 }
 
+void QgsMapToolCapture::resetLastVertex()
+{
+  if ( mRubberBand )
+  {
+    int rubberBandSize = mRubberBand->numberOfVertices();
+    if ( rubberBandSize < 2 )
+    {
+      return;
+    }
+    const QgsPoint *lastPoint = mRubberBand->getPoint(0, rubberBandSize-2);
+    mRubberBand->movePoint( *lastPoint );
+  }
+}
+
 void QgsMapToolCapture::keyPressEvent( QKeyEvent* e )
 {
   if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
