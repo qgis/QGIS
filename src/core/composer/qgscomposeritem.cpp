@@ -995,7 +995,7 @@ void QgsComposerItem::drawArrowHead( QPainter* p, double x, double y, double ang
 double QgsComposerItem::textWidthMillimeters( const QFont& font, const QString& text ) const
 {
   QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetrics fontMetrics( metricsFont );
+  QFontMetricsF fontMetrics( metricsFont );
   return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
 }
 
