@@ -469,7 +469,7 @@ QString QgsRasterDataProvider::identifyFormatLabel( QgsRaster::IdentifyFormat fo
     case QgsRaster::IdentifyFormatValue:
       return tr( "Value" );
     case QgsRaster::IdentifyFormatText:
-      return ( "Text" );
+      return tr( "Text" );
     case QgsRaster::IdentifyFormatHtml:
       return tr( "Html" );
     case QgsRaster::IdentifyFormatFeature:
