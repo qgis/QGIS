@@ -814,14 +814,24 @@ void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
   QString unitsOnFlyState = tr( "Canvas units (CRS transformation: %1)" );
   if ( !onFlyEnabled )
   {
-    if ( !mProjectSrsId )
-    {
-      mProjectSrsId = projectionSelector->selectedCrsId();
-    }
+    QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
+    mProjectSrsId = myRenderer->destinationCrs().srsid();
     projectionSelector->setSelectedCrsId( mLayerSrsId );
 
     btnGrpMeasureEllipsoid->setTitle( measureOnFlyState.arg( tr( "OFF" ) ) );
     btnGrpMapUnits->setTitle( unitsOnFlyState.arg( tr( "OFF" ) ) );
+
+    spinBoxDP->setValue( QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" ) );
+
+    QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "D" );
+    if ( format == "DM" )
+      radDM->setChecked( true );
+    else if ( format == "DMS" )
+      radDMS->setChecked( true );
+    else
+      radD->setChecked( true );
+
+    mEllipsoidIndex = 0;
   }
   else
   {
@@ -1452,7 +1462,6 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
       leSemiMajor->setToolTip( QString( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
       leSemiMinor->setToolTip( QString( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
     }
-    cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
     if ( mEllipsoidList[ mEllipsoidIndex ].acronym != GEO_NONE )
     {
       leSemiMajor->setText( QLocale::system().toString( myMajor, 'f', 3 ) );
@@ -1464,4 +1473,5 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
     cmbEllipsoid->setEnabled( false );
     cmbEllipsoid->setToolTip( tr( "Can only use ellipsoidal calculations when CRS transformation is enabled" ) );
   }
+  cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
 }
