@@ -22,7 +22,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
-#include "qgsrubberband.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
@@ -161,27 +160,29 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     }
 
     //add point to list and to rubber band
-    int error = addVertex( e->pos() );
-    if ( error == 1 )
-    {
-      //current layer is not a vector layer
-      return;
-    }
-    else if ( error == 2 )
-    {
-      //problem with coordinate transformation
-      QMessageBox::information( 0, tr( "Coordinate transform error" ),
-                                tr( "Cannot transform the point to the layers coordinate system" ) );
-      return;
-    }
-
     if ( e->button() == Qt::LeftButton )
     {
+      int error = addVertex( e->pos() );
+      if ( error == 1 )
+      {
+        //current layer is not a vector layer
+        return;
+      }
+      else if ( error == 2 )
+      {
+        //problem with coordinate transformation
+        QMessageBox::information( 0, tr( "Coordinate transform error" ),
+                                     tr( "Cannot transform the point to the layers coordinate system" ) );
+        return;
+      }
+
       startCapturing();
     }
     else if ( e->button() == Qt::RightButton )
     {
       // End of string
+
+      resetLastVertex();
 
       //lines: bail out if there are not at least two vertices
       if ( mode() == CaptureLine && size() < 2 )
