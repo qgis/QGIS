@@ -18172,12 +18172,12 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="547"/>
         <source>Top</source>
-        <translation>Сверху</translation>
+        <translation>Вверху</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="566"/>
         <source>Bottom</source>
-        <translation>Снизу</translation>
+        <translation>Внизу</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="585"/>
@@ -21816,7 +21816,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="922"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="925"/>
         <source>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Дополнительные разделители.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="935"/>
@@ -21846,7 +21846,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="971"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="974"/>
         <source>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Управляющие символы экранируют следующие за ними служебные символы (разделители, кавычки и переносы строк). Если управляющие символы совпадают с кавычками, они экранируют сами себя и только внутри строковых значений.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="1014"/>
@@ -21858,7 +21858,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="1039"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="1042"/>
         <source>Regular expression used to split each line into fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Регулярное выражение разбивки строк на поля</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="414"/>
@@ -21875,7 +21875,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="650"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="653"/>
         <source>Geometry is a point defined by X and Y coordinate fields</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Геометрия представлена XY-координатами точек</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="656"/>
@@ -21887,7 +21887,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="262"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="265"/>
         <source>X and Y coordinates are expressed in degrees/minutes/seconds</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Координаты в файле выражены в градусах/минутах/секундах</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="268"/>
@@ -21899,7 +21899,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="672"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="675"/>
         <source>Geometry is read as a well known text string from the selected fields</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Геометрия представлена строками в формате WKT</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="678"/>
@@ -21916,7 +21916,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="327"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="330"/>
         <source>Name of the field containing well known text value</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле, содержащее значения WKT</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="343"/>
@@ -21999,7 +21999,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="688"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="691"/>
         <source>The file contains only attribute information - it will not be displayed on the map</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл содержит только атрибутивную информацию и не будет отображён на карте</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="694"/>
@@ -22046,7 +22046,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="142"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="145"/>
         <source>Select the file encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Кодировка файла</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="1065"/>
@@ -22056,7 +22056,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="1089"/>
         <source>Sample data</source>
-        <translation type="unfinished"></translation>
+        <translation>Образец</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="400"/>
@@ -22451,12 +22451,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="339"/>
         <source>Bar length: Scale linearly, such as the following value matches the specified size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Линейно масштабировать столбцы до соответствия значения атрибута указанному размеру:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="346"/>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
-        <translation type="unfinished">Линейно масштабировать диаграммы между нулевым размером и следующим значением атрибута:</translation>
+        <translation>Линейно масштабировать диаграммы до соответствия значения атрибута указанному размеру:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="403"/>
@@ -22564,12 +22564,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="251"/>
         <source>Only show diagrams with a size inside the specified range.</source>
-        <translation>Показывать диаграммы только в пределах указанных масштабов</translation>
+        <translation type="unfinished">Показывать диаграммы размеры которых лежат в указанном диапазоне.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="254"/>
         <source>Hide diagrams with a size outside the specified range.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Скрыть диаграммы размеры которых лежат за пределами указанного диапазона.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="257"/>
@@ -22682,7 +22682,7 @@ Leave empty to automatically apply the maximum value.</source>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="659"/>
         <source>Automated placement settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры размещения</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="667"/>
@@ -22737,7 +22737,7 @@ Leave empty to automatically apply the maximum value.</source>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="901"/>
         <source>Drag and drop to reorder</source>
-        <translation type="unfinished"></translation>
+        <translation>Перетащите атрибуты для изменения их порядка в диаграмме</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="934"/>
@@ -23706,7 +23706,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="765"/>
         <source>Web view</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">HTML</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="766"/>
@@ -30194,6 +30194,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabelpropertydialog.cpp" line="85"/>
         <source>Expression result</source>
+        <translatorcomment>В диалоге редактирования подписей (если в подписях стоят выражения)</translatorcomment>
         <translation type="unfinished">Результат выражения</translation>
     </message>
     <message>
@@ -30233,7 +30234,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="322"/>
         <source>Show label</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать подпись</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="304"/>
@@ -30284,7 +30285,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="210"/>
         <source>Bold text
 (data defined only, overrides Style)</source>
-        <translation type="unfinished"></translation>
+        <translation>Полужирный шрифт (определяется данными)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="214"/>
@@ -30295,7 +30296,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="245"/>
         <source>Italic text
 (data defined only, overrides Style)</source>
-        <translation type="unfinished"></translation>
+        <translation>Курсив (определяется данными)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="249"/>
@@ -30305,12 +30306,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="329"/>
         <source>Ignores priority and permits collisions/overlaps</source>
-        <translation type="unfinished"></translation>
+        <translation>Игнорировать приоритеты и разрешить коллизии и перекрытия</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="332"/>
         <source>Always show (exceptions above)</source>
-        <translation type="unfinished"></translation>
+        <translation>Всегда показывать подпись</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="342"/>
@@ -30350,7 +30351,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="515"/>
         <source>Rotation</source>
-        <translation>Вращение</translation>
+        <translation>Угол поворота</translation>
     </message>
 </context>
 <context>
@@ -30589,7 +30590,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1190"/>
         <source>B</source>
-        <translation>Полужирный</translation>
+        <translation>B</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1228"/>
@@ -30600,7 +30601,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1232"/>
         <source>I</source>
-        <translation>Курсив</translation>
+        <translation>I</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1340"/>
@@ -30694,7 +30695,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1095"/>
         <source>U</source>
-        <translation></translation>
+        <translation>U</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1133"/>
@@ -30704,7 +30705,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1136"/>
         <source>S</source>
-        <translation>Ю</translation>
+        <translation>S</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="967"/>
@@ -30780,13 +30781,13 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5037"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5165"/>
         <source>Minimum </source>
-        <translation>Минимальный </translation>
+        <translation>Мин. </translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5066"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="5200"/>
         <source>Maximum </source>
-        <translation>Максимальный </translation>
+        <translation>Макс. </translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -30876,7 +30877,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4499"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4729"/>
         <source>Rotation</source>
-        <translation>Вращение</translation>
+        <translation>Угол поворота</translation>
     </message>
     <message>
         <source>degrees</source>
@@ -31231,7 +31232,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="81"/>
         <source>Edit expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить выражение</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="114"/>
@@ -31467,7 +31468,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2760"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2871"/>
         <source>Fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Фиксированный</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3066"/>
@@ -31478,32 +31479,32 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2999"/>
         <source>Rectangle</source>
-        <translation type="unfinished">Прямоугольник</translation>
+        <translation>Прямоугольник</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3004"/>
         <source>Square</source>
-        <translation type="unfinished">Квадрат</translation>
+        <translation>Квадрат</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3009"/>
         <source>Ellipse</source>
-        <translation type="unfinished">Эллипс</translation>
+        <translation>Эллипс</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3014"/>
         <source>Circle</source>
-        <translation type="unfinished">Круг</translation>
+        <translation>Круг</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3019"/>
         <source>SVG</source>
-        <translation type="unfinished">SVG-файл</translation>
+        <translation>SVG-файл</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2579"/>
         <source>Shape</source>
-        <translation type="unfinished">Фигура</translation>
+        <translation>Фигура</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2861"/>
@@ -31925,12 +31926,12 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="31"/>
         <source>Styles related to the layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Стили слоя</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="45"/>
         <source>Other styles on the database</source>
-        <translation type="unfinished"></translation>
+        <translation>Остальные стили</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="76"/>
@@ -33917,7 +33918,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="138"/>
         <source>&amp;Set Filter</source>
-        <translation type="unfinished">Задать &amp;фильтр</translation>
+        <translation>&amp;Фильтр</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="139"/>
@@ -37820,7 +37821,9 @@ error:%2
 SQL:%1
 error:%2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось получить список доступных таблиц.
+SQL: %1
+Error: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="231"/>
@@ -37835,7 +37838,7 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="371"/>
         <source>Unsupported geometry type %1 in %2.%3.%4 ignored</source>
-        <translation type="unfinished"></translation>
+        <translation>Проигнорирован неподдерживаемый тип геометрии %1 в поле %2.%3.%4</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="396"/>
@@ -38061,7 +38064,7 @@ error:%2
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="144"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When searching for spatial tables restrict the search to tables that are owned by the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ограничить поиск пространственных таблиц таблицами, принадлежащими указанному пользователю.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="211"/>
@@ -38140,7 +38143,7 @@ error:%2
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="57"/>
         <source>Use estimated table metadata</source>
-        <translation>Использовать расчётные метаданные таблицы</translation>
+        <translation>Использовать расчётные метаданные таблиц</translation>
     </message>
 </context>
 <context>
@@ -38309,12 +38312,12 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="693"/>
         <source>Probing for spatial index on column %1.%2.%3 failed [%4]</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка запроса пространственного индекса для поля %1.%2.%3 [%4]</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="709"/>
         <source>Retrieving fields from &apos;%1&apos; failed [%2]</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось получить поля из таблицы %1 [%2]</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="790"/>
@@ -38322,7 +38325,10 @@ error:%2
 The error message from the database was:
 %3.
 SQL: %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось определить привилегии доступа для поля %1.%2.
+Сообщение базы данных:
+%3.
+SQL: %4</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="801"/>
@@ -38330,7 +38336,10 @@ SQL: %4</source>
 The error message from the database was:
 %2.
 SQL: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось определить привилегии доступа к таблице %1.
+Сообщение базы данных:
+%2.
+SQL: %3</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="814"/>
@@ -38357,7 +38366,7 @@ SQL: %2</translation>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="886"/>
         <source>Primary key field %1 not found in %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Первичный ключ %1 не найден в таблице %2</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="936"/>
@@ -38382,7 +38391,7 @@ SQL: %2</translation>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1149"/>
         <source>Evaluation of default value failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось вычислить значение по умолчанию</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1180"/>
@@ -38450,7 +38459,7 @@ SQL: %2</translation>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1490"/>
         <source>Setting comment on %1 failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось записать комментарий для поля %1</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1503"/>
@@ -38746,12 +38755,12 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="188"/>
         <source>&amp;Set Filter</source>
-        <translation>Задать &amp;фильтр</translation>
+        <translation>&amp;Фильтр</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="189"/>
         <source>Set Filter</source>
-        <translation>Задать фильтр</translation>
+        <translation type="unfinished">Задать фильтр</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="203"/>
@@ -39328,7 +39337,7 @@ Error: %2</source>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="264"/>
         <source>Use estimated table metadata</source>
-        <translation>Использовать расчётные метаданные таблицы</translation>
+        <translation>Использовать расчётные метаданные таблиц</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="287"/>
@@ -39432,12 +39441,12 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="175"/>
         <source>&amp;Set Filter</source>
-        <translation>Задать &amp;фильтр</translation>
+        <translation>&amp;Фильтр</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="176"/>
         <source>Set Filter</source>
-        <translation>Задать фильтр</translation>
+        <translation type="unfinished">Задать фильтр</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="191"/>
@@ -47660,12 +47669,12 @@ but implies better performance thereafter.</source>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="56"/>
         <source>&amp;Update statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Обновить статистику</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="64"/>
         <source>&amp;Set Filter</source>
-        <translation type="unfinished">Задать &amp;фильтр</translation>
+        <translation>&amp;Фильтр</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="265"/>
@@ -54781,7 +54790,7 @@ Description: %2</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="254"/>
         <source>Simple Encryption</source>
-        <translation>Просто шифрование</translation>
+        <translation>Простое шифрование</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="251"/>
@@ -54791,7 +54800,7 @@ Description: %2</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="264"/>
         <source>Estimate table metadata</source>
-        <translation>Использовать расчётные метаданные таблицы</translation>
+        <translation>Использовать расчётные метаданные таблиц</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="261"/>
@@ -54823,7 +54832,7 @@ Description: %2</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="65"/>
         <source>&amp;Set Filter</source>
-        <translation>Задать &amp;фильтр</translation>
+        <translation>&amp;Фильтр</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="72"/>
