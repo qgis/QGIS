@@ -812,47 +812,50 @@ double QgsMarkerLineSymbolLayerV2::markerAngle( const QPolygonF& points, bool is
 
 void QgsMarkerLineSymbolLayerV2::renderPolylineCentral( const QPolygonF& points, QgsSymbolV2RenderContext& context )
 {
-  // calc length
-  qreal length = 0;
-  QPolygonF::const_iterator it = points.constBegin();
-  QPointF last = *it;
-  for ( ++it; it != points.constEnd(); ++it )
+  if ( points.size() > 0 )
   {
-    length += sqrt(( last.x() - it->x() ) * ( last.x() - it->x() ) +
-                   ( last.y() - it->y() ) * ( last.y() - it->y() ) );
+    // calc length
+    qreal length = 0;
+    QPolygonF::const_iterator it = points.constBegin();
+    QPointF last = *it;
+    for ( ++it; it != points.constEnd(); ++it )
+    {
+      length += sqrt(( last.x() - it->x() ) * ( last.x() - it->x() ) +
+                     ( last.y() - it->y() ) * ( last.y() - it->y() ) );
+      last = *it;
+    }
+
+    // find the segment where the central point lies
+    it = points.constBegin();
     last = *it;
+    qreal last_at = 0, next_at = 0;
+    QPointF next;
+    int segment = 0;
+    for ( ++it; it != points.constEnd(); ++it )
+    {
+      next = *it;
+      next_at += sqrt(( last.x() - it->x() ) * ( last.x() - it->x() ) +
+                      ( last.y() - it->y() ) * ( last.y() - it->y() ) );
+      if ( next_at >= length / 2 )
+        break; // we have reached the center
+      last = *it;
+      last_at = next_at;
+      segment++;
+    }
+
+    // find out the central point on segment
+    MyLine l( last, next ); // for line angle
+    qreal k = ( length * 0.5 - last_at ) / ( next_at - last_at );
+    QPointF pt = last + ( next - last ) * k;
+
+    // draw the marker
+    double origAngle = mMarker->angle();
+    if ( mRotateMarker )
+      mMarker->setAngle( origAngle + l.angle() * 180 / M_PI );
+    mMarker->renderPoint( pt, context.feature(), context.renderContext(), -1, context.selected() );
+    if ( mRotateMarker )
+      mMarker->setAngle( origAngle );
   }
-
-  // find the segment where the central point lies
-  it = points.constBegin();
-  last = *it;
-  qreal last_at = 0, next_at = 0;
-  QPointF next;
-  int segment = 0;
-  for ( ++it; it != points.constEnd(); ++it )
-  {
-    next = *it;
-    next_at += sqrt(( last.x() - it->x() ) * ( last.x() - it->x() ) +
-                    ( last.y() - it->y() ) * ( last.y() - it->y() ) );
-    if ( next_at >= length / 2 )
-      break; // we have reached the center
-    last = *it;
-    last_at = next_at;
-    segment++;
-  }
-
-  // find out the central point on segment
-  MyLine l( last, next ); // for line angle
-  qreal k = ( length * 0.5 - last_at ) / ( next_at - last_at );
-  QPointF pt = last + ( next - last ) * k;
-
-  // draw the marker
-  double origAngle = mMarker->angle();
-  if ( mRotateMarker )
-    mMarker->setAngle( origAngle + l.angle() * 180 / M_PI );
-  mMarker->renderPoint( pt, context.feature(), context.renderContext(), -1, context.selected() );
-  if ( mRotateMarker )
-    mMarker->setAngle( origAngle );
 }
 
 
