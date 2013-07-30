@@ -86,6 +86,8 @@ from processing.algs.JoinAttributes import JoinAttributes
 from processing.algs.CreateConstantRaster import CreateConstantRaster
 from processing.algs.PointsLayerFromTable import PointsLayerFromTable
 
+from processing.algs.PointsDisplacement import PointsDisplacement
+
 #from processing.algs.VectorLayerHistogram import VectorLayerHistogram
 #from processing.algs.VectorLayerScatterplot import VectorLayerScatterplot
 #from processing.algs.MeanAndStdDevPlot import MeanAndStdDevPlot
@@ -134,10 +136,12 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         PointsLayerFromTable(), StatisticsByCategories(), Polygonize(),
                         # ------ raster ------
                         #CreateConstantRaster(),
-                        RasterLayerStatistics()
+                        RasterLayerStatistics(),
                         # ------ graphics ------
                         #VectorLayerHistogram(), VectorLayerScatterplot(), RasterLayerHistogram(),
                         #MeanAndStdDevPlot(), BarPlot(), PolarPlot()
+                        # ------ vector ------
+                        PointsDisplacement()
                         ]
 
     def initializeSettings(self):
