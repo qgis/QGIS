@@ -456,6 +456,7 @@ int main( int argc, char * argv[] )
       continue;
     }
 
+    adminConfigParser->loadLabelSettings( theMapRenderer->labelingEngine() );
     theServer->setAdminConfigParser( adminConfigParser );
 
 

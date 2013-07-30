@@ -24,6 +24,7 @@
 #include "qgsmslayercache.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
+#include "qgspallabeling.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -3591,6 +3592,68 @@ void QgsProjectParser::addDrawingOrderEmbeddedGroup( const QDomElement& groupEle
       {
         orderedLayerList.insertMulti( embedDrawingOrder, layerNames.at( i ) );
       }
+    }
+  }
+}
+
+void QgsProjectParser::loadLabelSettings( QgsLabelingEngineInterface* lbl )
+{
+  //pal labeling engine?
+  QgsPalLabeling* pal = dynamic_cast<QgsPalLabeling*>( lbl );
+  if ( pal )
+  {
+    QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+    if ( propertiesElem.isNull() )
+    {
+      return;
+    }
+
+    QDomElement palElem = propertiesElem.firstChildElement( "PAL" );
+    if ( palElem.isNull() )
+    {
+      return;
+    }
+
+    //pal::Pal p;
+    int candPoint = 8; //p.getPointP();
+    int candLine = 8; //p.getLineP();
+    int candPoly = 8; //p.getPolyP();
+
+    //mCandPoint
+    QDomElement candPointElem = palElem.firstChildElement( "CandidatesPoint" );
+    if ( !candPointElem.isNull() )
+    {
+      candPoint = candPointElem.text().toInt();
+    }
+
+    //mCandLine
+    QDomElement candLineElem = palElem.firstChildElement( "CandidatesLine" );
+    if ( !candLineElem.isNull() )
+    {
+      candLine = candLineElem.text().toInt();
+    }
+
+    //mCandPolygon
+    QDomElement candPolyElem = palElem.firstChildElement( "CandidatesPolygon" );
+    if ( !candPolyElem.isNull() )
+    {
+      candPoly = candPolyElem.text().toInt();
+    }
+
+    pal->setNumCandidatePositions( candPoint, candLine, candPoly );
+
+    //mShowingCandidates
+    QDomElement showCandElem = palElem.firstChildElement( "ShowingCandidates" );
+    if ( !showCandElem.isNull() )
+    {
+      pal->setShowingCandidates( showCandElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
+    }
+
+    //mShowingAllLabels
+    QDomElement showAllLabelsElem = palElem.firstChildElement( "ShowingAllLabels" );
+    if ( !showAllLabelsElem.isNull() )
+    {
+      pal->setShowingAllLabels( showAllLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
     }
   }
 }

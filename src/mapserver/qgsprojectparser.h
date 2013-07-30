@@ -138,6 +138,8 @@ class QgsProjectParser: public QgsConfigParser
     /**Draw text annotation items from the QGIS projectfile*/
     void drawOverlays( QPainter* p, int dpi, int width, int height ) const;
 
+    void loadLabelSettings( QgsLabelingEngineInterface* lbl );
+
   private:
 
     //forbidden

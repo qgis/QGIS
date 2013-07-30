@@ -32,6 +32,7 @@ class QgsComposerMap;
 class QgsComposerFrame;
 class QgsComposerMultiFrame;
 class QgsComposerHtml;
+class QgsLabelingEngineInterface;
 class QDomElement;
 
 /**Interface class for configuration parsing, e.g. SLD configuration or QGIS project file*/
@@ -159,6 +160,9 @@ class QgsConfigParser
         @param width width of output image
         @param height height of output image*/
     virtual void drawOverlays( QPainter* p, int dpi, int width, int height ) const { Q_UNUSED( p ); Q_UNUSED( dpi ); Q_UNUSED( width ); Q_UNUSED( height ); }
+
+    /**Applies configuration specific label settings*/
+    virtual void loadLabelSettings( QgsLabelingEngineInterface* lbl ) { Q_UNUSED( lbl ); }
 
   protected:
     /**Parser to forward not resolved requests (e.g. SLD parser based on user request might have a fallback parser with admin configuration)*/
