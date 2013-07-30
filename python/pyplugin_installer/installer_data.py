@@ -32,7 +32,7 @@ import codecs
 import ConfigParser
 import qgis.utils
 from qgis.core import *
-from qgis.utils import iface
+from qgis.utils import iface, plugin_paths
 from version_compare import compareVersions, normalizeVersion, isCompatible
 
 """
@@ -563,7 +563,7 @@ class Plugins(QObject):
 
 
   # ----------------------------------------- #
-  def getInstalledPlugin(self, key, readOnly, testLoad=True):
+  def getInstalledPlugin(self, key, path, readOnly, testLoad=True):
     """ get the metadata of an installed plugin """
     def metadataParser(fct):
         """ plugin metadata parser reimplemented from qgis.utils
@@ -589,11 +589,6 @@ class Plugins(QObject):
           value = metadataParser( "%s[%s]" % (fct, locale.split("_")[0] ) )
           if value: return value
         return metadataParser( fct )
-
-    if readOnly:
-      path = QDir.cleanPath( QgsApplication.pkgDataPath() ) + "/python/plugins/" + key
-    else:
-      path = QDir.cleanPath( QgsApplication.qgisSettingsDirPath() ) + "/python/plugins/" + key
 
     if not QDir(path).exists():
       return
@@ -681,39 +676,38 @@ class Plugins(QObject):
   def getAllInstalled(self, testLoad=True):
     """ Build the localCache """
     self.localCache = {}
-    # first, try to add the readonly plugins...
-    pluginsPath = unicode(QDir.convertSeparators(QDir.cleanPath(QgsApplication.pkgDataPath() + "/python/plugins")))
-    #  temporarily add the system path as the first element to force loading the readonly plugins, even if masked by user ones.
-    sys.path = [pluginsPath] + sys.path
-    try:
-      pluginDir = QDir(pluginsPath)
-      pluginDir.setFilter(QDir.AllDirs)
-      for key in pluginDir.entryList():
-        key = unicode(key)
-        if not key in [".",".."]:
-          # only test those not yet loaded. Others proved they're o.k.
-          self.localCache[key] = self.getInstalledPlugin(key, readOnly=True, testLoad=testLoad and not qgis.utils.plugins.has_key(key))
-    except:
-      # return QCoreApplication.translate("QgsPluginInstaller","Couldn't open the system plugin directory")
-      pass # it's not necessary to stop due to this error
-    # remove the temporarily added path
-    sys.path.remove(pluginsPath)
-    # ...then try to add locally installed ones
-    try:
-      pluginDir = QDir.convertSeparators(QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "/python/plugins"))
-      pluginDir = QDir(pluginDir)
-      pluginDir.setFilter(QDir.AllDirs)
-    except:
-      return QCoreApplication.translate("QgsPluginInstaller","Couldn't open the local plugin directory")
-    for key in pluginDir.entryList():
-      key = unicode(key)
-      if not key in [".",".."]:
-        # only test those not yet loaded. Others proved they're o.k.
-        plugin = self.getInstalledPlugin(key, readOnly=False, testLoad=testLoad and not qgis.utils.plugins.has_key(key))
-        if key in self.localCache.keys() and compareVersions(self.localCache[key]["version_installed"],plugin["version_installed"]) == 1:
-          # An obsolete plugin in the "user" location is masking a newer one in the "system" location!
-          self.obsoletePlugins += [key]
-        self.localCache[key] = plugin
+
+    # reversed list of the plugin paths: first system plugins -> then user plugins -> finally custom path(s)
+    pluginPaths = list(plugin_paths)
+    pluginPaths.reverse()
+
+    for pluginsPath in pluginPaths:
+      isTheSystemDir = (pluginPaths.index(pluginsPath)==0)  # The curent dir is the system plugins dir
+      if isTheSystemDir:
+        # temporarily add the system path as the first element to force loading the readonly plugins, even if masked by user ones.
+        sys.path = [pluginsPath] + sys.path
+      try:
+        pluginDir = QDir(pluginsPath)
+        pluginDir.setFilter(QDir.AllDirs)
+        for key in pluginDir.entryList():
+          if not key in [".",".."]:
+            path = QDir.convertSeparators( pluginsPath + "/" + key )
+            # readOnly = not QFileInfo(pluginsPath).isWritable() # On windows testing the writable status isn't reliable.
+            readOnly = isTheSystemDir                            # Assume only the system plugins are not writable.
+            # only test those not yet loaded. Loaded plugins already proved they're o.k.
+            testLoadThis = testLoad and not qgis.utils.plugins.has_key(key)
+            plugin = self.getInstalledPlugin(key, path=path, readOnly=readOnly, testLoad=testLoadThis)
+            self.localCache[key] = plugin
+            if key in self.localCache.keys() and compareVersions(self.localCache[key]["version_installed"],plugin["version_installed"]) == 1:
+              # An obsolete plugin in the "user" location is masking a newer one in the "system" location!
+              self.obsoletePlugins += [key]
+      except:
+        # it's not necessary to stop if one of the dirs is inaccessible
+        pass
+
+      if isTheSystemDir:
+        # remove the temporarily added path
+        sys.path.remove(pluginsPath)
 
 
   # ----------------------------------------- #
