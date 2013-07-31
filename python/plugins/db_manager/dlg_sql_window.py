@@ -51,6 +51,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     self.restoreGeometry(settings.value("/DB_Manager/sqlWindow/geometry", QByteArray(), type=QByteArray))
 
     self.editSql.setAcceptRichText(False)
+    self.editSql.setFocus()
     SqlCompleter(self.editSql, self.db)
     SqlHighlighter(self.editSql, self.db)
 
