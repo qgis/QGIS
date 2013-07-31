@@ -1433,8 +1433,8 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContex
     mMarkerSymbol->renderPoint( QPointF( width, height ), context.feature(), pointRenderContext );
 
     //render displaced points
-    double displacementPixelX = displacementX * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDisplacementXUnit );
-    double displacementPixelY = displacementY * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDisplacementYUnit );
+    double displacementPixelX = displacementX * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mDisplacementXUnit );
+    double displacementPixelY = displacementY * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mDisplacementYUnit );
     mMarkerSymbol->renderPoint( QPointF( width / 2.0, -displacementPixelY ), context.feature(), pointRenderContext );
     mMarkerSymbol->renderPoint( QPointF( displacementPixelX, height / 2.0 ), context.feature(), pointRenderContext );
     mMarkerSymbol->renderPoint( QPointF( width / 2.0 + displacementPixelX, height / 2.0 - displacementPixelY ), context.feature(), pointRenderContext );
