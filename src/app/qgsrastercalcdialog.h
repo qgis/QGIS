@@ -87,6 +87,8 @@ class QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcDialogBase
     /**Returns true if output file directory exists*/
     bool filePathValid() const;
 
+    static QString quoteBandEntry( const QString& layerName );
+
     /**Stores relation between driver name and extension*/
     QMap<QString, QString> mDriverExtensionMap;
 

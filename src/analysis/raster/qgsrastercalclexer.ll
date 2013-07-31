@@ -48,6 +48,7 @@ number  {num1}|{num2}
 non_ascii    [\x80-\xFF]
 raster_ref_char  [A-Za-z0-9_./:]|{non_ascii}|[-]
 raster_band_ref ({raster_ref_char}+)@{dig}
+raster_band_ref_quoted  \"(\\.|[^"])*\"
 
 %%
 
@@ -73,6 +74,8 @@ raster_band_ref ({raster_ref_char}+)@{dig}
 {number} { rasterlval.number  = atof(rastertext); return NUMBER; }
 
 {raster_band_ref} { return RASTER_BAND_REF; }
+
+{raster_band_ref_quoted} { return RASTER_BAND_REF; }
 
 {white}    /* skip blanks and tabs */
 %%

@@ -130,7 +130,7 @@ void QgsRasterCalcDialog::insertAvailableRasterBands()
         QgsRasterCalculatorEntry entry;
         entry.raster = rlayer;
         entry.bandNumber = i + 1;
-        entry.ref = rlayer->name() + "@" + QString::number( i + 1 );
+        entry.ref = quoteBandEntry( rlayer->name() + "@" + QString::number( i + 1 ) );
         mAvailableRasterBands.push_back( entry );
         mRasterBandsListWidget->addItem( entry.ref );
       }
@@ -405,4 +405,14 @@ void QgsRasterCalcDialog::on_mAndButton_clicked()
 void QgsRasterCalcDialog::on_mOrButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( " OR " );
+}
+
+QString QgsRasterCalcDialog::quoteBandEntry( const QString& layerName )
+{
+  // '"' -> '\\"'
+  QString quotedName = layerName;
+  quotedName.replace( "\"", "\\\"" );
+  quotedName.append( "\"" );
+  quotedName.prepend( "\"" );
+  return quotedName;
 }
