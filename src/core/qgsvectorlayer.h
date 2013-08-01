@@ -431,19 +431,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       Classification,
       EditRange,
       SliderRange,
-      CheckBox,      /** @note added in 1.4 */
+      CheckBox,      /**< @note added in 1.4 */
       FileName,
       Enumeration,
-      Immutable,     /** The attribute value should not be changed in the attribute form */
-      Hidden,        /** The attribute value should not be shown in the attribute form @note added in 1.4 */
-      TextEdit,      /** multiline edit @note added in 1.4*/
-      Calendar,      /** calendar widget @note added in 1.5 */
-      DialRange,     /** dial range @note added in 1.5 */
-      ValueRelation, /** value map from an table @note added in 1.8 */
-      UuidGenerator, /** uuid generator - readonly and automatically intialized @note added in 1.9 */
-      Photo,         /** phote widget @note added in 1.9 */
-      WebView,       /** webview widget @note added in 1.9 */
-      Color,         /** color @note added in 1.9 */
+      Immutable,     /**< The attribute value should not be changed in the attribute form */
+      Hidden,        /**< The attribute value should not be shown in the attribute form @note added in 1.4 */
+      TextEdit,      /**< multiline edit @note added in 1.4*/
+      Calendar,      /**< calendar widget @note added in 1.5 */
+      DialRange,     /**< dial range @note added in 1.5 */
+      ValueRelation, /**< value map from an table @note added in 1.8 */
+      UuidGenerator, /**< uuid generator - readonly and automatically intialized @note added in 1.9 */
+      Photo,         /**< phote widget @note added in 1.9 */
+      WebView,       /**< webview widget @note added in 1.9 */
+      Color,         /**< color @note added in 1.9 */
     };
 
     struct RangeData
