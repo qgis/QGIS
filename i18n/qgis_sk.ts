@@ -6175,8 +6175,8 @@ Platí na práve aktívne editovateľné vrstvy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1236"/>
-        <source>Add WMS Layer...</source>
-        <translation>Pridať vrstvu WMS...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Pridať vrstvu WMS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1239"/>
@@ -11037,7 +11037,7 @@ SQL: %1</translation>
         <translation type="obsolete">Nová záložka...</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">Pridať vrstvu WMS...</translation>
     </message>
     <message>

@@ -7155,7 +7155,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="unfinished">เพิ่มชั้นข้อมูล WMS</translation>
     </message>
     <message>

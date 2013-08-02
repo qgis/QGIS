@@ -6769,8 +6769,8 @@ Fungear på aktuellt redigerbart lager</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1236"/>
-        <source>Add WMS Layer...</source>
-        <translation>Lägg till WMS-lager...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Lägg till WMS-lager...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1239"/>
@@ -11946,7 +11946,7 @@ Vänligen kontakta utvecklarna.
         <translation type="obsolete">Nytt bokmärke</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">Lägg till WMS-lager...</translation>
     </message>
     <message>

@@ -6309,8 +6309,8 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
         <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
-        <translation>WMS-laag Toevoegen...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">WMS-laag Toevoegen...</translation>
     </message>
     <message>
         <source>Ctrl+Shift+W</source>
@@ -10967,7 +10967,7 @@ Deze zal daarom niet actief worden gemaakt.</translation>
         <translation type="obsolete">Hoekpunt Toevoegen</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">WMS-laag Toevoegen...</translation>
     </message>
     <message>

@@ -6279,8 +6279,8 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
-        <translation>WMS давхарга нэмэх...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">WMS давхарга нэмэх...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>
@@ -11254,7 +11254,7 @@ SQL: %1</source>
         <translation type="obsolete">Шинэ Хавчуулга</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">WMS давхарга нэмэх...</translation>
     </message>
     <message>

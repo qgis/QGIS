@@ -7260,8 +7260,8 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
-        <translation>Dodaj WMS sloj...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Dodaj WMS sloj...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>
@@ -14831,7 +14831,7 @@ Please contact the developers.
         <translation type="obsolete">Dodaj SpatiaLite sloj</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">Dodaj WMS sloj...</translation>
     </message>
     <message>

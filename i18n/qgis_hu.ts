@@ -7184,8 +7184,8 @@ Warnings:</source>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
-        <translation>WMS réteg hozzáadás...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">WMS réteg hozzáadás...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>
@@ -12895,7 +12895,7 @@ SQL: %1</translation>
         <translation type="obsolete">Új könyvjelző</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">WMS réteg hozzáadás...</translation>
     </message>
     <message>

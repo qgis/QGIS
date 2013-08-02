@@ -6372,8 +6372,8 @@ Shift+クリックで非表示
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1236"/>
-        <source>Add WMS Layer...</source>
-        <translation>WMSレイヤの追加...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">WMSレイヤの追加...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1239"/>

@@ -6390,7 +6390,7 @@ Actualizează</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="unfinished">Adăugare layer WMS</translation>
     </message>
     <message>

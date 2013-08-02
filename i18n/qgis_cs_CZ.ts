@@ -7741,8 +7741,8 @@ Funguje pro všechny editovatelné vrstvy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1236"/>
-        <source>Add WMS Layer...</source>
-        <translation>Přidat vrstvu WMS...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Přidat vrstvu WMS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1239"/>
@@ -13609,7 +13609,7 @@ Please contact the developers.
         <translation type="obsolete">Nová záložka...</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">Přidat vrstvu WMS...</translation>
     </message>
     <message>

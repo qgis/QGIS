@@ -6245,8 +6245,8 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
-        <translation>ເພີ້ມລະດັບຊັ້ນຂອງ WMS</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">ເພີ້ມລະດັບຊັ້ນຂອງ WMS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>
@@ -10866,7 +10866,7 @@ Errors: %3
         <translation type="obsolete">ບຸກມາກ (Bookmark) ໃຫມ່</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">ເພີ້ມລະດັບຊັ້ນຂອງ WMS</translation>
     </message>
     <message>

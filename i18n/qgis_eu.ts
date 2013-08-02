@@ -6134,8 +6134,8 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
-        <translation>Gehitu WMS geruza...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Gehitu WMS geruza...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>

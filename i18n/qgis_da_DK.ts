@@ -6724,8 +6724,8 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation>Tilføj Oracle Spatial-lag...</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
-        <translation type="obsolete">Tilføj WMS-lag...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Tilføj WMS-lag...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1239"/>
@@ -7073,11 +7073,6 @@ Virker på det aktuelle redigérbare lag</translation>
         <location filename="../src/ui/qgisapp.ui" line="559"/>
         <source>Exit QGIS</source>
         <translation>Afslut QGIS</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgisapp.ui" line="1236"/>
-        <source>Add WMS/WMTS Layer...</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1272"/>

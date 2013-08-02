@@ -7125,8 +7125,8 @@ Toimib aktiivse redigeeritava kihi peal
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
-        <translation>Lisa WMS kiht ...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Lisa WMS kiht ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>

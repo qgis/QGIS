@@ -5821,7 +5821,7 @@ Would you like to add the new layer to the TOC?</source>
             </translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="unfinished">
             </translation>
     </message>

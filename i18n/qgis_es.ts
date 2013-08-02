@@ -6597,8 +6597,8 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
         <translation>Ctrl+Mayúsculas+L</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
-        <translation>Añadir capa WMS...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Añadir capa WMS...</translation>
     </message>
     <message>
         <source>Ctrl+Shift+W</source>
@@ -11566,7 +11566,7 @@ Se desactivará.</translation>
         <translation type="obsolete">Nuevo marcador</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">Añadir capa WMS...</translation>
     </message>
     <message>

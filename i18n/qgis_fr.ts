@@ -7681,8 +7681,8 @@ Agit sur toutes les couches actives courantes</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1236"/>
-        <source>Add WMS Layer...</source>
-        <translation>Ajouter une couche WMS...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Ajouter une couche WMS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1239"/>
@@ -13728,7 +13728,7 @@ Veuillez contacter les développeurs.
         <translation type="obsolete">Nouveau signet</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">Ajouter une couche WMS...</translation>
     </message>
     <message>

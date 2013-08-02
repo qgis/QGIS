@@ -7727,8 +7727,8 @@ Deluje na trenutnem sloju z omogočenim urejanjem</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
-        <translation>Vstavi WMS sloj...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Vstavi WMS sloj...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>
@@ -13476,7 +13476,7 @@ Prosim obrnite se na razvijalce.</translation>
         <translation type="obsolete">Dodaj SpatiaLite sloj</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">Dodaj WMS sloj...</translation>
     </message>
     <message>
