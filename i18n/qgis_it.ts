@@ -7,7 +7,7 @@
         <location filename="../python/console/console_compile_apis.ui" line="32"/>
         <source>Generating prepared API file (please wait)...</source>
         <translatorcomment>Non sono sicuro se &quot;preconfigurato&quot; sia attinenente al 100%, le alternative &quot;preparato&quot; o &quot;predisposto&quot; non mi suonano molto bene (rospus)</translatorcomment>
-        <translation>In generazione file API preconfigurato (attendere prego)...</translation>
+        <translation>File API preconfigurato in generazione (attendere prego)...</translation>
     </message>
 </context>
 <context>
@@ -259,11 +259,11 @@ Questa tabella è essenziale a molte applicazioni GIS per elencare le tabelle.</
     </message>
     <message>
         <source>create new objects</source>
-        <translation>Crea nuovi oggetti</translation>
+        <translation>crea nuovi oggetti</translation>
     </message>
     <message>
         <source>access objects</source>
-        <translation>Accedi agli oggetti</translation>
+        <translation>accedi agli oggetti</translation>
     </message>
     <message>
         <source>Schema details</source>
@@ -287,7 +287,7 @@ Questa tabella è essenziale a molte applicazioni GIS per elencare le tabelle.</
     </message>
     <message>
         <source>Rows:</source>
-        <translation>Righe: </translation>
+        <translation>Righe:</translation>
     </message>
     <message>
         <source>Unknown (&lt;a href=&quot;action:rows/count&quot;&gt;find out&lt;/a&gt;)</source>
@@ -403,7 +403,7 @@ Questa tabella è essenziale a molte applicazioni GIS per elencare le tabelle.</
     </message>
     <message>
         <source>&lt;warning&gt; This user has read-only privileges.</source>
-        <translation>&lt;warning&gt; Questo utente ha privilegi di sola lettura </translation>
+        <translation>&lt;warning&gt; Questo utente ha privilegi di sola lettura.</translation>
     </message>
     <message>
         <source>&lt;warning&gt; There&apos;s a significant difference between estimated and real row count. Consider running &lt;a href=&quot;action:vacuumanalyze/run&quot;&gt;VACUUM ANALYZE&lt;/a&gt;.</source>
@@ -411,7 +411,7 @@ Questa tabella è essenziale a molte applicazioni GIS per elencare le tabelle.</
     </message>
     <message>
         <source>&lt;warning&gt; No primary key defined for this table!</source>
-        <translation type="unfinished">&lt;warning&gt; Nessuna chiave primaria definita per questa tabella!</translation>
+        <translation>&lt;warning&gt; Nessuna chiave primaria definita per questa tabella!</translation>
     </message>
     <message>
         <source>Scripts:</source>
@@ -420,7 +420,7 @@ Questa tabella è essenziale a molte applicazioni GIS per elencare le tabelle.</
     <message>
         <source>&lt;warning&gt; Version of installed scripts doesn&apos;t match version of released scripts!
 This is probably a result of incorrect PostGIS upgrade.</source>
-        <translatorcomment>Sono in dubbio sulla traduzione di&quot;version of released scripts&quot; (flavio) </translatorcomment>
+        <translatorcomment>Sono in dubbio sulla traduzione di&quot;version of released scripts&quot; (flavio). A me pare corretta (skampus)</translatorcomment>
         <translation type="unfinished">&lt;warning&gt; La versione degli script installati non corrisponde alla versione degli script di rilascio!
 Questo dipende probabilmente da un aggiornamento non corretto di PostGIS.</translation>
     </message>
@@ -478,7 +478,7 @@ Questa tabella è essenziale a molte applicazioni GIS per elencare le tabelle.</
         <source>Error:
 %s</source>
         <translation type="unfinished">Errore:
-%</translation>
+%s</translation>
     </message>
     <message>
         <source>
@@ -487,8 +487,8 @@ Query:
 %s</source>
         <translation type="unfinished">
 
-Query:
-%</translation>
+Interrogazione:
+%s</translation>
     </message>
     <message>
         <source>&amp;Re-connect</source>
@@ -549,7 +549,7 @@ Query:
     </message>
     <message>
         <source>Enter new schema name</source>
-        <translation type="unfinished">Inserisci nuovo nome per lo schema</translation>
+        <translation>Inserisci nuovo nome per lo schema</translation>
     </message>
     <message>
         <source>Select an empty SCHEMA for deletion.</source>
@@ -561,52 +561,55 @@ Query:
     </message>
     <message>
         <source>Really delete schema %s?</source>
-        <translatorcomment>ho aggiunto la versione al plurale: vi sembra corretto? (flavio)</translatorcomment>
+        <translatorcomment>ho aggiunto la versione al plurale: vi sembra corretto? (flavio). Sì (skampus)</translatorcomment>
         <translation type="unfinished">Eliminare veramente lo%(gli) schema %(i)?</translation>
     </message>
     <message>
         <source>Select a TABLE for editation.</source>
-        <translation type="unfinished">Scegli una TABELLA per modificarla.</translation>
+        <translation type="unfinished">Scegli una TABELLA da modificare.</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW for deletion.</source>
-        <translation type="unfinished">Scegli una TABELLA/VISTA per eliminarla.</translation>
+        <translation type="unfinished">Scegli una TABELLA/VISTA da cancellare.</translation>
     </message>
     <message>
         <source>Really delete table/view %s?</source>
-        <translatorcomment>ho aggiunto la versione al plurale: vi sembra corretto? (flavio)</translatorcomment>
+        <translatorcomment>ho aggiunto la versione al plurale: vi sembra corretto? (flavio). Sì (skampus)</translatorcomment>
         <translation type="unfinished">Eliminare veramente la %(le) tabella/vista %(e)?</translation>
     </message>
     <message>
         <source>Select a TABLE to empty it.</source>
-        <translation type="unfinished">Scegli una TABELLA per svuotarla.</translation>
+        <translation type="unfinished">Scegli una TABELLA da  svuotare.</translation>
     </message>
     <message>
         <source>Really delete all items from table %s?</source>
-        <translation type="unfinished">Eliminare veramente tutti gli oggetti dalla%(e) tabella %(e)?</translation>
+        <translation type="unfinished">Eliminare veramente tutti gli oggetti dalla tabella %s?</translation>
     </message>
     <message>
         <source>Select a TABLE/VIEW.</source>
-        <translation type="unfinished">Scegli una TABELLA/VISTA.</translation>
+        <translation>Scegli una TABELLA/VISTA.</translation>
     </message>
     <message>
         <source>Do you want to %s all triggers?</source>
-        <translation type="unfinished">Vuoi %s tutti il trigger?</translation>
-    </message>
+<translatorcomment>Mi sembra che il senso della frase sia &quot;Vuoi attivare tutti i trigger?&quot; (skampus)</translatorcomment>
+        <translation type="unfinished">Vuoi %s tutti i trigger?</translation>
+</message>
     <message>
         <source>Table triggers</source>
-        <translation type="unfinished"></translation>
+        <translation>Trigger della tabella</translation>
     </message>
     <message>
         <source>Do you want to %s trigger %s?</source>
+        <translatorcomment>Mi sembra che il senso della frase sia &quot;Vuoi attivare il trigger?&quot; (skampus)</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Table trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>Trigger della tabella</translation>
     </message>
     <message>
         <source>Do you want to %s spatial index for field %s?</source>
+        <translatorcomment>non capisco (skampus)</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -615,7 +618,7 @@ Query:
     </message>
     <message>
         <source>Check</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verifica</translation>
     </message>
     <message>
         <source>Primary key</source>
@@ -623,10 +626,12 @@ Query:
     </message>
     <message>
         <source>Foreign key</source>
+        <translatorcomment>Chiave esterna</translatorcomment>
         <translation type="unfinished">Foreign key</translation>
     </message>
     <message>
         <source>Unique</source>
+        <translatorcomment>Perchè femminile e non maschile? (skampus)</translatorcomment>
         <translation type="unfinished">Unica</translation>
     </message>
     <message>
@@ -673,6 +678,7 @@ Query:
     </message>
     <message>
         <source>Add to canvas</source>
+        <translatorcomment>Preferirei &quot;Aggiungi alla vista&quot; (skampus)</translatorcomment>
         <translation>Aggiungi all&apos;area di mappa</translation>
     </message>
     <message>
@@ -728,6 +734,7 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="47"/>
         <source>Unique</source>
+        <translatorcomment>perchè femminile? (skampus)</translatorcomment>
         <translation>Unica</translation>
     </message>
 </context>
@@ -1060,7 +1067,8 @@ Query:
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="124"/>
         <source>&amp;Clear</source>
-        <translation>&amp;Cancella</translation>
+        <translatorcomment>Vedo nelle frasi che &quot;clear&quot; è stato tradotto sia &quot;cancella&quot; sia &quot;pulisci&quot; (skampus)</translatorcomment>
+        <translation type="unfinished">&amp;Cancella</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="137"/>
@@ -1449,12 +1457,12 @@ colonne</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="27"/>
         <source>Input point layer</source>
-        <translation>Vettore punti in input</translation>
+        <translation>Vettore di punti in input</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="55"/>
         <source>Target point layer</source>
-        <translation>Vettore punti in output</translation>
+        <translation>Vettore di punti in output</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="69"/>
@@ -1541,7 +1549,7 @@ colonne</translation>
 %s
 
 Would you like to add the new layer to the TOC?</source>
-        <translation>Creato un output shapefile di punti:
+        <translation>Creato uno shapefile di punti:
 %s
 
 Vuoi aggiungerlo alla legenda?</translation>
@@ -1579,21 +1587,23 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <source>Commit error:
 %s</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not replace geometry of feature with id %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Non è stato possibile sostituire la geometria dell&apos;elemento con id %s</translation>
     </message>
     <message>
         <source>Could not eliminate features with these ids:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Non è stato possibile eliminare gli elementi con i seguenti id:
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Creato shapefile di output:
+%s</translation>
     </message>
     <message>
         <source>Simplify results</source>
@@ -1602,7 +1612,7 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <source>Created output shapefiles in folder:
 %s</source>
-        <translation>Creato uno shapefile di output nella catella:
+        <translation type="unfinished">Creati shapefile di output nella cartella:
 %s</translation>
     </message>
     <message>
@@ -1629,12 +1639,12 @@ sono stati ridotti a %2 dopo la semplificazione</translation>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="22"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="90"/>
         <source>Input polygon vector layer</source>
-        <translation>Vettore poligonale in input</translation>
+        <translation type="unfinished">Vettore di poligoni in input</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="36"/>
         <source>Input point vector layer</source>
-        <translation>Vettore punti in input</translation>
+        <translation type="unfinished">Vettore di punti in input</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="50"/>
@@ -1711,7 +1721,7 @@ sono stati ridotti a %2 dopo la semplificazione</translation>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="42"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="64"/>
         <source>Number of Features</source>
-        <translation>Numero di geometrie</translation>
+        <translation type="unfinished">Numero di elementi</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="76"/>
@@ -1753,7 +1763,8 @@ sono stati ridotti a %2 dopo la semplificazione</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="83"/>
         <source>Import spatial reference system from existing layer</source>
-        <translation>Importa sistema di riferimento da vettore esistente</translation>
+        <translatorcomment>Perchè da &quot;vettore esistente&quot;? Potrebbe essere anche un raster. Meglio lasciare &quot;layer&quot; (skampus)</translatorcomment>
+        <translation type="unfinished">Importa sistema di riferimento da layer esistente</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="100"/>
@@ -1802,17 +1813,17 @@ sono stati ridotti a %2 dopo la semplificazione</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="111"/>
         <source>Grid Spacing</source>
-        <translation>Spaziatura reticolato</translation>
+        <translation type="unfinished">Spaziatura reticolo</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="119"/>
         <source>Use this point spacing</source>
-        <translation>Usa questa spaziatura</translation>
+        <translation type="unfinished">Usa questa spaziatura dei punti</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="171"/>
         <source>Apply random offset to point spacing</source>
-        <translation>Applica offset casuale al punto di spaziatura</translation>
+        <translation type="unfinished">Applica offset casuale alla spaziatura dei punti</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="191"/>
@@ -1833,7 +1844,7 @@ sono stati ridotti a %2 dopo la semplificazione</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation>Reticolato vettoriale</translation>
+        <translation type="unfinished">Reticolo vettoriale</translation>
     </message>
     <message>
         <source>Split vector layer</source>
@@ -1841,7 +1852,8 @@ sono stati ridotti a %2 dopo la semplificazione</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation>Selezione casuale con un sottoinsieme</translation>
+        <translatorcomment>within vuol dire &quot;dentro&quot;. Io interpreto &quot;Selezione casuale da sottoinsiemi&quot; (skampus)</translatorcomment>
+        <translation type="unfinished">Selezione casuale con un sottoinsieme</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
@@ -1932,12 +1944,12 @@ sono stati ridotti a %2 dopo la semplificazione</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="127"/>
         <source>Input line vector layer</source>
-        <translation>Vettore linee in input</translation>
+        <translation>Vettore di linee in input</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="26"/>
         <source>Grid extent</source>
-        <translation>Estensione reticolato</translation>
+        <translation>Estensione reticolo</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="41"/>
@@ -1947,7 +1959,7 @@ sono stati ridotti a %2 dopo la semplificazione</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="54"/>
         <source>Update extents from canvas</source>
-        <translation>Aggiorna estensioni da vista mappa</translation>
+        <translation>Aggiorna estensioni da vista</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="169"/>
@@ -1977,12 +1989,12 @@ sono stati ridotti a %2 dopo la semplificazione</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="286"/>
         <source>Output grid as polygons</source>
-        <translation>Reticolato di output come poligoni</translation>
+        <translation type="unfinished">Reticolo di output come poligoni</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="296"/>
         <source>Output grid as lines</source>
-        <translation>Reticolato di output come linee</translation>
+        <translation type="unfinished">Reticolo di output come linee</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="17"/>
@@ -2245,7 +2257,7 @@ Following field names are longer than 10 characters:
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="17"/>
         <source>Generate Vector Grid</source>
-        <translation>Genera un reticolato vettoriale</translation>
+        <translation type="unfinished">Genera un reticolo vettoriale</translation>
     </message>
     <message>
         <source>No input shapefile specified</source>
@@ -5325,7 +5337,7 @@ Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un 
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation>Shapefile punti in output</translation>
+        <translation>Shapefile di punti in output</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
@@ -5333,7 +5345,7 @@ Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un 
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation>Vettore punti in input</translation>
+        <translation>Vettore di punti in input</translation>
     </message>
     <message>
         <source>Voronoi polygon</source>
@@ -5349,7 +5361,7 @@ Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un 
     </message>
     <message>
         <source>Input line vector layer</source>
-        <translation>Vettore linee in input</translation>
+        <translation>Vettore di linee in input</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
@@ -5361,7 +5373,7 @@ Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un 
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation>Shapefile poligoni in output</translation>
+        <translation>Shapefile di poligoni in output</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
@@ -5371,8 +5383,9 @@ Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un 
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
                                  different threads to the same datasource. Make sure your layer&apos;s 
                                  attribute tables are closed. Continue?</source>
-        <translation>Al momento, QGIS non consente l&apos;accesso simultaneo da 
-                                 threads differenti alla stessa sorgente dati. Accertati che le tabelle 
+        <translatorcomment>Non saprei come tradurre &quot;thread&quot; (skampus)</translatorcomment>
+        <translation type="unfinished">Al momento, QGIS non consente l&apos;accesso simultaneo da 
+                                 thread differenti alla stessa sorgente dati. Accertati che le tabelle 
                                  degli attributi del tuo layer siano chiuse. Proseguo?</translation>
     </message>
     <message>
@@ -5396,6 +5409,7 @@ Scegli un altro campo...</translation>
 {1}
 
 Would you like to add the new layer to the TOC?</source>
+        <translatorcomment>TOC = Legenda? (skampus)</translatorcomment>
         <translation>Creato uno shapefile di output:
 {0}
 {1}
@@ -6776,12 +6790,12 @@ Ctl (Cmd) increments by 15 deg.</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1760"/>
         <source>&amp;Grid</source>
-        <translation>&amp;Reticolato</translation>
+        <translation type="unfinished">&amp;Reticolo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1763"/>
         <source>Grid</source>
-        <translation>Reticolato</translation>
+        <translation type="unfinished">Reticolo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1778"/>
@@ -10337,7 +10351,7 @@ Soltanto %1 di %2 elementi sono stati scritti.</translation>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="121"/>
         <source>Equals</source>
-        <translation>E&apos; uguale a</translation>
+        <translation type="unfinished">È uguale a</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="122"/>
@@ -18305,7 +18319,7 @@ Prova ad usare una risoluzione minore o un formato di disegno più piccolo</tran
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="289"/>
         <source>Grid &amp;type</source>
-        <translation>&amp;Tipo reticolato</translation>
+        <translation type="unfinished">&amp;Tipo reticolo</translation>
     </message>
     <message>
         <source>Interval X</source>
@@ -19084,7 +19098,7 @@ Prova ad usare una risoluzione minore o un formato di disegno più piccolo</tran
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="329"/>
         <source>Select grid color</source>
-        <translation>Scegli il colore del reticolato</translation>
+        <translation type="unfinished">Scegli il colore del reticolo</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="275"/>
@@ -19554,7 +19568,7 @@ Prova ad usare una risoluzione minore o un formato di disegno più piccolo</tran
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="67"/>
         <source>Select grid color</source>
-        <translation type="unfinished">Scegli il colore del reticolato</translation>
+        <translation type="unfinished">Scegli il colore del reticolo</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="110"/>
@@ -35153,7 +35167,7 @@ Ulteriori informazioni sull&apos;errore:
     <message>
         <location filename="../src/analysis/openstreetmap/qgsosmdownload.cpp" line="52"/>
         <source>There is already a pending request for data.</source>
-        <translation>E&apos; già in corso una richiesta dati </translation>
+        <translation type="unfinished">È già in corso una richiesta dati.</translation>
     </message>
     <message>
         <location filename="../src/analysis/openstreetmap/qgsosmdownload.cpp" line="58"/>
@@ -50594,7 +50608,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="169"/>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation>%1 richiede almeno %2 GCP. E&apos; necessario specificare ulteriori punti</translation>
+        <translation type="unfinished">%1 richiede almeno %2 GCP. È necessario specificare ulteriori punti</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="183"/>
@@ -55641,7 +55655,7 @@ about SEXTANTE</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="312"/>
         <source>Symbol</source>
-        <translation type="unfinished">Simbolo</translation>
+        <translation>Simbolo</translation>
     </message>
     <message>
         <source>Change</source>
@@ -55692,17 +55706,17 @@ about SEXTANTE</source>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="69"/>
         <source>TopologyChecker</source>
-        <translation type="unfinished">Validatore topologico</translation>
+        <translation>Validatore topologico</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="77"/>
         <source>Topology Checker for vector layer</source>
-        <translation type="unfinished">Validatore Topologico per layer vettoriale</translation>
+        <translation>Validatore Topologico per layer vettoriale</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="82"/>
         <source>&amp;Topology Checker</source>
-        <translation type="unfinished">&amp;Validatore Topologico</translation>
+        <translation>&amp;Validatore Topologico</translation>
     </message>
 </context>
 <context>
@@ -55747,11 +55761,11 @@ about SEXTANTE</source>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation>Specificare il campo di input</translation>
+        <translation>Specifica il campo di input</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli uno shapefile in output</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -55759,7 +55773,7 @@ about SEXTANTE</source>
     </message>
     <message>
         <source>Geometry</source>
-        <translation type="unfinished">Geometria</translation>
+        <translation>Geometria</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -55767,12 +55781,17 @@ about SEXTANTE</source>
 %s
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Creato uno shapefile di output:
+%s
+%s
+
+Vuoi aggiungerlo alla legenda?</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore durante il caricamento dello shapefile di output:
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -55798,7 +55817,7 @@ Vuoi aggiungerlo alla legenda?</translation>
     </message>
     <message>
         <source>Error(s)</source>
-        <translation>Errore</translation>
+        <translation>Errore(i)</translation>
     </message>
 </context>
 <context>
@@ -55898,17 +55917,17 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="34"/>
         <source>Colors</source>
-        <translation type="unfinished">Colori</translation>
+        <translation>Colori</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="49"/>
         <source>Fill</source>
-        <translation type="unfinished">Riempimento</translation>
+        <translation>Riempimento</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="81"/>
         <source>Border</source>
-        <translation type="unfinished">Bordo</translation>
+        <translation>Bordo</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="122"/>
@@ -55921,7 +55940,7 @@ Vuoi aggiungerlo alla legenda?</translation>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="246"/>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="309"/>
         <source>Millimeter</source>
-        <translation type="unfinished">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="153"/>
@@ -55929,7 +55948,7 @@ Vuoi aggiungerlo alla legenda?</translation>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="251"/>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="314"/>
         <source>Map unit</source>
-        <translation type="unfinished">Unità mappa</translation>
+        <translation>Unità mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="163"/>
@@ -55949,7 +55968,7 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="324"/>
         <source>Offset X,Y</source>
-        <translation type="unfinished">Offset X,Y</translation>
+        <translation>Offset X,Y</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="204"/>
@@ -55999,13 +56018,13 @@ Vuoi aggiungerlo alla legenda?</translation>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="108"/>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="191"/>
         <source>Millimeter</source>
-        <translation type="unfinished">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="113"/>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="196"/>
         <source>Map unit</source>
-        <translation type="unfinished">Unità mappa</translation>
+        <translation>Unità mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="123"/>
@@ -56790,59 +56809,59 @@ Vuoi aggiungerlo alla legenda?</translation>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="14"/>
         <source>Topology Checker</source>
-        <translation type="unfinished"></translation>
+        <translation>Validatore topologico</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="41"/>
         <source>Validate All</source>
-        <translation type="unfinished"></translation>
+        <translation>Valida tutto</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="48"/>
         <source>Validate Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Valida l&apos;estensione</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="72"/>
         <source>Topology not checked yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Topologia non ancora validata</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="30"/>
         <source>Configure</source>
-        <translation type="unfinished"></translation>
+        <translation>Configura</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="59"/>
         <source>Show topology errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra errori topologici</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="62"/>
         <source>Show errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra errori</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="84"/>
         <location filename="../src/plugins/topology/checkDock.cpp" line="221"/>
         <source>Select automatic fix</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli correzione automatica</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="92"/>
         <source>Fix!</source>
-        <translation type="unfinished"></translation>
+        <translation>Correggi!</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="181"/>
         <location filename="../src/plugins/topology/checkDock.cpp" line="200"/>
         <source>No errors were found</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun errore trovato</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="228"/>
         <source>Invalid first layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Primo layer non valido</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="228"/>
@@ -56852,18 +56871,18 @@ Vuoi aggiungerlo alla legenda?</translation>
         <location filename="../src/plugins/topology/checkDock.cpp" line="290"/>
         <location filename="../src/plugins/topology/checkDock.cpp" line="345"/>
         <source>Topology plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin per la topologia</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="238"/>
         <source>Invalid first geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Prima geometria non valida</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="239"/>
         <location filename="../src/plugins/topology/checkDock.cpp" line="272"/>
         <source>Topology test</source>
-        <translation type="unfinished"></translation>
+        <translation>Test topologico</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="239"/>
@@ -56871,48 +56890,50 @@ Vuoi aggiungerlo alla legenda?</translation>
         <source>Feature not found in the layer.
 The layer has probably changed.
 Run topology check again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometria non trovata nel layer.
+Il layer è probabilmente cambiato.
+Lancia ancora il validatore topologico.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="262"/>
         <source>Invalid second layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Secondo layer non valido</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="271"/>
         <source>Invalid second geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Seconda geometria non valida</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="290"/>
         <source>Invalid conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>Conflitto non valido</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="326"/>
         <location filename="../src/plugins/topology/checkDock.cpp" line="411"/>
         <source>%1 errors were found</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 errori trovati</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="330"/>
         <source>Topology fix error</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore di correzione topologica</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="330"/>
         <source>Fixing failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Correzione fallita!</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="345"/>
         <source>Layer %1 not found in registry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Layer %1 non trovato nel registro.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="355"/>
         <source>Abort</source>
-        <translation type="unfinished">Interrompi</translation>
+        <translation>Interrompi</translation>
     </message>
 </context>
 <context>
@@ -56969,8 +56990,8 @@ Questa finestra di dialogo consente di impostare le proprietà relative al &lt;l
 &lt;tr&gt;&lt;td&gt;&lt;label&gt;Titolo del progetto&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Un titolo descrittivo del progetto. Questo titolo verrà visualizzato nella barra del titolo della finestra di QGIS&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;&lt;label&gt;Colore della selezione&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Gli elementi selezionati verranno visualizzati sull&apos;area mappa usando questo colore.&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;&lt;label&gt;Colore di sfondo&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Il colore dell&apos;area mappa.&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;label&gt;Salva percorsi&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Possibilita&apos; di salvare i percorsi come assoluti o relativi.&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;label&gt;Unita&apos; layer&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Scegliere le unita&apos; di misura appropriate per i layer nel progetto.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Salva percorsi&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Possibilità di salvare i percorsi come assoluti o relativi.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Unita&apos; layer&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Scegliere le unità di misura appropriate per i layer nel progetto.&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;&lt;label&gt;Precisione&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Utilizzare &apos;manuale&apos; per impostare la precisione della visualizzazione nella barra di stato. Quando il mouse si sposta sull&apos;area mappa, le coordinate vengono aggiornate e visualizzate nella barra di stato usando la precisione scelta. Automatico (il default) corrisponde ad una precisione di default basata sulle unita&apos; mappa.&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;&lt;label&gt;Digitalizzazione&lt;/label&gt;&lt;/td&gt;&lt;td&gt;L&apos;opzione &lt;label&gt; Abilita modifica topologica&lt;/label&gt; abilita la modifica mantenendo contorni comuni tra poligoni adiacenti. La modifica di un vertice in un contorno comune comporta l&apos;aggiornamento di entrambi i contorni.&lt;p&gt;
 Per evitare di modificare tutti i vertici del contorno comune selezionare &lt;label&gt;Evitare intersezioni di nuovi poligoni&lt;/label&gt;. Nella finestra di dialogo spuntare i layer ai quali il nuovo poligono deve essere appoggiato. Disegnare il nuovo poligono sovrapposto all&apos;esistente, verra&apos; tagliato automaticamente. &lt;p&gt;
@@ -56980,11 +57001,11 @@ Per evitare di modificare tutti i vertici del contorno comune selezionare &lt;la
 &lt;a name=&quot;crs&quot;&gt;
 &lt;h4&gt;Tab Coordinate di Riferimento Spaziale (CRS)&lt;/h4&gt;
 &lt;/a&gt;
-Il tab Coordinate di Riferimento Spaziale (CRS) consente di impostare la proiezione per il progetto corrente e di abilitare la trasformazione &apos;modifica immediata&apos;. Non e&apos; necessario avere un progetto salvato per impostare e abilitare la &apos;modifica immediata&apos; trasformazione CRS.
+Il tab Coordinate di Riferimento Spaziale (CRS) consente di impostare la proiezione per il progetto corrente e di abilitare la trasformazione &apos;modifica immediata&apos;. Non è necessario avere un progetto salvato per impostare e abilitare la &apos;modifica immediata&apos; trasformazione CRS.
 &lt;p&gt;
 Per usare la &apos;modifica immediata&apos; trasformazione CRS, clic sul checkbox &lt;label&gt;Abilita la &apos;modifica immediata&apos; trasformazione CRS&lt;/label&gt;. Poi scegliere la proiezione per il progetto (area mappa) dalla lista dei sistemi di coordinate geografiche o proiettate.
 &lt;p&gt;
-E&apos; possibile trovare un sistema di coordinate indicando il nome, il codice EPSG oppure l&apos;ID di QGIS e facendo clic sul pulsante &lt;label&gt;trova&lt;/label&gt;.
+È possibile trovare un sistema di coordinate indicando il nome, il codice EPSG oppure l&apos;ID di QGIS e facendo clic sul pulsante &lt;label&gt;trova&lt;/label&gt;.
 &lt;p&gt;
 Gli ultimi 4 sistemi di coordinate usati sono disponibili come pulsanti nella parte inferiore.
 
@@ -57038,13 +57059,13 @@ Spuntare il checkbox &lt;label&gt;Usa progetto corrente&lt;/label&gt; o inserisc
 
 &lt;h4&gt;Map file&lt;/h4&gt;
 
-&lt;label&gt;Map file&lt;/label&gt; Inserire un nome per il map file da creare. E&apos; possibile
+&lt;label&gt;Map file&lt;/label&gt; Inserire un nome per il map file da creare. È possibile
 usare il pulsante a destra per cercare la directory in cui salvare il map
 file creato.
 
 &lt;h4&gt;Mappa&lt;/h4&gt;
 Questi valori vengono scritto nel map file nel posto giusto al fine di impostare
-la dimensione della immagine in output, unita&apos; di misura e tipo di immagine.
+la dimensione della immagine in output, unità di misura e tipo di immagine.
 &lt;dl&gt;
   &lt;dt&gt;&lt;label&gt;Nome&lt;/label&gt;&lt;/dt&gt;
   &lt;dd&gt;Un nome per la mappa. Questo nome vera&apos; usato come prefisso per tutte le immagini generate da MapServer.&lt;/dd&gt;
@@ -57467,13 +57488,13 @@ Per aggiungere un layer:
 &lt;li&gt;Scegliere la connessione desiderata dal drop-down box.
 &lt;li&gt;Clic su &lt;label&gt;Connetti&lt;/label&gt;.
 &lt;li&gt;Trovare il layer che si vuole aggiungere nella lista e poi clic su di esso per selezionarlo.
-&lt;li&gt;E&apos; possibile selezionare layer aggiuntivi tenendo premuto il tasto Ctrl e facendo clic sui layer desiderati.
+&lt;li&gt;È possibile selezionare layer aggiuntivi tenendo premuto il tasto Ctrl e facendo clic sui layer desiderati.
 &lt;li&gt;Clic su &lt;label&gt;Aggiungi&lt;/label&gt; per aggiungere il/i layer alla mappa.
 &lt;/ol&gt;
 &lt;a name=&quot;filter&quot;&gt;
 &lt;h4&gt;Filtrare un layer&lt;/h4&gt;
 &lt;/a&gt;
-Per filtrare un layer prima di aggiungerlo alla mappa, doppio clic sul suo nome. Questo aprira&apos; il Query builder, consentendo di creare una istruzione SQL da usare per il filtraggio dei record.
+Per filtrare un layer prima di aggiungerlo alla mappa, doppio clic sul suo nome. Questo aprirà il Query builder, consentendo di creare una istruzione SQL da usare per il filtraggio dei record.
 
 </translation>
     </message>
@@ -57557,14 +57578,14 @@ You can also define the width and precision of the new attribute column.
 In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
 </source>
         <translation type="unfinished">&lt;h3&gt;Crea nuovo layer vettoriale&lt;/h3&gt;
-Per creare un nuovo layer, scegliere &lt;label&gt;Nuovo vettoriale&lt;/label&gt; dal menu&apos; &lt;label&gt;Layer&lt;/label&gt;. &lt;br/&gt;
-Con questa finestra di dialogo e&apos; possibile creare uno Shapefile.
+Per creare un nuovo layer, scegliere &lt;label&gt;Nuovo vettoriale&lt;/label&gt; dal menu &lt;label&gt;Layer&lt;/label&gt;. &lt;br/&gt;
+Con questa finestra di dialogo è possibile creare uno Shapefile.
 &lt;h4&gt;Tipo&lt;/h4&gt;
 Scegliere il tipo di layer &lt;label&gt;Punto&lt;/label&gt;, &lt;label&gt;Linea&lt;/label&gt; o &lt;label&gt;Poligono&lt;/label&gt;.&lt;br/&gt;
 Clic sul pulsante &lt;label&gt;Specifica CRS&lt;/label&gt; per cambiare le coordinate di riferimento spaziale del layer se necessario.
 &lt;h4&gt;Nuovo attributo&lt;/h4&gt;
 Aggiungere gli attributi desiderati con un clic sul pulsante &lt;label&gt;Aggiungi alla lista degli attributi&lt;/label&gt; dopo aver specificato un nome ed un tipo per l&apos;attributo. Gli attributi possono essere numeri reali, interi o stringhe.&lt;br/&gt;
-E&apos;possibile definire l&apos;ampiezza e la precisione della nuova colonna attributo.
+È possibile definire l&apos;ampiezza e la precisione della nuova colonna attributo.
 &lt;h4&gt;Lista attributi&lt;/h4&gt;
 In questa sezione e&apos; possibile visualizzare la lista degli attributi. Per cancellarne uno, selezionarlo e poi clic sul pulsante &lt;label&gt;Rimuovi attributo selezionato&lt;/label&gt;.
 </translation>
@@ -58890,13 +58911,13 @@ Nota: si possono avere più segnalibri con lo stesso nome.
 &lt;a name=&quot;working&quot;&gt;
 &lt;h4&gt;Lavorare con i segnalibri&lt;/h4&gt;
 &lt;/a&gt;
-Per utilizzare o gestire i segnalibri, clic sul pulsante &lt;label&gt;Mostra segnalibri&lt;/label&gt; oppure scegli &lt;label&gt;Mostra segnalibri&lt;/label&gt; dal menu&apos; &lt;label&gt;Visualizza&lt;/label&gt;. La finestra di dialogo dei segnalibri consente di zoomare su un segnalibro o di cancellarne uno. Non si possono modificare il nome e le coordinare del segnalibro.
+Per utilizzare o gestire i segnalibri, clic sul pulsante &lt;label&gt;Mostra segnalibri&lt;/label&gt; oppure scegli &lt;label&gt;Mostra segnalibri&lt;/label&gt; dal menu &lt;label&gt;Visualizza&lt;/label&gt;. La finestra di dialogo dei segnalibri consente di zoomare su un segnalibro o di cancellarne uno. Non si possono modificare il nome e le coordinare del segnalibro.
 &lt;a name=&quot;zooming&quot;&gt;
 &lt;h5&gt;Zoomare su un segnalibro&lt;/h5&gt;
 &lt;/a&gt;
 Dalla finestra di dialogo Segnalibri geospaziali, selezionare il segnalibro desiderato con un clic, poi clic sul pulsante &lt;label&gt;Zoom a&lt;/label&gt;.
 &lt;p&gt;
-E&apos; possibile zoomare su un segnalibro con un doppio clic.
+È possibile zoomare su un segnalibro con un doppio clic.
 &lt;a name=&quot;deleting&quot;&gt;
 &lt;h5&gt;Cancellare un segnalibro&lt;/h5&gt;
 &lt;/a&gt;
@@ -58940,7 +58961,7 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 </source>
         <translation type="unfinished">&lt;h3&gt;Plugin etichetta di copyright&lt;/h3&gt;
 Disegna una etichetta di copyrigth con informazioni associate.&lt;br/&gt;
-E&apos; possibile aggiungere qualsiasi testo alla mappa e non solo una etichetta di copyright.
+È possibile aggiungere qualsiasi testo alla mappa e non solo una etichetta di copyright.
 &lt;p&gt;
 &lt;a href=&quot;#howto&quot;&gt;Procedere&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#text&quot;&gt;Formattazione del testo&lt;/a&gt;&lt;br/&gt;
@@ -58953,7 +58974,7 @@ E&apos; possibile aggiungere qualsiasi testo alla mappa e non solo una etichetta
 &lt;li&gt;Clic su &lt;label&gt;Plugin &gt; Decorazioni &gt; Etichetta copyright&lt;/label&gt; oppure clic sul pulsante &lt;label&gt;Etichetta copyright&lt;/label&gt; dalla barra degli strumenti.
 &lt;li&gt;Scrivere il testo da inserire sulla mappa. Si può usare anche testo in HTML.
 &lt;li&gt;Scegliere una posizione per l&apos;etichetta dal drop-down menu &lt;label&gt;In basso a destra&lt;/label&gt;.
-&lt;li&gt;Assicurarsi che sia spuntato  &lt;label&gt;Abilita etichetta di copyright&lt;/label&gt;.
+&lt;li&gt;Assicurarsi che sia spuntato &lt;label&gt;Abilita etichetta di copyright&lt;/label&gt;.
 &lt;li&gt;Clic su &lt;label&gt;OK&lt;/label&gt;.
 &lt;/ol&gt;
 &lt;a name=&quot;text&quot;&gt;
@@ -59303,7 +59324,7 @@ At present there is only one style available. You can adjust the angle of the ar
         <translation type="unfinished">&lt;h3&gt;Plugin freccia a Nord&lt;/h3&gt;
 Visualizza sulla mappa una freccia orientata a Nord.
 &lt;p&gt;
-Attualmente e&apos; disponibile soltanto uno stile di rappresentazione della freccia. E&apos; possibile modificare l&apos;orientamento della freccia o lasciarlo fare automaticamente a QGIS. Se si sceglie di lasciare a QGIS l&apos;impostazione, verrà proposta una sua ipotesi di orientamento della freccia. Per il posizionamento della freccia ci sono quattro opzioni, corrispondenti ai quattro angoli dell&apos;area mappa.
+Attualmente è disponibile soltanto uno stile di rappresentazione della freccia. È possibile modificare l&apos;orientamento della freccia o lasciarlo fare automaticamente a QGIS. Se si sceglie di lasciare a QGIS l&apos;impostazione, verrà proposta una sua ipotesi di orientamento della freccia. Per il posizionamento della freccia ci sono quattro opzioni, corrispondenti ai quattro angoli dell&apos;area mappa.
 </translation>
     </message>
     <message>
@@ -59928,7 +59949,7 @@ system.
 Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
 </source>
         <translation type="unfinished">&lt;h3&gt;Definizione coordinate di riferimento spaziale&lt;/h3&gt;
-Se QGIS non fornisce le coordinate di riferimento spaziale necessarie e&apos; possibile definire un CRS personalizzato.
+Se QGIS non fornisce le coordinate di riferimento spaziale necessarie è possibile definire un CRS personalizzato.
 &lt;p&gt;
 Per definire un CRS, selezionare &lt;label&gt;CRS personalizzato&lt;/label&gt; dal menu &lt;label&gt;Modifica&lt;/label&gt; (Gnome, OSX) oppure &lt;label&gt;Impostazioni&lt;/label&gt; (KDE, Windows). I CRS personalizzati vengono memorizzati nel database QGIS dell&apos;utente. In aggiunta ai CRS personalizzati, questo database contiene i segnalibri spaziali e altri dati personalizzati.
 
@@ -60631,7 +60652,7 @@ Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
 CNR, Milan Unit (Information Technology), Construction Technologies Institute.
 For support send a mail to scala@itc.cnr.it
 </source>
-        <translation>Descrizione dei campi:
+        <translation type="unfinished">Descrizione dei campi:
 *.File DXF in input: percorso al file DXF da convertire
 *.File SHP in output: nome dello shape file da creare
 *.Tipo di file SHP in output: specifica il tipo di shape file in output
@@ -60639,7 +60660,7 @@ For support send a mail to scala@itc.cnr.it
 
 ---
 Sviluppato da Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
-CNR, Unita&apos; di Milano (Information Technology), Construction Technologies Institute.
+CNR, Unità di Milano (Information Technology), Construction Technologies Institute.
 Per supporto inviare una mail a scala@itc.cnr.it</translation>
     </message>
     <message>
@@ -61468,7 +61489,7 @@ Il plugin non sarà abilitato.</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation>Reticolato vettoriale</translation>
+        <translation type="unfinished">Reticolo vettoriale</translation>
     </message>
     <message>
         <source>Select by location</source>
@@ -64087,7 +64108,7 @@ Convert a string into Qt data type.
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="101"/>
         <source>Create grid in current region</source>
-        <translation>Crea un reticolato nella regione attuale</translation>
+        <translation type="unfinished">Crea un reticolo nella regione attuale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="102"/>

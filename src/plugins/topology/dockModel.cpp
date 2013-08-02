@@ -21,7 +21,7 @@
 DockModel::DockModel( ErrorList& theErrorList, QObject *parent = 0 ) : mErrorlist( theErrorList )
 {
   Q_UNUSED( parent );
-  mHeader << "Error" << "Layer" << "Feature ID";
+  mHeader << QObject::tr( "Error" ) << QObject::tr( "Layer" ) << QObject::tr( "Feature ID" );
 
 }
 

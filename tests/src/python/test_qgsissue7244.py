@@ -14,6 +14,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import random
+import qgis
 
 from qgis.core import *
 from qgis.gui import *

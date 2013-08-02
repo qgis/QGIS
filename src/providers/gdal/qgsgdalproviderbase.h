@@ -46,6 +46,9 @@ class QgsGdalProviderBase
 
     /** \brief ensures that GDAL drivers are registered, but only once */
     static void registerGdalDrivers();
+
+    /** Wrapper function for GDALOpen to get around possible bugs in GDAL */
+    static GDALDatasetH  gdalOpen( const char *pszFilename, GDALAccess eAccess );
   protected:
 
     QGis::DataType dataTypeFromGdal( int theGdalDataType ) const;

@@ -545,9 +545,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                 webbrowser.open( "http://www.qgis.org/pyqgis-cookbook/" )
             elif cmd == '_api':
                 webbrowser.open( "http://www.qgis.org/api/" )
-            if msgText:
-                self.parent.callWidgetMessageBar(msgText)
-
             more = False
         else:
             self.buffer.append(cmd)

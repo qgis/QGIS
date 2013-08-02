@@ -67,8 +67,6 @@ void QgsMapToolCapture::deactivate()
   while ( !mSnappingMarkers.isEmpty() )
     delete mSnappingMarkers.takeFirst();
 
-  stopCapturing();
-
   QgsMapToolEdit::deactivate();
 }
 
@@ -116,8 +114,8 @@ void QgsMapToolCapture::canvasMoveEvent( QMouseEvent * e )
     {
       QgsVertexMarker *m = new QgsVertexMarker( mCanvas );
       m->setIconType( QgsVertexMarker::ICON_CROSS );
-      m->setColor( Qt::green );
-      m->setPenWidth( 2 );
+      m->setColor( Qt::magenta );
+      m->setPenWidth( 3 );
       m->setCenter( r.snappedVertex );
       mSnappingMarkers << m;
     }
@@ -230,6 +228,20 @@ void QgsMapToolCapture::undo()
     mCaptureList.removeLast();
 
     validateGeometry();
+  }
+}
+
+void QgsMapToolCapture::resetLastVertex()
+{
+  if ( mRubberBand )
+  {
+    int rubberBandSize = mRubberBand->numberOfVertices();
+    if ( rubberBandSize < 2 )
+    {
+      return;
+    }
+    const QgsPoint *lastPoint = mRubberBand->getPoint(0, rubberBandSize-2);
+    mRubberBand->movePoint( *lastPoint );
   }
 }
 

@@ -15,6 +15,7 @@ test_qgscomposerlabel.py
  ***************************************************************************/
 '''
 import unittest
+import qgis
 from utilities import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -27,14 +28,14 @@ class TestQgsComposerLabel(unittest.TestCase):
 
     def testCase(self):
         TEST_DATA_DIR = unitTestDataPath()
-        vectorFileInfo = QFileInfo( TEST_DATA_DIR + QDir().separator().toAscii() + "france_parts.shp")
+        vectorFileInfo = QFileInfo( TEST_DATA_DIR + QDir().separator() + "france_parts.shp")
         mVectorLayer = QgsVectorLayer( vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr" )
 
         QgsMapLayerRegistry.instance().addMapLayers( [mVectorLayer] )
 
         # create composition with composer map
         mMapRenderer = QgsMapRenderer()
-        layerStringList = QStringList()
+        layerStringList = []
         layerStringList.append( mVectorLayer.id() )
         mMapRenderer.setLayerSet( layerStringList )
         mMapRenderer.setProjectionsEnabled( False )
@@ -62,7 +63,7 @@ class TestQgsComposerLabel(unittest.TestCase):
         # $CURRENT_DATE() evaluation (inside an expression)
         mLabel.setText( "__[%$CURRENT_DATE(dd) + 1%](ok)__" )
         dd = QDate.currentDate().day()
-        expected = "__" + QString( "%1" ).arg(dd+1) + "(ok)__"
+        expected = "__%d(ok)__" % (dd+1)
         assert mLabel.displayText() == expected
 
         # expression evaluation (without associated feature)
@@ -101,9 +102,9 @@ class TestQgsComposerLabel(unittest.TestCase):
 
         # use setSpecialColumn
         mLabel.setText( "[%$var1 + 1%]" )
-        QgsExpression.setSpecialColumn( "$var1", QVariant(41) )
+        QgsExpression.setSpecialColumn( "$var1", 41 )
         assert mLabel.displayText() == "42"
-        QgsExpression.setSpecialColumn( "$var1", QVariant(99) )
+        QgsExpression.setSpecialColumn( "$var1", 99 )
         assert mLabel.displayText() == "100"
         QgsExpression.unsetSpecialColumn( "$var1" )
         assert mLabel.displayText() == "[%$var1 + 1%]"

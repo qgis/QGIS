@@ -46,20 +46,21 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc is the Dom document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const
-    { Q_UNUSED( elem ); Q_UNUSED( doc ); return true; }
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
     /** sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
        * @param doc is the Dom document
        */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc )
-    { Q_UNUSED( itemElem ); Q_UNUSED( doc ); return true; }
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     QSet<QgsComposerItem*> items() { return mItems; }
 
   signals:
     void childItemDeleted( QgsComposerItem* item );
+
+  public slots:
+    void itemDestroyed();
 
   protected:
     void drawFrame( QPainter* p );
@@ -68,5 +69,3 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
     QSet<QgsComposerItem*> mItems;
     QRectF mSceneBoundingRectangle;
 };
-
-

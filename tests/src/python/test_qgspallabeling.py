@@ -13,6 +13,7 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
+import qgis
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 

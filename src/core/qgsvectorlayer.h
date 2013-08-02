@@ -69,6 +69,7 @@ class CORE_EXPORT QgsAttributeEditorElement : public QObject
       AeTypeInvalid
     };
 
+
     QgsAttributeEditorElement( AttributeEditorType type, QString name, QObject *parent = NULL )
         : QObject( parent ), mType( type ), mName( name ) {}
 
@@ -430,19 +431,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       Classification,
       EditRange,
       SliderRange,
-      CheckBox,      /* added in 1.4 */
+      CheckBox,      /**< @note added in 1.4 */
       FileName,
       Enumeration,
-      Immutable,     /* The attribute value should not be changed in the attribute form */
-      Hidden,        /* The attribute value should not be shown in the attribute form @added in 1.4 */
-      TextEdit,      /* multiline edit @added in 1.4*/
-      Calendar,      /* calendar widget @added in 1.5 */
-      DialRange,     /* dial range @added in 1.5 */
-      ValueRelation, /* value map from an table @added in 1.8 */
-      UuidGenerator, /* uuid generator - readonly and automatically intialized @added in 1.9 */
-      Photo,         /* phote widget @added in 1.9 */
-      WebView,       /* webview widget @added in 1.9 */
-      Color,         /* color @added in 1.9 */
+      Immutable,     /**< The attribute value should not be changed in the attribute form */
+      Hidden,        /**< The attribute value should not be shown in the attribute form @note added in 1.4 */
+      TextEdit,      /**< multiline edit @note added in 1.4*/
+      Calendar,      /**< calendar widget @note added in 1.5 */
+      DialRange,     /**< dial range @note added in 1.5 */
+      ValueRelation, /**< value map from an table @note added in 1.8 */
+      UuidGenerator, /**< uuid generator - readonly and automatically intialized @note added in 1.9 */
+      Photo,         /**< phote widget @note added in 1.9 */
+      WebView,       /**< webview widget @note added in 1.9 */
+      Color,         /**< color @note added in 1.9 */
     };
 
     struct RangeData
@@ -1019,6 +1020,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Adds a tab (for the attribute editor form) holding groups and fields
       @note added in version 1.9*/
     void addAttributeEditorWidget( QgsAttributeEditorElement* data );
+
     /**Returns a list of tabs holding groups and fields
       @note added in version 1.9*/
     QList< QgsAttributeEditorElement* > &attributeEditorElements();

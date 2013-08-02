@@ -788,6 +788,8 @@ void QgsVectorLayer::modifySelection( QgsFeatureIds selectIds, QgsFeatureIds des
   mSelectedFeatureIds -= deselectIds;
   mSelectedFeatureIds += selectIds;
 
+  setCacheImage( 0 );
+
   emit selectionChanged( selectIds, deselectIds - intersectingIds, false );
 }
 

@@ -1771,7 +1771,18 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   }
 
   if ( ct ) // reproject the geometry if necessary
-    geom->transform( *ct );
+  {
+    try
+    {
+      geom->transform( *ct );
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse );
+      QgsDebugMsgLevel( QString( "Ignoring feature %1 due transformation exception" ).arg( f.id() ), 4 );
+      return;
+    }
+  }
 
   if ( !checkMinimumSizeMM( context, geom, minFeatureSize ) )
   {
@@ -2029,25 +2040,28 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
         {
           QString valiString = exprVal.toString();
           QgsDebugMsgLevel( QString( "exprVal Vali:%1" ).arg( valiString ), 4 );
+
           if ( valiString.compare( "Bottom", Qt::CaseInsensitive ) != 0 )
           {
-            if ( valiString.compare( "Top", Qt::CaseInsensitive ) == 0
-                 || valiString.compare( "Cap", Qt::CaseInsensitive ) == 0 )
+            if ( valiString.compare( "Top", Qt::CaseInsensitive ) == 0 )
             {
               ydiff -= labelY;
             }
             else
             {
               double descentRatio = labelFontMetrics->descent() / labelFontMetrics->height();
-
               if ( valiString.compare( "Base", Qt::CaseInsensitive ) == 0 )
               {
                 ydiff -= labelY * descentRatio;
               }
-              else if ( valiString.compare( "Half", Qt::CaseInsensitive ) == 0 )
+              else //'Cap' or 'Half'
               {
-                ydiff -= labelY * descentRatio;
-                ydiff -= labelY * 0.5 * ( 1 - descentRatio );
+                double capHeightRatio = ( labelFontMetrics->boundingRect( 'H' ).height() + 1 + labelFontMetrics->descent() ) / labelFontMetrics->height();
+                ydiff -= labelY * capHeightRatio;
+                if ( valiString.compare( "Half", Qt::CaseInsensitive ) == 0 )
+                {
+                  ydiff += labelY * ( capHeightRatio - descentRatio ) / 2.0;
+                }
               }
             }
           }
@@ -2066,7 +2080,16 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
         double z = 0;
         if ( ct )
         {
-          ct->transformInPlace( xPos, yPos, z );
+          try
+          {
+            ct->transformInPlace( xPos, yPos, z );
+          }
+          catch ( QgsCsException &e )
+          {
+            Q_UNUSED( e );
+            QgsDebugMsgLevel( QString( "Ignoring feature %1 due transformation exception on data-defined position" ).arg( f.id() ), 4 );
+            return;
+          }
         }
 
         xPos += xdiff;
@@ -3029,6 +3052,7 @@ QgsPalLabeling::QgsPalLabeling()
   }
 
   mShowingCandidates = false;
+  mShowingShadowRects = false;
   mShowingAllLabels = false;
 
   mLabelSearchTree = new QgsLabelSearchTree();
@@ -3834,14 +3858,14 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     }
 
     //layer names
-    QString layerNameUtf8 = QString::fromUtf8(( *it )->getLayerName() );
+    QString layerName = QString::fromUtf8( ( *it )->getLayerName() );
     if ( palGeometry->isDiagram() )
     {
       //render diagram
       QHash<QgsVectorLayer*, QgsDiagramLayerSettings>::iterator dit = mActiveDiagramLayers.begin();
       for ( dit = mActiveDiagramLayers.begin(); dit != mActiveDiagramLayers.end(); ++dit )
       {
-        if ( dit.key() && dit.key()->id().append( "d" ) == layerNameUtf8 )
+        if ( dit.key() && dit.key()->id().append( "d" ) == layerName )
         {
           QgsPoint outPt = xform->transform(( *it )->getX(), ( *it )->getY() );
           dit.value().renderer->renderDiagram( palGeometry->diagramAttributes(), context, QPointF( outPt.x(), outPt.y() ) );
@@ -3852,14 +3876,14 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
       if ( mLabelSearchTree )
       {
         //for diagrams, remove the additional 'd' at the end of the layer id
-        QString layerId = layerNameUtf8;
+        QString layerId = layerName;
         layerId.chop( 1 );
         mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), QString( "" ), layerId, QFont(), true, false );
       }
       continue;
     }
 
-    const QgsPalLayerSettings& lyr = layer( layerNameUtf8 );
+    const QgsPalLayerSettings& lyr = layer( layerName );
 
     // Copy to temp, editable layer settings
     // these settings will be changed by any data defined values, then used for rendering label components
@@ -3930,7 +3954,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     if ( mLabelSearchTree )
     {
       QString labeltext = (( QgsPalGeometry* )( *it )->getFeaturePart()->getUserGeometry() )->text();
-      mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), ( *it )->getLayerName(), labeltext, dFont, false, palGeometry->isPinned() );
+      mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), layerName, labeltext, dFont, false, palGeometry->isPinned() );
     }
   }
 

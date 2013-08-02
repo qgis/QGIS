@@ -95,15 +95,10 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
   // only if libspatialite version is >= 4.0.0
   // using v.4.0 Abstract Interface
   if ( !getTableInfoAbstractInterface( handle, loadGeometrylessTables ) )
-  {
-    return FailedToGetTables;
-  }
-  closeSpatiaLiteDb( handle );
-  return NoError;
-#endif
-
-// obsolete library: still using the traditional approach
+#else
+  // obsolete library: still using the traditional approach
   if ( !getTableInfo( handle, loadGeometrylessTables ) )
+#endif
   {
     return FailedToGetTables;
   }

@@ -408,7 +408,6 @@
         <file>themes/default/propertyicons/symbology.png</file>
         <file>themes/default/propertyicons/system.svg</file>
         <file>themes/default/propertyicons/transparency.png</file>
-        <file>themes/default/qgis.xpm</file>
         <file>themes/default/rendererCategorizedSymbol.png</file>
         <file>themes/default/rendererGraduatedSymbol.png</file>
         <file>themes/default/rendererSingleSymbol.png</file>

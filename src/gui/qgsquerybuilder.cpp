@@ -250,36 +250,43 @@ void QgsQueryBuilder::reject()
 void QgsQueryBuilder::on_btnEqual_clicked()
 {
   txtSQL->insertPlainText( " = " );
+  txtSQL->setFocus();
 }
 
 void QgsQueryBuilder::on_btnLessThan_clicked()
 {
   txtSQL->insertPlainText( " < " );
+  txtSQL->setFocus();
 }
 
 void QgsQueryBuilder::on_btnGreaterThan_clicked()
 {
   txtSQL->insertPlainText( " > " );
+  txtSQL->setFocus();
 }
 
 void QgsQueryBuilder::on_btnPct_clicked()
 {
   txtSQL->insertPlainText( "%" );
+  txtSQL->setFocus();
 }
 
 void QgsQueryBuilder::on_btnIn_clicked()
 {
   txtSQL->insertPlainText( " IN " );
+  txtSQL->setFocus();
 }
 
 void QgsQueryBuilder::on_btnNotIn_clicked()
 {
   txtSQL->insertPlainText( " NOT IN " );
+  txtSQL->setFocus();
 }
 
 void QgsQueryBuilder::on_btnLike_clicked()
 {
   txtSQL->insertPlainText( " LIKE " );
+  txtSQL->setFocus();
 }
 
 QString QgsQueryBuilder::sql()
@@ -308,6 +315,7 @@ void QgsQueryBuilder::on_lstFields_clicked( const QModelIndex &index )
 void QgsQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 {
   txtSQL->insertPlainText( "\"" + mLayer->pendingFields()[ mModelFields->data( index, Qt::UserRole+1 ).toInt()].name() + "\"" );
+  txtSQL->setFocus();
 }
 
 void QgsQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
@@ -321,36 +329,44 @@ void QgsQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
     txtSQL->insertPlainText( value.toString() );
   else
     txtSQL->insertPlainText( "'" + value.toString().replace( "'", "''" ) + "'" );
+
+  txtSQL->setFocus();
 }
 
 void QgsQueryBuilder::on_btnLessEqual_clicked()
 {
   txtSQL->insertPlainText( " <= " );
+  txtSQL->setFocus();
 }
 
 void QgsQueryBuilder::on_btnGreaterEqual_clicked()
 {
   txtSQL->insertPlainText( " >= " );
+  txtSQL->setFocus();
 }
 
 void QgsQueryBuilder::on_btnNotEqual_clicked()
 {
   txtSQL->insertPlainText( " != " );
+  txtSQL->setFocus();
 }
 
 void QgsQueryBuilder::on_btnAnd_clicked()
 {
   txtSQL->insertPlainText( " AND " );
+  txtSQL->setFocus();
 }
 
 void QgsQueryBuilder::on_btnNot_clicked()
 {
   txtSQL->insertPlainText( " NOT " );
+  txtSQL->setFocus();
 }
 
 void QgsQueryBuilder::on_btnOr_clicked()
 {
   txtSQL->insertPlainText( " OR " );
+  txtSQL->setFocus();
 }
 
 void QgsQueryBuilder::clear()
@@ -363,6 +379,7 @@ void QgsQueryBuilder::clear()
 void QgsQueryBuilder::on_btnILike_clicked()
 {
   txtSQL->insertPlainText( " ILIKE " );
+  txtSQL->setFocus();
 }
 
 void QgsQueryBuilder::setDatasourceDescription( QString uri )

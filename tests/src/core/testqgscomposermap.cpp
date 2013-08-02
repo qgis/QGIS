@@ -117,6 +117,7 @@ void TestQgsComposerMap::grid()
   mComposerMap->setGridAnnotationDirection( QgsComposerMap::Horizontal, QgsComposerMap::Bottom );
   mComposerMap->setAnnotationFontColor( QColor( 255, 0, 0, 150 ) );
   mComposerMap->setGridBlendMode( QPainter::CompositionMode_Overlay );
+  qWarning() << "grid annotation font: " << mComposerMap->gridAnnotationFont().toString() << " exactMatch:" << mComposerMap->gridAnnotationFont().exactMatch();
   QgsCompositionChecker checker( "Composer map grid", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
                                  "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_landsat_grid.png" ) );
   bool testResult = checker.testComposition();

@@ -87,7 +87,6 @@ class SinglePartsToMultiparts(GeoAlgorithm):
                     if unicode(idVar).strip() == unicode(i).strip():
                         if first:
                             attrs = atMap
-                            print attrs
                             first = False
                         inGeom = QgsGeometry(inFeat.geometry())
                         vType = inGeom.type()

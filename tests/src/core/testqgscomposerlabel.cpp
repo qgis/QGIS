@@ -22,6 +22,7 @@
 #include "qgsmaprenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+
 #include <QObject>
 #include <QtTest>
 
@@ -68,6 +69,8 @@ void TestQgsComposerLabel::initTestCase()
 
   mComposerLabel = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( mComposerLabel );
+
+  qWarning() << "composer label font: " << mComposerLabel->font().toString() << " exactMatch:" << mComposerLabel->font().exactMatch();
 }
 
 void TestQgsComposerLabel::cleanupTestCase()
@@ -79,12 +82,10 @@ void TestQgsComposerLabel::cleanupTestCase()
 
 void TestQgsComposerLabel::init()
 {
-
 }
 
 void TestQgsComposerLabel::cleanup()
 {
-
 }
 
 void TestQgsComposerLabel::evaluation()

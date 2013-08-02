@@ -72,7 +72,8 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QgsDista
   mFeatureList->setModel( mFeatureListModel );
 
   mAttributeDialog = new QgsAttributeDialog( layer, 0, false, myDa );
-  mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
+  if ( mAttributeDialog->dialog() )
+    mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
 
   columnBoxInit();
 }

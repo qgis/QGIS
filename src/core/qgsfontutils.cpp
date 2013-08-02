@@ -53,7 +53,8 @@ bool QgsFontUtils::fontFamilyMatchOnSystem( const QString& family, QString* chos
       {
         // full 'family [foundry]' strings have to match
         *match = ( *it == family );
-        if ( match ) { break; }
+        if ( *match )
+          break;
       }
       else
       {

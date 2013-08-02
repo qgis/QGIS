@@ -820,7 +820,7 @@ int QgsProjectFileTransform::rasterBandNumber( const QDomElement& rasterProperti
 
     if ( re.indexIn( rasterBandElem.text() ) >= 0 )
     {
-      return re.cap(1).toInt();
+      return re.cap( 1 ).toInt();
     }
   }
   return band;

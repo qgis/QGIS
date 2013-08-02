@@ -35,7 +35,7 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
     //! @note added in 2.0
     QgsSymbolV2::ScaleMethod scaleMethod() const;
 
-    virtual QString dump();
+    virtual QString dump() const;
 
     virtual QgsFeatureRendererV2* clone() /Factory/;
 

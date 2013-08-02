@@ -119,7 +119,7 @@ class ParametersPanel(QtGui.QWidget):
                 self.labels[param.name] = label
                 widget = self.getWidgetFromParameter(param)
                 self.valueItems[param.name] = widget
-                if isinstance(param, ParameterVector):
+                if isinstance(param, ParameterVector) and not self.alg.allowOnlyOpenedLayers:
                     layout = QtGui.QHBoxLayout()
                     layout.setSpacing(2)
                     layout.setMargin(0)
@@ -202,7 +202,7 @@ class ParametersPanel(QtGui.QWidget):
                 items.append((self.getExtendedLayerName(layer), layer))
             item = InputLayerSelectorPanel(items)
         elif isinstance(param, ParameterVector):
-            if self.somethingDependsOnThisParameter(param):
+            if self.somethingDependsOnThisParameter(param) or self.alg.allowOnlyOpenedLayers:
                 item = QtGui.QComboBox()
                 layers = QGisLayers.getVectorLayers(param.shapetype)
                 if (param.optional):

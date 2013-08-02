@@ -173,7 +173,7 @@ void QgsSingleSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMe
   setScaleMethodToSymbol( mSymbol, scaleMethod );
 }
 
-QString QgsSingleSymbolRendererV2::dump()
+QString QgsSingleSymbolRendererV2::dump() const
 {
   if ( mSymbol )
   {

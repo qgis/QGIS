@@ -7867,7 +7867,7 @@ Agit sur toutes les couches actives courantes</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="517"/>
         <source>Save &amp;As...</source>
-        <translation>Saauvegarder sous...</translation>
+        <translation>Sauvegarder sous...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1272"/>

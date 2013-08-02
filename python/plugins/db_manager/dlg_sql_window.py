@@ -51,6 +51,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     self.restoreGeometry(settings.value("/DB_Manager/sqlWindow/geometry", QByteArray(), type=QByteArray))
 
     self.editSql.setAcceptRichText(False)
+    self.editSql.setFocus()
     SqlCompleter(self.editSql, self.db)
     SqlHighlighter(self.editSql, self.db)
 
@@ -225,8 +226,8 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     aliasIndex = 0
     while True:
       alias = "_%s__%d" % ("subQuery", aliasIndex)
-      escaped = '\\b("?)' + QRegExp.escape(alias) + '\\1\\b'
-      if not query.contains( QRegExp(escaped, Qt.CaseInsensitive) ):
+      escaped = re.compile('\\b("?)' + re.escape(alias) + '\\1\\b')
+      if not escaped.search(query):
         break
       aliasIndex += 1
 

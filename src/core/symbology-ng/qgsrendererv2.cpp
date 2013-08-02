@@ -362,7 +362,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
   }
 }
 
-QString QgsFeatureRendererV2::dump()
+QString QgsFeatureRendererV2::dump() const
 {
   return "UNKNOWN RENDERER\n";
 }

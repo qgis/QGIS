@@ -59,6 +59,9 @@ class GeoAlgorithm:
         #change any of the following if your algorithm should not appear in the toolbox or modeler
         self.showInToolbox = True
         self.showInModeler = True
+        #if true, will show only loaded layers in parameters dialog
+        self.allowOnlyOpenedLayers = False
+        #False if it should not be run a a batch process
         self.canRunInBatchMode = True
         #to be set by the provider when it loads the algorithm
         self.provider = None
@@ -408,7 +411,7 @@ class GeoAlgorithm:
                 s+=out.getValueAsCommandLineParameter() + ","
         s= s[:-1] + ")"
         return s
-    
+
     def getPostProcessingErrorMessage(self, wrongLayers):
         '''Returns the message to be shown to the user when, after running this algorithm,
         there is a problem loading the resulting layer.

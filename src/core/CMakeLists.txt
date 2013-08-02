@@ -441,15 +441,36 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerimport.h
   qgsvectorlayerundocommand.h
   qgstolerance.h
+  qgscrscache.h
+  qgsspatialindex.h
+  qgspaintenginehack.h
+  qgsscaleutils.h
+  qgsdbfilterproxymodel.h
+  qgsvectorlayerjoinbuffer.h
+  qgslabelsearchtree.h
 
+  qgsdiagramrendererv2.h
   diagram/qgsdiagram.h
   diagram/qgspiediagram.h
   diagram/qgstextdiagram.h
   diagram/qgshistogramdiagram.h
 
-
   composer/qgslegendmodel.h
   composer/qgscomposerlegenditem.h
+  composer/qgscomposermultiframecommand.h
+  composer/qgsscalebarstyle.h
+  composer/qgsnumericscalebarstyle.h
+  composer/qgsaddremovemultiframecommand.h
+  composer/qgsdoubleboxscalebarstyle.h
+  composer/qgscomposertable.h
+  composer/qgspaperitem.h
+  composer/qgsticksscalebarstyle.h
+  composer/qgscomposerlegendstyle.h
+  composer/qgssingleboxscalebarstyle.h
+  composer/qgscomposerframe.h
+  composer/qgscomposerarrow.h
+  composer/qgscomposertexttable.h
+  composer/qgscomposeritemcommand.h
 
   raster/qgsraster.h
   raster/qgsrasterblock.h
@@ -477,6 +498,21 @@ SET(QGIS_CORE_HDRS
   raster/qgsrastershader.h
   raster/qgsrastershaderfunction.h
   raster/qgsrasterviewport.h
+  raster/qgsbilinearrasterresampler.h
+  raster/qgsbrightnesscontrastfilter.h
+  raster/qgssinglebandcolordatarenderer.h
+  raster/qgssinglebandpseudocolorrenderer.h
+  raster/qgsrasterresampler.h
+  raster/qgssinglebandgrayrenderer.h
+  raster/qgspalettedrasterrenderer.h
+  raster/qgsrasternuller.h
+  raster/qgsrasterfilewriter.h
+  raster/qgsrasterrenderer.h
+  raster/qgscubicrasterresampler.h
+  raster/qgsrasteriterator.h
+  raster/qgsrasterdrawer.h
+  raster/qgshuesaturationfilter.h
+  raster/qgsmultibandcolorrenderer.h
 
   symbology-ng/qgscategorizedsymbolrendererv2.h
   symbology-ng/qgscolorbrewerpalette.h
@@ -500,18 +536,12 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgsvectorcolorrampv2.h
   symbology-ng/qgscptcityarchive.h
   symbology-ng/qgsvectorfieldsymbollayer.h
-
-  qgsdiagramrendererv2.h
-
-  qgsspatialindex.h
-
-  qgspaintenginehack.h
-  qgsscaleutils.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND)
   SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
     gps/qgsqtlocationconnection.h
+    gps/qgsgpsconnectionregistry.h
   )
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
 
@@ -648,4 +678,3 @@ IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
   INSTALL(TARGETS qgis_core FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/qgis_core\")")
 ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
-

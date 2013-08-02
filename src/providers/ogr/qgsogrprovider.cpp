@@ -670,14 +670,28 @@ void QgsOgrProvider::loadFields()
         default: varType = QVariant::String; // other unsupported, leave it as a string
       }
 
+      //TODO: fix this hack
+#ifdef ANDROID
+      QString name = OGR_Fld_GetNameRef( fldDef );
+#else
+      QString name = mEncoding->toUnicode( OGR_Fld_GetNameRef( fldDef ) );
+#endif
+
+      if ( mAttributeFields.indexFromName( name ) != -1 )
+      {
+
+        QString tmpname = name + "_%1";
+        int fix = 0;
+
+        while ( mAttributeFields.indexFromName( name ) != -1 )
+        {
+          name = tmpname.arg( ++fix );
+        }
+      }
+
       mAttributeFields.append(
         QgsField(
-          //TODO: fix this hack
-#ifdef ANDROID
-          OGR_Fld_GetNameRef( fldDef ),
-#else
-          mEncoding->toUnicode( OGR_Fld_GetNameRef( fldDef ) ),
-#endif
+          name,
           varType,
 #ifdef ANDROID
           OGR_GetFieldTypeName( ogrType ),

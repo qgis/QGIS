@@ -343,7 +343,6 @@ QImage* QgsWMSServer::getLegendGraphics()
   double mmToPixelFactor = theImage->dotsPerMeterX() / 1000.0;
   double maxTextWidth = 0;
   double maxSymbolWidth = 0;
-  double currentY = 0;
   double fontOversamplingFactor = 10.0;
 
   //get icon size, spaces between legend items and font from config parser
@@ -360,29 +359,9 @@ QImage* QgsWMSServer::getLegendGraphics()
     return 0;
   }
 
-  int numLayerItems = rootItem->rowCount();
-  if ( numLayerItems < 1 )
-  {
-    return 0;
-  }
-
-  currentY = boxSpace;
-  for ( int i = 0; i < numLayerItems; ++i )
-  {
-    QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( rootItem->child( i ) );
-    if ( layerItem )
-    {
-      if ( i > 0 )
-      {
-        currentY += layerSpace;
-      }
-      drawLegendLayerItem( layerItem, 0, maxTextWidth, maxSymbolWidth, currentY, layerFont, layerFontColor, itemFont, itemFontColor,
-                           boxSpace, layerSpace, layerTitleSpace, symbolSpace, iconLabelSpace, symbolWidth, symbolHeight, fontOversamplingFactor,
-                           theImage->dotsPerMeterX() * 0.0254 );
-    }
-    currentY += layerSpace;
-  }
-  currentY += boxSpace;
+  double currentY = drawLegendGraphics( 0, fontOversamplingFactor, rootItem, boxSpace, layerSpace, layerTitleSpace, symbolSpace,
+                                        iconLabelSpace, symbolWidth, symbolHeight, layerFont, itemFont, layerFontColor, itemFontColor, maxTextWidth,
+                                        maxSymbolWidth, theImage->dotsPerMeterX() * 0.0254 );
 
   //create second image with the right dimensions
   QImage* paintImage = createImage( maxTextWidth + maxSymbolWidth, ceil( currentY ) );
@@ -391,7 +370,32 @@ QImage* QgsWMSServer::getLegendGraphics()
   QPainter p( paintImage );
   p.setRenderHint( QPainter::Antialiasing, true );
 
-  currentY = boxSpace;
+  drawLegendGraphics( &p, fontOversamplingFactor, rootItem, boxSpace, layerSpace, layerTitleSpace, symbolSpace,
+                      iconLabelSpace, symbolWidth, symbolHeight, layerFont, itemFont, layerFontColor, itemFontColor, maxTextWidth,
+                      maxSymbolWidth, theImage->dotsPerMeterX() * 0.0254 );
+
+  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  delete theImage;
+  return paintImage;
+}
+
+double QgsWMSServer::drawLegendGraphics( QPainter* p, double fontOversamplingFactor, QStandardItem* rootItem, double boxSpace,
+    double layerSpace, double layerTitleSpace, double symbolSpace, double iconLabelSpace,
+    double symbolWidth, double symbolHeight, const QFont& layerFont, const QFont& itemFont,
+    const QColor& layerFontColor, const QColor& itemFontColor, double& maxTextWidth, double& maxSymbolWidth, double dpi )
+{
+  if ( !rootItem )
+  {
+    return 0;
+  }
+
+  int numLayerItems = rootItem->rowCount();
+  if ( numLayerItems < 1 )
+  {
+    return 0;
+  }
+
+  double currentY = boxSpace;
   for ( int i = 0; i < numLayerItems; ++i )
   {
     QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( rootItem->child( i ) );
@@ -401,16 +405,13 @@ QImage* QgsWMSServer::getLegendGraphics()
       {
         currentY += layerSpace;
       }
-      drawLegendLayerItem( layerItem, &p, maxTextWidth, maxSymbolWidth, currentY, layerFont, layerFontColor, itemFont, itemFontColor, boxSpace,
-                           layerSpace, layerTitleSpace, symbolSpace, iconLabelSpace, symbolWidth, symbolHeight, fontOversamplingFactor,
-                           theImage->dotsPerMeterX() * 0.0254 );
+      drawLegendLayerItem( layerItem, p, maxTextWidth, maxSymbolWidth, currentY, layerFont, layerFontColor, itemFont, itemFontColor,
+                           boxSpace, layerSpace, layerTitleSpace, symbolSpace, iconLabelSpace, symbolWidth, symbolHeight, fontOversamplingFactor,
+                           dpi );
     }
-    currentY += layerSpace;
   }
-
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
-  delete theImage;
-  return paintImage;
+  currentY += boxSpace;
+  return currentY;
 }
 
 void QgsWMSServer::legendParameters( double mmToPixelFactor, double fontOversamplingFactor, double& boxSpace, double& layerSpace, double& layerTitleSpace,
@@ -894,6 +895,23 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
       QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
       if ( vectorLayer )
       {
+        if ( vectorLayer->vectorJoins().size() > 0 )
+        {
+          QList<QgsMapLayer *> joinLayers;
+          //JoinBuffer is based on qgsmaplayerregistry!!!!!
+          //insert existing join info
+          const QList< QgsVectorJoinInfo >& joins = vectorLayer->vectorJoins();
+          for ( int i = 0; i < joins.size(); ++i )
+          {
+            QgsMapLayer* joinLayer = mConfigParser->mapLayerFromLayerId( joins[i].joinLayerId );
+            if ( joinLayer )
+            {
+              joinLayers << joinLayer;
+            }
+            QgsMapLayerRegistry::instance()->addMapLayers( joinLayers, false, true );
+          }
+          vectorLayer->updateFields();
+        }
         if ( featureInfoFromVectorLayer( vectorLayer, infoPoint, featureCount, result, layerElement, mMapRenderer, renderContext,
                                          version, featuresRect ) != 0 )
         {
@@ -935,6 +953,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   }
 
   restoreLayerFilters( originalLayerFilters );
+  QgsMapLayerRegistry::instance()->removeAllMapLayers();
   delete featuresRect;
   delete infoPoint;
   return 0;
@@ -1305,6 +1324,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   QgsFeature feature;
   QgsAttributes featureAttributes;
   int featureCounter = 0;
+  layer->updateFields();
   const QgsFields& fields = layer->pendingFields();
   bool addWktGeometry = mConfigParser && mConfigParser->featureInfoWithWktGeometry();
   const QSet<QString>& excludedAttributes = layer->excludeAttributesWMS();
@@ -1485,6 +1505,24 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
              ( theMapLayer->minimumScale() <= scaleDenominator && theMapLayer->maximumScale() >= scaleDenominator ) )
         {
           layerKeys.push_front( theMapLayer->id() );
+          //joinVectorLayers
+          QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( theMapLayer );
+          if ( vectorLayer && vectorLayer->vectorJoins().size() > 0 )
+          {
+            QList<QgsMapLayer *> joinLayers;
+            //insert existing join info
+            const QList< QgsVectorJoinInfo >& joins = vectorLayer->vectorJoins();
+            for ( int i = 0; i < joins.size(); ++i )
+            {
+              QgsMapLayer* joinLayer = mConfigParser->mapLayerFromLayerId( joins[i].joinLayerId );
+              if ( joinLayer )
+              {
+                joinLayers << joinLayer;
+              }
+              QgsMapLayerRegistry::instance()->addMapLayers( joinLayers, false, true );
+            }
+            vectorLayer->updateFields();
+          }
           QgsMapLayerRegistry::instance()->addMapLayers(
             QList<QgsMapLayer *>() << theMapLayer, false, false );
         }

@@ -13,6 +13,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import sys
+import qgis
 from PyQt4 import QtGui, QtCore
 from qgis.core import (QgsApplication,
                        QgsCoordinateReferenceSystem,
@@ -20,6 +21,8 @@ from qgis.core import (QgsApplication,
 from qgis.gui import QgsMapCanvas
 from qgis_interface import QgisInterface
 import hashlib
+import re
+from itertools import izip
 
 # Support python < 2.7 via unittest2 needed for expected failure decorator.
 # Note that you should ignore unused import warnings here as these are imported
@@ -164,9 +167,9 @@ def writeShape(theMemoryLayer, theFileName):
     myFileName = os.path.join(str(QtCore.QDir.tempPath()), theFileName)
     print myFileName
     # Explicitly giving all options, not really needed but nice for clarity
-    myErrorMessage = QtCore.QString()
-    myOptions = QtCore.QStringList()
-    myLayerOptions = QtCore.QStringList()
+    myErrorMessage = ''
+    myOptions = []
+    myLayerOptions = []
     mySelectedOnlyFlag = False
     mySkipAttributesFlag = False
     myGeoCrs = QgsCoordinateReferenceSystem()
@@ -183,3 +186,24 @@ def writeShape(theMemoryLayer, theFileName):
         myLayerOptions,
         mySkipAttributesFlag)
     assert myResult == QgsVectorFileWriter.NoError
+
+def compareWkt(a, b, tol=0.000001):
+    r = re.compile( "-?\d+(?:\.\d+)?(?:[eE]\d+)?" )
+
+    # compare the structure
+    a0 = r.sub( "#", a )
+    b0 = r.sub( "#", b )
+    if a0 != b0:
+        return False
+
+    # compare the numbers with given tolerance
+    a0 = r.findall( a )
+    b0 = r.findall( b )
+    if len(a0) != len(b0):
+        return False
+
+    for (a1,b1) in izip(a0,b0):
+        if abs(float(a1)-float(b1))>tol:
+            return False
+
+    return True

@@ -96,7 +96,6 @@ void QgsSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl )
 
 QSet<QString> QgsSymbolLayerV2::usedAttributes() const
 {
-  QSet<QString> attributes;
   QStringList columns;
 
   QMap< QString, QgsExpression* >::const_iterator ddIt = mDataDefinedProperties.constBegin();
@@ -108,11 +107,13 @@ QSet<QString> QgsSymbolLayerV2::usedAttributes() const
     }
   }
 
+  QSet<QString> attributes;
   QStringList::const_iterator it = columns.constBegin();
   for ( ; it != columns.constEnd(); ++it )
   {
     attributes.insert( *it );
   }
+
   return attributes;
 }
 
@@ -131,9 +132,8 @@ void QgsSymbolLayerV2::saveDataDefinedProperties( QgsStringMap& stringMap ) cons
 void QgsSymbolLayerV2::copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) const
 {
   if ( !destLayer )
-  {
     return;
-  }
+
   destLayer->removeDataDefinedProperties();
 
   QMap< QString, QgsExpression* >::const_iterator ddIt = mDataDefinedProperties.constBegin();

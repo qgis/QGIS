@@ -101,13 +101,13 @@ class CORE_EXPORT QgsSymbolV2
     void stopRender( QgsRenderContext& context );
 
     void setColor( const QColor& color );
-    QColor color();
+    QColor color() const;
 
     void drawPreviewIcon( QPainter* painter, QSize size );
 
     QImage bigSymbolPreviewImage();
 
-    QString dump();
+    QString dump() const;
 
     virtual QgsSymbolV2* clone() const = 0;
 

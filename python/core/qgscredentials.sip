@@ -8,7 +8,7 @@ class QgsCredentials
     //! virtual destructor
     virtual ~QgsCredentials();
 
-    bool get( QString realm, QString &username, QString &password, QString message = QString::null );
+    bool get( QString realm, QString &username /In,Out/, QString &password /In,Out/, QString message = QString::null );
     void put( QString realm, QString username, QString password );
 
     //! retrieves instance

@@ -34,6 +34,8 @@ except ImportError:
 
 from ..html_elems import HtmlParagraph, HtmlList, HtmlTable
 
+from qgis.core import QgsCredentials
+
 
 def classFactory():
 	return PostGisDBPlugin
@@ -98,19 +100,10 @@ class PostGisDBPlugin(DBPlugin):
 		except ConnectionError, e:
 			err = str(e)
 
-		hasCredentialDlg = True
-		try:
-			from qgis.gui import QgsCredentials
-		except ImportError:	# no credential dialog
-			hasCredentialDlg = False
-
 		# ask for valid credentials
 		max_attempts = 3
 		for i in range(max_attempts):
-			if hasCredentialDlg:
-				(ok, username, password) = QgsCredentials.instance().get(uri.connectionInfo(), username, password, err)
-			else:
-				(password, ok) = QInputDialog.getText(parent, self.tr("Enter password"), self.tr('Enter password for connection "%s":') % conn_name, QLineEdit.Password)
+			(ok, username, password) = QgsCredentials.instance().get(uri.connectionInfo(), username, password, err)
 
 			if not ok:
 				return False
@@ -128,8 +121,8 @@ class PostGisDBPlugin(DBPlugin):
 				err = str(e)
 				continue
 
-			if hasCredentialDlg:
-				QgsCredentials.instance().put(uri.connectionInfo(), username, password)
+			QgsCredentials.instance().put(uri.connectionInfo(), username, password)
+
 			return True
 
 		return False

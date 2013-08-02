@@ -70,7 +70,7 @@ class QgsFeatureRendererV2
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     //! for debugging
-    virtual QString dump();
+    virtual QString dump() const;
 
     enum Capabilities
     {
@@ -78,7 +78,7 @@ class QgsFeatureRendererV2
       RotationField = 2,    // rotate symbols by attribute value
       MoreSymbolsPerFeature = 4  // may use more than one symbol to render a feature: symbolsForFeature() will return them
       Filter         = 8,   // features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
-      ScaleDependent = 16   // dependends on scale if feature will be rendered (rule based )
+      ScaleDependent = 16   // depends on scale if feature will be rendered (rule based )
     };
 
     //! returns bitwise OR-ed capabilities of the renderer
@@ -123,6 +123,7 @@ class QgsFeatureRendererV2
 
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
+    //! @note: not available in python bindings
     // virtual QgsLegendSymbolList legendSymbolItems();
 
     //! set type and size of editing vertex markers for subsequent rendering

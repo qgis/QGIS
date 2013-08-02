@@ -157,11 +157,11 @@ class CORE_EXPORT QgsExpression
 
     //! Return calculator used for distance and area calculations
     //! (used by internal functions)
-    QgsDistanceArea* geomCalculator() { return & mCalc; }
+    QgsDistanceArea *geomCalculator() { initGeomCalculator(); return mCalc; }
 
     //! Sets the geometry calculator used in evaluation of expressions,
     // instead of the default.
-    void setGeomCalculator( QgsDistanceArea& calc );
+    void setGeomCalculator( QgsDistanceArea &calc );
 
     /** This function currently replaces each expression between [% and %]
        in the string with the result of its evaluation on the feature
@@ -613,7 +613,7 @@ class CORE_EXPORT QgsExpression
     double mScale;
 
     static QMap<QString, QVariant> gmSpecialColumns;
-    QgsDistanceArea mCalc;
+    QgsDistanceArea *mCalc;
 
     friend class QgsOgcUtils;
 

@@ -46,26 +46,26 @@ QgsMimeDataUtils::Uri::Uri( QString& encData )
   QChar escape = '\\';
   QString part;
   bool inEscape = false;
-  for (int i = 0; i < encData.length(); ++i)
+  for ( int i = 0; i < encData.length(); ++i )
   {
-      if (encData.at(i) == escape && !inEscape)
-      {
-          inEscape = true;
-      }
-      else if (encData.at(i) == split && !inEscape)
-      {
-          parts << part;
-          part = "";
-      }
-      else
-      {
-          part += encData.at(i);
-          inEscape = false;
-      }
-  }
-  if (!part.isEmpty())
-  {
+    if ( encData.at( i ) == escape && !inEscape )
+    {
+      inEscape = true;
+    }
+    else if ( encData.at( i ) == split && !inEscape )
+    {
       parts << part;
+      part = "";
+    }
+    else
+    {
+      part += encData.at( i );
+      inEscape = false;
+    }
+  }
+  if ( !part.isEmpty() )
+  {
+    parts << part;
   }
 
   if ( parts.size() == 4 )
@@ -80,11 +80,11 @@ QgsMimeDataUtils::Uri::Uri( QString& encData )
 
 QString QgsMimeDataUtils::Uri::data() const
 {
-    QString escapedName = name;
-    QString escapeUri = uri;
-    escapedName.replace(":", "\\:");
-    escapeUri.replace(":", "\\:");
-    return layerType + ":" + providerKey + ":" + escapedName + ":" + escapeUri;
+  QString escapedName = name;
+  QString escapeUri = uri;
+  escapedName.replace( ":", "\\:" );
+  escapeUri.replace( ":", "\\:" );
+  return layerType + ":" + providerKey + ":" + escapedName + ":" + escapeUri;
 }
 
 // -----

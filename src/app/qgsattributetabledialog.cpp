@@ -570,8 +570,8 @@ void QgsAttributeTableDialog::filterQueryAccepted()
 {
   if ( mFilterQuery->text().isEmpty() )
   {
-      filterShowAll();
-      return;
+    filterShowAll();
+    return;
   }
   filterQueryChanged( mFilterQuery->text() );
 }

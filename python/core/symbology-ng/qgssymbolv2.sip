@@ -83,7 +83,7 @@ class QgsSymbolV2
 
     QImage bigSymbolPreviewImage();
 
-    QString dump();
+    QString dump() const;
 
     virtual QgsSymbolV2* clone() const = 0 /Factory/;
 

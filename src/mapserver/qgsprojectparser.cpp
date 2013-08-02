@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaplayerregistry.h"
+
 #include "qgsprojectparser.h"
 #include "qgsconfigcache.h"
 #include "qgscrscache.h"
@@ -22,6 +24,7 @@
 #include "qgsmslayercache.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
+#include "qgspallabeling.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -165,7 +168,9 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
         QDomElement nameElem = doc.createElement( "Name" );
         //We use the layer name even though it might not be unique.
         //Because the id sometimes contains user/pw information and the name is more descriptive
-        QDomText nameText = doc.createTextNode( layer->name() );
+        QString typeName = layer->name();
+        typeName = typeName.replace( QString( " " ), QString( "_" ) );
+        QDomText nameText = doc.createTextNode( typeName );
         nameElem.appendChild( nameText );
         layerElem.appendChild( nameElem );
 
@@ -424,6 +429,23 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
         {
           continue;
         }
+        if ( layer->vectorJoins().size() > 0 )
+        {
+          QList<QgsMapLayer *> joinLayers;
+          //JoinBuffer is based on qgsmaplayerregistry!!!!!
+          //insert existing join info
+          const QList< QgsVectorJoinInfo >& joins = layer->vectorJoins();
+          for ( int i = 0; i < joins.size(); ++i )
+          {
+            QgsMapLayer* joinLayer = mapLayerFromLayerId( joins[i].joinLayerId );
+            if ( joinLayer )
+            {
+              joinLayers << joinLayer;
+            }
+            QgsMapLayerRegistry::instance()->addMapLayers( joinLayers, false, true );
+          }
+          layer->updateFields();
+        }
 
         //hidden attributes for this layer
         const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWFS();
@@ -494,7 +516,8 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
           sequenceElem.appendChild( geomElem );
         }
 
-        const QgsFields& fields = provider->fields();
+        //const QgsFields& fields = provider->fields();
+        const QgsFields& fields = layer->pendingFields();
         for ( int idx = 0; idx < fields.count(); ++idx )
         {
 
@@ -527,6 +550,7 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
       }
     }
   }
+  QgsMapLayerRegistry::instance()->removeAllMapLayers();
   return;
 }
 
@@ -1452,6 +1476,16 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
   }
 
   return layerList;
+}
+
+QgsMapLayer* QgsProjectParser::mapLayerFromLayerId( const QString& lId ) const
+{
+  QHash< QString, QDomElement >::const_iterator layerIt = mProjectLayerElementsById.find( lId );
+  if ( layerIt != mProjectLayerElementsById.constEnd() )
+  {
+    return createLayerFromElement( layerIt.value(), true );
+  }
+  return 0;
 }
 
 void QgsProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem, QList<QgsMapLayer*>& layerList, bool useCache ) const
@@ -3558,6 +3592,68 @@ void QgsProjectParser::addDrawingOrderEmbeddedGroup( const QDomElement& groupEle
       {
         orderedLayerList.insertMulti( embedDrawingOrder, layerNames.at( i ) );
       }
+    }
+  }
+}
+
+void QgsProjectParser::loadLabelSettings( QgsLabelingEngineInterface* lbl )
+{
+  //pal labeling engine?
+  QgsPalLabeling* pal = dynamic_cast<QgsPalLabeling*>( lbl );
+  if ( pal )
+  {
+    QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+    if ( propertiesElem.isNull() )
+    {
+      return;
+    }
+
+    QDomElement palElem = propertiesElem.firstChildElement( "PAL" );
+    if ( palElem.isNull() )
+    {
+      return;
+    }
+
+    //pal::Pal p;
+    int candPoint = 8; //p.getPointP();
+    int candLine = 8; //p.getLineP();
+    int candPoly = 8; //p.getPolyP();
+
+    //mCandPoint
+    QDomElement candPointElem = palElem.firstChildElement( "CandidatesPoint" );
+    if ( !candPointElem.isNull() )
+    {
+      candPoint = candPointElem.text().toInt();
+    }
+
+    //mCandLine
+    QDomElement candLineElem = palElem.firstChildElement( "CandidatesLine" );
+    if ( !candLineElem.isNull() )
+    {
+      candLine = candLineElem.text().toInt();
+    }
+
+    //mCandPolygon
+    QDomElement candPolyElem = palElem.firstChildElement( "CandidatesPolygon" );
+    if ( !candPolyElem.isNull() )
+    {
+      candPoly = candPolyElem.text().toInt();
+    }
+
+    pal->setNumCandidatePositions( candPoint, candLine, candPoly );
+
+    //mShowingCandidates
+    QDomElement showCandElem = palElem.firstChildElement( "ShowingCandidates" );
+    if ( !showCandElem.isNull() )
+    {
+      pal->setShowingCandidates( showCandElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
+    }
+
+    //mShowingAllLabels
+    QDomElement showAllLabelsElem = palElem.firstChildElement( "ShowingAllLabels" );
+    if ( !showAllLabelsElem.isNull() )
+    {
+      pal->setShowingAllLabels( showAllLabelsElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
     }
   }
 }

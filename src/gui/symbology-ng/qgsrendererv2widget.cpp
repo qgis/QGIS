@@ -54,7 +54,7 @@ void QgsRendererV2Widget::changeSymbolColor()
     return;
   }
 
-  QColor color = QColorDialog::getColor( symbolList.at( 0 )->color(), this );
+  QColor color = QColorDialog::getColor( symbolList.at( 0 )->color(), this, "Change Symbol Color", QColorDialog::ShowAlphaChannel );
   if ( color.isValid() )
   {
     QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();

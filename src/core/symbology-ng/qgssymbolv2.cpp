@@ -237,9 +237,9 @@ void QgsSymbolV2::setColor( const QColor& color )
   }
 }
 
-QColor QgsSymbolV2::color()
+QColor QgsSymbolV2::color() const
 {
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     // return color of the first unlocked layer
     if ( !( *it )->isLocked() )
@@ -313,7 +313,7 @@ QImage QgsSymbolV2::bigSymbolPreviewImage()
 }
 
 
-QString QgsSymbolV2::dump()
+QString QgsSymbolV2::dump() const
 {
   QString t;
   switch ( type() )
@@ -325,7 +325,7 @@ QString QgsSymbolV2::dump()
   }
   QString s = QString( "%1 SYMBOL (%2 layers) color %3" ).arg( t ).arg( mLayers.count() ).arg( QgsSymbolLayerV2Utils::encodeColor( color() ) );
 
-  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     // TODO:
   }

@@ -96,4 +96,5 @@ INSTALL (TARGETS qgis_help
 )
 IF (APPLE)
   INSTALL (CODE "EXECUTE_PROCESS (COMMAND ln -sfh ../../../${QGIS_FW_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_help.app/Contents/Frameworks\")")
+  INSTALL (CODE "EXECUTE_PROCESS (COMMAND ln -sfh ../../../../${QGIS_LIB_DIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_help.app/Contents/MacOS/lib\")")
 ENDIF (APPLE)

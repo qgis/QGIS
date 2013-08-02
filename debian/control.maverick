@@ -4,7 +4,7 @@ Priority: extra
 Maintainer: QGIS developers <qgis-developer@lists.osgeo.org>
 Build-Depends:
  bison,
- cmake (>= 2.6),
+ cmake (>= 2.8),
  debhelper (>= 7),
  flex,
  grass-dev,
@@ -35,7 +35,8 @@ Build-Depends:
  doxygen,
  graphviz,
  txt2tags,
- xvfb, xauth, xfonts-base
+ xvfb, xauth,
+ xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.4
 XS-Python-Version: current

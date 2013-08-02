@@ -56,6 +56,7 @@ class RandomSelection(GeoAlgorithm):
     #===========================================================================
 
     def defineCharacteristics(self):
+        self.allowOnlyOpenedLayers = True
         self.name = "Random selection"
         self.group = "Vector selection tools"
 

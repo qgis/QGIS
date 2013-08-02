@@ -60,9 +60,9 @@ QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, Q
   {
     setWindowTitle( tr( "Import style(s)" ) );
     // populate the import types
-    importTypeCombo->addItem( "file specified below", QVariant( "file" ) );
+    importTypeCombo->addItem( tr( "file specified below" ), QVariant( "file" ) );
     // importTypeCombo->addItem( "official QGIS repo online", QVariant( "official" ) );
-    importTypeCombo->addItem( "URL specified below", QVariant( "url" ) );
+    importTypeCombo->addItem( tr( "URL specified below" ), QVariant( "url" ) );
     connect( importTypeCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( importTypeChanged( int ) ) );
 
     QStringList groups = mQgisStyle->groupNames();

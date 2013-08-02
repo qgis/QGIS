@@ -38,6 +38,7 @@ class CORE_EXPORT QgsRasterBlock
      *  @param theDataType raster data type
      *  @param theWidth width of data matrix
      *  @param theHeight height of data matrix
+     *  @note not available in python bindings (use variant with theNoDataValue)
      */
     QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight );
 
@@ -56,6 +57,7 @@ class CORE_EXPORT QgsRasterBlock
      *  @param theWidth width of data matrix
      *  @param theHeight height of data matrix
      *  @return true on success
+     *  @note not available in python bindings (use variant with theNoDataValue)
      */
     bool reset( QGis::DataType theDataType, int theWidth, int theHeight );
 
@@ -234,7 +236,7 @@ class CORE_EXPORT QgsRasterBlock
 
     /** \brief Set the whole block to no data
      *  @return true on success */
-    bool setIsNoData( );
+    bool setIsNoData();
 
     /** \brief Set the whole block to no data except specified rectangle
      *  @return true on success */
@@ -244,16 +246,21 @@ class CORE_EXPORT QgsRasterBlock
      *  @param row row index
      *  @param column column index
      *  @return pointer to data
+     *  @note not available in python bindings
      */
     char * bits( int row, int column );
 
     /** \brief Get pointer to data
      *  @param index data matrix index
-     *  @return pointer to data */
+     *  @return pointer to data
+     *  @note not available in python bindings
+     */
     char * bits( size_t index );
 
     /** \brief Get pointer to data
-     *  @return pointer to data */
+     *  @return pointer to data
+     *  @note not available in python bindings
+     */
     char * bits();
 
     /** \brief Print double value with all necessary significant digits.
@@ -276,8 +283,10 @@ class CORE_EXPORT QgsRasterBlock
      *  @return true on success */
     bool setImage( const QImage * image );
 
+    // @note not available in python bindings
     inline static double readValue( void *data, QGis::DataType type, size_t index );
 
+    // @note not available in python bindings
     inline static void writeValue( void *data, QGis::DataType type, size_t index, double value );
 
     void applyNoDataValues( const QgsRasterRangeList & rangeList );
@@ -297,7 +306,7 @@ class CORE_EXPORT QgsRasterBlock
      * @param theSubExtent extent, usually smaller than theExtent
      * @return the rectangle covered by sub extent
      */
-    static QRect subRect( const QgsRectangle & theExtent, int theWidth, int theHeight, const QgsRectangle &  theSubExtent );
+    static QRect subRect( const QgsRectangle &theExtent, int theWidth, int theHeight, const QgsRectangle &theSubExtent );
 
   private:
     static QImage::Format imageFormat( QGis::DataType theDataType );

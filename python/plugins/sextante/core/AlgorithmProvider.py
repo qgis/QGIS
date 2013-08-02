@@ -83,7 +83,7 @@ class AlgorithmProvider():
 
     def getDescription(self):
         '''Returns the full name of the provider'''
-        return "Generic algorithm provider"   
+        return "Generic algorithm provider"
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/alg.png")

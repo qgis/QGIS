@@ -1030,6 +1030,7 @@ class mmqgisx_select_algorithm(GeoAlgorithm):
 	RESULT = "RESULT"
 
 	def defineCharacteristics(self):
+		self.allowOnlyOpenedLayers = True
 		self.name = "Select by attribute"
 		self.group = "Vector selection tools"
 

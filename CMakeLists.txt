@@ -18,8 +18,7 @@ MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSIO
 #############################################################
 # CMake settings
 
-# 2.6.2 required for VERSION_LESS
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0)
 
 SET(CMAKE_COLOR_MAKEFILE ON)
 
@@ -221,7 +220,7 @@ SET (HAVE_MSSQL TRUE)
 
 #############################################################
 # search for Qt4
-SET(QT_MIN_VERSION 4.4.0)
+SET(QT_MIN_VERSION 4.5.0)
 FIND_PACKAGE(Qt4 ${QT_MIN_VERSION} REQUIRED)
 SET(QT_USE_QTXML 1)
 SET(QT_USE_QTNETWORK 1)

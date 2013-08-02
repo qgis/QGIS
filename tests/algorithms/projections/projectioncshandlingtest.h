@@ -70,7 +70,7 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase
     //
     void setUp()
     {
-      // wkt for creating a spatial refernence system
+      // wkt for creating a spatial reference system
       wkt =   "GEOGCS[\"WGS 84\", "
               "  DATUM[\"WGS_1984\", "
               "    SPHEROID[\"WGS 84\",6378137,298.257223563, "

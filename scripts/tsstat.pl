@@ -82,7 +82,7 @@ my $translators= {
 	th => 'Man Chao',
 	tr => 'Osman Yilmaz',
 	uk => 'Сергей Якунин',
-	vi => 'Bùi Hữu Mạnh',
+	vi => 'Phan Anh, Bùi Hữu Mạnh',
 	zh_CN => 'Calvin Ngei, Zhang Jun',
 	zh_TW => 'Nung-yao Lin',
 };

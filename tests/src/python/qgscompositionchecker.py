@@ -14,6 +14,8 @@ qgscompositionchecker.py - check rendering of Qgscomposition against an expected
  *                                                                         *
  ***************************************************************************/
 '''
+import qgis
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -92,7 +94,7 @@ class QgsCompositionChecker:
                 mismatchCount = mismatchCount + 1
                 differenceImage.setPixel( j, i, qRgb( 255, 0, 0 ) )
 
-          if  not differenceImagePath.isEmpty():
+          if differenceImagePath != "":
             differenceImage.save( differenceImagePath, "PNG" )
 
           #allow pixel deviation of 1 percent
