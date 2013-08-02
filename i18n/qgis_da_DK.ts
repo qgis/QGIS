@@ -508,7 +508,7 @@ Denne tabel er essentiel for mange GIS-programmer til optælling af tabeller.</t
     </message>
     <message>
         <source>&quot;{0}&quot; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;{0}&quot; ikke fundet</translation>
     </message>
     <message>
         <source>Filename:</source>
@@ -1109,59 +1109,59 @@ Forespørgsel:
         <translation>Resultat:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="177"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="180"/>
         <source>Load as new layer</source>
         <translation>Indlæs som nyt lag</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="197"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="200"/>
         <source>Column with unique 
 integer values</source>
         <translation>Kolonne med unikke talværdier</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="221"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="224"/>
         <source>Geometry column</source>
         <translation>Geometrikolonne</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="263"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="266"/>
         <source>Retrieve 
 columns</source>
         <translation>Hent kolonner</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="275"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="278"/>
         <source>Layer name (prefix)</source>
         <translation>Lagnavn (præfiks)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="298"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="301"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="308"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="311"/>
         <source>Vector</source>
         <translation>Vektor</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="318"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="321"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="344"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="347"/>
         <source>Load now!</source>
         <translation>Hent nu!</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="356"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="359"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id.  Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Undgå at udvælge objekter via ID.  Indimellem - især ved tunge forespørgsler/views - kan det være meget hurtigere at hente data sekventielt i stedet for at vælge objekter via ID.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="359"/>
+        <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="362"/>
         <source>Avoid selecting by feature id</source>
         <translation>Undgå at udvælge objekter via ID</translation>
     </message>
@@ -5597,7 +5597,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Symmetrical difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Symmetrisk forskel</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
@@ -6651,7 +6651,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1131"/>
         <source>New Shapefile Layer...</source>
-        <translation>Nyt Shape fil lag...</translation>
+        <translation>Nyt Shapefil-lag...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1134"/>
@@ -6724,9 +6724,8 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation>Tilføj Oracle Spatial-lag...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1236"/>
         <source>Add WMS Layer...</source>
-        <translation>Tilføj WMS-lag...</translation>
+        <translation type="obsolete">Tilføj WMS-lag...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1239"/>
@@ -7074,6 +7073,11 @@ Virker på det aktuelle redigérbare lag</translation>
         <location filename="../src/ui/qgisapp.ui" line="559"/>
         <source>Exit QGIS</source>
         <translation>Afslut QGIS</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="1236"/>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1272"/>
@@ -9663,12 +9667,12 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="388"/>
         <source>no available replacement for internal fieldname ogc_fid found</source>
-        <translation type="unfinished"></translation>
+        <translation>ingen tilgængelig erstatning for internt feltnavn  ogc_fid fundet</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="393"/>
         <source>Reserved attribute name ogc_fid replaced with %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Reserveret attributnavn  ogc_fid erstattet med %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="416"/>
@@ -9753,7 +9757,7 @@ Kun %1 af %2 objekter skrevet.</translation>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1139"/>
         <source>DBF file</source>
-        <translation type="unfinished"></translation>
+        <translation>DBF-fil</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1146"/>
@@ -11738,47 +11742,47 @@ SQL: %1</translation>
     <message>
         <location filename="../src/plugins/topology/dockModel.cpp" line="24"/>
         <source>Error</source>
-        <translation type="unfinished">Fejl</translation>
+        <translation>Fejl</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/dockModel.cpp" line="24"/>
         <source>Layer</source>
-        <translation type="unfinished">Lag</translation>
+        <translation>Lag</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/dockModel.cpp" line="24"/>
         <source>Feature ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt-ID</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1652"/>
         <source>empty response</source>
-        <translation type="unfinished"></translation>
+        <translation>tomt svar</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1658"/>
         <source>WFS service exception:%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fejl fra WFS-tjeneste: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1664"/>
         <source>unsuccessful service response: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ugyldigt svar fra tjeneste: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1671"/>
         <source>WFS exception report (code=%1 text=%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rapport over WFS-fejl (kode=%1 tekst=%2)</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1672"/>
         <source>missing</source>
-        <translation type="unfinished"></translation>
+        <translation>mangler</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1678"/>
         <source>unhandled response: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ubehandlet svar: %1</translation>
     </message>
 </context>
 <context>
@@ -13002,24 +13006,25 @@ Kontakt udviklerne af programmet.</translation>
         <location filename="../src/app/qgisapp.cpp" line="4247"/>
         <location filename="../src/app/qgisapp.cpp" line="4253"/>
         <source>Commit errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Commit-fejl</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4248"/>
         <location filename="../src/app/qgisapp.cpp" line="4254"/>
         <source>Could not commit changes to layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunne ikke gemme ændringer til lag %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4256"/>
         <source>Errors: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Fejl: %1
+</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4262"/>
         <source>Show more</source>
-        <translation type="unfinished"></translation>
+        <translation>Vis mere</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4309"/>
@@ -18684,7 +18689,7 @@ Prøv venligst en lavere opløsning eller en mindre papirstørrelse</translation
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="181"/>
         <source>Image search paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Søgestier til billeder</translation>
     </message>
     <message>
         <source>Loading SVG previews...</source>
@@ -20154,12 +20159,12 @@ Prøv venligst en lavere opløsning eller en mindre papirstørrelse</translation
     <message>
         <location filename="../src/core/qgscontexthelp.cpp" line="83"/>
         <source>Error starting help viewer [%1]</source>
-        <translation type="unfinished"></translation>
+        <translation>Fejl ved opstart af hjælpeviser [%1]</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp.cpp" line="83"/>
         <source>Context help</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontekstafh. hjælp</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp.cpp" line="91"/>
@@ -20928,7 +20933,7 @@ og den aktuelle fil er [%3]</translation>
     <message>
         <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="500"/>
         <source>&lt;b&gt;Current definition %1:&lt;/b&gt;&lt;br&gt;%2</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Aktuel definition %1:&lt;/b&gt;&lt;br&gt;%2</translation>
     </message>
     <message>
         <source>&lt;b&gt;Current definition%1:&lt;/b&gt;&lt;br&gt;%2</source>
@@ -21865,7 +21870,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="129"/>
         <source>Use one or more characters as the delimiter, or choose a different delimiter type</source>
-        <translation type="unfinished"></translation>
+        <translation>Brug et eller flere tegn som afgrænser, eller vælg en anden afgrænsertype</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="139"/>
@@ -22176,7 +22181,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="518"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="521"/>
         <source>The file is a comma separated value file, fields delimited by commas and quoted by &quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen er en kommasepareret værdi-fil, felter afgrænses af kommaer og citeres med &quot;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="524"/>
@@ -22193,7 +22198,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="562"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="565"/>
         <source>Each line in the file is split using a regular expression to define the end of each field</source>
-        <translation type="unfinished"></translation>
+        <translation>Hver linje i filen er opdelt vha. et regulært udtryk, som definerer slutningen på hvert felt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="568"/>
@@ -23814,7 +23819,7 @@ Udtrykket er udgyldigt, se (mere info) for detaljer</translation>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="297"/>
         <source>Type name</source>
-        <translation type="unfinished"></translation>
+        <translation>Typenavn</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="298"/>
@@ -26450,12 +26455,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsgml.cpp" line="140"/>
         <source>GML Getfeature network request failed with error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fejl ved GML Getfeature-netværksforespørgsel: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgml.cpp" line="141"/>
         <source>Network</source>
-        <translation type="unfinished">Netværk</translation>
+        <translation>Netværk</translation>
     </message>
 </context>
 <context>
@@ -29497,7 +29502,7 @@ på linje %2 kolonne %3</translation>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="45"/>
         <source>%1 of %2 bad layers were not fixable.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 af %2 ugyldige lag kunne ikke fikses.</translation>
     </message>
     <message>
         <source>%1 of %2 bad layers were not not fixable.</source>
@@ -29921,7 +29926,7 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1377"/>
         <source>Cannot print</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan ikke printe</translation>
     </message>
     <message>
         <source>Could not open url</source>
@@ -31182,7 +31187,7 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1286"/>
         <source>Font is missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Font mangler.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1336"/>
@@ -36403,7 +36408,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1160"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2330"/>
         <source>OGR error syncing to disk: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR-fejl ved synkronisering til disk: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1183"/>
@@ -36428,17 +36433,17 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1249"/>
         <source>Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Data er muligvis beskadiget, efter REPACK blev fundet. %1 findes stadig. Dette kan skyldes et rettigheds- eller låsningsproblem med den originale DBF.</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1268"/>
         <source>Original layer could not be reopened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Originalt lag kunne ikke genåbnes.</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1276"/>
         <source>Original datasource could not be reopened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Original datakilde kunne ikke genåbnes.</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1357"/>
@@ -39108,10 +39113,9 @@ SQL: %3</translation>
         <source>Could not update metadata for %1.%2.
 SQL:%3
 Error: %4</source>
-        <translation type="unfinished">Kunne ikke opdatere metadata for %1.%4.
-SQL:%1
-Fejl: %4 {1.%2.?} {3
-?}</translation>
+        <translation>Kunne ikke opdatere metadata for %1.%2.
+SQL:%3
+Fejl: %4</translation>
     </message>
     <message>
         <source>Could not update metadata for %1.%2.
@@ -40292,11 +40296,11 @@ Check beskedloggen for mulige fejl.</translation>
     </message>
     <message>
         <source>The plugin exited with error status: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Pluginet afsluttede med fejlstatus: {0}</translation>
     </message>
     <message>
         <source>Unknown error</source>
-        <translation type="unfinished">Ukendt fejl</translation>
+        <translation>Ukendt fejl</translation>
     </message>
     <message>
         <source>Uninstall (recommended)</source>
@@ -46601,7 +46605,7 @@ standardafvigelse ×</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="69"/>
         <source>Refine current rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Omdefinér aktuel regel</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="70"/>
@@ -49447,12 +49451,12 @@ Opdateringer af geometriværdier vil blive slået fra, og forespørgselsydeevnen
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="63"/>
         <source>file specified below</source>
-        <translation type="unfinished"></translation>
+        <translation>fil angivet herunder</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="65"/>
         <source>URL specified below</source>
-        <translation type="unfinished"></translation>
+        <translation>URL angivet herunder</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="78"/>
@@ -59339,7 +59343,91 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Administrér og installér plugin&lt;/h3&gt;
+
+&lt;p&gt;
+Administrér og installér plugin.
+&lt;/p&gt;
+
+
+&lt;a href=&quot;#installedtab&quot;&gt;Fanen Installeret&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#getmoretab&quot;&gt;Fanen Hent flere&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#newtab&quot;&gt;Fanen Ny&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#upgradabletab&quot;&gt;Fanen Opgraderbar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#invalidtab&quot;&gt;Fanen Ugyldige&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#settingstab&quot;&gt;Fanen Indstillinger&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;installedtab&quot;&gt;
+&lt;h4&gt;Fanen Installeret&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Denne fane viser dig en liste over aktuelt installerede plugins på dit system. Både
+Python og C++-plugins er listet.
+&lt;/p&gt;
+&lt;p&gt;
+Du kan aktivere eller deaktivere dem ved at klikke på checkboksen foran navnet.&lt;br/&gt;
+At vælge et element viser plugininformation i detaljeruden.
+&lt;/p&gt;
+&lt;p&gt;
+Der er en genvejsmenu (højreklik) tilgængelig for at ændre sortering på:
+navn, antal downloads, stemmer og status.
+&lt;/p&gt;
+
+
+&lt;a name=&quot;getmoretab&quot;&gt;
+&lt;h4&gt;Fanen Hent flere&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Denne fane viser dig en liste over tilgængelige plugins fra online repositories.
+Den er downloadet én gang, hvis du starter op. Men du kan ændre dette i Indstillinger
+&lt;/p&gt;
+&lt;p&gt;
+At vælge et element viser dig plugininformation i detaljeruden.
+&lt;/p&gt;
+
+&lt;a name=&quot;newtab&quot;&gt;
+&lt;h4&gt;Fanen Ny&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Denne fane vil blive vist, når en ny plugin er til rådighed! Det vil kun blive vist
+én gang.
+&lt;/p&gt;
+
+&lt;a name=&quot;upgradabletab&quot;&gt;
+&lt;h4&gt;Fanen Opgraderbar&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Denne fane er kun tilgængelig, hvis en af dine installerede plugins kan opgraderes
+fra online repositories.
+&lt;/p&gt;
+
+&lt;a name=&quot;Invalid tab&quot;&gt;
+&lt;h4&gt;Fanen Ugyldige&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Denne fane er kun tilgængelig, hvis der er et ugyldigt plugin. For det meste forårsaget af en
+fejl under indlæsning af pluginet.
+&lt;/p&gt;
+
+&lt;a name=&quot;settingstab&quot;&gt;
+&lt;h4&gt;Fanen Indstillinger&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+I dette faneblad kan du ændre indstillingerne for Pluginstyring.
+&lt;/p&gt;
+&lt;p&gt;
+Det er muligt at kontrollere, hvor ofte QGIS vil hente listen og opdatere oplysninger
+fra de tilgængelige repositories.
+&lt;/p&gt;
+&lt;p&gt;
+Ved at markere checkboksen &apos;Vis eksperimentelle plugins&apos;, bliver alle plugins blive vist
+på listerne, selv dem, der betragtes som &apos;eksperimentiel&apos; af forfatteren.
+
+&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt; &lt;tr&gt; &lt;td&gt;
+NB: Eksperimentielle plugins er generelt uegnede til brug i produktion. Disse plugins er i de tidlige stadier af udvikling, og bør betragtes som &quot;ufærdige&quot; eller &quot;proof of concept&quot;-værktøjer. QGIS-udviklingsholdet anbefaler ikke at installere disse plugins, mm. du agter at bruge dem til testformål.
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="853"/>
@@ -59450,11 +59538,11 @@ Som standard gør QGIS alle lag synlige, når kortkanvasset skal opdateres. De b
 &lt;li&gt;Tilføjelse af et lag
 &lt;li&gt;Panorering eller zoom
 &lt;li&gt;Ændre størrelse på QGIS-vinduet
-&lt;li&gt;Ændring af synligheden af ​​et eller flere lag
+&lt;li&gt;Ændring af synligheden af ??et eller flere lag
 &lt;/ul&gt;
 QGIS tillader dig at styre renderingsprocessen på en række måder:&lt;p&gt;
 Du kan indstille en mulighed for altid at indlæse nye lag uden at tegne dem.&lt;br&gt;
-Det betyder, at laget vil blive tilføjet til kortet, men dets checkboks for synlighed i tegnforklaringen vil være markeret som standard. For at indstille denne mulighed, skal du fjerne markeringen af checkboksen ​​&lt;label&gt;Som standard  skal nye lag føjet til kortet vises&lt;/label&gt;.&lt;p&gt;
+Det betyder, at laget vil blive tilføjet til kortet, men dets checkboks for synlighed i tegnforklaringen vil være markeret som standard. For at indstille denne mulighed, skal du fjerne markeringen af checkboksen &lt;label&gt;Som standard  skal nye lag føjet til kortet vises&lt;/label&gt;.&lt;p&gt;
 Du kan indstille en mulighed for at opdatere kortvisningen, som objekter er tegnet.&lt;br&gt;
 Som standard viser QGIS ikke alle objekter for et lag, indtil hele laget er blevet renderet. For at opdatere visningen, som objekter læses fra datalageret, sæt&lt;label&gt;Antal objekter at tegne, før du opdaterer skærmen&lt;/label&gt;til en passende værdi. Indstilling af en værdi på 0 deaktiverer opdatering under tegning (dette er standard). Indstilles af en værdi for lavt, vil det medføre dårlig ydelse, som kortkanvasset løbende opdateres under læsningen af objekter. En foreslået værdi til at starte med er 500.
 &lt;a name=&quot;map&quot;&gt;
@@ -59469,7 +59557,7 @@ Gør det muligt at definere musehjulets handling og zoomfaktor.
 &lt;a name=&quot;over&quot;&gt;
 &lt;h4&gt;Belægning&lt;/h4&gt;
 &lt;/a&gt;
-Definér placeringsalgoritme til labels. Vælg mellem &lt;label&gt;centralt punkt (hurtigst)&lt;/label&gt;, &lt;label&gt;kæde (hurtig)&lt;/label&gt;, &lt;label&gt;popmusik tabukæde (langsom)&lt;/label&gt;, &lt;label&gt;popmusik tabu (langsom)&lt; / label&gt;og&lt;label&gt;popmusik kæde (meget langsom)&lt;/label&gt;.
+Definér placeringsalgoritme til labels. Vælg mellem &lt;label&gt;centralt punkt (hurtigst)&lt;/label&gt;, &lt;label&gt;kæde (hurtig)&lt;/label&gt;, &lt;label&gt;popmusik tabukæde (langsom)&lt;/label&gt;, &lt;label&gt;popmusik tabu (langsom)&lt;/label&gt;og&lt;label&gt;popmusik kæde (meget langsom)&lt;/label&gt;.
 
 &lt;a name=&quot;digit&quot;&gt;
 &lt;h4&gt;Digitalisering&lt;/h4&gt;
@@ -59496,7 +59584,7 @@ Informerer dig om aktiv systemlandekode. Markér &lt;label&gt;Overtrumf systemet
 &lt;a name=&quot;net&quot;&gt;
 &lt;h4&gt;Netværk &amp; Proxy&lt;/h4&gt;
 &lt;/a&gt;
-Markér ​​&lt;label&gt;Brug proxy til webadgang&lt;/label&gt; for at definere vært, port, bruger og kodeord.
+Markér &lt;label&gt;Brug proxy til webadgang&lt;/label&gt; for at definere vært, port, bruger og kodeord.
 </translation>
     </message>
     <message>
@@ -67310,37 +67398,37 @@ Returnerer en strengrepræsentation af en farve baseret på dens farvetone-, mæ
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="276"/>
         <source>First geometry invalid in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Første geometri ugyldig i flagrende-linjer-test.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="282"/>
         <source>Failed to import first geometry into GEOS in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunne ikke importere første geometri i GEOS i flagrende-linjer-test.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="408"/>
         <source>Invalid second geometry in duplicate geometry test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ugyldig anden geometri i dubleret-geometri-test.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="414"/>
         <source>Failed to import second geometry into GEOS in duplicate geometry test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunne ikke importere anden geometri i GEOS i dubleret-geometri-test.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="531"/>
         <source>Invalid second geometry in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ugyldig anden geometri i overlapningstest.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="537"/>
         <source>Failed to import second geometry into GEOS in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunne ikke importere anden geometri i GEOS i overlapningstest.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="543"/>
         <source>Skipping invalid second geometry of feature %1 in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Springer over ugyldig anden geometri i objekt %1 i overlapningstest.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="772"/>
@@ -67373,7 +67461,7 @@ Returnerer en strengrepræsentation af en farve baseret på dens farvetone-, mæ
         <location filename="../src/plugins/topology/topolTest.cpp" line="1443"/>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1517"/>
         <source>Second geometry missing or GEOS import failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Anden geometri mangler, eller import til GEOS mislykkedes.</translation>
     </message>
     <message>
         <source>No second geometry missing or GEOS import failed.</source>
