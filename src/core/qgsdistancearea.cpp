@@ -98,6 +98,11 @@ void QgsDistanceArea::setSourceCrs( long srsid )
   mCoordTransform->setSourceCrs( srcCRS );
 }
 
+void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem& srcCRS )
+{
+  mCoordTransform->setSourceCrs( srcCRS );
+}
+
 void QgsDistanceArea::setSourceAuthId( QString authId )
 {
   QgsCoordinateReferenceSystem srcCRS;
