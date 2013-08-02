@@ -370,5 +370,5 @@ void QgsMessageBar::resetCountdown()
 
 void QgsMessageBar::updateItemCount()
 {
-  mItemCount->setText( mList.count() > 0 ? QString::number( mList.count() ) + QString( " " ) + tr( "more" ) : QString( "" ) );
+  mItemCount->setText( mList.count() > 0 ? tr( "%n more", "unread messages", mList.count() ) : QString( "" ) );
 }
