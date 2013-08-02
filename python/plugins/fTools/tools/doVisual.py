@@ -245,8 +245,9 @@ class visualThread( QThread ):
     for item in unique:
       nElement += 1
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
-      lstUnique.append(unicode(item).strip())
-    lstCount = len( unique )
+      if item:
+        lstUnique.append(unicode(item).strip())
+    lstCount = len( lstUnique )
     return ( lstUnique, lstCount )
 
   def basic_statistics( self, vlayer, myField ):
