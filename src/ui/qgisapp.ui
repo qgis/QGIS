@@ -1233,7 +1233,7 @@
      <normaloff>:/images/themes/default/mActionAddWmsLayer.svg</normaloff>:/images/themes/default/mActionAddWmsLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Add WMS Layer...</string>
+    <string>Add WMS/WMTS Layer...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+W</string>
