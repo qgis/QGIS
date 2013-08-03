@@ -172,7 +172,7 @@ void QgsOSMExportDialog::onOK()
   }
   else
   {
-    QMessageBox::critical( this, tr( "OpenStreetMap import" ), tr( "Failed to export OSM data:\n%1" ).arg( mDatabase->errorString() ) );
+    QMessageBox::critical( this, tr( "OpenStreetMap export" ), tr( "Failed to export OSM data:\n%1" ).arg( mDatabase->errorString() ) );
   }
 
   mDatabase->close();
