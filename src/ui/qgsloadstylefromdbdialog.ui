@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Add column</string>
+   <string>Load Style</string>
   </property>
   <property name="modal">
    <bool>true</bool>
