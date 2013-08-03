@@ -61,14 +61,14 @@ MACRO (PLUGIN_INSTALL plugin subdir )
   ENDFOREACH(file)
   ADD_DEPENDENCIES(staged-plugins ${plugin}-${subdir_sane}-stageinstall)
 
-  IF(TARGET staged_${plugin})
-    ADD_DEPENDENCIES(staged_${plugin} ${plugin}-${subdir_sane}-stageinstall)
-  ELSE(TARGET staged_${plugin})
-    ADD_CUSTOM_TARGET(staged_${plugin} DEPENDS ${plugin}-${subdir_sane}-stageinstall)
+  IF(TARGET staged-${plugin})
+    ADD_DEPENDENCIES(staged-${plugin} ${plugin}-${subdir_sane}-stageinstall)
+  ELSE(TARGET staged-${plugin})
+    ADD_CUSTOM_TARGET(staged-${plugin} DEPENDS ${plugin}-${subdir_sane}-stageinstall)
     ADD_CUSTOM_TARGET(clean-staged-${plugin}
       COMMAND ${CMAKE_COMMAND} -E remove_directory ${PYTHON_OUTPUT_DIRECTORY}/plugins/${plugin}
     )
-  ENDIF(TARGET staged_${plugin})
+  ENDIF(TARGET staged-${plugin})
 
 ENDMACRO (PLUGIN_INSTALL)
 
