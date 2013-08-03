@@ -26,7 +26,8 @@ from .connector import PostGisDBConnector
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from ..plugin import ConnectionError, DBPlugin, Database, Schema, Table, VectorTable, RasterTable, TableField, TableConstraint, TableIndex, TableTrigger, TableRule
+from ..plugin import ConnectionError, InvalidDataException, DBPlugin, Database, Schema, Table, VectorTable, RasterTable, TableField, TableConstraint, TableIndex, TableTrigger, TableRule
+
 try:
 	from . import resources_rc
 except ImportError:
