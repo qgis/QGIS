@@ -49,8 +49,6 @@ class TableFieldsDelegate(QItemDelegate):
 			for item in self.fieldTypes:
 				cbo.addItem(item)
 			return cbo
-		elif index.column() == 2:
-			return QCheckBox(parent)
 		return QItemDelegate.createEditor(self, parent, option, index)
 
 	def setEditorData(self, editor, index):
@@ -59,9 +57,6 @@ class TableFieldsDelegate(QItemDelegate):
 		if index.column() == 1:
 			txt = m.data(index, Qt.DisplayRole)
 			editor.setEditText(txt)
-		elif index.column() == 2:
-			checked = m.data(index, Qt.DisplayRole) == "true"
-			editor.setChecked( checked )
 		else:
 			# use default
 			QItemDelegate.setEditorData(self, editor, index)
@@ -70,8 +65,6 @@ class TableFieldsDelegate(QItemDelegate):
 		""" save data from editor back to model """
 		if index.column() == 1:
 			model.setData(index, editor.currentText())
-		elif index.column() == 1:
-			model.setData(index, editor.isChecked())
 		else:
 			# use default
 			QItemDelegate.setModelData(self, editor, model, index)
@@ -191,7 +184,8 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 			if "serial" in self.fieldTypes:	# PostgreSQL
 				colType = "serial"
 		m.setData(indexType, colType)
-		m.setData(indexNull, False)
+		m.setData(indexNull, None, Qt.DisplayRole)
+		m.setData(indexNull, Qt.Unchecked, Qt.CheckStateRole)
 
 		# selects the new row
 		sel = self.fields.selectionModel()
