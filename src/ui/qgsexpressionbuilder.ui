@@ -280,6 +280,9 @@
       </property>
       <item>
        <widget class="QPushButton" name="btnEqualPushButton">
+        <property name="toolTip">
+         <string>Equal operator</string>
+        </property>
         <property name="text">
          <string>=</string>
         </property>
@@ -293,6 +296,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="toolTip">
+         <string>Addition operator</string>
+        </property>
         <property name="text">
          <string>+</string>
         </property>
@@ -300,6 +306,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnMinusPushButton">
+        <property name="toolTip">
+         <string>Subtraction operator</string>
+        </property>
         <property name="text">
          <string>-</string>
         </property>
@@ -307,6 +316,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnDividePushButton">
+        <property name="toolTip">
+         <string>Division operator</string>
+        </property>
         <property name="text">
          <string>/</string>
         </property>
@@ -314,6 +326,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnMultiplyPushButton">
+        <property name="toolTip">
+         <string>Multiplication operator</string>
+        </property>
         <property name="text">
          <string>*</string>
         </property>
@@ -321,6 +336,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnExpButton">
+        <property name="toolTip">
+         <string>Power operator</string>
+        </property>
         <property name="text">
          <string>^</string>
         </property>
@@ -328,6 +346,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnConcatButton">
+        <property name="toolTip">
+         <string>String Concatenation</string>
+        </property>
         <property name="text">
          <string>||</string>
         </property>
@@ -347,6 +368,9 @@
           <height>10</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Open Bracket </string>
+        </property>
         <property name="text">
          <string>(</string>
         </property>
@@ -354,6 +378,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnCloseBracketPushButton">
+        <property name="toolTip">
+         <string>Close Bracket </string>
+        </property>
         <property name="text">
          <string>)</string>
         </property>
