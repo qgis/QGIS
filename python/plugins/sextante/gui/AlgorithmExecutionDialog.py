@@ -163,7 +163,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             except:
                 return param.setValue(widget.getValue())
         elif isinstance(param, ParameterBoolean):
-            return param.setValue(widget.currentIndex() == 0)
+            return param.setValue(widget.isChecked())
         elif isinstance(param, ParameterSelection):
             return param.setValue(widget.currentIndex())
         elif isinstance(param, ParameterFixedTable):
