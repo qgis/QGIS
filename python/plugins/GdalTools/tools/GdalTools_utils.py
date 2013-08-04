@@ -227,7 +227,7 @@ def fillRasterOutputFormat(aFilter = None, filename = None):
 
   if aFilter != None:
     supportedRasters = GdalConfig.getSupportedRasters()
-    filterName = re.sub('^.*\] ', '', FileFilter.getFilterName( aFilter ))
+    filterName = re.sub('^.*\] ', '', FileFilter.getFilterName( aFilter[0] ))
     if supportedRasters.has_key( filterName ):
       return supportedRasters[ filterName ][ "SHORTNAME" ]
 
@@ -246,7 +246,7 @@ def fillVectorOutputFormat(aFilter = None, filename = None):
 
   if aFilter != None:
     supportedVectors = GdalConfig.getSupportedVectors()
-    filterName = re.sub('^.*\] ', '', FileFilter.getFilterName( aFilter ))
+    filterName = re.sub('^.*\] ', '', FileFilter.getFilterName( aFilter[0] ))
     if supportedVectors.has_key( filterName ):
       return supportedVectors[ filterName ][ "SHORTNAME" ]
 
@@ -359,7 +359,7 @@ class FileDialog:
     dialog.setAcceptMode(acceptMode)
 
     if selectedFilter != None:
-      dialog.selectNameFilter(selectedFilter)
+      dialog.selectNameFilter(selectedFilter[0])
 
     if not dialog.exec_():
       if useEncoding:
@@ -368,7 +368,7 @@ class FileDialog:
 
     # change the selected filter value
     if selectedFilter != None:
-      selectedFilter = dialog.selectedNameFilter()
+      selectedFilter[0] = dialog.selectedNameFilter()
 
     # save the last used dir and return the selected files
     files = dialog.selectedFiles()
@@ -441,13 +441,15 @@ class FileFilter:
 
     return self.rastersFilter
 
+  # Retrieves the last used filter for raster files
+  # Note: filter string is in a list
   @classmethod
   def lastUsedRasterFilter(self):
-     return self.getFilter("lastRaster")
+     return [self.getFilter("lastRaster")]
 
   @classmethod
   def setLastUsedRasterFilter(self, aFilter):
-     self.setFilter("lastRaster", aFilter)
+     self.setFilter("lastRaster", aFilter[0])
 
   # stores the supported vectors file filter
   vectorsFilter = ''
@@ -459,13 +461,15 @@ class FileFilter:
       self.vectorsFilter = QgsProviderRegistry.instance().fileVectorFilters()
     return self.vectorsFilter
 
+  # Retrieves the last used filter for vector files
+  # Note: filter string is in a list
   @classmethod
   def lastUsedVectorFilter(self):
-     return self.getFilter("lastVector")
+     return [self.getFilter("lastVector")]
 
   @classmethod
   def setLastUsedVectorFilter(self, aFilter):
-     self.setFilter("lastVector", aFilter)
+     self.setFilter("lastVector", aFilter[0])
 
   # Retrieves the extensions list from a filter string
   @classmethod
