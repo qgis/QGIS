@@ -78,11 +78,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.loadFields( self.getInputFileName() )
 
   def fillInputFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
+      lastUsedFilter = [Utils.FileFilter.lastUsedVectorFilter()]
       inputFile, encoding = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Rasterize" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter, True)
       if not inputFile:
         return
-      Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
+      Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter[0])
 
       self.inSelector.setFilename(inputFile)
       self.lastEncoding = encoding
@@ -90,7 +90,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.loadFields( inputFile )
 
   def fillOutputFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+      lastUsedFilter = [Utils.FileFilter.lastUsedRasterFilter()]
 
       # rasterize supports output file creation for GDAL 1.8
       gdalVersion = Utils.GdalConfig.versionNum()
@@ -102,7 +102,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       outputFile = fileDialogFunc(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
       if not outputFile:
         return
-      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter[0])
 
       self.outSelector.setFilename(outputFile)
 

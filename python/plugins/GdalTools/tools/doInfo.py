@@ -109,11 +109,11 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
       self.rasterInfoList.addItems( info )
 
   def fillInputFileEdit( self ):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+      lastUsedFilter = [Utils.FileFilter.lastUsedRasterFilter()]
       inputFile = Utils.FileDialog.getOpenFileName( self, self.tr( "Select the file to analyse" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
       if not inputFile:
         return
-      Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
+      Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter[0] )
 
       self.inSelector.setFilename( inputFile )
 

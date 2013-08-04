@@ -67,13 +67,13 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
       self.inSelector.setFilename( inputDir )
 
   def fillOutputFileEdit( self ):
-      lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
+      lastUsedFilter = [Utils.FileFilter.lastUsedVectorFilter()]
       outputFile, encoding = Utils.FileDialog.getSaveFileName( self, self.tr( "Select where to save the TileIndex output" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter, True )
       if not outputFile:
         return
-      Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
+      Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter[0])
 
-      self.outputFormat = Utils.fillVectorOutputFormat( lastUsedFilter, outputFile )
+      self.outputFormat = Utils.fillVectorOutputFormat( lastUsedFilter[0], outputFile )
       self.outSelector.setFilename( outputFile )
       self.lastEncoding = encoding
 
