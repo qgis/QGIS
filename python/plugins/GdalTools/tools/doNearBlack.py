@@ -63,20 +63,20 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
 
   def fillInputFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+      lastUsedFilter = [Utils.FileFilter.lastUsedRasterFilter()]
       inputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Near Black" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
       if not inputFile:
         return
-      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter[0])
 
       self.inSelector.setFilename(inputFile)
 
   def fillOutputFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+      lastUsedFilter = [Utils.FileFilter.lastUsedRasterFilter()]
       outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
       if not outputFile:
         return
-      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter[0])
 
       self.outSelector.setFilename(outputFile)
 

@@ -93,11 +93,11 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
       self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
 
   def fillInputFile( self ):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+      lastUsedFilter = [Utils.FileFilter.lastUsedRasterFilter()]
       inputFile = Utils.FileDialog.getOpenFileName( self, self.tr( "Select the input file" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
       if inputFile == '':
         return
-      Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
+      Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter[0] )
 
       self.inSelector.setFilename( inputFile )
 

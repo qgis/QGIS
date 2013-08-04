@@ -63,31 +63,31 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.maskSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
 
   def fillInputFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+      lastUsedFilter = [Utils.FileFilter.lastUsedRasterFilter()]
       inputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Polygonize" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
       if not inputFile:
         return
-      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter[0])
 
       self.inSelector.setFilename(inputFile)
 
   def fillOutputFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
+      lastUsedFilter = [Utils.FileFilter.lastUsedVectorFilter()]
       outputFile, encoding = Utils.FileDialog.getSaveFileName(self, self.tr( "Select where to save the Polygonize output" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter, True)
       if not outputFile:
         return
-      Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
+      Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter[0])
 
-      self.outputFormat = Utils.fillVectorOutputFormat( lastUsedFilter, outputFile )
+      self.outputFormat = Utils.fillVectorOutputFormat( lastUsedFilter[0], outputFile )
       self.outSelector.setFilename(outputFile)
       self.lastEncoding = encoding
 
   def fillMaskFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+      lastUsedFilter = [Utils.FileFilter.lastUsedRasterFilter()]
       maskFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Polygonize" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
       if not maskFile():
         return
-      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter[0])
 
       self.maskSelector.setFilename(maskFile)
 

@@ -124,11 +124,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
 
   def fillInputFile( self ):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+      lastUsedFilter = [Utils.FileFilter.lastUsedRasterFilter()]
       inputFile = Utils.FileDialog.getOpenFileName( self, self.tr( "Select the input file for Translate" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
       if not inputFile:
         return
-      Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
+      Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter[0] )
 
       self.inSelector.setFilename( inputFile )
 
@@ -157,13 +157,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
 
   def fillOutputFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+      lastUsedFilter = [Utils.FileFilter.lastUsedRasterFilter()]
       outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
       if not outputFile:
         return
-      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter[0])
 
-      self.outputFormat = Utils.fillRasterOutputFormat(lastUsedFilter, outputFile)
+      self.outputFormat = Utils.fillRasterOutputFormat(lastUsedFilter[0], outputFile)
       self.outSelector.setFilename(outputFile)
 
   def fillOutputDir( self ):

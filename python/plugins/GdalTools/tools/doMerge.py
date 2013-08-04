@@ -88,11 +88,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
 
   def fillInputFilesEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+      lastUsedFilter = [Utils.FileFilter.lastUsedRasterFilter()]
       files = Utils.FileDialog.getOpenFileNames(self, self.tr( "Select the files to Merge" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
       if not files:
         return
-      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter[0])
       self.inSelector.setFilename(files)
 
   def refreshExtent(self):
@@ -120,13 +120,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.someValueChanged()
 
   def fillOutputFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+      lastUsedFilter = [Utils.FileFilter.lastUsedRasterFilter()]
       outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select where to save the Merge output" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
       if not outputFile:
         return
-      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter[0])
 
-      self.outputFormat = Utils.fillRasterOutputFormat( lastUsedFilter, outputFile )
+      self.outputFormat = Utils.fillRasterOutputFormat( lastUsedFilter[0], outputFile )
       self.outSelector.setFilename( outputFile )
 
   def fillInputDir( self ):

@@ -359,7 +359,7 @@ class FileDialog:
     dialog.setAcceptMode(acceptMode)
 
     if selectedFilter != None:
-      dialog.selectNameFilter(selectedFilter)
+      dialog.selectNameFilter(selectedFilter[0])
 
     if not dialog.exec_():
       if useEncoding:
@@ -368,7 +368,7 @@ class FileDialog:
 
     # change the selected filter value
     if selectedFilter != None:
-      selectedFilter = dialog.selectedNameFilter()
+      selectedFilter[0] = dialog.selectedNameFilter()
 
     # save the last used dir and return the selected files
     files = dialog.selectedFiles()

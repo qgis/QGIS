@@ -67,17 +67,17 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
 
   def fillInputFileEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+      lastUsedFilter = [Utils.FileFilter.lastUsedRasterFilter()]
       inputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Contour" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
       if not inputFile:
         return
-      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter[0])
 
       self.inSelector.setFilename(inputFile)
 
   def fillOutputFileEdit(self):
       if not self.useDirAsOutput:
-        lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
+        lastUsedFilter = [Utils.FileFilter.lastUsedVectorFilter()]
         outputFile, encoding = Utils.FileDialog.getSaveFileName(self, self.tr( "Select where to save the Contour output" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter, True)
       else:
         outputFile, encoding = Utils.FileDialog.getExistingDirectory(self, self.tr( "Select where to save the Contour output" ), True)
@@ -86,7 +86,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         return
 
       if not self.useDirAsOutput:
-        Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
+        Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter[0])
 
       self.outSelector.setFilename(outputFile)
       self.lastEncoding = encoding

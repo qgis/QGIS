@@ -113,11 +113,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.recurseCheck.setEnabled( enableInputFiles )
 
   def fillInputFilesEdit(self):
-      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+      lastUsedFilter = [Utils.FileFilter.lastUsedRasterFilter()]
       files = Utils.FileDialog.getOpenFileNames(self, self.tr( "Select the files for VRT" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
       if files == '':
         return
-      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter[0])
       self.inSelector.setFilename(",".join(files))
 
   def fillOutputFileEdit(self):
