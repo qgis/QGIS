@@ -870,7 +870,8 @@ class geometryThread( QThread ):
 
     return True
 
-  def feature_extent( self, ):
+  def feature_extent( self ):
+    vprovider = self.vlayer.dataProvider()
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0 )
 
     fields = QgsFields()
