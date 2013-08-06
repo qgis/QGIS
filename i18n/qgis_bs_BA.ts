@@ -6185,8 +6185,8 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
-        <translation>Dodaj WMS sloj...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Dodaj WMS sloj...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>

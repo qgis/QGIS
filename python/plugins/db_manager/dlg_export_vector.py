@@ -64,12 +64,12 @@ class DlgExportVector(QDialog, Ui_Dialog):
 	def chooseOutputFile(self):
 		# get last used dir and format
 		settings = QSettings()
-                lastDir = settings.value("/db_manager/lastUsedDir", "")
+		lastDir = settings.value("/db_manager/lastUsedDir", "")
 		# ask for a filename
 		filename = QFileDialog.getSaveFileName(self, self.tr("Choose where to save the file"), lastDir, self.tr("Shapefiles") + " (*.shp)")
 		if filename == "":
 			return
-		if filename[:-4] != ".shp":
+		if filename[-4:] != ".shp":
 			filename += ".shp"
 		# store the last used dir and format
 		settings.setValue("/db_manager/lastUsedDir", QFileInfo(filename).filePath())

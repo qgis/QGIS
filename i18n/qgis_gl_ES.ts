@@ -7280,8 +7280,8 @@ Prema na tecla ALT para alterna-las etiquetas seleccionadas entre o estado engan
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
-        <translation>Engadir capa WMS...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Engadir capa WMS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>

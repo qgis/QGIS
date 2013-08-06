@@ -1330,7 +1330,7 @@ bool QgsMssqlProvider::setSubsetString( QString theSQL, bool )
   QString sql = QString( "select count(*) from " );
 
   if ( !mSchemaName.isEmpty() )
-    mStatement += "[" + mSchemaName + "].";
+    sql += "[" + mSchemaName + "].";
 
   sql += "[" + mTableName + "]";
 

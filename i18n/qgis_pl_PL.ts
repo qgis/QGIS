@@ -7596,8 +7596,8 @@ Działa na aktualnie edytowanej warstwie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
-        <translation>Dodaj warstwę WMS...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Dodaj warstwę WMS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>
@@ -12912,7 +12912,7 @@ Błędy: %3
         <translation type="obsolete">Nowa zakładka</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">Dodaj warstwę WMS...</translation>
     </message>
     <message>

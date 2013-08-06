@@ -262,7 +262,7 @@ void QgsDualView::saveEditChanges()
 {
   if ( mAttributeDialog && mAttributeDialog->dialog() )
   {
-    if ( mLayerCache->layer()->isEditable() )
+    if ( mLayerCache->layer() && mLayerCache->layer()->isEditable() )
     {
       // Get the current (unedited) feature
       QgsFeature srcFeat;

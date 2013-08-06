@@ -5899,7 +5899,7 @@ Input CRS error: One or more input layers missing coordinate reference informati
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="unfinished">Shto Shtrese WMS...</translation>
     </message>
     <message>

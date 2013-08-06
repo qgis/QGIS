@@ -649,7 +649,7 @@ class Editor(QsciScintilla):
 
     def keyPressEvent(self, e):
         if self.settings.value("pythonConsole/autoCloseBracketEditor", True, type=bool):
-            startLine, _, endLine, _ = self.getSelection()
+            startLine, _, endLine, endPos = self.getSelection()
             t = unicode(e.text())
             ## Close bracket automatically
             if t in self.opening:
@@ -660,6 +660,7 @@ class Editor(QsciScintilla):
                     self.removeSelectedText()
                     if startLine == endLine:
                         self.insert(self.opening[i] + selText + self.closing[i])
+                        self.setCursorPosition(endLine, endPos+2)
                         return
                     elif startLine < endLine and self.opening[i] in ("'", '"'):
                         self.insert("'''" + selText + "'''")
@@ -669,6 +670,17 @@ class Editor(QsciScintilla):
                     self.endUndoAction()
                 else:
                     self.insert(self.closing[i])
+            ## FIXES #8392 (automatically removes the redundant char
+            ## when autoclosing brackets option is enabled)
+            if t in self.closing:
+                l, pos = self.getCursorPosition()
+                txt = self.text(l)
+                try:
+                    if txt[pos-1] in self.opening:
+                        self.setCursorPosition(l, pos+1)
+                        self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
+                except IndexError:
+                    pass
             QsciScintilla.keyPressEvent(self, e)
         else:
             QsciScintilla.keyPressEvent(self, e)

@@ -7172,8 +7172,8 @@ Toimii nyt aktiivisesti muokattavalle tasolle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1236"/>
-        <source>Add WMS Layer...</source>
-        <translation>Lisää WMS taso...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Lisää WMS taso...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1239"/>
@@ -12869,7 +12869,7 @@ Ota yhteys kehittäjiin.
         <translation type="obsolete">Lisää SpatiaLite tason</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">Lisää WMS taso...</translation>
     </message>
     <message>

@@ -6630,8 +6630,8 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
-        <translation>添加WMS图层...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">添加WMS图层...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>
@@ -12293,7 +12293,7 @@ Please contact the developers.
         <translation type="obsolete">新的书签</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">添加WMS图层...</translation>
     </message>
     <message>

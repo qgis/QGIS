@@ -204,6 +204,13 @@ class TableFieldsModel(SimpleTableModel):
 			return section+1
 		return SimpleTableModel.headerData(self, section, orientation, role)
 
+	def flags(self, index):
+		flags = SimpleTableModel.flags(self, index)
+		if index.column() == 2:  # set Null column as checkable
+			flags &= ~Qt.ItemIsEditable
+			flags |= Qt.ItemIsUserCheckable
+		return flags
+
 	def append(self, fld):
 		data = [fld.name, fld.type2String(), not fld.notNull, fld.default2String()]
 		self.appendRow( self.rowFromData(data) )
@@ -230,7 +237,7 @@ class TableFieldsModel(SimpleTableModel):
 			fld.modifier = None
 			fld.dataType = typestr
 
-		fld.notNull = self.data(self.index(row, 2)) != "true"
+		fld.notNull = self.data(self.index(row, 2), Qt.CheckStateRole) == Qt.Unchecked
 		fld.primaryKey = self.data(self.index(row, 1), Qt.UserRole)
 		return fld
 

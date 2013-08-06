@@ -7137,8 +7137,8 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
-        <translation>加入WMS圖層...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">加入WMS圖層...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>
@@ -12203,7 +12203,7 @@ Please contact the developers.
         <translation type="obsolete">新的書籤</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">加入WMS圖層...</translation>
     </message>
     <message>

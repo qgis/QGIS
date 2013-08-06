@@ -352,7 +352,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             #self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def keyPressEvent(self, e):
-        startLine, startPos, endLine, _ = self.getSelection()
+        startLine, startPos, endLine, endPos = self.getSelection()
 
         # handle invalid cursor position and multiline selections
         if not self.is_cursor_on_edition_zone() or startLine < endLine:
@@ -418,9 +418,21 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                         selText = self.selectedText()
                         self.removeSelectedText()
                         self.insert(self.opening[i] + selText + self.closing[i])
+                        self.setCursorPosition(endLine, endPos+2)
                         return
                     else:
                         self.insert(self.closing[i])
+                ## FIXES #8392 (automatically removes the redundant char
+                ## when autoclosing brackets option is enabled)
+                if t in self.closing:
+                    l, pos = self.getCursorPosition()
+                    txt = self.text(l)
+                    try:
+                        if txt[pos-1] in self.opening:
+                            self.setCursorPosition(l, pos+1)
+                            self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
+                    except IndexError:
+                        pass
             QsciScintilla.keyPressEvent(self, e)
 
     def contextMenuEvent(self, e):

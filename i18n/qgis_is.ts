@@ -6376,8 +6376,8 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
-        <translation>Bæta við WMS lagi...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Bæta við WMS lagi...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>
@@ -11389,7 +11389,7 @@ SQL: %1</source>
         <translation type="obsolete">Bæta við SpatiaLite lagi</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">Bæta við WMS lagi...</translation>
     </message>
     <message>

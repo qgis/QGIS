@@ -6001,8 +6001,8 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
         <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
-        <translation>Pievienot WMS slāni...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Pievienot WMS slāni...</translation>
     </message>
     <message>
         <source>Ctrl+Shift+W</source>
@@ -10831,7 +10831,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Ctrl+B</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">Pievienot WMS slāni...</translation>
     </message>
     <message>

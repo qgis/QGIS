@@ -7831,8 +7831,8 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1236"/>
-        <source>Add WMS Layer...</source>
-        <translation>WMS 레이어 추가...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">WMS 레이어 추가...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1239"/>
@@ -13680,7 +13680,7 @@ Please contact the developers.
         <translation type="obsolete">새 북마크</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">WMS 레이어 추가</translation>
     </message>
     <message>

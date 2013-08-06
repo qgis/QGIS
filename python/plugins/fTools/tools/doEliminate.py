@@ -228,7 +228,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
                     fidList += str(fid)
 
                 QtGui.QMessageBox.information(self, self.tr("Eliminate"),
-                        self.tr("Could not eliminate features with these ids:\n%s") %s (fidList))
+                        self.tr("Could not eliminate features with these ids:\n%s") % (fidList))
             else:
                 QtGui.QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Could not add features"))
 
@@ -241,6 +241,6 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
                 ftools_utils.addShapeToCanvas(outFileName)
             else:
                 QtGui.QMessageBox.information(self, self.tr("Eliminate"),
-                    self.tr("Created output shapefile:\n%s") %s (outFileName))
+                    self.tr("Created output shapefile:\n%s") % (outFileName))
 
         self.iface.mapCanvas().refresh()

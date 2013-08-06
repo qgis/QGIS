@@ -5877,8 +5877,8 @@ Ctl (Cmd) øker med 15 grd.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1236"/>
-        <source>Add WMS Layer...</source>
-        <translation>Legg til WMS lag...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Legg til WMS lag...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1239"/>

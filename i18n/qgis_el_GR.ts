@@ -7005,8 +7005,8 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
-        <translation>Προσθήκη WMS Layer ...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Προσθήκη WMS Layer ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>
@@ -12183,7 +12183,7 @@ Please contact the developers.
         <translation type="obsolete">Προσθήκη ενός PostGIS Layer</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">Προσθήκη WMS Layer ...</translation>
     </message>
     <message>

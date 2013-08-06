@@ -6763,8 +6763,8 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
-        <translation>اضافه کردن لایه WMS ...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">اضافه کردن لایه WMS ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>
@@ -11259,7 +11259,7 @@ Please contact the developers.
         <translation type="obsolete">ایجاد لایه SpatiaLite</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">اضافه کردن لایه WMS ...</translation>
     </message>
     <message>

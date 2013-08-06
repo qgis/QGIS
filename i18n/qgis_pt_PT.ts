@@ -7735,8 +7735,8 @@ Shift+seleção da camada activa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS Layer...</source>
-        <translation>Adicionar Camada WMS...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Adicionar Camada WMS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>
@@ -13348,7 +13348,7 @@ Please contact the developers.
         <translation type="obsolete">Novo Favorito</translation>
     </message>
     <message>
-        <source>Add WMS Layer...</source>
+        <source>Add WMS/WMTS Layer...</source>
         <translation type="obsolete">Adicionar camada WMS</translation>
     </message>
     <message>

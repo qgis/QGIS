@@ -6748,8 +6748,8 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1236"/>
-        <source>Add WMS Layer...</source>
-        <translation>Tambahkan Lapisan WMS...</translation>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished">Tambahkan Lapisan WMS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1239"/>
