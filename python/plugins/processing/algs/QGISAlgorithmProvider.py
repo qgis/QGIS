@@ -87,6 +87,7 @@ from processing.algs.CreateConstantRaster import CreateConstantRaster
 from processing.algs.PointsLayerFromTable import PointsLayerFromTable
 
 from processing.algs.PointsDisplacement import PointsDisplacement
+from sextante.algs.ZonalStatistics import ZonalStatistics
 
 #from processing.algs.VectorLayerHistogram import VectorLayerHistogram
 #from processing.algs.VectorLayerScatterplot import VectorLayerScatterplot
@@ -141,7 +142,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         #VectorLayerHistogram(), VectorLayerScatterplot(), RasterLayerHistogram(),
                         #MeanAndStdDevPlot(), BarPlot(), PolarPlot()
                         # ------ vector ------
-                        PointsDisplacement()
+                        PointsDisplacement(),
+                        ZonalStatistics()
                         ]
 
     def initializeSettings(self):
