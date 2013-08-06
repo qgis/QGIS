@@ -48,7 +48,7 @@ class PointsDisplacement(GeoAlgorithm):
         self.name = "Points displacement"
         self.group = "Vector geometry tools"
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_POINT))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterNumber(self.DISTANCE, "Displacement distance", 0.00001, 999999999.999990, 0.00015))
         self.addParameter(ParameterBoolean(self.HORIZONTAL, "Horizontal distribution for two point case"))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
