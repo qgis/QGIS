@@ -107,6 +107,9 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
   else
     close();
 
+  if ( hasFeature )
+    feature.setFields( &P->mFields ); // allow name-based attribute lookups
+
   return hasFeature;
 }
 
