@@ -23,6 +23,7 @@ QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsHtmlAnnotationItem* item, Q
     : QDialog( parent, f ), mItem( item ), mEmbeddedWidget( 0 )
 {
   setupUi( this );
+  setWindowTitle( tr( "HTML annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
   mEmbeddedWidget->show();
   mStackedWidget->addWidget( mEmbeddedWidget );
