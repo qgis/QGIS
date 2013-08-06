@@ -89,7 +89,7 @@ class Polygonize(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Polygonize"
         self.group = "Vector geometry tools"
-        self.addParameter(ParameterVector(self.INPUT, "Input layer",ParameterVector.VECTOR_TYPE_LINE))
+        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterBoolean(self.FIELDS, "Keep table structure of line layer", False))
         self.addParameter(ParameterBoolean(self.GEOMETRY, "Create geometry columns", True))
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))

@@ -51,7 +51,7 @@ class OgrInfo(OgrAlgorithm):
         self.name = "ogrinfo"
         self.group = "[OGR] Miscellaneous"
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", [ParameterVector.VECTOR_TYPE_ANY], False))
 
         self.addOutput(OutputHTML(self.OUTPUT, "Layer information"))
 

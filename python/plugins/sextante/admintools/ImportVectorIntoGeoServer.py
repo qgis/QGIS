@@ -59,6 +59,6 @@ class ImportVectorIntoGeoServer(GeoServerToolsAlgorithm):
         self.addBaseParameters()
         self.name = "Import vector into GeoServer"
         self.group = "GeoServer management tools"
-        self.addParameter(ParameterVector(self.INPUT, "Layer to import", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterVector(self.INPUT, "Layer to import", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterString(self.WORKSPACE, "Workspace"))
 

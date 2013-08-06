@@ -43,7 +43,7 @@ class StatisticsByCategories(GeoAlgorithm):
         self.name = "Statistics by categories"
         self.group = "Vector table tools"
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input vector layer", ParameterVector.VECTOR_TYPE_ANY, False))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input vector layer", [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterTableField(self.VALUES_FIELD_NAME, "Field to calculate statistics on",
                                               self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
         self.addParameter(ParameterTableField(self.CATEGORIES_FIELD_NAME, "Field with categories",

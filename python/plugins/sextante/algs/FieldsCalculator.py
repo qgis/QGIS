@@ -54,7 +54,7 @@ class FieldsCalculator(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Field calculator"
         self.group = "Vector table tools"
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Result field name"))
         self.addParameter(ParameterSelection(self.FIELD_TYPE, "Field type", self.TYPE_NAMES))
         self.addParameter(ParameterNumber(self.FIELD_LENGTH, "Field length", 1, 255, 10))
@@ -81,20 +81,20 @@ class FieldsCalculator(GeoAlgorithm):
         nFeat = provider.featureCount()
         nElement = 0
         features = QGisLayers.features(layer)
-        
-        fieldnames = [field.name() for field in provider.fields()]        
+
+        fieldnames = [field.name() for field in provider.fields()]
         fieldnames.sort(key=len, reverse=False)
         fieldidx = [fieldnames.index(field.name()) for field in provider.fields()]
         print fieldidx
         for inFeat in features:
             progress.setPercentage(int((100 * nElement) / nFeat))
             attrs = inFeat.attributes()
-            expression = formula            
-            for idx in fieldidx:            
-                expression = expression.replace(unicode(fields[idx].name()), unicode(attrs[idx]))                
-            try:                          
+            expression = formula
+            for idx in fieldidx:
+                expression = expression.replace(unicode(fields[idx].name()), unicode(attrs[idx]))
+            try:
                 result = eval(expression)
-            except Exception:                                                
+            except Exception:
                 result = None
             nElement += 1
             inGeom = inFeat.geometry()

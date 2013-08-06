@@ -70,7 +70,7 @@ class DropAnalysis(GeoAlgorithm):
         self.addParameter(ParameterRaster(self.D8_FLOW_DIR_GRID, "D8 Flow Direction Grid", False))
         self.addParameter(ParameterRaster(self.PIT_FILLED_GRID, "Pit Filled Elevation Grid", False))
         self.addParameter(ParameterRaster(self.ACCUM_STREAM_SOURCE_GRID, "Contributing Area Grid", False))
-        self.addParameter(ParameterVector(self.OUTLETS_SHAPE, "Outlets Shapefile", ParameterVector.VECTOR_TYPE_POINT, False))
+        self.addParameter(ParameterVector(self.OUTLETS_SHAPE, "Outlets Shapefile", [ParameterVector.VECTOR_TYPE_POINT], False))
         self.addParameter(ParameterNumber(self.MIN_TRESHOLD, "Minimum Threshold", 0, None, 5))
         self.addParameter(ParameterNumber(self.MAX_THRESHOLD, "Maximum Threshold", 0, None, 500))
         self.addParameter(ParameterNumber(self.TRESHOLD_NUM, "Number of Threshold Values", 0, None, 10))

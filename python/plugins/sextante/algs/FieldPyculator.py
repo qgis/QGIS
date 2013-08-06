@@ -64,7 +64,7 @@ class FieldsPyculator(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Advanced Python field calculator"
         self.group = "Vector table tools"
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Result field name", "NewField"))
         self.addParameter(ParameterSelection(self.FIELD_TYPE, "Field type", self.TYPE_NAMES))
         self.addParameter(ParameterNumber(self.FIELD_LENGTH, "Field length", 1, 255, 10))

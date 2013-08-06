@@ -44,8 +44,8 @@ class JoinAttributes(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Join attributes table"
         self.group = "Vector general tools"
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        self.addParameter(ParameterVector(self.INPUT_LAYER_2, "Input layer 2", ParameterVector.VECTOR_TYPE_ANY, False))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterVector(self.INPUT_LAYER_2, "Input layer 2", [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterTableField(self.TABLE_FIELD, "Table field", self.INPUT_LAYER))
         self.addParameter(ParameterTableField(self.TABLE_FIELD_2, "Table field 2", self.INPUT_LAYER_2))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))

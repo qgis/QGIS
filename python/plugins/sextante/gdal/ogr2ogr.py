@@ -62,7 +62,7 @@ class Ogr2Ogr(OgrAlgorithm):
 
         #we add the input vector layer. It can have any kind of geometry
         #It is a mandatory (not optional) one, hence the False argument
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterSelection(self.DEST_FORMAT, "Destination Format", FORMATS))
         self.addParameter(ParameterString(self.DEST_DSCO, "Creation Options", ""))
 

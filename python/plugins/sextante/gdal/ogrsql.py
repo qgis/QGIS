@@ -57,7 +57,7 @@ class OgrSql(OgrAlgorithm):
 
         #we add the input vector layer. It can have any kind of geometry
         #It is a mandatory (not optional) one, hence the False argument
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterString(self.SQL, "SQL", ""))
 
         self.addOutput(OutputHTML(self.OUTPUT, "SQL result"))

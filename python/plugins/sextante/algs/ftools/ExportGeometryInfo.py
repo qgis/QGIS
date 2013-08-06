@@ -57,7 +57,7 @@ class ExportGeometryInfo(GeoAlgorithm):
         self.name = "Export/Add geometry columns"
         self.group = "Vector table tools"
 
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterSelection(self.METHOD, "Calculate using", self.CALC_METHODS, 0))
 
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))

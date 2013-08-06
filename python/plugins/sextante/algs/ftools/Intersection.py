@@ -90,6 +90,6 @@ class Intersection(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Intersection"
         self.group = "Vector overlay tools"
-        self.addParameter(ParameterVector(Intersection.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterVector(Intersection.INPUT2, "Intersect layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterVector(Intersection.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterVector(Intersection.INPUT2, "Intersect layer", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addOutput(OutputVector(Intersection.OUTPUT, "Intersection"))

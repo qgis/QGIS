@@ -65,7 +65,7 @@ class DinfTransLimAccum(GeoAlgorithm):
         self.addParameter(ParameterRaster(self.DINF_FLOW_DIR_GRID, "D-Infinity Flow Direction Grid", False))
         self.addParameter(ParameterRaster(self.SUPPLY_GRID, "Supply Grid", False))
         self.addParameter(ParameterRaster(self.CAPACITY_GRID, "Transport Capacity Grid", False))
-        self.addParameter(ParameterVector(self.OUTLETS_SHAPE, "Outlets Shapefile", ParameterVector.VECTOR_TYPE_POINT, True))
+        self.addParameter(ParameterVector(self.OUTLETS_SHAPE, "Outlets Shapefile", [ParameterVector.VECTOR_TYPE_POINT], True))
         self.addParameter(ParameterBoolean(self.EDGE_CONTAM, "Check for edge contamination", True))
 
         self.addOutput(OutputRaster(self.TRANSP_LIM_ACCUM_GRID, "Transport Limited Accumulation Grid"))

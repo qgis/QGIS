@@ -53,7 +53,7 @@ class VoronoiPolygons(GeoAlgorithm):
         self.name = "Voronoi polygons"
         self.group = "Vector geometry tools"
 
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_POINT))
+        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_POINT]))
 
         self.addOutput(OutputVector(self.OUTPUT, "Voronoi polygons"))
 

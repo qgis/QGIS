@@ -50,8 +50,8 @@ class LinesIntersection(GeoAlgorithm):
         self.name = "Line intersections"
         self.group = "Vector overlay tools"
 
-        self.addParameter(ParameterVector(self.INPUT_A, "Input layer", ParameterVector.VECTOR_TYPE_LINE))
-        self.addParameter(ParameterVector(self.INPUT_B, "Intersect layer", ParameterVector.VECTOR_TYPE_LINE))
+        self.addParameter(ParameterVector(self.INPUT_A, "Input layer", [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterVector(self.INPUT_B, "Intersect layer", [ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterTableField(self.FIELD_A, "Input unique ID field", self.INPUT_A))
         self.addParameter(ParameterTableField(self.FIELD_B, "Intersect unique ID field", self.INPUT_B))
 

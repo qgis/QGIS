@@ -40,7 +40,7 @@ class lasclip(LasToolsAlgorithm):
         self.name = "lasclip"
         self.group = "Tools"
         self.addParameter(ParameterFile(lasclip.INPUT, "Input las layer"))
-        self.addParameter(ParameterVector(lasclip.POLYGON, "Input polygons", ParameterVector.VECTOR_TYPE_POLYGON))
+        self.addParameter(ParameterVector(lasclip.POLYGON, "Input polygons", [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addOutput(OutputFile(lasclip.OUTPUT, "Output classified las file"))
         self.addCommonParameters()
 
