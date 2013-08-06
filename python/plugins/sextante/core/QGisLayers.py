@@ -76,12 +76,12 @@ class QGisLayers:
         return raster
 
     @staticmethod
-    def getVectorLayers(shapetype=-1):
+    def getVectorLayers(shapetype=[-1]):
         layers = QGisLayers.iface.legendInterface().layers()
-        vector = list()
+        vector = []
         for layer in layers:
             if layer.type() == layer.VectorLayer:
-                if shapetype == QGisLayers.ALL_TYPES or layer.geometryType() == shapetype:
+                if shapetype == QGisLayers.ALL_TYPES or layer.geometryType() in shapetype:
                     uri = unicode(layer.source())
                     if not uri.lower().endswith("csv") and not uri.lower().endswith("dbf"):
                         vector.append(layer)

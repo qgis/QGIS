@@ -36,7 +36,7 @@ class ParameterVector(ParameterDataObject):
     VECTOR_TYPE_POLYGON = 2
     VECTOR_TYPE_ANY = -1
 
-    def __init__(self, name="", description="", shapetype=-1, optional=False):
+    def __init__(self, name="", description="", shapetype=[-1], optional=False):
         ParameterDataObject.__init__(self, name, description)
         self.optional = optional
         self.shapetype = shapetype
@@ -92,11 +92,11 @@ class ParameterVector(ParameterDataObject):
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\
-                        "|" + str(self.shapetype) + "|" + str(self.optional)
+                        "|" + ",".join(str(t) for t in self.shapetype) + "|" + str(self.optional)
 
     def deserialize(self, s):
         tokens = s.split("|")
-        return ParameterVector(tokens[1], tokens[2], int(tokens[3]), str(True) == tokens[4])
+        return ParameterVector(tokens[1], tokens[2], [int(t) for t in tokens[3].split(",")], str(True) == tokens[4])
 
     def getAsScriptCode(self):
         return "##" + self.name + "=vector"
