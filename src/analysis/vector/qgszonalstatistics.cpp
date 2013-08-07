@@ -310,7 +310,10 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, QgsGeometry*
       {
         if ( GEOSPreparedContains( polyGeosPrepared, currentCellCenter ) )
         {
-          sum += scanLine[j];
+          if ( !qIsNaN( scanLine[j] ) )
+          {
+            sum += scanLine[j];
+          }
           ++count;
         }
       }
