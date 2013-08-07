@@ -30,6 +30,7 @@ class QgsAbout : public QDialog, private Ui::QgsAbout
 
   private:
     void setWhatsNew( );
+    void setLicence();
     void setPluginInfo();
     void init();
     void openUrl( QString url );

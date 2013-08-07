@@ -188,6 +188,22 @@ void QgsAbout::init()
     QgsDebugMsg( QString( "translatorHTML:%1" ).arg( translatorHTML.toAscii().constData() ) );
   }
   setWhatsNew();
+  setLicence();
+}
+
+void QgsAbout::setLicence()
+{
+  // read the DONORS file and populate the text widget
+  QFile licenceFile( QgsApplication::licenceFilePath() );
+#ifdef QGISDEBUG
+  printf( "Reading licence file %s.............................................\n",
+          licenceFile.fileName().toLocal8Bit().constData() );
+#endif
+  if ( licenceFile.open( QIODevice::ReadOnly ) )
+  {
+      QString content = licenceFile.readAll();
+      txtLicense->setText(content);
+  }
 }
 
 void QgsAbout::setVersion( QString v )

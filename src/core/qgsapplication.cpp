@@ -449,6 +449,14 @@ const QString QgsApplication::translatorsFilePath()
 }
 
 /*!
+  Returns the path to the licence file.
+*/
+const QString QgsApplication::licenceFilePath()
+{
+  return ABISYM( mPkgDataPath ) + QString( "/doc/LICENCE" );
+}
+
+/*!
   Returns the path to the help application.
 */
 const QString QgsApplication::helpAppPath()
