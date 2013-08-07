@@ -851,7 +851,7 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index )
     }
     else // then it must be a group
     {
-      if (( !index.data( Qt::UserRole + 1 ).toInt() && ( index.data( Qt::UserRole + 1 ) == "ungrouped" ) ) || mGrouppingMode )
+      if ( index.data( Qt::UserRole + 1 ) == "ungrouped" || mGrouppingMode )
         enableGroupInputs( false );
       else
         enableGroupInputs( true );
