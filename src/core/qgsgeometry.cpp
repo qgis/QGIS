@@ -3607,7 +3607,10 @@ QgsRectangle QgsGeometry::boundingBox()
   if ( !mGeometry )
   {
     QgsDebugMsg( "WKB geometry not available!" );
-    return QgsRectangle( 0, 0, 0, 0 );
+    // Return minimal QgsRectangle
+    QgsRectangle invalidRect;
+    invalidRect.setMinimal();
+    return invalidRect;
   }
 
   // consider endian when fetching feature type
