@@ -96,6 +96,7 @@
      <addaction name="mActionSelectPolygon"/>
      <addaction name="mActionSelectFreehand"/>
      <addaction name="mActionSelectRadius"/>
+     <addaction name="mActionSelectByExpression"/>
      <addaction name="mActionDeselectAll"/>
     </widget>
     <widget class="QMenu" name="menuMeasure">
