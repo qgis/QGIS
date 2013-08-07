@@ -3101,7 +3101,10 @@ QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& 
     return BBox;
   }
 
-  BBox.set( minx, miny, maxx, maxy );
+  BBox.setXMinimum( minx );
+  BBox.setXMaximum( maxx );
+  BBox.setYMinimum( miny );
+  BBox.setYMaximum( maxy );
 
   if ( version != "1.1.1" && layerCrs.axisInverted() )
   {

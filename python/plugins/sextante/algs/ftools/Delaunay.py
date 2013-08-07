@@ -54,7 +54,7 @@ class Delaunay(GeoAlgorithm):
         self.name = "Delaunay triangulation"
         self.group = "Vector geometry tools"
 
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_POINT))
+        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_POINT]))
 
         self.addOutput(OutputVector(self.OUTPUT, "Delaunay triangulation"))
 

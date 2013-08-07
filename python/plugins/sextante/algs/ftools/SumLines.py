@@ -57,8 +57,8 @@ class SumLines(GeoAlgorithm):
         self.name = "Sum line lengths"
         self.group = "Vector analysis tools"
 
-        self.addParameter(ParameterVector(self.LINES, "Lines", ParameterVector.VECTOR_TYPE_LINE))
-        self.addParameter(ParameterVector(self.POLYGONS, "Polygons", ParameterVector.VECTOR_TYPE_POLYGON))
+        self.addParameter(ParameterVector(self.LINES, "Lines", [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterVector(self.POLYGONS, "Polygons", [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterString(self.LEN_FIELD, "Lines length field name", "LENGTH"))
         self.addParameter(ParameterString(self.COUNT_FIELD, "Lines count field name", "COUNT"))
 

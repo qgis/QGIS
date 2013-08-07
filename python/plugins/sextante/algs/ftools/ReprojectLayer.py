@@ -46,7 +46,7 @@ class ReprojectLayer(GeoAlgorithm):
         self.name = "Reproject layer"
         self.group = "Vector general tools"
 
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterCrs(self.TARGET_CRS, "Target CRS", "EPSG:4326"))
 
         self.addOutput(OutputVector(self.OUTPUT, "Reprojected layer"))

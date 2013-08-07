@@ -59,7 +59,7 @@ class ConvexHull(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Convex hull"
         self.group = "Vector geometry tools"
-        self.addParameter(ParameterVector(ConvexHull.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterVector(ConvexHull.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(ConvexHull.FIELD, "Field (optional, only used if creating convex hulls by classes)", ConvexHull.INPUT, optional = True))
         self.addParameter(ParameterSelection(ConvexHull.METHOD, "Method", ConvexHull.METHODS))
         self.addOutput(OutputVector(ConvexHull.OUTPUT, "Convex hull"))

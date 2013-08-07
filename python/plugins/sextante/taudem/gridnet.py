@@ -61,7 +61,7 @@ class GridNet(GeoAlgorithm):
         self.group = "Basic Grid Analysis tools"
 
         self.addParameter(ParameterRaster(self.D8_FLOW_DIR_GRID, "D8 Flow Direction Grid", False))
-        self.addParameter(ParameterVector(self.OUTLETS_SHAPE, "Outlets Shapefile", ParameterVector.VECTOR_TYPE_POINT, True))
+        self.addParameter(ParameterVector(self.OUTLETS_SHAPE, "Outlets Shapefile", [ParameterVector.VECTOR_TYPE_POINT], True))
         self.addParameter(ParameterRaster(self.MASK_GRID, "Mask Grid", True))
         self.addParameter(ParameterNumber(self.THRESHOLD, "Proportion Threshold", 0, None, 100))
 

@@ -55,8 +55,8 @@ class PointsInPolygonUnique(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Count unique points in polygon"
         self.group = "Vector analysis tools"
-        self.addParameter(ParameterVector(self.POLYGONS, "Polygons", ParameterVector.VECTOR_TYPE_POLYGON))
-        self.addParameter(ParameterVector(self.POINTS, "Points", ParameterVector.VECTOR_TYPE_POINT))
+        self.addParameter(ParameterVector(self.POLYGONS, "Polygons", [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addParameter(ParameterVector(self.POINTS, "Points", [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterTableField(self.CLASSFIELD, "Class field", self.POINTS))
         self.addParameter(ParameterString(self.FIELD, "Count field name", "NUMPOINTS"))
         self.addOutput(OutputVector(self.OUTPUT, "Result"))

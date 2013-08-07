@@ -53,7 +53,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         self.name = "Nearest neighbour analysis"
         self.group = "Vector analysis tools"
 
-        self.addParameter(ParameterVector(self.POINTS, "Points", ParameterVector.VECTOR_TYPE_POINT))
+        self.addParameter(ParameterVector(self.POINTS, "Points", [ParameterVector.VECTOR_TYPE_POINT]))
 
         self.addOutput(OutputHTML(self.OUTPUT, "Result"))
 

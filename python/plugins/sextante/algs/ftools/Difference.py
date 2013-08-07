@@ -50,8 +50,8 @@ class Difference(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Difference"
         self.group = "Vector overlay tools"
-        self.addParameter(ParameterVector(Difference.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterVector(Difference.OVERLAY, "Difference layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterVector(Difference.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterVector(Difference.OVERLAY, "Difference layer", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addOutput(OutputVector(Difference.OUTPUT, "Difference"))
 
     def processAlgorithm(self, progress):

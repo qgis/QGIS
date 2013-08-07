@@ -66,7 +66,7 @@ class PointDistance(GeoAlgorithm):
         self.name = "Distance matrix"
         self.group = "Vector analysis tools"
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input point layer", ParameterVector.VECTOR_TYPE_POINT))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input point layer", [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterTableField(self.INPUT_FIELD, "Input unique ID field", self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
         self.addParameter(ParameterVector(self.TARGET_LAYER, "Target point layer", ParameterVector.VECTOR_TYPE_POINT))
         self.addParameter(ParameterTableField(self.TARGET_FIELD, "Target unique ID field", self.TARGET_LAYER, ParameterTableField.DATA_TYPE_ANY))

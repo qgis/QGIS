@@ -55,7 +55,7 @@ class FixedDistanceBuffer(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Fixed distance buffer"
         self.group = "Vector geometry tools"
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterNumber(self.DISTANCE, "Distance", 0.0, default=10.0))
         self.addParameter(ParameterNumber(self.SEGMENTS, "Segments", 1, default=5))
         self.addParameter(ParameterBoolean(self.DISSOLVE, "Dissolve result", False))

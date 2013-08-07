@@ -51,7 +51,7 @@ class ExtentFromLayer(GeoAlgorithm):
         self.name = "Polygon from layer extent"
         self.group = "Vector general tools"
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterBoolean(self.BY_FEATURE, "Calculate extent for each feature separately", False))
 
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))

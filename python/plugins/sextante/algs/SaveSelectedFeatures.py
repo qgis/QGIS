@@ -61,7 +61,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
 
         #we add the input vector layer. It can have any kind of geometry
         #It is a mandatory (not optional) one, hence the False argument
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", [ParameterVector.VECTOR_TYPE_ANY], False))
         # we add a vector layer as output
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer with selected features"))
 

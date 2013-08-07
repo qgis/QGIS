@@ -45,7 +45,7 @@ class LinesToPolygons(GeoAlgorithm):
         self.name = "Lines to polygons"
         self.group = "Vector geometry tools"
 
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_LINE))
+        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_LINE]))
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):

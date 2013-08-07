@@ -48,7 +48,7 @@ class Centroids(GeoAlgorithm):
         self.name = "Polygon centroids"
         self.group = "Vector geometry tools"
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_POLYGON))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", [ParameterVector.VECTOR_TYPE_POLYGON]))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 

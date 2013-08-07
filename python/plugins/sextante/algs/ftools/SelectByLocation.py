@@ -54,8 +54,8 @@ class SelectByLocation(GeoAlgorithm):
         self.allowOnlyOpenedLayers = True
         self.name = "Select by location"
         self.group = "Vector selection tools"
-        self.addParameter(ParameterVector(self.INPUT, "Layer to select from", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterVector(self.INTERSECT, "Additional layer (intersection layer)", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterVector(self.INPUT, "Layer to select from", [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterVector(self.INTERSECT, "Additional layer (intersection layer)", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterSelection(self.METHOD, "Modify current selection by", self.METHODS, 0))
         self.addOutput(OutputVector(self.OUTPUT, "Selection", True))
 

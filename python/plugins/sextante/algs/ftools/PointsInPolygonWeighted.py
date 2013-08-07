@@ -56,8 +56,8 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         self.name = "Count points in polygon(weighted)"
         self.group = "Vector analysis tools"
 
-        self.addParameter(ParameterVector(self.POLYGONS, "Polygons", ParameterVector.VECTOR_TYPE_POLYGON))
-        self.addParameter(ParameterVector(self.POINTS, "Points", ParameterVector.VECTOR_TYPE_POINT))
+        self.addParameter(ParameterVector(self.POLYGONS, "Polygons", [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addParameter(ParameterVector(self.POINTS, "Points", [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterTableField(self.WEIGHT, "Weight field", self.POINTS))
         self.addParameter(ParameterString(self.FIELD, "Count field name", "NUMPOINTS"))
 

@@ -208,6 +208,6 @@ class   Union(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Union"
         self.group = "Vector overlay tools"
-        self.addParameter(ParameterVector(Union.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterVector(Union.INPUT2, "Input layer 2", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterVector(Union.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterVector(Union.INPUT2, "Input layer 2", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addOutput(OutputVector(Union.OUTPUT, "Union"))

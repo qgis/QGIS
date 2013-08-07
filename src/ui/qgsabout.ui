@@ -266,6 +266,16 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>License </string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QTextBrowser" name="txtLicense"/>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -289,7 +299,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>lstContributors</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

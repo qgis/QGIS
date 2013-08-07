@@ -46,7 +46,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         self.name = "Densify geometries given an interval"
         self.group = "Vector geometry tools"
 
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_POLYGON,ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterNumber(self.INTERVAL, "Interval between Vertices to add", 1, 10000000, 1))
 
         self.addOutput(OutputVector(self.OUTPUT, "Densified layer"))

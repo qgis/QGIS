@@ -49,7 +49,7 @@ class MeanCoords(GeoAlgorithm):
         self.name = "Mean coordinate(s)"
         self.group = "Vector analysis tools"
 
-        self.addParameter(ParameterVector(self.POINTS, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterVector(self.POINTS, "Input layer", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.WEIGHT, "Weight field", MeanCoords.POINTS, ParameterTableField.DATA_TYPE_NUMBER))
         self.addParameter(ParameterTableField(self.UID, "Unique ID field", MeanCoords.POINTS, ParameterTableField.DATA_TYPE_NUMBER))
 

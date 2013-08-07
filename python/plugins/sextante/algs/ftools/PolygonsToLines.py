@@ -49,7 +49,7 @@ class PolygonsToLines(GeoAlgorithm):
         self.name = "Polygons to lines"
         self.group = "Vector geometry tools"
 
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_POLYGON))
+        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_POLYGON]))
 
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 

@@ -55,7 +55,7 @@ class VariableDistanceBuffer(GeoAlgorithm):
         self.name = "Variable distance buffer"
         self.group = "Vector geometry tools"
 
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD, "Distance field",self.INPUT ))
         self.addParameter(ParameterNumber(self.SEGMENTS, "Segments", 1, default=5))
         self.addParameter(ParameterBoolean(self.DISSOLVE, "Dissolve result", False))

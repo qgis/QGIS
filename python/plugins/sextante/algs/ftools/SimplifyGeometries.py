@@ -49,7 +49,7 @@ class SimplifyGeometries(GeoAlgorithm):
         self.name = "Simplify geometries"
         self.group = "Vector geometry tools"
 
-        self.addParameter(ParameterVector(self.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterVector(self.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterNumber(self.TOLERANCE, "Tolerance", 0.0, 10000000.0, 1.0))
 
         self.addOutput(OutputVector(self.OUTPUT, "Simplified layer"))

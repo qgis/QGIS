@@ -512,7 +512,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             QsciScintillaCompat.dropEvent(self, e)
 
     def insertFromDropPaste(self, textDP):
-        pasteList = str(textDP).splitlines()
+        pasteList = unicode(textDP).splitlines()
         for line in pasteList[:-1]:
             cleanLine = line.replace(">>> ", "").replace("... ", "")
             self.insert(unicode(cleanLine))

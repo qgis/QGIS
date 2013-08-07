@@ -51,8 +51,8 @@ class Clip(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Clip"
         self.group = "Vector overlay tools"
-        self.addParameter(ParameterVector(Clip.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterVector(Clip.OVERLAY, "Clip layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterVector(Clip.INPUT, "Input layer", [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterVector(Clip.OVERLAY, "Clip layer", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addOutput(OutputVector(Clip.OUTPUT, "Clipped"))
 
     def processAlgorithm(self, progress):

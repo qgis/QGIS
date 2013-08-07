@@ -37,7 +37,9 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geomet
     , mTranslationOffsetY( 0.0 )
 {
   reset( geometryType );
-  setColor( QColor( Qt::lightGray ) );
+  QColor color(Qt::lightGray);
+  color.setAlpha(63);
+  setColor( color );
 }
 
 QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon )
@@ -49,7 +51,9 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon )
     , mTranslationOffsetY( 0.0 )
 {
   reset( isPolygon ? QGis::Polygon : QGis::Line );
-  setColor( QColor( Qt::lightGray ) );
+  QColor color(Qt::lightGray);
+  color.setAlpha(63);
+  setColor( color );
 }
 
 QgsRubberBand::QgsRubberBand(): QgsMapCanvasItem( 0 )
@@ -66,7 +70,7 @@ QgsRubberBand::~QgsRubberBand()
 void QgsRubberBand::setColor( const QColor & color )
 {
   mPen.setColor( color );
-  QColor fillColor( color.red(), color.green(), color.blue(), 63 );
+  QColor fillColor( color.red(), color.green(), color.blue(), color.alpha() );
   mBrush.setColor( fillColor );
   mBrush.setStyle( Qt::SolidPattern );
 }

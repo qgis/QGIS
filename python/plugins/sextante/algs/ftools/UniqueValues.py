@@ -53,7 +53,7 @@ class UniqueValues(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "List unique values"
         self.group = "Vector table tools"
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD_NAME, "Target field", self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
         self.addOutput(OutputHTML(self.OUTPUT, "Unique values"))
         self.addOutput(OutputNumber(self.TOTAL_VALUES, "Total unique values"))

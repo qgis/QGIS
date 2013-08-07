@@ -92,6 +92,11 @@ class CORE_EXPORT QgsApplication: public QApplication
      */
     static const QString translatorsFilePath();
 
+    /*!
+      Returns the path to the licence file.
+    */
+    static const QString licenceFilePath();
+
     //! Returns the path to the help application.
     static const QString helpAppPath();
 

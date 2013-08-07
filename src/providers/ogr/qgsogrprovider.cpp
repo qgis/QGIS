@@ -398,11 +398,11 @@ bool QgsOgrProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
 
   if ( !mSubsetString.isEmpty() )
   {
-    QString sql = QString( "SELECT * FROM %1 WHERE %2" )
-                  .arg( quotedIdentifier( FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) ) ) )
-                  .arg( mSubsetString );
-    QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-    ogrLayer = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, NULL );
+    QByteArray sql = "SELECT * FROM " + quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
+    sql += " WHERE " + mEncoding->fromUnicode( mSubsetString );
+
+    QgsDebugMsg( QString( "SQL: %1" ).arg( mEncoding->toUnicode( sql ) ) );
+    ogrLayer = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), NULL, NULL );
 
     if ( !ogrLayer )
     {
@@ -1232,14 +1232,14 @@ bool QgsOgrProvider::createSpatialIndex()
 
   QgsCPLErrorHandler handler;
 
-  QString layerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
+  QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
 
   // run REPACK on shape files
   if ( mDeletedFeatures )
   {
-    QString sql = QString( "REPACK %1" ).arg( layerName );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
-    QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-    OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, NULL );
+    QByteArray sql = QByteArray( "REPACK " ) + layerName;   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
+    QgsDebugMsg( QString( "SQL: %1" ).arg( FROM8( sql ) ) );
+    OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), NULL, NULL );
 
     if ( mFilePath.endsWith( ".shp", Qt::CaseInsensitive ) || mFilePath.endsWith( ".dbf", Qt::CaseInsensitive ) )
     {
@@ -1284,9 +1284,9 @@ bool QgsOgrProvider::createSpatialIndex()
 
   if ( ogrDataSource )
   {
-    QString sql = QString( "CREATE SPATIAL INDEX ON %1" ).arg( quotedIdentifier( layerName ) );  // quote the layer name so spaces are handled
-    QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-    OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "" );
+    QByteArray sql = "CREATE SPATIAL INDEX ON " + quotedIdentifier( layerName );  // quote the layer name so spaces are handled
+    QgsDebugMsg( QString( "SQL: %1" ).arg( FROM8( sql ) ) );
+    OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "" );
   }
 
   QFileInfo fi( mFilePath );     // to get the base name
@@ -1297,11 +1297,11 @@ bool QgsOgrProvider::createSpatialIndex()
 
 bool QgsOgrProvider::createAttributeIndex( int field )
 {
-  QString layerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
-  QString dropSql = QString( "DROP INDEX ON %1" ).arg( quotedIdentifier( layerName ) );
-  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( dropSql ).constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "SQL" );
-  QString createSql = QString( "CREATE INDEX ON %1 USING %2" ).arg( quotedIdentifier( layerName ) ).arg( fields()[field].name() );
-  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( createSql ).constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "SQL" );
+  QByteArray quotedLayerName = quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
+  QByteArray dropSql = "DROP INDEX ON " + quotedLayerName;
+  OGR_DS_ExecuteSQL( ogrDataSource, dropSql.constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "SQL" );
+  QByteArray createSql = "CREATE INDEX ON " + quotedLayerName + " USING " + mEncoding->fromUnicode( fields()[field].name() );
+  OGR_DS_ExecuteSQL( ogrDataSource, createSql.constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "SQL" );
 
   QFileInfo fi( mFilePath );     // to get the base name
   //find out, if the .idm file is there
@@ -2197,23 +2197,23 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   // avoid GDAL #4509
   return QgsVectorDataProvider::uniqueValues( index, uniqueValues, limit );
 #else
-  QString theLayerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
-
-  QString sql = QString( "SELECT DISTINCT %1 FROM %2" )
-                .arg( quotedIdentifier( fld.name() ) )
-                .arg( quotedIdentifier( theLayerName ) );
+  QByteArray sql = "SELECT DISTINCT " + quotedIdentifier( mEncoding->fromUnicode( fld.name() ) );
+  sql += " FROM " + quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += QString( " WHERE %1" ).arg( mSubsetString );
+    sql += " WHERE " + mEncoding->fromUnicode( mSubsetString );
   }
 
-  sql += QString( " ORDER BY %1 ASC" ).arg( fld.name() );  // quoting of fieldname produces a syntax error
+  sql += " ORDER BY " + mEncoding->fromUnicode( fld.name() ) + " ASC";  // quoting of fieldname produces a syntax error
 
-  QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, "SQL" );
+  QgsDebugMsg( QString( "SQL: %1" ).arg( mEncoding->toUnicode( sql ) ) );
+  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), NULL, "SQL" );
   if ( l == 0 )
+  {
+    QgsDebugMsg( "Failed to execute SQL" );
     return QgsVectorDataProvider::uniqueValues( index, uniqueValues, limit );
+  }
 
   OGRFeatureH f;
   while ( 0 != ( f = OGR_L_GetNextFeature( l ) ) )
@@ -2237,21 +2237,20 @@ QVariant QgsOgrProvider::minimumValue( int index )
   }
   const QgsField& fld = mAttributeFields[index];
 
-  QString theLayerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
-
-  QString sql = QString( "SELECT MIN(%1) FROM %2" )
-                .arg( quotedIdentifier( fld.name() ) )
-                .arg( quotedIdentifier( theLayerName ) );
+  QByteArray sql = "SELECT MIN(" + quotedIdentifier( mEncoding->fromUnicode( fld.name() ) );
+  sql += ") FROM " + quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += QString( " WHERE %1" ).arg( mSubsetString );
+    sql += " WHERE " + mEncoding->fromUnicode( mSubsetString );
   }
 
-  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, "SQL" );
-
+  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), NULL, "SQL" );
   if ( l == 0 )
+  {
+    QgsDebugMsg( QString( "Failed to execute SQL: %1" ).arg( mEncoding->toUnicode( sql ) ) );
     return QgsVectorDataProvider::minimumValue( index );
+  }
 
   OGRFeatureH f = OGR_L_GetNextFeature( l );
   if ( f == 0 )
@@ -2276,20 +2275,20 @@ QVariant QgsOgrProvider::maximumValue( int index )
   }
   const QgsField& fld = mAttributeFields[index];
 
-  QString theLayerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
-
-  QString sql = QString( "SELECT MAX(%1) FROM %2" )
-                .arg( quotedIdentifier( fld.name() ) )
-                .arg( quotedIdentifier( theLayerName ) );
+  QByteArray sql = "SELECT MAX(" + quotedIdentifier( mEncoding->fromUnicode( fld.name() ) );
+  sql += ") FROM " + quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += QString( " WHERE %1" ).arg( mSubsetString );
+    sql += " WHERE " + mEncoding->fromUnicode( mSubsetString );
   }
 
-  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, "SQL" );
+  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), NULL, "SQL" );
   if ( l == 0 )
+  {
+    QgsDebugMsg( QString( "Failed to execute SQL: %1" ).arg( mEncoding->toUnicode( sql ) ) );
     return QgsVectorDataProvider::maximumValue( index );
+  }
 
   OGRFeatureH f = OGR_L_GetNextFeature( l );
   if ( f == 0 )
@@ -2306,7 +2305,7 @@ QVariant QgsOgrProvider::maximumValue( int index )
   return value;
 }
 
-QString QgsOgrProvider::quotedIdentifier( QString field )
+QByteArray QgsOgrProvider::quotedIdentifier( QByteArray field )
 {
   if ( ogrDriverName == "MySQL" )
   {
