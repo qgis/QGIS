@@ -58,9 +58,9 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   tabItemType->setDocumentMode( true );
 #endif
 #if QT_VERSION >= 0x40700
-  searchBox->setPlaceholderText( tr( "Type here to filter symbols ..." ) );
+  searchBox->setPlaceholderText( tr( "Type here to filter symbols..." ) );
 #else
-  searchBox->setToolTip( tr( "Type here to filter symbols ..." ) );
+  searchBox->setToolTip( tr( "Type here to filter symbols..." ) );
 #endif
 
   // setup icons
@@ -77,9 +77,9 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( btnEditItem, SIGNAL( clicked() ), this, SLOT( editItem() ) );
   connect( btnRemoveItem, SIGNAL( clicked() ), this, SLOT( removeItem() ) );
 
-  QMenu *shareMenu = new QMenu( "Share Menu", this );
-  QAction *exportAction = shareMenu->addAction( "Export" );
-  QAction *importAction = shareMenu->addAction( "Import" );
+  QMenu *shareMenu = new QMenu( tr( "Share Menu" ), this );
+  QAction *exportAction = shareMenu->addAction( tr( "Export" ) );
+  QAction *importAction = shareMenu->addAction( tr( "Import" ) );
   connect( exportAction, SIGNAL( triggered() ), this, SLOT( exportItems() ) );
   connect( importAction, SIGNAL( triggered() ), this, SLOT( importItems() ) );
   btnShare->setMenu( shareMenu );
@@ -106,9 +106,9 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( groupModel, SIGNAL( itemChanged( QStandardItem* ) ),
            this, SLOT( groupRenamed( QStandardItem* ) ) );
 
-  QMenu *groupMenu = new QMenu( "Group Actions", this );
-  QAction *groupSymbols = groupMenu->addAction( "Group Symbols" );
-  QAction *editSmartgroup = groupMenu->addAction( "Edit Smart Group" );
+  QMenu *groupMenu = new QMenu( tr( "Group Actions" ), this );
+  QAction *groupSymbols = groupMenu->addAction( tr( "Group Symbols" ) );
+  QAction *editSmartgroup = groupMenu->addAction( tr( "Edit Smart Group" ) );
   btnManageGroups->setMenu( groupMenu );
   connect( groupSymbols, SIGNAL( triggered() ), this, SLOT( groupSymbolsAction() ) );
   connect( editSmartgroup, SIGNAL( triggered() ), this, SLOT( editSmartgroupAction() ) );
@@ -761,7 +761,7 @@ void QgsStyleV2ManagerDialog::populateGroups()
   QStandardItemModel *model = qobject_cast<QStandardItemModel*>( groupTree->model() );
   model->clear();
 
-  QStandardItem *allSymbols = new QStandardItem( "All Symbols" );
+  QStandardItem *allSymbols = new QStandardItem( tr( "All Symbols" ) );
   allSymbols->setData( "all" );
   allSymbols->setEditable( false );
   setBold( allSymbols );
@@ -771,15 +771,15 @@ void QgsStyleV2ManagerDialog::populateGroups()
   group->setData( "groups" );
   group->setEditable( false );
   buildGroupTree( group );
-  group->setText( "Groups" );//set title later
-  QStandardItem *ungrouped = new QStandardItem( "Ungrouped" );
-  ungrouped->setData( 0 );
+  group->setText( tr( "Groups" ) );//set title later
+  QStandardItem *ungrouped = new QStandardItem( tr( "Ungrouped" ) );
+  ungrouped->setData( "ungrouped" );
   setBold( ungrouped );
   setBold( group );
   group->appendRow( ungrouped );
   model->appendRow( group );
 
-  QStandardItem *tag = new QStandardItem( "Smart Groups" );
+  QStandardItem *tag = new QStandardItem( tr( "Smart Groups" ) );
   tag->setData( "smartgroups" );
   tag->setEditable( false );
   setBold( tag );
@@ -851,7 +851,7 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index )
     }
     else // then it must be a group
     {
-      if (( !index.data( Qt::UserRole + 1 ).toInt() && ( index.data() == "Ungrouped" ) ) || mGrouppingMode )
+      if (( !index.data( Qt::UserRole + 1 ).toInt() && ( index.data( Qt::UserRole + 1 ) == "ungrouped" ) ) || mGrouppingMode )
         enableGroupInputs( false );
       else
         enableGroupInputs( true );
@@ -884,7 +884,7 @@ void QgsStyleV2ManagerDialog::addGroup()
 
   // Violation 1: Creating sub-groups of system defined groups
   QString parentData = parentIndex.data( Qt::UserRole + 1 ).toString();
-  if ( parentData == "all" || ( parentIndex.data() == "Ungrouped" && parentData == "0" ) )
+  if ( parentData == "all" || ( parentIndex.data( Qt::UserRole + 1 ) == "ungrouped" && parentData == "0" ) )
   {
     int err = QMessageBox::critical( this, tr( "Invalid Selection" ),
                                      tr( "The parent group you have selected is not user editable.\n"
@@ -922,7 +922,7 @@ void QgsStyleV2ManagerDialog::addGroup()
   }
   else
   {
-    itemName = QString( "New Group" );
+    itemName = QString( tr( "New Group" ) );
     itemData = QVariant( "newgroup" );
   }
 
@@ -946,7 +946,7 @@ void QgsStyleV2ManagerDialog::removeGroup()
 
   // Violation: removing system groups
   QString data = index.data( Qt::UserRole + 1 ).toString();
-  if ( data == "all" || data == "groups" || data == "smartgroups" || index.data() == "Ungrouped" )
+  if ( data == "all" || data == "groups" || data == "smartgroups" || data == "ungrouped" )
   {
     int err = QMessageBox::critical( this, tr( "Invalid selection" ),
                                      tr( "Cannot delete system defined categories.\n"
@@ -1030,7 +1030,7 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
   if ( mGrouppingMode )
   {
     mGrouppingMode = false;
-    senderAction->setText( "Group Symbols" );
+    senderAction->setText( tr( "Group Symbols" ) );
     // disconnect slot which handles regrouping
     disconnect( model, SIGNAL( itemChanged( QStandardItem* ) ),
                 this, SLOT( regrouped( QStandardItem* ) ) );
@@ -1054,7 +1054,7 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
     QModelIndex present = groupTree->currentIndex();
     while ( present.parent().isValid() )
     {
-      if ( present.parent().data() == "Groups" )
+      if ( present.parent().data() == tr( "Groups" ) )
       {
         validGroup = true;
         break;
@@ -1067,7 +1067,7 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
 
     mGrouppingMode = true;
     // Change the text menu
-    senderAction->setText( "Finish Grouping" );
+    senderAction->setText( tr( "Finish Grouping" ) );
     // Remove all Symbol editing functionalities
     disconnect( treeModel, SIGNAL( itemChanged( QStandardItem* ) ),
                 this, SLOT( groupRenamed( QStandardItem* ) ) );
@@ -1259,25 +1259,25 @@ void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
   QPoint globalPos = groupTree->viewport()->mapToGlobal( point );
 
   QModelIndex index = groupTree->indexAt( point );
-  QgsDebugMsg( "Now you clicked : " + index.data().toString() );
+  QgsDebugMsg( "Now you clicked: " + index.data().toString() );
 
   QMenu groupMenu;
 
-  if ( index.parent().isValid() && ( index.data().toString() != "Ungrouped" ) )
+  if ( index.parent().isValid() && ( index.data( Qt::UserRole + 1 ).toString() != "ungrouped" ) )
   {
     if ( index.parent().data( Qt::UserRole + 1 ).toString() == "smartgroups" )
     {
-      groupMenu.addAction( "Edit Group" );
+      groupMenu.addAction( tr( "Edit Group" ) );
     }
     else
     {
-      groupMenu.addAction( "Add Group" );
+      groupMenu.addAction( tr( "Add Group" ) );
     }
-    groupMenu.addAction( "Remove Group" );
+    groupMenu.addAction( tr( "Remove Group" ) );
   }
   else if ( index.data( Qt::UserRole + 1 ) == "groups" || index.data( Qt::UserRole + 1 ) == "smartgroups" )
   {
-    groupMenu.addAction( "Add Group" );
+    groupMenu.addAction( tr( "Add Group" ) );
   }
 
 
@@ -1285,11 +1285,11 @@ void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
 
   if ( selectedItem )
   {
-    if ( selectedItem->text() == "Add Group" )
+    if ( selectedItem->text() == tr( "Add Group" ) )
       addGroup();
-    else if ( selectedItem->text() == "Remove Group" )
+    else if ( selectedItem->text() == tr( "Remove Group" ) )
       removeGroup();
-    else if ( selectedItem->text() == "Edit Group" )
+    else if ( selectedItem->text() == tr( "Edit Group" ) )
       editSmartgroupAction();
   }
 }
@@ -1300,7 +1300,7 @@ void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
 
   QMenu *groupMenu = new QMenu( this );
   QMenu *groupList = new QMenu( this );
-  groupList->setTitle( "Apply Group" );
+  groupList->setTitle( tr( "Apply Group" ) );
 
   QStringList groups = mStyle->groupNames();
   foreach ( QString group, groups )
@@ -1308,7 +1308,7 @@ void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
     groupList->addAction( group );
   }
   groupMenu->addMenu( groupList );
-  groupMenu->addAction( "Un-group" );
+  groupMenu->addAction( tr( "Un-group" ) );
 
   QAction* selectedItem = groupMenu->exec( globalPos );
 
@@ -1321,7 +1321,7 @@ void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
       return;
     }
     int groupId = 0;
-    if ( selectedItem->text() != "Un-group" )
+    if ( selectedItem->text() != tr( "Un-group" ) )
     {
       groupId = mStyle->groupId( selectedItem->text() );
     }
