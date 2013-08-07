@@ -761,7 +761,7 @@ void QgsStyleV2ManagerDialog::populateGroups()
   QStandardItemModel *model = qobject_cast<QStandardItemModel*>( groupTree->model() );
   model->clear();
 
-  QStandardItem *allSymbols = new QStandardItem( tr( "All Symbols" ) );
+  QStandardItem *allSymbols = new QStandardItem( "All Symbols" );
   allSymbols->setData( "all" );
   allSymbols->setEditable( false );
   setBold( allSymbols );
@@ -771,15 +771,15 @@ void QgsStyleV2ManagerDialog::populateGroups()
   group->setData( "groups" );
   group->setEditable( false );
   buildGroupTree( group );
-  group->setText( tr( "Groups" ) );//set title later
-  QStandardItem *ungrouped = new QStandardItem( tr( "Ungrouped" ) );
-  ungrouped->setData( "ungrouped" );
+  group->setText( "Groups" );//set title later
+  QStandardItem *ungrouped = new QStandardItem( "Ungrouped" );
+  ungrouped->setData( 0 );
   setBold( ungrouped );
   setBold( group );
   group->appendRow( ungrouped );
   model->appendRow( group );
 
-  QStandardItem *tag = new QStandardItem( tr( "Smart Groups" ) );
+  QStandardItem *tag = new QStandardItem( "Smart Groups" );
   tag->setData( "smartgroups" );
   tag->setEditable( false );
   setBold( tag );
@@ -851,7 +851,7 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index )
     }
     else // then it must be a group
     {
-      if ( index.data( Qt::UserRole + 1 ) == "ungrouped" || mGrouppingMode )
+      if (( !index.data( Qt::UserRole + 1 ).toInt() && ( index.data() == "Ungrouped" ) ) || mGrouppingMode )
         enableGroupInputs( false );
       else
         enableGroupInputs( true );
@@ -884,7 +884,7 @@ void QgsStyleV2ManagerDialog::addGroup()
 
   // Violation 1: Creating sub-groups of system defined groups
   QString parentData = parentIndex.data( Qt::UserRole + 1 ).toString();
-  if ( parentData == "all" || parentData == "ungrouped" )
+  if ( parentData == "all" || ( parentIndex.data() == "Ungrouped" && parentData == "0" ) )
   {
     int err = QMessageBox::critical( this, tr( "Invalid Selection" ),
                                      tr( "The parent group you have selected is not user editable.\n"
@@ -946,7 +946,7 @@ void QgsStyleV2ManagerDialog::removeGroup()
 
   // Violation: removing system groups
   QString data = index.data( Qt::UserRole + 1 ).toString();
-  if ( data == "all" || data == "groups" || data == "smartgroups" || data == "ungrouped" )
+  if ( data == "all" || data == "groups" || data == "smartgroups" || index.data() == "Ungrouped" )
   {
     int err = QMessageBox::critical( this, tr( "Invalid selection" ),
                                      tr( "Cannot delete system defined categories.\n"
@@ -1263,7 +1263,7 @@ void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
 
   QMenu groupMenu;
 
-  if ( index.parent().isValid() && ( index.data( Qt::UserRole + 1 ).toString() != "ungrouped" ) )
+  if ( index.parent().isValid() && ( index.data().toString() != "Ungrouped" ) )
   {
     if ( index.parent().data( Qt::UserRole + 1 ).toString() == "smartgroups" )
     {
