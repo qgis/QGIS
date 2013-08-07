@@ -35,6 +35,7 @@ import datetime
 import pyclbr
 from operator import itemgetter
 import traceback
+import codecs
 
 class KeyFilter(QObject):
     SHORTCUTS = {
@@ -486,7 +487,7 @@ class Editor(QsciScintilla):
         import tempfile
         fd, path = tempfile.mkstemp()
         tmpFileName = path + '.py'
-        with open(path, "w") as f:
+        with codecs.open(path, "w", encoding='utf-8') as f:
             f.write(self.text())
         os.close(fd)
         os.rename(path, tmpFileName)
@@ -758,7 +759,7 @@ class EditorTab(QWidget):
 
     def loadFile(self, filename, modified):
         self.newEditor.lastModified = QFileInfo(filename).lastModified()
-        fn = open(unicode(filename), "rb")
+        fn = codecs.open(unicode(filename), "rb", encoding='utf-8')
         txt = fn.read()
         fn.close()
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -804,7 +805,7 @@ class EditorTab(QWidget):
                 os.remove(temp_path)
             os.rename(path, temp_path)
         # Save the new contents
-        with open(path, "w") as f:
+        with codecs.open(path, "w", encoding='utf-8') as f:
             f.write(self.newEditor.text())
         if overwrite:
             os.remove(temp_path)
@@ -1007,7 +1008,7 @@ class EditorTabWidget(QTabWidget):
         if filename:
             readOnly = not QFileInfo(filename).isWritable()
             try:
-                fn = open(unicode(filename), "rb")
+                fn = codecs.open(unicode(filename), "rb", encoding='utf-8')
                 txt = fn.read()
                 fn.close()
             except IOError, error:
