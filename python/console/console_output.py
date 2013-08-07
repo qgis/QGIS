@@ -134,8 +134,8 @@ class ShellOutputScintilla(QsciScintilla):
 
     def insertInitText(self):
         txtInit = QCoreApplication.translate("PythonConsole",
-                                             "Python {0} on {1}\n"
-                                             "## Type help(iface) for more info and list of methods.\n".format(sys.version,  socket.gethostname()))
+                                             "Python %s on %s\n"
+                                             "## Type help(iface) for more info and list of methods.\n") % (sys.version,  socket.gethostname())
         initText = self.setText(txtInit)
 
     def refreshLexerProperties(self):
