@@ -1054,7 +1054,7 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
     QModelIndex present = groupTree->currentIndex();
     while ( present.parent().isValid() )
     {
-      if ( present.parent().data() == tr( "Groups" ) )
+      if ( present.parent().data() == "Groups" )
       {
         validGroup = true;
         break;
