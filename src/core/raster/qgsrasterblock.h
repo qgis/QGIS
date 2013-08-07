@@ -145,7 +145,7 @@ class CORE_EXPORT QgsRasterBlock
      * @return true if the block has no data value */
     bool hasNoDataValue() const { return mHasNoDataValue; }
 
-    /** Returns true if thee block may contain no data. It does not guarantee
+    /** Returns true if the block may contain no data. It does not guarantee
      * that it really contains any no data. It can be used to speed up processing.
      * Not the difference between this method and hasNoDataValue().
      * @return true if the block may contain no data */
