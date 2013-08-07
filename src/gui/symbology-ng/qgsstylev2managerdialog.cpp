@@ -884,7 +884,7 @@ void QgsStyleV2ManagerDialog::addGroup()
 
   // Violation 1: Creating sub-groups of system defined groups
   QString parentData = parentIndex.data( Qt::UserRole + 1 ).toString();
-  if ( parentData == "all" || ( parentIndex.data( Qt::UserRole + 1 ) == "ungrouped" && parentData == "0" ) )
+  if ( parentData == "all" || parentData == "ungrouped" )
   {
     int err = QMessageBox::critical( this, tr( "Invalid Selection" ),
                                      tr( "The parent group you have selected is not user editable.\n"
