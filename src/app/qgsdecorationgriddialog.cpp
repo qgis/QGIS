@@ -54,7 +54,7 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid& deco, QWidg
   mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::Vertical,
       tr( "Vertical" ) );
   mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::HorizontalAndVertical,
-      tr( "Horizontal and vertical" ) );
+      tr( "Horizontal and Vertical" ) );
   mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::BoundaryDirection,
       tr( "Boundary direction" ) );
 
