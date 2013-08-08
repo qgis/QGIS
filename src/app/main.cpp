@@ -336,8 +336,14 @@ void myMessageOutput( QtMsgType type, const char *msg )
       myPrint( "Warning: %s\n", msg );
 
 #ifdef QGISDEBUG
-      dumpBacktrace( 20 );
-      QgsMessageLog::logMessage( msg, "Qt" );
+      // Print all warnings except setNamedColor.
+      // Only seems to happen on windows
+      if ( 0 != strncmp( msg, "QColor::setNamedColor:", 22 ) )
+      {
+        // TODO: Verify this code in action.
+        dumpBacktrace( 20 );
+        QgsMessageLog::logMessage( msg, "Qt" );
+      }
 #endif
 
       // TODO: Verify this code in action.
