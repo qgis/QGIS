@@ -101,6 +101,18 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     void setIconSize( int iconSize );
 
     /**
+    * Set the style of the line
+    *  @note Added in 1.9
+    */
+    void setLineStyle( Qt::PenStyle penStyle );
+
+    /**
+    * Set the style of the brush
+    *  @note Added in 1.9
+    */
+    void setBrushStyle( Qt::BrushStyle brushStyle );
+
+    /**
      * Clears all the geometries in this rubberband.
      * Sets the representation type according to geometryType.
      *  @param geometryType Defines how the data should be drawn onto the screen. (Use QGis::Line, QGis::Polygon or QGis::Point)
@@ -226,16 +238,13 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     QBrush mBrush;
     QPen mPen;
 
-    /** The width of any line within the rubberband. */
-    int mWidth;
-
     /** The size of the icon for points.
       * @note Added in 1.9 */
     int mIconSize;
 
     /** Icon to be shown.
      *  @note Added in 1.9 */
-    IconType mIconType ;
+    IconType mIconType;
 
     /**
      * Nested lists used for multitypes

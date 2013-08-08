@@ -68,7 +68,7 @@ void QgsMapToolSplitFeatures::canvasReleaseEvent( QMouseEvent * e )
   }
   else if ( e->button() == Qt::RightButton )
   {
-    resetLastVertex();
+    deleteTempRubberBand();
 
     //bring up dialog if a split was not possible (polygon) or only done once (line)
     int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
