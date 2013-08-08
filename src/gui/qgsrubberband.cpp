@@ -29,7 +29,6 @@
 */
 QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geometryType )
     : QgsMapCanvasItem( mapCanvas )
-    , mWidth( 1 )
     , mIconSize( 5 )
     , mIconType( ICON_CIRCLE )
     , mGeometryType( geometryType )
@@ -37,23 +36,28 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geomet
     , mTranslationOffsetY( 0.0 )
 {
   reset( geometryType );
-  QColor color(Qt::lightGray);
-  color.setAlpha(63);
+  QColor color( Qt::lightGray );
+  color.setAlpha( 63 );
   setColor( color );
+  setWidth( 1 );
+  setLineStyle( Qt::SolidLine );
+  setBrushStyle( Qt::SolidPattern );
 }
 
 QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon )
     : QgsMapCanvasItem( mapCanvas )
-    , mWidth( 1 )
     , mIconSize( 5 )
     , mIconType( ICON_CIRCLE )
     , mTranslationOffsetX( 0.0 )
     , mTranslationOffsetY( 0.0 )
 {
   reset( isPolygon ? QGis::Polygon : QGis::Line );
-  QColor color(Qt::lightGray);
-  color.setAlpha(63);
+  QColor color( Qt::lightGray );
+  color.setAlpha( 63 );
   setColor( color );
+  setWidth( 1 );
+  setLineStyle( Qt::SolidLine );
+  setBrushStyle( Qt::SolidPattern );
 }
 
 QgsRubberBand::QgsRubberBand(): QgsMapCanvasItem( 0 )
@@ -72,7 +76,6 @@ void QgsRubberBand::setColor( const QColor & color )
   mPen.setColor( color );
   QColor fillColor( color.red(), color.green(), color.blue(), color.alpha() );
   mBrush.setColor( fillColor );
-  mBrush.setStyle( Qt::SolidPattern );
 }
 
 /*!
@@ -80,7 +83,7 @@ void QgsRubberBand::setColor( const QColor & color )
   */
 void QgsRubberBand::setWidth( int width )
 {
-  mWidth = width;
+  mPen.setWidth( width );
 }
 
 void QgsRubberBand::setIcon( IconType icon )
@@ -91,6 +94,16 @@ void QgsRubberBand::setIcon( IconType icon )
 void QgsRubberBand::setIconSize( int iconSize )
 {
   mIconSize = iconSize;
+}
+
+void QgsRubberBand::setLineStyle( Qt::PenStyle penStyle )
+{
+  mPen.setStyle( penStyle );
+}
+
+void QgsRubberBand::setBrushStyle( Qt::BrushStyle brushStyle )
+{
+  mBrush.setStyle( brushStyle );
 }
 
 /*!
@@ -406,7 +419,6 @@ void QgsRubberBand::paint( QPainter* p )
   if ( mPoints.size() > 0 )
   {
     p->setBrush( mBrush );
-    mPen.setWidth( mWidth );
     p->setPen( mPen );
 
     Q_FOREACH( const QList<QgsPoint>& line, mPoints )
@@ -488,7 +500,7 @@ void QgsRubberBand::updateRect()
       return;
     }
     qreal s = ( mIconSize - 1 ) / 2;
-    qreal p = mWidth;
+    qreal p = mPen.width();
 
     QgsRectangle r( it->x() + mTranslationOffsetX - s - p, it->y() + mTranslationOffsetY - s - p,
                     it->x() + mTranslationOffsetX + s + p, it->y() + mTranslationOffsetY + s + p );

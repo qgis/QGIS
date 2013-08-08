@@ -69,7 +69,7 @@ void QgsMapToolAddRing::canvasReleaseEvent( QMouseEvent * e )
   }
   else if ( e->button() == Qt::RightButton )
   {
-    resetLastVertex();
+    deleteTempRubberBand();
 
     closePolygon();
 

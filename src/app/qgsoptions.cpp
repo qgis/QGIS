@@ -638,7 +638,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   myRed = settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt();
   myGreen = settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt();
   myBlue = settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt();
-  mLineColorToolButton->setColor( QColor( myRed, myGreen, myBlue ) );
+  myAlpha = settings.value( "/qgis/digitizing/line_color_alpha", 200 ).toInt();
+  mLineColorToolButton->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+  mLineColorToolButton->setColorDialogOptions(QColorDialog::ShowAlphaChannel);
 
   //default snap mode
   mDefaultSnapModeComboBox->insertItem( 0, tr( "To vertex" ), "to vertex" );
@@ -1083,6 +1085,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/digitizing/line_color_red", digitizingColor.red() );
   settings.setValue( "/qgis/digitizing/line_color_green", digitizingColor.green() );
   settings.setValue( "/qgis/digitizing/line_color_blue", digitizingColor.blue() );
+  settings.setValue( "/qgis/digitizing/line_color_alpha", digitizingColor.alpha() );
 
   //default snap mode
   QString defaultSnapModeString = mDefaultSnapModeComboBox->itemData( mDefaultSnapModeComboBox->currentIndex() ).toString();

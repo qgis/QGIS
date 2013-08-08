@@ -112,7 +112,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
       }
       else if ( e->button() != Qt::RightButton )
       {
-        resetLastVertex();
+        deleteTempRubberBand();
 
         return;
       }
