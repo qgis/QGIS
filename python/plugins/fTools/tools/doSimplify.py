@@ -88,6 +88,9 @@ class Dialog( QDialog, Ui_Dialog ):
     self.edOutputFile.setText( self.shapeFileName )
 
   def accept( self ):
+    if not self.cmbInputLayer.currentText():
+      QMessageBox.warning( self, self.tr( "Warning" ), self.tr( "Please specify an input layer" ) )
+      return
     vLayer = ftools_utils.getVectorLayerByName( self.cmbInputLayer.currentText() )
 
     self.btnOk.setEnabled( False )
