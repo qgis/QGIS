@@ -16390,7 +16390,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsabout.ui" line="271"/>
         <source>License </source>
-        <translation type="unfinished"></translation>
+        <translation>라이센스 </translation>
     </message>
     <message>
         <source>Name</source>
@@ -27172,7 +27172,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="284"/>
         <source>Equal operator</source>
-        <translation type="unfinished">같음 연산자</translation>
+        <translation>같음 연산자</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="287"/>
@@ -27182,7 +27182,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="300"/>
         <source>Addition operator</source>
-        <translation type="unfinished">추가적인 연산자</translation>
+        <translation>덧샘 연산자</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="303"/>
@@ -27192,7 +27192,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="310"/>
         <source>Subtraction operator</source>
-        <translation type="unfinished">뺴기 연산자</translation>
+        <translation>빼기 연산자</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="313"/>
@@ -27202,7 +27202,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="320"/>
         <source>Division operator</source>
-        <translation type="unfinished">나누기 연산자</translation>
+        <translation>나누기 연산자</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="323"/>
@@ -27212,7 +27212,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="330"/>
         <source>Multiplication operator</source>
-        <translation type="unfinished">곱하기 연산자</translation>
+        <translation>곱하기 연산자</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="333"/>
@@ -27222,7 +27222,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="340"/>
         <source>Power operator</source>
-        <translation type="unfinished">승 연산자</translation>
+        <translation>승산 연산자</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="343"/>
@@ -27232,7 +27232,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="350"/>
         <source>String Concatenation</source>
-        <translation type="unfinished"></translation>
+        <translation>문자열 연결</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="353"/>
@@ -27242,7 +27242,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="372"/>
         <source>Open Bracket </source>
-        <translation type="unfinished"></translation>
+        <translation>괄호 열기</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="375"/>
@@ -27252,7 +27252,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="382"/>
         <source>Close Bracket </source>
-        <translation type="unfinished"></translation>
+        <translation>괄호 닫기</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="385"/>
@@ -33571,7 +33571,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgshtmlannotationdialog.cpp" line="26"/>
         <source>HTML annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML 주석</translation>
     </message>
     <message>
         <location filename="../src/app/qgshtmlannotationdialog.cpp" line="38"/>
@@ -38142,8 +38142,8 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/gui/qgsmessagebar.cpp" line="373"/>
         <source>%n more</source>
         <comment>unread messages</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n 더 있음</numerusform>
         </translation>
     </message>
     <message>
@@ -48648,7 +48648,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterdataprovider.cpp" line="472"/>
         <source>Text</source>
-        <translation type="unfinished">텍스트</translation>
+        <translation>텍스트</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterdataprovider.cpp" line="474"/>
