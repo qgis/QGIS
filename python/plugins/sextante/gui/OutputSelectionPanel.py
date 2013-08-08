@@ -29,6 +29,7 @@ from PyQt4.QtGui import *
 from qgis.gui import *
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.outputs.OutputVector import OutputVector
+from sextante.outputs.OutputDirectory import OutputDirectory
 
 class OutputSelectionPanel(QWidget):
 
@@ -43,8 +44,16 @@ class OutputSelectionPanel(QWidget):
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
         self.text = QLineEdit()
-        if hasattr(self.text, 'setPlaceholderText'):
-            self.text.setPlaceholderText(OutputSelectionPanel.SAVE_TO_TEMP_FILE)
+        if isinstance(self.output, OutputDirectory):
+            settings = QSettings()
+            if settings.contains("/SextanteQGIS/LastOutputPath"):
+                currentPath = settings.value( "/SextanteQGIS/LastOutputPath")
+            else:
+                currentPath = SextanteConfig.getSetting(SextanteConfig.OUTPUT_FOLDER)
+            self.text.setText(currentPath)
+        else:
+            if hasattr(self.text, 'setPlaceholderText'):
+                self.text.setPlaceholderText(OutputSelectionPanel.SAVE_TO_TEMP_FILE)
         self.text.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QPushButton()
@@ -54,19 +63,22 @@ class OutputSelectionPanel(QWidget):
         self.setLayout(self.horizontalLayout)
 
     def buttonPushed(self):
-        popupmenu = QMenu()
-        saveToTemporaryFileAction = QAction("Save to a temporary file", self.pushButton)
-        saveToTemporaryFileAction.triggered.connect(self.saveToTemporaryFile)
-        popupmenu.addAction(saveToTemporaryFileAction )
-        if (isinstance(self.output, OutputVector) and self.alg.provider.supportsNonFileBasedOutput()):
-            saveToMemoryAction= QAction("Save to a memory layer", self.pushButton)
-            saveToMemoryAction.triggered.connect(self.saveToMemory)
-            popupmenu.addAction(saveToMemoryAction)
-        saveToFileAction = QAction("Save to file...", self.pushButton)
-        saveToFileAction.triggered.connect(self.saveToFile)
-        popupmenu.addAction(saveToFileAction)
+        if isinstance(self.output, OutputDirectory):
+            self.saveToDirectory()
+        else:
+            popupmenu = QMenu()
+            saveToTemporaryFileAction = QAction("Save to a temporary file", self.pushButton)
+            saveToTemporaryFileAction.triggered.connect(self.saveToTemporaryFile)
+            popupmenu.addAction(saveToTemporaryFileAction )
+            if (isinstance(self.output, OutputVector) and self.alg.provider.supportsNonFileBasedOutput()):
+                saveToMemoryAction= QAction("Save to a memory layer", self.pushButton)
+                saveToMemoryAction.triggered.connect(self.saveToMemory)
+                popupmenu.addAction(saveToMemoryAction)
+            saveToFileAction = QAction("Save to file...", self.pushButton)
+            saveToFileAction.triggered.connect(self.saveToFile)
+            popupmenu.addAction(saveToFileAction)
 
-        popupmenu.exec_(QCursor.pos())
+            popupmenu.exec_(QCursor.pos())
 
     def saveToTemporaryFile(self):
         self.text.setText("")
@@ -100,13 +112,38 @@ class OutputSelectionPanel(QWidget):
             settings.setValue("/SextanteQGIS/LastOutputPath", os.path.dirname(filename))
             settings.setValue("/SextanteQGIS/encoding", encoding)
 
-    def getValue(self):
-        filename = unicode(self.text.text())
-        if filename.strip() == "" or filename == OutputSelectionPanel.SAVE_TO_TEMP_FILE:
-            return None
-        if filename.startswith("memory:"):
-            return filename
+    def saveToDirectory(self):
+        '''
+        Show a dialog for choosing an output directory.
+        '''
+
+        settings = QSettings()
+        if settings.contains("/SextanteQGIS/LastOutputPath"):
+            currentPath = settings.value( "/SextanteQGIS/LastOutputPath")
         else:
-            if not os.path.isabs(filename):
-                filename = SextanteConfig.getSetting(SextanteConfig.OUTPUT_FOLDER) + os.sep + filename
-            return filename
+            currentPath = SextanteConfig.getSetting(SextanteConfig.OUTPUT_FOLDER)
+        lastEncoding = settings.value("/SextanteQGIS/encoding", "System")
+        dirDialog = QgsEncodingFileDialog(self, "Save Directory", currentPath,
+                                          "", lastEncoding)
+        dirDialog.setFileMode(QFileDialog.Directory)
+        dirDialog.setOption(QFileDialog.ShowDirsOnly)
+        if dirDialog.exec_() == QDialog.Accepted:
+            directories = dirDialog.selectedFiles()
+            encoding = unicode(dirDialog.encoding())
+            self.output.encoding = encoding
+            directory = unicode(directories[0])
+            self.text.setText(directory)
+            settings.setValue("/SextanteQGIS/LastOutputPath", directory)
+            settings.setValue("/SextanteQGIS/encoding", encoding)
+
+    def getValue(self):
+        filepath = unicode(self.text.text())
+        if filepath.strip() == "" or filepath == OutputSelectionPanel.SAVE_TO_TEMP_FILE:
+            value = None
+        elif filepath.startswith("memory:"):
+            value = filepath
+        elif not os.path.isabs(filepath):
+            value = SextanteConfig.getSetting(SextanteConfig.OUTPUT_FOLDER) + os.sep + filepath
+        else:
+            value = filepath
+        return value
