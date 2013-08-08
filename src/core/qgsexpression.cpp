@@ -688,7 +688,7 @@ static QVariant fcnRegexpSubstr( const QVariantList& values, const QgsFeature* ,
   if ( re.captureCount() > 0 )
   {
     // return first capture
-    return QVariant( re.capturedTexts()[0] );
+    return QVariant( re.capturedTexts()[1] );
   }
   else
   {
@@ -1661,7 +1661,7 @@ bool QgsExpression::needsGeometry()
 
 void QgsExpression::initGeomCalculator()
 {
-  if( mCalc )
+  if ( mCalc )
     return;
 
   // Use planimetric as default
@@ -1671,7 +1671,7 @@ void QgsExpression::initGeomCalculator()
 
 void QgsExpression::setGeomCalculator( QgsDistanceArea &calc )
 {
-  if( !mCalc )
+  if ( !mCalc )
     mCalc = new QgsDistanceArea();
 
   // Copy from supplied calculator
