@@ -14447,6 +14447,10 @@ p, li { white-space: pre-wrap; }
         <source>QGIS is licensed under the GNU General Public License</source>
         <translation>QGIS se distribuye bajo la Licencia Pública General GNU</translation>
     </message>
+    <message>
+        <source>License </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAddAttrDialog</name>
@@ -21383,7 +21387,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Horizontal and vertical</source>
-        <translation>Horizontal and vertical</translation>
+        <translation type="obsolete">Horizontal and vertical</translation>
     </message>
     <message>
         <source>Boundary direction</source>
@@ -23483,6 +23487,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Load 10 sample values</source>
         <translation>Cargar 10 valores de muestra</translation>
+    </message>
+    <message>
+        <source>Equal operator</source>
+        <translation type="unfinished">Operador de igualdad</translation>
+    </message>
+    <message>
+        <source>Addition operator</source>
+        <translation type="unfinished">Operador de suma</translation>
+    </message>
+    <message>
+        <source>Subtraction operator</source>
+        <translation type="unfinished">Operador de resta</translation>
+    </message>
+    <message>
+        <source>Division operator</source>
+        <translation type="unfinished">Operador de división</translation>
+    </message>
+    <message>
+        <source>Multiplication operator</source>
+        <translation type="unfinished">Operador de multiplicación</translation>
+    </message>
+    <message>
+        <source>Power operator</source>
+        <translation type="unfinished">Operador de potencia</translation>
+    </message>
+    <message>
+        <source>String Concatenation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Bracket </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close Bracket </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -28506,6 +28546,10 @@ en la línea %2 columna %3</translation>
         <source>html</source>
         <translation>HTML</translation>
     </message>
+    <message>
+        <source>HTML annotation</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsHttpTransaction</name>
@@ -30842,7 +30886,7 @@ mo se muestran</translation>
     <name>QgsLoadStyleFromDBDialogLayout</name>
     <message>
         <source>Add column</source>
-        <translation>Añadir columna</translation>
+        <translation type="obsolete">Añadir columna</translation>
     </message>
     <message>
         <source>Styles related to the layer</source>
@@ -31846,7 +31890,7 @@ mo se muestran</translation>
     <name>QgsMapToolSplitFeatures</name>
     <message>
         <source>Split error</source>
-        <translation>Error en la división</translation>
+        <translation type="obsolete">Error en la división</translation>
     </message>
     <message>
         <source>An error occured during feature splitting</source>
@@ -32322,7 +32366,15 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>more</source>
-        <translation>más</translation>
+        <translation type="obsolete">más</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n more</source>
+        <comment>unread messages</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -33734,7 +33786,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OpenStreetMap import</source>
-        <translation>Importación de OpenStreetMap</translation>
+        <translation type="obsolete">Importación de OpenStreetMap</translation>
     </message>
     <message>
         <source>Failed to export OSM data:
@@ -41123,6 +41175,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Feature</source>
         <translation>Objeto espacial</translation>
+    </message>
+    <message>
+        <source>Text</source>
+        <translation type="unfinished">Texto</translation>
     </message>
 </context>
 <context>
@@ -53474,85 +53530,87 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Topology not checked yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Topología aún sin comprobar</translation>
     </message>
     <message>
         <source>Configure</source>
-        <translation type="unfinished"></translation>
+        <translation>Configurar</translation>
     </message>
     <message>
         <source>Select automatic fix</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar arreglo automático</translation>
     </message>
     <message>
         <source>Fix!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Arreglado!</translation>
     </message>
     <message>
         <source>No errors were found</source>
-        <translation type="unfinished"></translation>
+        <translation>No se encontraron errores</translation>
     </message>
     <message>
         <source>Invalid first layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Primera capa no válida</translation>
     </message>
     <message>
         <source>Topology plugin</source>
-        <translation type="unfinished">Complemento Topología</translation>
+        <translation>Complemento Topología</translation>
     </message>
     <message>
         <source>Invalid first geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Primera geometría no válida</translation>
     </message>
     <message>
         <source>Topology test</source>
-        <translation type="unfinished"></translation>
+        <translation>Test de topología</translation>
     </message>
     <message>
         <source>Feature not found in the layer.
 The layer has probably changed.
 Run topology check again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Objeto espacial no encontrado en la capa.
+La capa probablemente ha cambiado.
+Ejecute la comprobación de topología de nuevo.</translation>
     </message>
     <message>
         <source>Invalid second layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Segunda capa no válida</translation>
     </message>
     <message>
         <source>Invalid second geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Segunda geometría no válida</translation>
     </message>
     <message>
         <source>Invalid conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>Conflicto no válido</translation>
     </message>
     <message>
         <source>%1 errors were found</source>
-        <translation type="unfinished"></translation>
+        <translation>Se encontraron %1 errores</translation>
     </message>
     <message>
         <source>Topology fix error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de arreglo de topología</translation>
     </message>
     <message>
         <source>Fixing failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Falló el arreglo!</translation>
     </message>
     <message>
         <source>Layer %1 not found in registry.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se encontró la capa %1 en el registro.</translation>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Abortar</translation>
+        <translation>Abortar</translation>
     </message>
     <message>
         <source>Show topology errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar errrores de topología</translation>
     </message>
     <message>
         <source>Show errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar errores</translation>
     </message>
 </context>
 <context>
@@ -53593,33 +53651,38 @@ The Coordinate Reference System (CRS) tab allows you to set the projection for t
 &lt;/a&gt;
 On this tab you can choose on which layers the identify tool will work.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Propiedades del proyecto&lt;/h3&gt;
+        <translation>&lt;h3&gt;Propiedades del proyecto&lt;/h3&gt;
 Este diálogo permite establecer algunas propiedades relacionadas con el &lt;label&gt;Proyecto&lt;/label&gt;. Un proyecto es un conjunto guardado de capas y su configuración, así como otra información necesaria para restaurar el proyecto desde el disco.&lt;p&gt;
 
-&lt;h4&gt;Pestaña general&lt;/h4&gt;
+&lt;a href=&quot;#general&quot;&gt;Pestaña General&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#crs&quot;&gt;Pestaña Sistema de referencia de coordenadas (SRC)&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#layers&quot;&gt;Pestaña Capas identificables&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;Pestaña General&lt;/h4&gt;
+&lt;/a&gt;
 &lt;table border=1&gt;
-&lt;tr&gt;
-&lt;td&gt;Título de proyecto&lt;/td&gt;&lt;td&gt;Un título descriptivo para el proyecto. Este título aparecerá en la barra de títulos de la ventana de QGIS.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Unidades del mapa&lt;/td&gt;&lt;td&gt;Elija las unidades del mapa adecuadas para las capas del proyecto.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Precisión de la visualización del cursor&lt;/td&gt;&lt;td&gt;Use la configuración manual para establecer la precisión de la visualización en la barra de estado. A medida que se mueve el ratón sobre la vista del mapa, las coordenadas se actualizan y se muestran en la barra de estado usando la precisión que elija. Automática (predeterminado) tiene como resultado una precisión por omisión basada en las unidades del mapa.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Configuración de la digitalización&lt;/td&gt;&lt;td&gt;Esto permite establecer la tolerancia de autoensamblado en píxeles, la anchura de línea usada al digitalizar y el color de las líneas digitalizadas.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Color de selección&lt;/td&gt;&lt;td&gt;Los objetos espaciales seleccionados se muestran en el mapa usando este color.&lt;/td&gt;
-&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Título de proyecto&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Un título descriptivo para el proyecto. Este título aparecerá en la barra de títulos de la ventana de QGIS.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Color de selección&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Los objetos espaciales seleccionados se muestran en el mapa usando este color.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Color de fondo&lt;/label&gt;&lt;/td&gt;&lt;td&gt;El color del lienzo del mapa.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Guardar rutas&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Capacidad para guardar las rutas como absolutas o relativas.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Unidades de capa&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Elija las unidades adecuadas para las capas del proyecto.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Precisión&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Use la configuración manual para establecer la precisión de la visualización en la barra de estado. A medida que se mueve el ratón sobre la vista del mapa, las coordenadas se actualizan y se muestran en la barra de estado usando la precisión que elija. Automática (predeterminado) tiene como resultado una precisión por omisión basada en las unidades del mapa.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Digitalización&lt;/label&gt;&lt;/td&gt;&lt;td&gt;La opción &lt;label&gt; Habilitar edición topológica&lt;/label&gt; permite editar y mantener bordes comunes en mosaicos de polígonos. Editar un vértice en un borde común hará que se actualicen ambos bordes.&lt;p&gt;Para evitar digitalizar todos los vértices de un borde común seleccione &lt;label&gt;Evitar intersecciones de nuevos polígonos&lt;/label&gt;. En la ventana de diálogo marque las capas adecuadas a las que se ajustará el nuevo polígono. Dibuje el nuevo polígono de forma que solape con el existente, se recortará automáticamente. &lt;p&gt;&lt;label&gt;Opciones de autoensamblado&lt;/label&gt;Le permite establecer la tolerancia de autoensamblado en píxeles o unidades de mapa y el modo de autoensamblado: &lt;label&gt;a vértice&lt;/label&gt;, &lt;label&gt;a segmento&lt;/label&gt;, &lt;label&gt;a vértice y segmento&lt;/label&gt; para cada capa por separado.&lt;/td&gt;&lt;/tr&gt;
+
 &lt;/table&gt;
-&lt;a anchor=&quot;projections&quot;&gt;&lt;/a&gt;&lt;h4&gt;Pestaña proyección&lt;/h4&gt;
-La pestaña proyección permite establecer la proyección para el proyecto actual y activar la proyección al vuelo. No es necesario tener guardado el proyecto para configurar y activar la proyección al vuelo.&lt;p&gt;
-Para usar la proyección al vuelo, haga clic en la casilla de verificación &lt;label&gt;Activar proyección al vuelo&lt;/label&gt;. Elija luego la proyección para el proyecto (Vista del mapa) de la lista de sistemas de coordenadas geográficas o proyectadas.
-&lt;p&gt;
-Puede encontrar un sistema de coordenadas introduciendo su PostGIS SRID, código EPSG o el QGIS SRSRID y haciendo clic en el botón &lt;label&gt;Encontrar&lt;/label&gt;.
- 
-</translation>
+&lt;a name=&quot;crs&quot;&gt;
+&lt;h4&gt;Pestaña Sistema de referencia de coordenadas (SRC)&lt;/h4&gt;
+&lt;/a&gt;
+La pestaña Sistema de referencia de coordenadas (SRC) le permite establecer la proyección para el proyecto actual y activar la transformación «al vuelo». No necesita tener guardado un proyecto para configurar y activar la transformación «al vuelo» del SRC.
+&lt;p&gt;Para usar la transformación «al vuelo» del SRC, marque la casilla &lt;label&gt;Activar transformación de SRC «al vuelo»&lt;/label&gt;. Luego elija la proyección para el proyecto (lienzo del mapa) de la lista de sistemas de coordenadas geográficas o proyectadas.
+&lt;p&gt;Puede encontrar un sistema de coordenadas introduciendo su nombre, código EPSG o la ID de QGIS ID y pulsando el botón &lt;label&gt;Encontrar&lt;/label&gt;.
+&lt;p&gt;Para un acceso rápido, en la parte de abajo estará disponible la lista de sistemeas de coordenadas usados recientemente.
+
+&lt;a name=&quot;layers&quot;&gt;
+&lt;h4&gt;Pestaña Capas identificables&lt;/h4&gt;
+&lt;/a&gt;
+En esta pestaña puede elegir sobre qué capas actuará la herramienta identificar.</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Export a QGIS Project to MapServer Map File&lt;/h3&gt;
@@ -53655,24 +53718,18 @@ These values are written to the map file in the appropriate spots to set things 
   &lt;dt&gt;&lt;label&gt;Footer&lt;/label&gt;&lt;/dt&gt;
   &lt;dd&gt;Full path to the MapServer footer file to be used with the map file.&lt;/dd&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Exportar un proyecto de QGIS a archivo de mapa de MapServer&lt;/h3&gt;
+        <translation>&lt;h3&gt;Exportar un proyecto de QGIS a archivo de mapa de MapServer&lt;/h3&gt;
 &lt;p&gt;
-Esta herramienta le permite exportar un proyecto guardado de QGIS a map de MapServer 
-Sólo se necesitan el &lt;b&gt;Archivo de mapa&lt;/b&gt; y el &lt;b&gt;archivo de proyecto de QGIS&lt;/b&gt;.
+Esta herramienta le permite exportar un proyecto guardado de QGIS a map de MapServer Sólo se necesitan el &lt;b&gt;Archivo de mapa&lt;/b&gt; y el &lt;b&gt;archivo de proyecto de QGIS&lt;/b&gt;.
 &lt;/p&gt;
-Marque la casilla &lt;label&gt;Usar proyecto actual&lt;/label&gt; o introduzca la ruta completa a 
-el archivo del proyecto de QGIS (.qgs) que quiera exportar. Puede usar el botón de la 
-derecha para buscar el archivo de proyecto de QGIS.
+Marque la casilla &lt;label&gt;Usar proyecto actual&lt;/label&gt; o introduzca la ruta completa al archivo del proyecto de QGIS (.qgs) que quiera exportar. Puede usar el botón de la derecha para buscar el archivo de proyecto de QGIS.
 
 &lt;h4&gt;Archivo de mapa&lt;/h4&gt;
 
-&lt;label&gt;Archivo de mapa&lt;/label&gt; Introduzca el nombre del archivo de mapa a crear. Puede 
-usar el botón de la derecha para navegar hasta el directorio en que que quiera crear 
-el archivo de mapa.
+&lt;label&gt;Archivo de mapa&lt;/label&gt; Introduzca el nombre del archivo de mapa a crear. Puede usar el botón de la derecha para navegar hasta el directorio en que que quiera crear el archivo de mapa.
 
 &lt;h4&gt;Mapa&lt;/h4&gt;
-Estos valores se escriben en el archivo de mapa en los lugares adecuados para establecer cosas 
-tales como el tamaño de la imagen de salida, las unidades o el tipo de imagen.
+Estos valores se escriben en el archivo de mapa en los lugares adecuados para establecer cosas tales como el tamaño de la imagen de salida, las unidades o el tipo de imagen.
 &lt;dl&gt;
   &lt;dt&gt;&lt;label&gt;Nombre&lt;/label&gt;&lt;/dt&gt;
   &lt;dd&gt;Un nombre para el mapa. Este nombre se antepone a todas las imágenes generadas por MapServer.&lt;/dd&gt;
@@ -53682,7 +53739,7 @@ tales como el tamaño de la imagen de salida, las unidades o el tipo de imagen.
   &lt;dd&gt;Altura de la imagen de salida en píxeles.&lt;/dd&gt;
   &lt;dt&gt;&lt;label&gt;Unidades&lt;/label&gt;&lt;/dt&gt;
   &lt;dd&gt;Unidades de medida usadas para la salida.&lt;/dd&gt;
-  &lt;dt&gt;&lt;label&gt;Imagen type&lt;/label&gt;&lt;/dt&gt;
+  &lt;dt&gt;&lt;label&gt;Tipo de imagen&lt;/label&gt;&lt;/dt&gt;
   &lt;dd&gt;Formato para la imagen de salida generada por MapServer&lt;/dd&gt;
 &lt;/dl&gt;
 &lt;h4&gt;Rutas&lt;/h4&gt;
@@ -54025,7 +54082,13 @@ QGIS supports vector data in a number of formats, including those supported by t
 QGIS supports PostGIS layers in a PostgreSQL database and SpatiaLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats can be found in Appendix A.1 of the User Guide.&lt;/p&gt;
 Detailed description how to proceed with vector data is described in chapter 5 &apos;Working with Vector Data&apos;.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Diálogo Abrir capa vectorial&lt;/h3&gt;
+
+El diálogo Abrir capa vectorial se usa para añadir datos vectoriales a la vista del mapa de QGIS. Los datos vectoriales son datos espaciales descritor usando geometrías de puntos, líneas y polígonos (áreas cerradas).&lt;/p&gt;
+QGIS admite datos vectoriales en distintos formatos, incluyendo aquellos admitidos por el complemento del proveedor de datos de la biblioteca OGR, tales como archivos shape de ESRI, MapInfo MIF (formato de intercambio) y MapInfo TAB (formato nativo).&lt;/p&gt;
+QGIS admite capas PostGIS en una base datos PostgreSQL y capas SpatiaLite. La capacidad para tipos de datos adicionales (ej. texto delimitado) es proporcionada por complementos de proveedores de datos adicionales. Se puede encontrar una lista de los formatos vectoriales soportados por OGR en el Apéndice A.1 del manual de usuario.&lt;/p&gt;
+En el capítulo 5 «Trabajar con datos vectoriales» se describe con detalle cómo proceder con los datos vectoriales.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Add PostGIS Tables&lt;/h3&gt;
@@ -54065,7 +54128,43 @@ To filter a layer before adding it to the map, double click on its name or use &
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Añadir tablas PostGIS&lt;/h3&gt;
+Este diálogo le permite añadir capas PostGIS (tablas con una columna de geometría) a la vista del mapa de QGIS.
+&lt;p&gt;
+&lt;a href=&quot;#connect&quot;&gt;Conexiones&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#add&quot;&gt;Añadir capas&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#filter&quot;&gt;Filtrar una capa&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#search&quot;&gt;Opciones de búsqueda&lt;/a&gt;&lt;br/&gt;
+
+&lt;a href=&quot;#connect&quot;&gt;
+&lt;h4&gt;Conexiones&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;Elija la conexión a usar de la lista desplegable y pulse &lt;label&gt;Conectar&lt;/label&gt;.
+&lt;li&gt;Si no hay conexiones, use el botón &lt;label&gt;Nueva&lt;/label&gt; para crear una conexión.
+&lt;li&gt;Para modificar una conexión, pulse el botón &lt;label&gt;Editar&lt;/label&gt;.
+&lt;/ul&gt;
+&lt;a name=&quot;add&quot;&gt;
+&lt;h4&gt;Añadir capas&lt;/h4&gt;
+&lt;/a&gt;
+Para añadir una capa:
+&lt;ol&gt;
+&lt;li&gt;Elija la conexión deseada de la lista desplegable.
+&lt;li&gt;Pulse &lt;label&gt;Conectar&lt;/label&gt;.
+&lt;li&gt;Encuentre la capa que quiera añadir en la lista y pulse en ella para seleccionarla.
+&lt;li&gt;Puede seleccionar capas adicionales manteniendo pulsada la tecla Ctrl y pulsando en ellas.
+&lt;li&gt;Pulse &lt;label&gt;Añadir&lt;/label&gt; para añadir la(s) capa(s) al mapa.
+&lt;/ol&gt;
+&lt;a name=&quot;filter&quot;&gt;
+&lt;h4&gt;Filtrar una capa&lt;/h4&gt;
+&lt;/a&gt;
+Para filtrar una capa antes de añadirla al mapa, haga doble clic en su nombre o use el botón &lt;label&gt;Construir consulta&lt;/label&gt;. Esto abrirá el Constructor de consultas, permitiéndole construir una sentencia SQL para usarla en el filtrado de registros.
+
+&lt;a name=&quot;search&quot;&gt;
+&lt;h4&gt;Opciones de búsqueda&lt;/h4&gt;
+&lt;/a&gt;
+Marcando &lt;label&gt;Opciones de búsqueda&lt;/label&gt; se activan opciones adicionales para buscar en diferentes tipos de columnas y usando dos modos de búsqueda: &lt;label&gt;Comodín&lt;/label&gt; o &lt;label&gt;Expresión regular&lt;/label&gt;.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Create a New PostgreSQL Connection&lt;/h3&gt;
@@ -54101,31 +54200,47 @@ This dialog allows you to define the settings for a connection to a PostgreSQL d
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Crear una nueva conexión a PostGIS&lt;/h3&gt;
-Para crear una nueva conexión PostGIS, necesita saber el servidor, el puerto y su nombre de usuario y contraseña para el servidor de bases de datos.
-&lt;h4&gt;Parámetros requeridos&lt;/h4&gt;
+        <translation type="unfinished">&lt;h3&gt;Crear una nueva conexión a PostgreSQL&lt;/h3&gt;
+Este diálogo le permite definir la configuración para una conexión a una base de datos PostgreSQL.
+&lt;p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;label&gt;Nombre&lt;/label&gt; - un nombre descriptivo para la conexión.
-&lt;li&gt;&lt;label&gt;Servidor&lt;/label&gt; - el nombre del servidor de la base de datos (ej. madison.qgis.org).
-&lt;li&gt;&lt;label&gt;Base de datos&lt;/label&gt; - nombre de la base de datos a la que conectarse.
-&lt;li&gt;&lt;label&gt;Puerto&lt;/label&gt; - puerto al que PostgreSQL. Por omisión este es el 5432. En caso de duda, compruebe con su administador de bases de datos.
-&lt;li&gt;&lt;label&gt;Nombre de usuario&lt;/label&gt; - su nombre de usuario de la base de datos.
-&lt;li&gt;&lt;label&gt;Contraseña&lt;/label&gt; - su contraseña de la base de datos.
+&lt;li&gt;&lt;label&gt;Nombre&lt;/label&gt; Un nombre para identificar configuración de la conexión.
+
+&lt;li&gt;&lt;label&gt;Servicio&lt;/label&gt; Un nombre de un servicio listado en el &lt;a href=&quot;http://www.postgresql.org/docs/current/static/libpq-pgservice.html&quot;&gt;Archivo de Servicio de Conexión&lt;/a&gt;.
+
+&lt;li&gt; &lt;label&gt;Servidor&lt;/label&gt;Nombre o dirección IP del ordenador que aloja el servidor de base de datos (dejar en blanco para conexiones o servicios locales).
+
+&lt;li&gt;&lt;label&gt;Puerto&lt;/label&gt; Puerto IP usado por el servidor de bases de datos (dejar en blanco para conexiones locales o para usar el puerto prederminado 5432).
+
+&lt;li&gt; &lt;label&gt;Base de datos&lt;/label&gt; Nombre de la base de datos (dejar en blanco para la base de datos predeterminada).
+
+&lt;li&gt; &lt;label&gt;Modo SSL&lt;/label&gt; &lt;a href=&quot;http://www.postgresql.org/docs/9.0/static/libpq-ssl.html#LIBPQ-SSL-SSLMODE-STATEMENTS&quot;&gt;Modo SSL&lt;/a&gt; de la conexión.
+
+&lt;li&gt; &lt;label&gt;Nombre de usuario&lt;/label&gt; Nombre de usuario de la base de datos.
+&lt;li&gt; &lt;label&gt;Contraseña&lt;/label&gt; Contraseña de la base de datos.
+
+&lt;li&gt; &lt;label&gt;Guardar usuario&lt;/label&gt; Indica si guardar nombre de usuario de la base de datos en la configuración de la conexión.
+
+&lt;li&gt; &lt;label&gt;Guardar contraseña&lt;/label&gt; Indica si guardar la contraseña de la base de datos en la configuración de la conexión. &lt;font color=&quot;red&quot;&gt;¡Las contraseñas se guardan en &lt;strong&gt;texto plano&lt;/strong&gt; en la configuración del sistema y en los archivos de proyecto!&lt;/font&gt;
+
+&lt;li&gt; &lt;label&gt;Buscar sólo en la tabla de columnas de geometría&lt;/label&gt; Indica que solo se usen las columnas de geometría «listadas» - en vez de escanear todas las tablas buscando columnas de geometría.
+
+&lt;li&gt; &lt;label&gt;Buscar sólo en el esquema &quot;público&quot;&lt;/label&gt; Indica que solo se tengan en cuenta tablas en el esquema público - en vez de todas las tablas accesibles.
+
+&lt;li&gt; &lt;label&gt;Listar también tablas sin geometría&lt;/label&gt;  Indica que las tablas sin geometría se listen también por omisión.
+
+&lt;li&gt; &lt;label&gt;Usar metadatos de tabla estimados&lt;/label&gt; Al inicializar tablas pueden ser necesarioas varias consultas para establecer las características de las geometrías guardades en la tabla de la base de datos. Cuando esta opción está marcada, estas consultas examinan solo una muestra de las filas y usan las estadísticas de la tablam en vez de toda la tabla. Esto puede acelerar drásticamente las operaciones en grandes conjuntos de datos, pero puede dar una caracterización incorrecta de las capas (ej. la &lt;font color=&quot;red&quot;&gt;cuenta de objetos espaciales&lt;/font&gt; de capas filtradas no se determinará con precisión).
+
 &lt;/ul&gt;
-&lt;h4&gt;Opciones&lt;/h4&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;label&gt;Guardar contraseña&lt;/label&gt; - guarda su contraseña de forma que no tenga que introducirla cada vez. La contraseña se guarda en texto plano con sus preferencias de QGIS.
-&lt;li&gt;&lt;label&gt;Buscar sólo en la tabla de columnas de geometría&lt;/label&gt; - normalmente QGIS examina cada tabla en la base de datos para ver si tiene una columna de geometría y si es así, la añade a la lista de capas. Marcando esta casilla le dice a QGIS que sólo muestre capas que han sido &quot;registradas&quot; y tienen una entrada en la tabla de columnas de geometría.
-&lt;li&gt;&lt;label&gt;Buscar sólo en el esquema &quot;público&quot;&lt;/label&gt; - esto limita la búsqueda de capas al esquema público.
-&lt;/ol&gt;
-&lt;h4&gt;Probar la conexión&lt;/h4&gt;
-Haciendo clic en el botón &lt;label&gt;Probar conexión&lt;/label&gt; inicia un intento de conexión a la base de datos usando los parámetros que ha especificado. Esta es una buena forma de comprobar los parámetros de conexión antes de guardar la conexión.</translation>
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Complemento GPS&lt;/h3&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Create New Vector Layer&lt;/h3&gt;
@@ -54495,7 +54610,7 @@ You only need to request the list of layers by clicking the &lt;label&gt;Connect
     <message>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Conexión a base de datos&lt;/h3&gt;
+        <translation>&lt;h3&gt;Conexión a base de datos&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -54815,7 +54930,8 @@ Para añadir una barra de escala:
     <message>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Diálogo de nueva conexión a base de datos OGR&lt;/h3&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
@@ -54977,7 +55093,8 @@ Haga clic sobre uno de los íconos a lo largo de la parte superior de la ventana
     <message>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Administrador de estilos&lt;/h3&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Custom Coordinate Reference System Definition&lt;/h3&gt;
@@ -56456,7 +56573,8 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
     <message>
         <source>&lt;h3&gt;Identify&lt;/h3&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">&lt;h3&gt;Identificar&lt;/h3&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -57357,11 +57475,11 @@ El complemento no se activará.</translation>
     </message>
     <message>
         <source>Eliminate sliver polygons</source>
-        <translation type="unfinished">Eliminar polígonos «astilla»</translation>
+        <translation>Eliminar polígonos «astilla»</translation>
     </message>
     <message>
         <source>QGIS version detected: </source>
-        <translation type="unfinished">Versión de QGIS detectada: </translation>
+        <translation>Versión de QGIS detectada: </translation>
     </message>
 </context>
 <context>
@@ -57380,7 +57498,19 @@ None
 &lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función $rownum&lt;/h3&gt;
+Devuelve el número de la fila actual.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;$rownum&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ninguno
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>
@@ -57401,13 +57531,31 @@ Returns a string representation of a color based on its red, green, blue, and al
 &lt;!-- Show example of function.--&gt;
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;Función color_rgba()&lt;/h3&gt;
+Devuelve una representación de cadena de un color basado es sus componenetes rojo, verde, azul y alfa (transparencia)
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     color_rgba(&lt;i&gt;rojo, verde, azul, alfa&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  rojo&lt;/i&gt; &amp;rarr; el componente rojo como un valor entero de 0 a 255.&lt;br&gt;
+&lt;i&gt;  verde&lt;/i&gt; &amp;rarr; el componente verde como un valor entero de 0 a 255.&lt;br&gt;
+&lt;i&gt;  azul&lt;/i&gt; &amp;rarr; el componente azul como un valor entero de 0 a 255.&lt;br&gt;
+&lt;i&gt;  alfa&lt;/i&gt; &amp;rarr; el componente alfa como un valor entero de 0 a 255 (completamente transparente) a 255 (opaco).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupo Condicionales&lt;/h3&gt;
+Este grupo contiene funciones para manejar comprobaciones condicionales en expresiones.</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$feature function&lt;/h3&gt;
@@ -57423,7 +57571,19 @@ None
 &lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función $feature&lt;/h3&gt;
+En la generación de atlas, devuelve el número del objeto espacial actual sobre el que se itera en la capa de cobertura.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;$feature&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+None
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$numpages function&lt;/h3&gt;
@@ -57439,7 +57599,19 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función $numpages&lt;/h3&gt;
+Devuelve el número total de páginas de la composición.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;$numpages&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+None
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$perimeter function&lt;/h3&gt;
@@ -57455,13 +57627,28 @@ None
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función $perimeter&lt;/h3&gt;
+Devuelve la longitud del perímetro del objeto espacial actual.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;$perimeter&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+None
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupo Geometría&lt;/h3&gt;
+Este grupo contiene funciones que operan objetos de geometría, ej. longitud, ár
+ea.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;concat() function&lt;/h3&gt;
@@ -59265,11 +59452,11 @@ actually inserted, ie. when building queries.
     </message>
     <message>
         <source>Point x ordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordinal X de punto</translation>
     </message>
     <message>
         <source>Point y ordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordinal Y de punto</translation>
     </message>
 </context>
 <context>
@@ -59480,7 +59667,7 @@ actually inserted, ie. when building queries.
     </message>
     <message>
         <source>Change the type of boundary dangle to line</source>
-        <translation type="unfinished">Cambiar el tipo de borde (dangle) en el extremo de la línea </translation>
+        <translation type="unfinished">Cambiar el tipo de borde (dangle) en el extremo a línea</translation>
     </message>
     <message>
         <source>Change the type of bridges connecting area and island or 2 islands from boundary to line</source>
@@ -60728,7 +60915,7 @@ actually inserted, ie. when building queries.
     </message>
     <message>
         <source>Remove dangles</source>
-        <translation type="unfinished">Remover extremos sin borde (dangles)</translation>
+        <translation type="unfinished">Eliminar extremos sin borde (dangles)</translation>
     </message>
     <message>
         <source>Remove duplicate area centroids</source>
@@ -61132,120 +61319,120 @@ actually inserted, ie. when building queries.
     </message>
     <message>
         <source>Create random raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear ráster aleatorio</translation>
     </message>
 </context>
 <context>
     <name>optionsDialog</name>
     <message>
         <source>Warning!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Advertencia!</translation>
     </message>
     <message>
         <source>You need to add some APIs file in order to compile</source>
-        <translation type="unfinished"></translation>
+        <translation>Debe añadir algún archivo de API para compilar</translation>
     </message>
     <message>
         <source>Please specify API file or check &quot;Use preloaded API files&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, especifique archivo de API o marque &quot;Usar archivos de API precargados&quot;</translation>
     </message>
     <message>
         <source>The APIs file was not compiled, click on &quot;Compile APIs...&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>El archivo de API no se compiló, pulse en &quot;Compilar API...&quot;</translation>
     </message>
 </context>
 <context>
     <name>rulesDialog</name>
     <message>
         <source>Topology Rule Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración de reglas de topología</translation>
     </message>
     <message>
         <source>Current Rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Reglas actuales</translation>
     </message>
     <message>
         <source>Rule</source>
-        <translation type="unfinished">Regla</translation>
+        <translation>Regla</translation>
     </message>
     <message>
         <source>Layer #1</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa #1</translation>
     </message>
     <message>
         <source>Layer #2</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa #2</translation>
     </message>
     <message>
         <source>Tolerance</source>
-        <translation type="unfinished">Tolerancia</translation>
+        <translation>Tolerancia</translation>
     </message>
     <message>
         <source>Layer1ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID de capa 1</translation>
     </message>
     <message>
         <source>Layer2ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID de capa 2</translation>
     </message>
     <message>
         <source>No layer</source>
-        <translation type="unfinished">Ninguna capa</translation>
+        <translation>Ninguna capa</translation>
     </message>
     <message>
         <source>Delete Rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar regla</translation>
     </message>
     <message>
         <source>Add Rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir regla</translation>
     </message>
 </context>
 <context>
     <name>topolTest</name>
     <message>
         <source>Invalid second geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Segunda geometría no válida.</translation>
     </message>
     <message>
         <source>Topology plugin</source>
-        <translation type="unfinished">Complemento Topología</translation>
+        <translation>Complemento Topología</translation>
     </message>
     <message>
         <source>Invalid first geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Primera geometría no válida.</translation>
     </message>
     <message>
         <source>Skipping invalid first geometry in pseudo line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Saltando primera geometría no válida en test de pseudo línea.</translation>
     </message>
     <message>
         <source>Failed to import first geometry into GEOS in pseudo line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo importar la primera geometría a GEOS en el test de pseudo línea.</translation>
     </message>
     <message>
         <source>Invalid geometry in validity test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometría no válida en test de validez.</translation>
     </message>
     <message>
         <source>Invalid geometry in covering test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometría no válida en test de cobertura.</translation>
     </message>
     <message>
         <source>Second geometry missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Falta la segunda geometría.</translation>
     </message>
     <message>
         <source>Missing geometry in multipart check.</source>
-        <translation type="unfinished"></translation>
+        <translation>Falta geometría en comprobación multiparte.</translation>
     </message>
     <message>
         <source>First layer not found in registry.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se encontró primera capa en el registro.</translation>
     </message>
     <message>
         <source>Second layer not found in registry.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se encontró segunda capa en el registro.</translation>
     </message>
     <message>
         <source>First geometry invalid in dangling line test.</source>
@@ -61257,27 +61444,27 @@ actually inserted, ie. when building queries.
     </message>
     <message>
         <source>Invalid second geometry in duplicate geometry test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Segunda geometría no válida en test de geometrías duplicadas.</translation>
     </message>
     <message>
         <source>Failed to import second geometry into GEOS in duplicate geometry test.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo importar la segunda geometría a GEOS en el test de geometrías duplicadas.</translation>
     </message>
     <message>
         <source>Invalid second geometry in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Segunda geometría no válida en test de superposiciones.</translation>
     </message>
     <message>
         <source>Failed to import second geometry into GEOS in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo importar la segunda geometría a GEOS en el test de superposiciones.</translation>
     </message>
     <message>
         <source>Skipping invalid second geometry of feature %1 in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Saltando segunda geometría no válida del objeto espacial %1 en test de superposiciones.</translation>
     </message>
     <message>
         <source>Second geometry missing or GEOS import failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Falta la segunda geometría o falló la importación de GEOS.</translation>
     </message>
 </context>
 <context>
