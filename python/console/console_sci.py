@@ -29,6 +29,7 @@ from PyQt4.Qsci import (QsciScintilla,
 import sys
 import os
 import code
+import codecs
 
 from qgis.core import QgsApplication
 from ui_console_history_dlg import Ui_HistoryDialogPythonConsole
@@ -277,7 +278,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def writeHistoryFile(self, fromCloseConsole=False):
         ok = False
         try:
-            wH = open(_historyFile, 'w')
+            wH = codecs.open(_historyFile, 'w', encoding='utf-8')
             for s in self.history:
                 wH.write(s + '\n')
             ok = True
@@ -292,7 +293,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def readHistoryFile(self):
         fileExist = QFile.exists(_historyFile)
         if fileExist:
-            rH = open(_historyFile, 'r')
+            rH = codecs.open(_historyFile, 'r', encoding='utf-8')
             for line in rH:
                 if line != "\n":
                     l = line.rstrip('\n')
@@ -309,7 +310,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             return
         ok = False
         try:
-            cH = open(_historyFile, 'w')
+            cH = codecs.open(_historyFile, 'w', encoding='utf-8')
             ok = True
         except:
             raise

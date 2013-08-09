@@ -576,7 +576,7 @@ class Editor(QsciScintilla):
                 tmpFile = self.createTempFile()
                 filename = tmpFile
 
-            self.parent.pc.shell.runCommand("execfile(r'{0}')".format(filename))
+            self.parent.pc.shell.runCommand(u"execfile(r'{0}')".format(filename))
 
     def runSelectedCode(self):
         cmd = self.selectedText()
