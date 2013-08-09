@@ -147,6 +147,7 @@
 #include "qgsmergeattributesdialog.h"
 #include "qgsmessageviewer.h"
 #include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 #include "qgsmimedatautils.h"
 #include "qgsmessagelog.h"
 #include "qgsmultibandcolorrenderer.h"
@@ -2923,8 +2924,8 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
       QLabel *msgLabel = new QLabel( tr( "%1 is an invalid layer and cannot be loaded. Please check the <a href=\"#messageLog\">message log</a> for further info." ).arg( layerPath ), messageBar() );
       msgLabel->setWordWrap( true );
       connect( msgLabel, SIGNAL( linkActivated( QString ) ), mLogDock, SLOT( show() ) );
-      messageBar()->pushWidget( msgLabel,
-                                QgsMessageBar::WARNING );
+      QgsMessageBarItem *item = new QgsMessageBarItem( msgLabel, QgsMessageBar::WARNING );
+      messageBar()->pushItem( item );
       delete layer;
     }
     //qWarning("incrementing iterator");
@@ -3590,22 +3591,24 @@ bool QgisApp::addProject( QString projectFile )
       {
         // create the notification widget for macros
 
-        QWidget *macroMsg = QgsMessageBar::createMessage( tr( "Security warning" ),
-                            tr( "project macros have been disabled." ),
-                            QgsApplication::getThemeIcon( "/mIconWarn.png" ),
-                            mInfoBar );
 
-        QToolButton *btnEnableMacros = new QToolButton( macroMsg );
+        QToolButton *btnEnableMacros = new QToolButton();
         btnEnableMacros->setText( tr( "Enable macros" ) );
         btnEnableMacros->setStyleSheet( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" );
         btnEnableMacros->setCursor( Qt::PointingHandCursor );
         btnEnableMacros->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
         connect( btnEnableMacros, SIGNAL( clicked() ), mInfoBar, SLOT( popWidget() ) );
         connect( btnEnableMacros, SIGNAL( clicked() ), this, SLOT( enableProjectMacros() ) );
-        macroMsg->layout()->addWidget( btnEnableMacros );
 
+        QgsMessageBarItem *macroMsg = new QgsMessageBarItem(
+          tr( "Security warning" ),
+          tr( "project macros have been disabled." ),
+          btnEnableMacros,
+          QgsMessageBar::WARNING,
+          0,
+          mInfoBar );
         // display the macros notification widget
-        mInfoBar->pushWidget( macroMsg, QgsMessageBar::WARNING );
+        mInfoBar->pushItem( macroMsg );
       }
     }
   }
@@ -4214,66 +4217,63 @@ void QgisApp::labelingFontNotFound( QgsVectorLayer* vlayer, const QString& fontf
   // TODO: update when pref for how to resolve missing family (use matching algorithm or just default font) is implemented
   QString substitute = tr( "Default system font substituted." );
 
-  QWidget* fontMsg = QgsMessageBar::createMessage(
-                       tr( "Labeling" ),
-                       tr( "Font for layer <b><u>%1</u></b> was not found (<i>%2</i>). %3" ).arg( vlayer->name() ).arg( fontfamily ).arg( substitute ),
-                       QgsApplication::getThemeIcon( "/mIconWarn.png" ),
-                       messageBar() );
-
-  QToolButton* btnOpenPrefs = new QToolButton( fontMsg );
+  QToolButton* btnOpenPrefs = new QToolButton();
   btnOpenPrefs->setStyleSheet( "QToolButton{ background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline; }" );
   btnOpenPrefs->setCursor( Qt::PointingHandCursor );
   btnOpenPrefs->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
   btnOpenPrefs->setToolButtonStyle( Qt::ToolButtonTextOnly );
 
   // store pointer to vlayer in data of QAction
-  QAction* act = new QAction( fontMsg );
+  QAction* act = new QAction( btnOpenPrefs );
   act->setData( QVariant( QMetaType::QObjectStar, &vlayer ) );
   act->setText( tr( "Open labeling dialog" ) );
   btnOpenPrefs->addAction( act );
   btnOpenPrefs->setDefaultAction( act );
   btnOpenPrefs->setToolTip( "" );
-
   connect( btnOpenPrefs, SIGNAL( triggered( QAction* ) ), this, SLOT( labelingDialogFontNotFound( QAction* ) ) );
-  fontMsg->layout()->addWidget( btnOpenPrefs );
 
   // no timeout set, since notice needs attention and is only shown first time layer is labeled
-  messageBar()->pushWidget( fontMsg, QgsMessageBar::WARNING );
+  QgsMessageBarItem* fontMsg = new QgsMessageBarItem(
+    tr( "Labeling" ),
+    tr( "Font for layer <b><u>%1</u></b> was not found (<i>%2</i>). %3" ).arg( vlayer->name() ).arg( fontfamily ).arg( substitute ),
+    btnOpenPrefs,
+    QgsMessageBar::WARNING,
+    0,
+    messageBar() );
+  messageBar()->pushItem( fontMsg );
 }
 
 void QgisApp::commitError( QgsVectorLayer* vlayer )
 {
-  QWidget *errorMsg = QgsMessageBar::createMessage(
-                        tr( "Commit errors" ),
-                        tr( "Could not commit changes to layer %1" ).arg( vlayer->name() ),
-                        QgsApplication::getThemeIcon( "/mIconWarn.png" ),
-                        messageBar() );
-
-  QgsMessageViewer *mv = new QgsMessageViewer( errorMsg );
+  QgsMessageViewer *mv = new QgsMessageViewer();
   mv->setWindowTitle( tr( "Commit errors" ) );
   mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() )
                              + "\n\n"
                              + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( "\n  " ) )
                            );
 
+  QToolButton *showMore = new QToolButton();
   // store pointer to vlayer in data of QAction
-  QAction *act = new QAction( errorMsg );
+  QAction *act = new QAction( showMore );
   act->setData( QVariant( QMetaType::QObjectStar, &vlayer ) );
   act->setText( tr( "Show more" ) );
-
-  QToolButton *showMore = new QToolButton( errorMsg );
   showMore->setStyleSheet( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" );
   showMore->setCursor( Qt::PointingHandCursor );
   showMore->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
   showMore->addAction( act );
   showMore->setDefaultAction( act );
-
   connect( showMore, SIGNAL( triggered( QAction* ) ), mv, SLOT( exec() ) );
   connect( showMore, SIGNAL( triggered( QAction* ) ), showMore, SLOT( deleteLater() ) );
-  errorMsg->layout()->addWidget( showMore );
 
   // no timeout set, since notice needs attention and is only shown first time layer is labeled
-  messageBar()->pushWidget( errorMsg, QgsMessageBar::WARNING );
+  QgsMessageBarItem *errorMsg = new QgsMessageBarItem(
+    tr( "Commit errors" ),
+    tr( "Could not commit changes to layer %1" ).arg( vlayer->name() ),
+    showMore,
+    QgsMessageBar::WARNING,
+    0,
+    messageBar() );
+  messageBar()->pushItem( errorMsg );
 }
 
 void QgisApp::labelingDialogFontNotFound( QAction* act )
@@ -6147,7 +6147,7 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
   mMapCanvas->freeze();
   QgsMapLayer *dupLayer;
   QString layerDupName, unSppType;
-  QList<QWidget *> msgBars;
+  QList<QgsMessageBarItem *> msgBars;
 
   foreach ( QgsMapLayer * selectedLyr, selectedLyrs )
   {
@@ -6188,23 +6188,25 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
 
     if ( unSppType.isEmpty() && dupLayer && !dupLayer->isValid() )
     {
-      msgBars.append( QgsMessageBar::createMessage(
-                        tr( "Duplicate layer: " ),
-                        tr( "%1 (duplication resulted in invalid layer)" ).arg( selectedLyr->name() ) ,
-                        QgsApplication::getThemeIcon( "/mIconWarn.png" ),
-                        mInfoBar ) );
+      msgBars.append( new QgsMessageBarItem(
+                          tr( "Duplicate layer: " ),
+                          tr( "%1 (duplication resulted in invalid layer)" ).arg( selectedLyr->name() ) ,
+                          QgsMessageBar::WARNING,
+                          0,
+                          mInfoBar ) );
       continue;
     }
 
     if ( !unSppType.isEmpty() || !dupLayer )
     {
-      msgBars.append( QgsMessageBar::createMessage(
-                        tr( "Duplicate layer: " ),
-                        tr( "%1 (%2 type unsupported)" )
-                        .arg( selectedLyr->name() )
-                        .arg( !unSppType.isEmpty() ? QString( "'" ) + unSppType + "' " : "" ),
-                        QgsApplication::getThemeIcon( "/mIconWarn.png" ),
-                        mInfoBar ) );
+      msgBars.append( new QgsMessageBarItem(
+                          tr( "Duplicate layer: " ),
+                          tr( "%1 (%2 type unsupported)" )
+                          .arg( selectedLyr->name() )
+                          .arg( !unSppType.isEmpty() ? QString( "'" ) + unSppType + "' " : "" ),
+                          QgsMessageBar::WARNING,
+                          0,
+                          mInfoBar ) );
       continue;
     }
 
@@ -6261,9 +6263,9 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
   mMapCanvas->freeze( false );
 
   // display errors in message bar after duplication of layers
-  foreach ( QWidget * msgBar, msgBars )
+  foreach ( QgsMessageBarItem * msgBar, msgBars )
   {
-    mInfoBar->pushWidget( msgBar, QgsMessageBar::WARNING );
+    mInfoBar->pushItem( msgBar );
   }
 }
 

@@ -51,6 +51,7 @@
 %Include qgsmaptooltouch.sip
 %Include qgsmaptoolzoom.sip
 %Include qgsmessagebar.sip
+%Include qgsmessagebaritem.sip
 %Include qgsmessagelogviewer.sip
 %Include qgsmessageviewer.sip
 %Include qgsnewhttpconnection.sip
