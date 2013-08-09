@@ -15,41 +15,49 @@ class QgsMessageBar: QFrame
     QgsMessageBar( QWidget *parent = 0 );
     ~QgsMessageBar();
 
-    /*! display a widget on the bar after hiding the currently visible one
-     *  and putting it in a stack
-     * @param widget widget to add
+
+    /*! display a message item on the bar after hiding the currently visible one
+     *  and putting it in a stack.
+     * @param item item to display
+     */
+    void pushItem( QgsMessageBarItem *item /Transfer/);
+
+    /*! display a widget as a message on the bar after hiding the currently visible one
+     *  and putting it in a stack.
+     * @param widget message widget to display
      * @param level is QgsMessageBar::INFO, WARNING or CRITICAL
      * @param duration timeout duration of message in seconds, 0 value indicates no timeout
      */
-    void pushWidget( QWidget *widget /Transfer/, MessageLevel level = INFO, int duration = 0 );
+    QgsMessageBarItem *pushWidget( QWidget *widget /Transfer/, MessageLevel level = INFO, int duration = 0 );
 
     /*! remove the passed widget from the bar (if previously added),
      *  then display the next one in the stack if any or hide the bar
      *  @param widget widget to remove
      *  @return true if the widget was removed, false otherwise
      */
-    bool popWidget( QWidget *widget );
+    bool popWidget( QgsMessageBarItem *item );
 
-    //! make out a widget containing a message to be displayed on the bar
-    static QWidget* createMessage( const QString &text, QWidget *parent = 0 ) /Factory/;
-    //! make out a widget containing icon and message to be displayed on the bar
-    static QWidget* createMessage( const QString &text, const QIcon &icon, QWidget *parent = 0 ) /Factory/;
+    //make out a widget containing a message to be displayed on the bar
+    static QgsMessageBarItem* createMessage( const QString &text, QWidget *parent = 0 ) /Factory/;
     //! make out a widget containing title and message to be displayed on the bar
-    static QWidget* createMessage( const QString &title, const QString &text, QWidget *parent = 0 )  /Factory/;
-    //! make out a widget containing icon, title and message to be displayed on the bar
-    static QWidget* createMessage( const QString &title, const QString &text, const QIcon &icon, QWidget *parent = 0 ) /Factory/;
-
+    static QgsMessageBarItem* createMessage( const QString &title, const QString &text, QWidget *parent = 0 )  /Factory/;
+     //! make out a widget containing title and message to be displayed on the bar
+    static QgsMessageBarItem* createMessage( QWidget *widget, QWidget *parent = 0 ) /Factory/;
+    
     //! convenience method for pushing a non-widget-based message to the bar
-    void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 0 );
+    QString pushMessage( const QString &text, MessageLevel level = INFO, int duration = 0 );
     //! convenience method for pushing a non-widget-based message with title to the bar
-    void pushMessage( const QString &title, const QString &text, MessageLevel level = INFO, int duration = 0 );
+    QString pushMessage( const QString &title, const QString &text, MessageLevel level = INFO, int duration = 0 );
+
+    //! return the item for given uuid if the item still exists, 0 otherwise
+    QgsMessageBarItem* itemAtId( QString uuid );
 
   signals:
     //! emitted when a message widget is added to the bar
-    void widgetAdded( QWidget *widget );
+    void widgetAdded( QgsMessageBarItem *item );
 
     //! emitted when a widget was removed from the bar
-    void widgetRemoved( QWidget *widget );
+    void widgetRemoved( QgsMessageBarItem *item );
 
   public slots:
     /*! remove the currently displayed widget from the bar and
