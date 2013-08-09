@@ -1,0 +1,7 @@
+ViGrA - Smoothing
+vigra
+ParameterRaster|INPUT|Input|False
+OutputRaster|OUTPUT|Output
+ParameterSelection|TYPE|Type of smoothing|[0] exponential;[1] nonlinear;[2] gaussian
+ParameterNumber|SCALE|Size of smoothing filter|0|None|2
+ParameterNumber|EDGE|Edge threshold for nonlinear smoothing|0|None|1

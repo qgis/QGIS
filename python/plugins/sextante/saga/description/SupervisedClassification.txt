@@ -3,7 +3,7 @@ imagery_classification
 ParameterMultipleInput|GRIDS|Grids|3.0|False
 ParameterVector|ROI|Training Areas|2|False
 ParameterTableField|ROI_ID|Class Identifier|ROI|-1|False
-ParameterSelection|METHOD|Method|[0] parallelepiped;[1] minimum distance;[2] mahalanobis distance;[3] maximum likelihood;[4] spectral angle mapping;[5] binary encoding
+ParameterSelection|METHOD|Method|[0] Binary Encoding;[1] Parallelepiped;[2] Minimum Distance;[3] Mahalanobis Distance;[4] Maximum Likelihood;[5] Spectral Angle Mapping; [6] Winner Takes All
 ParameterBoolean|NORMALISE            |Normalise|True
 ParameterNumber|THRESHOLD_DIST|Distance Threshold|None|None|0.0
 ParameterNumber|THRESHOLD_PROB|Probability Threshold (Percent)|None|None|0.0

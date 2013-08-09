@@ -1,0 +1,5 @@
+ViGrA - Distance
+vigra
+ParameterRaster|INPUT|Input|False
+OutputRaster|OUTPUT|Distance
+ParameterSelection|NORM|Type of distance calculation| [0] Chessboard; [1] Manhattan; [2] Euclidean
