@@ -401,7 +401,7 @@ class Editor(QsciScintilla):
                 styleError = 'QLineEdit {background-color: #d65253; \
                                         color: #ffffff;}'
                 msgText = QCoreApplication.translate('PythonConsole',
-                                                     '<b>"{0}"</b> was not found.'.format(text))
+                                                     '<b>"{0}"</b> was not found.').format(text)
                 self.parent.pc.callWidgetMessageBarEditor(msgText, 0, True)
             else:
                 styleError = ''
@@ -523,17 +523,17 @@ class Editor(QsciScintilla):
                         else:
                             raise e
             if tmp:
-                tmpFileTr = QCoreApplication.translate('PythonConsole', ' [Temporary file saved in {0}]'.format(dir))
+                tmpFileTr = QCoreApplication.translate('PythonConsole', ' [Temporary file saved in {0}]').format(dir)
                 file = file + tmpFileTr
             if _traceback:
-                msgTraceTr = QCoreApplication.translate('PythonConsole', '## Script error: {0}'.format(file))
+                msgTraceTr = QCoreApplication.translate('PythonConsole', '## Script error: {0}').format(file)
                 print "## %s" % datetime.datetime.now()
                 print unicode(msgTraceTr)
                 sys.stderr.write(_traceback)
                 p.stderr.close()
             else:
                 msgSuccessTr = QCoreApplication.translate('PythonConsole',
-                                                          '## Script executed successfully: {0}'.format(file))
+                                                          '## Script executed successfully: {0}').format(file)
                 print "## %s" % datetime.datetime.now()
                 print unicode(msgSuccessTr)
                 sys.stdout.write(out)
@@ -543,7 +543,8 @@ class Editor(QsciScintilla):
                 os.remove(filename)
         except IOError, error:
             IOErrorTr = QCoreApplication.translate('PythonConsole',
-                                                   'Cannot execute file {0}. Error: {1}\n'.format(unicode(filename), error.strerror))
+                                                   'Cannot execute file {0}. Error: {1}\n').format(filename,
+                                                                                                   error.strerror)
             print '## Error: ' + IOErrorTr
         except:
             s = traceback.format_exc()
@@ -691,7 +692,7 @@ class Editor(QsciScintilla):
         if pathfile:
             if not QFileInfo(pathfile).exists():
                 msgText = QCoreApplication.translate('PythonConsole',
-                                                     'The file <b>"{0}"</b> has been deleted or is not accessible'.format(unicode(pathfile)))
+                                                     'The file <b>"{0}"</b> has been deleted or is not accessible').format(pathfile)
                 self.parent.pc.callWidgetMessageBarEditor(msgText, 2, False)
                 return
         if pathfile and self.lastModified != QFileInfo(pathfile).lastModified():
@@ -712,14 +713,14 @@ class Editor(QsciScintilla):
             self.parent.tw.listObject(self.parent.tw.currentWidget())
             self.lastModified = QFileInfo(pathfile).lastModified()
             msgText = QCoreApplication.translate('PythonConsole',
-                                                 'The file <b>"{0}"</b> has been changed and reloaded'.format(unicode(pathfile)))
+                                                 'The file <b>"{0}"</b> has been changed and reloaded').format(pathfile)
             self.parent.pc.callWidgetMessageBarEditor(msgText, 1, False)
         QsciScintilla.focusInEvent(self, e)
 
     def fileReadOnly(self):
         tabWidget = self.parent.tw.currentWidget()
         msgText = QCoreApplication.translate('PythonConsole',
-                                             'The file <b>"{0}"</b> is read only, please save to different file first.'.format(unicode(tabWidget.path)))
+                                             'The file <b>"{0}"</b> is read only, please save to different file first.').format(tabWidget.path)
         self.parent.pc.callWidgetMessageBarEditor(msgText, 1, False)
 
 class EditorTab(QWidget):
@@ -1013,14 +1014,15 @@ class EditorTabWidget(QTabWidget):
                 fn.close()
             except IOError, error:
                 IOErrorTr = QCoreApplication.translate('PythonConsole',
-                                                       'The file {0} could not be opened. Error: {1}\n'.format(unicode(filename), error.strerror))
+                                                       'The file {0} could not be opened. Error: {1}\n').format(filename,
+                                                                                                                error.strerror)
                 print '## Error: '
                 sys.stderr.write(IOErrorTr)
                 return
 
         nr = self.count()
         if not tabName:
-            tabName = QCoreApplication.translate('PythonConsole', 'Untitled-{0}'.format(nr))
+            tabName = QCoreApplication.translate('PythonConsole', 'Untitled-{0}').format(nr)
         self.tab = EditorTab(self, self.parent, filename, readOnly)
         self.iconTab = QgsApplication.getThemeIcon('console/iconTabEditorConsole.png')
         self.addTab(self.tab, self.iconTab, tabName + ' (ro)' if readOnly else tabName)
@@ -1055,7 +1057,7 @@ class EditorTabWidget(QTabWidget):
             txtSaveOnRemove = QCoreApplication.translate("PythonConsole",
                                                          "Python Console: Save File")
             txtMsgSaveOnRemove = QCoreApplication.translate("PythonConsole",
-                                                            "The file <b>'{0}'</b> has been modified, save changes?".format(self.tabText(tab)))
+                                                            "The file <b>'{0}'</b> has been modified, save changes?").format(self.tabText(tab))
             res = QMessageBox.question( self, txtSaveOnRemove,
                                         txtMsgSaveOnRemove,
                                         QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel )
@@ -1099,7 +1101,7 @@ class EditorTabWidget(QTabWidget):
                 self.newTabEditor(tabName, pathFile)
             else:
                 errOnRestore = QCoreApplication.translate("PythonConsole",
-                                                          "Unable to restore the file: \n{0}\n".format(unicode(pathFile)))
+                                                          "Unable to restore the file: \n{0}\n").format(pathFile)
                 print  '## Error: '
                 s = errOnRestore
                 sys.stderr.write(s)

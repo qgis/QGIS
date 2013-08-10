@@ -641,8 +641,8 @@ class PythonConsoleWidget(QWidget):
         except (IOError, OSError), error:
             errTr = QCoreApplication.translate("PythonConsole", "Save Error")
             msgText = QCoreApplication.translate('PythonConsole',
-                                                 'The file <b>{0}</b> could not be saved. Error: {1}'.format(unicode(tabWidget.path),
-                                                                                                           error.strerror))
+                                                 'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
+                                                                                                              error.strerror)
             self.callWidgetMessageBarEditor(msgText, 2, False)
 
     def saveAsScriptFile(self, index=-1):
@@ -668,8 +668,8 @@ class PythonConsoleWidget(QWidget):
             except (IOError, OSError), error:
                 errTr = QCoreApplication.translate("PythonConsole", "Save Error")
                 msgText = QCoreApplication.translate('PythonConsole',
-                                                     'The file <b>{0}</b> could not be saved. Error: {1}'.format(unicode(tabWidget.path),
-                                                                                                            error.strerror))
+                                                     'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
+                                                                                                                  error.strerror)
                 self.callWidgetMessageBarEditor(msgText, 2, False)
                 if fileNone:
                     tabWidget.path = None
