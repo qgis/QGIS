@@ -47,10 +47,11 @@ ADD_BISON_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalcparser.yy)
 IF (MSVC AND PEDANTIC)
 # disable warnings
 # 4065 switch with default and no case
+# 4127 conditional expression is constant
 # 4702 unreachable code
 SET_SOURCE_FILES_PROPERTIES(
                 ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp 
-                PROPERTIES COMPILE_FLAGS "-wd4065 -wd4702")
+                PROPERTIES COMPILE_FLAGS "-wd4065 -wd4127 -wd4702")
 ENDIF (MSVC AND PEDANTIC)
 
 SET(QGIS_ANALYSIS_MOC_HDRS
