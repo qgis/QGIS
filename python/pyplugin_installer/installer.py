@@ -506,5 +506,7 @@ class QgsPluginInstaller(QObject):
   # ----------------------------------------- #
   def setRepositoryInspectionFilter(self, reposName = None):
     """ temporarily block another repositories to fetch only one for inspection """
+    if reposName is not None:
+      reposName = reposName.decode("utf-8")
     repositories.setInspectionFilter(reposName)
     self.reloadAndExportData()
