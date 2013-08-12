@@ -1,0 +1,14 @@
+[general]
+name=Processing
+description=Spatial data processing framework for QGIS
+category=Analysis
+version=1.1
+qgisMinimumVersion=2.0
+
+author=Victor Olaya
+email=volayaf@gmail.com
+website=www.qgis.org
+
+icon=images/alg.png
+
+class_name=ProcessingPlugin

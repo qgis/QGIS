@@ -1,0 +1,5 @@
+FILE(GLOB PY_FILES *.py)
+FILE(GLOB TEST_DATA_FILES data/*)
+
+PLUGIN_INSTALL(processing tests ${PY_FILES})
+PLUGIN_INSTALL(processing tests/data ${TEST_DATA_FILES})
