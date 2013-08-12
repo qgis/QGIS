@@ -46,7 +46,6 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   setLayout( mLayout );
 
   mCountProgress = new QProgressBar( this );
-  mCountProgress->setObjectName( "mCountProgress" );
   mCountStyleSheet = QString( "QProgressBar { border: 1px solid rgba(0, 0, 0, 75%);"
                               " border-radius: 2px; background: rgba(0, 0, 0, 0);"
                               " image: url(:/images/themes/default/%1) }"
@@ -105,19 +104,17 @@ QgsMessageBar::~QgsMessageBar()
 
 void QgsMessageBar::mousePressEvent( QMouseEvent * e )
 {
-  // stop/start mCountdownTimer
-  QProgressBar *pb = static_cast<QProgressBar *>( childAt( e->pos() ) );
-  if ( pb && pb->objectName() == QString( "mCountdown" ) && e->button() == Qt::LeftButton )
+  if ( mCountProgress == childAt( e->pos() ) && e->button() == Qt::LeftButton )
   {
     if ( mCountdownTimer->isActive() )
     {
       mCountdownTimer->stop();
-      pb->setStyleSheet( mCountStyleSheet.arg( "mIconTimerContinue.png" ) );
+      mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerContinue.png" ) );
     }
     else
     {
       mCountdownTimer->start();
-      pb->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.png" ) );
+      mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.png" ) );
     }
   }
 }
