@@ -77,6 +77,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     , mUseSubsetIndex( false )
     , mMaxInvalidLines( 50 )
     , mShowInvalidLines( true )
+    , mRescanRequired( false )
     , mCrs()
     , mWkbType( QGis::WKBNoGeometry )
     , mGeometryType( QGis::UnknownGeometry )
@@ -319,6 +320,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
   mLayerValid = false;
   mValid = false;
+  mRescanRequired = false;
 
   clearInvalidLines();
 
@@ -675,6 +677,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
 void QgsDelimitedTextProvider::rescanFile()
 {
+  mRescanRequired = false;
   resetIndexes();
 
   bool buildSpatialIndex = mSpatialIndex != 0;
@@ -717,6 +720,7 @@ void QgsDelimitedTextProvider::rescanFile()
     reportErrors( messages, false );
     QgsDebugMsg( "Delimited text source invalid on rescan - missing geometry fields" );
     mValid = false;
+    return;
   }
 
   // Reset the field columns
@@ -864,8 +868,9 @@ void QgsDelimitedTextProvider::resetStream()
 
 QgsFeatureIterator QgsDelimitedTextProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  // If the file has become invalid, check that it is still invalid.
-  if ( mLayerValid && ! mValid ) rescanFile();
+  // If the file has become invalid, rescan to check that it is still invalid.
+  //
+  if ( (mLayerValid && ! mValid) || mRescanRequired ) rescanFile();
 
   return QgsFeatureIterator( new QgsDelimitedTextFeatureIterator( this, request ) );
 }
@@ -1050,9 +1055,13 @@ void QgsDelimitedTextProvider::setUriParameter( QString parameter, QString value
 
 void QgsDelimitedTextProvider::onFileUpdated()
 {
-  QStringList messages;
-  messages.append( tr( "The file has been updated by another application - reloading" ) );
-  reportErrors( messages, false );
+  if( ! mRescanRequired )
+  {
+    QStringList messages;
+    messages.append( tr( "The file has been updated by another application - reloading" ) );
+    reportErrors( messages, false );
+    mRescanRequired = true;
+  }
 
   while ( !mActiveIterators.empty() )
   {
@@ -1061,7 +1070,6 @@ void QgsDelimitedTextProvider::onFileUpdated()
     it->close();
   }
 
-  rescanFile();
 }
 
 bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature, QgsDelimitedTextFile *file, QgsDelimitedTextFeatureIterator *iterator )
@@ -1079,9 +1087,12 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature, QgsDelimitedTex
     first = false;
 
     // before we do anything else, assume that there's something wrong with
-    // the feature
+    // the feature.  If the provider is not currently valid, then cannot return
+    // feature.
 
     feature.setValid( false );
+    if( ! mValid ) break;
+
     QgsDelimitedTextFile::Status status = file->nextRecord( tokens );
     if ( status == QgsDelimitedTextFile::RecordEOF ) break;
     if ( status != QgsDelimitedTextFile::RecordOk ) continue;
@@ -1250,6 +1261,7 @@ void QgsDelimitedTextProvider::fetchAttribute( QgsFeature& feature, int fieldIdx
 // Return the extent of the layer
 QgsRectangle QgsDelimitedTextProvider::extent()
 {
+  if( mRescanRequired ) rescanFile();
   return mExtent;
 }
 
@@ -1266,6 +1278,7 @@ QGis::WkbType QgsDelimitedTextProvider::geometryType() const
  */
 long QgsDelimitedTextProvider::featureCount() const
 {
+  if( mRescanRequired ) const_cast<QgsDelimitedTextProvider *>(this)->rescanFile();
   return mNumberFeatures;
 }
 
