@@ -67,7 +67,7 @@ void QgsMapToolLabel::createRubberBands( )
   mLabelRubberBand->addPoint( QgsPoint( rect.xMaximum(), rect.yMaximum() ) );
   mLabelRubberBand->addPoint( QgsPoint( rect.xMaximum(), rect.yMinimum() ) );
   mLabelRubberBand->addPoint( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
-  mLabelRubberBand->setColor( Qt::green );
+  mLabelRubberBand->setColor( QColor(0,255,0, 65) );
   mLabelRubberBand->setWidth( 3 );
   mLabelRubberBand->show();
 
@@ -82,7 +82,7 @@ void QgsMapToolLabel::createRubberBands( )
       if ( geom )
       {
         mFeatureRubberBand = new QgsRubberBand( mCanvas, geom->type() );
-        mFeatureRubberBand->setColor( Qt::red );
+        mFeatureRubberBand->setColor( QColor(255, 0, 0, 65) );
         mFeatureRubberBand->setToGeometry( geom, vlayer );
         mFeatureRubberBand->show();
       }
@@ -103,7 +103,7 @@ void QgsMapToolLabel::createRubberBands( )
 
       QgsGeometry* pointGeom = QgsGeometry::fromPoint( fixPoint );
       mFixPointRubberBand = new QgsRubberBand( mCanvas, QGis::Line );
-      mFixPointRubberBand->setColor( Qt::blue );
+      mFixPointRubberBand->setColor( QColor(0, 0, 255, 65) );
       mFixPointRubberBand->setToGeometry( pointGeom, vlayer );
       mFixPointRubberBand->show();
       delete pointGeom;

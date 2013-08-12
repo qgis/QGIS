@@ -71,9 +71,9 @@ checkDock::checkDock( QgisInterface* qIface, QWidget* parent )
   mRBFeature2 = new QgsRubberBand( canvas );
   mRBConflict = new QgsRubberBand( canvas );
 
-  mRBFeature1->setColor( "blue" );
-  mRBFeature2->setColor( "green" );
-  mRBConflict->setColor( "red" );
+  mRBFeature1->setColor( QColor(0, 0, 255, 65) );
+  mRBFeature2->setColor( QColor(0, 255, 0, 65) );
+  mRBConflict->setColor( QColor(255, 0, 0, 65) );
 
   mRBFeature1->setWidth( 5 );
   mRBFeature2->setWidth( 5 );

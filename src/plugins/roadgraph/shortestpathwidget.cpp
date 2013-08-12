@@ -153,11 +153,11 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   connect( mClear, SIGNAL( clicked( bool ) ), this, SLOT( clear() ) );
 
   mrbFrontPoint = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QGis::Polygon );
-  mrbFrontPoint->setColor( Qt::green );
+  mrbFrontPoint->setColor( QColor(0, 255, 0, 65) );
   mrbFrontPoint->setWidth( 2 );
 
   mrbBackPoint = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QGis::Polygon );
-  mrbBackPoint->setColor( Qt::red );
+  mrbBackPoint->setColor( QColor(255, 0, 0, 65) );
   mrbBackPoint->setWidth( 2 );
 
   mrbPath = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QGis::Line );
