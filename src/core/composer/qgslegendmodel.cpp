@@ -170,6 +170,7 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
     if ( oldSymbolItem )
     {
       currentSymbolItem->setUserText( oldSymbolItem->userText() );
+
     }
 
     currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
@@ -271,6 +272,11 @@ void QgsLegendModel::updateSymbolV2ItemText( QStandardItem* symbolItem )
   QPair<QString, QgsSymbolV2*> symbol = symbolList.value( symbolItem->row() );
 
   QString label = sv2Item->userText().isEmpty() ? symbol.first : sv2Item->userText();
+
+  if ( renderer->type() == "singleSymbol" )
+  {
+    label = vLayer->name();
+  }
 
   if ( lItem->showFeatureCount() )
   {

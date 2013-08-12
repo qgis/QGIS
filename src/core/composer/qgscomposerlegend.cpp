@@ -326,11 +326,6 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
 #endif
 
   QString text = symbolItem->text();
-  if ( text.isEmpty() )
-  {
-    // Use layer label, used for single symbols
-    text = layerItem->text();
-  }
 
   QStringList lines = splitStringForWrapping( text );
 
