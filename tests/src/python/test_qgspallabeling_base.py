@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsPalLabeling: base suite setup
 
-.. note:: from build dir: ctest -R PyQgsPalLabelingBase -V
-Set env variable PAL_SUITE to run specific tests (define in __main__)
-Set env variable PAL_VERBOSE to output individual test summary
-Set env variable PAL_CONTROL_IMAGE to trigger building of new control images
+From build dir: ctest -R PyQgsPalLabelingBase -V
+Set the following env variables when manually running tests:
+  PAL_SUITE to run specific tests (define in __main__)
+  PAL_VERBOSE to output individual test summary
+  PAL_CONTROL_IMAGE to trigger building of new control images
+  PAL_REPORT to open any failed image check reports in web browser
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,7 +22,9 @@ __revision__ = '$Format:%H$'
 import os
 import sys
 import glob
+import shutil
 import StringIO
+import webbrowser
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -28,7 +32,6 @@ from qgis.core import (
     QGis,
     QgsCoordinateReferenceSystem,
     QgsDataSourceURI,
-    QgsLogger,
     QgsMapLayerRegistry,
     QgsMapRenderer,
     QgsPalLabeling,
@@ -48,6 +51,14 @@ from utilities import (
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
+PALREPORTDIR = ''
+if 'PAL_REPORT' in os.environ:
+    PALREPORTDIR = os.path.join(str(QDir.tempPath()), 'pal_test_report')
+    # clear out old reports, if temp dir exists
+    if os.path.exists(PALREPORTDIR):
+        shutil.rmtree(PALREPORTDIR, True)
+    os.mkdir(PALREPORTDIR)
+
 
 class TestQgsPalLabeling(TestCase):
 
@@ -66,6 +77,8 @@ class TestQgsPalLabeling(TestCase):
         # qgis instances
         cls._QgisApp, cls._Canvas, cls._Iface, cls._Parent = \
             QGISAPP, CANVAS, IFACE, PARENT
+
+        cls._PalReportDir = PALREPORTDIR
 
         # verify that spatialite provider is available
         msg = ('\nSpatialite provider not found, '
@@ -153,7 +166,7 @@ class TestQgsPalLabeling(TestCase):
         self._TestFunction = testid[2]
         testheader = '\n#####_____ {0}.{1} _____#####\n'.\
             format(self._TestGroup, self._TestFunction)
-        QgsLogger.debug(testheader)
+        qDebug(testheader)
 
         # define the shorthand name of the test (to minimize file name length)
         self._Test = '{0}_{1}'.format(self._TestGroupAbbr,
@@ -200,12 +213,22 @@ class TestQgsPalLabeling(TestCase):
         self._Map.render()
         self._Canvas.saveAsImage(imgpath)
 
-    def renderCheck(self):
+    def renderCheck(self, mismatch=0):
         chk = QgsRenderChecker()
         chk.setControlPathPrefix('expected_' + self._TestGroupPrefix)
         chk.setControlName(self._Test)
         chk.setMapRenderer(self._MapRenderer)
-        res = chk.runTest(self._Test)
+        res = chk.runTest(self._Test, mismatch)
+        if self._PalReportDir and not res:  # don't report ok checks
+            testname = self._TestGroup + ' . ' + self._Test
+            report = '<html>'
+            report += '<head><title>{0}</title></head>'.format(testname)
+            report += '<body>' + chk.report().toLocal8Bit() + '</body>'
+            report += '</html>'
+            f = QFile(os.path.join(self._PalReportDir, testname + '.html'))
+            if f.open(QIODevice.ReadWrite | QIODevice.Truncate):
+                f.write(report)
+                f.close()
         msg = '\nRender check failed for "{0}"'.format(self._Test)
         return res, msg
 
@@ -280,7 +303,14 @@ def runSuite(module, tests):
         print '\nIndividual test summary:'
     print '\n' + out.getvalue()
     out.close()
+
+    if PALREPORTDIR:
+        for report in os.listdir(PALREPORTDIR):
+            webbrowser.open_new_tab('file://' +
+                                    os.path.join(PALREPORTDIR, report))
+
     return res
+
 
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set
@@ -288,4 +318,4 @@ if __name__ == '__main__':
     b = 'TestQgsPalLabelingBase.'
     tests = [b + 'test_write_read_settings']
     res = runSuite(sys.modules[__name__], tests)
-    sys.exit(not res.wasSuccessful())
+    sys.exit(int(not res.wasSuccessful()))

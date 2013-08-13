@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 """QGIS unit tests for QgsPalLabeling: label rendering to screen canvas
 
-.. note:: from build dir: ctest -R PyQgsPalLabelingCanvas -V
-Set env variable PAL_SUITE to run specific tests (define in __main__)
-Set env variable PAL_VERBOSE to output individual test summary
-Set env variable PAL_CONTROL_IMAGE to trigger building of new control images
+From build dir: ctest -R PyQgsPalLabelingCanvas -V
+Set the following env variables when manually running tests:
+  PAL_SUITE to run specific tests (define in __main__)
+  PAL_VERBOSE to output individual test summary
+  PAL_CONTROL_IMAGE to trigger building of new control images
+  PAL_REPORT to open any failed image check reports in web browser
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -104,4 +106,4 @@ if __name__ == '__main__':
 
     tests = [sp + 'test_text_size_map_unit']
     res = runSuite(sys.modules[__name__], tests)
-    sys.exit(not res.wasSuccessful())
+    sys.exit(int(not res.wasSuccessful()))
