@@ -294,3 +294,21 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess 
 
   return hDS;
 }
+
+CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void * pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace )
+{
+  // See http://hub.qgis.org/issues/8356 and http://trac.osgeo.org/gdal/ticket/5170
+#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
+  char* pszOldVal = CPLStrdup( CPLGetConfigOption( "VSI_CACHE", "FALSE" ) );
+  CPLSetThreadLocalConfigOption( "VSI_CACHE", "FALSE" );
+#endif
+
+  CPLErr err = GDALRasterIO( hBand, eRWFlag, nXOff, nYOff, nXSize, nYSize, pData, nBufXSize, nBufYSize, eBufType, nPixelSpace, nLineSpace );
+
+#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
+  CPLSetThreadLocalConfigOption( "VSI_CACHE", pszOldVal );
+  CPLFree( pszOldVal );
+#endif
+
+  return err;
+}
