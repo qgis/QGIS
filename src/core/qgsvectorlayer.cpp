@@ -147,10 +147,6 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     // Always set crs
     setCoordinateSystem();
 
-    mJoinBuffer = new QgsVectorLayerJoinBuffer();
-
-    updateFields();
-
     // check if there is a default style / propertysheet defined
     // for this layer and if so apply it
     bool defaultLoadedFlag = false;
@@ -1631,6 +1627,10 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 
       // get and store the feature type
       mWkbType = mDataProvider->geometryType();
+
+      mJoinBuffer = new QgsVectorLayerJoinBuffer();
+
+      updateFields();
 
       // look at the fields in the layer and set the primary
       // display field using some real fuzzy logic
