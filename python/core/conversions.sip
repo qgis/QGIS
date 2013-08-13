@@ -1017,7 +1017,7 @@ template<TYPE1, TYPE2>
             if (!sipCanConvertToType(t1obj, sipType_TYPE1, SIP_NOT_NONE))
                 return 0;
 
-            if (!sipCanConvertToInstance(t2obj, sipClass_TYPE2, SIP_NOT_NONE))
+            if (!sipCanConvertToType(t2obj, sipType_TYPE2, SIP_NOT_NONE))
                 return 0;
         }
 
