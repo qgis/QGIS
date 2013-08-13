@@ -57,7 +57,7 @@ class TestQgsPalLabelingPoint(TestQgsPalLabeling):
         # Verify basic default label placement and text size in points
         self.lyr.writeToLayer(self.layer)
         self.saveContolImage()
-        self.assertTrue(self.renderCheck())
+        self.assertTrue(*self.renderCheck())
 
     def test_text_size_map_unit(self):
         # Verify label text size in map units
@@ -67,14 +67,14 @@ class TestQgsPalLabelingPoint(TestQgsPalLabeling):
         self.lyr.textFont = tmpFont
         self.lyr.writeToLayer(self.layer)
         self.saveContolImage()
-        self.assertTrue(self.renderCheck())
+        self.assertTrue(*self.renderCheck())
 
     def test_text_color(self):
         # Verify label color change
         self.lyr.textColor = Qt.blue
         self.lyr.writeToLayer(self.layer)
         self.saveContolImage()
-        self.assertTrue(self.renderCheck())
+        self.assertTrue(*self.renderCheck())
 
 
 # class TestQgsPalLabelingLine(TestQgsPalLabeling):
@@ -104,6 +104,6 @@ if __name__ == '__main__':
     sg = 'TestQgsPalLabelingPolygon.'
     mf = 'TestQgsPalLabelingMultiFeature.'
 
-    tests = [sp + 'test_text_size_map_unit']
+    tests = [sp + 'test_default_label']
     res = runSuite(sys.modules[__name__], tests)
-    sys.exit(int(not res.wasSuccessful()))
+    sys.exit(not res.wasSuccessful())

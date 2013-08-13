@@ -21,10 +21,11 @@ __revision__ = '$Format:%H$'
 
 import os
 import sys
+import datetime
 import glob
-import shutil
 import StringIO
-import webbrowser
+import subprocess
+import tempfile
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -51,13 +52,8 @@ from utilities import (
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
-PALREPORTDIR = ''
-if 'PAL_REPORT' in os.environ:
-    PALREPORTDIR = os.path.join(str(QDir.tempPath()), 'pal_test_report')
-    # clear out old reports, if temp dir exists
-    if os.path.exists(PALREPORTDIR):
-        shutil.rmtree(PALREPORTDIR, True)
-    os.mkdir(PALREPORTDIR)
+PALREPORT = 'PAL_REPORT' in os.environ
+PALREPORTS = {}
 
 
 class TestQgsPalLabeling(TestCase):
@@ -77,8 +73,6 @@ class TestQgsPalLabeling(TestCase):
         # qgis instances
         cls._QgisApp, cls._Canvas, cls._Iface, cls._Parent = \
             QGISAPP, CANVAS, IFACE, PARENT
-
-        cls._PalReportDir = PALREPORTDIR
 
         # verify that spatialite provider is available
         msg = ('\nSpatialite provider not found, '
@@ -116,8 +110,7 @@ class TestQgsPalLabeling(TestCase):
         # default for labeling test data sources: WGS 84 / UTM zone 13N
         crs.createFromSrid(32613)
         cls._MapRenderer.setDestinationCrs(crs)
-        # TODO: match and store platform's native logical output dpi
-        cls._MapRenderer.setOutputSize(QSize(600, 400), 72)
+        # use platform's native logical output dpi for QgsMapRenderer on launch
 
         cls._Pal = QgsPalLabeling()
         cls._MapRenderer.setLabelingEngine(cls._Pal)
@@ -219,16 +212,9 @@ class TestQgsPalLabeling(TestCase):
         chk.setControlName(self._Test)
         chk.setMapRenderer(self._MapRenderer)
         res = chk.runTest(self._Test, mismatch)
-        if self._PalReportDir and not res:  # don't report ok checks
+        if PALREPORT and not res:  # don't report ok checks
             testname = self._TestGroup + ' . ' + self._Test
-            report = '<html>'
-            report += '<head><title>{0}</title></head>'.format(testname)
-            report += '<body>' + chk.report().toLocal8Bit() + '</body>'
-            report += '</html>'
-            f = QFile(os.path.join(self._PalReportDir, testname + '.html'))
-            if f.open(QIODevice.ReadWrite | QIODevice.Truncate):
-                f.write(report)
-                f.close()
+            PALREPORTS[testname] = str(chk.report().toLocal8Bit())
         msg = '\nRender check failed for "{0}"'.format(self._Test)
         return res, msg
 
@@ -304,10 +290,30 @@ def runSuite(module, tests):
     print '\n' + out.getvalue()
     out.close()
 
-    if PALREPORTDIR:
-        for report in os.listdir(PALREPORTDIR):
-            webbrowser.open_new_tab('file://' +
-                                    os.path.join(PALREPORTDIR, report))
+    if PALREPORTS:
+        teststamp = 'PAL Test Report: ' + \
+                    datetime.datetime.now().strftime('%Y-%m-%d %X')
+        report = '<html><head><title>{0}</title></head><body>'.format(teststamp)
+        report += '\n<h2>Failed Tests: {0}</h2>'.format(len(PALREPORTS))
+        for k, v in PALREPORTS.iteritems():
+            report += '\n<h3>{0}</h3>\n{1}'.format(k, v)
+        report += '</body></html>'
+
+        tmp = tempfile.NamedTemporaryFile(suffix=".html", delete=False)
+        palreport = tmp.name
+        tmp.write(report)
+        tmp.close()
+
+        if sys.platform[:3] in ('win', 'dar'):
+            import webbrowser
+            webbrowser.open_new_tab("file://{0}".format(palreport))
+        else:
+            # some Linux OS pause execution on webbrowser open, so background it
+            cmd = 'import webbrowser;' \
+                  'webbrowser.open_new_tab("file://{0}")'.format(palreport)
+            p = subprocess.Popen([sys.executable, "-c", cmd],
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.STDOUT).pid
 
     return res
 
@@ -318,4 +324,4 @@ if __name__ == '__main__':
     b = 'TestQgsPalLabelingBase.'
     tests = [b + 'test_write_read_settings']
     res = runSuite(sys.modules[__name__], tests)
-    sys.exit(int(not res.wasSuccessful()))
+    sys.exit(not res.wasSuccessful())
