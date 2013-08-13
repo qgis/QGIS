@@ -536,6 +536,12 @@ int QgsRubberBand::size() const
   return mPoints.size();
 }
 
+int QgsRubberBand::partSize( int geometryIndex ) const
+{
+  if ( geometryIndex < 0 || geometryIndex >= mPoints.size() ) return 0;
+  return mPoints[geometryIndex].size();
+}
+
 int QgsRubberBand::numberOfVertices() const
 {
   int count = 0;

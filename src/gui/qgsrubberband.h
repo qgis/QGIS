@@ -164,6 +164,13 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     void movePoint( int index, const QgsPoint& p, int geometryIndex = 0 );
 
     /**
+     * Returns number of vertices in feature part
+     *  @param geometryIndex The index of the feature part (in case of multipart geometries)
+     *  @return number of vertices
+     */
+    int partSize( int geometryIndex ) const;
+
+    /**
      * Sets this rubber band to the geometry of an existing feature.
      * This is useful for feature highlighting.
      * In contrast to {@link addGeometry}, this method does also change the geometry type of the rubberband.

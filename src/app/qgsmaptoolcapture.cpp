@@ -209,8 +209,9 @@ int QgsMapToolCapture::addVertex( const QPoint &p )
   {
     mTempRubberBand = createRubberBand( mCaptureMode == CapturePolygon ? QGis::Polygon : QGis::Line , true );
   }
-  else{
-    mTempRubberBand->reset(CapturePolygon ? true : false);
+  else
+  {
+    mTempRubberBand->reset( mCaptureMode == CapturePolygon ? true : false );
   }
   if ( mCaptureMode == CaptureLine )
   {
@@ -234,6 +235,7 @@ void QgsMapToolCapture::undo()
   if ( mRubberBand )
   {
     int rubberBandSize = mRubberBand->numberOfVertices();
+    int tempRubberBandSize = mTempRubberBand->numberOfVertices();
     int captureListSize = mCaptureList.size();
 
     if ( rubberBandSize < 1 || captureListSize < 1 )
@@ -241,7 +243,21 @@ void QgsMapToolCapture::undo()
       return;
     }
 
-    mRubberBand->removePoint( -2 ); // remove the one before the last one
+    mRubberBand->removePoint( -1 );
+
+    if ( mRubberBand->numberOfVertices() > 0 )
+    {
+      if ( mTempRubberBand->numberOfVertices() > 1 )
+      {
+        const QgsPoint *point = mRubberBand->getPoint( 0, mRubberBand->numberOfVertices() - 1 );
+        mTempRubberBand->movePoint( mTempRubberBand->numberOfVertices() - 2, *point );
+      }
+    }
+    else
+    {
+      mTempRubberBand->reset( mCaptureMode == CapturePolygon ? true : false );
+    }
+
     mCaptureList.removeLast();
 
     validateGeometry();
