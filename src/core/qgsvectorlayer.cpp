@@ -267,21 +267,21 @@ void QgsVectorLayer::setDisplayField( QString fldName )
       // We assume that the user has organized the data with the
       // more "interesting" field names first. As such, name should
       // be selected before oldname, othername, etc.
-      if ( fldName.indexOf( "name", false ) > -1 )
+      if ( fldName.indexOf( "name", 0, Qt::CaseInsensitive ) > -1 )
       {
         if ( idxName.isEmpty() )
         {
           idxName = fldName;
         }
       }
-      if ( fldName.indexOf( "descrip", false ) > -1 )
+      if ( fldName.indexOf( "descrip", 0, Qt::CaseInsensitive ) > -1 )
       {
         if ( idxName.isEmpty() )
         {
           idxName = fldName;
         }
       }
-      if ( fldName.indexOf( "id", false ) > -1 )
+      if ( fldName.indexOf( "id", 0, Qt::CaseInsensitive ) > -1 )
       {
         if ( idxId.isEmpty() )
         {
