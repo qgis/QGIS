@@ -7,7 +7,6 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="24"
@@ -15,7 +14,7 @@
    id="svg5692"
    version="1.1"
    inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="oraceraster.svg"
+   sodipodi:docname="oracleraster.svg"
    inkscape:export-filename="/home/denis/Desktop/oracle.png"
    inkscape:export-xdpi="67.5"
    inkscape:export-ydpi="67.5">
@@ -23,11 +22,6 @@
      id="title2829">GIS icon theme 0.2</title>
   <defs
      id="defs5694">
-    <pattern
-       inkscape:collect="always"
-       xlink:href="#pattern4576"
-       id="pattern4600"
-       patternTransform="translate(-30.28039,4.0411768)" />
     <inkscape:perspective
        sodipodi:type="inkscape:persp3d"
        inkscape:vp_x="0 : 16 : 1"
@@ -213,16 +207,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="15.9375"
-     inkscape:cx="5.3068201"
-     inkscape:cy="11.248674"
+     inkscape:cx="2.7809563"
+     inkscape:cy="11.387808"
      inkscape:current-layer="layer2"
      showgrid="true"
      inkscape:grid-bbox="true"
      inkscape:document-units="px"
      borderlayer="false"
-     inkscape:window-width="1920"
+     inkscape:window-width="1855"
      inkscape:window-height="1056"
-     inkscape:window-x="1920"
+     inkscape:window-x="65"
      inkscape:window-y="24"
      inkscape:window-maximized="1"
      inkscape:snap-global="true"
@@ -296,13 +290,49 @@
      inkscape:label="Layer"
      style="display:inline"
      transform="translate(0,-8)">
+    <path
+       style="fill:#6e97c4;fill-opacity:1;fill-rule:nonzero;stroke:none;display:inline"
+       d="m 8.8761275,12.665805 6.4999985,0 0,6.499999 -6.4999985,0 z"
+       id="rect3249"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#253e5b;fill-opacity:1;fill-rule:nonzero;stroke:none;display:inline"
+       inkscape:transform-center-x="-3.2499991"
+       inkscape:transform-center-y="-4.3333322"
+       d="m 8.8761275,19.165807 6.4999985,0 0,6.499999 -6.4999985,0 z"
+       id="rect3251"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#253e5b;fill-opacity:1;fill-rule:nonzero;stroke:none;display:inline"
+       d="m 3.2856629,13.530971 5.5904657,-0.865166 0,6.499999 -6.4999991,0 z"
+       id="rect3253"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:#6d97c4;fill-opacity:1;fill-rule:nonzero;stroke:none;display:inline"
+       d="m 2.3761295,19.165807 6.4999991,0 0,6.499999 -5.479547,-0.798615 z"
+       id="rect3255"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:#253e5b;fill-opacity:1;fill-rule:nonzero;stroke:none;display:inline"
+       d="m 15.376125,12.665805 5.368628,0.953901 1.131371,5.546098 -6.499999,0 z"
+       id="rect3261"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:#6d97c4;fill-opacity:1;fill-rule:nonzero;stroke:none;display:inline"
+       d="m 15.376125,19.165807 6.499999,0 -1.286657,5.812303 -5.213342,0.687696 z"
+       id="rect3263"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
     <rect
-       style="fill:url(#pattern4600);fill-opacity:1;fill-rule:nonzero;stroke:#425a75;stroke-width:1.47476006;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:2.4"
+       style="fill:none;stroke:#425a75;stroke-width:1.47476006;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:2.4"
        id="rect6415"
        width="18.806105"
        height="13.680147"
-       x="2.0286224"
-       y="10.701779"
+       x="2.5969477"
+       y="12.359473"
        rx="5.0510759"
        ry="3.6338408"
        inkscape:export-filename="/home/denis/Desktop/rect6415.png"
