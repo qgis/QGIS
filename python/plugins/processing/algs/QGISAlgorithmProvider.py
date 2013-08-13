@@ -89,6 +89,7 @@ from processing.algs.PointsLayerFromTable import PointsLayerFromTable
 from processing.algs.PointsDisplacement import PointsDisplacement
 from sextante.algs.ZonalStatistics import ZonalStatistics
 from sextante.algs.PointsFromPolygons import PointsFromPolygons
+from sextante.algs.PointsFromLines import PointsFromLines
 
 #from processing.algs.VectorLayerHistogram import VectorLayerHistogram
 #from processing.algs.VectorLayerScatterplot import VectorLayerScatterplot
@@ -145,7 +146,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         # ------ vector ------
                         PointsDisplacement(),
                         ZonalStatistics(),
-                        PointsFromPolygons()
+                        PointsFromPolygons(),
+                        PointsFromLines()
                         ]
 
     def initializeSettings(self):
