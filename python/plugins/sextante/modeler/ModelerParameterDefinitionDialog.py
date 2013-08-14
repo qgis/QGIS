@@ -150,7 +150,7 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.shapetypeCombo.addItem("Polygon")
             if self.param is not None:
                 self.yesNoCombo.setCurrentIndex(1 if self.param.optional else 0)
-                self.shapetypeCombo.setCurrentIndex(self.param.shapetype + 1)
+                self.shapetypeCombo.setCurrentIndex(self.param.shapetype[0] + 1)
             self.horizontalLayout3.addWidget(self.shapetypeCombo)
             self.verticalLayout.addLayout(self.horizontalLayout3)
             self.verticalLayout.addLayout(self.horizontalLayout2)
@@ -245,7 +245,7 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE or isinstance(self.param, ParameterTable):
             self.param = ParameterTable(name, description, self.yesNoCombo.currentIndex() == 1)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_VECTOR or isinstance(self.param, ParameterVector):
-            self.param = ParameterVector(name, description, self.shapetypeCombo.currentIndex()-1, self.yesNoCombo.currentIndex() == 1)
+            self.param = ParameterVector(name, description, [self.shapetypeCombo.currentIndex() - 1], self.yesNoCombo.currentIndex() == 1)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_MULTIPLE or isinstance(self.param, ParameterMultipleInput):
             self.param = ParameterMultipleInput(name, description, self.datatypeCombo.currentIndex()-1, self.yesNoCombo.currentIndex() == 1)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_NUMBER or isinstance(self.param, ParameterNumber):
