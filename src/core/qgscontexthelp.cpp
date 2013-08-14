@@ -73,7 +73,7 @@ QProcess *QgsContextHelp::start()
   }
 #endif
 
-  process->start( helpPath );
+  process->start( helpPath, QStringList() );
 
   return process;
 }
