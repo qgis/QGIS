@@ -550,7 +550,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../../images/images.qrc">
-                   <normaloff>:/images/themes/default/mActionPan.png</normaloff>:/images/themes/default/mActionPan.png</iconset>
+                   <normaloff>:/images/themes/default/mActionPan.svg</normaloff>:/images/themes/default/mActionPan.svg</iconset>
                  </property>
                 </item>
                 <item>
