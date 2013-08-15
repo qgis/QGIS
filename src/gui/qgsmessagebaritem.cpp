@@ -94,6 +94,35 @@ void QgsMessageBarItem::writeContent()
     mLblIcon = 0;
   }
 
+  // ICON
+  if ( mLblIcon == 0 )
+  {
+    mLblIcon = new QLabel( this );
+    mLayout->addWidget( mLblIcon );
+  }
+  QIcon icon;
+  if ( !mUserIcon.isNull() )
+  {
+    icon = mUserIcon;
+  }
+  else
+  {
+    QString msgIcon( "/mIconInfo.png" );
+    switch ( mLevel )
+    {
+      case QgsMessageBar::CRITICAL:
+        msgIcon = QString( "/mIconCritical.png" );
+        break;
+      case QgsMessageBar::WARNING:
+        msgIcon = QString( "/mIconWarn.png" );
+        break;
+      default:
+        break;
+    }
+    icon = QgsApplication::getThemeIcon( msgIcon );
+  }
+  mLblIcon->setPixmap( icon.pixmap( 24 ) );
+
   // TITLE AND TEXT
   if ( mTitle.isEmpty() && mText.isEmpty() )
   {
@@ -133,46 +162,12 @@ void QgsMessageBarItem::writeContent()
   // WIDGET
   if ( mWidget != 0 )
   {
-    int idx = 0;
-    if ( mTextEdit != 0 )
-      idx = 1;
-
-    QLayoutItem *item = mLayout->itemAt( idx );
+    QLayoutItem *item = mLayout->itemAt( 2 );
     if ( !item || item->widget() != mWidget )
     {
-      mLayout->insertWidget( idx, mWidget );
+      mLayout->addWidget( mWidget );
     }
   }
-
-  // ICON
-  if ( mLblIcon == 0 )
-  {
-    mLblIcon = new QLabel( this );
-    mLayout->addWidget( mLblIcon );
-  }
-  QIcon icon;
-  if ( !mUserIcon.isNull() )
-  {
-    icon = mUserIcon;
-  }
-  else
-  {
-    QString msgIcon( "/mIconInfo.png" );
-    switch ( mLevel )
-    {
-      case QgsMessageBar::CRITICAL:
-        msgIcon = QString( "/mIconCritical.png" );
-        break;
-      case QgsMessageBar::WARNING:
-        msgIcon = QString( "/mIconWarn.png" );
-        break;
-      default:
-        break;
-    }
-    icon = QgsApplication::getThemeIcon( msgIcon );
-  }
-  mLblIcon->setPixmap( icon.pixmap( 24 ) );
-
 
   // STYLESHEET
   if ( mLevel >= QgsMessageBar::CRITICAL )
@@ -220,10 +215,7 @@ QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
   if ( mWidget != 0 )
   {
     QLayoutItem *item;
-    int idx = 0;
-    if ( mTextEdit != 0 )
-      idx = 1;
-    item = mLayout->itemAt( idx );
+    item = mLayout->itemAt( 2 );
     if ( item->widget() == mWidget )
     {
       delete item->widget();

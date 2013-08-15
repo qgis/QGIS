@@ -26,7 +26,7 @@
 #include <QHBoxLayout>
 
 
-class QgsMessageBarItem : public QWidget
+class GUI_EXPORT QgsMessageBarItem : public QWidget
 {
     Q_OBJECT
   public:
