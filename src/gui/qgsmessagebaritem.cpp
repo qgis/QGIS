@@ -22,11 +22,9 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTextEdit>
-#include <QUuid>
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent ) :
     QWidget( parent )
-    , mUuid( QUuid::createUuid().toString() )
     , mTitle( "" )
     , mText( text )
     , mLevel( level )
@@ -40,7 +38,6 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::Messag
 
 QgsMessageBarItem::QgsMessageBarItem(const QString &title, const QString &text, QgsMessageBar::MessageLevel level, int duration , QWidget *parent ) :
     QWidget( parent )
-    , mUuid( QUuid::createUuid().toString() )
     , mTitle( title )
     , mText( text )
     , mLevel( level )
@@ -54,7 +51,6 @@ QgsMessageBarItem::QgsMessageBarItem(const QString &title, const QString &text, 
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent ) :
     QWidget( parent )
-    , mUuid( QUuid::createUuid().toString() )
     , mTitle( title )
     , mText( text )
     , mLevel( level )
@@ -68,7 +64,6 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text,
 
 QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent ) :
     QWidget( parent )
-    , mUuid( QUuid::createUuid().toString() )
     , mTitle( "" )
     , mText( "" )
     , mLevel( level )

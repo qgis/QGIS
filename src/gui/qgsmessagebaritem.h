@@ -59,9 +59,6 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     //! returns the duration in second of the message
     int duration() const { return mDuration; }
 
-    //! get the uuid of this message
-    QString id() { return mUuid; }
-
     //! returns the level
     QgsMessageBar::MessageLevel level() { return mLevel; }
 
@@ -76,7 +73,6 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
   private:
     void writeContent();
 
-    QString mUuid;
     QString mTitle;
     QString mText;
     QgsMessageBar::MessageLevel mLevel;

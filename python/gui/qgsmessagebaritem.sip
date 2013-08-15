@@ -32,9 +32,6 @@ class QgsMessageBarItem: QWidget
 
     //! returns the duration in second of the message
     int duration();
-
-    //! get the uuid of this message
-    QString id();
     
     //! returns the level
     QgsMessageBar::MessageLevel level();

@@ -268,11 +268,10 @@ QgsMessageBarItem* QgsMessageBar::pushWidget( QWidget *widget , QgsMessageBar::M
   return item;
 }
 
-QString QgsMessageBar::pushMessage( const QString &title, const QString &text, QgsMessageBar::MessageLevel level, int duration )
+void QgsMessageBar::pushMessage( const QString &title, const QString &text, QgsMessageBar::MessageLevel level, int duration )
 {
   QgsMessageBarItem *item = new QgsMessageBarItem( title, text, level, duration );
   pushItem( item );
-  return item->id();
 }
 
 QgsMessageBarItem* QgsMessageBar::createMessage( const QString &text, QWidget *parent )
@@ -289,17 +288,6 @@ QgsMessageBarItem* QgsMessageBar::createMessage( const QString &title, const QSt
 QgsMessageBarItem* QgsMessageBar::createMessage( QWidget *widget, QWidget *parent )
 {
   return new QgsMessageBarItem( widget, INFO, 0, parent );
-}
-
-QgsMessageBarItem* QgsMessageBar::itemAtId( QString uuid )
-{
-  if ( mCurrentItem->id() == uuid )
-    return mCurrentItem;
-
-  foreach ( QgsMessageBarItem *item, mItems )
-    if ( item->id() == uuid )
-      return item;
-  return 0;
 }
 
 void QgsMessageBar::updateCountdown()

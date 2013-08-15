@@ -45,12 +45,9 @@ class QgsMessageBar: QFrame
     static QgsMessageBarItem* createMessage( QWidget *widget, QWidget *parent = 0 ) /Factory/;
     
     //! convenience method for pushing a non-widget-based message to the bar
-    QString pushMessage( const QString &text, MessageLevel level = INFO, int duration = 0 );
+    void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 0 );
     //! convenience method for pushing a non-widget-based message with title to the bar
-    QString pushMessage( const QString &title, const QString &text, MessageLevel level = INFO, int duration = 0 );
-
-    //! return the item for given uuid if the item still exists, 0 otherwise
-    QgsMessageBarItem* itemAtId( QString uuid );
+    void pushMessage( const QString &title, const QString &text, MessageLevel level = INFO, int duration = 0 );
 
   signals:
     //! emitted when a message widget is added to the bar
