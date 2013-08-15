@@ -190,9 +190,9 @@ void QgsRubberBand::removePoint( int index, bool doUpdate/* = true*/, int geomet
   }
 }
 
-void QgsRubberBand::removeLastPoint( int geometryIndex )
+void QgsRubberBand::removeLastPoint( int geometryIndex, bool doUpdate/* = true*/ )
 {
-  removePoint( -1, true, geometryIndex );
+  removePoint( -1, doUpdate, geometryIndex );
 }
 
 /*!
@@ -272,6 +272,7 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
         pt = geom->asPoint();
       }
       addPoint( pt, false, idx );
+      removeLastPoint( idx , false );
     }
     break;
 
@@ -285,10 +286,12 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
         if ( layer )
         {
           addPoint( mr->layerToMapCoordinates( layer, pt ), false, idx );
+          removeLastPoint( idx , false );
         }
         else
         {
           addPoint( pt, false, idx );
+          removeLastPoint( idx , false );
         }
       }
     }
@@ -499,8 +502,10 @@ void QgsRubberBand::updateRect()
     {
       return;
     }
-    qreal s = ( mIconSize - 1 ) / 2;
-    qreal p = mPen.width();
+
+    qreal scale = mMapCanvas->mapUnitsPerPixel();
+    qreal s = ( mIconSize - 1 ) / 2 * scale;
+    qreal p = mPen.width() * scale;
 
     QgsRectangle r( it->x() + mTranslationOffsetX - s - p, it->y() + mTranslationOffsetY - s - p,
                     it->x() + mTranslationOffsetX + s + p, it->y() + mTranslationOffsetY + s + p );
