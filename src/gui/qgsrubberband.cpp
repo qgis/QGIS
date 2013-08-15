@@ -502,8 +502,10 @@ void QgsRubberBand::updateRect()
     {
       return;
     }
-    qreal s = ( mIconSize - 1 ) / 2;
-    qreal p = mPen.width();
+
+    qreal scale = mMapCanvas->mapUnitsPerPixel();
+    qreal s = ( mIconSize - 1 ) / 2 * scale;
+    qreal p = mPen.width() * scale;
 
     QgsRectangle r( it->x() + mTranslationOffsetX - s - p, it->y() + mTranslationOffsetY - s - p,
                     it->x() + mTranslationOffsetX + s + p, it->y() + mTranslationOffsetY + s + p );
