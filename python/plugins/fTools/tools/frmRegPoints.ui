@@ -218,7 +218,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="toolOut">
+      <widget class="QPushButton" name="toolOut">
        <property name="text">
         <string>Browse</string>
        </property>

@@ -30,7 +30,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="toolOut">
+      <widget class="QPushButton" name="toolOut">
        <property name="text">
         <string>Browse</string>
        </property>
@@ -88,7 +88,7 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
+   <item row="6" column="0" colspan="2">
     <spacer>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
