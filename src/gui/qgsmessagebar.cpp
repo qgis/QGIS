@@ -16,20 +16,19 @@
  ***************************************************************************/
 
 #include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 #include "qgsapplication.h"
 
 #include <QWidget>
 #include <QPalette>
 #include <QStackedWidget>
-#include <QLabel>
 #include <QProgressBar>
 #include <QToolButton>
 #include <QTimer>
 #include <QGridLayout>
 #include <QMenu>
 #include <QMouseEvent>
-#include <QTextEdit>
-
+#include <QLabel>
 
 QgsMessageBar::QgsMessageBar( QWidget *parent )
     : QFrame( parent ), mCurrentItem( NULL )
@@ -91,8 +90,8 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mCountdownTimer->setInterval( 1000 );
   connect( mCountdownTimer, SIGNAL( timeout() ), this, SLOT( updateCountdown() ) );
 
-  connect( this, SIGNAL( widgetAdded( QWidget* ) ), this, SLOT( updateItemCount() ) );
-  connect( this, SIGNAL( widgetRemoved( QWidget* ) ), this, SLOT( updateItemCount() ) );
+  connect( this, SIGNAL( widgetAdded( QgsMessageBarItem* ) ), this, SLOT( updateItemCount() ) );
+  connect( this, SIGNAL( widgetRemoved( QgsMessageBarItem* ) ), this, SLOT( updateItemCount() ) );
 
   // start hidden
   setVisible( false );
@@ -123,26 +122,24 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
 {
   Q_ASSERT( item );
 
-  if ( item != mCurrentItem && !mList.contains( item ) )
+  if ( item != mCurrentItem && !mItems.contains( item ) )
     return;
 
   if ( item == mCurrentItem )
   {
     if ( mCurrentItem )
     {
-      mLayout->removeWidget( mCurrentItem->widget() );
-      mCurrentItem->widget()->hide();
-      if ( mCurrentItem->widget()->parent() == this )
-      {
-        delete mCurrentItem->widget();
-      }
+      QWidget *widget = dynamic_cast<QWidget*>( mCurrentItem );
+      mLayout->removeWidget( widget );
+      mCurrentItem->hide();
+      disconnect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
       delete mCurrentItem;
       mCurrentItem = 0;
     }
 
-    if ( !mList.isEmpty() )
+    if ( !mItems.isEmpty() )
     {
-      pushItem( mList.first() );
+      showItem( mItems.first() );
     }
     else
     {
@@ -151,33 +148,29 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
   }
   else
   {
-    mList.removeOne( item );
+    mItems.removeOne( item );
   }
 
-  emit widgetRemoved( item->widget() );
+  emit widgetRemoved( item );
 }
 
-bool QgsMessageBar::popWidget( QWidget *widget )
+bool QgsMessageBar::popWidget( QgsMessageBarItem *item )
 {
-  if ( !widget || !mCurrentItem )
+  if ( !item || !mCurrentItem )
     return false;
 
-  if ( widget == mCurrentItem->widget() )
+  if ( item == mCurrentItem )
   {
     popItem( mCurrentItem );
     return true;
   }
 
-  foreach ( QgsMessageBarItem *item, mList )
+  foreach ( QgsMessageBarItem *existingItem, mItems )
   {
-    if ( item->widget() == widget )
+    if ( existingItem == item )
     {
-      mList.removeOne( item );
-      if ( item->widget()->parent() == this )
-      {
-        delete item->widget();
-      }
-      delete item;
+      mItems.removeOne( existingItem );
+      delete existingItem;
       return true;
     }
   }
@@ -200,38 +193,41 @@ bool QgsMessageBar::popWidget()
 
 bool QgsMessageBar::clearWidgets()
 {
-  if ( !mCurrentItem && mList.empty() )
+  if ( !mCurrentItem && mItems.empty() )
     return true;
 
-  while ( mList.count() > 0 )
+  while ( mItems.count() > 0 )
   {
     popWidget();
   }
   popWidget();
 
-  return !mCurrentItem && mList.empty();
+  return !mCurrentItem && mItems.empty();
 }
 
-void QgsMessageBar::pushItem( QgsMessageBarItem *item )
+void QgsMessageBar::showItem( QgsMessageBarItem *item )
 {
   Q_ASSERT( item );
+
+  if ( mCurrentItem != 0 )
+    disconnect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
 
   if ( item == mCurrentItem )
     return;
 
-  if ( mList.contains( item ) )
-    mList.removeOne( item );
+  if ( mItems.contains( item ) )
+    mItems.removeOne( item );
 
   if ( mCurrentItem )
   {
-    mList.prepend( mCurrentItem );
-    mLayout->removeWidget( mCurrentItem->widget() );
-    mCurrentItem->widget()->hide();
+    mItems.prepend( mCurrentItem );
+    mLayout->removeWidget( mCurrentItem );
+    mCurrentItem->hide();
   }
 
   mCurrentItem = item;
-  mLayout->addWidget( item->widget(), 0, 1, 1, 1 );
-  mCurrentItem->widget()->show();
+  mLayout->addWidget( item, 0, 1, 1, 1 );
+  mCurrentItem->show();
 
   if ( item->duration() > 0 )
   {
@@ -241,102 +237,69 @@ void QgsMessageBar::pushItem( QgsMessageBarItem *item )
     mCountdownTimer->start();
   }
 
-  setStyleSheet( item->styleSheet() );
+  connect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
+  setStyleSheet( item->getStyleSheet() );
   show();
 
-  emit widgetAdded( item->widget() );
+  emit widgetAdded( item );
 }
 
-void QgsMessageBar::pushWidget( QWidget *widget, MessageLevel level, int duration )
+void QgsMessageBar::pushItem( QgsMessageBarItem *item )
 {
   resetCountdown();
-
-  QString stylesheet;
-  if ( level >= CRITICAL )
-  {
-    stylesheet = "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
-                 "QLabel,QTextEdit { color: white; } ";
-  }
-  else if ( level == WARNING )
-  {
-    stylesheet = "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
-                 "QLabel,QTextEdit { color: black; } ";
-  }
-  else if ( level <= INFO )
-  {
-    stylesheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
-                 "QLabel,QTextEdit { color: #2554a1; } ";
-  }
-  stylesheet += "QLabel#mItemCount { font-style: italic; }";
-  pushWidget( widget, stylesheet, duration );
-}
-
-void QgsMessageBar::pushWidget( QWidget *widget, const QString &styleSheet, int duration )
-{
-  if ( !widget )
-    return;
-
   // avoid duplicated widget
-  popWidget( widget );
-
-  pushItem( new QgsMessageBarItem( widget, styleSheet, duration ) );
+  popWidget( item );
+  showItem( item );
 }
 
-QWidget* QgsMessageBar::createMessage( const QString &title, const QString &text, const QIcon &icon, QWidget *parent )
+QgsMessageBarItem* QgsMessageBar::pushWidget( QWidget *widget , QgsMessageBar::MessageLevel level, int duration )
 {
-  QWidget *widget = new QWidget( parent );
-
-  QHBoxLayout *layout = new QHBoxLayout( widget );
-  layout->setContentsMargins( 0, 0, 0, 0 );
-
-  if ( !icon.isNull() )
+  QgsMessageBarItem *item;
+  item = dynamic_cast<QgsMessageBarItem*>( widget );
+  if ( item )
   {
-    QLabel *lblIcon = new QLabel( widget );
-    lblIcon->setPixmap( icon.pixmap( 24 ) );
-    layout->addWidget( lblIcon );
+    item->setLevel( level )->setDuration( duration );
   }
-
-  QTextEdit *msgText = new QTextEdit( widget );
-  msgText->setObjectName( "mMsgText" );
-  QString content = text;
-  if ( !title.isEmpty() )
+  else
   {
-    // add ':' to end of title
-    QString t = title.trimmed();
-    if ( !t.endsWith( ":" ) )
-      t += ": ";
-    content.prepend( QString( "<b>" ) + t + "</b>" );
+    item = new QgsMessageBarItem( widget, level, duration );
   }
-  msgText->setText( content );
-  msgText->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
-  msgText->setReadOnly( true );
-  msgText->setFrameShape( QFrame::NoFrame );
-  // stylesheet set here so Qt-style substitued scrollbar arrows can show within limited height
-  // adjusts to height of font set in app options
-  msgText->setStyleSheet( "* { background-color: rgba(0,0,0,0); margin-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
-                          "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); }" );
-  layout->addWidget( msgText );
-
-  return widget;
+  pushItem( item );
+  return item;
 }
 
-void QgsMessageBar::pushMessage( const QString &title, const QString &text, MessageLevel level, int duration )
+QString QgsMessageBar::pushMessage( const QString &title, const QString &text, QgsMessageBar::MessageLevel level, int duration )
 {
-  QString msgIcon( "/mIconInfo.png" );
-  switch ( level )
-  {
-    case QgsMessageBar::CRITICAL:
-      msgIcon = QString( "/mIconCritical.png" );
-      break;
-    case QgsMessageBar::WARNING:
-      msgIcon = QString( "/mIconWarn.png" );
-      break;
-    default:
-      break;
-  }
+  QgsMessageBarItem *item = new QgsMessageBarItem( title, text, level, duration );
+  pushItem( item );
+  return item->id();
+}
 
-  QWidget *msg = QgsMessageBar::createMessage( title, text, QgsApplication::getThemeIcon( msgIcon ), this );
-  pushWidget( msg, level, duration );
+QgsMessageBarItem* QgsMessageBar::createMessage( const QString &text, QWidget *parent )
+{
+  QgsMessageBarItem* item = new QgsMessageBarItem( text, INFO, 0, parent );
+  return item;
+}
+
+QgsMessageBarItem* QgsMessageBar::createMessage( const QString &title, const QString &text, QWidget *parent )
+{
+  return new QgsMessageBarItem( title, text, QgsMessageBar::INFO, 0, parent );
+}
+
+QgsMessageBarItem* QgsMessageBar::createMessage( QWidget *widget, QWidget *parent )
+{
+  return new QgsMessageBarItem( widget, INFO, 0, parent );
+}
+
+QgsMessageBarItem* QgsMessageBar::itemAtId( QString uuid )
+{
+  if ( mCurrentItem->id() == uuid )
+    return mCurrentItem;
+
+  foreach ( QgsMessageBarItem *item, mItems )
+    if ( item->id() == uuid )
+      return item;
+  return 0;
 }
 
 void QgsMessageBar::updateCountdown()
@@ -367,5 +330,5 @@ void QgsMessageBar::resetCountdown()
 
 void QgsMessageBar::updateItemCount()
 {
-  mItemCount->setText( mList.count() > 0 ? tr( "%n more", "unread messages", mList.count() ) : QString( "" ) );
+  mItemCount->setText( mItems.count() > 0 ? tr( "%n more", "unread messages", mItems.count() ) : QString( "" ) );
 }

@@ -89,6 +89,7 @@ qgsmaptoolidentify.cpp
 qgsmaptoolpan.cpp
 qgsmaptoolzoom.cpp
 qgsmessagebar.cpp
+qgsmessagebaritem.cpp
 qgsmessageviewer.cpp
 qgsmessagelogviewer.cpp
 qgsnewhttpconnection.cpp
@@ -201,6 +202,7 @@ qgsmapcanvas.h
 qgsmapoverviewcanvas.h
 qgsmaptoolemitpoint.h
 qgsmaptoolidentify.h
+qgsmessagebaritem.h
 qgsmessagebar.h
 qgsmessageviewer.h
 qgsmessagelogviewer.h
@@ -253,6 +255,7 @@ qgsmaptoolemitpoint.h
 qgsmaptoolidentify.h
 qgsmaptoolpan.h
 qgsmaptoolzoom.h
+qgsmessagebaritem.h
 qgsmessagebar.h
 qgsmessageviewer.h
 qgsoptionsdialogbase.h

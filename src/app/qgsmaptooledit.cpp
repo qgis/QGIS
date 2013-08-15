@@ -75,7 +75,7 @@ QgsRubberBand* QgsMapToolEdit::createRubberBand( QGis::GeometryType geometryType
   rb->setWidth( settings.value( "/qgis/digitizing/line_width", 1 ).toInt() );
   QColor color( settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt(),
                 settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt(),
-                settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt());
+                settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt() );
   double myAlpha = settings.value( "/qgis/digitizing/line_color_alpha", 200 ).toInt() / 255.0 ;
   if ( alternativeBand )
   {
@@ -84,9 +84,9 @@ QgsRubberBand* QgsMapToolEdit::createRubberBand( QGis::GeometryType geometryType
   }
   if ( geometryType == QGis::Polygon )
   {
-    color.setAlphaF ( myAlpha );
+    color.setAlphaF( myAlpha );
   }
-  color.setAlphaF ( myAlpha );
+  color.setAlphaF( myAlpha );
   rb->setColor( color );
   rb->show();
   return rb;
