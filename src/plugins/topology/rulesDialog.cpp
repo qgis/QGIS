@@ -186,9 +186,13 @@ void rulesDialog::showControls( const QString& testName )
         continue;
       }
 
-      if ( topologyRule.layer2AcceptsType( v1->geometryType() ) )
+
+      if ( v1->type() == QgsMapLayer::VectorLayer )
       {
-        mLayer2Box->addItem( v1->name() , v1->id() );
+        if ( topologyRule.layer2AcceptsType( v1->geometryType() ) )
+        {
+          mLayer2Box->addItem( v1->name() , v1->id() );
+        }
       }
     }
   }
@@ -351,8 +355,10 @@ void rulesDialog::initGui()
     qDebug() << "layerid = " + layerList[i];
 
     // add layer name to the layer combo boxes
-
-    mLayer1Box->addItem( v1->name(), v1->id() );
+    if ( v1->type() == QgsMapLayer::VectorLayer )
+    {
+      mLayer1Box->addItem( v1->name(), v1->id() );
+    }
   }
   mLayer1Box->blockSignals( false );
 
