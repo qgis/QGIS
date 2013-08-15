@@ -149,7 +149,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**
      * Removes the last point. Most useful in connection with undo operations
      */
-    void removeLastPoint( int geometryIndex = 0 );
+    void removeLastPoint( int geometryIndex = 0 , bool doUpdate = true );
 
     /**
      * Moves the rubber band point specified by index. Note that if the rubber band is
