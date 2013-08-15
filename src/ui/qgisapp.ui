@@ -799,7 +799,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionPan.png</normaloff>:/images/themes/default/mActionPan.png</iconset>
+     <normaloff>:/images/themes/default/mActionPan.svg</normaloff>:/images/themes/default/mActionPan.svg</iconset>
    </property>
    <property name="text">
     <string>Pan Map</string>
@@ -1688,7 +1688,7 @@ Ctl (Cmd) increments by 15 deg.</string>
   <action name="mActionPanToSelected">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionPanToSelected.png</normaloff>:/images/themes/default/mActionPanToSelected.png</iconset>
+     <normaloff>:/images/themes/default/mActionPanToSelected.svg</normaloff>:/images/themes/default/mActionPanToSelected.svg</iconset>
    </property>
    <property name="text">
     <string>Pan Map to Selection</string>

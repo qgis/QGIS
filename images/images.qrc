@@ -230,8 +230,7 @@
         <file>themes/default/mActionOffsetCurve.png</file>
         <file>themes/default/mActionOpenTable.png</file>
         <file>themes/default/mActionOptions.svg</file>
-        <file>themes/default/mActionPan.png</file>
-        <file>themes/default/mActionPanToSelected.png</file>
+        <file>themes/default/mActionPan.svg</file>
         <file>themes/default/mActionPanToSelected.svg</file>
         <file>themes/default/mActionPinLabels.svg</file>
         <file>themes/default/mActionProjectProperties.png</file>
