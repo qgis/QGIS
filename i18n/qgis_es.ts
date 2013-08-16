@@ -32030,189 +32030,189 @@ mo se muestran</translation>
     <name>QgsMapserverExportBase</name>
     <message>
         <source>Map file</source>
-        <translation>Archivo de mapa</translation>
+        <translation type="obsolete">Archivo de mapa</translation>
     </message>
     <message>
         <source>Map</source>
-        <translation>Mapa</translation>
+        <translation type="obsolete">Mapa</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nombre</translation>
+        <translation type="obsolete">Nombre</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation>Altura</translation>
+        <translation type="obsolete">Altura</translation>
     </message>
     <message>
         <source>Units</source>
-        <translation>Unidades</translation>
+        <translation type="obsolete">Unidades</translation>
     </message>
     <message>
         <source>Image type</source>
-        <translation>Tipo de imagen</translation>
+        <translation type="obsolete">Tipo de imagen</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation>Anchura</translation>
+        <translation type="obsolete">Anchura</translation>
     </message>
     <message>
         <source>Header</source>
-        <translation>Encabezado</translation>
+        <translation type="obsolete">Encabezado</translation>
     </message>
     <message>
         <source>Footer</source>
-        <translation>Pie de página</translation>
+        <translation type="obsolete">Pie de página</translation>
     </message>
     <message>
         <source>Template</source>
-        <translation>Plantilla</translation>
+        <translation type="obsolete">Plantilla</translation>
     </message>
     <message>
         <source>Path to the MapServer template file</source>
-        <translation>Ruta al archivo de plantilla de MapServer</translation>
+        <translation type="obsolete">Ruta al archivo de plantilla de MapServer</translation>
     </message>
     <message>
         <source>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile</source>
-        <translation>Prefijo añadido al nombre de los archivos GIF del mapa, la barra de escala y la leyenda creados usando este archivo de mapa</translation>
+        <translation type="obsolete">Prefijo añadido al nombre de los archivos GIF del mapa, la barra de escala y la leyenda creados usando este archivo de mapa</translation>
     </message>
     <message>
         <source>Name for the map file to be created from the QGIS project file</source>
-        <translation>Nombre para el archivo de mapa que se va a crear a partir del proyecto de QGIS</translation>
+        <translation type="obsolete">Nombre para el archivo de mapa que se va a crear a partir del proyecto de QGIS</translation>
     </message>
     <message>
         <source>Full path to the QGIS project file to export to MapServer map format</source>
-        <translation>Ruta completa al proyecto de QGIS para exportar al formato de mapa de MapServer</translation>
+        <translation type="obsolete">Ruta completa al proyecto de QGIS para exportar al formato de mapa de MapServer</translation>
     </message>
     <message>
         <source>If checked, only the layer information will be processed</source>
-        <translation>Si se marca, sólo será procesada la información de la capa</translation>
+        <translation type="obsolete">Si se marca, sólo será procesada la información de la capa</translation>
     </message>
     <message>
         <source>Forces labels on, regardless of collisions. Available only for cached labels.</source>
-        <translation>Fuerza la colocación de etiquetas, sin tener en cuenta las colisiones. Sólo disponible para etiquetas en caché.</translation>
+        <translation type="obsolete">Fuerza la colocación de etiquetas, sin tener en cuenta las colisiones. Sólo disponible para etiquetas en caché.</translation>
     </message>
     <message>
         <source>Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.</source>
-        <translation>Marcar para permitir a MapServer devolver los datos en formato GML. Útil cuando se usa con operaciones WMS GetFeatureInfo.</translation>
+        <translation type="obsolete">Marcar para permitir a MapServer devolver los datos en formato GML. Útil cuando se usa con operaciones WMS GetFeatureInfo.</translation>
     </message>
     <message>
         <source>Force</source>
-        <translation>Forzar</translation>
+        <translation type="obsolete">Forzar</translation>
     </message>
     <message>
         <source>Should text be antialiased? Note that this requires more available colors, decreases drawing performance, and results in slightly larger output images.</source>
-        <translation>¿Se debe suavizar el texto? Tenga en cuenta que esto requiere más colores disponibles, disminuye las prestaciones del dibujado y produce imágenes ligeramente más grandes.</translation>
+        <translation type="obsolete">¿Se debe suavizar el texto? Tenga en cuenta que esto requiere más colores disponibles, disminuye las prestaciones del dibujado y produce imágenes ligeramente más grandes.</translation>
     </message>
     <message>
         <source>Anti-alias</source>
-        <translation>Suavizado</translation>
+        <translation type="obsolete">Suavizado</translation>
     </message>
     <message>
         <source>Can text run off the edge of the map?</source>
-        <translation>¿Puede salirse el texto del borde del mapa?</translation>
+        <translation type="obsolete">¿Puede salirse el texto del borde del mapa?</translation>
     </message>
     <message>
         <source>Partials</source>
-        <translation>Parciales</translation>
+        <translation type="obsolete">Parciales</translation>
     </message>
     <message>
         <source>Dump</source>
-        <translation>Basura</translation>
+        <translation type="obsolete">Basura</translation>
     </message>
     <message>
         <source>Paths</source>
-        <translation>Rutas</translation>
+        <translation type="obsolete">Rutas</translation>
     </message>
     <message>
         <source>MapServer url</source>
-        <translation>URL de MapServer</translation>
+        <translation type="obsolete">URL de MapServer</translation>
     </message>
     <message>
         <source>Browse...</source>
-        <translation>Explorar...</translation>
+        <translation type="obsolete">Explorar...</translation>
     </message>
     <message>
         <source>Save As...</source>
-        <translation>Guardar como...</translation>
+        <translation type="obsolete">Guardar como...</translation>
     </message>
     <message>
         <source>MapServer Export: Save project to MapFile</source>
-        <translation>Exportación de MapServer: guardar proyecto a archivo MapFile</translation>
+        <translation type="obsolete">Exportación de MapServer: guardar proyecto a archivo MapFile</translation>
     </message>
     <message>
         <source>Use current project</source>
-        <translation>Usar el proyecto actual</translation>
+        <translation type="obsolete">Usar el proyecto actual</translation>
     </message>
     <message>
         <source>LAYER information only</source>
-        <translation>Sólo información de CAPA</translation>
+        <translation type="obsolete">Sólo información de CAPA</translation>
     </message>
     <message>
         <source>Rendering</source>
-        <translation>Representar</translation>
+        <translation type="obsolete">Representar</translation>
     </message>
     <message>
         <source>The URL to the mapserver executable.
 
 For example: 
 http://my.host.com/cgi-bin/mapserv.exe</source>
-        <translation>URL del ejecutable de mapserver.
+        <translation type="obsolete">URL del ejecutable de mapserver.
 
 Por ejemplo:
 http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>Inline</source>
-        <translation>En línea</translation>
+        <translation type="obsolete">En línea</translation>
     </message>
     <message>
         <source>Symbolset</source>
-        <translation>Conjuto de símbolos</translation>
+        <translation type="obsolete">Conjuto de símbolos</translation>
     </message>
     <message>
         <source>Use templates</source>
-        <translation>Usar plantillas</translation>
+        <translation type="obsolete">Usar plantillas</translation>
     </message>
     <message>
         <source>The file name of the fonts file.</source>
-        <translation>Nombre del archivo de tipos de letra.</translation>
+        <translation type="obsolete">Nombre del archivo de tipos de letra.</translation>
     </message>
     <message>
         <source>Fontset</source>
-        <translation>Conjunto de tipos de letra</translation>
+        <translation type="obsolete">Conjunto de tipos de letra</translation>
     </message>
     <message>
         <source>The file name of the symbols file.</source>
-        <translation>Nombre del archivo de símbolos.</translation>
+        <translation type="obsolete">Nombre del archivo de símbolos.</translation>
     </message>
     <message>
         <source>Layer/label options</source>
-        <translation>Opciones de capa/etiqueta</translation>
+        <translation type="obsolete">Opciones de capa/etiqueta</translation>
     </message>
     <message>
         <source>meters</source>
-        <translation>metros</translation>
+        <translation type="obsolete">metros</translation>
     </message>
     <message>
         <source>dd</source>
-        <translation>dd</translation>
+        <translation type="obsolete">dd</translation>
     </message>
     <message>
         <source>feet</source>
-        <translation>pies</translation>
+        <translation type="obsolete">pies</translation>
     </message>
     <message>
         <source>miles</source>
-        <translation>millas</translation>
+        <translation type="obsolete">millas</translation>
     </message>
     <message>
         <source>inches</source>
-        <translation>pulgadas</translation>
+        <translation type="obsolete">pulgadas</translation>
     </message>
     <message>
         <source>kilometers</source>
-        <translation>kilómetros</translation>
+        <translation type="obsolete">kilómetros</translation>
     </message>
 </context>
 <context>
@@ -44338,7 +44338,7 @@ desviación estándar ×</translation>
     <name>QgsSaveToDBDialog</name>
     <message>
         <source>Add column</source>
-        <translation>Añadir columna</translation>
+        <translation type="obsolete">Añadir columna</translation>
     </message>
     <message>
         <source>Description</source>
@@ -44363,6 +44363,10 @@ desviación estándar ×</translation>
     <message>
         <source>Optionally pick an input form for attribute editing (QT Designer UI format), it will be stored in the database</source>
         <translation>De forma opcional tomar un formulario de entrada para la edición de atributos (formato UI de Qt Designer). Se guardará en la base de datos.</translation>
+    </message>
+    <message>
+        <source>Save style</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -55893,78 +55897,6 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Python Plugin Installer&lt;/h3&gt;
-Downloads and installs plugins from remote repositories.
-&lt;br/&gt;&lt;br/&gt;
-&lt;a href=&quot;#pltab&quot;&gt;Plugins tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#retab&quot;&gt;Repositories tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#optab&quot;&gt;Options tab&lt;/a&gt;&lt;br/&gt;
-
-&lt;a name=&quot;pltab&quot;&gt;
-&lt;h4&gt;Plugins tab&lt;/h4&gt;
-&lt;/a&gt;
-
-&lt;p align=&apos;justify&apos;&gt;
-The &lt;label&gt;Plugins&lt;/label&gt; tab contains a list of all locally installed Python plugins, as well as plugins available in 
-remote repositories. Each plugin can be either:
-&lt;dl&gt;
-&lt;dt&gt;not installed&lt;/dt&gt;&lt;dd&gt;this means the plugin is available in the repository, but is not installed yet. In order to install it, select the plugin from the list and click the &lt;label&gt;Install plugin&lt;/label&gt; button.&lt;/dd&gt;
-&lt;dt&gt;new&lt;/dt&gt;&lt;dd&gt;this means that the plugin is newly available in the repository.&lt;/dd&gt;
-&lt;dt&gt;installed&lt;/dt&gt;&lt;dd&gt;this indicates that the plugin is already installed. If it is also available in any repository the &lt;label&gt;Reinstall plugin&lt;/label&gt; button will be enabled. If the available version is older than the installed version, the &lt;label&gt;Downgrade plugin&lt;/label&gt; button will appear instead.&lt;/dd&gt;
-&lt;dt&gt;upgradeable&lt;/dt&gt;&lt;dd&gt;this means that the plugin is installed, but there is an updated version available. In this case, the &lt;label&gt;Upgrade plugin&lt;/label&gt; button will be enabled.&lt;/dd&gt;
-&lt;dt&gt;invalid&lt;/dt&gt;&lt;dd&gt;this means that the plugin is installed, but is unavailable or broken. The reason will be explained in the plugin description field.&lt;/dd&gt;
-&lt;/dl&gt;
-&lt;/p&gt;
-
-To install a plugin, select it from the list and click the &lt;label&gt;Install plugin&lt;/label&gt; button. The plugin is installed in its own directory in:
-&lt;table border=1&gt;
-&lt;tr&gt;&lt;th&gt;OS&lt;/th&gt;&lt;th&gt;system plugins&lt;/th&gt;&lt;th&gt;plugins installed by user&lt;/th&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Linux and other unices&lt;/td&gt;&lt;td&gt;./share/qgis/python/plugins&lt;/td&gt;&lt;td rowspan=2&gt;$HOME/qgis/python/plugins&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Mac OS X&lt;/td&gt;&lt;td&gt;./Contents/MacOS/share/qgis/python/plugins&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Windows&lt;/td&gt;&lt;td&gt;(QGIS install directory)&amp;#92;python&amp;#92;plugins&lt;/td&gt;&lt;td&gt;%USERPROFILE%&amp;#92;.qgis&amp;#92;python&amp;#92;plugins&lt;/td&gt;&lt;/tr&gt;
-&lt;/table&gt;
-&lt;br/&gt;
-
-&lt;p align=&apos;justify&apos;&gt;
-If the installation is successful, a confirmation message will appear. The plugin is ready to use.
-&lt;/p&gt;
-
-&lt;p align=&apos;justify&apos;&gt;
-If the installation fails, the reason for the failure will be displayed in a warning dialog. Most often, errors are the result of connection problems and/or missing Python modules. In the former case you will likely need to wait before trying the install again, in the latter case, you should install the missing modules relevant to your operating system prior to using the plugin. For Linux, most required modules should be available via a package manager. For install instructions in Windows visit the module home page. If you are using a proxy, you may need to configure it under &lt;label&gt;Edit&lt;/label&gt; &gt; &lt;label&gt;Options&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; &gt; &lt;label&gt;Options&lt;/label&gt; (KDE, Windows) on the &lt;label&gt;Proxy&lt;/label&gt; tab.&lt;/p&gt;
-
-&lt;p align=&apos;justify&apos;&gt;
-The &lt;label&gt;Uninstall plugin&lt;/label&gt; button is enabled only if the selected plugin is installed and is not a core plugin. Note that if you have installed an update to a core plugin, you can uninstall this update with the &lt;label&gt;Uninstall plugin&lt;/label&gt; and revert to the version shipped with QGIS. This default version however, cannot be uninstalled.&lt;/p&gt;
-
-&lt;a name=&quot;retab&quot;&gt;
-&lt;h4&gt;Repositories tab&lt;/h4&gt;
-&lt;/a&gt;
-&lt;p align=&apos;justify&apos;&gt;
-The second tab &lt;label&gt;Repositories&lt;/label&gt;, contains a list of plugin repositories available for the Plugin Installer. By default, only the QGIS Official Repository is enabled. You can add several user-contributed repositories, including the central QGIS Contributed Repository and other external repositories by clicking the &lt;label&gt;Add 3rd party repositories&lt;/label&gt; button. The added repositories contain a large number of useful plugins which are not maintained by the QGIS Development Team. As such, we cannot take any responsibility for them. You can also manage the repository list manually, that is add, remove, and edit the entries. Temporarily disabling a particular repository is possible by clicking the &lt;label&gt;Edit...&lt;/label&gt; button.&lt;/p&gt;
-
-&lt;a name=&quot;optab&quot;&gt;
-&lt;h4&gt;Options tab&lt;/h4&gt;
-&lt;/a&gt;
-&lt;p align=&apos;justify&apos;&gt;
-The &lt;label&gt;Options&lt;/label&gt; tab is where you can configure the settings of the Plugin Installer. The &lt;label&gt;x Check for updates on start up&lt;/label&gt; check box tells QGIS to automatically look for plugin updates and news. By default, if this feature is enabled all repositories listed and enabled in the &lt;label&gt;Repositories&lt;/label&gt; tab are checked for updates each time the program is started. The frequency of update checking can be adjusted using the drop down menu, and may be adjusted from once a day right up to once a month. If a new plugin or update is available for one of the installed plugins, a notification will appear in the Status Bar. If the check box is disabled, looking for updates and news is performed only when the Plugin Installer is manually launched from the menu.&lt;/p&gt;
-
-&lt;p align=&apos;justify&apos;&gt;
-Some Internet connections will cause problems when attempting to automatically check for updates.  In these cases, a &lt;i&gt;Looking for new plugins...&lt;/i&gt; indicator will remain visible in the Status Bar during your entire QGIS session, and may cause a program crash when exiting. In this case please disable the check box.&lt;/p&gt;
-
-In addition, you may specify the type of plugins that are displayed by the Plugin Installer. Under &lt;i&gt;Allowed plugins&lt;/i&gt;, you can specify whether you would like to:
-&lt;ul&gt;
-&lt;li&gt; Only show plugins from the official repository&lt;/li&gt;
-&lt;li&gt; Show all plugins except those marked as experimental,&lt;/li&gt;
-&lt;li&gt; or Show all plugins, even those marked as experimental.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;br/&gt;
-&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
-Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
-&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
