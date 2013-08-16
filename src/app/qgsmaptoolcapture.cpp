@@ -245,11 +245,11 @@ void QgsMapToolCapture::undo()
 
     mRubberBand->removePoint( -1 );
 
-    if ( rubberBandSize > 0 )
+    if ( rubberBandSize > 1 )
     {
       if ( tempRubberBandSize > 1 )
       {
-        const QgsPoint *point = mRubberBand->getPoint( 0, rubberBandSize - 1 );
+        const QgsPoint *point = mRubberBand->getPoint( 0, rubberBandSize - 2 );
         mTempRubberBand->movePoint( tempRubberBandSize - 2, *point );
       }
     }
