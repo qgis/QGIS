@@ -115,8 +115,6 @@ class ParametersPanel(QtGui.QWidget):
                 desc = param.description
                 if isinstance(param, ParameterExtent):
                     desc += "(xmin, xmax, ymin, ymax)"
-                label = QtGui.QLabel(desc)
-                self.labels[param.name] = label
                 widget = self.getWidgetFromParameter(param)
                 self.valueItems[param.name] = widget
                 if isinstance(param, ParameterVector) and not self.alg.allowOnlyOpenedLayers:
@@ -140,13 +138,21 @@ class ParametersPanel(QtGui.QWidget):
                     tooltip = tooltips[param.name]
                 else:
                     tooltip = param.description
-                label.setToolTip(tooltip)
                 widget.setToolTip(tooltip)
-                if param.isAdvanced:
-                    label.setVisible(self.showAdvanced)
-                    widget.setVisible(self.showAdvanced)
-                    self.widgets[param.name] = widget
-                self.verticalLayout.addWidget(label)
+                if isinstance(param, ParameterBoolean):
+                    widget.setText(desc)
+                    if param.isAdvanced:
+                        widget.setVisible(self.showAdvanced)
+                        self.widgets[param.name] = widget
+                else:
+                    label = QtGui.QLabel(desc)
+                    self.labels[param.name] = label
+                    label.setToolTip(tooltip)
+                    if param.isAdvanced:
+                        label.setVisible(self.showAdvanced)
+                        widget.setVisible(self.showAdvanced)
+                        self.widgets[param.name] = widget
+                    self.verticalLayout.addWidget(label)
                 self.verticalLayout.addWidget(widget)
 
             for output in self.alg.outputs:
@@ -238,13 +244,11 @@ class ParametersPanel(QtGui.QWidget):
                     items.append((layer.name(), layer))
                 item = InputLayerSelectorPanel(items)
         elif isinstance(param, ParameterBoolean):
-            item = QtGui.QComboBox()
-            item.addItem("Yes")
-            item.addItem("No")
+            item = QtGui.QCheckBox()
             if param.default:
-                item.setCurrentIndex(0)
+                item.setChecked(True)
             else:
-                item.setCurrentIndex(1)
+                item.setChecked(False)
         elif isinstance(param, ParameterTableField):
             item = QtGui.QComboBox()
             if param.parent in self.dependentItems:
