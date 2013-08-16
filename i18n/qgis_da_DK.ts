@@ -8459,15 +8459,15 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been deleted or is not accessible</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; er blevet slettet eller er utilgængelig</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been changed and reloaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; er blevet ændret og genindlæst</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is read only, please save to different file first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; er skrivebeskyttet, gem til en anden fil først.</translation>
     </message>
     <message>
         <source>Run script</source>
@@ -8567,7 +8567,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; was not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; kunne ikke findes.</translation>
     </message>
     <message>
         <source>URL copied to clipboard.</source>
@@ -8579,20 +8579,21 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source> [Temporary file saved in {0}]</source>
-        <translation type="unfinished"></translation>
+        <translation> [Midlertidig fil gemt i {0}]</translation>
     </message>
     <message>
         <source>## Script error: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>## Script-fejl: {0}</translation>
     </message>
     <message>
         <source>## Script executed successfully: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>## Script eksekveret korrekt: {0}</translation>
     </message>
     <message>
         <source>Cannot execute file {0}. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Kan ikke eksekvere fil {0}. Fejl: {1}
+</translation>
     </message>
     <message>
         <source>Hey, type something to run!</source>
@@ -8637,11 +8638,12 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <message>
         <source>The file {0} could not be opened. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Filen {0} kunne ikke åbnes. Fejl: {1}
+</translation>
     </message>
     <message>
         <source>Untitled-{0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Unavngivet-{0}</translation>
     </message>
     <message>
         <source>Python Console: Save File</source>
@@ -8649,19 +8651,23 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>The file &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; has been modified, save changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; er blevet ændret, gem ændringer?</translation>
     </message>
     <message>
         <source>Unable to restore the file: 
 {0}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Kan ikke gendanne filen: 
+{0}
+</translation>
     </message>
     <message>
         <source>Python {0} on {1}
 ## Type help(iface) for more info and list of methods.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Python {0} på {1}
+## Skriv help(iface) for mere info og en liste over metoder.
+</translation>
     </message>
     <message>
         <source>Hide/Show Toolbar</source>
@@ -8721,7 +8727,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>The file &lt;b&gt;{0}&lt;/b&gt; could not be saved. Error: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen &lt;b&gt;{0}&lt;/b&gt; kunne ikke gemmes. Fejl: {1}</translation>
     </message>
     <message>
         <source>Save File As</source>
@@ -13526,7 +13532,7 @@ Ignorér altid disse fejl?</translation>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="271"/>
         <source>License </source>
-        <translation type="unfinished"></translation>
+        <translation>Licens </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="147"/>
@@ -23656,7 +23662,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="284"/>
         <source>Equal operator</source>
-        <translation type="unfinished">Lig med-operator</translation>
+        <translation>Lig med-operator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="287"/>
@@ -23666,7 +23672,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="300"/>
         <source>Addition operator</source>
-        <translation type="unfinished">Additionsoperator</translation>
+        <translation>Additionsoperator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="303"/>
@@ -23676,7 +23682,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="310"/>
         <source>Subtraction operator</source>
-        <translation type="unfinished">Subtraktionsoperator</translation>
+        <translation>Subtraktionsoperator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="313"/>
@@ -23686,7 +23692,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="320"/>
         <source>Division operator</source>
-        <translation type="unfinished">Divisionsoperator</translation>
+        <translation>Divisionsoperator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="323"/>
@@ -23696,7 +23702,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="330"/>
         <source>Multiplication operator</source>
-        <translation type="unfinished">Multiplikationsoperator</translation>
+        <translation>Multiplikationsoperator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="333"/>
@@ -23706,7 +23712,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="340"/>
         <source>Power operator</source>
-        <translation type="unfinished">Potensoperator</translation>
+        <translation>Potensoperator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="343"/>
@@ -23716,7 +23722,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="350"/>
         <source>String Concatenation</source>
-        <translation type="unfinished"></translation>
+        <translation>Strengkonkatenering</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="353"/>
@@ -23726,7 +23732,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="372"/>
         <source>Open Bracket </source>
-        <translation type="unfinished"></translation>
+        <translation>Åben parentes</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="375"/>
@@ -23736,7 +23742,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="382"/>
         <source>Close Bracket </source>
-        <translation type="unfinished"></translation>
+        <translation>Lukket parentes</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="385"/>
@@ -29702,7 +29708,7 @@ Alt+B</translation>
     <message>
         <location filename="../src/app/qgshtmlannotationdialog.cpp" line="26"/>
         <source>HTML annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML-anmærkning</translation>
     </message>
     <message>
         <location filename="../src/app/qgshtmlannotationdialog.cpp" line="38"/>
@@ -34085,9 +34091,9 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/gui/qgsmessagebar.cpp" line="321"/>
         <source>%n more</source>
         <comment>unread messages</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n flere</numerusform>
+            <numerusform>%n flere</numerusform>
         </translation>
     </message>
     <message>
@@ -43973,7 +43979,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterdataprovider.cpp" line="472"/>
         <source>Text</source>
-        <translation type="unfinished">Tekst</translation>
+        <translation>Tekst</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterdataprovider.cpp" line="474"/>
@@ -47024,7 +47030,7 @@ standardafvigelse ×</translation>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="14"/>
         <source>Save style</source>
-        <translation type="unfinished"></translation>
+        <translation>Gem stilart</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="23"/>
@@ -49767,38 +49773,38 @@ Overskriv?</translation>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="61"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="63"/>
         <source>Type here to filter symbols...</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv her for filtrere symboler...</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="80"/>
         <source>Share Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Menuen Del</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="81"/>
         <source>Export</source>
-        <translation type="unfinished">Eksportér</translation>
+        <translation>Eksportér</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="82"/>
         <source>Import</source>
-        <translation type="unfinished">Importér</translation>
+        <translation>Importér</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="109"/>
         <source>Group Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppehandlinger</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="110"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1033"/>
         <source>Group Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppesymboler</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="111"/>
         <source>Edit Smart Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigér smart-gruppe</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="194"/>
@@ -49934,7 +49940,7 @@ Vælg &apos;Smart-gruppe&apos; for at oprette en ny gruppe.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="925"/>
         <source>New Group</source>
-        <translation type="unfinished">Ny gruppe</translation>
+        <translation>Ny gruppe</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="951"/>
@@ -49963,7 +49969,7 @@ Der var et problem med til din symboldatabase.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1070"/>
         <source>Finish Grouping</source>
-        <translation type="unfinished"></translation>
+        <translation>Afslut gruppering</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1109"/>
@@ -49979,31 +49985,31 @@ Der var et problem med til din symboldatabase.</translation>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1270"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1292"/>
         <source>Edit Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigér gruppe</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1274"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1280"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1288"/>
         <source>Add Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilføj gruppe</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1276"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1290"/>
         <source>Remove Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjern gruppe</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1303"/>
         <source>Apply Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Anvend gruppe</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1311"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1324"/>
         <source>Un-group</source>
-        <translation type="unfinished"></translation>
+        <translation>Afgruppér</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1348"/>
@@ -59397,7 +59403,7 @@ Denne dialog tillader dig at definere indstillingerne for en forbindelse til en 
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="187"/>
         <source>&lt;h3&gt;Identify&lt;/h3&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Identificér&lt;/h3&gt;
+        <translation>&lt;h3&gt;Identificér&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -61743,7 +61749,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;week()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen week()&lt;/h3&gt;
 Udtrækker ugenummeret fra en dato, eller antallet af uger
 fra et &lt;code&gt;Interval&lt;/code&gt;
 
@@ -61795,7 +61801,7 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;CASE-udtryk&lt;/h3&gt;
+        <translation>&lt;h3&gt;Udtrykket CASE&lt;/h3&gt;
 Et betinget udtryk, som kan bruges til at evaluere flere udtryk og
 returnere et resultat.
 
@@ -61843,7 +61849,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;right()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen right()&lt;/h3&gt;
 Returnerer en delstreng, som indeholder &lt;i&gt;n&lt;/i&gt; tegn af strengen fra højre af.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -61887,7 +61893,7 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;length()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen length()&lt;/h3&gt;
 Returns længden af en streng.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -61918,7 +61924,7 @@ Converts a string to upper case letters.
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;upper()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen upper()&lt;/h3&gt;
 Konverterer en streng til store bogstaver.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -61951,7 +61957,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 &lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;left()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen left()&lt;/h3&gt;
 Returnerer en delstreng, som indeholder &lt;i&gt;n&lt;/i&gt; tegn fra venstre i strengen.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -62017,7 +62023,7 @@ Note: This function is only available in some contexts and will be 0 otherwise.
 
 
 </source>
-        <translation>&lt;h3&gt;$scale-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen $scale&lt;/h3&gt;
 Returnerer kortkanvassets præcise skala.
 &lt;br&gt;
 NB: Denne funktion vil kun være tilgængelig i nogle sammenhænge og giver ellers 0. 
@@ -62051,7 +62057,7 @@ Returns a string representation of a color based on its red, green, and blue com
      color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
 </source>
         <translation>
-&lt;h3&gt;color_rgb()-funktion&lt;/h3&gt;
+&lt;h3&gt;Funktionen color_rgb()&lt;/h3&gt;
 Returnerer en strengrepræsentation af en farve baseret på dens rød-, grøn- og blå-komponenter
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -62083,7 +62089,7 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$numpages-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen $numpages&lt;/h3&gt;
 Returnerer det totale antal sider i layoutet.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -62116,7 +62122,7 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;rand()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen rand()&lt;/h3&gt;
 Returnerer et tilfældigt heltal med intervallet angivet med minimum- og
 maksimum-argumentet (inklusiv).
 &lt;br&gt;
@@ -62149,7 +62155,7 @@ None
 &lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$rownum-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen $rownum&lt;/h3&gt;
 Returner nummeret på den aktuelle række.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -62181,7 +62187,7 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;atan2() function&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen atan2()&lt;/h3&gt;
 Returnerer arctangens af y/x vha. fortegnene på de 2 
 argumenter for at afgøre resultatets kvadrant
 
@@ -62213,7 +62219,7 @@ Returns sinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;sin()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen sin()&lt;/h3&gt;
 Returnerer sinus på en vinkel.
 
 
@@ -62249,7 +62255,7 @@ Restricts an input value to a specified range.
      
      
 </source>
-        <translation>&lt;h3&gt;clamp()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen clamp()&lt;/h3&gt;
 Begrænser en inputværdi til et angivet interval.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -62292,7 +62298,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;month()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen month()&lt;/h3&gt;
 Udtræk månedsdelen af en dato, eller antallet af måneder
 fra et &lt;code&gt;Interval&lt;/code&gt;
 
@@ -62328,7 +62334,7 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$area-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen $area&lt;/h3&gt;
 Returnerer det aktuelle objekts areal.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -62364,7 +62370,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;day()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen day()&lt;/h3&gt;
 Trækker dagen ud fra en dato, eller antallet af dage
 fra et &lt;code&gt;Interval&lt;/code&gt;
 
@@ -62401,7 +62407,7 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;toreal-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen toreal()&lt;/h3&gt;
 Konverterer en streng til et real-tal. Intet ændres, hvis en værdi ikke kan konverteres til real (fx &apos;123.56asd&apos; is invalid). Tal afrundes efter gemning af ændringer, hvis præcisionen er mindre end resultatet af konverteringen.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -62431,7 +62437,7 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;todate()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen todate()&lt;/h3&gt;
 Konverterer en streng til en Qt-datatype.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -62465,7 +62471,7 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;lpad()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen lpad()&lt;/h3&gt;
 Returnerer en streng med den angivne længde udfyldt
 med fyldtegnet.
 
@@ -62499,7 +62505,7 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;acos()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen acos()&lt;/h3&gt;
 Returnerer arccos af en værdi i radianer.
 
 
@@ -62555,7 +62561,7 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;log()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen log()&lt;/h3&gt;
 Returner værdien af the logaritmen af den angivne værdi og base.
 &lt;br&gt;
 Denne funktion tager 2 argumenter.
@@ -62620,7 +62626,7 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$page-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen $page&lt;/h3&gt;
 Returnerer det aktuelle sidenummer i et layout.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -62654,7 +62660,7 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;strpos()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen strpos()&lt;/h3&gt;
 Returner indekset for et regulært udtryk i en streng.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -62691,7 +62697,7 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;ln()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen ln()&lt;/h3&gt;
 Returnerer værdien af den naturlige logaritme af det angivne udtryk.
 &lt;br&gt;
 Denne funktion tager 1 argument.
@@ -62723,7 +62729,7 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;exp()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen exp()&lt;/h3&gt;
 Returns eksponentialfunktionen af en værdi.
 
 
@@ -62790,7 +62796,7 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;rpad()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen rpad()&lt;/h3&gt;
 Returnerer en streng med den angivne længde udfyldt
 med fyldtegnet.
 
@@ -62826,7 +62832,7 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;tostring-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen tostring()&lt;/h3&gt;
 Konverterer et tal til en streng.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -62864,7 +62870,7 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation>&lt;h3&gt;round()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen round()&lt;/h3&gt;
 Afrunder et tal til et antal decimaler.
 &lt;br&gt;
 Denne funktion kan tage 1 eller 2 argumenter, afhængigt af behovet.
@@ -62901,7 +62907,7 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$now-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen $now&lt;/h3&gt;
 Returnerer den aktuelle dato og tid
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -62946,7 +62952,7 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
      
      
 </source>
-        <translation>&lt;h3&gt;scale_exp()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen scale_exp()&lt;/h3&gt;
 Transformerer en given værdi fra et inputdomæne til et outputinterval vha. en eksponentiel kurve. Denne funktion kan bruges til at lempe in- og out-værdier 
 i det angivne interval.   
 
@@ -63000,7 +63006,7 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$id-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen $id&lt;/h3&gt;
 Returerner et objekt-id for den aktuelle række.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -63029,7 +63035,7 @@ None
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$perimeter-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen $perimeter&lt;/h3&gt;
 Returnerer det aktuelle objekts perimeterværdi.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -63090,7 +63096,7 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;tointerval()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen tointerval()&lt;/h3&gt;
 Konverterer en streng til en intervaltype. Kan bruges til at trække dage, timer, måneder osv. fra en dato.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -63127,7 +63133,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;hour()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen hour()&lt;/h3&gt;
 Udtrækker timen fra en datetime eller time, eller antallet af timer
 fra et &lt;code&gt;Interval&lt;/code&gt;
 
@@ -63168,7 +63174,7 @@ Returns a string representation of a color based on its hue, saturation, lightne
 &lt;!-- Show example of function.--&gt;
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;color_hsla()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen color_hsla()&lt;/h3&gt;
 Returnerer en strengrepræsentation af en farve baseret på dens farvetone-, mætning-, lysheds- og alfa(transparens)-attributter
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -63200,7 +63206,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;$pi constant&lt;/h3&gt;
+        <translation>&lt;h3&gt;Konstanten $pi&lt;/h3&gt;
 Returnerer pi som en værdi til beregninger
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -63237,7 +63243,7 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;totime()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen totime()&lt;/h3&gt;
 Konverterer en streng til en Qt-tidstype.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -63269,7 +63275,7 @@ Returns a string with the the supplied string replaced.
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;replace()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen replace()&lt;/h3&gt;
 Returnerer en streng med angivne streng erstattet.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -63310,7 +63316,7 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;abs()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen abs()&lt;/h3&gt;
 Returnerer den absolutte værdi af et tal.&lt;br&gt;
 
 
@@ -63340,7 +63346,7 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation>&lt;h3&gt;max()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen max()&lt;/h3&gt;
 Returnerer den højeste værdi i et sæt af værdier.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -63376,7 +63382,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
      color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;
 </source>
         <translation>
-&lt;h3&gt;color_cmyk()-funktion&lt;/h3&gt;
+&lt;h3&gt;Funktionen color_cmyk()&lt;/h3&gt;
 Returnerer en strengrepræsentation af en farve baseret på dens cyan-, magenta-, gul- og sort-komponenter
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -63409,7 +63415,7 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;sqrt()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen sqrt()&lt;/h3&gt;
 Returnerer kvadratroden af en værdi
 
 
@@ -63447,7 +63453,7 @@ may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
 </source>
         <translation>
-&lt;h3&gt;ramp_color()-funktion&lt;/h3&gt;
+&lt;h3&gt;Funktionen ramp_color()&lt;/h3&gt;
 Returnerer en streng, som repræsenterer en farve fra en farverampe
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -63499,7 +63505,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
         <translation>
-&lt;h3&gt;color_cmyka()-funktion&lt;/h3&gt;
+&lt;h3&gt;Funktionen color_cmyka()s&lt;/h3&gt;
 Returnerer en strengrepræsentation af en farve baseret på dens cyan-, magenta-, gul-, sort- og alfa(transparens)-komponenter
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
      color_cmyka(&lt;i&gt;cyan, magenta, gul, sort, alfa&lt;/i&gt;)&lt;/p&gt;
@@ -63536,7 +63542,7 @@ to.
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </source>
-        <translation>&lt;h3&gt;format_number()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen format_number()&lt;/h3&gt;
 Returnerer et tal formatteret med landekodeseparatoren for tusinde. 
 Trunkerer også tallet til det angivne antal pladser. 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -63576,7 +63582,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;year()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen year()&lt;/h3&gt;
 Udtrækker året fra en date, eller antallet af år
 fra et &lt;code&gt;Interval&lt;/code&gt;
 
@@ -63627,7 +63633,7 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;CASE-udtryk&lt;/h3&gt;
+        <translation>&lt;h3&gt;Udtrykket CASE&lt;/h3&gt;
 Et betinget udtryk, som kan bruges til at evaluere flere udtryk og
 returnerer et resultat.
 
@@ -63675,7 +63681,7 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;randf()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen randf()&lt;/h3&gt;
 Returnerer en tilfældig float i intervallet angivet med minimum- og 
 maksimum-argumentet (inklusive).
 &lt;br&gt;
@@ -63715,7 +63721,7 @@ Transforms a given value from an input domain to an output range using linear in
      
      
 </source>
-        <translation>&lt;h3&gt;scale_linear()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen scale_linear()&lt;/h3&gt;
 Transformerer en given værdi fra et inputdomæne til et outputinterval vha. lineær interpolering. 
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -63752,7 +63758,7 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;trim()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen trim()&lt;/h3&gt;
 Fjerner alle foranstillede og bagvedstillede mellemrum (mellumrumstegn, tabulator osv.) fra en streng.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -63790,7 +63796,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;minute()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen minute()&lt;/h3&gt;
 Udtrækker antal minutter fra en datetime eller date, eller antallet af minutter
 fra et &lt;code&gt;Interval&lt;/code&gt;
 
@@ -63847,7 +63853,7 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;age()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen age()&lt;/h3&gt;
 Returnerer forskellen mellem 2 dage.
 &lt;br&gt;&lt;br&gt;
 Forskellen returneres som et &lt;code&gt;Interval&lt;/code&gt; 
@@ -63899,7 +63905,7 @@ This function takes one argument.
 &lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;log10()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen log10()&lt;/h3&gt;
 Returnerer værdien af base10-logaritmen for det angivne udtryk
 &lt;br&gt;
 Denne funktion tager 1 argument.
@@ -63939,7 +63945,7 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;yat-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen yat()&lt;/h3&gt;
 Henter y-koodinatet fra det aktuelle objekt
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -63967,7 +63973,7 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;cos()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen cos()&lt;/h3&gt;
 Returnerer cosinus på en vinkel
 
 
@@ -64007,7 +64013,7 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;floor()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen floor()&lt;/h3&gt;
 Runder et tal nedad
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -64046,7 +64052,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;second()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen second()&lt;/h3&gt;
 Udtrækker sekunderne fra en datetime eller date, eller antallet af sekunder
 fra et &lt;code&gt;Interval&lt;/code&gt;
 
@@ -64083,7 +64089,7 @@ Returns arcustanget of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;atan()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen atan()&lt;/h3&gt;
 Returnerer arctangens af en værdi i radianer.
 
 
@@ -64111,7 +64117,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;$length-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen $length&lt;/h3&gt;
 Returnerer det aktuelle objekts længde.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -64141,7 +64147,7 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;title()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen title()&lt;/h3&gt;
 Konverterer alle ord i en streng til, at alle ord er med små bogstaver med
 stort startbogstav.
 
@@ -64174,7 +64180,20 @@ Returns true if any part of a string matches the supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen regexp_match()&lt;/h3&gt;
+Returnerer true hvis en vilkårlig del af en streng matcher det angivne regulære udtryk.
+
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     regexp_match(&lt;i&gt;streng,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  streng&lt;/i&gt; &amp;rarr; er string.  Strengen, der skal testes mod det regulære udtryk.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; er string.  Det regulære udtryk at teste imod. Backslashtegn skal dobbeltescapes (fx &quot;&amp;#92;&amp;#92;s&quot; for at matche et mellemrumstegn). Ikke-grådige regulære udtryk er ikke understøttet.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="189"/>
@@ -64194,7 +64213,7 @@ Return a part of a string
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;substr()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen substr()&lt;/h3&gt;
 Returnerer en del af en streng
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -64227,7 +64246,7 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;format()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen format()&lt;/h3&gt;
 Formaterer en streng med angivne argumenter. 
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -64260,7 +64279,21 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- Show example of function.--&gt;
      regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen regexp_replace()&lt;/h3&gt;
+Returnerer en streng med det angivne regulære udtryk erstattet.
+
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     regexp_replace(&lt;i&gt;streng,regex,efter&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  streng&lt;/i&gt; &amp;rarr; is string.  Start-strengen.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  Det regulære udtryk at erstatte. Backslashtegn skal dobbeltescapes  (fx &quot;&amp;#92;&amp;#92;s&quot; for at match et mellemrumstagn). Ikke-grådige regulære udtryk er ikke understøttet.&lt;br&gt;
+&lt;i&gt;  efter&lt;/i&gt; &amp;rarr; is string.  Strengen, som vil erstatte alle matchende forekomster af det angivne regulære udtryk. Fundne grupper kan indsættes i erstatningsstrengen vha. &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, osv. &lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="833"/>
@@ -64279,7 +64312,20 @@ Returns the portion of a string which matches a supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Funktionen regexp_substr()&lt;/h3&gt;
+Returner den del af strengen, som matcher med et angivet regulært udtryk.
+
+&lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
+     regexp_substr(&lt;i&gt;streng,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumenter&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  streng&lt;/i&gt; &amp;rarr; er string.  Input-strengen.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; er string.  Det regulære udtryk at matche imod. Backslash-tegn skal dobbelt-escapes (eg &quot;&amp;#92;&amp;#92;s&quot; for at matche mellemrumstegn).Ikke-grådige regulære udtryk er ikke understøttet.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Eksempel&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1129"/>
@@ -64296,7 +64342,7 @@ None
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$y-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen $y&lt;/h3&gt;
 Returner y-koordinatet fra det aktuelle objekt.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -64331,7 +64377,7 @@ Returns a string representation of a color based on its red, green, blue, and al
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
         <translation>
-&lt;h3&gt;color_rgba()-funktion&lt;/h3&gt;
+&lt;h3&gt;Funktionen color_rgba()&lt;/h3&gt;
 Returnerer en strengrepræsentation af en farve baseret på dens rød-, grøn-, blå- og alfa(transparens)-attributter
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -64364,7 +64410,7 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$x-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen $x&lt;/h3&gt;
 Returnerer x-koordinatet fra det aktuelle objekt.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -64392,7 +64438,7 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;xat-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen xat()&lt;/h3&gt;
 Henter et x-koordinat fra det aktuelle objekt
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -64422,7 +64468,7 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;ceil()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen ceil()&lt;/h3&gt;
 Runder et tal opad.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -64456,7 +64502,7 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;#ffaa00&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;color_hsv()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen color_hsv()&lt;/h3&gt;
 Returnerer en strengrepræsentation af en farve baseret på dens farvetone-, mætning- og værdiattributter
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -64498,7 +64544,7 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation>&lt;h3&gt;min()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen min()&lt;/h3&gt;
 Returnerer den laveste værdi i et sæt af værdier.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -64527,7 +64573,7 @@ Converts a string to lower case letters.
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;lower()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen lower()&lt;/h3&gt;
 Konverterer en streng til små bogstaver.
 
 &lt;p&gt;&lt;h4&gt;  Syntaks&lt;/h4&gt;
@@ -64555,7 +64601,7 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$numfeatures-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen $numfeatures&lt;/h3&gt;
 Returnerer det totale antal objekter i dækningslaget ved oprettelse af atlas.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -64594,7 +64640,7 @@ Concatenates several strings to one.
 &lt;!-- Show example of function.--&gt;
      concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
-        <translation>&lt;h3&gt;concat()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen concat()&lt;/h3&gt;
 Sætter flere strenge sammen til én.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -64631,7 +64677,7 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;coalesce()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen coalesce()&lt;/h3&gt;
 Returnerer den første ikke-NULL-værdi fra udtrykslisten.
 &lt;br&gt;
 Funktionen kan tage et vilkårligt antal parametre.
@@ -64670,7 +64716,7 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;color_hsl()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen color_hsl()&lt;/h3&gt;
 Returnerer en strengrepræsentation af en farve baseret på dens farvetone-, mætning- og lyshedsattributter
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -64702,7 +64748,7 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;asin()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen asin()&lt;/h3&gt;
 Returner arcsin af en værdi i radianer.
 
 
@@ -64731,7 +64777,7 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;todatetime()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen todatetime()&lt;/h3&gt;
 Konverterer en stregn til en Qt-datetime-type.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -64761,7 +64807,7 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;toint-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen toint()&lt;/h3&gt;
 Konverterer en streng til et heltal. Intet ændres, hvis værdien ikke kan konverteres til heltal (fx &apos;123asd&apos; er ugyldigt).
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -64953,7 +64999,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;format_date()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen format_date()&lt;/h3&gt;
 Formaterer en date-type eller streng til et tilpasset strengformat. Bruger Qt-data-tidsformats-strenge  Se &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -65144,7 +65190,7 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;tan()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen tan()&lt;/h3&gt;
 Returnerer tangens af en vinkel.
 
 
@@ -65173,7 +65219,7 @@ None
 &lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$feature-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen $feature&lt;/h3&gt;
 Returnerer det aktuelle objektnummer, som der itereres over på dækningslaget, ved oprettelse af atlas.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -65206,7 +65252,7 @@ Returns a string representation of a color based on its hue, saturation, value a
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;color_hsva()-funktion&lt;/h3&gt;
+        <translation>&lt;h3&gt;Funktionen color_hsva()&lt;/h3&gt;
 Returnerer en strengrepræsentation af en farve baseret på dens farvetone-, mætning-, værdi- og alfa(transparens)-attributter
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
