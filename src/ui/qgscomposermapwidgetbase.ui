@@ -302,7 +302,7 @@
             <item row="1" column="1">
              <layout class="QVBoxLayout" name="verticalLayout_7">
               <item>
-               <widget class="QDoubleSpinBox" name="mIntervalYSpinBox">
+               <widget class="QDoubleSpinBox" name="mIntervalXSpinBox">
                 <property name="prefix">
                  <string>X </string>
                 </property>
@@ -315,7 +315,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QDoubleSpinBox" name="mIntervalXSpinBox">
+               <widget class="QDoubleSpinBox" name="mIntervalYSpinBox">
                 <property name="prefix">
                  <string>Y </string>
                 </property>
@@ -454,7 +454,7 @@
                <bool>false</bool>
               </property>
               <property name="buddy">
-               <cstring>mIntervalXSpinBox</cstring>
+               <cstring>mIntervalYSpinBox</cstring>
               </property>
              </widget>
             </item>
