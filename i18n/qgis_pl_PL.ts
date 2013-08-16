@@ -6,7 +6,7 @@
     <message>
         <location filename="../python/console/console_compile_apis.ui" line="32"/>
         <source>Generating prepared API file (please wait)...</source>
-        <translation>Generowanie pliku API (prosze czekać ...)</translation>
+        <translation>Generowanie pliku API (proszę czekać)...</translation>
     </message>
 </context>
 <context>
@@ -364,7 +364,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>&quot;{0}&quot; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>nie znaleziono &quot;{0}&quot;</translation>
     </message>
     <message>
         <source>Filename:</source>
@@ -8281,15 +8281,15 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been deleted or is not accessible</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; został usunięty lub jest niedostępny</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been changed and reloaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; został zmieniony i przeładowany</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is read only, please save to different file first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; jest tylko do odczytu, proszę zapisać do innego pliku. </translation>
     </message>
     <message>
         <source>Run script</source>
@@ -8377,7 +8377,7 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; was not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie znaleziono &lt;b&gt;&quot;{0}&quot;&lt;/b&gt;.</translation>
     </message>
     <message>
         <source>URL copied to clipboard.</source>
@@ -8389,7 +8389,7 @@ Linia z błędem: %1</translation>
     </message>
     <message>
         <source> [Temporary file saved in {0}]</source>
-        <translation type="unfinished"></translation>
+        <translation> [Plik tymczasowy zaposany do {0}]</translation>
     </message>
     <message>
         <source>## Script error: {0}</source>
@@ -8402,7 +8402,7 @@ Linia z błędem: %1</translation>
     <message>
         <source>Cannot execute file {0}. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Nie mogę wykonać pliku {0}. Błąd: {1}</translation>
     </message>
     <message>
         <source>Hey, type something to run!</source>
@@ -8447,11 +8447,11 @@ Linia z błędem: %1</translation>
     <message>
         <source>The file {0} could not be opened. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Nie mogę otworzyć pliku {0}. Błąd: {1}</translation>
     </message>
     <message>
         <source>Untitled-{0}</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bez nazwy-{0}</translation>
     </message>
     <message>
         <source>Python Console: Save File</source>
@@ -12399,17 +12399,17 @@ Prosimy o kontakt z autorami.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1338"/>
         <source>&amp;Web</source>
-        <translation>W internecie</translation>
+        <translation>W &amp;internecie</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1552"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position. The format is lat,lon or east,north</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokazuje współrzędne kursora na mapie. Wynik jest na bieżąco aktualizowany podczas poruszania myszą. Można także wprowadzić współrzędne, aby ustawić środek płótna. Obsługiwany jest format szerokość,długość lub ku wschodowi,ku północy</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1556"/>
         <source>Current map coordinate (lat,lon or east,north)</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualne współrzędne mapy (szerokość,długość lub ku wschodowi,ku północy)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2108"/>
@@ -12612,7 +12612,7 @@ Błędy: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6419"/>
         <source>Python support ENABLED :-) </source>
-        <translation>Wsparcie dla Pythona jest dostępne.</translation>
+        <translation>Wsparcie dla Pythona jest włączone</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6467"/>
@@ -13732,7 +13732,7 @@ Wersja binarna została skompilowana z Qt %1, a bieżąca działa z Qt %2</trans
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6204"/>
         <source>%1 (%2 type unsupported)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (%2 nieobsługiwany typ)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6517"/>
@@ -13759,7 +13759,7 @@ Wersja binarna została skompilowana z Qt %1, a bieżąca działa z Qt %2</trans
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6986"/>
         <source>Do you want to save the current project? %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy chcesz zapisać aktywny projekt? %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8938"/>
@@ -14334,24 +14334,24 @@ QWT Version: %1.</source>
         <location filename="../src/app/qgisapp.cpp" line="4249"/>
         <location filename="../src/app/qgisapp.cpp" line="4270"/>
         <source>Commit errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Błędy przesyłania</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4250"/>
         <location filename="../src/app/qgisapp.cpp" line="4271"/>
         <source>Could not commit changes to layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można zatwierdzić zmian dla warstwy %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4252"/>
         <source>Errors: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Błędy: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4259"/>
         <source>Show more</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż więcej</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4309"/>
@@ -14361,7 +14361,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4310"/>
         <source>Please select a vector layer first</source>
-        <translation>Wskaż warstwę wektorową.</translation>
+        <translation>Wskaż warstwę wektorową</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4318"/>
@@ -14433,12 +14433,12 @@ Błąd: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4802"/>
         <source>Title can not be empty!</source>
-        <translation>Nazwa nie może być pusta</translation>
+        <translation>Nazwa nie może być pusta!</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4813"/>
         <source>Title already exists!</source>
-        <translation>Jest już taka nazwa</translation>
+        <translation>Jest już taka nazwa!</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4830"/>
@@ -15337,7 +15337,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsabout.ui" line="271"/>
         <source>License </source>
-        <translation type="unfinished"></translation>
+        <translation>Licencja</translation>
     </message>
     <message>
         <source>Version</source>
@@ -16096,7 +16096,7 @@ Nazwa motywu:	%4
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="353"/>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters within [% and %] will be evaluated as expression and replaced by its result. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
-        <translation>Wprowadź tutaj akcję. Może to być dowolny program, skrypt lub komenda dostępna w systemie. Gdy akcja jest wywoływana, zestaw znaków w [% i %] zostanie przetworzony jako wyrażenie i zamieniony na jego wynik. Znak cudzysłowu grupuje tekst jako jeden argument dla programu, skryptu lub komendy. Cudzysłów poprzedzony ukośnikiem będzie ignorowany.</translation>
+        <translation>Wprowadź tutaj akcję. Może to być dowolny program, skrypt lub komenda dostępna w systemie. Gdy akcja jest wywoływana, zestaw znaków w [% i %] zostanie przetworzony jako wyrażenie i zamieniony na jego wynik. Znak cudzysłowu grupuje tekst jako jeden argument dla programu, skryptu lub komendy. Cudzysłów poprzedzony ukośnikiem będzie ignorowany</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="311"/>
@@ -17979,12 +17979,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgscharacterselectdialogbase.ui" line="34"/>
         <source>Font:</source>
-        <translation>Czcionka...</translation>
+        <translation>Czcionka:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscharacterselectdialogbase.ui" line="41"/>
         <source>Current font family and style</source>
-        <translation>Aktualna rodzina czcionek i stylów</translation>
+        <translation>Aktualna rodzina i styl czcionki</translation>
     </message>
 </context>
 <context>
@@ -18252,7 +18252,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="978"/>
         <source>Memory Allocation Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd alokacji pamięci</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1020"/>
@@ -19768,7 +19768,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="150"/>
         <source>Update item</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualizuj pozycję</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="163"/>
@@ -19788,7 +19788,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="320"/>
         <source>Show feature count for each class of vector layer.</source>
-        <translation>Wyświetl liczbę obiektów dla każdej klasy</translation>
+        <translation>Wyświetl liczbę obiektów dla każdej klasy.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="371"/>
@@ -20852,7 +20852,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="181"/>
         <source>Image search paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Ścieżki wyszukiwania obrazów</translation>
     </message>
     <message>
         <source>Loading SVG previews...</source>
@@ -20987,7 +20987,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="51"/>
         <source>Map units</source>
-        <translation>Jednostki mapy</translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="52"/>
@@ -21029,7 +21029,7 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="254"/>
         <source>Number of scalebar segments changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmieniono liczbę segmentów podziałki</translation>
     </message>
     <message>
         <source>Scalebar n segments</source>
@@ -21734,12 +21734,12 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="1007"/>
         <source>Aligned items horizontal center</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrównaj do środka w poziomie</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="1097"/>
         <source>Aligned items vertical center</source>
-        <translation type="unfinished"></translation>
+        <translation>wyrównano obiekty do środka w pionie</translation>
     </message>
     <message>
         <source>Aligned items hcenter</source>
@@ -22371,12 +22371,12 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <location filename="../src/core/qgscontexthelp.cpp" line="83"/>
         <source>Context help</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomoc kontekstowa</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp.cpp" line="91"/>
         <source>&lt;h3&gt;Oops! QGIS can&apos;t find help for this form.&lt;/h3&gt;The help file for %1 was not found for your language&lt;br&gt;If you would like to create it, contact the QGIS development team</source>
-        <translation>&lt;h3&gt;Hmmm...! Wygląda na to, że tego pliku pomocy jeszcze nie ma.&lt;/h3&gt;Brak pliku pomocy %1 dla twojego języka.&lt;br&gt;Jeśli chcesz go stworzyć, skontaktuj się z QGIS Polska.</translation>
+        <translation>&lt;h3&gt;Hmmm...! Wygląda na to, że tego pliku pomocy jeszcze nie ma.&lt;/h3&gt;Brak pliku pomocy %1 dla twojego języka.&lt;br&gt;Jeśli chcesz go stworzyć, skontaktuj się z QGIS Polska</translation>
     </message>
 </context>
 <context>
@@ -25096,7 +25096,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="63"/>
         <source>Map units</source>
-        <translation>Jednostki mapy</translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="76"/>
@@ -35305,17 +35305,6 @@ not displayed</source>
     </message>
 </context>
 <context>
-    <name>QgsLinearlyScalingDialog</name>
-    <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">Milimetr</translation>
-    </message>
-    <message>
-        <source>Map units</source>
-        <translation type="obsolete">Jednostki mapy</translation>
-    </message>
-</context>
-<context>
     <name>QgsLinearlyScalingDialogBase</name>
     <message>
         <source>Form</source>
@@ -37061,8 +37050,6 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <source>%n more</source>
         <comment>unread messages</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -43582,23 +43569,23 @@ Sprawdź czy masz uprawnienia SELECT do tabeli zawierającej geometrię PostGIS.
     </message>
     <message>
         <source>If you haven&apos;t cancelled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeśli nie przerwano połączenia ręcznie, najprawdopodobniej nastąpiło przekroczenie limitu czasu dla połączeń sieciowych. W tym wypadku rozważ zwiększenie limitu w oknie głównych opcji QGIS-a.</translation>
     </message>
     <message>
         <source>Server response is 200 OK, but doesn&apos;t contain plugin metatada. This is most likely caused by a proxy or a wrong repository URL. You can configure proxy settings in QGIS options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Odpowiedź serwera jest poprawna (200 OK), lecz nie wydaje się zawieraź metadanych wtyczek. Jest to najprawdopodobniej spowodowane przez proxy lub błędny adres URL repozytorium. Możesz skonfigurować ustawienia proxy w głównych opcjach QGIS-a.</translation>
     </message>
     <message>
         <source>Status code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kod błędu:</translation>
     </message>
     <message>
         <source>The plugin exited with error status: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Wtyczka zakończyła pracę z kodem błędu: {0}</translation>
     </message>
     <message>
         <source>Unknown error</source>
-        <translation type="unfinished">Nieznany błąd.</translation>
+        <translation>Nieznany błąd</translation>
     </message>
     <message>
         <source>Uninstall (recommended)</source>
@@ -43698,7 +43685,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     </message>
     <message>
         <source>If you haven&apos;t cancelled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeśli nie przerwano połączenia ręcznie, najprawdopodobniej nastąpiło przekroczenie limitu czasu dla połączeń sieciowych. W tym wypadku rozważ zwiększenie limitu w oknie głównych opcji QGIS-a.</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
@@ -43886,7 +43873,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="111"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="134"/>
@@ -43952,25 +43939,25 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="544"/>
         <source>Only locally available</source>
         <comment>category: plugins that are only locally available</comment>
-        <translation type="unfinished">Niemożliwe do przeinstalowania</translation>
+        <translation>Niedostępne w repozytoriach</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="545"/>
         <source>Reinstallable</source>
         <comment>category: plugins that are installed and available</comment>
-        <translation type="unfinished">Możliwe do przeinstalowania</translation>
+        <translation>Dostępne w repozytoriach</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="546"/>
         <source>Upgradeable</source>
         <comment>category: plugins that are installed and there is a newer version available</comment>
-        <translation>Aktualizowalne</translation>
+        <translation>Dostępne do aktualizacji</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="547"/>
         <source>Downgradeable</source>
         <comment>category: plugins that are installed and there is an OLDER version available</comment>
-        <translation type="unfinished"></translation>
+        <translation>Dostępna starsza wersja</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="621"/>
@@ -44046,7 +44033,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="702"/>
         <source>%1 downloads</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 pobrań</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="719"/>
@@ -44056,12 +44043,12 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="723"/>
         <source>tracker</source>
-        <translation type="unfinished"></translation>
+        <translation>bugtracker</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="727"/>
         <source>code_ repository</source>
-        <translation type="unfinished"></translation>
+        <translation>repozytorium kodu źródłowego</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="748"/>
@@ -44076,7 +44063,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="758"/>
         <source>changelog:&lt;br/&gt;%1 &lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>changelog:&lt;br/&gt;%1 &lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="770"/>
@@ -44186,27 +44173,35 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="11"/>
         <source>&lt;h3&gt;Installed Plugins&lt;/h3&gt;&lt;p&gt;On the left you see the list of &lt;b&gt;installed plugins&lt;/b&gt; on your system. Both python and cpp plugins are listed. Some plugins come with your QGIS installation while most of them are made available via the plugin repositories.&lt;/p&gt;&lt;p&gt;You can temporarily enable or disable a plugin.To &lt;i&gt;enable&lt;/i&gt; or &lt;i&gt;disable&lt;/i&gt; a plugin, click its checkbox or doubleclick its name...&lt;/p&gt;&lt;p&gt;Plugins showing in &lt;span style=&apos;color:red&apos;&gt;red&lt;/span&gt; are not loaded because there is a problem. Consult the &apos;Invalid&apos; tab to see more details, or to reinstall or uninstall this plugin.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Zainstalowane wtyczki&lt;/h3&gt;&lt;p&gt;Po lewej stronie znajduje się lista wszystkich wtyczek zainstalowanych na tym komputerze. Lista zawiera zarówno wtyczki napisane w języku C++ jak i Python. Część z nich została zainstalowana razem z Twoją kopią QGIS-a, inne pobiera się z repozytorium (możesz także podłączyć własne, niezależne repozytoria wtyczek).&lt;/p&gt;
+&lt;p&gt;Wtyczki możesz &lt;i&gt;włączać&lt;/i&gt; i &lt;i&gt;wyłączać&lt;/i&gt; poprzez zaznaczanie checkboksa lub dwuklik na nazwie.&lt;/p&gt;
+&lt;p&gt;Pojedyncze klinięcie na nazwie wtyczki wyświetla jej opis i szczegóły instalacji. Uaktywnia też przyciski &lt;i&gt;Odinstaluj&lt;/i&gt;, &lt;i&gt;Przeinstaluj&lt;/i&gt; itp, w zależności od dostępności danej czynności. Na przykład nie wszystkie wtyczki są dostępne w sieci do przeinstalowania, nie wszystkie też można odinstalować.&lt;/p&gt;&lt;p&gt;Wtyczki oznaczone &lt;b&gt;wytłuszczeniem&lt;/b&gt; są aktualizowalne, to znaczy, że w repozytorium znajduje się nowsza wersja. Wtyczki te znajdziesz także w zakładce &lt;i&gt;Aktualizowalne&lt;/i&gt;.&lt;/p&gt;
+&lt;p&gt;Wtyczki oznaczone kolorem &lt;span style=&apos;color:red&apos;&gt;czerwonym&lt;/span&gt; są niesprawne, a powód jest w miarę możliwości podany w opisie wtyczki. Te same wtyczki znajdziesz też w zakładce &lt;i&gt;Niesprawne&lt;/i&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="32"/>
         <source>&lt;h3&gt;Upgradable plugins&lt;/h3&gt;&lt;p&gt;Here are &lt;b&gt;upgradeable plugins&lt;/b&gt;. It means more recent versions of installed plugins are available in the repositories.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Aktualizowalne wtyczki&lt;/h3&gt;&lt;p&gt;Oto podzbiór wtyczek zainstalowanych na tym komputerze, których nowsze wersje są dostępne w repozytorium. Po wybraniu wtyczki z listy, poniżej uaktywni się przycisk &lt;i&gt;Aktualizuj wtyczkę&lt;/i&gt;. Możesz także użyć przycisku &lt;i&gt;Aktualizuj wszystkie&lt;/i&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="43"/>
         <source>&lt;h3&gt;Get more plugins&lt;/h3&gt;&lt;p&gt;Here you see the list of all plugins available in the repositories, but which are &lt;b&gt;not yet installed&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Click on the name to see details.&lt;/p&gt;&lt;p&gt;You can change the sorting via the context menu (right click).&lt;/p&gt;&lt;p&gt;A plugin can be downloaded and installed by clicking on it&apos;s name, and then click the &apos;Install plugin&apos; button.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Pobierz więcej wtyczek&lt;/h3&gt;&lt;p&gt;Oto lista wtyczek &lt;b&gt;dostępnych do instalacji&lt;/b&gt; z repozytorium.&lt;/p&gt;
+&lt;p&gt;Kliknięcie na nazwie wtyczki wyświetli jej opis i uaktywni przycisk umożliwiający jej instalację.&lt;/p&gt;
+&lt;p&gt;Aby wyszukać interesującą Cię wtyczkę, możesz skorzystać z filtra powyżej. Możesz też zmienić porządek sortowania poprzez menu kontekstowe (prawy klik na liście wtyczek).&lt;/p&gt;
+&lt;p&gt;Uwaga: Lista zawiera tylko te wtyczki, które nie są jeszcze zainstalowane. Dlatego po instalacji wtyczka znika z listy i przenosi się do zakładki &lt;i&gt;Zainstalowane&lt;/i&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="64"/>
         <source>&lt;h3&gt;New plugins&lt;/h3&gt;&lt;p&gt;Here you see brand &lt;b&gt;new&lt;/b&gt; plugins which can be installed.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Nowości&lt;/h3&gt;&lt;p&gt;Oto lista opublikowanych ostatnio wtyczek (ściślej mówiąc: tych, które widzę po raz pierwszy), które możesz zainstalować. Jest to podzbiór wtyczek z zakładki &lt;i&gt;Pobierz więcej&lt;/i&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager_texts.cpp" line="75"/>
         <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download an other version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Niesprawne wtyczki&lt;/h3&gt;&lt;p&gt;Oto podzbiór zainstalowanych wtyczek, które są &lt;b&gt;uszkodzone&lt;/b&gt;, &lt;b&gt;niekompatybilne&lt;/b&gt; z tą wersją QGIS-a, lub &lt;b&gt;zależne&lt;/b&gt; od brakujących modułów Pythona. Po kliknięciu na nazwie wtyczki, w miarę możliwości QGIS poda więcej informacji.&lt;/p&gt;
+&lt;p&gt;Częstą przyczyną problemów jest instalacja wtyczki nieprzeznaczonej dla tej wersji QGIS-a. W takim wypadku warto spróbować zaktualizować lub choćby przeinstalować wtyczkę. Jeśli to nie pomoże, być może znajdziesz właściwą wersję na stronie &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Innym częstym problemem jest &lt;i&gt;zależność&lt;/i&gt; wtyczki od zewnętrznych bibliotek lub modułów Pythona, które nie zostały standardowo zainstalowane z QGIS-em. Możesz zainstalować je własnoręcznie, dalsze instrukcje znajdziesz w Internecie. Po poprawnej instalacji wtyczka powinna zacząć działać.&lt;/p&gt;
+&lt;p&gt;W razie problemów, warto szukać pomocy na &lt;a href=&quot;http://forum.quantum-gis.pl&quot;&gt;polskim forum użytkowników QGIS-a&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -44248,7 +44243,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="112"/>
         <source>Installed plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista zainstalowanych wtyczek</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="124"/>
@@ -44258,7 +44253,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="127"/>
         <source>Not installed plugins available for download</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista niezainstalowanych wtyczek, dostępnych do pobrania z sieci</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="139"/>
@@ -44268,7 +44263,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="142"/>
         <source>Installed plugins with more recent version available for download</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista zainstalowanych wtyczek, możliwych do atualizacji do nowszej wersji</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="154"/>
@@ -44278,7 +44273,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="157"/>
         <source>Not installed plugins seen for the first time</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista nowych wtyczek, które widzę w sieci pierwszy raz</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="169"/>
@@ -44288,7 +44283,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="172"/>
         <source>Broken and incompatible installed plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista zainstalowanych uszkodzonych i niekompatybilnych wtyczek</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="184"/>
@@ -44365,7 +44360,7 @@ Musisz włączyć ponownie program QGIS, żeby ją przeładować.</translation>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="543"/>
         <source>The settings on this tab are only applicable for Python Plugins. No Python support detected, thus no settings available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia na tej karcie mają zastosowanie jedynie do wtyczek napisanych w Pythonie. Nie wykryto wsparcia Pythona, więc ustawienia te nie są dostępne.</translation>
     </message>
     <message>
         <source>The settings on this tab are only applicable for downloading Python Plugins. No Python support detected, thus no settings available.</source>
@@ -45404,7 +45399,7 @@ Rezultat: %3 (%4)</translation>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="690"/>
         <source>Loading layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Wczytywanie warstwy %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="802"/>
@@ -45487,7 +45482,7 @@ Poszukać brakujących warstw?</translation>
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="112"/>
         <source>QGIS files</source>
-        <translation type="unfinished">Pliki QGIS</translation>
+        <translation>Pliki QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="143"/>
@@ -45984,7 +45979,7 @@ Kontynuować?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1744"/>
         <source>Exclude composers</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyłącz wydruki</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1812"/>
@@ -45999,7 +45994,7 @@ Kontynuować?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1843"/>
         <source>Insert</source>
-        <translation type="unfinished"></translation>
+        <translation>Wstaw</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1848"/>
@@ -46307,7 +46302,7 @@ Z tego powodu wybór odwzorowania nie będzie działał...</translation>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="39"/>
         <source>Selected CRS:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybrany układ współrzędnych:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="194"/>
@@ -46881,7 +46876,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterdataprovider.cpp" line="286"/>
         <source>Format not supported</source>
-        <translation type="unfinished">Format nieobsługiwany</translation>
+        <translation>Format nieobsługiwany</translation>
     </message>
     <message>
         <source>Feature info</source>
@@ -46907,7 +46902,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterdataprovider.cpp" line="472"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekst</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterdataprovider.cpp" line="474"/>
@@ -49982,7 +49977,7 @@ standard deviation ×</source>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="101"/>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="104"/>
         <source>Millimeter</source>
-        <translation>milimetr</translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="101"/>
@@ -54269,10 +54264,6 @@ Im niższy numer, tym wcześniej rysowana jest warstwa.</translation>
         <translation type="obsolete">Jednostki</translation>
     </message>
     <message>
-        <source>Millimeter</source>
-        <translation type="obsolete">Milimetry</translation>
-    </message>
-    <message>
         <source>Map unit</source>
         <translation type="obsolete">Jednostki mapy</translation>
     </message>
@@ -54479,7 +54470,7 @@ Im niższy numer, tym wcześniej rysowana jest warstwa.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="42"/>
         <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case studies section&lt;/a&gt; of the QGIS home page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeśli jesteś autorem publikacji naukowej lub artykułu opisującego wykorzystanie QGIS, pomyśl czy nie warto byłoby podzielić się tym z innymi. Te i podobne informacje zamieszczane są na stronie QGIS jako &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;studia przypadków&lt;/a&gt; pod adresem (http://http://www.qgis.org/en/community/qgis-case-studies.html).</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="48"/>
@@ -54546,7 +54537,7 @@ Dla osób szukających pomocy w języku polskim, uruchomione zostało &lt;a href
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="85"/>
         <source>Add the current date to a map layout</source>
-        <translation>Jak dodać aktualną datę do wydruku mapy?</translation>
+        <translation>Jak dodać aktualną datę do wydruku mapy</translation>
     </message>
     <message>
         <source>You can add a current date variable to your map layout. Create a regular text label and add the string $CURRENT_DATE(yyyy-MM-dd) to the text box. See the &lt;a href=&quot;http://doc.qt.nokia.com/latest/qdate.html#toString&quot;&gt;QDate::toString format documentation&lt;/a&gt; for the possible date formats.</source>
@@ -54633,17 +54624,17 @@ Dla osób szukających pomocy w języku polskim, uruchomione zostało &lt;a href
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="146"/>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;Esc&apos; (the escape key), or click the &apos;Stop map rendering&apos; icon in the status bar to the bottom of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
-        <translation type="unfinished"></translation>
+        <translation>Czasem wyświetlenie dużej mapy zajmuje wieki. Naciśnięcie klawisza ESC lub małej ikony z pędzlem i czerwonym przekreślony kółkiem zlokalizowanej w prawy dolnym rogu okna, przerwie rysowanie. Jeśli planujesz wykonanie kilku operacji mogących spowolnić odświeżanie widoku, możesz tymczasowo wyłączyć automatyczne przerysowywanie widoku mapy. Należy w tym celu wyłączyć opcję Renderuj umieszczoną w prawym dolnym rogu ekranu. Nie zapomnij jednak ponownie włączyć tej opcji po zakończeniu operacji!</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="175"/>
         <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our regular hackfest meetings, and to generally support the goals of our project. Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeśli dzięki QGIS oszczędzasz pieniądze (czas?) lub podoba Ci się to, co robimy, zastanów się nad możliwością wsparcia finansowego projektu. Pieniądze od sponsorów wykorzystywane są na organizację dwa razy do roku roboczych spotkań twórców programu oraz ogólnie na koszty funkcjonowania projektu. Odwiedź stronę &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;Sponsorowanie QGIS&lt;/a&gt;, aby poznać więcej szczegółów.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="186"/>
         <source>QGIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage and Install Plugins menu. In addition there are a lot of &lt;a href=&quot;http://plugins.qgis.org/&quot;&gt;Python plugins &lt;/a&gt; contributed by the user community that can be installed via this same menu. Don&apos;t miss out on all QGIS has to offer! Check out the plugins and see what they can do for you.</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS udostępnia system wtyczek, które rozszerzają liczbę jego funkcji. Standardowo z instalacją dostarczane są wtyczki dostępne w menu Wtyczki-&gt;Zarządzaj wtyczkami. Dodatkowo dostępnych jest mnóstwo wtyczek udostępnianych przez społeczność QGIS, które można doinstalować w tym samym oknie. </translation>
     </message>
     <message>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;esc&apos; (the escape key), or click the small red &apos;X&apos; icon in the status bar to the bottom right of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
@@ -55504,12 +55495,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3527"/>
         <source>Layer comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Komentarz warstwy</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3534"/>
         <source>Storage type of this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Format zapisu tej warstwy</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3542"/>
@@ -55519,12 +55510,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3549"/>
         <source>Source for this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Źródło tej warstwy</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3566"/>
         <source>Geometry type of the features in this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodzaj obiektów geometrycznych na tej warstwie</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3575"/>
@@ -55534,12 +55525,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3586"/>
         <source>The number of features in this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba obiektów na tej warstwie </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3591"/>
         <source>Editing capabilities of this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Możliwości edycyjne tej warstwy</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3600"/>
@@ -55549,28 +55540,28 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3604"/>
         <source>In layer spatial reference system units</source>
-        <translation type="unfinished"></translation>
+        <translation>W jednostkach układu odniesienia warstwy</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3670"/>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3705"/>
         <source>In project spatial reference system units</source>
-        <translation type="unfinished"></translation>
+        <translation>W jednostkach układu odniesienia projektu</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3683"/>
         <source>Layer Spatial Reference System</source>
-        <translation type="unfinished"></translation>
+        <translation>Przestrzenny układ odniesienia warstwy</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3694"/>
         <source>Project (Output) Spatial Reference System</source>
-        <translation type="unfinished"></translation>
+        <translation>układ współrzędnych projektu (wyjściowy)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3716"/>
         <source>Attribute field info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informacja o atrybutach pola</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3722"/>
@@ -55600,7 +55591,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3955"/>
         <source>Error: qgis element could not be found</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd: element QGIS nie został odnaleziony</translation>
     </message>
     <message>
         <source>Unknown renderer</source>
@@ -60393,17 +60384,17 @@ about SEXTANTE</source>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="69"/>
         <source>TopologyChecker</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrola topologii</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="77"/>
         <source>Topology Checker for vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrola topologii warstwy wektorowej</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="82"/>
         <source>&amp;Topology Checker</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrola &amp;topologii</translation>
     </message>
 </context>
 <context>
@@ -60452,7 +60443,7 @@ about SEXTANTE</source>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj nazwę wyjściowego pliku Shapefile</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -60468,12 +60459,18 @@ about SEXTANTE</source>
 %s
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Utworzono plik Shapefile:
+%s
+%s
+
+Czy chcesz dodać go do mapy?
+</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd wczytywania wyjściowego pliku Shapefile:
+%s</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -60629,7 +60626,7 @@ Czy chcesz dodać go do mapy?
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="246"/>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="309"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="153"/>
@@ -60637,7 +60634,7 @@ Czy chcesz dodać go do mapy?
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="251"/>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="314"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="163"/>
@@ -60652,7 +60649,7 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="267"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Właściwości oparte na danych...</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="324"/>
@@ -60707,13 +60704,13 @@ Czy chcesz dodać go do mapy?
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="108"/>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="191"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="113"/>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="196"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="123"/>
@@ -60746,12 +60743,12 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="96"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="101"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <source>Change</source>
@@ -60785,14 +60782,14 @@ Czy chcesz dodać go do mapy?
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="110"/>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="154"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="74"/>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="115"/>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="159"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="84"/>
@@ -60807,7 +60804,7 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="201"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Właściwości oparte na danych...</translation>
     </message>
     <message>
         <source>Change</source>
@@ -60861,13 +60858,13 @@ Czy chcesz dodać go do mapy?
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="73"/>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="172"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="78"/>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="177"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="88"/>
@@ -60926,7 +60923,7 @@ Czy chcesz dodać go do mapy?
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="140"/>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="181"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="63"/>
@@ -60934,7 +60931,7 @@ Czy chcesz dodać go do mapy?
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="145"/>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="186"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="73"/>
@@ -60954,7 +60951,7 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="202"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Właściwości oparte na danych...</translation>
     </message>
 </context>
 <context>
@@ -60973,13 +60970,13 @@ Czy chcesz dodać go do mapy?
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="124"/>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="264"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="129"/>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="269"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="139"/>
@@ -61004,7 +61001,7 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="285"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Właściwości oparte na danych...</translation>
     </message>
     <message>
         <source>Color</source>
@@ -61030,12 +61027,12 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="25"/>
         <source>SVG Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupy obrazów SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="32"/>
         <source>SVG Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbole SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="78"/>
@@ -61082,13 +61079,13 @@ Czy chcesz dodać go do mapy?
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="85"/>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="148"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="90"/>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="153"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="100"/>
@@ -61098,7 +61095,7 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="169"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Właściwości oparte na danych...</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="184"/>
@@ -61137,14 +61134,14 @@ Czy chcesz dodać go do mapy?
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="155"/>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="229"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="107"/>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="160"/>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="234"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="117"/>
@@ -61174,12 +61171,12 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="221"/>
         <source>Dash pattern unit</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostka stylu linii</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="248"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Właściwości oparte na danych...</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="205"/>
@@ -61222,14 +61219,14 @@ Czy chcesz dodać go do mapy?
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="173"/>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="253"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="143"/>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="178"/>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="258"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="153"/>
@@ -61254,7 +61251,7 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="274"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Właściwości oparte na danych...</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="281"/>
@@ -61283,14 +61280,14 @@ Czy chcesz dodać go do mapy?
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="299"/>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="362"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="158"/>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="304"/>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="367"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="168"/>
@@ -61320,7 +61317,7 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="383"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Właściwości oparte na danych...</translation>
     </message>
     <message>
         <source>Change</source>
@@ -61342,7 +61339,7 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="93"/>
         <source>SVG Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupy obrazów SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="100"/>
@@ -61365,12 +61362,12 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="23"/>
         <source>SVG Images</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrazy SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="30"/>
         <source>SVG Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupy obrazów SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="110"/>
@@ -61380,12 +61377,12 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="117"/>
         <source>Generated path will be relative to current SVG search directories or to Project file</source>
-        <translation type="unfinished"></translation>
+        <translation>Utworzona ścieżka będzie względna do bieżącego katalogu przeszukiwania SVG lub do pliku projektu</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgselector.ui" line="120"/>
         <source>Relative path</source>
-        <translation type="unfinished"></translation>
+        <translation>Względne ścieżki dostępu</translation>
     </message>
 </context>
 <context>
@@ -61428,17 +61425,17 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="86"/>
         <source>Distance unit</source>
-        <translation type="unfinished">Jednostka odległości</translation>
+        <translation>Jednostka odległości</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="100"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="105"/>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="146"/>
@@ -61502,7 +61499,7 @@ Czy chcesz dodać go do mapy?
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="14"/>
         <source>Topology Checker</source>
-        <translation type="unfinished">Kontrola topologii</translation>
+        <translation>Kontrola topologii</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="41"/>
@@ -61564,7 +61561,7 @@ Czy chcesz dodać go do mapy?
         <location filename="../src/plugins/topology/checkDock.cpp" line="284"/>
         <location filename="../src/plugins/topology/checkDock.cpp" line="339"/>
         <source>Topology plugin</source>
-        <translation type="unfinished">Topologia</translation>
+        <translation>Topologia</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="232"/>
@@ -68077,7 +68074,7 @@ Convert a string into Qt data type.
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="120"/>
         <source>Create random raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj losowy raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="121"/>
@@ -69359,7 +69356,7 @@ Convert a string into Qt data type.
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="359"/>
         <source>Remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachement of centroid), first and last segment of the boundary is never changed</source>
-        <translation>Usuń wierzchołki w zadanej odległości od linii i granic. Granica jest usuwana tylko wtedy, gdy topologia nie jest zniszczona (nowy węzeł, zmienione przypisanie centroidu). Pierwszy i ostatni segment granicy nigdy się nie zmienia.</translation>
+        <translation>Usuń wierzchołki w zadanej odległości od linii i granic. Granica jest usuwana tylko wtedy, gdy topologia nie jest zniszczona (nowy węzeł, zmienione przypisanie centroidu). Pierwszy i ostatni segment granicy nigdy się nie zmienia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="360"/>
@@ -69778,12 +69775,12 @@ Convert a string into Qt data type.
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="441"/>
         <source>Which column for the Y coordinate?</source>
-        <translation>Kolumna współrzędnej Y.</translation>
+        <translation type="unfinished">Kolumna współrzędnej Y.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="442"/>
         <source>Which column for the Z coordinate? If 0, z coordinate is not used</source>
-        <translation>Kolumna współrzędnej Z. Jeśli nieużywana - podaj 0.</translation>
+        <translation type="unfinished">Kolumna współrzędnej Z. Jeśli nieużywana - podaj 0.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="443"/>
@@ -69840,7 +69837,7 @@ Convert a string into Qt data type.
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="112"/>
         <source>Rule</source>
-        <translation type="unfinished">Reguła</translation>
+        <translation>Reguła</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="117"/>
