@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
+    <normaloff></normaloff></iconset>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
