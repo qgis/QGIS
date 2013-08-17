@@ -2777,7 +2777,7 @@ yksinkertaistettaessa vähennettiin %2 kulmapisteeseen</translation>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgConfig.ui" line="26"/>
         <source>Enter setting name to filter list</source>
-        <translation>Anna aseetusten nimi suodattaaksesi luetteloa</translation>
+        <translation>Anna asetusten nimi suodattaaksesi luetteloa</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgConfig.ui" line="37"/>
@@ -6934,7 +6934,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1237"/>
         <source>Add WMS/WMTS Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää WMS/WMTS taso...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1384"/>
@@ -12414,7 +12414,7 @@ Ota yhteys kehittäjiin.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="644"/>
         <source>Initializing file filters</source>
-        <translation>Alustetaan tiedostomuotoja</translation>
+        <translation>Alustetaan tiedostosuodattimia</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="672"/>
@@ -14865,7 +14865,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsabout.ui" line="271"/>
         <source>License </source>
-        <translation type="unfinished"></translation>
+        <translation>Lisenssi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="147"/>
@@ -15263,7 +15263,7 @@ Käyttäjän DB polku:	%8</translation>
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="244"/>
         <source>Feature filtering</source>
-        <translation>Ominaisuuksien lajittelu</translation>
+        <translation>Ominaisuuksien suodatus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="264"/>
@@ -25401,7 +25401,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="284"/>
         <source>Equal operator</source>
-        <translation type="unfinished">On yhtä kuin -operaattori</translation>
+        <translation>On yhtä kuin -operaattori</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="287"/>
@@ -25411,7 +25411,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="300"/>
         <source>Addition operator</source>
-        <translation type="unfinished">Lisäys operaattori</translation>
+        <translation>Lisäys operaattori</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="303"/>
@@ -25421,7 +25421,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="310"/>
         <source>Subtraction operator</source>
-        <translation type="unfinished">Vähennys operaattori</translation>
+        <translation>Vähennys operaattori</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="313"/>
@@ -25431,7 +25431,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="320"/>
         <source>Division operator</source>
-        <translation type="unfinished">Jakamisoperaattori</translation>
+        <translation>Jakamisoperaattori</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="323"/>
@@ -25441,7 +25441,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="330"/>
         <source>Multiplication operator</source>
-        <translation type="unfinished">Kertomisoperaattori</translation>
+        <translation>Kertomisoperaattori</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="333"/>
@@ -25451,7 +25451,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="340"/>
         <source>Power operator</source>
-        <translation type="unfinished">Potenssioperaattori</translation>
+        <translation>Potenssioperaattori</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="343"/>
@@ -25461,7 +25461,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="350"/>
         <source>String Concatenation</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="353"/>
@@ -25471,7 +25471,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="372"/>
         <source>Open Bracket </source>
-        <translation type="unfinished"></translation>
+        <translation>Avaa sulkeet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="375"/>
@@ -25481,7 +25481,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="382"/>
         <source>Close Bracket </source>
-        <translation type="unfinished"></translation>
+        <translation>Sulje sulkeet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionbuilder.ui" line="385"/>
@@ -31327,7 +31327,7 @@ rivillä %2 sarakkeessa %3</translation>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="61"/>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="116"/>
         <source>Filter</source>
-        <translation>Filtteri</translation>
+        <translation>Suodatin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="85"/>
@@ -31566,7 +31566,7 @@ rivillä %2 sarakkeessa %3</translation>
     <message>
         <location filename="../src/app/qgshtmlannotationdialog.cpp" line="26"/>
         <source>HTML annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML huomautus</translation>
     </message>
     <message>
         <location filename="../src/app/qgshtmlannotationdialog.cpp" line="38"/>
@@ -33255,7 +33255,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1286"/>
         <source>Font is missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kirjasin puuttuu.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1336"/>
@@ -35971,9 +35971,9 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/gui/qgsmessagebar.cpp" line="321"/>
         <source>%n more</source>
         <comment>unread messages</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n lisää</numerusform>
+            <numerusform>%n lisää</numerusform>
         </translation>
     </message>
     <message>
@@ -42044,7 +42044,7 @@ Virheilmoitus:
 &lt;p&gt;Kun taso alustetaan erilaista metadataa tarvitaan PostGIS taulua varten. Tämä vaatimus koskee informaatiota kuten taulun rivien lkm, geometria tyyppi ja tietoalueen laajuuden geometriasaraketta varten. Jos taulu sisältää suuren määrän rivejä voi tämän metadatan määritteleminen olla aikaa vievää.&lt;/p&gt;
 &lt;p&gt;Aktivoimalla tämän vaihtoehdon suoritetaan seuraavat nopeat taulun metadata operaatiot:&lt;/p&gt;
 &lt;p&gt;1) Rivi lkm määritetään haetuista taulun tilastoista suorittamalla PostgreSQL taulun analyysi funktion.&lt;/p&gt;
-&lt;p&gt;2) Taulun alueenlaajuus määritetään aina estimated_extent PostGIS funktiolla jopa silloin kun tasolle on määritelty filtteri.&lt;/p&gt;
+&lt;p&gt;2) Taulun alueenlaajuus määritetään aina estimated_extent PostGIS funktiolla jopa silloin kun tasolle on määritelty suodatin.&lt;/p&gt;
 &lt;p&gt;3) Jos taulun geometriatyyppi on tuntematon ja sitä ei ole erityisesti haettu geometry_columns taulusta, silloin se määritellään taulun ensimmäisistä 100 non-null geometria rivistä.&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;</translation>
@@ -45446,7 +45446,7 @@ Tästä johtuen projektoinnin valinta ei toimi...</translation>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="194"/>
         <source>Filter</source>
-        <translation>Filtteri</translation>
+        <translation>Suodatin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="212"/>
@@ -46028,7 +46028,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterdataprovider.cpp" line="472"/>
         <source>Text</source>
-        <translation type="unfinished">Teksti</translation>
+        <translation>Teksti</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterdataprovider.cpp" line="474"/>
@@ -48702,7 +48702,7 @@ keskihajonta ×</translation>
         <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="35"/>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="572"/>
         <source>Filter</source>
-        <translation>Filtteri</translation>
+        <translation>Suodatin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="53"/>
@@ -48754,7 +48754,7 @@ keskihajonta ×</translation>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="543"/>
         <source>Filter expression parsing error:
 </source>
-        <translation>Filtterilausekkeen jäsennysvirhe:</translation>
+        <translation>Suodatinlausekkeen jäsennysvirhe:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="551"/>
@@ -48766,8 +48766,8 @@ keskihajonta ×</translation>
         <source>Filter returned %n feature(s)</source>
         <comment>number of filtered features</comment>
         <translation>
-            <numerusform>Filtteri palautti %n kohteen</numerusform>
-            <numerusform>Filtteri palautti %n kohdetta</numerusform>
+            <numerusform>Suodatin palautti %n kohteen</numerusform>
+            <numerusform>Suodatin palautti %n kohdetta</numerusform>
         </translation>
     </message>
 </context>
@@ -48939,7 +48939,7 @@ keskihajonta ×</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="639"/>
         <source>(no filter)</source>
-        <translation>(ei filtteriä)</translation>
+        <translation>(ei suodatinta)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="663"/>
@@ -51294,7 +51294,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="60"/>
         <source>Filter</source>
-        <translation>Filtteri</translation>
+        <translation>Suodatin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="91"/>
@@ -58295,7 +58295,7 @@ Kuvaus: %2</translation>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="65"/>
         <source>&amp;Set Filter</source>
-        <translation>&amp;aseta suodatin</translation>
+        <translation>&amp;Aseta suodatin</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="72"/>
@@ -65975,7 +65975,7 @@ Palauttaa kulman sinin.
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="212"/>
         <source>Filter and create depressionless elevation map and flow direction map from elevation raster</source>
-        <translation>Suodata ja luo vähemmän painanteita oleva korkeuskartta ja virtaussuuntakarta korkeusrasterista</translation>
+        <translation>Suodata ja luo vähemmän painanteita oleva korkeuskartta ja virtaussuuntakartta korkeusrasterista</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="213"/>
@@ -66555,7 +66555,7 @@ Palauttaa kulman sinin.
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="328"/>
         <source>Raster file matrix filter</source>
-        <translation>Rasteitiedoston matriisisuodin</translation>
+        <translation>Rasteritiedoston matriisisuodin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="329"/>
