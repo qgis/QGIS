@@ -24,6 +24,9 @@ import hashlib
 import re
 from itertools import izip
 
+import webbrowser
+import subprocess
+
 # Support python < 2.7 via unittest2 needed for expected failure decorator.
 # Note that you should ignore unused import warnings here as these are imported
 # from this module by other tests.
@@ -163,6 +166,7 @@ def setCanvasCrs(theEpsgId, theOtfpFlag=False):
     # Reproject all layers to WGS84 geographic CRS
     CANVAS.mapRenderer().setDestinationCrs(myCrs)
 
+
 def writeShape(theMemoryLayer, theFileName):
     myFileName = os.path.join(str(QtCore.QDir.tempPath()), theFileName)
     print myFileName
@@ -187,6 +191,7 @@ def writeShape(theMemoryLayer, theFileName):
         mySkipAttributesFlag)
     assert myResult == QgsVectorFileWriter.NoError
 
+
 def compareWkt(a, b, tol=0.000001):
     r = re.compile( "-?\d+(?:\.\d+)?(?:[eE]\d+)?" )
 
@@ -207,3 +212,15 @@ def compareWkt(a, b, tol=0.000001):
             return False
 
     return True
+
+
+def openInBrowserTab(url):
+    if sys.platform[:3] in ('win', 'dar'):
+        webbrowser.open_new_tab(url)
+    else:
+        # some Linux OS pause execution on webbrowser open, so background it
+        cmd = 'import webbrowser;' \
+              'webbrowser.open_new_tab({0})'.format(url)
+        p = subprocess.Popen([sys.executable, "-c", cmd],
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT).pid

@@ -33,11 +33,10 @@ from utilities import (
 )
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
+from test_qgspallabeling_tests import TestPointBase
 
 
-class TestQgsPalLabelingPoint(TestQgsPalLabeling):
-    """Most layer-level labeling properties shared across feature types are
-    tested in this class"""
+class TestCanvasPoint(TestQgsPalLabeling, TestPointBase):
 
     @classmethod
     def setUpClass(cls):
@@ -53,57 +52,17 @@ class TestQgsPalLabelingPoint(TestQgsPalLabeling):
         """Run after each test."""
         pass
 
-    def test_default_label(self):
-        # Verify basic default label placement and text size in points
+    def checkTest(self):
         self.lyr.writeToLayer(self.layer)
         self.saveContolImage()
         self.assertTrue(*self.renderCheck())
-
-    def test_text_size_map_unit(self):
-        # Verify label text size in map units
-        self.lyr.fontSizeInMapUnits = True
-        tmpFont = QFont(self._TestFont)
-        tmpFont.setPointSizeF(0.25)
-        self.lyr.textFont = tmpFont
-        self.lyr.writeToLayer(self.layer)
-        self.saveContolImage()
-        self.assertTrue(*self.renderCheck())
-
-    def test_text_color(self):
-        # Verify label color change
-        self.lyr.textColor = Qt.blue
-        self.lyr.writeToLayer(self.layer)
-        self.saveContolImage()
-        self.assertTrue(*self.renderCheck())
-
-
-# class TestQgsPalLabelingLine(TestQgsPalLabeling):
-#     """Layer-level property tests for line features"""
-#
-#     @classmethod
-#     def setUpClass(cls):
-#         TestQgsPalLabeling.setUpClass()
-#         cls.layer = TestQgsPalLabeling.loadFeatureLayer('line')
-#
-#     def setUp(self):
-#         """Run before each test."""
-#         self.configTest('pal_canvas', 'sl')
-#         self.lyr = self.defaultSettings()
-#
-#     def tearDown(self):
-#         """Run after each test."""
-#         pass
 
 
 if __name__ == '__main__':
-    # NOTE: unless PAL_SUITE env var is set
-    # all test class methods will be run
-    sp = 'TestQgsPalLabelingPoint.'
-    sl = 'TestQgsPalLabelingLine.'
-    sc = 'TestQgsPalLabelingCurved.'
-    sg = 'TestQgsPalLabelingPolygon.'
-    mf = 'TestQgsPalLabelingMultiFeature.'
-
-    tests = [sp + 'test_default_label']
-    res = runSuite(sys.modules[__name__], tests)
+    # NOTE: unless PAL_SUITE env var is set all test class methods will be run
+    # ex: 'TestGroup(Point|Line|Curved|Polygon|Feature).test_method'
+    suite = [
+        'TestCanvasPoint.test_text_size_map_unit'
+    ]
+    res = runSuite(sys.modules[__name__], suite)
     sys.exit(not res.wasSuccessful())

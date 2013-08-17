@@ -24,7 +24,6 @@ import sys
 import datetime
 import glob
 import StringIO
-import subprocess
 import tempfile
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -47,7 +46,8 @@ from utilities import (
     TestCase,
     unittest,
     expectedFailure,
-    unitTestDataPath
+    unitTestDataPath,
+    openInBrowserTab
 )
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
@@ -140,12 +140,19 @@ class TestQgsPalLabeling(TestCase):
         cls._MapRegistry.addMapLayer(vlayer)
         cls._MapRenderer.setLayerSet([vlayer.id()])
 
-        # zoom to area of interest, which matches output aspect ratio
-        uri.setDataSource('', 'aoi', 'geometry')
-        aoilayer = QgsVectorLayer(uri.uri(), table, 'spatialite')
-        cls._MapRenderer.setExtent(aoilayer.extent())
+        # zoom to aoi
+        cls._MapRenderer.setExtent(cls.aoiExtent())
         cls._Canvas.zoomToFullExtent()
         return vlayer
+
+    @classmethod
+    def aoiExtent(cls):
+        """Area of interest extent, which matches output aspect ratio"""
+        uri = QgsDataSourceURI()
+        uri.setDatabase(cls._PalFeaturesDb)
+        uri.setDataSource('', 'aoi', 'geometry')
+        aoilayer = QgsVectorLayer(uri.uri(), 'aoi', 'spatialite')
+        return aoilayer.extent()
 
     def configTest(self, prefix, abbr):
         """Call in setUp() function of test subclass"""
@@ -219,7 +226,7 @@ class TestQgsPalLabeling(TestCase):
         return res, msg
 
 
-class TestQgsPalLabelingBase(TestQgsPalLabeling):
+class TestPALConfig(TestQgsPalLabeling):
 
     @classmethod
     def setUpClass(cls):
@@ -300,28 +307,18 @@ def runSuite(module, tests):
         report += '</body></html>'
 
         tmp = tempfile.NamedTemporaryFile(suffix=".html", delete=False)
-        palreport = tmp.name
         tmp.write(report)
         tmp.close()
-
-        if sys.platform[:3] in ('win', 'dar'):
-            import webbrowser
-            webbrowser.open_new_tab("file://{0}".format(palreport))
-        else:
-            # some Linux OS pause execution on webbrowser open, so background it
-            cmd = 'import webbrowser;' \
-                  'webbrowser.open_new_tab("file://{0}")'.format(palreport)
-            p = subprocess.Popen([sys.executable, "-c", cmd],
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.STDOUT).pid
+        openInBrowserTab('file://' + tmp.name)
 
     return res
 
 
 if __name__ == '__main__':
-    # NOTE: unless PAL_SUITE env var is set
-    # all test class methods will be run
-    b = 'TestQgsPalLabelingBase.'
-    tests = [b + 'test_write_read_settings']
-    res = runSuite(sys.modules[__name__], tests)
+    # NOTE: unless PAL_SUITE env var is set all test class methods will be run
+    # ex: 'TestGroup(Point|Line|Curved|Polygon|Feature).test_method'
+    suite = [
+        'TestPALConfig.test_write_read_settings'
+    ]
+    res = runSuite(sys.modules[__name__], suite)
     sys.exit(not res.wasSuccessful())
