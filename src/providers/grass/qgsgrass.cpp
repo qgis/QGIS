@@ -142,6 +142,14 @@ void GRASS_LIB_EXPORT QgsGrass::init( void )
     // Use the applicationDirPath()/grass
     gisBase = shortPath( QCoreApplication::applicationDirPath() + "/grass" );
     QgsDebugMsg( QString( "GRASS gisBase = %1" ).arg( gisBase ) );
+#elif defined(Q_OS_MACX)
+    // check for bundled GRASS, fall back to configured path
+    gisBase = QCoreApplication::applicationDirPath().append("/grass") ;
+    if ( !isValidGrassBaseDir( gisBase ) )
+    {
+      gisBase = GRASS_BASE;
+    }
+    QgsDebugMsg( QString( "GRASS gisBase = %1" ).arg( gisBase ) );
 #else
     // Use the location specified --with-grass during configure
     gisBase = GRASS_BASE;
