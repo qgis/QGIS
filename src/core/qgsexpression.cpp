@@ -1617,15 +1617,12 @@ QgsExpression::QgsExpression( const QString& expr )
   mRootNode = ::parseExpression( mExpression, mParserErrorString );
 
   if ( mParserErrorString.isNull() )
-  {
-    Q_ASSERT( mRootNode != NULL );
-  }
+    Q_ASSERT( mRootNode );
 }
 
 QgsExpression::~QgsExpression()
 {
-  if ( mCalc )
-    delete mCalc;
+  delete mCalc;
   delete mRootNode;
 }
 

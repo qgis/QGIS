@@ -255,9 +255,7 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
 
     if ( !props.value( "filter", "" ).isEmpty() )
     {
-      QDomElement filterElem = doc.createElement( "ogc:Filter" );
-      QgsSymbolLayerV2Utils::createFunctionElement( doc, filterElem, props.value( "filter", "" ) );
-      ruleElem.appendChild( filterElem );
+      QgsSymbolLayerV2Utils::createFunctionElement( doc, ruleElem, props.value( "filter", "" ) );
     }
 
     if ( !props.value( "scaleMinDenom", "" ).isEmpty() )

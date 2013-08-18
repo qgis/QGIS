@@ -599,7 +599,7 @@ class CORE_EXPORT QgsExpression
 
   protected:
     // internally used to create an empty expression
-    QgsExpression() : mRootNode( NULL ), mRowNumber( 0 ) {}
+    QgsExpression() : mRootNode( 0 ), mRowNumber( 0 ), mCalc( 0 ) {}
 
     void initGeomCalculator();
 
