@@ -2353,7 +2353,7 @@ void QgsGdalProvider::initBaseDataset()
   }
 
   // check if this file has pyramids
-  mHasPyramids = GDALGetOverviewCount( myGDALBand ) > 0;
+  mHasPyramids = gdalGetOverviewCount( myGDALBand ) > 0;
 
   // Get the layer's projection info and set up the
   // QgsCoordinateTransform for this layer

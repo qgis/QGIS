@@ -53,6 +53,8 @@ class QgsGdalProviderBase
     /** Wrapper function for GDALRasterIO to get around possible bugs in GDAL */
     static CPLErr gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void * pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace );
 
+    /** Wrapper function for GDALRasterIO to get around possible bugs in GDAL */
+    static int gdalGetOverviewCount( GDALRasterBandH hBand );
   protected:
 
     QGis::DataType dataTypeFromGdal( int theGdalDataType ) const;

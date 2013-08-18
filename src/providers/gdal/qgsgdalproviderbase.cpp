@@ -283,6 +283,7 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess 
 #if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
   char* pszOldVal = CPLStrdup( CPLGetConfigOption( "VSI_CACHE", "FALSE" ) );
   CPLSetThreadLocalConfigOption( "VSI_CACHE", "FALSE" );
+  QgsDebugMsg( "Disabled VSI_CACHE" );
 #endif
 
   GDALDatasetH hDS = GDALOpen( pszFilename, eAccess );
@@ -290,6 +291,7 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess 
 #if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
   CPLSetThreadLocalConfigOption( "VSI_CACHE", pszOldVal );
   CPLFree( pszOldVal );
+  QgsDebugMsg( "Reset VSI_CACHE" );
 #endif
 
   return hDS;
@@ -301,6 +303,7 @@ CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWF
 #if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
   char* pszOldVal = CPLStrdup( CPLGetConfigOption( "VSI_CACHE", "FALSE" ) );
   CPLSetThreadLocalConfigOption( "VSI_CACHE", "FALSE" );
+  QgsDebugMsg( "Disabled VSI_CACHE" );
 #endif
 
   CPLErr err = GDALRasterIO( hBand, eRWFlag, nXOff, nYOff, nXSize, nYSize, pData, nBufXSize, nBufYSize, eBufType, nPixelSpace, nLineSpace );
@@ -308,7 +311,28 @@ CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWF
 #if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
   CPLSetThreadLocalConfigOption( "VSI_CACHE", pszOldVal );
   CPLFree( pszOldVal );
+  QgsDebugMsg( "Reset VSI_CACHE" );
 #endif
 
   return err;
+}
+
+int QgsGdalProviderBase::gdalGetOverviewCount( GDALRasterBandH hBand )
+{
+  // See http://hub.qgis.org/issues/8356 and http://trac.osgeo.org/gdal/ticket/5170
+#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
+  char* pszOldVal = CPLStrdup( CPLGetConfigOption( "VSI_CACHE", "FALSE" ) );
+  CPLSetThreadLocalConfigOption( "VSI_CACHE", "FALSE" );
+  QgsDebugMsg( "Disabled VSI_CACHE" );
+#endif
+
+  int count = GDALGetOverviewCount( hBand );
+
+#if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
+  CPLSetThreadLocalConfigOption( "VSI_CACHE", pszOldVal );
+  CPLFree( pszOldVal );
+  QgsDebugMsg( "Reset VSI_CACHE" );
+#endif
+
+  return count;
 }
