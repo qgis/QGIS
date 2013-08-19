@@ -512,12 +512,12 @@ Esta táboa é esencial para moitas aplicacións SIX na enumeración de táboas.
         <translation>&amp;Táboa</translation>
     </message>
     <message>
-        <source>&quot;{0}&quot; not found</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Filename:</source>
         <translation>Nome de ficheiro:</translation>
+    </message>
+    <message>
+        <source>&quot;{0}&quot; not found</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>SQLite version:</source>
@@ -3562,7 +3562,9 @@ columna de xeometría - columna con valores enteiros únicos</translation>
         <source>Unable to load {0} plugin. 
 The required &quot;{1}&quot; module is missing. 
 Install it and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de carga-lo plugin {0}. 
+O módulo {1} requerido está perdido. 
+Instáleo e ténteo de novo.</translation>
     </message>
     <message>
         <source>QGIS version detected: </source>
@@ -3919,7 +3921,8 @@ http://trac.faunalia.it/GdalTools-plugin</translation>
     <message>
         <source>The following files were not created: 
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Os seguintes ficheiros NON foron creados: 
+{0}</translation>
     </message>
     <message>
         <source>The following files were not created: 
@@ -4082,7 +4085,7 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>{0} not created.</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} non creado.</translation>
     </message>
     <message>
         <source>Select the input file for Near Black</source>
@@ -6544,6 +6547,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation>Engadir Capa Oracle Spatial...</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgisapp.ui" line="1237"/>
+        <source>Add WMS/WMTS Layer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgisapp.ui" line="1261"/>
         <source>Toggle Editing</source>
         <translation>Activar/Desactivar Edición</translation>
@@ -6886,7 +6894,7 @@ Prema na tecla ALT para alterna-las etiquetas seleccionadas entre o estado engan
         <location filename="../src/ui/qgisapp.ui" line="1808"/>
         <location filename="../src/ui/qgisapp.ui" line="1811"/>
         <source>New Blank Project</source>
-        <translation>Novo Proxecto en blanco</translation>
+        <translation>Novo Proxecto en branco</translation>
     </message>
     <message>
         <source>Composer manager...</source>
@@ -7287,9 +7295,8 @@ Prema na tecla ALT para alterna-las etiquetas seleccionadas entre o estado engan
         <translation>Engadir capa MSSQL Spatial...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1237"/>
-        <source>Add WMS/WMTS Layer...</source>
-        <translation type="unfinished">Engadir capa WMS...</translation>
+        <source>Add WMS Layer...</source>
+        <translation type="obsolete">Engadir capa WMS/WMTS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1240"/>
@@ -9770,37 +9777,37 @@ Erro(%2): %3</translation>
         <translation>Non se pode convertir  &apos;%1:%2:%3:%4:%5&apos; a cor</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2369"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2366"/>
         <source>function help for %1 missing</source>
         <translation>Perdida a función de axuda para %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2378"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2375"/>
         <source>Operators</source>
         <translation>Operadores</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2380"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2377"/>
         <source>Fields and Values</source>
         <translation>Campos e Valores</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2381"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2378"/>
         <source>Math</source>
         <translation>Matemática</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2382"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2379"/>
         <source>Conversions</source>
         <translation>Conversións</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2379"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2376"/>
         <source>Conditionals</source>
         <translation>Condicionais</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2383"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2380"/>
         <source>Date and Time</source>
         <translation>Data e Hora</translation>
     </message>
@@ -9809,22 +9816,22 @@ Erro(%2): %3</translation>
         <translation type="obsolete">Data/Hora</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2384"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2381"/>
         <source>String</source>
         <translation>Cadea</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2385"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2382"/>
         <source>Color</source>
         <translation>Cor</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2386"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2383"/>
         <source>Geometry</source>
         <translation>Xeometría</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2387"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2384"/>
         <source>Record</source>
         <translation>Rexistro</translation>
     </message>
@@ -9833,33 +9840,33 @@ Erro(%2): %3</translation>
         <translation type="obsolete">Especial</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1688"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1700"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1685"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1697"/>
         <source>No root node! Parsing failed?</source>
         <translation>¡Ningún nó raíz! ¿Fallou a análise?</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1721"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1718"/>
         <source>(no root)</source>
         <translation>(non root)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1852"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1849"/>
         <source>Unary minus only for numeric values.</source>
         <translation>Unidade de menos só para valores numéricos.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1902"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1899"/>
         <source>Can&apos;t preform /, *, or % on DateTime and Interval</source>
         <translation>Non se pode preformatear /, *, ou % en DataHora e Intervalo</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2243"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2240"/>
         <source>[unsupported type;%1; value:%2]</source>
         <translation>[Tipo insoportado;%1; valor:%2]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2271"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2268"/>
         <source>Column &apos;%1&apos; not found</source>
         <translation>Columna &apos;%1&apos; non atopada</translation>
     </message>
@@ -9934,7 +9941,7 @@ Erro(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="287"/>
         <source>polygon %1 has no rings</source>
-        <translation type="unfinished"></translation>
+        <translation>O polígono %1 non ten aneis</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="299"/>
@@ -10609,17 +10616,17 @@ Só %1 de %2 entidades escritas.</translation>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="733"/>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="764"/>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="775"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="803"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="815"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1124"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1141"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1177"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1308"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1372"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1397"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1429"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1459"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1482"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="811"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="823"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1132"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1149"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1185"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1316"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1380"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1405"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1437"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1467"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1490"/>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="188"/>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="242"/>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="254"/>
@@ -11233,140 +11240,140 @@ Só %1 de %2 entidades escritas.</translation>
         <translation>Provedor do formato GPS eXchange</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="158"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="190"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="166"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="198"/>
         <source>GRASS plugin</source>
         <translation>Plugin GRASS</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="159"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="167"/>
         <source>QGIS couldn&apos;t find your GRASS installation.
 Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>QGIS non pode atopa-la súa instalación de GRASS. ¿Podería especifica-la ruta (GISBASE) á súa instalación GRASS?</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="174"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="182"/>
         <source>Choose GRASS installation path (GISBASE)</source>
         <translation>Escolla ruta á instalación GRASS (GISBASE)</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="191"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="199"/>
         <source>GRASS data won&apos;t be available if GISBASE is not specified.</source>
         <translation>Os datos de GRASS non estarán accesibles se non se especifica o GISBASE.</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="448"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="456"/>
         <source>GISBASE is not set.</source>
         <translation>GISBASE non fixado.</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="453"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="461"/>
         <source>%1 is not a GRASS mapset.</source>
         <translation>%1 non é un conxunto de mapas GRASS.</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="485"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="493"/>
         <source>Mapset is already in use.</source>
         <translation>Conxunto de mapas aínda en uso.</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="475"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="483"/>
         <source>Cannot start %1/etc/lock</source>
         <translation>Non se pode comezar %1/etc/lock</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="502"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="510"/>
         <source>Temporary directory %1 exists but is not writable</source>
         <translation>O directorio temporal %1 existe pero non se pode escribir nel</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="510"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="518"/>
         <source>Cannot create temporary directory %1</source>
         <translation>Non se pode crear o directorio temporal %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="526"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="534"/>
         <source>Cannot create %1</source>
         <translation>Non se pode crear %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="608"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="616"/>
         <source>Cannot remove mapset lock: %1</source>
         <translation>Non se pode elimina-lo bloqueo do mapset: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="803"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="811"/>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
         <translation>Non se pode abrir o vector %1 no mapset %2 no nivel 2 (topoloxía non dispoñible, intente reconstruír a topoloxía usando o modulo v.build).</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="815"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="823"/>
         <source>Cannot open vector %1 in mapset %2</source>
         <translation>Non se pode abri-lo vector %1 no mapset %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1125"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1133"/>
         <source>Cannot read raster map region</source>
         <translation>Non se pode ler a rexión do mapa ráster</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1142"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1150"/>
         <source>Cannot read vector map region</source>
         <translation>Non se pode ler a rexión do mapa vectorial</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1178"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1186"/>
         <source>Cannot read region</source>
         <translation>Non se pode ler a rexión</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1198"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1206"/>
         <source>Cannot open GISRC file</source>
         <translation>Non se pode abri-lo ficheiro GISRC</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1218"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1226"/>
         <source>Cannot start module</source>
         <translation>Non se pode comeza-lo módulo</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1219"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1227"/>
         <source>command: %1 %2</source>
         <translation>comando: %1 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1238"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1246"/>
         <source>Cannot run module</source>
         <translation>Non se pode executa-lo módulo</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1239"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1247"/>
         <source>command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
         <translation>comando: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1309"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1317"/>
         <source>Cannot get projection </source>
         <translation>Non se pode obte-la proxección</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1373"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1398"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1381"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1406"/>
         <source>Cannot get raster extent</source>
         <translation>Non se pode obte-la extensión ráster</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1430"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1438"/>
         <source>Cannot get map info</source>
         <translation>Non se pode obter información do mapa</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1460"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1468"/>
         <source>Cannot get colors</source>
         <translation>Non se poden obte-los colores</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1483"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1491"/>
         <source>Cannot query raster </source>
         <translation>Non se pode consulta-lo ráster</translation>
     </message>
@@ -11545,7 +11552,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2093"/>
         <source>field %1 with unsupported type %2 skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>O ficheiro %1 co tipo non soportado %2 foi omitido</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2099"/>
@@ -12755,7 +12762,7 @@ Póñase en contacto cos desarrolladores.
         <location filename="../src/app/qgisapp.cpp" line="2276"/>
         <location filename="../src/app/qgisapp.cpp" line="3419"/>
         <source>&lt; Blank &gt;</source>
-        <translation>&lt; En Blanco &gt;</translation>
+        <translation>&lt; En Branco &gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2331"/>
@@ -14304,25 +14311,25 @@ Ruta á Base de Datos do Usuario:	%9</translation>
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="919"/>
         <source>[ERROR] Can not make qgis.db private copy</source>
-        <translation type="unfinished">[ERROR] Non se pode facer unha copia privada de qgis.db</translation>
+        <translation>[ERROR] Non se pode facer unha copia privada de qgis.db</translation>
     </message>
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="932"/>
         <source>Could not open qgis.db</source>
-        <translation type="unfinished">Non se pode abri qgis.db</translation>
+        <translation>Non se pode abri qgis.db</translation>
     </message>
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="962"/>
         <source>Migration of private qgis.db failed.
 %1</source>
-        <translation type="unfinished">Fallou a migración da qgis.db privada.
+        <translation>Fallou a migración da qgis.db privada.
 %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="997"/>
         <source>Update of view in private qgis.db failed.
 %1</source>
-        <translation type="unfinished">Fallou a actualización da vista no qgis.db privado.
+        <translation>Fallou a actualización da vista no qgis.db privado.
 %1</translation>
     </message>
     <message>
@@ -16825,7 +16832,13 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="978"/>
         <source>Memory Allocation Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro de Asignación de Memoria</translation>
+    </message>
+    <message>
+        <source>Trying to create image #%1 ( %2x%3 @ %4dpi )may result in a memory overflow.
+Please try a lower resolution or a smaller papersize</source>
+        <translation type="obsolete">Tentar crear a imaxe #%1 ( %2x%3 @ %4dpi ) pode causar unha sobrecarga de memoria.
+Ténteo cunha resolución baixa ou cun tamaño de papel menor</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1020"/>
@@ -36628,7 +36641,7 @@ Informacion do erro extendido:
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="45"/>
         <source>Date</source>
-        <translation type="unfinished">Data</translation>
+        <translation>Data</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="51"/>
@@ -36638,17 +36651,17 @@ Informacion do erro extendido:
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="54"/>
         <source>Comma Separated Value</source>
-        <translation type="unfinished">Valores Separados por Comas</translation>
+        <translation>Valores Separados por Comas</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="55"/>
         <source>GML</source>
-        <translation type="unfinished"></translation>
+        <translation>GML</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="56"/>
         <source>Mapinfo File</source>
-        <translation type="unfinished">Ficheiro Mapinfo</translation>
+        <translation>Ficheiro Mapinfo</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="242"/>
@@ -37078,7 +37091,7 @@ Informacion do erro extendido:
     <message>
         <location filename="../src/providers/ows/qgsowsdataitems.cpp" line="198"/>
         <source>New Connection...</source>
-        <translation type="unfinished">Nova conexión...</translation>
+        <translation>Nova conexión...</translation>
     </message>
 </context>
 <context>
@@ -39645,7 +39658,7 @@ Sempre rede: cargar sempre dende a rede e non comprobar se a caché ten unha ent
         <location filename="../src/ui/qgsoptionsbase.ui" line="3882"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3896"/>
         <source>Leave this blank if no proxy username / password are required</source>
-        <translation>Deixe isto en blanco se non é requerido usuario/contrasinal</translation>
+        <translation>Deixe isto en branco se non é requerido usuario/contrasinal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3889"/>
@@ -41778,15 +41791,15 @@ Comprobe as mensaxes de advertencia para posibles erros.</translation>
     </message>
     <message>
         <source>If you haven&apos;t cancelled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se non cancelou a descarga manualmente, esta debeuse probablemente a un tempo límite. Neste caso considere incrementa-lo valor do tempo límite da conexión na lapela de opcións de QGIS.</translation>
     </message>
     <message>
         <source>Server response is 200 OK, but doesn&apos;t contain plugin metatada. This is most likely caused by a proxy or a wrong repository URL. You can configure proxy settings in QGIS options.</source>
-        <translation type="unfinished"></translation>
+        <translation>A resposta do servidor é 200 (OK) pero non contén metadatos de plugins. Isto débese probablemente a un proxy ou a unha URL de repositorio errónea. Pode configura-los axustes de proxy nas Opcións de QGIS.</translation>
     </message>
     <message>
         <source>Status code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Código de estado:</translation>
     </message>
     <message>
         <source>The plugin exited with error status: {0}</source>
@@ -41894,7 +41907,7 @@ Necesita reiniciar QGIS para recargalo.</translation>
     </message>
     <message>
         <source>If you haven&apos;t cancelled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se non cancelou a descarga manualmente, pode ser causada por un tempo límite. Neste caso considere incrementa-lo valor do tempo límite da conexión nas Opcións de QGIS.</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
@@ -42599,7 +42612,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="111"/>
         <source>Name</source>
-        <translation type="unfinished">Nome</translation>
+        <translation>Nome</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="134"/>
@@ -42616,17 +42629,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="172"/>
         <source>Parameters</source>
-        <translation type="unfinished">Parámetros</translation>
+        <translation>Parámetros</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="185"/>
         <source>?qgis=</source>
-        <translation type="unfinished"></translation>
+        <translation>?qgis=</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="202"/>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>URL</translation>
     </message>
     <message>
         <location filename="../python/pyplugin_installer/qgsplugininstallerrepositorybase.ui" line="228"/>
@@ -42787,7 +42800,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="702"/>
         <source>%1 downloads</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 descargados</translation>
     </message>
     <message>
         <location filename="../src/app/pluginmanager/qgspluginmanager.cpp" line="719"/>
@@ -43079,7 +43092,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="543"/>
         <source>The settings on this tab are only applicable for Python Plugins. No Python support detected, thus no settings available.</source>
-        <translation type="unfinished"></translation>
+        <translation>A configuración desta lapela é só aplicable ós Plugins Python. Coma non se detectou soporte de Python, esta configuración non está dispoñible.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="589"/>
@@ -43851,24 +43864,26 @@ Erro da base de datos: %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3107"/>
         <source>PostgreSQL version: unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Versión PostgreSQL: descoñecida</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3108"/>
         <source>unknown</source>
-        <translation type="unfinished">descoñecido</translation>
+        <translation>descoñecido</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3128"/>
         <source>PostgreSQL not connected</source>
-        <translation type="unfinished"></translation>
+        <translation>PostgreSQL non conectado</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3131"/>
         <source>PostgreSQL/PostGIS provider
 %1
 PostGIS %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Provedor PostgreSQL/PostGIS
+%1
+PostGIS %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="817"/>
@@ -45062,7 +45077,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="260"/>
         <source>Provider specific filter expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Expresión de filtro específica do provedor</translation>
     </message>
     <message>
         <source>SQL where clause</source>
@@ -50028,7 +50043,7 @@ contraste</translation>
         <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="190"/>
         <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="226"/>
         <source>table info on %1 failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallou a información da táboa %1</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="318"/>
@@ -52841,22 +52856,30 @@ Houbo un problema coa base de datos de símbolos.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="42"/>
         <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case studies section&lt;/a&gt; of the QGIS home page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se escribe un artigo científico ou calquera outro artigo que faga referencia a QGIS gustaríanos que incluíse o seu traballo na sección de &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;estudos do caso&lt;/a&gt; da páxina principal de QGIS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="49"/>
         <source>Would you like to see QGIS in your native language? We are looking for more translators and would appreciate your help! The translation process is fairly straight forward - instructions are available in the QGIS wiki &lt;a href=&quot;http://www.qgis.org/wiki/GUI_Translation&quot;&gt;translator&apos;s page.&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Gustaríalle ver QGIS non seu idioma? ¡Estamos a buscar máis tradutores e apreciámo-la súa axuda! O proceso de tradución é moi sinxelo - as instrucións están dispoñibles na &lt;a href=&quot;http://www.qgis.org/wiki/GUI_Translation&quot;&gt;páxina de tradutores&lt;/a&gt; da wiki de QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
         <source>If you need help using QGIS we have a &apos;users&apos;  mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se necesita axuda con QGIS existe unha lista de correo de &apos;usuarios&apos;  onde os usuarios axúdanse uns ós outros con temas relacionados coa utilización deste software. Existe tamén unha lista de correo de &apos;desarrolladores&apos; para aqueles que busquen axuda e para discutir cousas relacionadas co código base de QGIS. Hai detalles de como subscribirse na &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;sección da comunidade  &lt;/a&gt; da páxina de inicio de QGIS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="86"/>
         <source>You can add a current date variable to your map layout. Create a regular text label and add the string $CURRENT_DATE(yyyy-MM-dd) to the text box. See the &lt;a href=&quot;http://qt-project.org/doc/qt-5.0/qtcore/qdate.html#toString&quot;&gt;QDate::toString format documentation&lt;/a&gt; for the possible date formats.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pode engadi-la actual data variable ó seu deseño de mapa. Cree unha etiqueta de texto normal e engada a cadea $CURRENT_DATE(yyyy-MM-dd) á caixa do texto. Vexa a &lt;a href=&quot;http://qt-project.org/doc/qt-5.0/qtcore/qdate.html#toString&quot;&gt;documentación do formato QDate::toString&lt;/a&gt; para os posibles formatos de data.</translation>
+    </message>
+    <message>
+        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item Properties -&gt; General Options -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows one to move the map content within a map frame.</source>
+        <translation type="obsolete">Na barra de ferramentas do deseñador de impresión pode atopar dous botóns para mover elementos. O esquerdo (icona coa frecha cara a dereita) selecciona e move os elementos no trazado. Logo de selecciona-lo elemento con esta ferramenta tamén pode move-lo arredor coas teclas de frecha. Para un posicionado preciso utilice o diálogo &lt;strong&gt;Posición e Tamaño&lt;/strong&gt;, que se atopa na pestana &lt;strong&gt;Propiedades do Elemento -&gt; Opcións Xerais&lt;/strong&gt;. A outra ferramenta de movemento (icona de vista do mapa con frecha á dereita) permite mover o contido do mapa dentro dun marco do mapa.</translation>
+    </message>
+    <message>
+        <source>You can rotate a map by setting its rotation value in the &lt;strong&gt;Item Properties -&gt; Map&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
+        <translation type="obsolete">Pode rotar un mapa configurando o seu valor de rotación na sección &lt;strong&gt;Propiedades do Elemento -&gt; Mapa &lt;/strong&gt;. Para ubicar unha rosa dos ventos no seu deseño pode usa-la ferramenta &lt;strong&gt;Engadir Imaxe&lt;/strong&gt;. Logo da selección e ubicación da rosa dos ventos no deseño pode enlazala cun marco de mapa específico activando a opción &lt;strong&gt;Sincronizar con mapa&lt;/strong&gt; e seleccionando un marco de mapa. Cando cambie o valor de rotación dun mapa enlazado, a rosa dos ventos axustará automaticamente a súa rotación.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="94"/>
@@ -52899,14 +52922,18 @@ Houbo un problema coa base de datos de símbolos.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;Esc&apos; (the escape key), or click the small red &apos;X&apos; icon in the status bar to the bottom right of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
+        <translation type="obsolete">Algunhas veces posúe un conxunto de datos moi amplo que tarda moito en debuxarse. Pode premer &apos;esc&apos; (a tecla de escape) ou clicar na pequena icona vermella &apos;X&apos; na barra de estado no fondo á dereita da fiestra en calquera momento para interrompe-la renderización. Se vostede vai realizar varias accións (ex: modicica-las opcións da simboloxía) e desexa deshabilitar temporalmente a renderización do mapa mentras o fai, pode desmarca-la caixa de verificación no fondo á dereita da barra de estado. Non esqueza marcala de novo cando estea listo para que o mapa se debuxe outra vez!</translation>
+    </message>
+    <message>
         <location filename="../src/app/qgstipfactory.cpp" line="175"/>
         <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our regular hackfest meetings, and to generally support the goals of our project. Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se QGIS lle está a aforrar cartos ou lle gusta o noso traballo e ten a capacidade financeira para axudar, por favor considere o patrocinio do desarrollo  de QGIS. Utilizámo-los cartos dos nosos patrocinadores para paga-las viaxes e custos relacionados coa nosa xuntanza de desarrolladores regular, e en xeral para soporta-las metas do noso proxecto. Por favor visite a &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;Páxina Web de Patrocinio de QGIS&lt;/a&gt; para máis detalles.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="186"/>
         <source>QGIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage and Install Plugins menu. In addition there are a lot of &lt;a href=&quot;http://plugins.qgis.org/&quot;&gt;Python plugins &lt;/a&gt; contributed by the user community that can be installed via this same menu. Don&apos;t miss out on all QGIS has to offer! Check out the plugins and see what they can do for you.</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS posúe plugins que estenden a súa funcionalidade. QGIS está montado con varios plugins integrados que pode explorar no menú Plugins-&gt;Administración e Instalación de Plugins. Ademais hai &lt;a href=&quot;http://plugins.qgis.org/&quot;&gt;Plugins Python &lt;/a&gt; aportados pola comunidade de usuarios que poden ser instalados dende o mesmo menú. Non perda todo o que QGIS ten que ofrecerlle --- consulte os plugins e vexa o que poden facer por vostede.</translation>
     </message>
     <message>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;esc&apos; (the escape key), or click the small red &apos;X&apos; icon in the status bar to the bottom right of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
@@ -53763,7 +53790,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3542"/>
         <source>Description of this provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Descrición deste provedor</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3549"/>
@@ -59833,13 +59860,13 @@ Execute a verificación de topoloxía de novo.</translation>
 <context>
     <name>context_help</name>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="597"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="767"/>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;Conexión da base de datos&lt;/h3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="736"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1466"/>
         <source>&lt;h3&gt;Create a new WMS connection&lt;/h3&gt;
 WMS layers can be added quite simply, as long as you know the URL to access the WMS server, you have a serviceable connection to that server, and the server understands HTTP as the data transport mechanism.&lt;p&gt;
 QGIS currently can act as a WMS client that understands WMS 1.1, 1.1.1 and 1.3 servers.
@@ -59917,7 +59944,7 @@ Para visualiza-los resultados, seleccione unha entrada de táboa, prema o botón
 Só necesita consulta-la lista de capas clicando no botón &lt;label&gt;Conectar&lt;/label&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="774"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="382"/>
         <source>&lt;h3&gt;Identify Features&lt;/h3&gt;
 &lt;p&gt;
 The results dialog shows all the features identified within the search tolerance. To see the results details, expand the feature information on the left of each feature.
@@ -59928,10 +59955,19 @@ You may also tick an &lt;label&gt;Open feature form, if a single feature is iden
 Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Settings &gt; Project Properties &gt; Identifiable layers&lt;/label&gt; where all the layers names are listed, their type (vector, raster, etc.) and ability to be identified.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Identificar Entidades&lt;/h3&gt;
+&lt;p&gt;
+O diálogo de resultados amosa tódalas entidades identificadas dentro da tolerancia da busca. Para ve-los detalles do resultado, expanda a información de entidade á esquerda de cada entidade.
+&lt;/p&gt;
+&lt;p&gt;
+O radio de busca pode configurarse no diálogo de opcións da sección de Identificación &lt;label&gt;Configuración &gt; Opcións &gt; Ferramentas de Mapa&lt;/label&gt;, coma un porcentaxe do ancho do mapa. Nesta sección tamén pode configura-lo modo de identificación entre &lt;label&gt;Capa actual&lt;/label&gt;, &lt;label&gt;De arriba a abaixo, parando no primeiro&lt;/label&gt;, &lt;label&gt;De arriba a abaixo&lt;/label&gt;. &lt;br&gt;
+Tamén pode marcar a opción &lt;label&gt;Abrir formulario de entidade, se unha entidade única é identificada&lt;/label&gt;.&lt;br&gt;
+Capas Identificables pode configurarse no diálogo de Propiedades do Proxecto &lt;label&gt;Configuración &gt; Propiedades do Proxecto &gt; Capas Identificables&lt;/label&gt; onde tódolos nomes de capa son listados, o seu tipo (vector, ráster, etc.) e a súa capacidade de ser identificadas.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1525"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="572"/>
         <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
 You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
 &lt;h4&gt;Database&lt;/h4&gt;
@@ -59955,10 +59991,32 @@ In this section you can see the list of attributes. To delete one of them, click
 &lt;p&gt;
 Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.  Clicking &lt;label&gt;Apply&lt;/label&gt; also creates the layer, but keeps the dialog open, thereby allowing you to create more similar layers. &lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Crear unha nova capa SpatiaLite&lt;/h3&gt;
+Pode utilizar este diálogo para crear unha nova base de datos SpatiaLite e/ou unha capa SpatiaLite para editar. Mirar debaixo para unha explicación das entradas do diálogo.
+&lt;h4&gt;Base de datos&lt;/h4&gt;
+Escolla a base de datos da lista desplegable. Esta lista é creada da súas conexións gardadas a SpatiaLite. Se non gardou a conexión ou quere crear unha nova base de datos, clique no botón (&lt;label&gt;...&lt;/label&gt;) á dereita da lista desplegable.
+&lt;h4&gt;Nome de capa&lt;/h4&gt;
+Introduza un nome para a capa que queira crear. O nome debe ser unha soa palabra. Pode utilizar guión baixo no nome se o desexa.
+&lt;h4&gt;Columna de xeometría&lt;/h4&gt;
+Introduza un nome para a columna de xeometría ou acepte o predeterminado.
+&lt;h4&gt;Tipo&lt;/h4&gt;
+Eliza o tipo de capa que queira crear. 
+&lt;h4&gt;SRID EPSG&lt;/h4&gt;
+Introduza o número EPSG para a id do sistema de referencia espacial (SRID). Por defecto a SRID WGS 84 será incluída. Clique no botón &lt;label&gt;Atopar SRID&lt;/label&gt; para cambia-lo sistema de referencia de coordenadas da capa se o necesita. A SRID debe existir dentro de spatial_ref_sys na súa base de datos SpatiaLite. Pode buscar unha SRID utilizando búsquedas parciais nato no nome coma no SRID.
+&lt;h4&gt;Crear unha Chave Primaria autoincremental&lt;/h4&gt;
+Clicando nesta opción engadirá unha clave primaria á nova capa. Este campo chave será autoincremental, o que significa que non terá que introducir un valor nel cando engada novas entidades á táboa de atributos da capa.
+&lt;h4&gt;Novo atributo&lt;/h4&gt;
+Engada os atributos desexados clicando no botón de &lt;label&gt;Engadir á lista de atributos&lt;/label&gt; despois de especificar un nome e un tipo para o atributo. Só atributos de número real, enteiro ou cadea están soportados.&lt;br/&gt;
+Anchura e presición son irrelevantes nunha base de datos SpatiaLite polo que non ten que especificalos.
+&lt;h4&gt;Lista de Atributos&lt;/h4&gt;
+Nesta sección pode ve-la lista de atributos. Para eliminar un deles, clique nel e escolla o botón &lt;label&gt;Eliminar atriburos seleccionados&lt;/label&gt;.
+
+&lt;p&gt;
+Clique en &lt;label&gt;OK&lt;/label&gt; para crea-la capa e pecha-lo diálogo.  Clicando en &lt;label&gt;Aplicar&lt;/label&gt; tamén crea a capa, pero mantén o diálogo aberto, permitindo deste modo crear máis capas similares. &lt;label&gt;Cancelar&lt;/label&gt; pechará a capa sen cambios.
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1208"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="595"/>
         <source>&lt;h3&gt;Custom Coordinate Reference System Definition&lt;/h3&gt;
 If QGIS does not provide the coordinate reference system you need, you can define a custom CRS. &lt;p&gt;
 To define a CRS, select &lt;label&gt;Custom CRS&lt;/label&gt; from the &lt;label&gt;Edit&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; (KDE, Windows) menu. Custom CRS are stored in your QGIS user database. In addition to your custom CRS, this database also contains your spatial bookmarks and other custom data.
@@ -59976,10 +60034,115 @@ system.
 &lt;p&gt;
 Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
 </source>
+        <translation>&lt;h3&gt;Definicion Persoalizada do Sistema de Referencia de Coordenadas&lt;/h3&gt;
+Se QGIS non prové o sistema de referencia de coordenadas que necesita, pode definir un SRC persoalizado. &lt;p&gt;
+Para definir un SRC, seleccione &lt;label&gt;SRC Persoalizado&lt;/label&gt; dende o menú &lt;label&gt;Editar&lt;/label&gt; (Gnome, OSX) ou &lt;label&gt;Configuración&lt;/label&gt; (KDE, Windows). Os SRC Persoalizados están gardados na base de datos de usuario de QGIS. Ademais dos seus SRC persoalizados, esta base de datos tamén contén os seus marcadores espaciais e outros datos persoalizados.
+
+&lt;h4&gt;Definir&lt;/h4&gt;
+Para crerar un novo SRC, clique o botón &lt;label&gt;Novo&lt;/label&gt; e introduza:
+&lt;ul&gt;
+&lt;li&gt;nome descriptivo 
+&lt;li&gt;parámetros do SRC
+&lt;/ul&gt;
+Logo diso pode garda-lo SRC clicando no botón &lt;label&gt;Gardar&lt;/label&gt;.
+&lt;p&gt;
+Teña en conta que os Parámetros deben comezar cun bloque +proj=-, que representa un novo sistema de referencia de coordenadas
+&lt;p&gt;
+Definir un SRC persoalizado en QGIS require un bo coñecemento da librería de proxeccións Proj.4. Para empezrar, tome come referencia os &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Procedementos de Proxección Cartográfica para o Entorno UNIX&lt;/a&gt; - Un manual de ususario de Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. Este manual describe o uso da &lt;i&gt;proj.4&lt;/i&gt; e utilidades de liña de comandos relacionadas. Os parámetros cartográficos utilizados con &lt;i&gt;proj.4&lt;/i&gt; están descritos neste manual de usuario e son os mesmos que os que utliza QGIS.
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1110"/>
+        <source>&lt;h3&gt;Manage and install Plugins&lt;/h3&gt;
+
+&lt;p&gt;
+Manage and install plugins.
+&lt;/p&gt;
+
+
+&lt;a href=&quot;#installedtab&quot;&gt;Installed tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#getmoretab&quot;&gt;Get more tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#newtab&quot;&gt;New tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#upgradabletab&quot;&gt;Upgradable tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#invalidtab&quot;&gt;Invalid tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#settingstab&quot;&gt;Settings tab&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;installedtab&quot;&gt;
+&lt;h4&gt;Installed tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+This tab shows you the list of currently installed plugins on your system. Both
+python and C++ plugins are listed.
+&lt;/p&gt;
+&lt;p&gt;
+You can enable or disable them by clicking the checkbox in front of the name.&lt;br/&gt;
+Selecting an item show the plugin information in the detail pane.
+&lt;/p&gt;
+&lt;p&gt;
+There is a context menu (right click) available, to change the sorting on:
+name, number of downloads, votes and status.
+&lt;/p&gt;
+
+
+&lt;a name=&quot;getmoretab&quot;&gt;
+&lt;h4&gt;Get more tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+This tab shows you the list of available plugins from the remote repositories.
+It is downloaded once if you start up. But you can change that in the Settings
+&lt;/p&gt;
+&lt;p&gt;
+Selecting an item shows you the plugin information in the detail pane.
+&lt;/p&gt;
+
+&lt;a name=&quot;newtab&quot;&gt;
+&lt;h4&gt;New tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+This tab will be shown when a new plugin is made available! It will be shown
+just once.
+&lt;/p&gt;
+
+&lt;a name=&quot;upgradabletab&quot;&gt;
+&lt;h4&gt;Upgradable tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+This tab is only available if one of your installed plugins can be upgraded
+from the remote repositories.
+&lt;/p&gt;
+
+&lt;a name=&quot;Invalid tab&quot;&gt;
+&lt;h4&gt;Invalid tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+This tab is only available if there is a invalid plugin. Mostly caused by an error 
+during loading the plugin.
+&lt;/p&gt;
+
+&lt;a name=&quot;settingstab&quot;&gt;
+&lt;h4&gt;Settings tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+In this tab you can change the Settings for the plugin manager.
+&lt;/p&gt;
+&lt;p&gt;
+It is possible to check how often QGIS will download the list and update information 
+from the available repositories.
+&lt;/p&gt;
+&lt;p&gt;
+By checking the &apos;Show experimental plugins&apos; checkbox, all plugins will be shown
+in the lists, even the ones that are considered &apos;experimental&apos; by the author.
+
+&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
+Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;/p&gt;
+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="786"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1506"/>
         <source>&lt;h3&gt;Create a New Oracle Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a Oracle database.
 &lt;p&gt;
@@ -60020,10 +60183,48 @@ geometry types and don&apos;t offer to add others.
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Crear unha nova Conexión Oracle&lt;/h3&gt;
+Este diálogo permítelle defini-la configuración para a conexión a unha base de datos.
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;label&gt;Nome&lt;/label&gt; Un nome para identifica-la configuración da conexión.
+
+&lt;li&gt; &lt;label&gt;Base de datos&lt;/label&gt; SID ou NOME_SERVIZO da instancia Oracle.
+
+&lt;li&gt; &lt;label&gt;Hóspede&lt;/label&gt; Nome ou enderezo IP do ordenador que hospeda o servidor da base de datos.
+
+&lt;li&gt; &lt;label&gt;Porto&lt;/label&gt; Porto IP utilizado polo servidor da base de datos.
+
+&lt;li&gt; &lt;label&gt;Nome de Usuario&lt;/label&gt; O nome de usuario da base de datos.
+&lt;li&gt; &lt;label&gt;Contrasinal&lt;/label&gt; Contrasinal da base de datos.
+
+&lt;li&gt; &lt;label&gt;Gardar Nome de Usuario&lt;/label&gt; Indica onde gardar-lo nome de usuario da base de datos na configuraciónda conexión.
+
+&lt;li&gt; &lt;label&gt;Gardar Contrasinal&lt;/label&gt; Indica onde garda-lo contrasinal da base de datos na configuración da conexión.  &lt;font color=&quot;red&quot;&gt;¡Os Contrasinais son gardados en &lt;strong&gt;texto lexible&lt;/strong&gt; na configuración do sistema e nos ficheiros de proxecto!&lt;/font&gt;
+
+&lt;li&gt; &lt;label&gt;Buscar só na táboa de metadatos&lt;/label&gt; Restrinxe as táboas amosadas a aquelasque están na vista all_sdo_geom_metadata. Isto pode acelera-la disposición inicial das táboas espaciais.
+
+&lt;li&gt; &lt;label&gt;Buscar só nas táboas de usuario&lt;/label&gt; Na busca de táboas espaciais restrinxe a busca a aquelas táboas das que o usuario é o propietario.
+
+&lt;li&gt; &lt;label&gt;Tamén listar táboas sen xeometría&lt;/label&gt;  Indica que as táboas sen xeometría deben ser listadas por defecto.
+
+&lt;li&gt; &lt;label&gt;Utilizar estadísticas de táboa estimadas para os metadatos da capa&lt;/label&gt; Cando 
+a capa está configurada con varios metadatos é requerido pola táboa Oracle. Isto
+inclúe información tal coma a conta de ringleiras, tipo de xeometría e extensión espacial
+dos datos na columna de xeometría. Se a táboa contén un número largo
+de ringleiras, a determinación destes metadatos consume moito tempo. Activando esta opción
+as seguintes operacións rápidas de metadatos da táboa serán feitas: a conta de ringleiras 
+é determinada dende all_tables.num_rows. A extensión da táboa será sempre determinada coa función
+SDO_TUNE.EXTENTS_OF incluso se o filtro de capa é aplicado. A xeometría da táboa
+será determinada dende as 100 primeiras ringleiras de xeometría non nulas na táboa.
+
+&lt;li&gt; &lt;label&gt;Só tipos de xeometría existentes&lt;/label&gt; Lista só os tipos de xeometría existentes e non ofrece engadir outros.
+
+&lt;/ul&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1448"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1293"/>
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
@@ -60032,7 +60233,7 @@ geometry types and don&apos;t offer to add others.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="60"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="752"/>
         <source>&lt;h3&gt;Finding shortest path&lt;/h3&gt;
 &lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Plugins &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
@@ -60048,10 +60249,24 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Atopa-la ruta máis curta&lt;/h3&gt;
+&lt;p&gt;O Gráfico de Estrada é un plugin C++  de QGIS, que calcula a ruta máis curta entre dous puntos en calquera capa de liñas e traza esta ruta sobre a rede de estradas. Antes de usar este plugin configúreo. Isto pode facerse no menú &lt;label&gt;Plugins &amp;rarr; Gráfico de EStrada&amp;rarr; Configuración&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#howto&quot;&gt;Como facer&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;a name=&quot;howto&quot;&gt;
+&lt;h4&gt;Como facer&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;Pode selecciona-los puntos inicial e final cos botóns de selección próximos ós campos.
+Premendo o botón &lt;label&gt;Calcular&lt;/label&gt; calculará a ruta máis curta utilizando o criterio de optimización seleccionado na caixa de &lt;label&gt;Criterios&lt;/label&gt;  O botón&lt;label&gt;Exportar&lt;/label&gt; permítelle exporta-la ruta calculada a unha nova capa vectorial, e o botón &lt;label&gt;Limpar&lt;/label&gt; eliminará tódolos campos e borrará os puntos e rutas calculadas da vista do mapa.&lt;/p&gt;
+
+&lt;h5&gt;Nota&lt;/h5&gt;
+&lt;p&gt;Para vincular os puntos de inicio e de parada da ruta á rede de estradas o Gráfico de Estradas selecciona o punto máis cercano ou arco do gráfico. De feito pode vinculalos a calquera parte da rede de estradas. Nembargantes, a súas rutas e características non toman en consideración a distancia dende o punto inicial á rede de estradas e da rede de estradas ó punto final.&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="23"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="682"/>
         <source>&lt;h3&gt;Add PostGIS Tables&lt;/h3&gt;
 This dialog allows you to add PostGIS layers (tables with a geometry column) to the QGIS map canvas.
 &lt;p&gt;
@@ -60089,16 +60304,46 @@ To filter a layer before adding it to the map, double click on its name or use &
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Engadir Táboas PostGIS&lt;/h3&gt;
+Este diálogo permítelle engadir capas PostGIS (táboas cunha columna de xeometría) á vista do mapa de QGIS.
+&lt;p&gt;
+&lt;a href=&quot;#connect&quot;&gt;Conexións&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#add&quot;&gt;Engadir Capas&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#filter&quot;&gt;Filtrar unha capa&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#search&quot;&gt;Opcións de busca&lt;/a&gt;&lt;br/&gt;
+
+&lt;a href=&quot;#connect&quot;&gt;
+&lt;h4&gt;Conexións&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;Escolla a conexión a utilizar dende a caixa desplegable e clique en &lt;label&gt;Conectar&lt;/label&gt;.
+&lt;li&gt;Se non hai conexións, utilice o botón &lt;label&gt;Novo&lt;/label&gt; para crear unha.
+&lt;li&gt;Para modificar unha conexión, clique no botón &lt;label&gt;Editar&lt;/label&gt;.
+&lt;/ul&gt;
+&lt;a name=&quot;add&quot;&gt;
+&lt;h4&gt;Egadir capas&lt;/h4&gt;
+&lt;/a&gt;
+Para engadir unha capa:
+&lt;ol&gt;
+&lt;li&gt;Escolla a conexión desexada dende a caixa desplegable.
+&lt;li&gt;Clique en &lt;label&gt;Conectar&lt;/label&gt;.
+&lt;li&gt;Atope a capa que queira engadir na lista e clíquea para seleccionala.
+&lt;li&gt;Pode seleccionar capas adicionais mantendo pulsada a tecla Ctrl e clicando.
+&lt;li&gt;Clique &lt;label&gt;Engadir&lt;/label&gt; para engadir novas capas ó mapa.
+&lt;/ol&gt;
+&lt;a name=&quot;filter&quot;&gt;
+&lt;h4&gt;Filtrar unha capa&lt;/h4&gt;
+&lt;/a&gt;
+Para filtrar unha capa antes de engadila ó mapa, faga doble clic no seu nome ou utilice o botón &lt;label&gt;Crear consulta&lt;/label&gt;. Isto abrirá o Constructor de Consultas, permitíndolle crear unha sentenza SQL para usar no filtrado de rexistros.
+
+&lt;a name=&quot;search&quot;&gt;
+&lt;h4&gt;Opcións de Busca&lt;/h4&gt;
+&lt;/a&gt;
+Marcando &lt;label&gt;Opcións de Busca&lt;/label&gt; activa opcións adicionais para a busca en tipos de columna diferentes e utilizar dous modos de busca: &lt;label&gt;Comodín&lt;/label&gt; ou &lt;label&gt;RegExp&lt;/label&gt;.
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="187"/>
-        <source>&lt;h3&gt;Identify&lt;/h3&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="224"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="769"/>
         <source>&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
 This dialog allows you to work with vector layer settings and properties. There are seven tabs:
 &lt;p&gt;
@@ -60238,10 +60483,145 @@ The Diagram tab allows you to add a graphic overlay to a vector layer. To activa
 The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Propiedades da Capa Vectorial&lt;/h3&gt;
+Este diálogo permítelle traballar coa configuración e as propiedades da capa vectorial. Hai sete pestanas:
+&lt;p&gt;
+&lt;a href=&quot;#symbology&quot;&gt;Simboloxía&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#labels&quot;&gt;Etiquetas&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Atributos&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#general&quot;&gt;Xeral&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#metadata&quot;&gt;Metadatos&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#actions&quot;&gt;Accións&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#diagram&quot;&gt;Diagramas&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;symbology&quot;&gt;
+&lt;h4&gt;Simboloxía&lt;/h4&gt;
+&lt;/a&gt;
+Para cambia-la simboloxía dunha capa, simplemente faga doble clic na lenda e o diálogo &lt;label&gt;Propiedades de Capa&lt;/label&gt; será amosado.&lt;p&gt;
+Dentro deste diálogo pode cambia-lo estilo da capa vectorial. Dependendo da opción de renderizado escollida tamén terá a posibilidade de clasifica-las entidades do mapa.
+
+&lt;h5&gt;Tipo de Lenda&lt;/h5&gt;
+QGIS soporta un número de renderizadores de simboloxía para controlar como son amosadas as entiades vectorias. Actualmente están dispoñibles os seguintes renderizadores:
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Símbolo único&lt;/label&gt; - un único estilo é aplicado a cada obxecto na capa.
+&lt;li&gt;&lt;label&gt;Símbolos graduados&lt;/label&gt; - os obxectos dentro da capa amósanse con diferentes símbolos clasificados polos valores dun campo en particular.
+&lt;li&gt;&lt;label&gt;Cor contínua&lt;/label&gt; - os obxectos dentro da capa amósanse cunha gama de cores clasificados polo valor numérico dentro dun campo específico.
+&lt;li&gt;&lt;label&gt;Valor único&lt;/label&gt; - os obxectos clasifícanse polos valores únicos dentro dun campo específico con cada valor tendo un símbolo diferente.
+&lt;/ul&gt;
+
+&lt;h5&gt;Nova simboloxía&lt;/h5&gt;
+Clique no botón&lt;label&gt;Nova simboloxía&lt;/label&gt; para utiliza-la nova implantación de simboloxía da capa.
+
+&lt;h5&gt;Transparencia vectorial&lt;/h5&gt;
+QGIS permítelle establece-la transparencia para cada capa vectorial. Isto pode facerse co panel deslizante &lt;label&gt;Transparencia&lt;/label&gt;. Isto é útil para sobrepoñer varias capas vectorias.
+
+&lt;h5&gt;Gardar estilos&lt;/h5&gt;
+Unha vez que teña estilizada a súa capa pode garda-lo estilo da capa nun ficheiro separado (con extensión *.qml). Para isto, use o botón &lt;label&gt;Gardar Estilo...&lt;/label&gt;. Non é necesario dicir que  &lt;label&gt;Cargar Estilo...&lt;/label&gt; carga os seus ficheiros de estilo de capa gardados.&lt;br/&gt;
+Se desexa utilizar sempre un estilo en concreto cada vez que a capa é cargada, utilice o botón&lt;label&gt;Gardar como Predeterminado&lt;/label&gt; para facer do estilo o predeterminado. Tamén, se realiza cambios no estilo cos que non está de acordo, utilice o botón &lt;label&gt;Restaurar Estilo Predeterminado&lt;/label&gt; para reverte-lo estilo predeterminado.
+
+&lt;a name=&quot;labels&quot;&gt;
+&lt;h4&gt;Etiquetas&lt;/h4&gt;
+&lt;/a&gt;
+A pestana de Etiquetas permítelle activa-lo etiquetado de entidades e controlar varias opcións relacioadas coa fonte, posicionamento, estilo, aliñamento e buffer.&lt;br/&gt;
+Marque a caixa &lt;label&gt;Amosar etiquetas&lt;/label&gt; para activa-lo etiquetado.
+
+&lt;h5&gt;Opcións Básicas de Etiqueta&lt;/h5&gt;
+Escolla o campo co que etiquetar.&lt;p&gt;
+Seleccione os botóns &lt;label&gt;Fonte&lt;/label&gt; e &lt;label&gt;Cor&lt;/label&gt; para establece-la fonte e a cor. Tamén pode cambia-lo ángulo e o posicionamento do texto da etiqueta.&lt;p&gt;
+Se as etiquetas se extenden sobre varias liñas, marque &lt;label&gt;¿Etiquetas Multiliña?&lt;/label&gt;. QGIS verificará a correcta disposición das liñas no campo etiqueta e insertará saltos de liña onde corresponda. Un retorno de liña correcto é un simple carácter &amp;#92;n, (non dous caracteres separados, coma a cotrabarra &amp;#92; seguido do carácter n).
+
+&lt;h5&gt;Posicionamento&lt;/h5&gt;
+Cambia o posicionamento da etiqueta seleccionando un dos botóns de radio no grupo &lt;label&gt;Posicionamento&lt;/label&gt;.
+
+&lt;h5&gt;Unidades do tamaño da fonte&lt;/h5&gt;
+As&lt;label&gt;unidades do tamaño da fonte&lt;/label&gt; permítenlle seleccionar entre &lt;label&gt;Puntos&lt;/label&gt; ou &lt;label&gt;Unidades de Mapa&lt;/label&gt;.
+
+&lt;h5&gt;Buffer de etiqueta&lt;/h5&gt;
+Crear un buffer de etiqueta significa poñer un fondo arredor dela para destacala mellor. Para poñer un buffer na etiqueta de lagos:
+&lt;ol&gt;
+&lt;li&gt;Clique na caixa de verificación de &lt;label&gt;Buffer de Etiquetas&lt;/label&gt; para activa-lo buffer.
+&lt;li&gt;Escolla un tamaño para o buffer utilizando o cadro de selección.
+&lt;li&gt;Escolla unha cor clicando en &lt;label&gt;Cor&lt;/label&gt; e elixa a súa favorite co selector de cor. Pode establecer algún tipo de transparencia para o buffer se o prefire.
+&lt;li&gt;Clique en &lt;label&gt;Aplicar&lt;/label&gt; para ver se lle gustan os cambios.
+&lt;/ol&gt;
+Teña en conta que pode especifica-lo tamaño do buffer en unidades do mapa se iso funciona mellor para vostede.
+
+&lt;h5&gt;Datos definidos de posicionamento, propiedades, buffer, posición&lt;/h5&gt;
+As restantes entradas dentro da pestana &lt;label&gt;Etiqueta&lt;/label&gt; permítelle controla-la apariencia das etiquetas usando atributos almacenados na capa. As entradas que comezan con &lt;label&gt;Datos definidos&lt;/label&gt; permítenlle establecer tódolos parámetros das etiquetas utilizando campos na capa.
+
+
+&lt;a name=&quot;attributes&quot;&gt;
+&lt;h4&gt;Atributos&lt;/h4&gt;
+&lt;/a&gt;
+Dentro da pestana &lt;label&gt;Atributos&lt;/label&gt; os atributos dos datos seleccionados poden ser manipulados. Os botón &lt;label&gt;Nova Columna&lt;/label&gt; e &lt;label&gt;Eliminar Columna&lt;/label&gt; poden utilizarse cando o conxunto de datos está en modo edición. A librería OGR soporta a adición de novas columnas, pero non a eliminación delas se ten unha versión GDAL instalada &gt;= 1.6. En caso contrario só columnas de capas PostGIS poderán ser editadas.&lt;p&gt;
+O botón&lt;label&gt;Alternar modo de edición&lt;/label&gt; varía este modo.&lt;p&gt;
+Dentro da pestana de Atributos tamén pode atopar unha columna de edición de widget. Esta columna pode utilizarse para defini-los valores ou o rango de valores que están permitidos para engadirse á columna da táboa de atributos específica. Se clic no botón &lt;label&gt;editar widget&lt;/label&gt;, ábrese un diálogo, onde pode definir diferentes widgets. Estes widgets son:&lt;br/&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Editar Liña&lt;/label&gt; un campo de edición que permite introducir texto plano (ou restrinxilo a números para atributos numéricos).
+&lt;li&gt;&lt;label&gt;Clasificación&lt;/label&gt; Amosa un cadro combinado cos valores utilizados para a clasificación, se escolleu &lt;label&gt;valores únicos&lt;/label&gt; como tipo de lenda na pestana de simboloxía do diálogo de propiedades.
+&lt;li&gt;&lt;label&gt;Rango&lt;/label&gt; Permite establecer valores numéricos dun rango específico. O widget de edición pode ser tanto un cadro deslizante coma un cadro de selección.
+&lt;li&gt;&lt;label&gt;Valores Únicos&lt;/label&gt; O usuario pode seleccionar un dos valores xa utilizados na táboa de atributos. Se &lt;label&gt;editable&lt;/label&gt; está activado, unha liña de edición é amosada con capacidade de autocompletado, anque valores adicionais son posibles, en caso contrario un cadro combinado será usado.
+&lt;li&gt;&lt;label&gt;Nome de ficheiro&lt;/label&gt; Simplifica a selección engadindo un diálogo de selección de ficheiro.
+&lt;li&gt;&lt;label&gt;Mapa de Valores&lt;/label&gt; un cadro combinado con elementos predefinidos. O valor está almacenado nos atributos, a descrición é amosada no cadro combinado. Pode definir valores manualmente ou cargalos dende unha capa ou un ficheiro csv.
+&lt;li&gt;&lt;label&gt;Enumeración&lt;/label&gt; Abre un cadro combinado con valores que poden utilizarse dentro do tipo de columnas. Actualmente só está soportado polo provedor Postgres.
+&lt;li&gt;&lt;label&gt;Immutable&lt;/label&gt; A columna de atributo immutable é de só lectura. O ususario non pode modifica-lo contido.
+&lt;li&gt;&lt;label&gt;Oculto&lt;/label&gt; Unha columna de atributo oculto é invisible para o usuario.
+&lt;li&gt;&lt;label&gt;Caixa de verificación&lt;/label&gt; Unha caixa de verificación é amosada. O valor que representa o estado da caixa de verificación no atributo ten que ser introducido.
+&lt;li&gt;&lt;label&gt;Editar Texto&lt;/label&gt; É amosado un campo de edición de texto, que permite introducir texto multiliña.
+&lt;/ul&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;Xeral&lt;/h4&gt;
+&lt;/a&gt;
+A pestana Xeral permítelle cambia-lo nome amosado, establece-las opcións de renderizado dependente da escala, crear un índice espacial do ficheiro vectorial (só para formatos soportados por OGR e PostGIS) e ver ou cambia-la proxección dunha capa específica vectorial.&lt;p&gt;
+Tamén pode definir un provedor de expresións de filtro específico utilizando o &lt;label&gt;Constructor de Consultas&lt;/label&gt;.
+
+&lt;h5&gt;Subconxuntos&lt;/h5&gt;
+O botón &lt;label&gt;Constructor de Consultas&lt;/label&gt; permítelle limitar as entidades dunha capa a un subconxunto que coincida cun provedor de expresión de filtros específico.
+
+&lt;a name=&quot;metadata&quot;&gt;
+&lt;h4&gt;Metadatos&lt;/h4&gt;
+&lt;/a&gt;
+A pestana&lt;label&gt;Metadatos&lt;/label&gt; contén información sobre a capa, incluíndo detalles sobre o tipo e localización, número de entidades, tipo de entidade e capacidades de edición. A sección de Sistema de Referencia Espacial da Capa, que proporciona información da proxección, é amosada nesta pestana. Esta é unha forma rápida de obter inforación sobre a capa.
+
+&lt;a name=&quot;actions&quot;&gt;
+&lt;h4&gt;Accións&lt;/h4&gt;
+&lt;/a&gt;
+QGIS proporciona a capacidade de executar unha acción baseada nos atributos da entidade. Isto pode usarse para executar calquera número de accións, por exemplo, executar un programa con argumentos construídos cos atributos da entidade ou pasando parámetros cunha ferramenta de comunicación web. &lt;br/&gt;
+As accións son útiles cando quere executar frecuentemente unha aplicación externa ou ver unha páxina web baseada nun ou máis valores da súa capa vectorial.&lt;p&gt;
+
+A nova implementación de accións utiliza o motor de expesións de QGIS para facer avaliacións. Cada expresión é avaliada e reemplazada polo seu resultado ó tempo de execución.&lt;p&gt;
+Unha expresión debe encadrarse entre &lt;code&gt;[%&lt;/code&gt; e &lt;code&gt;%]&lt;/code&gt; - a IGU ten algúns botóns que fan iso automaticamente. 
+O botón &lt;label&gt;Insertar expresión...&lt;/label&gt; lanza o &lt;label&gt;constructor de expresións&lt;/label&gt; que permite escribir unha expresión facilmente, o botón &lt;label&gt;Insertar campo&lt;/label&gt; inserta na acción un espazo reservado coma &lt;code&gt;[% &quot;nomedecampo&quot; %]&lt;/code&gt; onde nomedecampo é o nome do campo seleccionado na lista desplegable de campo.&lt;p&gt;
+
+Mirar a Guía de Usuario para máis información.
+
+&lt;h5&gt;Usar Accións&lt;/h5&gt;
+As acccións poden ser invocadas dende o diálogo &lt;label&gt;Identificar Resultados&lt;/label&gt; ou utilizando a ferramenta &lt;label&gt;Executar acción de entidade&lt;/label&gt; na barra de ferramentas.&lt;p&gt;
+
+Cada acción engade un pequeno conxunto de expresións persoalizadas ó conxunto predeterminado dispoñible no &lt;label&gt;Constructor de Expresións&lt;/label&gt;.&lt;br/&gt;
+Mentras se executan as accións dende o diálogo &lt;label&gt;Identificar Resultados&lt;/label&gt; a expresión persoalizada &lt;code&gt;$currfield&lt;/code&gt; reemplazará co valor do campo seleccionado o valor do campo seleccionado no diálogo, utilizando a ferramenta &lt;label&gt;Executar acción de entidade&lt;/label&gt; as seguintes expresións persoalizadas están dispoñibles (no canto de $currfield):
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;$clickx&lt;/code&gt; devolve a coordenada x da posición do clic na vista do mapa&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$clicky&lt;/code&gt; devolve a coordenada y da posición do clic na vista do mapa&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$layerid&lt;/code&gt; devolve a ID da capa seleccionada na lenda&lt;/li&gt;
+&lt;/ul&gt;
+
+Nota: a ferramenta &lt;label&gt;Executar acción de entidade&lt;/label&gt; executa a acción en tódalas entidades coincidentes, onde &lt;label&gt;Identificar Resultados&lt;/label&gt; permítelle seleccionar en que entidade específica executar unha acción.&lt;p&gt;
+
+
+&lt;h5&gt;Exemplos de Acción&lt;/h5&gt;
+Pode engadir algúnhas accións de exemplo clicando no botón &lt;label&gt;Engadir accións predeterminadas&lt;/label&gt;.
+
+
+&lt;a name=&quot;diagram&quot;&gt;
+&lt;h4&gt;Diagramas&lt;/h4&gt;
+&lt;/a&gt;
+A pestana Diagramas permítelle engadir unha superposición gráfica a unha capa vectorial. Para activar esta entidade, abra o &lt;label&gt;Administrador de Plugins&lt;/label&gt; e seleccione o plugin &lt;label&gt;Diagramas&lt;/label&gt;. Logo disto, hai unha nova pestana no diálogo vectorial &lt;label&gt;Propiedades de Capa&lt;/label&gt; onde a configuración dos diagramas pode ser insertada.&lt;p&gt;
+A implementación actual dos diagramas proporciona soporte para gráficos de sectores e de barras e para un escalado liñar do tamaño do diagrama en función dun atributo de clasificación.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="401"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="486"/>
         <source>&lt;h3&gt;Query Builder&lt;/h3&gt;
 The query builder allows you to create provider specific filter expressions.
 
@@ -60288,10 +60668,55 @@ are sometimes limited (e.g. for shape files) or behave diffently.
 &lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Constructor de Consultas&lt;/h3&gt;
+O constructor de consultas permítelle crear expresións de filtro proporcionadas especificamente.
+
+Habitulamente estas son avaliadas máis rápido que as expresións de QGIS xenéricas,
+pero algunhas veces son limitadas(por exemplo para shapefiles) ou compórtanse diferentemente.
+
+&lt;h4&gt;Provedores&lt;/h4&gt;
+
+&lt;table border=1&gt;
+&lt;tr&gt;
+  &lt;th&gt;Provider&lt;/th&gt;
+  &lt;th&gt;Documentation&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;OGR&lt;/td&gt;
+  &lt;td&gt;where clauses depending on the
+    &lt;a href=&quot;http://www.gdal.org/ogr/ogr_formats.html&quot;&gt;formato&lt;/a&gt; (ex:
+    &lt;a href=&quot;http://www.gdal.org/ogr/ogr_sql.html&quot;&gt;OGR SQL&lt;/a&gt;
+    para shapefiles)
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;PostgreSQL/PostGIS&lt;/td&gt;
+  &lt;td&gt;onde as cláusulas usan
+    &lt;a href=&quot;http://www.postgresql.org/docs/&quot;&gt;PostgreSQL&lt;/a&gt; and
+    &lt;a href=&quot;http://postgis.net/documentation&quot;&gt;PostGIS&lt;/a&gt; 
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;SpatiaLite&lt;/td&gt;
+  &lt;td&gt;onde as cláusulas usan
+    &lt;a href=&quot;http://www.sqlite.org/lang_select.html&quot;&gt;SQLite&lt;/a&gt; e
+    &lt;a href=&quot;http://www.gaia-gis.it/gaia-sins/spatialite-sql-4.1.0.html&quot;&gt;SpatiaLite&lt;/a&gt;
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;Oracle Spatial/Locator&lt;/td&gt;
+  &lt;td&gt;onde as cláusulas usan 
+    &lt;a href=&quot;http://docs.oracle.com/cd/B28359_01/appdev.111/b28400/sdo_index_query.htm#autoId9&quot;&gt;Oracle Spatial/Locator&lt;/a&gt;
+  &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td colspan=2&gt;...&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="478"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1233"/>
         <source>&lt;h3&gt;Field Calculator&lt;/h3&gt;
 The field calculator allows you to update fields with expressions.
 
@@ -60352,25 +60777,260 @@ The field calculator allows you to update fields with expressions.
 &lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negative value of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Calculadora de Campos&lt;/h3&gt;
+A Calculadora de campos permítelle actualizar campos con expresións.
+
+&lt;h4&gt;Opercións Soportadas&lt;/h4&gt;
+
+&lt;table border=1&gt;
+&lt;tr&gt;
+  &lt;th&gt;Operación&lt;/th&gt;
+  &lt;th&gt;Descrición&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;
+    &lt;tt&gt;nome_columna&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&quot;nome_columna&quot;&lt;/tt&gt;
+  &lt;/td&gt;
+  &lt;td&gt;valor do campo &lt;tt&gt;nome_columna&lt;/tt&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&apos;&lt;tt&gt;cadea&lt;/tt&gt;&apos;&lt;/td&gt;&lt;td&gt;valor literal da cadea&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;número&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;número&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NULL&lt;/td&gt;&lt;td&gt;valor nulo&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;exp(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;número E elevado a&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ln(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;logaritmo natural (é dicir en base e) de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;log10(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;logaritmo en base 10 de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;log(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;b&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;logaritmo en base &lt;tt&gt;b&lt;/tt&gt; de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;sqrt(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;raíz cadrada&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;sin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;seno de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;cos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;coseno de&lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;tan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;tanxente de&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;asin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;seno inverso de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;acos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;coseno inverso de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;atan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;tanxente inversa de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to int(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convirte cadea &lt;tt&gt;a&lt;/tt&gt; a enteiro&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to real(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convirte cadea &lt;tt&gt;a&lt;/tt&gt; a número real&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to string(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convirte número &lt;tt&gt;a&lt;/tt&gt; a cadea&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;lower(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convirte cadea &lt;tt&gt;a&lt;/tt&gt; a minúsculas&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;upper(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convirte cadea &lt;tt&gt;a&lt;/tt&gt; a maiúsculas&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;length(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;lonxitude da cadea&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;atan2(&lt;tt&gt;y&lt;/tt&gt;,&lt;tt&gt;x&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;tanxente inversa de &lt;tt&gt;y&lt;/tt&gt;/&lt;tt&gt;x&lt;/tt&gt; usando os signos de dous argumentos para determina-lo cuadrante do resultado.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;reemplazar(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;replacethis&lt;/tt&gt;,&lt;tt&gt;withthat&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;reemplaza&lt;tt&gt;replacethis&lt;/tt&gt; con &lt;tt&gt;withthat&lt;/tt&gt; na cadea&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;regexp_replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;replacethis&lt;/tt&gt;,&lt;tt&gt;withthat&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;reemplaza a expresión regular&lt;tt&gt;replacethis&lt;/tt&gt; con &lt;tt&gt;withthat&lt;/tt&gt; na cadea&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;substr(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;from&lt;/tt&gt;,&lt;tt&gt;len&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;&lt;tt&gt;lonxitude&lt;/tt&gt; dos caracteres da cadea &lt;tt&gt;a&lt;/tt&gt; comezando dende&lt;tt&gt;from&lt;/tt&gt; (o índice do primeiro carácter é 1)&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; || &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;concatena cadeas &lt;tt&gt;a&lt;/tt&gt; e &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$rownum&lt;/td&gt;&lt;td&gt;número da ringleira actual&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$area&lt;/td&gt;&lt;td&gt;área do polígono&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$perimeter&lt;/td&gt;&lt;td&gt;perímetro do polígnono&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$length&lt;/td&gt;&lt;td&gt;área da liña&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$id&lt;/td&gt;&lt;td&gt;ID de entidade&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$x&lt;/td&gt;&lt;td&gt;coordenada x do punto&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$y&lt;/td&gt;&lt;td&gt;coordenada y do punto&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;xat(&lt;tt&gt;n&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;coordenada x do &lt;tt&gt;n&lt;/tt&gt;th punto da liña (o índice comeza en 0; os valores negativos aplícanse o último índice)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yat(&lt;tt&gt;n&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;coordenada y do &lt;tt&gt;n&lt;/tt&gt;th punto da liña (o índice comeza en 0; os valores negativos aplícanse o último índice)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ^ &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; elevado á potencia de &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; * &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; multiplicado por &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; / &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; dividido por&lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; + &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; máis &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; - &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; menos &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;+&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;signo positivo &lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;valor negativo de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1140"/>
+        <source>&lt;h3&gt;Manage and install Plugins&lt;/h3&gt;
+
+&lt;p&gt;
+Manage and install plugins.
+&lt;/p&gt;
+
+
+&lt;a href=&quot;#installedtab&quot;&gt;Installed tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#getmoretab&quot;&gt;Get more tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#newtab&quot;&gt;New tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#upgradabletab&quot;&gt;Upgradable tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#invalidtab&quot;&gt;Invalid tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#settingstab&quot;&gt;Settings tab&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;installedtab&quot;&gt;
+&lt;h4&gt;Installed tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+This tab shows you the list of currently installed plugins on your system. Both
+python and C++ plugins are listed.
+&lt;/p&gt;
+&lt;p&gt;
+You can enable or disable them by clicking the checkbox in front of the name.&lt;br/&gt;
+Selecting an item show the plugin information in the detail pane.
+&lt;/p&gt;
+&lt;p&gt;
+There is a context menu (right click) available, to change the sorting on:
+name, number of downloads, votes and status.
+&lt;/p&gt;
+
+
+&lt;a name=&quot;getmoretab&quot;&gt;
+&lt;h4&gt;Get more tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+This tab shows you the list of available plugins from the remote repositories.
+It is downloaded once if you start up. But you can change that in the Settings
+&lt;/p&gt;
+&lt;p&gt;
+Selecting an item shows you the plugin information in the detail pane.
+&lt;/p&gt;
+
+&lt;a name=&quot;newtab&quot;&gt;
+&lt;h4&gt;New tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+This tab will be shown when a new plugin is made available? It will be shown
+just once.
+&lt;/p&gt;
+
+&lt;a name=&quot;upgradabletab&quot;&gt;
+&lt;h4&gt;Upgradable tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+This tab is only available if there one of your installed plugins can be upgraded
+from the remote repositories.
+&lt;/p&gt;
+
+&lt;a name=&quot;Invalid tab&quot;&gt;
+&lt;h4&gt;Invalid tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+This tab is only available if there is a plugin invalid. That is if there was an
+error during loading the plugin.
+&lt;/p&gt;
+
+&lt;a name=&quot;settingstab&quot;&gt;
+&lt;h4&gt;Settings tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+In this tab you can change the Settings for the plugin manager.
+&lt;/p&gt;
+&lt;p&gt;
+It is possible to check how often QGIS will download the list and update information 
+from the available repositories.
+&lt;/p&gt;
+&lt;p&gt;
+By checking the &apos;Show experimental plugins&apos; checkbox, all plugins will be shown
+in the lists, even the ones that are considered &apos;experimental&apos; by the author.
+
+&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
+Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;/p&gt;
+</source>
+        <translation type="obsolete">&lt;h3&gt;Administrar e instalar Plugins&lt;/h3&gt;
+
+&lt;p&gt;
+Administra e instala plugins.
+&lt;/p&gt;
+
+
+&lt;a href=&quot;#installedtab&quot;&gt;Pestana Instalados&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#getmoretab&quot;&gt;Pestana Obter máis&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#newtab&quot;&gt;Pestana Novos&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#upgradabletab&quot;&gt;Pestana Actualizables&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#invalidtab&quot;&gt;Pestana Non válidos&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#settingstab&quot;&gt;Pestana Configuración&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;installedtab&quot;&gt;
+&lt;h4&gt;Pestana Instalados&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Ista pestana amosa a lista dos plugins instalados actualmente no sistema. Tanto os plugins python coma os C++ son listados.
+&lt;/p&gt;
+&lt;p&gt;
+Pode activalos ou desactivalos clicando na caixa diante do nome.&lt;br/&gt;
+Seleccionando un elemento amosa información do plugin no panel de detalles.
+&lt;/p&gt;
+&lt;p&gt;
+Hai un menú contextual (clic dereito) dispoñible, para cambia-la clasificación:
+nome, número de descargas, votos e estatus.
+&lt;/p&gt;
+
+
+&lt;a name=&quot;getmoretab&quot;&gt;
+&lt;h4&gt;Pestana Obter máis&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Esta pestana amosa a lista de plugins dispoñibles dos repositorios remotos.
+É descargada unha vez se a inicia. Pero pode modificar isto na Configuración
+&lt;/p&gt;
+&lt;p&gt;
+Seleccionando un elemento amosa a información do plugin no panel de detalles.
+&lt;/p&gt;
+
+&lt;a name=&quot;newtab&quot;&gt;
+&lt;h4&gt;Pestana Novo&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Esta pestana amosarálle cando un novo plugin está dispoñible. Amosaráse só
+unha vez.
+&lt;/p&gt;
+
+&lt;a name=&quot;upgradabletab&quot;&gt;
+&lt;h4&gt;Pestana Actualizables&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Esta pestana está só dispoñible se hai un dos plugin instalados que poida ser actualizado
+dende os repositorios remotos.
+&lt;/p&gt;
+
+&lt;a name=&quot;Invalid tab&quot;&gt;
+&lt;h4&gt;Pestana Non válidos&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Esta pestana está só dispoñible se hai un plugin non válido. Isto é se houbo un erro
+durante a carga do plugin.
+&lt;/p&gt;
+
+&lt;a name=&quot;settingstab&quot;&gt;
+&lt;h4&gt;Pestana Configuración&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;
+Nesta pestana pode cambia-la configuración do administrador de plugins.
+&lt;/p&gt;
+&lt;p&gt;
+É posible comprobar con que frecuencia QGIS descargará a lista e actualizará información
+dos repositorios dispoñibles.
+&lt;/p&gt;
+&lt;p&gt;
+Clicando na caixa &apos;Amosar plugins experimentais&apos;, tódolos plugins se amosarán na lista,
+incluso aqueles que sexan considerados como &apos;experimentais&apos; polo autor.
+
+&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
+Nota: Os plugins experimentais non son adecuados para o seu uso en produción. Estes plugins están nos estadíos iniciais de desarrollo, e deben considerarse ferramentas &quot;incompletas&quot; ou  &quot;probas de conceptos&quot;. A equipa de desarrollo de QGIS non recomenta instalar estes plugins se non ten intención de usalos para propósitos de proba.
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1296"/>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;Novo diálogo de Conexión á base de datos OGR&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="646"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="612"/>
         <source>&lt;h3&gt; North Arrow Plugin&lt;/h3&gt;
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
 At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt; Plugin de Frecha Norte&lt;/h3&gt;
+Amosa unha frecha norte superposta no mapa.
+&lt;p&gt;
+Agora mesmo só hai un estilo dispoñible. Pode axusta-lo ángulo da frecha ou deixar que QGIS estableza a dirección automaticamente. Se escolle que QGIS determine a dirección, este fai a mellor estimación de como debera estar orientada a frecha. Para o posicionamento da frecha ten catro opcións, correspondenco coas catro esquinas da vista do mapa.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="154"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="446"/>
         <source>&lt;h3&gt;Export a QGIS Project to MapServer Map File&lt;/h3&gt;
 &lt;p&gt;
 This tool allows you to export a saved QGIS project file to a MapServer map. Only the &lt;b&gt;Map file&lt;/b&gt; and &lt;b&gt;QGIS project file&lt;/b&gt; inputs are required.
@@ -60404,10 +61064,42 @@ These values are written to the map file in the appropriate spots to set things 
   &lt;dt&gt;&lt;label&gt;Footer&lt;/label&gt;&lt;/dt&gt;
   &lt;dd&gt;Full path to the MapServer footer file to be used with the map file.&lt;/dd&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Exporta un Proxecto QGIS a un Ficheiro de Mapa MapServer&lt;/h3&gt;
+&lt;p&gt;
+Esta ferramenta permítelle exportar un ficheiro de proxecto QGIS gardado a un mapa MapServer. Só as entradas do &lt;b&gt;ficheiro Map&lt;/b&gt; e &lt;b&gt;o ficheiro de proxecto QGIS&lt;/b&gt; inputs son necesarias.
+&lt;/p&gt;
+Pulse na caixa &lt;label&gt;Utilizar proxecto actual&lt;/label&gt; ou introduza a ruta completa ó ficheiro de proxecto de QGIS (.qgs) que queira exportar. Pode utiliza-lo botón á dereita para busca-lo ficheiro de proxecto QGIS.
+
+&lt;h4&gt; Ficheiro Map&lt;/h4&gt;
+
+&lt;label&gt;Ficheiro Map&lt;/label&gt; Introduza o nome do ficheiro map a ser creado. Pode utiliza-lo botón á dereita para busca-lo directorio onde queira que o ficheiro map sexa creado.
+
+&lt;h4&gt;Map&lt;/h4&gt;
+Estes valores son escritos ó ficheiro map nos lugares adecuados para configurar cousas coma o tamaño da imaxe de saída, unidades e tipo de imaxe.
+&lt;dl&gt;
+  &lt;dt&gt;&lt;label&gt;Nome&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Un nome par o mapa. Este nome é prefixo de tódalas imaxes xeradas por MapServer.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Anchura&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Anchura da imaxe de saída en píxeles.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Altura&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Altura da imaxe de saída en píxeles.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Unidades&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Unidades de medida utilizadas para a saída.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Tipo de Imaxe&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Formato da imaxe de saída xerada por MapServer&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;h4&gt;Rutas&lt;/h4&gt;
+&lt;dl&gt;
+  &lt;dt&gt;&lt;label&gt;Modelo&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Ruta completa ó ficheiro modelo de MapServer a ser usado co ficheiro map.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Cabeceira&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Ruta completa ó ficheiro de cabeceira de MapServer a ser usado co ficheiro map.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Pé de páxina&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Ruta completa ó ficheiro de pé de páxina de MapServer a ser usado co ficheiro map.&lt;/dd&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1225"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1214"/>
         <source>&lt;h3&gt;Scale bar Plugin&lt;/h3&gt;
 Draws a scale bar on the map.
 &lt;p&gt;
@@ -60427,10 +61119,28 @@ To add a scale bar:
 &lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Plugin Barra de Escala&lt;/h3&gt;
+Debuxa unha barra de escala no mapa.
+&lt;p&gt;
+Pode controla-lo estilo e posicionamento, así coma o etiquetado da barra.
+QGIS só soporta a presentación da escala nas mesmas unidades que as do marco do mapa.
+Polo que se as unidades da capa están en metros, non pode crear unha barra de escala en pés.
+Igualmente se está usando graos decimais, non pode crear unha barra de escala
+para amosa-la distancia en metros.&lt;/p&gt; &lt;p&gt;
+Para engadir unha barra de escala:
+&lt;ol&gt;
+&lt;li&gt;Escolla unha ubicación dende a lista desplegable &lt;label&gt;Posicionamento&lt;/label&gt;.&lt;/li&gt;
+&lt;li&gt;Escolla un estilo dende a lista &lt;label&gt;Estilo de Barra de Escala&lt;/label&gt;.&lt;/li&gt;
+&lt;li&gt;Seleccione a cor da barra &lt;label&gt;Cor da barra&lt;/label&gt; ou use a cor negra predeterminada.&lt;/li&gt;
+&lt;li&gt;Estableza o tamaño da barra e a súa etiqueta &lt;label&gt;Tamaño da barra&lt;/label&gt;. &lt;/li&gt;
+&lt;li&gt;Estea seguro de que a caixa &lt;label&gt;Activar barra de escala&lt;/label&gt; estea marcada.&lt;/li&gt;
+&lt;li&gt;Opcionalmente escolla autoaxustar automaticamente a un número redondo cando a vista do mapa é redimensionada &lt;label&gt;Autoaxustar automaticamente a un número redondo no redimensionado&lt;/label&gt;.&lt;/li&gt;
+&lt;li&gt;Clique &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="599"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="719"/>
         <source>&lt;h3&gt;Create a New PostgreSQL Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a PostgreSQL database.
 &lt;p&gt;
@@ -60464,10 +61174,42 @@ This dialog allows you to define the settings for a connection to a PostgreSQL d
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Crear unha Nova Conexión PostgreSQL&lt;/h3&gt;
+Este diálogo permítelle defini-la configuración para unha conexión a unha base de datos PostgreSQL.
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;label&gt;Nome&lt;/label&gt; Un nome para identifica-la configuración da conexión.
+
+&lt;li&gt; &lt;label&gt;Servizo&lt;/label&gt; Un nome de servizo listado no &lt;a href=&quot;http://www.postgresql.org/docs/current/static/libpq-pgservice.html&quot;&gt;Ficheiro de Servizo de Conexión&lt;/a&gt;.
+
+&lt;li&gt; &lt;label&gt;Hóspede&lt;/label&gt; Nome ou dirección IP do ordenador que hospeda o servidor da base de datos (deixar en branco para conexións ou servizos locais).
+
+&lt;li&gt; &lt;label&gt;Porto&lt;/label&gt; Porot IP utilizado polo servidor da base de datos (deixar en branco para conexións locais ou utiliza-lo porto predeterminado 5432).
+
+&lt;li&gt; &lt;label&gt;Base de Datos&lt;/label&gt; Nome da base de datos (deixar en branco para a base de datos predeterminada).
+
+&lt;li&gt; &lt;label&gt;Modo SSL&lt;/label&gt; &lt;a href=&quot;http://www.postgresql.org/docs/9.0/static/libpq-ssl.html#LIBPQ-SSL-SSLMODE-STATEMENTS&quot;&gt;Modo SSL&lt;/a&gt; da conexión
+
+&lt;li&gt; &lt;label&gt;Nome de Usuario&lt;/label&gt; Nome de usuario da Base de Datos.
+&lt;li&gt; &lt;label&gt;Contrasinal&lt;/label&gt; Contrasinal da Base de Datos.
+
+&lt;li&gt; &lt;label&gt;Gardar Nome de Usuario&lt;/label&gt; Indica se garda o nome de usuario da base de datos na configuración da conexión.
+
+&lt;li&gt; &lt;label&gt;Gardar Contrasinal&lt;/label&gt; Indica se garda o contrasinal da base de datos na configuración da conexión.  &lt;font color=&quot;red&quot;&gt;¡Os contrasinais gárdanse en &lt;strong&gt;texto sen cifrar&lt;/strong&gt; na configuración do sistema e nos ficheiros de proxecto!&lt;/font&gt;
+
+&lt;li&gt; &lt;label&gt;Buscar só na táboa geometry_columns.&lt;/label&gt; Indica que só as columnas de xeometría &quot;listadas&quot; serán usadas - no canto de escanear tódalas táboas por columnas de xeometría.
+
+&lt;li&gt; &lt;label&gt;Buscar só no esquema &apos;public&apos;&lt;/label&gt; Indica que só as táboas no esquema &apos;public&apos; deben considerarse - en contraposición a tódalas táboas accesibles.
+
+&lt;li&gt; &lt;label&gt;Listar tamén táboas sen xeometría&lt;/label&gt; Indica que as táboas sen xeometría deben ser listadas por defecto.
+
+&lt;li&gt; &lt;label&gt;Utilizar metadatos de táboa estimados&lt;/label&gt; Cando se inician capas, varias consultas poden ser necesarias para establece-las características das xeometrías almacenadas na táboa da base de datos. Cando esta opción está marcada, estas consultas examinan só unha mostra das columnas e utilizan as estadísticas da táboa, no canto da táboa enteira. Isto pode acelerar drasticamente as operacións en conxuntos de datos grandes, pero pode resultar nunha incorrecta caracterización das capas (por exemplo: o &lt;font color=&quot;red&quot;&gt;reconto de entidades&lt;/font&gt; de  capas filtradas non será determidado con precisión).
+
+&lt;/ul&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="107"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="479"/>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
 There are two measure tools: length and area. With them, you can measure both distances and areas on the map canvas. Currently the tools provide results in metric units only. A single right mouse click stops the measuring, while two right mouse clicks starts measuring anew.
 &lt;h4&gt;Measuring Lengths&lt;/h4&gt;
@@ -60475,10 +61217,15 @@ To measure lengths, select the tool and click along the path you want to measure
 &lt;h4&gt;Measuring Areas&lt;/h4&gt;
 To measure areas, select the tool and click to create the area. The total area is dynamically displayed as you click.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Ferramentas de medida&lt;/h3&gt;
+Hai dúas ferramentas de medida: lonxitude e área. Con elas, pode medir tanto distancias coma áreas na vista do mapa. Actualmente as ferramentas provén resultados só en unidades métricas. Cun simple clic co botón dereito a medición detense, mentras que dous clics co botón dereito inicia a mediación de novo.
+&lt;h4&gt;Medición de distancias&lt;/h4&gt;
+Para medir distancias, seleccione a ferramenta e  cliquee ó longo da ruta que queira medir. A lonxitude de cada segmento será amosada así como o total da lonxitude da ruta.
+&lt;h4&gt;Medición de Áreas&lt;/h4&gt;
+Para medir áreas, seleccione a ferramenta e clique para crea-la áreas. A área total será amosada dinamicamente segundo clique.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1244"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="920"/>
         <source>&lt;h3&gt;Copyright Label Plugin&lt;/h3&gt;
 Draws a copyright label with information.&lt;br/&gt;
 You can add any random text to the map not only a copyright label.
@@ -60511,10 +61258,181 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Plugin de Etiqueta Copyright &lt;/h3&gt;
+Debuxa unha etiqueta copyright con información.&lt;br/&gt;
+Pode engadir calquera texto aleatorio ó mapa non só unha etiqueta copyright.
+&lt;p&gt;
+&lt;a href=&quot;#howto&quot;&gt;Como facer&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#text&quot;&gt;Formateado de texto&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;howto&quot;&gt;
+&lt;h4&gt;Como facer&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ol&gt;
+&lt;li&gt;Asegúrese de que o plugin está cargado.
+&lt;li&gt;Clique en &lt;label&gt;Plugins &gt; Decorados &gt; Etiqueta Copyright&lt;/label&gt; ou utilice o botón &lt;label&gt;Etiqueta Copyright&lt;/label&gt; da Barra de ferramentas.
+&lt;li&gt;Introduza o texto que queira situar no mapa. Pode utilizar HTML.
+&lt;li&gt;Escolla a ubicación da etiqueta a caixa desplegable &lt;label&gt;Ubicación Correcta do Fondo&lt;/label&gt;.
+&lt;li&gt;Asegúrese de que estea marcada a &lt;label&gt;caixa Activar Etiqueta Copyright&lt;/label&gt;.
+&lt;li&gt;Clique &lt;label&gt;OK&lt;/label&gt;.
+&lt;/ol&gt;
+&lt;a name=&quot;text&quot;&gt;
+&lt;h4&gt; Formateado de texto &lt;/h4&gt;
+&lt;/a&gt;
+Esta plugin soporta etiquetas de marcado HTML básico para formateado de texto. Por exemplo:
+
+&lt;ul&gt;
+&lt;li&gt;&amp;lt;B&amp;gt;&lt;b&gt; Negriña &lt;/b&gt;&amp;lt;/B&amp;gt;
+&lt;/li&gt;
+&lt;li&gt;&amp;lt;I&amp;gt;&lt;i&gt; Cursiva &lt;/i&gt;&amp;lt;/I&amp;gt;
+&lt;/li&gt;
+&lt;li&gt;&amp;lt;U&amp;gt;&lt;u&gt; Texto suliñado&lt;/u&gt;&amp;lt;/U&amp;gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="538"/>
+        <source>&lt;h3&gt;Python Plugin Installer&lt;/h3&gt;
+Downloads and installs plugins from remote repositories.
+&lt;br/&gt;&lt;br/&gt;
+&lt;a href=&quot;#pltab&quot;&gt;Plugins tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#retab&quot;&gt;Repositories tab&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#optab&quot;&gt;Options tab&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;pltab&quot;&gt;
+&lt;h4&gt;Plugins tab&lt;/h4&gt;
+&lt;/a&gt;
+
+&lt;p align=&apos;justify&apos;&gt;
+The &lt;label&gt;Plugins&lt;/label&gt; tab contains a list of all locally installed Python plugins, as well as plugins available in 
+remote repositories. Each plugin can be either:
+&lt;dl&gt;
+&lt;dt&gt;not installed&lt;/dt&gt;&lt;dd&gt;this means the plugin is available in the repository, but is not installed yet. In order to install it, select the plugin from the list and click the &lt;label&gt;Install plugin&lt;/label&gt; button.&lt;/dd&gt;
+&lt;dt&gt;new&lt;/dt&gt;&lt;dd&gt;this means that the plugin is newly available in the repository.&lt;/dd&gt;
+&lt;dt&gt;installed&lt;/dt&gt;&lt;dd&gt;this indicates that the plugin is already installed. If it is also available in any repository the &lt;label&gt;Reinstall plugin&lt;/label&gt; button will be enabled. If the available version is older than the installed version, the &lt;label&gt;Downgrade plugin&lt;/label&gt; button will appear instead.&lt;/dd&gt;
+&lt;dt&gt;upgradeable&lt;/dt&gt;&lt;dd&gt;this means that the plugin is installed, but there is an updated version available. In this case, the &lt;label&gt;Upgrade plugin&lt;/label&gt; button will be enabled.&lt;/dd&gt;
+&lt;dt&gt;invalid&lt;/dt&gt;&lt;dd&gt;this means that the plugin is installed, but is unavailable or broken. The reason will be explained in the plugin description field.&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;/p&gt;
+
+To install a plugin, select it from the list and click the &lt;label&gt;Install plugin&lt;/label&gt; button. The plugin is installed in its own directory in:
+&lt;table border=1&gt;
+&lt;tr&gt;&lt;th&gt;OS&lt;/th&gt;&lt;th&gt;system plugins&lt;/th&gt;&lt;th&gt;plugins installed by user&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Linux and other unices&lt;/td&gt;&lt;td&gt;./share/qgis/python/plugins&lt;/td&gt;&lt;td rowspan=2&gt;$HOME/qgis/python/plugins&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Mac OS X&lt;/td&gt;&lt;td&gt;./Contents/MacOS/share/qgis/python/plugins&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Windows&lt;/td&gt;&lt;td&gt;(QGIS install directory)&amp;#92;python&amp;#92;plugins&lt;/td&gt;&lt;td&gt;%USERPROFILE%&amp;#92;.qgis&amp;#92;python&amp;#92;plugins&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;br/&gt;
+
+&lt;p align=&apos;justify&apos;&gt;
+If the installation is successful, a confirmation message will appear. The plugin is ready to use.
+&lt;/p&gt;
+
+&lt;p align=&apos;justify&apos;&gt;
+If the installation fails, the reason for the failure will be displayed in a warning dialog. Most often, errors are the result of connection problems and/or missing Python modules. In the former case you will likely need to wait before trying the install again, in the latter case, you should install the missing modules relevant to your operating system prior to using the plugin. For Linux, most required modules should be available via a package manager. For install instructions in Windows visit the module home page. If you are using a proxy, you may need to configure it under &lt;label&gt;Edit&lt;/label&gt; &gt; &lt;label&gt;Options&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; &gt; &lt;label&gt;Options&lt;/label&gt; (KDE, Windows) on the &lt;label&gt;Proxy&lt;/label&gt; tab.&lt;/p&gt;
+
+&lt;p align=&apos;justify&apos;&gt;
+The &lt;label&gt;Uninstall plugin&lt;/label&gt; button is enabled only if the selected plugin is installed and is not a core plugin. Note that if you have installed an update to a core plugin, you can uninstall this update with the &lt;label&gt;Uninstall plugin&lt;/label&gt; and revert to the version shipped with QGIS. This default version however, cannot be uninstalled.&lt;/p&gt;
+
+&lt;a name=&quot;retab&quot;&gt;
+&lt;h4&gt;Repositories tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p align=&apos;justify&apos;&gt;
+The second tab &lt;label&gt;Repositories&lt;/label&gt;, contains a list of plugin repositories available for the Plugin Installer. By default, only the QGIS Official Repository is enabled. You can add several user-contributed repositories, including the central QGIS Contributed Repository and other external repositories by clicking the &lt;label&gt;Add 3rd party repositories&lt;/label&gt; button. The added repositories contain a large number of useful plugins which are not maintained by the QGIS Development Team. As such, we cannot take any responsibility for them. You can also manage the repository list manually, that is add, remove, and edit the entries. Temporarily disabling a particular repository is possible by clicking the &lt;label&gt;Edit...&lt;/label&gt; button.&lt;/p&gt;
+
+&lt;a name=&quot;optab&quot;&gt;
+&lt;h4&gt;Options tab&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p align=&apos;justify&apos;&gt;
+The &lt;label&gt;Options&lt;/label&gt; tab is where you can configure the settings of the Plugin Installer. The &lt;label&gt;x Check for updates on start up&lt;/label&gt; check box tells QGIS to automatically look for plugin updates and news. By default, if this feature is enabled all repositories listed and enabled in the &lt;label&gt;Repositories&lt;/label&gt; tab are checked for updates each time the program is started. The frequency of update checking can be adjusted using the drop down menu, and may be adjusted from once a day right up to once a month. If a new plugin or update is available for one of the installed plugins, a notification will appear in the Status Bar. If the check box is disabled, looking for updates and news is performed only when the Plugin Installer is manually launched from the menu.&lt;/p&gt;
+
+&lt;p align=&apos;justify&apos;&gt;
+Some Internet connections will cause problems when attempting to automatically check for updates.  In these cases, a &lt;i&gt;Looking for new plugins...&lt;/i&gt; indicator will remain visible in the Status Bar during your entire QGIS session, and may cause a program crash when exiting. In this case please disable the check box.&lt;/p&gt;
+
+In addition, you may specify the type of plugins that are displayed by the Plugin Installer. Under &lt;i&gt;Allowed plugins&lt;/i&gt;, you can specify whether you would like to:
+&lt;ul&gt;
+&lt;li&gt; Only show plugins from the official repository&lt;/li&gt;
+&lt;li&gt; Show all plugins except those marked as experimental,&lt;/li&gt;
+&lt;li&gt; or Show all plugins, even those marked as experimental.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;br/&gt;
+&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
+Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+</source>
+        <translation type="obsolete">&lt;h3&gt;Instalador de Plugins Python&lt;/h3&gt;
+Descarga e instala plugins de repositorios remotos.
+&lt;br/&gt;&lt;br/&gt;
+&lt;a href=&quot;#pltab&quot;&gt;Pestana Plugins&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#retab&quot;&gt;Pestana Repositorios&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#optab&quot;&gt;Pestana Opcións&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;pltab&quot;&gt;
+&lt;h4&gt;Pestana Plugins&lt;/h4&gt;
+&lt;/a&gt;
+
+&lt;p align=&apos;justify&apos;&gt;
+A Pestana &lt;label&gt;Plugins&lt;/label&gt; contén unha lista de tódolos plugins Python instalados localmente, así coma plugins dispoñibles en repositorios remotos.
+Cada plugin pode estar tanto:
+&lt;dl&gt;
+&lt;dt&gt;non instalado&lt;/dt&gt;&lt;dd&gt; isto significa que o plugin está dispoñible no repositorio, pero aínda non está instalado. Para instalalo, seleccione o plugin na lista e clique o botón &lt;label&gt;Instalar plugin&lt;/label&gt;.&lt;/dd&gt;
+&lt;dt&gt;novo&lt;/dt&gt;&lt;dd&gt; isto significa que o plugin está dispoñible como novidade no repositorio.&lt;/dd&gt;
+&lt;dt&gt;instalado&lt;/dt&gt;&lt;dd&gt; isto indica que o plugin xa está instalado. Se tamén estivese dispoñible en calquera repositorio o botón &lt;label&gt;Reinstalar plugin&lt;/label&gt; activaríase. Se a versión dispoñible é máis antiga que a instalada, o botón &lt;label&gt;Degradar plugin&lt;/label&gt; aparecerá entón.&lt;/dd&gt;
+&lt;dt&gt;actualizable&lt;/dt&gt;&lt;dd&gt; isto significa que o plugin está instalado, pero hai unha versión actualizada dispoñible. Neste caso, o botón &lt;label&gt;Actualizar plugin&lt;/label&gt; estará activado.&lt;/dd&gt;
+&lt;dt&gt;inválido&lt;/dt&gt;&lt;dd&gt; isto significa que o plugin está instalado, pero non está dispoñible ou está roto. A razón explicaráse no campo de descrición do plugin.&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;/p&gt;
+
+Para instalar un plugin, seleccióneo da lista e clique no botón &lt;label&gt;Instalar plugin&lt;/label&gt;. O plugin é instalado no seu propio directorio en:
+&lt;table border=1&gt;
+&lt;tr&gt;&lt;th&gt;OS&lt;/th&gt;&lt;th&gt;plugins de sistema&lt;/th&gt;&lt;th&gt;plugins instalados polo ususario&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Linux e outros Unix&lt;/td&gt;&lt;td&gt;./share/qgis/python/plugins&lt;/td&gt;&lt;td rowspan=2&gt;$HOME/qgis/python/plugins&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Mac OS X&lt;/td&gt;&lt;td&gt;./Contents/MacOS/share/qgis/python/plugins&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Windows&lt;/td&gt;&lt;td&gt;(QGIS install directory)&amp;#92;python&amp;#92;plugins&lt;/td&gt;&lt;td&gt;%USERPROFILE%&amp;#92;.qgis&amp;#92;python&amp;#92;plugins&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;br/&gt;
+
+&lt;p align=&apos;justify&apos;&gt;
+Se a instalación é satisfactoria, aparecerá unha mensaxe de confirmación. O plugin está listo para usar.
+&lt;/p&gt;
+
+&lt;p align=&apos;justify&apos;&gt;
+Se a instalación falla, a razón do fallo amosaráse no diálogo de advertencia. Frecuentemente, o erros son resultado de problemas de conexión e/ou perdo de módulos Python. No primeiro caso, probablemente haberá que esperar antes de instalar de novo, no último caso, deberá instalar os módulos perdidos relativos ó seu sistema operativo antes de utiliza-lo plugin. Para Linux, a mairía dos módulos requeridos deben estar dispoñibes vía o xestor de paquetes. Para instruccións de instalación en Windows visite a páxina de inicio dos módulos. Se está a usar un proxy, necesitará configuralo en &lt;label&gt;Editar&lt;/label&gt; &gt; &lt;label&gt;Opcións&lt;/label&gt; (Gnome, OSX) ou &lt;label&gt;Configuración&lt;/label&gt; &gt; &lt;label&gt;Opcións&lt;/label&gt; (KDE, Windows) na pestana &lt;label&gt;Proxy&lt;/label&gt;.&lt;/p&gt;
+
+&lt;p align=&apos;justify&apos;&gt;
+O botón &lt;label&gt;Desinstalar plugin&lt;/label&gt; está activado só se o plugin seleccionado está instalado e non é un plugin do núcleo. Teña en conta que se instalou unha actualización dun plugin do núcleo, pode desinstalar esta actualización con &lt;label&gt;Desinstalar plugin&lt;/label&gt; e revertelo á versión incluída con QGIS. Porén esta versión predeterminada non pode ser desinstalada.&lt;/p&gt;
+
+&lt;a name=&quot;retab&quot;&gt;
+&lt;h4&gt;Pestana Repositorios&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p align=&apos;justify&apos;&gt;
+A segunda pestana, &lt;label&gt;Repositorios&lt;/label&gt;, contén unha lista de repositorios de plugins dispoñibles para o Instalador de Plugins. Por sistema, só o Repositorio Oficial de QGIS está activado. Pode engadir varios repositorios contribuídos polo usuario, incluíndo o Repositorio Contribuído de QGIS central e outros repositorios externos clicando o botón &lt;label&gt;Engadir repositorios de terceiros&lt;/label&gt;. Os repositorios engadidos conteñen un número elevado de plugins útiles que no están mantidos pola Equipa de Desarrollo de QGIS. Como tal, non temos ningunha responsabilidade por eles. Tamén pode administra-la lista de repositorios manualmente, isto é engadir, eliminar e editar entradas. Deshabilitar temporalmente un repositorio particular é posible clicando no botón &lt;label&gt;Editar...&lt;/label&gt;.&lt;/p&gt;
+
+&lt;a name=&quot;optab&quot;&gt;
+&lt;h4&gt;Pestana Opcións&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p align=&apos;justify&apos;&gt;
+A pestana &lt;label&gt;Opcións&lt;/label&gt; é onde pode configura-los axustes do Instalador de Plugins. A caixa &lt;label&gt;Marque x para actualizacións no inicio&lt;/label&gt; dílle a QGIS que busque automaticamente actualizacións de plugins e novidades. Por sistema, se ista característica está activada tódolos repositorios listados e activados na pestana &lt;label&gt;Repositorios&lt;/label&gt; son comprobados para actualizacións cada vez que o programa se inicia. A frecuencia de comprobación de actualizacións pode axustarse usando o menú desplegable, dende unha vez ó día a unha vez ó mes. Se un novo plugin ou actualización está dispoñible para un dos plugins instalados, unha notificación aparecerá na Barra de Estado. Se a caixa de verificación está desactivada, a busca de actualizacións e novidades só se realiza cando o Instalador de Plugins é lanzado manualmente dende o menú..&lt;/p&gt;
+
+&lt;p align=&apos;justify&apos;&gt;
+Algunhas conexións de Internet causarán problemas cando tentan buscar automaticamente actualizacións. Nestes casos, un indicador &lt;i&gt;Buscando novos plugins...&lt;/i&gt; permanecerá visible na Barra de Estado durante toda a sesión de QGIS, podendo causa-la ruptura do programa ó saír. Neste caso desactive a caixa de verificación.&lt;/p&gt;
+
+Ademais, pode especifica-lo tipo de plugins que son amosados no Instalador de Plugins. Baixo &lt;i&gt;Plugins Permitidos&lt;/i&gt;, pode especificar se quere que:
+&lt;ul&gt;
+&lt;li&gt; Amosar só plugins do repositorio oficial&lt;/li&gt;
+&lt;li&gt; Amosar tódolos plugins agás aqueles marcados coma experimentais,&lt;/li&gt;
+&lt;li&gt; ou Amosar tódolos plugins, incluso aqueles marcados coma experimentais.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;br/&gt;
+&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
+Nota: Os plugins Experimentais non son xeralmente apropiados para o seu uso en producción. Estes plugins están en estadíos iniciais de desarrollo e deben considerarse ferramentas &quot;incompletas&quot; ou &quot;probas de concepto&quot;. A equipa de desarrollo de QGIS non recomenda instalar estes plugins a menos que pretenda usalos con fins de proba.
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="984"/>
         <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
 The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; General&lt;/label&gt;.&lt;p&gt;
 
@@ -60567,10 +61485,61 @@ The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table al
 The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
 The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Táboa de Atributos&lt;/h3&gt;
+A táboa de atributos amosa entidades da capa seleccionada. Cada ringleira na táboa representa unha etidade do mapa cos seus atributos amosados en varias columnas. As entidades na táboa poden ser buscadas, seleccionadas, movidas ou incluso editadas. Por sistema a táboa de atributos é unha fiestra separada. Se a abriu e xa non a pode ver, é probable que estea agochada debaixo da fiestra principal de QGIS. Pode facela tamén unha fiestra fixa, marcando &lt;label&gt;Abrir táboa de atributos nunha fiestra fixa&lt;/label&gt; en &lt;label&gt;Configuración &gt; Opcións &gt; Xeral&lt;/label&gt;.&lt;p&gt;
+
+O número total de entidades da capa, entidades filtradas e entidades seleccionadas é impreso na cabeceira da fiestra.&lt;p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;Seleccionar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;Ordear&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;Filtrar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;Editar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;Calculadora de Campos&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;Selecting&quot;&gt;
+&lt;h4&gt;Seleccionar&lt;/h4&gt;
+&lt;/a&gt;
+As ringleiras poden seleccionarse clicando no número de ringleira na parte esquerda da mesma. As ringleiras subsecuentes poden seleccionarse mantendo pulsado o botón do rato e movéndoo ata a fin da selección. Pódense seleccionar múltiples ringleiras non subsecuentes mantendo pulsada a tecla &lt;label&gt;Ctrl&lt;/label&gt;.&lt;br&gt;
+Pode facerse unha selección contínua mantendo pulsada a tecla &lt;label&gt;Maiúscula&lt;/label&gt; e clicando en varias cabeceiras de rinbgleira na parte esquera das ringleiras. Tódalas ringleiras entre a posición actual do cursor e a ringleira clicada son seleccionadas.
+
+&lt;a name=&quot;Sorting&quot;&gt;
+&lt;h4&gt;Ordear&lt;/h4&gt;
+&lt;/a&gt;
+Cada columna pode ordearse clicando na cabeceira da columna. Unha pequena frecha indica a dirección da ordeación (apuntando cara abaixo significa valores descendentes dende a ringleira de arriba a arriba a abaixo, apuntando cara arriba significa valores ascendentes dende a ringleira de arriba a abaixo).&lt;br&gt;
+Activa-lo botón &lt;label&gt;Seleccionado na parte superior&lt;/label&gt; para amosa-las ringleiras seleccionadas na parte de arriba, independentemente da orde actual da columna.
+
+&lt;a name=&quot;Filtering&quot;&gt;
+&lt;h4&gt;Filtrado&lt;/h4&gt;
+&lt;/a&gt;
+Para navegar a través de partes dos seus datos, pode utiliza-lo botón de filtro non fondo á esquerda. As seguintes opcións están dispoñibles.
+&lt;h5&gt;Amosar Tódalas Entidades&lt;/h5&gt;
+Amosa tódalas entidades da capa.
+&lt;h5&gt;Amosar Entidades Seleccionadas&lt;/h5&gt;
+Amosa tódals entidades que actualmente estean seleccionadas.
+&lt;h5&gt;Amosar Entidades Visibles no Mapa&lt;/h5&gt;
+Amosa tódalas entidades que actualmente están visibles na vista do mapa, tomando a actual extensión visible e tendo en conta a visibilidade baseada na escala.
+&lt;h5&gt;Amosar Entidades Editadas e Novas&lt;/h5&gt;
+Amosa só entidades editadas e novas. Neste modo, as entidades nas que non se cometeron cambios son amosadas e isto é polo tanto un bo filtro para revisar cambios, antes de perpetralos. Teña en conta que as entidades eliminadas non se amosan neste modo.
+&lt;h5&gt;Filtro de Columna&lt;/h5&gt;
+Un simple filtro, que permite filtrar por un atributo. Se o atributo contén texto, tamén busca sub-cadeas. Buscando &lt;b&gt;man&lt;/b&gt; amosará tamén rexistros que conteñan &lt;b&gt;woman&lt;/b&gt;. Despois de cambia-lo texto do filtro, prema&lt;label&gt;Enter&lt;/label&gt; ou clique en &lt;label&gt;Aplicar&lt;/label&gt;. Tamén pode conmuta-la caixa &lt;label&gt;Sensible ás maiúsculas&lt;/label&gt;, así o filtro tamén atopará &lt;b&gt;Night&lt;/b&gt; cando o texto de busca é &lt;b&gt;night&lt;/b&gt;.   
+&lt;h5&gt;Filtro Avanzado&lt;/h5&gt;
+Para buscas máis complexas, este modo ofrece un potente constructor de expresións, que é similar á cláusula SQL WHERE. Refírase á axuda interna do constructor de expresións para detalles da sintaxe.
+
+&lt;a name=&quot;Editing&quot;&gt;
+&lt;h4&gt;Editar&lt;/h4&gt;
+&lt;/a&gt;
+Para editar valores, primeiro ten que cambia-la capa a modo edición. Para cambiar a modo edición clique en &lt;label&gt;Alternar modo edición&lt;/label&gt; botón (lapis) ou prema &lt;label&gt;Ctrl + E&lt;/label&gt;. Despois diso faga doble clic no valor que queira editar ou sitúe o cursor nel e utilice a tecla &lt;label&gt;Espazo&lt;/label&gt;. Pode persoaliza-los widgets usados para a edición en &lt;label&gt;Propiedaes de Capa Vectorial &gt; Campos&lt;/label&gt;  
+
+&lt;a name=&quot;FieldCalc&quot;&gt;
+&lt;h4&gt;Calculadora de Campos&lt;/h4&gt;
+&lt;/a&gt;
+O botón &lt;label&gt;Calculadora de Campos&lt;/label&gt; na táboa de atributos permite realizar cálculos en base á valores de atributo existentes ou funcións definidas, por exemplo calcular a lonxitude ou área de entidades xeométricas.&lt;br&gt;
+Os resultados poden escribirse nunha nova columna de atributos ou poden utilizarse para actualizar valores nunha columna xa existente.&lt;br&gt;
+A capa vectorial necesita estar en modo edición, antes de clicar na icona &lt;label&gt;Calculadora de Campos&lt;/label&gt; para abri-lo diálogo.
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="189"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="647"/>
         <source>&lt;h3&gt;Project Properties&lt;/h3&gt;
 This dialog allows you to set a number of properties related to the &lt;label&gt;Project&lt;/label&gt;. A Project is a saved set of layers and their settings, as well as other information required to restore the project from disk.&lt;p&gt;
 
@@ -60606,18 +61575,58 @@ The Coordinate Reference System (CRS) tab allows you to set the projection for t
 &lt;/a&gt;
 On this tab you can choose on which layers the identify tool will work.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Propiedaes de Proxecto&lt;/h3&gt;
+Este diálogo permítelle establecer un número de propiedades relativas ó &lt;label&gt;Proxecto&lt;/label&gt;. Un Proxecto é un conxunto de capas gardadas e a súa configuración, así como outra información requeridapara restaura-lo proxecto dende o disco.&lt;p&gt;
+
+&lt;a href=&quot;#general&quot;&gt;Pestana Xeral&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#crs&quot;&gt;Pestana Sistema de Referencia de Coordenadas (SRC)&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#layers&quot;&gt;Pestana Capas Identificables&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;Pestana Xeral&lt;/h4&gt;
+&lt;/a&gt;
+&lt;table border=1&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Título do Proxecto&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Un título descriptivo para o proxecto. Este título amosaráse na barra de título da fiestra de QGIS&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Selección de Cor&lt;/label&gt;&lt;/td&gt;&lt;td&gt;As entidades selecciondas amósanse no mapa usando esta cor.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Cor de fondo&lt;/label&gt;&lt;/td&gt;&lt;td&gt;A cor da vista do mapa.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Gardar rutas&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Capacidade de garda-las rutas tanto absolutas coma relativas.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Unidades da Capa&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Escolla as unidades apropiadas para as capas no proxecto.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Precisión&lt;/label&gt;&lt;/td&gt;&lt;td&gt;Utilice a configuración manual para establece-la precisión da visualización na barra de estado. Tal como se move o rato sobre a vista do mapa, as coordenadas son actualizadas e visualizadas na barra de estadoutilizando a precisión que escolla. Automático (o predeterminado) resulta nunha precisión predeterminada baseada
+nas unidades do mapa.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;Dixitalizar&lt;/label&gt;&lt;/td&gt;&lt;td&gt;A opción &lt;label&gt;Activar edición topolóxica&lt;/label&gt; activa a edición e mantén os límites comúns en mosaicos de polígonos. Editar un vértice nun límite compartido resultará na actualización de ámbolos límites.&lt;p&gt;
+Para evitar dixitalizar tódolos vértices do límite común seleccione &lt;label&gt;Evitar interseccións dos novos polígonos&lt;/label&gt;. Na fiestra de diálogo tique as capas apropiadas ás que o novo polígono debe axustarse. Debuxe o novo polígono na forma que solape o existente, e será cortado automaticamente. &lt;p&gt;
+&lt;label&gt;Opcións de Autoaxuste&lt;/label&gt; permítelle establece-la tolerancia de autoaxuste en píxeles ou unidades de mapa e o modo de autoaxuste: &lt;label&gt;ó vértice&lt;/label&gt;, &lt;label&gt;ó segmento&lt;/label&gt;, &lt;label&gt;ó vértice e segmento&lt;/label&gt; para cada capa separadamente.&lt;/td&gt;&lt;/tr&gt;
+
+&lt;/table&gt;
+&lt;a name=&quot;crs&quot;&gt;
+&lt;h4&gt;Pestana Sistema de Referencia de Coordenadas (SRC)&lt;/h4&gt;
+&lt;/a&gt;
+A pestana Sistema de Referencia de Coordenadas (SRC) permítelle establece-la proxección para o proxecto actual e activa-la transformación sobre a marcha. Non necesita ter un proxecto gardado para dispoñer e activa-la transformación do SRC
+&apos;sobre a marcha&apos;.
+&lt;p&gt;Para utiliza-la Transformación do SRC &apos;sobre a marcha&apos;, clique na caixa de verificación &lt;label&gt;Activar transformación &apos;sobre a marcha&apos;&lt;/label&gt;. Logo escolla a proxección para o proxecto (vista do mapa) da lista de sistemas de coordenadas
+Xeográficos ou Proxectados.
+&lt;p&gt;Pode atopar un sistema de coordenadas introducindo o seu nome, código EPSG ou ID QGIS e clicando 
+o botón &lt;label&gt;Atopar&lt;/label&gt;.
+&lt;p&gt;A lista de sistemas de coordenadas utilizados recentemente estará dispoñible no fondo para un acceso rápido.
+
+&lt;a name=&quot;layers&quot;&gt;
+&lt;h4&gt;Pestana Capas Identificables&lt;/h4&gt;
+&lt;/a&gt;
+Nesta pestana pode escoller en que capas funcionará a ferramenta de identificación.
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1276"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1196"/>
         <source>&lt;h3&gt;Add SpatiaLite Tables&lt;/h3&gt;
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Engadir Táboas SpatiaLite&lt;/h3&gt;
+Para definir unha nova conexión, clique no botón &lt;label&gt;Novo&lt;/label&gt; e utilice un navegador de ficheiros para localiza-la súa base de datos SpatiaLite, que é un ficheiro coa extensión &lt;i&gt;.sqlite&lt;/i&gt; .&lt;p&gt;
+As conexións que defina serán lembradas para futuros usos e estarán dispoñibles para escoller dende o menú desplegable.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="114"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="532"/>
         <source>&lt;h3&gt;Spatial Bookmarks&lt;/h3&gt;
 Spatial Bookmarks allow you to &quot;bookmark&quot; a geographic location and return to it later.
 &lt;p&gt;
@@ -60658,10 +61667,49 @@ To delete a bookmark from the Bookmarks dialog, click on it then click the &lt;l
 To update the extent of a bookmark, click on it then click the &lt;label&gt;Update&lt;/label&gt; button. Confirm your choice by clicking &lt;label&gt;OK&lt;/label&gt; or cancel the update by clicking &lt;label&gt;Cancel&lt;/label&gt;.
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Marcadores Espaciais&lt;/h3&gt;
+Os Marcadores Espaciais permítenlle &quot;marcar&quot; unha localización xeográfica e voltar a ela despois.
+&lt;p&gt;
+&lt;a href=&quot;#creating&quot;&gt;Crear un Marcador&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#working&quot;&gt;Traballando con Marcadores&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#zooming&quot;&gt;Zoom a un Marcadore&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#deleting&quot;&gt;Eliminar un Marcador&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#updating&quot;&gt;Actualizar un Marcador&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;creating&quot;&gt;
+&lt;h4&gt;Crear un Marcador&lt;/h4&gt;
+&lt;/a&gt;
+Para crear un marcador:
+&lt;ol&gt;
+&lt;li&gt;Zoom ou desplácese a área deinterese.
+&lt;li&gt;Clique en &lt;label&gt;Novo marcador&lt;/label&gt; ou teclee Ctrl-B.
+&lt;li&gt;Introduza un nome descritivo para o marcador (ata 255 caracteres).
+&lt;li&gt;Clique&lt;label&gt;OK&lt;/label&gt; para engadi-lo marcador ou &lt;label&gt;Cancelar&lt;/label&gt; para saír sen engadi-lo marcador.
+&lt;/ol&gt;
+Teña en conta que pode ter múltiples marcadores co mesmo nome.
+&lt;a name=&quot;working&quot;&gt;
+&lt;h4&gt;Traballando con Marcadores&lt;/h4&gt;
+&lt;/a&gt;
+Para utilizar ou xestionar marcadores, clique no botón &lt;label&gt;Amosar marcadores&lt;/label&gt; ou escolla &lt;label&gt;Amosar Marcadores&lt;/label&gt; dende o menú &lt;label&gt;Vista&lt;/label&gt;. O diálogo dos marcadores permítelle facer zoom ou elimina-lo marcador. Non pode edita-lo nome do marcador nin as coordenadas.
+&lt;a name=&quot;zooming&quot;&gt;
+&lt;h5&gt;Zoom a un Marcador&lt;/h5&gt;
+&lt;/a&gt;
+Dende o diálogo de Marcadores Xeo Espaciais, seleccione o marcador desexado clicando nel, logo clique no botón &lt;label&gt;Facer Zoom&lt;/label&gt;.
+&lt;p&gt;
+Tamén pode facer zoom a un marcador facendo doble clic nel.
+&lt;a name=&quot;deleting&quot;&gt;
+&lt;h5&gt;Eliminar un Marcador&lt;/h5&gt;
+&lt;/a&gt;
+Para eliminar un marcador do diálogo de Marcadores, clique nel e logo no botón &lt;label&gt;Eliminar&lt;/label&gt;. Confirme a súa decisión clicando &lt;label&gt;OK&lt;/label&gt; ou cancele a eliminación clicando en &lt;label&gt;Cancelar&lt;/label&gt;.
+&lt;a name=&quot;updating&quot;&gt;
+&lt;h5&gt;Actualizar un Marcador&lt;/h5&gt;
+&lt;/a&gt;
+Para actualiza-la extensión dun marcador, clique nel e logo clique o botón &lt;label&gt;Actalizar&lt;/label&gt;. Confirme a súa elección clicando &lt;label&gt;OK&lt;/label&gt; ou cancele a actualización clicando en &lt;label&gt;Cancelar&lt;/label&gt;.
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="447"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="616"/>
         <source>&lt;h3&gt;Road graph plugin settings&lt;/h3&gt;
 &lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any polyline layer and plots this path over the road network.&lt;/p&gt;
 &lt;p&gt;
@@ -60693,10 +61741,10 @@ To update the extent of a bookmark, click on it then click the &lt;label&gt;Upda
 &lt;h5&gt;Default settings&lt;/h5&gt;
 &lt;p&gt;If the attribute table of your linear layer does not contain the required fields or fields contain unexpected values, the plugin will use default values. You can set them in the default tab &lt;label&gt;Default settings&lt;/label&gt;.&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="75"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="952"/>
         <source>&lt;h3&gt;Create a New SQL Anywhere Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a
 SQL Anywhere database.
@@ -60729,10 +61777,41 @@ SQL Anywhere database.
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Crear unha nova Conexión SQL Anywhere&lt;/h3&gt;
+Este diálogo permítelle defini-la configuración para unha conexió a unha base de datos
+SQL Anywhere.
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;label&gt;Nome&lt;/label&gt; Un nome para identifica-la configuración da conexión.
+
+&lt;li&gt; &lt;label&gt;Hóspede&lt;/label&gt; Nome ou dirección IP do ordenador que alberga o servidor da base de datos (deixar en branco para conexións locais)
+
+&lt;li&gt; &lt;label&gt;Porto&lt;/label&gt; Porto IP usado polo servidor da base de datos (deixar en branco para conexións locais ou para usar o porto predeterminado 2638).
+
+&lt;li&gt; &lt;label&gt;Servidor&lt;/label&gt; Nome do servidor da base de datos (deixar en branco para servidor predeterminado no hópede).
+
+&lt;li&gt; &lt;label&gt;Base de datos&lt;/label&gt; Nome da base de datos (deixar en branco para base de datos predeterminada no servidor).
+
+&lt;li&gt; &lt;label&gt;Parámetros da Conexión&lt;/label&gt; Parámetros adicionais a engadir á cadea de conexión (lista delimitada por punto e coma).  Mirar documentación SQL Anywhere para unha lista e descrición dos parámetros de conexión dispoñibles.
+
+&lt;li&gt; &lt;label&gt;Nome de usuario&lt;/label&gt; Nome de usuario da base de datos.
+&lt;li&gt; &lt;label&gt;Contrasinal&lt;/label&gt; Contrasinal da bse de datos.
+
+&lt;li&gt; &lt;label&gt;Gardar Nome de Usuario&lt;/label&gt; Indica se garda o nome de usuario da base de datos na configuración da conexión.
+
+&lt;li&gt; &lt;label&gt;Gardar Contrasinal&lt;/label&gt; Indica se garda o contrasinal da base de datos na configuración da conexión.  &lt;em&gt;¡Os Contrasinais gárdanse en &lt;strong&gt;texto sen cifrar&lt;/strong&gt; na configuración do sistema!&lt;/em&gt;
+
+&lt;li&gt; &lt;label&gt;Encriptado Simple&lt;/label&gt; Asegura a conexión á base de datos usando un encriptado simple.
+
+&lt;li&gt; &lt;label&gt;Estimar metadatos de táboa&lt;/label&gt; Cando se inician as capas, varias consultas poden ser necesarias para establece-las características das xeometrías gardadas na táboa da base de datos.  Cando esta opción está marcada, estas consultas examinan só unha mostra das ringleiras, no canto da táboa enteira.  Isto pode acelerar significativamente o iniciado de capas, pero pode resultar nunha incorrecta caracterización de capas que conteñan tipos heteroxéneos.
+
+&lt;li&gt; &lt;label&gt;Buscar táboas doutros usuarios&lt;/label&gt; Indica que a lista de capas debe encherse con tódalas capas almacenadas na base de datos.  Cando se desmarca (o predefinido), só as capas almacenadas en táboas propiedade do usuario conectado serán amosadas.
+
+&lt;/ul&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="590"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="325"/>
         <source>&lt;h3&gt;Open Vector Layer Dialog&lt;/h3&gt;
 
 The open vector layer dialog is used to add vector data to the QGIS map view. Vector data are spatial data described using geometries of points, lines and polygons (enclosed areas).&lt;/p&gt;
@@ -60740,107 +61819,23 @@ QGIS supports vector data in a number of formats, including those supported by t
 QGIS supports PostGIS layers in a PostgreSQL database and SpatiaLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats can be found in Appendix A.1 of the User Guide.&lt;/p&gt;
 Detailed description how to proceed with vector data is described in chapter 5 &apos;Working with Vector Data&apos;.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Abrir Diálogo de Capa Vectorial&lt;/h3&gt;
+
+O diálogo abrir capa vectorial é utilizado para engadir datos vectoriais á vista do mapa de QGIS. Os datos vectoriais son datos espaciais descritos utilizando xeometrías de puntos, liñas e polígonos (áreas adxuntas).&lt;/p&gt;
+QGIS soporta datos vectoriais nun certo número de formatos, incluíndo aqueles soportados polo plugin provedor de datos biblioteca OGR, tales como ESRI shapefiles, MapInfo MIF (formatos de intercambio) e MapInfo TAB (formato nativo).&lt;/p&gt;
+QGIS soporta capas PostGIS nunha base de datos PostgreSQL e capas SpatiaLite. O soporte para tipo de datos adicionais (por exemplo texto delimitado) é proporcionado por plugins de provedores de datos adicionais. Pode atoparse unha lista de formatos vectoriais soportados por OGR no apéndice A.1 da Guía do Usuario.&lt;/p&gt;
+Unha descrición detallada de como proceder cos datos vectoriais é relatada no capítulo 5 &apos;Traballando con Datos Vectoriais&apos;.
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="650"/>
-        <source>&lt;h3&gt;Manage and install Plugins&lt;/h3&gt;
-
-&lt;p&gt;
-Manage and install plugins.
-&lt;/p&gt;
-
-
-&lt;a href=&quot;#installedtab&quot;&gt;Installed tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#getmoretab&quot;&gt;Get more tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#newtab&quot;&gt;New tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#upgradabletab&quot;&gt;Upgradable tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#invalidtab&quot;&gt;Invalid tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#settingstab&quot;&gt;Settings tab&lt;/a&gt;&lt;br/&gt;
-
-&lt;a name=&quot;installedtab&quot;&gt;
-&lt;h4&gt;Installed tab&lt;/h4&gt;
-&lt;/a&gt;
-&lt;p&gt;
-This tab shows you the list of currently installed plugins on your system. Both
-python and C++ plugins are listed.
-&lt;/p&gt;
-&lt;p&gt;
-You can enable or disable them by clicking the checkbox in front of the name.&lt;br/&gt;
-Selecting an item show the plugin information in the detail pane.
-&lt;/p&gt;
-&lt;p&gt;
-There is a context menu (right click) available, to change the sorting on:
-name, number of downloads, votes and status.
-&lt;/p&gt;
-
-
-&lt;a name=&quot;getmoretab&quot;&gt;
-&lt;h4&gt;Get more tab&lt;/h4&gt;
-&lt;/a&gt;
-&lt;p&gt;
-This tab shows you the list of available plugins from the remote repositories.
-It is downloaded once if you start up. But you can change that in the Settings
-&lt;/p&gt;
-&lt;p&gt;
-Selecting an item shows you the plugin information in the detail pane.
-&lt;/p&gt;
-
-&lt;a name=&quot;newtab&quot;&gt;
-&lt;h4&gt;New tab&lt;/h4&gt;
-&lt;/a&gt;
-&lt;p&gt;
-This tab will be shown when a new plugin is made available! It will be shown
-just once.
-&lt;/p&gt;
-
-&lt;a name=&quot;upgradabletab&quot;&gt;
-&lt;h4&gt;Upgradable tab&lt;/h4&gt;
-&lt;/a&gt;
-&lt;p&gt;
-This tab is only available if one of your installed plugins can be upgraded
-from the remote repositories.
-&lt;/p&gt;
-
-&lt;a name=&quot;Invalid tab&quot;&gt;
-&lt;h4&gt;Invalid tab&lt;/h4&gt;
-&lt;/a&gt;
-&lt;p&gt;
-This tab is only available if there is a invalid plugin. Mostly caused by an error 
-during loading the plugin.
-&lt;/p&gt;
-
-&lt;a name=&quot;settingstab&quot;&gt;
-&lt;h4&gt;Settings tab&lt;/h4&gt;
-&lt;/a&gt;
-&lt;p&gt;
-In this tab you can change the Settings for the plugin manager.
-&lt;/p&gt;
-&lt;p&gt;
-It is possible to check how often QGIS will download the list and update information 
-from the available repositories.
-&lt;/p&gt;
-&lt;p&gt;
-By checking the &apos;Show experimental plugins&apos; checkbox, all plugins will be shown
-in the lists, even the ones that are considered &apos;experimental&apos; by the author.
-
-&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
-Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
-&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-
-&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="784"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1504"/>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;Administrador de Estilo&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1280"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1298"/>
         <source>&lt;style&gt;
 	#toolbarConsole td{
 		background: #f6f6f6;
@@ -61009,10 +62004,179 @@ that will be automatically deleted after running.&lt;/li&gt;
 	from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Consola Python de QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Consola&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Configuración&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				A consola Python de QGIS é un terminal interactivo para a execución de comandos
+				python. 
+				Tamén ten un editor de ficheiros python que lle permite editar e garda-los seus
+				scripts python.  
+				Tanto a consola coma o editor están baseados no paquete PyQScintilla2.&lt;br&gt;
+				A consola está dividita en dous paneis principais, o superior e o inferior
+				redimensionable usando o separador horizontal. A área do panel de saída é un
+				widget de só lectura que amosa os comandos de saída.
+				Pode arrastrar e soltar ou copiar e pegar texto na área de entrada e 
+				executar fragmentos de código dende o panel de saída seleccionando algún texto e
+				clicando no comando &lt;label&gt;Introducir seleccionado&lt;/label&gt; no menú contextual.
+				Non pasa nada se o texto seleccionado contén o apuntador do intérprete (&gt;&gt;&gt;, ...).
+				A área do panel de entrada é o terminal python interactivo para introducir comandos.					&lt;br&gt;Para acceder ó editor de ficheiros python utilice o botón 
+				&lt;label&gt;Amosar editor&lt;/label&gt; na barra de ferramentas.
+				O editor permite editar e gardar ficheiros python e ofrece funcionalidades básicas 
+				para a xestión do seu código (comentar e descomentar código, comprobar sintaxe,
+				compartir código vía codepad.org e moito máis).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Console&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Características principais:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Autocompletado de código, resalte de sintaxe e calltips para as seguintes APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; para ve-la lista de autocompletado.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; para ve-la lista do historial de comandos.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Executa fragmentos de código co comando &lt;label&gt;Introducir seleccionado&lt;/label&gt; do panel de saída.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Abre a documentacion API de QGIS API tecleando&lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Abre o Libro de Receitas PyQGIS tecleando &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Gardar e limpa-lo historial de comandos accedidos dende o menú contextual do panel de 					entrada. O historial será gardado no ficheiro ~/.qgis2/console_history.txt&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Limpar consola python&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSextanteConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importar clase Sextante&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Importar clase PyQt4.QtCore&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Ferramenta para importar clase PyQt4.QtGui&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Executar comando (coma tecla Intro pulsada)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Configuración&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Características principais:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Autocompletado de código, realce de sintaxe e calltips para as seguintes APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; para ve-la lista de autocompletado.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Compartir fragmentos de código vía codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Comprobación de sintaxe.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Inspector de Obxectos: un buscador de clases e funcións.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Ir a unha definición de obxecto cun clic de rato. (dende o inspector de Obxectos)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Executa fragmentos de código co comando &lt;label&gt;Introducir seleccionado&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Exucuta-lo script completo co comando &lt;label&gt;Executar script&lt;/label&gt;
+			(isto crea un ficheiro compilado byte coa extensión .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Configuración&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Máis axustes para a consola python:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autocompletado:&lt;/label&gt; o completado de código está activado de estar marcada. Pode ter autocompletado
+do documento actual, de APIs instaladas ou ámbalas das APIs e do actual documento&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Marxe de Autocompletado threshold:&lt;/label&gt; Establece a marxe para amosa-la lista de autocompleatado (en caracteres tecleados)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Insercion automática de parénteses:&lt;/label&gt; Activa o autopechado de parénteses de estar marcado&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Gardar automaticamente script antes de executar:&lt;/label&gt; Permítelle gardar automaticamente 
+o script a executar para evitar gardalo despois de calquera modificación.
+Esta acción almacenará un ficheiro temporal no directorio temporal do sistema que
+será eliminado automaticamente logo de executarse.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Usar ficheiro de APIs precargado:&lt;/label&gt; Pode escoller se usa-lo ficheiro de APIs precargado ou cargar algúns ficheiros de APIs gardados no seu sistema.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Usar ficheiro de APIs preparado:&lt;/label&gt; De ser marcado o ficheiro *.pap será utilizado para o completado de código. Para xenerar un ficheiro de APIs preparado ten que cargar polo menos un ficheiro *.api e logo compilalo clicando no botón &lt;label&gt;Compilar Apis...&lt;/label&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Nota:&lt;/b&gt; Para garda-lo estado dos widgets de consola ten que pecha-la Consola Python
+	no botón pechar. Isto permítelle garda-la xeometría a ser restaurada no próximo inicio.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1451"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1036"/>
         <source>&lt;h3&gt;Options&lt;/h3&gt;
 This dialog allows you to select some basic options for QGIS. There are eight tabs:
 &lt;p&gt;
@@ -61087,10 +62251,83 @@ Informs you about active system locale. To change it tick &lt;label&gt;Override 
 &lt;/a&gt;
 Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, user, and password.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Opcións&lt;/h3&gt;
+Este diálogo permítelle seleccionar algunhas opcións básicas de QGIS. Hai oito pestanas:
+&lt;p&gt;
+
+&lt;a href=&quot;#general&quot;&gt;Xeral&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#ren&quot;&gt;Renderizado &amp; SVG&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#map&quot;&gt;Ferramentas de Mapa&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#over&quot;&gt;Superposición&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#digit&quot;&gt;Dixitalización&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#crs&quot;&gt;SRC&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#loc&quot;&gt;Locale&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#net&quot;&gt;Rede &amp; Proxy&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;Xeral&lt;/h4&gt;
+&lt;/a&gt;
+Nesta pestana pode configura-las opcións xerais para o comportamento do proxecto na apertura/gardado, apariencia predeterminada do mapa, o seu tema de iconas favorito e moitas outras.
+&lt;a name=&quot;ren&quot;&gt;
+&lt;h4&gt;Renderizado &amp; SVG&lt;/h4&gt;
+&lt;/a&gt;
+Dentro desta pestana pode establece-las opcions xerais de renderizado para as capas do mapa.&lt;br&gt;
+Por defecto, QGIS renderiza tódalas capas visibles sempre que a vista do mapa sexa refrescada. Os eventos que desencadean un refrescado da vista do mapa inclúen:
+&lt;ul&gt;
+&lt;li&gt;Engadir unha capa
+&lt;li&gt;Desplazar ou achegar
+&lt;li&gt;Redimensionar a fiestra de QGIS
+&lt;li&gt;Cambia-la visibilidade dunha capa ou capas
+&lt;/ul&gt;
+QGIS permítelle controla-lo proceso de renderizado de varias formas:&lt;p&gt;
+Pode configurar unha opción para que sempre cargue novas capas sen debuxalas.&lt;br&gt;
+Isto significa que a capa será engadida ó mapa, pero a súa caixa de verificación de visibilidade na lenda estará desmarcada por defecto. Para coller esta opción, desmarque a caixa de verificación &lt;label&gt;Por defecto, as novas capas engadidas deben ser amosadas&lt;/label&gt;.&lt;p&gt;
+Pode configurar unha opción para actualiza-la visualización do mapa segundo as entidades son debuxadas. &lt;br&gt;
+Por defecto, QGIS non amosa ningunha entidade dunha capa ata que a capa enteira foi renderizada. Para actualiza-la visualización así como as entidades son lidas dende o almacén de datos, configure o &lt;label&gt;Número de entidades a debuxar antes de actualica-la visualización&lt;/label&gt; a un valor apropiado. Establecendo un valor de 0 desactiva a actualización durante o debuxado (este é o predeterminado). Establecendo un valor demasiado baixo resultará nun pobre rendemento xa que a vista do mapa está continuamente actualizando durante a lectura das entidades. Un valor suxerido para comezar é 500.
+&lt;a name=&quot;map&quot;&gt;
+&lt;h4&gt;Ferramentas de Mapa&lt;/h4&gt;
+&lt;/a&gt;
+&lt;h5&gt;Identificar&lt;/h5&gt;
+A configuración &lt;label&gt;Modo&lt;/label&gt; determina que capas serán amosadas pola ferramenta &lt;label&gt;Identificar&lt;/label&gt;. Cambiando  de &lt;label&gt;Arriba a abaixo&lt;/label&gt; no canto de &lt;label&gt;Capa actual&lt;/label&gt; os atributos para tódalas capas identificables serán amosados coa ferramenta &lt;label&gt;Identificar&lt;/label&gt;.
+&lt;h5&gt;Ferramenta de Medición&lt;/h5&gt;
+Aquí pode establecer un elipsoide para cálculos de distancia, unidades de medida e cor preferida da banda elástica.
+&lt;h5&gt;Desprazamento e achegamento&lt;/h5&gt;
+Permite defini-la acción da roda do rato e o factor de zoom.
+&lt;a name=&quot;over&quot;&gt;
+&lt;h4&gt;Superposición&lt;/h4&gt;
+&lt;/a&gt;
+Define un algoritmo de posicionamento para etiquetas. Escolla entre &lt;label&gt;punto central (o máis rápido)&lt;/label&gt;, &lt;label&gt;cadea (rápido)&lt;/label&gt;, &lt;label&gt;cadea tabú popmusic (lento)&lt;/label&gt;, &lt;label&gt;tabú popmusic tabu (lento)&lt;/label&gt; e&lt;label&gt;cadea popmusic (moi lento)&lt;/label&gt;.
+
+&lt;a name=&quot;digit&quot;&gt;
+&lt;h4&gt;Dixitalización&lt;/h4&gt;
+&lt;/a&gt;
+&lt;h5&gt;Banda elaśtica&lt;/h5&gt;
+Na pestana &lt;label&gt;Dixitalización&lt;/label&gt; pode defini-la configuración para o ancho e cor da liña de dixitalización.
+&lt;h5&gt;Autoaxuste&lt;/h5&gt;
+Aquí pode definir unha tolerancia xeral ampla do proxecto. &lt;p&gt;
+Pode seleccionar entre &lt;label&gt;Ó vértice&lt;/label&gt;, &lt;label&gt;Ó segmento&lt;/label&gt; ou &lt;label&gt;Ó vértice e ó segmento&lt;/label&gt; coma modo de axuste predeterminado. Tamén pode definir unha tolerancia de axuste predeterminada e un radio de busca para edicións de vértices. A tolerancia pode establecerse tanto en unidades de mapa ou en píxeles. A vantaxe de escoller en píxeles, é que a tolerancia de axuste non cambia logo de operacións de zoom.&lt;p&gt;
+Unha tolerancia de axuste baseado nunha capa pode definirse escollendo &lt;label&gt;Configuración&lt;/label&gt; (ou &lt;label&gt;Ficheiro&lt;/label&gt;) &gt; &lt;label&gt;Propiedades de Proxecto...&lt;/label&gt;. Na pestana &lt;label&gt;Xeral&lt;/label&gt;, sección &lt;label&gt;Dixitalizar&lt;/label&gt; pode clicar en &lt;label&gt;Opcións de autoaxuste...&lt;/label&gt; para activar e axusta-lo modo de axuste e tolerancia na capa base.
+&lt;h5&gt;Marcadores de vértices&lt;/h5&gt;
+Pode definir un estilo de marcador a &lt;label&gt;Círculo Semitransparente&lt;/label&gt;, &lt;label&gt;Cruz&lt;/label&gt; ou &lt;label&gt;Ningún&lt;/label&gt; e ó tamaño; tamén pode establecer marcadores visibles só para entidades seleccionadas.
+&lt;h5&gt;Introducri Valores de Atributo&lt;/h5&gt;
+Por defecto, logo de dixitalizar unha nova entidade, QGIS pregúntalle se quere introducir valores de atributo na entidade. Pinchando &lt;label&gt;Suprimir fiestra emerxente de atributos logo de cada entidade creada&lt;/label&gt; permítelle introduci-los atributos despois.
+&lt;a name=&quot;crs&quot;&gt;
+&lt;h4&gt;SRC&lt;/h4&gt;
+&lt;/a&gt;
+QGIS xa non establece o SRC do mapa ó sistema de referencia de coordenadas da primeira capa cargada. Camdp comeza unha sesión de QGIS con capas que non teñen un SRC, necesita verificar e definir unha definición do SRC para esas capas. Isto pode facerse globalmente nesta pestana.&lt;p&gt;
+O SRC global predeterminado &lt;i&gt;proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs&lt;/i&gt; vén predefinido en QGIS pero, por suposto, pode cambiarse e a nova definición será gardada para futuras sesións de QGIS.
+&lt;a name=&quot;lov&quot;&gt;
+&lt;h4&gt;Locale&lt;/h4&gt;
+&lt;/a&gt;
+Infórmalle sobre o locale activo no sistema. Para cambialo tique &lt;label&gt;Anular configuración rexional do sistema&lt;/label&gt; e reinicie QGIS.
+&lt;a name=&quot;net&quot;&gt;
+&lt;h4&gt;Rede &amp; Proxy&lt;/h4&gt;
+&lt;/a&gt;
+Tique &lt;label&gt;Use proxy para acceso a internet&lt;/label&gt; para definir hóspede, porto, usuario e contrasinal.
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1142"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="908"/>
         <source>&lt;h3&gt;Create New Vector Layer&lt;/h3&gt;
 To create a new layer for editing, choose &lt;label&gt;New Vector Layer&lt;/label&gt; from the &lt;label&gt;Layer&lt;/label&gt; menu.&lt;br/&gt;
 With this dialog you can create a shape file layer.
@@ -61103,10 +62340,21 @@ You can also define the width and precision of the new attribute column.
 &lt;h4&gt;Attributes list&lt;/h4&gt;
 In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Crear Nova Capa Vectorial&lt;/h3&gt;
+Para crear unha nova capa para edición, escolla &lt;label&gt;Nova Capa Vectorial&lt;/label&gt; dende o menú &lt;label&gt;Cajpa&lt;/label&gt;.&lt;br/&gt;
+Con este diálogo pode crear unha capa shapefile.
+&lt;h4&gt;Tipo&lt;/h4&gt;
+Escolla o tipo de capa &lt;label&gt;Punto&lt;/label&gt;, &lt;label&gt;Liña&lt;/label&gt; ou &lt;label&gt;Polígono&lt;/label&gt;.&lt;br/&gt;
+Clique no botón &lt;label&gt;Especificar SRC&lt;/label&gt; para cambia-lo sistema de referencia de coordenadas da capa se é necesario.
+&lt;h4&gt;Novo atributo&lt;/h4&gt;
+Engada os atributos desexados clicando no botón &lt;label&gt;Engadir á lista de atributos&lt;/label&gt; despois de que especifique un nome e tipo de atributo. Só atributos de tipo número real, enteiro ou cadea están soportados.&lt;br/&gt;
+Tamén pode defini-lo ancho e a precisión na nova columna de atributos.
+&lt;h4&gt;Lista de Atributos&lt;/h4&gt;
+Nesta sección pode ve-la lista de atributos. Para eliminar un deles, clíqueo e escolla o botón &lt;label&gt;Eliminar atributo seleccionado&lt;/label&gt;.
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="363"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="344"/>
         <source>&lt;h3&gt;Add SQL Anywhere Tables&lt;/h3&gt;
 This dialog allows you to add SQL Anywhere layers (tables with a geometry column) to the QGIS map canvas.
 &lt;p&gt;
@@ -61145,10 +62393,47 @@ To filter a layer before adding it to the map, either double click on its name o
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Engadir Táboas SQL Anywhere&lt;/h3&gt;
+Este diálogo permítelle engadir capas SQL Anywhere (táboas cunha columna de xeometría) á vista do mapa de QGIS.
+&lt;p&gt;
+&lt;a href=&quot;#connect&quot;&gt;Conexións&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#add&quot;&gt;Engadir Capas&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#filter&quot;&gt;Filtrar unha capa&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#search&quot;&gt;Opcións de Busca&lt;/a&gt;&lt;br/&gt;
+
+&lt;a href=&quot;#connect&quot;&gt;
+&lt;h4&gt;Conexións&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;Escolla a conexión a utilizar dendea caixa desplegable e clique en &lt;label&gt;Conectar&lt;/label&gt;.
+&lt;li&gt;Se non hai conexións, utilice o botón &lt;label&gt;Novo&lt;/label&gt; para crear unha conexión.
+&lt;li&gt;Para modificar ou elimina-la conexión seleccionada, clique o botón &lt;label&gt;Editar&lt;/label&gt; ou &lt;label&gt;Eliminar&lt;/label&gt;, respectivamente.
+&lt;/ul&gt;
+&lt;a name=&quot;add&quot;&gt;
+&lt;h4&gt;Engadir Capas&lt;/h4&gt;
+&lt;/a&gt;
+Para engadir unha capa:
+&lt;ol&gt;
+&lt;li&gt;Escolla a conexión desexada dende a caixa desplegable.
+&lt;li&gt;Clique en &lt;label&gt;Conectar&lt;/label&gt;, que encherá a lista de capas dende a base de datos. As opcións que afectana como a lista é enchida descríbensena axuda da caixa de diálogo para unha nova conexión.
+    
+&lt;li&gt;Atope a capa que queira engadir na lista e clique nela para seleccionala.
+&lt;li&gt;Pode seleccionar capas adicionais mantendo pulsada a tecla Ctrl e clicando.
+&lt;li&gt;Clique &lt;label&gt;Engadir&lt;/label&gt; para engadir a capa(s) ó mapa.
+&lt;/ol&gt;
+&lt;a name=&quot;filter&quot;&gt;
+&lt;h4&gt;Filtrar unha Capa&lt;/h4&gt;
+&lt;/a&gt;
+Para filtrar unha capa antes de engadila ó mapa, tanto doble clicno seu nome coma seleccionala e clicar no botón &lt;label&gt;Construír consulta&lt;/label&gt;. Isto abrirá o Constructor de Consultas, permitíndolle crear unha sentenza SQL para utilizar no filtrado de rexistros.
+
+&lt;a name=&quot;search&quot;&gt;
+&lt;h4&gt;Opcións de Busca&lt;/h4&gt;
+&lt;/a&gt;
+Marcando &lt;label&gt;Opcións de busca&lt;/label&gt; activa opcións adicionais para buscar en diferentes tipos de columnas e usar dous modos de busca: &lt;label&gt;Comodín&lt;/label&gt; ou &lt;label&gt;Expresión Regular&lt;/label&gt;.
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="632"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1200"/>
         <source>&lt;h3&gt;Save vector layer as...&lt;/h3&gt;
 
 &lt;p&gt;This dialog allows you to save vector data in various formats using GDAL/OGR.
@@ -61163,10 +62448,23 @@ Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for
 
 See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Gardar capa vectorial como...&lt;/h3&gt;
+
+&lt;p&gt;Este diálogo permítelle gardar datos vectoriais en varios formatos utilizando GDAL/OGR.
+
+&lt;ul&gt;
+&lt;li&gt;Dende a lista &lt;label&gt;Formato&lt;/label&gt; pode selecciona-lo formato de destino (segundo o anunciado por OGR).
+&lt;li&gt;En &lt;label&gt;Gardar como&lt;/label&gt; pode introducir un destino do nome de ficheiro ou seleccionar un utilizando o botón &lt;label&gt;Buscar&lt;/label&gt;.
+&lt;li&gt;Na lista &lt;label&gt;Codificación&lt;/label&gt; pode definir en que codificación deben gardarse os datos.
+&lt;li&gt;Utilizando o &lt;label&gt;SRC&lt;/label&gt; pode seleccionarun SRC no que os datos que sexan gardados deban ser reproxectados.
+&lt;li&gt;OGR tamén ten varias opcións para os diferentes formatos que soporta.  Utilice o campo de creación &lt;label&gt;fonte de datos&lt;/label&gt; para establece-las opcións da fonte de datos e as opcións de creación de &lt;label&gt;capa&lt;/label&gt;. Introduza unha opción por liña (por exemplo &lt;code&gt;SPATIALITE=si&lt;/code&gt; na &lt;label&gt;fonte de datos&lt;/label&gt; para crear unha base de datos spatialite utilizando o driver SQLite).
+&lt;/ul&gt;
+
+Ver &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;formatos vectoriais OGR&lt;/a&gt; para unha lista de formatos soportados e as opcións dispoñibles.
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1154"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="392"/>
         <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
 &lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
 raster of an input point vector layer.  The density is calculated based on the
@@ -61221,10 +62519,60 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h1&gt;Axuda do Plugin Mapa de Calor&lt;/h1&gt;
+&lt;p&gt;O plugin Mapa de Calor utiliza a Estimación de Densidade do Núcleo para crear unha densidade ráster (mapa de calor)
+dunha capa vectorial de puntos de entrada.  A densidade é calculada baseada no número de puntos 
+nunha posición, con números elevados de puntos agrupados resultando
+valores altos. O mapa de calor permite unha fácil identificación de &quot;puntos quentes&quot; e a agrupación de puntos.&lt;/p&gt;
+
+&lt;h2&gt;Parámetros do Diálogo&lt;/h2&gt;
+
+&lt;h3&gt;Capa de puntos de entrada&lt;/h3&gt;
+&lt;p&gt;A entrada é sempre unha capa vectorial de tipo punto. Tódalas capas vectoriais de puntos que estean actualmente cargadas na vista do mapa son amosadas na lista despregable. Clique no botón despregable e seleccione as capas desexadas.&lt;/p&gt;
+
+&lt;h3&gt;Ráster de saída&lt;/h3&gt;
+&lt;p&gt;A localización e o nome de ficheiro do ráster de saída poden establecerse clicando o botón &lt;label&gt;...&lt;/label&gt; próximo ó cadro de texto ráster de saída.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt; O nome de ficheiro engádese automaticamente dependendo do formato de saída seleccionado, se non se explicita ningún.&lt;/p&gt;
+
+&lt;h3&gt;Formato de saída&lt;/h3&gt;
+&lt;p&gt;Toda creación de ficheiro que soporte os formatos GDAL está dispoñible la lista despregable. Clique e seleccione o formato de saída requerido para o seu ficheiro.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt; Os formatos GeoTiff e ERDAS Imagine .img son os recomendados. Algúns formatos producen un bloqueo da aplicación. Cíngase amablemente ós formatos recomendados ata que o elemento de bloqueo sexa resolto ou utilice outros formatos se sabe que GDAL os soporta completamente.&lt;/p&gt;
+
+&lt;h3&gt;Radio (ancho de banda)&lt;/h3&gt;
+&lt;p&gt;Usado para especifica-lo radio de busca do mapa de calor (ou ancho de banda do núcleo) en metros ou unidades do mapa. O radio especifica a distancia arredor dun punto no cal a influencia dese punto se deixa notar. Valores grandes resultan nun gran suavizado, mentras que valores baixos poden amosar detalles finos e variación na densidade de puntos.&lt;/p&gt;
+
+&lt;h3&gt;Opcións Avanzadas&lt;/h3&gt;
+
+&lt;h4&gt;Ringleiras e Columnas&lt;/h4&gt;
+&lt;p&gt;Utilizado para cambia-las dimensións do ficheiro ráster de saída. Estes valores están ligados ós valores de &lt;b&gt;Tamaño da cela X&lt;/b&gt; e &lt;b&gt;Tamaño da cela Y&lt;/b&gt;. 
+Inrementando o número de ringleiras ou columnas decrecerá o tamaño de cela e incrementará o tamaño do ficheiro de saída. Os valores en Ringleiras e Columnas
+tamén están ligados, así doblando o número de ringleiras automaticamente doblará o número de columnas e o tamaño das celas tamén será reducido á metade. ¡A área xeográfica do ráster de saída permanecerá a mesma!&lt;/p&gt;
+
+&lt;h4&gt;Tamaño de cela X e Y&lt;/h4&gt;
+&lt;p&gt;Controla o tamaño xeográfico de cada píxel no ráster de saída. Cambiando estes valores tamén cambiará o número de Ringleiras e Columnas no ráster de saída.&lt;/p&gt;
+  
+&lt;h4&gt;Forma do Núcleo&lt;/h4&gt;
+&lt;p&gt;A forma do núcleo controla a taxa á cal a influencia dun punto diminúe así como a distancia ó punto incrementa. Núcleos diferentes decaen a taxas diferentes,
+así un núcleo triponderado dá entidades con maior peso para distancias próximas ó punto que o núcleo de Epanechnikov. Consecuentemente,
+a triponderación resulta en puntos quentes &quot;nítidos&quot;, mentras que Epanechnikov resulta en puntos quentes &quot;máis suaves&quot;. Hai un certo número de funcións de núcleo estándar
+dispoñibles en QGIS, que se describen e ilustran na Wikipedia&lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4&gt;Radio de decaemento&lt;/h4&gt;
+&lt;p&gt;Para núcleos triangulares, o radio de decaemento define a cantidade de influencia que se aplica ós píxeles máis externos no radio do búfer. Un valor 0 reflicte un núcleo triangular estándar, onde a influencia cae a 0 segundo a distancia dende o píxel ó punto se aproxima ó radio especificado. En contraste, un valor de 1 indica que non hai caída segundo a distancia ó punto incrementa.&lt;/p&gt;
+
+&lt;h4&gt;Utilice radio dende campo&lt;/h4&gt;
+&lt;p&gt;Opcionalmente, o valor nun campo especificado pode utilizarse para controlar o radio do núcleo para cada punto na capa de entrada.&lt;/p&gt;
+
+&lt;h4&gt;Utilice peso dende campo&lt;/h4&gt;
+&lt;p&gt;Opcionalmente, un atributo que conteña pesos para puntos pode utilizarse para ponderar algúns puntos na capa de entrada máis que outros.&lt;/p&gt;
+
+&lt;h2&gt;Para máis detalles&lt;/h2&gt;
+&lt;p&gt;Contacte co autor a través de aruntheguy en gmail punto com&lt;/p&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="826"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="11"/>
         <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
 Loads and displays delimited text files
 &lt;p&gt;
@@ -61542,7 +62890,7 @@ The following options can be added
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="11"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="332"/>
         <source>&lt;h3&gt;Print Composer&lt;/h3&gt;
 
 &lt;p&gt;
@@ -61555,7 +62903,18 @@ Click on one of the icons along the top of the composer window to select what ty
 &lt;/p&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Deseñador de Impresión&lt;/h3&gt;
+
+&lt;p&gt;
+O deseñador de impresión permítelle organizar elementos nunha páxina, para ser impresos. Os elementos inclúen o contido da vista do mapa, a barra de escala, a lenda e imaxes arbitrarias.
+&lt;/p&gt;
+
+&lt;p&gt;
+Clique nunha das iconas ó longo da parte de arriba da fiestra do deseñador para seleccionar que tipo de elemento posicionar na páxina, logo clique e debuxe na páxina para ubicalo. O tamaño dalgúns elementos, tales coma a vista do mapa e a barra de escala poden establecerse clicando e arrastrando na páxina. Outros elementos teñen un tamaño fixo, pero pódense modificar posteriormente resaltando o elemento e logo axustando o tamaño dos campos no panel da esquerda.
+
+&lt;/p&gt;
+
+</translation>
     </message>
 </context>
 <context>
@@ -62625,7 +63984,7 @@ O plugin non será activado.</translation>
 <context>
     <name>function_help</name>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="278"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="58"/>
         <source>&lt;h3&gt;week() function&lt;/h3&gt;
 Extract the week number from a date, or the number of weeks
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -62646,10 +64005,27 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función semana()&lt;/h3&gt;
+Extrae o número de semana dende unha data ou o número de semanas
+dende un &lt;code&gt;Intervalo&lt;/code&gt;
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;week(data)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(Intervalo)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;data&lt;/code&gt; - é a data. A data dende a que extrae-la semana.
+&lt;br&gt;
+&lt;code&gt;Intervalo&lt;/code&gt; - é o Intervalo. O Intervalo dende o que devolve o número de semanas.
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;week(&apos;2012-05-12&apos;) &amp;rarr; 19&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(tointerval(&apos;3 weeks&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="94"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="361"/>
         <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
 A conditional expression that can be used to evaluate multiple expressions and
 return a result.
@@ -62679,10 +64055,37 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Expresión CASE&lt;/h3&gt;
+Unha expresión condicional que pode ser usada para avaliar múltiples expresións
+e devolver un resultado.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;condición&lt;/i&gt; THEN &lt;i&gt;resultado&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;resultado&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] marca compoñentes opcionais
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  condición WHEN&lt;/i&gt; - A expresión de condición a avaliar. &lt;br&gt;
+&lt;i&gt;  resultado THEN&lt;/i&gt; - Se a  &lt;i&gt;condición&lt;/i&gt; avaliada é Certa entón o &lt;i&gt;resultado&lt;/i&gt; é avaliado e amosado. &lt;br&gt;
+&lt;i&gt;  resultado ELSE &lt;/i&gt; -  Se ningunha das condicións avaliadas arriba é Certa entón o &lt;i&gt;resultado&lt;/i&gt; é avaliado e amosado. &lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;columna&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;Ningún&apos;&lt;/i&gt;
+        ELSE &lt;i&gt;&quot;columna&quot;&lt;/i&gt;
+    END
+&lt;/pre&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="363"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1440"/>
         <source>&lt;h3&gt;right() function&lt;/h3&gt;
 Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters of the string.
 
@@ -62699,10 +64102,25 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función dereita()&lt;/h3&gt;
+Devolve unha subcadea que contén os &lt;i&gt;n&lt;/i&gt; caracteres máis á dereita da cadea.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;right(cadea, posición)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - tipo cadea. A cadea.
+&lt;br&gt;
+&lt;code&gt;length&lt;/code&gt; - tipo enteiro. O número de caracteres dende a dereita a amosar.
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1429"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="881"/>
         <source>
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
@@ -62712,7 +64130,7 @@ This group contains functions for manipulating colors
 Este grupo contén funcións para a manipulación das cores</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1086"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="563"/>
         <source>&lt;h3&gt;length() function&lt;/h3&gt;
 Returns the length of a string.
 
@@ -62727,10 +64145,22 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función lonxitude ()&lt;/h3&gt;
+Amosa a lonxitude dunha cadea.
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     length(&lt;i&gt;cadea&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; tipo cadea.  A Cadea da cal contar a lonxitude.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1480"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="589"/>
         <source>&lt;h3&gt;upper() function&lt;/h3&gt;
 Converts a string to upper case letters.
 
@@ -62745,10 +64175,22 @@ Converts a string to upper case letters.
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función maiúscula()&lt;/h3&gt;
+Convirte unha cadea a letras maiúsculas.
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     upper(&lt;i&gt;cadea&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; tipo cadea.  A Cadea a convertir a maiúsculas.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="347"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="27"/>
         <source>&lt;h3&gt;left() function&lt;/h3&gt;
 Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters of the string.
 
@@ -62765,10 +64207,57 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 &lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función esquerda()&lt;/h3&gt;
+Devolve as subcadeas que conteñen os caracteres &lt;i&gt;n&lt;/i&gt; máis á esquerda da cadea.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;left(cadea, lonxitude)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadea&lt;/code&gt; - tipo cadea. A cadea.
+&lt;br&gt;
+&lt;code&gt;lonxitude&lt;/code&gt; - tipo enteiro. O número de caracteres a amosar dende a esquerda.
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="205"/>
+        <source>&lt;h3&gt;regexp_replace() function&lt;/h3&gt;
+Returns a string with the supplied regular expression replaced.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_replace(&lt;i&gt;string,regex,after&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character).&lt;br&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</source>
+        <translation type="obsolete">&lt;h3&gt;función regexp_replace()&lt;/h3&gt;
+Devolve unha cadea coa expresión regular indicada substituída.
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     regexp_replace(&lt;i&gt;cadea,expresión_regular,posterior&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  cadea&lt;/i&gt; &amp;rarr; tipo cadea.  O inicio da cadea.&lt;br&gt;
+&lt;i&gt;  expresión_regular&lt;/i&gt; &amp;rarr; tipo cadea.  A expresión regular a substituír. Os caracteres de Barra Invertida deben estar entrecomiñados (por exemplo &quot;&amp;#92;&amp;#92;s&quot; para marcar un caracter espazo en branco).&lt;br&gt;
+&lt;i&gt;  posterior&lt;/i&gt; &amp;rarr; tipo cadea.  A cadea que substituirá calquera coincidencia coa expresión regular indicada. Os grupos capturados poden insertarse na cadea de substitución utilizando  &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="885"/>
         <source>&lt;h3&gt;$scale function&lt;/h3&gt;
 Returns the current scale of the map canvas.
 &lt;br&gt;
@@ -62782,10 +64271,22 @@ Note: This function is only available in some contexts and will be 0 otherwise.
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función $escala &lt;/h3&gt;
+Devolve a escala actual da vista do mapa.
+&lt;br&gt;
+Nota: Esta función está dispoñible só en certos contextos e será 0 no caso contrario. 
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;$scale&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;$scale &amp;rarr; 10000&lt;/code&gt;&lt;br&gt;
+
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1512"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="226"/>
         <source>
 &lt;h3&gt;color_rgb() function&lt;/h3&gt;
 Returns a string representation of a color based on its red, green, and blue components
@@ -62803,10 +64304,25 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;función cor_rgb()&lt;/h3&gt;
+Devolve unha representación da cadea dunha cor baseada nos seus compoñentes vermello, verde e azul
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     color_rgb(&lt;i&gt;vermello, verde, azul&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  vermello&lt;/i&gt; &amp;rarr; a compoñente vermella coma un valor enteiro dende 0 to 255.&lt;br&gt;
+&lt;i&gt;  verde&lt;/i&gt; &amp;rarr; a compoñente verde coma un valor enteiro dende 0 to 255.&lt;br&gt;
+&lt;i&gt;  azul&lt;/i&gt; &amp;rarr; a compoñente azul coma un valor enteiro dende 0 to 255.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     color_rgb(255,127,0) &amp;rarr; &apos;#ff7f00&apos;&lt;/p</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="996"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="400"/>
         <source>&lt;h3&gt;$numpages function&lt;/h3&gt;
 Returns the total number of pages in the composition.
 
@@ -62820,10 +64336,21 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función $numpages&lt;/h3&gt;
+Devolve o número total de páxinas da composición.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;pre&gt;$numpages&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ningún
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="172"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="494"/>
         <source>&lt;h3&gt;rand() function&lt;/h3&gt;
 Returns a random integer within the range specified by the minimum and 
 maximum argument (inclusive).
@@ -62841,10 +64368,25 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función rand()&lt;/h3&gt;
+Devolve un número enteiro aleatorio dentro do rango especificado entre os argumentos mínimo
+e máximo (incluídos).
+&lt;br&gt;
+Esta función toma dous argumentos.
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;rand(mín, máx)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;mín&lt;/code&gt; - un número enteiro representando o número aleatorio máis baixo desexado.&lt;br&gt;
+&lt;code&gt;máx&lt;/code&gt; - un número enteiro representando o número aleatorio máis alto desexado.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1317"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1456"/>
         <source>&lt;h3&gt;$rownum function&lt;/h3&gt;
 Returns the number of the current row.
 
@@ -62858,10 +64400,22 @@ None
 &lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función $rownum&lt;/h3&gt;
+Devolve o número da ringleira actual.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;pre&gt;$rownum&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ningún
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="660"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="773"/>
         <source>&lt;h3&gt;atan2() function&lt;/h3&gt;
 Returns arcustangens of y/x using the signs of the two 
 arguments to determine the quadrant of the result
@@ -62878,10 +64432,24 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función atan2()&lt;/h3&gt;
+Devolve o arcotanxecte de y/x utilizando os signos dos dous argumentos
+para determina-lo cuadrante do resultado.
+
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     atan2(&lt;i&gt;número real&lt;/i&gt;, &lt;i&gt;número real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;número real&lt;/i&gt; &amp;rarr; diferencia da coordenada y&lt;br&gt;
+&lt;i&gt;número real&lt;/i&gt; &amp;rarr; diferencia da coordenada x&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+     atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="393"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1337"/>
         <source>&lt;h3&gt;sin() function&lt;/h3&gt;
 Returns sinus of an angle.
 
@@ -62895,10 +64463,21 @@ Returns sinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función seno() &lt;/h3&gt;
+Devolve o seno dun ánguloReturns sinus of an angle.
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     sin(&lt;i&gt;número real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;número real&lt;/i&gt; &amp;rarr; ángulo en radiáns.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+     sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="465"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="203"/>
         <source>&lt;h3&gt;clamp() function&lt;/h3&gt;
 Restricts an input value to a specified range.
 
@@ -62919,10 +64498,29 @@ Restricts an input value to a specified range.
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función clamp()&lt;/h3&gt;
+Restrinxe un valor introducido a un rango específico.
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     clamp(&lt;i&gt;mínimo&lt;/i&gt;,&lt;i&gt;entrada&lt;/i&gt;,&lt;i&gt;máximo&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  mínimo&lt;/i&gt; &amp;rarr; O valor máis baixo &lt;i&gt;introducido&lt;/i&gt; que se permite tomar.&lt;br&gt;
+&lt;i&gt;  entrada&lt;/i&gt; &amp;rarr; un valor que será restrinxido ó rango especificado polo &lt;i&gt;mínimo&lt;/i&gt; e o &lt;i&gt;máximo&lt;/i&gt;.&lt;br&gt;
+&lt;i&gt;  máximo&lt;/i&gt; &amp;rarr; O valor máis alto &lt;i&gt;introducido&lt;/i&gt; que se permite tomar.&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     clamp(1,5,10) &amp;rarr; 5 (&lt;i&gt;entrada&lt;/i&gt; está entre 1 e 10 polo que o resultado non varía)&lt;br&gt;
+     clamp(1,0,10) &amp;rarr; 1 (&lt;i&gt;entrada&lt;/i&gt; é menor que o valor mínimo de 1, polo que a función devolve 1)&lt;br&gt;
+     clamp(1,11,10) &amp;rarr; 10 (&lt;i&gt;entrada&lt;/i&gt; é maior que  valor máximo de 10, polo que a función devolve 10)&lt;br&gt;
+     
+     
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1433"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1256"/>
         <source>&lt;h3&gt;month() function&lt;/h3&gt;
 Extract the month part from a date, or the number of months
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -62943,10 +64541,29 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función mes()&lt;/h3&gt;
+Extrae a parte do mes dunha data, ou o número de meses dun 
+&lt;code&gt;Intervalo&lt;/code&gt;
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;month(data)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(Intervalo)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;data&lt;/code&gt; - é a data. A data da que extrae-lo mes.
+&lt;br&gt;
+&lt;code&gt;Intervalo&lt;/code&gt; - é o Intervalo. O Intervalo dende o que devolver o número de meses.
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;month(&apos;2012-05-12&apos;) &amp;rarr; 05&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(tointerval(&apos;3 months&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="792"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="311"/>
         <source>&lt;h3&gt;$area function&lt;/h3&gt;
 Returns the area size of the current feature.
 
@@ -62960,10 +64577,22 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función $area &lt;/h3&gt;
+Devolve o tamaño da área da entidade actual.
+
+&lt;h4&gt;Sitaxe&lt;/h4&gt;
+&lt;pre&gt;$area&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ningún
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1392"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="162"/>
         <source>&lt;h3&gt;day() function&lt;/h3&gt;
 Extract the day from a date, or the number of days
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -62984,10 +64613,29 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función día()&lt;/h3&gt;
+Extrae o día dunha data ou o número de días
+dun &lt;code&gt;Intervalo&lt;/code&gt;
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;day(data)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(Intervalo)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;data&lt;/code&gt; - é a data. A data dende a que se extraerá o día.
+&lt;br&gt;
+&lt;code&gt;Intervalo&lt;/code&gt; - é o Intervalo. O Intervalo a dende o que devolve-lo número de días.
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;day(&apos;2012-05-12&apos;) &amp;rarr; 12&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(tointerval(&apos;3 days&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1466"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="131"/>
         <source>&lt;h3&gt;toreal function&lt;/h3&gt;
 Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
 
@@ -63002,10 +64650,23 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función toreal&lt;/h3&gt;
+Convierte unha cadea a número real. Non cambiará nada se o valor non pode ser convertido a número real (por exemplo &apos;123.56asd&apos; non é válido). Os números son redondeados logo de garda-los cambios se a precisión é menor que o resultado da conversión.
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     toreal(&lt;i&gt;cadea&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  cadea&lt;/i&gt; &amp;rarr; tipo cadea.  A cadea a converter a número real.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="805"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="646"/>
         <source>&lt;h3&gt;todate() function&lt;/h3&gt;
 Convert a string into Qt data type.
 
@@ -63019,10 +64680,22 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función todate()&lt;/h3&gt;
+Convirte unha cadea a tipo data Qt.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;todate(&apos;cadea&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadea&lt;/code&gt; - é a cadea no formato de data Qt.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1494"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1181"/>
         <source>&lt;h3&gt;lpad() function&lt;/h3&gt;
 Returns a string with supplied width padded
 using the fill character.
@@ -63041,10 +64714,26 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función lpad()&lt;/h3&gt;
+Devolve unha cadea coa anchura de recheo indicada
+utilizando caracteres de recheo.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;lpad(cadea, lonxitude, recheo)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadea&lt;/code&gt; - tipo cadea. A Cadea.
+&lt;br&gt;
+&lt;code&gt;lonxitude&lt;/code&gt; - tipo enteiro. A lonxitude da nova cadea.
+&lt;br&gt;
+&lt;code&gt;recheo&lt;/code&gt; - tipo carácter. O carácter co que encher o espazo restante. 
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="218"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1276"/>
         <source>&lt;h3&gt;acos() function&lt;/h3&gt;
 Returns arcuscosinus of a value in radians.
 
@@ -63058,10 +64747,22 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función acos()&lt;/h3&gt;
+Devolve o arcocoseno dun valor en radiáns.
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     acos(&lt;i&gt;número real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;número real&lt;/i&gt; &amp;rarr; coseno dun ángulo.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+     acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="721"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="616"/>
         <source>&lt;h3&gt;log() function&lt;/h3&gt;
 Returns the value of the logarithm of the passed value and base.
 &lt;br&gt;
@@ -63079,10 +64780,26 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función log()&lt;/h3&gt;
+Devolve o valor do logaritmo do valor de base e o elevado.
+&lt;br&gt;
+Esta función toma dous argumentos.
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;log(base, valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;base&lt;/code&gt; - calquera número positivo.&lt;br&gt;
+&lt;code&gt;valor&lt;/code&gt; - calquera número positivo.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="718"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="223"/>
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
@@ -63090,7 +64807,7 @@ This group contains functions that operate on geometry objects e.g length, area.
 Este grupo contén funcións que operar coa xeometría dos obxectos, por exemplo lonxitude ou área.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="56"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1496"/>
         <source>&lt;h3&gt;$page function&lt;/h3&gt;
 Returns the current page number within a composition.
 
@@ -63104,10 +64821,22 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función $page&lt;/h3&gt;
+Devolve o número de páxina actual dentro da composición.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;pre&gt;$page&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ningún
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1029"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="932"/>
         <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
 Return the index of a regular expression in a string.
 
@@ -63126,10 +64855,27 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función strpos()&lt;/h3&gt;
+Devolve o índice dunha expresión regular nunha cadea.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     strpos(&lt;i&gt;palleiro&lt;/i&gt;, &lt;i&gt;agulla&lt;/i&gt;)
+&lt;br&gt;&lt;br&gt;
+Devolve -1 se a expresión non se atopa.
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  palleiro&lt;/i&gt; &amp;rarr; tipo cadea.  A cadea que será buscada.&lt;br&gt;
+&lt;i&gt;  agulla&lt;/i&gt; &amp;rarr; típo número.  A expresión regular a buscar.&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="409"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1538"/>
         <source>&lt;h3&gt;Funktion ln()&lt;/h3&gt;
 Returns the value of the natural logarithm of the passed expression.
 &lt;br&gt;
@@ -63146,10 +64892,25 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función ln()&lt;/h3&gt;
+Devolve o valor do logaritmo natural da expresión tomada.
+&lt;br&gt;
+Esta función toma un argumento.
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;ln(valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;valor&lt;/code&gt; - calquera número positivo.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1206"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="298"/>
         <source>&lt;h3&gt;exp() function&lt;/h3&gt;
 Returns exponential of an value.
 
@@ -63163,10 +64924,54 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función exp()&lt;/h3&gt;
+Devolve o exponencial dun valor.
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     exp(&lt;i&gt;número real&lt;/i&gt;)
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;número real&lt;/i&gt; &amp;rarr; número.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+     exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1357"/>
+        <source>&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
+Returns the portion of a string which matches a supplied regular expression.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_substr(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The input string.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to match against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</source>
+        <translation type="obsolete">&lt;h3&gt;función regexp_substr()&lt;/h3&gt;
+Devolve a porción dunha cadea que coincida cunha expresión regular indicada.
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     regexp_substr(&lt;i&gt;cadea,expresión regular&lt;/i&gt;)
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  cadea&lt;/i&gt; &amp;rarr; tipo cadea.  A cadea introducida.&lt;br&gt;
+&lt;i&gt;  expresión regular&lt;/i&gt; &amp;rarr; tipo cadea.  A expresión regular que coincida con caracteres de barra invertida deberán estar entre comiñas (por exemplo &quot;&amp;#92;&amp;#92;s&quot; para marcar un carácter de espazo en branco).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="679"/>
         <source>&lt;h3&gt;rpad() function&lt;/h3&gt;
 Returns a string with supplied width padded
 using the fill character.
@@ -63186,10 +64991,28 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función rpad()&lt;/h3&gt;
+Devolve unha cadea con anchura de recheo indicada
+utilizando un carácter de recheo.
+
+&lt;h4&gt;Sintase&lt;/h4&gt;
+&lt;code&gt;rpad(cadea, anchura, recheo)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadea&lt;/code&gt; - tipo cadea. A cadea.
+&lt;br&gt;
+&lt;code&gt;anchura&lt;/code&gt; - tipo enteiro. A lonxitude da nova cadea.
+&lt;br&gt;
+&lt;code&gt;recheo&lt;/code&gt; - tipo carácter. O carácter co que enche-lo espazo restante. 
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="379"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1226"/>
         <source>&lt;h3&gt;tostring function&lt;/h3&gt;
 Converts a number to string.
 
@@ -63204,10 +65027,23 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función tostring&lt;/h3&gt;
+Convirte un número a cadea.
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     tostring(&lt;i&gt;número&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;número&lt;/i&gt; &amp;rarr; tipo enteiro ou número real.  O número a convertir a cadea.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1296"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="107"/>
         <source>&lt;h3&gt;round() function&lt;/h3&gt;
 Rounds a number to number of decimal places.
 &lt;br&gt;
@@ -63229,10 +65065,30 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función round()&lt;/h3&gt;
+Redondea un número a un número de varios decimais.
+&lt;br&gt;
+Esta función pode tomar un ou dous argumentos dependendo do que se necesite.
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;round(decimal,lugares)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;round(decimal)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;decimal&lt;/code&gt; - tipo decimal. O número decimal a redondear.
+&lt;br&gt;
+&lt;code&gt;lugares&lt;/code&gt; - tipo enteiro. O número de lugares a redondea-lo decimal. Pode ser negativo.
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;round(1234.567, 2 ) &amp;rarr; 1234.57&lt;/code&gt;&lt;br&gt;
+utiliza &lt;code&gt;round(decimal)&lt;/code&gt; para redondear ó enteiro máis próximo&lt;br&gt;
+&lt;code&gt;round(1234.567) &amp;rarr; 1235&lt;/code&gt;&lt;br&gt;
+
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="425"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="633"/>
         <source>&lt;h3&gt;$now function&lt;/h3&gt;
 Returns the current date and time
 
@@ -63246,10 +65102,22 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función $now&lt;/h3&gt;
+Devolve a data e tempo actuais
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;pre&gt;$now&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ningún
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="231"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="78"/>
         <source>&lt;h3&gt;scale_exp() function&lt;/h3&gt;
 Transforms a given value from an input domain to an output range using an exponential curve. This function can be used to ease values in or out 
 of the specified output range.   
@@ -63279,10 +65147,38 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función scale_exp()&lt;/h3&gt;
+Transforma un valor dadto dende un dominio de entrada a un rango de saída utilizando unha curva exponencial. Esta función pode ser usada para facilitar valores dentro ou fóra 
+do rango de saída especificado.   
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     scale_exp(&lt;i&gt;valor&lt;/i&gt;,&lt;i&gt;dominio_mín&lt;/i&gt;,&lt;i&gt;dominio_máx&lt;/i&gt;,&lt;i&gt;rango_mín&lt;/i&gt;,&lt;i&gt;rango_máx&lt;/i&gt;,&lt;i&gt;exponente&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  valor&lt;/i&gt; &amp;rarr; é un valor no dominio de entrada. A función devolverá o valor escalado correspondente no rango de saída.&lt;br&gt;
+&lt;i&gt;  dominio_mín, dominio_máx&lt;/i&gt; &amp;rarr; especifica o dominio de entrada, o menor e o maior dos &lt;i&gt;valores&lt;/i&gt; de entrada que debe tomar.&lt;br&gt;
+&lt;i&gt;  rango_mín, rango_máx&lt;/i&gt; &amp;rarr; especifica o rango de saída, o menor e o maior dos valores que debe retornar a función.&lt;br&gt;
+&lt;i&gt;  exponente&lt;/i&gt; &amp;rarr; un valor positivo (maior de 0), que dicta a forma na que os valores de entrada son trazados no rango de saída. Exponentes grandes causarán que a saída se facilite, comezando lentamente antes de
+acelerarse así como os valores de entrada se aproximan ó dominio máximo. Exponentes baixos (menos de 1) causarán que os valores de saída se compliquen, cando o trazado comeza rápido pero ralentiza a medida que se aproxima ó dominio máximo.&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;b&gt;Facilitando, utilizando un exponente de 2:&lt;/b&gt;&lt;br&gt;
+     scale_exp(5,0,10,0,100,2) &amp;rarr; 25&lt;br&gt;
+     scale_exp(7.5,0,10,0,100,2) &amp;rarr; 56.25&lt;br&gt;
+     scale_exp(9.5,0,10,0,100,2) &amp;rarr; 90.25&lt;br&gt;               
+     &lt;br&gt;
+&lt;b&gt;Complicando, utilizando un exponenete de 0.5:&lt;/b&gt;&lt;br&gt;          
+     scale_exp(3,0,10,0,100,0.5) &amp;rarr; 54.772&lt;br&gt;
+     scale_exp(6,0,10,0,100,0.5) &amp;rarr; 77.459&lt;br&gt;
+     scale_exp(9,0,10,0,100,0.5) &amp;rarr; 94.868&lt;br&gt;          
+     
+     
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1268"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1571"/>
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
@@ -63290,7 +65186,7 @@ This group contains functions for handling date and time data.
 Este grupo contén funcións para a manipulación dos datos de tempo e data.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="81"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="445"/>
         <source>&lt;h3&gt;$id function&lt;/h3&gt;
 Returns the feature id of the current row.
 
@@ -63304,10 +65200,22 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función $id&lt;/h3&gt;
+Devolve a id da entidade da ringleira actual.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;pre&gt;$id&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ningún
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1142"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1125"/>
         <source>&lt;h3&gt;$perimeter function&lt;/h3&gt;
 Returns the perimeter length of the current feature.
 
@@ -63321,10 +65229,54 @@ None
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función $perimeter&lt;/h3&gt;
+Devolve a lonxitude do perímetro da entidade actual.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;pre&gt;$perimeter&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ningún
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1283"/>
+        <source>&lt;h3&gt;regexp_match() function&lt;/h3&gt;
+Returns true if any part of a string matches the supplied regular expression.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_match(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to test against the regular expression.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to test against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
+</source>
+        <translation type="obsolete">&lt;h3&gt;función regexp_match()&lt;/h3&gt;
+Devolve verdadeiro se calquera parte dunha cadea coincide coa expresión regular indicada.
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     regexp_match(&lt;i&gt;cadea,expresión_regular&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  cadea&lt;/i&gt; &amp;rarr; tipo cadea.  A cadea na que busca-la expresión regular.&lt;br&gt;
+&lt;i&gt;  expresión_regular&lt;/i&gt; &amp;rarr; tipo cadea.  A expresión regular que comprobar. Caracteres de barra invertida deben estar entre comiñas (por exemplo &quot;&amp;#92;&amp;#92;s&quot; para marcar un carácter de espazo en branco).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="273"/>
         <source>&lt;h3&gt;tointerval() function&lt;/h3&gt;
 Converts a string to a interval type.  Can be used to take days, hours, month, etc off a date. 
 
@@ -63338,10 +65290,22 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función tointerval()&lt;/h3&gt;
+Convirte unha cadea a tipo intervalo.  Pode usarse para coller días, horas, meses, etc. dunha data. 
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;tointerval(&apos;cadea&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadea&lt;/code&gt; - tipo cadea. Formato {n} días {n} horas {n} meses
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="298"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="511"/>
         <source>&lt;h3&gt;hour() function&lt;/h3&gt;
 Extract the hour from a datetime or time, or the number of hours
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -63363,10 +65327,30 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función hora()&lt;/h3&gt;
+Extrae a hora dende o tempo, ou o número de horas
+dende un  &lt;code&gt;Intervalo&lt;/code&gt;
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;hour(data)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(Intervalo)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;data&lt;/code&gt; - tipo data ou tempo. A data da que extrae-la hora.
+&lt;br&gt;
+&lt;code&gt;Intervalo&lt;/code&gt; - é o Intervalo. O intervalo dende o que devolve-lo número de horas.
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa exemplos da función.--&gt;
+&lt;code&gt;hour(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 13&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(tointerval(&apos;3 hours&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-07-22T13:00:00&apos;,&apos;2012-07-22T10:00:00&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="884"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="145"/>
         <source>&lt;h3&gt;color_hsla() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, lightness and alpha (transparency) attributes
 
@@ -63384,10 +65368,26 @@ Returns a string representation of a color based on its hue, saturation, lightne
 &lt;!-- Show example of function.--&gt;
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función color_hsla()&lt;/h3&gt;
+Devolve unha representación da cor da cadea baseada no seu matiz, saturación, luminosidade e atributos alfa (transparencia)
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     color_hsla(&lt;i&gt;matiz, saturación, luminosidade, alfa&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  matiz&lt;/i&gt; &amp;rarr; o matiz da cor, coma un valor enteiro dende 0 a 360.&lt;br&gt;
+&lt;i&gt;  saturación&lt;/i&gt; &amp;rarr; a porcentaxe de saturación da cor coma un valor enteiro entre 0 e 100.&lt;br&gt;
+&lt;i&gt;  luminosidade&lt;/i&gt; &amp;rarr; a porcentaxe de luminosidade da cor come un valor enteiro entre 0 e 100.&lt;br&gt;
+&lt;i&gt;  alfa&lt;/i&gt; &amp;rarr; a compoñente alfa coma un valor enteiro entre 0 (completamente transparente) e 255 (opaco).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función..--&gt;
+     color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1222"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="577"/>
         <source>&lt;h3&gt;$pi constant&lt;/h3&gt;
 Returns pi as value for calculations
 
@@ -63400,10 +65400,21 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;constante $pi &lt;/h3&gt;
+Devolve pi coma valor para cálculos
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;pre&gt;$pi&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ningún
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="406"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="345"/>
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
@@ -63411,7 +65422,7 @@ This group contains functions that operate on record identifiers.
 Este grupo contén funcións que operan co rexistro de identificadores.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="452"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="432"/>
         <source>&lt;h3&gt;totime() function&lt;/h3&gt;
 Convert a string into Qt time type.
 
@@ -63425,10 +65436,22 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función totime()&lt;/h3&gt;
+Convirte unha cadea en tipo tempo de Qt.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;totime(&apos;cadea&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadea&lt;/code&gt; - tipo cadea en formato de tempo Qt.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="776"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1574"/>
         <source>&lt;h3&gt;replace() function&lt;/h3&gt;
 Returns a string with the the supplied string replaced.
 
@@ -63445,10 +65468,25 @@ Returns a string with the the supplied string replaced.
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función replace()&lt;/h3&gt;
+Devolve unha cadea coa cadea indicada reemplazada.
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     replace(&lt;i&gt;cadea,antes,despois&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  cadea&lt;/i&gt; &amp;rarr; tipo cadea.  A cadea de inicio.&lt;br&gt;
+&lt;i&gt;  antes&lt;/i&gt; &amp;rarr; tipo cadea.  A cadea a reemplazar.&lt;br&gt;
+&lt;i&gt;  despois&lt;/i&gt; &amp;rarr; tipo cadea.  A cadea que substituirá a &lt;i&gt;antes&lt;/i&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="977"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="270"/>
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
@@ -63456,7 +65494,7 @@ This group contains functions to handle conditional checks in expressions.
 Este grupo contén funcións para manipular comprobacións condicionais nas expresións.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="951"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1168"/>
         <source>&lt;h3&gt;abs() function&lt;/h3&gt;
 Returns the absolute value of a number.&lt;br&gt;
 
@@ -63470,10 +65508,22 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función abs()&lt;/h3&gt;
+Devolve o valor absoluto dun número.&lt;br&gt;
+
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+abs(&lt;i&gt;valor&lt;/i&gt;)&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;valor&lt;/code&gt; - un número.&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1343"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1482"/>
         <source>&lt;h3&gt;max() function&lt;/h3&gt;
 Returns the largest value in a set of values.
 
@@ -63488,10 +65538,23 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función max()&lt;/h3&gt;
+Devolve o valor máis alto dun conxunto de valores.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     max(&lt;i&gt;valor&lt;i&gt;[,&lt;i&gt;valor&lt;/i&gt;...])
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  valor&lt;/i&gt; &amp;rarr; un número.&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     max(2,10.2,5.5) &amp;rarr; 10.2
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1047"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1396"/>
         <source>
 &lt;h3&gt;color_cmyk() function&lt;/h3&gt;
 Returns a string representation of a color based on its cyan, magenta, yellow and black components
@@ -63510,10 +65573,27 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;función color_cmyk()&lt;/h3&gt;
+Devolve unha representación da cor dunha cadea baseada nas súas compoñentes azul, maxenta, amarela e negra
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     color_cmyk(&lt;i&gt;azul, maxenta, amarela, negra&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  azul&lt;/i&gt; &amp;rarr; a compoñente azul da cor, coma un valor enteiro en porcentaxe dende 0 ata 100.&lt;br&gt;
+&lt;i&gt;  maxenta&lt;/i&gt; &amp;rarr; a compoñente maxenta da cor, coma un valor enteiro en porcentaxe dende 0 ata 100.&lt;br&gt;
+&lt;i&gt;  amarela&lt;/i&gt; &amp;rarr; a compoñente amarela da cor, coma un valor enteiro en porcentaxe dende 0 ata 100&lt;br&gt;
+&lt;i&gt;  negra&lt;/i&gt; &amp;rarr; a compoñente negra da cor, coma un valor enteiro en porcentaxe dende 0 ata 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="705"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="348"/>
         <source>&lt;h3&gt;sqrt() function&lt;/h3&gt;
 Returns square root of a value
 
@@ -63527,10 +65607,22 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función sqrt()&lt;/h3&gt;
+Devolve a raíz cadrada dun valor
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     sqrt(&lt;i&gt;número_real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;número_real&lt;/i&gt; &amp;rarr; número.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+     sqrt(9) &amp;rarr; 3&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1065"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="324"/>
         <source>
 &lt;h3&gt;ramp_color() function&lt;/h3&gt;
 Returns a string representing a color from a color ramp. 
@@ -63552,10 +65644,30 @@ The color ramps available vary between QGIS installations.  This function
 may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;función ramp_color()&lt;/h3&gt;
+Devolve unha representación da cor da cadea dende unha rampla de cor. 
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     ramp_color(&lt;i&gt;nome_rampla, valor&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  nome_rampla&lt;/i&gt; &amp;rarr; o nome da rampla de cor como cadea, por exemplo &apos;Spectral&apos;.&lt;br&gt;
+&lt;i&gt;  valor&lt;/i&gt; &amp;rarr; a posición na rampla de cor para selecciona-la cor coma un número real entre 0 e 1.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     ramp_color(&apos;Spectral&apos;,0.3) &amp;rarr; &apos;#fdbe73&apos;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Nota:&lt;/h4&gt;
+As ramplas de cor dispoñibles varían entre as distintas instalacións de QGIS.  Esta función
+pode non da-los resultados agardados se cambia o seu proxecto Quantum.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="980"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="11"/>
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
@@ -63563,7 +65675,7 @@ This group contains functions that operate on condition.
 Este grupo contén funcións que operan cunha condición.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1529"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="475"/>
         <source>
 &lt;h3&gt;color_cmyka() function&lt;/h3&gt;
 Returns a string representation of a color based on its cyan, magenta, yellow, black and alpha (transparency) components
@@ -63583,10 +65695,28 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 &lt;!-- Show example of function.--&gt;
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;función color_cmyka()&lt;/h3&gt;
+Devolve unha representación da cor dunha cadea baseada nas súas compoñentes azul, maxenta, amarela, negra e alfa (transparencia)
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     color_cmyka(&lt;i&gt;azul, maxenta, amarela, negra, alfa&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  azul&lt;/i&gt; &amp;rarr; a compoñente azul da cor, coma un valor enteiro en porcentaxe dende 0 ata 100.&lt;br&gt;
+&lt;i&gt;  maxenta&lt;/i&gt; &amp;rarr; a compoñente maxenta da cor, coma un valor enteiro en porcentaxe dende 0 ata 100.&lt;br&gt;
+&lt;i&gt;  amarela&lt;/i&gt; &amp;rarr; a compoñente amarela da cor, coma un valor enteiro en porcentaxe dende 0 ata 100&lt;br&gt;
+&lt;i&gt;  negra&lt;/i&gt; &amp;rarr; a compoñente negra da cor, coma un valor enteiro en porcentaxe dende 0 ata 100.&lt;br&gt;
+&lt;i&gt;  alfa&lt;/i&gt; &amp;rarr; a compoñente alfa coma valor enteiro dende 0 (completamente transparente) a 255 (opaco).&lt;br
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1100"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="458"/>
         <source>&lt;h3&gt;format_number() function&lt;/h3&gt;
 Returns a number formatted with the locale separator for thousands. 
 Also truncates the number to the number of supplied places. 
@@ -63604,10 +65734,25 @@ to.
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función format_number()&lt;/h3&gt;
+Devolve un número formateado co separador do locale para os milleiros. 
+Tamén corta o número a un número coas cifras indicadas. 
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;format_number(número, lugares)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;número&lt;/code&gt; - tipo númeor. O número a formatear.
+&lt;br&gt;
+&lt;code&gt;lugares&lt;/code&gt; - tipo enteiro. O número de lugares decimais onde corta-la cadea.
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1248"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="659"/>
         <source>&lt;h3&gt;year() function&lt;/h3&gt;
 Extract the year part from a date, or the number of years
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -63628,10 +65773,29 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función ano()&lt;/h3&gt;
+Extrae a parte do ano dunha data, ou o númeor de anos
+dende un &lt;code&gt;Intervalo&lt;/code&gt;
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;year(data)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(Intervalo)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;data&lt;/code&gt; - tipo data. A data da que extrae-lo ano.
+&lt;br&gt;
+&lt;code&gt;Intervalo&lt;/code&gt; - tipo Intervalo. O Intervalo do que devolve-lo número de anos.
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;year(&apos;2012-05-12&apos;) &amp;rarr; 2012&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(tointerval(&apos;3 Years&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1562"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="698"/>
         <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
 A conditional expression that can be used to evaluate multiple expressions and
 return a result.
@@ -63660,10 +65824,37 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;expresión CASE&lt;/h3&gt;
+Unha expresión condicional que pode ser utilizada para avaliar múltiples expresións 
+e devolver un resultado.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;condición&lt;/i&gt; THEN &lt;i&gt;resultado&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;resultado&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] marca compoñentes opcionais
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  condición WHEN&lt;/i&gt; - A expresión de condición a avaliar. &lt;br&gt;
+&lt;i&gt;  THEN resultado&lt;/i&gt; - Se a &lt;i&gt;condición&lt;/i&gt; considera que é Certo entón o &lt;i&gt;resultado&lt;/i&gt; é avaliado e devolto &lt;br&gt;
+&lt;i&gt;  ELSE resultado&lt;/i&gt; - Se ningunha das condicións de arriba son Certas entón o &lt;i&gt;resultado&lt;/i&gt; é avaliado e devolto. &lt;br&gt;
+
+&lt;h4&gt;Exempo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;columns&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;Ningún&apos;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="26"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1320"/>
         <source>&lt;h3&gt;randf() function&lt;/h3&gt;
 Returns a random float within the range specified by the minimum and 
 maximum argument (inclusive).
@@ -63681,10 +65872,27 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función randf()&lt;/h3&gt;
+Devolve un número decimal dentro do rango especificado polo argumento
+mínimo e máximo (incluídos).
+
+&lt;br&gt;
+Esta función toma dous argumentos.
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;randf(mín, máx)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;mín&lt;/code&gt; - un número flotante que representa o número aleatorio máis baixo posible desexado.&lt;br&gt;
+&lt;code&gt;máx&lt;/code&gt; - un número flotante que representa o número aleatorio máis alto posible desexado.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1009"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="912"/>
         <source>&lt;h3&gt;scale_linear() function&lt;/h3&gt;
 Transforms a given value from an input domain to an output range using linear interpolation. 
 
@@ -63705,10 +65913,29 @@ Transforms a given value from an input domain to an output range using linear in
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función scale_linear()&lt;/h3&gt;
+Transforma un valor dado dende un dominio de entrada a un rango de saída utilizando unha interpolación liñar. 
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     scale_linear(&lt;i&gt;valor&lt;/i&gt;,&lt;i&gt;dominio_mín&lt;/i&gt;,&lt;i&gt;dominio_máx&lt;/i&gt;,&lt;i&gt;rango_mín&lt;/i&gt;,&lt;i&gt;rango_máx&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  valor&lt;/i&gt; &amp;rarr; é o valor do dominio de entrada. A función devolverá un valor escalado no rango de saída.&lt;br&gt;
+&lt;i&gt;  dominio_mín, dominio_máx&lt;/i&gt; &amp;rarr; especifica o dominio de entrada, os &lt;i&gt;valores&lt;/i&gt; máis pequeno e máis grande que deben tomar.&lt;br&gt;
+&lt;i&gt;  rango_mín, rango_máx&lt;/i&gt; &amp;rarr; especifica o rango de saída, os valores máis pequeno e máis grande que deben saír dende a función.&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     scale_linear(5,0,10,0,100) &amp;rarr; 50&lt;br&gt;
+     scale_linear(0.2,0,1,0,360) &amp;rarr; 72 &lt;i&gt;(por exemplo, escalando un valor entre 0 e 1 a un ángulo entre 0 e 360)&lt;/i&gt;&lt;br&gt;
+     scale_linear(1500,1000,10000,9,20) &amp;rarr; 10.22 &lt;i&gt;(por exemplo, escalando a poboación que varía entre 1000 e 10000 a un tamaño de fonte entre 9 e 20)&lt;/i&gt;&lt;br&gt;
+     
+     
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1548"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="756"/>
         <source>&lt;h3&gt;trim() function&lt;/h3&gt;
 Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 
@@ -63723,10 +65950,23 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función trim()&lt;/h3&gt;
+Elimina tódolos espazos en branco iniciais e finais (espazos, tabulacións, etc) dunha cadea.
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     trim(&lt;i&gt;cadea&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  cadea&lt;/i&gt; &amp;rarr; tipo cadea. A cadea a recortar.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="123"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1289"/>
         <source>&lt;h3&gt;minute() function&lt;/h3&gt;
 Extract the minute from a datetime or time, or the number of minutes
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -63748,10 +65988,30 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función minuto()&lt;/h3&gt;
+Extrae o minuto dunha data, ou o número de minutos
+dun &lt;code&gt;Intervalo&lt;/code&gt;
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;minute(data)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(Intervalo)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;data&lt;/code&gt; - é a data ou tempo. A data dende a que extrae-lo minuto.
+&lt;br&gt;
+&lt;code&gt;Intervalo&lt;/code&gt; - é o Intervalo. O Intervalo dende o que devolve-lo número de minutos.
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;minute(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 24&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(tointerval(&apos;3 minutes&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 20&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="918"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1350"/>
         <source>&lt;h3&gt;age() function&lt;/h3&gt;
 Returns the difference between two dates.
 &lt;br&gt;&lt;br&gt;
@@ -63785,10 +66045,42 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función idade()&lt;/h3&gt;
+Devolve a diferencia entre dúas datas.
+&lt;br&gt;&lt;br&gt;
+A diferencia e devolta coma &lt;code&gt;Intervalo&lt;/code&gt; 
+e é necesario utilizala cunha das seguintes funcións para 
+extraer información útil:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ano&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;mes&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;semana&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;día&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;hora&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;minuto&lt;/code&gt;
+&lt;li&gt;&lt;code&gt;segundo&lt;/code&gt;
+&lt;/ul&gt;
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;age(cadea, cadea)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(data,data)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(cadea, data)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(data,cadea)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadea&lt;/code&gt; - tipo cadea. A cadea no formato de data.
+&lt;br&gt;
+&lt;code&gt;data&lt;/code&gt; - é a data ou tempo. Tipo data ou tempo.
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;) &amp;rarr; Intervalo&lt;/code&gt;&lt;br&gt;
+utilice &lt;code&gt;día&lt;/code&gt; para extrae-lo número de días&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1376"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="532"/>
         <source>&lt;h3&gt;log10() function&lt;/h3&gt;
 Returns the value of the base 10 logarithm of the passed expression.
 &lt;br&gt;
@@ -63805,10 +66097,25 @@ This function takes one argument.
 &lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función log10()&lt;/h3&gt;
+Devolve o valor do logaritmo en base 10 da expresión pasada.
+&lt;br&gt;
+Esta función toma un argumento.
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;log10(valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;valor&lt;/code&gt; - calquera número positivo.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="275"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1535"/>
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
@@ -63816,7 +66123,7 @@ This group contains functions to convert on data type to another e.g string to i
 Este grupo contén funcións para convertir uns tipos de datos noutros, por exemplo cadeas a enteiros, enteiros a cadeas.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="738"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1156"/>
         <source>&lt;h3&gt;yat function&lt;/h3&gt;
 Retrieves a y coordinate of the current feature
 
@@ -63829,10 +66136,21 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función yat&lt;/h3&gt;
+Retorna a coordenada y da entidade actual
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;yat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - tipo enteiro. Índice do punto da liña (o índice comeza en 0; os valores negativos aplicaránse ó último índice).
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="763"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="824"/>
         <source>&lt;h3&gt;cos() function&lt;/h3&gt;
 Returns cosinus of an angle.
 
@@ -63846,10 +66164,22 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función cos()&lt;/h3&gt;
+Devolve o coseno dun ángulo
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     cos(&lt;i&gt;número_real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;número_real&lt;/i&gt; &amp;rarr; ángulo en radiáns.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+     cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="915"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="128"/>
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
@@ -63857,7 +66187,7 @@ This group contains operators e.g + - *
 Este grupo contén operadores, por exemplo + - *</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="260"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="789"/>
         <source>&lt;h3&gt;Function floor()&lt;/h3&gt;
 Rounds a number downwards.
 
@@ -63873,10 +66203,24 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función floor()&lt;/h3&gt;
+Redondea un número cara abaixo.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;floor(valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;valor&lt;/code&gt; - un número.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1185"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="182"/>
         <source>&lt;h3&gt;second() function&lt;/h3&gt;
 Extract the seconds from a datetime or time, or the number of seconds
 from a &lt;code&gt;Interval&lt;/code&gt;
@@ -63898,10 +66242,30 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función segundo()&lt;/h3&gt;
+Extrae os segundos dunha data ou tempo, ou o número de segundos
+dun &lt;code&gt;Intervalo&lt;/code&gt;
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;second(data)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(Intervalo)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;data&lt;/code&gt; - tipo data ou tempo. A data da que extrae-los segundos.
+&lt;br&gt;
+&lt;code&gt;Intervalo&lt;/code&gt; - é o Intervalo. O Intervalo dende o que devolve-lo número de segundos.
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;second(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 57&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(tointerval(&apos;3 seconds&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 1200&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1330"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="14"/>
         <source>&lt;h3&gt;atan() function&lt;/h3&gt;
 Returns arcustanget of a value in radians.
 
@@ -63915,10 +66279,22 @@ Returns arcustanget of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función atan()&lt;/h3&gt;
+Devolve o arcotanxente dun valor en radiáns.
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     atan(&lt;i&gt;número_real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;número_real&lt;/i&gt; &amp;rarr; tanxente dun ángulo.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+     atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1271"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1414"/>
         <source>&lt;h3&gt;$length function&lt;/h3&gt;
 Returns the length of the current feature.
 
@@ -63931,10 +66307,21 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función $length&lt;/h3&gt;
+Devolve a lonxitude da entidade actual.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;pre&gt;$length&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ningún
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="11"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="548"/>
         <source>&lt;h3&gt;title() function&lt;/h3&gt;
 Converts all words of a string to title case (all words lower case with leading
 capital letter).
@@ -63950,10 +66337,23 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función title()&lt;/h3&gt;
+Capitaliza tódalas palabras dunha cadea (tódalas palabras en minúscula coa letra inicial en maiúscula).
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     title(&lt;i&gt;cadea&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  cadea&lt;/i&gt; &amp;rarr; tipo cadea.  A cadea a capitalizar.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="46"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1310"/>
         <source>&lt;h3&gt;Field&lt;/h3&gt;
 Double click to add field name to expression string.
 &lt;br&gt;&lt;br&gt;
@@ -63964,29 +66364,19 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Campo&lt;/h3&gt;
+Doble clic para engadi-lo nome de campo á cadea de expresión.
+&lt;br&gt;&lt;br&gt;
+Clic dereiro no nome de campo para abri-lo menú contextual de opcións de carga de valores de mostra.
+
+&lt;p&gt;&lt;h4&gt;Nota:&lt;/h4&gt;
+A carga de valores dende capas WFS non está soportada, antes de que a capa estea realmente insertada,
+é dicir na construcción de consultas.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="157"/>
-        <source>&lt;h3&gt;regexp_match() function&lt;/h3&gt;
-Returns true if any part of a string matches the supplied regular expression.
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     regexp_match(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to test against the regular expression.&lt;br&gt;
-&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to test against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="189"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="865"/>
         <source>&lt;h3&gt;substr() function&lt;/h3&gt;
 Return a part of a string
 
@@ -64003,10 +66393,25 @@ Return a part of a string
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función substr()&lt;/h3&gt;
+Devolve unha parte dunha cadea
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     substr(&lt;i&gt;cadea,posición_inicio,lonxitude&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  cadea&lt;/i&gt; &amp;rarr; tipo cadea.  A cadea enteira.&lt;br&gt;
+&lt;i&gt;  posición_inicio&lt;/i&gt; &amp;rarr; tipo número.  A posición de inicio dende a que extraer.&lt;br&gt;
+&lt;i&gt;  lonxitude&lt;/i&gt; &amp;rarr; tipo número.  A lonxitue da cadea a extraer.&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="319"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="390"/>
         <source>&lt;h3&gt;Fields and Values&lt;/h3&gt;
 Contains a list of fields from the layer.  Sample values can also be accessed via right-click.
 &lt;br&gt;&lt;br&gt;
@@ -64017,10 +66422,19 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Campos e Valores&lt;/h3&gt;
+Contén unha lista de campos da capa..  Ós valores de mostra tamén pode accederse vía clic dereito.
+&lt;br&gt;&lt;br&gt;
+Seleccione o nome de campo da lista, logo clic dereito para acceder ó menú contextual coas opcións de carga de valores de mostra do campo seleccionado.
+
+&lt;p&gt;&lt;h4&gt;Nota:&lt;/h4&gt;
+A carga de valores dende capas WFS non está soportada, antes de que a capa estea realmente insertada,
+é dicir na construcción de consultas.
+&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="438"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1426"/>
         <source>&lt;h3&gt;format() function&lt;/h3&gt;
 Format a string using supplied arguments. 
 
@@ -64035,49 +66449,23 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función format()&lt;/h3&gt;
+Formateará unha cadea utilizando os argumentos subministrados. 
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;format(&apos;cadea&apos;, arg, [arg...n])&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadea&lt;/code&gt; - tipo cadea.  Cadea con marcadores de posición Qt QString.  Use %1, %2, etc para marcadores de posición. Os marcadores de posición poden repetirse. 
+&lt;br&gt;
+&lt;code&gt;arg [arg...n]&lt;/code&gt; - calquera tipo. Calquera número de argumentos. 
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="676"/>
-        <source>&lt;h3&gt;regexp_replace() function&lt;/h3&gt;
-Returns a string with the supplied regular expression replaced.
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     regexp_replace(&lt;i&gt;string,regex,after&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
-&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="833"/>
-        <source>&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
-Returns the portion of a string which matches a supplied regular expression.
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     regexp_substr(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The input string.&lt;br&gt;
-&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to match against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1129"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1522"/>
         <source>&lt;h3&gt;$y function&lt;/h3&gt;
 Returns the y coordinate of the current feature.
 
@@ -64091,10 +66479,22 @@ None
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función $y&lt;/h3&gt;
+Devolve a coordenada y da entidade actual.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;pre&gt;$y&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ningún
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="329"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1138"/>
         <source>
 &lt;h3&gt;color_rgba() function&lt;/h3&gt;
 Returns a string representation of a color based on its red, green, blue, and alpha (transparency) components
@@ -64113,10 +66513,27 @@ Returns a string representation of a color based on its red, green, blue, and al
 &lt;!-- Show example of function.--&gt;
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;función color_rgba()&lt;/h3&gt;
+Devove unha representación da cor da cadea baseada nas súas compoñentes vermella, verde, azul e alfa (transparencia)
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     color_rgba(&lt;i&gt;vermello, verde, azul, alfa&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- LIsta os argumentos da función aquí--&gt;
+&lt;i&gt;  vermello&lt;/i&gt; &amp;rarr; a compoñente vermella coma un valor enteiro de 0 a 255.&lt;br&gt;
+&lt;i&gt;  verde&lt;/i&gt; &amp;rarr; a compoñente verde coma un valor enteiro de 0 a 255.&lt;br&gt;
+&lt;i&gt;  azul&lt;/i&gt; &amp;rarr; a compoñente azul coma un valor enteiro de 0 a 255.&lt;br&gt;
+&lt;i&gt;  alfa&lt;/i&gt; &amp;rarr; a compoñente alfa coma un valor enteiro entre 0 (completamente transparente) a 255 (opaco).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="692"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="603"/>
         <source>&lt;h3&gt;$x function&lt;/h3&gt;
 Returns the x coordinate of the current feature.
 
@@ -64130,10 +66547,22 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función $x&lt;/h3&gt;
+Devolve a coordenada x da entidade actual.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;pre&gt;$x&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ningún
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1117"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="286"/>
         <source>&lt;h3&gt;xat function&lt;/h3&gt;
 Retrieves a x coordinate of the current feature
 
@@ -64146,10 +66575,21 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función xat&lt;/h3&gt;
+Recupera a coordenada x da entidade actualRetrieves a x coordinate of the current feature
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;xat(i)&lt;/code&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - tipo enteiro. Índice do punto da liña (os índices comezan en 0; os valores negativos aplícanse ó último índice).
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="818"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="43"/>
         <source>&lt;h3&gt;Function ceil()&lt;/h3&gt;
 Rounds a number upwards.
 
@@ -64165,10 +66605,24 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función ceil()&lt;/h3&gt;
+Redondea un número cara arriba.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;ceil(valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;valor&lt;/code&gt; - un número.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="868"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="726"/>
         <source>&lt;h3&gt;color_hsv() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, and value attributes
 
@@ -64185,10 +66639,25 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;#ffaa00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función color_hsv()&lt;/h3&gt;
+Devolve unha representación da cor da cadea baseada no matiz, saturación e valores de atributo
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     color_hsv(&lt;i&gt;matiz, saturación, valor&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  matiz&lt;/i&gt; &amp;rarr; o matiz da cor, coma valor enteiro dende 0 a 360.&lt;br&gt;
+&lt;i&gt;  saturación&lt;/i&gt; &amp;rarr; a porcentaxe de saturación da cor coma valor enteiro entre 0 e 100.&lt;br&gt;
+&lt;i&gt;  valor&lt;/i&gt; &amp;rarr; a porcentaxe do valor da cor coma un enteiro entre 0 e 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     color_hsv(40,100,100) &amp;rarr; &apos;#ffaa00&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="43"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="413"/>
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
@@ -64196,7 +66665,7 @@ This group contains math functions e.g square root, sin and cos
 Este grupo contén funcións matemáticas, por exemplo raíz cadrada, seno e coseno</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="901"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1212"/>
         <source>&lt;h3&gt;min() function&lt;/h3&gt;
 Returns the smallest value in a set of values.
 
@@ -64211,10 +66680,23 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función min()&lt;/h3&gt;
+Devolve o valor máis baixo dun conxunto de valores.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     min(&lt;i&gt;valor&lt;i&gt;[,&lt;i&gt;valor&lt;/i&gt;...])
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  valor&lt;/i&gt; &amp;rarr; un número.&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     min(20.5,10,6.2) &amp;rarr; 6.2
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="69"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="258"/>
         <source>&lt;h3&gt;lower() function&lt;/h3&gt;
 Converts a string to lower case letters.
 
@@ -64227,10 +66709,21 @@ Converts a string to lower case letters.
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función lower()&lt;/h3&gt;
+Convirte unha cadea a minúsculas.
+
+&lt;p&gt;&lt;h4&gt;  Sintaxe&lt;/h4&gt;
+     lower(&lt;i&gt;cadea&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;  Argumentos&lt;/h4&gt;
+&lt;i&gt;  cadea&lt;/i&gt; &amp;rarr; tipo cadea.  A Cadea a convertir a minúsculas.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;  Exemplo&lt;/h4&gt;
+     lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="750"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1199"/>
         <source>&lt;h3&gt;$numfeatures function&lt;/h3&gt;
 In atlas generation, returns the total number of features within the coverage layer.
 
@@ -64244,10 +66737,22 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función $numfeatures&lt;/h3&gt;
+Na xeneración do atlas, devolve o número total de entidades dentro da capa de cuberta.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;pre&gt;$numfeatures&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ningún
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1219"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="770"/>
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
@@ -64255,7 +66760,7 @@ This group contains functions that operate on strings e.g replace, convert to up
 Este grupo contén funcións que operan con cadeas, por exemplo reemplazar, convertir a todo maiúsculas.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1234"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="742"/>
         <source>&lt;h3&gt;concat() function&lt;/h3&gt;
 Concatenates several strings to one.
 
@@ -64270,10 +66775,23 @@ Concatenates several strings to one.
 &lt;!-- Show example of function.--&gt;
      concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función concat()&lt;/h3&gt;
+Concatena varias cadeas nunha.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     concat(&lt;i&gt;cadea&lt;i&gt;[,&lt;i&gt;cadea&lt;/i&gt;...])
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  cadea&lt;/i&gt; &amp;rarr; tipo cadea.  unha cadea.&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="848"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="804"/>
         <source>&lt;h3&gt;coalesce() function&lt;/h3&gt;
 Returns the first non-NULL value from the expression list.
 &lt;br&gt;
@@ -64294,10 +66812,29 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función coalesce()&lt;/h3&gt;
+Devolve o primeiro valor non-NULO da lista de expresións.
+&lt;br&gt;
+Esta función pode tomar calquera número de argumentos.
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;coalesce(expresión1, expresión2 ...)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;expresión&lt;/code&gt; - calquera expresión válida ou valor, independentemente do tipo.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;coalesce(NULL, 2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(NULL, 2, 3) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(7, NULL, 3*2) &amp;rarr; 7&lt;/code&gt;&lt;br&gt;&lt;br&gt;
+&lt;code&gt;coalesce(&quot;fieldA&quot;, &quot;fallbackField&quot;, &apos;ERROR&apos;) &amp;rarr; vlor de fieldA se é non-NULL
+ senón o valor de &quot;fallbackField&quot; ou a cadea&apos;ERROR&apos; se os dous son NULL&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1169"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="416"/>
         <source>&lt;h3&gt;color_hsl() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, and lightness attributes
 
@@ -64314,10 +66851,26 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función color_hsl()&lt;/h3&gt;
+Devolve unha representación da cor da cadea baseada nos seus atributos de matiz, saturación e luminosidade
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     color_hsl(&lt;i&gt;matiz, saturación, luminosidade&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  matiz&lt;/i&gt; &amp;rarr; o matiz da cor, como valor enteiro de 0 a 360.&lt;br&gt;
+&lt;i&gt;  saturación&lt;/i&gt; &amp;rarr; a porcentaxe de saturación da cor coma valor enteiro entre 0 e 100.&lt;br&gt;
+&lt;i&gt;  luminosidade&lt;/i&gt; &amp;rarr; a porcentaxe de luminosidade da cor coma valor enteiro entre 0 e 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     color_hsl(100,50,70) &amp;rarr; &apos;#a6d98c&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="964"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="852"/>
         <source>&lt;h3&gt;asin() function&lt;/h3&gt;
 Returns arcussinus of a value in radians.
 
@@ -64331,10 +66884,22 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función asin()&lt;/h3&gt;
+Devolve o arcoseno dun valor en radiáns.
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     asin(&lt;i&gt;número_real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;número_real&lt;/i&gt; &amp;rarr; seno dun ángulo.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+     asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="983"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1383"/>
         <source>&lt;h3&gt;todatetime() function&lt;/h3&gt;
 Convert a string into Qt data time type.
 
@@ -64348,10 +66913,22 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función todatetime()&lt;/h3&gt;
+Convirte unha cadea a tipo Qt data e tempo.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;todatetime(&apos;cadea&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadea&lt;/code&gt; - tipo cadea en formato Qt data e tempo.
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1155"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="898"/>
         <source>&lt;h3&gt;toint function&lt;/h3&gt;
 Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
 
@@ -64366,10 +66943,61 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
+        <translation>&lt;h3&gt;función toint&lt;/h3&gt;
+Convirte unha cadea a número enteiro. Non cambiará nada se o valor non pode ser convertido a enteiro (por exemplo &apos;123asd&apos; non é válido).
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     toint(&lt;i&gt;cadea&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  cadea&lt;/i&gt; &amp;rarr; tipo cadea.  A Cadea a convertir a número enteiro.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="243"/>
+        <source>&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
+Returns the portion of a string which matches a supplied regular expression.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_substr(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The input string.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to match against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="485"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="837"/>
+        <source>&lt;h3&gt;regexp_match() function&lt;/h3&gt;
+Returns true if any part of a string matches the supplied regular expression.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_match(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to test against the regular expression.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to test against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="950"/>
         <source>&lt;h3&gt;format_date() function&lt;/h3&gt;
 Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
 
@@ -64545,10 +67173,204 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </source>
+        <translation>&lt;h3&gt;función format_date()&lt;/h3&gt;
+Formatea un tipo de data ou cadea nun formato de cadea persoalizado. Utiliza cadeas co formato Qt de data e tempo.  Ver &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;code&gt;format_date(&apos;cadea&apos;, &apos;formato_cadea&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadea&lt;/code&gt; - tipo cadea. Cadea Data/Tempo/Data-Tempo string.
+&lt;br&gt;
+&lt;code&gt;formato_cadea&lt;/code&gt; - tipo cadea. Modelo de cadea utilizado para formatea-la cadea.
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Expresiónon&lt;/th&gt;
+
+        &lt;th&gt;Saída&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;d&lt;/td&gt;
+
+      &lt;td&gt;o día coma número sen o cero diante (1 a 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dd&lt;/td&gt;
+
+      &lt;td&gt;o día coma número co cero diante (01 a 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ddd&lt;/td&gt;
+
+      &lt;td&gt;o nome abreviado e localizado do día (por exemplo &apos;Lun&apos; a &apos;Dom&apos;). Utiliza &lt;a href=
+      &quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dddd&lt;/td&gt;
+
+      &lt;td&gt;o nome longo e localizado do día (por exemplo &apos;Luns&apos; a &apos;Domingo&apos;). Utiliza &lt;a href=
+      &quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;M&lt;/td&gt;
+
+      &lt;td&gt;o mes coma número sen o cero diante (1-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MM&lt;/td&gt;
+
+      &lt;td&gt;o mes coma número con cero diante (01-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMM&lt;/td&gt;
+
+      &lt;td&gt;o nome abreviado e localizado do mes (por exemplo &apos;Xan&apos; a &apos;Dec&apos;). Utiliza &lt;a href=
+      &quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMMM&lt;/td&gt;
+
+      &lt;td&gt;o nome longo e localizado do mes (por exemplo &apos;Xaneiro&apos; a &apos;Decembro&apos;). Utiliza&lt;a href=
+      &quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yy&lt;/td&gt;
+
+      &lt;td&gt;o ano cun número de dous díxitos (00-99)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yyyy&lt;/td&gt;
+
+      &lt;td&gt;o ano cun número de catro díxitos&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+  &lt;p&gt;Estas expresións poden utilizarse para a parte do tempo da cadea formateada:&lt;/p&gt;
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Expresiónon&lt;/th&gt;
+
+        &lt;th&gt;Saídaut&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;h&lt;/td&gt;
+
+      &lt;td&gt;a hora sen o cero diante (0 a 23 ou 1 a 12 no formato AM/PM)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;hh&lt;/td&gt;
+
+      &lt;td&gt;a hora con ceros diante (00 a 23 ou 01 a 12 no formato AM/PM)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;H&lt;/td&gt;
+
+      &lt;td&gt;a hora sen cero diante (0 a 23, incluso con formato AM/PM)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;HH&lt;/td&gt;
+
+      &lt;td&gt;a hora con ceros diante (00 a 23, incluso con formato AM/PM)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;m&lt;/td&gt;
+
+      &lt;td&gt;o minuto se cero diante (0 a 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;mm&lt;/td&gt;
+
+      &lt;td&gt;o minuto con cero diante (00 a 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;s&lt;/td&gt;
+
+      &lt;td&gt;o segundo sen cero diante (0 a 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ss&lt;/td&gt;
+
+      &lt;td&gt;o segundo con cero diante (00 a 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;z&lt;/td&gt;
+
+      &lt;td&gt;os milisegundos sen cero diante(0 a 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;zzz&lt;/td&gt;
+
+      &lt;td&gt;os milisegundos con ceros diante (000 a 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;AP ou A&lt;/td&gt;
+
+      &lt;td&gt;interpreta coma un tempo AM/PM. &lt;i&gt;AP&lt;/i&gt; pode ser tanto &quot;AM&quot; coma &quot;PM&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ap ou a&lt;/td&gt;
+
+      &lt;td&gt;Interpreta coma un tempo AM/PM. &lt;i&gt;ap&lt;/i&gt; pode ser tanto &quot;am&quot; coma &quot;pm&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+&lt;br&gt;
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+&lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
+</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1240"/>
+        <source>&lt;h3&gt;regexp_replace() function&lt;/h3&gt;
+Returns a string with the supplied regular expression replaced.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_replace(&lt;i&gt;string,regex,after&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="144"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1469"/>
         <source>&lt;h3&gt;tan() function&lt;/h3&gt;
 Returns tangent of an angle.
 
@@ -64562,10 +67384,22 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función tan()&lt;/h3&gt;
+Devolve a tanxente dun ángulo.
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     tan(&lt;i&gt;número_real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;númeor_real&lt;/i&gt; &amp;rarr; ángulo en radiáns.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+     tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1453"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1509"/>
         <source>&lt;h3&gt;$feature function&lt;/h3&gt;
 In atlas generation, returns the current feature number that is iterated over on the coverage layer.
 
@@ -64579,10 +67413,22 @@ None
 &lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función $feature&lt;/h3&gt;
+Na xeneración do atlas, devolve o número de entidade actual que é iterado na capa de cuberta.
+
+&lt;h4&gt;Sintaxe&lt;/h4&gt;
+&lt;pre&gt;$feature&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ningún
+
+&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression_texts.cpp" line="1412"/>
+        <location filename="../src/core/qgsexpression_texts.cpp" line="1554"/>
         <source>&lt;h3&gt;color_hsva() function&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, value and alpha (transparency) attributes
 
@@ -64600,7 +67446,23 @@ Returns a string representation of a color based on its hue, saturation, value a
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;función color_hsva()&lt;/h3&gt;
+Devolve unha representación da cor da cadea baseada nos seus atributos de matiz, saturación, valor e alfa (transparencia)
+
+&lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
+     color_hsva(&lt;i&gt;matiz, saturación, valor, alfa&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- Lista os argumentos da función aquí--&gt;
+&lt;i&gt;  matiz&lt;/i&gt; &amp;rarr; o matiz da cor, coma un valor enteiro entre 0 e 360.&lt;br&gt;
+&lt;i&gt;  saturación&lt;/i&gt; &amp;rarr; a porcentaxe de saturación da cor coma valor enteiro entre 0 e 100.&lt;br&gt;
+&lt;i&gt;  valor&lt;/i&gt; &amp;rarr; a porcentaxe do valor da cor coma un enteiro entre 0 e 100.&lt;br&gt;
+&lt;i&gt;  alfa&lt;/i&gt; &amp;rarr; a compoñente alfa coma un valor enteiro entre  (completamente transparente) a 255 (opaco).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Exemplo&lt;/h4&gt;
+&lt;!-- Amosa un exemplo da función.--&gt;
+     color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -66904,7 +69766,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="100"/>
         <source>Add Rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Engadir norma</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="112"/>

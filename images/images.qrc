@@ -15,7 +15,6 @@
         <file>flags/fa.png</file>
         <file>flags/fi.png</file>
         <file>flags/fr.png</file>
-        <file>flags/gl_ES.png</file>
         <file>flags/he.png</file>
         <file>flags/hr_HR.png</file>
         <file>flags/hu.png</file>
@@ -433,6 +432,7 @@
         <file>flags/eu.png</file>
         <file>flags/bn.png</file>
         <file>flags/nb_NO.png</file>
+        <file>flags/gl.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
