@@ -275,7 +275,22 @@ void QgsLegendModel::updateSymbolV2ItemText( QStandardItem* symbolItem )
 
   if ( renderer->type() == "singleSymbol" )
   {
-    label = vLayer->name();
+    if ( !sv2Item->userText().isEmpty() )
+    {
+      label = sv2Item->userText();
+    }
+    else if ( !lItem->userText().isEmpty() )
+    {
+      label = lItem->userText();
+    }
+    else if ( !vLayer->title().isEmpty() )
+    {
+      label = vLayer->title();
+    }
+    else
+    {
+      label = vLayer->name();
+    }
   }
 
   if ( lItem->showFeatureCount() )
@@ -380,10 +395,9 @@ void QgsLegendModel::updateLayer( QStandardItem* layerItem )
     QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
     if ( mapLayer )
     {
-      QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
-
       updateLayerItemText( lItem );
 
+      QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
       if ( vLayer )
       {
         addVectorLayerItemsV2( lItem, vLayer );
@@ -406,14 +420,16 @@ void QgsLegendModel::updateLayerItemText( QStandardItem* layerItem )
   QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( lItem->layerID() );
   if ( !mapLayer ) return;
 
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
-  if ( !vLayer ) return;
-
   QString label = lItem->userText().isEmpty() ? mapLayer->name() : lItem->userText();
 
-  if ( vLayer && lItem->showFeatureCount() )
+  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
+  if ( vLayer )
   {
-    label += QString( " [%1]" ).arg( vLayer->featureCount() );
+    addVectorLayerItemsV2( lItem, vLayer );
+    if ( lItem->showFeatureCount() )
+    {
+      label += QString( " [%1]" ).arg( vLayer->featureCount() );
+    }
   }
   lItem->setText( label );
 }
