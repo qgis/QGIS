@@ -123,7 +123,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         if tokens[1].lower().strip() == "raster":
             param = ParameterRaster(tokens[0], desc, False)
         elif tokens[1].lower().strip() == "vector":
-            param = ParameterVector(tokens[0],  desc,ParameterVector.VECTOR_TYPE_ANY)
+            param = ParameterVector(tokens[0],  desc, [ParameterVector.VECTOR_TYPE_ANY])
         elif tokens[1].lower().strip() == "table":
             param = ParameterTable(tokens[0], desc, False)
         elif tokens[1].lower().strip() == "multiple raster":
