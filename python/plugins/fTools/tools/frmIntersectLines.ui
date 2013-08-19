@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>382</width>
-    <height>333</height>
+    <height>411</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="2">
+   <item row="0" column="0">
     <layout class="QVBoxLayout">
      <item>
       <widget class="QLabel" name="label_4">
@@ -34,7 +34,7 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0" colspan="2">
+   <item row="1" column="0">
     <layout class="QVBoxLayout">
      <item>
       <widget class="QLabel" name="label_6">
@@ -48,7 +48,7 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0" colspan="2">
+   <item row="2" column="0">
     <layout class="QVBoxLayout">
      <item>
       <widget class="QLabel" name="label_3">
@@ -62,7 +62,7 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0" colspan="2">
+   <item row="3" column="0">
     <layout class="QVBoxLayout">
      <item>
       <widget class="QLabel" name="label_5">
@@ -76,7 +76,7 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="4" column="0">
     <spacer>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -89,7 +89,7 @@
      </property>
     </spacer>
    </item>
-   <item row="5" column="0" colspan="2">
+   <item row="5" column="0">
     <layout class="QVBoxLayout">
      <item>
       <widget class="QLabel" name="label_2">
@@ -119,27 +119,38 @@
     </layout>
    </item>
    <item row="6" column="0">
-    <widget class="QProgressBar" name="progressBar">
-     <property name="value">
-      <number>0</number>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="textVisible">
-      <bool>true</bool>
+    <widget class="QCheckBox" name="addToCanvasCheck">
+     <property name="text">
+      <string>Add result to canvas</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
-    <widget class="QDialogButtonBox" name="buttonBox_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+   <item row="7" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QProgressBar" name="progressBar">
+       <property name="value">
+        <number>0</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="textVisible">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
