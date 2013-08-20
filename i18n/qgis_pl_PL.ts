@@ -39323,12 +39323,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="104"/>
         <source>Converting to offline project</source>
-        <translation type="unfinished"></translation>
+        <translation>Konwersja do projektu offline</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="116"/>
         <source>Synchronizing to remote layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchronizacja z warstwami zdalnymi</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="165"/>
@@ -39338,7 +39338,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="168"/>
         <source>%v / %m features processed</source>
-        <translation type="unfinished">%v / %m obiektów</translation>
+        <translation>%v / %m obiektów gotowe</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="171"/>
@@ -41356,7 +41356,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3517"/>
         <source>When a new layer is created, or when a layer is loaded that has no CRS</source>
-        <translation>Gdy tworzona jest nowa warstwa, lub wgrywana warstwa nie zawiera deklaracji układu współrzędnych</translation>
+        <translation>Gdy wgrywana lub tworzona warstwa nie zawiera deklaracji układu współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3543"/>
