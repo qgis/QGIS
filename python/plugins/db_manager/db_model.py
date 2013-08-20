@@ -523,21 +523,7 @@ class DBModel(QAbstractItemModel):
 					added += 1
 
 		if data.hasFormat(self.QGIS_URI_MIME):
-			encodedData = data.data(self.QGIS_URI_MIME)
-			stream = QDataStream(encodedData, QIODevice.ReadOnly)
-
-			while not stream.atEnd():
-				mimeUri = stream.readQString()
-
-				parts = mimeUri.split(":", 3)
-				if len(parts) != 4:
-					# invalid qgis mime uri
-					QMessageBox.warning(None, self.tr("Invalid MIME uri"), self.tr("The dropped object is not a valid layer"))
-					continue
-
-				layerType, providerKey, layerName, uriString = parts
-
-				if self.importLayer( layerType, providerKey, layerName, uriString, parent ):
+			for uri tin qgis.core.QgsMimeDataUtils.decodeUriList( data ):
 					added += 1
 
 		return added > 0
