@@ -27,16 +27,16 @@ __revision__ = '$Format:%H$'
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from sextante.parameters.Parameter import Parameter
-from sextante.parameters.ParameterBoolean import ParameterBoolean
-from sextante.parameters.ParameterRaster import ParameterRaster
-from sextante.parameters.ParameterTable import ParameterTable
-from sextante.parameters.ParameterVector import ParameterVector
-from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
-from sextante.parameters.ParameterNumber import ParameterNumber
-from sextante.parameters.ParameterString import ParameterString
-from sextante.parameters.ParameterTableField import ParameterTableField
-from sextante.parameters.ParameterExtent import ParameterExtent
+from processing.parameters.Parameter import Parameter
+from processing.parameters.ParameterBoolean import ParameterBoolean
+from processing.parameters.ParameterRaster import ParameterRaster
+from processing.parameters.ParameterTable import ParameterTable
+from processing.parameters.ParameterVector import ParameterVector
+from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
+from processing.parameters.ParameterNumber import ParameterNumber
+from processing.parameters.ParameterString import ParameterString
+from processing.parameters.ParameterTableField import ParameterTableField
+from processing.parameters.ParameterExtent import ParameterExtent
 
 
 class ModelerParameterDefinitionDialog(QtGui.QDialog):
