@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:/src/qgis/python/plugins/sextante/ui/DlgModeler.ui'
+# Form implementation generated from reading ui file 'DlgModeler.ui'
 #
-# Created: Tue Jul 16 01:17:48 2013
-#      by: PyQt4 UI code generator 4.8.3
+# Created: Tue Aug 20 11:02:00 2013
+#      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
 

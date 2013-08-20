@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:/src/qgis/python/plugins/sextante/ui/ProcessingToolbox.ui'
+# Form implementation generated from reading ui file 'ProcessingToolbox.ui'
 #
-# Created: Tue Jul 16 01:17:48 2013
-#      by: PyQt4 UI code generator 4.8.3
+# Created: Tue Aug 20 11:02:22 2013
+#      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -42,7 +42,7 @@ class Ui_ProcessingToolbox(object):
         QtCore.QMetaObject.connectSlotsByName(ProcessingToolbox)
 
     def retranslateUi(self, ProcessingToolbox):
-        ProcessingToolbox.setWindowTitle(QtGui.QApplication.translate("ProcessingToolbox", "Toolbox", None, QtGui.QApplication.UnicodeUTF8))        
+        ProcessingToolbox.setWindowTitle(QtGui.QApplication.translate("ProcessingToolbox", "Processing Toolbox", None, QtGui.QApplication.UnicodeUTF8))
         self.searchBox.setToolTip(QtGui.QApplication.translate("ProcessingToolbox", "Enter algorithm name to filter list", None, QtGui.QApplication.UnicodeUTF8))
 
 from qgis.gui import QgsFilterLineEdit
