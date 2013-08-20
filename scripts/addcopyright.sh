@@ -37,7 +37,7 @@ for i in $FILES; do
 
         case $i in
 	# Override author if initial commit was by someone else
-	python/plugins/sextante/*)
+	python/plugins/processing/*)
 		author=volayaf
 		;;
 
