@@ -523,7 +523,8 @@ class DBModel(QAbstractItemModel):
 					added += 1
 
 		if data.hasFormat(self.QGIS_URI_MIME):
-			for uri tin qgis.core.QgsMimeDataUtils.decodeUriList( data ):
+			for uri in qgis.core.QgsMimeDataUtils.decodeUriList( data ):
+				if self.importLayer( uri.layerType, uri.providerKey, uri.name, uri.uri, parent ):
 					added += 1
 
 		return added > 0
