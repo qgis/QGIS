@@ -1237,7 +1237,7 @@ QString QgsPostgresConn::postgisTypeFilter( QString geomCol, QGis::WkbType geomT
     case QGis::WKBPolygon25D:
     case QGis::WKBMultiPolygon:
     case QGis::WKBMultiPolygon25D:
-      return QString( "upper(geometrytype(%1)) IN ('POLYGON','MULTIPOLYGON','POLYGONM','MULTIPOLYGONM')" ).arg( geomCol );
+      return QString( "upper(geometrytype(%1)) IN ('POLYGON','MULTIPOLYGON','POLYGONM','MULTIPOLYGONM', 'POLYHEDRALSURFACE', 'TIN')" ).arg( geomCol );
     case QGis::WKBNoGeometry:
       return QString( "geometrytype(%1) IS NULL" ).arg( geomCol );
     case QGis::WKBUnknown:

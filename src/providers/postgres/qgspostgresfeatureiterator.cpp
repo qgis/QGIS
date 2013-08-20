@@ -356,7 +356,124 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
         unsigned char *featureGeom = new unsigned char[returnedLength + 1];
         memset( featureGeom, 0, returnedLength + 1 );
         memcpy( featureGeom, PQgetvalue( queryResult.result(), row, col ), returnedLength );
-        feature.setGeometryAndOwnership( featureGeom, returnedLength + 1 );
+
+	// modify 2.5D WKB types to make them compliant with OGR
+	unsigned int wkbType;
+	memcpy( &wkbType, featureGeom + 1, sizeof( wkbType) );
+
+	// convert unsupported types to supported ones
+	switch ( wkbType )
+	{
+	case 15:
+	  // 2D polyhedral => multipolygon
+	  wkbType = 6;
+	  break;
+	case 1015:
+	  // 3D polyhedral => multipolygon
+	  wkbType = 1006;
+	  break;
+	case 17:
+	  // 2D triangle => polygon
+	  wkbType = 3;
+	  break;
+	case 1017:
+	  // 3D triangle => polygon
+	  wkbType = 1003;
+	  break;
+	case 16:
+	  // 2D TIN => multipolygon
+	  wkbType = 6;
+	  break;
+	case 1016:
+	  // TIN => multipolygon
+	  wkbType = 1006;
+	  break;
+	}
+	// convert from postgis types to qgis types
+	if ( wkbType >= 1000 )
+	{
+	  wkbType = wkbType - 1000 + QGis::WKBPoint25D - 1;
+	}
+	memcpy( featureGeom + 1, &wkbType, sizeof( wkbType) );
+
+	// change wkb type of inner geometries
+	if ( wkbType == QGis::WKBMultiPoint25D ||
+	     wkbType == QGis::WKBMultiLineString25D ||
+	     wkbType == QGis::WKBMultiPolygon25D )
+	{
+	  unsigned int numGeoms = *(( int* )( featureGeom + 5 ));
+	  unsigned char* wkb = featureGeom + 9;
+	  for ( unsigned int i = 0; i < numGeoms; ++i )
+	  {
+	    unsigned int localType;
+	    memcpy( &localType, wkb + 1, sizeof( localType) );
+	    switch ( localType )
+	    {
+	    case 15:
+	      // 2D polyhedral => multipolygon
+	      localType = 6;
+	      break;
+	    case 1015:
+	      // 3D polyhedral => multipolygon
+	      localType = 1006;
+	      break;
+	    case 17:
+	      // 2D triangle => polygon
+	      localType = 3;
+	      break;
+	    case 1017:
+	      // 3D triangle => polygon
+	      localType = 1003;
+	      break;
+	    case 16:
+	      // 2D TIN => multipolygon
+	      localType = 6;
+	      break;
+	    case 1016:
+	      // TIN => multipolygon
+	      localType = 1006;
+	      break;
+	    }
+	    if ( localType >= 1000 )
+	    {
+	      localType = localType - 1000 + QGis::WKBPoint25D - 1;
+	    }
+	    memcpy( wkb + 1, &localType, sizeof( localType) );
+
+	    // skip endian and type info
+	    wkb += sizeof( unsigned int ) + 1;
+
+	    // skip coordinates
+	    switch ( wkbType )
+	    {
+	    case QGis::WKBMultiPoint25D:
+	      wkb += sizeof( double ) * 3;
+	      break;
+	    case QGis::WKBMultiLineString25D:
+	      {
+		unsigned int nPoints = *(( int* ) wkb );
+		wkb += sizeof( nPoints );
+		wkb += sizeof( double ) * 3 * nPoints;
+	      }
+	      break;
+	    default:
+	    case QGis::WKBMultiPolygon25D:
+	      {
+		unsigned int nRings = *(( int* ) wkb );
+		wkb += sizeof( nRings );
+		for ( unsigned int j = 0; j < nRings; ++j )
+		{
+		  unsigned int nPoints = *(( int* ) wkb );
+		  wkb += sizeof( nPoints );
+		  wkb += sizeof( double ) * 3 * nPoints;
+		}
+	      }
+	      break;
+	    }
+	  }
+	}
+
+	feature.setGeometryAndOwnership( featureGeom, returnedLength + 1 );
       }
       else
       {
