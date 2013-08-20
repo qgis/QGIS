@@ -16,7 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.parameters.ParameterFile import ParameterFile
+
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -37,6 +37,7 @@ from processing.parameters.ParameterNumber import ParameterNumber
 from processing.parameters.ParameterString import ParameterString
 from processing.parameters.ParameterTableField import ParameterTableField
 from processing.parameters.ParameterExtent import ParameterExtent
+from processing.parameters.ParameterFile import ParameterFile
 
 
 class ModelerParameterDefinitionDialog(QtGui.QDialog):
