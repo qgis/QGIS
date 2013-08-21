@@ -47,10 +47,12 @@ from utilities import (
     unittest,
     expectedFailure,
     unitTestDataPath,
+    loadTestFont,
     openInBrowserTab
 )
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+TESTFONT = loadTestFont()
 
 PALREPORT = 'PAL_REPORT' in os.environ
 PALREPORTS = {}
@@ -61,7 +63,7 @@ class TestQgsPalLabeling(TestCase):
     _TestDataDir = unitTestDataPath()
     _PalDataDir = os.path.join(_TestDataDir, 'labeling')
     _PalFeaturesDb = os.path.join(_PalDataDir, 'pal_features_v3.sqlite')
-    _TestFontID = -1
+    _TestFont = TESTFONT
     _MapRegistry = None
     _MapRenderer = None
     _Canvas = None
@@ -81,18 +83,8 @@ class TestQgsPalLabeling(TestCase):
         assert res, msg
 
         # load the FreeSansQGIS labeling test font
-        fontdb = QFontDatabase()
-        cls._TestFontID = fontdb.addApplicationFont(
-            os.path.join(cls._TestDataDir, 'font', 'FreeSansQGIS.ttf'))
-        msg = ('\nCould not store test font in font database, '
-               'SKIPPING TEST SUITE')
-        assert cls._TestFontID != -1, msg
-
-        cls._TestFont = fontdb.font('FreeSansQGIS', 'Medium', 48)
-        appfont = QApplication.font()
-        msg = ('\nCould not load test font from font database, '
-               'SKIPPING TEST SUITE')
-        assert cls._TestFont.toString() != appfont.toString(), msg
+        msg = '\nCould not load test font, SKIPPING TEST SUITE'
+        assert TESTFONT is not None, msg
 
         cls._TestFunction = ''
         cls._TestGroup = ''
@@ -127,6 +119,10 @@ class TestQgsPalLabeling(TestCase):
     @classmethod
     def removeAllLayers(cls):
         cls._MapRegistry.removeAllMapLayers()
+
+    @classmethod
+    def getTestFont(cls):
+        return QFont(cls._TestFont)
 
     @classmethod
     def loadFeatureLayer(cls, table):
@@ -176,7 +172,9 @@ class TestQgsPalLabeling(TestCase):
         lyr = QgsPalLayerSettings()
         lyr.enabled = True
         lyr.fieldName = 'text'  # default in data sources
-        lyr.textFont = self._TestFont
+        font = self.getTestFont()
+        font.setPointSize(48)
+        lyr.textFont = font
         lyr.textNamedStyle = 'Medium'
         return lyr
 

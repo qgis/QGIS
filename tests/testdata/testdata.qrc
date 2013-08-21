@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/testdata">
+        <file>font/FreeSansQGIS.ttf</file>
+    </qresource>
+</RCC>

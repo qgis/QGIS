@@ -21,6 +21,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFont>
+#include <QFontDatabase>
 #include <QPixmap>
 #include <QLocale>
 #include <QSettings>
@@ -809,6 +810,14 @@ int main( int argc, char *argv[] )
       }
     }
   }
+
+  // load standard test font from testdata.qrc (for unit tests)
+  QFile testFont( ":/testdata/font/FreeSansQGIS.ttf" );
+  if ( testFont.open( QIODevice::ReadOnly ) )
+  {
+    int fontID = QFontDatabase::addApplicationFontFromData( testFont.readAll() );
+    QgsDebugMsg( QString( "Test font %1loaded from testdata.qrc" ).arg( fontID != -1 ? "" : "NOT " ) );
+  } // else app wasn't built with ENABLE_TESTS
 
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.
