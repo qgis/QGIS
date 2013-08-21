@@ -23,6 +23,7 @@ import os
 import sys
 import datetime
 import glob
+import shutil
 import StringIO
 import tempfile
 from PyQt4.QtCore import *
@@ -36,6 +37,7 @@ from qgis.core import (
     QgsMapRenderer,
     QgsPalLabeling,
     QgsPalLayerSettings,
+    QgsProject,
     QgsProviderRegistry,
     QgsVectorLayer,
     QgsRenderChecker
@@ -64,6 +66,7 @@ class TestQgsPalLabeling(TestCase):
     _PalDataDir = os.path.join(_TestDataDir, 'labeling')
     _PalFeaturesDb = os.path.join(_PalDataDir, 'pal_features_v3.sqlite')
     _TestFont = TESTFONT
+    _TestProj = None
     _MapRegistry = None
     _MapRenderer = None
     _Canvas = None
@@ -77,8 +80,7 @@ class TestQgsPalLabeling(TestCase):
             QGISAPP, CANVAS, IFACE, PARENT
 
         # verify that spatialite provider is available
-        msg = ('\nSpatialite provider not found, '
-               'SKIPPING TEST SUITE')
+        msg = '\nSpatialite provider not found, SKIPPING TEST SUITE'
         res = 'spatialite' in QgsProviderRegistry.instance().providerList()
         assert res, msg
 
@@ -90,6 +92,7 @@ class TestQgsPalLabeling(TestCase):
         cls._TestGroup = ''
         cls._TestGroupPrefix = ''
         cls._TestGroupAbbr = ''
+        cls._TestImage = ''
 
         # initialize class MapRegistry, Canvas, MapRenderer, Map and PAL
         cls._MapRegistry = QgsMapLayerRegistry.instance()
@@ -98,10 +101,10 @@ class TestQgsPalLabeling(TestCase):
         cls._Map = cls._Canvas.map()
         cls._Map.resize(QSize(600, 400))
         cls._MapRenderer = cls._Canvas.mapRenderer()
-        crs = QgsCoordinateReferenceSystem()
+        cls._CRS = QgsCoordinateReferenceSystem()
         # default for labeling test data sources: WGS 84 / UTM zone 13N
-        crs.createFromSrid(32613)
-        cls._MapRenderer.setDestinationCrs(crs)
+        cls._CRS.createFromSrid(32613)
+        cls._MapRenderer.setDestinationCrs(cls._CRS)
         # use platform's native logical output dpi for QgsMapRenderer on launch
 
         cls._Pal = QgsPalLabeling()
@@ -195,7 +198,7 @@ class TestQgsPalLabeling(TestCase):
                     res[attr] = value
         return res
 
-    def saveContolImage(self):
+    def saveContolImage(self, tmpimg=''):
         if 'PAL_CONTROL_IMAGE' not in os.environ:
             return
         testgrpdir = 'expected_' + self._TestGroupPrefix
@@ -208,20 +211,68 @@ class TestQgsPalLabeling(TestCase):
         for f in glob.glob(imgbasepath + '.*'):
             if os.path.exists(f):
                 os.remove(f)
-        self._Map.render()
-        self._Canvas.saveAsImage(imgpath)
+        if tmpimg:
+            if os.path.exists(tmpimg):
+                shutil.copyfile(tmpimg, imgpath)
+        else:
+            self._Map.render()
+            self._Canvas.saveAsImage(imgpath)
 
-    def renderCheck(self, mismatch=0):
+    def renderCheck(self, mismatch=0, imgpath='', grpprefix=''):
+        """Check rendered map canvas or existing image against control image
+
+        mismatch: number of pixels different from control, and still valid check
+        imgpath: existing image; if present, skips rendering canvas
+        grpprefix: compare test image/rendering against different test group
+        """
+        if not grpprefix:
+            grpprefix = self._TestGroupPrefix
         chk = QgsRenderChecker()
-        chk.setControlPathPrefix('expected_' + self._TestGroupPrefix)
+        chk.setControlPathPrefix('expected_' + grpprefix)
         chk.setControlName(self._Test)
         chk.setMapRenderer(self._MapRenderer)
-        res = chk.runTest(self._Test, mismatch)
+        res = False
+        if imgpath:
+            res = chk.compareImages(self._Test, mismatch, str(imgpath))
+        else:
+            res = chk.runTest(self._Test, mismatch)
         if PALREPORT and not res:  # don't report ok checks
             testname = self._TestGroup + ' . ' + self._Test
             PALREPORTS[testname] = str(chk.report().toLocal8Bit())
         msg = '\nRender check failed for "{0}"'.format(self._Test)
         return res, msg
+
+    def defaultWmsParams(self, projpath, layername):
+        return {
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetMap',
+            'MAP': str(projpath).strip(),
+            # layer stacking order for rendering: bottom,to,top
+            'LAYERS': ['background', str(layername).strip()],  # or 'name,name'
+            'STYLES': ',',
+            'CRS': 'EPSG:32613',  # self._CRS,  # authid str or QgsCoordinateReferenceSystem obj
+            'BBOX': '606510,4823130,612510,4827130',  # self.aoiExtent(),
+            'FORMAT': 'image/png',  # or: 'image/png; mode=8bit'
+            'WIDTH': '600',
+            'HEIGHT': '400',
+            'DPI': '72',
+            'MAP_RESOLUTION': '72',
+            'FORMAT_OPTIONS': 'dpi:72',
+            'TRANSPARENT': 'FALSE',
+            'IgnoreGetMapUrl': '1'
+        }
+
+    @classmethod
+    def setUpServerProjectAndDir(cls, testprojpath, testdir):
+        cls._TestProj = QgsProject.instance()
+        cls._TestProj.setFileName(testprojpath)
+        try:
+            shutil.copy(cls._PalFeaturesDb, testdir)
+            for qml in glob.glob(cls._PalDataDir + os.sep + '*.qml'):
+                shutil.copy(qml, testdir)
+        except IOError, e:
+            raise IOError(str(e) + '\nCould not set up test server directory')
 
 
 class TestPALConfig(TestQgsPalLabeling):

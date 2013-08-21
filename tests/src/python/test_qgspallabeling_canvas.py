@@ -52,7 +52,7 @@ class TestCanvasPoint(TestQgsPalLabeling, TestPointBase):
         """Run after each test."""
         pass
 
-    def checkTest(self):
+    def checkTest(self, **kwargs):
         self.lyr.writeToLayer(self.layer)
         self.saveContolImage()
         self.assertTrue(*self.renderCheck())
