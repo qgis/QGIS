@@ -24,9 +24,7 @@ class QgsSymbolLayerV2
       break;
 
     case QgsSymbolV2::Line:
-      if (dynamic_cast<QgsLineDecorationSymbolLayerV2*>(sipCpp) != NULL)
-	sipClass = sipClass_QgsLineDecorationSymbolLayerV2;
-      else if (dynamic_cast<QgsMarkerLineSymbolLayerV2*>(sipCpp) != NULL)
+      if (dynamic_cast<QgsMarkerLineSymbolLayerV2*>(sipCpp) != NULL)
 	sipClass = sipClass_QgsMarkerLineSymbolLayerV2;
       else if (dynamic_cast<QgsSimpleLineSymbolLayerV2*>(sipCpp) != NULL)
 	sipClass = sipClass_QgsSimpleLineSymbolLayerV2;
