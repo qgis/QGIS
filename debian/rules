@@ -203,11 +203,6 @@ install: build
 	# remove unwanted files
 	! [ -f debian/tmp/usr/share/qgis/doc/api/installdox ] || rm debian/tmp/usr/share/qgis/doc/api/installdox
 	! [ -f debian/tmp/usr/share/qgis/doc/api/jquery.js ] || ln -sf /usr/share/javascript/jquery/jquery.js debian/tmp/usr/share/qgis/doc/api/jquery.js
-	! [ -f debian/tmp/usr/share/qgis/python/plugins/sextante/help/_static/jquery.js ] || ln -sf /usr/share/javascript/jquery/jquery.js debian/tmp/usr/share/qgis/python/plugins/sextante/help/_static/jquery.js
-	! [ -f debian/tmp/usr/share/qgis/python/helpConsole/js/jquery-1.8.2.min.js ] || ln -sf /usr/share/javascript/jquery/jquery.js debian/tmp/usr/share/qgis/python/helpConsole/js/jquery-1.8.2.min.js
-ifeq (,$(findstring $(DISTRIBUTION),"squeeze lucid"))
-	! [ -f debian/tmp/usr/share/qgis/python/plugins/sextante/help/_static/underscore.js ] || ln -sf /usr/share/javascript/underscore/underscore.js debian/tmp/usr/share/qgis/python/plugins/sextante/help/_static/underscore.js
-endif
 
 	# Install menu pixmap
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
