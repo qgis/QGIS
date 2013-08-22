@@ -1041,6 +1041,11 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
 
 void QgsWmsProvider::repeatTileRequest( QNetworkRequest const &oldRequest )
 {
+  if ( mErrors == 100 )
+  {
+    QgsMessageLog::logMessage( tr( "Not logging more than 100 request errors." ), tr( "WMS" ) );
+  }
+
   QNetworkRequest request( oldRequest );
 
   QString url = request.url().toString();
@@ -1058,14 +1063,15 @@ void QgsWmsProvider::repeatTileRequest( QNetworkRequest const &oldRequest )
       QgsMessageLog::logMessage( tr( "Tile request max retry error. Failed %1 requests for tile %2 of tileRequest %3 (url: %4)" )
                                  .arg( maxRetry ).arg( tileNo ).arg( tileReqNo ).arg( url ), tr( "WMS" ) );
     }
-    else if ( mErrors == 100 )
-    {
-      QgsMessageLog::logMessage( tr( "Not logging more than 100 request errors." ), tr( "WMS" ) );
-    }
     return;
   }
 
   setAuthorization( request );
+  if ( mErrors < 100 )
+  {
+    QgsMessageLog::logMessage( tr( "repeat tileRequest %1 tile %2(retry %3)" )
+                               .arg( tileReqNo ).arg( tileNo ).arg( retry ), tr( "WMS" ), QgsMessageLog::INFO );
+  }
   QgsDebugMsg( QString( "repeat tileRequest %1 %2(retry %3) for url: %4" ).arg( tileReqNo ).arg( tileNo ).arg( retry ).arg( url ) );
   request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), retry );
 
