@@ -236,7 +236,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>10</number>
          </property>
          <widget class="QWidget" name="mOptionsPage_01">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -266,8 +266,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>687</width>
-                <height>523</height>
+                <width>656</width>
+                <height>676</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -912,8 +912,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>670</width>
-                <height>750</height>
+                <width>656</width>
+                <height>803</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1248,8 +1248,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>687</width>
-                <height>523</height>
+                <width>674</width>
+                <height>496</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1577,8 +1577,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>670</width>
-                <height>611</height>
+                <width>656</width>
+                <height>757</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -2092,8 +2092,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>687</width>
-                <height>523</height>
+                <width>674</width>
+                <height>496</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2395,8 +2395,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>670</width>
-                <height>619</height>
+                <width>656</width>
+                <height>768</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -2802,8 +2802,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>670</width>
-                <height>551</height>
+                <width>656</width>
+                <height>687</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3303,8 +3303,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>687</width>
-                <height>523</height>
+                <width>674</width>
+                <height>496</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3443,8 +3443,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>687</width>
-                <height>523</height>
+                <width>674</width>
+                <height>496</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -3624,8 +3624,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>687</width>
-                <height>523</height>
+                <width>674</width>
+                <height>496</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -3724,8 +3724,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>670</width>
-                <height>528</height>
+                <width>656</width>
+                <height>704</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -3778,6 +3778,24 @@
                     </item>
                     <item>
                      <widget class="QSpinBox" name="mDefaultTileExpirySpinBox">
+                      <property name="maximum">
+                       <number>100000000</number>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_33">
+                    <item>
+                     <widget class="QLabel" name="label_57">
+                      <property name="text">
+                       <string>Max retry in case of tile request errors</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QSpinBox" name="mDefaultTileMaxRetrySpinBox">
                       <property name="maximum">
                        <number>100000000</number>
                       </property>

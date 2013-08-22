@@ -744,6 +744,15 @@ class QgsWmsProvider : public QgsRasterDataProvider
     static QString nodeAttribute( const QDomElement &e, QString name, QString defValue = QString::null );
 
     /**
+     * \brief Relaunch tile request cloning previous request parameters and managing max repeat
+     *
+     * \param oldRequest request to clone to generate new tile request
+     *
+     * request is not launched if max retry is reached. Message is logged.
+     */
+    void repeatTileRequest( QNetworkRequest const &oldRequest );
+
+    /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server
      *
      * \param forceRefresh  if true, ignores any previous response cached in memory
