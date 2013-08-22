@@ -154,7 +154,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.setSelection(line, 4, line, selCmdLenght)
         self.removeSelectedText()
         if command == "processing":
-            # import Sextante class
+            # import Processing class
             self.append('import processing')
         elif command == "qtCore":
             # import QtCore class
