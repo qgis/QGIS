@@ -843,7 +843,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
         }
 
         int i = 0;
-        int retry = 0;
+        int retry = 0; // Retry counter to manage Tile request fails. Faile bounded by option defaultTileMaxRetry
         for ( int row = row0; row <= row1; row++ )
         {
           for ( int col = col0; col <= col1; col++ )
@@ -865,7 +865,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
             request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), i );
             request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ),
                                   QRectF( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap ) );
-            request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), retry );
+            request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), retry);
 
             QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
             QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
@@ -902,7 +902,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
           url.removeQueryItem( "TILECOL" );
 
           int i = 0;
-          int retry = 0;
+          int retry = 0; // Retry counter to manage Tile request fails. Faile bounded by option defaultTileMaxRetry
           for ( int row = row0; row <= row1; row++ )
           {
             for ( int col = col0; col <= col1; col++ )
@@ -920,7 +920,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
               request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), i );
               request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ),
                                     QRectF( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap ) );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), retry );
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), retry);
 
               QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
               QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
@@ -944,7 +944,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
           }
 
           int i = 0;
-          int retry = 0;
+          int retry = 0; // Retry counter to manage Tile request fails. Faile bounded by option defaultTileMaxRetry
           for ( int row = row0; row <= row1; row++ )
           {
             for ( int col = col0; col <= col1; col++ )
@@ -962,7 +962,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
               request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), i );
               request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ),
                                     QRectF( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap ) );
-              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), retry );
+              request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), retry);
 
               QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
               QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
@@ -1039,6 +1039,8 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   //delete image;
 }
 
+// manage retry in case of tile fail
+// feature added with founding of Regione Toscana - SITA
 void QgsWmsProvider::repeatTileRequest( QNetworkRequest const &oldRequest )
 {
   if ( mErrors == 100 )
@@ -1254,7 +1256,7 @@ void QgsWmsProvider::tileReplyFinished()
         QgsMessageLog::logMessage( tr( "Returned image is flawed [Content-Type:%1; URL: %2]" )
                                    .arg( contentType ).arg( reply->url().toString() ), tr( "WMS" ) );
 
-        repeatTileRequest( reply->request() );
+        repeatTileRequest( reply->request());
       }
     }
     else
@@ -1275,7 +1277,7 @@ void QgsWmsProvider::tileReplyFinished()
   {
     mErrors++;
 
-    repeatTileRequest( reply->request() );
+    repeatTileRequest( reply->request());
 
     mTileReplies.removeOne( reply );
     reply->deleteLater();
