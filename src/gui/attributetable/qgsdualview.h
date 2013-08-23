@@ -184,7 +184,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void previewExpressionChanged( const QString expression );
 
     /**
-     * If an attribute on this layer is deleted, close any open editors
+     * If an attribute on this layer is deleted, remove the field also for open
+     * attribute dialogs.
      * (as long as the attribute dialog is not able to handle this problem)
      *
      * @param attribute The attribute being deleted
