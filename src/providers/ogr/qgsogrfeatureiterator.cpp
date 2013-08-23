@@ -54,7 +54,18 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatur
 
   if ( !P->subsetString().isEmpty() )
   {
-    QByteArray sql = "SELECT * FROM " + P->quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
+    QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) );
+    if ( P->ogrDriverName == "ODBC" ) //the odbc driver does not like schema names for subset
+    {
+      QString layerNameString = P->mEncoding->toUnicode( layerName );
+      int dotIndex = layerNameString.indexOf( "." );
+      if ( dotIndex > 1 )
+      {
+        QString modifiedLayerName = layerNameString.right( layerNameString.size() - dotIndex - 1 );
+        layerName = P->mEncoding->fromUnicode( modifiedLayerName );
+      }
+    }
+    QByteArray sql = "SELECT * FROM " + P->quotedIdentifier( layerName );
     sql += " WHERE " + P->textEncoding()->fromUnicode( P->subsetString() );
     QgsDebugMsg( QString( "SQL: %1" ).arg( P->textEncoding()->toUnicode( sql ) ) );
     ogrLayer = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), NULL, NULL );
