@@ -184,6 +184,14 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void previewExpressionChanged( const QString expression );
 
     /**
+     * If an attribute on this layer is deleted, close any open editors
+     * (as long as the attribute dialog is not able to handle this problem)
+     *
+     * @param attribute The attribute being deleted
+     */
+    void attributeDeleted( int attribute );
+
+    /**
      * Will be called periodically, when loading layers from slow data providers.
      *
      * @param i       The number of features already loaded
