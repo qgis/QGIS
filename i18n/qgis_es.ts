@@ -2663,7 +2663,7 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     </message>
     <message>
         <source>Processing options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opciones de procesado</translation>
     </message>
 </context>
 <context>
@@ -3089,7 +3089,7 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     </message>
     <message>
         <source>Processing modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelador de procesado</translation>
     </message>
 </context>
 <context>
@@ -5863,7 +5863,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Creating heatmap</source>
-        <translation type="unfinished"></translation>
+        <translation>Creando heatmap</translation>
     </message>
     <message>
         <source>Abort</source>
@@ -6049,7 +6049,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Kernel shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Forma del kernel</translation>
     </message>
     <message>
         <source>Rows</source>
@@ -7355,7 +7355,7 @@ Por favor, use la opción &apos;Guardar como...&apos;</translation>
     </message>
     <message>
         <source>Processing models (*.model)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelos de procesado (*.model)</translation>
     </message>
 </context>
 <context>
@@ -8318,62 +8318,62 @@ Por favor, cambie esta situación primero, porque el complemento de OSM no sabe 
     <name>Processing</name>
     <message>
         <source>Processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Procesado</translation>
     </message>
     <message>
         <source>Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Caja de herramientas</translation>
     </message>
     <message>
         <source>Graphical modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelador gráfico</translation>
     </message>
     <message>
         <source>History and log</source>
-        <translation type="unfinished">Historial y registro</translation>
+        <translation>Historial y registro</translation>
     </message>
     <message>
         <source>Options and configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Opciones y configuración</translation>
     </message>
     <message>
         <source>&amp;Results viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>Visor de &amp;resultados</translation>
     </message>
     <message>
         <source>&amp;Commander</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Comandos</translation>
     </message>
 </context>
 <context>
     <name>ProcessingToolbox</name>
     <message>
         <source>Processing Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Caja de herramientas de procesado</translation>
     </message>
     <message>
         <source>Enter algorithm name to filter list</source>
-        <translation type="unfinished">Introducir nombre de algoritmo para filtrar la lista</translation>
+        <translation>Introducir nombre de algoritmo para filtrar la lista</translation>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished">Buscar...</translation>
+        <translation>Buscar...</translation>
     </message>
     <message>
         <source>Execute</source>
-        <translation type="unfinished">Ejecutar</translation>
+        <translation>Ejecutar</translation>
     </message>
     <message>
         <source>Execute as batch process</source>
-        <translation type="unfinished">Ejecutar usando procesamiento por lotes</translation>
+        <translation>Ejecutar usando procesamiento por lotes</translation>
     </message>
     <message>
         <source>Edit rendering styles for outputs</source>
-        <translation type="unfinished">Editar estilos de renderizados para salidas</translation>
+        <translation>Editar estilos de renderizados para salidas</translation>
     </message>
     <message>
         <source>Recently used algorithms</source>
-        <translation type="unfinished">Algoritmos usados recientemente</translation>
+        <translation>Algoritmos usados recientemente</translation>
     </message>
 </context>
 <context>
@@ -8828,7 +8828,7 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
     </message>
     <message>
         <source>Import Processing class</source>
-        <translation type="unfinished"></translation>
+        <translation>Clase de procesado de importación</translation>
     </message>
 </context>
 <context>
@@ -44450,7 +44450,7 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>Save style</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar estilo</translation>
     </message>
 </context>
 <context>
@@ -55435,7 +55435,58 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h1&gt;Ayuda del complemento Heatmap&lt;/h1&gt;
+&lt;p&gt;El complemento Heatmap utiliza estimación de densidad de kernel para crear un ráster de densidad (heatmap)
+de una capa vectorial de puntos de entrada. La densidad se calcula en base al número
+de puntos en una posición, de forma que mayores números de puntos agrupados dan
+valores mayores. Los heatmaps permiten una fácil identificación de &quot;puntos calientes&quot; y
+agrupamiento de puntos.&lt;/p&gt;
+
+&lt;h2&gt;Parámetros del diálogo&lt;/h2&gt;
+
+&lt;h3&gt;Capa de puntos de entrada&lt;/h3&gt;
+&lt;p&gt;La entrada es siempre una capa vectorial de puntos. En la lista desplegable se muestran todas las capas vectoriales de puntos que estén actualmente cargadas en la vista del mapa. Pulse el botón para desplegar y seleccione la capa deseada.&lt;/p&gt;
+
+&lt;h3&gt;Ráster de salida&lt;/h3&gt;
+&lt;p&gt;Se puede establecer la ubicación y nombre del archivo ráster de salida haciendo clic en el botón &lt;label&gt;...&lt;/label&gt; que hay junto al cuadro de texto del ráster de salida.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt; Si no se indica expresamente, el formato del archivo de salida se añade automáticamente dependiendo del formato de salida seleccionado.&lt;/p&gt;
+
+&lt;h3&gt;Formato de salida&lt;/h3&gt;
+&lt;p&gt;Todos los formatos de archivo que pueden ser creados por GDAL están disponibles en la lista desplegable. Pulse y seleccione el formato de salida necesario para su archivo.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt; Se recomiendan los formatos GeoTiff y ERDAS Imagine .img. Algunos formatos hacen que se cuelgue la aplicación. Limítese a los formatos recomendados hasta que se solvente el problema o use otros formatos si sabe que GDAL los soporta completamente.&lt;/p&gt;
+
+&lt;h3&gt;Radio (ancho de banda)&lt;/h3&gt;
+&lt;p&gt;Se utiliza para especificar el radio de búsqueda del heatmap (o ancho de banda del kernel) en metros o unidades del mapa. El radio especifica la distancia alrededor de un punto a la que se sentirá la influencia del punto. Valores más grandes producen un suavizado mayor, mientras que valores más pequeños pueden mostrar detalles más finos y variación el la densidad de puntos.&lt;/p&gt;
+
+&lt;h3&gt;Opciones avanzadas&lt;/h3&gt;
+
+&lt;h4&gt;Filas y columnas&lt;/h4&gt;
+&lt;p&gt;Se utiliza para cambiar las dimensiones del archivo ráster de salida. Estos valores están también enlazados con los valores &lt;b&gt;Tamaño X de celda&lt;/b&gt; y &lt;b&gt;Tamaño Y de celda&lt;/b&gt;. 
+Aumentando el número de filas o columnas disminuirá el tamaño de celda y aumentará el tamaño del archivo de salida. Los valores en Filas y columnas
+también están enlazados, de forma que doblar el número de filas se doblará automaticamente el número de columnas y se reducirá a la mitad el tamaño de celda. El área geográfica del ráster de salida se mantendrá igual.&lt;/p&gt;
+
+&lt;h4&gt;Tamaño X e Y de celda&lt;/h4&gt;
+&lt;p&gt;Controla el tamaño geográfico de cada píxel en el ráster de salida. Cambiar estos valores también cambiará el número de filas y columnas en el ráster de salida.&lt;/p&gt;
+  
+&lt;h4&gt;Forma del kernel&lt;/h4&gt;
+&lt;p&gt;La forma del kernel controla la tasa a la que la influencia de un punto disminuye a medida que aumenta la distancia a él. Diferentes kernels decaen 
+a tasas distintas, así un kernel triweight da mayor peso a objetos espaciales más próximos al punto que el kernel Epanechnikov. En consecuencia,
+el kernel triweight da puntos calienes más &quot;afilados&quot; y el Epanechnikov da puntos calientes más &quot;suaves&quot;. QGIS dispone de cierto número de funciones de kernel estándar,
+que se describen e ilustran en &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4&gt;Relación de decaimiento&lt;/h4&gt;
+&lt;p&gt;Para kernels triangulares, la relación de decaimiento define la cantidad de influencia que se aplica a los píxeles más externos dentro del radio de buffer. Un valor de 0 refleja un kernel triangular estándar, en el que la influencia tiende a cero a medida que la distancia desde el píxel al punto se aproxima al radio especificado. En contraste, un valor de 1 indica que no hay disminución al aumentar la distancia desde el punto.&lt;/p&gt;
+
+&lt;h4&gt;Usar radio a partir de campo&lt;/h4&gt;
+&lt;p&gt;De forma optional, se puede usar el valor de un campo especificado para controlar el radio del kernel para cada punto de la capa de entrada.&lt;/p&gt;
+
+&lt;h4&gt;Usar peso a partir de campo&lt;/h4&gt;
+&lt;p&gt;De forma optional, se puede usar un atributo que contenga pesos para puntos para dar más peso a algunos puntos de la capa de entrada que a otros.&lt;/p&gt;
+
+&lt;h2&gt;Más detalles&lt;/h2&gt;
+&lt;p&gt;Contacte con el autor através de aruntheguy arroba gmail punto com&lt;/p&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Save vector layer as...&lt;/h3&gt;
@@ -55452,7 +55503,20 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 
 See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Guarda capa vectorial como...&lt;/h3&gt;
+
+&lt;p&gt;Este diálogo le permite guardar datos vectoriales en varios formatos usando GDAL/OGR.
+
+&lt;ul&gt;
+&lt;li&gt;Puede seleccionar el formato de destino de la lista &lt;label&gt;Formato&lt;/label&gt; (como se aconseja por OGR).
+&lt;li&gt;En &lt;label&gt;Guardar como&lt;/label&gt; puede introducir un nombre de archivo de destino o seleccionar uno usando el botón &lt;label&gt;Explorar&lt;/label&gt;.
+&lt;li&gt;En la lista &lt;label&gt;Codificación&lt;/label&gt; puede definir con qué codificación se deben guardar los datos.
+&lt;li&gt;Puede seleccionar un SRC enel que se deban reproyectar los datos que se van a guardar usando &lt;label&gt;CRS&lt;/label&gt;.
+&lt;li&gt;OGR también tiene varias opciones para los distintos formatos que soporta. Utilice el campo de creación de &lt;label&gt;fuente de datos&lt;/label&gt; para establecer las opciones de la fuente de datos y las opciones de creación de la &lt;label&gt;capa&lt;/label&gt;. Introduzca una opción por línea (ej. &lt;code&gt;SPATIALITE=yes&lt;/code&gt; en la &lt;label&gt;fuente de datos&lt;/label&gt; para crear una base de datos spatialite usando el controlador SQLite).
+&lt;/ul&gt;
+
+Vea &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;formatos vectoriales de OGR&lt;/a&gt; para una lista de los formatos admitidos y las opciones disponibles.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Print Composer&lt;/h3&gt;
@@ -55467,14 +55531,14 @@ Click on one of the icons along the top of the composer window to select what ty
 &lt;/p&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;Diseñador de impresión&lt;/h3&gt;
+        <translation>&lt;h3&gt;Diseñador de impresión&lt;/h3&gt;
 
 &lt;p&gt;
-El diseñador de impresión permite ordenar los ítems que serán impresos dentro de la página. Los ítems incluyen el contenido de la vista del mapa, la cuadrícula, la barra de escala, la leyenda e imágenes adicionales.
+El diseñador de impresión permite ordenar los elementos que serán impresos dentro de la página. Los elementos incluyen el contenido de la vista del mapa, la barra de escala, la leyenda e imágenes adicionales.
 &lt;/p&gt;
 
 &lt;p&gt;
-Haga clic sobre uno de los íconos a lo largo de la parte superior de la ventana Diseñador para seleccionar el tipo de ítem que desea colocar en la página, luego haga clic y dibuje sobre la página para ubicar el ítem seleccionado. El tamaño de algunos ítems, tales como la vista del mapa y la barra de escala se pueden definir haciendo clic y arrastrando sobre la página. Otros ítems tienen tamaño fijo, pero se puede cambiar después seleccionando el ítem y ajustándo el campo de tamaño en el panel derecho.
+Haga clic sobre uno de los íconos a lo largo de la parte superior de la ventana Diseñador para seleccionar el tipo de elemento a colocar en la página, luego haga clic y dibuje sobre la página para ubicar el elementoo. El tamaño de algunos elementos, tales como la vista del mapa y la barra de escala se pueden definir haciendo clic y arrastrando sobre la página. Otros elementos tienen tamaño fijo, pero se puede cambiar después seleccionando el elementos y ajustándo el campo de tamaño en el panel derecho.
 
 &lt;/p&gt;
 
@@ -55504,21 +55568,21 @@ system.
 &lt;p&gt;
 Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Definición de sistemas de referencia de coordenadas personalizados&lt;/h3&gt;
+        <translation>&lt;h3&gt;Definición de sistemas de referencia de coordenadas personalizados&lt;/h3&gt;
 Si QGIS no ofrece el sistema de referencia de coordenadas que necesita, puede definir un SRC personalizado. &lt;p&gt;
 Para definir un SRC, seleccione &lt;label&gt;SRC personalizado&lt;/label&gt; del menú &lt;label&gt;Edición&lt;/label&gt; (Gnome, OSX) o del menú &lt;label&gt;Configuración&lt;/label&gt; (KDE, Windows). Los SRC personalizados se almacenan en la base de datos de su usuario de QGIS. Además de sus SRC personalizados, esta base de datos también contiene los marcadores geoespaciales y otros datos personalizados.
 
 &lt;h4&gt;Definición&lt;/h4&gt;
-Para crear un nuevo SRC, haga clic sobre el boton &lt;label&gt;Nuevo&lt;/label&gt; e introduzca :
+Para crear un nuevo SRC, haga clic sobre el boton &lt;label&gt;Nuevo&lt;/label&gt; e introduzca:
 &lt;ul&gt;
 &lt;li&gt;nombre descriptivo 
-&lt;li&gt;parámetros del SRC 
+&lt;li&gt;parámetros del SRC
 &lt;/ul&gt;
 Después puede guardar su SRC haciendo clic en el botón &lt;label&gt;Guardar&lt;/label&gt;.
 &lt;p&gt;
-Note que los parámetros deben comenzar con un bloque +proj=, para representar el nuevo sistema de referencia de coordenadas.
+Tenga en cuenta que los parámetros deben comenzar con un bloque +proj= para representar el nuevo sistema de referencia de coordenadas.
 &lt;p&gt;
-La definición de un SRC personalizado en QGIS requiere una buena comprensión de la biblioteca de proyección Proj.4. Para comenzar, consulte  &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - Un Manual de usuario hecho por Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. Este manual describe el uso de &lt;i&gt;proj.4&lt;/i&gt; y las herramientas de línea de órdenes relacionadas. Los parámetros cartográficos utilizados con &lt;i&gt;proj.4&lt;/i&gt; se describen en el manual de usuario y son los mismos que utiliza QGIS.
+La definición de un SRC personalizado en QGIS requiere una buena comprensión de la biblioteca de proyección Proj.4. Para comenzar, consulte  &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Procedimientos de proyección cartográfica para entornos UNIX&lt;/a&gt; - Un Manual de usuario hecho por Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. Este manual describe el uso de &lt;i&gt;proj.4&lt;/i&gt; y las herramientas de línea de órdenes relacionadas. Los parámetros cartográficos utilizados con &lt;i&gt;proj.4&lt;/i&gt; se describen en el manual de usuario y son los mismos que utiliza QGIS.
 </translation>
     </message>
     <message>
@@ -55729,20 +55793,21 @@ The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table al
 The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
 The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Tabla de atributos&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tabla de atributos&lt;/h3&gt;
 La tabla de atributos muestra los objetos espaciales de la capa seleccionada. Cada fila de la tabla representa un objeto espacial con sus atributos mostrados en varias columnas. Se pueden buscar, seleccionar, mover o incluso editar los objetos espaciales de la tabla. Por omisión la tabla de atributos es una ventana separada. Si la ha abierto y no la puede ver, probablemente está oculta tras la ventana principal de QGIS. También la puede hacer una ventana adosable, marcando &lt;label&gt;Abrir tabla de atributos en una ventada adosada&lt;/label&gt; en &lt;label&gt;Configuración &gt; Opciones &gt; General&lt;/label&gt;.&lt;p&gt;
 
-El número de objetos espaciales seleccionados/totales de la tabla se muestra en la cabecera.&lt;p&gt;
+El número de objetos espaciales totales, filtrados y seleccionados de la capa se muestra en la cabecera de la tabla.&lt;p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#Selecting&quot;&gt;Seleccionar&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#Sorting&quot;&gt;Ordenar&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Searching&quot;&gt;Buscar&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Field&quot;&gt;Calculadora de campos&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;Filtrar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;Editar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;Calculadora de campos&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;Selecting&quot;&gt;
 &lt;h4&gt;Seleccionar&lt;/h4&gt;
 &lt;/a&gt;
-Se pueden seleccionar filas haciendo clic en el número de fila en la parte izquierda de la fila. Seleccionar una fila no cambia la posición actual del cursor. Se pueden marcar múltiples filas manteniendo pulsada la tecla &lt;label&gt;Ctrl&lt;/label&gt;.&lt;br&gt;
+Se pueden seleccionar filas haciendo clic en el número de fila en la parte izquierda de la fila. Se pueden seleccionar las filas siguientes manteniendo pulsado el botón del ratón y moviendo el ratón hasta el otro extremo de la selección. Se pueden seleccionar múltiples filas no contiguas manteniendo pulsada la tecla &lt;label&gt;Ctrl&lt;/label&gt;.&lt;br&gt;
 Se puede hacer una selección continua manteniendo pulsada la tecla &lt;label&gt;Mayúsculas&lt;/label&gt; y pulsando en la cabecera de varias filas en la parte izquierda de las filas. Se seleccionarán todas las filas entre la posición actual del cursor y la fila pulsada.&lt;br&gt;
 Se pueden invertir las filas seleccionadas usando el botón &lt;label&gt;Invertir selección&lt;/label&gt; de la parte inferior de la ventana.
 
@@ -55750,18 +55815,34 @@ Se pueden invertir las filas seleccionadas usando el botón &lt;label&gt;Inverti
 &lt;h4&gt;Ordenar&lt;/h4&gt;
 &lt;/a&gt;
 Cada columna se puede ordenar haciendo clic en su cabecera. Una pequeña flecha indica el sentido del orden (indicando hacia abajo significa valores descendentes de arriba a abajo, apuntando hacia arriba indica valores ascendentes de arriba a abajo).&lt;br&gt;
-Use el botón &lt;label&gt;Mover la selección arriba del todo&lt;/label&gt; para ordenar las filas seleccionadas y mostrarlas en las primeras filas de la tabla. Para mostrar sólo los registros seleccionados, use la casilla de verificación &lt;label&gt;Mostrar sólo los seleccionados&lt;/label&gt;.
+Active el botón &lt;label&gt;Seleccionados arriba&lt;/label&gt; para mostrar las filas seleccionadas siempre en las primeras filas de la tabla, al margen de la columna actual de ordenación.
 
-&lt;a name=&quot;Searching&quot;&gt;
-&lt;h4&gt;Buscar&lt;/h4&gt;
+&lt;a name=&quot;Filtering&quot;&gt;
+&lt;h4&gt;Filtrar&lt;/h4&gt;
 &lt;/a&gt;
-Para una búsqueda simple por atributos en una sola columna, se puede usar el campo &lt;label&gt;Buscar&lt;/label&gt;. Seleccione el campo (columna) en el que se debe hacer la búsqueda en el munú desplegable y pulse el botón &lt;label&gt;Buscar&lt;/label&gt;.&lt;br&gt;
-Para búsquedas más complejas use el botón &lt;label&gt;Busqueda avanzada&lt;/label&gt;. Este botón abre el Constructor de consultas de búsqueda y le permite seleccionar objetos espaciales que cumplan una cláusula SQL-tipo WHERE.
+Para navegar sólo por parte de sus datos, puede usar el botón filtrar de abajo a la izquierda. Hay disponibles las siguientes opciones.
+&lt;h5&gt;Mostrar todos los objetos espaciales&lt;/h5&gt;
+Muestra todos los objetos espaciales de la capa.
+&lt;h5&gt;Mostrar objetos espaciales seleccionados&lt;/h5&gt;
+Muestra todos los objetos espaciales que estén seleccionados.
+&lt;h5&gt;Mostrar objetos espaciales visibles en el mapa&lt;/h5&gt;
+Muestra todos los objetos espaciales que sean visibles actualmente en la vista del mapa, teniendo en cuenta la extesión visible y la visibilidad basada en la escala.
+&lt;h5&gt;Mostrar objetos espaciales editados y nuevos&lt;/h5&gt;
+Muestra sólo los objetos espaciales editados y nuevos. En este modo, se muestran los objetos espaciales con cambios sin guardar. y es por tanto un buen filtro para revisar cambios antes de guardarlos. Tenga en cuenta que los objetos espaciales borrados no se muestran en este modo.
+&lt;h5&gt;Filtro de columna&lt;/h5&gt;
+Un filtro sencillo, que le permite filtrar por un atributo. Si el atributo contiene texto, también busca subcadenas. Por tanto, busca &lt;b&gt;mano&lt;/b&gt; también mostrará los registros que contengan &lt;b&gt;humano&lt;/b&gt;. Después de cambiar el texto del filtro, pulse &lt;label&gt;Intro&lt;/label&gt; o haga clid en &lt;label&gt;Aplicar&lt;/label&gt;. También puede conmutar la casilla &lt;label&gt;Sensible a mayúsculas&lt;/label&gt;, de forma que su filtro también encuentre &lt;b&gt;Noche&lt;/b&gt; cuando busque el texto &lt;b&gt;noche&lt;/b&gt;.   
+&lt;h5&gt;Filtro avanzado&lt;/h5&gt;
+Para búsquedas más complejsa, este modo un potente constructor de expresiones, que es similar a una cláusula WHERE de SQL. Por favor, consulte la ayuda incluida en el constructor de consultas para detalles sobre la sintaxis.
 
-&lt;a name=&quot;Field&quot;&gt;
+&lt;a name=&quot;Editing&quot;&gt;
+&lt;h4&gt;Editar&lt;/h4&gt;
+&lt;/a&gt;
+Para editar valores primero tiene que pasar la capa al modo edición. Para ello haga clic en el botón &lt;label&gt;Conmutar modo edición&lt;/label&gt; (lápiz) o teclee &lt;label&gt;Ctrl + E&lt;/label&gt;. Después haga doble clic en el valor que quiera editar o sitúe el cursos en él y use la tecla &lt;label&gt;Espacio&lt;/label&gt;. Puede personalizar los controles usados para la edición de campos en &lt;label&gt;Propiedades de capas vectoriales &gt; Campos&lt;/label&gt;  
+
+&lt;a name=&quot;FieldCalc&quot;&gt;
 &lt;h4&gt;Calculadora de campos&lt;/h4&gt;
 &lt;/a&gt;
-El botón &lt;label&gt;Calculadora de campos&lt;/label&gt; de la tabla de atributos permite realizar cálculos basados en valores de atributos existentes o funciones definidas, ej. para calcular longitud o área de objetos espaciales.&lt;br&gt;
+El botón &lt;label&gt;Calculadora de campos&lt;/label&gt; de la tabla de atributos permite realizar cálculos basados en valores de atributos existentes o en funciones definidas, ej. para calcular longitud o área de objetos espaciales.&lt;br&gt;
 Los resultados se pueden escribir en una nueva columna de atributos o se puede usar para actualizar valores de una columna existente.&lt;br&gt;
 Tiene que poner la capa vectorial en modo editable antes de pulsar en el icono &lt;label&gt;Calculadora de campos&lt;/label&gt; para abrir el diálogo.
 
