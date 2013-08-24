@@ -2025,6 +2025,13 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   OGRLayerH layer;
   layer = OGR_DS_CreateLayer( dataSource, TO8F( QFileInfo( uri ).completeBaseName() ), reference, OGRvectortype, papszOptions );
   CSLDestroy( papszOptions );
+
+  QSettings settings;
+  if ( !settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() )
+  {
+    CPLSetConfigOption( "SHAPE_ENCODING", 0 );
+  }
+
   if ( !layer )
   {
     QgsMessageLog::logMessage( QObject::tr( "Creation of OGR data source %1 failed: %2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), QObject::tr( "OGR" ) );
