@@ -29,27 +29,12 @@ import qgis
 from PyQt4.QtCore import *
 from PyQt4.QtXml import QDomDocument
 
-from qgis.core import (QgsCentroidFillSymbolLayerV2,
-                       QgsEllipseSymbolLayerV2,
-                       QgsFontMarkerSymbolLayerV2,
-                       QgsLineDecorationSymbolLayerV2,
-                       QgsLinePatternFillSymbolLayer,
-                       QgsMarkerLineSymbolLayerV2,
-                       QgsMarkerSymbolLayerV2,
-                       QgsPointPatternFillSymbolLayer,
-                       QgsSimpleFillSymbolLayerV2,
-                       QgsSimpleLineSymbolLayerV2,
-                       QgsSimpleMarkerSymbolLayerV2,
-                       QgsSVGFillSymbolLayer,
-                       QgsSvgMarkerSymbolLayerV2,
-                       QgsSymbolLayerV2,
-                       QgsVectorFieldSymbolLayer,
+from qgis.core import (
                        QgsCentroidFillSymbolLayerV2,
                        QgsEllipseSymbolLayerV2,
                        QgsFillSymbolLayerV2,
                        QgsFontMarkerSymbolLayerV2,
                        QgsImageFillSymbolLayer,
-                       QgsLineDecorationSymbolLayerV2,
                        QgsLinePatternFillSymbolLayer,
                        QgsLineSymbolLayerV2,
                        QgsMarkerLineSymbolLayerV2,
@@ -60,6 +45,7 @@ from qgis.core import (QgsCentroidFillSymbolLayerV2,
                        QgsSimpleMarkerSymbolLayerV2,
                        QgsSVGFillSymbolLayer,
                        QgsSvgMarkerSymbolLayerV2,
+                       QgsSymbolLayerV2,
                        QgsVectorFieldSymbolLayer,
                       )
 from utilities import (unitTestDataPath,
@@ -142,14 +128,6 @@ class TestQgsSymbolLayerV2(TestCase):
 
         try:
             mType = type(QgsLineSymbolLayerV2)
-        except:
-            mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
-
-        try:
-            mType = type(QgsLineDecorationSymbolLayerV2)
         except:
             mType = None
         mExpectedType = pyqtWrapperType
