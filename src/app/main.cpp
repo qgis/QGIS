@@ -223,7 +223,7 @@ static void dumpBacktrace( unsigned int depth )
     if ( pipe( fd ) == 0 && fork() == 0 )
     {
       close( STDIN_FILENO ); // close stdin
-      dup( fd[0] );          // stdin from pipe
+      ( void ) dup( fd[0] ); // stdin from pipe
       close( fd[1] );        // close writing end
       execl( "/usr/bin/c++filt", "c++filt", ( char * ) 0 );
       perror( "could not start c++filt" );
@@ -234,7 +234,7 @@ static void dumpBacktrace( unsigned int depth )
     stderr_fd = dup( STDERR_FILENO );
     close( fd[0] );          // close reading end
     close( STDERR_FILENO );  // close stderr
-    dup( fd[1] );            // stderr to pipe
+    ( void ) dup( fd[1] );   // stderr to pipe
     close( fd[1] );          // close duped pipe
   }
 
@@ -246,7 +246,7 @@ static void dumpBacktrace( unsigned int depth )
   {
     int status;
     close( STDERR_FILENO );
-    dup( stderr_fd );
+    ( void ) dup( stderr_fd );
     close( stderr_fd );
     wait( &status );
   }
@@ -827,6 +827,7 @@ int main( int argc, char *argv[] )
   if ( testFont.open( QIODevice::ReadOnly ) )
   {
     int fontID = QFontDatabase::addApplicationFontFromData( testFont.readAll() );
+    Q_UNUSED( fontID );
     QgsDebugMsg( QString( "Test font %1loaded from testdata.qrc" ).arg( fontID != -1 ? "" : "NOT " ) );
   } // else app wasn't built with ENABLE_TESTS
 
