@@ -211,6 +211,7 @@ static void dumpBacktrace( unsigned int depth )
     depth = 20;
 
 #if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
+  int stderr_fd = -1;
   if ( access( "/usr/bin/c++filt", X_OK ) < 0 )
   {
     myPrint( "Stacktrace (c++filt NOT FOUND):\n" );
@@ -230,15 +231,25 @@ static void dumpBacktrace( unsigned int depth )
     }
 
     myPrint( "Stacktrace (piped through c++filt):\n" );
+    stderr_fd = dup( STDERR_FILENO );
     close( fd[0] );          // close reading end
     close( STDERR_FILENO );  // close stderr
     dup( fd[1] );            // stderr to pipe
+    close( fd[1] );          // close duped pipe
   }
 
   void **buffer = new void *[ depth ];
   int nptrs = backtrace( buffer, depth );
   backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
   delete [] buffer;
+  if ( stderr_fd >= 0 )
+  {
+    int status;
+    close( STDERR_FILENO );
+    dup( stderr_fd );
+    close( stderr_fd );
+    wait( &status );
+  }
 #elif defined(Q_OS_WIN)
   void **buffer = new void *[ depth ];
 
