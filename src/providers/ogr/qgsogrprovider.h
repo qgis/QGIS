@@ -341,6 +341,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /**Calls OGR_L_SyncToDisk and recreates the spatial index if present*/
     bool syncToDisc();
 
+    OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds );
+
     friend class QgsOgrFeatureIterator;
     QSet< QgsOgrFeatureIterator* > mActiveIterators;
 };
