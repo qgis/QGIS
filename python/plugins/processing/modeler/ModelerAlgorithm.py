@@ -178,7 +178,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                                 #we add the output to the algorithm, with a name indicating where it comes from
                                 #that guarantees that the name is unique
                                 output = copy.deepcopy(out)
-                                output.description = line
+                                output.description = name
                                 output.name = self.getSafeNameForOutput(iAlg, output)
                                 self.addOutput(output)
                             else:

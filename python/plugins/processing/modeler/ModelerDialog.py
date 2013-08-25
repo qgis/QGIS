@@ -415,7 +415,8 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
 class TreeAlgorithmItem(QTreeWidgetItem):
 
     def __init__(self, alg):
-        useCategories = ProcessingConfig.getSetting(ModelerDialog.USE_CATEGORIES)
+        settings = QSettings()
+        useCategories = settings.value(ModelerDialog.USE_CATEGORIES, type = bool)
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         icon = alg.getIcon()

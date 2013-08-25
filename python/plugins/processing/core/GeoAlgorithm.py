@@ -149,8 +149,7 @@ class GeoAlgorithm:
             self.runPreExecutionScript(progress)
             self.processAlgorithm(progress)
             self.convertUnsupportedFormats(progress)
-            self.runPostExecutionScript(progress)
-            print self.crs.authid()
+            self.runPostExecutionScript(progress)            
         except GeoAlgorithmExecutionException, gaee:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, gaee.msg)
             raise gaee

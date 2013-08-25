@@ -45,10 +45,11 @@ class SagaAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         if ProcessingUtils.isWindows():
-            ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_FOLDER, "SAGA folder", SagaUtils.sagaPath()))
+            ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_FOLDER, "SAGA folder", SagaUtils.sagaPath())) 
+        ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_208, "Enable SAGA 2.0.8 compatibility", False))            
         ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_AUTO_RESAMPLING, "Use min covering grid system for resampling", True))
-        ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_LOG_COMMANDS, "Log execution commands", False))
-        ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_LOG_CONSOLE, "Log console output", False))
+        ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_LOG_COMMANDS, "Log execution commands", True))
+        ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_LOG_CONSOLE, "Log console output", True))
         ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_RESAMPLING_REGION_XMIN, "Resampling region min x", 0))
         ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_RESAMPLING_REGION_YMIN, "Resampling region min y", 0))
         ProcessingConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_RESAMPLING_REGION_XMAX, "Resampling region max x", 1000))
@@ -70,10 +71,11 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def createAlgsList(self):
         self.preloadedAlgs = []
+        saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
         folder = SagaUtils.sagaDescriptionPath()
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith("txt"):
-                if ProcessingUtils.isWindows() or ProcessingUtils.isMac():
+                if not saga208:
                     if descriptionFile.startswith("2.0.8"):
                         continue
                 else:

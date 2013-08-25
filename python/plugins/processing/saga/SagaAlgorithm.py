@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.parameters.ParameterTableField import ParameterTableField
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -237,7 +238,8 @@ class SagaAlgorithm(GeoAlgorithm):
                             raise GeoAlgorithmExecutionException("Unsupported file format")
 
         #2: set parameters and outputs
-        if ProcessingUtils.isWindows() or ProcessingUtils.isMac():
+        saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
+        if ProcessingUtils.isWindows() or ProcessingUtils.isMac() or not saga208:
             command = self.undecoratedGroup  + " \"" + self.cmdname + "\""
         else:
             command = "lib" + self.undecoratedGroup  + " \"" + self.cmdname + "\""
@@ -304,8 +306,9 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
                 filename2 = ProcessingUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
-                if ProcessingUtils.isWindows() or ProcessingUtils.isMac():
-                    commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 4 -TYPE 0 -FILE \"" + filename + "\"");
+                formatIndex = 1 if saga208 else 4                    
+                if ProcessingUtils.isWindows() or ProcessingUtils.isMac() or not saga208:                    
+                    commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT " + str(formatIndex) +" -TYPE 0 -FILE \"" + filename + "\"");
                 else:
                     commands.append("libio_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");
 
@@ -363,7 +366,8 @@ class SagaAlgorithm(GeoAlgorithm):
             inputFilename = layer
         destFilename = ProcessingUtils.getTempFilename("sgrd")
         self.exportedLayers[layer]= destFilename
-        if ProcessingUtils.isWindows() or ProcessingUtils.isMac():
+        saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
+        if ProcessingUtils.isWindows() or ProcessingUtils.isMac() or not saga208:
             s = "grid_tools \"Resampling\" -INPUT \"" + inputFilename + "\" -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
                 str(self.xmin) + " -USER_XMAX " + str(self.xmax) + " -USER_YMIN " + str(self.ymin) + " -USER_YMAX "  + str(self.ymax) +\
                 " -USER_SIZE " + str(self.cellsize) + " -USER_GRID \"" + destFilename + "\""
@@ -377,7 +381,8 @@ class SagaAlgorithm(GeoAlgorithm):
     def exportRasterLayer(self, layer):
         destFilename = ProcessingUtils.getTempFilenameInTempFolder(os.path.basename(layer)[0:5] + ".sgrd")
         self.exportedLayers[layer]= destFilename
-        if ProcessingUtils.isWindows() or ProcessingUtils.isMac():
+        saga208 = ProcessingConfig.getSetting(SagaUtils.SAGA_208)
+        if ProcessingUtils.isWindows() or ProcessingUtils.isMac() or not saga208:
             return "io_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + layer+"\""
         else:
             return "libio_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + layer + "\""

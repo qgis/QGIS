@@ -100,7 +100,7 @@ class CalculatorModelerParametersDialog(QtGui.QDialog):
         self.values = {}
         self.outputs = {}
 
-        name =  self.getSafeNameForHarcodedParameter(self.alg.getParameterFromName(self.alg.FORMULA))
+        name =  self.getSafeNameForHarcodedParameter(self.alg.getParameterFromName(self.alg.FORMULA))        
         value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
         self.params[self.alg.FORMULA] = value
         formula = str(self.formulaText.text())
@@ -130,8 +130,8 @@ class CalculatorModelerParametersDialog(QtGui.QDialog):
         return True
 
     def getSafeNameForHarcodedParameter(self, param):
-        if self.algIndex is None:
-            return "HARDCODEDPARAMVALUE_" + param.name + "_" + str(self.alg)
+        if self.algIndex is not None:
+            return "HARDCODEDPARAMVALUE_" + param.name + "_" + str(self.algIndex)
         else:
             return "HARDCODEDPARAMVALUE_" + param.name + "_" + str(len(self.model.algs))
 

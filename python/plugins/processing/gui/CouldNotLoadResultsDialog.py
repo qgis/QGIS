@@ -23,7 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtCore, QtGui, QtWebKit
+from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import webbrowser
@@ -36,21 +36,24 @@ class CouldNotLoadResultsDialog(QtGui.QDialog):
         self.setupUi()
 
     def setupUi(self):
-        self.resize(800,400)
+        self.resize(600,350)
         self.setWindowTitle("Problem loading output layers")
         layout = QVBoxLayout()
-        webView = QtWebKit.QWebView()
-        webView.page().setLinkDelegationPolicy(QtWebKit.QWebPage.DelegateAllLinks)
-        webView.connect(webView, SIGNAL("linkClicked(const QUrl&)"), self.linkClicked)
+        browser = QtGui.QTextBrowser()
+        browser.setOpenLinks(False)        
+        browser.anchorClicked.connect(self.linkClicked)
         html = self.alg.getPostProcessingErrorMessage(self.wrongLayers)
-        webView.setHtml(html)
-        closeButton = QtGui.QPushButton()
-        closeButton.setText("Close")
-        QObject.connect(closeButton, QtCore.SIGNAL("clicked()"), self.closeButtonPressed)
-        layout.addWidget(webView)
-        layout.addWidget(closeButton)
+        browser.setHtml(html)                
+        button = QPushButton()
+        button.setText("Close")
+        button.clicked.connect(self.closeButtonPressed)  
+        buttonBox = QtGui.QDialogButtonBox()
+        buttonBox.setOrientation(QtCore.Qt.Horizontal)      
+        buttonBox.addButton(button, QDialogButtonBox.ActionRole)        
+        layout.addWidget(browser)
+        layout.addWidget(buttonBox)
         self.setLayout(layout)
-        QtCore.QMetaObject.connectSlotsByName(self)
+
 
     def linkClicked(self, url):
         webbrowser.open(str(url))
