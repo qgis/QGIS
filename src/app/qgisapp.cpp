@@ -2343,7 +2343,11 @@ void QgisApp::about()
 
     versionString += "</tr><tr>";
 
-    versionString += "<td>" + tr( "GEOS Version" ) + "</td><td>" + GEOS_VERSION + "</td>";
+    versionString += "<td>" + tr( "Compiled against GEOS" ) + "</td><td>" + GEOS_CAPI_VERSION + "</td>";
+    versionString += "<td>" + tr( "Running against GEOS" ) + "</td><td>" + GEOSversion() + "</td>";
+
+    versionString += "</tr><tr>";
+
     versionString += "<td>" + tr( "PostgreSQL Client Version" ) + "</td><td>";
 #ifdef HAVE_POSTGRESQL
     versionString += PG_VERSION;
@@ -2352,22 +2356,21 @@ void QgisApp::about()
 #endif
     versionString += "</td>";
 
-    versionString += "</tr><tr>";
-
     versionString += "<td>" +  tr( "SpatiaLite Version" ) + "</td><td>";
     versionString += spatialite_version();
     versionString += "</td>";
 
-    versionString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
-
     versionString += "</tr><tr>";
 
+    versionString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
     versionString += "<td>" + tr( "PROJ.4 Version" ) + "</td><td>" + QString::number( PJ_VERSION ) + "</td>";
+
+    versionString += "</tr><tr>";
 
     versionString += "<td>" + tr( "QScintilla2 Version" ) + "</td><td>" + QSCINTILLA_VERSION_STR + "</td>";
 
 #ifdef QGISDEBUG
-    versionString += "</tr><tr><td colspan=4>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
+    versionString += "<td colspan=2>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
 #endif
 
     versionString += "</tr></table></div></body></html>";
