@@ -465,7 +465,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
                                             mRenderContext.painter()->device()->height(), QImage::Format_ARGB32 );
             if ( mypImage->isNull() )
             {
-              QgsDebugMsg( "insufficient memory for image " + QString::number(mRenderContext.painter()->device()->width()) + "x" + QString::number(mRenderContext.painter()->device()->height()) );
+              QgsDebugMsg( "insufficient memory for image " + QString::number( mRenderContext.painter()->device()->width() ) + "x" + QString::number( mRenderContext.painter()->device()->height() ) );
               emit drawError( ml );
               painter->end(); // drawError is not caught by anyone, so we end painting to notify caller
               return;
@@ -510,7 +510,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
                                           mRenderContext.painter()->device()->height(), QImage::Format_ARGB32 );
           if ( mypFlattenedImage->isNull() )
           {
-            QgsDebugMsg( "insufficient memory for image " + QString::number(mRenderContext.painter()->device()->width()) + "x" + QString::number(mRenderContext.painter()->device()->height()) );
+            QgsDebugMsg( "insufficient memory for image " + QString::number( mRenderContext.painter()->device()->width() ) + "x" + QString::number( mRenderContext.painter()->device()->height() ) );
             emit drawError( ml );
             painter->end(); // drawError is not caught by anyone, so we end painting to notify caller
             return;

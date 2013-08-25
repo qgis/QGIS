@@ -6192,24 +6192,24 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
     if ( unSppType.isEmpty() && dupLayer && !dupLayer->isValid() )
     {
       msgBars.append( new QgsMessageBarItem(
-                          tr( "Duplicate layer: " ),
-                          tr( "%1 (duplication resulted in invalid layer)" ).arg( selectedLyr->name() ) ,
-                          QgsMessageBar::WARNING,
-                          0,
-                          mInfoBar ) );
+                        tr( "Duplicate layer: " ),
+                        tr( "%1 (duplication resulted in invalid layer)" ).arg( selectedLyr->name() ) ,
+                        QgsMessageBar::WARNING,
+                        0,
+                        mInfoBar ) );
       continue;
     }
 
     if ( !unSppType.isEmpty() || !dupLayer )
     {
       msgBars.append( new QgsMessageBarItem(
-                          tr( "Duplicate layer: " ),
-                          tr( "%1 (%2 type unsupported)" )
-                          .arg( selectedLyr->name() )
-                          .arg( !unSppType.isEmpty() ? QString( "'" ) + unSppType + "' " : "" ),
-                          QgsMessageBar::WARNING,
-                          0,
-                          mInfoBar ) );
+                        tr( "Duplicate layer: " ),
+                        tr( "%1 (%2 type unsupported)" )
+                        .arg( selectedLyr->name() )
+                        .arg( !unSppType.isEmpty() ? QString( "'" ) + unSppType + "' " : "" ),
+                        QgsMessageBar::WARNING,
+                        0,
+                        mInfoBar ) );
       continue;
     }
 

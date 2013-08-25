@@ -181,7 +181,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 raise GeoAlgorithmExecutionException("SAGA folder is not configured.\nPlease configure it before running SAGA algorithms.")
         commands = list()
         self.exportedLayers = {}
-                
+
         self.preProcessInputs()
 
         #1: Export rasters to sgrd and vectors to shp
@@ -309,7 +309,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 else:
                     commands.append("libio_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");
 
-        
+
         #4 Run SAGA
         commands = self.editCommands(commands)
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
@@ -332,7 +332,7 @@ class SagaAlgorithm(GeoAlgorithm):
         if hasattr(module, 'preProcessInputs'):
             func = getattr(module,'preProcessInputs')
             func(self)
-            
+
     def editCommands(self, commands):
         name = self.commandLineName()[len('saga:'):]
         try:

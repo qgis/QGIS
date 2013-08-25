@@ -43,7 +43,7 @@ class ExampleAlgorithm(GeoAlgorithm):
     a new one just with just those features of the input layer that are
     selected.
 
-    It is meant to be used as an example of how to create your own 
+    It is meant to be used as an example of how to create your own
     algorithms and explain methods and variables used to do it. An algorithm
     like this will be available in all elements, and there is not need
     for additional work.

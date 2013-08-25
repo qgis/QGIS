@@ -76,7 +76,7 @@ class LayerPreview(QgsMapCanvas):
     if self.item is not None:
       ## skip exception on RuntimeError fixes #6892
       try:
-        self.disconnect(self.item, SIGNAL('aboutToChange'), self.setDirty) 
+        self.disconnect(self.item, SIGNAL('aboutToChange'), self.setDirty)
       except RuntimeError:
         pass
     self.item = None
