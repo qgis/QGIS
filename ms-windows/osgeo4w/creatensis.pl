@@ -21,11 +21,12 @@ use Pod::Usage;
 my $keep = 0;
 my $verbose = 0;
 
-my $packagename;
+my $packagename = "QGIS";
 my $releasename;
-my $shortname;
+my $shortname = "qgis";
 my $version;
 my $binary;
+my $root = "http://download.osgeo.org/osgeo4w";
 my $ininame = "setup.ini";
 my $help;
 
@@ -38,33 +39,35 @@ my $result = GetOptions(
 		"packagename=s" => \$packagename,
 		"shortname=s" => \$shortname,
 		"ininame=s" => \$ininame,
+		"mirror=s" => \$root,
 		"help" => \$help
 	);
 
-if( $help ) {
-	pod2usage(1);
-}
+pod2usage(1) if $help;
 
 my $wgetopt = $verbose ? "" : "-q";
 
 unless(-f "nsis/System.dll") {
 	mkdir "nsis", 0755 unless -d "nsis";
 	system "wget $wgetopt -Onsis/System.dll http://qgis.org/downloads/System.dll";
+	die "download of System.dll failed" if $?;
 }
 
 mkdir "packages", 0755 unless -d "packages";
 chdir "packages";
 
-my $root = "http://download.osgeo.org/osgeo4w";
 
 system "wget $wgetopt -c http://nsis.sourceforge.net/mediawiki/images/9/9d/Untgz.zip" unless -f "Untgz.zip";
-system "wget $wgetopt -c http://www.nirsoft.net/utils/nircmd.zip" unless -f "nircmd.zip";
+die "download of Untgz.zip failed" if $?;
 
 my %dep;
 my %file;
+my %lic;
+my %sdesc;
 my $package;
 
 system "wget $wgetopt -O setup.ini -c $root/$ininame";
+die "download of setup.ini failed" if $?;
 open F, "setup.ini" || die "setup.ini not found";
 while(<F>) {
 	chop;
@@ -74,6 +77,10 @@ while(<F>) {
 		@{$dep{$package}} = split / /, $1;
 	} elsif( /^install:\s+(\S+)\s+/) {
 		$file{$package} = $1 unless exists $file{$package};
+	} elsif( /^license:\s+(\S+)\s+/) {
+		$lic{$package} = $1 unless exists $lic{$package};
+	} elsif( /^sdesc:\s*"(.*)"\s*$/) {
+		$sdesc{$package} = $1 unless exists $sdesc{$package};
 	}
 }
 close F;
@@ -105,16 +112,30 @@ if(-f "../addons/bin/NCSEcw4_RO.dll") {
 	getDeps("gdal-ecw")
 }
 
+my @lic;
+my @desc;
 foreach my $p ( keys %pkgs ) {
-	my $f = "$root/$file{$p}";
-	$f =~ s/\/\.\//\//g;
+	my @f;
+	push @f, "$root/$file{$p}";
 
-	my($file) = $f =~ /([^\/]+)$/;
+	if( exists $lic{$p} ) {
+		push @f, "$root/$lic{$p}";
+		my($l) = $lic{$p} =~ /([^\/]+)$/;
+		push @lic, $l;
+		push @desc, $sdesc{$p};
+	}
 
-	next if -f $file;
-	
-	print "Downloading $file [$f]...\n" if $verbose;
-	system "wget $wgetopt -c $f";
+	for my $f (@f) {
+		$f =~ s/\/\.\//\//g;
+
+		my($file) = $f =~ /([^\/]+)$/;
+
+		next if -f $file;
+
+		print "Downloading $file [$f]...\n" if $verbose;
+		system "wget $wgetopt -c $f";
+		die "download of $f failed" if $?;
+	}
 }
 
 chdir "..";
@@ -145,19 +166,29 @@ unless(-d "unpacked") {
 
 		print "Unpacking $p...\n" if $verbose;
 		system "tar $taropt -C unpacked -xjf $p";
+		die "unpacking of $p failed" if $?;
 	}
 
 	chdir "unpacked";
 
 	mkdir "bin", 0755;
-	mkdir "apps", 0755;
-	mkdir "apps/nircmd", 0755;
 
-	system "cd apps/nircmd; unzip ../../../packages/nircmd.zip && mv nircmd.exe ../../bin";
+	unless( -f "bin/nircmd.exe" ) {
+		unless( -f "../../../packages/nircmd.zip" ) {
+			system "cd ../../../packages; wget $wgetopt -c http://www.nirsoft.net/utils/nircmd.zip";
+			die "download of nircmd.zip failed" if $?;
+		}
+
+		mkdir "apps", 0755;
+		mkdir "apps/nircmd", 0755;
+		system "cd apps/nircmd; unzip ../../../packages/nircmd.zip && mv nircmd.exe ../../bin";
+		die "unpacking of nircmd failed" if $?;
+	}
 
 	if( -d "../addons" ) {
 		print " Including addons...\n" if $verbose;
 		system "tar -C ../addons -cf - . | tar $taropt -xf -";
+		die "copying of addons failed" if $?;
 	}
 
 	chdir "..";
@@ -250,12 +281,73 @@ unless( defined $binary ) {
 	}
 }
 
-system "unzip packages/Untgz.zip" unless -d "untgz";
+unless(-d "untgz") {
+	system "unzip packages/Untgz.zip";
+	die "unpacking Untgz.zip failed" if $?;
+}
 
 chdir "..";
 
-$packagename = "QGIS" unless defined $packagename;
-$shortname = "qgis" unless defined $shortname;
+
+print "Creating license file\n" if $verbose;
+open O, ">license.tmp";
+my $lic;
+for my $l ( ( "osgeo4w/unpacked/apps/$shortname/doc/LICENSE", "../COPYING", "./Installer-Files/LICENSE.txt" ) ) {
+	next unless -f $l;
+	$lic = $l;
+	last;
+}
+
+die "no license found" unless defined $lic;
+
+my $i = 0;
+if( @lic ) {
+	print O "License overview:\n";
+	print O "1. QGIS\n";
+	for my $l ( @desc ) {
+		print O ++$i . ". $l\n";
+	}
+	$i = 0;
+	print O "\n\n----------\n\n" . ++$i . ". License of 'QGIS'\n\n";
+}
+
+print " Including QGIS license $lic\n" if $verbose;
+open I, $lic;
+while(<I>) {
+	s/\s*$/\n/;
+	print O;
+}
+close I;
+
+for my $l (@lic) {
+	print " Including license $l\n" if $verbose;
+
+	open I, "osgeo4w/packages/$l" or die "License $l not found.";
+	print O "\n\n----------\n\n" . ++$i . ". License of '" . shift(@desc) . "'\n\n";
+	while(<I>) {
+		s/\s*$/\n/;
+		print O;
+	}
+	close I;
+}
+
+close O;
+
+my $license = "license.tmp";
+if( -f "osgeo4w/unpacked/apps/$shortname/doc/LICENSE" ) {
+	open O, ">osgeo4w/unpacked/apps/$shortname/doc/LICENSE";
+	open I, $license;
+	while(<I>) {
+		print O;
+	}
+	close O;
+	close I;
+
+	$license = "osgeo4w/unpacked/apps/$shortname/doc/LICENSE";
+}
+
+
+print "Running NSIS\n" if $verbose;
 
 my $cmd = "makensis";
 $cmd .= " -V$verbose";
@@ -269,9 +361,11 @@ $cmd .= " -DDISPLAYED_NAME='$packagename \'$releasename\' ($version)'";
 $cmd .= " -DSHORTNAME='$shortname'";
 $cmd .= " -DINSTALLER_TYPE=OSGeo4W";
 $cmd .= " -DPACKAGE_FOLDER=osgeo4w/unpacked";
+$cmd .= " -DLICENSE_FILE='$license'";
 $cmd .= " QGIS-Installer.nsi";
 
 system $cmd;
+die "running nsis failed" if $?;
 
 open P, ">osgeo4w/binary-$version";
 print P $binary;
@@ -297,6 +391,7 @@ creatensis.pl [options] [packages...]
     -ininame=filename	name of the setup.ini (defaults to setup.ini)
     -packagename=s	name of package (defaults to 'QGIS')
     -shortname=s	shortname used for batch file (defaults to 'qgis')
+    -mirror=s		default mirror (defaults to 'http://download.osgeo.org/osgeo4w')
     -help		this help
 
   If no packages are given 'qgis-full' and it's dependencies will be retrieved
