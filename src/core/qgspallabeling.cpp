@@ -3858,7 +3858,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     }
 
     //layer names
-    QString layerName = QString::fromUtf8( ( *it )->getLayerName() );
+    QString layerName = QString::fromUtf8(( *it )->getLayerName() );
     if ( palGeometry->isDiagram() )
     {
       //render diagram

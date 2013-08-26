@@ -4442,10 +4442,11 @@ QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
     QgsWmsSupportedFormat p1 = { "image/png", "PNG" };
     QgsWmsSupportedFormat p2 = { "image/png; mode=24bit", "PNG24" }; // UMN mapserver
     QgsWmsSupportedFormat p3 = { "image/png8", "PNG8" }; // used by geoserver
-    QgsWmsSupportedFormat p4 = { "png", "PNG" }; // used by french IGN geoportail
-    QgsWmsSupportedFormat p5 = { "pngt", "PNGT" }; // used by french IGN geoportail
+    QgsWmsSupportedFormat p4 = { "image/png; mode=8bit", "PNG8" }; // used by QGIS server and UMN mapserver
+    QgsWmsSupportedFormat p5 = { "png", "PNG" }; // used by french IGN geoportail
+    QgsWmsSupportedFormat p6 = { "pngt", "PNGT" }; // used by french IGN geoportail
 
-    formats << p1 << p2 << p3 << p4 << p5;
+    formats << p1 << p2 << p3 << p4 << p5 << p6;
   }
 
   if ( supportedFormats.contains( "jpg" ) )

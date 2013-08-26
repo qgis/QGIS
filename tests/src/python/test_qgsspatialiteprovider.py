@@ -43,11 +43,12 @@ class TestQgsSpatialiteProvider(TestCase):
     def setUpClass(cls):
         """Run before all tests"""
         # create test db
-	cls.dbname = os.path.join( tempfile.gettempdir(), "test.sqlite" )
+        cls.dbname = os.path.join( tempfile.gettempdir(), "test.sqlite" )
         if os.path.exists( cls.dbname ):
             os.remove( cls.dbname )
-        con = sqlite3.connect(cls.dbname)
+        con = sqlite3.connect(cls.dbname, isolation_level=None)
         cur = con.cursor()
+        cur.execute( "BEGIN" )
         sql = "SELECT InitSpatialMetadata()"
         cur.execute(sql)
 
@@ -69,7 +70,7 @@ class TestQgsSpatialiteProvider(TestCase):
         sql +=    "VALUES (1, 'toto', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
         cur.execute(sql)
 
-        con.commit()
+        cur.execute( "COMMIT" )
         con.close()
 
     @classmethod
@@ -97,7 +98,7 @@ class TestQgsSpatialiteProvider(TestCase):
         layer.splitFeatures([QgsPoint(0.5, -0.5), QgsPoint(0.5, 1.5)], 0)==0 or die("error in split")
         layer.splitFeatures([QgsPoint(-0.5, 0.5), QgsPoint(1.5, 0.5)], 0)==0 or die("error in split")
         if not layer.commitChanges():
-		die("this commit should work")
+            die("this commit should work")
         layer.featureCount() == 4 or die("we should have 4 features after 2 split")
 
     def xtest_SplitFeatureWithFailedCommit(self):
@@ -109,7 +110,7 @@ class TestQgsSpatialiteProvider(TestCase):
         layer.splitFeatures([QgsPoint(0.5, -0.5), QgsPoint(0.5, 1.5)], 0)==0 or die("error in split")
         layer.splitFeatures([QgsPoint(-0.5, 0.5), QgsPoint(1.5, 0.5)], 0)==0 or die("error in split")
         if layer.commitChanges():
-		die("this commit should fail")
+            die("this commit should fail")
         layer.rollBack()
         feat = QgsFeature()
         it=layer.getFeatures()

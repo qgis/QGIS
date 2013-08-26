@@ -219,7 +219,7 @@ FunctionEnd
 
 !define MUI_WELCOMEPAGE_TITLE_3LINES
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE ".\Installer-Files\LICENSE.txt"
+!insertmacro MUI_PAGE_LICENSE ${LICENSE_FILE}
 
 !define MUI_PAGE_CUSTOMFUNCTION_PRE CheckUpdate
 !insertmacro MUI_PAGE_DIRECTORY

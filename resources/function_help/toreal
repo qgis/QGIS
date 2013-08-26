@@ -1,4 +1,4 @@
-<h3>toreal function</h3>
+<h3>toreal() function</h3>
 Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g '123.56asd' is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
 
 <p><h4>Syntax</h4>

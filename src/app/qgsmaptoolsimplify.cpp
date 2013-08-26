@@ -299,7 +299,7 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
 
     mRubberBand = new QgsRubberBand( mCanvas );
     mRubberBand->setToGeometry( mSelectedFeature.geometry(), 0 );
-    mRubberBand->setColor( QColor(255, 0, 0, 65)  );
+    mRubberBand->setColor( QColor( 255, 0, 0, 65 ) );
     mRubberBand->setWidth( 2 );
     mRubberBand->show();
     //calculate boudaries for slidebar

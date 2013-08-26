@@ -1,3 +1,0 @@
-FILE(GLOB IMAGE_FILES *.png)
-
-PLUGIN_INSTALL(sextante ./images ${IMAGE_FILES})

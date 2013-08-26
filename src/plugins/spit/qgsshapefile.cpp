@@ -25,6 +25,7 @@
 #include <QLabel>
 #include <QTextCodec>
 #include <QFileInfo>
+#include <QSettings>
 
 #include "qgsapplication.h"
 #include "cpl_error.h"
@@ -45,6 +46,10 @@ QgsShapeFile::QgsShapeFile( QString name, QString encoding )
   fileName = name;
   features = 0;
   QgsApplication::registerOgrDrivers();
+
+  QSettings settings;
+  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() ? "" : 0 );
+
   ogrDataSource = OGROpen( TO8F( fileName ), false, NULL );
   if ( ogrDataSource != NULL )
   {

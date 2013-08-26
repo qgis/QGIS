@@ -21,6 +21,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFont>
+#include <QFontDatabase>
 #include <QPixmap>
 #include <QLocale>
 #include <QSettings>
@@ -210,6 +211,7 @@ static void dumpBacktrace( unsigned int depth )
     depth = 20;
 
 #if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
+  int stderr_fd = -1;
   if ( access( "/usr/bin/c++filt", X_OK ) < 0 )
   {
     myPrint( "Stacktrace (c++filt NOT FOUND):\n" );
@@ -221,7 +223,7 @@ static void dumpBacktrace( unsigned int depth )
     if ( pipe( fd ) == 0 && fork() == 0 )
     {
       close( STDIN_FILENO ); // close stdin
-      dup( fd[0] );          // stdin from pipe
+      ( void ) dup( fd[0] ); // stdin from pipe
       close( fd[1] );        // close writing end
       execl( "/usr/bin/c++filt", "c++filt", ( char * ) 0 );
       perror( "could not start c++filt" );
@@ -229,15 +231,25 @@ static void dumpBacktrace( unsigned int depth )
     }
 
     myPrint( "Stacktrace (piped through c++filt):\n" );
+    stderr_fd = dup( STDERR_FILENO );
     close( fd[0] );          // close reading end
     close( STDERR_FILENO );  // close stderr
-    dup( fd[1] );            // stderr to pipe
+    ( void ) dup( fd[1] );   // stderr to pipe
+    close( fd[1] );          // close duped pipe
   }
 
   void **buffer = new void *[ depth ];
   int nptrs = backtrace( buffer, depth );
   backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
   delete [] buffer;
+  if ( stderr_fd >= 0 )
+  {
+    int status;
+    close( STDERR_FILENO );
+    ( void ) dup( stderr_fd );
+    close( stderr_fd );
+    wait( &status );
+  }
 #elif defined(Q_OS_WIN)
   void **buffer = new void *[ depth ];
 
@@ -809,6 +821,15 @@ int main( int argc, char *argv[] )
       }
     }
   }
+
+  // load standard test font from testdata.qrc (for unit tests)
+  QFile testFont( ":/testdata/font/FreeSansQGIS.ttf" );
+  if ( testFont.open( QIODevice::ReadOnly ) )
+  {
+    int fontID = QFontDatabase::addApplicationFontFromData( testFont.readAll() );
+    Q_UNUSED( fontID );
+    QgsDebugMsg( QString( "Test font %1loaded from testdata.qrc" ).arg( fontID != -1 ? "" : "NOT " ) );
+  } // else app wasn't built with ENABLE_TESTS
 
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.

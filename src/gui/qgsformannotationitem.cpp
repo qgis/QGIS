@@ -37,6 +37,7 @@ QgsFormAnnotationItem::QgsFormAnnotationItem( QgsMapCanvas* canvas, QgsVectorLay
     mHasAssociatedFeature( hasFeature ), mFeature( feature )
 {
   mWidgetContainer = new QGraphicsProxyWidget( this );
+  mWidgetContainer->setData( 0, "AnnotationItem" ); //mark embedded widget as belonging to an annotation item (composer knows it needs to be printed)
   if ( mVectorLayer && mMapCanvas ) //default to the layers edit form
   {
     mDesignerForm = mVectorLayer->annotationForm();

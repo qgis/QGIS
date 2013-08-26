@@ -48,6 +48,7 @@ IFACE = None
 GEOCRS = 4326  # constant for EPSG:GEOCRS Geographic CRS id
 GOOGLECRS = 900913  # constant for EPSG:GOOGLECRS Google Mercator id
 
+TESTFONT = None
 
 def assertHashesForFile(theHashes, theFilename):
     """Assert that a files has matches one of a list of expected hashes"""
@@ -212,6 +213,19 @@ def compareWkt(a, b, tol=0.000001):
             return False
 
     return True
+
+
+def loadTestFont():
+    # load the FreeSansQGIS test font
+    global TESTFONT  # pylint: disable=W0603
+
+    if TESTFONT is None:
+        fontid = QtGui.QFontDatabase.addApplicationFont(
+            os.path.join(unitTestDataPath('font'), 'FreeSansQGIS.ttf'))
+        if fontid != -1:
+            TESTFONT = QtGui.QFont('FreeSansQGIS')
+
+    return TESTFONT
 
 
 def openInBrowserTab(url):

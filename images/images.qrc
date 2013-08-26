@@ -15,7 +15,6 @@
         <file>flags/fa.png</file>
         <file>flags/fi.png</file>
         <file>flags/fr.png</file>
-        <file>flags/gl_ES.png</file>
         <file>flags/he.png</file>
         <file>flags/hr_HR.png</file>
         <file>flags/hu.png</file>
@@ -73,7 +72,7 @@
         <file>themes/default/console/iconSaveConsole.png</file>
         <file>themes/default/console/iconScriptConsole.png</file>
         <file>themes/default/console/iconSettingsConsole.png</file>
-        <file>themes/default/console/iconSextanteConsole.png</file>
+        <file>themes/default/console/iconProcessingConsole.png</file>
         <file>themes/default/console/consoleHelp.png</file>
         <file>themes/default/console/editorHelp.png</file>
         <file>themes/default/console/classBrowserHelp.png</file>
@@ -384,6 +383,7 @@
         <file>themes/default/propertyicons/labelbackground.svg</file>
         <file>themes/default/propertyicons/labelbuffer.svg</file>
         <file>themes/default/propertyicons/labelformatting.svg</file>
+        <file>themes/default/propertyicons/labelplacement.svg</file>
         <file>themes/default/propertyicons/labels.png</file>
         <file>themes/default/propertyicons/labels.svg</file>
         <file>themes/default/propertyicons/labelshadow.svg</file>
@@ -433,6 +433,7 @@
         <file>flags/eu.png</file>
         <file>flags/bn.png</file>
         <file>flags/nb_NO.png</file>
+        <file>flags/gl.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

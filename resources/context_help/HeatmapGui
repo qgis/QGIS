@@ -35,7 +35,7 @@ are also linked, so doubling the number of rows will automatically double the nu
   
 <h4>Kernel shape</h4>
 <p>The kernel shape controls the rate at which the influence of a point decreases as the distance from the point increases. Different kernels decay at
-different rates, so a triweight kernel gives features greater weight for distances closer to the point then the Epanechnikov kernel does. Consequently,
+different rates, so a triweight kernel gives features greater weight for distances closer to the point than the Epanechnikov kernel does. Consequently,
 triweight results in "sharper" hotspots, and Epanechnikov results in "smoother" hotspots. A number of standard kernel functions are available in QGIS,
 which are described and illustrated on <a href="http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use">Wikipedia</a>.</p>
 

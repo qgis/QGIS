@@ -398,12 +398,8 @@ bool QgsOgrProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
 
   if ( !mSubsetString.isEmpty() )
   {
-    QByteArray sql = "SELECT * FROM " + quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
-    sql += " WHERE " + mEncoding->fromUnicode( mSubsetString );
 
-    QgsDebugMsg( QString( "SQL: %1" ).arg( mEncoding->toUnicode( sql ) ) );
-    ogrLayer = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), NULL, NULL );
-
+    ogrLayer = setSubsetString( ogrOrigLayer, ogrDataSource );
     if ( !ogrLayer )
     {
       pushError( tr( "OGR[%1] error %2: %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
@@ -2025,6 +2021,13 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   OGRLayerH layer;
   layer = OGR_DS_CreateLayer( dataSource, TO8F( QFileInfo( uri ).completeBaseName() ), reference, OGRvectortype, papszOptions );
   CSLDestroy( papszOptions );
+
+  QSettings settings;
+  if ( !settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() )
+  {
+    CPLSetConfigOption( "SHAPE_ENCODING", 0 );
+  }
+
   if ( !layer )
   {
     QgsMessageLog::logMessage( QObject::tr( "Creation of OGR data source %1 failed: %2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), QObject::tr( "OGR" ) );
@@ -2406,6 +2409,26 @@ OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type 
     case wkbMultiPolygon: return wkbPolygon;
     default: return type;
   }
+}
+
+OGRLayerH QgsOgrProvider::setSubsetString( OGRLayerH layer, OGRDataSourceH ds )
+{
+  QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( layer ) );
+  if ( ogrDriverName == "ODBC" ) //the odbc driver does not like schema names for subset
+  {
+    QString layerNameString = mEncoding->toUnicode( layerName );
+    int dotIndex = layerNameString.indexOf( "." );
+    if ( dotIndex > 1 )
+    {
+      QString modifiedLayerName = layerNameString.right( layerNameString.size() - dotIndex - 1 );
+      layerName = mEncoding->fromUnicode( modifiedLayerName );
+    }
+  }
+  QByteArray sql = "SELECT * FROM " + quotedIdentifier( layerName );
+  sql += " WHERE " + mEncoding->fromUnicode( mSubsetString );
+
+  QgsDebugMsg( QString( "SQL: %1" ).arg( mEncoding->toUnicode( sql ) ) );
+  return OGR_DS_ExecuteSQL( ds, sql.constData(), NULL, NULL );
 }
 
 // ---------------------------------------------------------------------------

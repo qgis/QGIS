@@ -1305,6 +1305,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     virtual void onCacheImageDelete();
 
+  protected slots:
+    void invalidateSymbolCountedFlag();
+
   signals:
 
     /**

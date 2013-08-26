@@ -552,8 +552,8 @@ void QgsAttributeDialog::dialogDestroyed()
 
   if ( !mReturnvarname.isEmpty() )
   {
-      QString expr = QString( "if locals().has_key('%1'): del %1\n" ).arg( mReturnvarname );
-      QgsPythonRunner::run( expr );
+    QString expr = QString( "if locals().has_key('%1'): del %1\n" ).arg( mReturnvarname );
+    QgsPythonRunner::run( expr );
   }
 
   mDialog = NULL;

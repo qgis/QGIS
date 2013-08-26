@@ -41,8 +41,9 @@ class TestQgsSpatialiteProvider(TestCase):
         # create test db
         if os.path.exists("test.sqlite") :
             os.remove("test.sqlite")
-        con = sqlite3.connect("test.sqlite")
+        con = sqlite3.connect("test.sqlite", isolation_level=None)
         cur = con.cursor()
+        cur.execute("BEGIN")
         sql = "SELECT InitSpatialMetadata()"
         cur.execute(sql)
 
@@ -73,7 +74,7 @@ class TestQgsSpatialiteProvider(TestCase):
         sql = "INSERT INTO test_pg (name, geometry) "
         sql +=    "VALUES ('polygon with interior ring', GeomFromText('POLYGON((0 0,3 0,3 3,0 3,0 0),(1 1,1 2,2 2,2 1,1 1))', 4326))"
         cur.execute(sql)
-        con.commit()
+        cur.execute("COMMIT")
         con.close()
 
     @classmethod

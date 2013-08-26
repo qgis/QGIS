@@ -29,9 +29,9 @@ class TestPointBase(object):
     def __init__(self):
         """Dummy assignments, intended to be overriden in subclasses"""
         self.lyr = QgsPalLayerSettings()
-        self._TestFont = QFont()
+        self._TestFont = QApplication.font()
 
-    def checkTest(self):
+    def checkTest(self, **kwargs):
         """Intended to be overriden in subclasses"""
         pass
 
@@ -42,9 +42,9 @@ class TestPointBase(object):
     def test_text_size_map_unit(self):
         # Label text size in map units
         self.lyr.fontSizeInMapUnits = True
-        tmpFont = QFont(self._TestFont)
-        tmpFont.setPointSizeF(0.25)
-        self.lyr.textFont = tmpFont
+        font = QFont(self._TestFont)
+        font.setPointSizeF(500)
+        self.lyr.textFont = font
         self.checkTest()
 
     def test_text_color(self):

@@ -60,7 +60,7 @@ void QgsMapToolReshape::canvasReleaseEvent( QMouseEvent * e )
     {
       //problem with coordinate transformation
       QMessageBox::information( 0, tr( "Coordinate transform error" ),
-                                   tr( "Cannot transform the point to the layers coordinate system" ) );
+                                tr( "Cannot transform the point to the layers coordinate system" ) );
       return;
     }
 
