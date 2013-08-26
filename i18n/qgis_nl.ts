@@ -39232,7 +39232,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <source>Parameters :</source>
-        <translation>Parameters :</translation>
+        <translation type="obsolete">Parameters :</translation>
     </message>
     <message>
         <source>Parameters:</source>
@@ -39241,6 +39241,10 @@ Doorgaan?</translation>
     <message>
         <source>Can only use ellipsoidal calculations when CRS transformation is enabled</source>
         <translation>Gebruik van ellipsoïdische berekeningen kan alleen als CRS-transformatie is ingeschakeld</translation>
+    </message>
+    <message>
+        <source>Select %1 from pull-down menu to adjust radii</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -54416,7 +54420,7 @@ are sometimes limited (e.g. for shape files) or behave diffently.
     <message>
         <source>&lt;h3&gt;Identify&lt;/h3&gt;
 </source>
-        <translation>&lt;h3&gt;Identificeren&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Identificeren&lt;/h3&gt;
 </translation>
     </message>
     <message>
