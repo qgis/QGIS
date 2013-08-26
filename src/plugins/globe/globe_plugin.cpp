@@ -507,15 +507,20 @@ double GlobePlugin::getSelectedElevation()
 
 void GlobePlugin::syncExtent()
 {
+  QgsMapCanvas* mapCanvas = mQGisIface->mapCanvas();
+  QgsMapRenderer* mapRenderer = mapCanvas->mapRenderer();
+  QgsRectangle extent = mapCanvas->extent();
+
   osgEarth::Util::EarthManipulator* manip = dynamic_cast<osgEarth::Util::EarthManipulator*>( mOsgViewer->getCameraManipulator() );
   //rotate earth to north and perpendicular to camera
   manip->setRotation( osg::Quat() );
 
-  //get mapCanvas->extent().height() in meters
-  QgsRectangle extent = mQGisIface->mapCanvas()->extent();
   QgsDistanceArea dist;
-  dist.setEllipsoidalMode( true );
-  //dist.setProjectionsEnabled( true );
+
+  dist.setSourceCrs( mapRenderer->destinationCrs().srsid() );
+  dist.setEllipsoidalMode( mapRenderer->hasCrsTransformEnabled() );
+  dist.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+
   QgsPoint ll = QgsPoint( extent.xMinimum(), extent.yMinimum() );
   QgsPoint ul = QgsPoint( extent.xMinimum(), extent.yMaximum() );
   double height = dist.measureLine( ll, ul );
