@@ -1,0 +1,44 @@
+
+====
+NEWS
+====
+
+- 1.6.4 -
+  * Use octal mode for -M (patch by dfjoerg)
+  * Add -b backlog option (fixes #2422, patch by aschmitz)
+
+- 1.6.3 - 2009-09-23
+  * Fix unix socket mode change to work without specifying user/group for socket
+  * Add some ./run script examples for use with daemontools or runit
+  * Fix Invalid Argument in chmod if mode=-1 (fixes #2033)
+  * Add deprecated and /bin/sh info for -f option; wrap syntax output (fixes #2044)
+  * Add run script examples in automake dist build
+
+- 1.6.2 - 2009-04-18
+  * Add homepage to README
+  * Add IPv6 support
+  * Fix problems with usernames starting with a digit and non-existent uids; add warning if only user privs are dropped. (fixes #1959)
+  * Add check to link against socket/nsl if needed (fixes #1960)
+  * List IPv6 as feature after the version if it is supported
+
+- 1.6.1 - 2009-03-29
+
+  * Add build date to show-version
+  * Added options to chown/chmod the socket and to create the socket before chroot() (fixes #1906)
+  * Updated man page
+  * Add proper SUID bit detection
+  * Added option to change the directory before spawning (fixes #1847)
+
+- 1.6.0 - 2009-02-28
+
+  * Separated spawn-fcgi from lighttpd
+  * Remove limits for php children; per default the PHP_FCGI_CHILDREN var is not changed (php defaults to no children, one worker)
+  * Modified the log messages format (more details on errors, no source line)
+  * Only try to connect to unix socket (not tcp) before spawning (fixes again #1575)
+  * Only disconnect from terminal in fork mode (keep stderr/stdout open in nofork mode)
+  * Allow numerical user and group ids for -u/-g (fixes #1141)
+  * Ignore pid-file option in no-fork mode (instead of producing empty file)
+  * Fix error handling for unix-socket-connect test
+  * Man page update
+  * Use header include order from 1.4.x
+  * Fix segfault due to uninitialized var

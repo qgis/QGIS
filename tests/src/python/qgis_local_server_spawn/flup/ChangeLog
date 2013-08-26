@@ -1,0 +1,325 @@
+2011-04-04  Allan Saddi  <allan@saddi.com>
+
+	* Add threadpool options to Paste factories.
+
+2011-02-19  Allan Saddi  <allan@saddi.com>
+
+	* When deriving PATH_INFO from REQUEST_URI, take SCRIPT_NAME into account.
+
+2011-01-11  Allan Saddi  <allan@saddi.com>
+
+	* Use HTTP status code 500 for error pages. Thanks to
+	  Yohann Gabory for pointing out this issue and providing a patch.
+
+2010-10-14  Allan Saddi  <allan@saddi.com>
+
+	* Don't try to restore signal handlers if they weren't installed in
+	  the first place.
+
+2010-10-05  Allan Saddi  <allan@saddi.com>
+
+	* Improvements to *_app._getConnection methods suggested by
+	  Andrej A Antonov. Thanks!
+
+2009-10-27  Allan Saddi  <allan@saddi.com>
+
+	* Exit gracefully if a thread cannot be started when adding a new
+	  job.
+
+2009-10-21  Allan Saddi  <allan@saddi.com>
+
+	* Add configurable timeout (default: no timeout) to be used when the
+	  WSGI application is called. Only applies to forked servers!
+
+2009-06-05  Allan Saddi  <allan@saddi.com>
+
+	* Fix bug in scgi servers that occurs when SCRIPT_NAME is missing.
+	  Thanks to Jon Nelson for finding the problem!
+
+2009-05-29  Allan Saddi  <allan@saddi.com>
+
+	* Let all the active requests to finish before quitting. Thanks
+	  to Anand Chitipothu for the patch!
+
+2009-05-26  Allan Saddi  <allan@saddi.com>
+
+	* Release 1.0.2
+
+2009-05-18  Allan Saddi  <allan@saddi.com>
+
+	* Import Paste factories (and dependencies...) from PasteScript
+
+2009-05-04  Allan Saddi  <allan@saddi.com>
+
+	* Be tolerant of EAGAIN when sending messages to parent process.
+
+2009-02-02  Allan Saddi  <allan@saddi.com>
+
+	* Add forceCGI keyword argument to FastCGI servers to
+	  programmatically force CGI behavior.
+
+	* Merge Tommi Virtanen's "single server" (sequential server)
+	  patch.
+
+2008-12-03  Allan Saddi  <allan@saddi.com>
+
+	* Update ez_setup.py.
+
+2008-09-26  Allan Saddi  <allan@saddi.com>
+
+	* Re-seed random module after each fork.
+
+2008-09-11  Allan Saddi  <allan@saddi.com>
+
+	* Add an indication as to which header fails assertion when
+	  passing in non-string header names and/or values.
+
+2008-08-20  Allan Saddi  <allan@saddi.com>
+
+	* Add support for setting umask for UNIX domain sockets from
+	  paste.server_factory implementations. Thanks to Michal Suszko
+	  for the patch.
+
+2008-07-23  Allan Saddi  <allan@saddi.com>
+
+	* Add support for configuring UNIX domain sockets (for servers that
+	  support them) in the paste.server_factory implementations. Thanks
+	  to Dan Roberts for the code.
+
+2008-07-22  Allan Saddi  <allan@saddi.com>
+
+	* Release 1.0.1
+
+	* Attempt to deduce missing PATH_INFO and/or QUERY_STRING from
+	  REQUEST_URI, if present. Patch provided by Richard Davies.
+
+2007-09-10  Allan Saddi  <allan@saddi.com>
+
+	* Fix readline implementations so size argument is checked
+	  earlier.
+
+2007-07-14  Allan Saddi  <allan@saddi.com>
+
+	* Prevent ThreadPool inconsistences if an exception is
+	  actually raised. Thanks to Tim Chen for the patch.
+
+2007-06-05  Allan Saddi  <allan@saddi.com>
+
+	* Remove publisher and middleware packages.
+	* Add cgi server for completeness.
+
+2007-05-17  Allan Saddi  <allan@saddi.com>
+
+	* Fix fcgi_fork so it can run on Solaris. Thanks to
+	  Basil Crow for the patch.
+
+2007-01-22  Allan Saddi  <allan@saddi.com>
+
+	* Fix eunuchs import issue.
+
+2007-01-10  Allan Saddi  <allan@saddi.com>
+
+	* Support gzip compression of XHTML pages using the
+	  correct MIME type.
+
+2006-12-29  Allan Saddi  <allan@saddi.com>
+
+	* Deprecate WSGI_SCRIPT_NAME and scriptName in scgi_base.
+	  Modern versions of mod_scgi correctly set SCRIPT_NAME &
+	  PATH_INFO.
+
+2006-12-13  Allan Saddi  <allan@saddi.com>
+
+	* Fix problem in session.py seen when optimization is on.
+
+2006-12-05  Allan Saddi  <allan@saddi.com>
+
+	* Update servers to default to an empty QUERY_STRING if
+	  not present in the environ.
+	* Update gzip.py: compresslevel -> compress_level
+	* Update gzip.py by updating docstrings and renaming
+	  classes/methods/functions to better follow Python naming
+	  conventions. NB: mimeTypes keyword parameter is now
+	  mime_types.
+
+2006-12-02  Allan Saddi  <allan@saddi.com>
+
+	* Change intra-package imports into absolute imports.
+
+2006-12-02  Allan Saddi  <allan@saddi.com>
+
+	* Add forceCookieOutput attribute to SessionService to
+	  force Set-Cookie output for the current request.
+
+2006-12-01  Allan Saddi  <allan@saddi.com>
+
+	* Update setup script.
+
+2006-11-26  Allan Saddi  <allan@saddi.com>
+
+	* Don't attempt to install signal handlers under Windows
+	  to improve compatibility.
+
+2006-11-24  Allan Saddi  <allan@saddi.com>
+
+	* Add *_thread egg entry-point aliases.
+	* Add UNIX domain socket support to scgi, scgi_fork,
+	  scgi_app.
+	* Add flup.client package which contains various
+	  WSGI -> connector client implentations. (So far: FastCGI,
+	  and SCGI.)
+
+2006-11-19  Allan Saddi  <allan@saddi.com>
+
+	* Change mime-type matching algorithm in GzipMiddleware.
+	  Strip parameters (e.g. "encoding") and accept a list of
+	  regexps. By default, compress 'text/.*' mime-types.
+
+2006-11-10  Allan Saddi  <allan@saddi.com>
+
+	* Add cookieAttributes to SessionService to make it easier
+	  to customize the generated cookie's attributes.
+
+2006-08-28  Allan Saddi  <allan@saddi.com>
+
+	* Add support for FastCGI roles other than FCGI_RESPONDER.
+	  Patch provided by Seairth Jacobs.
+
+2006-08-02  Allan Saddi  <allan@saddi.com>
+
+	* Add cookieExpiration keyword to SessionService /
+	  SessionMiddleware to adjust the session cookie's expiration.
+	  Thanks to Blaise Laflamme for the suggestion.
+
+2006-06-27  Allan Saddi  <allan@saddi.com>
+
+	* Set close-on-exec flag on all server sockets. Thanks to
+	  Ralf Schmitt for reporting the problem.
+
+2006-06-18  Allan Saddi  <allan@saddi.com>
+
+	* Stop ignoring EPIPE exceptions, as this is probably the
+	  wrong thing to do. (Application is unaware of disconnected
+	  clients and the CPU spins when sending large files to a
+	  disconnected client.) Thanks to Ivan Sagalaev for bringing
+	  this to my attention.
+
+	  NB: Existing applications that use the flup servers may begin
+	  seeing socket.error exceptions...
+
+2006-05-18  Allan Saddi  <allan@saddi.com>
+
+	* Added umask keyword parameter to fcgi and fcgi_fork,
+	  for use when binding to a UNIX socket.
+
+2006-05-03  Allan Saddi  <allan@saddi.com>
+
+	* Fix illusive problem with AJP implementation. Thanks to
+	  Moshe Van der Sterre for explaining the problem and
+	  providing a fix.
+
+2006-04-06  Allan Saddi  <allan@saddi.com>
+
+	* Catch a strange FieldStorage case. Seen in production.
+	  Not quite sure what causes it.
+
+2006-03-21  Allan Saddi  <allan@saddi.com>
+
+	* Add maxRequests option to PreforkServer. Patch provided by
+	  Wojtek Sobczuk.
+
+2006-02-23  Allan Saddi  <allan@saddi.com>
+
+	* Add paste.server_factory-compliant factories and respective
+	  egg entry points. Thanks to Luis Bruno for the code.
+
+	  Add debug option to servers, which is True by default.
+	  Currently, only server-level error handling is affected.
+	
+2006-01-15  Allan Saddi  <allan@saddi.com>
+
+	* Change the behavior of ImportingModuleResolver when dealing
+	  with ImportErrors. Previously, it would act as if the module
+	  did not exist. Now, it propagates the exception to another
+	  level (outer middleware or WSGI). Reported by Scot Doyle.
+
+2006-01-05  Allan Saddi  <allan@saddi.com>
+
+	* Improve Windows compatibility by conditionally installing
+	  SIGHUP handler. Thanks to Brad Miller for pointing out the
+	  problem and providing a fix.
+
+2005-12-19  Allan Saddi  <allan@saddi.com>
+
+	* Fix socket leak in eunuchs socketpair() wrapper. Thanks to
+	  Georg Bauer for pointing this out.
+
+2005-12-16  Allan Saddi  <allan@saddi.com>
+
+	* Switch to setuptools for egg support.
+	* Add higher-level 404 error page support. Thanks to Scot Doyle
+	  for suggesting the idea and providing code. If you previously
+	  subclassed Publisher to provide a custom 404 error page, this
+	  is now broken. It will have to be massaged to fit the new
+	  calling convention.
+
+2005-11-28  Allan Saddi  <allan@saddi.com>
+
+	* Fix issue with FCGI_GET_VALUES handling. Thanks to
+	  Timothy Wright for pointing this out.
+
+2005-11-18  Allan Saddi  <allan@saddi.com>
+
+	* When running under Python < 2.4, attempt to use socketpair()
+	  from eunuchs module.
+
+2005-09-07  Allan Saddi  <allan@saddi.com>
+
+	* Python 2.3 doesn't define socket.SHUT_WR, which affected
+	  the closing of the FastCGI socket with the server. This would
+	  cause output to hang. Thanks to Eugene Lazutkin for bringing
+	  the problem to my attention and going out of his way to help
+	  me debug it!
+
+2005-07-03  Allan Saddi  <allan@saddi.com>
+
+	* Ensure session identifiers only contain ASCII characters when
+	  using a non-ASCII locale. Thanks to Ksenia Marasanova for the
+	  the fix.
+
+2005-06-12  Allan Saddi  <allan@saddi.com>
+
+	* Cleanly close connection socket to avoid sending a TCP RST to
+	  the web server. (fcgi_base) Fix suggested by Dima Barsky.
+
+2005-05-31  Allan Saddi  <allan@saddi.com>
+
+	* Take scriptName from the WSGI_SCRIPT_NAME environment variable
+	  passed from the web server, if present.
+	* Check if scriptName is None, and if so, don't modify SCRIPT_NAME
+	  & PATH_INFO. For better compatibility with cgi2scgi. (scgi_base)
+
+2005-05-18  Allan Saddi  <allan@saddi.com>
+
+	* Change default allowedServers for ajp and scgi to ['127.0.0.1'].
+	* Accept PATH_INFO from environment for scgi servers, in case
+	  cgi2scgi is being used. Submitted by Ian Bicking.
+	* Change threaded servers so wsgi.multiprocess is False by default.
+	  Allow it to be changed by keyword argument.
+	* Fix wsgi.multiprocess for scgi_fork. (Set to True.)
+
+2005-05-15  Allan Saddi  <allan@saddi.com>
+
+	* Prevent possible deadlock related to DiskSessionStore locking.
+	* Add logic to SessionStore so that it will block if attempting to
+	  check out a Session that's already been checked out.
+
+2005-05-14  Allan Saddi  <allan@saddi.com>
+
+	* Convert the use of decorators in session.py to something
+	  compatible with Python <2.4.
+
+2005-04-23  Allan Saddi  <allan@saddi.com>
+
+	* Ensure that SessionStore.checkOutSession() never returns an
+	  invalidated Session. Reported by Rene Dudfield.
