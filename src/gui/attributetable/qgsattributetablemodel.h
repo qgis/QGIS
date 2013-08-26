@@ -204,6 +204,11 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void updatedFields();
 
+    /**
+     * Called whenever a column is removed;
+     */
+    virtual void attributeDeleted( int idx );
+
   protected slots:
     /**
      * Launched when attribute value has been changed

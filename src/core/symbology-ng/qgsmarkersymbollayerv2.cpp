@@ -200,7 +200,10 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
 
   if ( mUsingCache )
   {
-    prepareCache( context );
+    if ( !prepareCache( context ) )
+    {
+      mUsingCache = false;
+    }
   }
   else
   {
@@ -212,7 +215,7 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
 }
 
 
-void QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& context )
+bool QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& context )
 {
   double scaledSize = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit );
 
@@ -220,6 +223,11 @@ void QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& conte
   double pw = (( mPen.widthF() == 0 ? 1 : mPen.widthF() ) + 1 ) / 2 * 2; // make even (round up); handle cosmetic pen
   int imageSize = (( int ) scaledSize + pw ) / 2 * 2 + 1; //  make image width, height odd; account for pen width
   double center = imageSize / 2.0;
+
+  if ( imageSize > mMaximumCacheWidth )
+  {
+    return false;
+  }
 
   mCache = QImage( QSize( imageSize, imageSize ), QImage::Format_ARGB32_Premultiplied );
   mCache.fill( 0 );
@@ -263,6 +271,8 @@ void QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& conte
     drawMarker( &p, context );
     p.end();
   }
+
+  return true;
 }
 
 void QgsSimpleMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )

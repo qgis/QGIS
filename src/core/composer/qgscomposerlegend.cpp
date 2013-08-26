@@ -311,9 +311,9 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   //real symbol height. Can be different from standard height in case of point symbols
   double realSymbolHeight;
 
+#if 0
   QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( symbolItem->parent() );
 
-#if 0
   int opacity = 255;
   if ( layerItem )
   {
@@ -326,11 +326,6 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
 #endif
 
   QString text = symbolItem->text();
-  if ( text.isEmpty() )
-  {
-    // Use layer label, used for single symbols
-    text = layerItem->text();
-  }
 
   QStringList lines = splitStringForWrapping( text );
 

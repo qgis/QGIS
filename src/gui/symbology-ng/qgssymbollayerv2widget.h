@@ -233,34 +233,6 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget
 
 ///////////
 
-#include "ui_widget_linedecoration.h"
-
-class QgsLineDecorationSymbolLayerV2;
-
-class GUI_EXPORT QgsLineDecorationSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetLineDecoration
-{
-    Q_OBJECT
-
-  public:
-    QgsLineDecorationSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
-
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsLineDecorationSymbolLayerV2Widget( vl ); }
-
-    // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
-
-  public slots:
-    void colorChanged( const QColor& color );
-    void penWidthChanged();
-    void on_mWidthUnitComboBox_currentIndexChanged( int index );
-
-  protected:
-    QgsLineDecorationSymbolLayerV2* mLayer;
-};
-
-//////////
-
 #include "ui_widget_svgfill.h"
 
 class QgsSVGFillSymbolLayer;

@@ -68,10 +68,10 @@ class VisualDialog( QDialog, Ui_Dialog ):
       items = ""
       if self.myFunction in ( 1, 2 ):
         for rec in range( self.tblUnique.rowCount() ):
-          items.append( self.tblUnique.item( rec, 0 ).text() + "\n" )
+          items += self.tblUnique.item( rec, 0 ).text() + "\n"
       else:
         for rec in range( self.tblUnique.rowCount() ):
-          items.append( self.tblUnique.item( rec, 0 ).text() + ":" + self.tblUnique.item( rec, 1 ).text() + "\n" )
+          items += self.tblUnique.item( rec, 0 ).text() + ":" + self.tblUnique.item( rec, 1 ).text() + "\n"
       if items:
         clip_board = QApplication.clipboard()
         clip_board.setText( items )

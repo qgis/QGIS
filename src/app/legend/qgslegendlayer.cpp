@@ -496,9 +496,9 @@ QString QgsLegendLayer::label()
 {
   QString name = mLyr.layer()->name();
   QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( mLyr.layer() );
-  if ( mShowFeatureCount && vlayer && vlayer->featureCount() >= 0 )
+  if ( mShowFeatureCount && vlayer && vlayer->pendingFeatureCount() >= 0 )
   {
-    name += QString( " [%1]" ).arg( vlayer->featureCount() );
+    name += QString( " [%1]" ).arg( vlayer->pendingFeatureCount() );
   }
   return name;
 }

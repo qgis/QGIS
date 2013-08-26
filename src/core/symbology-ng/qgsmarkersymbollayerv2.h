@@ -83,7 +83,9 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     bool prepareShape( QString name = QString() );
     bool preparePath( QString name = QString() );
 
-    void prepareCache( QgsSymbolV2RenderContext& context );
+    /**Prepares cache image
+    @return true in case of success, false if cache image size too large*/
+    bool prepareCache( QgsSymbolV2RenderContext& context );
 
     QColor mBorderColor;
     double mOutlineWidth;
@@ -98,6 +100,9 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QBrush mSelBrush;
     QImage mSelCache;
     bool mUsingCache;
+
+    //Maximum width/height of cache image
+    static const int mMaximumCacheWidth = 3000;
 };
 
 //////////

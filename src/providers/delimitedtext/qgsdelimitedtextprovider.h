@@ -296,6 +296,9 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     //! Only want to show the invalid lines once to the user
     bool mShowInvalidLines;
 
+    //! Record file updates, flags rescan required
+    bool mRescanRequired;
+
     struct wkbPoint
     {
       unsigned char byteOrder;

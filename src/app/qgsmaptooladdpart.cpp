@@ -92,7 +92,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
       //add point to list and to rubber band
       if ( e->button() == Qt::LeftButton )
       {
-       int error = addVertex( e->pos() );
+        int error = addVertex( e->pos() );
         if ( error == 1 )
         {
           QgsDebugMsg( "current layer is not a vector layer" );
@@ -112,7 +112,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
       }
       else if ( e->button() != Qt::RightButton )
       {
-        resetLastVertex();
+        deleteTempRubberBand();
 
         return;
       }

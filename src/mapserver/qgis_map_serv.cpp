@@ -240,9 +240,21 @@ int main( int argc, char * argv[] )
   QgsMapRenderer* theMapRenderer = new QgsMapRenderer();
   theMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
+  // load standard test font from testdata.qrc (for unit tests)
+  bool testFontLoaded = false;
+  QFile testFont( ":/testdata/font/FreeSansQGIS.ttf" );
+  if ( testFont.open( QIODevice::ReadOnly ) )
+  {
+    int fontID = QFontDatabase::addApplicationFontFromData( testFont.readAll() );
+    testFontLoaded = ( fontID != -1 );
+  } // else app wasn't built with ENABLE_TESTS or not GUI app
+
   while ( fcgi_accept() >= 0 )
   {
     printRequestInfos(); //print request infos if in debug mode
+#ifdef QGSMSDEBUG
+    QgsDebugMsg( QString( "Test font %1loaded from testdata.qrc" ).arg( testFontLoaded ? "" : "NOT " ) );
+#endif
 
     //use QgsGetRequestHandler in case of HTTP GET and QgsSOAPRequestHandler in case of HTTP POST
     QgsRequestHandler* theRequestHandler = 0;

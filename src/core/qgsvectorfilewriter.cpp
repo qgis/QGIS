@@ -125,8 +125,6 @@ QgsVectorFileWriter::QgsVectorFileWriter(
       layOptions.append( "ENCODING=" + convertCodecNameForEncodingOption( fileEncoding ) );
     }
 
-    CPLSetConfigOption( "SHAPE_ENCODING", "" );
-
     if ( driverName == "ESRI Shapefile" && !vectorFileName.endsWith( ".shp", Qt::CaseInsensitive ) )
     {
       vectorFileName += ".shp";
@@ -270,6 +268,9 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     options[ layOptions.size()] = NULL;
   }
 
+  // disable encoding conversion of OGR Shapefile layer
+  CPLSetConfigOption( "SHAPE_ENCODING", "" );
+
   mLayer = OGR_DS_CreateLayer( mDS, TO8F( layerName ), ogrRef, wkbType, options );
 
   if ( options )
@@ -278,6 +279,12 @@ QgsVectorFileWriter::QgsVectorFileWriter(
       CPLFree( options[i] );
     delete [] options;
     options = NULL;
+  }
+
+  QSettings settings;
+  if ( !settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() )
+  {
+    CPLSetConfigOption( "SHAPE_ENCODING", 0 );
   }
 
   if ( srs )

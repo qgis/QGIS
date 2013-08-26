@@ -1,0 +1,7 @@
+ViGrA - Fourier Transform Inverse
+vigra
+ParameterRaster|REAL|Real|False
+ParameterRaster|IMAG|Imaginary|False
+OutputRaster|REAL_OUT|Real
+OutputRaster|IMAG_OUT|Imaginary
+ParameterBoolean|CENTER|Centered|True

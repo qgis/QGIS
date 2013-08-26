@@ -1092,7 +1092,7 @@ class geoprocessingThread( QThread ):
     indexA = ftools_utils.createIndex( vproviderB )
     indexB = ftools_utils.createIndex( vproviderA )
 
-    nFeat = vproviderA.featureCount() * vproviderB.featureCount()
+    nFeat = vproviderA.featureCount() + vproviderB.featureCount()
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0)
     self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
 
@@ -1198,12 +1198,11 @@ class geoprocessingThread( QThread ):
     length = len( vproviderA.fields() )
 
     fitB = vproviderB.getFeatures()
-    while fitB.nextFeature( inFeatA ):
+    while fitB.nextFeature( inFeatB ):
       add = False
-      geom = QgsGeometry( inFeatA.geometry() )
+      geom = QgsGeometry( inFeatB.geometry() )
       diff_geom = QgsGeometry( geom )
-      atMap = inFeatA.attributes()
-      atMap = dict( zip( range( length, length + len( atMap ) ), atMap ) )
+      atMap = inFeatB.attributes()
       intersects = indexB.intersects( geom.boundingBox() )
 
       if len(intersects) < 1:
@@ -1215,8 +1214,8 @@ class geoprocessingThread( QThread ):
           FEATURE_EXCEPT = False
       else:
         for id in intersects:
-          vproviderB.getFeatures( QgsFeatureRequest().setFilterFid( int( id ) ) ).nextFeature( inFeatB )
-          tmpGeom = QgsGeometry( inFeatB.geometry() )
+          vproviderA.getFeatures( QgsFeatureRequest().setFilterFid( int( id ) ) ).nextFeature( inFeatA )
+          tmpGeom = QgsGeometry( inFeatA.geometry() )
 
           try:
             if diff_geom.intersects( tmpGeom ):

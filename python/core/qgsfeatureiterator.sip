@@ -41,7 +41,7 @@ public:
 %MethodCode
   QgsFeature* f = new QgsFeature;
   if (sipCpp->nextFeature(*f))
-    sipRes = sipConvertFromInstance(f, sipClass_QgsFeature, Py_None);
+    sipRes = sipConvertFromType(f, sipType_QgsFeature, Py_None);
   else
   {
     delete f;

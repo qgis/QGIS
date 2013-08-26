@@ -38,7 +38,7 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 try:
     from PyQt4.Qsci import QSCINTILLA_VERSION_STR
     VER = QSCINTILLA_VERSION_STR
-except ImportError, e:
+except ImportError:
     VER = ""
 
 

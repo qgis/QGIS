@@ -1151,63 +1151,6 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
   }
 }
 
-///////////////
-
-QgsLineDecorationSymbolLayerV2Widget::QgsLineDecorationSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent, vl )
-{
-  mLayer = NULL;
-
-  setupUi( this );
-
-  connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( colorChanged( const QColor& ) ) );
-  connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( penWidthChanged() ) );
-}
-
-void QgsLineDecorationSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
-{
-  if ( layer->layerType() != "LineDecoration" )
-    return;
-
-  // layer type is correct, we can do the cast
-  mLayer = static_cast<QgsLineDecorationSymbolLayerV2*>( layer );
-
-  // set values
-  btnChangeColor->setColor( mLayer->color() );
-  btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
-  spinWidth->setValue( mLayer->width() );
-
-  mWidthUnitComboBox->blockSignals( true );
-  mWidthUnitComboBox->setCurrentIndex( mLayer->widthUnit() );
-  mWidthUnitComboBox->blockSignals( false );
-}
-
-QgsSymbolLayerV2* QgsLineDecorationSymbolLayerV2Widget::symbolLayer()
-{
-  return mLayer;
-}
-
-void QgsLineDecorationSymbolLayerV2Widget::colorChanged( const QColor& color )
-{
-  mLayer->setColor( color );
-  emit changed();
-}
-
-void QgsLineDecorationSymbolLayerV2Widget::penWidthChanged()
-{
-  mLayer->setWidth( spinWidth->value() );
-  emit changed();
-}
-
-void QgsLineDecorationSymbolLayerV2Widget::on_mWidthUnitComboBox_currentIndexChanged( int index )
-{
-  if ( mLayer )
-  {
-    mLayer->setWidthUnit(( QgsSymbolV2::OutputUnit ) index );
-  }
-  emit changed();
-}
-
 /////////////
 
 #include <QFileDialog>

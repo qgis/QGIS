@@ -53,6 +53,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
   connect( layer(), SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ), this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ) );
   connect( layer(), SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( featureAdded( QgsFeatureId ) ) );
   connect( layer(), SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
+  connect( layer(), SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
   connect( layer(), SIGNAL( updatedFields() ), this, SLOT( updatedFields() ) );
   connect( mLayerCache, SIGNAL( cachedLayerDeleted() ), this, SLOT( layerDeleted() ) );
 }
@@ -146,6 +147,14 @@ void QgsAttributeTableModel::updatedFields()
   QgsDebugMsg( "entered." );
   loadAttributes();
   emit modelChanged();
+}
+
+void QgsAttributeTableModel::attributeDeleted( int idx )
+{
+  if ( idx == mCachedField )
+  {
+    prefetchColumnData( -1 );
+  }
 }
 
 void QgsAttributeTableModel::layerDeleted()

@@ -61,15 +61,15 @@ void QgsMapToolAddRing::canvasReleaseEvent( QMouseEvent * e )
     {
       //problem with coordinate transformation
       QMessageBox::information( 0, tr( "Coordinate transform error" ),
-                                   tr( "Cannot transform the point to the layers coordinate system" ) );
-     return;
+                                tr( "Cannot transform the point to the layers coordinate system" ) );
+      return;
     }
 
     startCapturing();
   }
   else if ( e->button() == Qt::RightButton )
   {
-    resetLastVertex();
+    deleteTempRubberBand();
 
     closePolygon();
 

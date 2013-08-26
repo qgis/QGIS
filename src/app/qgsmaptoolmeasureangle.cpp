@@ -133,7 +133,7 @@ void QgsMapToolMeasureAngle::createRubberBand()
   int myRed = settings.value( "/qgis/default_measure_color_red", 180 ).toInt();
   int myGreen = settings.value( "/qgis/default_measure_color_green", 180 ).toInt();
   int myBlue = settings.value( "/qgis/default_measure_color_blue", 180 ).toInt();
-  mRubberBand->setColor( QColor( myRed, myGreen, myBlue ) );
+  mRubberBand->setColor( QColor( myRed, myGreen, myBlue, 65 ) );
 }
 
 QgsPoint QgsMapToolMeasureAngle::snapPoint( const QPoint& p )

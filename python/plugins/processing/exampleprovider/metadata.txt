@@ -1,0 +1,18 @@
+[general]
+name=SEXTANTE Example Provider
+description=An example plugin that adds algorithms to SEXTANTE. Mainly created to guide developers in the process of creating plugins that add new capabilities to SEXTANTE
+category=Analysis
+version=2.0
+qgisMinimumVersion=2.0
+
+author=Victor Olaya
+email=volayaf@gmail.com
+
+tags=analysis,processing
+
+homepage=
+tracker=
+repository=
+
+experimental=False
+deprecated=False

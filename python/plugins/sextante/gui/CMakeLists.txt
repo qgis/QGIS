@@ -1,5 +1,0 @@
-FILE(GLOB PY_FILES *.py)
-FILE(GLOB OTHER_FILES help/*.*)
-
-PLUGIN_INSTALL(sextante gui ${PY_FILES})
-PLUGIN_INSTALL(sextante gui/help ${OTHER_FILES})

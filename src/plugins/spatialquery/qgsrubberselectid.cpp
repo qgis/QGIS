@@ -82,7 +82,7 @@ void QgsRubberSelectId::show()
 
 void QgsRubberSelectId::setStyle()
 {
-  QColor color = QColor( mColorRGB[0], mColorRGB[1], mColorRGB[2] );
+  QColor color = QColor( mColorRGB[0], mColorRGB[1], mColorRGB[2], 65 );
   mRubberBand->setColor( color );
   mRubberBand->setWidth( mWidth );
 }

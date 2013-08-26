@@ -60,7 +60,7 @@ void QgsMapToolReshape::canvasReleaseEvent( QMouseEvent * e )
     {
       //problem with coordinate transformation
       QMessageBox::information( 0, tr( "Coordinate transform error" ),
-                                   tr( "Cannot transform the point to the layers coordinate system" ) );
+                                tr( "Cannot transform the point to the layers coordinate system" ) );
       return;
     }
 
@@ -68,7 +68,7 @@ void QgsMapToolReshape::canvasReleaseEvent( QMouseEvent * e )
   }
   else if ( e->button() == Qt::RightButton )
   {
-    resetLastVertex();
+    deleteTempRubberBand();
 
     //find out bounding box of mCaptureList
     if ( size() < 1 )

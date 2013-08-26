@@ -566,7 +566,7 @@ Query:
     </message>
     <message>
         <source>Cannot delete the selected item.</source>
-        <translation>Kan het geselecteerde onderdeel niet verwijderen</translation>
+        <translation>Kan het geselecteerde onderdeel niet verwijderen.</translation>
     </message>
     <message>
         <source>No database selected or you are not connected to it.</source>
@@ -664,6 +664,10 @@ Query:
         <source>Unknown</source>
         <translation>Onbekend</translation>
     </message>
+    <message>
+        <source>&quot;{0}&quot; not found</source>
+        <translation>&quot;{0}&quot; niet gevonden</translation>
+    </message>
 </context>
 <context>
     <name>DBModel</name>
@@ -673,11 +677,11 @@ Query:
     </message>
     <message>
         <source>Invalid MIME uri</source>
-        <translation>Ongeldige MIME uri</translation>
+        <translation type="obsolete">Ongeldige MIME uri</translation>
     </message>
     <message>
         <source>The dropped object is not a valid layer</source>
-        <translation>Het vervallen object is geen geldige laag</translation>
+        <translation type="obsolete">Het vervallen object is geen geldige laag</translation>
     </message>
     <message>
         <source>Invalid layer</source>
@@ -2170,7 +2174,7 @@ Dit een onverwacht resultaat opleveren.</translation>
     </message>
     <message>
         <source>Incorrect field names</source>
-        <translation>Ongeldige veldnamen</translation>
+        <translation type="obsolete">Ongeldige veldnamen</translation>
     </message>
     <message>
         <source>No output will be created.
@@ -2475,7 +2479,7 @@ die zijn gereduceerd tot %d hoekpunten na vereenvoudiging</translation>
         <source>No output will be created.
 Following field names are longer than 10 characters:
 %s</source>
-        <translation>Geen resulataat mogelijk.
+        <translation type="obsolete">Geen resulataat mogelijk.
 De volgende veldnamen zijn langer dan 10 karakters:
 %s</translation>
     </message>
@@ -2574,7 +2578,7 @@ De volgende veldnamen zijn langer dan 10 karakters:
     <name>DlgConfig</name>
     <message>
         <source>SEXTANTE options</source>
-        <translation>SEXTANTE opties</translation>
+        <translation type="obsolete">SEXTANTE opties</translation>
     </message>
     <message>
         <source>Enter setting name to filter list</source>
@@ -2587,6 +2591,10 @@ De volgende veldnamen zijn langer dan 10 karakters:
     <message>
         <source>Value</source>
         <translation>Waarde</translation>
+    </message>
+    <message>
+        <source>Processing options</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2988,7 +2996,7 @@ De volgende veldnamen zijn langer dan 10 karakters:
     <name>DlgModeler</name>
     <message>
         <source>SEXTANTE modeler</source>
-        <translation>SEXTANTE modeler</translation>
+        <translation type="obsolete">SEXTANTE modeler</translation>
     </message>
     <message>
         <source>Inputs</source>
@@ -3009,6 +3017,10 @@ De volgende veldnamen zijn langer dan 10 karakters:
     <message>
         <source>Enter group name here</source>
         <translation>Geef naam van de groep</translation>
+    </message>
+    <message>
+        <source>Processing modeler</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5377,7 +5389,7 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation>Symmetrische difference</translation>
+        <translation type="obsolete">Symmetrische difference</translation>
     </message>
     <message>
         <source>Clip layer</source>
@@ -5498,6 +5510,10 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
 %s</source>
         <translation>Fout bij het laden van het uitvoer shape-bestand:
 %s</translation>
+    </message>
+    <message>
+        <source>Symmetrical difference</source>
+        <translation>Symmetrische difference</translation>
     </message>
 </context>
 <context>
@@ -6310,7 +6326,7 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     </message>
     <message>
         <source>Add WMS/WMTS Layer...</source>
-        <translation type="unfinished">WMS-laag Toevoegen...</translation>
+        <translation>WMS/WMTS-laag Toevoegen...</translation>
     </message>
     <message>
         <source>Ctrl+Shift+W</source>
@@ -6998,7 +7014,7 @@ Werkt voor huidige actieve bewerkbare laag</translation>
     </message>
     <message>
         <source>SEXTANTE models (*.model)</source>
-        <translation>SEXTANTE modellen (*.model)</translation>
+        <translation type="obsolete">SEXTANTE modellen (*.model)</translation>
     </message>
     <message>
         <source>Model saved</source>
@@ -7047,6 +7063,10 @@ Please, use the &apos;Save as...&apos; option.</source>
         <translation>Dit model kan niet worden opgeslagen op huidige locatie
 (waarschijnlijk betreft dit een rechtenprobleem).
 U kunt de optie &apos;Opslaan als...&apos; gebruiken.</translation>
+    </message>
+    <message>
+        <source>Processing models (*.model)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7987,11 +8007,11 @@ Pas dat eerst aan, want de OSM-plugin weet niet naar welke kaartlaag moet worden
     </message>
     <message>
         <source>Enter password</source>
-        <translation>Geef wachtwoord</translation>
+        <translation type="obsolete">Geef wachtwoord</translation>
     </message>
     <message>
         <source>Enter password for connection &quot;%s&quot;:</source>
-        <translation>Geef wachtwoord voor de verbinding &quot;%s&quot;:</translation>
+        <translation type="obsolete">Geef wachtwoord voor de verbinding &quot;%s&quot;:</translation>
     </message>
 </context>
 <context>
@@ -8003,6 +8023,68 @@ Pas dat eerst aan, want de OSM-plugin weet niet naar welke kaartlaag moet worden
     <message>
         <source>Done</source>
         <translation>Gereed</translation>
+    </message>
+</context>
+<context>
+    <name>Processing</name>
+    <message>
+        <source>Processing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toolbox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Graphical modeler</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History and log</source>
+        <translation type="unfinished">Historie en log</translation>
+    </message>
+    <message>
+        <source>Options and configuration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Results viewer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Commander</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ProcessingToolbox</name>
+    <message>
+        <source>Processing Toolbox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter algorithm name to filter list</source>
+        <translation type="unfinished">Geef naam algoritme als filter</translation>
+    </message>
+    <message>
+        <source>Search...</source>
+        <translation type="unfinished">Zoek...</translation>
+    </message>
+    <message>
+        <source>Execute</source>
+        <translation type="unfinished">Uitvoeren</translation>
+    </message>
+    <message>
+        <source>Execute as batch process</source>
+        <translation type="unfinished">Uitvoeren als batch-proces</translation>
+    </message>
+    <message>
+        <source>Edit rendering styles for outputs</source>
+        <translation type="unfinished">Weergave-stijlen voor uitvoer bewerken</translation>
+    </message>
+    <message>
+        <source>Recently used algorithms</source>
+        <translation type="unfinished">Recent gebruikte algoritmes</translation>
     </message>
 </context>
 <context>
@@ -8126,7 +8208,7 @@ gebruikt u het  qgis.utils.iface object (een instantie van QgisInterface class).
     </message>
     <message>
         <source>Import Sextante class</source>
-        <translation>Importeren klasse Sextante</translation>
+        <translation type="obsolete">Importeren klasse Sextante</translation>
     </message>
     <message>
         <source>Import PyQt.QtCore class</source>
@@ -8302,7 +8384,7 @@ gebruikt u het  qgis.utils.iface object (een instantie van QgisInterface class).
     </message>
     <message>
         <source>Syntax ok</source>
-        <translation>Syntax is oké</translation>
+        <translation type="obsolete">Syntax is oké</translation>
     </message>
     <message>
         <source>Python Console: Save file</source>
@@ -8411,6 +8493,72 @@ gebruikt u het  qgis.utils.iface object (een instantie van QgisInterface class).
     <message>
         <source>Remove API path</source>
         <translation>API pad verwijderen</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; was not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> [Temporary file saved in {0}]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>## Script error: {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>## Script executed successfully: {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot execute file {0}. Error: {1}
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been deleted or is not accessible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been changed and reloaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is read only, please save to different file first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file {0} could not be opened. Error: {1}
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Untitled-{0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; has been modified, save changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to restore the file: 
+{0}
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python {0} on {1}
+## Type help(iface) for more info and list of methods.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file &lt;b&gt;{0}&lt;/b&gt; could not be saved. Error: {1}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import Processing class</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9254,7 +9402,7 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
     </message>
     <message>
         <source>A plugin for placing diagrams on vector layers</source>
-        <translation>Plugin om diagrammen op vectorlagen te tonen</translation>
+        <translation type="obsolete">Plugin om diagrammen op vectorlagen te tonen</translation>
     </message>
     <message>
         <source>Version 0.0.1</source>
@@ -9482,7 +9630,7 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>Line decoration</source>
-        <translation>Lijndecoratie</translation>
+        <translation type="obsolete">Lijndecoratie</translation>
     </message>
     <message>
         <source>Simple marker</source>
@@ -10381,11 +10529,11 @@ Fout(%2): %3</translation>
     </message>
     <message>
         <source>Diagram Overlay (Legacy)</source>
-        <translation>Diagram &apos;Overlay&apos; (oud)</translation>
+        <translation type="obsolete">Diagram &apos;Overlay&apos; (oud)</translation>
     </message>
     <message>
         <source>Version 0.0.1 (Legacy)</source>
-        <translation>Versie 0.0.1 (oud)</translation>
+        <translation type="obsolete">Versie 0.0.1 (oud)</translation>
     </message>
     <message>
         <source>To select features, choose a vector layer in the legend</source>
@@ -10799,11 +10947,59 @@ Deze zal daarom niet actief worden gemaakt.</translation>
     </message>
     <message>
         <source>Attribute index %1 out of bounds [0;%2]</source>
-        <translation type="unfinished">Attribuut index %1 ligt buiten bereik [0;%2] {1 ?} {0;%2]?}</translation>
+        <translation>Attribuut index %1 ligt buiten bereik [0;%2]</translation>
     </message>
     <message>
         <source>Unable to determine number of geometry columns of layer %1.%2: 
 %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>no available replacement for internal fieldname ogc_fid found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reserved attribute name ogc_fid replaced with %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DBF file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Fout</translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">Laag</translation>
+    </message>
+    <message>
+        <source>Feature ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>empty response</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WFS service exception:%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unsuccessful service response: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WFS exception report (code=%1 text=%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unhandled response: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -12391,7 +12587,7 @@ Fout: %1</translation>
 
 Errors: %2
 </source>
-        <translation>Commiten van de aanpassingen aan laag %1 zijn mislukt
+        <translation type="obsolete">Commiten van de aanpassingen aan laag %1 zijn mislukt
 
 Fouten:  %2
 </translation>
@@ -12966,7 +13162,7 @@ QWT Version: %1.</source>
     </message>
     <message>
         <source>GEOS Version</source>
-        <translation>GEOS-versie</translation>
+        <translation type="obsolete">GEOS-versie</translation>
     </message>
     <message>
         <source>PostgreSQL Client Version</source>
@@ -13439,10 +13635,36 @@ Neem alstublieft contact op met de ontwikkelaars.
     </message>
     <message>
         <source>%1 (%2 type unsupported)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (%2 type niet ondersteund)</translation>
     </message>
     <message>
         <source>Do you want to save the current project? %1</source>
+        <translation>Wilt u het huidige project opslaan? %1</translation>
+    </message>
+    <message>
+        <source>Commit errors</source>
+        <translation>Commit fouten</translation>
+    </message>
+    <message>
+        <source>Could not commit changes to layer %1</source>
+        <translation>Commiten van de aanpassingen zijn mislukt voor laag %1
+</translation>
+    </message>
+    <message>
+        <source>Errors: %1
+</source>
+        <translation>Fouten: %1</translation>
+    </message>
+    <message>
+        <source>Show more</source>
+        <translation>Meer tonen</translation>
+    </message>
+    <message>
+        <source>Compiled against GEOS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Running against GEOS</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13605,6 +13827,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>QGIS is licensed under the GNU General Public License</source>
         <translation>Quantum Gis valt onder de GNU General Public License</translation>
+    </message>
+    <message>
+        <source>License </source>
+        <translation>Licentie</translation>
     </message>
 </context>
 <context>
@@ -18087,6 +18313,10 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Loading previews...</source>
         <translation>Voorvertoning laden...</translation>
     </message>
+    <message>
+        <source>Image search paths</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerScaleBar</name>
@@ -19232,6 +19462,14 @@ Please try a lower resolution or a smaller papersize</source>
         <source>&lt;h3&gt;Oops! QGIS can&apos;t find help for this form.&lt;/h3&gt;The help file for %1 was not found for your language&lt;br&gt;If you would like to create it, contact the QGIS development team</source>
         <translation>&lt;h3&gt;Oops! QGIS kan geen help vinden voor dit formulier.&lt;/h3&gt;Het hulpbestand %1 is niet beschikbaar in uw taal&lt;br&gt;Wilt u het maken? Neem contact op met het QGIS development team</translation>
     </message>
+    <message>
+        <source>Error starting help viewer [%1]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Context help</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsContinuousColorDialogBase</name>
@@ -19964,7 +20202,7 @@ en het huidige bestand is [%3]</translation>
     </message>
     <message>
         <source>&lt;b&gt;Current definition%1:&lt;/b&gt;&lt;br&gt;%2</source>
-        <translation>&lt;b&gt;Huidige definitie%1:&lt;/b&gt;&lt;br&gt;%2</translation>
+        <translation type="obsolete">&lt;b&gt;Huidige definitie%1:&lt;/b&gt;&lt;br&gt;%2</translation>
     </message>
     <message>
         <source>string </source>
@@ -20017,6 +20255,10 @@ en het huidige bestand is [%3]</translation>
     <message>
         <source>string [&lt;b&gt;r,g,b,a&lt;/b&gt;] as int 0-255</source>
         <translation>string [&lt;b&gt;r,g,b,a&lt;/b&gt;] als int 0-255</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Current definition %1:&lt;/b&gt;&lt;br&gt;%2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -20386,7 +20628,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Horizontal and vertical</source>
-        <translation>Horizontaal en vertikaal</translation>
+        <translation type="obsolete">Horizontaal en vertikaal</translation>
     </message>
     <message>
         <source>Boundary direction</source>
@@ -20989,7 +21231,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please one or more characters to use as the delimiter, or choose a different delimiter type</source>
-        <translation>Geef één of meerdere karakter als scheidingstekens, of kies een ander type scheidingsteken</translation>
+        <translation type="obsolete">Geef één of meerdere karakter als scheidingstekens, of kies een ander type scheidingsteken</translation>
     </message>
     <message>
         <source>Invalid regular expression</source>
@@ -21058,6 +21300,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>%1 badly formatted records discarded from sample data</source>
         <translation>%1 niet goed geformateerde records overgeslagen van voorbeeldgegevens</translation>
+    </message>
+    <message>
+        <source>Use one or more characters as the delimiter, or choose a different delimiter type</source>
+        <translation>Kies een of meer karakters als scheidingsteken, of kies een ander scheidingstekentype</translation>
     </message>
 </context>
 <context>
@@ -21204,7 +21450,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Each line in the  file is split using a regular expression to define the end of each field</source>
-        <translation>Elke regel in het bestand is opgesplits m.b.v. een reguliere expressie om het eind van elk veld te bepalen</translation>
+        <translation type="obsolete">Elke regel in het bestand is opgesplits m.b.v. een reguliere expressie om het eind van elk veld te bepalen</translation>
     </message>
     <message>
         <source>Fields are defined by the specified delimiter, quote, and escape characters</source>
@@ -21212,7 +21458,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The file a comma separated value file, fields delimited by commas and quoted by &quot;</source>
-        <translation>Het bestand, een comma gescheiden waarden bestand, velden gescheiden door commas en voor aanhalingsteken gebruik &quot;</translation>
+        <translation type="obsolete">Het bestand, een comma gescheiden waarden bestand, velden gescheiden door commas en voor aanhalingsteken gebruik &quot;</translation>
     </message>
     <message>
         <source>CSV (comma separated values) format</source>
@@ -21441,6 +21687,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Layer settings</source>
         <translation>Laat instellingen</translation>
+    </message>
+    <message>
+        <source>The file is a comma separated value file, fields delimited by commas and quoted by &quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Each line in the file is split using a regular expression to define the end of each field</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22452,6 +22706,42 @@ p, li { white-space: pre-wrap; }
         <source>Load 10 sample values</source>
         <translation>Laad 10 voorbeeld waarden</translation>
     </message>
+    <message>
+        <source>Equal operator</source>
+        <translation>Is-gelijk-aan operator</translation>
+    </message>
+    <message>
+        <source>Addition operator</source>
+        <translation>Optellen operator</translation>
+    </message>
+    <message>
+        <source>Subtraction operator</source>
+        <translation>Aftrekken operator</translation>
+    </message>
+    <message>
+        <source>Division operator</source>
+        <translation>Delen operator</translation>
+    </message>
+    <message>
+        <source>Multiplication operator</source>
+        <translation>Vermenigvuldigen operator</translation>
+    </message>
+    <message>
+        <source>Power operator</source>
+        <translation>Machtsverheffen operator</translation>
+    </message>
+    <message>
+        <source>String Concatenation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Bracket </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close Bracket </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsExpressionSelectionDialogBase</name>
@@ -22836,6 +23126,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>UI file</source>
         <translation>UI-bestand</translation>
+    </message>
+    <message>
+        <source>Type name</source>
+        <translation>Type naam</translation>
     </message>
 </context>
 <context>
@@ -24938,6 +25232,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>WFS</source>
         <translation>WFS</translation>
+    </message>
+    <message>
+        <source>GML Getfeature network request failed with error: %1</source>
+        <translation>GML Gefeature request mislukt met fout: %1</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <translation>Netwerk</translation>
     </message>
 </context>
 <context>
@@ -27339,7 +27641,11 @@ in regel %2 kolom %3</translation>
     </message>
     <message>
         <source>%1 of %2 bad layers were not not fixable.</source>
-        <translation>%1 van de %2 foute lagen waren niet repareerbaar.</translation>
+        <translation type="obsolete">%1 van de %2 foute lagen waren niet repareerbaar.</translation>
+    </message>
+    <message>
+        <source>%1 of %2 bad layers were not fixable.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27431,6 +27737,10 @@ in regel %2 kolom %3</translation>
     <message>
         <source>html</source>
         <translation>html</translation>
+    </message>
+    <message>
+        <source>HTML annotation</source>
+        <translation>HTML-annotatie</translation>
     </message>
 </context>
 <context>
@@ -27704,11 +28014,15 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>Cannot not print</source>
-        <translation>Kan niet afdrukken</translation>
+        <translation type="obsolete">Kan niet afdrukken</translation>
     </message>
     <message>
         <source>Cannot print this item</source>
         <translation>Kan dit onderdeel niet afdrukken</translation>
+    </message>
+    <message>
+        <source>Cannot print</source>
+        <translation>Printen niet mogelijk</translation>
     </message>
 </context>
 <context>
@@ -29472,6 +29786,10 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
         <source>Discourage labels from covering features</source>
         <translation>Voorkom dat labels objecten overschrijven</translation>
     </message>
+    <message>
+        <source>Font is missing.</source>
+        <translation>Font mist.</translation>
+    </message>
 </context>
 <context>
     <name>QgsLayerPropertiesWidget</name>
@@ -29764,7 +30082,7 @@ worden niet getoond</translation>
     <name>QgsLoadStyleFromDBDialogLayout</name>
     <message>
         <source>Add column</source>
-        <translation>Kolom toevoegen</translation>
+        <translation type="obsolete">Kolom toevoegen</translation>
     </message>
     <message>
         <source>Styles related to the layer</source>
@@ -30764,7 +31082,7 @@ worden niet getoond</translation>
     </message>
     <message>
         <source>Split error</source>
-        <translation>Splitsingsfout</translation>
+        <translation type="obsolete">Splitsingsfout</translation>
     </message>
     <message>
         <source>No feature split done</source>
@@ -30838,189 +31156,189 @@ worden niet getoond</translation>
     <name>QgsMapserverExportBase</name>
     <message>
         <source>Browse...</source>
-        <translation>Bladeren...</translation>
+        <translation type="obsolete">Bladeren...</translation>
     </message>
     <message>
         <source>Footer</source>
-        <translation>Voetregel</translation>
+        <translation type="obsolete">Voetregel</translation>
     </message>
     <message>
         <source>Full path to the QGIS project file to export to MapServer map format</source>
-        <translation>Volledige pad naar het QGIS-projectbestand welke moet worden geexporteerd naar Mapserver-map-formaat</translation>
+        <translation type="obsolete">Volledige pad naar het QGIS-projectbestand welke moet worden geexporteerd naar Mapserver-map-formaat</translation>
     </message>
     <message>
         <source>Header</source>
-        <translation>Kopregel</translation>
+        <translation type="obsolete">Kopregel</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation>Hoogte</translation>
+        <translation type="obsolete">Hoogte</translation>
     </message>
     <message>
         <source>If checked, only the layer information will be processed</source>
-        <translation>Indien aangevinkt zal alleen de laaginformatie worden verwerkt</translation>
+        <translation type="obsolete">Indien aangevinkt zal alleen de laaginformatie worden verwerkt</translation>
     </message>
     <message>
         <source>Image type</source>
-        <translation>Image type</translation>
+        <translation type="obsolete">Image type</translation>
     </message>
     <message>
         <source>Map</source>
-        <translation>Kaart</translation>
+        <translation type="obsolete">Kaart</translation>
     </message>
     <message>
         <source>Map file</source>
-        <translation>Map-bestand</translation>
+        <translation type="obsolete">Map-bestand</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Naam</translation>
+        <translation type="obsolete">Naam</translation>
     </message>
     <message>
         <source>Name for the map file to be created from the QGIS project file</source>
-        <translation>Geef een naam voor het &apos;map&apos;-bestand wat wordt gemaakt op basis van het QGIS-projectbestand</translation>
+        <translation type="obsolete">Geef een naam voor het &apos;map&apos;-bestand wat wordt gemaakt op basis van het QGIS-projectbestand</translation>
     </message>
     <message>
         <source>Path to the MapServer template file</source>
-        <translation>Pad naar de MapServer &apos;template&apos;-bestanden</translation>
+        <translation type="obsolete">Pad naar de MapServer &apos;template&apos;-bestanden</translation>
     </message>
     <message>
         <source>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile</source>
-        <translation>Voorvoegsel voor &apos;map&apos;, schaalbalk en legenda-GIF-bestanden met dit &apos;Map&apos;-bestand gemaakt</translation>
+        <translation type="obsolete">Voorvoegsel voor &apos;map&apos;, schaalbalk en legenda-GIF-bestanden met dit &apos;Map&apos;-bestand gemaakt</translation>
     </message>
     <message>
         <source>Save As...</source>
-        <translation>Opslaan Als...</translation>
+        <translation type="obsolete">Opslaan Als...</translation>
     </message>
     <message>
         <source>Template</source>
-        <translation>Template</translation>
+        <translation type="obsolete">Template</translation>
     </message>
     <message>
         <source>Units</source>
-        <translation>Eenheden</translation>
+        <translation type="obsolete">Eenheden</translation>
     </message>
     <message>
         <source>Force</source>
-        <translation>Forceer</translation>
+        <translation type="obsolete">Forceer</translation>
     </message>
     <message>
         <source>Should text be antialiased? Note that this requires more available colors, decreases drawing performance, and results in slightly larger output images.</source>
-        <translation>Tekst tonen met anti-alias? Merk op dat dit meer kleuren vereist, wat de tekensnelheid naar beneden haalt en uiteindelijk grotere afbeeldingen oplevert.</translation>
+        <translation type="obsolete">Tekst tonen met anti-alias? Merk op dat dit meer kleuren vereist, wat de tekensnelheid naar beneden haalt en uiteindelijk grotere afbeeldingen oplevert.</translation>
     </message>
     <message>
         <source>Anti-alias</source>
-        <translation>Anti-alias</translation>
+        <translation type="obsolete">Anti-alias</translation>
     </message>
     <message>
         <source>Can text run off the edge of the map?</source>
-        <translation>Kan tekst van de rand van de kaart aflopen?</translation>
+        <translation type="obsolete">Kan tekst van de rand van de kaart aflopen?</translation>
     </message>
     <message>
         <source>Partials</source>
-        <translation>Gedeelten</translation>
+        <translation type="obsolete">Gedeelten</translation>
     </message>
     <message>
         <source>Dump</source>
-        <translation>Dump</translation>
+        <translation type="obsolete">Dump</translation>
     </message>
     <message>
         <source>Paths</source>
-        <translation>Paden</translation>
+        <translation type="obsolete">Paden</translation>
     </message>
     <message>
         <source>MapServer url</source>
-        <translation>Mapserver url</translation>
+        <translation type="obsolete">Mapserver url</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation>Breedte</translation>
+        <translation type="obsolete">Breedte</translation>
     </message>
     <message>
         <source>MapServer Export: Save project to MapFile</source>
-        <translation>MapServer Export: Project opslaan als Map-bestand</translation>
+        <translation type="obsolete">MapServer Export: Project opslaan als Map-bestand</translation>
     </message>
     <message>
         <source>Use current project</source>
-        <translation>Gebruik huidige project</translation>
+        <translation type="obsolete">Gebruik huidige project</translation>
     </message>
     <message>
         <source>LAYER information only</source>
-        <translation>Alleen LAYER-informatie</translation>
+        <translation type="obsolete">Alleen LAYER-informatie</translation>
     </message>
     <message>
         <source>Rendering</source>
-        <translation>Rendering</translation>
+        <translation type="obsolete">Rendering</translation>
     </message>
     <message>
         <source>The URL to the mapserver executable.
 
 For example: 
 http://my.host.com/cgi-bin/mapserv.exe</source>
-        <translation>De URL voor de mapserver-cgi.
+        <translation type="obsolete">De URL voor de mapserver-cgi.
 
 Bijvoorbeeld: 
 http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>Inline</source>
-        <translation>Ingebouwd</translation>
+        <translation type="obsolete">Ingebouwd</translation>
     </message>
     <message>
         <source>Symbolset</source>
-        <translation>Symboolset</translation>
+        <translation type="obsolete">Symboolset</translation>
     </message>
     <message>
         <source>Use templates</source>
-        <translation>Templates gebruiken</translation>
+        <translation type="obsolete">Templates gebruiken</translation>
     </message>
     <message>
         <source>The file name of the fonts file.</source>
-        <translation>Bestandsnaam van het &apos;lettertype&apos;-bestand.</translation>
+        <translation type="obsolete">Bestandsnaam van het &apos;lettertype&apos;-bestand.</translation>
     </message>
     <message>
         <source>Fontset</source>
-        <translation>Lettertypeset</translation>
+        <translation type="obsolete">Lettertypeset</translation>
     </message>
     <message>
         <source>The file name of the symbols file.</source>
-        <translation>Bestandsnaam van het &apos;symbols&apos;-bestand.</translation>
+        <translation type="obsolete">Bestandsnaam van het &apos;symbols&apos;-bestand.</translation>
     </message>
     <message>
         <source>Layer/label options</source>
-        <translation>Layer/label opties</translation>
+        <translation type="obsolete">Layer/label opties</translation>
     </message>
     <message>
         <source>Forces labels on, regardless of collisions. Available only for cached labels.</source>
-        <translation>Labels altijd aan, ook bij overlappingen. Alleen beschikbaar voor gecachede labels.</translation>
+        <translation type="obsolete">Labels altijd aan, ook bij overlappingen. Alleen beschikbaar voor gecachede labels.</translation>
     </message>
     <message>
         <source>Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.</source>
-        <translation>Check of MapServer data in GML-formaat kan retourneren. Handig bij WMS-GetFeatureInfo-operaties.</translation>
+        <translation type="obsolete">Check of MapServer data in GML-formaat kan retourneren. Handig bij WMS-GetFeatureInfo-operaties.</translation>
     </message>
     <message>
         <source>meters</source>
-        <translation>meters</translation>
+        <translation type="obsolete">meters</translation>
     </message>
     <message>
         <source>dd</source>
-        <translation>dd</translation>
+        <translation type="obsolete">dd</translation>
     </message>
     <message>
         <source>feet</source>
-        <translation>voet</translation>
+        <translation type="obsolete">voet</translation>
     </message>
     <message>
         <source>miles</source>
-        <translation>mijlen</translation>
+        <translation type="obsolete">mijlen</translation>
     </message>
     <message>
         <source>inches</source>
-        <translation>inch</translation>
+        <translation type="obsolete">inch</translation>
     </message>
     <message>
         <source>kilometers</source>
-        <translation>kilometers</translation>
+        <translation type="obsolete">kilometers</translation>
     </message>
 </context>
 <context>
@@ -31238,7 +31556,15 @@ eigenschappen
     </message>
     <message>
         <source>more</source>
-        <translation>meer</translation>
+        <translation type="obsolete">meer</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n more</source>
+        <comment>unread messages</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -32638,7 +32964,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OpenStreetMap import</source>
-        <translation>OpenStreetMap import</translation>
+        <translation type="obsolete">OpenStreetMap import</translation>
     </message>
     <message>
         <source>Failed to export OSM data:
@@ -33349,6 +33675,22 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
         <source>Date &amp; Time</source>
         <translation>Datum en Tijd</translation>
     </message>
+    <message>
+        <source>OGR error syncing to disk: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Original layer could not be reopened.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Original datasource could not be reopened.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOpenRasterDialog</name>
@@ -33583,23 +33925,23 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Central point (fastest)</source>
-        <translation>Middelpunt (snelst)</translation>
+        <translation type="obsolete">Middelpunt (snelst)</translation>
     </message>
     <message>
         <source>Chain (fast)</source>
-        <translation>&apos;Chain&apos; (snel)</translation>
+        <translation type="obsolete">&apos;Chain&apos; (snel)</translation>
     </message>
     <message>
         <source>Popmusic tabu chain (slow)</source>
-        <translation>&apos;Popmusic tabu chain&apos; (slow)</translation>
+        <translation type="obsolete">&apos;Popmusic tabu chain&apos; (slow)</translation>
     </message>
     <message>
         <source>Popmusic tabu (slow)</source>
-        <translation>&apos;Popmusic tabu&apos; (slow)</translation>
+        <translation type="obsolete">&apos;Popmusic tabu&apos; (slow)</translation>
     </message>
     <message>
         <source>Popmusic chain (very slow)</source>
-        <translation>&apos;Popmusic chain&apos; (very slow)</translation>
+        <translation type="obsolete">&apos;Popmusic chain&apos; (very slow)</translation>
     </message>
     <message>
         <source>Selection color</source>
@@ -33990,7 +34332,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Placement algorithm</source>
-        <translation>Plaatsingsalgorithme</translation>
+        <translation type="obsolete">Plaatsingsalgorithme</translation>
     </message>
     <message>
         <source>Reuse last entered attribute values</source>
@@ -34731,7 +35073,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Overlay position</source>
-        <translation>Overlay-positie</translation>
+        <translation type="obsolete">Overlay-positie</translation>
     </message>
     <message>
         <source>Feature creation</source>
@@ -35449,7 +35791,7 @@ SQL: %3</translation>
         <source>Could not update metadata for %1.%2.
 SQL:%1
 Error: %2</source>
-        <translation>Kan de metadata niet updaten voor %1.%2.
+        <translation type="obsolete">Kan de metadata niet updaten voor %1.%2.
 SQL:%1
 Fout: %2</translation>
     </message>
@@ -35546,6 +35888,14 @@ Fout: %3</translation>
 Error: %2</source>
         <translation>Oracle-fout: %1
 Fout: %2</translation>
+    </message>
+    <message>
+        <source>Could not update metadata for %1.%2.
+SQL:%3
+Error: %4</source>
+        <translation>Kan de metadata niet updaten voor %1.%2.
+SQL:%3
+Fout: %4</translation>
     </message>
 </context>
 <context>
@@ -36537,7 +36887,7 @@ Check the message log for possible errors.</source>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation>De lokale pluginmap kan niet worden geopend</translation>
+        <translation type="obsolete">De lokale pluginmap kan niet worden geopend</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
@@ -36706,6 +37056,14 @@ U dient Quantum GIS te herstarten om de plugin te laden.</translation>
     <message>
         <source>If you haven&apos;t cancelled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.</source>
         <translation>Als u het downloaden niet zelf heeft afgebroken, dan is de meeste waarschijnlijke oorzaak een &apos;time out&apos;. U kunt proberen om de &apos;verbindings-timeout&apos; waarde in het QGIS opties venster aan te passen.</translation>
+    </message>
+    <message>
+        <source>The plugin exited with error status: {0}</source>
+        <translation>De plugin is gestopt met fout status; {0}</translation>
+    </message>
+    <message>
+        <source>Unknown error</source>
+        <translation>Onbekende fout</translation>
     </message>
 </context>
 <context>
@@ -38077,7 +38435,7 @@ Fout: geen &apos;result buffer&apos;</translation>
     <message>
         <source>Not logged query failed: %1
 Error: no result buffer</source>
-        <translation>Niet gelogde query mislukt: %1
+        <translation type="obsolete">Niet gelogde query mislukt: %1
 Fout: geen &apos;result buffer&apos;</translation>
     </message>
     <message>
@@ -38874,7 +39232,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <source>Parameters :</source>
-        <translation>Parameters :</translation>
+        <translation type="obsolete">Parameters :</translation>
     </message>
     <message>
         <source>Parameters:</source>
@@ -38883,6 +39241,10 @@ Doorgaan?</translation>
     <message>
         <source>Can only use ellipsoidal calculations when CRS transformation is enabled</source>
         <translation>Gebruik van ellipsoïdische berekeningen kan alleen als CRS-transformatie is ingeschakeld</translation>
+    </message>
+    <message>
+        <source>Select %1 from pull-down menu to adjust radii</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -39913,6 +40275,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Feature</source>
         <translation>Object</translation>
+    </message>
+    <message>
+        <source>Text</source>
+        <translation>Tekst</translation>
     </message>
 </context>
 <context>
@@ -42718,6 +43084,10 @@ standaarddeviatie x</translation>
         <source>Remove rule</source>
         <translation>Verwijder regel</translation>
     </message>
+    <message>
+        <source>Refine current rule</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRunProcess</name>
@@ -42947,7 +43317,7 @@ standaarddeviatie x</translation>
     <name>QgsSaveToDBDialog</name>
     <message>
         <source>Add column</source>
-        <translation>Kolom toevoegen</translation>
+        <translation type="obsolete">Kolom toevoegen</translation>
     </message>
     <message>
         <source>Description</source>
@@ -42976,6 +43346,10 @@ standaarddeviatie x</translation>
     <message>
         <source>Optionally pick an input form for attribute editing (QT Designer UI format), it will be stored in the database</source>
         <translation>Optie: kies een invoerformulier voor het bewerken (QT Creator UI formaat), dit zal worden opgeslagen in de database</translation>
+    </message>
+    <message>
+        <source>Save style</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45432,6 +45806,14 @@ Overschrijven?</translation>
         <source>Download failed: %1.</source>
         <translation>Download mislukt: %1.</translation>
     </message>
+    <message>
+        <source>file specified below</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>URL specified below</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsStyleV2ExportImportDialogBase</name>
@@ -45536,7 +45918,7 @@ Overschrijven?</translation>
     </message>
     <message>
         <source>Type here to filter symbols ...</source>
-        <translation>Vul hier in om te filteren op symbolen ...</translation>
+        <translation type="obsolete">Vul hier in om te filteren op symbolen ...</translation>
     </message>
     <message>
         <source>cpt-city</source>
@@ -45661,6 +46043,62 @@ Er was een probleem met uw symbolen database.</translation>
     <message>
         <source>There was some error while editing the smart group.</source>
         <translation>Er deed zich een fout voor tijdens het bewerken van de &apos;slimme&apos; groep.</translation>
+    </message>
+    <message>
+        <source>Type here to filter symbols...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Share Menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export</source>
+        <translation type="unfinished">Exporteer</translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation type="unfinished">Importeren</translation>
+    </message>
+    <message>
+        <source>Group Actions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group Symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit Smart Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Group</source>
+        <translation type="unfinished">Nieuwe Groep</translation>
+    </message>
+    <message>
+        <source>Finish Grouping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Un-group</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48452,7 +48890,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Error</source>
-        <translation>Fout</translation>
+        <translation type="obsolete">Fout</translation>
     </message>
     <message>
         <source>unknown</source>
@@ -50475,7 +50913,7 @@ Omschrijving: %2</translation>
     <name>SEXTANTE</name>
     <message>
         <source>Analysis</source>
-        <translation>Analyse</translation>
+        <translation type="obsolete">Analyse</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE Toolbox</source>
@@ -50491,11 +50929,11 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE options and configuration</source>
-        <translation>&amp;SEXTANTE opties en instellingen</translation>
+        <translation type="obsolete">&amp;SEXTANTE opties en instellingen</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE results viewer</source>
-        <translation>&amp;SEXTANTE resultaat-viewer</translation>
+        <translation type="obsolete">&amp;SEXTANTE resultaat-viewer</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE help</source>
@@ -50507,19 +50945,19 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE toolbox</source>
-        <translation>&amp;SEXTANTE gereedschap</translation>
+        <translation type="obsolete">&amp;SEXTANTE gereedschap</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE modeler</source>
-        <translation>&amp;SEXTANTE modeler</translation>
+        <translation type="obsolete">&amp;SEXTANTE modeler</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE history and log</source>
-        <translation>&amp;SEXTANTE historie en log</translation>
+        <translation type="obsolete">&amp;SEXTANTE historie en log</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE commander</source>
-        <translation>&amp;SEXTANTE commander</translation>
+        <translation type="obsolete">&amp;SEXTANTE commander</translation>
     </message>
 </context>
 <context>
@@ -51141,7 +51579,7 @@ Omschrijving: %3</translation>
     <name>SextanteToolbox</name>
     <message>
         <source>SEXTANTE Toolbox</source>
-        <translation>SEXTANTE-gereedschap</translation>
+        <translation type="obsolete">SEXTANTE-gereedschap</translation>
     </message>
     <message>
         <source>Click here to configure
@@ -51150,15 +51588,15 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Execute</source>
-        <translation>Uitvoeren</translation>
+        <translation type="obsolete">Uitvoeren</translation>
     </message>
     <message>
         <source>Execute as batch process</source>
-        <translation>Uitvoeren als batch-proces</translation>
+        <translation type="obsolete">Uitvoeren als batch-proces</translation>
     </message>
     <message>
         <source>Edit rendering styles for outputs</source>
-        <translation>Weergave-stijlen voor uitvoer bewerken</translation>
+        <translation type="obsolete">Weergave-stijlen voor uitvoer bewerken</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -51166,20 +51604,20 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Recently used algorithms</source>
-        <translation>Recent gebruikte algoritmes</translation>
+        <translation type="obsolete">Recent gebruikte algoritmes</translation>
     </message>
     <message>
         <source>Enter algorithm name to filter list</source>
-        <translation>Geef naam algoritme als filter</translation>
+        <translation type="obsolete">Geef naam algoritme als filter</translation>
     </message>
     <message>
         <source>Search...</source>
-        <translation>Zoek...</translation>
+        <translation type="obsolete">Zoek...</translation>
     </message>
     <message>
         <source>Click here to learn more
 about SEXTANTE</source>
-        <translation>Klik hier om meer te leren
+        <translation type="obsolete">Klik hier om meer te leren
 over SEXTANTE</translation>
     </message>
 </context>
@@ -51202,7 +51640,7 @@ over SEXTANTE</translation>
     <name>SpatiaLiteDBConnector</name>
     <message>
         <source>&quot;%s&quot; not found</source>
-        <translation>&quot;%s&quot; niet gevonden</translation>
+        <translation type="obsolete">&quot;%s&quot; niet gevonden</translation>
     </message>
 </context>
 <context>
@@ -51616,11 +52054,11 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     <name>WidgetLineDecoration</name>
     <message>
         <source>Form</source>
-        <translation>Formulier</translation>
+        <translation type="obsolete">Formulier</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation>Kleur</translation>
+        <translation type="obsolete">Kleur</translation>
     </message>
     <message>
         <source>Change</source>
@@ -51628,15 +52066,15 @@ Wilt u het toevoegen aan de huidige kaart/legenda?</translation>
     </message>
     <message>
         <source>Pen width</source>
-        <translation>Pendikte</translation>
+        <translation type="obsolete">Pendikte</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation>Millimeter</translation>
+        <translation type="obsolete">Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Kaarteenheid</translation>
+        <translation type="obsolete">Kaarteenheid</translation>
     </message>
 </context>
 <context>
@@ -52464,7 +52902,28 @@ In this section you can see the list of attributes. To delete one of them, click
 &lt;p&gt;
 Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.  Clicking &lt;label&gt;Apply&lt;/label&gt; also creates the layer, but keeps the dialog open, thereby allowing you to create more similar layers. &lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Aanmaken van een nieuwe New SpatiaLite Laag&lt;/h3&gt;
+Hiermee kunt u een nieuwe SpatialLite database maken en/of een nieuwe SpatialLite laag om te editen. Zie hieronder voor een uitleg over het invoerscherm.
+&lt;h4&gt;Database&lt;/h4&gt;
+Kies de database uit de lijst. De lijst is opgebouwd uit uw bewaarde SpatialLite connecties. Als er geen bewaarde connecties zijn of als u een nieuwe database wil aanmaken, klik dan op (&lt;label&gt;...&lt;/label&gt;) rechts van de lijst.
+&lt;h4&gt;Laag naam&lt;/h4&gt;
+Geef de aan te maken laag een naam. De naam moet uit één woord bestaan, underscores zijn toegestaan.
+&lt;h4&gt;Geometrie kolom&lt;/h4&gt;
+Geef een naam op voor de geometrie kolom, of accepteer de standaard waarde.
+&lt;h4&gt;Type&lt;/h4&gt;
+Geef het type laag dat u wil aanmaken. 
+&lt;h4&gt;EPSG CRS&lt;/h4&gt;
+Geef het EPSG nummer van het Ruimtelijk Referentie Systeem (CRS). Standaard wordt het CRS voor WGS 84 ingevuld. Klik op &lt;label&gt;Geef het CRS&lt;/label&gt; om, als dat nodig is, het Ruimtelijk Referentie Systeem van de kaartlaag te wijzigen. Het CRS moet gedefinieerd zijn in uw SpatialLite database. U kunt het gewenste CRS zoeken op naam of EPSG nummer. 
+&lt;h4&gt;Maak een automatisch ophogend primair sleutelveld aan&lt;/h4&gt;
+Aanvinken van deze optie zorgt ervoor dat er een primaire sleutel voor de nieuwe laag wordt aangemaakt. Deze kolom wordt automatisch ingevuld bij het maken van nieuwe objecten in de kaartlaag.
+&lt;h4&gt;Nieuw attribuut&lt;/h4&gt;
+Geef een naam en een type op voor een nieuw attribuut, en voeg het toe met de knop &lt;label&gt;Toevoegen aan attributenlijst&lt;/label&gt;. Alleen tekst-data en getallen (geheel of decimaal) zijn toegestaan.&lt;br/&gt;
+Kolombreedte en precisie zijn niet relevant in een SpatialLite database, dus die hoeft u niet te definiëren.
+&lt;h4&gt;Attributenlijst&lt;/h4&gt;
+In deze lijst kunt u zien welke attributen er in de tabel zitten. U kunt een attribuut verwijderen door erop te klikken en dan &lt;label&gt;Verwijder attribuut&lt;/label&gt; te kiezen.
+
+&lt;p&gt;
+Klik op &lt;label&gt;OK&lt;/label&gt; om de nieuwe laag aan te maken en de dialoog te sluiten. Wanneer u op &lt;label&gt;Toepassen&lt;/label&gt; klikt, wordt de laag ook aangemaakt, maar blijft het dialoogscherm open, zodat u meteen meerdere SpatialLite kaartlagen kunt aanmaken. Met &lt;label&gt;Annuleren&lt;/label&gt; wordt het dialoogscherm afgesloten zonder de kaartlaag aan te maken.</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Custom Coordinate Reference System Definition&lt;/h3&gt;
@@ -52484,7 +52943,21 @@ system.
 &lt;p&gt;
 Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Aangepast Ruimtelijk Referentie Systeem (CRS) Definitie&lt;/h3&gt;
+Als het gewenste coördinaatsysteem niet aanwezig is kunt u zelf een aangepast CRS definiëren. &lt;p&gt;
+Om een CRS te definiëren, selecteer dan &lt;label&gt;Aangepast CRS&lt;/label&gt; via het &lt;label&gt;Edit&lt;/label&gt; (Gnome, OSX) of &lt;label&gt;Extra&lt;/label&gt; (KDE, Windows) menu. Aangepaste Ruimtelijke Referentie Systemen worden opgeslagen in uw QGIS gebruikersdatabase. Naast uw aangepaste CRS bevat deze database ook uw ruimtelijke bladwijzers en andere gebruikersspecifieke gegevens.
+
+&lt;h4&gt;Definieer&lt;/h4&gt;
+Om een nieuw CRS te definiëren, klik op &lt;label&gt;Nieuw&lt;/label&gt;:
+&lt;ul&gt;
+&lt;li&gt;Naam
+&lt;li&gt;CRS parameters
+&lt;/ul&gt;
+Daarna kunt u het CRS opslaan door middel van de knop &lt;label&gt;Opslaan&lt;/label&gt;.
+&lt;p&gt;
+Hou er rekening mee dat het Parameters veld moet beginnen met een +proj=-blok, om het nieuwe coördinaatsysteem te representeren.
+&lt;p&gt;
+Om een aangepast CRS in QGIS te definiëren is kennis van de Proj.4 projectie bibliotheek vereist. Voor meer uitleg hierover, zie: &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. Deze handleiding beschrijft het gebruik van de &lt;i&gt;proj.4&lt;/i&gt; en gerelateerde commandline gereedschappen. De cartografische parameters die in &lt;i&gt;proj.4&lt;/i&gt; worden gebruikt, staan in de handleiding beschreven; dit zijn dezelfde als die door QGIS worden gebruikt.</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Create a New Oracle Connection&lt;/h3&gt;
@@ -52527,7 +53000,38 @@ geometry types and don&apos;t offer to add others.
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Maak een nieuwe Oracle Verbinding&lt;/h3&gt;
+Met dit dialoogscherm kunt u een verbinding naar een Oracle datbase instellen.
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;label&gt;Naam&lt;/label&gt; Naam van de verbinding.
+
+&lt;li&gt; &lt;label&gt;Database&lt;/label&gt; SID of SERVICE_NAME van de Oracle  instance.
+
+&lt;li&gt; &lt;label&gt;Host&lt;/label&gt; Naam of IP adres van de computer waar de database server op draait.
+
+&lt;li&gt; &lt;label&gt;Poort&lt;/label&gt; IP poort die door de database server wordt gebruikt.
+
+&lt;li&gt; &lt;label&gt;Gebruikersnaam&lt;/label&gt; Database gebruikersnaam.
+&lt;li&gt; &lt;label&gt;Wachtwoord&lt;/label&gt; Database wachtwoord.
+
+&lt;li&gt; &lt;label&gt;Gebruikersnaam Opslaan&lt;/label&gt; Aanvinken om de gebruikersnaam op te slaan voor de huidige verbinding.
+
+&lt;li&gt; &lt;label&gt;Save Password&lt;/label&gt; Aanvinken om het wachtwoord op te slaan voor de huidige verbinding.  &lt;font color=&quot;red&quot;&gt;Wachtwoorden worden opgeslagen als &lt;strong&gt;clear text&lt;/strong&gt; in de systeemconfiguratie en in de project bestanden!&lt;/font&gt;
+
+&lt;li&gt; &lt;label&gt;Zoek alleen in de metadata tabel&lt;/label&gt; Aanvinken om alleen tabellen weer te geven die in de all_sdo_geom_metadata view staan. Dit kan het tonen van ruimtelijke tabellen versnellen.
+
+&lt;li&gt; &lt;label&gt;Kijk alleen in de gebruikerstabellen&lt;/label&gt; Aanvinken om alleen te zoeken naar tabellen die eigendom zijn van de gebruiker.
+
+&lt;li&gt; &lt;label&gt;Ook tabellen zonder geometrie tonen&lt;/label&gt;  Aanvinken houdt in dat standaard ook tabellen zonder geometrie moeten worden getoond in de lijst.
+
+&lt;li&gt; &lt;label&gt;Gebruik geschatte tabel statistieken voor metadata&lt;/label&gt; 
+Bij het initialiseren van de kaartlaag wordt de metadata van de Oracle tabel opgevraagd. Dit houdt informatie in over onder andere aantal rijen, gemetrie type en ruimtelijke extent in de geometrie kolom. Als de tabel veel rijen bevat, kan het samenstellen van de metadata veel tijd kosten. Bij aanvinken van deze optie wordt dit proces versneld: Het aantal rijen wordt overgenomen uit all_tables.num_rows. Ruimtelijke extent wordt altijd bepaald met de SDO_TUNE.EXTENTS_OF functie, ook als een kaartlaag filter wordt toegepast. De geometrie wordt bepaald uit de eerste 100 niet-lege geometrieën in de tabel.
+
+&lt;li&gt; &lt;label&gt;Alleen bestaande geometrie typen&lt;/label&gt; Laat alleen bestaande geometrie typen zien, zonder de mogelijkheid om andere toe te voegen.
+
+&lt;/ul&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
@@ -52553,7 +53057,20 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Kortste route berekenen&lt;/h3&gt;
+&lt;p&gt;Road graph is een C++ plugin voor QGIS die de kortste route tussen twee punten berekent over een lijnen kaartlaag, en vervolgens de route over het netwerk heen tekent. De plugin moet eerst worden geconfigureerd, vóórdat deze gebruikt kan worden. Dit kan in het menu &lt;label&gt;Plugins &amp;rarr; Road graph &amp;rarr; Instellingen&lt;/label&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#howto&quot;&gt;Uitleg&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;a name=&quot;howto&quot;&gt;
+&lt;h4&gt;Uitleg&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;Je kan beginpunt en eindpunt selecteren met de knoppen naast de invulvelden.
+Met &lt;label&gt;Berekenen...&lt;/label&gt; wordt de kortste afstand berekend, waarbij gebruik wordt gemaakt van het bij &lt;label&gt;Criterium&lt;/abel&gt; ingestelde criterium. Met de &lt;label&gt;Exporteer&lt;/label&gt; knop is het mogelijk om de berekende route als nieuwe vector kaartlaag op te slaan. Met de knop &lt;label&gt;Leegmaken&lt;/label&gt; worden alle invulvelden gewist en wordt de berekende route verijderd uit de kaart.&lt;/p&gt;
+
+&lt;h5&gt;Opmerking&lt;/h5&gt;
+&lt;p&gt;Om het begin- en eindpunt van de route aan het netwerk te verbinden selecteert Road graph het dichtstbij liggende punt of lijnstuk van het netwerk. Bij het bepalen van de route wordt de afstand tussen begin- of eindpunt en het netwerk zelf niet meegenomen.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Add PostGIS Tables&lt;/h3&gt;
@@ -52593,7 +53110,41 @@ To filter a layer before adding it to the map, double click on its name or use &
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Voeg PostGIS-lagen toe&lt;/h3&gt;
+Met deze diagloog kunt u PostGIS lagen (tabellen met geometrie) aan het QGIS kaartscherm toevoegen.
+&lt;p&gt;
+&lt;a href=&quot;#connect&quot;&gt;Verbindingen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#add&quot;&gt;Lagen toevoegen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#filter&quot;&gt;Zoekfilter toepassen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#search&quot;&gt;Zoek opties&lt;/a&gt;&lt;br/&gt;
+
+&lt;a href=&quot;#connect&quot;&gt;
+&lt;h4&gt;Verbindingen&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;Kies een bestaande verbinding uit de dropdown lijst en klik &lt;label&gt;Verbinden&lt;/label&gt;.
+&lt;li&gt;Als er geen verbindingen zijn, of als u een nieuwe wil maken, kie dan &lt;label&gt;Nieuw&lt;/label&gt; om een verbinding te maken.
+&lt;li&gt;Kies &lt;label&gt;Bewerken&lt;/label&gt; om de eigenschappen van een bestaande verbinding te wijzigen.
+&lt;/ul&gt;
+&lt;a name=&quot;add&quot;&gt;
+&lt;h4&gt;Lagen toevoegen&lt;/h4&gt;
+&lt;/a&gt;
+Om een PostGIS laag toe te voegen:
+&lt;ol&gt;
+&lt;li&gt;Kies de gewenste verbinding uit de lijst.
+&lt;li&gt;Klik &lt;label&gt;Verbinden&lt;/label&gt;.
+&lt;li&gt;Selecteer uit de beschikbare lagen de laag die u toe wil voegen.Als u de Ctrl toets ingedrukt houdt kunt u meerdere lagen tegelijk selecteren.
+&lt;li&gt;Klik &lt;label&gt;Toevoegen&lt;/label&gt; om de geselecteerde kaartlagen aan de kaart toe te voegen.
+&lt;/ol&gt;
+&lt;a name=&quot;filter&quot;&gt;
+&lt;h4&gt;Zoekfilter toepassen&lt;/h4&gt;
+&lt;/a&gt;
+Om een zoekfilter toe te passen alvorens de laag aan het kaartvenster toe te voegen, dubbelklik dan op de laagnaam of gebruik de  &lt;label&gt;Zoekfilter&lt;/label&gt; knop. Hiermee opent u de Query Bouwer, waarmee u met behulp van een SQL query de kaartlaag kunt filteren.
+
+&lt;a name=&quot;search&quot;&gt;
+&lt;h4&gt;Zoek opties&lt;/h4&gt;
+&lt;/a&gt;
+Met het aanvinken van &lt;label&gt;Zoek opties&lt;/label&gt; kunt u extra opties gebruiken om op verschillende kolomtypen te zoeken.Er zijn 2 manieren om te zoeken: &lt;label&gt;Wildcard&lt;/label&gt; en &lt;label&gt;RegExp&lt;/label&gt;.</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Field Calculator&lt;/h3&gt;
@@ -52656,12 +53207,73 @@ The field calculator allows you to update fields with expressions.
 &lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negative value of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Veld Berekening Calculator&lt;/h3&gt;
+
+Met veld Berekening kunt u attributen invullen met behulp van expressies.
+
+&lt;h4&gt;Mogelijkheden voor bewerkingen&lt;/h4&gt;
+
+&lt;table border=1&gt;
+&lt;tr&gt;
+  &lt;th&gt;Bewerking&lt;/th&gt;
+  &lt;th&gt;Omschrijving&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;
+    &lt;tt&gt;kolom_naam&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&quot;kolom_naam&quot;&lt;/tt&gt;
+  &lt;/td&gt;
+  &lt;td&gt;attribuutwaarde &lt;tt&gt;kolom_naam&lt;/tt&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&apos;&lt;tt&gt;string&lt;/tt&gt;&apos;&lt;/td&gt;&lt;td&gt;tekst waarde&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;number&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;getal&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NULL&lt;/td&gt;&lt;td&gt;null waarde&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;exp(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;e tot de macht van &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ln(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;natuurlijk logaritme van &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;log10(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;&lt;sup&gt;10&lt;/sup&gt;log  van &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;log(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;b&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;&lt;tt&gt;&lt;sup&gt;b&lt;/sup&gt;&lt;/tt&gt;log van &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;sqrt(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;wortel&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;sin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;sinus van &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;cos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;cosinus van &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;tan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;tangens van &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;asin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;inverse sinus van &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;acos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;inverse cosinus van &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;atan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;inverse tangens van &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to int(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;converteer tekst &lt;tt&gt;a&lt;/tt&gt; naar geheel getal&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to real(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;converteer tekst &lt;tt&gt;a&lt;/tt&gt; naar decimaal getal&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to string(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;converteer getal &lt;tt&gt;a&lt;/tt&gt; naar tekst&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;lower(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;converteer tekst &lt;tt&gt;a&lt;/tt&gt; naar kleine letters&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;upper(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;converteer tekst &lt;tt&gt;a&lt;/tt&gt; naar hoofdletters&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;length(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;tekstlengte &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;atan2(&lt;tt&gt;y&lt;/tt&gt;,&lt;tt&gt;x&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;inverse tangens &lt;tt&gt;y&lt;/tt&gt;/&lt;tt&gt;x&lt;/tt&gt; gebruik de tekens van de twee argumenten om het kwadraat van het resultaat te bepalen.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;oud&lt;/tt&gt;,&lt;tt&gt;nieuw&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;vervang &lt;tt&gt;oude tekst&lt;/tt&gt; door &lt;tt&gt;nieuwe tekst&lt;/tt&gt; in tekst &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;regexp_replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;oud&lt;/tt&gt;,&lt;tt&gt;nieuw&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;vervang reguliere expressie &lt;tt&gt;oude expressie&lt;/tt&gt; door &lt;tt&gt;nieuwe expressie&lt;/tt&gt; in tekst &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;substr(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;vanaf&lt;/tt&gt;,&lt;tt&gt;aantal&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;&lt;tt&gt;aantal&lt;/tt&gt; tekens van tekst &lt;tt&gt;a&lt;/tt&gt; beginnend bij &lt;tt&gt;vanaf&lt;/tt&gt; (eerste teken index = 1)&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; || &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;voeg tekst &lt;tt&gt;a&lt;/tt&gt; en &lt;tt&gt;b&lt;/tt&gt; samen &lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$rownum&lt;/td&gt;&lt;td&gt;nummer van huidige rij&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$area&lt;/td&gt;&lt;td&gt;oppervlakte van polygoon&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$perimeter&lt;/td&gt;&lt;td&gt;omtrek van polygoon&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$length&lt;/td&gt;&lt;td&gt;lengte van lijn&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$id&lt;/td&gt;&lt;td&gt;object id&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$x&lt;/td&gt;&lt;td&gt;x coördinaat van punt&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$y&lt;/td&gt;&lt;td&gt;y coördinaat van punt&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;xat(&lt;tt&gt;n&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;x coördinaat van &lt;tt&gt;n&lt;/tt&gt;-de punt van een lijn (index start bij 0; negatieve index is laatste punt)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yat(&lt;tt&gt;n&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;y coördinaat van &lt;tt&gt;n&lt;/tt&gt;-de punt van een lijn (index start bij 0; negatieve index is laatste punt)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ^ &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; tot de macht &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; * &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; vermenigvuldigd met &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; / &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; gedeeld door &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; + &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; plus &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; - &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; minus &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;+&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;positieve waarde van &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negatieve waarde van &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Nieuwe OGR Database Verbinding Dialoog&lt;/h3&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt; North Arrow Plugin&lt;/h3&gt;
@@ -52707,7 +53319,40 @@ These values are written to the map file in the appropriate spots to set things 
   &lt;dt&gt;&lt;label&gt;Footer&lt;/label&gt;&lt;/dt&gt;
   &lt;dd&gt;Full path to the MapServer footer file to be used with the map file.&lt;/dd&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">&lt;h3&gt;Exporteer een QGIS Project als MapServer Map-bestand&lt;/h3&gt;
+&lt;p&gt;
+
+Hiermee kun je een QGIS project als een MapServer map-bestand opslaan. De enige verplichte invoerparameters zijn het &lt;b&gt; QGIS project&lt;/b&gt; en het &lt;b&gt;Map-bestand&lt;/b&gt;. 
+&lt;/p&gt;
+Vink &lt;label&gt;Gebruik huidige project&lt;/label&gt; aan of geef het volledige pad naar het QGIS project (.qgs bestand) op dat je wil exporteren. Met &lt;label&gt;Bladeren...&lt;/label&gt; kun je het QGIS project zoeken.
+
+&lt;h4&gt;Map-bestand&lt;/h4&gt;
+
+&lt;label&gt;Map-bestand&lt;/label&gt; Geef de naam van het Map-bestand dat gemaakt moet worden. Met &lt;label&gt;Opslaan als...&lt;/label&gt; kun je naar de directory navigeren waar het Map-bestand in moet komen.
+
+&lt;h4&gt;Kaart&lt;/h4&gt;
+Hier kun je parameters opgeven die aan het Map-bestand worden meegegeven, zoals grootte, eenheden en type van de afbeelding.
+&lt;dl&gt;
+  &lt;dt&gt;&lt;label&gt;Naam&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Naam van de kaart. Alle afbeeldingen die door MapServer worden gegenereerd krijgen deze naam als voorvoegsel.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Breedte&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Breedte van de geëxporteerde afbeelding in pixels.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Hoogte&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Hoogte van de geëxporteerde afbeelding in pixels.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Eenheden&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Kaarteenheden van het uitvoerbestand.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Type afbeelding&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Formaat van de afbeelding die door MapServer wordt gegenereerd.&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;h4&gt;Paden&lt;/h4&gt;
+&lt;dl&gt;
+  &lt;dt&gt;&lt;label&gt;Template&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Volledige pad naar het MapServer template bestand dat moet worden gebruikt voor het maken van het Map-bestand.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Kopregel&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Volledige pad naar het Mapserver &apos;header&apos; bestand dat moet worden gebruikt.&lt;/dd&gt;
+  &lt;dt&gt;&lt;label&gt;Voetregel&lt;/label&gt;&lt;/dt&gt;
+  &lt;dd&gt;Volledige pad naar het Mapserver &apos;footer&apos; bestand dat moet worden gebruikt..&lt;/dd&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Scale bar Plugin&lt;/h3&gt;
@@ -52780,7 +53425,39 @@ This dialog allows you to define the settings for a connection to a PostgreSQL d
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Maak een nieuwe PostgreSQL Verbinding&lt;/h3&gt;
+This dialog allows you to define the settings for a connection to a PostgreSQL database.
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;label&gt;Naam&lt;/label&gt; De naam van de nieuwe verbinding.
+
+&lt;li&gt; &lt;label&gt;Service&lt;/label&gt; De naam van de service, gedefinieerd in de &lt;a href=&quot;http://www.postgresql.org/docs/current/static/libpq-pgservice.html&quot;&gt;Connection Service File&lt;/a&gt;.
+
+&lt;li&gt; &lt;label&gt;Host&lt;/label&gt; Naam of IP adres van de computer waar de database server op draait (leeg laten voor lokale verbindingen of or services).
+
+&lt;li&gt; &lt;label&gt;Poort&lt;/label&gt; IP poort die wordt gebruikt door de database server (leeg laten voor lokale verbindingen of om de standaard poort 5432 te gebruiken).
+
+&lt;li&gt; &lt;label&gt;Database&lt;/label&gt; Naam van de database (leeg laten voor standaard database).
+
+&lt;li&gt; &lt;label&gt;SSL modus&lt;/label&gt; &lt;a href=&quot;http://www.postgresql.org/docs/9.0/static/libpq-ssl.html#LIBPQ-SSL-SSLMODE-STATEMENTS&quot;&gt;SSL modus&lt;/a&gt; van de verbinding
+
+&lt;li&gt; &lt;label&gt;Gebruikersnaam&lt;/label&gt; Database gebruikersnaam.
+&lt;li&gt; &lt;label&gt;Wachtwoord&lt;/label&gt; Database wachtwoord.
+
+&lt;li&gt; &lt;label&gt;Gebruikersnaam Opslaan&lt;/label&gt; Aanvinken om de gebruikersnaam op te slaan voor de huidige verbinding.
+
+&lt;li&gt; &lt;label&gt;Wachtwoord Opslaan&lt;/label&gt; Aanvinken om het wachtwoord op te slaan voor de huidige verbinding.  &lt;font color=&quot;red&quot;&gt;Wachtwoorden worden opgeslagen als &lt;strong&gt;clear text&lt;/strong&gt; in de systeemconfiguratie en in de project bestanden!&lt;/font&gt;
+
+&lt;li&gt; &lt;label&gt;Kijk alleen in de geometry_columns tabel&lt;/label&gt; Aanvinken om alleen de &quot;geregistreerde&quot; geometrie kolommen te gebruiken. Niet aanvinken betekent dat alle tabellen worden gescand op kolommen met geometrie.
+
+&lt;li&gt; &lt;label&gt;Kijk alleen in het publieke schema&lt;/label&gt; Aanvinken houdt in dat alleen tabellen in het publieke schema worden getoond.
+
+&lt;li&gt; &lt;label&gt;Ook tabellen zonder geometrie tonen&lt;/label&gt;  Aanvinken houdt in dat standaard ook tabellen zonder geometrie moeten worden getoond in de lijst.
+
+&lt;li&gt; &lt;label&gt;Gebruik geschatte tabel statistieken&lt;/label&gt; Bij het initialiseren van kaartlagen kan het nodig zijn om de eigenschappen van de geometrieën in de tabel te bepalen. Als deze optie is aangevinkt wordt bij het bepalen van de eigenschappen slechts een deel van de rijen in de tabel gebruikt in plaats van de hele tabel. Dit kan de snelheid van bevragingen op grote datasets enorm verhogen, maar het kan ook leiden tot een incorrecte weergave van de laag eigenschappen. Bijvoorbeeld: onnauwkeurige bepaling van het &lt;font color=&quot;red&quot;&gt;aantal objecten&lt;/font&gt; van gefilterde lagen.
+
+&lt;/ul&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
@@ -52790,7 +53467,12 @@ To measure lengths, select the tool and click along the path you want to measure
 &lt;h4&gt;Measuring Areas&lt;/h4&gt;
 To measure areas, select the tool and click to create the area. The total area is dynamically displayed as you click.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Meetgereedschap&lt;/h3&gt;
+Er zijn twee meetgereedschappen: lengte en oppervlakte. Hiermee kun je op de kaart afstanden en oppervlakte opmeten. Dit kan alleen in metrische eenheden. Met rechts klikken wordt het opmeten gestopt; 2x rechts klikken hervat het meten.
+&lt;h4&gt;Afstanden opmeten&lt;/h4&gt;
+Om afstanden op te meten, selecteer het gereedschap en klik langs de route die je wil opmeten. De lengte van de totale route en de lengte van elk afzonderlijke lijnstuk worden weergegeven.
+&lt;h4&gt;Oppervlakte opmeten&lt;/h4&gt;
+Om oppervlakte te meten, selecteer het gereedschap om het vlak te tekenen. De totale oppervlakte wordt tijdens het tekenen dynamisch in beeld gebracht.</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Copyright Label Plugin&lt;/h3&gt;
@@ -52824,78 +53506,6 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;li&gt;&amp;lt;U&amp;gt;&lt;u&gt; Underlined text &lt;/u&gt;&amp;lt;/U&amp;gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Python Plugin Installer&lt;/h3&gt;
-Downloads and installs plugins from remote repositories.
-&lt;br/&gt;&lt;br/&gt;
-&lt;a href=&quot;#pltab&quot;&gt;Plugins tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#retab&quot;&gt;Repositories tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#optab&quot;&gt;Options tab&lt;/a&gt;&lt;br/&gt;
-
-&lt;a name=&quot;pltab&quot;&gt;
-&lt;h4&gt;Plugins tab&lt;/h4&gt;
-&lt;/a&gt;
-
-&lt;p align=&apos;justify&apos;&gt;
-The &lt;label&gt;Plugins&lt;/label&gt; tab contains a list of all locally installed Python plugins, as well as plugins available in 
-remote repositories. Each plugin can be either:
-&lt;dl&gt;
-&lt;dt&gt;not installed&lt;/dt&gt;&lt;dd&gt;this means the plugin is available in the repository, but is not installed yet. In order to install it, select the plugin from the list and click the &lt;label&gt;Install plugin&lt;/label&gt; button.&lt;/dd&gt;
-&lt;dt&gt;new&lt;/dt&gt;&lt;dd&gt;this means that the plugin is newly available in the repository.&lt;/dd&gt;
-&lt;dt&gt;installed&lt;/dt&gt;&lt;dd&gt;this indicates that the plugin is already installed. If it is also available in any repository the &lt;label&gt;Reinstall plugin&lt;/label&gt; button will be enabled. If the available version is older than the installed version, the &lt;label&gt;Downgrade plugin&lt;/label&gt; button will appear instead.&lt;/dd&gt;
-&lt;dt&gt;upgradeable&lt;/dt&gt;&lt;dd&gt;this means that the plugin is installed, but there is an updated version available. In this case, the &lt;label&gt;Upgrade plugin&lt;/label&gt; button will be enabled.&lt;/dd&gt;
-&lt;dt&gt;invalid&lt;/dt&gt;&lt;dd&gt;this means that the plugin is installed, but is unavailable or broken. The reason will be explained in the plugin description field.&lt;/dd&gt;
-&lt;/dl&gt;
-&lt;/p&gt;
-
-To install a plugin, select it from the list and click the &lt;label&gt;Install plugin&lt;/label&gt; button. The plugin is installed in its own directory in:
-&lt;table border=1&gt;
-&lt;tr&gt;&lt;th&gt;OS&lt;/th&gt;&lt;th&gt;system plugins&lt;/th&gt;&lt;th&gt;plugins installed by user&lt;/th&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Linux and other unices&lt;/td&gt;&lt;td&gt;./share/qgis/python/plugins&lt;/td&gt;&lt;td rowspan=2&gt;$HOME/qgis/python/plugins&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Mac OS X&lt;/td&gt;&lt;td&gt;./Contents/MacOS/share/qgis/python/plugins&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Windows&lt;/td&gt;&lt;td&gt;(QGIS install directory)&amp;#92;python&amp;#92;plugins&lt;/td&gt;&lt;td&gt;%USERPROFILE%&amp;#92;.qgis&amp;#92;python&amp;#92;plugins&lt;/td&gt;&lt;/tr&gt;
-&lt;/table&gt;
-&lt;br/&gt;
-
-&lt;p align=&apos;justify&apos;&gt;
-If the installation is successful, a confirmation message will appear. The plugin is ready to use.
-&lt;/p&gt;
-
-&lt;p align=&apos;justify&apos;&gt;
-If the installation fails, the reason for the failure will be displayed in a warning dialog. Most often, errors are the result of connection problems and/or missing Python modules. In the former case you will likely need to wait before trying the install again, in the latter case, you should install the missing modules relevant to your operating system prior to using the plugin. For Linux, most required modules should be available via a package manager. For install instructions in Windows visit the module home page. If you are using a proxy, you may need to configure it under &lt;label&gt;Edit&lt;/label&gt; &gt; &lt;label&gt;Options&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; &gt; &lt;label&gt;Options&lt;/label&gt; (KDE, Windows) on the &lt;label&gt;Proxy&lt;/label&gt; tab.&lt;/p&gt;
-
-&lt;p align=&apos;justify&apos;&gt;
-The &lt;label&gt;Uninstall plugin&lt;/label&gt; button is enabled only if the selected plugin is installed and is not a core plugin. Note that if you have installed an update to a core plugin, you can uninstall this update with the &lt;label&gt;Uninstall plugin&lt;/label&gt; and revert to the version shipped with QGIS. This default version however, cannot be uninstalled.&lt;/p&gt;
-
-&lt;a name=&quot;retab&quot;&gt;
-&lt;h4&gt;Repositories tab&lt;/h4&gt;
-&lt;/a&gt;
-&lt;p align=&apos;justify&apos;&gt;
-The second tab &lt;label&gt;Repositories&lt;/label&gt;, contains a list of plugin repositories available for the Plugin Installer. By default, only the QGIS Official Repository is enabled. You can add several user-contributed repositories, including the central QGIS Contributed Repository and other external repositories by clicking the &lt;label&gt;Add 3rd party repositories&lt;/label&gt; button. The added repositories contain a large number of useful plugins which are not maintained by the QGIS Development Team. As such, we cannot take any responsibility for them. You can also manage the repository list manually, that is add, remove, and edit the entries. Temporarily disabling a particular repository is possible by clicking the &lt;label&gt;Edit...&lt;/label&gt; button.&lt;/p&gt;
-
-&lt;a name=&quot;optab&quot;&gt;
-&lt;h4&gt;Options tab&lt;/h4&gt;
-&lt;/a&gt;
-&lt;p align=&apos;justify&apos;&gt;
-The &lt;label&gt;Options&lt;/label&gt; tab is where you can configure the settings of the Plugin Installer. The &lt;label&gt;x Check for updates on start up&lt;/label&gt; check box tells QGIS to automatically look for plugin updates and news. By default, if this feature is enabled all repositories listed and enabled in the &lt;label&gt;Repositories&lt;/label&gt; tab are checked for updates each time the program is started. The frequency of update checking can be adjusted using the drop down menu, and may be adjusted from once a day right up to once a month. If a new plugin or update is available for one of the installed plugins, a notification will appear in the Status Bar. If the check box is disabled, looking for updates and news is performed only when the Plugin Installer is manually launched from the menu.&lt;/p&gt;
-
-&lt;p align=&apos;justify&apos;&gt;
-Some Internet connections will cause problems when attempting to automatically check for updates.  In these cases, a &lt;i&gt;Looking for new plugins...&lt;/i&gt; indicator will remain visible in the Status Bar during your entire QGIS session, and may cause a program crash when exiting. In this case please disable the check box.&lt;/p&gt;
-
-In addition, you may specify the type of plugins that are displayed by the Plugin Installer. Under &lt;i&gt;Allowed plugins&lt;/i&gt;, you can specify whether you would like to:
-&lt;ul&gt;
-&lt;li&gt; Only show plugins from the official repository&lt;/li&gt;
-&lt;li&gt; Show all plugins except those marked as experimental,&lt;/li&gt;
-&lt;li&gt; or Show all plugins, even those marked as experimental.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;br/&gt;
-&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
-Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
-&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -52997,7 +53607,10 @@ On this tab you can choose on which layers the identify tool will work.
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;SpatialLite tabellen toevoegen&lt;/h3&gt;
+Om een nieuwe verbinding te definiëren, klik op &lt;label&gt;Nieuw&lt;/label&gt; en navigeer naar de SpatialLite database (bestand met een &lt;i&gt;.sqlite&lt;/i&gt; extensie.&lt;p&gt;
+De gedefinieerde verbindingen worden opgeslagen voor later gebruik en komen in de dropdown lijst bescikbaar. 
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Spatial Bookmarks&lt;/h3&gt;
@@ -53119,7 +53732,12 @@ QGIS supports vector data in a number of formats, including those supported by t
 QGIS supports PostGIS layers in a PostgreSQL database and SpatiaLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats can be found in Appendix A.1 of the User Guide.&lt;/p&gt;
 Detailed description how to proceed with vector data is described in chapter 5 &apos;Working with Vector Data&apos;.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Vectorlaag Toevoegen&lt;/h3&gt;
+&lt;p&gt;Het dialoogscherm voor Vectorlaag Toevoegen wordt gebruikt om vector kaartlagen aan de kaart toe te voegen. Vectoren zijn ruimtelijke objecten die worden beschreven als punten, lijnen en vlakken (polygonen).&lt;/p&gt;
+&lt;p&gt;QGIS ondersteunt vector gegevens in een groot aantal formaten, waaronder degenen die door de OGR bibliotheek plugin worden ondersteund. Dit zijn onder andere ESRI shapefiles, Mapinfo MIF (uitwisselingsformaat) en MapInfo TAB (eigen formaat).&lt;/p&gt;
+&lt;p&gt;QGIS ondersteunt ook PostGIS kaartlagen in een PostgreSQL database en SpatialLite lagen. Ondersteuning voor overige bestandstypen (bijvoorbeeld gescheiden tekst) wordt via extra plugins geregeld. Een lijst met OGR ondersteunde vectordata formaten is te vinden in Bijlage A.1 van de gebruikershandleiding.&lt;/p&gt;
+Voor een uitgebreide uitleg over het werken met vectordata, zie hoofdstuk 5 &apos;Werken met Vector Data&apos;.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
@@ -53273,63 +53891,6 @@ Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for
 &lt;/ul&gt;
 
 See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
-&lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
-raster of an input point vector layer.  The density is calculated based on the
-number of points in a location, with larger numbers of clustered points resulting
-in larger values. Heatmaps allow easy identification of &quot;hotspots&quot; and
-clustering of points.&lt;/p&gt;
-
-&lt;h2&gt;Dialog Parameters&lt;/h2&gt;
-
-&lt;h3&gt;Input point layer&lt;/h3&gt;
-&lt;p&gt;The input is always a vector layer of point type. All the point vector layers that are currently loaded in the canvas are shown in the drop-down list. Click the dropdown button and select the desired layer.&lt;/p&gt;
-
-&lt;h3&gt;Output raster&lt;/h3&gt;
-&lt;p&gt;The output raster location and filename can be set by clicking the &lt;label&gt;...&lt;/label&gt; button next to the output raster textbox.&lt;br/&gt;
-&lt;b&gt;Note:&lt;/b&gt; The file format is automatically added depending upon the output format selected, if not explicitly given.&lt;/p&gt;
-
-&lt;h3&gt;Output format&lt;/h3&gt;
-&lt;p&gt;All the file creation supporting GDAL formats are available in the drop down list. Click and select the required output format for your file.&lt;br/&gt;
-&lt;b&gt;Note:&lt;/b&gt; GeoTiff and ERDAS Imagine .img formats are recommended. Some formats make the application crash. Kindly stick to the recommended formats until the crash issue is resolved or use other formats if you know GDAL supports it completely.&lt;/p&gt;
-
-&lt;h3&gt;Radius (bandwidth)&lt;/h3&gt;
-&lt;p&gt;Used to specify the heatmap search radius (or kernel bandwidth) in meters or map units. The radius specifies the distance around a point at which the influence
-  of the point will be felt. Larger values result in greater smoothing, but smaller values may show finer details and variation in point density.&lt;/p&gt;
-
-&lt;h3&gt;Advanced Options&lt;/h3&gt;
-
-&lt;h4&gt;Rows and Columns&lt;/h4&gt;
-&lt;p&gt;Used to change the dimensions of the output raster file. These values are also linked to the &lt;b&gt;Cell size X&lt;/b&gt; and &lt;b&gt;Cell size Y&lt;/b&gt; values. 
-Increasing the number of rows or colums will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
-are also linked, so doubling the number of rows will automatically double the number of columns and the cell sizes will also be halved. The geographical area of the output raster will remain the same!&lt;/p&gt;
-
-&lt;h4&gt;Cell size X and Y&lt;/h4&gt;
-&lt;p&gt;Control the geographic size of each pixel in the output raster. Changing these values will also change the number of Rows and Columns in the output
-  raster.&lt;/p&gt;
-  
-&lt;h4&gt;Kernel shape&lt;/h4&gt;
-&lt;p&gt;The kernel shape controls the rate at which the influence of a point decreases as the distance from the point increases. Different kernels decay at
-different rates, so a triweight kernel gives features greater weight for distances closer to the point then the Epanechnikov kernel does. Consequently,
-triweight results in &quot;sharper&quot; hotspots, and Epanechnikov results in &quot;smoother&quot; hotspots. A number of standard kernel functions are available in QGIS,
-which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h4&gt;Decay ratio&lt;/h4&gt;
-&lt;p&gt;For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.&lt;/p&gt;
-
-&lt;h4&gt;Use radius from field&lt;/h4&gt;
-&lt;p&gt;Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.&lt;/p&gt;
-
-&lt;h4&gt;Use weight from field&lt;/h4&gt;
-&lt;p&gt;Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.&lt;/p&gt;
-
-&lt;h2&gt;Further Details&lt;/h2&gt;
-&lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
-
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -53666,177 +54227,6 @@ Click on one of the icons along the top of the composer window to select what ty
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;style&gt;
-	#toolbarConsole td{
-		background: #f6f6f6;
-	}
-&lt;/style&gt;
-&lt;h3&gt;Python Console for QGIS&lt;/h3&gt;
-&lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
-&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
-&lt;a href=&quot;#settings&quot;&gt;Settings&lt;/a&gt;&lt;br&gt;&lt;br&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;p align=&apos;justify&apos;&gt;
-				The QGIS Python Console is an interactive shell for the python command executions. 
-				It also has a python file editor that allows you to edit and save your python scripts. 
-				Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
-				The console is split in two main panes, top and bottom one 
-				resizable by using the horizontal splitter. Output area pane is a widget read-only which 
-				shows the commands output. You can drag and drop or copy and paste text into input area and 
-				execute code snippets from the output pane by selecting some text and clicking on the 
-				&lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
-				No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
-				python shell for input commands.&lt;br&gt;To access to the python file editor use the 
-				&lt;label&gt;Show editor&lt;/label&gt; button 
-				from the toolbar. The editor allows to edit and save python file and it offers basic functionality 
-				for managing your code (comment and 
-				uncomment code, check syntax, share the code via codepad.org and much more).
-			&lt;/p&gt;
-		&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;console&quot;&gt;
-&lt;h4&gt;Console&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;ul&gt;
-			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
-				&lt;ol&gt;
-				&lt;li&gt;Python&lt;/li&gt;
-				&lt;li&gt;PyQGIS&lt;/li&gt;
-				&lt;li&gt;PyQt4&lt;/li&gt;
-				&lt;li&gt;QScintilla2&lt;/li&gt;
-				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
-				&lt;/ol&gt;
-			&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
-			&lt;br&gt;
-                        &lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
-			The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
-			&lt;br&gt;
-			&lt;/ul&gt;
-		&lt;/td&gt;
-		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
-	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSextanteConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Import Sextante class&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
-		&lt;/tr&gt;
-                &lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
-		&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;editor&quot;&gt;
-&lt;h4&gt;Editor&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
-			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
-		&lt;/td&gt;
-		&lt;td&gt;
-			&lt;ul&gt;
-			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
-				&lt;ol&gt;
-				&lt;li&gt;Python&lt;/li&gt;
-				&lt;li&gt;PyQGIS&lt;/li&gt;
-				&lt;li&gt;PyQt4&lt;/li&gt;
-				&lt;li&gt;QScintilla2&lt;/li&gt;
-				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
-				&lt;/ol&gt;
-			&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
-			&lt;br&gt;
-			&lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
-			(this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
-			&lt;br&gt;
-			&lt;/ul&gt;
-		&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;settings&quot;&gt;
-&lt;h4&gt;Settings&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Further settings for python console:&lt;/i&gt;&lt;/b&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;label&gt;Autocompletion:&lt;/label&gt; If checked the code completion is enabled. You can get autocompletion
-from current document, from installed APIs and both from APIs and current document&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Autocompletion threshold:&lt;/label&gt; Sets the threshold to display the autocompletion list (in chars typed)&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Automatic parentheses insertion:&lt;/label&gt; If checked enables the autoclosing for bracket&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Auto-save script before running:&lt;/label&gt; Allows you to save automatically the
-script to be executed in order to avoid to save it after any modification.
-This action will store a temporary file into the temporary system directory 
-that will be automatically deleted after running.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Using preloaded APIs file:&lt;/label&gt; You can choose whether use the preload APIs file or load some APIs files saved on your system.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
-	&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
-	from the close button. This allows you to save the geometry to be restored to the next start.
-&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
 This dialog allows you to work with vector layer settings and properties. There are seven tabs:
 &lt;p&gt;
@@ -54030,7 +54420,8 @@ are sometimes limited (e.g. for shape files) or behave diffently.
     <message>
         <source>&lt;h3&gt;Identify&lt;/h3&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">&lt;h3&gt;Identificeren&lt;/h3&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Manage and install Plugins&lt;/h3&gt;
@@ -54117,6 +54508,234 @@ in the lists, even the ones that are considered &apos;experimental&apos; by the 
 Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
+&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
+&lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
+raster of an input point vector layer.  The density is calculated based on the
+number of points in a location, with larger numbers of clustered points resulting
+in larger values. Heatmaps allow easy identification of &quot;hotspots&quot; and
+clustering of points.&lt;/p&gt;
+
+&lt;h2&gt;Dialog Parameters&lt;/h2&gt;
+
+&lt;h3&gt;Input point layer&lt;/h3&gt;
+&lt;p&gt;The input is always a vector layer of point type. All the point vector layers that are currently loaded in the canvas are shown in the drop-down list. Click the dropdown button and select the desired layer.&lt;/p&gt;
+
+&lt;h3&gt;Output raster&lt;/h3&gt;
+&lt;p&gt;The output raster location and filename can be set by clicking the &lt;label&gt;...&lt;/label&gt; button next to the output raster textbox.&lt;br/&gt;
+&lt;b&gt;Note:&lt;/b&gt; The file format is automatically added depending upon the output format selected, if not explicitly given.&lt;/p&gt;
+
+&lt;h3&gt;Output format&lt;/h3&gt;
+&lt;p&gt;All the file creation supporting GDAL formats are available in the drop down list. Click and select the required output format for your file.&lt;br/&gt;
+&lt;b&gt;Note:&lt;/b&gt; GeoTiff and ERDAS Imagine .img formats are recommended. Some formats make the application crash. Kindly stick to the recommended formats until the crash issue is resolved or use other formats if you know GDAL supports it completely.&lt;/p&gt;
+
+&lt;h3&gt;Radius (bandwidth)&lt;/h3&gt;
+&lt;p&gt;Used to specify the heatmap search radius (or kernel bandwidth) in meters or map units. The radius specifies the distance around a point at which the influence
+  of the point will be felt. Larger values result in greater smoothing, but smaller values may show finer details and variation in point density.&lt;/p&gt;
+
+&lt;h3&gt;Advanced Options&lt;/h3&gt;
+
+&lt;h4&gt;Rows and Columns&lt;/h4&gt;
+&lt;p&gt;Used to change the dimensions of the output raster file. These values are also linked to the &lt;b&gt;Cell size X&lt;/b&gt; and &lt;b&gt;Cell size Y&lt;/b&gt; values. 
+Increasing the number of rows or colums will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
+are also linked, so doubling the number of rows will automatically double the number of columns and the cell sizes will also be halved. The geographical area of the output raster will remain the same!&lt;/p&gt;
+
+&lt;h4&gt;Cell size X and Y&lt;/h4&gt;
+&lt;p&gt;Control the geographic size of each pixel in the output raster. Changing these values will also change the number of Rows and Columns in the output
+  raster.&lt;/p&gt;
+  
+&lt;h4&gt;Kernel shape&lt;/h4&gt;
+&lt;p&gt;The kernel shape controls the rate at which the influence of a point decreases as the distance from the point increases. Different kernels decay at
+different rates, so a triweight kernel gives features greater weight for distances closer to the point than the Epanechnikov kernel does. Consequently,
+triweight results in &quot;sharper&quot; hotspots, and Epanechnikov results in &quot;smoother&quot; hotspots. A number of standard kernel functions are available in QGIS,
+which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4&gt;Decay ratio&lt;/h4&gt;
+&lt;p&gt;For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.&lt;/p&gt;
+
+&lt;h4&gt;Use radius from field&lt;/h4&gt;
+&lt;p&gt;Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.&lt;/p&gt;
+
+&lt;h4&gt;Use weight from field&lt;/h4&gt;
+&lt;p&gt;Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.&lt;/p&gt;
+
+&lt;h2&gt;Further Details&lt;/h2&gt;
+&lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Python Console for QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Settings&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				The QGIS Python Console is an interactive shell for the python command executions. 
+				It also has a python file editor that allows you to edit and save your python scripts. 
+				Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
+				The console is split in two main panes, top and bottom one 
+				resizable by using the horizontal splitter. Output area pane is a widget read-only which 
+				shows the commands output. You can drag and drop or copy and paste text into input area and 
+				execute code snippets from the output pane by selecting some text and clicking on the 
+				&lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
+				No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
+				python shell for input commands.&lt;br&gt;To access to the python file editor use the 
+				&lt;label&gt;Show editor&lt;/label&gt; button 
+				from the toolbar. The editor allows to edit and save python file and it offers basic functionality 
+				for managing your code (comment and 
+				uncomment code, check syntax, share the code via codepad.org and much more).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Console&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
+			The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Import Processing class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
+			(this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Settings&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Further settings for python console:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion:&lt;/label&gt; If checked the code completion is enabled. You can get autocompletion
+from current document, from installed APIs and both from APIs and current document&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion threshold:&lt;/label&gt; Sets the threshold to display the autocompletion list (in chars typed)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Automatic parentheses insertion:&lt;/label&gt; If checked enables the autoclosing for bracket&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto-save script before running:&lt;/label&gt; Allows you to save automatically the
+script to be executed in order to avoid to save it after any modification.
+This action will store a temporary file into the temporary system directory 
+that will be automatically deleted after running.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using preloaded APIs file:&lt;/label&gt; You can choose whether use the preload APIs file or load some APIs files saved on your system.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
+	from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
@@ -55160,25 +55779,6 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;regexp_replace() function&lt;/h3&gt;
-Returns a string with the supplied regular expression replaced.
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     regexp_replace(&lt;i&gt;string,regex,after&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
-&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character).&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;$scale function&lt;/h3&gt;
 Returns the current scale of the map canvas.
 &lt;br&gt;
@@ -55387,23 +55987,6 @@ from a &lt;code&gt;Interval&lt;/code&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;toreal function&lt;/h3&gt;
-Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     toreal(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to real number.&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;todate() function&lt;/h3&gt;
 Convert a string into Qt data type.
 
@@ -55520,25 +56103,6 @@ Returns -1 if the expression isn&apos;t found.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Funktion ln()&lt;/h3&gt;
-Returns the value of the natural logarithm of the passed expression.
-&lt;br&gt;
-This function takes one argument.
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;ln(value)&lt;/code&gt;&lt;br&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - any positive number.
-&lt;br&gt;
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;exp() function&lt;/h3&gt;
 Returns exponential of an value.
 
@@ -55551,24 +56115,6 @@ Returns exponential of an value.
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
-Returns the portion of a string which matches a supplied regular expression.
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     regexp_substr(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The input string.&lt;br&gt;
-&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to match against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character).&lt;br&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -55591,23 +56137,6 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;tostring function&lt;/h3&gt;
-Converts a number to string.
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     tostring(&lt;i&gt;number&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;number&lt;/i&gt; &amp;rarr; is integer or real.  The number to convert to string.&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -55718,24 +56247,6 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;regexp_match() function&lt;/h3&gt;
-Returns true if any part of a string matches the supplied regular expression.
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     regexp_match(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to test against the regular expression.&lt;br&gt;
-&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to test against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character).&lt;br&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -56203,21 +56714,6 @@ This group contains functions to convert on data type to another e.g string to i
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;yat function&lt;/h3&gt;
-Retrieves a y coordinate of the current feature
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;yat(i)&lt;/code&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;cos() function&lt;/h3&gt;
 Returns cosinus of an angle.
 
@@ -56236,24 +56732,6 @@ Returns cosinus of an angle.
     <message>
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Function floor()&lt;/h3&gt;
-Rounds a number downwards.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;floor(value)&lt;/code&gt;&lt;br&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - a number.
-&lt;br&gt;
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -56416,39 +56894,6 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;xat function&lt;/h3&gt;
-Retrieves a x coordinate of the current feature
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;xat(i)&lt;/code&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Function ceil()&lt;/h3&gt;
-Rounds a number upwards.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;ceil(value)&lt;/code&gt;&lt;br&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - a number.
-&lt;br&gt;
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -56620,23 +57065,6 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;toint function&lt;/h3&gt;
-Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to integer number.&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -56895,6 +57323,197 @@ actually inserted, ie. when building queries.
 </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&lt;h3&gt;regexp_match() function&lt;/h3&gt;
+Returns true if any part of a string matches the supplied regular expression.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_match(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to test against the regular expression.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to test against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;regexp_replace() function&lt;/h3&gt;
+Returns a string with the supplied regular expression replaced.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_replace(&lt;i&gt;string,regex,after&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
+Returns the portion of a string which matches a supplied regular expression.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_substr(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The input string.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to match against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;floor() function&lt;/h3&gt;
+Rounds a number downwards.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;floor(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;tostring() function&lt;/h3&gt;
+Converts a number to string.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     tostring(&lt;i&gt;number&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;number&lt;/i&gt; &amp;rarr; is integer or real.  The number to convert to string.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;ln() function&lt;/h3&gt;
+Returns the value of the natural logarithm of the passed expression.
+&lt;br&gt;
+This function takes one argument.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;ln(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;yat() function&lt;/h3&gt;
+Retrieves a y coordinate of the current feature
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;yat(i)&lt;/code&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;ceil() function&lt;/h3&gt;
+Rounds a number upwards.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;ceil(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;xat() function&lt;/h3&gt;
+Retrieves a x coordinate of the current feature
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;xat(i)&lt;/code&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;toint() function&lt;/h3&gt;
+Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to integer number.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;toreal() function&lt;/h3&gt;
+Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     toreal(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to real number.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>geometryThread</name>
@@ -56936,7 +57555,7 @@ actually inserted, ie. when building queries.
     <message>
         <source>Following field names are longer than 10 characters:
 %s</source>
-        <translation>Dit veld bevat namen die langer zijn dan 10 karakters:
+        <translation type="obsolete">Dit veld bevat namen die langer zijn dan 10 karakters:
 %s</translation>
     </message>
 </context>
@@ -58861,23 +59480,23 @@ actually inserted, ie. when building queries.
     </message>
     <message>
         <source>First geometry invalid in line test.</source>
-        <translation>Eerste geometrie ongeldig &apos;in line test&apos;.</translation>
+        <translation type="obsolete">Eerste geometrie ongeldig &apos;in line test&apos;.</translation>
     </message>
     <message>
         <source>Failed to import first geometry into GEOS in line test.</source>
-        <translation>De eerst geometrie importeren in de &apos;GEOS in line&apos; test is mislukt.</translation>
+        <translation type="obsolete">De eerst geometrie importeren in de &apos;GEOS in line&apos; test is mislukt.</translation>
     </message>
     <message>
         <source>Invalid second geometry in dangling line test.</source>
-        <translation>Ongeldige tweede geometrie in &apos;dangling line test&apos;.</translation>
+        <translation type="obsolete">Ongeldige tweede geometrie in &apos;dangling line test&apos;.</translation>
     </message>
     <message>
         <source>Failed to import second geometry into GEOS in dangling line test.</source>
-        <translation>De tweede geometrie importeren in de &apos;GEOS in dangling line&apos; test is mislukt.</translation>
+        <translation type="obsolete">De tweede geometrie importeren in de &apos;GEOS in dangling line&apos; test is mislukt.</translation>
     </message>
     <message>
         <source>Skipping invalid second geometry of feature %1 in dangling line test.</source>
-        <translation>Overslaan van ongeldige tweede geometrie van object %1 in &apos;dangling line test&apos;.</translation>
+        <translation type="obsolete">Overslaan van ongeldige tweede geometrie van object %1 in &apos;dangling line test&apos;.</translation>
     </message>
     <message>
         <source>Skipping invalid first geometry in pseudo line test.</source>
@@ -58901,7 +59520,7 @@ actually inserted, ie. when building queries.
     </message>
     <message>
         <source>No second geometry missing or GEOS import failed.</source>
-        <translation>Tweede geometrie ontbreekt of GEOS import is mislukt.</translation>
+        <translation type="obsolete">Tweede geometrie ontbreekt of GEOS import is mislukt.</translation>
     </message>
     <message>
         <source>Missing geometry in multipart check.</source>
@@ -58914,6 +59533,38 @@ actually inserted, ie. when building queries.
     <message>
         <source>Second layer not found in registry.</source>
         <translation>Tweede laag niet gevonden in register.</translation>
+    </message>
+    <message>
+        <source>First geometry invalid in dangling line test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import first geometry into GEOS in dangling line test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid second geometry in duplicate geometry test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import second geometry into GEOS in duplicate geometry test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid second geometry in overlaps test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import second geometry into GEOS in overlaps test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skipping invalid second geometry of feature %1 in overlaps test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second geometry missing or GEOS import failed.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

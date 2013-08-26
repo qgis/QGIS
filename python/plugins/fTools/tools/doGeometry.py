@@ -581,6 +581,7 @@ class geometryThread( QThread ):
         if index1!=index2:
           changeMap[ inFeat.id() ][ index2 ] = attr2
         vprovider.changeAttributeValues( changeMap )
+        self.vlayer.updateFields()
 
     if self.writeShape:
       del writer

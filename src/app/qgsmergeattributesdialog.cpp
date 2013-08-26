@@ -568,7 +568,7 @@ void QgsMergeAttributesDialog::createRubberBandForFeature( int featureId )
   //create rubber band to highlight the feature
   delete mSelectionRubberBand;
   mSelectionRubberBand = new QgsRubberBand( mMapCanvas, mVectorLayer->geometryType() == QGis::Polygon );
-  mSelectionRubberBand->setColor( QColor( 255, 0, 0 ) );
+  mSelectionRubberBand->setColor( QColor( 255, 0, 0, 65 ) );
   QgsFeature featureToSelect;
   mVectorLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( featureToSelect );
   mSelectionRubberBand->setToGeometry( featureToSelect.geometry(), mVectorLayer );

@@ -141,6 +141,8 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       mCanvas->refresh();
     }
   }
+
+  // LINE AND POLYGON CAPTURING
   else if ( mode() == CaptureLine || mode() == CapturePolygon )
   {
     //check we only use the line tool for line/multiline layers
@@ -172,7 +174,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       {
         //problem with coordinate transformation
         QMessageBox::information( 0, tr( "Coordinate transform error" ),
-                                     tr( "Cannot transform the point to the layers coordinate system" ) );
+                                  tr( "Cannot transform the point to the layers coordinate system" ) );
         return;
       }
 
@@ -181,8 +183,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     else if ( e->button() == Qt::RightButton )
     {
       // End of string
-
-      resetLastVertex();
+      deleteTempRubberBand();
 
       //lines: bail out if there are not at least two vertices
       if ( mode() == CaptureLine && size() < 2 )

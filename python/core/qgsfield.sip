@@ -168,7 +168,7 @@ class QgsFields
   {
     qDebug("__getitem__ %d", a0);
     QgsField* fld = new QgsField(sipCpp->at(a0));
-    sipRes = sipConvertFromInstance(fld, sipClass_QgsField, Py_None);
+    sipRes = sipConvertFromType(fld, sipType_QgsField, Py_None);
   }
 %End*/
 

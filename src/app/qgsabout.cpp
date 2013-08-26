@@ -201,8 +201,8 @@ void QgsAbout::setLicence()
 #endif
   if ( licenceFile.open( QIODevice::ReadOnly ) )
   {
-      QString content = licenceFile.readAll();
-      txtLicense->setText(content);
+    QString content = licenceFile.readAll();
+    txtLicense->setText( content );
   }
 }
 

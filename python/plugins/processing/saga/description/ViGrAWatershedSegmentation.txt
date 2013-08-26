@@ -1,0 +1,7 @@
+ViGrA - Watershed Segmentation
+vigra
+ParameterRaster|INPUT|Input|False
+ParameterNumber|SCALE|Width of gradient filter|0|None|1
+ParameterBoolean|RGB|RGB coded data|True
+ParameterBoolean|EDGES|Edges|True
+OutputRaster|OUTPUT|Segmentation

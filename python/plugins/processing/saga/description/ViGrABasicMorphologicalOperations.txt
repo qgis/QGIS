@@ -1,0 +1,8 @@
+ViGrA - Basic Morphological Operations
+vigra
+ParameterRaster|INPUT|Input|False
+OutputRaster|OUTPUT|Output
+ParameterSelection|TYPE|Operation|[0] Dilation;[1] Erosion; [2] Median; [3] User defined rank
+ParameterNumber|RADIUS|Radius (Cells)|0|None|1
+ParameterNumber|RANK|User defined rank|0|1|0.5
+ParameterBoolean|RESCALE| Rescale values (0-255)|TRUE

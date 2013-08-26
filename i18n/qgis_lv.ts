@@ -609,20 +609,16 @@ Query:
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&quot;{0}&quot; not found</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DBModel</name>
     <message>
         <source>Databases</source>
         <translation type="unfinished">Datu bāzes</translation>
-    </message>
-    <message>
-        <source>Invalid MIME uri</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The dropped object is not a valid layer</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Invalid layer</source>
@@ -1791,7 +1787,7 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Incorrect field names</source>
-        <translation>Kļūdains lauka nosaukums</translation>
+        <translation type="obsolete">Kļūdains lauka nosaukums</translation>
     </message>
     <message>
         <source>No output will be created.
@@ -2343,12 +2339,6 @@ were reduced to %d vertices after simplification</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>No output will be created.
-Following field names are longer than 10 characters:
-%s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Can&apos;t delete existing shapefile
 %s</source>
         <translation type="unfinished"></translation>
@@ -2428,10 +2418,6 @@ Following field names are longer than 10 characters:
 <context>
     <name>DlgConfig</name>
     <message>
-        <source>SEXTANTE options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Enter setting name to filter list</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2442,6 +2428,10 @@ Following field names are longer than 10 characters:
     <message>
         <source>Value</source>
         <translation type="unfinished">Vērtība</translation>
+    </message>
+    <message>
+        <source>Processing options</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2828,10 +2818,6 @@ Following field names are longer than 10 characters:
 <context>
     <name>DlgModeler</name>
     <message>
-        <source>SEXTANTE modeler</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Inputs</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2849,6 +2835,10 @@ Following field names are longer than 10 characters:
     </message>
     <message>
         <source>Enter group name here</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Processing modeler</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5117,7 +5107,7 @@ GEOS ģeoprocesēšanas kļūda: vienam vai vairākiem ievades objektiem ir nede
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation>Simetriskā starpība</translation>
+        <translation type="obsolete">Simetriskā starpība</translation>
     </message>
     <message>
         <source>Clip layer</source>
@@ -5205,6 +5195,10 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     <message>
         <source>Error loading output shapefile:
 %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symmetrical difference</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6679,10 +6673,6 @@ Acts on currently active editable layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>SEXTANTE models (*.model)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Model saved</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6724,6 +6714,10 @@ Wrong line: %1</source>
         <source>This model can&apos;t be saved in its original location
 (probably you do not have permission to do it).
 Please, use the &apos;Save as...&apos; option.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Processing models (*.model)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7541,14 +7535,6 @@ Please, use the &apos;Save as...&apos; option.</source>
         <source>There is no defined database connection &quot;%s&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Enter password</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enter password for connection &quot;%s&quot;:</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>PrepareAPIDialog</name>
@@ -7559,6 +7545,68 @@ Please, use the &apos;Save as...&apos; option.</source>
     <message>
         <source>Done</source>
         <translation type="unfinished">Darīts</translation>
+    </message>
+</context>
+<context>
+    <name>Processing</name>
+    <message>
+        <source>Processing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toolbox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Graphical modeler</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History and log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options and configuration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Results viewer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Commander</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ProcessingToolbox</name>
+    <message>
+        <source>Processing Toolbox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter algorithm name to filter list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Execute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Execute as batch process</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit rendering styles for outputs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recently used algorithms</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7665,10 +7713,6 @@ lieto qgis.utils.iface objektu (QgisInterface instances klase).
         <translation type="unfinished">Parametri</translation>
     </message>
     <message>
-        <source>Import Sextante class</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Import PyQt.QtCore class</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7770,10 +7814,6 @@ lieto qgis.utils.iface objektu (QgisInterface instances klase).
     </message>
     <message>
         <source>You have to save the file before running it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Syntax ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7922,6 +7962,72 @@ lieto qgis.utils.iface objektu (QgisInterface instances klase).
     </message>
     <message>
         <source>Remove API path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; was not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> [Temporary file saved in {0}]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>## Script error: {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>## Script executed successfully: {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot execute file {0}. Error: {1}
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been deleted or is not accessible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been changed and reloaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is read only, please save to different file first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file {0} could not be opened. Error: {1}
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Untitled-{0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; has been modified, save changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to restore the file: 
+{0}
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python {0} on {1}
+## Type help(iface) for more info and list of methods.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file &lt;b&gt;{0}&lt;/b&gt; could not be saved. Error: {1}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import Processing class</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8747,7 +8853,7 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
     </message>
     <message>
         <source>A plugin for placing diagrams on vector layers</source>
-        <translation>Vektoru slāņa diagrammu zīmēšanas spraudnis</translation>
+        <translation type="obsolete">Vektoru slāņa diagrammu zīmēšanas spraudnis</translation>
     </message>
     <message>
         <source>Version 0.0.1</source>
@@ -8940,7 +9046,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     </message>
     <message>
         <source>Line decoration</source>
-        <translation>Līnijas dekorācija</translation>
+        <translation type="obsolete">Līnijas dekorācija</translation>
     </message>
     <message>
         <source>Simple marker</source>
@@ -9875,10 +9981,6 @@ Error(%2): %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Attribute index %1 out of bounds [0;%2[</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Failed to transform a point while drawing a feature with ID &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9908,14 +10010,6 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>All Ramps</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Diagram Overlay (Legacy)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Version 0.0.1 (Legacy)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -10014,11 +10108,6 @@ Error: %2</source>
     </message>
     <message>
         <source>%1 not owner of the table %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable determine number of geometry columns of layer %1.%2: 
-%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -10228,6 +10317,63 @@ It will be disabled.</source>
     </message>
     <message>
         <source>field %1 with unsupported type %2 skipped</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute index %1 out of bounds [0;%2]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>no available replacement for internal fieldname ogc_fid found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reserved attribute name ogc_fid replaced with %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DBF file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Kļūda</translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">Slānis</translation>
+    </message>
+    <message>
+        <source>Feature ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to determine number of geometry columns of layer %1.%2: 
+%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>empty response</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WFS service exception:%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unsuccessful service response: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WFS exception report (code=%1 text=%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unhandled response: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11702,7 +11848,7 @@ Kļūda: %1</translation>
 
 Errors: %2
 </source>
-        <translation>Nevarēja veikt izmaiņas slānim %1
+        <translation type="obsolete">Nevarēja veikt izmaiņas slānim %1
 
 Kļūdas:  %2
 </translation>
@@ -12023,10 +12169,6 @@ Always ignore these errors?</source>
     </message>
     <message>
         <source>Running against Qt</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GEOS Version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -12353,19 +12495,11 @@ Errors: %3
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>%1 (%2type unsupported)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Do you want to save the current project?%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -12445,6 +12579,39 @@ Please contact the developers.
     </message>
     <message>
         <source>http://www.qgis.org/en/commercial-support.html</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Commit errors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not commit changes to layer %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Errors: %1
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show more</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 (%2 type unsupported)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to save the current project? %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compiled against GEOS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Running against GEOS</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -12607,6 +12774,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>QGIS is licensed under the GNU General Public License</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>License </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13628,10 +13799,6 @@ User DB Path:	%9
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The filter defines, which features are currently shown in the list or on the table</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Filter</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13701,6 +13868,10 @@ User DB Path:	%9
     </message>
     <message>
         <source>Show Edited and New Features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The filter defines which features are currently shown in the list or on the table</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14628,11 +14799,11 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
 <context>
     <name>QgsCollapsibleGroupBoxBasic</name>
     <message>
-        <source>Ctrl(or Alt)-click to toggle all</source>
+        <source>Shift-click to expand, then collapse others</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Shift-click to expand, then collapse others</source>
+        <source>Ctrl (or Alt)-click to toggle all</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14957,7 +15128,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Trying to create image #%1 ( %2x%3 @ %4dpi )may result in a memory overflow.
+        <source>Trying to create image #%1( %2x%3 @ %4dpi ) may result in a memory overflow.
 Please try a lower resolution or a smaller papersize</source>
         <translation type="unfinished"></translation>
     </message>
@@ -16987,6 +17158,10 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Loading previews...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Image search paths</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerScaleBar</name>
@@ -18231,6 +18406,14 @@ Please try a lower resolution or a smaller papersize</source>
         <source>&lt;h3&gt;Oops! QGIS can&apos;t find help for this form.&lt;/h3&gt;The help file for %1 was not found for your language&lt;br&gt;If you would like to create it, contact the QGIS development team</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Error starting help viewer [%1]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Context help</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsContinuousColorDialogBase</name>
@@ -18950,10 +19133,6 @@ and current file is [%3]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;b&gt;Current definition%1:&lt;/b&gt;&lt;br&gt;%2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>string </source>
         <translation type="unfinished"></translation>
     </message>
@@ -19003,6 +19182,10 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>string [&lt;b&gt;r,g,b,a&lt;/b&gt;] as int 0-255</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Current definition %1:&lt;/b&gt;&lt;br&gt;%2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19354,10 +19537,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Vertical</source>
         <translation type="unfinished">Vertikāls</translation>
-    </message>
-    <message>
-        <source>Horizontal and vertical</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Boundary direction</source>
@@ -19990,10 +20169,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Please one or more characters to use as the delimiter, or choose a different delimiter type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Invalid regular expression</source>
         <translation type="unfinished"></translation>
     </message>
@@ -20059,6 +20234,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>%1 badly formatted records discarded from sample data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use one or more characters as the delimiter, or choose a different delimiter type</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -20273,10 +20452,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The file a comma separated value file, fields delimited by commas and quoted by &quot;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>CSV (comma separated values)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -20286,10 +20461,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Custom delimiters</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Each line in the  file is split using a regular expression to define the end of each field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -20434,6 +20605,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Sample data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file is a comma separated value file, fields delimited by commas and quoted by &quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Each line in the file is split using a regular expression to define the end of each field</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -21379,6 +21558,42 @@ p, li { white-space: pre-wrap; }
         <source>Load 10 sample values</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Equal operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Addition operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subtraction operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Division operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multiplication operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Power operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>String Concatenation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Bracket </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close Bracket </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsExpressionSelectionDialogBase</name>
@@ -21759,6 +21974,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>UI file</source>
         <translation type="unfinished">UI fails</translation>
+    </message>
+    <message>
+        <source>Type name</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23804,6 +24023,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>WFS</source>
         <translation type="unfinished">WFS</translation>
+    </message>
+    <message>
+        <source>GML Getfeature network request failed with error: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <translation type="unfinished">Tīkls</translation>
     </message>
 </context>
 <context>
@@ -26203,7 +26430,7 @@ rindā %2 kolonnā %3</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>%1 of %2 bad layers were not not fixable.</source>
+        <source>%1 of %2 bad layers were not fixable.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -26295,6 +26522,10 @@ rindā %2 kolonnā %3</translation>
     </message>
     <message>
         <source>html</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HTML annotation</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -26573,11 +26804,11 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
         <translation type="unfinished">Atribūts nomainās</translation>
     </message>
     <message>
-        <source>Cannot not print</source>
+        <source>Cannot print this item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot print this item</source>
+        <source>Cannot print</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -28289,6 +28520,10 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
         <source>Discourage labels from covering features</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Font is missing.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLayerPropertiesWidget</name>
@@ -28572,7 +28807,7 @@ not displayed</source>
     <name>QgsLoadStyleFromDBDialogLayout</name>
     <message>
         <source>Add column</source>
-        <translation type="unfinished">Pievienot kolonnu</translation>
+        <translation type="obsolete">Pievienot kolonnu</translation>
     </message>
     <message>
         <source>Styles related to the layer</source>
@@ -29548,7 +29783,7 @@ not displayed</source>
     <name>QgsMapToolSplitFeatures</name>
     <message>
         <source>Split error</source>
-        <translation>Sadalīšanas kļūda</translation>
+        <translation type="obsolete">Sadalīšanas kļūda</translation>
     </message>
     <message>
         <source>An error occured during feature splitting</source>
@@ -29626,186 +29861,131 @@ not displayed</source>
     <name>QgsMapserverExportBase</name>
     <message>
         <source>Map file</source>
-        <translation>Map fails</translation>
+        <translation type="obsolete">Map fails</translation>
     </message>
     <message>
         <source>Map</source>
-        <translation>Karte</translation>
+        <translation type="obsolete">Karte</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nosaukums</translation>
+        <translation type="obsolete">Nosaukums</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation>Augstums</translation>
+        <translation type="obsolete">Augstums</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation>Platums</translation>
+        <translation type="obsolete">Platums</translation>
     </message>
     <message>
         <source>Units</source>
-        <translation>Vienības</translation>
+        <translation type="obsolete">Vienības</translation>
     </message>
     <message>
         <source>Image type</source>
-        <translation>Attēla tips</translation>
-    </message>
-    <message>
-        <source>Forces labels on, regardless of collisions. Available only for cached labels.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Force</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>MapServer Export: Save project to MapFile</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Attēla tips</translation>
     </message>
     <message>
         <source>Use current project</source>
-        <translation>Lietot pašreizējo projektu</translation>
-    </message>
-    <message>
-        <source>LAYER information only</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Lietot pašreizējo projektu</translation>
     </message>
     <message>
         <source>Rendering</source>
-        <translation>Renderēšana</translation>
-    </message>
-    <message>
-        <source>The URL to the mapserver executable.
-
-For example: 
-http://my.host.com/cgi-bin/mapserv.exe</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Inline</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Symbolset</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Renderēšana</translation>
     </message>
     <message>
         <source>Use templates</source>
-        <translation>Lietot paraugus</translation>
+        <translation type="obsolete">Lietot paraugus</translation>
     </message>
     <message>
         <source>The file name of the fonts file.</source>
-        <translation>Fontu faila nosaukums.</translation>
-    </message>
-    <message>
-        <source>Fontset</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Fontu faila nosaukums.</translation>
     </message>
     <message>
         <source>The file name of the symbols file.</source>
-        <translation>Simbolu faila nosaukums.</translation>
+        <translation type="obsolete">Simbolu faila nosaukums.</translation>
     </message>
     <message>
         <source>Layer/label options</source>
-        <translation>Slāņa/birkas parametri</translation>
-    </message>
-    <message>
-        <source>Should text be antialiased? Note that this requires more available colors, decreases drawing performance, and results in slightly larger output images.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Anti-alias</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Can text run off the edge of the map?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Partials</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Slāņa/birkas parametri</translation>
     </message>
     <message>
         <source>Dump</source>
-        <translation>Izmete</translation>
+        <translation type="obsolete">Izmete</translation>
     </message>
     <message>
         <source>Paths</source>
-        <translation>Ceļi</translation>
+        <translation type="obsolete">Ceļi</translation>
     </message>
     <message>
         <source>MapServer url</source>
-        <translation>MapServer adrese</translation>
+        <translation type="obsolete">MapServer adrese</translation>
     </message>
     <message>
         <source>Header</source>
-        <translation>Galvene</translation>
+        <translation type="obsolete">Galvene</translation>
     </message>
     <message>
         <source>Footer</source>
-        <translation>Kājene</translation>
+        <translation type="obsolete">Kājene</translation>
     </message>
     <message>
         <source>Template</source>
-        <translation>Sagatave</translation>
+        <translation type="obsolete">Sagatave</translation>
     </message>
     <message>
         <source>Name for the map file to be created from the QGIS project file</source>
-        <translation>No QGIS faila veidojamā Map faila nosaukums</translation>
+        <translation type="obsolete">No QGIS faila veidojamā Map faila nosaukums</translation>
     </message>
     <message>
         <source>If checked, only the layer information will be processed</source>
-        <translation>Ja atzīmēts, tikai slāņu informācija tiks apstrādāta</translation>
+        <translation type="obsolete">Ja atzīmēts, tikai slāņu informācija tiks apstrādāta</translation>
     </message>
     <message>
         <source>Path to the MapServer template file</source>
-        <translation>Ceļš līdz MapServer šablona failam</translation>
+        <translation type="obsolete">Ceļš līdz MapServer šablona failam</translation>
     </message>
     <message>
         <source>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile</source>
-        <translation>Kartes, leģendas un mērogjoslas failiem pievienotais prefikss, kas tiks izmantots šim Map failam</translation>
+        <translation type="obsolete">Kartes, leģendas un mērogjoslas failiem pievienotais prefikss, kas tiks izmantots šim Map failam</translation>
     </message>
     <message>
         <source>Full path to the QGIS project file to export to MapServer map format</source>
-        <translation>Plins ceļš līdz QGIS projeta failam, kurš tiks eksportēts uz MapServer Map failu</translation>
+        <translation type="obsolete">Plins ceļš līdz QGIS projeta failam, kurš tiks eksportēts uz MapServer Map failu</translation>
     </message>
     <message>
         <source>Browse...</source>
-        <translation>Pārlūkot...</translation>
+        <translation type="obsolete">Pārlūkot...</translation>
     </message>
     <message>
         <source>Save As...</source>
-        <translation>Saglabāt kā...</translation>
+        <translation type="obsolete">Saglabāt kā...</translation>
     </message>
     <message>
         <source>meters</source>
-        <translation>metri</translation>
+        <translation type="obsolete">metri</translation>
     </message>
     <message>
         <source>dd</source>
-        <translation>dd</translation>
+        <translation type="obsolete">dd</translation>
     </message>
     <message>
         <source>feet</source>
-        <translation>pēdas</translation>
+        <translation type="obsolete">pēdas</translation>
     </message>
     <message>
         <source>miles</source>
-        <translation>jūdzes</translation>
+        <translation type="obsolete">jūdzes</translation>
     </message>
     <message>
         <source>inches</source>
-        <translation>collas</translation>
+        <translation type="obsolete">collas</translation>
     </message>
     <message>
         <source>kilometers</source>
-        <translation>kilometri</translation>
+        <translation type="obsolete">kilometri</translation>
     </message>
 </context>
 <context>
@@ -30015,9 +30195,14 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
         <source>Close all</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>more</source>
-        <translation type="unfinished"></translation>
+    <message numerus="yes">
+        <source>%n more</source>
+        <comment>unread messages</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -31398,10 +31583,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>OpenStreetMap import</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Failed to export OSM data:
 %1</source>
         <translation type="unfinished"></translation>
@@ -32098,6 +32279,22 @@ Always network: always load from network and do not check if the cache has a val
         <source>Date &amp; Time</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>OGR error syncing to disk: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Original layer could not be reopened.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Original datasource could not be reopened.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOpenRasterDialog</name>
@@ -32332,23 +32529,23 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Central point (fastest)</source>
-        <translation>Centra punkts (ātri)</translation>
+        <translation type="obsolete">Centra punkts (ātri)</translation>
     </message>
     <message>
         <source>Chain (fast)</source>
-        <translation>Ķēde (ātri)</translation>
+        <translation type="obsolete">Ķēde (ātri)</translation>
     </message>
     <message>
         <source>Popmusic tabu chain (slow)</source>
-        <translation>Popmuzikas tabu ķēde (lēni)</translation>
+        <translation type="obsolete">Popmuzikas tabu ķēde (lēni)</translation>
     </message>
     <message>
         <source>Popmusic tabu (slow)</source>
-        <translation>Popmuzikas tabu (lēni)</translation>
+        <translation type="obsolete">Popmuzikas tabu (lēni)</translation>
     </message>
     <message>
         <source>Popmusic chain (very slow)</source>
-        <translation>Popmuzikas ķēde (ļoti lēni)</translation>
+        <translation type="obsolete">Popmuzikas ķēde (ļoti lēni)</translation>
     </message>
     <message>
         <source>Choose a directory</source>
@@ -32759,7 +32956,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Placement algorithm</source>
-        <translation>Novietojuma algoritms</translation>
+        <translation type="obsolete">Novietojuma algoritms</translation>
     </message>
     <message>
         <source>Exclude URLs (starting with)</source>
@@ -33435,10 +33632,6 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Legend item styles</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Overlay position</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -34123,12 +34316,6 @@ SQL: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not update metadata for %1.%2.
-SQL:%1
-Error: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Could not insert metadata for %1.%2.
 SQL:%3
 Error: %4</source>
@@ -34207,6 +34394,12 @@ Error: %3</source>
     <message>
         <source>Oracle error: %1
 Error: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not update metadata for %1.%2.
+SQL:%3
+Error: %4</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -35154,7 +35347,7 @@ Pārliecinieties, ka jums ir SELECT tiesības tai tabulai, kas satur PostGIS ģe
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation>Nebija iespējams atvērt lokālo spraudņu mapi</translation>
+        <translation type="obsolete">Nebija iespējams atvērt lokālo spraudņu mapi</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
@@ -35300,6 +35493,14 @@ You need to restart QGIS in order to reload it.</source>
     </message>
     <message>
         <source>If you haven&apos;t cancelled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin exited with error status: {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -36604,11 +36805,6 @@ Error: no result buffer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Not logged query failed: %1
-Error: no result buffer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Query: %1 returned %2 [%3]</source>
         <translation type="unfinished"></translation>
     </message>
@@ -37264,15 +37460,15 @@ Proceed?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Parameters :</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Parameters:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Can only use ellipsoidal calculations when CRS transformation is enabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select %1 from pull-down menu to adjust radii</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -38264,6 +38460,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Feature</source>
         <translation type="unfinished">Objekts</translation>
+    </message>
+    <message>
+        <source>Text</source>
+        <translation type="unfinished">Teksts</translation>
     </message>
 </context>
 <context>
@@ -40896,6 +41096,10 @@ standard deviation ×</source>
         <source>Remove rule</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Refine current rule</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRunProcess</name>
@@ -41122,7 +41326,7 @@ standard deviation ×</source>
     <name>QgsSaveToDBDialog</name>
     <message>
         <source>Add column</source>
-        <translation type="unfinished">Pievienot kolonnu</translation>
+        <translation type="obsolete">Pievienot kolonnu</translation>
     </message>
     <message>
         <source>Description</source>
@@ -41146,6 +41350,10 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Optionally pick an input form for attribute editing (QT Designer UI format), it will be stored in the database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save style</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -43434,6 +43642,14 @@ Pārrakstīt?</translation>
         <source>Download failed: %1.</source>
         <translation type="unfinished">Lejupielāde neizdevās: %1.</translation>
     </message>
+    <message>
+        <source>file specified below</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>URL specified below</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsStyleV2ExportImportDialogBase</name>
@@ -43535,10 +43751,6 @@ Pārrakstīt?</translation>
     <message>
         <source>XML files (*.xml *XML)</source>
         <translation type="obsolete">XML faili (*.xml *.XML)</translation>
-    </message>
-    <message>
-        <source>Type here to filter symbols ...</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>cpt-city</source>
@@ -43658,6 +43870,62 @@ There was a problem with your symbol database.</source>
     </message>
     <message>
         <source>There was some error while editing the smart group.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type here to filter symbols...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Share Menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export</source>
+        <translation type="unfinished">Eksportēt</translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation type="unfinished">Importēt</translation>
+    </message>
+    <message>
+        <source>Group Actions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group Symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit Smart Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Finish Grouping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Un-group</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -44289,23 +44557,23 @@ There was a problem with your symbol database.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item Properties -&gt; General Options -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows one to move the map content within a map frame.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You can rotate a map by setting its rotation value in the &lt;strong&gt;Item Properties -&gt; Map&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;Esc&apos; (the escape key), or click the small red &apos;X&apos; icon in the status bar to the bottom right of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our regular hackfest meetings, and to generally support the goals of our project. Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>QGIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage and Install Plugins menu. In addition there are a lot of &lt;a href=&quot;http://plugins.qgis.org/&quot;&gt;Python plugins &lt;/a&gt; contributed by the user community that can be installed via this same menu. Don&apos;t miss out on all QGIS has to offer! Check out the plugins and see what they can do for you.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; section, which can be found in the tab &lt;strong&gt;Item Properties -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows one to move the map content within a map frame.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In the Print Composer you can rotate a map by setting its rotation value in the tab &lt;strong&gt;Item Properties -&gt; Map -&gt; Main properties&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;Esc&apos; (the escape key), or click the &apos;Stop map rendering&apos; icon in the status bar to the bottom of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -46324,7 +46592,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Kļūda</translation>
+        <translation type="obsolete">Kļūda</translation>
     </message>
     <message>
         <source>DescribeFeatureType failed for url %1</source>
@@ -48231,31 +48499,7 @@ Reason phrase: %2</source>
     <name>SEXTANTE</name>
     <message>
         <source>Analysis</source>
-        <translation type="unfinished">Analīze</translation>
-    </message>
-    <message>
-        <source>&amp;SEXTANTE options and configuration</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;SEXTANTE results viewer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;SEXTANTE toolbox</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;SEXTANTE modeler</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;SEXTANTE history and log</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;SEXTANTE commander</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Analīze</translation>
     </message>
 </context>
 <context>
@@ -48851,41 +49095,8 @@ Apraksts: %3</translation>
 <context>
     <name>SextanteToolbox</name>
     <message>
-        <source>SEXTANTE Toolbox</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Execute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Execute as batch process</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Edit rendering styles for outputs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Warning</source>
         <translation type="obsolete">Brīdinājums</translation>
-    </message>
-    <message>
-        <source>Recently used algorithms</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enter algorithm name to filter list</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Search...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Click here to learn more
-about SEXTANTE</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48901,13 +49112,6 @@ about SEXTANTE</source>
     <message>
         <source>OK</source>
         <translation>Labi</translation>
-    </message>
-</context>
-<context>
-    <name>SpatiaLiteDBConnector</name>
-    <message>
-        <source>&quot;%s&quot; not found</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49312,11 +49516,11 @@ Would you like to add the new layer to the TOC?</source>
     <name>WidgetLineDecoration</name>
     <message>
         <source>Form</source>
-        <translation>Forma</translation>
+        <translation type="obsolete">Forma</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation>Krāsa</translation>
+        <translation type="obsolete">Krāsa</translation>
     </message>
     <message>
         <source>Change</source>
@@ -49324,15 +49528,11 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Pen width</source>
-        <translation>Zīmuļa platums </translation>
-    </message>
-    <message>
-        <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Zīmuļa platums </translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished">Kartes vienība</translation>
+        <translation type="obsolete">Kartes vienība</translation>
     </message>
 </context>
 <context>
@@ -50307,42 +50507,6 @@ At present there is only one style available. You can adjust the angle of the ar
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Export a QGIS Project to MapServer Map File&lt;/h3&gt;
-&lt;p&gt;
-This tool allows you to export a saved QGIS project file to a MapServer map. Only the &lt;b&gt;Map file&lt;/b&gt; and &lt;b&gt;QGIS project file&lt;/b&gt; inputs are required.
-&lt;/p&gt;
-Tick the &lt;label&gt;Use current project&lt;/label&gt; check box or enter the full path to the QGIS project file (.qgs) you want to export. You can use the button at the right to browse for the QGIS project file.
-
-&lt;h4&gt;Map file&lt;/h4&gt;
-
-&lt;label&gt;Map file&lt;/label&gt; Enter the name for the map file to be created. You can use the button at the right to browse for the directory where you want the map file created.
-
-&lt;h4&gt;Map&lt;/h4&gt;
-These values are written to the map file in the appropriate spots to set things such as output image size, units and image type.
-&lt;dl&gt;
-  &lt;dt&gt;&lt;label&gt;Name&lt;/label&gt;&lt;/dt&gt;
-  &lt;dd&gt;A name for the map. This name is prefixed to all images generated by the MapServer.&lt;/dd&gt;
-  &lt;dt&gt;&lt;label&gt;Width&lt;/label&gt;&lt;/dt&gt;
-  &lt;dd&gt;Width of the output image in pixels.&lt;/dd&gt;
-  &lt;dt&gt;&lt;label&gt;Height&lt;/label&gt;&lt;/dt&gt;
-  &lt;dd&gt;Height of the output image in pixels.&lt;/dd&gt;
-  &lt;dt&gt;&lt;label&gt;Units&lt;/label&gt;&lt;/dt&gt;
-  &lt;dd&gt;Units of measure used for output.&lt;/dd&gt;
-  &lt;dt&gt;&lt;label&gt;Image type&lt;/label&gt;&lt;/dt&gt;
-  &lt;dd&gt;Format for the output image generated by MapServer&lt;/dd&gt;
-&lt;/dl&gt;
-&lt;h4&gt;Paths&lt;/h4&gt;
-&lt;dl&gt;
-  &lt;dt&gt;&lt;label&gt;Template&lt;/label&gt;&lt;/dt&gt;
-  &lt;dd&gt;Full path to the MapServer template file to be used with the map file.&lt;/dd&gt;
-  &lt;dt&gt;&lt;label&gt;Header&lt;/label&gt;&lt;/dt&gt;
-  &lt;dd&gt;Full path to the MapServer header file to be used with the map file.&lt;/dd&gt;
-  &lt;dt&gt;&lt;label&gt;Footer&lt;/label&gt;&lt;/dt&gt;
-  &lt;dd&gt;Full path to the MapServer footer file to be used with the map file.&lt;/dd&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;Scale bar Plugin&lt;/h3&gt;
 Draws a scale bar on the map.
 &lt;p&gt;
@@ -50442,78 +50606,6 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;li&gt;&amp;lt;U&amp;gt;&lt;u&gt; Underlined text &lt;/u&gt;&amp;lt;/U&amp;gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Python Plugin Installer&lt;/h3&gt;
-Downloads and installs plugins from remote repositories.
-&lt;br/&gt;&lt;br/&gt;
-&lt;a href=&quot;#pltab&quot;&gt;Plugins tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#retab&quot;&gt;Repositories tab&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#optab&quot;&gt;Options tab&lt;/a&gt;&lt;br/&gt;
-
-&lt;a name=&quot;pltab&quot;&gt;
-&lt;h4&gt;Plugins tab&lt;/h4&gt;
-&lt;/a&gt;
-
-&lt;p align=&apos;justify&apos;&gt;
-The &lt;label&gt;Plugins&lt;/label&gt; tab contains a list of all locally installed Python plugins, as well as plugins available in 
-remote repositories. Each plugin can be either:
-&lt;dl&gt;
-&lt;dt&gt;not installed&lt;/dt&gt;&lt;dd&gt;this means the plugin is available in the repository, but is not installed yet. In order to install it, select the plugin from the list and click the &lt;label&gt;Install plugin&lt;/label&gt; button.&lt;/dd&gt;
-&lt;dt&gt;new&lt;/dt&gt;&lt;dd&gt;this means that the plugin is newly available in the repository.&lt;/dd&gt;
-&lt;dt&gt;installed&lt;/dt&gt;&lt;dd&gt;this indicates that the plugin is already installed. If it is also available in any repository the &lt;label&gt;Reinstall plugin&lt;/label&gt; button will be enabled. If the available version is older than the installed version, the &lt;label&gt;Downgrade plugin&lt;/label&gt; button will appear instead.&lt;/dd&gt;
-&lt;dt&gt;upgradeable&lt;/dt&gt;&lt;dd&gt;this means that the plugin is installed, but there is an updated version available. In this case, the &lt;label&gt;Upgrade plugin&lt;/label&gt; button will be enabled.&lt;/dd&gt;
-&lt;dt&gt;invalid&lt;/dt&gt;&lt;dd&gt;this means that the plugin is installed, but is unavailable or broken. The reason will be explained in the plugin description field.&lt;/dd&gt;
-&lt;/dl&gt;
-&lt;/p&gt;
-
-To install a plugin, select it from the list and click the &lt;label&gt;Install plugin&lt;/label&gt; button. The plugin is installed in its own directory in:
-&lt;table border=1&gt;
-&lt;tr&gt;&lt;th&gt;OS&lt;/th&gt;&lt;th&gt;system plugins&lt;/th&gt;&lt;th&gt;plugins installed by user&lt;/th&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Linux and other unices&lt;/td&gt;&lt;td&gt;./share/qgis/python/plugins&lt;/td&gt;&lt;td rowspan=2&gt;$HOME/qgis/python/plugins&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Mac OS X&lt;/td&gt;&lt;td&gt;./Contents/MacOS/share/qgis/python/plugins&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Windows&lt;/td&gt;&lt;td&gt;(QGIS install directory)&amp;#92;python&amp;#92;plugins&lt;/td&gt;&lt;td&gt;%USERPROFILE%&amp;#92;.qgis&amp;#92;python&amp;#92;plugins&lt;/td&gt;&lt;/tr&gt;
-&lt;/table&gt;
-&lt;br/&gt;
-
-&lt;p align=&apos;justify&apos;&gt;
-If the installation is successful, a confirmation message will appear. The plugin is ready to use.
-&lt;/p&gt;
-
-&lt;p align=&apos;justify&apos;&gt;
-If the installation fails, the reason for the failure will be displayed in a warning dialog. Most often, errors are the result of connection problems and/or missing Python modules. In the former case you will likely need to wait before trying the install again, in the latter case, you should install the missing modules relevant to your operating system prior to using the plugin. For Linux, most required modules should be available via a package manager. For install instructions in Windows visit the module home page. If you are using a proxy, you may need to configure it under &lt;label&gt;Edit&lt;/label&gt; &gt; &lt;label&gt;Options&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; &gt; &lt;label&gt;Options&lt;/label&gt; (KDE, Windows) on the &lt;label&gt;Proxy&lt;/label&gt; tab.&lt;/p&gt;
-
-&lt;p align=&apos;justify&apos;&gt;
-The &lt;label&gt;Uninstall plugin&lt;/label&gt; button is enabled only if the selected plugin is installed and is not a core plugin. Note that if you have installed an update to a core plugin, you can uninstall this update with the &lt;label&gt;Uninstall plugin&lt;/label&gt; and revert to the version shipped with QGIS. This default version however, cannot be uninstalled.&lt;/p&gt;
-
-&lt;a name=&quot;retab&quot;&gt;
-&lt;h4&gt;Repositories tab&lt;/h4&gt;
-&lt;/a&gt;
-&lt;p align=&apos;justify&apos;&gt;
-The second tab &lt;label&gt;Repositories&lt;/label&gt;, contains a list of plugin repositories available for the Plugin Installer. By default, only the QGIS Official Repository is enabled. You can add several user-contributed repositories, including the central QGIS Contributed Repository and other external repositories by clicking the &lt;label&gt;Add 3rd party repositories&lt;/label&gt; button. The added repositories contain a large number of useful plugins which are not maintained by the QGIS Development Team. As such, we cannot take any responsibility for them. You can also manage the repository list manually, that is add, remove, and edit the entries. Temporarily disabling a particular repository is possible by clicking the &lt;label&gt;Edit...&lt;/label&gt; button.&lt;/p&gt;
-
-&lt;a name=&quot;optab&quot;&gt;
-&lt;h4&gt;Options tab&lt;/h4&gt;
-&lt;/a&gt;
-&lt;p align=&apos;justify&apos;&gt;
-The &lt;label&gt;Options&lt;/label&gt; tab is where you can configure the settings of the Plugin Installer. The &lt;label&gt;x Check for updates on start up&lt;/label&gt; check box tells QGIS to automatically look for plugin updates and news. By default, if this feature is enabled all repositories listed and enabled in the &lt;label&gt;Repositories&lt;/label&gt; tab are checked for updates each time the program is started. The frequency of update checking can be adjusted using the drop down menu, and may be adjusted from once a day right up to once a month. If a new plugin or update is available for one of the installed plugins, a notification will appear in the Status Bar. If the check box is disabled, looking for updates and news is performed only when the Plugin Installer is manually launched from the menu.&lt;/p&gt;
-
-&lt;p align=&apos;justify&apos;&gt;
-Some Internet connections will cause problems when attempting to automatically check for updates.  In these cases, a &lt;i&gt;Looking for new plugins...&lt;/i&gt; indicator will remain visible in the Status Bar during your entire QGIS session, and may cause a program crash when exiting. In this case please disable the check box.&lt;/p&gt;
-
-In addition, you may specify the type of plugins that are displayed by the Plugin Installer. Under &lt;i&gt;Allowed plugins&lt;/i&gt;, you can specify whether you would like to:
-&lt;ul&gt;
-&lt;li&gt; Only show plugins from the official repository&lt;/li&gt;
-&lt;li&gt; Show all plugins except those marked as experimental,&lt;/li&gt;
-&lt;li&gt; or Show all plugins, even those marked as experimental.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;br/&gt;
-&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
-Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
-&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -50895,63 +50987,6 @@ See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector fo
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
-&lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
-raster of an input point vector layer.  The density is calculated based on the
-number of points in a location, with larger numbers of clustered points resulting
-in larger values. Heatmaps allow easy identification of &quot;hotspots&quot; and
-clustering of points.&lt;/p&gt;
-
-&lt;h2&gt;Dialog Parameters&lt;/h2&gt;
-
-&lt;h3&gt;Input point layer&lt;/h3&gt;
-&lt;p&gt;The input is always a vector layer of point type. All the point vector layers that are currently loaded in the canvas are shown in the drop-down list. Click the dropdown button and select the desired layer.&lt;/p&gt;
-
-&lt;h3&gt;Output raster&lt;/h3&gt;
-&lt;p&gt;The output raster location and filename can be set by clicking the &lt;label&gt;...&lt;/label&gt; button next to the output raster textbox.&lt;br/&gt;
-&lt;b&gt;Note:&lt;/b&gt; The file format is automatically added depending upon the output format selected, if not explicitly given.&lt;/p&gt;
-
-&lt;h3&gt;Output format&lt;/h3&gt;
-&lt;p&gt;All the file creation supporting GDAL formats are available in the drop down list. Click and select the required output format for your file.&lt;br/&gt;
-&lt;b&gt;Note:&lt;/b&gt; GeoTiff and ERDAS Imagine .img formats are recommended. Some formats make the application crash. Kindly stick to the recommended formats until the crash issue is resolved or use other formats if you know GDAL supports it completely.&lt;/p&gt;
-
-&lt;h3&gt;Radius (bandwidth)&lt;/h3&gt;
-&lt;p&gt;Used to specify the heatmap search radius (or kernel bandwidth) in meters or map units. The radius specifies the distance around a point at which the influence
-  of the point will be felt. Larger values result in greater smoothing, but smaller values may show finer details and variation in point density.&lt;/p&gt;
-
-&lt;h3&gt;Advanced Options&lt;/h3&gt;
-
-&lt;h4&gt;Rows and Columns&lt;/h4&gt;
-&lt;p&gt;Used to change the dimensions of the output raster file. These values are also linked to the &lt;b&gt;Cell size X&lt;/b&gt; and &lt;b&gt;Cell size Y&lt;/b&gt; values. 
-Increasing the number of rows or colums will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
-are also linked, so doubling the number of rows will automatically double the number of columns and the cell sizes will also be halved. The geographical area of the output raster will remain the same!&lt;/p&gt;
-
-&lt;h4&gt;Cell size X and Y&lt;/h4&gt;
-&lt;p&gt;Control the geographic size of each pixel in the output raster. Changing these values will also change the number of Rows and Columns in the output
-  raster.&lt;/p&gt;
-  
-&lt;h4&gt;Kernel shape&lt;/h4&gt;
-&lt;p&gt;The kernel shape controls the rate at which the influence of a point decreases as the distance from the point increases. Different kernels decay at
-different rates, so a triweight kernel gives features greater weight for distances closer to the point then the Epanechnikov kernel does. Consequently,
-triweight results in &quot;sharper&quot; hotspots, and Epanechnikov results in &quot;smoother&quot; hotspots. A number of standard kernel functions are available in QGIS,
-which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h4&gt;Decay ratio&lt;/h4&gt;
-&lt;p&gt;For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.&lt;/p&gt;
-
-&lt;h4&gt;Use radius from field&lt;/h4&gt;
-&lt;p&gt;Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.&lt;/p&gt;
-
-&lt;h4&gt;Use weight from field&lt;/h4&gt;
-&lt;p&gt;Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.&lt;/p&gt;
-
-&lt;h2&gt;Further Details&lt;/h2&gt;
-&lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
 Loads and displays delimited text files
 &lt;p&gt;
@@ -51284,177 +51319,6 @@ Click on one of the icons along the top of the composer window to select what ty
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;style&gt;
-	#toolbarConsole td{
-		background: #f6f6f6;
-	}
-&lt;/style&gt;
-&lt;h3&gt;Python Console for QGIS&lt;/h3&gt;
-&lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
-&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
-&lt;a href=&quot;#settings&quot;&gt;Settings&lt;/a&gt;&lt;br&gt;&lt;br&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;p align=&apos;justify&apos;&gt;
-				The QGIS Python Console is an interactive shell for the python command executions. 
-				It also has a python file editor that allows you to edit and save your python scripts. 
-				Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
-				The console is split in two main panes, top and bottom one 
-				resizable by using the horizontal splitter. Output area pane is a widget read-only which 
-				shows the commands output. You can drag and drop or copy and paste text into input area and 
-				execute code snippets from the output pane by selecting some text and clicking on the 
-				&lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
-				No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
-				python shell for input commands.&lt;br&gt;To access to the python file editor use the 
-				&lt;label&gt;Show editor&lt;/label&gt; button 
-				from the toolbar. The editor allows to edit and save python file and it offers basic functionality 
-				for managing your code (comment and 
-				uncomment code, check syntax, share the code via codepad.org and much more).
-			&lt;/p&gt;
-		&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;console&quot;&gt;
-&lt;h4&gt;Console&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;ul&gt;
-			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
-				&lt;ol&gt;
-				&lt;li&gt;Python&lt;/li&gt;
-				&lt;li&gt;PyQGIS&lt;/li&gt;
-				&lt;li&gt;PyQt4&lt;/li&gt;
-				&lt;li&gt;QScintilla2&lt;/li&gt;
-				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
-				&lt;/ol&gt;
-			&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
-			&lt;br&gt;
-                        &lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
-			The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
-			&lt;br&gt;
-			&lt;/ul&gt;
-		&lt;/td&gt;
-		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
-	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSextanteConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Import Sextante class&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
-		&lt;/tr&gt;
-                &lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
-		&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;editor&quot;&gt;
-&lt;h4&gt;Editor&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
-			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
-		&lt;/td&gt;
-		&lt;td&gt;
-			&lt;ul&gt;
-			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
-				&lt;ol&gt;
-				&lt;li&gt;Python&lt;/li&gt;
-				&lt;li&gt;PyQGIS&lt;/li&gt;
-				&lt;li&gt;PyQt4&lt;/li&gt;
-				&lt;li&gt;QScintilla2&lt;/li&gt;
-				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
-				&lt;/ol&gt;
-			&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
-			&lt;br&gt;
-			&lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
-			(this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
-			&lt;br&gt;
-			&lt;/ul&gt;
-		&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;settings&quot;&gt;
-&lt;h4&gt;Settings&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Further settings for python console:&lt;/i&gt;&lt;/b&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;label&gt;Autocompletion:&lt;/label&gt; If checked the code completion is enabled. You can get autocompletion
-from current document, from installed APIs and both from APIs and current document&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Autocompletion threshold:&lt;/label&gt; Sets the threshold to display the autocompletion list (in chars typed)&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Automatic parentheses insertion:&lt;/label&gt; If checked enables the autoclosing for bracket&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Auto-save script before running:&lt;/label&gt; Allows you to save automatically the
-script to be executed in order to avoid to save it after any modification.
-This action will store a temporary file into the temporary system directory 
-that will be automatically deleted after running.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Using preloaded APIs file:&lt;/label&gt; You can choose whether use the preload APIs file or load some APIs files saved on your system.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
-	&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
-	from the close button. This allows you to save the geometry to be restored to the next start.
-&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
 This dialog allows you to work with vector layer settings and properties. There are seven tabs:
 &lt;p&gt;
@@ -51692,7 +51556,7 @@ Selecting an item shows you the plugin information in the detail pane.
 &lt;h4&gt;New tab&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p&gt;
-This tab will be shown when a new plugin is made available? It will be shown
+This tab will be shown when a new plugin is made available! It will be shown
 just once.
 &lt;/p&gt;
 
@@ -51700,7 +51564,7 @@ just once.
 &lt;h4&gt;Upgradable tab&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p&gt;
-This tab is only available if there one of your installed plugins can be upgraded
+This tab is only available if one of your installed plugins can be upgraded
 from the remote repositories.
 &lt;/p&gt;
 
@@ -51708,8 +51572,8 @@ from the remote repositories.
 &lt;h4&gt;Invalid tab&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p&gt;
-This tab is only available if there is a plugin invalid. That is if there was an
-error during loading the plugin.
+This tab is only available if there is a invalid plugin. Mostly caused by an error 
+during loading the plugin.
 &lt;/p&gt;
 
 &lt;a name=&quot;settingstab&quot;&gt;
@@ -51730,6 +51594,234 @@ in the lists, even the ones that are considered &apos;experimental&apos; by the 
 Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
+&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
+&lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
+raster of an input point vector layer.  The density is calculated based on the
+number of points in a location, with larger numbers of clustered points resulting
+in larger values. Heatmaps allow easy identification of &quot;hotspots&quot; and
+clustering of points.&lt;/p&gt;
+
+&lt;h2&gt;Dialog Parameters&lt;/h2&gt;
+
+&lt;h3&gt;Input point layer&lt;/h3&gt;
+&lt;p&gt;The input is always a vector layer of point type. All the point vector layers that are currently loaded in the canvas are shown in the drop-down list. Click the dropdown button and select the desired layer.&lt;/p&gt;
+
+&lt;h3&gt;Output raster&lt;/h3&gt;
+&lt;p&gt;The output raster location and filename can be set by clicking the &lt;label&gt;...&lt;/label&gt; button next to the output raster textbox.&lt;br/&gt;
+&lt;b&gt;Note:&lt;/b&gt; The file format is automatically added depending upon the output format selected, if not explicitly given.&lt;/p&gt;
+
+&lt;h3&gt;Output format&lt;/h3&gt;
+&lt;p&gt;All the file creation supporting GDAL formats are available in the drop down list. Click and select the required output format for your file.&lt;br/&gt;
+&lt;b&gt;Note:&lt;/b&gt; GeoTiff and ERDAS Imagine .img formats are recommended. Some formats make the application crash. Kindly stick to the recommended formats until the crash issue is resolved or use other formats if you know GDAL supports it completely.&lt;/p&gt;
+
+&lt;h3&gt;Radius (bandwidth)&lt;/h3&gt;
+&lt;p&gt;Used to specify the heatmap search radius (or kernel bandwidth) in meters or map units. The radius specifies the distance around a point at which the influence
+  of the point will be felt. Larger values result in greater smoothing, but smaller values may show finer details and variation in point density.&lt;/p&gt;
+
+&lt;h3&gt;Advanced Options&lt;/h3&gt;
+
+&lt;h4&gt;Rows and Columns&lt;/h4&gt;
+&lt;p&gt;Used to change the dimensions of the output raster file. These values are also linked to the &lt;b&gt;Cell size X&lt;/b&gt; and &lt;b&gt;Cell size Y&lt;/b&gt; values. 
+Increasing the number of rows or colums will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
+are also linked, so doubling the number of rows will automatically double the number of columns and the cell sizes will also be halved. The geographical area of the output raster will remain the same!&lt;/p&gt;
+
+&lt;h4&gt;Cell size X and Y&lt;/h4&gt;
+&lt;p&gt;Control the geographic size of each pixel in the output raster. Changing these values will also change the number of Rows and Columns in the output
+  raster.&lt;/p&gt;
+  
+&lt;h4&gt;Kernel shape&lt;/h4&gt;
+&lt;p&gt;The kernel shape controls the rate at which the influence of a point decreases as the distance from the point increases. Different kernels decay at
+different rates, so a triweight kernel gives features greater weight for distances closer to the point than the Epanechnikov kernel does. Consequently,
+triweight results in &quot;sharper&quot; hotspots, and Epanechnikov results in &quot;smoother&quot; hotspots. A number of standard kernel functions are available in QGIS,
+which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4&gt;Decay ratio&lt;/h4&gt;
+&lt;p&gt;For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.&lt;/p&gt;
+
+&lt;h4&gt;Use radius from field&lt;/h4&gt;
+&lt;p&gt;Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.&lt;/p&gt;
+
+&lt;h4&gt;Use weight from field&lt;/h4&gt;
+&lt;p&gt;Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.&lt;/p&gt;
+
+&lt;h2&gt;Further Details&lt;/h2&gt;
+&lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Python Console for QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Settings&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				The QGIS Python Console is an interactive shell for the python command executions. 
+				It also has a python file editor that allows you to edit and save your python scripts. 
+				Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
+				The console is split in two main panes, top and bottom one 
+				resizable by using the horizontal splitter. Output area pane is a widget read-only which 
+				shows the commands output. You can drag and drop or copy and paste text into input area and 
+				execute code snippets from the output pane by selecting some text and clicking on the 
+				&lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
+				No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
+				python shell for input commands.&lt;br&gt;To access to the python file editor use the 
+				&lt;label&gt;Show editor&lt;/label&gt; button 
+				from the toolbar. The editor allows to edit and save python file and it offers basic functionality 
+				for managing your code (comment and 
+				uncomment code, check syntax, share the code via codepad.org and much more).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Console&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
+			The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Import Processing class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
+			(this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Settings&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Further settings for python console:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion:&lt;/label&gt; If checked the code completion is enabled. You can get autocompletion
+from current document, from installed APIs and both from APIs and current document&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion threshold:&lt;/label&gt; Sets the threshold to display the autocompletion list (in chars typed)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Automatic parentheses insertion:&lt;/label&gt; If checked enables the autoclosing for bracket&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto-save script before running:&lt;/label&gt; Allows you to save automatically the
+script to be executed in order to avoid to save it after any modification.
+This action will store a temporary file into the temporary system directory 
+that will be automatically deleted after running.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using preloaded APIs file:&lt;/label&gt; You can choose whether use the preload APIs file or load some APIs files saved on your system.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
+	from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
@@ -52948,25 +53040,6 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;regexp_replace() function&lt;/h3&gt;
-Returns a string with the supplied regular expression replaced.
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     regexp_replace(&lt;i&gt;string,regex,after&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
-&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character).&lt;br&gt;
-&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;$scale function&lt;/h3&gt;
 Returns the current scale of the map canvas.
 &lt;br&gt;
@@ -53175,23 +53248,6 @@ from a &lt;code&gt;Interval&lt;/code&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;toreal function&lt;/h3&gt;
-Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     toreal(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to real number.&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;todate() function&lt;/h3&gt;
 Convert a string into Qt data type.
 
@@ -53308,25 +53364,6 @@ Returns -1 if the expression isn&apos;t found.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Funktion ln()&lt;/h3&gt;
-Returns the value of the natural logarithm of the passed expression.
-&lt;br&gt;
-This function takes one argument.
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;ln(value)&lt;/code&gt;&lt;br&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - any positive number.
-&lt;br&gt;
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;exp() function&lt;/h3&gt;
 Returns exponential of an value.
 
@@ -53339,24 +53376,6 @@ Returns exponential of an value.
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
-Returns the portion of a string which matches a supplied regular expression.
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     regexp_substr(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The input string.&lt;br&gt;
-&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to match against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character).&lt;br&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -53379,23 +53398,6 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;tostring function&lt;/h3&gt;
-Converts a number to string.
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     tostring(&lt;i&gt;number&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;number&lt;/i&gt; &amp;rarr; is integer or real.  The number to convert to string.&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -53506,24 +53508,6 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;regexp_match() function&lt;/h3&gt;
-Returns true if any part of a string matches the supplied regular expression.
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     regexp_match(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to test against the regular expression.&lt;br&gt;
-&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to test against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character).&lt;br&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -53991,21 +53975,6 @@ This group contains functions to convert on data type to another e.g string to i
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;yat function&lt;/h3&gt;
-Retrieves a y coordinate of the current feature
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;yat(i)&lt;/code&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;cos() function&lt;/h3&gt;
 Returns cosinus of an angle.
 
@@ -54024,24 +53993,6 @@ Returns cosinus of an angle.
     <message>
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Function floor()&lt;/h3&gt;
-Rounds a number downwards.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;floor(value)&lt;/code&gt;&lt;br&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - a number.
-&lt;br&gt;
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -54204,39 +54155,6 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;xat function&lt;/h3&gt;
-Retrieves a x coordinate of the current feature
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;xat(i)&lt;/code&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Function ceil()&lt;/h3&gt;
-Rounds a number upwards.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;ceil(value)&lt;/code&gt;&lt;br&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - a number.
-&lt;br&gt;
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -54408,23 +54326,6 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;toint function&lt;/h3&gt;
-Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to integer number.&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -54683,6 +54584,197 @@ actually inserted, ie. when building queries.
 </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&lt;h3&gt;regexp_match() function&lt;/h3&gt;
+Returns true if any part of a string matches the supplied regular expression.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_match(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to test against the regular expression.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to test against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;regexp_replace() function&lt;/h3&gt;
+Returns a string with the supplied regular expression replaced.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_replace(&lt;i&gt;string,regex,after&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The start string.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to replace. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
+&lt;i&gt;  after&lt;/i&gt; &amp;rarr; is string.  The string that will replace any matching occurences of the supplied regular expression. Captured groups can be inserted into the replacement string using &amp;#92;&amp;#92;1, &amp;#92;&amp;#92;2, etc. &lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;regexp_substr() function&lt;/h3&gt;
+Returns the portion of a string which matches a supplied regular expression.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     regexp_substr(&lt;i&gt;string,regex&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The input string.&lt;br&gt;
+&lt;i&gt;  regex&lt;/i&gt; &amp;rarr; is string.  The regular expression to match against. Backslash characters must be double escaped (eg &quot;&amp;#92;&amp;#92;s&quot; to match a white space character). Non-greedy regular expressions are not supported.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;ceil() function&lt;/h3&gt;
+Rounds a number upwards.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;ceil(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;toreal() function&lt;/h3&gt;
+Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     toreal(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to real number.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;xat() function&lt;/h3&gt;
+Retrieves a x coordinate of the current feature
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;xat(i)&lt;/code&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;floor() function&lt;/h3&gt;
+Rounds a number downwards.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;floor(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;toint() function&lt;/h3&gt;
+Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to integer number.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;yat() function&lt;/h3&gt;
+Retrieves a y coordinate of the current feature
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;yat(i)&lt;/code&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;tostring() function&lt;/h3&gt;
+Converts a number to string.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     tostring(&lt;i&gt;number&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;number&lt;/i&gt; &amp;rarr; is integer or real.  The number to convert to string.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;ln() function&lt;/h3&gt;
+Returns the value of the natural logarithm of the passed expression.
+&lt;br&gt;
+This function takes one argument.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;ln(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>geometryThread</name>
@@ -54716,14 +54808,6 @@ actually inserted, ie. when building queries.
     </message>
     <message>
         <source>Point y ordinate</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>geoprocessingThread</name>
-    <message>
-        <source>Following field names are longer than 10 characters:
-%s</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -56639,26 +56723,6 @@ actually inserted, ie. when building queries.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>First geometry invalid in line test.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to import first geometry into GEOS in line test.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid second geometry in dangling line test.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to import second geometry into GEOS in dangling line test.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Skipping invalid second geometry of feature %1 in dangling line test.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Skipping invalid first geometry in pseudo line test.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -56679,10 +56743,6 @@ actually inserted, ie. when building queries.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>No second geometry missing or GEOS import failed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Missing geometry in multipart check.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -56692,6 +56752,38 @@ actually inserted, ie. when building queries.
     </message>
     <message>
         <source>Second layer not found in registry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First geometry invalid in dangling line test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import first geometry into GEOS in dangling line test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid second geometry in duplicate geometry test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import second geometry into GEOS in duplicate geometry test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid second geometry in overlaps test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import second geometry into GEOS in overlaps test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skipping invalid second geometry of feature %1 in overlaps test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second geometry missing or GEOS import failed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
