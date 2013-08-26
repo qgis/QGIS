@@ -8953,61 +8953,66 @@ Korjaa tilanne ensin koska OSM liitännäinen ei tiedä mikä taso on tuonnin ko
     </message>
     <message>
         <source>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; was not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; ei löytynyt.</translation>
     </message>
     <message>
         <source> [Temporary file saved in {0}]</source>
-        <translation type="unfinished"></translation>
+        <translation> [Väliaikainen tiedosto tallennettu {0}]</translation>
     </message>
     <message>
         <source>## Script error: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>## Skripti virhe: {0}</translation>
     </message>
     <message>
         <source>## Script executed successfully: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>## Skripti suoritettu onnistuneesti: {0}</translation>
     </message>
     <message>
         <source>Cannot execute file {0}. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voida suorittaa tieedostoa {0}. Virhe: {1}
+</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been deleted or is not accessible</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedosto &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; on poistettu tai sitä ei voida käyttää</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been changed and reloaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; on muutettu ja se on ladattu uudelleen</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is read only, please save to different file first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedoston &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; tila on ainoastaan-luettava, ole hyvä ja tallenna se ensin uuteen tiedostoon.</translation>
     </message>
     <message>
         <source>The file {0} could not be opened. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa {0} ei voitu avata. Virhe: {1}
+</translation>
     </message>
     <message>
         <source>Untitled-{0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimeämätön-{0}</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; has been modified, save changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; on muokattu, tallenna muutokset?</translation>
     </message>
     <message>
         <source>Unable to restore the file: 
 {0}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voida palauttaa tiedostoa: 
+{0}
+</translation>
     </message>
     <message>
         <source>Python {0} on {1}
 ## Type help(iface) for more info and list of methods.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Python {0}  {1}
+## Kirjoita help(iface) saadaksesi lisäinfoa ja metoodien listan.</translation>
     </message>
     <message>
         <source>Hide/Show Toolbar</source>
@@ -9115,7 +9120,7 @@ Korjaa tilanne ensin koska OSM liitännäinen ei tiedä mikä taso on tuonnin ko
     </message>
     <message>
         <source>The file &lt;b&gt;{0}&lt;/b&gt; could not be saved. Error: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa &lt;b&gt;{0}&lt;/b&gt; ei voitu rallentaa. Virhe: {1}</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;%1&lt;/b&gt; could not be saved. Error: %2</source>
@@ -49476,7 +49481,7 @@ keskihajonta ×</translation>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="14"/>
         <source>Save style</source>
-        <translation type="unfinished"></translation>
+        <translation>Tallenna tyyli</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="23"/>
@@ -52382,38 +52387,38 @@ Ylikirjoitetaanko?</translation>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="61"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="63"/>
         <source>Type here to filter symbols...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kirjoita tähän suodattaaksesi symboleita...</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="80"/>
         <source>Share Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Jakamisen valikko</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="81"/>
         <source>Export</source>
-        <translation type="unfinished">Vie</translation>
+        <translation>Vie</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="82"/>
         <source>Import</source>
-        <translation type="unfinished">Tuo</translation>
+        <translation>Tuo</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="109"/>
         <source>Group Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Ryhmätoiminnot</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="110"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1033"/>
         <source>Group Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Ryhmäsymbolit</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="111"/>
         <source>Edit Smart Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Muokkaa Älykästä Ryhmää</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="194"/>
@@ -52549,7 +52554,7 @@ Valitse &apos;Älykäs ryhmä&apos; luodaksesi uuden ryhmän.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="925"/>
         <source>New Group</source>
-        <translation type="unfinished">Uusi ryhmä</translation>
+        <translation>Uusi ryhmä</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="951"/>
@@ -52578,7 +52583,7 @@ Symbolien tietokannassa oli ongelma.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1070"/>
         <source>Finish Grouping</source>
-        <translation type="unfinished"></translation>
+        <translation>Lopeta ryhmien käyttö</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1109"/>
@@ -52594,31 +52599,31 @@ Symbolien tietokannassa oli ongelma.</translation>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1270"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1292"/>
         <source>Edit Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Muokaa ryhmää</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1274"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1280"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1288"/>
         <source>Add Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää ryhmä</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1276"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1290"/>
         <source>Remove Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista ryhmä</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1303"/>
         <source>Apply Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Ota ryhmä käyttöön</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1311"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1324"/>
         <source>Un-group</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista ryhmittely</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1348"/>
