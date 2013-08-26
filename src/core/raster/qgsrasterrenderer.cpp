@@ -191,48 +191,45 @@ QString QgsRasterRenderer::minMaxOriginLabel( int theOrigin )
     return tr( "User defined" );
   }
 
-  QString label;
-  QString est_exact;
-  QString values;
-  QString extent;
-  
+  QString name;
   if ( theOrigin & MinMaxEstimated )
   {
-    est_exact = tr( "Estimated" );
+    name += tr( "Estimated" );
   }
   else if ( theOrigin & MinMaxExact )
   {
-    est_exact = tr( "Exact" );
+    name += tr( "Exact" );
   }
+
+  name += " ";
 
   if ( theOrigin & MinMaxMinMax )
   {
-    values = tr( "min / max" );
+    name += tr( "min / max" );
   }
   else if ( theOrigin & MinMaxCumulativeCut )
   {
-    values = tr( "cumulative cut" );
+    name += "cumulative cut";
   }
   else if ( theOrigin & MinMaxStdDev )
   {
-    values = tr( "standard deviation" );
+    name += "standard deviation";
   }
+
+  name += " " + tr( " of " ) + " ";
 
   if ( theOrigin & MinMaxFullExtent )
   {
-    extent = tr( "full extent" );
+    name += "full extent";
   }
   else if ( theOrigin & MinMaxSubExtent )
   {
-    extent = tr( "sub extent" );
+    name += "sub extent";
   }
 
-  label = tr( "%1 %2 of %3.",
-    "min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent" )
-    .arg(est_exact)
-    .arg(values)
-    .arg(extent);
-  return label;
+  name += ".";
+
+  return name;
 }
 
 int QgsRasterRenderer::minMaxOriginFromName( QString theName )
