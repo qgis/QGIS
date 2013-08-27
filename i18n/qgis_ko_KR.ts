@@ -2913,7 +2913,7 @@ All those who have reported bugs / fixes / suggestions / comments / etc.
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="14"/>
         <source>Processing options</source>
-        <translation type="unfinished"></translation>
+        <translation>처리 옵션</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="26"/>
@@ -3340,7 +3340,7 @@ All those who have reported bugs / fixes / suggestions / comments / etc.
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="14"/>
         <source>Processing modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>처리 모델러</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="40"/>
@@ -8173,7 +8173,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Processing models (*.model)</source>
-        <translation type="unfinished"></translation>
+        <translation>처리 모델 (*.model)</translation>
     </message>
     <message>
         <source>SEXTANTE models (*.model)</source>
@@ -9198,31 +9198,31 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <name>Processing</name>
     <message>
         <source>Processing</source>
-        <translation type="unfinished"></translation>
+        <translation>처리</translation>
     </message>
     <message>
         <source>Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>툴박스</translation>
     </message>
     <message>
         <source>Graphical modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>그래픽컬 모델러</translation>
     </message>
     <message>
         <source>History and log</source>
-        <translation type="unfinished">역사와 기록</translation>
+        <translation>역사와 기록</translation>
     </message>
     <message>
         <source>Options and configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>옵션과 설정</translation>
     </message>
     <message>
         <source>&amp;Results viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>결과 뷰어(&amp;R)</translation>
     </message>
     <message>
         <source>&amp;Commander</source>
-        <translation type="unfinished"></translation>
+        <translation>커맨더(&amp;C)</translation>
     </message>
 </context>
 <context>
@@ -9230,32 +9230,32 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <message>
         <location filename="../python/plugins/processing/ui/ProcessingToolbox.ui" line="14"/>
         <source>Processing Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>처리 툴박스</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/ProcessingToolbox.ui" line="27"/>
         <source>Enter algorithm name to filter list</source>
-        <translation type="unfinished"></translation>
+        <translation>필터 리스트에 알고리즘 이름 입력</translation>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished">검색...</translation>
+        <translation>검색...</translation>
     </message>
     <message>
         <source>Execute</source>
-        <translation type="unfinished">실행</translation>
+        <translation>실행</translation>
     </message>
     <message>
         <source>Execute as batch process</source>
-        <translation type="unfinished">일괄 과정으로 실행</translation>
+        <translation>일괄 작업으로 실행</translation>
     </message>
     <message>
         <source>Edit rendering styles for outputs</source>
-        <translation type="unfinished">결과물 표현 스타일 수정</translation>
+        <translation>결과물 표현 스타일 수정</translation>
     </message>
     <message>
         <source>Recently used algorithms</source>
-        <translation type="unfinished">최근에 이용한 알고리듬</translation>
+        <translation>최근에 이용한 알고리듬</translation>
     </message>
 </context>
 <context>
@@ -9562,7 +9562,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Import Processing class</source>
-        <translation type="unfinished"></translation>
+        <translation>처리 클래스 가져오기</translation>
     </message>
     <message>
         <source>Enter text to find...</source>
@@ -15765,12 +15765,12 @@ QWT 버전: %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2346"/>
         <source>Compiled against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>컴파일시 사용된 GEOS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2347"/>
         <source>Running against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>실행시 사용된 GEOS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4252"/>
@@ -16594,7 +16594,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&lt;p&gt; 다음 개인과 기관에서 QGIS 개발 및 기타 프로젝트를 위한  비용을 기부 받았습니다.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="129"/>
+        <location filename="../src/app/qgsabout.cpp" line="131"/>
         <source>&lt;p&gt;For a list of individuals and institutions who have contributed money to fund QGIS development and other project costs see &lt;a href=&quot;http://qgis.org/en/sponsorship/donors.html&quot;&gt;http://qgis.org/en/sponsorship/donors.html&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;QGIS 개발 및 기타 프로젝트 비용을 기부한 개인과 기관의 목록은 다음과 WEB 페이지에서 볼 수 있습니다.&lt;a href=&quot;http://qgis.org/en/sponsorship/donors.html&quot;&gt;http://qgis.org/en/sponsorship/donors.html&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
@@ -16611,22 +16611,22 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">이름</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="228"/>
+        <location filename="../src/app/qgsabout.cpp" line="230"/>
         <source>Available QGIS Data Provider Plugins</source>
         <translation>사용 가능한 QGIS 데이터 프로바이더 플러그인</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="231"/>
+        <location filename="../src/app/qgsabout.cpp" line="233"/>
         <source>Available Qt Database Plugins</source>
         <translation>사용 가능한 Qt 데이터베이스 플러그인</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="237"/>
+        <location filename="../src/app/qgsabout.cpp" line="239"/>
         <source>Available Qt Image Plugins</source>
         <translation>사용 가능한 Qt 이미지 플러그인</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="238"/>
+        <location filename="../src/app/qgsabout.cpp" line="240"/>
         <source>Qt Image Plugin Search Paths &lt;br&gt;</source>
         <translation>Qt 이미지 플러그인 검색 경로 &lt;br&gt;</translation>
     </message>
@@ -26841,22 +26841,22 @@ Leave empty to automatically apply the maximum value.</source>
 <context>
     <name>QgsDualView</name>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="280"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="281"/>
         <source>Attributes changed</source>
         <translation>속성이 변경됨</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="299"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="300"/>
         <source>Expression based preview</source>
         <translation>표현식 기반 라벨</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="319"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="320"/>
         <source>Could not set preview column</source>
         <translation>미리보기 컬럼을 설정할수 없음</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="320"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="321"/>
         <source>Could not set column &apos;%1&apos; as preview column.
 Parser error:
 %2</source>
@@ -26865,33 +26865,33 @@ Parser error:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="361"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="362"/>
         <source>Run action</source>
         <translation>액션 실행</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="376"/>
         <location filename="../src/gui/attributetable/qgsdualview.cpp" line="377"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="378"/>
         <source>Open form</source>
         <translation>양식 열기</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="416"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="417"/>
         <source>Loading features...</source>
         <translation>피쳐 읽기 중...</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="416"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="417"/>
         <source>Abort</source>
         <translation>중단</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="417"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="418"/>
         <source>Attribute table</source>
         <translation>속성 테이블</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="423"/>
+        <location filename="../src/gui/attributetable/qgsdualview.cpp" line="424"/>
         <source>%1 features loaded.</source>
         <translation>%1 개의 피처 불러와짐.</translation>
     </message>
@@ -39559,7 +39559,7 @@ p, li { white-space: pre-wrap; }
         <translation>Mapinfo 파일</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="242"/>
+        <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="243"/>
         <source>Save As</source>
         <translation>다른 이름으로 저장</translation>
     </message>
@@ -47508,7 +47508,7 @@ Proceed?</source>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1452"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1453"/>
         <source>Select %1 from pull-down menu to adjust radii</source>
-        <translation type="unfinished"></translation>
+        <translation>반경 조절을 위해 풀다운 메뉴에서 %1 선택</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1465"/>
@@ -51287,24 +51287,49 @@ standard deviation ×</source>
         <translation>사용자 정의</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="197"/>
+        <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="201"/>
         <source>Estimated</source>
         <translation>추정 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="201"/>
+        <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="205"/>
         <source>Exact</source>
         <translation>정확 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="208"/>
+        <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="210"/>
         <source>min / max</source>
         <translation>최소값/최대값</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="219"/>
+        <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="214"/>
+        <source>cumulative cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="218"/>
+        <source>standard deviation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="223"/>
+        <source>full extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="227"/>
+        <source>sub extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="230"/>
+        <source>%1 %2 of %3.</source>
+        <comment>min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent</comment>
+        <translation type="unfinished">%1 / %3. {1 %2 ?}</translation>
+    </message>
+    <message>
         <source> of </source>
-        <translation> 의 </translation>
+        <translation type="obsolete"> 의 </translation>
     </message>
 </context>
 <context>
@@ -63755,7 +63780,56 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h1&gt;온도지도 플러그인 도움말&lt;/h1&gt;
+&lt;p&gt;온도지도 플러그인은 입력 점 벡터 레이어에서 밀도(온도) 레스터를 만들기 위해 
+Kernel Density 분석을 사용합니다. 밀도는 인접 위치에 있는 점 수를 기준으로 계산되며,
+많은 점이 모여있으면 높은 값으로 해석됩니다. 온도지도는 &quot;핫스팟&quot;과 점들이
+모이는 것을 쉽게 알아볼 수 있게 해줍니다.&lt;/p&gt;
+
+&lt;h2&gt;대화상자 파라미터&lt;/h2&gt;
+
+&lt;h3&gt;입력 점 레이어&lt;/h3&gt;
+&lt;p&gt;입력은 항상 점 형태의 벡터 레이어입니다. 현재 캔버스에 불러와진 모든 점 벡터 레이어가 드롭 다운 목록에 표시됩니다. 드롭 다운 버튼을 클릭하고 원하는 레이어를 선택합니다.&lt;/p&gt;
+
+&lt;h3&gt;출력 래스터&lt;/h3&gt;
+&lt;p&gt;출력 래스터 파일의 위치와 이름은 출력 래스터 텍스트 상자 옆에 있는 &lt;label&gt;...&lt;/label&gt; 버튼을 클릭하여 설정할 수 있습니다.&lt;br/&gt;
+&lt;b&gt;주의:&lt;/b&gt; 명시적으로 지정하지 않은 경우 출력 파일 포맷에 따라 확장자가 자동으로 추가됩니다.&lt;/p&gt;
+
+&lt;h3&gt;출력 형식&lt;/h3&gt;
+&lt;p&gt;GDAL이 지원하는 모든 파열 포맷 목록이 드랍 다운 목록에 나옵니다. 사용자가 원하는 출력 포맷을 클릭하여 선택하십시오.&lt;br/&gt;
+&lt;b&gt;주의:&lt;/b&gt; GeoTiff 와 ERDAS Imagine .img 포맷을 권장합니다. 일부 포맷은 프로그램 출돌이 발생할 수 있습니다. 충돌이 해결 될 때까지 권장 포맷을 이용하시거나 사용자가 알고 있는 GDAL에서 완전히 잘 지원 되는 포맷을 사용하십시오.&lt;/p&gt;
+
+&lt;h3&gt;반지름 (밴드위스)&lt;/h3&gt;
+&lt;p&gt;온도지도의 검색 반지름(혹은 커널 밴드위스)를 미터 혹은 지도 단위로 설정하기 위해 사용됩니다. 반지름은 점의 영향력이 미칠 점 주변의 거리를 설정합니다.
+큰 값은 많이 스무딩 된 결과를, 작은 값은 점 밀도의 미세한 디테일과 변화를 볼 수 있게 해 줍니다.&lt;/p&gt;
+
+&lt;h3&gt;고급 옵션&lt;/h3&gt;
+
+&lt;h4&gt;행과 열&lt;/h4&gt;
+&lt;p&gt;출력 래스터 파일의 크기를 변경하는 데 사용됩니다. 이 값은 &lt;b&gt;셀 크기 X&lt;/b&gt; 및 &lt;b&gt;셀 크기 Y&lt;/b&gt; 값과 연동됩니다.
+행 수나 열 수를 늘리면 셀 크기가 줄어들고 출력 파일의 크기가 커집니다. 행과 열의 값은 서로 연결되어 있어, 행 수를 두 배로 늘리면
+열 수도 자동적으로 두 배로 늘어나고 셀 크기가 절반으로 줄어듭니다. 하지만 출력 래스터의 지리적 영역은 그대로 유지됩니다!&lt;/p&gt;
+
+&lt;h4&gt;셀 크기 X와 Y&lt;/h4&gt;
+&lt;p&gt;출력 래스터의 각 픽셀의 지리적 크기를 지정 할 수 있습니다. 이 값을 변경하면 출력 래스터의 행과 열 수도 변경됩니다.&lt;/p&gt;
+  
+&lt;h4&gt;커널 모양&lt;/h4&gt;
+&lt;p&gt;커널 모양은 점의 영향이 점으로부터의 거리가 증가함에 따라 감소되는 속도를 제어합니다. 다른 커널은 다른 비율로 붕괴하며, 
+triweight 커널은 Epanechnikov 커널 보다 가까운 점에 대해 가중치가 더 큰 특성을 제공합니다.
+따라서 triweight은 &quot;선명한&quot; 핫스팟이 생기고, Epanechnikov은 &quot;부드러운&quot; 한 스팟이 생깁니다. QGIS에서 사용가능한 몇 가지 표준 커널 함수가 
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;에 그림과 함께 설명되어 있습니다.&lt;/p&gt;
+
+&lt;h4&gt;붕괴 비율&lt;/h4&gt;
+&lt;p&gt;삼각형 커널의 붕괴 비율은 버퍼 반지름의 가장자리 픽셀에 적용되는 영향의 양을 정의합니다. 0 값은 표준 삼각 커널을 반영하는데, 영향을 주는 점에서 부터의 거리가 지정된 반지름에 접근하면 영향력이 0으로 떨어짐을 나타냅니다. 반대로, 1 값은 점에서의 거리가 증가 해도 감쇠가 발생하지 않음을 나타냅니다.&lt;/p&gt;
+
+&lt;h4&gt;필드값에서 반지름 사용&lt;/h4&gt;
+&lt;p&gt;선택적으로, 지정된 필드의 값으로 입력 레이어의 각 점에 대한 커널 반경을 지정 할 수 있습니다.&lt;/p&gt;
+
+&lt;h4&gt;필드값에서 가중치 사용&lt;/h4&gt;
+&lt;p&gt;선택적으로, 속성에 담겨있는 가중치 값을 입력 레이어에 있는 다른 점들에 대한 가중치로 사용될 수 있습니다.&lt;/p&gt;
+
+&lt;h2&gt;추가 정보&lt;/h2&gt;
+&lt;p&gt;aruntheguy @ gmail . com 으로 저작자에게 연락 바랍니다.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="539"/>
@@ -64010,7 +64084,160 @@ that will be automatically deleted after running.&lt;/li&gt;
 	from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;style&gt;
+	#toolbarConsole td{
+	background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;QGIS용 파이썬 콘솔&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;콘솔&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;편집기&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;설정&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p align=&apos;justify&apos;&gt;
+QGIS 파이썬 콘솔은 파이썬 명령어를 실행할 수 있는 대화형 쉘입니다.
+또한 당신이 파이썬 스크립트를 편집하고 저장할 수있는 파이썬 파일 편집기가 있습니다.
+콘솔과 편집기 모두 PyQScintilla2 패키지를 기반으로합니다. &lt;br&gt;
+콘솔은 상하로 분할되어 있고, 상하 모두 가로 나누기를 사용하여 크기 조정이 가능합니다.  출력 영역은 명령 출력을  보여주는  읽기 전용 위젯입니다
+입력 공간에서 당신은 드래그앤 드롭, 복사 및 붙여넣기 등을 실행할 수 있고, 컨텍스트 메뉴에서 &lt;label&gt;선택 입력&lt;/label&gt;에서 명령어를 선택하고 일부를 선택해서  출력 패널에서 코드 스니펫을 실행할 수 있습니다.
+선택한 텍스트가 해석 프롬프트 (&gt;&gt;&gt;, ...)를 포함하고 있어도 개의치 마십시오. 입력 영역 패널은 입력 명령어를 실행하는 대화형 파이썬 셀입니다.&lt;br&gt; 파이썬 파일 편집기를 사용하기 위해서는 &lt;label&gt;편집기 보기&lt;/label&gt; 버튼을 툴바에서 사용가능합니다.  편집기는 파이썬 파일을 수정하고 저장할 수 있으며 당신의 코드를 관리하기 위한 기본적인 파이썬 기능을 제공합니다. ( 주석처리, 비주석처리, 구문확인, codepad.org 에 코드 공유하기 등등).
+&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;콘솔&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;주요기능:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;ul&gt;
+&lt;li&gt;코드 완성, 구문강조 및 다음 API들의 콜팁:
+&lt;ol&gt;
+&lt;li&gt;Python&lt;/li&gt;
+&lt;li&gt;PyQGIS&lt;/li&gt;
+&lt;li&gt;PyQt4&lt;/li&gt;
+&lt;li&gt;QScintilla2&lt;/li&gt;
+&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt; 자동완성 리스트를 보려면 &lt;label&gt;Ctrl+Alt+Space&lt;/label&gt;.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt; 명령어 이력을 보려면 &lt;label&gt;Ctrl+Shift+Space&lt;/label&gt;.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;출력 패널에서 &lt;label&gt;선택입력&lt;/label&gt; 명령어를 사용해 코드 스니팻 실행.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;_api&lt;/label&gt; 입력해서 QGIS API 문서 열기.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;_pyqgis&lt;/label&gt; 입력해서 PyQGIS Cookbook 열기.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;입력 패널의 컨텍스트 메뉴에서 저장하고 명령어 이력 지우기.
+이력은 ~/.qgis2/console_history.txt 로 저장됩니다.&lt;/li&gt;
+&lt;br&gt;
+&lt;/ul&gt;
+&lt;/td&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;툴바:&lt;/i&gt;&lt;/b&gt;
+&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td colspan=&quot;2&quot;&gt;파이썬 콘솔 지우기&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSextanteConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td&gt;Sextante class 가져오기&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td&gt;PyQt4.QtCore class 가져오기&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td&gt;PyQt4.QtGui class 가져오기 툴&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td colspan=&quot;2&quot;&gt;명령어 실행 (엔터키 치듯이)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td colspan=&quot;2&quot;&gt;설정&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+&lt;td colspan=&quot;2&quot;&gt;도움말&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;편집기&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;주요 기능들:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;ul&gt;
+&lt;li&gt;코드 완성, 구문강조 및 다음 API들 콜팁:
+&lt;ol&gt;
+&lt;li&gt;Python&lt;/li&gt;
+&lt;li&gt;PyQGIS&lt;/li&gt;
+&lt;li&gt;PyQt4&lt;/li&gt;
+&lt;li&gt;QScintilla2&lt;/li&gt;
+&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;자동완성기능은 &lt;label&gt;Ctrl+Space&lt;/label&gt;.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;codepad.org에 코드 스니펫 공유하기.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;구문 점검은 &lt;label&gt;Ctrl+4&lt;/label&gt;.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;객체 검사기: 클래스와 함수 탐색기.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;마우스 클릭해서 객체 정의하기. (객체 검사기 기능)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;선택 입력&lt;/label&gt; 명령어로 코드 스니펫 실행하기.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Run script&lt;/label&gt; 명령어로 전체 스크립트 실행하기
+(이경우 .pyc 확장자의 바이트 컴파일 된 파일이 만들어집니다.)&lt;/li&gt;
+&lt;br&gt;
+&lt;/ul&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;설정&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;파이선 콘솔 설정을 위한 한단계 더:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;자동완성기능:&lt;/label&gt; 자동완성 기능이 체크되어 있으면 현재 작업문서, 설치된 API, 등에서 자동 완성 기능이 제공됩니다.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;자동완성 임계값:&lt;/label&gt; 자동완성 리스트에 보여질 자동완성 임계치를 설정합니다.(캐릭터 타입)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;자동 괄호 삽입:&lt;/label&gt; 체크되어 있으면 자동으로 괄호를 닫습니다.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;실행전 자동 저장:&lt;/label&gt;저장한 뒤에 어떤 수정이 있을 때를 대비해서 실행될 스크립트를 자동으로 저장합니다. 이 액션은 임시 파일을 임시 디렉토리에 만든뒤에 실행후 삭제 합니다.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;미리 로딩된 API들의 파일을 사용하기:&lt;/label&gt;미리 로딩된 API들의 파일을 사용할 지 시스템에 저장된 몇몇 API들의 파일들을 사용할지 선택할 수 있습니다.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;준비된 API들 파일 사용하기:&lt;/label&gt; 코드완성을 위해서는 *.pap 파일이 선택되어 있어야 합니다. 준비된 API들 파일을 만들기 위해서는 적어도 한 개의 *.api 파일이 있어야 하며 &lt;label&gt;Api들 컴파일하기...&lt;/label&gt; 버튼을 눌러 컴파일 합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+&lt;b&gt;주의:&lt;/b&gt; 콘솔의 상태를 저장하기 위해서는 닫기 버튼을 눌러 파이썬 콘솔을 닫아야 합니다. 그러면 지오메트리를 저장해 다음 시작때  사용할 수 있도록 해 줍니다.
+&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1473"/>
@@ -68684,7 +68911,21 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;ceil() 함수&lt;/h3&gt;
+숫자를 올림하여 정수로 만들어 반환.
+
+&lt;h4&gt;문법&lt;/h4&gt;
+&lt;code&gt;ceil(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;인자&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - 숫자.
+&lt;br&gt;
+
+&lt;h4&gt;예제&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="131"/>
@@ -68702,7 +68943,20 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;toreal 함수&lt;/h3&gt;
+문자열을 실수로 변환. 만약 실수로 해석할 수 없으면(예: &apos;123.56asd&apos;은 잘못된 값) 변경하지 않음. 만약 정밀도가 변환 결과보다 작을 경우 숫자는 반올림 됨
+
+&lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
+     toreal(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;인자&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; string 임.  실수로 변환할 문자열.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;예제&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="286"/>
@@ -68718,7 +68972,18 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;xat() 함수&lt;/h3&gt;
+현재 객체의 X 좌표를 추출
+
+&lt;h4&gt;문법&lt;/h4&gt;
+&lt;code&gt;xat(i)&lt;/code&gt;
+
+&lt;h4&gt;인자&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - int 임. 선사의 점의 인덱스(인덱스는 0에서 시작, 음수이면 마지막 인덱스가 적용)
+
+&lt;h4&gt;예제&lt;/h4&gt;
+&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="400"/>
@@ -68802,7 +69067,21 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;floor() 함수&lt;/h3&gt;
+소수점 이하를 절사한다.
+
+&lt;h4&gt;문법&lt;/h4&gt;
+&lt;code&gt;floor(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;인자&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - 숫자.
+&lt;br&gt;
+
+&lt;h4&gt;예제&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="898"/>
@@ -68820,7 +69099,20 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;toint() 함수&lt;/h3&gt;
+문자열을 정수로 변환. 정수로 변환될 수 없는 값(예: &apos;123asd&apos;)인 경우 아무것도 변경되지 않음.
+
+&lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
+     toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;인자&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; string 임.  정수로 변환할 문자열.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;예제&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1156"/>
@@ -68836,7 +69128,18 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;yat() 함수&lt;/h3&gt;
+현재 객체의 Y 좌표를 추출
+
+&lt;h4&gt;문법&lt;/h4&gt;
+&lt;code&gt;yat(i)&lt;/code&gt;
+
+&lt;h4&gt;인자&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - int 임. 선의 점 인덱스(0에서 시작함, 음수인 경우 마지막 인덱스가 적용됨)
+
+&lt;h4&gt;예제&lt;/h4&gt;
+&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1226"/>
@@ -68854,7 +69157,20 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;tostring() 함수&lt;/h3&gt;
+숫자를 문자열로 변환.
+
+&lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
+     tostring(&lt;i&gt;number&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;인자&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;number&lt;/i&gt; &amp;rarr; integer 혹은 real 임.  문자열로 변환할 숫자.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;예제&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1456"/>
@@ -69974,7 +70290,21 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;ln() 함수&lt;/h3&gt;
+입력된 식의 자연로그값을 반환.
+&lt;br&gt;
+이 함수는 한 개의 인자를 필요로 함.
+&lt;h4&gt;문법&lt;/h4&gt;
+&lt;code&gt;ln(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;인자&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; -어떤 양의 수.
+&lt;br&gt;
+
+&lt;h4&gt;예제&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1574"/>
