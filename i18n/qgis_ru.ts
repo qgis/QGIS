@@ -2601,7 +2601,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="14"/>
         <source>Processing options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры анализа</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="26"/>
@@ -3016,7 +3016,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="14"/>
         <source>Processing modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор моделей анализа</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="40"/>
@@ -7297,7 +7297,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Processing models (*.model)</source>
-        <translation type="unfinished"></translation>
+        <translation>Модели анализа (*.model)</translation>
     </message>
     <message>
         <source>SEXTANTE models (*.model)</source>
@@ -8234,31 +8234,31 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <name>Processing</name>
     <message>
         <source>Processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Анализ</translation>
     </message>
     <message>
         <source>Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Панель инструментов</translation>
     </message>
     <message>
         <source>Graphical modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор моделей</translation>
     </message>
     <message>
         <source>History and log</source>
-        <translation type="unfinished">Журнал SEXTANTE</translation>
+        <translation>Журнал</translation>
     </message>
     <message>
         <source>Options and configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Параметры</translation>
     </message>
     <message>
         <source>&amp;Results viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>Просмотр &amp;результатов</translation>
     </message>
     <message>
         <source>&amp;Commander</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Командная строка</translation>
     </message>
 </context>
 <context>
@@ -8266,32 +8266,32 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <message>
         <location filename="../python/plugins/processing/ui/ProcessingToolbox.ui" line="14"/>
         <source>Processing Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Инструменты анализа</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/ProcessingToolbox.ui" line="27"/>
         <source>Enter algorithm name to filter list</source>
-        <translation type="unfinished">Искать по алгоритмам</translation>
+        <translation>Искать по алгоритмам</translation>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation>Поиск...</translation>
     </message>
     <message>
         <source>Execute</source>
-        <translation type="unfinished">Выполнить</translation>
+        <translation>Выполнить</translation>
     </message>
     <message>
         <source>Execute as batch process</source>
-        <translation type="unfinished">Выполнить в пакетном режиме</translation>
+        <translation>Выполнить в пакетном режиме</translation>
     </message>
     <message>
         <source>Edit rendering styles for outputs</source>
-        <translation type="unfinished">Изменить стили сохраняемых файлов</translation>
+        <translation>Изменить стили сохраняемых файлов</translation>
     </message>
     <message>
         <source>Recently used algorithms</source>
-        <translation type="unfinished">Последние используемые алгоритмы</translation>
+        <translation>Последние используемые алгоритмы</translation>
     </message>
 </context>
 <context>
@@ -8417,11 +8417,11 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Saving prepared file...</source>
-        <translation>Запись файла...</translation>
+        <translation>Сохранение файла...</translation>
     </message>
     <message>
         <source>Saved</source>
-        <translation>Файл записан</translation>
+        <translation>Файл сохранён</translation>
     </message>
     <message>
         <source>Done</source>
@@ -8592,7 +8592,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Import Processing class</source>
-        <translation type="unfinished"></translation>
+        <translation>Импортировать класс Processing</translation>
     </message>
     <message>
         <source>Enter text to find...</source>
@@ -10328,7 +10328,7 @@ Error(%2): %3</source>
         <source>
 Only %1 of %2 features written.</source>
         <translation>
-Записано %1 из %2 объектов.</translation>
+Сохранено %1 объектов из %2.</translation>
     </message>
     <message>
         <source>Groups not yet supported</source>
@@ -11715,7 +11715,7 @@ SQL: %1</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="743"/>
         <source>Save style to DB (%1)</source>
-        <translation>Сохранить в базе данных (%1)</translation>
+        <translation>Сохранение стиля в базе (%1)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="952"/>
@@ -12114,7 +12114,7 @@ SQL: %1</translation>
         <location filename="../src/app/qgisapp.cpp" line="679"/>
         <location filename="../src/app/qgisapp.cpp" line="683"/>
         <source>QGIS Ready!</source>
-        <translation>QGIS готова к запуску</translation>
+        <translation>Запуск QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1638"/>
@@ -12734,12 +12734,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2346"/>
         <source>Compiled against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Версия GEOS при сборке</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2347"/>
         <source>Running against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Текущая версия GEOS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4252"/>
@@ -13037,12 +13037,12 @@ Always ignore these errors?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4589"/>
         <source>Saving done</source>
-        <translation>Сохранение выполнено</translation>
+        <translation>Файл записан</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4590"/>
         <source>Export to vector file has been completed</source>
-        <translation>Экспорт в векторный файл завершён</translation>
+        <translation>Слой выгружен в векторный файл</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4596"/>
@@ -13456,7 +13456,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsabout.ui" line="86"/>
         <source>QGIS is licensed under the GNU General Public License</source>
-        <translation>QGIS выпускается под Стандартной Общественной Лицензией GNU</translation>
+        <translation>QGIS распространяется на условиях Стандартной Общественной Лицензии GNU</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="254"/>
@@ -32657,12 +32657,12 @@ not displayed</source>
         <location filename="../src/core/qgsmaplayer.cpp" line="1009"/>
         <location filename="../src/core/qgsmaplayer.cpp" line="1187"/>
         <source>Created default style file as %1</source>
-        <translation>Файл стиля по умолчанию создан в %1</translation>
+        <translation>Файл стандартного стиля создан в %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="1014"/>
         <source>ERROR: Failed to created default style file as %1. Check file permissions and retry.</source>
-        <translation>ОШИБКА: Не удалось создать файл стиля по умолчанию в %1. Проверьте права доступа к файлу и попробуйте ещё раз.</translation>
+        <translation>ОШИБКА: Не удалось создать файл стандартного стиля в %1. Проверьте права доступа к файлу и попробуйте ещё раз.</translation>
     </message>
 </context>
 <context>
@@ -37692,7 +37692,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="602"/>
         <source>Use live-updating color chooser dialogs</source>
-        <translation type="unfinished">Применять цвета в реальном времени</translation>
+        <translation>Изменять цвета в реальном времени</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="629"/>
@@ -37819,12 +37819,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1880"/>
         <source>Limits (minimum/maximum)</source>
-        <translation type="unfinished">Лимиты (минимальный/максимальный)</translation>
+        <translation>Предельные значения (мин/макс)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1912"/>
         <source>Cumulative pixel count cut limits</source>
-        <translation type="unfinished"></translation>
+        <translation>Границы среза с накоплением</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1926"/>
@@ -42517,7 +42517,7 @@ Proceed?</source>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1452"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1453"/>
         <source>Select %1 from pull-down menu to adjust radii</source>
-        <translation type="unfinished"></translation>
+        <translation>Для ручного ввода радиусов выберите «%1» в выпадающем списке</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1465"/>
@@ -42938,7 +42938,7 @@ Proceed?</source>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="124"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="904"/>
         <source>Default styles</source>
-        <translation>Стили по умолчанию</translation>
+        <translation>Стандартные стили</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="133"/>
@@ -44641,7 +44641,7 @@ Click on help button to get valid creation options for this format.</source>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1615"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1632"/>
         <source>Default Style</source>
-        <translation>Стиль по умолчанию</translation>
+        <translation>Стандартный стиль</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="221"/>
@@ -45397,12 +45397,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2152"/>
         <source>Restore Default Style</source>
-        <translation>Восстановить по умолчанию</translation>
+        <translation>Загрузить стандартный</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2138"/>
         <source>Save As Default</source>
-        <translation>Сохранить по умолчанию</translation>
+        <translation>Сохранить как стандартный</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2145"/>
@@ -46896,7 +46896,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="66"/>
         <source>Use as default style for this layer</source>
-        <translation>Использовать как стиль по умолчанию для текущего слоя</translation>
+        <translation>Использовать как стандартный стиль для текущего слоя</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="88"/>
@@ -47504,7 +47504,7 @@ enhancement</source>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="181"/>
         <source>Clip</source>
         <translatorcomment>При активированном флажке не будут закрашены области растра, которые выходят за пределы мин/макс значений градиента</translatorcomment>
-        <translation type="unfinished">Отсечение по мин/макс</translation>
+        <translation>Отсечение по мин/макс</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglebandpseudocolorrendererwidgetbase.ui" line="192"/>
@@ -47683,7 +47683,7 @@ enhancement</source>
     <message>
         <location filename="../src/ui/qgssmartgroupeditordialogbase.ui" line="30"/>
         <source>Condition matches</source>
-        <translation type="unfinished"></translation>
+        <translation>Критерии поиска</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssmartgroupeditordialogbase.ui" line="40"/>
@@ -50192,7 +50192,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="404"/>
         <source>Kindly select a symbol to add layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для добавления слоя необходимо выбрать знак.</translation>
     </message>
 </context>
 <context>
@@ -50456,7 +50456,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="57"/>
         <source>QGIS Mailing lists</source>
-        <translation>Списки рассылки QGIS</translation>
+        <translation>Полезные ресурсы</translation>
     </message>
     <message>
         <source>If you need help using QGIS we have a &apos;users&apos;  mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating the the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;community section&lt;/a&gt; of the QGIS home page (http://www.qgis.org/en/community/mailing-lists.html).</source>
@@ -50555,7 +50555,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="42"/>
         <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case studies section&lt;/a&gt; of the QGIS home page.</source>
-        <translation type="unfinished">Если в вашем проекте используется QGIS, напишите нам, чтобы мы могли включить вашу работу в список проектов на странице &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;опыты внедрения&lt;/a&gt;.</translation>
+        <translation>Если вы хотите поделиться вашим опытом использования QGIS, напишите нам, и мы добавим вашу работу в список проектов на странице &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;опыты внедрения&lt;/a&gt;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="49"/>
@@ -50565,7 +50565,9 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="58"/>
         <source>If you need help using QGIS we have a &apos;users&apos;  mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating to the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;community section&lt;/a&gt; of the QGIS home page.</source>
-        <translation type="unfinished">Списки рассылки QGIS перечислены на странице &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.htmlhttp://www.qgis.org/en/community/mailing-lists.html&quot;&gt;сообщество&lt;/a&gt; сайта QGIS. Для общения и помощи начинающим пользователям существует список рассылки qgis-user. Обсуждение разработки ведётся в списке рассылки qgis-developer.</translation>
+        <translation>Основной ресурс поддержки русскоязычных пользователей QGIS — &lt;a href=&quot;http://gis-lab.info/forum/viewforum.php?f=27&quot;&gt;форум GIS-Lab.info&lt;/a&gt;.
+
+&lt;p&gt;Кроме того, вы можете подписаться на &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;списки рассылки QGIS&lt;/a&gt;, созданные для общения пользователей и разработчиков.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="86"/>
@@ -51745,7 +51747,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="633"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="671"/>
         <source>Default Style</source>
-        <translation>Стиль по умолчанию</translation>
+        <translation>Стандартный стиль</translation>
     </message>
     <message>
         <source>Name conflict</source>
@@ -51800,7 +51802,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="587"/>
         <source>Load default style from: </source>
-        <translation type="unfinished"></translation>
+        <translation>База данных для загрузки стандартного стиля: </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="589"/>
@@ -51812,28 +51814,28 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="590"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="647"/>
         <source>Local database</source>
-        <translation type="unfinished"></translation>
+        <translation>Локальная база данных</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="591"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="648"/>
         <source>Datasource database</source>
-        <translation type="unfinished"></translation>
+        <translation>База данных источника</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="605"/>
         <source>Loaded from Provider</source>
-        <translation type="unfinished">Загруженный из источника</translation>
+        <translation>Загруженный из источника</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="608"/>
         <source>No default style was found for this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Стандартный стиль не найден для этого слоя</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="644"/>
         <source>Save default style to: </source>
-        <translation type="unfinished"></translation>
+        <translation>База данных для сохранения стандартного стиля: </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="708"/>
@@ -51843,7 +51845,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="765"/>
         <source>Style saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Стиль сохранён.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="789"/>
@@ -51865,7 +51867,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="887"/>
         <source>The retrieved style is not a valid named style. Error message: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Загруженный стиль содержит ошибки. Сообщение об ошибке: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="539"/>
@@ -52153,12 +52155,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="477"/>
         <source>Minimum scale, i.e. maximum scale denominator. This limit is exclusive, that means the layer will not be displayed on this scale.</source>
-        <translation type="unfinished">Минимальный масштаб. Минимальный масштаб не является включительным, поэтому слой не будет показан при этом масштабе.</translation>
+        <translation>Минимальный масштаб. Минимальный масштаб не является включительным, поэтому слой не будет показан в этом масштабе.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="530"/>
         <source>Maximum scale, i.e. minimum scale denominator. This limit is inclusive, that means the layer will be displayed on this scale.</source>
-        <translation type="unfinished">МАксимальный масштаб. Максимальный масштаб является включительным, поэтому слой будет показан при этом масштабе.</translation>
+        <translation>МАксимальный масштаб. Максимальный масштаб является включительным, поэтому слой будет показан в этом масштабе.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="500"/>
@@ -52176,12 +52178,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1633"/>
         <source>Restore Default Style</source>
-        <translation>Восстановить по умолчанию</translation>
+        <translation>Загрузить стандартный</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1619"/>
         <source>Save As Default</source>
-        <translation>Сохранить по умолчанию</translation>
+        <translation>Сохранить как стандартный</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1330"/>
@@ -52252,7 +52254,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="128"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="783"/>
         <source>Labels (deprecated)</source>
-        <translation type="unfinished">Подписи (старые)</translation>
+        <translation>Подписи (старые)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="137"/>
@@ -52618,12 +52620,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="68"/>
         <source>Feature symbology</source>
-        <translation type="unfinished"></translation>
+        <translation>Символика объектов</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="69"/>
         <source>Symbol layer symbology</source>
-        <translation type="unfinished"></translation>
+        <translation>Объединять объекты по уровням знака</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="123"/>
@@ -53039,7 +53041,7 @@ Features</source>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="216"/>
         <source>Use title for layer name</source>
-        <translation type="unfinished">Использовать заголовок в качестве идентификатора слоя</translation>
+        <translation>Использовать заголовок в качестве идентификатора слоя</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="14"/>
@@ -55599,47 +55601,47 @@ Description: %3</source>
         <location filename="../python/console/console_settings.ui" line="105"/>
         <location filename="../python/console/console_settings.ui" line="368"/>
         <source>Get autocompletion from current document</source>
-        <translation type="unfinished"></translation>
+        <translation>Загружать символы для автодолнения кода из текущего документа</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="108"/>
         <location filename="../python/console/console_settings.ui" line="371"/>
         <source>from Document</source>
-        <translation type="unfinished"></translation>
+        <translation>На основе документа</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="125"/>
         <location filename="../python/console/console_settings.ui" line="355"/>
         <source>Get autocompletion from installed APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>Загружать символы для автодолнения кода из загруженных файлов API</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="128"/>
         <location filename="../python/console/console_settings.ui" line="358"/>
         <source>from APIs files</source>
-        <translation type="unfinished"></translation>
+        <translation>На основе файлов API</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="535"/>
         <source>Using prepared APIs file</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать скомпилированный файл API</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="556"/>
         <source>Compile APIs...</source>
-        <translation type="unfinished"></translation>
+        <translation>Скомпилировать API...</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="115"/>
         <location filename="../python/console/console_settings.ui" line="345"/>
         <source>Get autocompletion from current document and installed APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>Загружать символы для автодолнения кода из текущего документа и файлов API</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="118"/>
         <location filename="../python/console/console_settings.ui" line="348"/>
         <source>from Doc and APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>На основе документа и API</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="69"/>
@@ -55655,18 +55657,18 @@ Description: %3</source>
         <location filename="../python/console/console_settings.ui" line="140"/>
         <location filename="../python/console/console_settings.ui" line="326"/>
         <source>Autocompletion threshold</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество символов для активации автодополнения</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="392"/>
         <source>Using preloaded APIs file</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать указанные файлы API</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="386"/>
         <location filename="../python/console/console_settings.ui" line="520"/>
         <source>APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлы API</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="223"/>
@@ -55859,7 +55861,7 @@ about SEXTANTE</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_symbolslist.ui" line="319"/>
         <source>Advanced</source>
-        <translation type="unfinished">Дополнительно</translation>
+        <translation>Дополнительно</translation>
     </message>
 </context>
 <context>
@@ -56997,12 +56999,12 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/plugins/topology/checkDock.ui" line="84"/>
         <location filename="../src/plugins/topology/checkDock.cpp" line="215"/>
         <source>Select automatic fix</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Автоматическое исправление</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="92"/>
         <source>Fix!</source>
-        <translation>Исправить!</translation>
+        <translation>Исправить</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="175"/>
@@ -62088,7 +62090,7 @@ Returns true if any part of a string matches the supplied regular expression.
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; строка.&lt;br&gt;
 &lt;i&gt;  regex&lt;/i&gt; &amp;rarr; регулярное выражение.&lt;br&gt;
 
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </translation>
@@ -62183,7 +62185,18 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;xat()&lt;/h3&gt;
+Возвращает X-координату текущего объекта.
+
+&lt;h4&gt;Синтаксис&lt;/h4&gt;
+&lt;code&gt;xat(i)&lt;/code&gt;
+
+&lt;h4&gt;Аргументы&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - индекс точки в геометрии. Отсчёт индексов ведётся с нуля; При использовании отрицательных индексов отсчет ведётся с последней точки.
+
+&lt;h4&gt;Пример&lt;/h4&gt;
+&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="458"/>
@@ -62281,7 +62294,18 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;yat()&lt;/h3&gt;
+Возвращает Y-координату текущего объекта.
+
+&lt;h4&gt;Синтаксис&lt;/h4&gt;
+&lt;code&gt;yat(i)&lt;/code&gt;
+
+&lt;h4&gt;Аргументы&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - индекс точки в геометрии. Отсчёт индексов ведётся с нуля; При использовании отрицательных индексов отсчет ведётся с последней точки.
+
+&lt;h4&gt;Пример&lt;/h4&gt;
+&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1168"/>
@@ -62328,7 +62352,20 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;tostring()&lt;/h3&gt;
+Преобразует число в строку.
+
+&lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
+     tostring(&lt;i&gt;number&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;number&lt;/i&gt; &amp;rarr; число.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1426"/>
@@ -62479,8 +62516,8 @@ from a &lt;code&gt;Interval&lt;/code&gt;
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
-        <translation type="unfinished">&lt;h3&gt;Math Group&lt;/h3&gt;
-This group contains math functions e.g square root, sin and cos
+        <translation>&lt;h3&gt;Функции&lt;/h3&gt;
+Математические функции
 </translation>
     </message>
     <message>
@@ -62912,8 +62949,8 @@ This function takes one argument.
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Date and Time Group&lt;/h3&gt;
-This group contains functions for handling date and time data.
+        <translation>&lt;h3&gt;Дата и время&lt;/h3&gt;
+Функции для работы с датой и временем.
 </translation>
     </message>
     <message>
@@ -63133,8 +63170,8 @@ Converts a string to upper case letters.
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Record Group&lt;/h3&gt;
-This group contains functions that operate on record identifiers.
+        <translation>&lt;h3&gt;Записи&lt;/h3&gt;
+Функции для работы с идентификаторами записей.
 </translation>
     </message>
     <message>
@@ -64020,9 +64057,8 @@ return a result.
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Conditions Group&lt;/h3&gt;
-This group contains functions that operate on condition.
-</translation>
+        <translation>&lt;h3&gt;Условия&lt;/h3&gt;
+Условные операторы и функции.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="162"/>
@@ -64475,8 +64511,8 @@ may not give the expected results if you move your Quantum project.
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Conversions Group&lt;/h3&gt;
-This group contains functions to convert on data type to another e.g string to integer, integer to string.
+        <translation>&lt;h3&gt;Преобразования&lt;/h3&gt;
+Функции преобразования типов данных.
 </translation>
     </message>
     <message>
@@ -64484,9 +64520,8 @@ This group contains functions to convert on data type to another e.g string to i
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
-        <translation type="unfinished">&lt;h3&gt;Operators Group&lt;/h3&gt;
-This group contains operators e.g + - * 
-</translation>
+        <translation>&lt;h3&gt;Операторы&lt;/h3&gt;
+Основные операторы, используемые в выражениях.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression_texts.cpp" line="1496"/>
@@ -64748,17 +64783,17 @@ Return a part of a string
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;substr() function&lt;/h3&gt;
-Return a part of a string
+        <translation>&lt;h3&gt;substr()&lt;/h3&gt;
+Возвращает часть строки.
 
 &lt;p&gt;&lt;h4&gt;Синтаксис&lt;/h4&gt;
      substr(&lt;i&gt;string,startpos,length&lt;/i&gt;)&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Аргументы&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The full string.&lt;br&gt;
-&lt;i&gt;  startpos&lt;/i&gt; &amp;rarr; is number.  The start position to extract from.&lt;br&gt;
-&lt;i&gt;  length&lt;/i&gt; &amp;rarr; is number.  The length of the string to extract.&lt;br&gt;&lt;/p&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; строка.&lt;br&gt;
+&lt;i&gt;  startpos&lt;/i&gt; &amp;rarr; начальная позиция подстроки.&lt;br&gt;
+&lt;i&gt;  length&lt;/i&gt; &amp;rarr; длина подстроки.&lt;br&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Пример&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -65043,14 +65078,14 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;todate()&lt;/h3&gt;
-Convert a string into Qt data type.
+        <translation>&lt;h3&gt;todate()&lt;/h3&gt;
+Преобразует строку в дату Qt.
 
 &lt;h4&gt;Синтаксис&lt;/h4&gt;
 &lt;code&gt;todate(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Аргументы&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string in Qt date format.
+&lt;code&gt;string&lt;/code&gt; - строка в формате даты Qt.
 &lt;br&gt;
 
 &lt;h4&gt;Пример&lt;/h4&gt;
@@ -67304,19 +67339,19 @@ Convert a string into Qt data type.
     <name>optionsDialog</name>
     <message>
         <source>Warning!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <source>You need to add some APIs file in order to compile</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавьте один или несколько файлов API для компиляции.</translation>
     </message>
     <message>
         <source>Please specify API file or check &quot;Use preloaded API files&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Не указан не один файл API для автодополнения кода.</translation>
     </message>
     <message>
         <source>The APIs file was not compiled, click on &quot;Compile APIs...&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл API не был скомпилирован, для его компиляции нажмите «Скомпилировать API».</translation>
     </message>
 </context>
 <context>
@@ -67439,62 +67474,62 @@ Convert a string into Qt data type.
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="276"/>
         <source>First geometry invalid in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недействительная первая геометрия выявлена при проверке висячих линий.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="282"/>
         <source>Failed to import first geometry into GEOS in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось загрузить первую геометрию при проверке висячих линий (GEOS).</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="408"/>
         <source>Invalid second geometry in duplicate geometry test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недействительная вторая геометрия выявлена при проверке дублирующихся геометрий.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="414"/>
         <source>Failed to import second geometry into GEOS in duplicate geometry test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось загрузить вторую геометрию при проверке дублирующихся геометрий (GEOS).</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="531"/>
         <source>Invalid second geometry in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недействительная вторая геометрия выявлена при проверке наложений.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="537"/>
         <source>Failed to import second geometry into GEOS in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось загрузить вторую геометрию при проверке наложений (GEOS).</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="543"/>
         <source>Skipping invalid second geometry of feature %1 in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Пропущена недействительная вторая геометрия объекта %1 при проверке наложений.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="772"/>
         <source>Skipping invalid first geometry in pseudo line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Пропущена недействительная первая геометрия при проверке псевдолиний.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="778"/>
         <source>Failed to import first geometry into GEOS in pseudo line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось загрузить первую геометрию при проверке псевдолиний (GEOS).</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="873"/>
         <source>Invalid geometry in validity test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недействительная геометрия выявлена при проверке действительности.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="944"/>
         <source>Invalid geometry in covering test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недействительная геометрия выявлена при проверке закрытия.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1178"/>
         <source>Second geometry missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует вторая геометрия.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1267"/>
@@ -67502,12 +67537,12 @@ Convert a string into Qt data type.
         <location filename="../src/plugins/topology/topolTest.cpp" line="1443"/>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1517"/>
         <source>Second geometry missing or GEOS import failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует вторая геометрия. Возможно не удалось импортировать геометрию средствами GEOS.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1558"/>
         <source>Missing geometry in multipart check.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не обнаружена геометрия при проверке составных объектов.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1677"/>
