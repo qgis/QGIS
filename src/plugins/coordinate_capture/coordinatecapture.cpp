@@ -94,10 +94,11 @@ void CoordinateCapture::initGui()
 
   // Create the action for tool
   mQActionPointer = new QAction( QIcon(), tr( "Coordinate Capture" ), this );
+  mQActionPointer->setCheckable( true ); 
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Click on the map to view coordinates and capture to clipboard." ) );
   // Connect the action to the run
-  connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
+  connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( showOrHide() ) );
   mQGisIface->addPluginToVectorMenu( tr( "&Coordinate Capture" ), mQActionPointer );
 
   // create our map tool
@@ -164,6 +165,7 @@ void CoordinateCapture::initGui()
 
   // now add our custom widget to the dock - ownership of the widget is passed to the dock
   mpDockWidget->setWidget( mypWidget );
+  connect( mpDockWidget, SIGNAL( visibilityChanged( bool ) ), mQActionPointer, SLOT( setChecked( bool ) ) );
 
 }
 
@@ -243,11 +245,22 @@ void CoordinateCapture::run()
   //myPluginGui->show();
 }
 
+void CoordinateCapture::showOrHide()
+{
+  if ( !mpDockWidget )
+    run();
+  else
+    if ( mQActionPointer->isChecked() )
+      mpDockWidget->show();
+    else
+      mpDockWidget->hide();
+}
+
 // Unload the plugin by cleaning up the GUI
 void CoordinateCapture::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu( "&Coordinate Capture", mQActionPointer );
+  mQGisIface->removePluginVectorMenu( "&Coordinate Capture", mQActionPointer );
   //mQGisIface->removeToolBarIcon( mQActionPointer );
   mpMapTool->deactivate();
   delete mpMapTool;
