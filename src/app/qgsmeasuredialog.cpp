@@ -222,7 +222,7 @@ void QgsMeasureDialog::updateUi()
     toolTip += "<br> * " + tr( "Project CRS transformation is turned off." ) + " ";
     toolTip += tr( "Canvas units setting is taken from project properties setting (%1)." ).arg( QGis::tr( mCanvasUnits ) );
     toolTip += "<br> * " + tr( "Ellipsoidal calculation is not possible, as project CRS is undefined." );
-    setWindowTitle( tr("Measure (OTF on)"));
+    setWindowTitle( tr("Measure (OTF off)"));
   }
   else
   {
