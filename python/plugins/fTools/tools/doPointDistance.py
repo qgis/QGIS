@@ -149,6 +149,9 @@ class Dialog(QDialog, Ui_Dialog):
     def compute(self, line1, line2, field1, field2, outPath, matType, nearest, progressBar):
         layer1 = ftools_utils.getVectorLayerByName(line1)
         layer2 = ftools_utils.getVectorLayerByName(line2)
+        if layer1.id() == layer2.id():
+            if nearest > 0:
+                nearest = nearest + 1   
         provider1 = layer1.dataProvider()
         provider2 = layer2.dataProvider()
         sindex = QgsSpatialIndex()
