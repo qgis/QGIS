@@ -174,14 +174,14 @@ unless(-d "unpacked") {
 	mkdir "bin", 0755;
 
 	unless( -f "bin/nircmd.exe" ) {
-		unless( -f "../../../packages/nircmd.zip" ) {
-			system "cd ../../../packages; wget $wgetopt -c http://www.nirsoft.net/utils/nircmd.zip";
+		unless( -f "../packages/nircmd.zip" ) {
+			system "cd ../packages; wget $wgetopt -c http://www.nirsoft.net/utils/nircmd.zip";
 			die "download of nircmd.zip failed" if $?;
 		}
 
 		mkdir "apps", 0755;
 		mkdir "apps/nircmd", 0755;
-		system "cd apps/nircmd; unzip ../../../packages/nircmd.zip && mv nircmd.exe ../../bin";
+		system "cd apps/nircmd; unzip ../../../packages/nircmd.zip && mv nircmd.exe nircmdc.exe ../../bin";
 		die "unpacking of nircmd failed" if $?;
 	}
 
