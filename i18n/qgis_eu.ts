@@ -1318,7 +1318,7 @@ columns</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="20"/>
         <source>Geoprocessing</source>
-        <translation>Geoprozesatzea</translation>
+        <translation>Geoprozesuak</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="60"/>
@@ -2463,7 +2463,7 @@ sinplifikazioaren ondoren %2 erpin geratu dira</translation>
     </message>
     <message>
         <source>Processing completed.</source>
-        <translation>Prozesatzea osatu da.</translation>
+        <translation>Prozesua osatu da.</translation>
     </message>
     <message>
         <source>Processing of the following layers/files ended with error:&lt;br&gt;&lt;br&gt;</source>
@@ -2561,7 +2561,7 @@ Hurrengo eremu-izenek 10 karaktere baino gehiago dituzte:
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="14"/>
         <source>Processing options</source>
-        <translation type="unfinished"></translation>
+        <translation>Prozesuen aukerak</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgConfig.ui" line="26"/>
@@ -2770,7 +2770,7 @@ Hurrengo eremu-izenek 10 karaktere baino gehiago dituzte:
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="14"/>
         <source>Processing modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Prozesu-modelizatzailea</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/DlgModeler.ui" line="40"/>
@@ -3319,7 +3319,7 @@ Amaitu egin nahi al duzu?</translation>
     </message>
     <message>
         <source>Processing completed.</source>
-        <translation>Prozesatzea osatu da.</translation>
+        <translation>Prozesua osatu da.</translation>
     </message>
     <message>
         <source>%s not created.</source>
@@ -3521,7 +3521,7 @@ Desgaitu &quot;Erabili ebakitze-hedadura&quot; aukera hutsik egongo ez den irtee
     </message>
     <message>
         <source>Processing completed.</source>
-        <translation>Prozesatzea osatu da.</translation>
+        <translation>Prozesua osatu da.</translation>
     </message>
     <message>
         <source>%1 not created.</source>
@@ -5002,7 +5002,7 @@ Geruza berria edukien taulan erakutsi nahi al duzu?</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
-        <translation>Geoprozesatzea</translation>
+        <translation>Geoprozesuak</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
@@ -5170,7 +5170,7 @@ Elementu-geometriaren errorea: Irteera-elementu bat edo gehiago ezikusi d(ir)a b
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation>GEOS geoprozesatze-errorea: Sarrera-elementu batek edo gehiago baliogabeko geometria du(te).</translation>
+        <translation>GEOS geoprozesuaren errorea: Sarrera-elementu batek edo gehiago baliogabeko geometria du(te).</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -6833,7 +6833,7 @@ Uneko geruza editagarrian du eragina</translation>
     </message>
     <message>
         <source>Processing models (*.model)</source>
-        <translation type="unfinished"></translation>
+        <translation>Prozesu-modelizatzaileak (*.model)</translation>
     </message>
     <message>
         <source>SEXTANTE models (*.model)</source>
@@ -6995,31 +6995,31 @@ Wrong line: %1</source>
     <name>Processing</name>
     <message>
         <source>Processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Prozesuak</translation>
     </message>
     <message>
         <source>Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Tresna-kutxa</translation>
     </message>
     <message>
         <source>Graphical modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Modelizatzaile grafikoa</translation>
     </message>
     <message>
         <source>History and log</source>
-        <translation type="unfinished">Historia eta egunkaria</translation>
+        <translation>Historia eta egunkaria</translation>
     </message>
     <message>
         <source>Options and configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Aukerak eta konfigurazioa</translation>
     </message>
     <message>
         <source>&amp;Results viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Emaitzen bisorea</translation>
     </message>
     <message>
         <source>&amp;Commander</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Komandoak</translation>
     </message>
 </context>
 <context>
@@ -7027,32 +7027,32 @@ Wrong line: %1</source>
     <message>
         <location filename="../python/plugins/processing/ui/ProcessingToolbox.ui" line="14"/>
         <source>Processing Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Prozesuen tresna-kutxa</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/ProcessingToolbox.ui" line="27"/>
         <source>Enter algorithm name to filter list</source>
-        <translation type="unfinished"></translation>
+        <translation>Sartu algoritmoaren izena zerrenda iragazteko</translation>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished">Bilatu...</translation>
+        <translation>Bilatu...</translation>
     </message>
     <message>
         <source>Execute</source>
-        <translation type="unfinished">Exekutatu</translation>
+        <translation>Exekutatu</translation>
     </message>
     <message>
         <source>Execute as batch process</source>
-        <translation type="unfinished">Exekutatu batch-prozesu gisa</translation>
+        <translation>Exekutatu batch-prozesu gisa</translation>
     </message>
     <message>
         <source>Edit rendering styles for outputs</source>
-        <translation type="unfinished">Editatu errendatze-estiloak irteeretarako</translation>
+        <translation>Editatu errendatze-estiloak irteeretarako</translation>
     </message>
     <message>
         <source>Recently used algorithms</source>
-        <translation type="unfinished">Berriki erabilitako algoritmoak</translation>
+        <translation>Berriki erabilitako algoritmoak</translation>
     </message>
 </context>
 <context>
@@ -7279,7 +7279,7 @@ Wrong line: %1</source>
     </message>
     <message>
         <source>Import Processing class</source>
-        <translation type="unfinished"></translation>
+        <translation>Inportatu prozesu-klasea</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;{0}&lt;/b&gt; could not be saved. Error: {1}</source>
@@ -11375,12 +11375,12 @@ Jarri harremanetan garatzaileekin.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2346"/>
         <source>Compiled against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>GEOS erabiliz konpilatua</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2347"/>
         <source>Running against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>GEOS erabiliz exekutatua</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3599"/>
@@ -39853,7 +39853,7 @@ Jarraitu?</translation>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1452"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1453"/>
         <source>Select %1 from pull-down menu to adjust radii</source>
-        <translation type="unfinished"></translation>
+        <translation>Hautatu %1 menutik erradioak doitzeko</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1465"/>
@@ -44925,7 +44925,7 @@ baina performantzia hobea eragingo du ondoren.</translation>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="223"/>
         <source>Finish at %L1 (processing time %L2 minutes)</source>
-        <translation>Amaitu %L1(e)n (prozesatze-dentora %L2 minutu) </translation>
+        <translation>Amaitu %L1(e)n (prozesatze-denbora %L2 minutu) </translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="286"/>
@@ -55240,7 +55240,7 @@ Plugina ez da gaituko.</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation>&amp;Geoprozesatze-tresnak</translation>
+        <translation>&amp;Geoprozesu-tresnak</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
@@ -58378,7 +58378,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="206"/>
         <source>Fast fourier transform for image processing</source>
-        <translation>Fourier transformazio azkarra irudiak prozesatzeko</translation>
+        <translation>Fourier transformazio azkarra irudien prozesamendurako</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="207"/>
