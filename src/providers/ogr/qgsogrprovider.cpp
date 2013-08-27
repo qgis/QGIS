@@ -356,9 +356,15 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 1, 10 )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double", QVariant::Double, 1, 20, 0, 15 )
   << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), "string", QVariant::String, 1, 255 )
-  << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 )
-  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "datetime", QVariant::DateTime )
-  ;
+  << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 );
+
+  // Some drivers do not support datetime type
+  // Please help to fill this list
+  if ( ogrDriverName != "ESRI Shapefile" )
+  {
+    mNativeTypes
+    << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "datetime", QVariant::DateTime );
+  }
 }
 
 QgsOgrProvider::~QgsOgrProvider()
