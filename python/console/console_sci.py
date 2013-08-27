@@ -410,7 +410,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.showNext()
         ## TODO: press event for auto-completion file directory
         else:
-            if self.settings.value("pythonConsole/autoCloseBracket", True, type=bool):
+            if self.settings.value("pythonConsole/autoCloseBracket", False, type=bool):
                 t = unicode(e.text())
                 ## Close bracket automatically
                 if t in self.opening:
@@ -425,7 +425,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                         self.insert(self.closing[i])
                 ## FIXES #8392 (automatically removes the redundant char
                 ## when autoclosing brackets option is enabled)
-                if t in self.closing:
+                if t in [')', ']', '}']:
                     l, pos = self.getCursorPosition()
                     txt = self.text(l)
                     try:
