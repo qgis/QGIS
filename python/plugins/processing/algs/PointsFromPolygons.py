@@ -29,15 +29,15 @@ from osgeo import gdal
 
 from qgis.core import *
 
-from sextante.core.GeoAlgorithm import GeoAlgorithm
-from sextante.core.QGisLayers import QGisLayers
+from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.QGisLayers import QGisLayers
 
-from sextante.parameters.ParameterRaster import ParameterRaster
-from sextante.parameters.ParameterVector import ParameterVector
+from processing.parameters.ParameterRaster import ParameterRaster
+from processing.parameters.ParameterVector import ParameterVector
 
-from sextante.outputs.OutputVector import OutputVector
+from processing.outputs.OutputVector import OutputVector
 
-from sextante.algs import QGISUtils as utils
+from processing.algs import QGISUtils as utils
 
 class PointsFromPolygons(GeoAlgorithm):
 

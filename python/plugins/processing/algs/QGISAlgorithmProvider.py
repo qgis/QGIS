@@ -87,9 +87,9 @@ from processing.algs.CreateConstantRaster import CreateConstantRaster
 from processing.algs.PointsLayerFromTable import PointsLayerFromTable
 
 from processing.algs.PointsDisplacement import PointsDisplacement
-from sextante.algs.ZonalStatistics import ZonalStatistics
-from sextante.algs.PointsFromPolygons import PointsFromPolygons
-from sextante.algs.PointsFromLines import PointsFromLines
+from processing.algs.ZonalStatistics import ZonalStatistics
+from processing.algs.PointsFromPolygons import PointsFromPolygons
+from processing.algs.PointsFromLines import PointsFromLines
 
 #from processing.algs.VectorLayerHistogram import VectorLayerHistogram
 #from processing.algs.VectorLayerScatterplot import VectorLayerScatterplot

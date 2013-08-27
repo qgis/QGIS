@@ -29,13 +29,13 @@ from PyQt4.QtCore import *
 
 from qgis.core import *
 
-from sextante.core.GeoAlgorithm import GeoAlgorithm
-from sextante.core.QGisLayers import QGisLayers
+from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.QGisLayers import QGisLayers
 
-from sextante.parameters.ParameterVector import ParameterVector
-from sextante.parameters.ParameterNumber import ParameterNumber
-from sextante.parameters.ParameterBoolean import ParameterBoolean
-from sextante.outputs.OutputVector import OutputVector
+from processing.parameters.ParameterVector import ParameterVector
+from processing.parameters.ParameterNumber import ParameterNumber
+from processing.parameters.ParameterBoolean import ParameterBoolean
+from processing.outputs.OutputVector import OutputVector
 
 class PointsDisplacement(GeoAlgorithm):
 

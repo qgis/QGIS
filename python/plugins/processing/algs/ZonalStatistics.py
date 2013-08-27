@@ -30,19 +30,19 @@ from osgeo import gdal, ogr, osr
 
 from qgis.core import *
 
-from sextante.core.GeoAlgorithm import GeoAlgorithm
-from sextante.core.QGisLayers import QGisLayers
+from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.QGisLayers import QGisLayers
 
-from sextante.parameters.ParameterVector import ParameterVector
-from sextante.parameters.ParameterRaster import ParameterRaster
-from sextante.parameters.ParameterString import ParameterString
-from sextante.parameters.ParameterNumber import ParameterNumber
-from sextante.parameters.ParameterBoolean import ParameterBoolean
+from processing.parameters.ParameterVector import ParameterVector
+from processing.parameters.ParameterRaster import ParameterRaster
+from processing.parameters.ParameterString import ParameterString
+from processing.parameters.ParameterNumber import ParameterNumber
+from processing.parameters.ParameterBoolean import ParameterBoolean
 
-from sextante.outputs.OutputVector import OutputVector
+from processing.outputs.OutputVector import OutputVector
 
-from sextante.algs.ftools import FToolsUtils as ftools_utils
-from sextante.algs import QGISUtils as utils
+from processing.algs.ftools import FToolsUtils as ftools_utils
+from processing.algs import QGISUtils as utils
 
 class ZonalStatistics(GeoAlgorithm):
 
