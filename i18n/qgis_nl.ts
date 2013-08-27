@@ -2594,7 +2594,7 @@ De volgende veldnamen zijn langer dan 10 karakters:
     </message>
     <message>
         <source>Processing options</source>
-        <translation type="unfinished"></translation>
+        <translation>Processing opties</translation>
     </message>
 </context>
 <context>
@@ -3020,7 +3020,7 @@ De volgende veldnamen zijn langer dan 10 karakters:
     </message>
     <message>
         <source>Processing modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Processing modeler</translation>
     </message>
 </context>
 <context>
@@ -7066,7 +7066,7 @@ U kunt de optie &apos;Opslaan als...&apos; gebruiken.</translation>
     </message>
     <message>
         <source>Processing models (*.model)</source>
-        <translation type="unfinished"></translation>
+        <translation>Processing modellen (*.model)</translation>
     </message>
 </context>
 <context>
@@ -8029,62 +8029,62 @@ Pas dat eerst aan, want de OSM-plugin weet niet naar welke kaartlaag moet worden
     <name>Processing</name>
     <message>
         <source>Processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Processing</translation>
     </message>
     <message>
         <source>Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Toolbox</translation>
     </message>
     <message>
         <source>Graphical modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>Grafische model bouwen</translation>
     </message>
     <message>
         <source>History and log</source>
-        <translation type="unfinished">Historie en log</translation>
+        <translation>Historie en log</translation>
     </message>
     <message>
         <source>Options and configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Opties en configuratie</translation>
     </message>
     <message>
         <source>&amp;Results viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Resultaten bekijken</translation>
     </message>
     <message>
         <source>&amp;Commander</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Commando&apos;s</translation>
     </message>
 </context>
 <context>
     <name>ProcessingToolbox</name>
     <message>
         <source>Processing Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Processing Gereedschap</translation>
     </message>
     <message>
         <source>Enter algorithm name to filter list</source>
-        <translation type="unfinished">Geef naam algoritme als filter</translation>
+        <translation>Geef naam algoritme als filter</translation>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished">Zoek...</translation>
+        <translation>Zoek...</translation>
     </message>
     <message>
         <source>Execute</source>
-        <translation type="unfinished">Uitvoeren</translation>
+        <translation>Uitvoeren</translation>
     </message>
     <message>
         <source>Execute as batch process</source>
-        <translation type="unfinished">Uitvoeren als batch-proces</translation>
+        <translation>Uitvoeren als batch-proces</translation>
     </message>
     <message>
         <source>Edit rendering styles for outputs</source>
-        <translation type="unfinished">Weergave-stijlen voor uitvoer bewerken</translation>
+        <translation>Weergave-stijlen voor uitvoer bewerken</translation>
     </message>
     <message>
         <source>Recently used algorithms</source>
-        <translation type="unfinished">Recent gebruikte algoritmes</translation>
+        <translation>Recent gebruikte algoritmes</translation>
     </message>
 </context>
 <context>
@@ -8496,69 +8496,72 @@ gebruikt u het  qgis.utils.iface object (een instantie van QgisInterface class).
     </message>
     <message>
         <source>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; was not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is niet gevonden.</translation>
     </message>
     <message>
         <source> [Temporary file saved in {0}]</source>
-        <translation type="unfinished"></translation>
+        <translation> [Tijdelijk bestand opgeslagen in {0}]</translation>
     </message>
     <message>
         <source>## Script error: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>## Script fout: {0}</translation>
     </message>
     <message>
         <source>## Script executed successfully: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>## Script succesvol uitgevoerd: {0}</translation>
     </message>
     <message>
         <source>Cannot execute file {0}. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Fout uit uitvoeren van bestand {0}. Fout: {1}</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been deleted or is not accessible</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is verwijderd of niet toegankelijk</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been changed and reloaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is aangepast en herladen</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is read only, please save to different file first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is read only, bewaar eerst het in een ander bestand.</translation>
     </message>
     <message>
         <source>The file {0} could not be opened. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand {0} kon niet worden geopend. fout: {1}</translation>
     </message>
     <message>
         <source>Untitled-{0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen naam-{0}</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; has been modified, save changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; is aangepast, bestand opslaan?</translation>
     </message>
     <message>
         <source>Unable to restore the file: 
 {0}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand kan niet worden hersteld: 
+{0}</translation>
     </message>
     <message>
         <source>Python {0} on {1}
 ## Type help(iface) for more info and list of methods.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Python {0} op {1}
+## Type help(iface) om meer informatie of een lijst van methoden te zien.
+</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;{0}&lt;/b&gt; could not be saved. Error: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand &lt;b&gt;{0}&lt;/b&gt; kan niet worden opgeslagen. Fout: {1}</translation>
     </message>
     <message>
         <source>Import Processing class</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeren klasse Processing</translation>
     </message>
 </context>
 <context>
@@ -10952,55 +10955,56 @@ Deze zal daarom niet actief worden gemaakt.</translation>
     <message>
         <source>Unable to determine number of geometry columns of layer %1.%2: 
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bepalen van het aantal geomtrie kolommen is niet mogelijk van laag %1.%2: 
+%3</translation>
     </message>
     <message>
         <source>no available replacement for internal fieldname ogc_fid found</source>
-        <translation type="unfinished"></translation>
+        <translation>geen vervanging gevonden voor de interne veldnaam ogc_fid</translation>
     </message>
     <message>
         <source>Reserved attribute name ogc_fid replaced with %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Gereserveerde attribuutnaam ogc_fid vervangen door %1</translation>
     </message>
     <message>
         <source>DBF file</source>
-        <translation type="unfinished"></translation>
+        <translation>DBF bestand</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Fout</translation>
+        <translation>Fout</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Laag</translation>
+        <translation>Laag</translation>
     </message>
     <message>
         <source>Feature ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Object-ID</translation>
     </message>
     <message>
         <source>empty response</source>
-        <translation type="unfinished"></translation>
+        <translation>lege response</translation>
     </message>
     <message>
         <source>WFS service exception:%1</source>
-        <translation type="unfinished"></translation>
+        <translation>WFS service fout: %1</translation>
     </message>
     <message>
         <source>unsuccessful service response: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>foute service response: %1</translation>
     </message>
     <message>
         <source>WFS exception report (code=%1 text=%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>WFS foutrapportage (code=%1 teks=%2)</translation>
     </message>
     <message>
         <source>missing</source>
-        <translation type="unfinished"></translation>
+        <translation>mist</translation>
     </message>
     <message>
         <source>unhandled response: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>response niet behandeld: %1</translation>
     </message>
 </context>
 <context>
@@ -13661,11 +13665,11 @@ Neem alstublieft contact op met de ontwikkelaars.
     </message>
     <message>
         <source>Compiled against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Gecompileerd tegen GEOS</translation>
     </message>
     <message>
         <source>Running against GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruikt nu GEOS</translation>
     </message>
 </context>
 <context>
@@ -14975,7 +14979,7 @@ Gebruikers DB Pad:	%9
     </message>
     <message>
         <source>The filter defines which features are currently shown in the list or on the table</source>
-        <translation type="unfinished"></translation>
+        <translation>Dit filter definieert welke objecten er momenteel getoond worden in de lijst of in de tabel</translation>
     </message>
 </context>
 <context>
@@ -15953,7 +15957,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Ctrl (or Alt)-click to toggle all</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl(of Alt)-klik om alles om te schakelen</translation>
     </message>
 </context>
 <context>
@@ -16285,7 +16289,8 @@ Probeer a.u.b. een lagere resolutie of een kleiner papiergrootte</translation>
     <message>
         <source>Trying to create image #%1( %2x%3 @ %4dpi ) may result in a memory overflow.
 Please try a lower resolution or a smaller papersize</source>
-        <translation type="unfinished"></translation>
+        <translation>Het aanmaken van afbeelding #%1( %2x%3 @ %4dpi ) kan resulteren in geheugenproblemen.
+Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translation>
     </message>
 </context>
 <context>
@@ -18315,7 +18320,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Image search paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoekpaden voor afbeelding</translation>
     </message>
 </context>
 <context>
@@ -19464,11 +19469,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Error starting help viewer [%1]</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het starten van de help [%1]</translation>
     </message>
     <message>
         <source>Context help</source>
-        <translation type="unfinished"></translation>
+        <translation>Context help</translation>
     </message>
 </context>
 <context>
@@ -20258,7 +20263,7 @@ en het huidige bestand is [%3]</translation>
     </message>
     <message>
         <source>&lt;b&gt;Current definition %1:&lt;/b&gt;&lt;br&gt;%2</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Huidige definitie %1:&lt;/b&gt;&lt;br&gt;%2</translation>
     </message>
 </context>
 <context>
@@ -21690,11 +21695,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The file is a comma separated value file, fields delimited by commas and quoted by &quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand is een comma gescheiden bestand, velden gescheiden door comma&apos;s en omgeven met &quot;</translation>
     </message>
     <message>
         <source>Each line in the file is split using a regular expression to define the end of each field</source>
-        <translation type="unfinished"></translation>
+        <translation>Elke regel in het bestand wordt opgedeeld door een reguliere expressie om het eind van een veld te bepalen</translation>
     </message>
 </context>
 <context>
@@ -22732,15 +22737,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>String Concatenation</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekenreeks Samenvoegen</translation>
     </message>
     <message>
         <source>Open Bracket </source>
-        <translation type="unfinished"></translation>
+        <translation>Open Haakje</translation>
     </message>
     <message>
         <source>Close Bracket </source>
-        <translation type="unfinished"></translation>
+        <translation>Sluiten Haakje</translation>
     </message>
 </context>
 <context>
@@ -27645,7 +27650,7 @@ in regel %2 kolom %3</translation>
     </message>
     <message>
         <source>%1 of %2 bad layers were not fixable.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 van de %2 foute lagen waren niet repareerbaar.</translation>
     </message>
 </context>
 <context>
@@ -31561,9 +31566,9 @@ eigenschappen
     <message numerus="yes">
         <source>%n more</source>
         <comment>unread messages</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n meer</numerusform>
+            <numerusform>%n meer</numerusform>
         </translation>
     </message>
 </context>
@@ -33677,19 +33682,19 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>OGR error syncing to disk: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR fout bij synchroniseren naar dis: %1</translation>
     </message>
     <message>
         <source>Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mogelijke fout bij REPACK gedetecteerd. %1 bestaat nog. Dit kan duiden op een permissie- of locking-probleem van de originele DBF.</translation>
     </message>
     <message>
         <source>Original layer could not be reopened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Originele laag kan niet worden geopend.</translation>
     </message>
     <message>
         <source>Original datasource could not be reopened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Originele databron kan niet worden geopend.</translation>
     </message>
 </context>
 <context>
@@ -39244,7 +39249,7 @@ Doorgaan?</translation>
     </message>
     <message>
         <source>Select %1 from pull-down menu to adjust radii</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer %1 uit het afrolmenu om de radii aan te passen</translation>
     </message>
 </context>
 <context>
@@ -42397,7 +42402,28 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source> of </source>
-        <translation> van </translation>
+        <translation type="obsolete"> van </translation>
+    </message>
+    <message>
+        <source>cumulative cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>standard deviation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>full extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sub extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 %2 of %3.</source>
+        <comment>min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent</comment>
+        <translation type="unfinished">%1 van %3. {1 %2 ?}</translation>
     </message>
 </context>
 <context>
@@ -43086,7 +43112,7 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>Refine current rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Verfijn huidige regel</translation>
     </message>
 </context>
 <context>
@@ -43349,7 +43375,7 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>Save style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stijl opslaan</translation>
     </message>
 </context>
 <context>
@@ -45808,11 +45834,11 @@ Overschrijven?</translation>
     </message>
     <message>
         <source>file specified below</source>
-        <translation type="unfinished"></translation>
+        <translation>bestand zoals onder weergegeven</translation>
     </message>
     <message>
         <source>URL specified below</source>
-        <translation type="unfinished"></translation>
+        <translation>URL hieronder</translation>
     </message>
 </context>
 <context>
@@ -46046,59 +46072,59 @@ Er was een probleem met uw symbolen database.</translation>
     </message>
     <message>
         <source>Type here to filter symbols...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vul hier in om te filteren op symbolen ...</translation>
     </message>
     <message>
         <source>Share Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Menu Delen</translation>
     </message>
     <message>
         <source>Export</source>
-        <translation type="unfinished">Exporteer</translation>
+        <translation>Exporteer</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation type="unfinished">Importeren</translation>
+        <translation>Importeren</translation>
     </message>
     <message>
         <source>Group Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Groep Acties</translation>
     </message>
     <message>
         <source>Group Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Groep Symbolen</translation>
     </message>
     <message>
         <source>Edit Smart Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Slimme Groep Aanpassen</translation>
     </message>
     <message>
         <source>New Group</source>
-        <translation type="unfinished">Nieuwe Groep</translation>
+        <translation>Nieuwe Groep</translation>
     </message>
     <message>
         <source>Finish Grouping</source>
-        <translation type="unfinished"></translation>
+        <translation>Groepering beeindigen</translation>
     </message>
     <message>
         <source>Edit Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Groep Aanpassen</translation>
     </message>
     <message>
         <source>Add Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Groep Toevoegen</translation>
     </message>
     <message>
         <source>Remove Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Groep verwijderen</translation>
     </message>
     <message>
         <source>Apply Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Groep Toepassen</translation>
     </message>
     <message>
         <source>Un-group</source>
-        <translation type="unfinished"></translation>
+        <translation>Groeperen ongedaan maken</translation>
     </message>
 </context>
 <context>
@@ -46842,15 +46868,15 @@ Er was een probleem met uw symbolen database.</translation>
     </message>
     <message>
         <source>In the print composer tool bar you can find two buttons for moving elements. The left one (right arrow icon) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; section, which can be found in the tab &lt;strong&gt;Item Properties -&gt; Position and Size&lt;/strong&gt;. The other move tool (map canvas icon with right arrow) allows one to move the map content within a map frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>In de print layouter werkbalk zie je twee knoppen om elementen te verplaatsen. De linker (pijl naar rechts icoon) selecteert en verplaatst elementen in de layout. Na het selecteren van het element met dit gereedschap kun het het element ook verplaatsen met de pijltjes-toetsen. Voor nauwkeurige positionering gebruikt u de sectie &lt;strong&gt;Positie and Grootte&lt;/strong&gt;, welke u kunt vinden in het tabblad &lt;strong&gt;Item Eigenschappen -&gt; Positie en Grootte&lt;/strong&gt;. Met andere verplaats-gereedschap (kaartbeeld icoon met een rechter pijl) kunt u de inhoud van de kaart verplaatsen in het kaartvenster.</translation>
     </message>
     <message>
         <source>In the Print Composer you can rotate a map by setting its rotation value in the tab &lt;strong&gt;Item Properties -&gt; Map -&gt; Main properties&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
-        <translation type="unfinished"></translation>
+        <translation>In the Layouter kunt een kaart roteren via de rotatie eigenschappen in het tabblad-onderdeel &lt;strong&gt;Item Eigenschappen -&gt; Kaart -&gt; Algemene Eigenschappen&lt;/strong&gt;. Om een noordpijl in de layout te plaatsen kunt u gebruik maken van het &lt;strong&gt;Afbeelding Toevoegen&lt;/strong&gt; gereedschap. Na het selecteren en plaatsen van de noordpijl in de layout kunt u de pijl koppelen aan een specifieke kaart door het aankruisen van het &lt;strong&gt;Synchroniseer met kaart&lt;/strong&gt; vinkje en dan een kaart te selecteren. Bij het roteren van de kaart zal dan ook de noordpijl automatisch meedraaien.</translation>
     </message>
     <message>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;Esc&apos; (the escape key), or click the &apos;Stop map rendering&apos; icon in the status bar to the bottom of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
-        <translation type="unfinished"></translation>
+        <translation>Soms duurt het renderen (kaart op het scherm tekenen) van een grote dataset veel te lang. Druk op &apos;esc&apos; (de escape toets) om het renderen te stoppen, of druk op de &quot;Stoppen met (her)tekenen&quot;-knop in de statusbalk rechts van de schaalaanduiding. Wanneer je meerdere aanpassingen in de weergeve gaat doen (bijvoorbeeld nieuwe symbologieën toepassen) dan kun je het renderen tijdelijk uitzetten door de optie (Her)tekenen in de statusbalk uit te vinken. Vergeet deze niet weer aan te vinken wanneer je klaar bent, zodat de kaart weer automatisch wordt getekend!</translation>
     </message>
 </context>
 <context>
@@ -53742,7 +53768,7 @@ Voor een uitgebreide uitleg over het werken met vectordata, zie hoofdstuk 5 &apo
     <message>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Stijl Manager&lt;/h3</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Options&lt;/h3&gt;
@@ -59536,35 +59562,35 @@ Converts a string to real number. Nothing changed if a value cannot be converted
     </message>
     <message>
         <source>First geometry invalid in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige eerste geometrie in &apos;dangling line test&apos;.</translation>
     </message>
     <message>
         <source>Failed to import first geometry into GEOS in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>De eerst geometrie importeren in GEOS mislukt.in de &apos;dangling line test&apos;.</translation>
     </message>
     <message>
         <source>Invalid second geometry in duplicate geometry test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige tweede geometrie in &apos;duplicate geometry test&apos;.</translation>
     </message>
     <message>
         <source>Failed to import second geometry into GEOS in duplicate geometry test.</source>
-        <translation type="unfinished"></translation>
+        <translation>De tweede geometrie importeren in GEOS mislukt.in de &apos;dangling line test&apos;.</translation>
     </message>
     <message>
         <source>Invalid second geometry in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige tweede geometrie in &apos;overlaps test&apos;.</translation>
     </message>
     <message>
         <source>Failed to import second geometry into GEOS in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>De tweede geometrie importeren in GEOS mislukt.in de &apos;overlapse test&apos;.</translation>
     </message>
     <message>
         <source>Skipping invalid second geometry of feature %1 in overlaps test.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige tweede geometrie van feature %1 wordt overgeslagen in &apos;overlapse test&apos;.</translation>
     </message>
     <message>
         <source>Second geometry missing or GEOS import failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tweede geometrie ontrbreekt of de GEOS import mis mislukt.</translation>
     </message>
 </context>
 <context>
