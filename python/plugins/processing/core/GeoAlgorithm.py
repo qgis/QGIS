@@ -149,7 +149,7 @@ class GeoAlgorithm:
             self.runPreExecutionScript(progress)
             self.processAlgorithm(progress)
             self.convertUnsupportedFormats(progress)
-            self.runPostExecutionScript(progress)            
+            self.runPostExecutionScript(progress)
         except GeoAlgorithmExecutionException, gaee:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, gaee.msg)
             raise gaee
@@ -423,7 +423,7 @@ class GeoAlgorithm:
 
         html ="<p>Oooops! The following output layers could not be open</p><ul>\n"
         for layer in wrongLayers:
-            html += '<li>' + layer.description + ': <font size=3 face="Courier New" color="ff0000">' + layer.value + "</font></li>\n"
+            html += '<li>' + layer.description + ': <font size=3 face="Courier New" color="#ff0000">' + layer.value + "</font></li>\n"
         html +="</ul><p>The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm</p>"
         html +="<p>Checking the log information might help you see why those layers were not created as expected</p>"
         return html
