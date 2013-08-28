@@ -643,7 +643,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   myBlue = settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt();
   myAlpha = settings.value( "/qgis/digitizing/line_color_alpha", 200 ).toInt();
   mLineColorToolButton->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
-  mLineColorToolButton->setColorDialogOptions(QColorDialog::ShowAlphaChannel);
+  mLineColorToolButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
   //default snap mode
   mDefaultSnapModeComboBox->insertItem( 0, tr( "To vertex" ), "to vertex" );

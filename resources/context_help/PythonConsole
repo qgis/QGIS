@@ -73,8 +73,8 @@
 		</tr>
 		<tr>
 			<td><img src="qrc:/images/themes/default/console/iconClassConsole.png" /></td>
-			<td><img src="qrc:/images/themes/default/console/iconSextanteConsole.png" /></td>
-			<td>Import Sextante class</td>
+			<td><img src="qrc:/images/themes/default/console/iconProcessingConsole.png" /></td>
+			<td>Import Processing class</td>
 		</tr>
 		<tr>
 			<td></td>

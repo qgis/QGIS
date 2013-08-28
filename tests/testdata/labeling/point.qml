@@ -1,6 +1,9 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis version="1.9.0-Master" minimumScale="-4.65661e-10" maximumScale="1e+08" minLabelScale="0" maxLabelScale="1e+08" hasScaleBasedVisibilityFlag="0" scaleBasedLabelVisibilityFlag="0">
-  <renderer-v2 symbollevels="0" type="singleSymbol">
+  <renderer-v2 symbollevels="0" type="RuleRenderer">
+    <rules>
+      <rule filter="&quot;text&quot; IS NOT NULL" symbol="0"/>
+    </rules>
     <symbols>
       <symbol alpha="1" type="marker" name="0">
         <layer pass="0" class="SimpleMarker" locked="0">

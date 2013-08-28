@@ -53,7 +53,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Destructor
      */
-    virtual ~QgsFeatureListView() {};
+    virtual ~QgsFeatureListView() {}
 
     /**
      * Returns the layer cache

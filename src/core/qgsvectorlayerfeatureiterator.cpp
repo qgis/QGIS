@@ -99,14 +99,8 @@ bool QgsVectorLayerFeatureIterator::nextFeature( QgsFeature& f )
   {
     if ( fetchNextChangedGeomFeature( f ) )
       return true;
-
-    // no more changed geometries
   }
-
-  if ( fetchNextAddedFeature( f ) )
-    return true;
-
-  // no more added features
+  // no more changed geometries
 
   while ( mProviderIterator.nextFeature( f ) )
   {
@@ -123,11 +117,18 @@ bool QgsVectorLayerFeatureIterator::nextFeature( QgsFeature& f )
       addJoinedAttributes( f );
 
     // update geometry
+    // TODO[MK]: FilterRect check after updating the geometry
     if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
       updateFeatureGeometry( f );
 
     return true;
   }
+  // no more provider features
+
+  if ( fetchNextAddedFeature( f ) )
+    return true;
+  // no more added features
+
 
   close();
   return false;
@@ -169,7 +170,7 @@ bool QgsVectorLayerFeatureIterator::close()
 
 bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature& f )
 {
-  for ( ; mFetchAddedFeaturesIt != mAddedFeatures.constEnd(); mFetchAddedFeaturesIt++ )
+  while ( mFetchAddedFeaturesIt-- != mAddedFeatures.constBegin() )
   {
     QgsFeatureId fid = mFetchAddedFeaturesIt->id();
 
@@ -185,7 +186,6 @@ bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature& f )
 
     useAddedFeature( *mFetchAddedFeaturesIt, f );
 
-    mFetchAddedFeaturesIt++;
     return true;
   }
 
@@ -279,7 +279,7 @@ void QgsVectorLayerFeatureIterator::rewindEditBuffer()
 {
   mFetchConsidered = mDeletedFeatureIds;
 
-  mFetchAddedFeaturesIt = mAddedFeatures.constBegin();
+  mFetchAddedFeaturesIt = mAddedFeatures.constEnd();
   mFetchChangedGeomIt = mChangedGeometries.constBegin();
 }
 

@@ -80,7 +80,7 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
     def _loadAlgorithms(self):
         '''Here we fill the list of algorithms in self.algs.
         This method is called whenever the list of algorithms should be updated.
-        If the list of algorithms can change 
+        If the list of algorithms can change
         (for instance, if it contains algorithms from user-defined scripts and
         a new script might have been added), you should create the list again
         here.

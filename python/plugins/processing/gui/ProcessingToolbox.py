@@ -63,7 +63,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
         else:
             self.modeComboBox.setCurrentIndex(1)
         self.modeComboBox.currentIndexChanged.connect(self.modeHasChanged)
-        
+
         self.searchBox.textChanged.connect(self.fillTree)
         self.algorithmTree.customContextMenuRequested.connect(self.showPopupMenu)
         self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)

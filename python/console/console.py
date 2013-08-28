@@ -307,16 +307,16 @@ class PythonConsoleWidget(QWidget):
         self.actionClass.setIconVisibleInMenu(True)
         self.actionClass.setToolTip(actionClassBt)
         self.actionClass.setText(actionClassBt)
-        ## Import Sextante class
-        loadSextanteBt = QCoreApplication.translate("PythonConsole", "Import Sextante class")
-        self.loadSextanteButton = QAction(self)
-        self.loadSextanteButton.setCheckable(False)
-        self.loadSextanteButton.setEnabled(True)
-        self.loadSextanteButton.setIcon(QgsApplication.getThemeIcon("console/iconSextanteConsole.png"))
-        self.loadSextanteButton.setMenuRole(QAction.PreferencesRole)
-        self.loadSextanteButton.setIconVisibleInMenu(True)
-        self.loadSextanteButton.setToolTip(loadSextanteBt)
-        self.loadSextanteButton.setText(loadSextanteBt)
+        ## Import Processing class
+        loadProcessingBt = QCoreApplication.translate("PythonConsole", "Import Processing class")
+        self.loadProcessingButton = QAction(self)
+        self.loadProcessingButton.setCheckable(False)
+        self.loadProcessingButton.setEnabled(True)
+        self.loadProcessingButton.setIcon(QgsApplication.getThemeIcon("console/iconProcessingConsole.png"))
+        self.loadProcessingButton.setMenuRole(QAction.PreferencesRole)
+        self.loadProcessingButton.setIconVisibleInMenu(True)
+        self.loadProcessingButton.setToolTip(loadProcessingBt)
+        self.loadProcessingButton.setText(loadProcessingBt)
         ## Import QtCore class
         loadQtCoreBt = QCoreApplication.translate("PythonConsole", "Import PyQt.QtCore class")
         self.loadQtCoreButton = QAction(self)
@@ -414,7 +414,7 @@ class PythonConsoleWidget(QWidget):
 
         ## Menu Import Class
         self.classMenu = QMenu()
-        self.classMenu.addAction(self.loadSextanteButton)
+        self.classMenu.addAction(self.loadProcessingButton)
         self.classMenu.addAction(self.loadQtCoreButton)
         self.classMenu.addAction(self.loadQtGuiButton)
         cM = self.toolBar.widgetForAction(self.actionClass)
@@ -526,7 +526,7 @@ class PythonConsoleWidget(QWidget):
         self.showEditorButton.toggled.connect(self.toggleEditor)
         self.clearButton.triggered.connect(self.shellOut.clearConsole)
         self.optionsButton.triggered.connect(self.openSettings)
-        self.loadSextanteButton.triggered.connect(self.sextante)
+        self.loadProcessingButton.triggered.connect(self.processing)
         self.loadQtCoreButton.triggered.connect(self.qtCore)
         self.loadQtGuiButton.triggered.connect(self.qtGui)
         self.runButton.triggered.connect(self.shell.entered)
@@ -577,8 +577,8 @@ class PythonConsoleWidget(QWidget):
             objName = itemName
         tabEditor.goToLine(objName, linenr)
 
-    def sextante(self):
-       self.shell.commandConsole('sextante')
+    def processing(self):
+       self.shell.commandConsole('processing')
 
     def qtCore(self):
        self.shell.commandConsole('qtCore')

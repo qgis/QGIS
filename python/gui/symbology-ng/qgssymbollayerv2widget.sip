@@ -183,29 +183,6 @@ class QgsSvgMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
 ///////////
 
-class QgsLineDecorationSymbolLayerV2Widget : QgsSymbolLayerV2Widget
-{
-%TypeHeaderCode
-#include <qgssymbollayerv2widget.h>
-%End
-
-  public:
-    QgsLineDecorationSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
-
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
-
-    // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
-
-  public slots:
-    void colorChanged( const QColor& color );
-    void penWidthChanged();
-    void on_mWidthUnitComboBox_currentIndexChanged( int index );
-};
-
-//////////
-
 class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerV2Widget
 {
 %TypeHeaderCode

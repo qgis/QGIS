@@ -92,13 +92,22 @@ void CoordinateCapture::initGui()
   mTransform.setDestCRS( mCrs ); // set the CRS in the transform
   mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QGis::Degrees ) ? 5 : 3; // precision depends on CRS units
 
+  //create the dock widget
+  mpDockWidget = new QDockWidget( tr( "Coordinate Capture" ), mQGisIface->mainWindow() );
+  mpDockWidget->setObjectName( "CoordinateCapture" );
+  mpDockWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  mQGisIface->addDockWidget( Qt::LeftDockWidgetArea, mpDockWidget );
+
   // Create the action for tool
   mQActionPointer = new QAction( QIcon(), tr( "Coordinate Capture" ), this );
+  mQActionPointer->setCheckable( true );
+  mQActionPointer->setChecked( mpDockWidget->isVisible() );
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Click on the map to view coordinates and capture to clipboard." ) );
   // Connect the action to the run
-  connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
+  connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( showOrHide() ) );
   mQGisIface->addPluginToVectorMenu( tr( "&Coordinate Capture" ), mQActionPointer );
+  mQGisIface->addVectorToolBarIcon( mQActionPointer );
 
   // create our map tool
   mpMapTool = new CoordinateCaptureMapTool( mQGisIface->mapCanvas() );
@@ -155,16 +164,9 @@ void CoordinateCapture::initGui()
   mypLayout->addWidget( mypCopyButton, 2, 1 );
   mypLayout->addWidget( mpCaptureButton, 3, 1 );
 
-
-  //create the dock widget
-  mpDockWidget = new QDockWidget( tr( "Coordinate Capture" ), mQGisIface->mainWindow() );
-  mpDockWidget->setObjectName( "CoordinateCapture" );
-  mpDockWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  mQGisIface->addDockWidget( Qt::LeftDockWidgetArea, mpDockWidget );
-
   // now add our custom widget to the dock - ownership of the widget is passed to the dock
   mpDockWidget->setWidget( mypWidget );
-
+  connect( mpDockWidget, SIGNAL( visibilityChanged( bool ) ), mQActionPointer, SLOT( setChecked( bool ) ) );
 }
 
 //method defined in interface
@@ -243,12 +245,23 @@ void CoordinateCapture::run()
   //myPluginGui->show();
 }
 
+void CoordinateCapture::showOrHide()
+{
+  if ( !mpDockWidget )
+    run();
+  else
+    if ( mQActionPointer->isChecked() )
+      mpDockWidget->show();
+    else
+      mpDockWidget->hide();
+}
+
 // Unload the plugin by cleaning up the GUI
 void CoordinateCapture::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu( "&Coordinate Capture", mQActionPointer );
-  //mQGisIface->removeToolBarIcon( mQActionPointer );
+  mQGisIface->removePluginVectorMenu( "&Coordinate Capture", mQActionPointer );
+  mQGisIface->removeVectorToolBarIcon( mQActionPointer );
   mpMapTool->deactivate();
   delete mpMapTool;
   delete mpDockWidget;

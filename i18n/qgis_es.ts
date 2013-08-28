@@ -134,7 +134,7 @@
     </message>
     <message>
         <source>Coordinate in your selected CRS (lat,lon or east,north)</source>
-        <translation>Coordenada en el SRC seleccionado(lat,lon o este,norte)</translation>
+        <translation>Coordenada en el SRC seleccionado (latitud,longitud o Este,Norte)</translation>
     </message>
     <message>
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
@@ -451,7 +451,7 @@ Esta tabla es esencial para muchas aplicaciones SIG para enumerar las tablas.</t
     <message>
         <source>&lt;warning&gt; Version of installed scripts doesn&apos;t match version of released scripts!
 This is probably a result of incorrect PostGIS upgrade.</source>
-        <translation>&lt;advertencia&gt; ¡La version de los scripts instalada no coincide con la versión liberada!
+        <translation>&lt;advertencia&gt; ¡La versión de los scripts instalada no coincide con la versión liberada!
 Esto probablemente es el resultado de una actualización incorrecta de PostGIS.</translation>
     </message>
     <message>
@@ -677,11 +677,11 @@ Consulta:
     </message>
     <message>
         <source>Invalid MIME uri</source>
-        <translation>URI del MIME no válida</translation>
+        <translation type="obsolete">URI del MIME no válida</translation>
     </message>
     <message>
         <source>The dropped object is not a valid layer</source>
-        <translation>El objeto soltado no es una capa válida</translation>
+        <translation type="obsolete">El objeto soltado no es una capa válida</translation>
     </message>
     <message>
         <source>Invalid layer</source>
@@ -2388,7 +2388,7 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Align extents and resolution to selected raster layer</source>
-        <translation>Alinear expensiones y resolución a la capa ráster seleccionada</translation>
+        <translation>Alinear extensión y resolución a la capa ráster seleccionada</translation>
     </message>
     <message>
         <source>Please select a raster layer</source>
@@ -2647,11 +2647,11 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     <name>DlgConfig</name>
     <message>
         <source>SEXTANTE options</source>
-        <translation>Opciones de SEXTANTE</translation>
+        <translation type="obsolete">Opciones de SEXTANTE</translation>
     </message>
     <message>
         <source>Enter setting name to filter list</source>
-        <translation>Introducir nombre de configuración para filtar la lista</translation>
+        <translation>Introducir nombre de configuración para filtrar la lista</translation>
     </message>
     <message>
         <source>Setting</source>
@@ -2660,6 +2660,10 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     <message>
         <source>Value</source>
         <translation>Valor</translation>
+    </message>
+    <message>
+        <source>Processing options</source>
+        <translation>Opciones de procesado</translation>
     </message>
 </context>
 <context>
@@ -3036,7 +3040,7 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     </message>
     <message>
         <source>Output table name is required</source>
-        <translation>Se require el nombre de la tabla se salida</translation>
+        <translation>Se requiere el nombre de la tabla se salida</translation>
     </message>
     <message>
         <source>Invalid source srid: must be an integer</source>
@@ -3061,7 +3065,7 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     <name>DlgModeler</name>
     <message>
         <source>SEXTANTE modeler</source>
-        <translation>Modelador de SEXTANTE</translation>
+        <translation type="obsolete">Modelador de SEXTANTE</translation>
     </message>
     <message>
         <source>Inputs</source>
@@ -3073,7 +3077,7 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     </message>
     <message>
         <source>Enter algorithm name to filter list</source>
-        <translation>Introducir nombre de algoritmo para filtar la lista</translation>
+        <translation>Introducir nombre de algoritmo para filtrar la lista</translation>
     </message>
     <message>
         <source>Enter model name here</source>
@@ -3082,6 +3086,10 @@ Los siguientes nombres de campo tienen más de 10 caracteres:
     <message>
         <source>Enter group name here</source>
         <translation>Introduzca el nombre del grupo aquí</translation>
+    </message>
+    <message>
+        <source>Processing modeler</source>
+        <translation>Modelador de procesado</translation>
     </message>
 </context>
 <context>
@@ -3609,7 +3617,7 @@ El complemento no se activará.</translation>
     </message>
     <message>
         <source>RGB to PCT</source>
-        <translation>RBG a PTC</translation>
+        <translation>RBG a PCT</translation>
     </message>
     <message>
         <source>Convert a 24bit RGB image to 8bit paletted</source>
@@ -3991,7 +3999,7 @@ Do you want terminate it anyway?</source>
     <message>
         <source>GDAL was unable to retrieve the extent from any file. 
 The &quot;Use intersected extent&quot; option will be unchecked.</source>
-        <translation>GDAL no pudo recuperra la extensión de ningún archivo. 
+        <translation>GDAL no pudo recuperar la extensión de ningún archivo. 
 Se desmarcará la opción &quot;Usar extensión de la intersección&quot;.</translation>
     </message>
     <message>
@@ -4665,7 +4673,7 @@ en línea cuando se pulsa el botón Ayuda del diálogo de la herramienta.</trans
     </message>
     <message>
         <source>Suppress GCP printing</source>
-        <translation>Suprimir impresión de PTC</translation>
+        <translation>Suprimir impresión de PCT</translation>
     </message>
     <message>
         <source>Suppress metadata printing</source>
@@ -5167,7 +5175,7 @@ El valor «gris» (de GDAL 1.7.0) habilita expandir un conjunto de datos con una
     </message>
     <message>
         <source>Copy all subdatasets of this file to individual output files. Use with formats like HDF or OGDI that have subdatasets.</source>
-        <translation>Copiar todos los subconjuntos de datos de este archivo a arhivos individuales de salida. Usar con formatos como HDF o OGDI que tienen subconjuntos de datos.</translation>
+        <translation>Copiar todos los subconjuntos de datos de este archivo a archivos individuales de salida. Usar con formatos como HDF o OGDI que tienen subconjuntos de datos.</translation>
     </message>
     <message>
         <source>Sds</source>
@@ -5855,7 +5863,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Creating heatmap</source>
-        <translation type="unfinished"></translation>
+        <translation>Creando heatmap</translation>
     </message>
     <message>
         <source>Abort</source>
@@ -6041,7 +6049,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Kernel shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Forma del kernel</translation>
     </message>
     <message>
         <source>Rows</source>
@@ -6834,7 +6842,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>This is here just to avoid shortcut conflicts, the shortcut is caught in QgsCustomization</source>
-        <translation>Esto está aquí para evitar conflitos en atajos de teclado, el atajo es cogido en QgsCustomization</translation>
+        <translation>Esto está aquí para evitar conflictos en atajos de teclado, el atajo es cogido en QgsCustomization</translation>
     </message>
     <message>
         <source>Ctrl+M</source>
@@ -7295,7 +7303,7 @@ Actúa sobre la capa actual en edición</translation>
     </message>
     <message>
         <source>SEXTANTE models (*.model)</source>
-        <translation>Modelos de SEXTANTE (*.model)</translation>
+        <translation type="obsolete">Modelos de SEXTANTE (*.model)</translation>
     </message>
     <message>
         <source>Model saved</source>
@@ -7344,6 +7352,10 @@ Please, use the &apos;Save as...&apos; option.</source>
         <translation>Este modelo no se puede guardar en su ubicación original
 (probablemente no tiene permiso para hacerlo).
 Por favor, use la opción &apos;Guardar como...&apos;</translation>
+    </message>
+    <message>
+        <source>Processing models (*.model)</source>
+        <translation>Modelos de procesado (*.model)</translation>
     </message>
 </context>
 <context>
@@ -8303,6 +8315,68 @@ Por favor, cambie esta situación primero, porque el complemento de OSM no sabe 
     </message>
 </context>
 <context>
+    <name>Processing</name>
+    <message>
+        <source>Processing</source>
+        <translation>Procesado</translation>
+    </message>
+    <message>
+        <source>Toolbox</source>
+        <translation>Caja de herramientas</translation>
+    </message>
+    <message>
+        <source>Graphical modeler</source>
+        <translation>Modelador gráfico</translation>
+    </message>
+    <message>
+        <source>History and log</source>
+        <translation>Historial y registro</translation>
+    </message>
+    <message>
+        <source>Options and configuration</source>
+        <translation>Opciones y configuración</translation>
+    </message>
+    <message>
+        <source>&amp;Results viewer</source>
+        <translation>Visor de &amp;resultados</translation>
+    </message>
+    <message>
+        <source>&amp;Commander</source>
+        <translation>&amp;Comandos</translation>
+    </message>
+</context>
+<context>
+    <name>ProcessingToolbox</name>
+    <message>
+        <source>Processing Toolbox</source>
+        <translation>Caja de herramientas de procesado</translation>
+    </message>
+    <message>
+        <source>Enter algorithm name to filter list</source>
+        <translation>Introducir nombre de algoritmo para filtrar la lista</translation>
+    </message>
+    <message>
+        <source>Search...</source>
+        <translation>Buscar...</translation>
+    </message>
+    <message>
+        <source>Execute</source>
+        <translation>Ejecutar</translation>
+    </message>
+    <message>
+        <source>Execute as batch process</source>
+        <translation>Ejecutar usando procesamiento por lotes</translation>
+    </message>
+    <message>
+        <source>Edit rendering styles for outputs</source>
+        <translation>Editar estilos de renderizados para salidas</translation>
+    </message>
+    <message>
+        <source>Recently used algorithms</source>
+        <translation>Algoritmos usados recientemente</translation>
+    </message>
+</context>
+<context>
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
@@ -8423,7 +8497,7 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
     </message>
     <message>
         <source>Import Sextante class</source>
-        <translation>Importar clase de Sextante</translation>
+        <translation type="obsolete">Importar clase de Sextante</translation>
     </message>
     <message>
         <source>Import PyQt.QtCore class</source>
@@ -8463,7 +8537,7 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
     </message>
     <message>
         <source>Run script</source>
-        <translation>Ejecutar scritp</translation>
+        <translation>Ejecutar script</translation>
     </message>
     <message>
         <source>Show editor</source>
@@ -8527,7 +8601,7 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
     </message>
     <message>
         <source>Saving prepared file...</source>
-        <translation>Guargando archivo preparado...</translation>
+        <translation>Guardando archivo preparado...</translation>
     </message>
     <message>
         <source>Saved</source>
@@ -8547,15 +8621,15 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
     </message>
     <message>
         <source>Check Syntax</source>
-        <translation>Comprobar sintáxis</translation>
+        <translation>Comprobar sintaxis</translation>
     </message>
     <message>
         <source>Run selected</source>
-        <translation>Ejecurar seleccionado</translation>
+        <translation>Ejecutar seleccionado</translation>
     </message>
     <message>
         <source>Run Script</source>
-        <translation>Ejecutar scritp</translation>
+        <translation>Ejecutar script</translation>
     </message>
     <message>
         <source>Undo</source>
@@ -8687,65 +8761,74 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
     </message>
     <message>
         <source>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; was not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;&quot;{0}&quot;&lt;/b&gt; no se encontró.</translation>
     </message>
     <message>
         <source> [Temporary file saved in {0}]</source>
-        <translation type="unfinished"></translation>
+        <translation> [Archivo temporal guardado en {0}]</translation>
     </message>
     <message>
         <source>## Script error: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>## Error de script: {0}</translation>
     </message>
     <message>
         <source>## Script executed successfully: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>## Script ejecutado con éxito: {0}</translation>
     </message>
     <message>
         <source>Cannot execute file {0}. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede ejecutar el archivo {0}. Error: {1}
+</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been deleted or is not accessible</source>
-        <translation type="unfinished"></translation>
+        <translation>El archivo &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; ha sido borrado o no es accesible</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; has been changed and reloaded</source>
-        <translation type="unfinished"></translation>
+        <translation>El archivo &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; ha sido cambiado y recargado</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; is read only, please save to different file first.</source>
-        <translation type="unfinished"></translation>
+        <translation>El archivo &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; es de solo lectura, por favor guarde en un archivo antes diferente.</translation>
     </message>
     <message>
         <source>The file {0} could not be opened. Error: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo abrir el archivo {0}. Error {1}</translation>
     </message>
     <message>
         <source>Untitled-{0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Sin título-{0}</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;&apos;{0}&apos;&lt;/b&gt; has been modified, save changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>El archivo &lt;b&gt;&quot;{0}&quot;&lt;/b&gt; ha sido modificado, ¿guardar los cambios?</translation>
     </message>
     <message>
         <source>Unable to restore the file: 
 {0}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede restaurar el archivo: 
+{0}
+</translation>
     </message>
     <message>
         <source>Python {0} on {1}
 ## Type help(iface) for more info and list of methods.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Python {0} en {1}
+## Teclee help(iface) para más información y lista de métodos.
+</translation>
     </message>
     <message>
         <source>The file &lt;b&gt;{0}&lt;/b&gt; could not be saved. Error: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo guardar el archivo &lt;b&gt;{0}&lt;/b&gt;. Error {1}</translation>
+    </message>
+    <message>
+        <source>Import Processing class</source>
+        <translation>Clase de procesado de importación</translation>
     </message>
 </context>
 <context>
@@ -8814,7 +8897,7 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
     </message>
     <message>
         <source>Unable to execute batch statement</source>
-        <translation>No se puede ejecutar la sentancia de lotes</translation>
+        <translation>No se puede ejecutar la sentencia de lotes</translation>
     </message>
     <message>
         <source>Unable to goto next</source>
@@ -8995,7 +9078,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Shapefile to PostgreSQL/PostGIS Import Tool</source>
-        <translation>Herramienta de importación de shapefiles a PostgreSQL/PostGIS</translation>
+        <translation>Herramienta de importación de archivos shape a PostgreSQL/PostGIS</translation>
     </message>
     <message>
         <source>WFS plugin</source>
@@ -9351,7 +9434,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Couldn&apos;t load QGIS utils.</source>
-        <translation>No se pudieron cargar las utilidadees de QGIS.</translation>
+        <translation>No se pudieron cargar las utilidades de QGIS.</translation>
     </message>
     <message>
         <source>Python version:</source>
@@ -9955,7 +10038,7 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     </message>
     <message>
         <source>Line decoration</source>
-        <translation>Decoración de línea</translation>
+        <translation type="obsolete">Decoración de línea</translation>
     </message>
     <message>
         <source>Simple marker</source>
@@ -10331,7 +10414,7 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     </message>
     <message>
         <source>A plugin to calculate count, sum, mean of rasters for each polygon of a vector layer</source>
-        <translation>Un complemento para calcular la cuentra, suma, media de rásters para cada polígono de una capa vectorial</translation>
+        <translation>Un complemento para calcular la cuenta, suma, media de rásters para cada polígono de una capa vectorial</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
@@ -10351,7 +10434,7 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     </message>
     <message>
         <source>Unable to create the datasource. %1 exists and overwrite flag is false.</source>
-        <translation>No se puede crear la fuente de datos. %1existe y la marca de sobrescritura es falsa.</translation>
+        <translation>No se puede crear la fuente de datos. %1 existe y la marca de sobrescritura es falsa.</translation>
     </message>
     <message>
         <source>Unable to get driver %1</source>
@@ -10823,7 +10906,7 @@ Error(%2): %3</translation>
     </message>
     <message>
         <source>Using fix %1.</source>
-        <translation>Usando correción %1.</translation>
+        <translation>Usando corrección %1.</translation>
     </message>
     <message>
         <source>Topology plugin</source>
@@ -10911,7 +10994,7 @@ Error: %2</translation>
     </message>
     <message>
         <source>%1 not owner of the table %2.</source>
-        <translation>%1 no es propietaro de la tabla %2.</translation>
+        <translation>%1 no es propietario de la tabla %2.</translation>
     </message>
     <message>
         <source>Unable determine number of geometry columns of layer %1.%2: 
@@ -11085,7 +11168,7 @@ SQL: %1</translation>
     </message>
     <message>
         <source>Error executing query: %1</source>
-        <translation>Error al ejecutar la contulta: %1</translation>
+        <translation>Error al ejecutar la consulta: %1</translation>
     </message>
     <message>
         <source>Error executing the select query for related styles. The query was logged</source>
@@ -11140,7 +11223,7 @@ Se desactivará.</translation>
     <message>
         <source>Unable to determine number of geometry columns of layer %1.%2: 
 %3</source>
-        <translation>No se puede determinar el número de colomnas de geometría de la capa %1. %2: 
+        <translation>No se puede determinar el número de columnas de geometría de la capa %1. %2: 
 %3</translation>
     </message>
     <message>
@@ -13866,7 +13949,7 @@ Esta copia de QGIS se ha creado sin capacidad para SpatialLite.</translation>
     </message>
     <message>
         <source>GEOS Version</source>
-        <translation>Versión de GEOS</translation>
+        <translation type="obsolete">Versión de GEOS</translation>
     </message>
     <message>
         <source>PostgreSQL Client Version</source>
@@ -14027,7 +14110,7 @@ Esta copia de QGIS se ha creado sin capacidad para SpatialLite.</translation>
     </message>
     <message>
         <source>PROJ.4 Version</source>
-        <translation>Version de PROJ.4 </translation>
+        <translation>Versión de PROJ.4 </translation>
     </message>
     <message>
         <source>Select zip layers to add...</source>
@@ -14047,7 +14130,7 @@ Esta copia de QGIS se ha creado sin capacidad para SpatialLite.</translation>
     </message>
     <message>
         <source>Layer labeling settings</source>
-        <translation>Configuracioń del etiquetado de la capa</translation>
+        <translation>Configuración del etiquetado de la capa</translation>
     </message>
     <message>
         <source>Browser</source>
@@ -14346,6 +14429,14 @@ Por favor, contacte con los desarrolladores.</translation>
     <message>
         <source>Show more</source>
         <translation>Mostrar más</translation>
+    </message>
+    <message>
+        <source>Compiled against GEOS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Running against GEOS</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15637,7 +15728,7 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>Filter all the features which have been edited but not yet saved</source>
-        <translation>Filtrar todos los objetoes espaciales que se han editado pero no se han guardado aún</translation>
+        <translation>Filtrar todos los objetos espaciales que se han editado pero no se han guardado aún</translation>
     </message>
     <message>
         <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4</source>
@@ -15828,7 +15919,7 @@ El error fue: %2</translation>
     </message>
     <message>
         <source>Combo box with predefined items. Value is stored in the attribute, description is shown in the combo box.</source>
-        <translation>Cuadro combinado con elementos predefinidos. El valor se guarda en el campo, la descripción se muestra en el cuado combinado.</translation>
+        <translation>Cuadro combinado con elementos predefinidos. El valor se guarda en el campo, la descripción se muestra en el cuadro combinado.</translation>
     </message>
     <message>
         <source>Load Data from layer</source>
@@ -15880,7 +15971,7 @@ El error fue: %2</translation>
     </message>
     <message>
         <source>A text edit field that accepts multiple lines will be used.</source>
-        <translation>Se usará un campo de edición de texto que acepta múltimples líneas.</translation>
+        <translation>Se usará un campo de edición de texto que acepta múltiples líneas.</translation>
     </message>
     <message>
         <source>Value relation</source>
@@ -15920,7 +16011,7 @@ El error fue: %2</translation>
     </message>
     <message>
         <source>Allow multiple selections</source>
-        <translation>Permitir selección multiple</translation>
+        <translation>Permitir selección múltiple</translation>
     </message>
     <message>
         <source>Filter column</source>
@@ -16804,7 +16895,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
-        <translation>Si necesita obtener de QGIS un archivo de salida de base vectorial, se sugiere que prube a imprimir a PostScript si la salida SVG no es satisfactoria.&lt;/p&gt;</translation>
+        <translation>Si necesita obtener de QGIS un archivo de salida de base vectorial, se sugiere que pruebe a imprimir a PostScript si la salida SVG no es satisfactoria.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>save template</source>
@@ -16995,7 +17086,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Arrow outline width</source>
-        <translation>Anchura de línea extrerior de flecha</translation>
+        <translation>Anchura de línea exterior de flecha</translation>
     </message>
     <message>
         <source>Arrowhead width</source>
@@ -17811,7 +17902,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Label margin changed</source>
-        <translation>Cambiado el márgen de la etiqueta</translation>
+        <translation>Cambiado el margen de la etiqueta</translation>
     </message>
     <message>
         <source>Label alignment changed</source>
@@ -18609,7 +18700,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>No frame</source>
-        <translation>Sin maroc</translation>
+        <translation>Sin marco</translation>
     </message>
     <message>
         <source>Zebra</source>
@@ -19490,7 +19581,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Table grid stroke</source>
-        <translation>Ĺineas de la cuadrícula de la tabla</translation>
+        <translation>Líneas de la cuadrícula de la tabla</translation>
     </message>
     <message>
         <source>Select grid color</source>
@@ -19557,7 +19648,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Header Font...</source>
-        <translation>Tipo de letra de la cabedera...</translation>
+        <translation>Tipo de letra de la cabecera...</translation>
     </message>
     <message>
         <source>Content Font...</source>
@@ -20083,7 +20174,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     </message>
     <message>
         <source>Presets</source>
-        <translation>Prestablecidos</translation>
+        <translation>Preestablecidos</translation>
     </message>
     <message>
         <source>Width</source>
@@ -20512,7 +20603,8 @@ y el archivo actual es [%3]</translation>
         <source>You can download a more complete set of cpt-city gradients by installing the &quot;Color Ramp Manager&quot; plugin (you must enable Experimental plugins in the plugin manager).
 
 </source>
-        <translation>Puede descargar un conjunto de gradientes cpt-city más completo  instalando el plugin &quot;Color Ramp Manager&quot; plugin (Debe habilitar complementos experimentales en el instalador de complementos). </translation>
+        <translation>Puede descargar un conjunto de gradientes cpt-city más completo instalando el complemento &quot;Color Ramp Manager&quot; (debe habilitar complementos experimentales en el instalador de complementos).
+</translation>
     </message>
     <message>
         <source>%1 directory details</source>
@@ -21059,7 +21151,7 @@ y el archivo actual es [%3]</translation>
     </message>
     <message>
         <source>double coord [&lt;b&gt;X,Y&lt;/b&gt;] as &amp;lt;= 0.0 =&amp;gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>coordenada doble [&lt;b&gt;X,Y&lt;/b&gt;] como &amp;lt;= 0.0 =&amp;gt;</translation>
     </message>
     <message>
         <source>double [-180.0 - 180.0]</source>
@@ -22087,7 +22179,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>At least one delimiter character must be specified</source>
-        <translation>Se debe especificar al menos un caracter delimitador</translation>
+        <translation>Se debe especificar al menos un carácter delimitador</translation>
     </message>
     <message>
         <source>Regular expression is not valid</source>
@@ -22326,7 +22418,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</source>
-        <translation>El caracter escape fuerza al siguiente caracter a ser tratado como un caracter normal (no un caracter delimitador, entrecomillado o salto de línea). Si el caracter escape es el mismo que un caracter de entrecomillado, sólo se escapa a sí mismo y sólo dentro de las comillas.</translation>
+        <translation>El carácter escape fuerza al siguiente carácter a ser tratado como un carácter normal (no un carácter delimitador, entrecomillado o salto de línea). Si el carácter escape es el mismo que un carácter de entrecomillado, sólo se escapa a sí mismo y sólo dentro de las comillas.</translation>
     </message>
     <message>
         <source>Regular expression used to split each line into fields</source>
@@ -22707,7 +22799,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Bar length: Scale linearly, such as the following value matches the specified size.</source>
-        <translation>Longitud de barra: escalar linealmente, de forma que el siguiente valor se ajuste al tamaño espacificado</translation>
+        <translation>Longitud de barra: escalar linealmente, de forma que el siguiente valor se ajuste al tamaño especificado</translation>
     </message>
     <message>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
@@ -22719,11 +22811,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Interpolation value</source>
-        <translation>Valor de interpolacíon</translation>
+        <translation>Valor de interpolación</translation>
     </message>
     <message>
         <source>You did not specify an interpolation value. A default value of %1 has been set.</source>
-        <translation>No especificó un valor de interpolación. Se ha establecido un valor predetermidado de %1.</translation>
+        <translation>No especificó un valor de interpolación. Se ha establecido un valor predeterminado de %1.</translation>
     </message>
 </context>
 <context>
@@ -23106,7 +23198,7 @@ Error del analizador:
     </message>
     <message>
         <source>Column Preview</source>
-        <translation>Vista prelimiar de columna</translation>
+        <translation>Vista preliminar de columna</translation>
     </message>
 </context>
 <context>
@@ -23673,7 +23765,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Not available for layer</source>
-        <translation>No diposible para capa</translation>
+        <translation>No disponible para capa</translation>
     </message>
 </context>
 <context>
@@ -24420,7 +24512,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Non-differential</source>
-        <translation>No difirencial</translation>
+        <translation>No diferencial</translation>
     </message>
     <message>
         <source>No position</source>
@@ -25591,7 +25683,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to get linear transform parameters</source>
-        <translation>No se pudieron obtener los parámetros de tranformación lineal</translation>
+        <translation>No se pudieron obtener los parámetros de transformación lineal</translation>
     </message>
     <message>
         <source>World file exists</source>
@@ -25723,7 +25815,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Projective</source>
-        <translation>Projectivo</translation>
+        <translation>Proyectivo</translation>
     </message>
     <message>
         <source>Not set</source>
@@ -25739,7 +25831,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coordinate of image(column/line)</source>
-        <translation>Coordenada de image(columna,fila)</translation>
+        <translation>Coordenada de imagen(columna,fila)</translation>
     </message>
 </context>
 <context>
@@ -26056,7 +26148,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Reset to defaults</source>
-        <translation>Restablecer valores perdeterminados</translation>
+        <translation>Restablecer valores predeterminados</translation>
     </message>
     <message>
         <source>Split stereo horizontal eye mapping</source>
@@ -28852,7 +28944,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Copy feature attributes</source>
-        <translation>Copiaar atributos del objeto espacial</translation>
+        <translation>Copiar atributos del objeto espacial</translation>
     </message>
     <message>
         <source>Copy GetFeatureInfo request URL</source>
@@ -29611,11 +29703,11 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>double coord [&lt;b&gt;in,out&lt;/b&gt; as 20.0-60.0,20.0-95.0]</source>
-        <translation type="unfinished"></translation>
+        <translation>coordenada doble [&lt;b&gt;entrada,salida&lt;/b&gt; como 20.0-60.0,20.0-95.0]</translation>
     </message>
     <message>
         <source>In edit mode, layer&apos;s relevant labeling map tool is:&lt;br&gt;&amp;nbsp;&amp;nbsp;Defined attribute field -&amp;gt; &lt;i&gt;enabled&lt;/i&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;Defined expression -&amp;gt; &lt;i&gt;disabled&lt;/i&gt;</source>
-        <translation>En el modo edición, la herramienta de mapa de etiquetado relevante de la capa es:&lt;br&gt;&amp;nbsp;&amp;nbsp;Campo de atributos definido -&amp;gt; &lt;i&gt;habilitado&lt;/i&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;Expresión definida -&amp;gt; &lt;i&gt;desabilitado&lt;/i&gt;</translation>
+        <translation>En el modo edición, la herramienta de mapa de etiquetado relevante de la capa es:&lt;br&gt;&amp;nbsp;&amp;nbsp;Campo de atributos definido -&amp;gt; &lt;i&gt;habilitado&lt;/i&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;Expresión definida -&amp;gt; &lt;i&gt;deshabilitado&lt;/i&gt;</translation>
     </message>
     <message>
         <source>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1&lt;br&gt;Value of 0 disables the specific limit.</source>
@@ -29662,7 +29754,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <name>QgsLabelingGuiBase</name>
     <message>
         <source>Layer labeling settings</source>
-        <translation>Configuracioń del etiquetado de la capa</translation>
+        <translation>Configuración del etiquetado de la capa</translation>
     </message>
     <message>
         <source>Label settings</source>
@@ -29986,7 +30078,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Line orientation dependent position</source>
-        <translation>Posición depenciente de la orientación de líneas</translation>
+        <translation>Posición dependiente de la orientación de líneas</translation>
     </message>
     <message>
         <source>Wrap label on character</source>
@@ -30018,7 +30110,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Wrap on character</source>
-        <translation>Caracter de división</translation>
+        <translation>Carácter de división</translation>
     </message>
     <message>
         <source>Line height</source>
@@ -30438,7 +30530,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Always show</source>
-        <translation>Mostrat siempre</translation>
+        <translation>Mostrar siempre</translation>
     </message>
     <message>
         <source>Draw under</source>
@@ -30756,7 +30848,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Not fully defined drawing order set to legend order.</source>
-        <translation>Orden de dibujado no definido totalmente estableciso al orden de la leyenda.</translation>
+        <translation>Orden de dibujado no definido totalmente establecido al orden de la leyenda.</translation>
     </message>
     <message>
         <source>Legend</source>
@@ -32168,7 +32260,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>Symbolset</source>
-        <translation type="obsolete">Conjuto de símbolos</translation>
+        <translation type="obsolete">Conjunto de símbolos</translation>
     </message>
     <message>
         <source>Use templates</source>
@@ -33111,7 +33203,7 @@ Nota: Proveer la contraseña es opcional. Será solicitada interactivamente cuan
 
 Extended error information:
 %1</source>
-        <translation>Falló la conexión - Compruebe la configuracioń y vuelva a probar.
+        <translation>Falló la conexión - Compruebe la configuración y vuelva a probar.
 
 Información de error ampliada:
 %1</translation>
@@ -33853,7 +33945,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Failed to export OSM data:
 %1</source>
-        <translation>No se pudiero exportar los datos de OSM:
+        <translation>No se pudieron exportar los datos de OSM:
 %1</translation>
     </message>
 </context>
@@ -33873,7 +33965,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output SpatiaLite DB file</source>
-        <translation>Arhivo DB de SpatiaLite de salida</translation>
+        <translation>Archivo DB de SpatiaLite de salida</translation>
     </message>
     <message>
         <source>Create connection (SpatiaLite) after import</source>
@@ -33902,7 +33994,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Failed to import OSM data:
 %1</source>
-        <translation>No se pudiero importar los datos de OSM:
+        <translation>No se pudieron importar los datos de OSM:
 %1</translation>
     </message>
     <message>
@@ -34335,7 +34427,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Synchronizing to remote layers</source>
-        <translation>Sincronizanco a capas remotas</translation>
+        <translation>Sincronizando a capas remotas</translation>
     </message>
     <message>
         <source>%v / %m features copied</source>
@@ -35692,11 +35784,11 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Scan for valid items in the browser dock</source>
-        <translation>Buscar elementos válidos en el dock del explorador</translation>
+        <translation type="unfinished">Buscar elementos válidos en el dock del explorador</translation>
     </message>
     <message>
         <source>Scan for contents of compressed files (.zip) in browser dock</source>
-        <translation>Buscarr contenidos de archivos comprimidos (.zip) en dock del explorador</translation>
+        <translation>Buscar contenidos de archivos comprimidos (.zip) en dock del explorador</translation>
     </message>
     <message>
         <source>Create new project from default project</source>
@@ -35840,7 +35932,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>System</source>
-        <translation>Sístema</translation>
+        <translation>Sistema</translation>
     </message>
     <message>
         <source>Data Sources</source>
@@ -36012,7 +36104,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Miter limit</source>
-        <translation type="unfinished"></translation>
+        <translation>Límite en inglete</translation>
     </message>
     <message>
         <source>Join style</source>
@@ -36703,7 +36795,7 @@ SQL: %3</translation>
     </message>
     <message>
         <source>Editing and adding disabled for 2D+ layer (%1; %2)</source>
-        <translation>Edición y adición desabilitados para la capa 2D+ (%1; %2)</translation>
+        <translation>Edición y adición deshabilitados para la capa 2D+ (%1; %2)</translation>
     </message>
     <message>
         <source>Could not insert metadata for %1.%2.
@@ -36725,7 +36817,7 @@ Error: %2</translation>
         <source>Rebuild of spatial index failed.
 SQL:%1
 Error: %2</source>
-        <translation>Falló la reconstricción del índice espacial.
+        <translation>Falló la reconstrucción del índice espacial.
 SQL: %1
 Error: %2</translation>
     </message>
@@ -37473,7 +37565,7 @@ Información de error ampliada:
     </message>
     <message>
         <source>Don&apos;t resolve type of unrestricted columns (GEOMETRY)</source>
-        <translation>No resolver el tipo de columnas sin restrcción (GEOMETRÍA)</translation>
+        <translation>No resolver el tipo de columnas sin restricción (GEOMETRÍA)</translation>
     </message>
 </context>
 <context>
@@ -37972,7 +38064,7 @@ Es necesario reiniciar QGIS para recargarlo.</translation>
     </message>
     <message>
         <source>If you haven&apos;t cancelled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.</source>
-        <translation>Si no ha cancelado la descarga manualmente, es muy probable que se deba a que expiró la conexión. En ese caso cosidere incrementar el tiempo para desconexión en la ventana de opciones de QGIS.</translation>
+        <translation>Si no ha cancelado la descarga manualmente, es muy probable que se deba a que expiró la conexión. En ese caso considere incrementar el tiempo para desconexión en la ventana de opciones de QGIS.</translation>
     </message>
     <message>
         <source>Server response is 200 OK, but doesn&apos;t contain plugin metatada. This is most likely caused by a proxy or a wrong repository URL. You can configure proxy settings in QGIS options.</source>
@@ -37984,7 +38076,7 @@ Es necesario reiniciar QGIS para recargarlo.</translation>
     </message>
     <message>
         <source>If you haven&apos;t cancelled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.</source>
-        <translation>Si no ha cancelado la descarga manualmente, puede que se deba a que expiró la conexión. En ese caso cosidere incrementar el tiempo para desconexión en las opciones de QGIS.</translation>
+        <translation>Si no ha cancelado la descarga manualmente, puede que se deba a que expiró la conexión. En ese caso considere incrementar el tiempo para desconexión en las opciones de QGIS.</translation>
     </message>
     <message>
         <source>The plugin exited with error status: {0}</source>
@@ -38659,7 +38751,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The plugin seems to be invalid or have unfulfilled dependencies. It has been installed, but can&apos;t be loaded. If you really need this plugin, you can contact its author or &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; and try to solve the problem. If not, you can just uninstall it. Here is the error message below:</source>
-        <translation>El complemento parece no ser válido o tiene dependencias insatisfechas. Se ha instalado, pero no se puede cargar. Si realmente lo necesita, puede contactar con el autor o &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;el grupo se usuarios de QGIS&lt;/a&gt; e intantar solucionar el problema. Si no, puede simplemente desinstalarlo. A continuación está el mensaje de error:</translation>
+        <translation>El complemento parece no ser válido o tiene dependencias insatisfechas. Se ha instalado, pero no se puede cargar. Si realmente lo necesita, puede contactar con el autor o &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;el grupo se usuarios de QGIS&lt;/a&gt; e intentar solucionar el problema. Si no, puede simplemente desinstalarlo. A continuación está el mensaje de error:</translation>
     </message>
     <message>
         <source>Do you want to uninstall this plugin now? If you&apos;re unsure, probably you would like to do this.</source>
@@ -38922,7 +39014,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;h3&gt;Installed Plugins&lt;/h3&gt;&lt;p&gt;On the left you see the list of &lt;b&gt;installed plugins&lt;/b&gt; on your system. Both python and cpp plugins are listed. Some plugins come with your QGIS installation while most of them are made available via the plugin repositories.&lt;/p&gt;&lt;p&gt;You can temporarily enable or disable a plugin.To &lt;i&gt;enable&lt;/i&gt; or &lt;i&gt;disable&lt;/i&gt; a plugin, click its checkbox or doubleclick its name...&lt;/p&gt;&lt;p&gt;Plugins showing in &lt;span style=&apos;color:red&apos;&gt;red&lt;/span&gt; are not loaded because there is a problem. Consult the &apos;Invalid&apos; tab to see more details, or to reinstall or uninstall this plugin.&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;Complementos instalados&lt;/h3&gt;&lt;p&gt;A la izquierda se ve la lista de &lt;b&gt;complementos instalados&lt;/b&gt; en su equipo. Se listan tanto los complementos de Python como los de cpp. Algunos complementos vienen con su instalacíon de QGIS mientras que la mayoría se ponen a disposición a través de los repositorios de complementos.&lt;/p&gt;&lt;p&gt;Puede habilitar o deshabilitar un complemento temporalmente.Para &lt;i&gt;habilitar&lt;/i&gt; o &lt;i&gt;deshabilitar&lt;/i&gt; un complemento, marque su casilla de verificación o haga doble clic en su nombre...&lt;/p&gt;&lt;p&gt;Los complementos que se muestran en &lt;span style=&apos;color:red&apos;&gt;rojo&lt;/span&gt; no están cargados porque hay un problema. Consulte la pestaña &apos;No válidos&apos; para ver más detalles o para reinstalar o desinstalar este complemento.&lt;/p&gt;</translation>
+        <translation>&lt;h3&gt;Complementos instalados&lt;/h3&gt;&lt;p&gt;A la izquierda se ve la lista de &lt;b&gt;complementos instalados&lt;/b&gt; en su equipo. Se listan tanto los complementos de Python como los de cpp. Algunos complementos vienen con su instalación de QGIS mientras que la mayoría se ponen a disposición a través de los repositorios de complementos.&lt;/p&gt;&lt;p&gt;Puede habilitar o deshabilitar un complemento temporalmente.Para &lt;i&gt;habilitar&lt;/i&gt; o &lt;i&gt;deshabilitar&lt;/i&gt; un complemento, marque su casilla de verificación o haga doble clic en su nombre...&lt;/p&gt;&lt;p&gt;Los complementos que se muestran en &lt;span style=&apos;color:red&apos;&gt;rojo&lt;/span&gt; no están cargados porque hay un problema. Consulte la pestaña &apos;No válidos&apos; para ver más detalles o para reinstalar o desinstalar este complemento.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Upgradable plugins&lt;/h3&gt;&lt;p&gt;Here are &lt;b&gt;upgradeable plugins&lt;/b&gt;. It means more recent versions of installed plugins are available in the repositories.&lt;/p&gt;</source>
@@ -38934,7 +39026,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;h3&gt;New plugins&lt;/h3&gt;&lt;p&gt;Here you see brand &lt;b&gt;new&lt;/b&gt; plugins which can be installed.&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;Complementos nuevos&lt;/h3&gt;&lt;p&gt;Aqui se ven los complementos más &lt;b&gt;nuevos&lt;/b&gt; que se pueden instalar.&lt;/p&gt;</translation>
+        <translation>&lt;h3&gt;Complementos nuevos&lt;/h3&gt;&lt;p&gt;Aquí se ven los complementos más &lt;b&gt;nuevos&lt;/b&gt; que se pueden instalar.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download an other version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
@@ -38989,7 +39081,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Not installed plugins available for download</source>
-        <translation>Complementos no instaldos disponibles para descarga</translation>
+        <translation>Complementos no instalados disponibles para descarga</translation>
     </message>
     <message>
         <source>Upgradeable</source>
@@ -38997,7 +39089,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Installed plugins with more recent version available for download</source>
-        <translation>Complementos instaldos con versión más reciente disponible para descarga</translation>
+        <translation>Complementos instalados con versión más reciente disponible para descarga</translation>
     </message>
     <message>
         <source>New</source>
@@ -39005,7 +39097,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Not installed plugins seen for the first time</source>
-        <translation>Complementos no instaldos vistos por primera vez</translation>
+        <translation>Complementos no instalados vistos por primera vez</translation>
     </message>
     <message>
         <source>Invalid</source>
@@ -39255,7 +39347,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Label attribute:</source>
-        <translation>Atributo de etiqutado:</translation>
+        <translation>Atributo de etiquetado:</translation>
     </message>
     <message>
         <source>Label font...</source>
@@ -39896,7 +39988,7 @@ Error de la base de datos: %2</translation>
     </message>
     <message>
         <source>Editing and adding disabled for 2D+ layer (%1; %2)</source>
-        <translation>Edición y adición desabilitados para la capa 2D+ (%1; %2)</translation>
+        <translation>Edición y adición deshabilitados para la capa 2D+ (%1; %2)</translation>
     </message>
     <message>
         <source>Primary key field &apos;%1&apos; for view not unique.</source>
@@ -40173,7 +40265,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Parameters :</source>
-        <translation>Parámetros:</translation>
+        <translation type="obsolete">Parámetros:</translation>
     </message>
     <message>
         <source>Parameters:</source>
@@ -40182,6 +40274,10 @@ Proceed?</source>
     <message>
         <source>Can only use ellipsoidal calculations when CRS transformation is enabled</source>
         <translation>Puede usar solo cálculos elipsoidales cuando está activada la transformación de SRC</translation>
+    </message>
+    <message>
+        <source>Select %1 from pull-down menu to adjust radii</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -40248,7 +40344,7 @@ Proceed?</source>
     </message>
     <message>
         <source>The number of decimal places that are used when displaying the mouse position is automatically set to be enough so that moving the mouse by one pixel gives a change in the position display</source>
-        <translation>El número de decimales usado cuando se visualiza en la posición del ratón se establece automaticamente de manera que un movimiento del ratón de un solo píxel cambia la posición de la visualización</translation>
+        <translation>El número de decimales usado cuando se visualiza en la posición del ratón se establece automáticamente de manera que un movimiento del ratón de un solo píxel cambia la posición de la visualización</translation>
     </message>
     <message>
         <source>Automatic</source>
@@ -40504,11 +40600,11 @@ Proceed?</source>
     </message>
     <message>
         <source>Macros</source>
-        <translation>Marcros</translation>
+        <translation>Macros</translation>
     </message>
     <message>
         <source>Python macros</source>
-        <translation>Marcros de Python</translation>
+        <translation>Macros de Python</translation>
     </message>
     <message>
         <source>Unselect all</source>
@@ -41853,7 +41949,7 @@ Pulse el botón de ayuda para obtener opciones de creación válidas para este f
     </message>
     <message>
         <source>CFloat32 - Complex Float32 </source>
-        <translation>CFloat32 - Número conplejo Float32 </translation>
+        <translation>CFloat32 - Número complejo Float32 </translation>
     </message>
     <message>
         <source>CFloat64 - Complex Float64 </source>
@@ -42882,7 +42978,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Minimum&lt;br&gt;(exclusive)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Mínimo&lt;br&gt;(excluído)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Mínimo&lt;br&gt;(excluido)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Maximum scale, i.e. minimum scale denominator. This limit is inclusive, that means the layer will be displayed on this scale.</source>
@@ -43593,7 +43689,7 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>Import colors...</source>
-        <translation>Inportar colores...</translation>
+        <translation>Importar colores...</translation>
     </message>
 </context>
 <context>
@@ -43775,7 +43871,7 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>Scale area</source>
-        <translation>Area de escala</translation>
+        <translation>Área de escala</translation>
     </message>
     <message>
         <source>Scale diameter</source>
@@ -43935,7 +44031,7 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>Number of features in this rule which are also present in other rule(s).</source>
-        <translation>Número de objetos espaciales en esta regla que tambiéne están presentes en otra(s) regla(s).</translation>
+        <translation>Número de objetos espaciales en esta regla que también están presentes en otra(s) regla(s).</translation>
     </message>
     <message>
         <source>Max. scale</source>
@@ -44366,7 +44462,7 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source>Save style</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar estilo</translation>
     </message>
 </context>
 <context>
@@ -45525,7 +45621,7 @@ pero implica un rendimiento mejor posteriormente.</translation>
     </message>
     <message>
         <source>Confirm Update Statistics</source>
-        <translation>Comfirmar actualización de estadísticas</translation>
+        <translation>Confirmar actualización de estadísticas</translation>
     </message>
     <message>
         <source>Update Statistics</source>
@@ -46702,7 +46798,7 @@ QGIS necesita que la relación tenga una columna de enteros no mayor de 32 bits 
     <message>
         <source>Error when saving selected symbols to file:
 %1</source>
-        <translation>Error al guardar los síbolos seleccionados a archivo:
+        <translation>Error al guardar los símbolos seleccionados a archivo:
 %1</translation>
     </message>
     <message>
@@ -47027,59 +47123,59 @@ Hubo un problema con su base de datos de símbolos.</translation>
     </message>
     <message>
         <source>Type here to filter symbols...</source>
-        <translation type="unfinished"></translation>
+        <translation>Escriba aquí para filtrar los símbolos...</translation>
     </message>
     <message>
         <source>Share Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Menú Compartir</translation>
     </message>
     <message>
         <source>Export</source>
-        <translation type="unfinished">Exportar</translation>
+        <translation>Exportar</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation type="unfinished">Importar</translation>
+        <translation>Importar</translation>
     </message>
     <message>
         <source>Group Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Acciones de grupo</translation>
     </message>
     <message>
         <source>Group Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Símbolos de grupo</translation>
     </message>
     <message>
         <source>Edit Smart Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar Grupo inteligente</translation>
     </message>
     <message>
         <source>New Group</source>
-        <translation type="unfinished">Nuevo Grupo</translation>
+        <translation>Nuevo Grupo</translation>
     </message>
     <message>
         <source>Finish Grouping</source>
-        <translation type="unfinished"></translation>
+        <translation>Terminar de agrupar</translation>
     </message>
     <message>
         <source>Edit Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar grupo</translation>
     </message>
     <message>
         <source>Add Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir grupo</translation>
     </message>
     <message>
         <source>Remove Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar grupo</translation>
     </message>
     <message>
         <source>Apply Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplicar grupo</translation>
     </message>
     <message>
         <source>Un-group</source>
-        <translation type="unfinished"></translation>
+        <translation>Desagrupar</translation>
     </message>
 </context>
 <context>
@@ -47660,7 +47756,7 @@ La otra herramienta para mover (icono de la Tierra combinado con el de la mano) 
     </message>
     <message>
         <source>By left clicking an element in the layout view you can select it, by right clicking an element you can lock it. A lock symbol will appear in the upper left corner of the selected element. This prevents the element from accidentally being moved with the mouse. While in a locked state, you cannot move an element with the mouse but you can still move it with the arrow keys or by absolutely positioning it by setting its &lt;strong&gt;Position and Size&lt;/strong&gt;.</source>
-        <translation>Haciendo clic izquierdo en un elemento de la vista de la composición puede seleccionarlo, haciendo clic derecho puede bloquearlo. Un símbolo de bloqueo aparecerá en la esquina superior izquierda del elemento seleccionado. Esto evita que el elemento sea movido accidentalmente con el ratón. Mientras esté bloqueado no puede mover un elemento con el ratón, pero sí con las teclas de desplazamiento o posicionándolo de forma absoluta establaciendo su &lt;strong&gt;Posición y tamaño&lt;/strong&gt;.</translation>
+        <translation>Haciendo clic izquierdo en un elemento de la vista de la composición puede seleccionarlo, haciendo clic derecho puede bloquearlo. Un símbolo de bloqueo aparecerá en la esquina superior izquierda del elemento seleccionado. Esto evita que el elemento sea movido accidentalmente con el ratón. Mientras esté bloqueado no puede mover un elemento con el ratón, pero sí con las teclas de desplazamiento o posicionándolo de forma absoluta estableciendo su &lt;strong&gt;Posición y tamaño&lt;/strong&gt;.</translation>
     </message>
     <message>
         <source>Rotating a map and linking a north arrow</source>
@@ -47708,7 +47804,7 @@ La otra herramienta para mover (icono de la Tierra combinado con el de la mano) 
     </message>
     <message>
         <source>In the options dialog, under the CRS tab, you can set QGIS so that whenever you create a new project, &apos;on the fly projection&apos; is enabled automatically and a pre-selected Coordinate Reference System of your choice is used.</source>
-        <translation>En el diálogo de opciones, bajo la pestaña SRC, puede establecer que QGIS active automáticamente la &quot;proyección al vuelo&quot; cada vez que cree un proyecto nuevo y se use un Sistema de Refencia de Coordenadas preseleccionado de su elección.</translation>
+        <translation>En el diálogo de opciones, bajo la pestaña SRC, puede establecer que QGIS active automáticamente la &quot;proyección al vuelo&quot; cada vez que cree un proyecto nuevo y se use un Sistema de Referencia de Coordenadas preseleccionado de su elección.</translation>
     </message>
     <message>
         <source>Sponsor QGIS</source>
@@ -47740,7 +47836,7 @@ La otra herramienta para mover (icono de la Tierra combinado con el de la mano) 
     </message>
     <message>
         <source>QGIS is open source software. This means that the software source code can be freely viewed and modified. The GPL places a restriction that any modifications you make must be made available in source form to whoever you give modified versions to, and that you can not create a new version of QGIS under a &apos;closed source&apos; license. Visit &lt;a href=&quot;http://qgis.org&quot;&gt; the QGIS home page (http://qgis.org)&lt;/a&gt; for more information.</source>
-        <translation>QGIS es un software de código abierto. Esto significa que el cógigo fuente del software se puede ver y modificar libremente. La GPL establece la restricción de que cualquier modificación que se haga se debe poner a disposición en forma de fuente a quienquiera que se de la versión modificada y que no se puede crear una nueva versión de QGIS con una licencia de código cerrado. Visite &lt;a href=&quot;http://qgis.org&quot;&gt; la página web de QGIS (http://qgis.org)&lt;/a&gt; para más información.</translation>
+        <translation>QGIS es un software de código abierto. Esto significa que el código fuente del software se puede ver y modificar libremente. La GPL establece la restricción de que cualquier modificación que se haga se debe poner a disposición en forma de fuente a quienquiera que se de la versión modificada y que no se puede crear una nueva versión de QGIS con una licencia de código cerrado. Visite &lt;a href=&quot;http://qgis.org&quot;&gt; la página web de QGIS (http://qgis.org)&lt;/a&gt; para más información.</translation>
     </message>
     <message>
         <source>Both used to be correct, but we recently decided to just use &apos;QGIS&apos;.  For articles we suggest you write &apos;QGIS is ....&apos;</source>
@@ -47788,7 +47884,7 @@ La otra herramienta para mover (icono de la Tierra combinado con el de la mano) 
     </message>
     <message>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;Esc&apos; (the escape key), or click the &apos;Stop map rendering&apos; icon in the status bar to the bottom of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
-        <translation>A veces se tiene un conjunto de datos muy grande que lleva horas dibujar. Puede presionar la tecla &quot;Esc&quot; (escape) o pulsar el icono &apos;Deterner la renderización del mapa&apos; de la barra de estado abajo de la ventana en cualquier momento para detener el renderizado. Si va a realizar varias acciones (ej.: modificar opcones de simbología) y quiere desactivar temporalmente el renderizado del mapa mientras lo hace, puede desmarcar la casilla &quot;Renderizar&quot; abajo a la derecha de la barra de estado. ¡No olvide volver a marcarla cuando quiera que se vuelva a dibujar el mapa!</translation>
+        <translation>A veces se tiene un conjunto de datos muy grande que lleva horas dibujar. Puede presionar la tecla &quot;Esc&quot; (escape) o pulsar el icono &apos;Detener la renderización del mapa&apos; de la barra de estado abajo de la ventana en cualquier momento para detener el renderizado. Si va a realizar varias acciones (ej.: modificar opciones de simbología) y quiere desactivar temporalmente el renderizado del mapa mientras lo hace, puede desmarcar la casilla &quot;Renderizar&quot; abajo a la derecha de la barra de estado. ¡No olvide volver a marcarla cuando quiera que se vuelva a dibujar el mapa!</translation>
     </message>
 </context>
 <context>
@@ -47876,7 +47972,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Projective</source>
-        <translation>Projectivo</translation>
+        <translation>Proyectivo</translation>
     </message>
     <message>
         <source>Polynomial 1</source>
@@ -49554,7 +49650,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Minimum&lt;br&gt;(exclusive)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Mínimo&lt;br&gt;(excluído)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Mínimo&lt;br&gt;(excluido)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Maximum&lt;br&gt;(inclusive)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -50583,7 +50679,7 @@ La respuesta fue:
     </message>
     <message>
         <source>Getting map via WCS.</source>
-        <translation>Obteniendo mapa via WCS.</translation>
+        <translation>Obteniendo mapa vía WCS.</translation>
     </message>
     <message>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
@@ -51298,7 +51394,7 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>unexpected image size</source>
-        <translation>tamaño de imegen inesperado</translation>
+        <translation>tamaño de imagen inesperado</translation>
     </message>
     <message>
         <source>Returned image is flawed [%1]</source>
@@ -51870,7 +51966,7 @@ URL probada: %1</translation>
     <name>SEXTANTE</name>
     <message>
         <source>Analysis</source>
-        <translation>Análisis</translation>
+        <translation type="obsolete">Análisis</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE Toolbox</source>
@@ -51886,11 +51982,11 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE options and configuration</source>
-        <translation>&amp;SEXTANTE opciones y configuración</translation>
+        <translation type="obsolete">&amp;SEXTANTE opciones y configuración</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE results viewer</source>
-        <translation>&amp;SEXTANTE Visualizador de resultados</translation>
+        <translation type="obsolete">&amp;SEXTANTE Visualizador de resultados</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE help</source>
@@ -51902,19 +51998,19 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE toolbox</source>
-        <translation>Caja de herramientas de &amp;SEXTANTE</translation>
+        <translation type="obsolete">Caja de herramientas de &amp;SEXTANTE</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE modeler</source>
-        <translation>Modelador de &amp;SEXTANTE</translation>
+        <translation type="obsolete">Modelador de &amp;SEXTANTE</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE history and log</source>
-        <translation>Historial y registro de &amp;SEXTANTE</translation>
+        <translation type="obsolete">Historial y registro de &amp;SEXTANTE</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE commander</source>
-        <translation>Órdenes de &amp;SEXTANTE</translation>
+        <translation type="obsolete">Órdenes de &amp;SEXTANTE</translation>
     </message>
 </context>
 <context>
@@ -51994,7 +52090,7 @@ URL probada: %1</translation>
 
 SQL Anywhere error code: %1
 Description: %2</source>
-        <translation>Falló la conexión - Compruebe la configuracioń y vuelva a probar.
+        <translation>Falló la conexión - Compruebe la configuración y vuelva a probar.
 
 Cógido de error de SQL Anywhere: %1
 Descripción: %2</translation>
@@ -52048,7 +52144,7 @@ Descripción: %2</translation>
     </message>
     <message>
         <source>Name or IP address of computer hosting the database server (leave blank for local connections)</source>
-        <translation>NOmbre o dirección IP del ordenador que aloja el servidor de la base de datos (dejar en blanco para conexiones locales)</translation>
+        <translation>Nombre o dirección IP del ordenador que aloja el servidor de la base de datos (dejar en blanco para conexiones locales)</translation>
     </message>
     <message>
         <source>Port number used by the database server (leave blank for default 2638)</source>
@@ -52253,7 +52349,7 @@ Descripción: %2</translation>
 
 SQL Anywhere error code: %2
 Description: %3</source>
-        <translation>Falló la conexión a la base de datos %1- Compruebe la configuracioń y vuelva a probar.
+        <translation>Falló la conexión a la base de datos %1- Compruebe la configuración y vuelva a probar.
 
 Cógido de error de SQL Anywhere: %2
 Descripción: %3</translation>
@@ -52553,7 +52649,7 @@ Descripción: %3</translation>
     <name>SextanteToolbox</name>
     <message>
         <source>SEXTANTE Toolbox</source>
-        <translation>Barra de herramientas SEXTANTE</translation>
+        <translation type="obsolete">Barra de herramientas SEXTANTE</translation>
     </message>
     <message>
         <source>Click here to configure
@@ -52562,15 +52658,15 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Execute</source>
-        <translation>Ejecutar</translation>
+        <translation type="obsolete">Ejecutar</translation>
     </message>
     <message>
         <source>Execute as batch process</source>
-        <translation>Ejecutar usando procesamiento por lotes</translation>
+        <translation type="obsolete">Ejecutar usando procesamiento por lotes</translation>
     </message>
     <message>
         <source>Edit rendering styles for outputs</source>
-        <translation>Editar estilos de renderizados para salidas</translation>
+        <translation type="obsolete">Editar estilos de renderizados para salidas</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -52578,20 +52674,20 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Recently used algorithms</source>
-        <translation>Algorimos usados recientemente</translation>
+        <translation type="obsolete">Algoritmos usados recientemente</translation>
     </message>
     <message>
         <source>Enter algorithm name to filter list</source>
-        <translation>Introducir nombre de algoritmo para filtar la lista</translation>
+        <translation type="obsolete">Introducir nombre de algoritmo para filtrar la lista</translation>
     </message>
     <message>
         <source>Search...</source>
-        <translation>Buscar...</translation>
+        <translation type="obsolete">Buscar...</translation>
     </message>
     <message>
         <source>Click here to learn more
 about SEXTANTE</source>
-        <translation>Pulse aquí para aprender más
+        <translation type="obsolete">Pulse aquí para aprender más
 sobre SEXTANTE</translation>
     </message>
 </context>
@@ -53024,11 +53120,11 @@ Would you like to add the new layer to the TOC?</source>
     <name>WidgetLineDecoration</name>
     <message>
         <source>Form</source>
-        <translation>Formulario</translation>
+        <translation type="obsolete">Formulario</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation>Color</translation>
+        <translation type="obsolete">Color</translation>
     </message>
     <message>
         <source>Change</source>
@@ -53036,15 +53132,15 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Pen width</source>
-        <translation>Anchura de plumilla</translation>
+        <translation type="obsolete">Anchura de plumilla</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation>Milímetro</translation>
+        <translation type="obsolete">Milímetro</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Unidad de mapa</translation>
+        <translation type="obsolete">Unidad de mapa</translation>
     </message>
 </context>
 <context>
@@ -53728,7 +53824,7 @@ Ejecute la comprobación de topología de nuevo.</translation>
     </message>
     <message>
         <source>Show topology errors</source>
-        <translation>Mostrar errrores de topología</translation>
+        <translation>Mostrar errores de topología</translation>
     </message>
     <message>
         <source>Show errors</source>
@@ -53840,7 +53936,7 @@ These values are written to the map file in the appropriate spots to set things 
   &lt;dt&gt;&lt;label&gt;Footer&lt;/label&gt;&lt;/dt&gt;
   &lt;dd&gt;Full path to the MapServer footer file to be used with the map file.&lt;/dd&gt;
 </source>
-        <translation>&lt;h3&gt;Exportar un proyecto de QGIS a archivo de mapa de MapServer&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Exportar un proyecto de QGIS a archivo de mapa de MapServer&lt;/h3&gt;
 &lt;p&gt;
 Esta herramienta le permite exportar un proyecto guardado de QGIS a map de MapServer Sólo se necesitan el &lt;b&gt;Archivo de mapa&lt;/b&gt; y el &lt;b&gt;archivo de proyecto de QGIS&lt;/b&gt;.
 &lt;/p&gt;
@@ -54822,14 +54918,54 @@ To filter a layer before adding it to the map, either double click on its name o
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Añadir tablas de SQL Anywhere&lt;/h3&gt;
+Este diálogo le permite añandir capas de SQL Anywhere (tablas con una columna de geometría) a la vista del mapa de QGIS.
+&lt;p&gt;
+&lt;a href=&quot;#connect&quot;&gt;Conexiones&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#add&quot;&gt;Añadir capas&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#filter&quot;&gt;Filtrar una capa&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#search&quot;&gt;Opciones de búsqueda&lt;/a&gt;&lt;br/&gt;
+
+&lt;a href=&quot;#connect&quot;&gt;
+&lt;h4&gt;Conexiones&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;Seleccione la conexión a usar de la lista desplegable y pulse &lt;label&gt;Conectar&lt;/label&gt;.
+&lt;li&gt;Si no hay conexiones, use el botón &lt;label&gt;Nueva&lt;/label&gt; para crear una conexión.
+&lt;li&gt;Para modificar o borrar la conexión seleccionada, pulse los botones &lt;label&gt;Editar&lt;/label&gt; o &lt;label&gt;Borrar&lt;/label&gt;, respectivamente.
+&lt;/ul&gt;
+&lt;a name=&quot;add&quot;&gt;
+&lt;h4&gt;Añadir capas&lt;/h4&gt;
+&lt;/a&gt;
+Para añadir una capa:
+&lt;ol&gt;
+&lt;li&gt;Elija la conexión que desee de la lista desplegable.
+&lt;li&gt;Pulse &lt;label&gt;Conectar&lt;/label&gt;, lo que rellenará la lista de capas de la base de datos. Las opciones que afectan a cómo se rellena esta lista se describen en la ayuda del cuadro de diálogo para nuevas conexiones.
+    
+&lt;li&gt;Encuentre la capa que quiera añadir en la lista y pulse en ella para seleccionarla.
+&lt;li&gt;Puede seleccionar capas adicionales manteniendo pulsada la tecla Ctrl y pulsando en ellas.
+&lt;li&gt;Pulse &lt;label&gt;Añadir&lt;/label&gt; para añadir la capa(s) al mapa.
+&lt;/ol&gt;
+&lt;a name=&quot;filter&quot;&gt;
+&lt;h4&gt;Filtrar una capa&lt;/h4&gt;
+&lt;/a&gt;
+Para filtrar una capa antes de añadirla al mapa, haga doble clic en su nombre o selecciónela y pulse el botón &lt;label&gt;Construir consulta&lt;/label&gt;. Esto abrirá el Constructor de consultas, permitiéndole construir una sentencia SQL para filtrar los registros.
+
+&lt;a name=&quot;search&quot;&gt;
+&lt;h4&gt;Opciones de búsqueda&lt;/h4&gt;
+&lt;/a&gt;
+Marcar &lt;label&gt;Opciones de búsqueda&lt;/label&gt; habilita opciones adicionales para buscar en diferentes tipos de columnas y usar 2 modos de búsqueda: &lt;label&gt;Comodín&lt;/label&gt; o &lt;label&gt;Expresión regular&lt;/label&gt;.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Add SpatiaLite Tables&lt;/h3&gt;
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Añadir tablas SpatiaLite&lt;/h3&gt;
+Para definir una nueva conexión, pulse el botón &lt;label&gt;Nueva&lt;/label&gt; y use el navegador de archivos para apuntar a su base de datos SpatiaLite, que es un archivo con extensión &lt;i&gt;.sqlite&lt;/i&gt;.&lt;p&gt;
+Las conexiones que defina se recordarán para uso posterior y estarán disponibles en el menú desplegable.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Spatial Bookmarks&lt;/h3&gt;
@@ -54872,16 +55008,17 @@ To delete a bookmark from the Bookmarks dialog, click on it then click the &lt;l
 To update the extent of a bookmark, click on it then click the &lt;label&gt;Update&lt;/label&gt; button. Confirm your choice by clicking &lt;label&gt;OK&lt;/label&gt; or cancel the update by clicking &lt;label&gt;Cancel&lt;/label&gt;.
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;Marcadores espaciales&lt;/h3&gt;
+        <translation>&lt;h3&gt;Marcadores espaciales&lt;/h3&gt;
 Los marcadores espaciales le permiten &quot;marcar&quot; una localización geográfica y volver a ella más tarde.
 &lt;p&gt;
-&lt;a href=&quot;#creating&quot;&gt;Crear una marcador&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;Crear un marcador&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#working&quot;&gt;Trabajar con marcadores&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#zooming&quot;&gt;Zum a un marcador&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#deleting&quot;&gt;Borrar un marcador&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#updating&quot;&gt;Actualizar un marcador&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;creating&quot;&gt;
-&lt;h4&gt;Crear una marcador&lt;/h4&gt;
+&lt;h4&gt;Crear un marcador&lt;/h4&gt;
 &lt;/a&gt;
 Para crear un marcador:
 &lt;ol&gt;
@@ -54898,13 +55035,17 @@ Para usar o administrar marcadores, pulse el botón &lt;label&gt;Mostrar marcado
 &lt;a name=&quot;zooming&quot;&gt;
 &lt;h5&gt;Zum a un marcador&lt;/h5&gt;
 &lt;/a&gt;
-En el diálogo de marcadores, seleccione el marcador deseado haciendo clic en él y luego pulse el botón &lt;label&gt;Zum a&lt;/label&gt;.
+En el diálogo de marcadores geo espaciales, seleccione el marcador deseado haciendo clic en él y luego pulse el botón &lt;label&gt;Zum a&lt;/label&gt;.
 &lt;p&gt;
 También puede hacer zum a un marcador haciendo doble clic en él.
 &lt;a name=&quot;deleting&quot;&gt;
 &lt;h5&gt;Borrar un marcador&lt;/h5&gt;
 &lt;/a&gt;
 Para borrar un marcador del diálogo de marcadores, haga clic en el botón &lt;label&gt;Borrar&lt;/label&gt;. Confirme su elección haciendo clic en &lt;label&gt;Aceptar&lt;/label&gt; o cancele el borrado haciendo clic en &lt;label&gt;Cancelar&lt;/label&gt;.
+&lt;a name=&quot;updating&quot;&gt;
+&lt;h5&gt;Actualizar un marcador&lt;/h5&gt;
+&lt;/a&gt;
+Para actualizar la extensión de un marcador, pulse en él y luego en el botón &lt;label&gt;Actualizar&lt;/label&gt;. Confirme su elección haciendo clic en &lt;label&gt;Aceptar&lt;/label&gt; o cancele la actualización haciendo clic en &lt;label&gt;Cancelar&lt;/label&gt;.
 
 </translation>
     </message>
@@ -54941,9 +55082,9 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Complemento etiqueta de copyright&lt;/h3&gt;
-Dibuja una etiqueta de copyright junto con información adicional.&lt;br/&gt;
-Es posible agregar cualquier texto al mapa, no solamente una etiqueta de copyright.
+        <translation>&lt;h3&gt;Complemento etiqueta de copyright&lt;/h3&gt;
+Dibuja una etiqueta de copyright con información.&lt;br/&gt;
+Es posible agregar cualquier texto al mapa, no solo una etiqueta de copyright.
 &lt;p&gt;
 &lt;a href=&quot;#howto&quot;&gt;Cómo se hace&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#text&quot;&gt;Dar formato al texto&lt;/a&gt;&lt;br/&gt;
@@ -54955,14 +55096,14 @@ Es posible agregar cualquier texto al mapa, no solamente una etiqueta de copyrig
 &lt;li&gt;Asegúrese de que el complemento está cargado.
 &lt;li&gt;Haga clic en &lt;label&gt;Complementos &gt; Ilustraciones &gt; Etiqueta de copyright&lt;/label&gt; o use el botón &lt;label&gt;Etiqueta de Copyright&lt;/label&gt; de la Barra de herramientas.
 &lt;li&gt;Introduzca el texto que desea colocar sobre el mapa. Puede usar HTML.
-&lt;li&gt;Elija la ubicación del texto de la lista desplegable &lt;label&gt;Ubicación&lt;/label&gt;.
-&lt;li&gt;Asegúrese de habilitar el cuadro &lt;label&gt;Activar etiqueta de copyright&lt;/label&gt;, que aparece en la parte superior de la ventana .
+&lt;li&gt;Elija la ubicación de la etiqueta de la lista desplegable &lt;label&gt;Ubicación&lt;/label&gt;.
+&lt;li&gt;Asegúrese de habilitar la casilla &lt;label&gt;Activar etiqueta de copyright&lt;/label&gt;.
 &lt;li&gt;Haga clic en &lt;label&gt;Aceptar&lt;/label&gt;.
 &lt;/ol&gt;
 &lt;a name=&quot;text&quot;&gt;
 &lt;h4&gt; Dar formato al texto &lt;/h4&gt;
 &lt;/a&gt;
-Este complemento soporta etiquetas HTML básicas para dar formato al texto. Por ejemplo :
+Este complemento admite etiquetas HTML básicas para dar formato al texto. Por ejemplo :
 
 &lt;ul&gt;
 &lt;li&gt;&amp;lt;B&amp;gt;&lt;b&gt; Texto en negrita &lt;/b&gt;&amp;lt;/B&amp;gt;
@@ -55035,7 +55176,66 @@ The field calculator allows you to update fields with expressions.
 &lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negative value of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Calculadora de campos&lt;/h3&gt;
+La calculadora de campos le permite actualizar campos con expresiones.
+
+&lt;h4&gt;Operaciones admitidas&lt;/h4&gt;
+
+&lt;table border=1&gt;
+&lt;tr&gt;
+  &lt;th&gt;Operación&lt;/th&gt;
+  &lt;th&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td&gt;
+    &lt;tt&gt;column_name&lt;/tt&gt;&lt;br&gt;
+    &lt;tt&gt;&quot;column_name&quot;&lt;/tt&gt;
+  &lt;/td&gt;
+  &lt;td&gt;valor del campo &lt;tt&gt;column_name&lt;/tt&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&apos;&lt;tt&gt;string&lt;/tt&gt;&apos;&lt;/td&gt;&lt;td&gt;valor literal de cadena&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;number&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;número&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;NULL&lt;/td&gt;&lt;td&gt;valor nulo&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;exp(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Número e de Euler elevado &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ln(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;logaritmo natural (base e) de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;log10(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;logaritmo en base 10 de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;log(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;b&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;logaritmo en base &lt;tt&gt;b&lt;/tt&gt; de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;sqrt(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;raíz cuadrada&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;sin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;seno de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;cos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;coseno de &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;tan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;tangente de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;asin(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;arcoseno de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;acos(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;arcocoseno de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;atan(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;arcotangente de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to int(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convertir cadena &lt;tt&gt;a&lt;/tt&gt; entero&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to real(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convertir cadena &lt;tt&gt;a&lt;/tt&gt; a real&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;to string(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convertir número &lt;tt&gt;a&lt;/tt&gt; a cadena&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;lower(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convertir cadena &lt;tt&gt;a&lt;/tt&gt; a minúsculas&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;upper(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;convertir cadena &lt;tt&gt;a&lt;/tt&gt; a mayúsculas&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;length(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;longitud de cadena &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;atan2(&lt;tt&gt;y&lt;/tt&gt;,&lt;tt&gt;x&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;arcotangente de &lt;tt&gt;y&lt;/tt&gt;/&lt;tt&gt;x&lt;/tt&gt; usando los signos de los dos argumentos para determinar el cuadrante del resultado.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;remplazaresto&lt;/tt&gt;,&lt;tt&gt;conesto&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;remplazar &lt;tt&gt;remplazaresto&lt;/tt&gt; con &lt;tt&gt;conesto&lt;/tt&gt; en la cadena &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;regexp_replace(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;remplazaresto&lt;/tt&gt;,&lt;tt&gt;conesto&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;remplazar la expresión regular &lt;tt&gt;remplazaresto&lt;/tt&gt; con &lt;tt&gt;conesto&lt;/tt&gt; en la cadena &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;substr(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;desde&lt;/tt&gt;,&lt;tt&gt;long&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;&lt;tt&gt;long&lt;/tt&gt; caracteres de la cadena &lt;tt&gt;a&lt;/tt&gt; comenzando desde &lt;tt&gt;desde&lt;/tt&gt; (el primer carácter tiene índice 1)&lt;/td&gt;&lt;/td&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; || &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;concatenar las cednas &lt;tt&gt;a&lt;/tt&gt; y &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$rownum&lt;/td&gt;&lt;td&gt;número de la fila actual&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$area&lt;/td&gt;&lt;td&gt;área de polígono&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$perimeter&lt;/td&gt;&lt;td&gt;perímetro de polígono&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$length&lt;/td&gt;&lt;td&gt;área de línea&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$id&lt;/td&gt;&lt;td&gt;ID de objeto espacial&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$x&lt;/td&gt;&lt;td&gt;coordenada X del punto&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;$y&lt;/td&gt;&lt;td&gt;coordenada Y del punto&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;xat(&lt;tt&gt;n&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;coordenada X del punto &lt;tt&gt;n&lt;/tt&gt; de una línea (los índices comienzan en 0; valores negativos se aplican al último índice)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yat(&lt;tt&gt;n&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;coordenada Y del punto &lt;tt&gt;n&lt;/tt&gt; de una línea (los índices comienzan en 0; valores negativos se aplican al último índice)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; ^ &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; elevado a la potencia de &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; * &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; multiplicado por &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; / &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; dividido por &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; + &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; más &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; - &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;&lt;tt&gt;a&lt;/tt&gt; menos &lt;tt&gt;b&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;+&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;signo positivo&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;valor negativo de &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Identify Features&lt;/h3&gt;
@@ -55048,15 +55248,14 @@ You may also tick an &lt;label&gt;Open feature form, if a single feature is iden
 Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Settings &gt; Project Properties &gt; Identifiable layers&lt;/label&gt; where all the layers names are listed, their type (vector, raster, etc.) and ability to be identified.
 &lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Identificar objetos espaciales&lt;/h3&gt;
+        <translation>&lt;h3&gt;Identificar objetos espaciales&lt;/h3&gt;
 &lt;p&gt;
-El diálogo de resultados muestra todos los objetos espaciales identificados dentro de la tolerancia de búsqueda. 
-Para ver los resultados, expanda la información del objeto espacial haciendo clic en el signo más &lt;label&gt;+&lt;/label&gt; a la izquierda de cada objeto.
+El diálogo de resultados muestra todos los objetos espaciales identificados dentro de la tolerancia de búsqueda. Para ver los detalles de los resultados, expanda la información del objeto espacial a la izquierda de cada objeto.
 &lt;/p&gt;
 &lt;p&gt;
-El radio de búsqueda se puede establecer en el diálogo de opciones &lt;label&gt;Configuración &gt; Opciones &gt; Herramientas de mapa&lt;/label&gt;, en la sección Identificar, como porcentaje del ancho del mapa. En esta sección también se pueden definir el modo para identificar la &lt;label&gt;Capa actual&lt;/label&gt;, &lt;label&gt;De arriba a abajo, detenerse en el primero&lt;/label&gt; o &lt;label&gt;De arriba a abajo&lt;/label&gt;. &lt;br&gt;
+El radio de búsqueda se puede establecer en el diálogo de opciones &lt;label&gt;Configuración &gt; Opciones &gt; Herramientas de mapa&lt;/label&gt;, en la sección Identificar, como porcentaje del ancho del mapa. En esta sección también se pueden definir el modo para identificar la &lt;label&gt;Capa actual&lt;/label&gt;, &lt;label&gt;De arriba a abajo, detenerse en la primera&lt;/label&gt; o &lt;label&gt;De arriba a abajo&lt;/label&gt;. &lt;br&gt;
 También se puede marcar la opción &lt;label&gt;Abrir formulario de objetos espaciales, si se identifica un solo objeto &lt;/label&gt;.&lt;br&gt;
-Las capas identificables se pueden definir en el cuadro de diálogo Propiedades del Proyecto &lt;label&gt;Configuración &gt; Propiedades del Proyecto &gt; Capas identificables&lt;/label&gt; donde se listan todos los nombres de las capas, junto con su tipo (vectorial, ráster, etc.) y la posibilidad de ser identificadas.
+Las capas identificables se pueden definir en el cuadro de diálogo Propiedades del Proyecto &lt;label&gt;Configuración &gt; Propiedades del Proyecto &gt; Capas identificables&lt;/label&gt; donde se listan los nombres todas las capas, junto con su tipo (vectorial, ráster, etc.) y la posibilidad de ser identificadas.
 &lt;/p&gt;
 </translation>
     </message>
@@ -55080,10 +55279,10 @@ To add a scale bar:
 &lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Complemento de Barra de escala&lt;/h3&gt;
+        <translation>&lt;h3&gt;Complemento de Barra de escala&lt;/h3&gt;
 Dibuja una barra de escala sobre el mapa.
 &lt;p&gt;
-Es posible controlar el estilo y la ubicación, así como las etiquetas de la barra. QGIS sólo permite desplegar la escala en las mismas unidades del mapa. Por esto si las unidades de sus capas están en metros, no es posible crear una barra de escala en pies. De la misma manera, si usted está usando grados decimales no podrá crear una barra de escala que muestre la distancia en metros.&lt;/p&gt;
+Es posible controlar el estilo y la ubicación, así como las etiquetas de la barra. QGIS sólo permite desplegar la escala en las mismas unidades del mapa. Por esto si las unidades de sus capas están en metros, no es posible crear una barra de escala en pies. De la misma manera, si está usando grados decimales no podrá crear una barra de escala que muestre la distancia en metros.&lt;/p&gt;
 &lt;p&gt;
 Para añadir una barra de escala:
 &lt;ol&gt;
@@ -55092,7 +55291,7 @@ Para añadir una barra de escala:
 &lt;li&gt;Defina el color para la barra &lt;label&gt;Color de barra&lt;/label&gt; o use el color negro predeterminado.&lt;/li&gt;
 &lt;li&gt;Defina el tamaño de la barra y su etiquera en &lt;label&gt;Tamaño de la barra&lt;/label&gt;. &lt;/li&gt;
 &lt;li&gt;Asegúrese de que el cuadro &lt;label&gt;Activar barra de escala&lt;/label&gt; está marcado.&lt;/li&gt;
-&lt;li&gt;De forma opcional seleccione redondear automáticamente al cambiar de tamaño de la vista del mapa &lt;label&gt;Redondear números automáticamente al cambir de tamaño&lt;/label&gt;.&lt;/li&gt;
+&lt;li&gt;De forma opcional seleccione redondear números automáticamente al cambiar el tamaño de la vista del mapa &lt;label&gt;Redondear números automáticamente al cambir de tamaño&lt;/label&gt;.&lt;/li&gt;
 &lt;li&gt;Haga clic en &lt;label&gt;Aceptar&lt;/label&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 </translation>
@@ -55111,10 +55310,10 @@ To measure lengths, select the tool and click along the path you want to measure
 &lt;h4&gt;Measuring Areas&lt;/h4&gt;
 To measure areas, select the tool and click to create the area. The total area is dynamically displayed as you click.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Herramientas de medición&lt;/h3&gt;
+        <translation>&lt;h3&gt;Herramientas de medición&lt;/h3&gt;
 Hay dos herramientas de medida: longitud y áreas. Con ellas puede medir tanto distancias como áreas en la vista del mapa. Actualmente las herramientas proporcionan los resultados sólo en unidades métricas. Un simple clic derecho del ratón detiene la medición, mientras que dos clics derechos comienzan una nueva medición.
 &lt;h4&gt;Medir longitudes&lt;/h4&gt;
-Para medir longitudes, seleccione la herramienta y haga clic a lo largo de la ruta que quiera medir. La longitud de cada segmento se muestra, al igual que la longitud total del recorrido.
+Para medir longitudes, seleccione la herramienta y haga clic a lo largo de la ruta que quiera medir. Se muestra la longitud de cada segmento, al igual que la longitud total del recorrido.
 &lt;h4&gt;Medir áreas&lt;/h4&gt;
 Para medir áreas, seleccione la herramienta y haga clic para crear el área a medir. La superficie total se muestra de forma dinámica a medida que va pinchando con el ratón.
 </translation>
@@ -55151,14 +55350,47 @@ Para medir áreas, seleccione la herramienta y haga clic para crear el área a m
 &lt;h5&gt;Default settings&lt;/h5&gt;
 &lt;p&gt;If the attribute table of your linear layer does not contain the required fields or fields contain unexpected values, the plugin will use default values. You can set them in the default tab &lt;label&gt;Default settings&lt;/label&gt;.&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Configuración del complemento Gráfico de ruta&lt;/h3&gt;
+&lt;p&gt;Gráfico de ruta es un complemento en C++ para QGIS, que calcula la ruta más corta entre dos puntos de una capa de polilíneas y dibuja esa ruta sobre la red de carreteras.&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#creating&quot;&gt;Unidades del complemento&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#topologyTolerance&quot;&gt;Tolerancia topológica&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#layerSettings&quot;&gt;Configuración de la capa de transporte&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;a name=&quot;creating&quot;&gt;
+&lt;h4&gt;Unidades del complemento&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;Puede ajustar las unidades de la distancia y tiempo calculados para la ruta. Seleccione las unidades en &lt;label&gt;Unidades de distancia&lt;/label&gt; y &lt;label&gt;Unidades de tiempo&lt;/label&gt;.&lt;/p&gt;
+
+&lt;a name=&quot;topologyTolerance&quot;&gt;
+&lt;h4&gt;Tolerancia topológica&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;&lt;label&gt;Tolerancia topológica&lt;/label&gt; - la distancia en unidades del proyecto. Si la distancia de dos puntos cae en la tolerancia topológica, se consideran vértices. Un valor de tolerancia topológica mayor de cero relentiza el complemento, pero puede utilizar fuentes de datos no ideales.&lt;/p&gt;
+
+&lt;h5&gt;Nota&lt;/h5&gt;
+&lt;p&gt;El complemento Gráfico de ruta considera que dos carreteras están unlazadas si tienen un nodo en común. Un node se identifica de forma única por sus coordenadas. Sin embargo, en el proceso de digitalización pueden ocurrir errores. Los errores a veces ocurren cuando se transforma una red de un sistema de coordenadas a otro. Esto puede hacer que el complemento Gráfico de ruta considere no conectadas carreteras que sí lo están. En ese caso la toleralcia topológica se debe establecer a un valor mayor que cero.&lt;/p&gt;
+
+&lt;a name=&quot;LayerSettings&quot;&gt;
+&lt;h4&gt;Configuración de la capa de transporte&lt;/h4&gt;
+&lt;/a&gt;
+&lt;p&gt;&lt;label&gt;Capa&lt;/label&gt; - la capa de datos de carreteras.&lt;/p&gt;
+&lt;p&gt;&lt;label&gt;Campo de dirección&lt;/label&gt; - el valor de este campo indica cómo interpretar los objetos espaciales por parte del complemento Gráfico de ruta. &lt;label&gt;Valor para sentido directo&lt;/label&gt; - la dirección del movimiento se corresponde con el orden de los puntos del objeto espacial. &lt;label&gt;Valor para sentido inverso&lt;/label&gt; - la dirección del movimiento se corresponde con el orden inverso al de los puntos del objeto espacial. &lt;label&gt;Valor para doble sentido&lt;/label&gt; - ambos son posibles.&lt;/p&gt;
+&lt;p&gt;Campo velocidad&lt;/p&gt; - campo que contiene la velocidad registrada de la carretera.&lt;/p&gt;
+
+&lt;h5&gt;Configuración predeterminada&lt;/h5&gt;
+&lt;p&gt;Si la tabla de atributos de la capa lineal no contiene los campos necesarios o los campos contienen valores inesperados, el complemento usará valores predeterminados. Puede establecerlos en la pestaña &lt;label&gt;Configuración predeterminada&lt;/label&gt;.&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt; North Arrow Plugin&lt;/h3&gt;
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
 At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt; Complemento Flecha de Norte&lt;/h3&gt;
+Muestra una flecha de Norte superpuesta sobre el mapa.
+&lt;p&gt;
+En este momento sólo hay un estilo disponible. Puede ajustar el ángulo de la flecha o dejar que QGIS establezca la dirección automaticamente. Si elije dejar que QGIS determine la dirección, hará la mejor estimación de cómo debe orientarse la flecha. En cuanto a la ubicación de la flecha, tiene cuatro opciones, que se corresponden con las cuatro esquinas de la vista del mapa.</translation>
     </message>
     <message>
         <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
@@ -55215,7 +55447,58 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">&lt;h1&gt;Ayuda del complemento Heatmap&lt;/h1&gt;
+&lt;p&gt;El complemento Heatmap utiliza estimación de densidad de kernel para crear un ráster de densidad (heatmap)
+de una capa vectorial de puntos de entrada. La densidad se calcula en base al número
+de puntos en una posición, de forma que mayores números de puntos agrupados dan
+valores mayores. Los heatmaps permiten una fácil identificación de &quot;puntos calientes&quot; y
+agrupamiento de puntos.&lt;/p&gt;
+
+&lt;h2&gt;Parámetros del diálogo&lt;/h2&gt;
+
+&lt;h3&gt;Capa de puntos de entrada&lt;/h3&gt;
+&lt;p&gt;La entrada es siempre una capa vectorial de puntos. En la lista desplegable se muestran todas las capas vectoriales de puntos que estén actualmente cargadas en la vista del mapa. Pulse el botón para desplegar y seleccione la capa deseada.&lt;/p&gt;
+
+&lt;h3&gt;Ráster de salida&lt;/h3&gt;
+&lt;p&gt;Se puede establecer la ubicación y nombre del archivo ráster de salida haciendo clic en el botón &lt;label&gt;...&lt;/label&gt; que hay junto al cuadro de texto del ráster de salida.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt; Si no se indica expresamente, el formato del archivo de salida se añade automáticamente dependiendo del formato de salida seleccionado.&lt;/p&gt;
+
+&lt;h3&gt;Formato de salida&lt;/h3&gt;
+&lt;p&gt;Todos los formatos de archivo que pueden ser creados por GDAL están disponibles en la lista desplegable. Pulse y seleccione el formato de salida necesario para su archivo.&lt;br/&gt;
+&lt;b&gt;Nota:&lt;/b&gt; Se recomiendan los formatos GeoTiff y ERDAS Imagine .img. Algunos formatos hacen que se cuelgue la aplicación. Limítese a los formatos recomendados hasta que se solvente el problema o use otros formatos si sabe que GDAL los soporta completamente.&lt;/p&gt;
+
+&lt;h3&gt;Radio (ancho de banda)&lt;/h3&gt;
+&lt;p&gt;Se utiliza para especificar el radio de búsqueda del heatmap (o ancho de banda del kernel) en metros o unidades del mapa. El radio especifica la distancia alrededor de un punto a la que se sentirá la influencia del punto. Valores más grandes producen un suavizado mayor, mientras que valores más pequeños pueden mostrar detalles más finos y variación el la densidad de puntos.&lt;/p&gt;
+
+&lt;h3&gt;Opciones avanzadas&lt;/h3&gt;
+
+&lt;h4&gt;Filas y columnas&lt;/h4&gt;
+&lt;p&gt;Se utiliza para cambiar las dimensiones del archivo ráster de salida. Estos valores están también enlazados con los valores &lt;b&gt;Tamaño X de celda&lt;/b&gt; y &lt;b&gt;Tamaño Y de celda&lt;/b&gt;. 
+Aumentando el número de filas o columnas disminuirá el tamaño de celda y aumentará el tamaño del archivo de salida. Los valores en Filas y columnas
+también están enlazados, de forma que doblar el número de filas se doblará automaticamente el número de columnas y se reducirá a la mitad el tamaño de celda. El área geográfica del ráster de salida se mantendrá igual.&lt;/p&gt;
+
+&lt;h4&gt;Tamaño X e Y de celda&lt;/h4&gt;
+&lt;p&gt;Controla el tamaño geográfico de cada píxel en el ráster de salida. Cambiar estos valores también cambiará el número de filas y columnas en el ráster de salida.&lt;/p&gt;
+  
+&lt;h4&gt;Forma del kernel&lt;/h4&gt;
+&lt;p&gt;La forma del kernel controla la tasa a la que la influencia de un punto disminuye a medida que aumenta la distancia a él. Diferentes kernels decaen 
+a tasas distintas, así un kernel triweight da mayor peso a objetos espaciales más próximos al punto que el kernel Epanechnikov. En consecuencia,
+el kernel triweight da puntos calienes más &quot;afilados&quot; y el Epanechnikov da puntos calientes más &quot;suaves&quot;. QGIS dispone de cierto número de funciones de kernel estándar,
+que se describen e ilustran en &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4&gt;Relación de decaimiento&lt;/h4&gt;
+&lt;p&gt;Para kernels triangulares, la relación de decaimiento define la cantidad de influencia que se aplica a los píxeles más externos dentro del radio de buffer. Un valor de 0 refleja un kernel triangular estándar, en el que la influencia tiende a cero a medida que la distancia desde el píxel al punto se aproxima al radio especificado. En contraste, un valor de 1 indica que no hay disminución al aumentar la distancia desde el punto.&lt;/p&gt;
+
+&lt;h4&gt;Usar radio a partir de campo&lt;/h4&gt;
+&lt;p&gt;De forma optional, se puede usar el valor de un campo especificado para controlar el radio del kernel para cada punto de la capa de entrada.&lt;/p&gt;
+
+&lt;h4&gt;Usar peso a partir de campo&lt;/h4&gt;
+&lt;p&gt;De forma optional, se puede usar un atributo que contenga pesos para puntos para dar más peso a algunos puntos de la capa de entrada que a otros.&lt;/p&gt;
+
+&lt;h2&gt;Más detalles&lt;/h2&gt;
+&lt;p&gt;Contacte con el autor através de aruntheguy arroba gmail punto com&lt;/p&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Save vector layer as...&lt;/h3&gt;
@@ -55232,7 +55515,20 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 
 See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Guarda capa vectorial como...&lt;/h3&gt;
+
+&lt;p&gt;Este diálogo le permite guardar datos vectoriales en varios formatos usando GDAL/OGR.
+
+&lt;ul&gt;
+&lt;li&gt;Puede seleccionar el formato de destino de la lista &lt;label&gt;Formato&lt;/label&gt; (como se aconseja por OGR).
+&lt;li&gt;En &lt;label&gt;Guardar como&lt;/label&gt; puede introducir un nombre de archivo de destino o seleccionar uno usando el botón &lt;label&gt;Explorar&lt;/label&gt;.
+&lt;li&gt;En la lista &lt;label&gt;Codificación&lt;/label&gt; puede definir con qué codificación se deben guardar los datos.
+&lt;li&gt;Puede seleccionar un SRC enel que se deban reproyectar los datos que se van a guardar usando &lt;label&gt;CRS&lt;/label&gt;.
+&lt;li&gt;OGR también tiene varias opciones para los distintos formatos que soporta. Utilice el campo de creación de &lt;label&gt;fuente de datos&lt;/label&gt; para establecer las opciones de la fuente de datos y las opciones de creación de la &lt;label&gt;capa&lt;/label&gt;. Introduzca una opción por línea (ej. &lt;code&gt;SPATIALITE=yes&lt;/code&gt; en la &lt;label&gt;fuente de datos&lt;/label&gt; para crear una base de datos spatialite usando el controlador SQLite).
+&lt;/ul&gt;
+
+Vea &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;formatos vectoriales de OGR&lt;/a&gt; para una lista de los formatos admitidos y las opciones disponibles.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Print Composer&lt;/h3&gt;
@@ -55247,14 +55543,14 @@ Click on one of the icons along the top of the composer window to select what ty
 &lt;/p&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;Diseñador de impresión&lt;/h3&gt;
+        <translation>&lt;h3&gt;Diseñador de impresión&lt;/h3&gt;
 
 &lt;p&gt;
-El diseñador de impresión permite ordenar los ítems que serán impresos dentro de la página. Los ítems incluyen el contenido de la vista del mapa, la cuadrícula, la barra de escala, la leyenda e imágenes adicionales.
+El diseñador de impresión permite ordenar los elementos que serán impresos dentro de la página. Los elementos incluyen el contenido de la vista del mapa, la barra de escala, la leyenda e imágenes adicionales.
 &lt;/p&gt;
 
 &lt;p&gt;
-Haga clic sobre uno de los íconos a lo largo de la parte superior de la ventana Diseñador para seleccionar el tipo de ítem que desea colocar en la página, luego haga clic y dibuje sobre la página para ubicar el ítem seleccionado. El tamaño de algunos ítems, tales como la vista del mapa y la barra de escala se pueden definir haciendo clic y arrastrando sobre la página. Otros ítems tienen tamaño fijo, pero se puede cambiar después seleccionando el ítem y ajustándo el campo de tamaño en el panel derecho.
+Haga clic sobre uno de los íconos a lo largo de la parte superior de la ventana Diseñador para seleccionar el tipo de elemento a colocar en la página, luego haga clic y dibuje sobre la página para ubicar el elementoo. El tamaño de algunos elementos, tales como la vista del mapa y la barra de escala se pueden definir haciendo clic y arrastrando sobre la página. Otros elementos tienen tamaño fijo, pero se puede cambiar después seleccionando el elementos y ajustándo el campo de tamaño en el panel derecho.
 
 &lt;/p&gt;
 
@@ -55284,21 +55580,21 @@ system.
 &lt;p&gt;
 Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Definición de sistemas de referencia de coordenadas personalizados&lt;/h3&gt;
+        <translation>&lt;h3&gt;Definición de sistemas de referencia de coordenadas personalizados&lt;/h3&gt;
 Si QGIS no ofrece el sistema de referencia de coordenadas que necesita, puede definir un SRC personalizado. &lt;p&gt;
 Para definir un SRC, seleccione &lt;label&gt;SRC personalizado&lt;/label&gt; del menú &lt;label&gt;Edición&lt;/label&gt; (Gnome, OSX) o del menú &lt;label&gt;Configuración&lt;/label&gt; (KDE, Windows). Los SRC personalizados se almacenan en la base de datos de su usuario de QGIS. Además de sus SRC personalizados, esta base de datos también contiene los marcadores geoespaciales y otros datos personalizados.
 
 &lt;h4&gt;Definición&lt;/h4&gt;
-Para crear un nuevo SRC, haga clic sobre el boton &lt;label&gt;Nuevo&lt;/label&gt; e introduzca :
+Para crear un nuevo SRC, haga clic sobre el boton &lt;label&gt;Nuevo&lt;/label&gt; e introduzca:
 &lt;ul&gt;
 &lt;li&gt;nombre descriptivo 
-&lt;li&gt;parámetros del SRC 
+&lt;li&gt;parámetros del SRC
 &lt;/ul&gt;
 Después puede guardar su SRC haciendo clic en el botón &lt;label&gt;Guardar&lt;/label&gt;.
 &lt;p&gt;
-Note que los parámetros deben comenzar con un bloque +proj=, para representar el nuevo sistema de referencia de coordenadas.
+Tenga en cuenta que los parámetros deben comenzar con un bloque +proj= para representar el nuevo sistema de referencia de coordenadas.
 &lt;p&gt;
-La definición de un SRC personalizado en QGIS requiere una buena comprensión de la biblioteca de proyección Proj.4. Para comenzar, consulte  &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - Un Manual de usuario hecho por Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. Este manual describe el uso de &lt;i&gt;proj.4&lt;/i&gt; y las herramientas de línea de órdenes relacionadas. Los parámetros cartográficos utilizados con &lt;i&gt;proj.4&lt;/i&gt; se describen en el manual de usuario y son los mismos que utiliza QGIS.
+La definición de un SRC personalizado en QGIS requiere una buena comprensión de la biblioteca de proyección Proj.4. Para comenzar, consulte  &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Procedimientos de proyección cartográfica para entornos UNIX&lt;/a&gt; - Un Manual de usuario hecho por Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. Este manual describe el uso de &lt;i&gt;proj.4&lt;/i&gt; y las herramientas de línea de órdenes relacionadas. Los parámetros cartográficos utilizados con &lt;i&gt;proj.4&lt;/i&gt; se describen en el manual de usuario y son los mismos que utiliza QGIS.
 </translation>
     </message>
     <message>
@@ -55509,20 +55805,21 @@ The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table al
 The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
 The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
 </source>
-        <translation type="unfinished">&lt;h3&gt;Tabla de atributos&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tabla de atributos&lt;/h3&gt;
 La tabla de atributos muestra los objetos espaciales de la capa seleccionada. Cada fila de la tabla representa un objeto espacial con sus atributos mostrados en varias columnas. Se pueden buscar, seleccionar, mover o incluso editar los objetos espaciales de la tabla. Por omisión la tabla de atributos es una ventana separada. Si la ha abierto y no la puede ver, probablemente está oculta tras la ventana principal de QGIS. También la puede hacer una ventana adosable, marcando &lt;label&gt;Abrir tabla de atributos en una ventada adosada&lt;/label&gt; en &lt;label&gt;Configuración &gt; Opciones &gt; General&lt;/label&gt;.&lt;p&gt;
 
-El número de objetos espaciales seleccionados/totales de la tabla se muestra en la cabecera.&lt;p&gt;
+El número de objetos espaciales totales, filtrados y seleccionados de la capa se muestra en la cabecera de la tabla.&lt;p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#Selecting&quot;&gt;Seleccionar&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#Sorting&quot;&gt;Ordenar&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Searching&quot;&gt;Buscar&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Field&quot;&gt;Calculadora de campos&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;Filtrar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;Editar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;Calculadora de campos&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;Selecting&quot;&gt;
 &lt;h4&gt;Seleccionar&lt;/h4&gt;
 &lt;/a&gt;
-Se pueden seleccionar filas haciendo clic en el número de fila en la parte izquierda de la fila. Seleccionar una fila no cambia la posición actual del cursor. Se pueden marcar múltiples filas manteniendo pulsada la tecla &lt;label&gt;Ctrl&lt;/label&gt;.&lt;br&gt;
+Se pueden seleccionar filas haciendo clic en el número de fila en la parte izquierda de la fila. Se pueden seleccionar las filas siguientes manteniendo pulsado el botón del ratón y moviendo el ratón hasta el otro extremo de la selección. Se pueden seleccionar múltiples filas no contiguas manteniendo pulsada la tecla &lt;label&gt;Ctrl&lt;/label&gt;.&lt;br&gt;
 Se puede hacer una selección continua manteniendo pulsada la tecla &lt;label&gt;Mayúsculas&lt;/label&gt; y pulsando en la cabecera de varias filas en la parte izquierda de las filas. Se seleccionarán todas las filas entre la posición actual del cursor y la fila pulsada.&lt;br&gt;
 Se pueden invertir las filas seleccionadas usando el botón &lt;label&gt;Invertir selección&lt;/label&gt; de la parte inferior de la ventana.
 
@@ -55530,18 +55827,34 @@ Se pueden invertir las filas seleccionadas usando el botón &lt;label&gt;Inverti
 &lt;h4&gt;Ordenar&lt;/h4&gt;
 &lt;/a&gt;
 Cada columna se puede ordenar haciendo clic en su cabecera. Una pequeña flecha indica el sentido del orden (indicando hacia abajo significa valores descendentes de arriba a abajo, apuntando hacia arriba indica valores ascendentes de arriba a abajo).&lt;br&gt;
-Use el botón &lt;label&gt;Mover la selección arriba del todo&lt;/label&gt; para ordenar las filas seleccionadas y mostrarlas en las primeras filas de la tabla. Para mostrar sólo los registros seleccionados, use la casilla de verificación &lt;label&gt;Mostrar sólo los seleccionados&lt;/label&gt;.
+Active el botón &lt;label&gt;Seleccionados arriba&lt;/label&gt; para mostrar las filas seleccionadas siempre en las primeras filas de la tabla, al margen de la columna actual de ordenación.
 
-&lt;a name=&quot;Searching&quot;&gt;
-&lt;h4&gt;Buscar&lt;/h4&gt;
+&lt;a name=&quot;Filtering&quot;&gt;
+&lt;h4&gt;Filtrar&lt;/h4&gt;
 &lt;/a&gt;
-Para una búsqueda simple por atributos en una sola columna, se puede usar el campo &lt;label&gt;Buscar&lt;/label&gt;. Seleccione el campo (columna) en el que se debe hacer la búsqueda en el munú desplegable y pulse el botón &lt;label&gt;Buscar&lt;/label&gt;.&lt;br&gt;
-Para búsquedas más complejas use el botón &lt;label&gt;Busqueda avanzada&lt;/label&gt;. Este botón abre el Constructor de consultas de búsqueda y le permite seleccionar objetos espaciales que cumplan una cláusula SQL-tipo WHERE.
+Para navegar sólo por parte de sus datos, puede usar el botón filtrar de abajo a la izquierda. Hay disponibles las siguientes opciones.
+&lt;h5&gt;Mostrar todos los objetos espaciales&lt;/h5&gt;
+Muestra todos los objetos espaciales de la capa.
+&lt;h5&gt;Mostrar objetos espaciales seleccionados&lt;/h5&gt;
+Muestra todos los objetos espaciales que estén seleccionados.
+&lt;h5&gt;Mostrar objetos espaciales visibles en el mapa&lt;/h5&gt;
+Muestra todos los objetos espaciales que sean visibles actualmente en la vista del mapa, teniendo en cuenta la extesión visible y la visibilidad basada en la escala.
+&lt;h5&gt;Mostrar objetos espaciales editados y nuevos&lt;/h5&gt;
+Muestra sólo los objetos espaciales editados y nuevos. En este modo, se muestran los objetos espaciales con cambios sin guardar. y es por tanto un buen filtro para revisar cambios antes de guardarlos. Tenga en cuenta que los objetos espaciales borrados no se muestran en este modo.
+&lt;h5&gt;Filtro de columna&lt;/h5&gt;
+Un filtro sencillo, que le permite filtrar por un atributo. Si el atributo contiene texto, también busca subcadenas. Por tanto, busca &lt;b&gt;mano&lt;/b&gt; también mostrará los registros que contengan &lt;b&gt;humano&lt;/b&gt;. Después de cambiar el texto del filtro, pulse &lt;label&gt;Intro&lt;/label&gt; o haga clid en &lt;label&gt;Aplicar&lt;/label&gt;. También puede conmutar la casilla &lt;label&gt;Sensible a mayúsculas&lt;/label&gt;, de forma que su filtro también encuentre &lt;b&gt;Noche&lt;/b&gt; cuando busque el texto &lt;b&gt;noche&lt;/b&gt;.   
+&lt;h5&gt;Filtro avanzado&lt;/h5&gt;
+Para búsquedas más complejsa, este modo un potente constructor de expresiones, que es similar a una cláusula WHERE de SQL. Por favor, consulte la ayuda incluida en el constructor de consultas para detalles sobre la sintaxis.
 
-&lt;a name=&quot;Field&quot;&gt;
+&lt;a name=&quot;Editing&quot;&gt;
+&lt;h4&gt;Editar&lt;/h4&gt;
+&lt;/a&gt;
+Para editar valores primero tiene que pasar la capa al modo edición. Para ello haga clic en el botón &lt;label&gt;Conmutar modo edición&lt;/label&gt; (lápiz) o teclee &lt;label&gt;Ctrl + E&lt;/label&gt;. Después haga doble clic en el valor que quiera editar o sitúe el cursos en él y use la tecla &lt;label&gt;Espacio&lt;/label&gt;. Puede personalizar los controles usados para la edición de campos en &lt;label&gt;Propiedades de capas vectoriales &gt; Campos&lt;/label&gt;  
+
+&lt;a name=&quot;FieldCalc&quot;&gt;
 &lt;h4&gt;Calculadora de campos&lt;/h4&gt;
 &lt;/a&gt;
-El botón &lt;label&gt;Calculadora de campos&lt;/label&gt; de la tabla de atributos permite realizar cálculos basados en valores de atributos existentes o funciones definidas, ej. para calcular longitud o área de objetos espaciales.&lt;br&gt;
+El botón &lt;label&gt;Calculadora de campos&lt;/label&gt; de la tabla de atributos permite realizar cálculos basados en valores de atributos existentes o en funciones definidas, ej. para calcular longitud o área de objetos espaciales.&lt;br&gt;
 Los resultados se pueden escribir en una nueva columna de atributos o se puede usar para actualizar valores de una columna existente.&lt;br&gt;
 Tiene que poner la capa vectorial en modo editable antes de pulsar en el icono &lt;label&gt;Calculadora de campos&lt;/label&gt; para abrir el diálogo.
 
@@ -56218,177 +56531,6 @@ The following options can be added
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;style&gt;
-	#toolbarConsole td{
-		background: #f6f6f6;
-	}
-&lt;/style&gt;
-&lt;h3&gt;Python Console for QGIS&lt;/h3&gt;
-&lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
-&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
-&lt;a href=&quot;#settings&quot;&gt;Settings&lt;/a&gt;&lt;br&gt;&lt;br&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;p align=&apos;justify&apos;&gt;
-				The QGIS Python Console is an interactive shell for the python command executions. 
-				It also has a python file editor that allows you to edit and save your python scripts. 
-				Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
-				The console is split in two main panes, top and bottom one 
-				resizable by using the horizontal splitter. Output area pane is a widget read-only which 
-				shows the commands output. You can drag and drop or copy and paste text into input area and 
-				execute code snippets from the output pane by selecting some text and clicking on the 
-				&lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
-				No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
-				python shell for input commands.&lt;br&gt;To access to the python file editor use the 
-				&lt;label&gt;Show editor&lt;/label&gt; button 
-				from the toolbar. The editor allows to edit and save python file and it offers basic functionality 
-				for managing your code (comment and 
-				uncomment code, check syntax, share the code via codepad.org and much more).
-			&lt;/p&gt;
-		&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;console&quot;&gt;
-&lt;h4&gt;Console&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;ul&gt;
-			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
-				&lt;ol&gt;
-				&lt;li&gt;Python&lt;/li&gt;
-				&lt;li&gt;PyQGIS&lt;/li&gt;
-				&lt;li&gt;PyQt4&lt;/li&gt;
-				&lt;li&gt;QScintilla2&lt;/li&gt;
-				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
-				&lt;/ol&gt;
-			&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
-			&lt;br&gt;
-                        &lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
-			The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
-			&lt;br&gt;
-			&lt;/ul&gt;
-		&lt;/td&gt;
-		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
-	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSextanteConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Import Sextante class&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
-		&lt;/tr&gt;
-                &lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
-			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
-		&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;editor&quot;&gt;
-&lt;h4&gt;Editor&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
-&lt;table&gt;
-	&lt;tr&gt;
-		&lt;td&gt;
-			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
-			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
-		&lt;/td&gt;
-		&lt;td&gt;
-			&lt;ul&gt;
-			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
-				&lt;ol&gt;
-				&lt;li&gt;Python&lt;/li&gt;
-				&lt;li&gt;PyQGIS&lt;/li&gt;
-				&lt;li&gt;PyQt4&lt;/li&gt;
-				&lt;li&gt;QScintilla2&lt;/li&gt;
-				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
-				&lt;/ol&gt;
-			&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
-			&lt;br&gt;
-			&lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
-			&lt;br&gt;
-			&lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
-			(this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
-			&lt;br&gt;
-			&lt;/ul&gt;
-		&lt;/td&gt;
-	&lt;/tr&gt;
-&lt;/table&gt;
-&lt;a name=&quot;settings&quot;&gt;
-&lt;h4&gt;Settings&lt;/h4&gt;
-&lt;/a&gt;
-&lt;b&gt;&lt;i&gt;Further settings for python console:&lt;/i&gt;&lt;/b&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;label&gt;Autocompletion:&lt;/label&gt; If checked the code completion is enabled. You can get autocompletion
-from current document, from installed APIs and both from APIs and current document&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Autocompletion threshold:&lt;/label&gt; Sets the threshold to display the autocompletion list (in chars typed)&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Automatic parentheses insertion:&lt;/label&gt; If checked enables the autoclosing for bracket&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Auto-save script before running:&lt;/label&gt; Allows you to save automatically the
-script to be executed in order to avoid to save it after any modification.
-This action will store a temporary file into the temporary system directory 
-that will be automatically deleted after running.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Using preloaded APIs file:&lt;/label&gt; You can choose whether use the preload APIs file or load some APIs files saved on your system.&lt;/li&gt;
-&lt;br&gt;
-&lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
-	&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
-	from the close button. This allows you to save the geometry to be restored to the next start.
-&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
 This dialog allows you to work with vector layer settings and properties. There are seven tabs:
 &lt;p&gt;
@@ -56671,8 +56813,236 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
     <message>
         <source>&lt;h3&gt;Identify&lt;/h3&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;Identificar&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Identificar&lt;/h3&gt;
 </translation>
+    </message>
+    <message>
+        <source>&lt;h1&gt;Heatmap Plugin Help&lt;/h1&gt;
+&lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
+raster of an input point vector layer.  The density is calculated based on the
+number of points in a location, with larger numbers of clustered points resulting
+in larger values. Heatmaps allow easy identification of &quot;hotspots&quot; and
+clustering of points.&lt;/p&gt;
+
+&lt;h2&gt;Dialog Parameters&lt;/h2&gt;
+
+&lt;h3&gt;Input point layer&lt;/h3&gt;
+&lt;p&gt;The input is always a vector layer of point type. All the point vector layers that are currently loaded in the canvas are shown in the drop-down list. Click the dropdown button and select the desired layer.&lt;/p&gt;
+
+&lt;h3&gt;Output raster&lt;/h3&gt;
+&lt;p&gt;The output raster location and filename can be set by clicking the &lt;label&gt;...&lt;/label&gt; button next to the output raster textbox.&lt;br/&gt;
+&lt;b&gt;Note:&lt;/b&gt; The file format is automatically added depending upon the output format selected, if not explicitly given.&lt;/p&gt;
+
+&lt;h3&gt;Output format&lt;/h3&gt;
+&lt;p&gt;All the file creation supporting GDAL formats are available in the drop down list. Click and select the required output format for your file.&lt;br/&gt;
+&lt;b&gt;Note:&lt;/b&gt; GeoTiff and ERDAS Imagine .img formats are recommended. Some formats make the application crash. Kindly stick to the recommended formats until the crash issue is resolved or use other formats if you know GDAL supports it completely.&lt;/p&gt;
+
+&lt;h3&gt;Radius (bandwidth)&lt;/h3&gt;
+&lt;p&gt;Used to specify the heatmap search radius (or kernel bandwidth) in meters or map units. The radius specifies the distance around a point at which the influence
+  of the point will be felt. Larger values result in greater smoothing, but smaller values may show finer details and variation in point density.&lt;/p&gt;
+
+&lt;h3&gt;Advanced Options&lt;/h3&gt;
+
+&lt;h4&gt;Rows and Columns&lt;/h4&gt;
+&lt;p&gt;Used to change the dimensions of the output raster file. These values are also linked to the &lt;b&gt;Cell size X&lt;/b&gt; and &lt;b&gt;Cell size Y&lt;/b&gt; values. 
+Increasing the number of rows or colums will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
+are also linked, so doubling the number of rows will automatically double the number of columns and the cell sizes will also be halved. The geographical area of the output raster will remain the same!&lt;/p&gt;
+
+&lt;h4&gt;Cell size X and Y&lt;/h4&gt;
+&lt;p&gt;Control the geographic size of each pixel in the output raster. Changing these values will also change the number of Rows and Columns in the output
+  raster.&lt;/p&gt;
+  
+&lt;h4&gt;Kernel shape&lt;/h4&gt;
+&lt;p&gt;The kernel shape controls the rate at which the influence of a point decreases as the distance from the point increases. Different kernels decay at
+different rates, so a triweight kernel gives features greater weight for distances closer to the point than the Epanechnikov kernel does. Consequently,
+triweight results in &quot;sharper&quot; hotspots, and Epanechnikov results in &quot;smoother&quot; hotspots. A number of standard kernel functions are available in QGIS,
+which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use&quot;&gt;Wikipedia&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4&gt;Decay ratio&lt;/h4&gt;
+&lt;p&gt;For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.&lt;/p&gt;
+
+&lt;h4&gt;Use radius from field&lt;/h4&gt;
+&lt;p&gt;Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.&lt;/p&gt;
+
+&lt;h4&gt;Use weight from field&lt;/h4&gt;
+&lt;p&gt;Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.&lt;/p&gt;
+
+&lt;h2&gt;Further Details&lt;/h2&gt;
+&lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;style&gt;
+	#toolbarConsole td{
+		background: #f6f6f6;
+	}
+&lt;/style&gt;
+&lt;h3&gt;Python Console for QGIS&lt;/h3&gt;
+&lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;#settings&quot;&gt;Settings&lt;/a&gt;&lt;br&gt;&lt;br&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;p align=&apos;justify&apos;&gt;
+				The QGIS Python Console is an interactive shell for the python command executions. 
+				It also has a python file editor that allows you to edit and save your python scripts. 
+				Both console and editor are based on PyQScintilla2 package.&lt;br&gt;
+				The console is split in two main panes, top and bottom one 
+				resizable by using the horizontal splitter. Output area pane is a widget read-only which 
+				shows the commands output. You can drag and drop or copy and paste text into input area and 
+				execute code snippets from the output pane by selecting some text and clicking on the 
+				&lt;label&gt;Enter selected&lt;/label&gt; command from the context menu. 
+				No matter if selected text contains the interpreter prompt (&gt;&gt;&gt;, ...). Input area pane is the interactive 
+				python shell for input commands.&lt;br&gt;To access to the python file editor use the 
+				&lt;label&gt;Show editor&lt;/label&gt; button 
+				from the toolbar. The editor allows to edit and save python file and it offers basic functionality 
+				for managing your code (comment and 
+				uncomment code, check syntax, share the code via codepad.org and much more).
+			&lt;/p&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;console&quot;&gt;
+&lt;h4&gt;Console&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Alt+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Shift+Space&lt;/label&gt; to view the command history list.&lt;/li&gt;
+			&lt;br&gt;
+                        &lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command from output pane.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Open QGIS API documentation by typing &lt;label&gt;_api&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Open PyQGIS Cookbook by typing &lt;label&gt;_pyqgis&lt;/label&gt;.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Save and clear the command history accessing from context menu of input pane. 
+			The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+		&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/consoleHelp.png&quot; /&gt;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
+	&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClassConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconProcessingConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Import Processing class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtCoreConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Import PyQt4.QtCore class&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;/td&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconQtGuiConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td&gt;Tool to import PyQt4.QtGui class&lt;/td&gt;
+		&lt;/tr&gt;
+                &lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconRunConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Run command (like Enter key pressed)&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconSettingsConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Settings&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconHelpConsole.png&quot; /&gt;&lt;/td&gt;
+			&lt;td colspan=&quot;2&quot;&gt;Help&lt;/td&gt;
+		&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;editor&quot;&gt;
+&lt;h4&gt;Editor&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Main features:&lt;/i&gt;&lt;/b&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/editorHelp.png&quot; /&gt;
+			&lt;img src=&quot;qrc:/images/themes/default/console/classBrowserHelp.png&quot; /&gt;
+		&lt;/td&gt;
+		&lt;td&gt;
+			&lt;ul&gt;
+			&lt;li&gt;Code completion, highlighting syntax and calltips for the following APIs:
+				&lt;ol&gt;
+				&lt;li&gt;Python&lt;/li&gt;
+				&lt;li&gt;PyQGIS&lt;/li&gt;
+				&lt;li&gt;PyQt4&lt;/li&gt;
+				&lt;li&gt;QScintilla2&lt;/li&gt;
+				&lt;li&gt;osgeo-gdal-ogr&lt;/li&gt;
+				&lt;/ol&gt;
+			&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+Space&lt;/label&gt; to view the auto-completion list.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Sharing code snippets via codepad.org.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;&lt;label&gt;Ctrl+4&lt;/label&gt; Syntax check.&lt;/li&gt; 
+			&lt;br&gt;
+			&lt;li&gt;Object inspector: a class and function browser.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Go to an object definition with a mouse click. (from Object inspector)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Execute code snippets with the &lt;label&gt;Enter selected&lt;/label&gt; command.&lt;/li&gt;
+			&lt;br&gt;
+			&lt;li&gt;Execute the whole script with the &lt;label&gt;Run script&lt;/label&gt; command 
+			(this creates a byte-compiled file with the extension .pyc)&lt;/li&gt;
+			&lt;br&gt;
+			&lt;/ul&gt;
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;a name=&quot;settings&quot;&gt;
+&lt;h4&gt;Settings&lt;/h4&gt;
+&lt;/a&gt;
+&lt;b&gt;&lt;i&gt;Further settings for python console:&lt;/i&gt;&lt;/b&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion:&lt;/label&gt; If checked the code completion is enabled. You can get autocompletion
+from current document, from installed APIs and both from APIs and current document&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Autocompletion threshold:&lt;/label&gt; Sets the threshold to display the autocompletion list (in chars typed)&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Automatic parentheses insertion:&lt;/label&gt; If checked enables the autoclosing for bracket&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Auto-save script before running:&lt;/label&gt; Allows you to save automatically the
+script to be executed in order to avoid to save it after any modification.
+This action will store a temporary file into the temporary system directory 
+that will be automatically deleted after running.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using preloaded APIs file:&lt;/label&gt; You can choose whether use the preload APIs file or load some APIs files saved on your system.&lt;/li&gt;
+&lt;br&gt;
+&lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+	&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
+	from the close button. This allows you to save the geometry to be restored to the next start.
+&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -56752,7 +57122,7 @@ Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
 CNR, Milan Unit (Information Technology), Construction Technologies Institute.
 For support send a mail to scala@itc.cnr.it
 </source>
-        <translation>Descripcion de campos:
+        <translation>Descripción de campos:
 * Archivo DXF de entrada: ruta al archivo DXF a convertir
 * Archivo Shp de salida: nombre deseado para el archivo shape a crear
 * Tipo de archivo shp de salida: especifica el tipo del archivo shape de salida
@@ -56836,7 +57206,7 @@ Para ayuda enviar un correo a scala@itc.cnr.it
     </message>
     <message>
         <source>New Database connection requested...</source>
-        <translation>Solitada nueva conexión a base de datos...</translation>
+        <translation>Solicitada nueva conexión a base de datos...</translation>
     </message>
     <message>
         <source>Error: You must select a database type</source>
@@ -57182,7 +57552,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Define the compass offset manually.</source>
-        <translation>Definir el desplazamiento de la brújula manuamente.</translation>
+        <translation>Definir el desplazamiento de la brújula manualmente.</translation>
     </message>
     <message>
         <source>Manual</source>
@@ -57313,7 +57683,7 @@ archivo de el atributo)</translation>
     </message>
     <message utf8="true">
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
-        <translation>Toda la información de atributos del punto asociado con la foto que se está viendo se muestra aquí. Si el tipo de archivo al que hace referencia el registro mostrado no es una imagen sino un tipo de archivo definido en la pestaña “Configurar aplicaciones externas” cuando haga doble clic en el valor del campo que contiene la ruta al archivo se abrirá la aplicación para ver u oir el contenido del archivo. Si se reconoce la extensión del archivo los datos de los atributos se mostrarán en verde.</translation>
+        <translation>Toda la información de atributos del punto asociado con la foto que se está viendo se muestra aquí. Si el tipo de archivo al que hace referencia el registro mostrado no es una imagen sino un tipo de archivo definido en la pestaña “Configurar aplicaciones externas” cuando haga doble clic en el valor del campo que contiene la ruta al archivo se abrirá la aplicación para ver u oír el contenido del archivo. Si se reconoce la extensión del archivo los datos de los atributos se mostrarán en verde.</translation>
     </message>
     <message utf8="true">
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
@@ -58075,7 +58445,22 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 &lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función left()&lt;/h3&gt;
+Devuelve una subcadena que contiene los &lt;i&gt;n&lt;/i&gt; caracteres a la izquierda de la cadena.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;left(string, length)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - es cadena. La cadena.
+&lt;br&gt;
+&lt;code&gt;length&lt;/code&gt; - es entero. El número de caracteres a la izquierda a devolver.
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;left(&apos;Hola mundo&apos;,4) &amp;rarr; &apos;Hola&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;tan() function&lt;/h3&gt;
@@ -58091,7 +58476,19 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función tan()&lt;/h3&gt;
+Devuelve la tangente de un ángulo.
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     tan(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; ángulo en radianes.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+     tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;lower() function&lt;/h3&gt;
@@ -58106,7 +58503,18 @@ Converts a string to lower case letters.
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función lower()&lt;/h3&gt;
+Convierte una cadena a letras en minúscula.
+
+&lt;p&gt;&lt;h4&gt;  Sintaxis&lt;/h4&gt;
+     lower(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;  Argumentos&lt;/h4&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; es cadena. La cadena a convertir en minúsculas.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;  Ejemplo&lt;/h4&gt;
+     lower(&apos;HOLA Mundo&apos;) &amp;rarr; &apos;hola mundo&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;format_number() function&lt;/h3&gt;
@@ -58126,13 +58534,31 @@ to.
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función format_number()&lt;/h3&gt;
+Devuelve un número formateado con el separador de miles local 
+También trunca el número al número de lugares proporcionado.
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;format_number(number,places)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;number&lt;/code&gt; - es número El número a formatear.
+&lt;br&gt;
+&lt;code&gt;places&lt;/code&gt; - es entero. El número de posiciones decimales a truncar
+to.
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupo Cadena&lt;/h3&gt;
+Este grupo contiene funciones que operan sobre cadenas, por ejemplo remplazar, convertir a mayúsculas.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;abs() function&lt;/h3&gt;
@@ -58148,7 +58574,19 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función abs()&lt;/h3&gt;
+Devuelve el valor absoluto de un número.&lt;br&gt;
+
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - un número.&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;format() function&lt;/h3&gt;
@@ -58165,7 +58603,20 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función format()&lt;/h3&gt;
+Da formato a una cadena utilizando los argumentos proporcionados.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;format(&apos;string&apos;, arg, [arg...n])&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - es una cadena. Cadena con posicionadores de Qt QString.  Use %1, %2, etc. para los posicionadores. Se pueden repetir los posicionadores.
+&lt;br&gt;
+&lt;code&gt;arg [arg...n]&lt;/code&gt; - cualquier tipo. Cualquier número de argumentos.
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format(&apos;Esto %1 un %2&apos;,&apos;es&apos;, &apos;test&apos;) &amp;rarr; Esto es un test&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>
@@ -58187,7 +58638,25 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 &lt;!-- Show example of function.--&gt;
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;Función color_cmyka()&lt;/h3&gt;
+Devuelve una representación mediante cadena de un color basada en sus componentes cian, magenta, amarillo, negro y alfa (transparencia).
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     color_cmyka(&lt;i&gt;cian, magenta, amarillo, negro, alfa&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cian&lt;/i&gt; &amp;rarr; el componente cian del color, como un valor entero de porcentaje de 0 a 100.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; el componente magenta del color, como un valor entero de porcentaje de 0 a 100.&lt;br&gt;
+&lt;i&gt;  amarillo&lt;/i&gt; &amp;rarr; el componente amarillo del color, como un valor entero de porcentaje de 0 a 1000.&lt;br&gt;
+&lt;i&gt;  negro&lt;/i&gt; &amp;rarr; el componente negro del color, como un valor entero de porcentaje de 0 a 100.&lt;br&gt;
+&lt;i&gt;  alfa&lt;/i&gt; &amp;rarr; el componente alfa como un valor entero de 0 (completamente transparente) a 255 (opaco).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;toreal function&lt;/h3&gt;
@@ -58204,7 +58673,20 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">&lt;h3&gt;Función toreal()&lt;/h3&gt;
+Convierte una cadena en un número real. No cambia nada si el valor no se puede convertir en real (ej. &apos;123.56asd&apos; no es válido). Los números se redondean después de guardar los cambios si la precisión es menor que el resultado de la conversión.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     toreal(&lt;i&gt;cadena&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cadena&lt;/i&gt; &amp;rarr; es una cadena. La cadena a convertir a número real.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;month() function&lt;/h3&gt;
@@ -58227,13 +58709,34 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función month()&lt;/h3&gt;
+Extrae la parte del mes de una fecha o el número de meses 
+de un &lt;code&gt;Intervalo&lt;/code&gt;
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;month(fecha)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(Intervalo)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;fecha&lt;/code&gt; - es una fecha o fecha y hora. La fecha de la que extraer el mes.
+&lt;br&gt;
+&lt;code&gt;Intervalo&lt;/code&gt; - es un Intervalo. El Intervalo del que devolver el número de meses.
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;month(&apos;2012-05-12&apos;) &amp;rarr; 05&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(tointerval(&apos;3 months&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupo Matemáticas&lt;/h3&gt;
+Este grupo contiene funciones matemáticas, por ejemplo raíz cuadrada, seno y coseno
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;coalesce() function&lt;/h3&gt;
@@ -58256,7 +58759,26 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función coalesce()&lt;/h3&gt;
+Devuelve el primer valor no NULO de una lista de expresiones.
+&lt;br&gt;
+Esta función puede tomar cualquier número de argumentos.
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;coalesce(expresión1, expresiónn2 ...)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;expresiónn&lt;/code&gt; - cualquier expresión o valor válidos, cualquiera que sea el tipo.
+&lt;br&gt;
+
+&lt;h4&gt;Ejmeplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;coalesce(NULL, 2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(NULL, 2, 3) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(7, NULL, 3*2) &amp;rarr; 7&lt;/code&gt;&lt;br&gt;&lt;br&gt;
+&lt;code&gt;coalesce(&quot;fieldA&quot;, &quot;fallbackField&quot;, &apos;ERROR&apos;) &amp;rarr; el valor de fieldA si no es NULO
+ de lo contrario el valor de &quot;fallbackField&quot; o la cedena &apos;ERROR&apos; si ambos son NULOS&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;scale_linear() function&lt;/h3&gt;
@@ -58279,7 +58801,26 @@ Transforms a given value from an input domain to an output range using linear in
      
      
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función scale_linear()&lt;/h3&gt;
+Transforma un valor dado de un dominio de entrada a un intervalo de salida usando interpolación lineal.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     scale_linear(&lt;i&gt;valor&lt;/i&gt;,&lt;i&gt;dominio_min&lt;/i&gt;,&lt;i&gt;dominio_max&lt;/i&gt;,&lt;i&gt;intervalo_min&lt;/i&gt;,&lt;i&gt;intervalo_max&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  valor&lt;/i&gt; &amp;rarr; es un valor en el dominio de entrada. La función devolverá un valor escalado correspondientedentro del intervalo de salida.&lt;br&gt;
+&lt;i&gt;  dominio_min, dominio_max&lt;/i&gt; &amp;rarr; especifica el dominio de entrada, los valores menor y mayor que el &lt;i&gt;valor&lt;/i&gt; de entrada debería tomar.&lt;br&gt;
+&lt;i&gt;  intervalo_min, intervalo_max&lt;/i&gt; &amp;rarr; especifa el intervalo de salida, los valores menor y mayor que debería sacar la función.&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     scale_linear(5,0,10,0,100) &amp;rarr; 50&lt;br&gt;
+     scale_linear(0.2,0,1,0,360) &amp;rarr; 72 &lt;i&gt;(ej. escalando un valor entre 0 y 1 a un ángulo entre 0 y 360)&lt;/i&gt;&lt;br&gt;
+     scale_linear(1500,1000,10000,9,20) &amp;rarr; 10.22 &lt;i&gt;(ej. escalando una población que varía entre 1000 y 10000 a un tamaño de letra entre 9 y 20)&lt;/i&gt;&lt;br&gt;
+     
+     
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$area function&lt;/h3&gt;
@@ -58295,7 +58836,19 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función $area&lt;/h3&gt;
+Devuelve el tamaño del área del objeto espacial actual.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;$area&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ninguno
+
+&lt;h4&gt;Ejmeplo&lt;/h4&gt;
+&lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;trim() function&lt;/h3&gt;
@@ -58312,7 +58865,20 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función trim()&lt;/h3&gt;
+Elimina los espacios (espacio, tabuladores, etc.) inicial y final de una cadena.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     trim(&lt;i&gt;cadena&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cadena&lt;/i&gt; &amp;rarr; es una cadena. La cadena a recortar.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     trim(&apos;   hola mundo    &apos;) &amp;rarr; &apos;hola mundo&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;color_hsv() function&lt;/h3&gt;
@@ -58331,7 +58897,22 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;#ffaa00&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función color_hsv()&lt;/h3&gt;
+Devuelve una representación de un color en forma de cadena basada en sus atributos de matiz, saturación y valor.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     color_hsv(&lt;i&gt;matiz, saturación, valor&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  matiz&lt;/i&gt; &amp;rarr; el matiz del color, como un valor entero entre 0 y 360.&lt;br&gt;
+&lt;i&gt;  saturación&lt;/i&gt; &amp;rarr; el porcentaje de saturación del color como un valor entero entre 0 y 100.&lt;br&gt;
+&lt;i&gt;  value&lt;/i&gt; &amp;rarr; el porcentaje de valor de un color como entero entre 0 y 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsv(40,100,100) &amp;rarr; &apos;#ffaa00&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;todatetime() function&lt;/h3&gt;
@@ -58347,7 +58928,19 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función todatetime()&lt;/h3&gt;
+Convierte una cadena al tipo fecha hora de Qt.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;todatetime(&apos;cadena&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadena&lt;/code&gt; - es una cadena el el formtato fecha hora de Qt.
+&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;week() function&lt;/h3&gt;
@@ -58370,7 +58963,26 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función week()&lt;/h3&gt;
+Extrae el número de semana de una fecha o en número de semanas
+de un &lt;code&gt;Intervalo&lt;/code&gt;
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;week(fecha)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(Intervalo)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;fecha&lt;/code&gt; - es una fecha o fecha y hora. La fecha de la que extraer la semana.
+&lt;br&gt;
+&lt;code&gt;Intervalo&lt;/code&gt; - es un Intervalo. El Intervalo del que devolver el número de semanas.
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;week(&apos;2012-05-12&apos;) &amp;rarr; 19&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(tointerval(&apos;3 weeks&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;CASE expression&lt;/h3&gt;
@@ -58402,7 +59014,35 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Expresión CASE&lt;/h3&gt;
+Una expresión condicional que se puede usar para evaluar múltiples expresiones y
+devolver un resultado.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;
+     CASE
+        WHEN &lt;i&gt;condición&lt;/i&gt; THEN &lt;i&gt;resultado&lt;/i&gt;
+        [ ...n ]
+        [ ELSE &lt;i&gt;resultado&lt;/i&gt; ]
+     END
+&lt;/pre&gt;
+[ ] marca componentes optionales
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  condición WHEN&lt;/i&gt; - La expresión condicional a evaluar. &lt;br&gt;
+&lt;i&gt;  THEN resultado&lt;/i&gt; - Si &lt;i&gt;condición&lt;/i&gt; se evalúa como Verdadero, entonces se evalúa y devuelvo &lt;i&gt;resultado&lt;/i&gt;. &lt;br&gt;
+&lt;i&gt;  ELSE resultado&lt;/i&gt; - Si ninguna de las condiciones anteriores es evaluada como Verdadero, entonces se evalúa y devuelve &lt;i&gt;resultado&lt;/i&gt;. &lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;pre&gt;
+    CASE
+        WHEN &lt;i&gt;&quot;columna&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;Nada&apos;&lt;/i&gt;
+        ELSE &lt;i&gt;&quot;columna&quot;&lt;/i&gt;
+    END
+&lt;/pre&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$id function&lt;/h3&gt;
@@ -58418,13 +59058,27 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función $id&lt;/h3&gt;
+Devuelve el ID del objeto espacial de la fila actual.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;$id&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ninguno
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupo Fecha y hora&lt;/h3&gt;
+Este grupo contiene funciones para manejar datos de fecha y hora.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$numfeatures function&lt;/h3&gt;
@@ -58440,7 +59094,19 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función $numfeatures&lt;/h3&gt;
+En la generación de atlas, devuelve el número total de objetos espaciales dentro de la capa de cobertura.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;$numfeatures&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ninguno
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>
@@ -58461,7 +59127,24 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+&lt;h3&gt;Función color_cmyk()&lt;/h3&gt;
+Devuelve una representación en forma de cadena de un color basada en sus componentes cian, magenta, amarillo y negro.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     color_cmyk(&lt;i&gt;cian, magenta, amarillo, negro&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cian&lt;/i&gt; &amp;rarr; el componente cian del color, como valor entero de porcentaje de 0 a 100.&lt;br&gt;
+&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; el componente magenta del color, como valor entero de porcentaje de 0 a 100.&lt;br&gt;
+&lt;i&gt;  amarillo&lt;/i&gt; &amp;rarr; el componente amarillo del color, como valor entero de porcentaje de 0 a 100.&lt;br&gt;
+&lt;i&gt;  negro&lt;/i&gt; &amp;rarr; el componente negro del color, como valor entero de porcentaje de 0 a 100.&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_cmyk(100,50,0,10) &amp;rarr; &apos;#0073e6&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;rpad() function&lt;/h3&gt;
@@ -58483,7 +59166,25 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función rpad()&lt;/h3&gt;
+Devuelve una cadena precedida con el carácter
+de relleno proporcionado, en la anchura dada.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;rpad(cadena, anchura, relleno)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadena&lt;/code&gt; - es una cadena. La cadena.
+&lt;br&gt;
+&lt;code&gt;anchura&lt;/code&gt; - es un entero. La longitud de la nueva cadena.
+&lt;br&gt;
+&lt;code&gt;relleno&lt;/code&gt; - es un carácter. El carácter con el que rellenar los espacios restantes.
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;rpad(&apos;Hola&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxxHola&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;lpad() function&lt;/h3&gt;
@@ -58504,7 +59205,25 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función lpad()&lt;/h3&gt;
+Devuelve una cadena seguida con el carácter
+de relleno proporcionado, en la anchura dada.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;lpad(cadena, anchura, relleno)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadena&lt;/code&gt; - es una cadena. La cadena.
+&lt;br&gt;
+&lt;code&gt;anchura&lt;/code&gt; - es un entero. La longitud de la nueva cadena.
+&lt;br&gt;
+&lt;code&gt;relleno&lt;/code&gt; - es un carácter. El carácter con el que rellenar los espacios restantes.
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;lpad(&apos;Hola&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Holaxxxxxx&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;upper() function&lt;/h3&gt;
@@ -58521,13 +59240,28 @@ Converts a string to upper case letters.
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función upper()&lt;/h3&gt;
+Convierte una cadena en letras mayúsculas.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     upper(&lt;i&gt;cadena&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cadena&lt;/i&gt; &amp;rarr; es una cadena. La cadena a pasar a mayúsculas.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     upper(&apos;hola MUndo&apos;) &amp;rarr; &apos;HOLA MUNDO&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Grupo Registros&lt;/h3&gt;
+Este grupo contiene funciones que operan sobre identificadores de registros.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;right() function&lt;/h3&gt;
@@ -58546,7 +59280,22 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función right()&lt;/h3&gt;
+Devuelve una subcadena que contiene los &lt;i&gt;n&lt;/i&gt; caracteres más a la derecha de la cadena.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;right(cadena, longitud)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;cadena&lt;/code&gt; - es una cadena. La cadena.
+&lt;br&gt;
+&lt;code&gt;longitud&lt;/code&gt; - es un entero. El número de caracteres a devolver desde el extremo derecho.
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;right(&apos;Hola mundo&apos;,5) &amp;rarr; &apos;mundo&apos;&lt;/code&gt;&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;length() function&lt;/h3&gt;
@@ -58563,7 +59312,20 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función length()&lt;/h3&gt;
+Devuelve la longitud de una cadena.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     length(&lt;i&gt;cadena&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  cadena&lt;/i&gt; &amp;rarr; es una cadena. La cadena de la que medir la longitud.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     length(&apos;HOLA&apos;) &amp;rarr; 4&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Function ceil()&lt;/h3&gt;
@@ -58581,7 +59343,21 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">&lt;h3&gt;Función ceil()&lt;/h3&gt;
+Redondea un número por encima.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;ceil(valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;valor&lt;/code&gt; - un número.
+&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;min() function&lt;/h3&gt;
@@ -58598,7 +59374,20 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función min()&lt;/h3&gt;
+Devuelve el valor menor de un conjunto de valores.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     min(&lt;i&gt;valor&lt;i&gt;[,&lt;i&gt;valor&lt;/i&gt;...])
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  valor&lt;/i&gt; &amp;rarr; un número.&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     min(20.5,10,6.2) &amp;rarr; 6.2
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Funktion ln()&lt;/h3&gt;
@@ -58617,7 +59406,22 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">&lt;h3&gt;Función ln()&lt;/h3&gt;
+Devuelve el valor del logaritmo natural de la expresión pasada.
+&lt;br&gt;
+Esta función toma un argumento.
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;ln(valor)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;valor&lt;/code&gt; - cualquier número positivo.
+&lt;br&gt;
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;color_hsla() function&lt;/h3&gt;
@@ -58637,7 +59441,23 @@ Returns a string representation of a color based on its hue, saturation, lightne
 &lt;!-- Show example of function.--&gt;
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función color_hsla()&lt;/h3&gt;
+Devuelve una representación en forma de cadena del color basada en sus atributos de matiz, saturación, brillo y alfa (transparencia).
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     color_hsla(&lt;i&gt;matiz, saturación, brillo, alfa&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  matiz&lt;/i&gt; &amp;rarr; el matiz del color, como un valor entero de 0 a 360.&lt;br&gt;
+&lt;i&gt;  saturación&lt;/i&gt; &amp;rarr; el porcentaje de saturación del color, como un valor entereo de 0 a 100.&lt;br&gt;
+&lt;i&gt;  brillo&lt;/i&gt; &amp;rarr; el porcentaje de brillo del color, como un valor entereo de 0 a 100.&lt;br&gt;
+&lt;i&gt;  alfa&lt;/i&gt; &amp;rarr; el componente alfa como un valor entero de 0 (completamente transparente) a 255 (opaco).&lt;br&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;asin() function&lt;/h3&gt;
@@ -58653,7 +59473,19 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función asin()&lt;/h3&gt;
+Devuelve el arcoseno de un valor en radianes.
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     asin(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; seno de un ángulo.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+     asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;sqrt() function&lt;/h3&gt;
@@ -58669,7 +59501,19 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función sqrt()&lt;/h3&gt;
+Devuelve la raíz cuadrada de un valor
+
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     sqrt(&lt;i&gt;real&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;i&gt;real&lt;/i&gt; &amp;rarr; número.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+     sqrt(9) &amp;rarr; 3&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;$x function&lt;/h3&gt;
@@ -58685,7 +59529,19 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función $x&lt;/h3&gt;
+Devuelve la coordenada  the X del objeto espacial actual.
+
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;pre&gt;$x&lt;/pre&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+Ninguno
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;tostring function&lt;/h3&gt;
@@ -58702,7 +59558,20 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">&lt;h3&gt;Función tostring()&lt;/h3&gt;
+Convierte un número en cadena.
+
+&lt;p&gt;&lt;h4&gt;Sintaxis&lt;/h4&gt;
+     tostring(&lt;i&gt;número&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;número&lt;/i&gt; &amp;rarr; es un entero o real. El número a convertir en cadena.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;round() function&lt;/h3&gt;
@@ -58726,7 +59595,27 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Función round()&lt;/h3&gt;
+Redondea un número al número de decimales indicado.
+&lt;br&gt;
+Esta función puede tomar uno o dos argumentos dependiendo de lo que se necesite.
+&lt;h4&gt;Sintaxis&lt;/h4&gt;
+&lt;code&gt;round(decimal,lugares)&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;round(decimal)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Argumentos&lt;/h4&gt;
+&lt;code&gt;decimal&lt;/code&gt; - es un decimal. El número decimal a redondear.
+&lt;br&gt;
+&lt;code&gt;lugares&lt;/code&gt; - es un entero. El número de decimales a los que redondear. Puede ser negativo.
+
+&lt;h4&gt;Ejemplo&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;round(1234.567, 2 ) &amp;rarr; 1234.57&lt;/code&gt;&lt;br&gt;
+usar &lt;code&gt;round(decimal)&lt;/code&gt; para redondear al entero más próximo&lt;br&gt;
+&lt;code&gt;round(1234.567) &amp;rarr; 1235&lt;/code&gt;&lt;br&gt;
+
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;format_date() function&lt;/h3&gt;
@@ -59035,24 +59924,6 @@ Returns a string representation of a color based on its hue, saturation, value a
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Function floor()&lt;/h3&gt;
-Rounds a number downwards.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;floor(value)&lt;/code&gt;&lt;br&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;value&lt;/code&gt; - a number.
-&lt;br&gt;
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;strpos() function&lt;/h3&gt;
 Return the index of a regular expression in a string.
 
@@ -59324,23 +60195,6 @@ Returns sinus of an angle.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;toint function&lt;/h3&gt;
-Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to integer number.&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;substr() function&lt;/h3&gt;
 Return a part of a string
 
@@ -59419,21 +60273,6 @@ This function takes two arguments.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;h3&gt;xat function&lt;/h3&gt;
-Retrieves a x coordinate of the current feature
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;xat(i)&lt;/code&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;replace() function&lt;/h3&gt;
 Returns a string with the the supplied string replaced.
 
@@ -59473,21 +60312,6 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-07-22T13:00:00&apos;,&apos;2012-07-22T10:00:00&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;yat function&lt;/h3&gt;
-Retrieves a y coordinate of the current feature
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;yat(i)&lt;/code&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -59655,6 +60479,142 @@ Returns the portion of a string which matches a supplied regular expression.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;ceil() function&lt;/h3&gt;
+Rounds a number upwards.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;ceil(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;toreal() function&lt;/h3&gt;
+Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     toreal(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to real number.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;xat() function&lt;/h3&gt;
+Retrieves a x coordinate of the current feature
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;xat(i)&lt;/code&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;floor() function&lt;/h3&gt;
+Rounds a number downwards.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;floor(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - a number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;toint() function&lt;/h3&gt;
+Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to integer number.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;yat() function&lt;/h3&gt;
+Retrieves a y coordinate of the current feature
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;yat(i)&lt;/code&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;i&lt;code&gt; - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;tostring() function&lt;/h3&gt;
+Converts a number to string.
+
+&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
+     tostring(&lt;i&gt;number&lt;/i&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;!-- List args for functions here--&gt;
+&lt;i&gt;number&lt;/i&gt; &amp;rarr; is integer or real.  The number to convert to string.&lt;/p&gt;
+
+&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;ln() function&lt;/h3&gt;
+Returns the value of the natural logarithm of the passed expression.
+&lt;br&gt;
+This function takes one argument.
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;ln(value)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;value&lt;/code&gt; - any positive number.
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -59870,7 +60830,7 @@ Returns the portion of a string which matches a supplied regular expression.
     </message>
     <message>
         <source>Calculate volume of data clumps, and create vector with centroids of clumps</source>
-        <translation>Calcular volúmen de agrupación de datos y crear capa vectorial con centroides de los grupos</translation>
+        <translation>Calcular volumen de agrupación de datos y crear capa vectorial con centroides de los grupos</translation>
     </message>
     <message>
         <source>Category or object oriented statistics</source>
@@ -60054,7 +61014,7 @@ Returns the portion of a string which matches a supplied regular expression.
     </message>
     <message>
         <source>Create a MASK for limiting raster operation</source>
-        <translation>Crear una MÁSCARA para limitar la operacion ráster</translation>
+        <translation>Crear una MÁSCARA para limitar la operación ráster</translation>
     </message>
     <message>
         <source>Create a map containing concentric rings</source>
@@ -60686,7 +61646,7 @@ Returns the portion of a string which matches a supplied regular expression.
     </message>
     <message>
         <source>Import OGR vectors in a given data source combining them in a GRASS vector</source>
-        <translation>Importar vectoriales OGR de una fuente de datos dada combinandolos en un vectorial de GRASS</translation>
+        <translation>Importar vectoriales OGR de una fuente de datos dada combinándolos en un vectorial de GRASS</translation>
     </message>
     <message>
         <source>Import OGR/PostGIS vector and create a fitted location</source>
@@ -60726,7 +61686,7 @@ Returns the portion of a string which matches a supplied regular expression.
     </message>
     <message>
         <source>Import geonames.org country files</source>
-        <translation>Importar archivos de paises de geonames.org</translation>
+        <translation>Importar archivos de países de geonames.org</translation>
     </message>
     <message>
         <source>Import into GRASS</source>
@@ -61010,7 +61970,7 @@ Returns the portion of a string which matches a supplied regular expression.
     </message>
     <message>
         <source>Print projection information from a georeferenced file and create a new location based on it</source>
-        <translation>Imprimir información de proyección de un archivo georreferenciado y crear una nueva locacización basada en ella</translation>
+        <translation>Imprimir información de proyección de un archivo georreferenciado y crear una nueva localización basada en ella</translation>
     </message>
     <message>
         <source>Print projection information of the current location</source>
@@ -61542,7 +62502,7 @@ Returns the portion of a string which matches a supplied regular expression.
     </message>
     <message>
         <source>Generates area statistics for rasters</source>
-        <translation>Genera estadísticas de area para rásters</translation>
+        <translation>Genera estadísticas de área para rásters</translation>
     </message>
     <message>
         <source>Import OGR vector and create a fitted location</source>

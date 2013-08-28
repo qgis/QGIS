@@ -30,8 +30,6 @@ QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
                       QgsSimpleLineSymbolLayerV2::create, QgsSimpleLineSymbolLayerV2::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "MarkerLine", QObject::tr( "Marker line" ), QgsSymbolV2::Line,
                       QgsMarkerLineSymbolLayerV2::create, QgsMarkerLineSymbolLayerV2::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "LineDecoration", QObject::tr( "Line decoration" ), QgsSymbolV2::Line,
-                      QgsLineDecorationSymbolLayerV2::create ) );
 
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SimpleMarker", QObject::tr( "Simple marker" ), QgsSymbolV2::Marker,
                       QgsSimpleMarkerSymbolLayerV2::create, QgsSimpleMarkerSymbolLayerV2::createFromSld ) );

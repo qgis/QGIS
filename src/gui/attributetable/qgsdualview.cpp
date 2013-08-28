@@ -64,6 +64,7 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QgsDista
 
   connect( layer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
   connect( layer, SIGNAL( beforeCommitChanges() ), this, SLOT( editingToggled() ) );
+  connect( layer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
 
   initLayerCache( layer );
   initModels( mapCanvas );
@@ -214,6 +215,8 @@ void QgsDualView::initLayerCache( QgsVectorLayer* layer )
 
     mLayerCache->setFullCache( true );
   }
+
+  connect( layer, SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
 }
 
 void QgsDualView::initModels( QgsMapCanvas* mapCanvas )
@@ -378,6 +381,28 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
 void QgsDualView::previewExpressionChanged( const QString expression )
 {
   mLayerCache->layer()->setDisplayExpression( expression );
+}
+
+void QgsDualView::attributeDeleted( int attribute )
+{
+  if ( mAttributeDialog && mAttributeDialog->dialog() )
+  {
+    // Let the dialog write the edited widget values to it's feature
+    mAttributeDialog->accept();
+    // Get the edited feature
+    QgsFeature* feat = mAttributeDialog->feature();
+    feat->deleteAttribute( attribute );
+
+    // Backup old dialog and delete only after creating the new dialog, so we can "hot-swap" the contained QgsFeature
+    QgsAttributeDialog* oldDialog = mAttributeDialog;
+
+    mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
+
+    mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( *feat ), true, mDistanceArea, this, false );
+    mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
+
+    delete oldDialog;
+  }
 }
 
 void QgsDualView::setFilteredFeatures( QgsFeatureIds filteredFeatures )

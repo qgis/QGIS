@@ -153,9 +153,9 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         selCmdLenght = len(self.text(line))
         self.setSelection(line, 4, line, selCmdLenght)
         self.removeSelectedText()
-        if command == "sextante":
-            # import Sextante class
-            self.append('import sextante')
+        if command == "processing":
+            # import Processing class
+            self.append('import processing')
         elif command == "qtCore":
             # import QtCore class
             self.append('from PyQt4.QtCore import *')
@@ -410,7 +410,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.showNext()
         ## TODO: press event for auto-completion file directory
         else:
-            if self.settings.value("pythonConsole/autoCloseBracket", True, type=bool):
+            if self.settings.value("pythonConsole/autoCloseBracket", False, type=bool):
                 t = unicode(e.text())
                 ## Close bracket automatically
                 if t in self.opening:
@@ -425,7 +425,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                         self.insert(self.closing[i])
                 ## FIXES #8392 (automatically removes the redundant char
                 ## when autoclosing brackets option is enabled)
-                if t in self.closing:
+                if t in [')', ']', '}']:
                     l, pos = self.getCursorPosition()
                     txt = self.text(l)
                     try:

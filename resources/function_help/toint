@@ -1,4 +1,4 @@
-<h3>toint function</h3>
+<h3>toint() function</h3>
 Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g '123asd' is invalid).
 
 <p><h4>Syntax</h4>

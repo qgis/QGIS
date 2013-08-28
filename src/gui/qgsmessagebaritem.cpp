@@ -36,7 +36,7 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::Messag
   writeContent();
 }
 
-QgsMessageBarItem::QgsMessageBarItem(const QString &title, const QString &text, QgsMessageBar::MessageLevel level, int duration , QWidget *parent ) :
+QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QgsMessageBar::MessageLevel level, int duration , QWidget *parent ) :
     QWidget( parent )
     , mTitle( title )
     , mText( text )

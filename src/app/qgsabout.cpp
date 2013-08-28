@@ -49,6 +49,8 @@ void QgsAbout::init()
 {
   setPluginInfo();
 
+  setWindowTitle( QString( "%1 - %2 Bit" ).arg( windowTitle() ).arg( QSysInfo::WordSize ) );
+
   // set the 60x60 icon pixmap
   QPixmap icon( QgsApplication::iconsPath() + "qgis-icon-60x60.png" );
   qgisIcon->setPixmap( icon );
@@ -201,8 +203,8 @@ void QgsAbout::setLicence()
 #endif
   if ( licenceFile.open( QIODevice::ReadOnly ) )
   {
-      QString content = licenceFile.readAll();
-      txtLicense->setText(content);
+    QString content = licenceFile.readAll();
+    txtLicense->setText( content );
   }
 }
 

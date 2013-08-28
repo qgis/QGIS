@@ -59,7 +59,6 @@ static void _initWidgetFunctions()
 
   _initWidgetFunction( "SimpleLine", QgsSimpleLineSymbolLayerV2Widget::create );
   _initWidgetFunction( "MarkerLine", QgsMarkerLineSymbolLayerV2Widget::create );
-  _initWidgetFunction( "LineDecoration", QgsLineDecorationSymbolLayerV2Widget::create );
 
   _initWidgetFunction( "SimpleMarker", QgsSimpleMarkerSymbolLayerV2Widget::create );
   _initWidgetFunction( "SvgMarker", QgsSvgMarkerSymbolLayerV2Widget::create );

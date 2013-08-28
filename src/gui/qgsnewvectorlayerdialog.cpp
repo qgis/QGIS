@@ -66,7 +66,8 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << "id" << "Integer" << "10" << "" ) );
 
   QgsCoordinateReferenceSystem srs;
-  srs.createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+
+  srs.createFromOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
   srs.validate();
 
   mCrsId = srs.srsid();

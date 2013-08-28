@@ -44,11 +44,11 @@ class ParameterTableField(Parameter):
     def getAsScriptCode(self):
         return "##" + self.name + "=field " + str(self.parent)
 
-    def setValue(self, field):
-        if field is None:
+    def setValue(self, value):
+        if value is None:
             return self.optional
-        elif len(field) > 0:
-            self.value = str(field)
+        elif len(value) > 0:
+            self.value = str(value)
         else:
             return self.optional
         return True
