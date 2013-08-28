@@ -219,7 +219,8 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 self.textGroup.setText(alg.group)
                 self.textName.setText(alg.name)
                 self.repaintModel()
-                self.view.ensureVisible(self.scene.getLastAlgorithmItem())
+                if self.scene.getLastAlgorithmItem():
+                    self.view.ensureVisible(self.scene.getLastAlgorithmItem())
                 self.view.centerOn(0,0)
             except WrongModelException, e:
                 QMessageBox.critical(self,
