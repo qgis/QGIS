@@ -43,6 +43,10 @@ try:
     def __nonzero__(self):
         return False
 
+    def __repr__(self):
+        return 'NULL'
+
     QPyNullVariant.__nonzero__ = MethodType(__nonzero__, None, QPyNullVariant)
+    QPyNullVariant.__repr__ = MethodType(__repr__, None, QPyNullVariant)
 except ImportError:
     pass
