@@ -46182,28 +46182,28 @@ standardafvigelse ×</translation>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="214"/>
         <source>cumulative cut</source>
-        <translation type="unfinished"></translation>
+        <translation>kumulativ beskæring</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="218"/>
         <source>standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>standardafvigelse</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="223"/>
         <source>full extent</source>
-        <translation type="unfinished"></translation>
+        <translation>fuldt omrids</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="227"/>
         <source>sub extent</source>
-        <translation type="unfinished"></translation>
+        <translation>underomrids</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="230"/>
         <source>%1 %2 of %3.</source>
         <comment>min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent</comment>
-        <translation type="unfinished">%1 af %3. {1 %2 ?}</translation>
+        <translation>%1 %2 af %3.</translation>
     </message>
     <message>
         <source> of </source>
@@ -47927,32 +47927,32 @@ forbedring</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="33"/>
         <source>has the tag</source>
-        <translation type="unfinished"></translation>
+        <translation>har tagget</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="34"/>
         <source>is a member of group</source>
-        <translation type="unfinished"></translation>
+        <translation>er medlem af gruppen</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="35"/>
         <source>has a part of name matching</source>
-        <translation type="unfinished"></translation>
+        <translation>har en del af navnet, som matcher</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="36"/>
         <source>does NOT have the tag</source>
-        <translation type="unfinished"></translation>
+        <translation>har IKKE tagget</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="37"/>
         <source>is NOT a member of group</source>
-        <translation type="unfinished"></translation>
+        <translation>er IKKE medlem af gruppen</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="38"/>
         <source>has NO part of name matching</source>
-        <translation type="unfinished"></translation>
+        <translation>har INGEN del af navnet, der matcher</translation>
     </message>
 </context>
 <context>
@@ -47973,12 +47973,12 @@ forbedring</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="86"/>
         <source>ALL the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>ALLE begrænsningerne</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="87"/>
         <source>any ONE of the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>en vilkårlig EN af begrænsningerne</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="204"/>
@@ -50579,12 +50579,12 @@ Der var et problem med til din symboldatabase.</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="74"/>
         <source>Style Manager</source>
-        <translation type="unfinished">Stilartstyring</translation>
+        <translation>Stilartstyring</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="76"/>
         <source>Save in symbol library...</source>
-        <translation type="unfinished"></translation>
+        <translation>Gem i symbolbibliotek...</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="223"/>
