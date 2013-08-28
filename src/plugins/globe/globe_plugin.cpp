@@ -194,17 +194,17 @@ void GlobePlugin::initGui()
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/globe/globe.png" ), tr( "Launch Globe" ), this );
   mQActionSettingsPointer = new QAction( QIcon( ":/globe/globe.png" ), tr( "Globe Settings" ), this );
-  QAction* actionUnload = new QAction( tr( "Unload Globe" ), this );
+  mQActionUnload = new QAction( tr( "Unload Globe" ), this );
 
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Overlay data on a 3D globe" ) );
   mQActionSettingsPointer->setWhatsThis( tr( "Settings for 3D globe" ) );
-  actionUnload->setWhatsThis( tr( "Unload globe" ) );
+  mQActionUnload->setWhatsThis( tr( "Unload globe" ) );
 
   // Connect actions
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   connect( mQActionSettingsPointer, SIGNAL( triggered() ), this, SLOT( settings() ) );
-  connect( actionUnload, SIGNAL( triggered() ), this, SLOT( reset() ) );
+  connect( mQActionUnload, SIGNAL( triggered() ), this, SLOT( reset() ) );
 
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon( mQActionPointer );
@@ -212,7 +212,7 @@ void GlobePlugin::initGui()
   //Add menu
   mQGisIface->addPluginToMenu( tr( "&Globe" ), mQActionPointer );
   mQGisIface->addPluginToMenu( tr( "&Globe" ), mQActionSettingsPointer );
-  mQGisIface->addPluginToMenu( tr( "&Globe" ), actionUnload );
+  mQGisIface->addPluginToMenu( tr( "&Globe" ), mQActionUnload );
 
   connect( mQGisIface->mapCanvas() , SIGNAL( extentsChanged() ),
            this, SLOT( extentsChanged() ) );
@@ -778,8 +778,12 @@ void GlobePlugin::unload()
 {
   reset();
   // remove the GUI
-  mQGisIface->removePluginMenu( "&Globe", mQActionPointer );
+  mQGisIface->removePluginMenu( tr( "&Globe" ), mQActionPointer );
+  mQGisIface->removePluginMenu( tr( "&Globe" ), mQActionSettingsPointer );
+  mQGisIface->removePluginMenu( tr( "&Globe" ), mQActionUnload );
+
   mQGisIface->removeToolBarIcon( mQActionPointer );
+
   delete mQActionPointer;
 }
 
