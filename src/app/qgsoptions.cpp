@@ -93,10 +93,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( cmbIconSize, SIGNAL( highlighted( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
   connect( cmbIconSize, SIGNAL( textChanged( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
 
-#ifdef Q_WS_X11
-  connect( chkEnableBackbuffer, SIGNAL( stateChanged( int ) ), this, SLOT( toggleEnableBackbuffer( int ) ) );
-#endif
-
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
   connect( this, SIGNAL( rejected() ), this, SLOT( rejectOptions() ) );
 
@@ -344,19 +340,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   if ( index == -1 ) index = 1;
   cmbScanZipInBrowser->setCurrentIndex( index );
 
-  // Set the enable backbuffer state for X11 (linux) systems only
-  // TODO: remove this when threading is implemented
-#ifdef Q_WS_X11
-  chkEnableBackbuffer->setChecked( settings.value( "/Map/enableBackbuffer", 1 ).toBool() );
-  toggleEnableBackbuffer( chkEnableBackbuffer->checkState() );
-#elif defined(Q_WS_MAC)
-  chkEnableBackbuffer->setChecked( true );
-  chkEnableBackbuffer->setEnabled( false );
+#ifdef Q_WS_MAC
   labelUpdateThreshold->setEnabled( false );
   spinBoxUpdateThreshold->setEnabled( false );
-#else // Q_WS_WIN32
-  chkEnableBackbuffer->setChecked( true );
-  chkEnableBackbuffer->setEnabled( false );
 #endif
 
   // set the display update threshold
@@ -812,24 +798,6 @@ void QgsOptions::on_mProjectOnLaunchPushBtn_pressed()
   }
 }
 
-void QgsOptions::toggleEnableBackbuffer( int state )
-{
-#ifdef Q_WS_X11
-  if ( Qt::Checked == state )
-  {
-    labelUpdateThreshold->setEnabled( false );
-    spinBoxUpdateThreshold->setEnabled( false );
-  }
-  else
-  {
-    labelUpdateThreshold->setEnabled( true );
-    spinBoxUpdateThreshold->setEnabled( true );
-  }
-#else
-  Q_UNUSED( state );
-#endif
-}
-
 QString QgsOptions::theme()
 {
   // returns the current theme (as selected in the cmbTheme combo box)
@@ -1002,7 +970,6 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Raster/cumulativeCutLower", mRasterCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
   settings.setValue( "/Raster/cumulativeCutUpper", mRasterCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
 
-  settings.setValue( "/Map/enableBackbuffer", chkEnableBackbuffer->isChecked() );
   int threshold = spinBoxUpdateThreshold->value();
   settings.setValue( "/Map/updateThreshold", threshold < 1000 ? 0 : threshold );
 

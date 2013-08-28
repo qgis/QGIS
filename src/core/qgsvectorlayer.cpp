@@ -412,24 +412,17 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
         continue; // skip features without geometry
 
 #ifndef Q_WS_MAC //MH: disable this on Mac for now to avoid problems with resizing
-#ifdef Q_WS_X11
-      if ( !mEnableBackbuffer ) // do not handle events, as we're already inside a paint event
+      if ( mUpdateThreshold > 0 && 0 == featureCount % mUpdateThreshold )
       {
-#endif // Q_WS_X11
-        if ( mUpdateThreshold > 0 && 0 == featureCount % mUpdateThreshold )
-        {
-          emit screenUpdateRequested();
-          // emit drawingProgress( featureCount, totalFeatures );
-          qApp->processEvents();
-        }
-        else if ( featureCount % 1000 == 0 )
-        {
-          // emit drawingProgress( featureCount, totalFeatures );
-          qApp->processEvents();
-        }
-#ifdef Q_WS_X11
+        emit screenUpdateRequested();
+        // emit drawingProgress( featureCount, totalFeatures );
+        qApp->processEvents();
       }
-#endif // Q_WS_X11
+      else if ( featureCount % 1000 == 0 )
+      {
+        // emit drawingProgress( featureCount, totalFeatures );
+        qApp->processEvents();
+      }
 #endif // Q_WS_MAC
 
       if ( rendererContext.renderingStopped() )
@@ -652,10 +645,6 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   {
     mUpdateThreshold = 1000;
   }
-
-#ifdef Q_WS_X11
-  mEnableBackbuffer = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
-#endif
 
   if ( !mRendererV2 )
     return false;
