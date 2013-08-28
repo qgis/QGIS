@@ -2209,7 +2209,7 @@ blev reduceret til %s hjørner efter forenkling</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation>Tilføj attibutter via spatielt overlap</translation>
+        <translation>Tilføj attributter via placering</translation>
     </message>
     <message>
         <source>Please specify target vector layer</source>
@@ -5760,6 +5760,9 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="213"/>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="214"/>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="215"/>
+        <location filename="../src/plugins/globe/globe_plugin.cpp" line="781"/>
+        <location filename="../src/plugins/globe/globe_plugin.cpp" line="782"/>
+        <location filename="../src/plugins/globe/globe_plugin.cpp" line="783"/>
         <source>&amp;Globe</source>
         <translation>&amp;Klode</translation>
     </message>
@@ -13295,7 +13298,7 @@ Fejl: %3
         <location filename="../src/app/qgisapp.cpp" line="6195"/>
         <location filename="../src/app/qgisapp.cpp" line="6206"/>
         <source>Duplicate layer: </source>
-        <translation>Dublér lag: </translation>
+        <translation>Dubleret lag: </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6196"/>
@@ -13329,7 +13332,7 @@ Fejl: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6474"/>
         <source>You are running a development version of QGIS</source>
-        <translation>Dette er en udvikler version af QGIS</translation>
+        <translation>Du kører med en udviklerversion af QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6478"/>
@@ -27139,7 +27142,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="316"/>
         <source>Edit attributes</source>
-        <translation>Redigér attibutter</translation>
+        <translation>Redigér attributter</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="321"/>
@@ -33600,7 +33603,7 @@ vises ikke</translation>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="113"/>
         <source>The active point layer does not have a rotation attribute</source>
-        <translation>Det aktive punktlag har ikke en rotationsattibut</translation>
+        <translation>Det aktive punktlag har ikke en rotationsattribut</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="193"/>
@@ -38164,7 +38167,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2839"/>
         <source>Suppress attributes pop-up windows after each created feature</source>
-        <translation>Undertryk attibutters popup-vinduer efter hvert oprettet objekt</translation>
+        <translation>Undertryk attributters popup-vinduer efter hvert oprettet objekt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2862"/>
@@ -47920,6 +47923,39 @@ forbedring</translation>
     </message>
 </context>
 <context>
+    <name>QgsSmartGroupCondition</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="33"/>
+        <source>has the tag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="34"/>
+        <source>is a member of group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="35"/>
+        <source>has a part of name matching</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="36"/>
+        <source>does NOT have the tag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="37"/>
+        <source>is NOT a member of group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="38"/>
+        <source>has NO part of name matching</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsSmartGroupConditionWidget</name>
     <message>
         <location filename="../src/ui/qgssmartgroupconditionwidget.ui" line="14"/>
@@ -47934,6 +47970,16 @@ forbedring</translation>
 </context>
 <context>
     <name>QgsSmartGroupEditorDialog</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="86"/>
+        <source>ALL the constraints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="87"/>
+        <source>any ONE of the constraints</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssmartgroupeditordialog.cpp" line="204"/>
         <source>Invalid name</source>
@@ -50530,6 +50576,16 @@ Der var et problem med til din symboldatabase.</translation>
 </context>
 <context>
     <name>QgsSymbolsListWidget</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="74"/>
+        <source>Style Manager</source>
+        <translation type="unfinished">Stilartstyring</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="76"/>
+        <source>Save in symbol library...</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="223"/>
         <source>Symbol name</source>
@@ -61812,7 +61868,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="222"/>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
         <translatorcomment>Shorter sentences please...</translatorcomment>
-        <translation>Hvis markeret, vil stien til billedet blive defineret ved at føje attributten i det valgte felt fra &quot;Attibut indeholdende sti til billede&quot;-dropdown-listen til &quot;Basis-stien&quot; defineret herunder.</translation>
+        <translation>Hvis markeret, vil stien til billedet blive defineret ved at føje attributten i det valgte felt fra &quot;Attribut indeholdende sti til billede&quot;-dropdown-listen til &quot;Basis-stien&quot; defineret herunder.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="225"/>
