@@ -172,6 +172,8 @@ class SplitThread(QThread):
 
 
         for i in unique:
+            if type(i) == QPyNullVariant:
+                i = u'NULL'
             check = QFile(baseName + "_" + unicode(i).strip() + ".shp")
             fName = check.fileName()
             if check.exists():
@@ -184,7 +186,7 @@ class SplitThread(QThread):
             fit = provider.getFeatures()
             while fit.nextFeature(inFeat):
                 atMap = inFeat.attributes()
-                if atMap[index] == i:
+                if atMap[index] == i or (not atMap[index] and i == u'NULL'):
                     writer.addFeature(inFeat)
             del writer
 
