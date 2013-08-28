@@ -30,12 +30,12 @@ QgsSmartGroupCondition::QgsSmartGroupCondition( int id, QWidget* parent ) : QWid
 
   mConditionId = id;
 
-  mCondCombo->addItem( "has the tag", QVariant( "tag" ) );
-  mCondCombo->addItem( "is a member of group", QVariant( "group" ) );
-  mCondCombo->addItem( "has a part of name matching", QVariant( "name" ) );
-  mCondCombo->addItem( "does NOT have the tag", QVariant( "!tag" ) );
-  mCondCombo->addItem( "is NOT a member of group", QVariant( "!group" ) );
-  mCondCombo->addItem( "has NO part of name matching", QVariant( "!name" ) );
+  mCondCombo->addItem( tr( "has the tag" ), QVariant( "tag" ) );
+  mCondCombo->addItem( tr( "is a member of group" ), QVariant( "group" ) );
+  mCondCombo->addItem( tr( "has a part of name matching" ), QVariant( "name" ) );
+  mCondCombo->addItem( tr( "does NOT have the tag" ), QVariant( "!tag" ) );
+  mCondCombo->addItem( tr( "is NOT a member of group" ), QVariant( "!group" ) );
+  mCondCombo->addItem( tr( "has NO part of name matching" ), QVariant( "!name" ) );
 
   mRemoveBtn->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
 
@@ -83,8 +83,8 @@ QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyleV2* style, QWidget
 
   mCondCount = 0;
 
-  mAndOrCombo->addItem( "ALL the constraints", QVariant( "AND" ) );
-  mAndOrCombo->addItem( "any ONE of the constraints", QVariant( "OR" ) );
+  mAndOrCombo->addItem( tr( "ALL the constraints" ), QVariant( "AND" ) );
+  mAndOrCombo->addItem( tr( "any ONE of the constraints" ), QVariant( "OR" ) );
 
   mLayout = new QGridLayout( mConditionsBox );
   addCondition();
