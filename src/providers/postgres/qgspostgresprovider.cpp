@@ -168,8 +168,8 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "double precision", QVariant::Double, -1, -1, -1, -1 )
 
   // string types
-  << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "char", QVariant::String, 1, 255 )
-  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255 )
+  << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "char", QVariant::String, 1, 255, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255, -1, -1 )
   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), "text", QVariant::String, -1, -1, -1, -1 )
 
   // date type
@@ -1872,7 +1872,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
       }
       else if ( type == "numeric" || type == "decimal" )
       {
-        if ( iter->length() > 0 && iter->precision() > 0 )
+        if ( iter->length() > 0 && iter->precision() >= 0 )
           type = QString( "%1(%2,%3)" ).arg( type ).arg( iter->length() ).arg( iter->precision() );
       }
 
