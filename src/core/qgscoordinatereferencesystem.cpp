@@ -593,6 +593,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
     }
   }
 
+  QStringList myParam;
   if ( myRecord.empty() )
   {
     // match all parameters individually:
@@ -618,6 +619,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
       {
         sql += delim + arg;
         delim = " AND ";
+        myParam.append(param);
       }
     }
 
@@ -637,9 +639,26 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   {
     mySrsId = myRecord["srs_id"].toLong();
     QgsDebugMsg( "proj4string param match search for srsid returned srsid: " + QString::number( mySrsId ) );
-    if ( mySrsId > 0 )
+    // Bugfix 8487 : test param lists are equal, except for +datum
+    myParam.sort();
+    QStringList foundParam;
+    foreach ( QString paramfound, myRecord["parameters"].split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
     {
-      createFromSrsId( mySrsId );
+      if ( !paramfound.startsWith( "+datum=" ) )
+        foundParam.append(paramfound);
+    }
+    foundParam.sort();
+    if ( myParam == foundParam)
+    {
+        if ( mySrsId > 0 )
+      {
+        createFromSrsId( mySrsId );
+      }
+    }
+    else
+    {
+      // Params differ
+      mIsValidFlag = false;
     }
   }
   else
