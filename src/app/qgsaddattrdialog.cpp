@@ -81,7 +81,7 @@ void QgsAddAttrDialog::setPrecisionMinMax()
   int maxPrecType = mTypeBox->itemData( idx, Qt::UserRole + 5 ).toInt();
   mPrec->setVisible( minPrecType < maxPrecType );
   mPrec->setMinimum( minPrecType );
-  mPrec->setMaximum( qMin( maxPrecType, mLength->value() ) );
+  mPrec->setMaximum( qMax( minPrecType, qMin( maxPrecType, mLength->value() ) ) );
 }
 
 void QgsAddAttrDialog::accept()
