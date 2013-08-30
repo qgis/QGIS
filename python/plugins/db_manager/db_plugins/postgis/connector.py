@@ -614,7 +614,8 @@ class PostGisDBConnector(DBConnector):
 		if self.isVectorTable(table):
 			sql = u"SELECT DropGeometryTable(%s%s)" % (schema_part, self.quoteString(tablename))
 		elif self.isRasterTable(table):
-			sql = u"SELECT DropRasterTable(%s%s)" % (schema_part, self.quoteString(tablename))
+			## Fix #8521: delete raster table and references from raster_columns table
+			sql = u"DROP TABLE %s" % self.quoteId(table)
 		else:
 			sql = u"DROP TABLE %s" % self.quoteId(table)
 		self._execute_and_commit(sql)
