@@ -396,8 +396,8 @@ QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, QString value
 {
   QVariant v( value );
 
-  if ( !v.convert( type ) )
-    v = QVariant( QString::null );
+  if ( !v.convert( type ) || value.isNull() )
+    v = QVariant( type );
 
   return v;
 }
