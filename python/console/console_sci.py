@@ -514,16 +514,17 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
     def insertFromDropPaste(self, textDP):
         pasteList = unicode(textDP).splitlines()
-        for line in pasteList[:-1]:
-            cleanLine = line.replace(">>> ", "").replace("... ", "")
-            self.insert(unicode(cleanLine))
-            self.move_cursor_to_end()
-            self.runCommand(unicode(self.currentCommand()))
-        if pasteList[-1] != "":
-            line = pasteList[-1]
-            cleanLine = line.replace(">>> ", "").replace("... ", "")
-            self.insert(unicode(cleanLine))
-            self.move_cursor_to_end()
+        if pasteList:
+            for line in pasteList[:-1]:
+                cleanLine = line.replace(">>> ", "").replace("... ", "")
+                self.insert(unicode(cleanLine))
+                self.move_cursor_to_end()
+                self.runCommand(unicode(self.currentCommand()))
+            if pasteList[-1] != "":
+                line = pasteList[-1]
+                cleanLine = line.replace(">>> ", "").replace("... ", "")
+                self.insert(unicode(cleanLine))
+                self.move_cursor_to_end()
 
     def insertTextFromFile(self, listOpenFile):
         for line in listOpenFile[:-1]:
