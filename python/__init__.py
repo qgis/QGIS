@@ -49,9 +49,13 @@ try:
     def __eq__(self, other):
         return isinstance(other, QPyNullVariant) or other is None
 
+    def __ne__(self, other):
+        return not isinstance(other, QPyNullVariant) and other is not None
+
     QPyNullVariant.__nonzero__ = MethodType(__nonzero__, None, QPyNullVariant)
     QPyNullVariant.__repr__ = MethodType(__repr__, None, QPyNullVariant)
     QPyNullVariant.__eq__= MethodType(__eq__, None, QPyNullVariant)
+    QPyNullVariant.__ne__= MethodType(__ne__, None, QPyNullVariant)
 
     # define a dummy QPyNullVariant instance NULL in qgis.core
     # this is mainly used to compare against
