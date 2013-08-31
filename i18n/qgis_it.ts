@@ -8803,7 +8803,7 @@ Cambiare questa situazione prima, perché il plugin OSM non quale layer è la de
     </message>
     <message>
         <source>Import Processing class</source>
-        <translation>Importa classe di elaborazione</translation>
+        <translation>Importa classe Processing</translation>
     </message>
     <message>
         <source>Run command</source>
@@ -56730,7 +56730,7 @@ Descrizione: %3</translation>
     <message>
         <location filename="../python/console/console_settings.ui" line="535"/>
         <source>Using prepared APIs file</source>
-        <translation>In uso il file delle API preinstallato</translation>
+        <translation>In uso il file delle API preparato</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="556"/>
