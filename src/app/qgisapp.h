@@ -435,6 +435,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsDecorationItem*> decorationItems() { return mDecorationItems; }
     void addDecorationItem( QgsDecorationItem* item ) { mDecorationItems.append( item ); }
 
+    /** Whether the current project still uses deprecated labels (QGIS 2.0)
+     */
+    bool deprecatedLabelsInProject() { return mDeprecatedLabelsInProj; }
+
   public slots:
     //! Zoom to full extent
     void zoomFull();
@@ -1038,6 +1042,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! shows label settings dialog (for labeling-ng)
     void labeling();
 
+    /** Check if deprecated labels are used in project and enable/disable it for project's open session (QGIS 2.0)
+     */
+    void checkForDeprecatedLabelsInProject();
+
     //! save current vector layer
     void saveAsFile();
     void saveSelectionAsVectorFile();
@@ -1481,6 +1489,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! a bar to display warnings in a non-blocker manner
     QgsMessageBar *mInfoBar;
     QWidget *mMacrosWarn;
+
+    //! whether deprecated labels are used in current project (QGIS 2.0)
+    bool mDeprecatedLabelsInProj;
 
 #ifdef HAVE_TOUCH
     bool gestureEvent( QGestureEvent *event );

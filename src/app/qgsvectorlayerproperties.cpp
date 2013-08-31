@@ -267,7 +267,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
 QgsVectorLayerProperties::~QgsVectorLayerProperties()
 {
-  if ( layer->hasGeometryType() )
+  if ( mOptsPage_LabelsOld && layer->hasGeometryType() )
   {
     disconnect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
   }
@@ -412,6 +412,18 @@ void QgsVectorLayerProperties::syncToLayer( void )
   mFieldsPropertiesDialog->init();
 
   QObject::connect( labelCheckBox, SIGNAL( clicked( bool ) ), this, SLOT( enableLabelOptions( bool ) ) );
+
+  // delete deprecated labels tab if not already used by project
+  // NOTE: this is not ideal, but a quick fix for QGIS 2.0 release
+  if ( !QgisApp::instance()->deprecatedLabelsInProject() )
+  {
+    if ( mOptsPage_LabelsOld )
+    {
+      disconnect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
+      delete mOptsPage_LabelsOld;
+      mOptsPage_LabelsOld = 0;
+    }
+  }
 } // reset()
 
 
@@ -462,10 +474,13 @@ void QgsVectorLayerProperties::apply()
 
   actionDialog->apply();
 
-  if ( labelDialog )
-    labelDialog->apply();
-  layer->enableLabels( labelCheckBox->isChecked() );
-  layer->setLayerName( mLayerOrigNameLineEdit->text() );
+  if ( mOptsPage_LabelsOld )
+  {
+    if ( labelDialog )
+      labelDialog->apply();
+    layer->enableLabels( labelCheckBox->isChecked() );
+    layer->setLayerName( mLayerOrigNameLineEdit->text() );
+  }
 
   // Apply fields settings
   mFieldsPropertiesDialog->apply();

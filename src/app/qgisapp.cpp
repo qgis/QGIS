@@ -698,6 +698,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mLastComposerId = 0;
   mLBL = new QgsPalLabeling();
   mMapCanvas->mapRenderer()->setLabelingEngine( mLBL );
+  mDeprecatedLabelsInProj = false;
 
   // Show a nice tip of the day
   if ( settings.value( "/qgis/showTips", 1 ).toBool() )
@@ -1898,6 +1899,12 @@ void QgisApp::setupConnections()
 
   connect( this, SIGNAL( projectRead() ),
            this, SLOT( fileOpenedOKAfterLaunch() ) );
+
+  // handle deprecated labels in project for QGIS 2.0
+  connect( this, SIGNAL( newProject() ),
+           this, SLOT( checkForDeprecatedLabelsInProject() ) );
+  connect( this, SIGNAL( projectRead() ),
+           this, SLOT( checkForDeprecatedLabelsInProject() ) );
 
   //
   // Do we really need this ??? - its already connected to the esc key...TS
@@ -4602,6 +4609,33 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
   delete dialog;
 }
 
+void QgisApp::checkForDeprecatedLabelsInProject()
+{
+  mDeprecatedLabelsInProj = false;
+  if ( QgsMapLayerRegistry::instance()->count() > 0 )
+  {
+    bool depLabelsUsed = false;
+    QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+    for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); it++ )
+    {
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
+      if ( !vl )
+      {
+        continue;
+      }
+
+      depLabelsUsed = vl->hasLabelsEnabled();
+      if ( depLabelsUsed )
+      {
+        break;
+      }
+    }
+    if ( depLabelsUsed )
+    {
+      mDeprecatedLabelsInProj = true;
+    }
+  }
+}
 
 void QgisApp::layerProperties()
 {
