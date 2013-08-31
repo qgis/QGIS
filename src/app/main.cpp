@@ -704,6 +704,13 @@ int main( int argc, char *argv[] )
     QgsCustomization::instance()->setEnabled( false );
   }
 
+  // Temporary fix, until the rendering is not done in the main thread any more:
+  // switch graphics system to "X11" (instead of Qt's "raster") to avoid flickering
+  // see http://hub.qgis.org/issues/4011#note-31
+#ifdef Q_WS_X11
+  QgsApplication::setGraphicsSystem( QLatin1String( "X11" ) );
+#endif
+
   QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
 
 // (if Windows/Mac, use icon from resource)

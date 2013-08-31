@@ -96,7 +96,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   mMapTool = NULL;
   mLastNonZoomMapTool = NULL;
 
-  mBackbufferEnabled = true;
   mDrawing = false;
   mFrozen = false;
   mDirty = true;
@@ -385,27 +384,11 @@ void QgsMapCanvas::refresh()
   }
 
 #ifdef Q_WS_X11
-  bool enableBackbufferSetting = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
-#endif
-
-#ifdef Q_WS_X11
 #ifndef ANDROID
   // disable the update that leads to the resize crash on X11 systems
   if ( viewport() )
   {
-    if ( enableBackbufferSetting != mBackbufferEnabled )
-    {
-      qDebug() << "Enable back buffering: " << enableBackbufferSetting;
-      if ( enableBackbufferSetting )
-      {
-        viewport()->setAttribute( Qt::WA_PaintOnScreen, false );
-      }
-      else
-      {
-        viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
-      }
-      mBackbufferEnabled = enableBackbufferSetting;
-    }
+    viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
   }
 #endif // ANDROID
 #endif // Q_WS_X11

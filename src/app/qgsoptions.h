@@ -88,10 +88,6 @@ class QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOptionsBase
      */
     void on_mProjectOnLaunchPushBtn_pressed();
 
-    //! Slot to change backbuffering. This is handled when the user changes
-    // the value of the checkbox
-    void toggleEnableBackbuffer( int );
-
     /**
      * Return the desired state of newly added layers. If a layer
      * is to be drawn when added to the map, this function returns

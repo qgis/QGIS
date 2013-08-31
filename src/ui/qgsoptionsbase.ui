@@ -266,8 +266,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>687</width>
-                <height>523</height>
+                <width>661</width>
+                <height>674</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -912,8 +912,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>670</width>
-                <height>750</height>
+                <width>661</width>
+                <height>803</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1248,8 +1248,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>687</width>
-                <height>523</height>
+                <width>674</width>
+                <height>496</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1577,8 +1577,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>670</width>
-                <height>611</height>
+                <width>661</width>
+                <height>725</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -1588,16 +1588,6 @@
                   <string>Rendering behavior</string>
                  </property>
                  <layout class="QGridLayout" name="_4">
-                  <item row="1" column="0">
-                   <widget class="QCheckBox" name="chkEnableBackbuffer">
-                    <property name="toolTip">
-                     <string>Better graphics performance at the cost of loosing the possibility to cancel rendering and incremental feature drawing</string>
-                    </property>
-                    <property name="text">
-                     <string>Enable back buffer</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="0" column="0">
                    <widget class="QCheckBox" name="chkAddedVisibility">
                     <property name="text">
@@ -1605,14 +1595,14 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="0" colspan="2">
+                  <item row="3" column="0" colspan="2">
                    <widget class="QCheckBox" name="chkUseRenderCaching">
                     <property name="text">
                      <string>Use render caching where possible to speed up redraws</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="0">
+                  <item row="1" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_26">
                     <item>
                      <widget class="QLabel" name="labelUpdateThreshold">
@@ -1642,7 +1632,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="3" column="0" colspan="2">
+                  <item row="2" column="0" colspan="2">
                    <widget class="QLabel" name="textLabel3">
                     <property name="text">
                      <string>&lt;b&gt;Note:&lt;/b&gt; Set below 1000 to prevent display updates until all features have been rendered</string>
@@ -2092,8 +2082,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>687</width>
-                <height>523</height>
+                <width>482</width>
+                <height>353</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2395,8 +2385,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>670</width>
-                <height>619</height>
+                <width>532</width>
+                <height>770</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -2802,8 +2792,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>670</width>
-                <height>551</height>
+                <width>497</width>
+                <height>691</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3303,8 +3293,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>687</width>
-                <height>523</height>
+                <width>464</width>
+                <height>386</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3443,8 +3433,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>687</width>
-                <height>523</height>
+                <width>639</width>
+                <height>422</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -3624,8 +3614,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>687</width>
-                <height>523</height>
+                <width>298</width>
+                <height>240</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -3724,8 +3714,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>670</width>
-                <height>528</height>
+                <width>534</width>
+                <height>672</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
