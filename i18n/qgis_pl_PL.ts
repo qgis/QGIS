@@ -38684,17 +38684,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/analysis/openstreetmap/qgsosmdownload.cpp" line="46"/>
         <source>No query has been specified.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie podano zapytania.</translation>
     </message>
     <message>
         <location filename="../src/analysis/openstreetmap/qgsosmdownload.cpp" line="52"/>
         <source>There is already a pending request for data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jest już zapytanie oczekujące na dane.</translation>
     </message>
     <message>
         <location filename="../src/analysis/openstreetmap/qgsosmdownload.cpp" line="58"/>
         <source>Cannot open output file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można otworzyć pliku do zapisu: %1</translation>
     </message>
 </context>
 <context>
@@ -38737,35 +38737,36 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="135"/>
         <source>OpenStreetMap files (*.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMap (*.osm)</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="149"/>
         <source>Download error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd pobierania</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="161"/>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="177"/>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="181"/>
         <source>OpenStreetMap download</source>
-        <translation type="unfinished"></translation>
+        <translation>Pobieranie danych OpenStreetMap</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="162"/>
         <source>Would you like to abort download?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy chcesz przerwać pobieranie?</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="177"/>
         <source>Download failed.
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Pobieranie nie powiodło się.
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="181"/>
         <source>Download has been successful.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomyślnie zakończono pobieranie.</translation>
     </message>
 </context>
 <context>
@@ -43191,13 +43192,13 @@ Rozszerzona informacja o błędzie:
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="196"/>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="281"/>
         <source>Restrict the displayed tables to those that are in the layer registries.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogranicz wyświetlane tabele tylko do zapisanych w rejestrze warstw.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="199"/>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="284"/>
         <source>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogranicz wyświetlane tabele tylko do zapisanych w rejestrze warstw (geometry_columns, geography_columns, topology.layer). Może to znacząco przespieszyć pierwsze wyświetlenie tabel przestrzennych.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="202"/>
@@ -43358,12 +43359,12 @@ Rozszerzona informacja o błędzie:
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="175"/>
         <source>&amp;Set Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustaw &amp;filtr</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="176"/>
         <source>Set Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustaw filtr</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="191"/>
@@ -43595,29 +43596,29 @@ Sprawdź czy masz uprawnienia SELECT do tabeli zawierającej geometrię PostGIS.
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="32"/>
         <source>Data Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ danych</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="33"/>
         <source>Spatial Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Dane przestrzenne</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="35"/>
         <source>Primary Key</source>
-        <translation type="unfinished"></translation>
+        <translation>Klucz główny</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="65"/>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="269"/>
         <source>Specify a geometry type</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj rodzaj geometrii</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="69"/>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="277"/>
         <source>Enter a SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj układ współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="87"/>
@@ -43627,7 +43628,7 @@ Sprawdź czy masz uprawnienia SELECT do tabeli zawierającej geometrię PostGIS.
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="284"/>
         <source>Select a primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz klucz główny</translation>
     </message>
 </context>
 <context>
@@ -47036,41 +47037,41 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="48"/>
         <source>Default</source>
-        <translation>Domyślny</translation>
+        <translation>domyślny</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="54"/>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="70"/>
         <source>No compression</source>
-        <translation type="unfinished"></translation>
+        <translation>bez kompresji</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="57"/>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="73"/>
         <source>Low compression</source>
-        <translation type="unfinished"></translation>
+        <translation>niska kompresja</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="60"/>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="76"/>
         <source>High compression</source>
-        <translation type="unfinished"></translation>
+        <translation>wysoka kompresja</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="63"/>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="79"/>
         <source>JPEG compression</source>
-        <translation type="unfinished"></translation>
+        <translation>kompresja JPEG</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="330"/>
         <source>cannot validate pyramid options</source>
-        <translation type="unfinished"></translation>
+        <translation>nie można sprawdzić opcji piramid</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="363"/>
         <source>Cannot validate creation options</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można sprawdzić opcji tworzenia</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="378"/>
@@ -47079,52 +47080,56 @@ p, li { white-space: pre-wrap; }
 %2
 
 Click on help button to get valid creation options for this format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Niepoprawne %1:
+
+%2
+
+Wybierz klawisz pomocy, aby wyświetlić opcje dla tego formatu.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="378"/>
         <source>pyramid creation option</source>
-        <translation type="unfinished"></translation>
+        <translation>opcje generowania piramid</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="378"/>
         <source>creation option</source>
-        <translation type="unfinished"></translation>
+        <translation>opcje generowania</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="266"/>
         <source>Cannot get create options for driver %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można pobrać opcji generowania dla sterownika %1</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="270"/>
         <source>For details on pyramids options please see the following pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Szczegółowe opcje piramid znajdują się na podanych stronach</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="274"/>
         <source>No help available</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomoc nie jest dostępna</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="374"/>
         <source>Valid</source>
-        <translation type="unfinished">Poprawna</translation>
+        <translation>Poprawna</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="415"/>
         <source>Profile name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa profilu:</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="588"/>
         <source>Use simple interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj prostego widoku</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="590"/>
         <source>Use table interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj prostego tabeli</translation>
     </message>
 </context>
 <context>
@@ -47200,52 +47205,52 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="108"/>
         <source>Min/Max options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje min./max.</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="111"/>
         <source>Always show min/max markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Zawsze wyświetlaj znaczniki max./min.</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="116"/>
         <source>Zoom to min/max</source>
-        <translation type="unfinished"></translation>
+        <translation>Powiększ do min./max.</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="121"/>
         <source>Update style to min/max</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualizuj styl do min./max.</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="137"/>
         <source>Show all bands</source>
-        <translation type="unfinished"></translation>
+        <translation>Wszystkie kanały</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="142"/>
         <source>Show RGB/Gray band(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż kanały RGB/skala szarości</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="147"/>
         <source>Show selected band</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybrany kanał</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="154"/>
         <source>Actions</source>
-        <translation type="unfinished">Akcje</translation>
+        <translation>Akcje</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="162"/>
         <source>Reset</source>
-        <translation type="unfinished">Wyczyść</translation>
+        <translation>Wyczyść</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="169"/>
         <source>Load min/max</source>
-        <translation type="unfinished"></translation>
+        <translation>Wczytaj min./max.</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="172"/>
@@ -47265,22 +47270,22 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="181"/>
         <source>Use stddev (1.0)</source>
-        <translation type="unfinished"></translation>
+        <translation>odchylenie standardowe (1.0)</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="184"/>
         <source>Use stddev (custom)</source>
-        <translation type="unfinished"></translation>
+        <translation>odchylenie standardowe (użytkownika)</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="187"/>
         <source>Load for each band</source>
-        <translation type="unfinished"></translation>
+        <translation>Wczytaj dla każdej warstwy</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="195"/>
         <source>Recompute Histogram</source>
-        <translation type="unfinished"></translation>
+        <translation>Przelicz histogram</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="449"/>
@@ -47290,7 +47295,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/gui/raster/qgsrasterhistogramwidget.cpp" line="565"/>
         <source>Choose a file name to save the map image as</source>
-        <translation type="unfinished">Podaj nazwę pliku do zapisania obrazu mapy</translation>
+        <translation>Podaj nazwę pliku do zapisania obrazu mapy</translation>
     </message>
 </context>
 <context>
@@ -47361,7 +47366,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/core/raster/qgsrasterinterface.cpp" line="551"/>
         <source>Identify</source>
-        <translation type="unfinished"></translation>
+        <translation>Identyfikuj</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterinterface.cpp" line="566"/>
@@ -47371,12 +47376,12 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/core/raster/qgsrasterinterface.cpp" line="556"/>
         <source>Create Datasources</source>
-        <translation type="unfinished"></translation>
+        <translation>Twórz źródło danych</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterinterface.cpp" line="561"/>
         <source>Remove Datasources</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń źródło danych</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterinterface.h" line="102"/>
@@ -47486,12 +47491,12 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="801"/>
         <source>Cannot instantiate the &apos;%1&apos; data provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się utworzenie źródła danych &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="811"/>
         <source>Provider is not valid (provider: %1, URI: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Niepoprawne źródło danych (źródło: %1, URI: %2)</translation>
     </message>
     <message>
         <source>Failed to load provider %1 (Reason: %2)</source>
@@ -47535,82 +47540,82 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="493"/>
         <source>Data Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ danych</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="500"/>
         <source>Byte - Eight bit unsigned integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Byte - ośmiobitowy integer bez znaku</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="503"/>
         <source>UInt16 - Sixteen bit unsigned integer </source>
-        <translation type="unfinished"></translation>
+        <translation>UInt16 - szesnastobitowy integer bez znaku</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="506"/>
         <source>Int16 - Sixteen bit signed integer </source>
-        <translation type="unfinished"></translation>
+        <translation>Int16 - szesnastobitowy integer ze znakiem</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="509"/>
         <source>UInt32 - Thirty two bit unsigned integer </source>
-        <translation type="unfinished"></translation>
+        <translation>UInt32 - trzydziestodwubitowy integer bez znaku</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="512"/>
         <source>Int32 - Thirty two bit signed integer </source>
-        <translation type="unfinished"></translation>
+        <translation>Int32 - trzydziestodwubitowy integer ze znakiem</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="515"/>
         <source>Float32 - Thirty two bit floating point </source>
-        <translation type="unfinished"></translation>
+        <translation>Float32 - trzydziestodwubitowy zmiennoprzecinkowy</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="518"/>
         <source>Float64 - Sixty four bit floating point </source>
-        <translation type="unfinished"></translation>
+        <translation>Float64 - sześćdziesięcioczterobitowy zmiennoprzecinkowy</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="521"/>
         <source>CInt16 - Complex Int16 </source>
-        <translation type="unfinished"></translation>
+        <translation>CInt16 - Complex Int16 </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="524"/>
         <source>CInt32 - Complex Int32 </source>
-        <translation type="unfinished"></translation>
+        <translation>CInt32 - Complex Int32 </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="527"/>
         <source>CFloat32 - Complex Float32 </source>
-        <translation type="unfinished"></translation>
+        <translation>CFloat32 - Complex Float32 </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="530"/>
         <source>CFloat64 - Complex Float64 </source>
-        <translation type="unfinished"></translation>
+        <translation>CFloat64 - Complex Float64 </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="538"/>
         <source>Pyramid overviews</source>
-        <translation type="unfinished"></translation>
+        <translation>Podgląd piramid</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="543"/>
         <source>Layer Spatial Reference System</source>
-        <translation type="unfinished">Przestrzenny układ odniesienia warstwy</translation>
+        <translation>Przestrzenny układ odniesienia warstwy</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="550"/>
         <source>Layer Extent (layer original source projection)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zasięg warstwy (w oryginalnym układzie współrzędnych)</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="560"/>
         <source>Project Spatial Reference System</source>
-        <translation type="unfinished"></translation>
+        <translation>Układ współrzędnych projektu</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="576"/>
@@ -47781,17 +47786,17 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="450"/>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation>od</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="451"/>
         <source>To</source>
-        <translation type="unfinished">do</translation>
+        <translation>do</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="639"/>
         <source>not defined</source>
-        <translation type="unfinished"></translation>
+        <translation>niezdefiniowane</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="982"/>
@@ -47858,7 +47863,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1253"/>
         <source>Value</source>
-        <translation type="unfinished">Wartość</translation>
+        <translation>Wartość</translation>
     </message>
     <message>
         <source>Color</source>
@@ -47892,25 +47897,25 @@ Click on help button to get valid creation options for this format.</source>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="236"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="239"/>
         <source>Nearest neighbour</source>
-        <translation type="unfinished">Najbliższego sąsiada</translation>
+        <translation>najbliższego sąsiada</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="237"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="869"/>
         <source>Bilinear</source>
-        <translation type="unfinished">bilinearna</translation>
+        <translation>bilinearna</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="238"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="873"/>
         <source>Cubic</source>
-        <translation type="unfinished"></translation>
+        <translation>sześcienna</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="240"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="886"/>
         <source>Average</source>
-        <translation type="unfinished">Średnia</translation>
+        <translation>średnia</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="302"/>
@@ -48291,17 +48296,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1748"/>
         <source>Overview format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format podglądu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1730"/>
         <source>External</source>
-        <translation type="unfinished"></translation>
+        <translation>zewnętrzny</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1647"/>
         <source>Resolutions</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozdzielczości</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1679"/>
@@ -48310,17 +48315,21 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1735"/>
         <source>Internal (if possible)</source>
-        <translation type="unfinished"></translation>
+        <translation>wewnętrzny (jeśli możliwe)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1740"/>
         <source>External (Erdas Imagine)</source>
-        <translation type="unfinished"></translation>
+        <translation>zewnętrzny (Erdas Imagine)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="133"/>
@@ -48540,27 +48549,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="391"/>
         <source>Minimum scale, i.e. maximum scale denominator. This limit is exclusive, that means the layer will not be displayed on this scale.</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimalna skala, czyli mająca największy dzielnik. Mapa w tej skali nie będzie już wyświetlana.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="397"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Minimum&lt;br&gt;(exclusive)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Minimum&lt;br&gt;(bez podanej)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="444"/>
         <source>Maximum scale, i.e. minimum scale denominator. This limit is inclusive, that means the layer will be displayed on this scale.</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksymalna skala, czyli mająca najmniejszy dzielnik. Mapa w tej skali będzie wyświetlana.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="447"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Maximum&lt;br&gt;(inclusive)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Maksimum&lt;br&gt;(włącznie z)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1479"/>
         <source>Add values from display</source>
-        <translation type="unfinished"></translation>
+        <translation>Wskaż punkty na mapie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1863"/>
@@ -48570,7 +48579,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1905"/>
         <source>Keyword list</source>
-        <translation type="unfinished">Słowa kluczowe</translation>
+        <translation>Słowa kluczowe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1920"/>
@@ -48581,7 +48590,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1951"/>
         <source>Attribution</source>
-        <translation type="unfinished"></translation>
+        <translation>Źródło</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1970"/>
@@ -48592,7 +48601,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1983"/>
         <source>MetadataUrl</source>
-        <translation type="unfinished"></translation>
+        <translation>MetadataUrl</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2004"/>
@@ -48602,17 +48611,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2080"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Właściwości</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="706"/>
         <source>Band rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetlanie kanałów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="794"/>
         <source>Color rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetlanie kolorów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="809"/>
@@ -48622,22 +48631,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="817"/>
         <source>Off</source>
-        <translation type="unfinished">brak</translation>
+        <translation>wyłącz</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="822"/>
         <source>By lightness</source>
-        <translation type="unfinished"></translation>
+        <translation>przez nasycenie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="827"/>
         <source>By luminosity</source>
-        <translation type="unfinished"></translation>
+        <translation>przez jasność</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="832"/>
         <source>By average</source>
-        <translation type="unfinished"></translation>
+        <translation>przez średnią</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="840"/>
@@ -48652,12 +48661,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="879"/>
         <source>Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Jasność</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="943"/>
         <source>Contrast</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrast</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="974"/>
@@ -48667,12 +48676,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="999"/>
         <source>Colorize</source>
-        <translation type="unfinished"></translation>
+        <translation>zabarwienie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1025"/>
         <source>Strength</source>
-        <translation type="unfinished"></translation>
+        <translation>w stopniu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1045"/>
@@ -48682,7 +48691,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1073"/>
         <source>Reset all color rendering options to default</source>
-        <translation type="unfinished"></translation>
+        <translation>Zresetuj wszystkie opcje wyświetlania kolorów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1076"/>
@@ -48692,17 +48701,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1111"/>
         <source>Zoomed: in</source>
-        <translation type="unfinished"></translation>
+        <translation>Powiększając</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1121"/>
         <source>out</source>
-        <translation type="unfinished"></translation>
+        <translation> Pomniejszając</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1131"/>
         <source>Oversampling</source>
-        <translation type="unfinished"></translation>
+        <translation>Nadpróbkowanie</translation>
     </message>
     <message>
         <source>Add Values from display</source>
@@ -48774,27 +48783,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="744"/>
         <source>Render type</source>
-        <translation type="unfinished"></translation>
+        <translation>Sposób wyświetlania</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1093"/>
         <source>Resampling</source>
-        <translation type="unfinished"></translation>
+        <translation>Resampling</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1315"/>
         <source>Use original source no data value.</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj oryginalnego kodowania braku danych ze źródła.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1318"/>
         <source>No data value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak danych:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1331"/>
         <source>Original data source no data value, if exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kodowanie braku danych w źródle, jeśli określono.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1334"/>
@@ -48805,12 +48814,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1345"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1355"/>
         <source>Additional user defined no data value.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdefiniowane przez użytkownika.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1348"/>
         <source>Additional no data value</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodatkowe kodowanie braku danych.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="347"/>
@@ -49073,17 +49082,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="45"/>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation>od</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="46"/>
         <source>To</source>
-        <translation type="unfinished">do</translation>
+        <translation>do</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="164"/>
         <source>Select output directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz karalog docelowy</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="177"/>
@@ -49093,12 +49102,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="178"/>
         <source>The directory %1 contains files which will be overwritten: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Katalog %1 zawiera pliki, które zostaną nadpisane: %2</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="198"/>
         <source>Select output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz plik docelowy</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="198"/>
@@ -49109,43 +49118,43 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="440"/>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="469"/>
         <source>layer</source>
-        <translation type="unfinished"></translation>
+        <translation>warstwa</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="443"/>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="475"/>
         <source>user defined</source>
-        <translation type="unfinished"></translation>
+        <translation>użytkownika</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="448"/>
         <source>Resolution (current: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozdzielczość (aktualna: %1)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="472"/>
         <source>map view</source>
-        <translation type="unfinished"></translation>
+        <translation>widok mapy</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="480"/>
         <source>Extent (current: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zasięg (aktualny: %1)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="553"/>
         <source>Layer (%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa (%1, %2)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="556"/>
         <source>Project (%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt (%1, %2)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="559"/>
         <source>Selected (%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybrane (%1, %2)</translation>
     </message>
 </context>
 <context>
@@ -49153,32 +49162,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="14"/>
         <source>Save raster layer as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz warstwę rastrową jako...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="22"/>
         <source>Output mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb zapisu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="29"/>
         <source>Write out raw raster layer data. Optionally user defined no data values may be applied.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz surowe dane warstwy. DOdatkowo można zdefiniować wartość braku danych.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="32"/>
         <source>Raw data</source>
-        <translation type="unfinished"></translation>
+        <translation>surowe dane</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="42"/>
         <source>Write out 3 bands RGB image rendered using current layer style.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz 3 kanały RGB wyrenderowanego obrazu z bieżącym stylem warstwy.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="45"/>
         <source>Rendered image</source>
-        <translation type="unfinished"></translation>
+        <translation>renderowanie warstwy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="72"/>
@@ -49189,7 +49198,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="92"/>
         <source>Create GDAL Virtual Format composed of multiple 
 datasets with maximum width and height specified below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tworzy wirtualny format GDAL stworzony z wielu 
+warstw o maksymalnej szerokości i wysokości określonej poniżej.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="107"/>
@@ -49239,12 +49249,12 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="330"/>
         <source>Layer extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Zasięg warstwy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="359"/>
         <source>Map view extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Zasięg widoku mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="391"/>
@@ -49254,84 +49264,84 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="405"/>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>pozioma</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="418"/>
         <source>Columns</source>
-        <translation type="unfinished"></translation>
+        <translation>kolumn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="428"/>
         <source>Rows</source>
-        <translation type="unfinished"></translation>
+        <translation>wierszy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="441"/>
         <source>Layer resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozdzielczość warstwy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="448"/>
         <source>Layer size</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozmiar warstwy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="455"/>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>pionowa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="476"/>
         <source>VRT Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Kafle VRT</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="531"/>
         <source>Create Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje kompresji</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="488"/>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="498"/>
         <source>Maximum number of columns in one tile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksymalna liczba kolumn w jednym kaflu.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="491"/>
         <source>Max columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Max. kolumn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="505"/>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="515"/>
         <source>Maximum number of rows in one tile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksymalna liczba wierszy w jednym kaflu.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="508"/>
         <source>Max rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Max. wierszy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="96"/>
         <source>Create VRT</source>
-        <translation type="unfinished"></translation>
+        <translation>Twórz VRT</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="639"/>
         <source>Additional no data values. The specified values will be set to no data in output raster.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodatkowe wartości braku danych. Podane wartości będą miały przypisany brak danych w rastrze docelowym.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="642"/>
         <source>No data values</source>
-        <translation type="unfinished">Wartość oznaczająca brak danych</translation>
+        <translation>Wartości oznaczające brak danych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="672"/>
         <source>Add values manually</source>
-        <translation type="unfinished">Dodaj wartości ręcznie</translation>
+        <translation>Dodaj wartość</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="675"/>
@@ -49344,17 +49354,17 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="686"/>
         <source>Load user defined fully transparent (100%) values </source>
-        <translation type="unfinished"></translation>
+        <translation>Wczytaj z pliku</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="700"/>
         <source>Remove selected row</source>
-        <translation type="unfinished">Usuń wybrany wiersz</translation>
+        <translation>Usuń wybrany wiersz</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="717"/>
         <source>Clear all</source>
-        <translation type="unfinished">Wyczyść wszystko</translation>
+        <translation>Wyczyść wszystko</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="555"/>
@@ -49364,17 +49374,17 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="579"/>
         <source>Resolutions</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozdzielczości</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="602"/>
         <source>Pyramid resolutions corresponding to levels given</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozdzielczości piramid odpowiadają podanym poziomom</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="623"/>
         <source>Use existing</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj istniejących</translation>
     </message>
 </context>
 <context>
@@ -49387,7 +49397,7 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="23"/>
         <source>Load min/max values</source>
-        <translation type="unfinished"></translation>
+        <translation>Wczytaj wartości min./max.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="52"/>
@@ -49402,7 +49412,7 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="90"/>
         <source>Min / max</source>
-        <translation>Min / max</translation>
+        <translation>Min./max.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="155"/>
@@ -49422,7 +49432,7 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="181"/>
         <source>Accuracy</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokładność</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="197"/>
@@ -49438,13 +49448,15 @@ datasets with maximum width and height specified below.</source>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="34"/>
         <source>Cumulative
 count cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Skumulowany
+poziom odcięcia</translation>
     </message>
     <message utf8="true">
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="114"/>
         <source>Mean +/-
 standard deviation ×</source>
-        <translation type="unfinished"></translation>
+        <translation>Odchylenie standardowe
+od średniej +/-</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="224"/>
@@ -49462,27 +49474,27 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrasterpyramidsoptionswidgetbase.ui" line="109"/>
         <source>Custom levels</source>
-        <translation type="unfinished"></translation>
+        <translation>Poziomy użytkownika</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterpyramidsoptionswidgetbase.ui" line="45"/>
         <source>Internal (if possible)</source>
-        <translation type="unfinished"></translation>
+        <translation>wewnętrzny (jeśli możliwe)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterpyramidsoptionswidgetbase.ui" line="23"/>
         <source>Insert positive integer values separated by spaces</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj dodatnie liczby całkowite oddzielone spacjami</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterpyramidsoptionswidgetbase.ui" line="40"/>
         <source>External (GTiff .ovr)</source>
-        <translation type="unfinished"></translation>
+        <translation>zewnętrzny (GTiff .ovr)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterpyramidsoptionswidgetbase.ui" line="50"/>
         <source>External (Erdas Imagine .aux)</source>
-        <translation type="unfinished"></translation>
+        <translation>zewnętrzny (Erdas Imagine .aux)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterpyramidsoptionswidgetbase.ui" line="96"/>
@@ -49497,22 +49509,22 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrasterpyramidsoptionswidgetbase.ui" line="126"/>
         <source>Overview format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format podglądu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterpyramidsoptionswidgetbase.ui" line="65"/>
         <source>Create Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje kompresji</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterpyramidsoptionswidgetbase.ui" line="58"/>
         <source>Levels</source>
-        <translation type="unfinished"></translation>
+        <translation>Poziomy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterpyramidsoptionswidgetbase.ui" line="88"/>
         <source>Resampling method</source>
-        <translation type="unfinished"></translation>
+        <translation>Metoda resamplingu</translation>
     </message>
 </context>
 <context>
@@ -49520,32 +49532,32 @@ standard deviation ×</source>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="187"/>
         <source>Unknown</source>
-        <translation type="unfinished">Nieznany</translation>
+        <translation>nieznana</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="191"/>
         <source>User defined</source>
-        <translation type="unfinished"></translation>
+        <translation>użytkownika</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="197"/>
         <source>Estimated</source>
-        <translation type="unfinished"></translation>
+        <translation>szacowana</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="201"/>
         <source>Exact</source>
-        <translation type="unfinished">Szczegółowa</translation>
+        <translation>dokładna</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="208"/>
         <source>min / max</source>
-        <translation>min / max</translation>
+        <translation>min./max.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="219"/>
         <source> of </source>
-        <translation type="unfinished"></translation>
+        <translation> brak </translation>
     </message>
 </context>
 <context>
@@ -50131,7 +50143,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="663"/>
         <source>&lt;li&gt;&lt;nobr&gt;%1 features also in rule %2&lt;/nobr&gt;&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt;&lt;nobr&gt;%1 obiektów również w regule %2&lt;/nobr&gt;&lt;/li&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="705"/>
@@ -51185,32 +51197,32 @@ Komunikat błędu:%2</translation>
     <message>
         <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="26"/>
         <source>Black to white</source>
-        <translation type="unfinished"></translation>
+        <translation>Czarny w biały</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="27"/>
         <source>White to black</source>
-        <translation type="unfinished"></translation>
+        <translation>Biały w czarny</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="59"/>
         <source>No enhancement</source>
-        <translation type="unfinished"></translation>
+        <translation>bez wzmocnienia</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="60"/>
         <source>Stretch to MinMax</source>
-        <translation type="unfinished"></translation>
+        <translation>rozciągnij do min./max.</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="61"/>
         <source>Stretch and clip to MinMax</source>
-        <translation type="unfinished"></translation>
+        <translation>rozciągnij i przytnij do min./max.</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="62"/>
         <source>Clip to MinMax</source>
-        <translation type="unfinished"></translation>
+        <translation>Przytnij do min./max.</translation>
     </message>
 </context>
 <context>
@@ -51283,12 +51295,12 @@ kontrastu</translation>
     <message>
         <location filename="../src/gui/raster/qgssinglebandpseudocolorrendererwidget.cpp" line="84"/>
         <source>Continuous</source>
-        <translation type="unfinished"></translation>
+        <translation>ciągły</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgssinglebandpseudocolorrendererwidget.cpp" line="85"/>
         <source>Equal interval</source>
-        <translation>Równe przedziały</translation>
+        <translation>równe przedziały</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgssinglebandpseudocolorrendererwidget.cpp" line="162"/>
@@ -56769,12 +56781,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="477"/>
         <source>Minimum scale, i.e. maximum scale denominator. This limit is exclusive, that means the layer will not be displayed on this scale.</source>
-        <translation>Minimalna skala, czyli mająca największym dzielniku. Mapa w tej skali nie będzie już wyświetlana.</translation>
+        <translation>Minimalna skala, czyli mająca największy dzielnik. Mapa w tej skali nie będzie już wyświetlana.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="530"/>
         <source>Maximum scale, i.e. minimum scale denominator. This limit is inclusive, that means the layer will be displayed on this scale.</source>
-        <translation>Maksymalna skala, czyli mająca najmniejszy dzielniku. Mapa w tej skali będzie wyświetlana.</translation>
+        <translation>Maksymalna skala, czyli mająca najmniejszy dzielnik. Mapa w tej skali będzie wyświetlana.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="500"/>
