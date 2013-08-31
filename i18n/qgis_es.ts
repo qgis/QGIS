@@ -43519,7 +43519,28 @@ desviación estándar ×</translation>
     </message>
     <message>
         <source> of </source>
-        <translation> de </translation>
+        <translation type="obsolete"> de </translation>
+    </message>
+    <message>
+        <source>cumulative cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>standard deviation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>full extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sub extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 %2 of %3.</source>
+        <comment>min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent</comment>
+        <translation type="unfinished">%1 de %3. {1 %2 ?}</translation>
     </message>
 </context>
 <context>
@@ -45261,6 +45282,33 @@ contraste</translation>
     </message>
 </context>
 <context>
+    <name>QgsSmartGroupCondition</name>
+    <message>
+        <source>has the tag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>is a member of group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has a part of name matching</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>does NOT have the tag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>is NOT a member of group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has NO part of name matching</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsSmartGroupConditionWidget</name>
     <message>
         <source>Form</source>
@@ -45280,6 +45328,14 @@ contraste</translation>
     <message>
         <source>The smart group name field is empty. Kindly provide a name</source>
         <translation>El nombre de campo del grupo inteligente está vacío. Por favor indique un nombre</translation>
+    </message>
+    <message>
+        <source>ALL the constraints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>any ONE of the constraints</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -47598,6 +47654,14 @@ Hubo un problema con su base de datos de símbolos.</translation>
     <message>
         <source>Transparency %1%</source>
         <translation>Transparencia: %1%</translation>
+    </message>
+    <message>
+        <source>Style Manager</source>
+        <translation type="unfinished">Administrador de estilos</translation>
+    </message>
+    <message>
+        <source>Save in symbol library...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -56813,7 +56877,7 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
     <message>
         <source>&lt;h3&gt;Identify&lt;/h3&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Identificar&lt;/h3&gt;
+        <translation type="unfinished">&lt;h3&gt;Identificar&lt;/h3&gt;
 </translation>
     </message>
     <message>
