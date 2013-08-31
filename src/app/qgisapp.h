@@ -1038,6 +1038,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! shows label settings dialog (for labeling-ng)
     void labeling();
 
+    /** Check if deprecated labels are used in project, and flag projects that use them (QGIS 2.0)
+     */
+    void checkForDeprecatedLabelsInProject();
+
     //! save current vector layer
     void saveAsFile();
     void saveSelectionAsVectorFile();
