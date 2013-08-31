@@ -1196,13 +1196,14 @@ class geoprocessingThread( QThread ):
             FEATURE_EXCEPT = False
 
     length = len( vproviderA.fields() )
+    atMapA = [None] * length
 
     fitB = vproviderB.getFeatures()
     while fitB.nextFeature( inFeatB ):
       add = False
       geom = QgsGeometry( inFeatB.geometry() )
       diff_geom = QgsGeometry( geom )
-      atMap = inFeatB.attributes()
+      atMap = atMapA + inFeatB.attributes()
       intersects = indexB.intersects( geom.boundingBox() )
 
       if len(intersects) < 1:
