@@ -42406,24 +42406,24 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>cumulative cut</source>
-        <translation type="unfinished"></translation>
+        <translation>cumulatieve afsnede</translation>
     </message>
     <message>
         <source>standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>standaard afwijking</translation>
     </message>
     <message>
         <source>full extent</source>
-        <translation type="unfinished"></translation>
+        <translation>volledige extent</translation>
     </message>
     <message>
         <source>sub extent</source>
-        <translation type="unfinished"></translation>
+        <translation>deel extent</translation>
     </message>
     <message>
         <source>%1 %2 of %3.</source>
         <comment>min/max origin label in raster properties, where %1 - estimated/exact, %2 - values (min/max, stddev, etc.), %3 - extent</comment>
-        <translation type="unfinished">%1 van %3. {1 %2 ?}</translation>
+        <translation>%1 %2 van %3.</translation>
     </message>
 </context>
 <context>
@@ -44182,27 +44182,27 @@ verbetering</translation>
     <name>QgsSmartGroupCondition</name>
     <message>
         <source>has the tag</source>
-        <translation type="unfinished"></translation>
+        <translation>heeft de &apos;tag&apos;</translation>
     </message>
     <message>
         <source>is a member of group</source>
-        <translation type="unfinished"></translation>
+        <translation>is deel van groep</translation>
     </message>
     <message>
         <source>has a part of name matching</source>
-        <translation type="unfinished"></translation>
+        <translation>bevat een deel van de naam</translation>
     </message>
     <message>
         <source>does NOT have the tag</source>
-        <translation type="unfinished"></translation>
+        <translation>heeft de &apos;tag&apos; NIET</translation>
     </message>
     <message>
         <source>is NOT a member of group</source>
-        <translation type="unfinished"></translation>
+        <translation>is GEEN deel van groep</translation>
     </message>
     <message>
         <source>has NO part of name matching</source>
-        <translation type="unfinished"></translation>
+        <translation>bevat GEEN deel van de naam</translation>
     </message>
 </context>
 <context>
@@ -44228,11 +44228,11 @@ verbetering</translation>
     </message>
     <message>
         <source>ALL the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>ALLE beperkingen</translation>
     </message>
     <message>
         <source>any ONE of the constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>EEN van de beperkingen</translation>
     </message>
 </context>
 <context>
@@ -46601,11 +46601,11 @@ Er was een probleem met uw symbolen database.</translation>
     </message>
     <message>
         <source>Style Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Stijl manager</translation>
     </message>
     <message>
         <source>Save in symbol library...</source>
-        <translation type="unfinished"></translation>
+        <translation>Opslaan in symboolbibliotheek...</translation>
     </message>
 </context>
 <context>
