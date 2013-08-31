@@ -155,7 +155,7 @@ IF(WITH_QSCIAPI)
   SET(PAP_NAME "pyqgis-master.pap")
   ADD_CUSTOM_COMMAND(TARGET qsci-pap-master
     POST_BUILD
-    COMMAND ${PYTHON_EXECUTABLE} "${APIS_SRC_DIR}/generate_console_pap.py" "${PAP_NAME}" "${APIS_SRC_DIR}" "${APIS_BIN_DIR}"
+    COMMAND ${PYTHON_EXECUTABLE} "${APIS_SRC_DIR}/generate_console_pap.py" "${PAP_NAME}" "${APIS_SRC_DIR}" "${APIS_BIN_DIR}" "${APIS_BIN_DIR}"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     COMMENT "Generating local-only ${PAP_NAME} for console auto-completion (MAY TAKE > 1 MINUTE!)" VERBATIM)
 
@@ -168,7 +168,7 @@ IF(WITH_QSCIAPI)
   SET(PAP_NAME "pyqgis.pap")
   ADD_CUSTOM_COMMAND(TARGET qsci-pap-src
     POST_BUILD
-    COMMAND ${PYTHON_EXECUTABLE} "${APIS_SRC_DIR}/generate_console_pap.py" "${PAP_NAME}" "${APIS_SRC_DIR}" "${APIS_SRC_DIR}"
+    COMMAND ${PYTHON_EXECUTABLE} "${APIS_SRC_DIR}/generate_console_pap.py" "${PAP_NAME}" "${APIS_SRC_DIR}" "${APIS_BIN_DIR}" "${APIS_SRC_DIR}"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     COMMENT "Generating ${PAP_NAME} for console auto-completion (MAY TAKE > 1 MINUTE!)" VERBATIM)
 

@@ -69,16 +69,17 @@ class PrepareAPIs(QObject):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 5:
         print 'Usage: python <script> <pap_name_w-ext> ' \
-              '<APIs_dir_path> <output_dir>'
+              '<apis_src_dir> <api_bin_dir> <output_dir>'
         sys.exit(1)
     pap_name = sys.argv[1]
     api_src_dir = sys.argv[2]
-    output_dir = sys.argv[3]
+    api_bin_dir = sys.argv[3]
+    output_dir = sys.argv[4]
 
     api_files = [
-        os.path.join(output_dir, 'PyQGIS.api'),
+        os.path.join(api_bin_dir, 'PyQGIS.api'),
         os.path.join(api_src_dir, 'Python-2.7.api'),
         os.path.join(api_src_dir, 'PyQt4-4.7.4.api'),
         os.path.join(api_src_dir, 'OSGeo_GDAL-OGR-1.9.1.api')
